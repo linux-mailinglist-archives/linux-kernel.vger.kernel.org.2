@@ -2,124 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000D13E3A4B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5613E3A50
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhHHMw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 08:52:56 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:2538 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229504AbhHHMwv (ORCPT
+        id S230486AbhHHM4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 08:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhHHM4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 08:52:51 -0400
-X-UUID: 23d95bde4c0e4e66b9998018f04a5f7d-20210808
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=JLQ+zb7/tEJb5TAPLTu2fShkGO7kQEonorKyASSHm3g=;
-        b=EXD5ulbQjUfwOLkc1SBi76I7FtdwU/0MEL6Q+qiMdrRuBPtZmlUodW8501ca+HwgiXZPQFu4yQREJT7oVhsesScsVO8K57BZGySsemNNU40xKIx9x1lb3v6biRKLGZe67/yV21wXjWup9T5Njm+E+rRxY6w2kEo2wQFN3jDGo0U=;
-X-UUID: 23d95bde4c0e4e66b9998018f04a5f7d-20210808
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 918776073; Sun, 08 Aug 2021 20:52:27 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 8 Aug
- 2021 20:52:23 +0800
-Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Sun, 8 Aug 2021 20:52:22 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
-        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v2 3/3] drm/mediatek: fine tune the dsi panel's power sequence
-Date:   Sun, 8 Aug 2021 20:52:18 +0800
-Message-ID: <20210808125218.63029-4-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210808125218.63029-1-jitao.shi@mediatek.com>
-References: <20210808125218.63029-1-jitao.shi@mediatek.com>
+        Sun, 8 Aug 2021 08:56:03 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E65C061760;
+        Sun,  8 Aug 2021 05:55:43 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so9489004wmb.5;
+        Sun, 08 Aug 2021 05:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KumXTSRy1ccI0diRB9WIg9PzVSWqHO8LNyHxSxpOrJs=;
+        b=MzW+ITtgPThujFWV0WY9+sTfUnfb7Z+ir0p06CFXCaFQcfXRmwyrl2uxwwQmoJ0QPp
+         QliKo61Y8PgkOH3KfDQbfjtgkYiesATvnXNdoAg0NkxHED4aIp5yuV/zdgPHQ7VYsZIH
+         O3eULSIsSGbrKRJSzq0+UQkBcF6MqRWhIrXQx2jaAu7X03X6ejO8/D/eDkYnILzI356V
+         xbK6V6+0+tt3KPueMEB6/K9sbPTgALTgTxRLAM+27rjzhsEGd77KhtRIOG5iK+bn11RM
+         o8n1drlKg48NnRJq4peJbVLyINErz5Aq7n0NBnTdbPaMdyCIpQHfEe0y5POHbhXujMsu
+         iQCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KumXTSRy1ccI0diRB9WIg9PzVSWqHO8LNyHxSxpOrJs=;
+        b=epj/SXw+g3CJ76elIFVQMhp4i1fcx+PysI1rMouyx2m7MFd2AcB9OoItbR7KALcG2P
+         ZGH4gx4ccIeqCUYwHkfWFJQYoQW/Olj3DOI7tQNv/Wf7eqiDtwg9Sf8kKsEi6Ib0m9QK
+         dAglg7RGw2b2QUQF5g28k/hoUdTDidBl1hM4ultcnGn1x0wk1IZgZGqzruyWdpyZs7Gd
+         tCCjHsYbMuje598MZkvSQMNrC1U5BxvgXDus8zuXBzwJh98maJUBD67X6Y33Qd1gVZ5q
+         j2u65y0Wbpwk6gvZ3Hzl9hidf/b3bm30v1Lwjf4KSPN8b5osCdr+OxPy1pQrrJ5GxEmT
+         e6TA==
+X-Gm-Message-State: AOAM531l7xn92uEbcVaZdMTyqEwC148i9g2CDgCNpZkSYy4NgJDiJ3E/
+        lyOJ2i+wA046NJfOtGj21So=
+X-Google-Smtp-Source: ABdhPJzcWa7TsLPHPMKznGhYudbIIp0nmOrWESKLxL5ksihDXUjUPVrJOiUkJc8gn7lNKuYvj52vMg==
+X-Received: by 2002:a1c:f019:: with SMTP id a25mr17834949wmb.96.1628427340979;
+        Sun, 08 Aug 2021 05:55:40 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.236.119])
+        by smtp.gmail.com with ESMTPSA id n3sm14177687wmi.0.2021.08.08.05.55.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Aug 2021 05:55:40 -0700 (PDT)
+To:     Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>
+References: <20210808001342.964634-1-namit@vmware.com>
+ <20210808001342.964634-2-namit@vmware.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH 1/2] io_uring: clear TIF_NOTIFY_SIGNAL when running task
+ work
+Message-ID: <488f005c-fd92-9881-2700-b2eb1adbb78e@gmail.com>
+Date:   Sun, 8 Aug 2021 13:55:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: C5AFE532C3BD71E978C6991D5609392D6891061BFE6B852291D72323DF9655412000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210808001342.964634-2-namit@vmware.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIHRoZSBkcm1fcGFuZWxfcHJlcGFyZV9wb3dlciBhbmQgZHJtX3BhbmVsX3VucHJlcGFyZV9w
-b3dlciBjb250cm9sLg0KVHVybiBvbiBwYW5lbCBwb3dlcihkcm1fcGFuZWxfcHJlcGFyZV9wb3dl
-cikgYW5kIGNvbnRyb2wgYmVmb3JlIGRzaQ0KZW5hYmxlLiBBbmQgdGhlbiBkc2kgZW5hYmxlLCBz
-ZW5kIGRjcyBjbWQgaW4gZHJtX3BhbmVsX3ByZXBhcmUsIGxhc3QNCnR1cm4gb24gYmFja2xpZ2h0
-Lg0KDQpNb3N0IGRzaSBwYW5lbHMsIGhhdmUgZml2ZSBzdGVwcyB3aGVuIHBvd2Vyb24uDQoNCjEu
-IHR1cm4gb24gZHNpIHNpZ25hbCB0byBMUDExICAgLS0+IGRzaSBob3N0J3MgYWN0aW9uDQoyLiB0
-dXJuIG9uIHRoZSBwb3dlciBzdXBwbGllcywgIC0tPiBwYW5lbCdzIGFjdGlvbg0KMy4gc2VuZCB0
-aGUgRENTICBjbWQgdG8gcGFuZWwgICAtLT4gcGFuZWwncyBhY3Rpb24NCjQuIHN0YXJ0IHNlbmQg
-dmlkZW8gc3RyZWFtICAgICAgLS0+IGRzaSBob3N0J3MgYWN0aW9uDQo1LiB0dXJuIG9uIGJhY2ts
-aWdodC4gICAgICAgICAgIC0tPiBwYW5lbCdzIGFjdGlvbg0KDQp3ZSBwdXQgInR1cm4gb24gdGhl
-IHBvd2VyIHN1cHBsaWVzIiBhbmQgInNlbmQgdGhlIERDUyAgY21kIHRvIHBhbmVsIiBpbg0KcGFu
-ZWxfcHJlcGFyZS4gQW5kICJ0dXJuIG9uIGJhY2tsaWdodCIgaW4gcGFuZWxfZW5hYmxlLg0KDQpC
-dXQgc29tZSBvdGhlciBwYW5lbHMgaGFzIGEgc3BlY2lhbCBwb3dlcm9uIHNlcXVlbmNlIGFzIHRo
-ZSBmb2xsb3dpbmcuDQoNCjEuIHR1cm4gb24gdGhlIHBvd2VyIHN1cHBsaWVzLCAgLS0+IHBhbmVs
-J3MgYWN0aW9uDQoyLiB0dXJuIG9uIGRzaSBzaWduYWwgdG8gTFAxMSAgIC0tPiBkc2kgaG9zdCdz
-IGFjdGlvbg0KMy4gc2VuZCB0aGUgRENTICBjbWQgdG8gcGFuZWwgICAtLT4gcGFuZWwncyBhY3Rp
-b24NCjQuIHN0YXJ0IHNlbmQgdmlkZW8gc3RyZWFtICAgICAgLS0+IGRzaSBob3N0J3MgYWN0aW9u
-DQo1LiB0dXJuIG9uIGJhY2tsaWdodC4gICAgICAgICAgIC0tPiBwYW5lbCdzIGFjdGlvbg0KDQpw
-YW5lbCdzIGFjdGlvbnMgYXJlIGRpdmlkZWQgaW50byB0aHJlZSBwYXJ0cy4NCg0KU28gSSBhZGQg
-YSBuZXcgYXBpICJkcm1fcGFuZWxfcHJlcGFyZV9wb3dlci9ybV9wYW5lbF91bnByZXBhcmVfcG93
-ZXIiIHRvDQpjb250cm9sIHRoZSBzZXF1ZW5jZS4NCg0KU2lnbmVkLW9mZi1ieTogSml0YW8gU2hp
-IDxqaXRhby5zaGlAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9ncHUvZHJtL21lZGlhdGVr
-L210a19kc2kuYyB8IDI5ICsrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQogMSBmaWxlIGNo
-YW5nZWQsIDI0IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9k
-cml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jIGIvZHJpdmVycy9ncHUvZHJtL21lZGlh
-dGVrL210a19kc2kuYw0KaW5kZXggYWU0MDNjNjdjYmQ5Li4yNGY4OWExZGQ0MjEgMTAwNjQ0DQot
-LS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQorKysgYi9kcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQpAQCAtMTg0LDYgKzE4NCw3IEBAIHN0cnVjdCBtdGtf
-ZHNpIHsNCiAJc3RydWN0IGRybV9lbmNvZGVyIGVuY29kZXI7DQogCXN0cnVjdCBkcm1fYnJpZGdl
-IGJyaWRnZTsNCiAJc3RydWN0IGRybV9icmlkZ2UgKm5leHRfYnJpZGdlOw0KKwlzdHJ1Y3QgZHJt
-X3BhbmVsICpwYW5lbDsNCiAJc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvcjsNCiAJc3Ry
-dWN0IHBoeSAqcGh5Ow0KIA0KQEAgLTYxOSwxMCArNjIwLDE4IEBAIHN0YXRpYyBpbnQgbXRrX2Rz
-aV9wb3dlcm9uKHN0cnVjdCBtdGtfZHNpICpkc2kpDQogCWRzaS0+ZGF0YV9yYXRlID0gRElWX1JP
-VU5EX1VQX1VMTChkc2ktPnZtLnBpeGVsY2xvY2sgKiBiaXRfcGVyX3BpeGVsLA0KIAkJCQkJICBk
-c2ktPmxhbmVzKTsNCiANCisJaWYgKGRzaS0+cGFuZWwpIHsNCisJCXJldCA9IHBhbmVsX2JyaWRn
-ZV9wcmVwYXJlX3Bvd2VyKGRzaS0+bmV4dF9icmlkZ2UpDQorCQlpZiAocmV0KSB7DQorCQkJRFJN
-X0lORk8oImNhbid0IHByZXBhcmUgcG93ZXIgdGhlIHBhbmVsXG4iKTsNCisJCQlnb3RvIGVycl9y
-ZWZjb3VudDsNCisJCX0NCisJfQ0KKw0KIAlyZXQgPSBjbGtfc2V0X3JhdGUoZHNpLT5oc19jbGss
-IGRzaS0+ZGF0YV9yYXRlKTsNCiAJaWYgKHJldCA8IDApIHsNCiAJCWRldl9lcnIoZGV2LCAiRmFp
-bGVkIHRvIHNldCBkYXRhIHJhdGU6ICVkXG4iLCByZXQpOw0KLQkJZ290byBlcnJfcmVmY291bnQ7
-DQorCQlnb3RvIGVycl9wcmVwYXJlX3Bvd2VyOw0KIAl9DQogDQogCXBoeV9wb3dlcl9vbihkc2kt
-PnBoeSk7DQpAQCAtNjY1LDYgKzY3NCwxMSBAQCBzdGF0aWMgaW50IG10a19kc2lfcG93ZXJvbihz
-dHJ1Y3QgbXRrX2RzaSAqZHNpKQ0KIAljbGtfZGlzYWJsZV91bnByZXBhcmUoZHNpLT5lbmdpbmVf
-Y2xrKTsNCiBlcnJfcGh5X3Bvd2VyX29mZjoNCiAJcGh5X3Bvd2VyX29mZihkc2ktPnBoeSk7DQor
-ZXJyX3ByZXBhcmVfcG93ZXI6DQorCWlmIChkc2ktPnBhbmVsKSB7DQorCQlpZiAocGFuZWxfYnJp
-ZGdlX3VucHJlcGFyZV9wb3dlcihkc2ktPm5leHRfYnJpZGdlKSkNCisJCQlkZXZfZXJyKGRldiwg
-IkNhbid0IHVucHJlcGFyZSBwb3dlciB0aGUgcGFuZWxcbiIpOw0KKwl9DQogZXJyX3JlZmNvdW50
-Og0KIAlkc2ktPnJlZmNvdW50LS07DQogCXJldHVybiByZXQ7DQpAQCAtNjk4LDYgKzcxMiwxMiBA
-QCBzdGF0aWMgdm9pZCBtdGtfZHNpX3Bvd2Vyb2ZmKHN0cnVjdCBtdGtfZHNpICpkc2kpDQogCWNs
-a19kaXNhYmxlX3VucHJlcGFyZShkc2ktPmRpZ2l0YWxfY2xrKTsNCiANCiAJcGh5X3Bvd2VyX29m
-Zihkc2ktPnBoeSk7DQorDQorCWlmIChkc2ktPnBhbmVsKSB7DQorCQlyZXQgPSBwYW5lbF9icmlk
-Z2VfdW5wcmVwYXJlX3Bvd2VyKGRzaS0+bmV4dF9icmlkZ2UpOw0KKwkJaWYgKHJldCkNCisJCQlk
-ZXZfZXJyKGRldiwgIkNhbid0IHVucHJlcGFyZSBwb3dlciB0aGUgcGFuZWwgcmV0OiVkXG4iLCBy
-ZXQpOw0KKwl9DQogfQ0KIA0KIHN0YXRpYyB2b2lkIG10a19vdXRwdXRfZHNpX2VuYWJsZShzdHJ1
-Y3QgbXRrX2RzaSAqZHNpKQ0KQEAgLTEwMDEsNyArMTAyMSw2IEBAIHN0YXRpYyBpbnQgbXRrX2Rz
-aV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KIHsNCiAJc3RydWN0IG10a19k
-c2kgKmRzaTsNCiAJc3RydWN0IGRldmljZSAqZGV2ID0gJnBkZXYtPmRldjsNCi0Jc3RydWN0IGRy
-bV9wYW5lbCAqcGFuZWw7DQogCXN0cnVjdCByZXNvdXJjZSAqcmVnczsNCiAJaW50IGlycV9udW07
-DQogCWludCByZXQ7DQpAQCAtMTAxOSwxMiArMTAzOCwxMiBAQCBzdGF0aWMgaW50IG10a19kc2lf
-cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCiAJfQ0KIA0KIAlyZXQgPSBkcm1f
-b2ZfZmluZF9wYW5lbF9vcl9icmlkZ2UoZGV2LT5vZl9ub2RlLCAwLCAwLA0KLQkJCQkJICAmcGFu
-ZWwsICZkc2ktPm5leHRfYnJpZGdlKTsNCisJCQkJCSAgJmRzaS0+cGFuZWwsICZkc2ktPm5leHRf
-YnJpZGdlKTsNCiAJaWYgKHJldCkNCiAJCWdvdG8gZXJyX3VucmVnaXN0ZXJfaG9zdDsNCiANCi0J
-aWYgKHBhbmVsKSB7DQotCQlkc2ktPm5leHRfYnJpZGdlID0gZGV2bV9kcm1fcGFuZWxfYnJpZGdl
-X2FkZChkZXYsIHBhbmVsKTsNCisJaWYgKGRzaS0+cGFuZWwpIHsNCisJCWRzaS0+bmV4dF9icmlk
-Z2UgPSBkZXZtX2RybV9wYW5lbF9icmlkZ2VfYWRkKGRldiwgZHNpLT5wYW5lbCk7DQogCQlpZiAo
-SVNfRVJSKGRzaS0+bmV4dF9icmlkZ2UpKSB7DQogCQkJcmV0ID0gUFRSX0VSUihkc2ktPm5leHRf
-YnJpZGdlKTsNCiAJCQlnb3RvIGVycl91bnJlZ2lzdGVyX2hvc3Q7DQotLSANCjIuMjUuMQ0K
+On 8/8/21 1:13 AM, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
+> 
+> When using SQPOLL, the submission queue polling thread calls
+> task_work_run() to run queued work. However, when work is added with
+> TWA_SIGNAL - as done by io_uring itself - the TIF_NOTIFY_SIGNAL remains
 
+static int io_req_task_work_add(struct io_kiocb *req)
+{
+	...
+	notify = (req->ctx->flags & IORING_SETUP_SQPOLL) ? TWA_NONE : TWA_SIGNAL;
+	if (!task_work_add(tsk, &tctx->task_work, notify))
+	...
+}
+
+io_uring doesn't set TIF_NOTIFY_SIGNAL for SQPOLL. But if you see it, I'm
+rather curious who does.
+
+
+> set afterwards and is never cleared.
+> 
+> Consequently, when the submission queue polling thread checks whether
+> signal_pending(), it may always find a pending signal, if
+> task_work_add() was ever called before.
+> 
+> The impact of this bug might be different on different kernel versions.
+> It appears that on 5.14 it would only cause unnecessary calculation and
+> prevent the polling thread from sleeping. On 5.13, where the bug was
+> found, it stops the polling thread from finding newly submitted work.
+> 
+> Instead of task_work_run(), use tracehook_notify_signal() that clears
+> TIF_NOTIFY_SIGNAL. Test for TIF_NOTIFY_SIGNAL in addition to
+> current->task_works to avoid a race in which task_works is cleared but
+> the TIF_NOTIFY_SIGNAL is set.
+> 
+> Fixes: 685fe7feedb96 ("io-wq: eliminate the need for a manager thread")
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> ---
+>  fs/io_uring.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 5a0fd6bcd318..f39244d35f90 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -78,6 +78,7 @@
+>  #include <linux/task_work.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/io_uring.h>
+> +#include <linux/tracehook.h>
+>  
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/io_uring.h>
+> @@ -2203,9 +2204,9 @@ static inline unsigned int io_put_rw_kbuf(struct io_kiocb *req)
+>  
+>  static inline bool io_run_task_work(void)
+>  {
+> -	if (current->task_works) {
+> +	if (test_thread_flag(TIF_NOTIFY_SIGNAL) || current->task_works) {
+>  		__set_current_state(TASK_RUNNING);
+> -		task_work_run();
+> +		tracehook_notify_signal();
+>  		return true;
+>  	}
+>  
+> 
+
+-- 
+Pavel Begunkov
