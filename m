@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8791E3E3960
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 09:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B613E3968
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 09:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhHHHWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 03:22:06 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:13017 "EHLO m43-7.mailgun.net"
+        id S230431AbhHHHXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 03:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230360AbhHHHWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 03:22:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628407306; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=fhmTdFlO7B+pDaZJEx7ZsxKpYgii7y1RdKtso6bZJVE=; b=qg9d3HUrN6XCppr1+OsXTO/PZ6OtMpt8r+IX5flgifAuhyWG5h+RqxM7J58zDZeoNeyRsYbn
- 2zgWWS3qjor95BuKJf54p+1WjhNJDH+8lsk0QBl6gk90C0J/uuns5o/Lxffo3iEzXz0i30vB
- MYbM0iLv3ccKS1nn/7Pp2fwb8RA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 610f8606454b7a558f396545 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 08 Aug 2021 07:21:42
- GMT
-Sender: luoj=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 98517C43143; Sun,  8 Aug 2021 07:21:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from akronite-sh-dev02.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 95E77C433F1;
-        Sun,  8 Aug 2021 07:21:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 95E77C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=luoj@codeaurora.org
-From:   Luo Jie <luoj@codeaurora.org>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux@armlinux.org.uk
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org, Luo Jie <luoj@codeaurora.org>
-Subject: [PATCH v1 2/2] MDIO: Kconfig: Specify more IPQ chipset supported
-Date:   Sun,  8 Aug 2021 15:21:11 +0800
-Message-Id: <20210808072111.8365-3-luoj@codeaurora.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210808072111.8365-1-luoj@codeaurora.org>
-References: <20210808072111.8365-1-luoj@codeaurora.org>
+        id S230492AbhHHHXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 03:23:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC02860EE7;
+        Sun,  8 Aug 2021 07:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628407372;
+        bh=XGYYRQow5YWAKiq7u48NhRiDXmC9gP8wUOFsh1QXQK4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EGhkw9UBo5PnbMyw6P8MmG9MNjAOoZ1vNdwMGihEHONPfC0MWAan2iLOrqaxKK4n8
+         pX4HrN8G1yCF2YKV3YWjRg5X1F7PWR4r0TD35jQAkg/tlabJS5oS/Hk90mzngOxCQF
+         T8wlq3jRDPphVCv3vIxkjNulQ8iPm/KoIEO84U4s=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/11] 4.4.280-rc1 review
+Date:   Sun,  8 Aug 2021 09:22:35 +0200
+Message-Id: <20210808072217.322468704@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.280-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.280-rc1
+X-KernelTest-Deadline: 2021-08-10T07:22+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IPQ MDIO driver currently supports IPQ40xx, IPQ807x, IPQ60xx and IPQ50xx.
+This is the start of the stable review cycle for the 4.4.280 release.
+There are 11 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Add the compatible 'qcom,ipq5018-mdio' because of ethernet LDO dedicated
-to the IPQ5018 platform.
+Responses should be made by Tue, 10 Aug 2021 07:22:11 +0000.
+Anything received after that time might be too late.
 
-Signed-off-by: Luo Jie <luoj@codeaurora.org>
----
- drivers/net/mdio/Kconfig        | 2 +-
- drivers/net/mdio/mdio-ipq4019.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.280-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-diff --git a/drivers/net/mdio/Kconfig b/drivers/net/mdio/Kconfig
-index a94d34cc7dc1..6da1fcb25847 100644
---- a/drivers/net/mdio/Kconfig
-+++ b/drivers/net/mdio/Kconfig
-@@ -172,7 +172,7 @@ config MDIO_IPQ4019
- 	depends on COMMON_CLK
- 	help
- 	  This driver supports the MDIO interface found in Qualcomm
--	  IPQ40xx series Soc-s.
-+	  IPQ40xx, IPQ60xx, IPQ807x and IPQ50xx series Soc-s.
- 
- config MDIO_IPQ8064
- 	tristate "Qualcomm IPQ8064 MDIO interface support"
-diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
-index b365f13c92ca..bc26b1459b12 100644
---- a/drivers/net/mdio/mdio-ipq4019.c
-+++ b/drivers/net/mdio/mdio-ipq4019.c
-@@ -262,6 +262,7 @@ static int ipq4019_mdio_remove(struct platform_device *pdev)
- 
- static const struct of_device_id ipq4019_mdio_dt_ids[] = {
- 	{ .compatible = "qcom,ipq4019-mdio" },
-+	{ .compatible = "qcom,ipq5018-mdio" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, ipq4019_mdio_dt_ids);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.280-rc1
+
+Anna-Maria Gleixner <anna-maria@linutronix.de>
+    rcu: Update documentation of rcu_read_unlock()
+
+Peter Zijlstra <peterz@infradead.org>
+    futex,rt_mutex: Fix rt_mutex_cleanup_proxy_lock()
+
+Thomas Gleixner <tglx@linutronix.de>
+    futex: Avoid freeing an active timer
+
+Mike Galbraith <efault@gmx.de>
+    futex: Handle transient "ownerless" rtmutex state correctly
+
+Thomas Gleixner <tglx@linutronix.de>
+    rtmutex: Make wait_lock irq safe
+
+Peter Zijlstra <peterz@infradead.org>
+    futex: Futex_unlock_pi() determinism
+
+Peter Zijlstra <peterz@infradead.org>
+    futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()
+
+Peter Zijlstra <peterz@infradead.org>
+    futex: Pull rt_mutex_futex_unlock() out from under hb->lock
+
+Peter Zijlstra <peterz@infradead.org>
+    futex,rt_mutex: Introduce rt_mutex_init_waiter()
+
+Peter Zijlstra <peterz@infradead.org>
+    futex: Cleanup refcounting
+
+Thomas Gleixner <tglx@linutronix.de>
+    futex: Rename free_pi_state() to put_pi_state()
+
+
+-------------
+
+Diffstat:
+
+ Makefile                        |   4 +-
+ include/linux/rcupdate.h        |   4 +-
+ kernel/futex.c                  | 245 ++++++++++++++++++++++++++--------------
+ kernel/locking/rtmutex.c        | 185 ++++++++++++++++--------------
+ kernel/locking/rtmutex_common.h |   2 +-
+ 5 files changed, 264 insertions(+), 176 deletions(-)
+
 
