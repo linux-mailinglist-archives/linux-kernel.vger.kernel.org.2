@@ -2,196 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2933E3827
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 05:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8203E3879
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 06:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhHHDyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 23:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhHHDyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 23:54:06 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03BFC061760;
-        Sat,  7 Aug 2021 20:53:47 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id u5-20020a17090ae005b029017842fe8f82so15089651pjy.0;
-        Sat, 07 Aug 2021 20:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mJCzvgG17lDIrPVUXi3Q36FAL+nZMzi8syW3cWaF/28=;
-        b=DFjyMlNiJhu+rvkBzvFde/2g0HmPd6knViZBvTLAWhfcp3BXNS6beo9J13yf4i18Cj
-         yVDbL95ZEEJrlyG9VfjDu2aDMIAf5vt8U6VQQ0gaIDQOtWqozv3MCLmlL8g/1RZfOO6/
-         a1HgdtfsiDUaiFnBxGW2Q0ORRXyh6hrRSJrRpSdGnICBXSmcuuwXW2lm9IY5xn2aOaQZ
-         CWVDAuWapV4C5Lmj7c8wObNFJXNIjQiZkjvgeCOKQJ6L8eSTGvLXtCWInm8sea8simLj
-         LLfalKpRnmHFx9dJrluhIvm/HQMa7hTThXzheFAFgAkRaWBgtIJSuYKtGPdzTl/pH2Mh
-         7K/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mJCzvgG17lDIrPVUXi3Q36FAL+nZMzi8syW3cWaF/28=;
-        b=JagKi631NNKiLqIfq5cNHppSMcepAUlVYq+jgcZyH7B491zKTOlP6IcB2HS13iTHW7
-         8plHgFvq2tIBFMiqdXNFyMpKKczCCrY7LednP5EhN7NtB6e/Dbp72zbeHmGZFmkQzPtR
-         8I4d5yL/bUa6a8maFAvQXfzbBA2JeKFcxYcGj0apoOYPnIKdmLCr96YRIG3m48SH6HHz
-         vJ+uh2GcxtV49L6kIoX6tSGqUM0y9sjv2XCeH37tMo+OjeT11C6zsGR/dNEd9nDTkdL7
-         P4p5Le4HU12Vg7brKTBFPILh11xMyV4v2yFANlaTHjVd9hohQBYwORe4VFgd5Ljf6wmO
-         Erdw==
-X-Gm-Message-State: AOAM530HQbvyBpxjzBcllhjeyn6rr6lZqvZnoW6u6yCDNsxHh6+A+SB/
-        Zr/2+/0/h4gUpLrIHCylcPA=
-X-Google-Smtp-Source: ABdhPJyzYc0VSp1iw09YIr5eKAXmqOajXuR8ynvhj4oPhBmWzk5ih95NadTh5o+tNERzBIAIF3xGpA==
-X-Received: by 2002:a63:f341:: with SMTP id t1mr238565pgj.149.1628394827249;
-        Sat, 07 Aug 2021 20:53:47 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id a22sm15641180pfa.137.2021.08.07.20.53.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Aug 2021 20:53:46 -0700 (PDT)
-Subject: Re: [PATCH v3 6/9] docs: pdfdocs: One-half spacing for CJK
- translations
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
-        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
-References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
- <a1c19fe1-2960-1c4b-b355-7e6da13b9630@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <8e70e5ed-c0d9-a0f0-6640-a0f1ebdda6d4@gmail.com>
-Date:   Sun, 8 Aug 2021 12:53:43 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229600AbhHHEad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 00:30:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229473AbhHHEac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 00:30:32 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B615C60EE4;
+        Sun,  8 Aug 2021 04:30:13 +0000 (UTC)
+Date:   Sun, 8 Aug 2021 00:30:11 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH] tracing / histogram: Fix NULL pointer dereference on
+ strcmp() on NULL event name
+Message-ID: <20210808003011.4037f8d0@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <a1c19fe1-2960-1c4b-b355-7e6da13b9630@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 18:56:16 +0900, Akira Yokosawa wrote:
-> CJK documents are much easier to read with a wider baseline stretch.
-> Applying the onehalfspacing option of "setspace" package looks
-> reasonable.
->=20
-> Note: \usepackage{setspace} needs to be before that of hyperref in the
-> preamble.  The 'extrapackages' key (available since Sphinx 2.3) is for
-> this purpose.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Sphinx versions < 2.3 ignore 'extrapackages' and generate LaTeX
-sources without setspace package.
-Obviously, building such LaTeX sources will end up in the error of:
+The following commands:
 
-    ! Undefined control sequence.
-    \kerneldocCJKoff ...exeCJKinactive \singlespacing
+ # echo 'read_max u64 size;' > synthetic_events
+ # echo 'hist:keys=common_pid:count=count:onmax($count).trace(read_max,count)' > events/syscalls/sys_enter_read/trigger
 
-Current requirement to build pdfdocs is Sphinx 2.4.4, but LaTeX
-sources generated by 1.7.9 can at least be built prior to this change.
+Causes:
 
-Jon, Mauro, do you think this is a regression?
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] PREEMPT SMP
+ CPU: 4 PID: 1763 Comm: bash Not tainted 5.14.0-rc2-test+ #155
+ Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
+v03.03 07/14/2016
+ RIP: 0010:strcmp+0xc/0x20
+ Code: 75 f7 31 c0 0f b6 0c 06 88 0c 02 48 83 c0 01 84 c9 75 f1 4c 89 c0
+c3 0f 1f 80 00 00 00 00 31 c0 eb 08 48 83 c0 01 84 d2 74 0f <0f> b6 14 07
+3a 14 06 74 ef 19 c0 83 c8 01 c3 31 c0 c3 66 90 48 89
+ RSP: 0018:ffffb5fdc0963ca8 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: ffffffffb3a4e040 RCX: 0000000000000000
+ RDX: 0000000000000000 RSI: ffff9714c0d0b640 RDI: 0000000000000000
+ RBP: 0000000000000000 R08: 00000022986b7cde R09: ffffffffb3a4dff8
+ R10: 0000000000000000 R11: 0000000000000000 R12: ffff9714c50603c8
+ R13: 0000000000000000 R14: ffff97143fdf9e48 R15: ffff9714c01a2210
+ FS:  00007f1fa6785740(0000) GS:ffff9714da400000(0000)
+knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 000000002d863004 CR4: 00000000001706e0
+ Call Trace:
+  __find_event_file+0x4e/0x80
+  action_create+0x6b7/0xeb0
+  ? kstrdup+0x44/0x60
+  event_hist_trigger_func+0x1a07/0x2130
+  trigger_process_regex+0xbd/0x110
+  event_trigger_write+0x71/0xd0
+  vfs_write+0xe9/0x310
+  ksys_write+0x68/0xe0
+  do_syscall_64+0x3b/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7f1fa6879e87
 
-You can skip 6/9 if you'd like.=20
+The problem was the "trace(read_max,count)" where the "count" should be
+"$count" as "onmax()" only handles variables (although it really should be
+able to figure out that "count" is a field of sys_enter_read). But there's
+a path that does not find the variable and ends up passing a NULL for the
+event, which ends up getting passed to "strcmp()".
 
-I'll see what can be done for compatibility with Sphinx < 2.3.
+Add a check for NULL to return and error on the command with:
 
-        Thanks, Akira
+ # cat error_log
+  hist:syscalls:sys_enter_read: error: Couldn't create or find variable
+  Command: hist:keys=common_pid:count=count:onmax($count).trace(read_max,count)
+                                ^
+Cc: stable@vger.kernel.org
+Fixes: 50450603ec9cb tracing: Add 'onmax' hist trigger action support
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_events_hist.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->=20
-> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> ---
->  Documentation/conf.py                      | 9 +++++++--
->  Documentation/translations/ja_JP/howto.rst | 8 ++++++++
->  Documentation/translations/ko_KR/howto.rst | 8 ++++++++
->  3 files changed, 23 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/conf.py b/Documentation/conf.py
-> index 2ccfe4442acc..2e54488e2480 100644
-> --- a/Documentation/conf.py
-> +++ b/Documentation/conf.py
-> @@ -341,6 +341,9 @@ latex_elements =3D {
->          verbatimhintsturnover=3Dfalse,
->      ''',
-> =20
-> +    # For CJK One-half spacing, need to be in front of hyperref
-> +    'extrapackages': r'\usepackage{setspace}',
-> +
->      # Additional stuff for the LaTeX preamble.
->      'preamble': '''
->  	% Prevent column squeezing of tabulary.
-> @@ -405,8 +408,8 @@ latex_elements['preamble']  +=3D '''
->  	\\newCJKfontfamily[JPsans]\\jpsans{Noto Sans CJK JP}
->  	\\newCJKfontfamily[JPmono]\\jpmono{Noto Sans Mono CJK JP}
->  	% Define custom macros to on/off CJK
-> -	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive}
-> -	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive}
-> +	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive\\onehalfspacing}
-> +	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive\\singlespacing}
->  	\\newcommand{\\kerneldocBeginSC}{%
->  	    \\begingroup%
->  	    \\scmain%
-> @@ -437,6 +440,8 @@ latex_elements['preamble']  +=3D '''
->  	    \\renewcommand{\\CJKttdefault}{JPmono}%
->  	}
->  	\\newcommand{\\kerneldocEndJP}{\\endgroup}
-> +	% Single spacing in literal blocks
-> +	\\fvset{baselinestretch=3D1}
->  	% To customize \\sphinxtableofcontents
->  	\\usepackage{etoolbox}
->  	% Inactivate CJK after tableofcontents
-> diff --git a/Documentation/translations/ja_JP/howto.rst b/Documentation=
-/translations/ja_JP/howto.rst
-> index 73ebdab4ced7..d667f9d8a02a 100644
-> --- a/Documentation/translations/ja_JP/howto.rst
-> +++ b/Documentation/translations/ja_JP/howto.rst
-> @@ -1,3 +1,7 @@
-> +.. raw:: latex
-> +
-> +	\kerneldocCJKoff
-> +
->  NOTE:
->  This is a version of Documentation/process/howto.rst translated into J=
-apanese.
->  This document is maintained by Tsugikazu Shibata <tshibata@ab.jp.nec.c=
-om>
-> @@ -11,6 +15,10 @@ try to update the original English file first.
-> =20
->  ----------------------------------
-> =20
-> +.. raw:: latex
-> +
-> +	\kerneldocCJKon
-> +
->  =E3=81=93=E3=81=AE=E6=96=87=E6=9B=B8=E3=81=AF=E3=80=81
->  Documentation/process/howto.rst
->  =E3=81=AE=E5=92=8C=E8=A8=B3=E3=81=A7=E3=81=99=E3=80=82
-> diff --git a/Documentation/translations/ko_KR/howto.rst b/Documentation=
-/translations/ko_KR/howto.rst
-> index a2bdd564c907..e3cdf0c84892 100644
-> --- a/Documentation/translations/ko_KR/howto.rst
-> +++ b/Documentation/translations/ko_KR/howto.rst
-> @@ -1,3 +1,7 @@
-> +.. raw:: latex
-> +
-> +	\kerneldocCJKoff
-> +
->  NOTE:
->  This is a version of Documentation/process/howto.rst translated into k=
-orean
->  This document is maintained by Minchan Kim <minchan@kernel.org>
-> @@ -11,6 +15,10 @@ try to update the original English file first.
-> =20
->  ----------------------------------
-> =20
-> +.. raw:: latex
-> +
-> +	\kerneldocCJKon
-> +
->  =EC=9D=B4 =EB=AC=B8=EC=84=9C=EB=8A=94
->  Documentation/process/howto.rst
->  =EC=9D=98 =ED=95=9C=EA=B8=80 =EB=B2=88=EC=97=AD=EC=9E=85=EB=8B=88=EB=8B=
-=A4.
->=20
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 949ef09dc537..a48aa2a2875b 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
+ 			event = data->match_data.event;
+ 		}
+ 
++		if (!event)
++			goto free;
+ 		/*
+ 		 * At this point, we're looking at a field on another
+ 		 * event.  Because we can't modify a hist trigger on
+-- 
+2.31.1
 
