@@ -2,136 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F8F3E3D00
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 00:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9403E3D06
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 00:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhHHWSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 18:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhHHWSx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 18:18:53 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1E7C061760
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 15:18:34 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so27066726pjh.3
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 15:18:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=workware-net-au.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=uXF/HlLy6BpvjjoddG1ldyRg+oHgXHYKMFkCEC267qM=;
-        b=lSQuWfRJMP36Z+1SgFTtAsmXpGj7xwm57C8lGNF1AHEK+lsyzHsIG6a9KEWScp0yEy
-         LQWvITelD7LcyPACTS3je333OKZ7guO23WpAdtTNtNvevgV3j9+9ndVthkq7a1GFLOEx
-         rfU8z/DtRCOka3Gi3xz74QQmX/Zo0TJJQSrDMNiDv0p/6SbQhwMlgQGmmTXfx8e38Byu
-         R7HVDauTa3v2R5dukvxaZHGFRy0SqBkMd7i3HhMdiNBDwgMFn28mpWZXMTgzzFTjOHcK
-         nX5Wrx9ZfXf8vrrM/1eHHPT133FVdPQHX72qep+LsTSnCgCLWBm68xl7i7RfKVEdk+RQ
-         tNpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=uXF/HlLy6BpvjjoddG1ldyRg+oHgXHYKMFkCEC267qM=;
-        b=IC5YR8p3TxI+R7KNPDy0OuwFdEfgo1u/ZZmUhOQvhGLaD91dlPs5e3fFI+7SpheC8p
-         M6ZrrYrafz2rhhyLk2b8NcnL/Thf8D8H418Unl9LpPHjyNcAgRvtOTC5SIM0I7NY/L8D
-         wQ4RFunp3IrYsC1nqhIVOfT40GxNlqiVMh0Uvf5hA/y2fyxrqTdkmAM3QNpNhM4kSqGL
-         tOf2/xxvkbdZjdT8e0hh928fBnWKe3ZceCfg7h8inJQr4sv4QaUpkohmv6K0M0Jc92ri
-         CD7HwFlhKFUtcyrZ1SEgfArpND4f3fJqU877W5AQ0adktIDw9ScrYzucpdWldJOQ0aiO
-         9ntQ==
-X-Gm-Message-State: AOAM530UoQYfi/aJaeqLQCXXImrKn08Wtxuo9OfUtgZUuXmPr+U3kFo4
-        fuVrO5hqEKUUU8O/nyBgot4LuQ==
-X-Google-Smtp-Source: ABdhPJwFwToNws/BYXYez5Gjg39xHwk/nkOmruK/PM8hyEb6KOfDeX15Aozd943TeypmTcOQQhnJpw==
-X-Received: by 2002:a63:f754:: with SMTP id f20mr186055pgk.385.1628461113677;
-        Sun, 08 Aug 2021 15:18:33 -0700 (PDT)
-Received: from smtpclient.apple (117-20-69-228.751445.bne.nbn.aussiebb.net. [117.20.69.228])
-        by smtp.gmail.com with ESMTPSA id m18sm15968802pjq.32.2021.08.08.15.18.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 08 Aug 2021 15:18:33 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] net: phy: micrel: Fix detection of ksz87xx switch
-From:   Steve Bennett <steveb@workware.net.au>
-In-Reply-To: <20210807000123.GA4898@cephalopod>
-Date:   Mon, 9 Aug 2021 08:18:28 +1000
-Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Workware-Check: steveb@workware.net.au
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F8C5F7CD-343A-4C25-B04B-EEA5C086B693@workware.net.au>
-References: <20210730105120.93743-1-steveb@workware.net.au>
- <20210730095936.1420b930@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <74BE3A85-61E2-45C9-BA77-242B1014A820@workware.net.au>
- <20210807000123.GA4898@cephalopod>
-To:     Ben Hutchings <ben.hutchings@essensium.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S232815AbhHHWXH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Aug 2021 18:23:07 -0400
+Received: from aposti.net ([89.234.176.197]:54676 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230506AbhHHWXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 18:23:06 -0400
+Date:   Mon, 09 Aug 2021 00:22:38 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/8] drm/ingenic: Simplify code by using hwdescs array
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
+        Sam Ravnborg <sam@ravnborg.org>, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-Id: <QTKJXQ.E7AFQWHL9BRJ3@crapouillou.net>
+In-Reply-To: <d6db6de0-dcc8-b0f0-439d-7a5f69ac4c62@suse.de>
+References: <20210808134526.119198-1-paul@crapouillou.net>
+        <20210808134526.119198-3-paul@crapouillou.net>
+        <d6db6de0-dcc8-b0f0-439d-7a5f69ac4c62@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thomas,
 
+Le dim., août 8 2021 at 20:42:53 +0200, Thomas Zimmermann 
+<tzimmermann@suse.de> a écrit :
+> Hi
+> 
+> Am 08.08.21 um 15:45 schrieb Paul Cercueil:
+>> Instead of having one 'hwdesc' variable for the plane #0 and one for 
+>> the
+>> plane #1, use a 'hwdesc[2]' array, where the DMA hardware descriptors
+>> are indexed by the plane's number.
+>> 
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> ---
+>>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 38 
+>> ++++++++++++-----------
+>>   1 file changed, 20 insertions(+), 18 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
+>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> index e42eb43d8020..bc71ba44ccf4 100644
+>> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> @@ -49,8 +49,7 @@ struct ingenic_dma_hwdesc {
+>>   } __aligned(16);
+>>     struct ingenic_dma_hwdescs {
+>> -	struct ingenic_dma_hwdesc hwdesc_f0;
+>> -	struct ingenic_dma_hwdesc hwdesc_f1;
+>> +	struct ingenic_dma_hwdesc hwdesc[2];
+>>   	struct ingenic_dma_hwdesc hwdesc_pal;
+>>   	u16 palette[256] __aligned(16);
+>>   };
+>> @@ -141,6 +140,13 @@ static inline struct ingenic_drm 
+>> *drm_nb_get_priv(struct notifier_block *nb)
+>>   	return container_of(nb, struct ingenic_drm, clock_nb);
+>>   }
+>>   +static inline dma_addr_t dma_hwdesc_addr(const struct 
+>> ingenic_drm *priv, bool use_f1)
+> 
+> Using the plane index instead of a boolean would be more aligned to 
+> the way this function is being used.
 
-> On 7 Aug 2021, at 10:01 am, Ben Hutchings =
-<ben.hutchings@essensium.com> wrote:
->=20
-> On Sat, Jul 31, 2021 at 08:19:17AM +1000, Steve Bennett wrote:
->>> On 31 Jul 2021, at 2:59 am, Jakub Kicinski <kuba@kernel.org> wrote:
->>>=20
->>> Please extend the CC list to the maintainers, and people who
->>> worked on this driver in the past, especially Marek.
->>=20
->> Sure, I can do that in a v2 of the patch along with the more detailed
->> explanation below.
->>=20
->>>=20
->>> On Fri, 30 Jul 2021 20:51:20 +1000 Steve Bennett wrote:
->>>> The previous logic was wrong such that the ksz87xx
->>>> switch was not identified correctly.
->>>=20
->>> Any more details of what is happening? Which extact device do you =
-see
->>> this problem on?
->>=20
->> I have a ksz8795 switch.
->>=20
->> Without the patch:
->>=20
->> ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver =
-[Generic PHY]
->> ksz8795-switch spi3.1 ade2 (uninitialized): PHY [dsa-0.1:04] driver =
-[Generic PHY]
->>=20
->> With the patch:
->>=20
->> ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver =
-[Micrel KSZ87XX Switch]
->> ksz8795-switch spi3.1 ade2 (uninitialized): PHY [dsa-0.1:04] driver =
-[Micrel KSZ87XX Switch]
-> [...]
->=20
-> And do the external ports work for you after this?
->=20
-> I have a development board with a KSZ8795.  All ports worked before
-> this patch.  After this patch, when I bring up the external ports they
-> are reported as having link up at 10M half duplex, when the link is
-> actually down.
->=20
-> The ksz8873mll_read_status() function is trying to read a non-standard
-> MDIO register that is not handled by the ksz8795 driver's MDIO
-> emulation (and is not documented as existing on the KSZ8873MLL,
-> either!).  It also also reports link up, which is obviously not
-> correct for an external port.
->=20
-> I'll post a patch as a reply to this.
->=20
-> Ben.
+Alright, I can do that.
 
-Thanks Ben,
+>> +{
+>> +	u32 offset = offsetof(struct ingenic_dma_hwdescs, hwdesc[use_f1]);
+> 
+> use_f1 is a function parameter. Is offsetof guaranteed to be 
+> evaluated at runtime?
 
-That looks reasonable to me. My board is running the external ports at =
-10HD so
-I didn't pick this up, but your patch looks correct.
+The offsetof() macro could be defined like this:
+#define offsetof(type, elm) ((size_t) &((type *) 0)->elm)
+
+So I don't see a reason why this couldn't be evaluated at runtime, yes. 
+It's just that the value of "offset" is not known at compilation time 
+(unless the compiler does some constant propagation). In practice 
+though, this code works fine.
+
+>> +
+>> +	return priv->dma_hwdescs_phys + offset;
+>> +}
+>> +
+>>   static int ingenic_drm_update_pixclk(struct notifier_block *nb,
+>>   				     unsigned long action,
+>>   				     void *data)
+>> @@ -562,6 +568,7 @@ static void 
+>> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>>   	struct ingenic_dma_hwdesc *hwdesc;
+>>   	unsigned int width, height, cpp, offset;
+>>   	dma_addr_t addr;
+>> +	bool use_f1;
+>>   	u32 fourcc;
+>>     	if (newstate && newstate->fb) {
+>> @@ -569,16 +576,14 @@ static void 
+>> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>>   			drm_fb_cma_sync_non_coherent(&priv->drm, oldstate, newstate);
+>>     		crtc_state = newstate->crtc->state;
+>> +		use_f1 = priv->soc_info->has_osd && plane != &priv->f0;
+>>     		addr = drm_fb_cma_get_gem_addr(newstate->fb, newstate, 0);
+>>   		width = newstate->src_w >> 16;
+>>   		height = newstate->src_h >> 16;
+>>   		cpp = newstate->fb->format->cpp[0];
+>>   -		if (!priv->soc_info->has_osd || plane == &priv->f0)
+>> -			hwdesc = &priv->dma_hwdescs->hwdesc_f0;
+>> -		else
+>> -			hwdesc = &priv->dma_hwdescs->hwdesc_f1;
+>> +		hwdesc = &priv->dma_hwdescs->hwdesc[use_f1];
+> 
+> Maybe add a helper that looks up the hwdesc field for a given plane?
+
+Sure.
+
+>>     		hwdesc->addr = addr;
+>>   		hwdesc->cmd = JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
+>> @@ -591,9 +596,9 @@ static void 
+>> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>>   			if (fourcc == DRM_FORMAT_C8)
+>>   				offset = offsetof(struct ingenic_dma_hwdescs, hwdesc_pal);
+>>   			else
+>> -				offset = offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+>> +				offset = offsetof(struct ingenic_dma_hwdescs, hwdesc[0]);
+>>   -			priv->dma_hwdescs->hwdesc_f0.next = priv->dma_hwdescs_phys + 
+>> offset;
+>> +			priv->dma_hwdescs->hwdesc[0].next = priv->dma_hwdescs_phys + 
+>> offset;
+> 
+> Maybe priv->dma_hwdescs_phys + offset could be computed in a more 
+> flexible helper than dma_hwdesc_addr().
+> 
+>>     			crtc_state->color_mgmt_changed = fourcc == DRM_FORMAT_C8;
+>>   		}
+>> @@ -964,20 +969,17 @@ static int ingenic_drm_bind(struct device 
+>> *dev, bool has_components)
+>>       	/* Configure DMA hwdesc for foreground0 plane */
+>> -	dma_hwdesc_phys_f0 = priv->dma_hwdescs_phys
+>> -		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+>> -	priv->dma_hwdescs->hwdesc_f0.next = dma_hwdesc_phys_f0;
+>> -	priv->dma_hwdescs->hwdesc_f0.id = 0xf0;
+>> +	dma_hwdesc_phys_f0 = dma_hwdesc_addr(priv, 0);
+>> +	priv->dma_hwdescs->hwdesc[0].next = dma_hwdesc_phys_f0;
+>> +	priv->dma_hwdescs->hwdesc[0].id = 0xf0;
+>>     	/* Configure DMA hwdesc for foreground1 plane */
+>> -	dma_hwdesc_phys_f1 = priv->dma_hwdescs_phys
+>> -		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f1);
+>> -	priv->dma_hwdescs->hwdesc_f1.next = dma_hwdesc_phys_f1;
+>> -	priv->dma_hwdescs->hwdesc_f1.id = 0xf1;
+>> +	dma_hwdesc_phys_f1 = dma_hwdesc_addr(priv, 1);
+>> +	priv->dma_hwdescs->hwdesc[1].next = dma_hwdesc_phys_f1;
+>> +	priv->dma_hwdescs->hwdesc[1].id = 0xf1;
+>>     	/* Configure DMA hwdesc for palette */
+>> -	priv->dma_hwdescs->hwdesc_pal.next = priv->dma_hwdescs_phys
+>> -		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+>> +	priv->dma_hwdescs->hwdesc_pal.next = dma_hwdesc_phys_f0;
+>>   	priv->dma_hwdescs->hwdesc_pal.id = 0xc0;
+>>   	priv->dma_hwdescs->hwdesc_pal.addr = priv->dma_hwdescs_phys
+>>   		+ offsetof(struct ingenic_dma_hwdescs, palette);
+>> 
+> 
+> Could the setup in these three blocks be moved into a common helper?
+
+Yes.
+
+Thanks for the review.
 
 Cheers,
-Steve=
+-Paul
+
+
