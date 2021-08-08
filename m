@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7CA3E39E7
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 12:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022113E39EC
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 13:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhHHKpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 06:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhHHKpR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 06:45:17 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB284C0613CF;
-        Sun,  8 Aug 2021 03:44:57 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id v24-20020a0568300918b02904f3d10c9742so11186880ott.4;
-        Sun, 08 Aug 2021 03:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9U9q0lZUKvbYE54RBYTDoIiNw159S6rYKfxs0QanQdA=;
-        b=BCaXKSSv8FmRRSLzHzm5EhLBPmnNWT/0VRlgGcNrsJe2NF9ugmko/soup69ZBwzvRE
-         3cUBeS6Ue/BzWCq+en/H7LbqhB8HaeqwdcbgtNLA2oHtdNuIxTt/1yy/OHPHkaOiEAEz
-         ov0Pxq/QWWfQMkLvyL1avZ82+pYbZ9sg/JM6F3zNqUX+t9+XMedlCmIH7c2tPpljZaEk
-         fx1NGv/vzANWdTIvlk6LrISKq6ojPebU/UvIRglJEqwnJiwN6ejk+EC3GMOHu5yBOehC
-         vd+4dZPzYkn0oId536oKDEr8oRsMtnpyo14qISzrWZPFv2R8K39GZaWAg3FysPtNEOJs
-         xKjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9U9q0lZUKvbYE54RBYTDoIiNw159S6rYKfxs0QanQdA=;
-        b=t84iXfYXmniz82fbNE31uJ+aNEJGKotkIp+qCDcpz0JNKa9TKDi+Dq5q+dpZDH/vZP
-         wsVXVq+aojqJx+GP+/8fB+Rjd0UEuFRKACdwstDB6ZQuN047Ue0c3sHfSrfpzEFmZdOy
-         FQVrswQdfi8hC9V83pT5x/F7sL3CycVICZXajPm/YcQNohhqaOZBFeF+iq/t0X5mI4Xp
-         u1QlWdcbV9tgHAcmxPJOEAf6TlZxXvjOejB0r3GKqcqZu21C6C7MF2PmavCgoHGYnf0U
-         VuppIGLQM5b9hf0qY7wQYQ9ccKGO4tGmOYuzJpwKVh3iRNClfEwL9nM48kc5Xmw2F8bP
-         m/tQ==
-X-Gm-Message-State: AOAM531gsDiBKwzD2qtele0lX06d/SYtmHquroDTBgGXz7FnQNYFQXMo
-        i9BpPrLa8s9ddYjh0ia+/QVQIXhMPiQMmEXP4HI75ySjtuc=
-X-Google-Smtp-Source: ABdhPJy2xl2rUBT0EBVx9mc8SQaSdTYDIZ5+UnBlv5OtJBtHIvX0gEjsxmHl0LTo4Zn1RVIxV19ZPvTTK+kGldTW/WU=
-X-Received: by 2002:a9d:749a:: with SMTP id t26mr13870019otk.370.1628419496524;
- Sun, 08 Aug 2021 03:44:56 -0700 (PDT)
+        id S230139AbhHHLK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 07:10:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229473AbhHHLKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 07:10:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B30316101E;
+        Sun,  8 Aug 2021 11:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628421005;
+        bh=0f56xpiVXt+VAbohAJHX35HCvdKAVptLGU8kId2ZMIw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MDaMaCrnn4lcC+4pBUQeAPV/RBglU8SIlFj3EGX6b6WZR/UY6uiWf+6WkaFqpuUn2
+         xE6deNdj5+83MP2HGRiZv9ytVcxWiTZ0/iM8jN5GvGr4Xa8GhUON8VhwHSEN2Y8Qcr
+         3krfPqiBsonQ/nfeZIvPGqDKOUNnJ4yC+IqZ0hO+BPpSWChPzgF4N0yt/V4mx/rIDf
+         qXIaUfD+UVt0Qwy4kpHvu36XivtUvvdCukg1hHueAi8Co4vK0bhW7vsg4+FaIl97AL
+         BdEioljKBZw1cTr6MDPQ0cJVneVusihRSui8cW3NUBEjWcOhzmVa6ktOLQLgdoeuki
+         KJXp0pf0p7Prg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A52DB60985;
+        Sun,  8 Aug 2021 11:10:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
- <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org>
-In-Reply-To: <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org>
-From:   Mikael Pettersson <mikpelinux@gmail.com>
-Date:   Sun, 8 Aug 2021 12:44:45 +0200
-Message-ID: <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
-Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on m68k/aranym
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: phy: micrel: Fix link detection on ksz87xx switch"
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162842100567.27537.2856135053086059450.git-patchwork-notify@kernel.org>
+Date:   Sun, 08 Aug 2021 11:10:05 +0000
+References: <20210807000618.GB4898@cephalopod>
+In-Reply-To: <20210807000618.GB4898@cephalopod>
+To:     Ben Hutchings <ben.hutchings@mind.be>
+Cc:     steveb@workware.net.au, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
->
-> On Sat, 7 Aug 2021, Mikael Pettersson wrote:
->
-> > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
-> > 5.10.47 to 5.10.56, and the new kernel failed to boot:
-> >
-> > ARAnyM 1.1.0
-> > Using config file: 'aranym1.headless.config'
-> > Could not open joystick 0
-> > ARAnyM RTC Timer: /dev/rtc: Permission denied
-> > ARAnyM LILO: Error loading ramdisk 'root.bin'
-> > Blitter tried to read byte from register ff8a00 at 0077ee
-> >
-> > At this point it kept running, but produced no output to the console,
-> > and would never get to the point of starting user-space. Attaching gdb
-> > to aranym showed nothing interesting, i.e. it seemed to be executing
-> > normally.
-> >
-> > A git bisect identified the following commit between 5.10.52 and
-> > 5.10.53 as the culprit:
-> > # first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
-> > mm/userfaultfd: fix uffd-wp special cases for fork()
-> >
->
-> That commit appeared in mainline between v5.13 and v5.14-rc1. Is mainline
-> also affected? e.g. v5.14-rc4.
+Hello:
 
-5.14-rc4 boots fine. I suspect the commit has some dependency that
-hasn't been backported to 5.10 stable.
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Sat, 7 Aug 2021 02:06:18 +0200 you wrote:
+> Commit a5e63c7d38d5 "net: phy: micrel: Fix detection of ksz87xx
+> switch" broke link detection on the external ports of the KSZ8795.
+> 
+> The previously unused phy_driver structure for these devices specifies
+> config_aneg and read_status functions that appear to be designed for a
+> fixed link and do not work with the embedded PHYs in the KSZ8795.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: phy: micrel: Fix link detection on ksz87xx switch"
+    https://git.kernel.org/netdev/net/c/2383cb9497d1
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
