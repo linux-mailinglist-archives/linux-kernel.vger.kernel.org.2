@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE1E3E3948
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 09:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DB23E394B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 09:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhHHHG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 03:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhHHHGW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 03:06:22 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4920C061760;
-        Sun,  8 Aug 2021 00:06:03 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso24638279pjf.4;
-        Sun, 08 Aug 2021 00:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Id49AvJlsrukCQw2aVHFU3JVesZ+nmFVyp5cZUBrgDk=;
-        b=D5WO1UksA4807jR59fpOkdeRfaH4f597Fbf6r1/Bf/LCSUNRgnRcQ+xad5STftxJrI
-         e3k05T2Hu5lAVsA79FCb/+8H18V29oIOkNmy0xLxoBaCNFAEbKJIp9vPq78hkPDm6I2M
-         kRUSBrjchX+dUYdZTcUxk18IFlcf0cdfYzI+LoJ3PcpOtXN8bNthdqUD/xfqOU1dMQS2
-         LaAKsSf80f2+PcUconldVR5prEurpdK64wez0zyMgzg5n1v+OxjgcExZ2+I/Mj6viJD3
-         QzdXlZro5sHOJDcYwpF6iGcqGiibZzniVH7FV6Hgb9+JjbymOhH0sOoe8XYvgLl4+cGo
-         h1/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Id49AvJlsrukCQw2aVHFU3JVesZ+nmFVyp5cZUBrgDk=;
-        b=ZigzGeMgBFkOcYpzqlf+JrM8PKmrkYRzt2OXfbsjHBbpheXxN4OypapYl3XfwfLxD9
-         5lkIFcwyqRhGK7Tla1FoHbYLaPV/+fPeIN9W3qURN8pXw55DX8ZaJM9y65PjIfn1ZieR
-         PRR4e6cD21e6NCVKQGYdzaHobNoOoDHt/G81pHPcgh8oFKW8WZg84yc3xzrPYwviK3Zx
-         ZuhIQYlg4saYsdVQl/yS7dkm/h+3Sy0Sl9joGf6BJzQTzBGJjMh24tNUVNRx4WQwNlE7
-         m8ZO1x3MUtdiU9x9ChopJh7EZWFj16rk3od62MOa3lfkrXm39mrcjrRt2d6xs1z3wgKc
-         7BTg==
-X-Gm-Message-State: AOAM530c72jbSjtHNL0Jxo5x28hD2z/w/qZjRiDkTSeddEitO25Y4mzr
-        WX+IrTlPJcmyBgUT3i3ULdKAYp+1f0U4zI/CD8M=
-X-Google-Smtp-Source: ABdhPJwO5zgXyH9DLPdlzB4IcPfBeyPOT2uAJcJz7eySfvO8B3PjLZ0EZWOelMryhPwm+RmEP8MMcA==
-X-Received: by 2002:a17:90b:4ac8:: with SMTP id mh8mr18104180pjb.5.1628406363398;
-        Sun, 08 Aug 2021 00:06:03 -0700 (PDT)
-Received: from localhost.localdomain ([1.240.193.107])
-        by smtp.googlemail.com with ESMTPSA id 37sm17672490pgt.28.2021.08.08.00.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 00:06:02 -0700 (PDT)
-From:   Kangmin Park <l4stpr0gr4m@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 net] ipv4: fix error path in fou_create()
-Date:   Sun,  8 Aug 2021 16:05:57 +0900
-Message-Id: <20210808070557.17858-1-l4stpr0gr4m@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S230344AbhHHHPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 03:15:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229504AbhHHHPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 03:15:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD1060F02;
+        Sun,  8 Aug 2021 07:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628406922;
+        bh=19MyriqWL0i0qp9NyBtdeUE7ylhEu80OW3mYoLdtfl8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qpIDBy05kNsGtLSBztZuNwZe+zk3RgqdR59eLmU5v0m3yctfFzspIjyJccARlhS3B
+         25VvBibDAfAGebf6NM1O8YjSy0hRMrthvNpuAecWgDlPB6S7hCEnilev9m8DgWWQYn
+         F3qNezH/BnxX70c7YzZwIiNHlvK1z0VzXZHLk2Gc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.243
+Date:   Sun,  8 Aug 2021 09:15:18 +0200
+Message-Id: <1628406918121186@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sock is always NULL when udp_sock_create() is failed and fou is
-always NULL when kzalloc() is failed in error label.
+I'm announcing the release of the 4.14.243 kernel.
 
-So, add error_sock and error_alloc label and fix the error path
-in those cases.
+All users of the 4.14 kernel series must upgrade.
 
-Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
----
-v3:
- - change commit message
- - fix error path
----
- net/ipv4/fou.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-diff --git a/net/ipv4/fou.c b/net/ipv4/fou.c
-index e5f69b0bf3df..f1d99e776bb8 100644
---- a/net/ipv4/fou.c
-+++ b/net/ipv4/fou.c
-@@ -572,13 +572,13 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
- 	/* Open UDP socket */
- 	err = udp_sock_create(net, &cfg->udp_config, &sock);
- 	if (err < 0)
--		goto error;
-+		goto error_sock;
- 
- 	/* Allocate FOU port structure */
- 	fou = kzalloc(sizeof(*fou), GFP_KERNEL);
- 	if (!fou) {
- 		err = -ENOMEM;
--		goto error;
-+		goto error_alloc;
- 	}
- 
- 	sk = sock->sk;
-@@ -627,9 +627,10 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
- 
- error:
- 	kfree(fou);
-+error_alloc:
- 	if (sock)
- 		udp_tunnel_sock_release(sock);
--
-+error_sock:
- 	return err;
- }
- 
--- 
-2.26.2
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                  |    2 -
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c |   23 ++++++++++++++-----
+ drivers/net/usb/r8152.c                   |    3 +-
+ drivers/spi/spi-mt65xx.c                  |   19 ++++-----------
+ drivers/watchdog/iTCO_wdt.c               |   12 ++--------
+ fs/btrfs/compression.c                    |    2 -
+ include/linux/mfd/rt5033-private.h        |    4 +--
+ net/bluetooth/hci_core.c                  |   16 ++++++-------
+ net/core/skbuff.c                         |    5 +++-
+ virt/kvm/kvm_main.c                       |   36 +++++++++++++++++++++++++-----
+ 10 files changed, 73 insertions(+), 49 deletions(-)
+
+Axel Lin (1):
+      regulator: rt5033: Fix n_voltages settings for BUCK and LDO
+
+Goldwyn Rodrigues (1):
+      btrfs: mark compressed range uptodate only if all bio succeed
+
+Greg Kroah-Hartman (3):
+      Revert "Bluetooth: Shutdown controller after workqueues are flushed or cancelled"
+      Revert "watchdog: iTCO_wdt: Account for rebooting on second timeout"
+      Linux 4.14.243
+
+Guenter Roeck (1):
+      spi: mediatek: Fix fifo transfer
+
+Jia He (1):
+      qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()
+
+Nicholas Piggin (1):
+      KVM: do not allow mapping valid but non-reference-counted pages
+
+Paolo Bonzini (1):
+      KVM: do not assume PTE is writable after follow_pfn
+
+Pravin B Shelar (1):
+      net: Fix zero-copy head len calculation.
+
+Sean Christopherson (1):
+      KVM: Use kvm_pfn_t for local PFN variable in hva_to_pfn_remapped()
+
+Takashi Iwai (1):
+      r8152: Fix potential PM refcount imbalance
 
