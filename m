@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F7A3E39AE
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 10:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2C83E39B7
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 11:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhHHIpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 04:45:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44049 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230442AbhHHIpW (ORCPT
+        id S231359AbhHHJA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 05:00:57 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:50631 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230301AbhHHJAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 04:45:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628412303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kFwi0Z6oGORAHQ+dxi0xTcqJOzaM4j07+7O6RC89Pmo=;
-        b=DXeqOvs1EygOhSvlYa2P9z87us8Htsm+WEsqO0ioepftsyxryAOhiQTIPLJHGCqkyizvNc
-        fLlPLqRDupvXs0f5F8ocqItJ8zA+eRS3suAUp4SEwvb1HvC9wKHPZ0ANaDPAnLGA82Ia4j
-        UkPMNBSr11rMJP9Q4hvYHEwZ5WZok1Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-KnHj6BWkMziveqpLqC8vLA-1; Sun, 08 Aug 2021 04:44:59 -0400
-X-MC-Unique: KnHj6BWkMziveqpLqC8vLA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7EA8180FCCF;
-        Sun,  8 Aug 2021 08:44:58 +0000 (UTC)
-Received: from T590 (ovpn-12-50.pek2.redhat.com [10.72.12.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EBDCE5D9D3;
-        Sun,  8 Aug 2021 08:44:51 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 16:44:46 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH] block: don't decrement flush request refcount if it's
- state is idle in flush_end_io()
-Message-ID: <YQ+Zfkl7Nsl2aSdw@T590>
-References: <20210808070330.763177-1-yukuai3@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210808070330.763177-1-yukuai3@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Sun, 8 Aug 2021 05:00:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1628413234; x=1659949234;
+  h=from:to:cc:subject:date:message-id;
+  bh=jR26YLBvlhKg/hguwFntiNL8kCbXJxE4Lbn+k+oiwH4=;
+  b=jiEInb9FnimMBOrM/ODdOQe3VI/sdG9X4WsUrEbiOcOxgRTymOMrhC90
+   bBANQ/dhznQVdMMajqQK2kfHNtCi/JIly5H8yXNuoSz+SWaScIb/tVEoC
+   ZBuVvUHH/pp1YNLGkkcKN9mzBBR3318Hi3r/gwvUXvGucvHkVUaNJCC02
+   YH8RltJH5iaJyrNG5TtelSFcgFV/U8TutTV+jWeVbUxsYGCmXps3rshkq
+   0Hk+nzMo3e7l18thHJkutltb95vduKfECbi/FMhwN0HTag++WHdO9J/y0
+   ItsMD3aI9udR9x/VFR1KpaVgLwCeQLKU0CKqoQ/5/CoS5clc5iLhHszt6
+   A==;
+X-IronPort-AV: E=Sophos;i="5.84,305,1620662400"; 
+   d="scan'208";a="288167957"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Aug 2021 17:00:34 +0800
+IronPort-SDR: orBRabjdoY1kMP+w5t5dXOMO8xxYAByFsZ3+1OjDlCPmXzlcHaNmp31qcXqCUj7hWIqMN4BkhC
+ dWfujPcNEv8ND1BDylAH4ceF11oIJsQxWdOI+VSUnmWKjDR9SNcYCq/AlPo91cSulBeqCY+M0u
+ OrTwe/P40vwtuszvhejlZRZTh6YC9JayI8KN6hcJh3j3td5U+DclXRDUg9IwxWe+rMy3o69CM9
+ /mrB6TLyFvEFnZxXSKThSrdzm9HXaxrVCXCgyQfonigit0MqUA6O52my15k0QzGXahtvOt37Q5
+ VJF/XnCeYGAJxs7m+/aDrsPq
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 01:36:08 -0700
+IronPort-SDR: +Au7qnkbpvwrSWQ4451C3mEIbU11vVCzlc6SuKhy/pCh4Yv3faO8clSCK1x4OgjRH6liiX6MGY
+ LrGnDy3kp76ICSJWAi/kUwsCmqeUdAeJxU+gYe5klZ+5ZkflUhlk0AhnHHzhez6SSRldZwOCm3
+ aSkGkbh0KMJD6UeY7MQfGy6ijMSNZ0HT1n/VLEpyf+/v9GW5e3YZT3PmExthhSqVTv1UbmdXB/
+ 4EfRu5gtNNz2JAyjno7u+sLsvsZYSDpTl42DJXoYOnnLEz/hLEkPsjeHgOfkZVED4yakyJypWE
+ els=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com (HELO BXYGM33.ad.shared) ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 08 Aug 2021 02:00:32 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH 0/4] scsi: ufs: Few HPB fixes
+Date:   Sun,  8 Aug 2021 12:00:20 +0300
+Message-Id: <20210808090024.21721-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 03:03:30PM +0800, Yu Kuai wrote:
-> flush_end_io() currently decrement request refcount unconditionally.
-> However, it's possible that the request is already idle and it's
-> refcount is zero since that flush_end_io() can be called concurrently.
-> 
-> For example, nbd_clear_que() can be called concurrently with normal
-> io completion or io timeout.
-> 
-> Thus check idle before decrement to avoid refcount_t underflow
-> warning.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  block/blk-flush.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-flush.c b/block/blk-flush.c
-> index 1002f6c58181..9b65dc43702c 100644
-> --- a/block/blk-flush.c
-> +++ b/block/blk-flush.c
-> @@ -222,7 +222,8 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
->  	/* release the tag's ownership to the req cloned from */
->  	spin_lock_irqsave(&fq->mq_flush_lock, flags);
->  
-> -	if (!refcount_dec_and_test(&flush_rq->ref)) {
-> +	if (blk_mq_rq_state(flush_rq) == MQ_RQ_IDLE ||
-> +	    !refcount_dec_and_test(&flush_rq->ref)) {
+Hi Martin,
 
-It is driver's bug to finish one already ended request, so please
-fix the driver instead.
+This patch series include several hpb fixes, most of them host mode.
+Please consider this patch series for kernel v5.15.
 
 Thanks,
-Ming
+Avri
+
+Avri Altman (4):
+  scsi: ufshpb: re-wind the read timeout on every read
+  scsi: ufshpb: Use a correct max multi chunk
+  scsi: ufshpb: Verify that num_inflight_map_req is non-negative
+  scsi: ufshpb: Do not report victim error in HCM
+
+ drivers/scsi/ufs/ufshpb.c | 29 +++++++++++++++++++++++++----
+ drivers/scsi/ufs/ufshpb.h |  6 ++++--
+ 2 files changed, 29 insertions(+), 6 deletions(-)
+
+-- 
+2.17.1
 
