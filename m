@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC64A3E3CDD
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 23:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718093E3CDF
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 23:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbhHHVOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 17:14:00 -0400
-Received: from mail-mw2nam10on2089.outbound.protection.outlook.com ([40.107.94.89]:37984
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229895AbhHHVN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 17:13:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ts34UMBUI2c0AP5fh85MUNG+XUfuIDieFS7PuXG9qWJYtDFW7akpCOR+DchD6Cg17GxhHGHgtLbUmfEY4OhpVI4YM03TocRnmEXLpQc9tgO4PnMvy19YRqJNhYps0WKVq/XmgncVpTkeM+BG4JTrwduVCsH39NJaz6a7EBhfjCwY2kCNkSwWUSMW/PCPWAw/yGnJi04mK6dxlGuLQhNGPqke+Rprxtvo03GwurQaHdjTAYE058oqhTkXB++irWFksVG2jOftkb1pIMMuf1Ige1ac2SjYYvxR1tO7R11gGCG0b9VA/wECf6LDfHdOeFY/bi7MpNuZeUNDhS+xPSCCCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ukzGuvMs7I5EhFA9bVD4Brm3bwMC8IIyEXPT+ENB7Vk=;
- b=FUUXJwCni02pPndlmqXatdFlo7lo/535AGwp9tDA7mJ6A5p3WIgamncsE97Hw3CJPvscjF9dV6iONAhQoA4LAMgtSMKrYYX4INVBiO645QImH38SNzu+IHVXi1qxhq+Qkh57Z8Itapgo3b8od55bj2btHFYbUsyb9VHGPIW15k11/Xduj2EvbzdUu46O6ZqE2ZVO0mzPCqSWMrVIVOUzJaEPH79sfaYmM/TpCaikIMIt3aIDjoOmU2doErFWMOpG46RhPe+UG5tur+wZvr/FX679z+topW7471VV0wfFhJHBMBmTIB70jI6G373hZ+FDVmwsTG6+MF2aV3aqzzJMtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linux.ibm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ukzGuvMs7I5EhFA9bVD4Brm3bwMC8IIyEXPT+ENB7Vk=;
- b=QMm7UAJ4ss2XT6oLXOcA0J8/zec/xWv5lsMheVbw3xrmTz0sWVwqRNS81uqi7a4uOnWJQFz4aHFxPX24/TPoFagwwcWvNMGKg4Q3lomKKMquEpiEVTdfmjAkItzyo/eRkB8z79b/6N/5/OSfjyQWYZ3AXlF6YKkopgmZgRebBP+oFHUQDop3xnf50XsOEujwGFUlBRyvGOl2TLjuExSCtUT6PbdIVMf83PJZ+S3tPeKNzrv4B8JWJ/XipiDeah+Wi/UiitlCukuYJUMuUjIVlou6dnBD/4G7jbVSTveU/Mmxe75Omcb8mbkOyQcRIEV0/jnwf7R5c2plvNGKSraQhw==
-Received: from BN9PR03CA0467.namprd03.prod.outlook.com (2603:10b6:408:139::22)
- by DM6PR12MB2618.namprd12.prod.outlook.com (2603:10b6:5:49::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Sun, 8 Aug
- 2021 21:13:38 +0000
-Received: from BN8NAM11FT032.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:139:cafe::c5) by BN9PR03CA0467.outlook.office365.com
- (2603:10b6:408:139::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend
- Transport; Sun, 8 Aug 2021 21:13:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT032.mail.protection.outlook.com (10.13.177.88) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4394.16 via Frontend Transport; Sun, 8 Aug 2021 21:13:37 +0000
-Received: from [10.2.53.40] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 8 Aug
- 2021 21:13:37 +0000
-Subject: Re: [PATCH 0/5] Cleanups and fixup for gup
-To:     Miaohe Lin <linmiaohe@huawei.com>, <akpm@linux-foundation.org>
-CC:     <imbrenda@linux.ibm.com>, <kirill.shutemov@linux.intel.com>,
-        <jack@suse.cz>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210807093620.21347-1-linmiaohe@huawei.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <9ddcde41-7222-8afe-1884-5544d6b5fae6@nvidia.com>
-Date:   Sun, 8 Aug 2021 14:13:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232580AbhHHVOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 17:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhHHVOh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 17:14:37 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1EFC061760;
+        Sun,  8 Aug 2021 14:14:17 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id f13so21497250edq.13;
+        Sun, 08 Aug 2021 14:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4jBI5fwS+8PcqcFnWHTT4nTI4zqvMfHeyhnQQ2c+hc4=;
+        b=V2Mx3EVNdOgB5oUMJEZpZGNuRL45Bt2CgsuyTZPescuYmeinTUEPbeo4ayGCSQhiKu
+         EhJQbQ6jW2/4Ukxr20IxGtjqbLFGCdPmQt4m+6bWrEyuqVQqjKkK1ikarpHCg7sQ2TKC
+         6j5UhXVBnNGQx3naZZkkBGNv+DAgwS4HnL7Hi9kFQC65x66oTBY9LkhVb3Re3h+iv26t
+         LfhamzG8n5bvaGtLRMJed+gzv8u4fWzIoXzjYT37Ao4hJKGrwYcbV1h/I9cxHO/mp38Q
+         lAUThEdNu+G9qy77VgK7KM9U8p9Bu/74XgQ79l4mDfUr8NRt8jUpnELFq3mB0teLhCSh
+         WqkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4jBI5fwS+8PcqcFnWHTT4nTI4zqvMfHeyhnQQ2c+hc4=;
+        b=r8JmlBGcIg/G0Nm0Gy/J3QvQNoQKY4BWFc7UFWr3I1DUP6SqgHXUuR/ajGFVLes/1c
+         oZiErAe5ruuDARHwAYTSXjhenTSEYvR5QtE3RPk5iyHE3sDb4ZqdekkzEkrGtZbKh4My
+         9F6kDFQqRdxhbsrWe62ceX10eLmOlxJeMtd6U6U+JRv5hiroPs1iIEAYaMTO44Y5YLIy
+         y2U5/Qpn/IToBAlpW/t3AA2BnyFC53f1z5bn+1Gv77eUIjWEpXsV6/KVgZ5vrksc1rSc
+         YyCvJ1wnTkaTuecpae7y9kBi9IfdMhC1CiS+/dmzz0CpQoFu47N1dFccJxVJh1KDBFlK
+         7LMw==
+X-Gm-Message-State: AOAM531HYQolf801Oz34idz+lJQU5QtLdDY4yFZvKFptpmgPxYrhVIjZ
+        gOUlc2VHL6cciiSlDrOnwf0=
+X-Google-Smtp-Source: ABdhPJzokKec6876qc7sH9rHOWFh83ObCR0CU5Rnz0C7t90O42gKw1/ACD11OnbtczG4JBKYNGEb1A==
+X-Received: by 2002:a05:6402:1a4c:: with SMTP id bf12mr25632909edb.137.1628457255713;
+        Sun, 08 Aug 2021 14:14:15 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id t17sm1193073edw.13.2021.08.08.14.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Aug 2021 14:14:15 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 00:14:13 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Jonathan McDowell <noodles@earth.li>,
+        Michal =?utf-8?B?Vm9rw6HEjQ==?= <vokac.m@gmail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
+        Hannu Nyman <hannu.nyman@iki.fi>,
+        Imran Khan <gururug@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Nick Lowe <nick.lowe@gmail.com>,
+        =?utf-8?B?QW5kcsOp?= Valentin <avalentin@marcant.net>
+Subject: Re: [RFC net-next 3/3] net: dsa: tag_qca: set offload_fwd_mark
+Message-ID: <20210808211413.33voutdjlz4qavzn@skbuf>
+References: <20210807120726.1063225-1-dqfext@gmail.com>
+ <20210807120726.1063225-4-dqfext@gmail.com>
+ <20210807225721.xk5q6osyqoqjmhmp@skbuf>
+ <20210808161224.228001-1-dqfext@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210807093620.21347-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4d5af6b6-60dd-43e1-5bde-08d95ab163e7
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2618:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB261874DB52D4F12F304EED08A8F59@DM6PR12MB2618.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lVO0v8ao5r7WI1WwKu6VoT9n9A71c7s0LB9PcBgca+uG64EOqaRDhoBFCA3DvR/v0Hg2ecIso74tAUFPvvQIO1BhPSBBb6JXg3Slcq1vyVN6LvqvONQNQuDqD5B03K9lUAGyP0Ic21irfNuNvcY/jNsvosNe0uS86mcmPBwY0ZZ0av+2YGh9qqLtKJZ01AoBifyXbytLQKVcW7PMrDKYNxmgOqjIXd49g7op8kPjV8CWB6EcV76QCwwhCdtuwMLJDm+I/TYMPjz4dWirLR4X5gZN3rQN0EW6Zw42QShst8QWRl004HeLnn9gmHwOda6xVs8i97QoXR/ORcWo2zxW3g/NeNQat3crk7jO9+CcR3O05ZAZxHqqcCYuixUzcmOI0fPTyySqE/JT2LCgrB6bIcj/gW+/VRe+npKcVTjUuEyOAybF8BC3vjv52nR4oZtC3YP1fiv3Pcw/oPcAii+P8N/TDl68FXFu9RaZW9vdUSXh3QZCK2VHsjjKgzRW9C1FJXq0R2XEgA+EZK71cExyjryuCa8q0GpIsey4CBSMds1Vcd1VmH+5AhtHIRQtFitHxuW66icsLqmehnYwzVRF/SyyJIdvtA6cJHZMltISpZvFw1ZaK0FSkQBFE3RRn31cyyqFD4Mu24Mv2Xcg/02wFQTZFJusaRhy2k9fV7cRfg7M8ZtTDhqk0iHs+gDY+NhbZxmrs/fOt6KJiUiz5ByXMPS5O0aEMM3Jt1HKwEEi/0Y=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(346002)(36840700001)(46966006)(336012)(356005)(36906005)(316002)(36756003)(26005)(16576012)(70206006)(2616005)(4326008)(8676002)(82310400003)(86362001)(426003)(4744005)(70586007)(47076005)(5660300002)(83380400001)(2906002)(31696002)(186003)(478600001)(16526019)(82740400003)(31686004)(8936002)(36860700001)(7636003)(53546011)(110136005)(54906003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2021 21:13:37.9864
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d5af6b6-60dd-43e1-5bde-08d95ab163e7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT032.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2618
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210808161224.228001-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/21 2:36 AM, Miaohe Lin wrote:
-> Hi all,
-> This series contains cleanups to remove unneeded variable, useless
-> BUG_ON and use helper to improve readability. Also we fix a potential
-> pgmap refcnt leak. More details can be found in the respective
-> changelogs. Thanks!
+On Mon, Aug 09, 2021 at 12:12:24AM +0800, DENG Qingfang wrote:
+> On Sun, Aug 08, 2021 at 01:57:21AM +0300, Vladimir Oltean wrote:
+> > In this day and age, I consider this commit to be a bug fix, since the
+> > software bridge, seeing an skb with offload_fwd_mark = false on an
+> > offloaded port, will think it hasn't been forwarded and do that job
+> > itself. So all broadcast and multicast traffic flooded to the CPU will
+> > end up being transmitted with duplicates on the other bridge ports.
+> > 
+> > When the qca8k tagger was added in 2016 in commit cafdc45c949b
+> > ("net-next: dsa: add Qualcomm tag RX/TX handler"), the offload_fwd_mark
+> > framework was already there, but no DSA driver was using it - the first
+> > commit I can find that uses offload_fwd_mark in DSA is f849772915e5
+> > ("net: dsa: lan9303: lan9303_rcv set skb->offload_fwd_mark") in 2017,
+> > and then quite a few more followed suit. But you could still blame
+> > commit cafdc45c949b.
 > 
-> Miaohe Lin (5):
->    mm: gup: remove set but unused local variable major
->    mm: gup: remove unneed local variable orig_refs
->    mm: gup: remove useless BUG_ON in __get_user_pages()
->    mm: gup: fix potential pgmap refcnt leak in __gup_device_huge()
->    mm: gup: use helper PAGE_ALIGNED in populate_vma_page_range()
-> 
->   mm/gup.c | 16 ++++++----------
->   1 file changed, 6 insertions(+), 10 deletions(-)
-> 
+> The driver currently only enables flooding to the CPU port (like MT7530
+> back then), so offload_fwd_mark should NOT be set until bridge flags
+> offload is supported.
 
-For the series:
-
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+Ok, I missed that. Please squash this with patch 1 then, please.
