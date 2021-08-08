@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7773E39FA
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 13:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E06E3E39FC
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 13:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhHHLbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 07:31:25 -0400
-Received: from mout.gmx.net ([212.227.15.15]:52729 "EHLO mout.gmx.net"
+        id S230468AbhHHLb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 07:31:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhHHLbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 07:31:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628422255;
-        bh=W5chU5//YfU3n5/LhSUUVSldCLiEe1+cMgrkYXazda0=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=C9NVFolz1ZsuztP7hj7CJh6tZUOPaGkLRIeA11yOMplKcp81SspAM4UApgNIyzct0
-         tM8nRFXsYv5+bS9hjP+tDhl3VE1QcY+h+xUO5jQcyD1h7EZOiI11dzIzTCpRKTzhkE
-         N27zc9Typcu5BRft/5MU7uZdmw/zIGmLeyxn1Tog=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MiaY9-1moFlA2Fl9-00fitP; Sun, 08
- Aug 2021 13:30:55 +0200
-Date:   Sun, 8 Aug 2021 13:30:43 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210808113043.GA3042@titan>
-References: <20210801144316.12841-1-len.baker@gmx.com>
- <20210801145959.GI22278@shell.armlinux.org.uk>
- <20210801155732.GA16547@titan>
- <202108010934.FA668DEB28@keescook>
- <20210807140245.GA2688@titan>
- <0c1d7c01821f1f0891fd8f13c1e8f9a68bb21717.camel@perches.com>
+        id S230420AbhHHLbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 07:31:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C3816101D;
+        Sun,  8 Aug 2021 11:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628422267;
+        bh=cQR9HjELS5wfqjRmJ6RrRMXOCCvZAs4SRF+f6Wp2mbs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=yhvoNhcaPEmU/LPg9keHrZIAsz8IVOqM8MNYDBMYyuF/EyyTyyWeLUecTWvvoSHwp
+         Thtusv7zMDFjK7GHUyLZBaR5AQOebPK8nyL9ibXgAQ9bFU6aBO4m5z0covl8lDMent
+         ampsx/A6UxORIDLmUEkZPWaIh+TrLs9gg/pRb1+w=
+Date:   Sun, 8 Aug 2021 13:31:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [GIT PULL] TTY/Serial driver fixes for 5.14-rc5
+Message-ID: <YQ/AeMGGzEwsxJkh@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c1d7c01821f1f0891fd8f13c1e8f9a68bb21717.camel@perches.com>
-X-Provags-ID: V03:K1:yhtkYHOcv/CHfzZdfq4WcAMbmVNEMTMq971wsGS9ywr1epjn7nE
- 1anGABKOQFM/27iH0g27l/ljraDexB9IRu9iidvy8X/LpM2joGccUuJYn98zRJNpxcwF1hH
- 4kVyEgb9uCeY8Onw6RSereN+/KNXvT3RnXvdOJrUxK7RXnDvSFgiQIMNPInOon9nvXKypme
- +cp9kDx3Wn2kEYwZssgJA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wbeyWHOiozo=:5WOgHNeL5Q45hm6gMdYeBG
- WtTe2QQjS0HdeW5zyT6ibXFFhDJc3tdwylJNHtEWpt2TyFEj5WYb3YrzrxD08eg3Xy/woBHn9
- yEe1nYJtrqknaCyOdbpw6Ki0gGFcNG2smWJdumrE43lrtiX+Pn8oKoDEMPdrraXIVNACGBTLU
- ZX4j1OlOKccvxSoq5KOOEgl92gufFkfZoUE7yXeQwgxWVwr4OkeZToan0kvPPoy1kcaTEDQCm
- ZYsqxGKLO8iB5mbi56GDECJsbkq+a8FLK+arZMRQ8qpQ4jMpxfbWKl1p56zZNGwGJm9OBHs8Y
- fogIgg+H5dXs8bryCTlR4klKFQYyl8CQiR4VFBaZMWnvnRYHDjSRrmB6y0mCY8xyn8mbXO9EQ
- 9+YCfUODUW3PDoDCkBfr5faMTYYAZuLsJOBDVwVNbuGJ95SB4ztfyzmj+0DO4Wonl4YySCgkm
- LBnLG/DRJv5Xp7pmaji6AFQcXMYk/PEi4QMs09WOTkWMbJeQqwh0a51+z1asCisPBjIVSSnYB
- eu8v3PywFRBhwHQjENl/7d68Yp4qeJOw1n/LiO2ELjdGzbzRO/ewiv9cm2+Yk1f26WtCwKrIv
- 1yhCRyvPiVVjFimBFkybHI4UMqqv7wNftFul18QJttS0jVxkAsuPme4ou5oxtWqyk6dkQSjP9
- FsQPmhnghB5J+nyJgFFx0TuzMonxdVMtiw+kBv8WsE4W8JOYdHXqAXP8WxRLWsi6BbDF0uKTb
- Sbr95zUO9WW1qwlCrUra+4VfJ4rI3ei0d39mkC+R46YRW98TD7jIrcfWIjjmqIhkGN/ZaVYCJ
- gZExeTTDL7cj6JlpXQVNdapx7yXQSRCw2ncdAt6RRBSyMksIh019QOQZ+yVRTe8zGj0LEcuvV
- j9flNdLJojegbi1BK7m8lNh3oJBdw7MM/Sy5af/Nn78vGMR0HlDgXat6OnZ7Z0IYSn4di8YjS
- swWD/W23RYRBHgPJN8h2mEQ18S73GveQDcdvVFQYzSOfR1qXm+9nPtyBaBTkP0rVKqgCFihl5
- J3PM0ngze9EgpdyGDO7AlXxDKGymZXvGntpxQxu7PL416mv5Hw+M82DbL1BJvVbVK9lfxMjhO
- o1GyuBOQ00Q4wiHnSiH9k3kJqWAGTpT/WL0OoH3iTaFhGOnTgXXMOKYUA==
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
 
-On Sat, Aug 07, 2021 at 08:17:39AM -0700, Joe Perches wrote:
-> On Sat, 2021-08-07 at 16:02 +0200, Len Baker wrote:
-> > On Sun, Aug 01, 2021 at 09:44:33AM -0700, Kees Cook wrote:
-> []
-> > > One thing is clear: replacing strlcpy() with strscpy() is probably t=
-he
-> > > easiest and best first step to cleaning up the proliferation of str*=
-()
-> > > functions.
-> >
-> > Thanks for all this info. I will work on it (clean up the proliferatio=
-n
-> > of str*() functions).
->
-> btw:
->
-> It's not possible to sed as the return value is different,
-> but here is a cocci script that converts strlcpy to strscpy
-> when the return value is unused.
->
->     @@
->     expression e1, e2, e3;
->     @@
->
->     -       strlcpy(
->     +       strscpy(
->             e1, e2, e3);
->
-> This cocci script was used on sound/ awhile back.
-> see commit 75b1a8f9d62e.
+  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
 
-Thanks a lot for your help on this. I will take into account all this info=
-.
+are available in the Git repository at:
 
-Regards,
-Len
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.14-rc5
+
+for you to fetch changes up to 341abd693d10e5f337a51f140ae3e7a1ae0febf6:
+
+  serial: 8250_pci: Avoid irq sharing for MSI(-X) interrupts. (2021-07-30 13:06:19 +0200)
+
+----------------------------------------------------------------
+TTY/Serial fixes for 5.14-rc5
+
+Here are some small tty/serial driver fixes for 5.14-rc5 to resolve a
+number of reported problems.
+
+They include:
+	- mips serial driver fixes
+	- 8250 driver fixes for reported problems
+	- fsl_lpuart driver fixes
+	- other tiny driver fixes
+
+All have been in linux-next for a while with no reported problems.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Andy Shevchenko (2):
+      serial: max310x: Unprepare and disable clock in error path
+      serial: 8250_pci: Enumerate Elkhart Lake UARTs via dedicated driver
+
+Johan Hovold (1):
+      serial: 8250: fix handle_irq locking
+
+Jon Hunter (1):
+      serial: tegra: Only print FIFO error message when an error occurs
+
+Maciej W. Rozycki (2):
+      serial: 8250: Mask out floating 16/32-bit bus bits
+      MIPS: Malta: Do not byte-swap accesses to the CBUS UART
+
+Mario Kleiner (1):
+      serial: 8250_pci: Avoid irq sharing for MSI(-X) interrupts.
+
+Sherry Sun (1):
+      tty: serial: fsl_lpuart: fix the wrong return value in lpuart32_get_mctrl
+
+Zhiyong Tao (1):
+      serial: 8250_mtk: fix uart corruption issue when rx power off
+
+ arch/mips/mti-malta/malta-platform.c        |  3 ++-
+ drivers/tty/serial/8250/8250_aspeed_vuart.c |  5 +++--
+ drivers/tty/serial/8250/8250_fsl.c          |  5 +++--
+ drivers/tty/serial/8250/8250_mtk.c          |  5 +++++
+ drivers/tty/serial/8250/8250_pci.c          |  7 +++++++
+ drivers/tty/serial/8250/8250_port.c         | 17 ++++++++++++-----
+ drivers/tty/serial/fsl_lpuart.c             |  2 +-
+ drivers/tty/serial/max310x.c                |  3 ++-
+ drivers/tty/serial/serial-tegra.c           |  6 ++++--
+ include/linux/serial_core.h                 | 24 ++++++++++++++++++++++++
+ 10 files changed, 63 insertions(+), 14 deletions(-)
