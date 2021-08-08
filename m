@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF1C3E3BF1
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8DA3E3BF0
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhHHR3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 13:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbhHHR3J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 13:29:09 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CD9C061760
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 10:28:50 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id h14so18177534wrx.10
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 10:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iatl/yvHUEXssqGaxmM3VVGCUZ13Zupn9QAYDy9G4Ic=;
-        b=L8s5/CXK1BrLFzBCHTucpUv+lXw1DZcBfy1WmBT0IH2EugIraGzHYc/cXSG/W2Nh/5
-         WD5/PfjLu5EHDGGDyEdnCqxnnnrVVYI+hJSS7kLtiJXz1gxT1dgZ3J1oRfrlR433D/GN
-         IKR5L3D773alI6Z0HSdo6Dj4oVEdnv1eqjo3qaZvvowCkVGwc2SO6F7kqfq8mDoAoO4v
-         LF+cvxllz5eVwq+kcFH9/9U6eNF1gec1Lp31i7X3HA6USrLTqQa4iqcfeO/2bCpWo4Nf
-         IRWxgfj+4y/5JnVQCTlNRQ1PClYFP4nCkt86IqjTwSFHHw8j+zeI87QtYekF5ZhfO9V7
-         /HwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iatl/yvHUEXssqGaxmM3VVGCUZ13Zupn9QAYDy9G4Ic=;
-        b=UBXTz9wsnnoJRGgXfg7ZdUuqAs2CUCMNeW41yfzxe1tG3CWTFhxeFNZfB6kK0RLZVZ
-         MiDPgMdbINb6DOfenZBLcz/9grYJkfyj0T4soBcHNQJLiD2uAqcre72+zDafwgM+REzJ
-         zl7PbMQ4TWz9iP7EXRIUVsdhSyKqHhj4Hsy98C9f5EQukHdNtBwSREIUIWMS+/z+33s1
-         2C7wKmUWZre1g6KTWYpjLbvoN/rP+E3NH7oiX8MQDh1NxttII6PVq5coobRvSJx+dsGP
-         c0ZuuBJeAMQhh/Ng51DNPE2oKg8hEQGK3Y/PPyXCISRaphCb/f6dSAO0J9ovnfRYwDmI
-         JVJA==
-X-Gm-Message-State: AOAM5320hQHlt2klI/vDqGF7KMwsIe/l068vpKUy1jYzTKxv3cRs9TlO
-        OWm6NiOf46ZhQ4rbx3zq3cM1V1s2MdQ20+dDRK2MmA==
-X-Google-Smtp-Source: ABdhPJwIX7nUgxNitNxYTgIOm5Ad/d+mcp90wIYMeBSyeiulv8eOHmZzPAw7bHQDAaA26DPAifYHopw9d/vgLIgW2Gs=
-X-Received: by 2002:adf:d087:: with SMTP id y7mr20381698wrh.323.1628443728684;
- Sun, 08 Aug 2021 10:28:48 -0700 (PDT)
+        id S232194AbhHHR2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 13:28:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231486AbhHHR2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 13:28:46 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F016260F0F;
+        Sun,  8 Aug 2021 17:28:25 +0000 (UTC)
+Date:   Sun, 8 Aug 2021 18:31:15 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: hid-sensor-press: Add timestamp channel
+Message-ID: <20210808183115.31df0580@jic23-huawei>
+In-Reply-To: <20210731032556.26813-1-xiang.ye@intel.com>
+References: <20210731032556.26813-1-xiang.ye@intel.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210731063938.1391602-1-yuzhao@google.com> <20210731063938.1391602-3-yuzhao@google.com>
- <20210804142257.tsgzpfc3zq7um7iu@box.shutemov.name>
-In-Reply-To: <20210804142257.tsgzpfc3zq7um7iu@box.shutemov.name>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Sun, 8 Aug 2021 11:28:37 -0600
-Message-ID: <CAOUHufZfMTi6_V_hw26WXapMpUuFgT6qnupYkcmkz=qGBWwHsw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: free zapped tail pages when splitting isolated thp
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shuang Zhai <zhais@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 8:22 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
->
-> On Sat, Jul 31, 2021 at 12:39:37AM -0600, Yu Zhao wrote:
-> > @@ -2506,6 +2508,25 @@ static void __split_huge_page(struct page *page, struct list_head *list,
-> >                       continue;
-> >               unlock_page(subpage);
-> >
-> > +             /*
-> > +              * If a tail page has only two references left, one inherited
-> > +              * from the isolation of its head and the other from
-> > +              * lru_add_page_tail() which we are about to drop, it means this
-> > +              * tail page was concurrently zapped. Then we can safely free it
-> > +              * and save page reclaim or migration the trouble of trying it.
-> > +              */
-> > +             if (list && page_ref_freeze(subpage, 2)) {
-> > +                     VM_BUG_ON_PAGE(PageLRU(subpage), subpage);
-> > +                     VM_BUG_ON_PAGE(PageCompound(subpage), subpage);
-> > +                     VM_BUG_ON_PAGE(page_mapped(subpage), subpage);
-> > +
-> > +                     ClearPageActive(subpage);
-> > +                     ClearPageUnevictable(subpage);
->
-> Why touch PG_Active/PG_Unevictable?
+On Sat, 31 Jul 2021 11:25:56 +0800
+Ye Xiang <xiang.ye@intel.com> wrote:
 
-Subpages may inherit these flags from their isolated head. Page
-reclaim doesn't isolate active or unevictable. But migration does. If
-we don't clear them here, we'll hit bad_page() later because both
-flags are included in PAGE_FLAGS_CHECK_AT_FREE. Does it make sense?
-Thanks.
+> Each sample has a timestamp field with this change. This timestamp may
+> be from the sensor hub when present or local kernel timestamp. The
+> unit of timestamp is nanosecond.
+> 
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+Applied to the togreg branch of iio.git and pushed out as testing to
+let 0-day see what it can find.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/pressure/hid-sensor-press.c | 40 +++++++++++++++----------
+>  1 file changed, 24 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/iio/pressure/hid-sensor-press.c b/drivers/iio/pressure/hid-sensor-press.c
+> index c416d261e3e3..b365483bd09e 100644
+> --- a/drivers/iio/pressure/hid-sensor-press.c
+> +++ b/drivers/iio/pressure/hid-sensor-press.c
+> @@ -16,17 +16,24 @@
+>  #include <linux/iio/buffer.h>
+>  #include "../common/hid-sensors/hid-sensor-trigger.h"
+>  
+> -#define CHANNEL_SCAN_INDEX_PRESSURE 0
+> +enum {
+> +	CHANNEL_SCAN_INDEX_PRESSURE,
+> +	CHANNEL_SCAN_INDEX_TIMESTAMP,
+> +};
+>  
+>  struct press_state {
+>  	struct hid_sensor_hub_callbacks callbacks;
+>  	struct hid_sensor_common common_attributes;
+>  	struct hid_sensor_hub_attribute_info press_attr;
+> -	u32 press_data;
+> +	struct {
+> +		u32 press_data;
+> +		u64 timestamp __aligned(8);
+> +	} scan;
+>  	int scale_pre_decml;
+>  	int scale_post_decml;
+>  	int scale_precision;
+>  	int value_offset;
+> +	s64 timestamp;
+>  };
+>  
+>  static const u32 press_sensitivity_addresses[] = {
+> @@ -44,7 +51,9 @@ static const struct iio_chan_spec press_channels[] = {
+>  		BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+>  		BIT(IIO_CHAN_INFO_HYSTERESIS),
+>  		.scan_index = CHANNEL_SCAN_INDEX_PRESSURE,
+> -	}
+> +	},
+> +	IIO_CHAN_SOFT_TIMESTAMP(CHANNEL_SCAN_INDEX_TIMESTAMP)
+> +
+>  };
+>  
+>  /* Adjust channel real bits based on report descriptor */
+> @@ -157,14 +166,6 @@ static const struct iio_info press_info = {
+>  	.write_raw = &press_write_raw,
+>  };
+>  
+> -/* Function to push data to buffer */
+> -static void hid_sensor_push_data(struct iio_dev *indio_dev, const void *data,
+> -					int len)
+> -{
+> -	dev_dbg(&indio_dev->dev, "hid_sensor_push_data\n");
+> -	iio_push_to_buffers(indio_dev, data);
+> -}
+> -
+>  /* Callback handler to send event after all samples are received and captured */
+>  static int press_proc_event(struct hid_sensor_hub_device *hsdev,
+>  				unsigned usage_id,
+> @@ -174,10 +175,13 @@ static int press_proc_event(struct hid_sensor_hub_device *hsdev,
+>  	struct press_state *press_state = iio_priv(indio_dev);
+>  
+>  	dev_dbg(&indio_dev->dev, "press_proc_event\n");
+> -	if (atomic_read(&press_state->common_attributes.data_ready))
+> -		hid_sensor_push_data(indio_dev,
+> -				&press_state->press_data,
+> -				sizeof(press_state->press_data));
+> +	if (atomic_read(&press_state->common_attributes.data_ready)) {
+> +		if (!press_state->timestamp)
+> +			press_state->timestamp = iio_get_time_ns(indio_dev);
+> +
+> +		iio_push_to_buffers_with_timestamp(
+> +			indio_dev, &press_state->scan, press_state->timestamp);
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -194,9 +198,13 @@ static int press_capture_sample(struct hid_sensor_hub_device *hsdev,
+>  
+>  	switch (usage_id) {
+>  	case HID_USAGE_SENSOR_ATMOSPHERIC_PRESSURE:
+> -		press_state->press_data = *(u32 *)raw_data;
+> +		press_state->scan.press_data = *(u32 *)raw_data;
+>  		ret = 0;
+>  		break;
+> +	case HID_USAGE_SENSOR_TIME_TIMESTAMP:
+> +		press_state->timestamp = hid_sensor_convert_timestamp(
+> +			&press_state->common_attributes, *(s64 *)raw_data);
+> +		break;
+>  	default:
+>  		break;
+>  	}
+
