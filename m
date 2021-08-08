@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A7B3E3A43
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC66A3E3A46
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhHHMpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 08:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhHHMpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 08:45:07 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD645C061760
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 05:44:47 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id u3so24052832ejz.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 05:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=jG+pcJ3dtW2bjqUjAdY5ktZ6p/MMjDNZqNMg9Jebb8g=;
-        b=kMTe32Jhg+RMw9UucgxZjer3PNIxx1n3WfXMp0z/UfJLQiYakZ4MQNsAu1B21DnJ/0
-         UesHEnjoC/OWlIeZvUYtVFoq2zdsNyj3xP4DOQlLHyagoRfFFADEOJXUoLOftYb1TjLH
-         Jmibvccs+/in8OtN/H8DLc3sqRN1QH2hRRQD6nsD/ONv6gVu1MUSXyJSLMII4ufn+jrE
-         58SsAupRxW1eEtRmuBmgMpOMYI+QGef1pPogrd+AqnTiPvhAE4hTlbYtNdIFNuko6hJm
-         zZS2gVex/s8NfZLTmQH18+0G1CtUh5H0EwbBg5gxy7ulte5Dy/5XcWPKG7NszLFCSy5b
-         Gp5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=jG+pcJ3dtW2bjqUjAdY5ktZ6p/MMjDNZqNMg9Jebb8g=;
-        b=npw+qX1prWu4e37Uat9oYID+m01ENRuuLLj4i4aec23tfLrSf7gwDbTQvgbriDQUuO
-         Pu2URsiYlPJrHfG3aFu1vlik7wMzD4zp1fQF/1KNPkniIGSzay37q9rVIfcXXlbQCkqa
-         eyWakNSrJG+GAPPEPBppN87Fnr11+HQFpiNtr43qeHgt24Oxbum0irtWNC1yU9hWpkmE
-         VqDMdYhESwnvRMBPuO1tlwICymqxJYa75NK2gjXfIYvMvXv2noS9r8yTE695U6/R9mOV
-         n5ntpoiKhB8amvhQV6k75vLJ2moXSf7dENcYmvv9errS8SBxjoapKwDjmS3v4gI+lTvB
-         AnQg==
-X-Gm-Message-State: AOAM533OKF9cirt2O5tQBgLbGz8p3GtURa3Uc2+mgzqHSRkAuQoVtA4F
-        glAjjnH6Xp9SyhICp4CkCkc3iKcKsisk6AWeH34=
-X-Google-Smtp-Source: ABdhPJwzTqk1DToyFrILQkiNpYDo+giZ2W9QJ6Oi6pkkhFDFcseGt/1CcBpH0VMAn4oXUnvkB/EkqIch3C5QY03NBYo=
-X-Received: by 2002:a17:906:34c8:: with SMTP id h8mr4610148ejb.124.1628426686339;
- Sun, 08 Aug 2021 05:44:46 -0700 (PDT)
+        id S229613AbhHHMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 08:51:04 -0400
+Received: from mout.gmx.net ([212.227.15.19]:57145 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229504AbhHHMvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 08:51:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628427023;
+        bh=SpKTBfXmINyJsM31kZW0SjsPXsZ/8Opex1XCX37rGUM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=AdXJLX2nB8fpHK/CnUV6GK4nXAMSigY7pojSYnNtm/+14pS502QVWuDJSiK7rtwV5
+         dfyjIyCBJ1ZIopFa6ir+BCEfV0iIdexA3DsvMEqxt6BCIdkKOMu/E35zuxIwA00Cvf
+         SWiEipd2dUWnk2GI8+Y+Idj/b+VD20YYPbcupsOI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MFbW0-1mM5ez13oU-00H51L; Sun, 08 Aug 2021 14:50:23 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/3] drivers/soc: Remove all strcpy() uses
+Date:   Sun,  8 Aug 2021 14:50:09 +0200
+Message-Id: <20210808125012.4715-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a50:9e6e:0:0:0:0:0 with HTTP; Sun, 8 Aug 2021 05:44:45 -0700 (PDT)
-From:   "Mrs. Judith Moris" <mrsjudithmoris@gmail.com>
-Date:   Sun, 8 Aug 2021 12:44:45 +0000
-Message-ID: <CAMP+kx6y+GfXsG7zaFL_4_nKca15DDpeX4Z7e1FUu1YnU0Jvgw@mail.gmail.com>
-Subject: Compensation.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JA/QpiClaw4kLUAx0jzddoPZd0qTnX2YuIOC4R22ha5D+avsrP0
+ hfD5HbwQT1i+QLyS34hUmZfbV0+OwvK/YuMtB/F1caBwH7WwiPFHnWHmhc+tEFVo+Khlx1r
+ WHVGWYNYDLaZgss8Om0xsDSf83o09RAMuOMbS7sNzaOG9klz6gQoTTXBcoFpz2wiAbAfI2X
+ x80wEaqyR3L2nftZrPsFQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WIa5A0qyMYM=:WTOz2uz2Zmef01HFaumnKB
+ dd8lRmxKpnv6PWezvrwpQOLqMXJGAUAD7cfY+InnynV+v26acq9LaFbH3lGsUkV2y2ATogmUc
+ yPjNVG1H548lAKX2yZ/5/XJj3GvAmW2628muangluIHU8nfRc/6jpKF9am8/03Ep3jMLXe9qb
+ FlY7MrEJ/06ZClz2c59JDuDAI4XO4FBiTvV7equohupy1bOKCa6FKQH0otIp2Dch2A1K6uikY
+ qODwXghsnwklK5DtnJeLNRbdG5FIF3YV6+QpHcEbHCNhu/9raX+SDDsac4uFrvHeb6/wuyUcw
+ fxGPMpARX/ClXTxuGZ7dZkCD8DIgtlm2U1QNrh4mQbTvLgU12NfXt9++SDvP2Q8GCkaOGZ37T
+ sGCZwR91jhVMju8ftj8cLgwPwAZ0JRUhDrif6x2GcZKWHbPTvSsGwXsbT8/lOpQ6x9fBsZxqz
+ eyvCHmq51QKNb1Z10Ew3GLspejykA6SrrVm7IoaZp5cJVWEtHHkQ3PdW3QCV/rh/BPkj5XQfD
+ tgTehhPHgu81WJxmKD2UMKeRNz+KswgkNj80e3s/k/vx0LWITRRbibuqivTF5pnRK0MmX0yAU
+ CHe1neq8zJ4a5rk8rfqsu/S/KxnFwLFhL/EOFD4oVcjMmVS60bmm5XgVFQnYZ/PmfQEiNXpxE
+ TJTVaENQD83JFUX8y3wUHEVsqJRdfGdtjNjFstWEq0Ffu6agFq+56yGOUjgMOoADIslkS2nXb
+ CercwWcykI6eY6DWC6RuaR7V9CzuSHg8bOw+xegnxxJg1A/mNZ1qy2vDqA9L+W122pBCDHGdR
+ S93+kBvxZaw3WqV2s9Bf11vsqiB7MCSScLxYJJtqfOV3R8Ef6LyZI6eQRaJ90/cTiW2XV/YP3
+ onItyzqHvG7K2mBRMbg4poAFSzcsWFSXvGshPD9mDkufcznvhVOddguC/QYdM+eaX4JftCSAr
+ hCLPivnMkWRW0O6QaKiWJIPnydv5/DsytbCAtC/QaFBz33EVDF34dTXzmfsCBaebS+5Oy1jJ2
+ LRwx/L6dIscUnSbq3hf4eGtaqhzxCUaJoko7rbcvOXSMrYSpreGeN8ZYuZXLTlWIu3/3reKiZ
+ 9GVrbj8urkMzr3mac5Q1UDhuErin8LH2jT61mRiTZs8UhE9BUtR5n/NDA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. So use strscpy() or memcpy() as a safe
+replacement.
 
-I am Mrs Judith Morris, Sorry for contacting you this late, but am
-happy to inform you about my success in getting those fund transferred
-to Japan through the help of a new partner who assisted me make sure
-the fund was transferred with the help of his company, As we speak
-right now i have moved to Japan to meet him for sharing according to
-the percentage as agreed, right now i am having a good time here with
-him as we are planing to use the fund to set up a new company here in
-Tokyo where both of us will manage it together.
+This is a task of the KSPP [1].
 
-Though i did not forget all your past effort to support me get the
-fund which failed us somehow, So for this reason i have decided to
-compensate you with the sum of USD$800,000.00 for your past effort,
-and i like to inform you that i have left an instruction to my lawyer
-Barr. Henry to send your bank cheque to you without delay so that once
-you receive the amount we can now share the joy together as part of
-the good relationship we shared at that time.
+Changelog v1 -> v2
+- Change the "area_name_size" variable for a shorter name (Geert
+  Uytterhoeven).
+- Add the "Reviewed-by: Geert Uytterhoeven" tag.
+- Use the memcpy function instead of strscpy function when the
+  size of the destination buffer cannot be obtained with "sizeof"
+  (David Laight, Robin Murphy).
 
-Like i said i have instructed my lawyer Hon. Barr. Henry to quickly
-send your bank cashier cheque to you once you contact him which i left
-for your compensation, So quickly contact my lawyer vie her email
-contacts as indicated herein below.
+Changelog v2 -> v3
+- Remove the "Reviewed-by: Geert Uytterhoeven" tag since the code
+  has changed after the v1 review (use of memcpy instead of
+  strscpy).
 
-Name: Hon Barr. Henry
-Email: henrylawchambers1@gmail.com
+Changelog v3 -> v4
+- Split the changes in 3 commits (Bjorn Andersson).
+- Don't break a long line (Bjorn Andersson).
+- Reword the commit when used the memcpy function (Bjorn Andersson)
 
-Contact him immediately as he will be waiting for you to contact him
-as instructed and do well to inform me once you receive your cheque
-from my lawyer and cash your money so that we can share the joy
-together, Once again am sorry that i did not contact you again since
-then as i have been busy searching for a solution to get the fund
-transferred through the help of the new partner, So am in Tokyo Japan
-right now for business investment, I wish you good luck and hoping to
-hear good news from you as soon as you receive your cheque from my
-lawyer and cash your money so we can be happy together.
+The previous version can be found here [2].
 
-Your friend
-Mrs Judith Morris
-Responding From Tokyo, Japan.
+[1] https://github.com/KSPP/linux/issues/88
+[2] https://lore.kernel.org/linux-hardening/20210801131958.6144-1-len.bake=
+r@gmx.com/
+
+Len Baker (3):
+  drivers/soc/qcom: Prefer strscpy over strcpy
+  drivers/soc/renesas: Prefer memcpy over strcpy
+  drivers/soc/ti: Prefer strscpy over strcpy
+
+ drivers/soc/qcom/pdr_interface.c    | 12 ++++++------
+ drivers/soc/renesas/r8a779a0-sysc.c |  6 ++++--
+ drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
+ drivers/soc/ti/knav_dma.c           |  2 +-
+ 4 files changed, 15 insertions(+), 11 deletions(-)
+
+=2D-
+2.25.1
+
