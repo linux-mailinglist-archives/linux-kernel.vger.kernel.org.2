@@ -2,133 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0074A3E3B57
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9D73E3B5F
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhHHQUc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Aug 2021 12:20:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45114 "EHLO mail.kernel.org"
+        id S231807AbhHHQZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 12:25:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhHHQUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 12:20:30 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4322760F38;
-        Sun,  8 Aug 2021 16:20:07 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 17:22:57 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, Dragos.Bogdan@analog.com,
-        Darius.Berghe@analog.com, Rob Herring <robh+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH 2/2] iio: potentiometer: Add driver support for AD5110
-Message-ID: <20210808172257.59b13400@jic23-huawei>
-In-Reply-To: <66d670d6-0374-88ae-c4c1-efd60b54bbd2@gmail.com>
-References: <20210807050900.10075-1-dmugil2000@gmail.com>
-        <20210807050900.10075-3-dmugil2000@gmail.com>
-        <53306463-668e-e291-4539-caca2352ea05@metafoo.de>
-        <9b58fb0c-245d-795f-2124-6cc2020bc8c5@gmail.com>
-        <66d670d6-0374-88ae-c4c1-efd60b54bbd2@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231398AbhHHQZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 12:25:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCC4E60F92;
+        Sun,  8 Aug 2021 16:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628439915;
+        bh=Ohc/3heuGxLg0kv3NvHFDAfCusqeQ5RY2plc5dtqdq8=;
+        h=From:To:Subject:Date:From;
+        b=V5RCkUgAyQb6xImM0cY+ybB7FN3DiId8+ohpzyIXCEEfeCYrqQn8hQSslrzTF992u
+         TFOFnDIF3jgzPACAo8vwqW4yK+3X/jQ3p1T/kvV1JGW4SCH1UB3BRojP1vxUfCvdQH
+         NtsuTK4hEF5BxKfRYPwLZ86ncby4i5qz1bALQajKRRUh1N4Tu8lUDdZLrg8pWnLqp7
+         E1XdIyl1CWlMENfcuLmedfbTMjOZg62oY5c4t9Ykd7sUOTspJKM5LaVTW53CtJEBCO
+         PKvNxS7W63zN90tWf2HRXuOz/6gAhXS0kW7/Mlg0mB/IQnMyX0MTBcrvZCX2SA0MAy
+         uuW28QvKI2mYQ==
+Received: by pali.im (Postfix)
+        id 6166413DC; Sun,  8 Aug 2021 18:25:12 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: [RFC PATCH 00/20] fs: Remove usage of broken nls_utf8 and drop it
+Date:   Sun,  8 Aug 2021 18:24:33 +0200
+Message-Id: <20210808162453.1653-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Aug 2021 23:04:18 +0530
-Mugilraj Dhavachelvan <dmugil2000@gmail.com> wrote:
+Module nls_utf8 is broken in several ways. It does not support (full)
+UTF-8, despite its name. It cannot handle 4-byte UTF-8 sequences and
+tolower/toupper table is not implemented at all. Which means that it is
+not suitable for usage in case-insensitive filesystems or UTF-16
+filesystems (because of e.g. missing UTF-16 surrogate pairs processing).
 
-> Sorry some formatting issues happened in my previous mail.
-> 
-> On 07/08/21 10:56 pm, Mugilraj Dhavachelvan wrote:
-> > 
-> > 
-> > On 07/08/21 5:41 pm, Lars-Peter Clausen wrote:  
-> >> On 8/7/21 7:08 AM, Mugilraj Dhavachelvan wrote:  
-> >>> The AD5110/AD5112/AD5114 provide a nonvolatile solution
-> >>> for 128-/64-/32-position adjustment applications, offering
-> >>> guaranteed low resistor tolerance errors of ±8% and up to
-> >>> ±6 mA current density.
-> >>>
-> >>> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/AD5110_5112_5114.pdf
-> >>> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>  
-> >>
-> >> Thanks for the patch. This looks really good> 
-> >>  
->
+This is RFC patch series which unify and fix iocharset=utf8 mount
+option in all fs drivers and converts all remaining fs drivers to use
+utf8s_to_utf16s(), utf16s_to_utf8s(), utf8_to_utf32(), utf32_to_utf8
+functions for implementing UTF-8 support instead of nls_utf8.
 
-...
+So at the end it allows to completely drop this broken nls_utf8 module.
 
-> >>> +
-> >>> +static IIO_DEVICE_ATTR(wiper_pos_eeprom, 0644,
-> >>> +               ad5110_eeprom_read,
-> >>> +               ad5110_eeprom_write, 0);  
-> >> This is new custom ABI and needs to be documented  
+For more details look at email thread where was discussed fs unification:
+https://lore.kernel.org/linux-fsdevel/20200102211855.gg62r7jshp742d6i@pali/t/#u
 
-We have existing similar ABI in dac/mcp4725 which is simply
-called store_eeprom
+This patch series is mostly untested and presented as RFC. Please let me
+know what do you think about it and if is the correct way how to fix
+broken UTF-8 support in fs drivers. As explained in above email thread I
+think it does not make sense to try fixing whole NLS framework and it is
+easier to just drop this nls_utf8 module.
 
-It's in the main docs
-Documentation/ABI/testing/sysfs-bus-iio as storing
-device configuration.  I'm guessing this device doesn't have
-other configuration so that description will work?
+Note: this patch series does not address UTF-8 fat case-sensitivity issue:
+https://lore.kernel.org/linux-fsdevel/20200119221455.bac7dc55g56q2l4r@pali/
 
+Pali Rohár (20):
+  fat: Fix iocharset=utf8 mount option
+  hfsplus: Add iocharset= mount option as alias for nls=
+  udf: Fix iocharset=utf8 mount option
+  isofs: joliet: Fix iocharset=utf8 mount option
+  ntfs: Undeprecate iocharset= mount option
+  ntfs: Fix error processing when load_nls() fails
+  befs: Fix printing iocharset= mount option
+  befs: Rename enum value Opt_charset to Opt_iocharset to match mount
+    option
+  befs: Fix error processing when load_nls() fails
+  befs: Allow to use native UTF-8 mode
+  hfs: Explicitly set hsb->nls_disk when hsb->nls_io is set
+  hfs: Do not use broken utf8 NLS table for iocharset=utf8 mount option
+  hfsplus: Do not use broken utf8 NLS table for iocharset=utf8 mount
+    option
+  jfs: Remove custom iso8859-1 implementation
+  jfs: Fix buffer overflow in jfs_strfromUCS_le() function
+  jfs: Do not use broken utf8 NLS table for iocharset=utf8 mount option
+  ntfs: Do not use broken utf8 NLS table for iocharset=utf8 mount option
+  cifs: Do not use broken utf8 NLS table for iocharset=utf8 mount option
+  cifs: Remove usage of load_nls_default() calls
+  nls: Drop broken nls_utf8 module
 
-> 
-> > I'm not aware of this, fixed in v2.  
-> >>> +static int ad5110_write_raw(struct iio_dev *indio_dev,
-> >>> +                struct iio_chan_spec const *chan,
-> >>> +                int val, int val2, long mask)
-> >>> +{
-> >>> +    struct ad5110_data *data = iio_priv(indio_dev);
-> >>> +    int ret;
-> >>> +
-> >>> +    switch (mask) {
-> >>> +    case IIO_CHAN_INFO_RAW:
-> >>> +        if (val >= data->cfg->max_pos || val < 0)  
-> >> val == data->cfg->max_pos is a valid setting. Writing max_pos puts it in top-scale mode which gives maximum resistance.  
-> > Fixed in v2.  
-> >>> +            return -EINVAL;
-> >>> +
-> >>> +        return ad5110_write(data, AD5110_RDAC_WR, val << data->cfg->shift);
-> >>> +    case IIO_CHAN_INFO_ENABLE:
-> >>> +        if (val < 0 || val > 1)
-> >>> +            return -EINVAL;
-> >>> +        if (data->enable == val)
-> >>> +            return 0;
-> >>> +        ret = ad5110_write(data, AD5110_SHUTDOWN, val);  
-> >> Doesn't val have to be inverted to get the right behavior  
-> 
-> > I just replicated the datasheet operation. 
-> > You mean,
-> >  1 - shutdown off
-> >  0 - shutdown on
-> > If yes, then the user won't get confused with the datasheet and the behavior of the driver?
-> > Or Is it work like this? But yeah even I like this change it's more convenient.  
+ fs/befs/linuxvfs.c          |  22 ++++---
+ fs/cifs/cifs_unicode.c      | 128 +++++++++++++++++++++++-------------
+ fs/cifs/cifs_unicode.h      |   2 +-
+ fs/cifs/cifsfs.c            |   2 +
+ fs/cifs/cifssmb.c           |   8 +--
+ fs/cifs/connect.c           |   8 ++-
+ fs/cifs/dfs_cache.c         |  24 +++----
+ fs/cifs/dir.c               |  28 ++++++--
+ fs/cifs/smb2pdu.c           |  17 ++---
+ fs/cifs/winucase.c          |  14 ++--
+ fs/fat/Kconfig              |  15 -----
+ fs/fat/dir.c                |  17 ++---
+ fs/fat/fat.h                |  22 +++++++
+ fs/fat/inode.c              |  28 ++++----
+ fs/fat/namei_vfat.c         |  26 ++++++--
+ fs/hfs/super.c              |  62 ++++++++++++++---
+ fs/hfs/trans.c              |  62 +++++++++--------
+ fs/hfsplus/dir.c            |   6 +-
+ fs/hfsplus/options.c        |  39 ++++++-----
+ fs/hfsplus/super.c          |   7 +-
+ fs/hfsplus/unicode.c        |  31 ++++++++-
+ fs/hfsplus/xattr.c          |  14 ++--
+ fs/hfsplus/xattr_security.c |   3 +-
+ fs/isofs/inode.c            |  27 ++++----
+ fs/isofs/isofs.h            |   1 -
+ fs/isofs/joliet.c           |   4 +-
+ fs/jfs/jfs_dtree.c          |  13 +++-
+ fs/jfs/jfs_unicode.c        |  35 +++++-----
+ fs/jfs/jfs_unicode.h        |   2 +-
+ fs/jfs/super.c              |  29 ++++++--
+ fs/nls/Kconfig              |   9 ---
+ fs/nls/Makefile             |   1 -
+ fs/nls/nls_utf8.c           |  67 -------------------
+ fs/ntfs/dir.c               |   6 +-
+ fs/ntfs/inode.c             |   5 +-
+ fs/ntfs/super.c             |  60 ++++++++---------
+ fs/ntfs/unistr.c            |  28 +++++++-
+ fs/udf/super.c              |  50 ++++++--------
+ fs/udf/udf_sb.h             |   2 -
+ fs/udf/unicode.c            |   4 +-
+ 40 files changed, 510 insertions(+), 418 deletions(-)
+ delete mode 100644 fs/nls/nls_utf8.c
 
-ABI has to be consistent and writing an enable attribute with 1 has to mean enabling it whatever
-approach the datasheet takes to describe things.  Most users don't read
-datasheets so interface needs to be intuitive.
-
-> >>> +        if (ret)
-> >>> +            return ret;
-> >>> +        data->enable = val;
-> >>> +        return 0;
-> >>> +    default:
-> >>> +        return -EINVAL;
-> >>> +    }
-> >>> +}  
-> >> [...]  
-> > Thanks for feedback!!
-> >   
+-- 
+2.20.1
 
