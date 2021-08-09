@@ -2,289 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81503E4B2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F713E4B2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhHIRuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
+        id S234689AbhHIRuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbhHIRuB (ORCPT
+        with ESMTP id S234383AbhHIRue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:50:01 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A86FC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:49:41 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id 14so19334667qkc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 10:49:41 -0700 (PDT)
+        Mon, 9 Aug 2021 13:50:34 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC98C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:50:13 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id s48so31020320ybi.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 10:50:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=jpfIGx2EzYaUOkGK/YPaLej8O5uKozVOIfYq7wV/cTQ=;
-        b=Tj7RAOmM1x2cET3pYHKg6cLSxjzwEmOYMIpGiMmjmkZHludn4vfEy5dyhIf3mMCMG3
-         fndz4DvX7LH/eCPn453Ic3kGMhGSareukjsqhkN3I46oL21egiPsE5H0acE4fUc9ABYB
-         iDxJGa8pi5M7Xd7x6CNHNWSYZEJJOxbf8shbEK53dwP+akOODp/rRjWTszoaquPBeXWd
-         9hsdgEWotN4xK1oqzCUtlnJ6Bz7hyS/ZWSFZ0SAy+iFX8u75i1wpTtvEtENsVNSVZoBv
-         Gt1FGzTBknfRVQLco9vYwXInh8Xy+xBS/7uZQ+zRHb5GazZF2jD9V/r5ozx7q6FBDjnq
-         K5OQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:cc;
+        bh=O4NMEur8QcJc4TO2WBpgWKn95vBrSIQfedD9EZ6Ad6E=;
+        b=NHSFXr9JCzbE3KrdVbFqcn19A5Tnb4DkN29Tnro3GkqWCJWCuRqRtTFAVO2jsqaqW/
+         K7EI9t7uVRC4FZCKZPflxqwmsKEQUewMajfHpt5YIxOg3Mn3Jclpk7Acdcm2gJJ2vtGA
+         LpZkzh8B9fvK93BQU9AHJ0TMjib1XARHHAvje+yQDm4q147tIS5lwyqx4jLf3v1mK0o8
+         KKEfqKxLpypWUSiZqA6ktVERUx01WFghhswcD3ubgJB2/kmlR7Kdcspq+Rv4ot5FnUcm
+         S7FmYkdTYK+RvV+4nqyJD93BPa7TN0eyPZxnnifidYPgLf3D/cP44xCbz1SHIrycrx+R
+         p6lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=jpfIGx2EzYaUOkGK/YPaLej8O5uKozVOIfYq7wV/cTQ=;
-        b=Y0Ds7VLIxIrOAnXxRdyY2I4vS8aI3O78m55/EiQgsPGZy7abQQ6+o2/qJWcAf8kwpD
-         ZafX9MA+3itDk3ah18CMUbSyZF2OsMENlAZjMbDt7aO61Tk1OkQwWn40zMT3oMgFXfg4
-         GTHQ8dZrddElXbqywXckYwZPE1Cgb0lkff7aM4lnPDQWaktKAGlf4qsNDyQsZRVP4ElV
-         IeQd4NhIASEMJF/zzW3uRnB3+nKGzMD0E8TmB4+e4e4Gcv+dG8rTxmlyiqXjqoLARhdE
-         bA7w9QL/Sax3bxhyVLvQx9xqofxwGrKds5QeDVFrpNNA6b15B1+E+eZH0l6YvXTzDcMf
-         WwRg==
-X-Gm-Message-State: AOAM531BAc6h5XJ0ztdtY79lTU6wyXeI43MLqR+/KMJJm+0kab+SPopM
-        IuJaophBQudS8Y2OB9tct5I9nA==
-X-Google-Smtp-Source: ABdhPJz2058dUuvRBlMStlQcuOvywn5SOSNHYuAFINAcfE0R3v56luVgJPI9khFKBeN8xtsVzZxpoA==
-X-Received: by 2002:a37:8306:: with SMTP id f6mr24935656qkd.82.1628531380217;
-        Mon, 09 Aug 2021 10:49:40 -0700 (PDT)
-Received: from smtpclient.apple ([2600:1700:42f0:6600:615b:6e84:29a:3bc6])
-        by smtp.gmail.com with ESMTPSA id a8sm8629059qkn.63.2021.08.09.10.49.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Aug 2021 10:49:39 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [RFC PATCH 12/20] hfs: Do not use broken utf8 NLS table for
- iocharset=utf8 mount option
-From:   Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <20210808162453.1653-13-pali@kernel.org>
-Date:   Mon, 9 Aug 2021 10:49:34 -0700
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        =?utf-8?Q?Marek_Beh=C3=BAn?= <marek.behun@nic.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4B1987C7-F6D9-4493-ACD0-846B92F86037@dubeyko.com>
-References: <20210808162453.1653-1-pali@kernel.org>
- <20210808162453.1653-13-pali@kernel.org>
-To:     =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:cc;
+        bh=O4NMEur8QcJc4TO2WBpgWKn95vBrSIQfedD9EZ6Ad6E=;
+        b=VUDmqW+VO4BJ4Iwaat2DcR3aa+iZMUyXWXrzGy1mxhOM841QPKs6vYGGRDcJQD1zch
+         IqICc2fb/jd9qtrt1cAlBMvUOdgUlYNhyYjwzOmT+9H/hAS2GCyMej9WQDiT8kNnImdM
+         FOKj6t+EsGepXutn3jdvwftk7pNsAZV8F5xlyD8qlwD54w46c8KVMeM1exjVBMzXy25P
+         TiWnmbmv9Ap0Boobm9d0fh4jPMcL5rqBabWgJWGVwQpTSNYgxo+BGYCbvllxZFB/OFCO
+         4HRoUjyM8XXu2KS9LSxeRD+3XiZ+iGHuIDTFlQHxkIVADM4ZBemy35JlZ9mESFP1NU2/
+         1TFA==
+X-Gm-Message-State: AOAM531fdOHwRmGJKV0KuYHHa0PD/dF7L5H/cAyo+LtPEpBfqeg5FNZ0
+        G2aorKNoJQFY0KkWfjnuEv6xkFNV1pcEFBvtUk8=
+X-Received: by 2002:a25:690f:: with SMTP id e15mt24884000ybc.473.1628531412783;
+ Mon, 09 Aug 2021 10:50:12 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:7110:918f:b029:eb:d45:8011 with HTTP; Mon, 9 Aug 2021
+ 10:50:12 -0700 (PDT)
+Reply-To: mp034367@gmail.com
+In-Reply-To: <CAOpEvtiGXf=qs3wB-vc20O6K1isE+rSqoWCH2YV0VuExuRyJJA@mail.gmail.com>
+References: <CAOpEvtgnxJTxQRyYoNSawaG_ft3hEWGPBySGw-qp751NfYWEYA@mail.gmail.com>
+ <CAOpEvtgYVEKzj-5FbN30nrTXdoHydxxc___NL+eog8gfteeP-g@mail.gmail.com>
+ <CAOpEvtj+sRP4ioG3J=wjzh8eZ-jL-ivKaDN2gpXzA0EpjZPA7Q@mail.gmail.com>
+ <CAOpEvtjBCMV4qaQtnwd1yyJ_Dyx+3Qt2zC_m=-QfRYPGcN=tPw@mail.gmail.com>
+ <CAOpEvtjR3cRRzeucmJJLu-JXJkXhimxaoZwGpBpY2+AwQaOJgg@mail.gmail.com>
+ <CAOpEvtjR6U1HKDonr1hLJsF+LOucxdimdgqHz2mrcQQe69ejxA@mail.gmail.com>
+ <CAOpEvtjd4W0VC+q6mbTGCFsYXuVRSr5WjBBHGpCJHhPts8Rscw@mail.gmail.com>
+ <CAOpEvthys1Bm3w3fG6thrKz6dBCUiky3yF63tjpBpupfu=EA_w@mail.gmail.com>
+ <CAOpEvtjj5pu_QB_2jm2YoWrAe4Hw7GB72KX1Je0zxQjDEvobig@mail.gmail.com>
+ <CAOpEvthB4BxxJJw-UV-q9=ZX3LzTgVTiXhPYaT3MOKyq=MpKxQ@mail.gmail.com>
+ <CAOpEvti=ONcEt_Y4ZF3aDZhGa8vhHkDT1wMuEkQnWZDP+XG-AQ@mail.gmail.com>
+ <CAOpEvtgnaMMzoK0pgEmVr1KfqQD0Cw1YuKTPhYxV4NrMn624PQ@mail.gmail.com>
+ <CAOpEvtju2ocU313kd0oUyKtpcfaXYSeyiCya=EvBjb8UwmO2DA@mail.gmail.com>
+ <CAOpEvtjy+U92RBKX4cZxPZk0Q16tkb+vrZ_BO8x_cTn5A5LweQ@mail.gmail.com>
+ <CAOpEvtgHohF9p1T+G+FQkc6X4ogo_BsVgY3Enb69ssxoMTFpeQ@mail.gmail.com>
+ <CAOpEvtitFdiE-C6q9NDpnRzweHviTHChXB+ep6DC2DD74uGjEg@mail.gmail.com>
+ <CAOpEvtgBaumHG9PJ+U1fa+SH6LWw=P5QEyjowF=dMsTa6AM8Xw@mail.gmail.com>
+ <CAOpEvtij7-GduJxc4NZS6ZdCuQiorT9BpSj_AZPJS7ZrOMjquw@mail.gmail.com>
+ <CAOpEvtidVNK0THUroBU2Wbku0TyowKxABNJuNA3Ux5=m6SKiDA@mail.gmail.com>
+ <CAOpEvtgbSVja2VOMiAAa-acR8prhd9j37Cuv2bP3CMTWmhCo9A@mail.gmail.com>
+ <CAOpEvtiWc=-BXEKpfavFs6xBc5aRpV_Eb=-oAeYD1iXK3MxjZg@mail.gmail.com>
+ <CAOpEvtg0yLRBvSSagsi0kORPn7sObHvSzrm2bzc2-q08Y=oEkg@mail.gmail.com>
+ <CAOpEvtgkXP4_A6fNnxqaNDzxBV5gwQrfrpesv7c3qu2mdzM-kw@mail.gmail.com>
+ <CAOpEvtgOCukSLLPdcTz6LszQAjUSMNv9gRC8pMHHF9knf1QJbA@mail.gmail.com>
+ <CAOpEvtjJXjrVUR4Yfgv9AgeBbALbW2LqjrQfAwWis1-Ut6s36w@mail.gmail.com>
+ <CAOpEvtitmX-jrXUfyvrtL4BymXGTXArCaZV5Rx6gFWA1TxqAAQ@mail.gmail.com>
+ <CAOpEvti21qkZhAgwMDKTpxdQX69EBHoDxmD0719zjbXNpWtGTg@mail.gmail.com>
+ <CAOpEvtiJDf2LWujDcogwNv9jgx+tA8yX2im+Um6Rz_QoMdP6CQ@mail.gmail.com>
+ <CAOpEvtjCaCK8TkBQ1Q1nDxDuE6tTbYp2GYgKXMe7hWdzoVb+OA@mail.gmail.com>
+ <CAOpEvtjz_YJOtkbA4+x-NU7z3S9fkK7RTmW2yd5HryO0wQpUKw@mail.gmail.com>
+ <CAOpEvtjF9yMMFChLrTeUdujM6-kaDmFtsCNWpGxPKOB-ysyzvw@mail.gmail.com>
+ <CAOpEvtj+iA3woj3H1D2KwFu+O=yQO+SWtDaU7a+smHOLMSDwMQ@mail.gmail.com>
+ <CAOpEvtiRLpAsRNJp7EQ7UPhMO+KWi-2Tc=v3MaxiJG5=b2Gu+A@mail.gmail.com>
+ <CAOpEvti46Nk+y9v5hbhMfrn5k7+wRXbVRTKWMfeyYUabGAQr+A@mail.gmail.com>
+ <CAOpEvtjBQYcmseiuTy=L7rt-RqbngeuLcSMA1ZvsHW3SAJ9h7w@mail.gmail.com>
+ <CAOpEvthfrRCLXWA7oFvs+GopY4rKPpvovy35zQdxLFcTkNU-Ow@mail.gmail.com>
+ <CAOpEvtiQSXNWJBioXkW_-rSP9ZJ5y5kyfN9m3fRp7Q58uN+UoA@mail.gmail.com>
+ <CAOpEvtiS-qnLZhPAxmjwqosYjY7qz9svLkZXnt05bUv_8iTQLQ@mail.gmail.com>
+ <CAOpEvtjwMbXxqpzTiCRP25Y778EdrBcqto_YX8XahAPVQYbyDg@mail.gmail.com>
+ <CAOpEvtjmYjNUB+FqEnGaVzkkq1Sb1-yZU9F5kyGUoCsgS5XN7Q@mail.gmail.com>
+ <CAOpEvtjt1dfVhy1wtju-dnZg+EdW0VbbJbrp8g0n0JKVuO1e-g@mail.gmail.com>
+ <CAOpEvthNydMqkxJx6qx9C2ebY1n6jMpaSfK+dRuv68=adHRq0w@mail.gmail.com>
+ <CAOpEvtjLNLrNAGh9k+s=g1DYa=7XS48-twnHBU8KYFfSXr-HOg@mail.gmail.com>
+ <CAOpEvtgV5GTcgf0T90Keoa1MUTmMF4yW9RPRa=bv2919ne5Kdg@mail.gmail.com>
+ <CAOpEvtgaszVp-MfhLbH4Wg4bfod2HysxzQbOmYqkFtSyTiZBcg@mail.gmail.com>
+ <CAOpEvtiU+6JhxtykD5bRA8cKrPrgwVU+Gz4i6EboCNVpzVysdQ@mail.gmail.com>
+ <CAOpEvtj+zgYow+Q8ckp5mev2y_bTrhBirWExw-NF3JqCDS80CA@mail.gmail.com> <CAOpEvtiGXf=qs3wB-vc20O6K1isE+rSqoWCH2YV0VuExuRyJJA@mail.gmail.com>
+From:   Pepe Edem <amedodziyaovi@gmail.com>
+Date:   Mon, 9 Aug 2021 18:50:12 +0100
+Message-ID: <CAOpEvtj_hAfg9DETt6ZiQpSrT56ZaspVX7fMgQjGJyb1d+yZPQ@mail.gmail.com>
+Subject: Greetings
+Cc:     mp034367@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good Day My Good Friend.
 
+I am deeply sorry if I have in any manner disturbed your privacy.
+Please forgive this unusual manner of contacting you, there is
+absolutely going to be a great doubt and distrust in your heart in
+respect of this email. There is no way for me to know whether I will
+be properly understood, but it is my duty to write and reach out to
+you as a person of transparency, honesty and high caliber. I'll
+introduce myself once again, i am Mr. Pepe Edem, from Togo Republic. I
+am also the Branch Bank Manager of Biatogo Bank, I was also the
+Account Manager of my late client Mrs. Stella  Who might or might
+not be related to you.
 
-> On Aug 8, 2021, at 9:24 AM, Pali Roh=C3=A1r <pali@kernel.org> wrote:
->=20
-> NLS table for utf8 is broken and cannot be fixed.
->=20
-> So instead of broken utf8 nls functions char2uni() and uni2char() use
-> functions utf8_to_utf32() and utf32_to_utf8() which implements correct
-> encoding and decoding between Unicode code points and UTF-8 sequence.
->=20
-> When iochatset=3Dutf8 is used then set hsb->nls_io to NULL and use it =
-for
-> distinguish between the fact if NLS table or native UTF-8 functions =
-should
-> be used.
->=20
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
-> ---
-> fs/hfs/super.c | 33 ++++++++++++++++++++++-----------
-> fs/hfs/trans.c | 24 ++++++++++++++++++++----
-> 2 files changed, 42 insertions(+), 15 deletions(-)
->=20
-> diff --git a/fs/hfs/super.c b/fs/hfs/super.c
-> index 86bc46746c7f..076308df41cf 100644
-> --- a/fs/hfs/super.c
-> +++ b/fs/hfs/super.c
-> @@ -149,10 +149,13 @@ static int hfs_show_options(struct seq_file =
-*seq, struct dentry *root)
-> 		seq_printf(seq, ",part=3D%u", sbi->part);
-> 	if (sbi->session >=3D 0)
-> 		seq_printf(seq, ",session=3D%u", sbi->session);
-> -	if (sbi->nls_disk)
-> +	if (sbi->nls_disk) {
-> 		seq_printf(seq, ",codepage=3D%s", =
-sbi->nls_disk->charset);
+She traveled down to china on the 28th of December 2019 on a five
+weeks business trip and after the successful transaction in china, she
+flew back, not knowing she has been infected with the deadly
+Coronavirus (COVID-19). And she sadly passed away on March 20th 2020.
+She left the sum of $3.2 Million (Three Million, Two Hundred Thousand
+United States Dollars) in our financial institute (Bank), she
+specifically confided in me told me that "no one else knows about her
+funds in our bank" that the funds was for a project before she passed
+away while she was ill. And down here in our country at this present
+day, once anyone passes away, after 1 Year if no relatives of the late
+customer doesn't come to claim the funds/assets it'll be recycled, and
+reported to the Central Bank where the greedy government will then
+want to have their hands on the funds.
 
-Maybe, I am missing something. But where is the closing =E2=80=9C}=E2=80=9D=
-?
+That's where you come in, since you bear the same surnames with her, I
+want you to stand as her next of kin since no one else knows about
+this funds in our bank besides me, and i don't think anyone will be
+coming for it. I promise you that if you agree to assist in claiming
+this funds from my Bank, we'll not bridge the law in any way because
+I'll be your eyes and ears here in the Bank.
 
+After all is settled we'll share the fund $3.2 Million 50% equally or
+rather invest on whatever we choose. So I would really like to know
+what you have to say in regards to my proposal.
 
-> -	if (sbi->nls_io)
-> -		seq_printf(seq, ",iocharset=3D%s", =
-sbi->nls_io->charset);
-> +		if (sbi->nls_io)
-> +			seq_printf(seq, ",iocharset=3D%s", =
-sbi->nls_io->charset);
-> +		else
-> +			seq_puts(seq, ",iocharset=3Dutf8");
-> +	}
-> 	if (sbi->s_quiet)
-> 		seq_printf(seq, ",quiet");
-> 	return 0;
-> @@ -225,6 +228,7 @@ static int parse_options(char *options, struct =
-hfs_sb_info *hsb)
-> 	char *p;
-> 	substring_t args[MAX_OPT_ARGS];
-> 	int tmp, token;
-> +	int have_iocharset;
-
-What=E2=80=99s about boolean type?
-
->=20
-> 	/* initialize the sb with defaults */
-> 	hsb->s_uid =3D current_uid();
-> @@ -239,6 +243,8 @@ static int parse_options(char *options, struct =
-hfs_sb_info *hsb)
-> 	if (!options)
-> 		return 1;
->=20
-> +	have_iocharset =3D 0;
-
-What=E2=80=99s about false here?
-
-> +
-> 	while ((p =3D strsep(&options, ",")) !=3D NULL) {
-> 		if (!*p)
-> 			continue;
-> @@ -332,18 +338,22 @@ static int parse_options(char *options, struct =
-hfs_sb_info *hsb)
-> 			kfree(p);
-> 			break;
-> 		case opt_iocharset:
-> -			if (hsb->nls_io) {
-> +			if (have_iocharset) {
-> 				pr_err("unable to change iocharset\n");
-> 				return 0;
-> 			}
-> 			p =3D match_strdup(&args[0]);
-> -			if (p)
-> -				hsb->nls_io =3D load_nls(p);
-> -			if (!hsb->nls_io) {
-> -				pr_err("unable to load iocharset =
-\"%s\"\n", p);
-> -				kfree(p);
-> +			if (!p)
-> 				return 0;
-> +			if (strcmp(p, "utf8") !=3D 0) {
-> +				hsb->nls_io =3D load_nls(p);
-> +				if (!hsb->nls_io) {
-> +					pr_err("unable to load iocharset =
-\"%s\"\n", p);
-> +					kfree(p);
-> +					return 0;
-> +				}
-> 			}
-> +			have_iocharset =3D 1;
-
-What=E2=80=99s about true here?
-
-> 			kfree(p);
-> 			break;
-> 		default:
-> @@ -351,7 +361,7 @@ static int parse_options(char *options, struct =
-hfs_sb_info *hsb)
-> 		}
-> 	}
->=20
-> -	if (hsb->nls_io && !hsb->nls_disk) {
-> +	if (have_iocharset && !hsb->nls_disk) {
-> 		/*
-> 		 * Previous version of hfs driver did something =
-unexpected:
-> 		 * When codepage was not defined but iocharset was then
-> @@ -382,7 +392,8 @@ static int parse_options(char *options, struct =
-hfs_sb_info *hsb)
-> 			return 0;
-> 		}
-> 	}
-> -	if (hsb->nls_disk && !hsb->nls_io) {
-> +	if (hsb->nls_disk &&
-> +	    !have_iocharset && strcmp(CONFIG_NLS_DEFAULT, "utf8") !=3D =
-0) {
-
-Maybe, introduce the variable to calculate the boolean value here? Then =
-if statement will look much cleaner.
-
-> 		hsb->nls_io =3D load_nls_default();
-> 		if (!hsb->nls_io) {
-> 			pr_err("unable to load default iocharset\n");
-> diff --git a/fs/hfs/trans.c b/fs/hfs/trans.c
-> index c75682c61b06..bff8e54003ab 100644
-> --- a/fs/hfs/trans.c
-> +++ b/fs/hfs/trans.c
-> @@ -44,7 +44,7 @@ int hfs_mac2asc(struct super_block *sb, char *out, =
-const struct hfs_name *in)
-> 		srclen =3D HFS_NAMELEN;
-> 	dst =3D out;
-> 	dstlen =3D HFS_MAX_NAMELEN;
-> -	if (nls_io) {
-> +	if (nls_disk) {
-> 		wchar_t ch;
->=20
-
-I could miss something here. But what=E2=80=99s about the closing =
-=E2=80=9C}=E2=80=9D?
-
-Thanks,
-Slava.
-
-> 		while (srclen > 0) {
-> @@ -57,7 +57,12 @@ int hfs_mac2asc(struct super_block *sb, char *out, =
-const struct hfs_name *in)
-> 			srclen -=3D size;
-> 			if (ch =3D=3D '/')
-> 				ch =3D ':';
-> -			size =3D nls_io->uni2char(ch, dst, dstlen);
-> +			if (nls_io)
-> +				size =3D nls_io->uni2char(ch, dst, =
-dstlen);
-> +			else if (dstlen > 0)
-> +				size =3D utf32_to_utf8(ch, dst, dstlen);
-> +			else
-> +				size =3D -ENAMETOOLONG;
-> 			if (size < 0) {
-> 				if (size =3D=3D -ENAMETOOLONG)
-> 					goto out;
-> @@ -101,11 +106,22 @@ void hfs_asc2mac(struct super_block *sb, struct =
-hfs_name *out, const struct qstr
-> 	srclen =3D in->len;
-> 	dst =3D out->name;
-> 	dstlen =3D HFS_NAMELEN;
-> -	if (nls_io) {
-> +	if (nls_disk) {
-> 		wchar_t ch;
-> +		unicode_t u;
->=20
-> 		while (srclen > 0) {
-> -			size =3D nls_io->char2uni(src, srclen, &ch);
-> +			if (nls_io)
-> +				size =3D nls_io->char2uni(src, srclen, =
-&ch);
-> +			else {
-> +				size =3D utf8_to_utf32(str, strlen, &u);
-> +				if (size >=3D 0) {
-> +					if (u <=3D MAX_WCHAR_T)
-> +						ch =3D u;
-> +					else
-> +						size =3D -EINVAL;
-> +				}
-> +			}
-> 			if (size < 0) {
-> 				ch =3D '?';
-> 				size =3D 1;
-> --=20
-> 2.20.1
->=20
-
+Thanks
+Mr. Pepe Edem.
