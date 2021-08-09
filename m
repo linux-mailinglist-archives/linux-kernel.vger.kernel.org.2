@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BC23E4110
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2440F3E4112
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhHIHsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233533AbhHIHsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:48:35 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1FFC0613CF;
-        Mon,  9 Aug 2021 00:48:14 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id ca5so26557208pjb.5;
-        Mon, 09 Aug 2021 00:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C85qCSugEcqkhP9sJqsX8NhHPkwOW8SIOj7a90Xvxf0=;
-        b=FoSOf3fe97dAktFJrsyO2Jm8eZW3V2hbTtl4YqOpsH3q6LFrMlcsdEspXGHh/HT6tg
-         qsUFdUMAe9Wo/Tp5jw+IYsw+1uMGLhUsw1O7i7DPFqjzjR0mOwgyUyXjtjpPc21nkAIj
-         vPY4Klo0WX73N0wprV+3jw8rn0FBQ7qzbrWNcek1B9oDnRrLGRCxz23sxgDg7RJqbR83
-         F68ZsfhXTzj2SQBe/O720stwmBjxNlzzEtaOt1bKYA49Rg6XILnyqpjz7XZqj7uIUEEE
-         v4TNn/Ekve1v39xAItQxyzHEquDCoWJqaNa8ibXKHvpTXGzCcZUA/1fme6ZvgRZmMg5c
-         oDHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C85qCSugEcqkhP9sJqsX8NhHPkwOW8SIOj7a90Xvxf0=;
-        b=IhLsKQLILWkZF7xhofIB5FluZhBX/yg1cAI8JgTXfS88gEaS04aA2d7bClR+p8DXiY
-         EvPMSlntldJShxNAlvidVweSDFcVbFFn4FkpxND1mT1zT5P1KXXKEOpA98CMHIv/dxV9
-         f7ySnQfoLlNjrbbU920HW2GmlY3nWu/d6LtzwjROhnqRWJDNjkDwUpiGcPPNFYDoqIxY
-         ygxU9Ft1Ellvi7m20RCaSJG8jLXiFsIC+B4S14i8iAO9P5500z98nocWY8SYMWI7giln
-         n0Rhx5CnE5h1sMMYz4JaXHISty5st695IcS+3cn7/WTvA60jDCjPLEAC+yw/Qn8KkmfZ
-         A07w==
-X-Gm-Message-State: AOAM531KisTz4oGvdHtRp9t/JFfGrngf2hl6BHgT/eCG0WXvRWWDwy5H
-        ybJsrUyK2r6dDvZrCzvIR/vYYqlQNjlGlA==
-X-Google-Smtp-Source: ABdhPJzDkvBu4hnlJ2QQXDeMmude9oYDgLJbFwDOrBwImh0r+qPVap7hNSuMhrAdn3p+B9RRObhBjQ==
-X-Received: by 2002:a17:90a:17cc:: with SMTP id q70mr2347701pja.1.1628495294159;
-        Mon, 09 Aug 2021 00:48:14 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id n35sm18609297pfv.152.2021.08.09.00.48.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Aug 2021 00:48:13 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Tony Luck <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86/pmu: Don't expose guest LBR if the LBR_SELECT is shared per physical core
-Date:   Mon,  9 Aug 2021 15:48:03 +0800
-Message-Id: <20210809074803.43154-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
+        id S233589AbhHIHt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:49:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233533AbhHIHt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 03:49:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 029DE61056
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628495376;
+        bh=q/S/ccLXHytgWzYsEEYPeb1axvMFlx+hkfDx9JyqjhI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZXkLPeDSnu/5fSVRxKq0MAg7wIhU9SY3SUjybAvltMCLBCcoXhz08WyVaEetNEy8O
+         eyMorI6OqeuXLwlS4DFnzwkr/53N5tAv/hau8SIZ2UcyM00eKIEXtPQapzBSomI/s6
+         IB0VrFfCIJV4LcEnhMlmTJArCU0HpC3W/D3EaNtEqG7jXOMJ/7jTcM5ELT7KXHAQgO
+         3kC8CaJKV3XrUVg+/Fzds11q7/0sDUpAS2UZoxvHra0RbbxZTmZoQgtVO+li9uoVdr
+         ZbD7NiTkgToVF3oc4zdn63svc3dtk75DvHp5JKmqdPRhn68B2iAxM13/xy9KMk+AdI
+         wFhqRAgwA/Pug==
+Received: by mail-wr1-f47.google.com with SMTP id k29so7332456wrd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:49:35 -0700 (PDT)
+X-Gm-Message-State: AOAM533DZVYV14bImdZ2uFVI5m6vrq7oS8lMl/k8tfJIF5N/dypBFfRb
+        AgO7/S/5hN5PXowQKipOx6TgOU6SRswMzwBq1+8=
+X-Google-Smtp-Source: ABdhPJwK0fcoyVP2S8sGrZY8yRoZXSzaTqRROq5Jut72S+v1w47Bga5OiaWNKFfeoKGo83RQrK3xtnVhG0enY+78Ey0=
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr24684354wrr.105.1628495374617;
+ Mon, 09 Aug 2021 00:49:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210807145537.124744-1-xianting.tian@linux.alibaba.com>
+ <20210809003044.6692ddce@xhacker> <c09fc86d-1e6a-3315-7489-9e269935ba55@linux.alibaba.com>
+In-Reply-To: <c09fc86d-1e6a-3315-7489-9e269935ba55@linux.alibaba.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 9 Aug 2021 09:49:18 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1wyhLp1hUUotzwqc1pyCyfWhO7O_pvt5O_U=qZp-ZhnA@mail.gmail.com>
+Message-ID: <CAK8P3a1wyhLp1hUUotzwqc1pyCyfWhO7O_pvt5O_U=qZp-ZhnA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add ARCH_DMA_MINALIGN support
+To:     Xianting TIan <xianting.tian@linux.alibaba.com>
+Cc:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+On Mon, Aug 9, 2021 at 8:20 AM Xianting TIan
+<xianting.tian@linux.alibaba.com> wrote:
+>
+> >> +#define ARCH_DMA_MINALIGN   L1_CACHE_BYTES
+> > It's not a good idea to blindly set this for all riscv. For "coherent"
+> > platforms, this is not necessary and will waste memory.
+>
+> I checked ARCH_DMA_MINALIGN definition,  "If an architecture isn't fully
+> DMA-coherent, ARCH_DMA_MINALIGN must be set".
+>
+> so that the memory allocator makes sure that kmalloc'ed buffer doesn't
+> share a cache line with the others.
+>
+> Documentation/core-api/dma-api-howto.rst
+>
+> 2) ARCH_DMA_MINALIGN
+>
+>     Architectures must ensure that kmalloc'ed buffer is
+>     DMA-safe. Drivers and subsystems depend on it. If an architecture
+>     isn't fully DMA-coherent (i.e. hardware doesn't ensure that data in
+>     the CPU cache is identical to data in main memory),
+>     ARCH_DMA_MINALIGN must be set so that the memory allocator
+>     makes sure that kmalloc'ed buffer doesn't share a cache line with
+>     the others. See arch/arm/include/asm/cache.h as an example.
+>
+>     Note that ARCH_DMA_MINALIGN is about DMA memory alignment
+>     constraints. You don't need to worry about the architecture data
+>     alignment constraints (e.g. the alignment constraints about 64-bit
+>     objects).
 
-According to Intel SDM, the Last Branch Record Filtering Select Register
-(R/W) is defined as shared per physical core rather than per logical core
-on some older Intel platforms: Silvermont, Airmont, Goldmont and Nehalem.
+The platform spec [1] says about this:
 
-To avoid LBR attacks or accidental data leakage, on these specific
-platforms, KVM should not expose guest LBR capability even if HT is
-disabled on the host, considering that the HT state can be dynamically
-changed, yet the KVM capabilities are initialized at module initialisation.
+| Memory accesses by I/O masters can be coherent or non-coherent
+| with respect to all hart-related caches.
 
-Fixes: be635e34c284 ("KVM: vmx/pmu: Expose LBR_FMT in the MSR_IA32_PERF_CAPABILITIES")
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- arch/x86/include/asm/intel-family.h |  1 +
- arch/x86/kvm/vmx/capabilities.h     | 19 ++++++++++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
+So the kernel in its default configuration can not assume that DMA is
+cache coherent on RISC-V. Making this configurable implies that
+a kernel that is configured for cache-coherent machines can no longer
+run on all hardware that follows the platform spec.
 
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index 27158436f322..f35c915566e3 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -119,6 +119,7 @@
- 
- #define INTEL_FAM6_ATOM_SILVERMONT	0x37 /* Bay Trail, Valleyview */
- #define INTEL_FAM6_ATOM_SILVERMONT_D	0x4D /* Avaton, Rangely */
-+#define INTEL_FAM6_ATOM_SILVERMONT_X3	0x5D /* X3-C3000 based on Silvermont */
- #define INTEL_FAM6_ATOM_SILVERMONT_MID	0x4A /* Merriefield */
- 
- #define INTEL_FAM6_ATOM_AIRMONT		0x4C /* Cherry Trail, Braswell */
-diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-index 4705ad55abb5..ff9596d7112d 100644
---- a/arch/x86/kvm/vmx/capabilities.h
-+++ b/arch/x86/kvm/vmx/capabilities.h
-@@ -3,6 +3,7 @@
- #define __KVM_X86_VMX_CAPS_H
- 
- #include <asm/vmx.h>
-+#include <asm/cpu_device_id.h>
- 
- #include "lapic.h"
- 
-@@ -376,6 +377,21 @@ static inline bool vmx_pt_mode_is_host_guest(void)
- 	return pt_mode == PT_MODE_HOST_GUEST;
- }
- 
-+static const struct x86_cpu_id lbr_select_shared_cpu[] = {
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_MID, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_D, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_X3, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT_MID, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_PLUS, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_EP, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_G, NULL),
-+	X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_EX, NULL),
-+	{}
-+};
-+
- static inline u64 vmx_get_perf_capabilities(void)
- {
- 	u64 perf_cap = 0;
-@@ -383,7 +399,8 @@ static inline u64 vmx_get_perf_capabilities(void)
- 	if (boot_cpu_has(X86_FEATURE_PDCM))
- 		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
- 
--	perf_cap &= PMU_CAP_LBR_FMT;
-+	if (!x86_match_cpu(lbr_select_shared_cpu))
-+		perf_cap &= PMU_CAP_LBR_FMT;
- 
- 	/*
- 	 * Since counters are virtualized, KVM would support full
--- 
-2.32.0
+We have the same problem on arm64, where most of the server parts
+are cache coherent, but the majority of the low-end embedded devices
+are not, and we require that a single kernel ran run on all of the above.
 
+One idea that we have discussed several times is to start the kernel
+without the small kmalloc caches and defer their creation until a
+later point in the boot process after determining whether any
+non-coherent devices have been discovered. Any in-kernel structures
+that have an explicit ARCH_DMA_MINALIGN alignment won't
+benefit from this, but any subsequent kmalloc() calls can use the
+smaller caches. The tricky bit is finding out whether /everything/ on
+the system is cache-coherent or not, since we do not have a global
+flag for that in the DT. See [2] for a recent discussion.
+
+       Arnd
+
+[1] https://github.com/riscv/riscv-platform-specs/blob/main/riscv-platform-spec.adoc#architecture
+[2] https://lore.kernel.org/linux-arm-kernel/20210527124356.22367-1-will@kernel.org/
