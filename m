@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A7C3E461B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7451C3E4623
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235148AbhHINHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:07:09 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:50592 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234227AbhHINHC (ORCPT
+        id S235305AbhHINHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:07:41 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18562 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235176AbhHINHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:07:02 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 179D6WQ3000482;
-        Mon, 9 Aug 2021 08:06:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628514392;
-        bh=Dmzn28ceeZNMrQ8BgJ7PL0F6bEl8WRq1RqedliSDbNM=;
-        h=Date:From:To:CC:Subject;
-        b=GyrKkJepUgEOwCSCM7gItzqiI2CZJlejCy9crBSEppdb0Yi/1VbRIjm0UMA5G0T4k
-         4D8HeAfzEs74YjZNAWo37ab/aGPF67CVdLGOU1pkg7yvAEH0rTiJIzsCxzCeh8uOXI
-         HsKAabNNXaWOIMjZ+AUSL17yOBr1upMTJYDDQSMo=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 179D6Wpf018478
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Aug 2021 08:06:32 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 9 Aug
- 2021 08:06:32 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 9 Aug 2021 08:06:32 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 179D6V2a113330;
-        Mon, 9 Aug 2021 08:06:31 -0500
-Date:   Mon, 9 Aug 2021 08:06:31 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Tero Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>
-Subject: arm64: dts: TI K3 updates for v5.15
-Message-ID: <20210809130631.pfvntcichsyeekbo@festive>
+        Mon, 9 Aug 2021 09:07:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628514434; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=syRAAEn6ukIppn65P9Lof264WUDrsD4lX0IMZ1u8oAc=; b=INnck6RfOJHcA/BKN/ZFn2/O7mIKdcuiGVHBxDat6VzAQOteAB1doNHTxODxlncUCI9tCYuX
+ 6/Ier3Crnf52mKHICoSxdaVyf1aNBeXXl8cPdna+VyR193KHSSgwWfiG1HmZNjgAGwS7NvRX
+ tUuBzT+J0yc2JjD6bI7uSEGAq4Q=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6111286ab14e7e2ecb3b40a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 13:06:50
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B7AE4C43144; Mon,  9 Aug 2021 13:06:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.92.0.248] (unknown [180.166.53.36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD19CC433D3;
+        Mon,  9 Aug 2021 13:06:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DD19CC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=luoj@codeaurora.org
+Subject: Re: [PATCH] dt-bindings: net: Add the properties for ipq4019 MDIO
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, robert.marko@sartura.hr,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+References: <20210808075328.30961-1-luoj@codeaurora.org>
+ <YQ/8q6gR6Eji2hKD@lunn.ch>
+From:   Jie Luo <luoj@codeaurora.org>
+Message-ID: <ba6f3daa-7b1c-dd66-f803-c049e1fc3e8a@codeaurora.org>
+Date:   Mon, 9 Aug 2021 21:06:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tv6tlzcqd4ve3k6t"
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YQ/8q6gR6Eji2hKD@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---tv6tlzcqd4ve3k6t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Arnd and Olof,
+On 8/8/2021 11:47 PM, Andrew Lunn wrote:
+> On Sun, Aug 08, 2021 at 03:53:28PM +0800, Luo Jie wrote:
+>> The new added properties resource "reg" is for configuring
+>> ethernet LDO in the IPQ5018 chipset, the property "clocks"
+>> is for configuring the MDIO clock source frequency.
+>>
+>> This patch depends on the following patch:
+>> Commit 2b8951cb4670 ("net: mdio: Add the reset function for IPQ MDIO
+>> driver")
+> Please always make binding patches part of the series containing the
+> driver code. We sometimes need to see both to do a proper review.
+>
+> Add a comment about when the second address range and clock is
+> required. Does qcom,ipq5018-mdio require them?
+>
+> 	  Andrew
 
-Here is the DT updates for 5.15. Just minor additions this time around.
+Hi Andrew,
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+yes, the second address range is only required for qcom,ipq5018-mdio 
+currently,
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+will document it in next patch set, and send it with the drive code 
+patch, thanks
 
-are available in the Git repository at:
+for the comments and review.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git tags/ti-k3=
--dt-for-v5.15
-
-for you to fetch changes up to c1fa5ac6c2f475b5140e6323801ed93c24e7e5cf:
-
-  arm64: dts: ti: k3-am642-sk: Add pwm nodes (2021-07-30 10:44:42 -0500)
-
-----------------------------------------------------------------
-Devicetree changes for TI K3 platforms for v5.15 merge window:
-
-* New features:
-  - AM64 adds pwm and ecap capability
-
-----------------------------------------------------------------
-Lokesh Vutla (4):
-      arm64: dts: ti: k3-am64-main: Add epwm nodes
-      arm64: dts: ti: k3-am64-main: Add ecap pwm nodes
-      arm64: dts: ti: k3-am642-evm: Add pwm nodes
-      arm64: dts: ti: k3-am642-sk: Add pwm nodes
-
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 114 +++++++++++++++++++++++++++=
-++++
- arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  56 +++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  64 +++++++++++++++++
- 3 files changed, 234 insertions(+)
-
---=20
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5=
- 849D 1736 249D
-
---tv6tlzcqd4ve3k6t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIyBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAmERKFEACgkQ3bWEnRc2
-JJ3ZCA/2PyVk/BhEQH6OnvxKgRCHW1hOUyXwQvZM6lfHfkEqyBCH+Yso9LAKmW3Q
-iLnyWXUlIX8ckPRIEcDbS4Zo7kF3eOEU7XTj8hNt+GDN3MrtvkcR2dgIar82rAKX
-SCFHZ+DLM53J+w11MSgvyj3Z64DTPAgiaZx4y+iWXE6rgK/ukQjfzwwzihOPZtYE
-xZB2dr277Oc8uMwbHETy56ElIpjW1Mn1dOv08oASqO7MR10QXOzkuDZMuH6xvtS6
-T6FEzsxEtiOYXuRCLm2lcvQO0Ytqnph3KL5QCEJBfmMd8z0MgEUKr5itP7wTdYl7
-pG35C/EiNGEaewaZH0X/l7qqAu/pC3XxfVKpKabDQqz7JNO5skeMfPt/KUcoQodB
-XsQfY4P/X4O3IBl3kNgsoDoDtqQGjiE9aZY2yrM+xOjTtrUhr/TU3VAeqnNdkt1l
-4MczYqGy5hm7EQFhE9w0N8o2NGnC2F3sPDidI+5TI+p8phfsQVaBpcYug5LwOWAe
-xYetsutAxdiYUqnxRC7Yv6MyqqyOlAWgq0JFjaQ+XUwjvScOiyt0SrCxDbHisq56
-/AqBnWOCtOekzhbqAEhXDxOoriMoUWCP4ucBuGszPkUXAwhAVfpgRRQont968F0m
-ED0O7DPSDYY/fVu57ICZzwRetLQDcJdK+Ol8/aeWOp7rMoZkXg==
-=H/px
------END PGP SIGNATURE-----
-
---tv6tlzcqd4ve3k6t--
