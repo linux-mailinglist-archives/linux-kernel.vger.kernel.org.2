@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446813E49C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4BC3E49CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhHIQ0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:26:44 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43689 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232881AbhHIQ0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:26:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628526343;
-        bh=3nL4/VMzAAvkcx/Y4QlFv5TCFLlPZza+oU/Wlor7F0I=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=fd6T0XFTVs5g11Oy5tuiZ8D+w2Fqyx0qc0G+KYdp6bZXiKZaynOK2zqewkIjJuZWs
-         RLPoHo1J7kaWF0uztR5NtyYInX9qkr6aidHu8K5mfLeRzF5bCvGoIjME8WcTRJ85Qx
-         o5WplG4Qwvz1mwNWZ0VATwOtcimF+SrCeD0BTQzQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9dsb-1n9ETD3FS9-015com; Mon, 09
- Aug 2021 18:25:42 +0200
-Date:   Mon, 9 Aug 2021 18:25:39 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Robert Richter <rric@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-Message-ID: <20210809162539.GB2619@titan>
-References: <20210807155957.10069-1-len.baker@gmx.com>
- <YRD6uoVYwCSFN0U0@rric.localdomain>
+        id S232842AbhHIQbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhHIQbT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 12:31:19 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA960C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:30:58 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id z2so18378575lft.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4VkPv3ijvSTRJOo9NDpocwpDrWuB20oSTHeZq/+JtY4=;
+        b=iKxkoaL4kXVhoJaIu2txEDqyx63rLwuewv97sgvO1NvLABlJvzMEzcQHX8m24fF8lu
+         MNqtTTYQ+qGttrYrZTrcwvePD0uE+OWxHK3M1k0eOEbg1w47J9We9QbFreNKNqt85Jzb
+         pZFkqcpoLP2XQorJWRxzcU7dDzUUe8izELraOhOBARFbGt1wDLCTMANOWT+01qIvjXDf
+         HZ1lDthuJDOHLo5E9jKEJW3xc5YL+zya9Mn8C2s4eaiyPVU6sCgZNxuSklUkFc+ds62C
+         pXBQfFpL44dfqrxiztM8ObkmRzBEqi0LFvcAQ/hX9k5q9N0vge5xDaHfPktR9QT5/3mw
+         J7Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4VkPv3ijvSTRJOo9NDpocwpDrWuB20oSTHeZq/+JtY4=;
+        b=JqJJZDpfaIOfPAZYoImDrg3kdAKsOLAXzeamMpCCpFNn7q7yj0HMIOG3/DUF9FOtJ3
+         5nJTQh8993iXx3Zx9yCEbNA12BIcx7yw5JqgSu9iRhLdscoKOCw6hJyDyQLMOF82yrOy
+         Z7ai3B6eTkgIb0B5Hf8wi77eqFQlYYO4RQQHbw7XhE6h6tuFtT9nlPeWMFWMRgya3uY3
+         lou0IiogAaTyxFK5/HxGheS9oqfMIv+zd5cl9eHXYyjh55+RKOTbYADePO6sRMv5Vw8H
+         nQEbzdnOYj1e60ZtlWpCl4aWLOhsIcmUNLFagA/BM6ypidHuZq3/1AQmLoHIwDXkeKdz
+         jcWg==
+X-Gm-Message-State: AOAM531Hx85VBoe9187ifEGGo6CpOxrgR65oHzVHDp4PKmAGlaVZ35qI
+        nW80SEziIZM1/B+1AAzQp+4jUYQ4UyW+yDut8MiN+Q==
+X-Google-Smtp-Source: ABdhPJzdL4ytuaQijALokAIa5Yk3f3euwhiuT27Zmii54Gn8/sNlSJY2a5P8w23L7LK5NBvmjW5aUeuHvVn5cD6M3nM=
+X-Received: by 2002:ac2:5fc7:: with SMTP id q7mr17406150lfg.524.1628526656761;
+ Mon, 09 Aug 2021 09:30:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRD6uoVYwCSFN0U0@rric.localdomain>
-X-Provags-ID: V03:K1:tUFOpibvDcC8BQZoy6rQw+BXUlHzBlNyJwMXnOpXUnskVAlpSTz
- nh3dHIazEuUS6bNCCMtYrpcmrmeR1lRQ33I61RWuN9v6UOxdRtxX3V7rZUhP8+KUUa4yb7W
- ZUkIDS/H9oWKgqvjXm2x+y4GYppZ43OX4cqsMl+WZY3/0+zjoRZ5oi3y96W2GZlCvsRiEBw
- 4ov5U+xfhsnIEjvyxVQtw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RvyGGdQcpwE=:nPhhZFPAwQOPWW+hbdauA5
- dCVp/TofLGNswLYrURJtbshoSRiZZ+VtjaqE+LF4xLWw8f4NfhdVcUsZxezGyXuYaP5OAtFF8
- cTCPcFHRyj0BzLER8Bsym4jtp67c2k6Sm9kTdmEi6kDLS4qIy5Q5y6equ97W/obfR4XRobFti
- bqzj4UghltdqSYSQJmvKkm/COTXCnUGgbJLICUokqHF9fVUoUfSZiWwoW10PB+kfxlYNKdAs7
- va6pwjVardNYasteTOLar7YCf7zi9ahOQgwED3iK3tX/sE56jK/cV7DdTIfogZFkFjVx8BnTI
- jeG3dNMTDtSmaJ+gjS5Ra74WsvZBFDPuBwhDc+mhxT553Kf+0hLtLYWlUPpex4gu7OQL3BnG6
- 9tzz9JhkFQOSm2zFHH0PMKzjzMYXYA4NKcMwJvXngXVD42J5erTOzlN8waUnap2KosLPWCx+u
- yRM4abt42bcTrvMNG0G/k3ukjUm09v52kfsBpY7rZ5lFESSbsUAqRfJ5gv+Tcq2UkFPqSMJxB
- 98WwUpK6NVMZKDh6jfxEMBT8v2b43N8nyqB3k7njCDZRkjt7787coXTHV1FkDp3CRnREL4yah
- n6N0QmeYyaye9ANzrMrFmI5LtmqtlMmfsMlkPsl6K0tgR4NhfMnS+dRaWao6fJkcCWnfgqy7i
- 4QTkkywBlooihzDWeVJJKwWoFd2JBEmvYoLUMP0OYsOLGL4e7gODhamH6kvre52Q7F+0YCMfD
- KN+plqORD3tp5g8FxvP81VGujdr3C4CJegUrkY5vP3Jrg2zXYq3PIiJOubT/xIlgy0l9eSisM
- fN/s64KN42v/kttOAtQANB2acAo7xft8NaXEGIkL+fJrwNQ1EFQ2ggWrysnHICWcUkKtsoLrF
- SdnPOv4iREsHlpDOcfNa4ZxmVwj1EAs8jlCN2cOwJ0SjF+5xHW+Y1KRfyQ85XBK9JAPxT9TTH
- MGmIo5N8Ar1IVUFb2L/It6qVm+bTjexe57rx7pNjDF1z+ENPfqOYMnehbJ6exExz5NQ6M+ve6
- jpqJG/xewEx/7F5QcqFvZItfi4du3BRuSeknQ+lwMh6ZQkSp1FgxbdVqqRICBWQnb5cI5O+Gy
- p1pz6vOal4xeMzXzqSmKQZJ4rW2rZQj6wY4mIVrapaBLPTki6jTPLRoiw==
-Content-Transfer-Encoding: quoted-printable
+References: <20210809152651.2297337-1-maz@kernel.org> <20210809152651.2297337-13-maz@kernel.org>
+In-Reply-To: <20210809152651.2297337-13-maz@kernel.org>
+From:   Oliver Upton <oupton@google.com>
+Date:   Mon, 9 Aug 2021 09:30:45 -0700
+Message-ID: <CAOQ_QsjT8DUoXQsxWGgGiZkwNe2itRswGomtq6-p+7_oU01orQ@mail.gmail.com>
+Subject: Re: [PATCH 12/13] arm64: Add a capability for FEAT_EVC
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Marc,
 
-On Mon, Aug 09, 2021 at 11:51:54AM +0200, Robert Richter wrote:
-> On 07.08.21 17:59:57, Len Baker wrote:
+On Mon, Aug 9, 2021 at 8:48 AM Marc Zyngier <maz@kernel.org> wrote:
 >
-> > @@ -1113,11 +1115,11 @@ void edac_mc_handle_error(const enum hw_event_=
-mc_err_type type,
-> >  			p =3D e->label;
-> >  			*p =3D '\0';
-> >  		} else {
-> > -			if (p !=3D e->label) {
-> > -				strcpy(p, OTHER_LABEL);
-> > -				p +=3D strlen(OTHER_LABEL);
-> > -			}
-> > -			strcpy(p, dimm->label);
-> > +			const char *text =3D (p !=3D e->label) ? OTHER_LABEL :
-> > +				dimm->label;
-> > +
-> > +			strscpy(p, text, len);
-> > +			len -=3D strlen(p);
+> Add a new capability to detect the Enhanced Counter Virtualization
+> feature (FEAT_EVC).
 >
-> The logic looks broken and dimm labels are not properly copied (the
-> code should add an " or " separator between labels).
 
-Apologies. My bad.
+s/FEAT_EVC/FEAT_ECV/g
 
-Regards,
-Len
-
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/kernel/cpufeature.c | 10 ++++++++++
+>  arch/arm64/tools/cpucaps       |  1 +
+>  2 files changed, 11 insertions(+)
 >
-> >  			p +=3D strlen(p);
-> >  		}
-> >
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 0ead8bfedf20..9c2ce5408811 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -1899,6 +1899,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
+>                 .sign = FTR_UNSIGNED,
+>                 .min_field_value = 1,
+>         },
+> +       {
+> +               .desc = "Enhanced counter virtualization",
+> +               .capability = ARM64_HAS_ECV,
+> +               .type = ARM64_CPUCAP_SYSTEM_FEATURE,
+> +               .matches = has_cpuid_feature,
+> +               .sys_reg = SYS_ID_AA64MMFR0_EL1,
+> +               .field_pos = ID_AA64MMFR0_ECV_SHIFT,
+> +               .sign = FTR_UNSIGNED,
+> +               .min_field_value = 1,
+> +       },
+
+Per one of your other patches in the series, it sounds like userspace
+access to the self-synchronized registers hasn't been settled yet.
+However, if/when available to userspace, should this cpufeature map to
+an ELF HWCAP?
+
+Also, w.r.t. my series I have out for ECV in KVM. All the controls
+used in EL2 depend on ECV=0x2. I agree that ECV=0x1 needs a cpufeature
+bit, but what about EL2's use case?
+
+Besides the typo:
+
+Reviewed-by: Oliver Upton <oupton@google.com>
+
+--
+Thanks,
+Oliver
+
+>  #ifdef CONFIG_ARM64_PAN
+>         {
+>                 .desc = "Privileged Access Never",
+> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
+> index 49305c2e6dfd..7a7c58acd8f0 100644
+> --- a/arch/arm64/tools/cpucaps
+> +++ b/arch/arm64/tools/cpucaps
+> @@ -18,6 +18,7 @@ HAS_CRC32
+>  HAS_DCPODP
+>  HAS_DCPOP
+>  HAS_E0PD
+> +HAS_ECV
+>  HAS_EPAN
+>  HAS_GENERIC_AUTH
+>  HAS_GENERIC_AUTH_ARCH
+> --
+> 2.30.2
+>
