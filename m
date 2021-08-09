@@ -2,123 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD703E43F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E343E43F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbhHIKfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
+        id S233890AbhHIKfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbhHIKfx (ORCPT
+        with ESMTP id S233658AbhHIKfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:35:53 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C774C061798;
-        Mon,  9 Aug 2021 03:35:33 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id k29so7944934wrd.7;
-        Mon, 09 Aug 2021 03:35:33 -0700 (PDT)
+        Mon, 9 Aug 2021 06:35:41 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2871CC0613D3;
+        Mon,  9 Aug 2021 03:35:19 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id y7so23799039eda.5;
+        Mon, 09 Aug 2021 03:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9H3/YxJliW7+PjfOPoBWLU1jHzqvHq35yXLPygLxSdo=;
-        b=hthcYKVf83AXqgasc5NyEfIDMWmMgKfNGxawq6gZz2gaSMqJS+rRQUakune+NKaFwL
-         PWJDK9ErDEW34vNJW9n7J9dpt7ZzwbFCdrCvNcmlxrepfHAHecb0XVg4aM0u4hncM7i6
-         53VxTLY49b3abv37IzTOHYqk0mvsH0uhTrVwoXDTrLTfEquAoYEnRjiweS6bOZIjbLeD
-         5H08UlOzKwXlga54vz2bX0+AnMn94fbWypilLR6vuk+aHukH2O43/U1M4YaRAbIROiTc
-         G8xZSU07EA1I7rafFTFvZkXVG3Y3xMKxDK9G40cSwjFyVoEgtfJfsKterO88WfBJmQX8
-         s1Cw==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=SKTI8cjqZvGaYJnPY8jnuaW9ah64OdLf3fUo/l7ct00=;
+        b=TfenVWIqPBiRbTpFziCcxykJK56ccf1R4JGLMI0ILMS33NQCmBJIfs8mL7LFNGVsgS
+         yD9Or9J66tEZlt2cGVg/DhoqIN+LIyByfOg3teCWEtkvIZ8hbtrdxGF9GWim3GAZkAKA
+         8baEcoOyjpJF2HMqel3EdB1W2NjZYNM0lBdPFyJZsuhPnE/iJ8azLGkA+kKlltuZwAMd
+         OVZyGaALIx1gs/X/EEz3yer+BA1tuaoNabO1TCWjxgNZTeX4hIIXJzoKRyIfjHEzkf94
+         j3o7UR4PHslJ0+bfVHlEWr85hFiss1aE9Bt3/F059GIt+qQhB3Iv6QBlcItXgFrdv2uA
+         j0Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9H3/YxJliW7+PjfOPoBWLU1jHzqvHq35yXLPygLxSdo=;
-        b=Gg7KF6TwM4TANtJs2WhIr9AqXWG9dlkDn/NkA39BJ92FfeAhuoBzJaN6KsVCyB9BxH
-         q2UF7mnMf2rTrG/HruDWBr2hClRwgD8ujT57FdVKQlEDOg36zEAY3QJ4d9SJ1jDi+wHk
-         LDAR3ZrKQPtJfGrgW9GIF6smQNbjoezpOhrxRf9fECn1ijmKA/CiUOONYEwzs9F7/1Y3
-         t486lcaa3IViztSrWRFdLLx2kE0mK1q6VbklGAOZP+vgnDpblubk9Q+DvNLpWn5/jbb2
-         8MKoRikLrKlF0KhsavCfEPCAlJWRTTW1X8sKx3xNKO2gPniNrCNalc3f0F14XC1FJu7+
-         Cjpg==
-X-Gm-Message-State: AOAM532dDNxClhWBpjqbJAKfdLBB6wUDKH/v7kYe6djgVpyM1cK/YlBg
-        TwvFTEj/U4urh64eSkeRP56mxozQbHA=
-X-Google-Smtp-Source: ABdhPJy3Bzt9mLaQEf4eh6vQkAD+sJbKaM2ao3RiD/vM6K1AVBCZ2BcK3/fpWDbkoqvL4ekQQMqwJQ==
-X-Received: by 2002:adf:eec9:: with SMTP id a9mr23386141wrp.226.1628505331499;
-        Mon, 09 Aug 2021 03:35:31 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.119])
-        by smtp.gmail.com with ESMTPSA id o2sm17367468wmq.30.2021.08.09.03.35.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 03:35:31 -0700 (PDT)
-To:     Nadav Amit <namit@vmware.com>, Hao Xu <haoxu@linux.alibaba.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210808001342.964634-1-namit@vmware.com>
- <20210808001342.964634-2-namit@vmware.com>
- <488f005c-fd92-9881-2700-b2eb1adbb78e@gmail.com>
- <40885F33-F35D-49E9-A79F-DB3C35278F73@vmware.com>
- <8825c48c-3574-c76f-4ff2-e68aaf657cda@linux.alibaba.com>
- <CAC2285F-0841-47F5-8567-24C1377DDFB6@vmware.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH 1/2] io_uring: clear TIF_NOTIFY_SIGNAL when running task
- work
-Message-ID: <f47cc1a7-eae5-df1b-a811-f2eabd6d735c@gmail.com>
-Date:   Mon, 9 Aug 2021 11:35:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=SKTI8cjqZvGaYJnPY8jnuaW9ah64OdLf3fUo/l7ct00=;
+        b=djmIo1JdOv+0QbzjVOCHAyYxdaSSnWu9rwmM4JMJnCuie6a6lRNjTk/ffEFktWKvb/
+         QE8iX36aVHgkoHvvZEW5/fixD+Vhohd5ejFCso1eyHvUtZJbvqb1DpSfUJHuTy2M180k
+         SEH7t7Xb89B0zNg+Z043UhLBnNsdJ9Rlo9B08tWjw7DSrinmBbN6YycQ0JhUgdhhlzgF
+         pJtqdW1F47BNYJ8qwVkw1dXEOm3bpt/rThYDDiQ7YcxfWZW2ghzarWbYBgEHU1nNau6c
+         N+OCOBxZJFYxI7Inl2s0pkemjRXkED2VH0F/uIRx3Xr8/Jy2QXGa9oXUFbss3+bRQVmC
+         i7iQ==
+X-Gm-Message-State: AOAM531X8UIFLgsbbb0B8MTFqe/CHAHyB+ZJc6w74UdJc/vztCGj6ycA
+        RUkxMtsVJ4zYbXHUBfEvSrg=
+X-Google-Smtp-Source: ABdhPJzHgyUaOgyK3TkrXhD2brcploK19GajRQQqDthhZyUDNXZk1ecHKiNR2JHDy33anOjmbPwXXA==
+X-Received: by 2002:aa7:cb0f:: with SMTP id s15mr18484171edt.190.1628505317655;
+        Mon, 09 Aug 2021 03:35:17 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.gmail.com with ESMTPSA id bx11sm5777534ejb.107.2021.08.09.03.35.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 03:35:17 -0700 (PDT)
+Message-ID: <cf825a794602de80fb0d7fc006ccbdf7c29f2644.camel@gmail.com>
+Subject: Re: [RFC PATCH v2 03/10] perf workqueue: add threadpool start and
+ stop functions
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Date:   Mon, 09 Aug 2021 12:35:16 +0200
+In-Reply-To: <CAM9d7cg-AF4u=MPJwBs5QSbT_RgEFXYyum97yu3gy0+2w16d6g@mail.gmail.com>
+References: <cover.1627657061.git.rickyman7@gmail.com>
+         <6b18cd4441733f487b45bdf1e6f507b45be3bfbf.1627657061.git.rickyman7@gmail.com>
+         <CAM9d7cg-AF4u=MPJwBs5QSbT_RgEFXYyum97yu3gy0+2w16d6g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <CAC2285F-0841-47F5-8567-24C1377DDFB6@vmware.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 5:50 AM, Nadav Amit wrote:
->> On Aug 8, 2021, at 9:07 PM, Hao Xu <haoxu@linux.alibaba.com> wrote:
->> 在 2021/8/9 上午1:31, Nadav Amit 写道:
->>>> On Aug 8, 2021, at 5:55 AM, Pavel Begunkov <asml.silence@gmail.com> wrote:
->>>> On 8/8/21 1:13 AM, Nadav Amit wrote:
->>>>> From: Nadav Amit <namit@vmware.com>
->>>>>
->>>>> When using SQPOLL, the submission queue polling thread calls
->>>>> task_work_run() to run queued work. However, when work is added with
->>>>> TWA_SIGNAL - as done by io_uring itself - the TIF_NOTIFY_SIGNAL remains
->>>>
->>>> static int io_req_task_work_add(struct io_kiocb *req)
->>>> {
->>>> 	...
->>>> 	notify = (req->ctx->flags & IORING_SETUP_SQPOLL) ? TWA_NONE : TWA_SIGNAL;
->>>> 	if (!task_work_add(tsk, &tctx->task_work, notify))
->>>> 	...
->>>> }
->>>>
->>>> io_uring doesn't set TIF_NOTIFY_SIGNAL for SQPOLL. But if you see it, I'm
->>>> rather curious who does.
->>> I was saying io-uring, but I meant io-uring in the wider sense:
->>> io_queue_worker_create().
->>> Here is a call trace for when TWA_SIGNAL is used. io_queue_worker_create()
->>> uses TWA_SIGNAL. It is called by io_wqe_dec_running(), and not shown due
->>> to inlining:
->> Hi Nadav, Pavel,
->> How about trying to make this kind of call to use TWA_NONE for sqthread,
->> though I know for this case currently there is no info to get to know if
->> task is sqthread. I think we shouldn't kick sqthread.
+Hi,
+
+On Fri, 2021-08-06 at 19:43 -0700, Namhyung Kim wrote:
+> On Fri, Jul 30, 2021 at 8:34 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > 
+> > This patch adds the start and stop functions, alongside the thread
+> > function.
+> > Each thread will run until a stop signal is received.
+> > Furthermore, start and stop are added to the test.
+> > 
+> > Thread management is based on the prototype from Alexey:
+> > https://lore.kernel.org/lkml/cover.1625227739.git.alexey.v.bayduraev@linux.intel.com/
+> > 
+> > Suggested-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > ---
 > 
-> It is possible, but it would break the abstractions and propagating
-> it would be disgusting. Let me give it some thought.
+> [SNIP]
+> > @@ -93,6 +134,130 @@ static void threadpool_entry__close_pipes(struct
+> > threadpool_entry *thread)
+> >         }
+> >  }
+> > 
+> > +/**
+> > + * threadpool__wait_thread - receive ack from thread
+> > + *
+> > + * NB: call only from main thread!
+> > + */
+> > +static int threadpool__wait_thread(struct threadpool_entry *thread)
+> 
+> If you wanted to differentiate APIs for main thread, I think it's better
+> to pass the pool struct (according to the name) and the index like:
+> 
+>   int threadpool__wait_thread(struct threadpool *pool, int idx)
+> 
+> Then it can get a pointer to the entry easily.
 
-We already do io_wq_enqueue() only from the right task context,
-so in theory instead of pushing it through tw, we can create
-a new thread on the spot. Though, would need to be careful
-with locking.
+Agree. 
+I also need to more clearly separate those APIs too.
 
-Anyway, agree that it's better to be left for next.
+> 
+> > +{
+> > +       int res;
+> > +       enum threadpool_msg msg = THREADPOOL_MSG__UNDEFINED;
+> > +
+> > +       res = readn(thread->pipes.ack[0], &msg, sizeof(msg));
+> > +       if (res < 0) {
+> > +               pr_debug2("threadpool: failed to recv msg from tid=%d:
+> > %s\n",
+> > +                      thread->tid, strerror(errno));
+> > +               return -THREADPOOL_ERROR__READPIPE;
+> > +       }
+> > +       if (msg != THREADPOOL_MSG__ACK) {
+> > +               pr_debug2("threadpool: received unexpected msg from tid=%d:
+> > %s\n",
+> > +                      thread->tid, threadpool_msg_tags[msg]);
+> > +               return -THREADPOOL_ERROR__INVALIDMSG;
+> > +       }
+> > +
+> > +       pr_debug2("threadpool: received ack from tid=%d\n", thread->tid);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +/**
+> > + * threadpool__terminate_thread - send stop signal to thread and wait for
+> > ack
+> > + *
+> > + * NB: call only from main thread!
+> > + */
+> > +static int threadpool__terminate_thread(struct threadpool_entry *thread)
+> 
+> Ditto.
 
-> Regardless, I think that this patch should go to 5.14 and stable,
-> and any solution to avoid kicking the SQ should come on top (to be
-> safe).
+ack
 
--- 
-Pavel Begunkov
+> 
+> > +{
+> > +       int res;
+> > +       enum threadpool_msg msg = THREADPOOL_MSG__STOP;
+> > +
+> > +       res = writen(thread->pipes.cmd[1], &msg, sizeof(msg));
+> > +       if (res < 0) {
+> > +               pr_debug2("threadpool: error sending stop msg to tid=%d:
+> > %s\n",
+> > +                       thread->tid, strerror(errno));
+> > +               return -THREADPOOL_ERROR__WRITEPIPE;
+> > +       }
+> > +
+> > +       return threadpool__wait_thread(thread);
+> > +}
+> > +
+> 
+> [SNIP]
+> > @@ -161,12 +326,30 @@ struct threadpool *threadpool__new(int n_threads)
+> >   *
+> >   * Buffer size should be at least THREADPOOL_STRERR_BUFSIZE bytes.
+> >   */
+> > -int threadpool__strerror(struct threadpool *pool __maybe_unused, int err,
+> > char *buf, size_t size)
+> > +int threadpool__strerror(struct threadpool *pool, int err, char *buf,
+> > size_t size)
+> >  {
+> >         char sbuf[STRERR_BUFSIZE], *emsg;
+> > +       const char *status_str, *errno_str;
+> > 
+> > -       emsg = str_error_r(err, sbuf, sizeof(sbuf));
+> > -       return scnprintf(buf, size, "Error: %s.\n", emsg);
+> > +       status_str = IS_ERR_OR_NULL(pool) ? "error" :
+> > threadpool_status_tags[pool->status];
+> > +
+> > +       switch (err) {
+> > +       case -THREADPOOL_ERROR__SIGPROCMASK:
+> > +       case -THREADPOOL_ERROR__READPIPE:
+> > +       case -THREADPOOL_ERROR__WRITEPIPE:
+> > +               emsg = str_error_r(errno, sbuf, sizeof(sbuf));
+> > +               errno_str = threadpool_errno_str[-err-
+> > THREADPOOL_ERROR__OFFSET];
+> > +               return scnprintf(buf, size, "%s: %s.\n", errno_str, emsg);
+> > +       case -THREADPOOL_ERROR__INVALIDMSG:
+> > +               errno_str = threadpool_errno_str[-err-
+> > THREADPOOL_ERROR__OFFSET];
+> > +               return scnprintf(buf, size, "%s.\n", errno_str);
+> > +       case -THREADPOOL_ERROR__NOTALLOWED:
+> > +               return scnprintf(buf, size, "%s (%s).\n",
+> > +                       threadpool_errno_str[-err], status_str);
+> 
+> s/-err/-err-THREADPOOL_ERROR__OFFSET/ ?
+> 
+> It'd be nice if you calculate the index once.
+
+agreed
+
+> 
+> > +       default:
+> > +               emsg = str_error_r(err, sbuf, sizeof(sbuf));
+> 
+> I'm confused whether the 'err' is negative or positive?
+
+It's negative, so it needs to be inverted in this case.
+
+Thanks,
+Riccardo
+
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> > +               return scnprintf(buf, size, "Error: %s", emsg);
+> > +       }
+> >  }
+> > 
+
+
