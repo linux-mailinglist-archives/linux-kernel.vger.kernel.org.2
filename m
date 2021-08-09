@@ -2,233 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122033E41AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67363E41B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhHIIex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:34:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34761 "EHLO
+        id S234004AbhHIIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:37:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25617 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233974AbhHIIew (ORCPT
+        by vger.kernel.org with ESMTP id S233903AbhHIIhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:34:52 -0400
+        Mon, 9 Aug 2021 04:37:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628498072;
+        s=mimecast20190719; t=1628498240;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kPQarTSOi0X361Zw0RXaLnMWkmeZ4pZwVNx8G3+tPYs=;
-        b=bsfWuREsXBVN33TiuImOalBjw92kuWLbOT/olLnlocluD7SgxzKU08wPAa+qtepI4mo2SM
-        sKugwWsWpx1hQKOfkUm4qAEj79S0MVCSwjnOd4cAO68YOXZdXMitT053roUTSKPDUTi9l1
-        BsqPsZAJKzbxc6cLGXALvMn/7hpZBog=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-496-oy5oFRyXOkKCqpYA9uGqjg-1; Mon, 09 Aug 2021 04:34:31 -0400
-X-MC-Unique: oy5oFRyXOkKCqpYA9uGqjg-1
-Received: by mail-ed1-f72.google.com with SMTP id v11-20020a056402348bb02903be68e116adso646086edc.14
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 01:34:30 -0700 (PDT)
+        bh=4zFuJFjv7Ipoe76Y1gRIQ97+xgK+EKCcRN1n5Om9DKw=;
+        b=ZgZqXTCYd3uiZfYid87oOvYM9QqKqfN49q/7i/6c10y62rabRh1fLDk+CYBZ3j4zNv3mrw
+        KsVDF5vjYENAQ6t7LTaBB3bh5QrhKeF6KS0E2nGCREZNluRFPp/Fuygn9zCFZgeZEJjIvA
+        8i53De6UgKdm3erZc75uduCHhurACZg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-gYe1LvleM0CdWKXB2u4VeA-1; Mon, 09 Aug 2021 04:37:18 -0400
+X-MC-Unique: gYe1LvleM0CdWKXB2u4VeA-1
+Received: by mail-ed1-f71.google.com with SMTP id g3-20020a0564024243b02903be33db5ae6so4403051edb.18
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 01:37:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kPQarTSOi0X361Zw0RXaLnMWkmeZ4pZwVNx8G3+tPYs=;
-        b=Brt1iLTeFgop5FfyPYUvGr2A4DQvBDIhxOo7IhFT+i3IglfbxSw2xJIsv5trJVI0ON
-         GPTvWPqN9n4ieKe98uZZ8q5V5oBi4XoT6C4KPApSjSxknovSwvDh2RmoD+HXwT49qEe0
-         GYclNoYYrhsE+c85buiwS37rMsi3JLn/robpsNLRx+Bdf0cDJmcY79LJdM2mI8JiN2lU
-         9NqjqFE4TdZiDFLZQlcgiVE1KoPU7+p5M1b5olFpl9PLCd0lAP94jqsuxSClCjEVu2vC
-         2JnFUM/Q8PDibcZT/7oUm4LXzizOSz1XW8ipJ9z1grfsMImbYBgk1hHFAroQrtYvzIBX
-         EtQw==
-X-Gm-Message-State: AOAM532OQ4+eRJaXOYF5OtLD4uBnzsrFg10UFaZP9DBallKwTDZn4Es1
-        ZD5lS4TmHgXDNsrnozOrtkEAnlunkecKTBmAQwo28FljBog/cPXFAoqgi7F1X6jaMSf5FKKSwxe
-        54H0qsZyztoH0g+79hsKgunuaypncP45iYIOL6a2i14KIAP4aNqC23J0yquCrvF3ZE4PBcv93/b
-        F5
-X-Received: by 2002:a17:906:1950:: with SMTP id b16mr4353804eje.153.1628498069842;
-        Mon, 09 Aug 2021 01:34:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxfAQN277/WqiV63b17hpYsEH8gdwXFBqz9HKsmS64tmoN+TNN0KMXw5HYyjWOLaludbfVTVg==
-X-Received: by 2002:a17:906:1950:: with SMTP id b16mr4353788eje.153.1628498069688;
-        Mon, 09 Aug 2021 01:34:29 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id ec38sm7712253edb.40.2021.08.09.01.34.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 01:34:29 -0700 (PDT)
-Subject: Re: [PATCH v2] platform/x86: intel_pmc_core: Prevent possibile
- overflow
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        irenic.rajneesh@gmail.com, novikov@ispras.ru,
-        gayatri.kammela@intel.com, mgross@linux.intel.com,
-        andy.shevchenko@gmail.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210804213843.498937-1-david.e.box@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <8ff9f139-68bc-e5fa-5f37-231b635f986d@redhat.com>
-Date:   Mon, 9 Aug 2021 10:34:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4zFuJFjv7Ipoe76Y1gRIQ97+xgK+EKCcRN1n5Om9DKw=;
+        b=FTrnJZurSW9N5L3es/2Y0QqupI8o7i8s96ZYnOTRbhePuQjVGg5foMtcTqaoGSkv4O
+         s7i0XIZOczMaTmvvdx/BiGpycs/PHclfqVILCkGfBvnVih3iZP1oON1RwqXLpgeTqdqt
+         srGivVNmrlO9Jr2r2T6PjNAh0JsRy6bogwzIFLZG8CgeWBD29zPi5HwPrI0tEVXpeMi1
+         VupDYi+e33VTyrcQ2ufipp2paHmKniap6Buwu7I8KDbu/nf4G88KTrvPcbfD7DtmGi/t
+         dZ8lOboWrJUcIBnZXFtkbpcvR18X2yMXA/ZWfFbv58lxdAKM3rlg+WFTRGD+0mAdaP6R
+         8SMg==
+X-Gm-Message-State: AOAM530EJ0iPYzOe/05TcZbGFkzrpdjbGJmxQMiGjvTkdARxt4RKEXXa
+        1MC76m9yDIWj2FkNarcRZTXUZUvQ0MpabHf2QFBShjbbRKAs02WFLDDUTPzuFT+DlNTFCZpP3y3
+        iH8QcPgG3gMfLia0jSaX6OPed
+X-Received: by 2002:aa7:d14b:: with SMTP id r11mr1782828edo.259.1628498237672;
+        Mon, 09 Aug 2021 01:37:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKNxwEsj+x2THIlv9zeYGA+s+C8pcSHCNUrpZGYVIEAkWyJQp3S5D/aRvXISxF3+JkGCcXPA==
+X-Received: by 2002:aa7:d14b:: with SMTP id r11mr1782808edo.259.1628498237475;
+        Mon, 09 Aug 2021 01:37:17 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.52.108])
+        by smtp.gmail.com with ESMTPSA id g11sm7767671edt.85.2021.08.09.01.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 01:37:17 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 10:37:15 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
+Message-ID: <YRDpO6CC0LEWcj8a@localhost.localdomain>
+References: <20210805080123.16320-1-juri.lelli@redhat.com>
+ <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210806080455.wkhlebgt7howjcrk@linutronix.de>
+ <20210806174411.GQ4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <20210804213843.498937-1-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806174411.GQ4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/4/21 11:38 PM, David E. Box wrote:
-> Low Power Mode (LPM) priority is encoded in 4 bits. Yet, this value is used
-> as an index to an array whose element size was less than 16, leading to the
-> possibility of overflow should we read a larger than expected priority.  In
-> addition to the overflow, bad values can lead to incorrect state reporting.
-> So rework the priority code to prevent the overflow and perform some
-> validation of the register. Use the priority register values if they give
-> an ordering of unique numbers between 0 and the maximum number of states.
-> Otherwise, use a default ordering instead.
+On 06/08/21 10:44, Paul E. McKenney wrote:
+> On Fri, Aug 06, 2021 at 10:04:55AM +0200, Sebastian Andrzej Siewior wrote:
+> > On 2021-08-05 09:03:37 [-0700], Paul E. McKenney wrote:
+> > > Makes sense to me!
+> > > 
+> > > But would another of the -rt people be willing to give an Acked-by?
+> > > For example, maybe they would prefer this kernel boot parameter to be
+> > > exposed only if (!PREEMPT_RT || NO_HZ_FULL).  Or are there !NO_HZ_FULL
+> > > situations where rcu_normal_after_boot makes sense?
+> > 
+> > Julia crafted that "rcu_normal_after_boot = 1" for RT after we had more
+> > and more synchronize_rcu_expedited() users popping up. I would like to
+> > keep that part (default value) since it good to have for most users.
+> > 
+> > I don't mind removing CONFIG_PREEMPT_RT part here if there are legitimate
+> > use cases for using "rcu_normal_after_boot = 0".
+> > Paul suggested initially to restrict that option for PREEMPT_RT and I
+> > would follow here Paul's guidance to either remove it or restrict it to
+> > NO_HZ_FULL in RT's case (as suggested).
 > 
-> Reported-by: Evgeny Novikov <novikov@ispras.ru>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
+> Given what I know now, I suggest the following:
 > 
-> v2:	Remove lpm_priority size increase. Instead, remove that array and
-> 	create 2 new local arrays, one to save priority levels in mode order,
-> 	and one to save modes in priority order. Use the mode_order list to
-> 	validate that no priority level is above the maximum and to validate
-> 	that they are all unique values. Then we can safely create a
-> 	priority_order list that will be the basis of how we report substate
-> 	information.
-
-Thank you for the new version.
-
-I expect that you will send a new version addressing Andy's remarks,
-so I'm going to drop this version from my queue.
-
-Regards,
-
-Hans
-
-
+> o	Restrict the option to !PREEMPT_RT unless NO_HZ_FULL.
+> 	Maybe "!defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)".
 > 
->  drivers/platform/x86/intel_pmc_core.c | 65 +++++++++++++++++++++------
->  drivers/platform/x86/intel_pmc_core.h |  4 ++
->  2 files changed, 56 insertions(+), 13 deletions(-)
+> 	If there is some non-NO_HZ_FULL PREEMPT_RT configuration that
+> 	tolerates expedited grace periods, this would need to change.
 > 
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-> index b0e486a6bdfb..0f623c422d4e 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -1449,11 +1449,15 @@ static int pmc_core_pkgc_show(struct seq_file *s, void *unused)
->  }
->  DEFINE_SHOW_ATTRIBUTE(pmc_core_pkgc);
->  
-> -static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
-> +static void pmc_core_get_low_power_modes(struct platform_device *pdev)
->  {
-> -	u8 lpm_priority[LPM_MAX_NUM_MODES];
-> +	struct pmc_dev *pmcdev = platform_get_drvdata(pdev);
-> +	u8 pri_order[LPM_MAX_NUM_MODES] = LPM_DEFAULT_PRI;
-> +	u8 mode_order[LPM_MAX_NUM_MODES];
-> +	u32 lpm_pri;
->  	u32 lpm_en;
-> -	int mode, i, p;
-> +	int mode, i, j, p;
-> +	bool bad_pri_reg = false;
->  
->  	/* Use LPM Maps to indicate support for substates */
->  	if (!pmcdev->map->lpm_num_maps)
-> @@ -1462,24 +1466,59 @@ static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
->  	lpm_en = pmc_core_reg_read(pmcdev, pmcdev->map->lpm_en_offset);
->  	pmcdev->num_lpm_modes = hweight32(lpm_en);
->  
-> -	/* Each byte contains information for 2 modes (7:4 and 3:0) */
-> -	for (mode = 0; mode < LPM_MAX_NUM_MODES; mode += 2) {
-> -		u8 priority = pmc_core_reg_read_byte(pmcdev,
-> -				pmcdev->map->lpm_priority_offset + (mode / 2));
-> -		int pri0 = GENMASK(3, 0) & priority;
-> -		int pri1 = (GENMASK(7, 4) & priority) >> 4;
-> +	/* Read 32 bit LPM_PRI register */
-> +	lpm_pri = pmc_core_reg_read(pmcdev, pmcdev->map->lpm_priority_offset);
-> +	if (!lpm_pri)
-> +		bad_pri_reg = true;
-> +
-> +	if (!bad_pri_reg) {
-> +		/*
-> +		 * Each byte contains gives the priority level for 2 modes (7:4 and 3:0).
-> +		 * In a 32 bit register this allows for describing 8 modes. Store the
-> +		 * levels and look for values out of range.
-> +		 */
-> +		for (mode = 0; mode < 8; mode++) {
-> +			int level = GENMASK(3, 0) & lpm_pri;
->  
-> -		lpm_priority[pri0] = mode;
-> -		lpm_priority[pri1] = mode + 1;
-> +			if (level >= LPM_MAX_NUM_MODES) {
-> +				bad_pri_reg = true;
-> +				break;
-> +			}
-> +
-> +			mode_order[mode] = level;
-> +			lpm_pri >>= 4;
-> +		}
->  	}
->  
-> +	if (!bad_pri_reg) {
-> +		/* Check that we have unique values */
-> +		for (i = 0; i < LPM_MAX_NUM_MODES - 1; i++)
-> +			for (j = i + 1; j < LPM_MAX_NUM_MODES; j++)
-> +				if (mode_order[i] == mode_order[j]) {
-> +					bad_pri_reg = true;
-> +					break;
-> +				}
-> +	}
-> +
-> +	/*
-> +	 * If bad_pri_reg is false, then mode_order must contain unique values for
-> +	 * all priority levels from 0 to LPM_MAX_NUM_MODES and this loop with properly
-> +	 * overwrite our default ordering. Otherwise just use the default.
-> +	 */
-> +	if (!bad_pri_reg)
-> +		/* Get list of modes in priority order */
-> +		for (mode = 0; mode < LPM_MAX_NUM_MODES; mode++)
-> +			pri_order[mode_order[mode]] = mode;
-> +	else
-> +		dev_warn(&pdev->dev, "Assuming a default substate order for this platform\n");
-> +
->  	/*
->  	 * Loop though all modes from lowest to highest priority,
->  	 * and capture all enabled modes in order
->  	 */
->  	i = 0;
->  	for (p = LPM_MAX_NUM_MODES - 1; p >= 0; p--) {
-> -		int mode = lpm_priority[p];
-> +		int mode = pri_order[p];
->  
->  		if (!(BIT(mode) & lpm_en))
->  			continue;
-> @@ -1675,7 +1714,7 @@ static int pmc_core_probe(struct platform_device *pdev)
->  	mutex_init(&pmcdev->lock);
->  
->  	pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit(pmcdev);
-> -	pmc_core_get_low_power_modes(pmcdev);
-> +	pmc_core_get_low_power_modes(pdev);
->  	pmc_core_do_dmi_quirks(pmcdev);
->  
->  	if (pmcdev->map == &tgl_reg_map)
-> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
-> index e8dae9c6c45f..9aaadb0f87df 100644
-> --- a/drivers/platform/x86/intel_pmc_core.h
-> +++ b/drivers/platform/x86/intel_pmc_core.h
-> @@ -188,6 +188,10 @@ enum ppfear_regs {
->  #define ICL_PMC_SLP_S0_RES_COUNTER_STEP		0x64
->  
->  #define LPM_MAX_NUM_MODES			8
-> +
-> +/* Must contain LPM_MAX_NUM_MODES elements */
-> +#define LPM_DEFAULT_PRI				{ 7, 5, 2, 6, 4, 3, 1, 0 }
-> +
->  #define GET_X2_COUNTER(v)			((v) >> 1)
->  #define LPM_STS_LATCH_MODE			BIT(31)
->  
+> o	Change the permissions from "0" to "0444", if desired.	If you
+> 	would rather not, I can do this in a follow-up patch.  (No idea
+> 	why I let such an ugly serviceability issue through, but the
+> 	previous pair of module_param() instances have the same problem.)
 > 
+> Anything I am missing?
+
+Not that I can think of right now. :)
+
+Will implement your suggestions and submit v2 soon. Thank again to you
+and Sebastian for the review!
+
+Best,
+Juri
 
