@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CE63E440D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9945F3E4417
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbhHIKnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234180AbhHIKnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:43:49 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBB7C0613D3;
-        Mon,  9 Aug 2021 03:43:29 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f26f300329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f26:f300:329c:23ff:fea6:a903])
+        id S234625AbhHIKqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234398AbhHIKpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 06:45:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D47E21EC03FE;
-        Mon,  9 Aug 2021 12:43:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628505804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=iRZgmeCr/Savpcr/auC+m2pX5jLL5wpQZZXyOWrBPUc=;
-        b=kEl2pueuhWRmxbCPU2YGFyTIm0CA72sLxsE7iGU8w/YUwUbr80EKuCFiEkxrUlFUwPeKnP
-        nBbFFNJExUwVq9MWMJ2c7d4wpheBOqQgTBaItGCtHfS8zuItHLw4wSbnIyi3zA0RsGkpJN
-        FnoK3e6cneFPXPkEitmc50zUKZLH2zc=
-Date:   Mon, 9 Aug 2021 12:44:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Richter <rric@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH] EDAC/mce_amd: Do not load edac_mce_amd module on guests
-Message-ID: <YREG8Pzj5n5AIEAs@zn.tnic>
-References: <20210628172740.245689-1-Smita.KoralahalliChannabasappa@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210628172740.245689-1-Smita.KoralahalliChannabasappa@amd.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id EFA7D61040;
+        Mon,  9 Aug 2021 10:45:18 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mD2mT-003nVJ-0T; Mon, 09 Aug 2021 11:45:17 +0100
+Date:   Mon, 09 Aug 2021 11:45:16 +0100
+Message-ID: <87mtpqc2wz.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>
+Subject: Re: [PATCH v2] clocksource/arm_arch_timer: Fix masking for high freq counters
+In-Reply-To: <CAOQ_Qsi-r0=YubmaTezB7Cq-RhzU3njWm+P5w-RWZcUz4kMfDA@mail.gmail.com>
+References: <20210807191428.3488948-1-oupton@google.com>
+        <CACRpkdYPEGygxAtU8jrCtnJsQr_JoYkBCRGpRFpvxGiOzUmxgg@mail.gmail.com>
+        <CAOQ_QsiECN7iVDyiyos12tk__viGkFhH9b6ZfkZVAYjeKhB=pQ@mail.gmail.com>
+        <87lf5c1aox.wl-maz@kernel.org>
+        <CAOQ_Qsi-r0=YubmaTezB7Cq-RhzU3njWm+P5w-RWZcUz4kMfDA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oupton@google.com, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 12:27:40PM -0500, Smita Koralahalli wrote:
-> Hypervisors may not expose SMCA feature to the guest.
+On Sun, 08 Aug 2021 20:01:10 +0100,
+Oliver Upton <oupton@google.com> wrote:
 > 
-> Check for X86_FEATURE_HYPERVISOR on entry in mce_amd_init() and return
-> -ENODEV if set.
+> On Sun, Aug 8, 2021 at 3:40 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Sun, 08 Aug 2021 02:14:35 +0100,
+> > Oliver Upton <oupton@google.com> wrote:
+> >
+> > > The only other sane idea that I could come up with is providing this
+> > > information to the kernel through DT, although that would leave ACPI
+> > > systems behind.
+> >
+> > It also has the disadvantage that a large number of DT timer nodes are
+> > a mess of cargo-culted, copy-pasted idioms, and that adding another
+> > property would only make it worse.
 > 
-> Suggested-by: Borislav Petkov <bp@suse.de>
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
->  drivers/edac/mce_amd.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Agreed, this does seem like the best solution, short of the
+> architecture actually providing something to determine the counter
+> width.
 > 
-> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-> index 5dd905a3f30c..1a1629166aa3 100644
-> --- a/drivers/edac/mce_amd.c
-> +++ b/drivers/edac/mce_amd.c
-> @@ -1176,6 +1176,9 @@ static int __init mce_amd_init(void)
->  	    c->x86_vendor != X86_VENDOR_HYGON)
->  		return -ENODEV;
->  
-> +	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
-> +		return -ENODEV;
-> +
->  	if (boot_cpu_has(X86_FEATURE_SMCA)) {
->  		xec_mask = 0x3f;
->  		goto out;
-> -- 
-> 2.17.1
+> On that note, I wonder how (if ever) we will be able to move away from
+> unnecessarily masking a 64 bit counter, i.e. a v8.6 or above
+> implementation. With this patch, one such counter would wrap after
+> 36.56 years, short of the 40 year guarantee we have from the
+> architecture for < v8.6 implementations. Getting it to 64 bits would
+> squarely make it someone else's problem ~585 years from now :)
 
-Applied, thanks.
+Hmmm. If you end-up with something that falls short of 40 years, then
+I suspect something is wrong in the way you compute the required
+width.
+
+40 years @1GHz (which we shall call FY1G from now on) fits comfortably
+in 61 bits, and I fear that your use of ilog2() gives you one less bit
+than what it should be:
+
+log2(FY1G) ~= 60.13
+
+What you are after is probably (ilog2(FY1G - 1) + 1), similar to the
+way roundup_pow_of_two() works.
+
+Thanks,
+
+	M.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Without deviation from the norm, progress is not possible.
