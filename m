@@ -2,108 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198773E4E64
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6360E3E4E6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236436AbhHIVYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234710AbhHIVYm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:24:42 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB564C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:24:21 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id e3-20020a4ab9830000b029026ada3b6b90so4780671oop.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=x7djV8cU9LbMV7kajT88pgm0cyo38YSmnH16cnh0+6c=;
-        b=IQnIucvNHK0pfJNN2pnmEFU/wNLWyA3Qq2owDANrdlt2wnUmmlqmJ0h0UzI5GV53Xj
-         SmkwwalgbcnonkWR2ftVHdWq6N5PvSo8LlW2U2q4z6uZbJefgvN7lGVojUr4edep6OW1
-         P7RW6Su7ZYx3s8DWXw1RQRIJYFZu4e7KY9qfY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=x7djV8cU9LbMV7kajT88pgm0cyo38YSmnH16cnh0+6c=;
-        b=KFiQst5bWaqYFI79gevh7MHTdPHiNcxRhMdkblmtgnLW4/Vbq/oT7x83ksKTBNmYHj
-         WSKwGN1EAruAi6j/j/NFPhD1bmgVfA3EyMl25Bd1uEBslqKiTloUY5C5X19nESrrHN2+
-         NGF6uNwfQ//nWokQlWnaW2yLva89HjAgtwg17eTbAWRG0HJOF+w+uq2l8sCSt0jTq7Vb
-         67zd9wKG94Hd1E0Ip9qAW2lcpD2oYhurcp+Dk8jZIQ3zCQd4MbkoUWRD7zv69/I4cgkz
-         GNKOi8uODvaqtZD9SoQsdGi/MIG5E9ApqTdMsjQ1tyFiTRum0vLBpEFm2jHbInXu/cUA
-         1czw==
-X-Gm-Message-State: AOAM5330uphiyuqL23d+eOZIykonmrASzYK4H+YlN7ERZEgEA+3HUt6z
-        00Qb+T/z4eCKMH8Y9VNCLd12SgK8rjjZsw==
-X-Google-Smtp-Source: ABdhPJw35KeFSqbLO0+gb80gRk+R8hv0hLj+U0FHQh773ZX2/Q8SopoLeqsamiEIKjf3suIEEQw9Gg==
-X-Received: by 2002:a4a:2c96:: with SMTP id o144mr13276227ooo.50.1628544259695;
-        Mon, 09 Aug 2021 14:24:19 -0700 (PDT)
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com. [209.85.161.45])
-        by smtp.gmail.com with ESMTPSA id p8sm3260209otk.22.2021.08.09.14.24.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 14:24:19 -0700 (PDT)
-Received: by mail-oo1-f45.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so4764539oos.10
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:24:18 -0700 (PDT)
-X-Received: by 2002:a4a:4c55:: with SMTP id a82mr16548740oob.66.1628544258286;
- Mon, 09 Aug 2021 14:24:18 -0700 (PDT)
+        id S236442AbhHIVYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:24:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236441AbhHIVYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 17:24:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 203B860EB9;
+        Mon,  9 Aug 2021 21:24:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628544264;
+        bh=D2aOWPkZRvo4FPeQiqOYNBi8S+9DKShgichgczsHHWo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iZLhpA+/gitAAaAEJQa+SuwtTRtdWqNg6KiI+uJ7wTvD3Slz3f1q3M9eNHEFeRye0
+         skvrWsmpZpvzteGIgxz4pTEpOgAipWgy9d7eUlNX8TSLP79IWGFGwweo0PtzzXd7OB
+         AEZsAAVVZ292uDGutkHjSqtKaODj/EDag/I63+6go3rh+dCs85LjWzbrvCixe8fofF
+         dgyiqfDqJVa2wzIudk1PTzSFI5sW3HaAMH3j/iQ+w7cgz2z0y4fJVAo4aRdc/zM6FO
+         /bYKoXwAhjmPGJpABv1eqcLcp3CKE5y689yJhJ/+5zZVIW9+Yy4Zn2AvdCx12kotWk
+         fG+pgXQ5/og3w==
+Date:   Mon, 9 Aug 2021 14:24:22 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+Message-ID: <YRGdBiJQ3xqZAT4w@gmail.com>
+References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
 MIME-Version: 1.0
-References: <20210809211134.GA22488@embeddedor>
-In-Reply-To: <20210809211134.GA22488@embeddedor>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Mon, 9 Aug 2021 14:24:07 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXO+GbP_WWVdO0=Uavh036ZhZiziE8DwGRKP-ooofd2QVw@mail.gmail.com>
-Message-ID: <CA+ASDXO+GbP_WWVdO0=Uavh036ZhZiziE8DwGRKP-ooofd2QVw@mail.gmail.com>
-Subject: Re: [PATCH][next] mwifiex: usb: Replace one-element array with
- flexible-array member
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806150928.27857-1-a.fatoum@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 2:08 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use =E2=80=9Cflexible array members=E2=80=9D[1] for these c=
-ases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
->
-> This helps with the ongoing efforts to globally enable -Warray-bounds
-> and get us closer to being able to tighten the FORTIFY_SOURCE routines
-> on memcpy().
->
-> This issue was found with the help of Coccinelle and audited and fixed,
-> manually.
->
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-le=
-ngth-and-one-element-arrays
->
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Hi Ahmad,
 
-An important part of your patch rationale should include determining
-that the 1-length wasn't actually important anywhere. I double checked
-for you, and nobody seemed to be relying on 'sizeof struct fw_data' at
-all, so this should be OK:
+This generally looks okay, but I have some comments below.
 
-Reviewed-by: Brian Norris <briannorris@chromium.org>
+On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
+> Kernel trusted keys don't require userspace knowledge of the raw key
+> material and instead export a sealed blob, which can be persisted to
+> unencrypted storage. Userspace can then load this blob into the kernel,
+> where it's unsealed and from there on usable for kernel crypto.
+
+Please be explicit about where and how the keys get generated in this case.
+
+> This is incompatible with fscrypt, where userspace is supposed to supply
+> the raw key material. For TPMs, a work around is to do key unsealing in
+> userspace, but this may not be feasible for other trusted key backends.
+
+As far as I can see, "Key unsealing in userspace" actually is the preferred way
+to implement TPM-bound encryption.  So it doesn't seem fair to call it a "work
+around".
+
+> +  Most users leave this 0 and specify the raw key directly.
+> +  "trusted" keys are useful to leverage kernel support for sealing
+> +  and unsealing key material. Sealed keys can be persisted to
+> +  unencrypted storage and later be used to decrypt the file system
+> +  without requiring userspace to have knowledge of the raw key
+> +  material.
+> +  "fscrypt-provisioning" key support is intended mainly to allow
+> +  re-adding keys after a filesystem is unmounted and re-mounted,
+>    without having to store the raw keys in userspace memory.
+>  
+>  - ``raw`` is a variable-length field which must contain the actual
+>    key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
+>    nonzero, then this field is unused.
+>  
+> +.. note::
+> +
+> +   Users should take care not to reuse the fscrypt key material with
+> +   different ciphers or in multiple contexts as this may make it
+> +   easier to deduce the key.
+> +   This also applies when the key material is supplied indirectly
+> +   via a kernel trusted key. In this case, the trusted key should
+> +   perferably be used only in a single context.
+
+Again, please be explicit about key generation.  Note that key generation is
+already discussed in a different section, "Master Keys".  There should be a
+mention of trusted keys there.  The above note about not reusing keys probably
+belongs there too.  (The section you're editing here is
+"FS_IOC_ADD_ENCRYPTION_KEY", which is primarily intended to just document the
+ioctl, so it's not necessarily the best place for this type of information.)
+
+> @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
+>  	key_ref_t ref;
+>  	struct key *key;
+>  	const struct fscrypt_provisioning_key_payload *payload;
+> -	int err;
+> +	int err = 0;
+>  
+>  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+>  	if (IS_ERR(ref))
+>  		return PTR_ERR(ref);
+>  	key = key_ref_to_ptr(ref);
+>  
+> -	if (key->type != &key_type_fscrypt_provisioning)
+> -		goto bad_key;
+> -	payload = key->payload.data[0];
+> +	if (key->type == &key_type_fscrypt_provisioning) {
+
+This function is getting long; it probably should be broken this up into several
+functions.  E.g.:
+
+static int get_keyring_key(u32 key_id, u32 type,
+                           struct fscrypt_master_key_secret *secret)
+{
+        key_ref_t ref;
+        struct key *key;
+        int err;
+
+        ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+        if (IS_ERR(ref))
+                return PTR_ERR(ref);
+        key = key_ref_to_ptr(ref);
+
+        if (key->type == &key_type_fscrypt_provisioning) {
+                err = fscrypt_get_provisioning_key(key, type, secret);
+        } else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) &&
+                   key->type == &key_type_trusted) {
+                err = fscrypt_get_trusted_key(key, secret);
+        } else {
+                err = -EKEYREJECTED;
+        }
+        key_ref_put(ref);
+        return err;
+}
+
+> +		/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
+
+Please avoid overly-long lines.
+
+> +		tkp = key->payload.data[0];
+> +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
+> +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
+> +			up_read(&key->sem);
+> +			err = -EINVAL;
+> +			goto out_put;
+> +		}
+
+What does the !tkp case mean?  For "user" and "logon" keys it means "key
+revoked", but the "trusted" key type doesn't implement revoke.  Is this included
+just to be safe?  That might be reasonable, but perhaps the error code in that
+case (but not the invalid length cases) should be -EKEYREVOKED instead?
+
+- Eric
