@@ -2,121 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1A23E435B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D0F3E4363
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbhHIJzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233309AbhHIJzv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:55:51 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE430C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 02:55:31 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so30382081pji.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 02:55:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=njx7c6+9wwA5X4lpJAmyr5NBuDZKm/2/00nAyGm9k3c=;
-        b=A6HsFJTtWkUFXXd4aLs1v0S4FAaWZ6FzJBH/6lqJy06Wopt1mFdbBSMXJtzJqTR8PB
-         BHAsY13ADf4bd6erQ6Gp0bYhRVC0eaDV+2RRW83GRuNl1qEGEZnWHMI22SoXewA23WXG
-         +ipT1jQ8aD7+dAJe2SS6kAW8FTxLH1AovNzz2G0Jcf0viG7WS2uOj4DIqiIjWdudmL/l
-         7CNQ0q1aFU12N6lL7qQ6yndyJOw7lwwc45suUG7A7ZAWzTjJu9u8mTtQBjeW2usP8Ot5
-         KGVod/uc7JxyyPTv+qP2SREFlBpCZh7a7MoZALGqUrnHd/sGqqhVQiWRmySqbWRV94XW
-         y8mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=njx7c6+9wwA5X4lpJAmyr5NBuDZKm/2/00nAyGm9k3c=;
-        b=gViv1QyhNod++adOh1QMmZfyG00RmxeKkqNN5JkdrWHsW2ImcJKwgi1ixIyPysC8lZ
-         3wFSFIYVNfxOYGCtmg56L0RHAlYYc3X3nNNfsiLFTriRpksf+g+/B+0RuXk9rI/lGFek
-         tL3XJkTTwwmz0dri2BCdYz8vIiLs3UgKcq1rrXoYsZNWxrfvtIk7jLTpF3U7nUJN0OSw
-         4Xt+E3qaaZC8EGHySMRx1IMVMV+b5RAmoEfucfwBnt4MbCs0DqbZ+64k9dJqkftdk76d
-         ofrCSEPrlaKWGeDLnr6xaBAWyCSaecX1e3eQkxHRK3BmuSqwAtNrDrHYeQhHICrmvWDm
-         oeOw==
-X-Gm-Message-State: AOAM5329pV75NV1D11NzXAbTQqGveDZs4praHKynXwbo+y8qBD1/Vasy
-        NJKG+YXwqRvUump4aO2G9WKo
-X-Google-Smtp-Source: ABdhPJzkchZ9TKCH/nJ58d9SDnhGhAbgyFy3EDYXD4WWzkELI2NvyiPzAdxMJGpUETw3oBycIuLFGQ==
-X-Received: by 2002:a17:90a:9747:: with SMTP id i7mr24897101pjw.141.1628502931254;
-        Mon, 09 Aug 2021 02:55:31 -0700 (PDT)
-Received: from workstation ([120.138.12.137])
-        by smtp.gmail.com with ESMTPSA id p190sm20015973pfb.4.2021.08.09.02.55.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 09 Aug 2021 02:55:30 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 15:25:27 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
+        id S233633AbhHIJ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:57:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233528AbhHIJ5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 05:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCB6660F11;
+        Mon,  9 Aug 2021 09:56:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628503009;
+        bh=siHqB30+J8sLOp7pEGFo9z0ErNUa2pMXDyohhHMW7U8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kevZHtdJYJPiRj0NYnYLFNKteyuj7hA/3N6StyCDAJnl9mszdPiYnuhSH2mqjlnq4
+         WtYS5CV8PlkYUHLSys+qFSJbIJh84/P6OSbhYCAHeckZZuBQ/2NVw3u+GY++pu/xed
+         l14Vq78Yr7dxIE2hki8H9zO0jo6NgQmwm3DfgomeezsJZ7yGAhQX1jiFDRnFx457nQ
+         +HK/EnQDZW1XX6O5PBu4X/sR1VXruhpIdGGtz2hN4+9EEOKfyQU9DwNffq0QDFghHT
+         lxYtXA121HNVgRoIU05N0p2enG/6gtH7nFUgNiY8mxJ814WTgXmO0XJsYoRASpqbnP
+         dxaypa2KMthug==
+Date:   Mon, 9 Aug 2021 12:56:47 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Richard Weinberger <richard@nod.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mhi tree
-Message-ID: <20210809095527.GA13990@workstation>
-References: <20210809193837.373a9f68@canb.auug.org.au>
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH 2/4] KEYS: trusted: allow trust sources to use kernel RNG
+ for key material
+Message-ID: <20210809095647.7xcxjeot5gyvmlpj@kernel.org>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <7b771da7b09a01c8b4da2ed21f05251ea797b2e8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <CAFA6WYOskwZNe5Wb5PTtnSHQBonSXZ48eEex0w9jQ+JW4vG=+w@mail.gmail.com>
+ <7537c853-3641-a6d3-91d8-70fea9f01a89@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210809193837.373a9f68@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7537c853-3641-a6d3-91d8-70fea9f01a89@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On Mon, Aug 09, 2021 at 07:38:37PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Aug 09, 2021 at 09:52:20AM +0200, Ahmad Fatoum wrote:
+> Hello Sumit,
 > 
-> After merging the mhi tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
+> On 22.07.21 08:31, Sumit Garg wrote:
+> > On Wed, 21 Jul 2021 at 22:19, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >>
+> >> The two existing trusted key sources don't make use of the kernel RNG,
+> >> but instead let the hardware that does the sealing/unsealing also
+> >> generate the random key material. While a previous change offers users
+> >> the choice to use the kernel RNG instead for both, new trust sources
+> >> may want to unconditionally use the kernel RNG for generating key
+> >> material, like it's done elsewhere in the kernel.
+> >>
+> >> This is especially prudent for hardware that has proven-in-production
+> >> HWRNG drivers implemented, as otherwise code would have to be duplicated
+> >> only to arrive at a possibly worse result.
+> >>
+> >> Make this possible by turning struct trusted_key_ops::get_random
+> >> into an optional member. If a driver leaves it NULL, kernel RNG
+> >> will be used instead.
+> >>
+> >> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> >> ---
+> >> To: James Bottomley <jejb@linux.ibm.com>
+> >> To: Jarkko Sakkinen <jarkko@kernel.org>
+> >> To: Mimi Zohar <zohar@linux.ibm.com>
+> >> To: David Howells <dhowells@redhat.com>
+> >> Cc: James Morris <jmorris@namei.org>
+> >> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> >> Cc: "Horia Geantă" <horia.geanta@nxp.com>
+> >> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+> >> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> >> Cc: "David S. Miller" <davem@davemloft.net>
+> >> Cc: Udit Agarwal <udit.agarwal@nxp.com>
+> >> Cc: Eric Biggers <ebiggers@kernel.org>
+> >> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
+> >> Cc: David Gstir <david@sigma-star.at>
+> >> Cc: Richard Weinberger <richard@nod.at>
+> >> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
+> >> Cc: Sumit Garg <sumit.garg@linaro.org>
+> >> Cc: keyrings@vger.kernel.org
+> >> Cc: linux-crypto@vger.kernel.org
+> >> Cc: linux-integrity@vger.kernel.org
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Cc: linux-security-module@vger.kernel.org
+> >> ---
+> >>  include/keys/trusted-type.h               | 2 +-
+> >>  security/keys/trusted-keys/trusted_core.c | 2 +-
+> >>  2 files changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/include/keys/trusted-type.h b/include/keys/trusted-type.h
+> >> index d89fa2579ac0..4eb64548a74f 100644
+> >> --- a/include/keys/trusted-type.h
+> >> +++ b/include/keys/trusted-type.h
+> >> @@ -64,7 +64,7 @@ struct trusted_key_ops {
+> >>         /* Unseal a key. */
+> >>         int (*unseal)(struct trusted_key_payload *p, char *datablob);
+> >>
+> >> -       /* Get a randomized key. */
+> >> +       /* Optional: Get a randomized key. */
+> >>         int (*get_random)(unsigned char *key, size_t key_len);
+> >>
+> >>         /* Exit key interface. */
+> >> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+> >> index 569af9af8df0..d2b7626cde8b 100644
+> >> --- a/security/keys/trusted-keys/trusted_core.c
+> >> +++ b/security/keys/trusted-keys/trusted_core.c
+> >> @@ -334,7 +334,7 @@ static int __init init_trusted(void)
+> >>                         continue;
+> >>
+> >>                 get_random = trusted_key_sources[i].ops->get_random;
+> >> -               if (trusted_kernel_rng)
+> >> +               if (trusted_kernel_rng || !get_random)
+> >>                         get_random = kernel_get_random;
+> >>
+> > 
+> > For ease of understanding, I would prefer to write it as:
+> > 
+> >                   get_random = trusted_key_sources[i].ops->get_random ?:
+> >                                          kernel_get_random;
+> >                   if (trusted_kernel_rng)
+> >                         get_random = kernel_get_random;
+> > 
+> > With that:
+> > 
+> > Acked-by: Sumit Garg <sumit.garg@linaro.org>
 > 
-> drivers/bus/mhi/pci_generic.c:406:40: error: redefinition of 'mhi_mv31_channels'
->   406 | static const struct mhi_channel_config mhi_mv31_channels[] = {
->       |                                        ^~~~~~~~~~~~~~~~~
-> drivers/bus/mhi/pci_generic.c:372:40: note: previous definition of 'mhi_mv31_channels' was here
->   372 | static const struct mhi_channel_config mhi_mv31_channels[] = {
->       |                                        ^~~~~~~~~~~~~~~~~
-> drivers/bus/mhi/pci_generic.c:417:32: error: redefinition of 'mhi_mv31_events'
->   417 | static struct mhi_event_config mhi_mv31_events[] = {
->       |                                ^~~~~~~~~~~~~~~
-> drivers/bus/mhi/pci_generic.c:383:32: note: previous definition of 'mhi_mv31_events' was here
->   383 | static struct mhi_event_config mhi_mv31_events[] = {
->       |                                ^~~~~~~~~~~~~~~
-> drivers/bus/mhi/pci_generic.c:424:43: error: redefinition of 'modem_mv31_config'
->   424 | static const struct mhi_controller_config modem_mv31_config = {
->       |                                           ^~~~~~~~~~~~~~~~~
-> drivers/bus/mhi/pci_generic.c:390:43: note: previous definition of 'modem_mv31_config' was here
->   390 | static const struct mhi_controller_config modem_mv31_config = {
->       |                                           ^~~~~~~~~~~~~~~~~
-> drivers/bus/mhi/pci_generic.c:433:38: error: redefinition of 'mhi_mv31_info'
->   433 | static const struct mhi_pci_dev_info mhi_mv31_info = {
->       |                                      ^~~~~~~~~~~~~
-> drivers/bus/mhi/pci_generic.c:399:38: note: previous definition of 'mhi_mv31_info' was here
->   399 | static const struct mhi_pci_dev_info mhi_mv31_info = {
->       |                                      ^~~~~~~~~~~~~
-> 
-> Caused by an newer version (but almost identical) of all the mhi tree
-> commits are also now in the char-misc tree (almos identical patches,
-> but different commits.
-> 
+> I don't think it improves readability to split up the conditional.
+> At least I need to take a second pass over the code to understand
+> the second conditional.
 
-That's due to sending the patches as a series to Greg instead of pull
-request.
+Ternary operators are pain to read, unless a super trivial case.
 
-> I have dropped the mhi tree for today (please clean it up).
-> 
+I'd stick to what you did.
 
-Done!
-
-Thanks,
-Mani
-
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
+/Jarkko
