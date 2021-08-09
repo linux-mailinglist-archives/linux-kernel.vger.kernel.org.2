@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D504C3E4630
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C8B3E463D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbhHINKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:10:04 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:39888 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234207AbhHINJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:09:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=bj4IgXIg32jZPQDCAO7n9XK4DWEWjo8Tf/ELTxnwevk=; b=Di5e2m5iSa/uhBcJoEare1Zxg6
-        pQL10khiMNUk8jvmuQneGR5vwzw2XfxYtfnfw5I+p1BnI0Wz67WwkCn8Kn+onYvpSMhNyDzFU2Wwr
-        Ugc9+90IbMvOISMPqZdjx3r6rbpOC6nyhS4zF/MapHTZoFKFITwDmj+ib4TlFXzjqS0k=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mD51r-00Ghnx-S3; Mon, 09 Aug 2021 15:09:19 +0200
-Date:   Mon, 9 Aug 2021 15:09:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S235342AbhHINLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:11:47 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48980
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235119AbhHINLp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:11:45 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 69ED240672
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 13:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628514684;
+        bh=RBrWNEsM4hpvDhERmxPrcwjfu4LtC8P3Itfo+sJHtYA=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=VZgYkGzM/QW6cTY+ZwKPFvg8odw7iZ3rk/CmV870FHU3h9dkm4zRtu2Xyoo/RVPBC
+         qB0ASYvwToA1wfX21esb7evAOYWU6PQlEDq3Ho3F8J2GVL2ysX2BDI5DVnNEAV2JVO
+         mTcNllgRoaqwD1KRAXnUo9pN8giP2NkwRw1HzuiPfKI6U3M7SQlpT+iTubraQxEngt
+         nHZ3HLxZw0iMNlrMyyEGpETtAjxDt1ubOPthQEkWZlpBY64ToXAM7H//+nen8DQs9g
+         F6gaKhdKJJRysy+0HN6Z1JoA8xfg3JVDTfu9gh4fVNVmc0biKeJyPnuocAREIkAjwx
+         Mt7PDgBH2oExQ==
+Received: by mail-ed1-f71.google.com with SMTP id v11-20020a056402348bb02903be68e116adso973244edc.14
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 06:11:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RBrWNEsM4hpvDhERmxPrcwjfu4LtC8P3Itfo+sJHtYA=;
+        b=E0+pfEtJoftw0RhvdsL7M1enOy/0EJSn1MWJwTm1o6tsbABTb5th0kXUJHamS7daAb
+         mW2zXbzU0S+Ui2D4tbW2bxKwMMV0iWsY4tgprT+GXb7unZB1rxCqdKbEsAedSxDjySzq
+         H0X7QE6uW3iEJKKHD7ytPy1UtecBVGJkGqUf9tlqv1qHfTuZCTtX6GLC0XPwgyDjLn/2
+         9uHeQ2f6bUsWUCLK6nv7NhQ8nN0zLdsWBX4jVy+8kwyHtftUvE6zWWQaGKXsol9KbRvT
+         4O7szlJU3V87k1vnQA/SdXUj8IOWyWzIoYVHPlAS2o3Zewt7aRel2by7hzgnyTvGoTQl
+         DPkQ==
+X-Gm-Message-State: AOAM531vkIYopQ2UL3gcp4BDpG1YrPZhiGFiQCVE4/8Wo1/fKACWTgt1
+        CnzW19GuZfWwBsumVYeJ7vsRmUVg9Xc7TFS3qBvj9Now9/brHbhWcvMwkf/1qCt35P2qa1xJHHC
+        rBNXgpkF8hoFd9rNgqufzQSVYlWofZ5EU5bH0pZ+WCA==
+X-Received: by 2002:a17:906:405:: with SMTP id d5mr22339551eja.189.1628514684090;
+        Mon, 09 Aug 2021 06:11:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyTLC+OlaK/O1lvE3JnmIxxQBbbFpcaB+prP+VoyxmDkoBcq7h0z45WNG/NNtiMCCWgCULeNA==
+X-Received: by 2002:a17:906:405:: with SMTP id d5mr22339525eja.189.1628514683894;
+        Mon, 09 Aug 2021 06:11:23 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id cf16sm8023425edb.92.2021.08.09.06.11.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 06:11:23 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Gabriel Somlo <gsomlo@gmail.com>, David Shah <dave@ds0.me>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] net: Add driver for LiteX's LiteETH network interface
-Message-ID: <YREo/wS8iagiuYBA@lunn.ch>
-References: <20210806054904.534315-1-joel@jms.id.au>
- <20210806054904.534315-3-joel@jms.id.au>
- <YQ7czmvIm6FTZAol@lunn.ch>
- <CACPK8XdOUhz8U0NqOcLRPC3=rjfVB1FFhwyJzMy2AE+7Omm_2g@mail.gmail.com>
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] dt-bindings: clock: samsung: more conversions
+Date:   Mon,  9 Aug 2021 15:09:33 +0200
+Message-Id: <20210809130935.80565-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACPK8XdOUhz8U0NqOcLRPC3=rjfVB1FFhwyJzMy2AE+7Omm_2g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 03:20:57AM +0000, Joel Stanley wrote:
-> On Sat, 7 Aug 2021 at 19:19, Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > > +static void liteeth_reset_hw(struct liteeth *priv)
-> > > +{
-> > > +     /* Reset, twice */
-> > > +     writeb(0, priv->base + LITEETH_PHY_CRG_RESET);
-> > > +     udelay(10);
-> > > +     writeb(1, priv->base + LITEETH_PHY_CRG_RESET);
-> > > +     udelay(10);
-> > > +     writeb(0, priv->base + LITEETH_PHY_CRG_RESET);
-> > > +     udelay(10);
-> >
-> > What is this actually resetting?
-> 
-> This comes from the reference firmware that many (but not all) litex
-> systems run before loading their operating system.
-> 
-> I'm not completely sure how necessary it still is; I will drop it for now.
+Hi,
 
-Which did not answer my question. Once we know what is being reset, we
-can maybe suggest when/how it should be reset.
+Conversion of Exynos4 and Exynos3250 seems straightforward.
 
-> > > +static int liteeth_probe(struct platform_device *pdev)
-> > > +{
-> > > +     struct net_device *netdev;
-> > > +     void __iomem *buf_base;
-> > > +     struct resource *res;
-> > > +     struct liteeth *priv;
-> > > +     int irq, err;
-> > > +
-> > > +     netdev = alloc_etherdev(sizeof(*priv));
-> > > +     if (!netdev)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     priv = netdev_priv(netdev);
-> > > +     priv->netdev = netdev;
-> > > +     priv->dev = &pdev->dev;
-> > > +
-> > > +     irq = platform_get_irq(pdev, 0);
-> > > +     if (irq < 0) {
-> > > +             dev_err(&pdev->dev, "Failed to get IRQ\n");
-> > > +             goto err;
-> > > +     }
-> > > +
-> > > +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > +     priv->base = devm_ioremap_resource(&pdev->dev, res);
-> > > +     if (IS_ERR(priv->base)) {
-> > > +             err = PTR_ERR(priv->base);
-> > > +             goto err;
-> > > +     }
-> > > +
-> > > +     res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> > > +     priv->mdio_base = devm_ioremap_resource(&pdev->dev, res);
-> > > +     if (IS_ERR(priv->mdio_base)) {
-> > > +             err = PTR_ERR(priv->mdio_base);
-> > > +             goto err;
-> > > +     }
-> >
-> > So you don't have any PHY handling, or any MDIO bus master code. So i
-> > would drop this, until the MDIO architecture question is answered. I
-> > also wonder how much use the MAC driver is without any PHY code?
-> > Unless you have a good reason, i don't think we should merge this
-> > until it makes the needed calls into phylib. It is not much code to
-> > add.
-> 
-> You mean I should skip out the parsing of the mdio base until I'm
-> using it? That's reasonable.
+This depends on:
+https://lore.kernel.org/linux-samsung-soc/20210809120544.56596-1-krzysztof.kozlowski@canonical.com/
 
-It could be we insist you add MDIO and PHY handling. But first we need
-to understand the architecture.
+Best regards,
+Krzysztof
 
-   Andrew
+
+Krzysztof Kozlowski (2):
+  dt-bindings: clock: samsung: convert Exynos3250 to dtschema
+  dt-bindings: clock: samsung: convert Exynos4 to dtschema
+
+ .../bindings/clock/exynos3250-clock.txt       | 57 ------------
+ .../bindings/clock/exynos4-clock.txt          | 86 -------------------
+ .../bindings/clock/samsung,exynos-clock.yaml  | 32 ++++++-
+ 3 files changed, 31 insertions(+), 144 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/exynos3250-clock.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/exynos4-clock.txt
+
+-- 
+2.30.2
+
