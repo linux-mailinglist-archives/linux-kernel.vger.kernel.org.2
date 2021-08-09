@@ -2,241 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214EA3E4BF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85B13E4BFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbhHISOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:14:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234847AbhHISOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5978561002;
-        Mon,  9 Aug 2021 18:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628532859;
-        bh=qXeJ0P/U8JvDxO9kR9G0/0wx57hQ6JjYEoFVv0vPQv8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=WW6aFqzA3dvX3Ze6M+eftHp7JaBZzCklo9aY7tR1PQm8w/hnkzEnuCle4tCjoZiSe
-         nT6rKeORsoNdjHgHs9BqQjZRVKkrC6rxN1uu2Ygmc41jcEEm8UEVPbXxSnQ6K0Wfj8
-         qSINXH8XorzrEZOa15qbiDu7ItPII0bkSjch0lXkcnkoO4HSU1QbFOtyKkGI+wZYNN
-         0+0+St5OBLuFlSt+oW4UklxyjCkK/jpDv/4IACdl9gU6SOxr0i2z8LDiCotUp5Fcfn
-         PGIel408/Vk6fQxN4caUeDLV9ODEWUpMqiy48I+zaYWawQn9qjAcLm5+IUrHSYXRZm
-         w1DE8HFaMxc8g==
-Date:   Mon, 9 Aug 2021 13:14:18 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
-        Russell Currey <ruscur@russell.cc>, x86@kernel.org,
-        oss-drivers@corigine.com, netdev@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        qat-linux@intel.com,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Borislav Petkov <bp@alien8.de>, Michael Buesch <m@bues.ch>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
-        kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 0/6] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <20210809181418.GA2168343@bjorn-Precision-5520>
+        id S234847AbhHISSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231357AbhHISSM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 14:18:12 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34591C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:17:51 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id t9so35806701lfc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 11:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qbVrjTG6KtD1ShxcQyr/Iy25T6noL4kVDyEjmN56a1Y=;
+        b=aASeeFZAXdWDc9jRFXU5zoyBl7CgTDnaf+pOucZ3iLDiLUPtAPEl/QKWWyF0b5u3dZ
+         lGkweHcBqNzo+sB1qCGqEZEHnvqAewZPwx71Nj731fJyOn/J2UABTGzuMdpVaKPvEbVP
+         WwTfT5DvC8C2uDtoseUxCOJgO3iCuPY+Bf/mcQhei/syL4VVtFxN4NgEw5X9gUtxFt2/
+         alhUjKqnwy+mEdDwBW7NXWCcLnMFhq6nJgSk4Zs9eafqMxsyJr0BJO2hMsjIQodzgaH1
+         v4S3vPWklSmfSftWHLbDTIwwmBnyzt7kIImP4D2fU3ydXxjgufcFNJauZAl5dPEYNbkr
+         b/5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qbVrjTG6KtD1ShxcQyr/Iy25T6noL4kVDyEjmN56a1Y=;
+        b=Hi9nCcm2n8V9orEIjE3grfKvDhf2UiLFbyTJO3XCJHRR//pRK0qqQuGN8ZCOFZwYuW
+         P01RA3lS+nANR//Tq8a6sD9u//IOcG9xZp25oQ4HLmAp1OQ7PBk/kzwa9XTQYbaqkHI0
+         Mfe63kdgT9L6bcz88Weq1lu/AM6x+C6QkZQM5pm4TkZI6wNO0MIX/2kzgt0244ns8/Pf
+         r634a10FJtvmBf2apv2v9gKy0oHBYRhAz/cHAMfiX54h1h1UUFVfJSCvUWUUN4hKtjBT
+         5iFvdZ3VjyooeV1ZmxxNXN/o3H8UVgMG+FbdkBCn2ih2QB44YfmL3X+WovuY2i9og77Y
+         M3Pg==
+X-Gm-Message-State: AOAM533+Z7sDcrK+gM6Nqzqa0tssrz0HTqB5Z3o/AWp7wY0IKKhPKf5c
+        nZJobl3jt4J9jA9gvNrE2QqF3WqZ5yvk9KrY78Gc0w==
+X-Google-Smtp-Source: ABdhPJwvubYWcvyp+iJZ34g5UbOHFO6fQr752H2iFo9L5IcrD2ras6rKyWnd7bzwG5B66YKrBGuusrhiR0L+vj9YjMc=
+X-Received: by 2002:a05:6512:3fa8:: with SMTP id x40mr3338313lfa.0.1628533069113;
+ Mon, 09 Aug 2021 11:17:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210807092645.52kn4ustyjudztvl@pengutronix.de>
+References: <20210809152651.2297337-1-maz@kernel.org> <20210809152651.2297337-14-maz@kernel.org>
+ <CAOQ_QshjRWh=onT-j3dWgmVfnAXsMFJoz0i7OEezQxkW4O9KZA@mail.gmail.com> <87im0ebi9m.wl-maz@kernel.org>
+In-Reply-To: <87im0ebi9m.wl-maz@kernel.org>
+From:   Oliver Upton <oupton@google.com>
+Date:   Mon, 9 Aug 2021 11:17:38 -0700
+Message-ID: <CAOQ_Qsh6h_afu_-WjJ2JTP=gYBYW4hbC92qmxzyJ8dgRCCgLKw@mail.gmail.com>
+Subject: Re: [PATCH 13/13] arm64: Add CNT{P,V}CTSS_EL0 alternatives to cnt{p,v}ct_el0
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021 at 11:26:45AM +0200, Uwe Kleine-König wrote:
-> On Fri, Aug 06, 2021 at 04:24:52PM -0500, Bjorn Helgaas wrote:
-> > On Fri, Aug 06, 2021 at 08:46:23AM +0200, Uwe Kleine-König wrote:
-> > > On Thu, Aug 05, 2021 at 06:42:34PM -0500, Bjorn Helgaas wrote:
-> > 
-> > > > I looked at all the bus_type.probe() methods, it looks like pci_dev is
-> > > > not the only offender here.  At least the following also have a driver
-> > > > pointer in the device struct:
-> > > > 
-> > > >   parisc_device.driver
-> > > >   acpi_device.driver
-> > > >   dio_dev.driver
-> > > >   hid_device.driver
-> > > >   pci_dev.driver
-> > > >   pnp_dev.driver
-> > > >   rio_dev.driver
-> > > >   zorro_dev.driver
-> > > 
-> > > Right, when I converted zorro_dev it was pointed out that the code was
-> > > copied from pci and the latter has the same construct. :-)
-> > > See
-> > > https://lore.kernel.org/r/20210730191035.1455248-5-u.kleine-koenig@pengutronix.de
-> > > for the patch, I don't find where pci was pointed out, maybe it was on
-> > > irc only.
-> > 
-> > Oh, thanks!  I looked to see if you'd done something similar
-> > elsewhere, but I missed this one.
-> > 
-> > > > Looking through the places that care about pci_dev.driver (the ones
-> > > > updated by patch 5/6), many of them are ... a little dubious to begin
-> > > > with.  A few need the "struct pci_error_handlers *err_handler"
-> > > > pointer, so that's probably legitimate.  But many just need a name,
-> > > > and should probably be using dev_driver_string() instead.
-> > > 
-> > > Yeah, I considered adding a function to get the driver name from a
-> > > pci_dev and a function to get the error handlers. Maybe it's an idea to
-> > > introduce these two and then use to_pci_driver(pdev->dev.driver) for the
-> > > few remaining users? Maybe doing that on top of my current series makes
-> > > sense to have a clean switch from pdev->driver to pdev->dev.driver?!
-> > 
-> > I'd propose using dev_driver_string() for these places:
-> > 
-> >   eeh_driver_name() (could change callers to use dev_driver_string())
-> >   bcma_host_pci_probe()
-> >   qm_alloc_uacce()
-> >   hns3_get_drvinfo()
-> >   prestera_pci_probe()
-> >   mlxsw_pci_probe()
-> >   nfp_get_drvinfo()
-> >   ssb_pcihost_probe()
-> 
-> So the idea is:
-> 
-> 	PCI: Simplify pci_device_remove()
-> 	PCI: Drop useless check from pci_device_probe()
-> 	xen/pci: Drop some checks that are always true
-> 
-> are kept as is as preparation. (Do you want to take them from this v2,
-> or should I include them again in v3?)
+On Mon, Aug 9, 2021 at 11:11 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Mon, 09 Aug 2021 17:42:00 +0100,
+> Oliver Upton <oupton@google.com> wrote:
+> >
+> > On Mon, Aug 9, 2021 at 8:48 AM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > CNTPCTSS_EL0 and CNTVCTSS_EL0 are alternatives to the usual
+> > > CNTPCT_EL0 and CNTVCT_EL0 that do not require a previous ISB
+> > > to be synchronised (SS stands for Self-Synchronising).
+> > >
+> > > Use the ARM64_HAS_ECV capability to control alternative sequences
+> > > that switch to these low(er)-cost primitives. Note that the
+> > > counter access in the VDSO is for now left alone until we decide
+> > > whether we want to allow this.
+> >
+> > What remains to be figured out before we add this to the vDSO (and
+> > presumably advertise to userspace through some standard convention)?
+>
+> We need to understand what breaks if we runtime-patch the VDSO just
+> like we do with the rest of the kernel. To start with, the debug
+> version of the shared object is not the same as the object presented
+> to the process. Maybe that's not a problem, but I would tend to err on
+> the side of caution.
 
-Easiest if you include them until we merge the series.
+I would too, but there sadly are instances of Linux patching *user*
+memory already (go look at how KVM/x86 handles the VMCALL/VMMCALL
+instruction). But yes, I would much prefer the debug vDSO correspond
+to the actual instructions.
 
-> Then convert the list of functions above to use dev_driver_string() in a
-> 4th patch.
-> 
-> > The use in mpt_device_driver_register() looks unnecessary: it's only
-> > to get a struct pci_device_id *, which is passed to ->probe()
-> > functions that don't need it.
-> 
-> This is patch #5.
-> 
-> > The use in adf_enable_aer() looks wrong: it sets the err_handler
-> > pointer in one of the adf_driver structs.  I think those structs
-> > should be basically immutable, and the drivers that call
-> > adf_enable_aer() from their .probe() methods should set
-> > ".err_handler = &adf_err_handler" in their static adf_driver
-> > definitions instead.
-> 
-> I don't understand that one without some research, probably this yields
-> at least one patch.
+> An alternative suggested by Ard was to have a separate function
+> altogether for the counter access and an ifunc mapping to pick the
+> right one.
+>
 
-Yeah, it's a little messy because you'd have to make adf_err_handler
-non-static and add an extern for it.  Sample below.
+Hmm, this does sound promising.
 
-> > I think that basically leaves these:
-> > 
-> >   uncore_pci_probe()     # .id_table, custom driver "registration"
-> >   match_id()             # .id_table, arch/x86/kernel/probe_roms.c
-> >   xhci_pci_quirks()      # .id_table
-> >   pci_error_handlers()   # roll-your-own AER handling, drivers/misc/cxl/guest.c
-> > 
-> > I think it would be fine to use to_pci_driver(pdev->dev.driver) for
-> > these few.
-> 
-> Converting these will be patch 7 then and patch 8 can then drop the
-> duplicated handling.
-> 
-> Sounds reasonable?
+> > It would be nice to skip the trap handler altogether, unless there's a
+> > can of worms lurking that I'm not aware of.
+>
+> The trap handlers are only there to work around errata. If you look at
+> the arch timer code, you will notice that there is a bunch of SoCs and
+> CPUs that do not have a reliable counter, and for which we have to
+> trap the virtual counter accesses from userspace (as well as the
+> VDSO).
+>
+> On sane platforms, userspace is free to use the virtual counter
+> without any trap.
 
-Sounds good to me.  Thanks for working on this!
+/facepalm I was about 2 cups of coffee short when writing this :) Thanks!
 
-Bjorn
-
-
-diff --git a/drivers/crypto/qat/qat_4xxx/adf_drv.c b/drivers/crypto/qat/qat_4xxx/adf_drv.c
-index a8805c815d16..75e6c5540523 100644
---- a/drivers/crypto/qat/qat_4xxx/adf_drv.c
-+++ b/drivers/crypto/qat/qat_4xxx/adf_drv.c
-@@ -310,6 +310,7 @@ static struct pci_driver adf_driver = {
- 	.probe = adf_probe,
- 	.remove = adf_remove,
- 	.sriov_configure = adf_sriov_configure,
-+	.err_handler = adf_err_handler,
- };
- 
- module_pci_driver(adf_driver);
-diff --git a/drivers/crypto/qat/qat_common/adf_aer.c b/drivers/crypto/qat/qat_common/adf_aer.c
-index d2ae293d0df6..701c3c5f8b9b 100644
---- a/drivers/crypto/qat/qat_common/adf_aer.c
-+++ b/drivers/crypto/qat/qat_common/adf_aer.c
-@@ -166,7 +166,7 @@ static void adf_resume(struct pci_dev *pdev)
- 	dev_info(&pdev->dev, "Device is up and running\n");
- }
- 
--static const struct pci_error_handlers adf_err_handler = {
-+const struct pci_error_handlers adf_err_handler = {
- 	.error_detected = adf_error_detected,
- 	.slot_reset = adf_slot_reset,
- 	.resume = adf_resume,
-@@ -187,7 +187,6 @@ int adf_enable_aer(struct adf_accel_dev *accel_dev)
- 	struct pci_dev *pdev = accel_to_pci_dev(accel_dev);
- 	struct pci_driver *pdrv = pdev->driver;
- 
--	pdrv->err_handler = &adf_err_handler;
- 	pci_enable_pcie_error_reporting(pdev);
- 	return 0;
- }
-diff --git a/drivers/crypto/qat/qat_common/adf_common_drv.h b/drivers/crypto/qat/qat_common/adf_common_drv.h
-index c61476553728..98a29e0b8769 100644
---- a/drivers/crypto/qat/qat_common/adf_common_drv.h
-+++ b/drivers/crypto/qat/qat_common/adf_common_drv.h
-@@ -95,6 +95,7 @@ void adf_ae_fw_release(struct adf_accel_dev *accel_dev);
- int adf_ae_start(struct adf_accel_dev *accel_dev);
- int adf_ae_stop(struct adf_accel_dev *accel_dev);
- 
-+extern const struct pci_error_handlers adf_err_handler;
- int adf_enable_aer(struct adf_accel_dev *accel_dev);
- void adf_disable_aer(struct adf_accel_dev *accel_dev);
- void adf_reset_sbr(struct adf_accel_dev *accel_dev);
+--
+Oliver
