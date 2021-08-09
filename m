@@ -2,175 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0D93E4CC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40EE3E4CC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235668AbhHITPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 15:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
+        id S235991AbhHITQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 15:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235961AbhHITPR (ORCPT
+        with ESMTP id S235918AbhHITQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 15:15:17 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95609C061796
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 12:14:56 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so542582pjs.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 12:14:56 -0700 (PDT)
+        Mon, 9 Aug 2021 15:16:28 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB110C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 12:16:07 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id db14so9554122qvb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 12:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z71lr7ALr8yhgNFk9t0UHNkHlIbL+MrfSpKuMWA0Gdg=;
-        b=YVNswqj3RzqtdUCaokR8knCfXB0jvPDRV5LdgxJ6C8HQbi2VR5aa7OVGrPfzlCUVn2
-         upyUDfslHyeyU5wW48o32z19ZYAvobB1AXj+vg4N/R8BXmmHSUoaAepVcNPnw4VFhVPk
-         O2vxbA6kJ+Qn0uWW/yWtpY4S4CIIlEdLxOYQYe+GA1pjGKrLqbU/cQueVVfzXF2nZk2r
-         yx/mk13TMcvULK+C5YG5kusmdC+1Euhzad+2Cl2ie75YR7EtYhiYzotmhtQHUtse9ZbQ
-         Il6PUpDC0eYsDUTTLgbYgGJXyGlZXLqU2SbDq+C2vPeOeObO/GBVlbFNHqfyfjtrs7Un
-         GtVg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eNbXDUTDq2s+IaNPv/bGr5+o3NzigRzKhkvSyNsXN88=;
+        b=zZQPvJUNvjfkbD+0j59Ay36EtKRba9d/7e1T3pbuBzJksLb46H1gcjWWVQ3JVhcwfb
+         ZQopmiE3aK1C8xme5PRrrW0HvQC7Ps+8JhK8LoEP+io9kR1AyQxjTNwHP7AmFzf+gpN7
+         M362d3zSAxYXoVreM6mKyTADldvuG58E/gaA3E3YYjdR7/P35nL/Hy1RbxQRNBqHFOrx
+         I1FLsmXvBQaZPRkdVNTAOn3huJoiCmrEzqcaL7wpf6h523pWon2pj2As/JsSPJ0ZNZnd
+         dR5jD5x5+GxwsqCHU9S5tuByklaS/zZ0j/jAAJsYFvuI6HVO0SmeTM7Oocj0sUTMYG0N
+         Cjpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z71lr7ALr8yhgNFk9t0UHNkHlIbL+MrfSpKuMWA0Gdg=;
-        b=QgAdk9uyQbxdzrsCtB6l/CstQVX9vjJ83muPeQZwTxfiK0Nd14XrN39cUkVUlZv3Gx
-         vxq0262k21D+4z+SzcqcRf62y5l/ixsCKphTtAipQ7FTTFkZg7XIocPOltn7kcD3eToI
-         xDpYC4jNUwVddzniEVwKVBwb6TwkItzTrnqmKTvNJVMNZWZQm34UW1IaYmRCvfnUt9I7
-         GFQ3q2SKl6zQYKNtDdC7doDRKYetrSWkjrxfdXjLa/Aprg8JRbwDuOCsNrvt4PMUIq9c
-         oSLhyck+DYz6wWe6sgd3iUMGncj4XPZF31bVCNxSbwtl687nV7vrM8wNkroGb/J5OPqV
-         WJEw==
-X-Gm-Message-State: AOAM532YHI9nV0DSbMjjraYvxye9vi6LJImxA23RaZfCBIMvieqCeGNF
-        cV+XUxL8jcI9yk/JaC8v1m1Oow==
-X-Google-Smtp-Source: ABdhPJzuIWt8O8bmIq2TkVYVreUsqsCwzquCtkX2KomoumtcUA3Jc+kI6kQmWcweJczhoUNgdUzzJQ==
-X-Received: by 2002:a17:902:6b4b:b029:12b:f96f:dc03 with SMTP id g11-20020a1709026b4bb029012bf96fdc03mr22019481plt.14.1628536495773;
-        Mon, 09 Aug 2021 12:14:55 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id e27sm21418503pfj.23.2021.08.09.12.14.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eNbXDUTDq2s+IaNPv/bGr5+o3NzigRzKhkvSyNsXN88=;
+        b=qUiHYWkGsDKXyQcT5JvyRJ553owGbzMWIKzCbVuFiCaPUu8BT/cATqNElQvNVHy4tE
+         Lmqe4hDg8d34xXVQCHpmQQ78QnuHRW1TIvSfctLCysYjZvDkl4VyRq8DHQvyILiH3LwZ
+         s8S0olbWu7GDJZF65UIM046VVmM36Fs2BN8ZPO5LWVT94wU7HjAb6Ssk5xY3Gm8VrpCN
+         9yK/JCZrNbOo7RQBo9u1PX6kgkCnP/cskOq38JxBqsaJw8LxEG3+Mb6coUqP2zeNINoY
+         1zwAttQKkePW6JZu0VmxlrjgARro/CmyHJjMGwIXeNUeNl+SjIi2Tr85GUuh1wJzw0Fl
+         huVg==
+X-Gm-Message-State: AOAM530QgjJl3mEUjLBxeQx0r6AStpWw8WQZXPy+HpBGyxo4xT3JvIzu
+        Jn2PZNe4aSMxoswUmC3Dip/8Lg==
+X-Google-Smtp-Source: ABdhPJxOihykJpeRPEDZTzRcVEV2Wuq24+nqfDn5c/qMKXFJNx0xbZGL2prEG0JGiv7yz9JcoA6chA==
+X-Received: by 2002:a05:6214:570:: with SMTP id cj16mr4212867qvb.41.1628536566949;
+        Mon, 09 Aug 2021 12:16:06 -0700 (PDT)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id n14sm7303398qti.47.2021.08.09.12.16.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 12:14:55 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 19:14:51 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v3 06/12] KVM: x86: don't disable APICv memslot when
- inhibited
-Message-ID: <YRF+qzvH8jbLCuNE@google.com>
-References: <20210802183329.2309921-1-mlevitsk@redhat.com>
- <20210802183329.2309921-7-mlevitsk@redhat.com>
- <f221e94c-fb64-a859-de3c-30f883eac657@redhat.com>
- <d3e0ba8085a8b6054e757dac696823f1181a712b.camel@redhat.com>
+        Mon, 09 Aug 2021 12:16:06 -0700 (PDT)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, robh+dt@kernel.org
+Cc:     steev@kali.org, tdas@codeaurora.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [Patch v5 0/6] Introduce LMh driver for Qualcomm SoCs
+Date:   Mon,  9 Aug 2021 15:15:58 -0400
+Message-Id: <20210809191605.3742979-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3e0ba8085a8b6054e757dac696823f1181a712b.camel@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021, Maxim Levitsky wrote:
-> On Tue, 2021-08-03 at 10:44 +0200, Paolo Bonzini wrote:
-> > Reviewing this patch and the next one together.
-> > 
-> > On 02/08/21 20:33, Maxim Levitsky wrote:
-> > > +static int avic_alloc_access_page(struct kvm *kvm)
-> > >  {
-> > >  	void __user *ret;
-> > >  	int r = 0;
-> > >  
-> > >  	mutex_lock(&kvm->slots_lock);
-> > > +
-> > > +	if (kvm->arch.apic_access_memslot_enabled)
-> > >  		goto out;
-> > 
-> > This variable is overloaded between "is access enabled" and "is the 
-> > memslot allocated".  I think you should check 
-> > kvm->arch.apicv_inhibit_reasons instead in kvm_faultin_pfn.
-> > 
-> > 
-> > > +	if (!activate)
-> > > +		kvm_zap_gfn_range(kvm, gpa_to_gfn(APIC_DEFAULT_PHYS_BASE),
-> > > +				  gpa_to_gfn(APIC_DEFAULT_PHYS_BASE + PAGE_SIZE));
-> > > +
-> > 
-> > Off by one, the last argument of kvm_zap_gfn_range is inclusive:
-> 
-> Actually is it? 
+Limits Management Hardware(LMh) is a hardware infrastructure on some
+Qualcomm SoCs that can enforce temperature and current limits as programmed
+by software for certain IPs like CPU. On many newer SoCs LMh is configured
+by firmware/TZ and no programming is needed from the kernel side. But on
+certain SoCs like sdm845 the firmware does not do a complete programming of
+the h/w block. On such SoCs kernel software has to explicitly set up the
+temperature limits and turn on various monitoring and enforcing algorithms
+on the hardware.
 
-Nope.  The actual implementation is exclusive for both legacy and TDP MMU.  And
-as you covered below, the fixed and variable MTRR helpers provide exclusive
-start+end, so there's no functional bug.  The "0 - ~0" use case is irrevelant
-because there can't be physical memory at -4096.
+Introduce support for enabling and programming various limit settings and
+monitoring capabilities of Limits Management Hardware(LMh) associated with
+cpu clusters. Also introduce support in cpufreq hardware driver to monitor
+the interrupt associated with cpu frequency throttling so that this
+information can be conveyed to the schdeuler via thermal pressure
+interface.
 
-The ~0ull case can be fixed by adding a helper to get the max GFN possible, e.g.
-steal this code from kvm_tdp_mmu_put_root()
+With this patch series following cpu performance improvement(30-70%) is
+observed on sdm845. The reasoning here is that without LMh being programmed
+properly from the kernel, the default settings were enabling thermal
+mitigation for CPUs at too low a temperature (around 70-75 degree C).  This
+in turn meant that many a time CPUs were never actually allowed to hit the
+maximum possible/required frequencies.
 
-	gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
+UnixBench whets and dhry (./Run whets dhry)
+System Benchmarks Index Score
 
-and maybe add a comment saying it intentionally ignores guest.MAXPHYADDR (from
-CPUID) so that the helper can be used even when CPUID is being modified.
+                Without LMh Support             With LMh Support
+1 copy test     1353.7                          1773.2
 
-> There are 3 uses of this function.
-> Two of them (kvm_post_set_cr0 and one case in update_mtrr) use 0,~0ULL which is indeed inclusive,
-> but for variable mtrrs I see that in var_mtrr_range this code:
-> 
-> *end = (*start | ~mask) + 1;
-> 
-> and the *end is passed to kvm_zap_gfn_range.
-> 
-> 
-> Another thing I noticed that I added calls to kvm_inc_notifier_count/kvm_dec_notifier_count
-> in the kvm_zap_gfn_range but these do seem to have non inclusive ends, thus 
-> I need to fix them sadly if this is the case.
-> This depends on mmu_notifier_ops and it is not documented well.
-> 
-> However at least mmu_notifier_retry_hva, does assume a non inclusive range since it checks
-> 
-> 
-> hva >= kvm->mmu_notifier_range_start &&
-> 	    hva < kvm->mmu_notifier_range_end
-> 
-> 
-> Also looking at the algorithm of the kvm_zap_gfn_range.
-> Suppose that gfn_start == gfn_end and we have a memslot with one page at gfn_start
-> 
-> Then:
-> 
-> 
-> start = max(gfn_start, memslot->base_gfn); // start = memslot->base_gfn
-> end = min(gfn_end, memslot->base_gfn + memslot->npages); // end = memslot->base_gfn
-> 
-> if (start >= end)
-> 	continue;
-> 
-> In this case it seems that it will do nothing. So I suspect that kvm_zap_gfn_range
-> actually needs non inclusive range but due to the facts that it was used much
-> it didn't cause trouble.
->
-> Another thing I found in kvm_zap_gfn_range:
-> 
-> kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
-> 
-> But kvm_flush_remote_tlbs_with_address expects (struct kvm *kvm, u64 start_gfn, u64 pages)
+8 copy tests    4473.6                          7402.3
 
-Heh, surpise, surprise, a rare path with no architecturally visible effects is
-busted :-)
+Sysbench cpu
+sysbench cpu --threads=8 --time=60 --cpu-max-prime=100000 run
 
-> kvm_flush_remote_tlbs_with_address is also for some reason called twice with
-> the same parameters.
+                Without LMh Support             With LMh Support
+Events per
+second                  355                             614
 
-It's called twice in the current code because mmu_lock is dropped between handling
-the current MMU and the legacy mmu.
+Avg Latency(ms)         21.84                           13.02
 
-> Could you help with that? Am I missing something?
+v4->v5:
+	- Rebased to v5.14-rc5.
+
+v3->v4:
+        - Rebased to v5.14-rc2.
+
+v2->v3:
+        - Included patch adding dt binding documentation for LMh nodes.
+        - Rebased to v5.13
+
+Thara Gopinath (6):
+  firmware: qcom_scm: Introduce SCM calls to access LMh
+  thermal: qcom: Add support for LMh driver
+  cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
+  arm64: dts: qcom: sdm45: Add support for LMh node
+  arm64: dts: qcom: sdm845: Remove cpufreq cooling devices for CPU
+    thermal zones
+  dt-bindings: thermal: Add dt binding for QCOM LMh
+
+ .../devicetree/bindings/thermal/qcom-lmh.yaml |  82 +++++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 162 ++----------
+ drivers/cpufreq/qcom-cpufreq-hw.c             | 147 +++++++++++
+ drivers/firmware/qcom_scm.c                   |  58 +++++
+ drivers/firmware/qcom_scm.h                   |   4 +
+ drivers/thermal/qcom/Kconfig                  |  10 +
+ drivers/thermal/qcom/Makefile                 |   1 +
+ drivers/thermal/qcom/lmh.c                    | 232 ++++++++++++++++++
+ include/linux/qcom_scm.h                      |  14 ++
+ 9 files changed, 574 insertions(+), 136 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+ create mode 100644 drivers/thermal/qcom/lmh.c
+
+-- 
+2.25.1
 
