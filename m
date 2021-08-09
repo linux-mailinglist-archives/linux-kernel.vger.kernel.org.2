@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862FA3E4858
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D49B3E485A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235438AbhHIPIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
+        id S235384AbhHIPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbhHIPIx (ORCPT
+        with ESMTP id S235409AbhHIPJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:08:53 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07846C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:08:33 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id y7so13151671ljp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:08:32 -0700 (PDT)
+        Mon, 9 Aug 2021 11:09:00 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDFAC061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:08:40 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f3so6035839plg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:08:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4pSL+H253Ict/PkeJDTxt/nIlNW4DtN6RkcuEgCb2gU=;
-        b=ryP4oz/7EDpIny7jdj8ksJtw7QouRLionXxy6Sea7BLn3DesSj2vNxjphZLhlyNsyO
-         P4RnY5E36yMMrF4epKJ+cjtu49yP3NBgFeOYUw4e5B6NbI9O7lM806FdiXmbve7JiO9J
-         DQ5Ekq0H9PkbO82SANEtb1ZM4c6U/67cW9teeWN+SrANGrfJv4rCCQ60OfZSjEl9I93j
-         8ZAbmCP+aaQzUZtNG27L1PdLYn56Q2fFQgNUTiGVY397lUKBsAK1qK4KTESlQuouMsNK
-         hdBw5MuGnrIVAg0ulZHrOQqd6J2N0oWj9fyze7FR1NgFkqZVw7DNlvvVlNKuCzwOnTUM
-         gLzg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GxPf+PJ9uPiWBgqJeRfB1gbBmulxVC9qhyEnT2/QSFs=;
+        b=YL4YMqDB4dFWVBSjmi7vQMy17STRsuMNn6w9Z5unBeYltViqi3qlLYjuRg4BQtcRYt
+         eqI/GPtDROa4pxvwo8kVVTaMXIsJs/1aM1zM3BU3KOrSD6VgZ7RBW9WUBje3uUI+dhk/
+         ASUPRXfkY0dZZfgQ3TTX8B49479aY+m2Dv8jg/GklwKP2nG3LzMTjz/7wLfdokvLmzdQ
+         Sja03hEcCuuosgUwTJFYcfltgjOCH5xFW4aXBN0l3t/hbnQUN4jmwqA6pbODL+gX2rBu
+         2Ap6dKrz26G26epieQrJOO3gNbR87N+KDC9tYG/OxmwiYTYYzgIkCfoYrJNzR0EWjrjV
+         5zgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4pSL+H253Ict/PkeJDTxt/nIlNW4DtN6RkcuEgCb2gU=;
-        b=mmxSZ+w8bHcdaioziF1gKkv9BvVZ2tY29yeXGQAa/5JCNGYv2XW6pc3GYHDt+5RmJu
-         F+xb0eySkDYWj1zMuvs2Foc/9RYmqDI1jEf/0/zZgdjuBy5dp5to44ubE50+6JebdCjA
-         UPstqaBeK006rYwsiaK5gFoPfIN9VylaLftu7eHrmd+QYsRSHxrCl+Av3H3DT+VGbs9C
-         XOooABiCfGMud522tOk5Rf508XrsTb9W4K71E7NaTue0t1psFz7ZiVcyyXv2naevEero
-         VvHbwFSVOh+yjbOD0RY08Al6ltnXW4mS9iuar5w9RoTPspJ6fPKafuZRIktoBLNpmcvZ
-         hG2g==
-X-Gm-Message-State: AOAM532ljORwGUZLKEgutI2XPKSJBi36rJlgnIH+LKBOs50T4nxyHkpq
-        VcJU0eXLuo3LZBNIzUAfHPxRGj7qhkwvXuzyJfSDuFHkVt0=
-X-Google-Smtp-Source: ABdhPJxOLDDKtcUBcb2EFrLzlzZsTQC0lp+4wH7Wx6Gr8wvInMrxfcs/YhKM+C0Ep3We7rvsxlwCZESqig9d6FVRyRo=
-X-Received: by 2002:a2e:bd81:: with SMTP id o1mr15947630ljq.65.1628521710495;
- Mon, 09 Aug 2021 08:08:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GxPf+PJ9uPiWBgqJeRfB1gbBmulxVC9qhyEnT2/QSFs=;
+        b=qEhBPlJdvMSUVCv7c2xGgbwTHjQDebz9fExW8f44/hDKOn3NRvMjeMiYz6LrZjPQZw
+         MfcnoLwSYSBVjIDLc1o84XeirdvZkTPl4cVHqeW1N9lwNd3TkSjvyE3Pcng4q9+Y3iFU
+         DfGrDOBO7J0aJvKnbx7Lnd4EuRD4iIydnAyp+TfZlRkx5KIzSxO4Qp/j+1mSwb0OIHYv
+         xEsD/Z3st+mw/Jsw4SwMMvr7aQ45fAHvd0GLtFLLbB+8uwRRBKObszdftuoGmcNCAE58
+         cGesZCYta7rLIIIt6OsX4TVZUujipE3/QTeKb5Kl2mwXiLG6L5ETKomkhQb+YhgW25Af
+         CTkw==
+X-Gm-Message-State: AOAM5338ybHyPBFXc64N7vvH0q2TMPZGeu4C4krkOJexJvTLaB2aeCcd
+        MikZ5u3QlCGFC8KzFTklPEAVDQ==
+X-Google-Smtp-Source: ABdhPJyAJf39mUhFmkTBZAOzAOLgL4pjwIl0elxQpmyJU6cl/ljto5YQ8CYmZFFDwSRLso5nebowIQ==
+X-Received: by 2002:a17:903:2448:b029:12c:cbce:8f86 with SMTP id l8-20020a1709032448b029012ccbce8f86mr3137905pls.72.1628521719705;
+        Mon, 09 Aug 2021 08:08:39 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n35sm24046071pgb.90.2021.08.09.08.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 08:08:39 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 15:08:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] KVM: x86: Clean up redundant macro definitions
+Message-ID: <YRFE8y24+5P31RjK@google.com>
+References: <20210809093410.59304-1-likexu@tencent.com>
 MIME-Version: 1.0
-References: <20210807191428.3488948-1-oupton@google.com> <CACRpkdYPEGygxAtU8jrCtnJsQr_JoYkBCRGpRFpvxGiOzUmxgg@mail.gmail.com>
- <CAOQ_QsiECN7iVDyiyos12tk__viGkFhH9b6ZfkZVAYjeKhB=pQ@mail.gmail.com>
- <87lf5c1aox.wl-maz@kernel.org> <CAOQ_Qsi-r0=YubmaTezB7Cq-RhzU3njWm+P5w-RWZcUz4kMfDA@mail.gmail.com>
- <87mtpqc2wz.wl-maz@kernel.org>
-In-Reply-To: <87mtpqc2wz.wl-maz@kernel.org>
-From:   Oliver Upton <oupton@google.com>
-Date:   Mon, 9 Aug 2021 08:08:19 -0700
-Message-ID: <CAOQ_QsiKttAwrGKuXKHmuXac4ANaJd79KNQAFwuD6h_VztJu+A@mail.gmail.com>
-Subject: Re: [PATCH v2] clocksource/arm_arch_timer: Fix masking for high freq counters
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809093410.59304-1-likexu@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 3:45 AM Marc Zyngier <maz@kernel.org> wrote:
-> > On that note, I wonder how (if ever) we will be able to move away from
-> > unnecessarily masking a 64 bit counter, i.e. a v8.6 or above
-> > implementation. With this patch, one such counter would wrap after
-> > 36.56 years, short of the 40 year guarantee we have from the
-> > architecture for < v8.6 implementations. Getting it to 64 bits would
-> > squarely make it someone else's problem ~585 years from now :)
->
-> Hmmm. If you end-up with something that falls short of 40 years, then
-> I suspect something is wrong in the way you compute the required
-> width.
->
-> 40 years @1GHz (which we shall call FY1G from now on) fits comfortably
-> in 61 bits, and I fear that your use of ilog2() gives you one less bit
-> than what it should be:
->
-> log2(FY1G) ~= 60.13
+On Mon, Aug 09, 2021, Like Xu wrote:
+> In KVM/x86 code, there are macros with the same name that are
+> defined and used separately in the evolving code, and if the scope
+> of the code review is only on iterations of the patch set, it can be
+> difficult to spot these fragmented macros being defined repeatedly.
+> 
+> IMO, it's necessary to clean this up to improve the consistency and
 
-Right, this is round-down behavior was deliberate. Reading the ARM ARM
-D11.1.2 'The system counter', I did not find any language that
-suggested the counter saturates the register width before rolling
-over. So, it may be paranoid, but I presumed it to be safer to wrap
-within the guaranteed interval rather than assume the sanity of the
-system counter implementation. That being said, fine with rounding up
-instead, so long as we don't believe there's any chance of hardware
-doing something crazy.
+Please use more specific shortlogs.  "Clean up" is too ambiguous, e.g. I would
+expect it to mean "clean up the macro itself".
 
---
-Thanks,
-Oliver
-> Thanks,
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+> readability of the code, and it also helps to avoid software defects
+> caused by inconsistencies in the scope of influence of macros.
+> 
+> Like Xu (5):
+
+>   KVM: x86: Clean up redundant mod_64(x, y) macro definition
+
+Feels like we should find a home outside of KVM for mod_64(), it's a full generic
+and straightforward macro.
+
+>   KVM: x86: Clean up redundant CC macro definition
+
+CC() should be kept where it is.  It should never be used outside of nested code
+and is far too generic of a name to be exposed to the world at large.  It was
+deliberately defined only in the nested.c files.
+
+>   KVM: x86: Clean up redundant ROL16(val, n) macro definition
+
+Moving ROL16 seems ok, though it scares me a bit that someone went through the
+trouble of #undef'ing the macros.
+
+>   KVM: x86: Clean up redundant __ex(x) macro definition
+
+__ex() and __kvm_handle_fault_on_reboot() were supposed to have been removed.
+The last two patches [8][9] of this series[*] got lost; I'll repost them as they
+no longer apply cleanly.
+
+>   KVM: x86: Clean up redundant pr_fmt(fmt) macro definition for svm
+
+NAK, this breaks sev.c's formatting.  Arguably, nested.c and avic.c should use
+more specific print messages, though that gets tricky with nested code as it's
+not wholly contained in nested.c.
