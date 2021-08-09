@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BDE3E4955
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09D53E4961
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235805AbhHIP5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:57:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48073 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235642AbhHIP5F (ORCPT
+        id S235826AbhHIQDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:03:18 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:60173 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235404AbhHIQDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:57:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628524604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ksirypdUbDyon7gnRT9jI8jlCatrBjNvokJRvHrhIUA=;
-        b=KwlGZlc7vXPTVgJtqUUgFB1DGjz2EuC5iuDYYiaJLfYUjet4/bcmPqhNj9sT2m664kvBdQ
-        eIS0fLdRXP6ZhDYST25lk7puwkWqrJpfcJqVLgae2L2teghPQpcUys9xaMe/3vzAUCUmwx
-        bgV4sfbkPUDokyvXb0zv/lhoUNyrfSQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-LyXmDG6AO1aeto5S1r0Jzg-1; Mon, 09 Aug 2021 11:56:43 -0400
-X-MC-Unique: LyXmDG6AO1aeto5S1r0Jzg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE4108799EC;
-        Mon,  9 Aug 2021 15:56:41 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2AB5A5DA60;
-        Mon,  9 Aug 2021 15:56:41 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     dan.j.williams@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>, <linux-edac@vger.kernel.org>,
-        <x86@kernel.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [patch] x86/pat: pass correct address to sanitize_phys
-References: <x49tuknmosl.fsf@segfault.boston.devel.redhat.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Mon, 09 Aug 2021 11:58:05 -0400
-In-Reply-To: <x49tuknmosl.fsf@segfault.boston.devel.redhat.com> (Jeff Moyer's
-        message of "Wed, 21 Jul 2021 15:48:10 -0400")
-Message-ID: <x494kbyehki.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 9 Aug 2021 12:03:14 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N0Zfg-1n0fzU3HF6-00wUZW for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021
+ 18:02:52 +0200
+Received: by mail-wr1-f53.google.com with SMTP id n12so12083652wrr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:02:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530sz4YPNr35PtdHl49k6m/E1ssAOnRg0iD+3pjgw1PLfUBBpbDx
+        mP46wMw/hjJ9LgWoDcNZ/Q/pjP1Wqfif9lQs1Gw=
+X-Google-Smtp-Source: ABdhPJygMEbjaqfBmCIQRo6I5LvrFqxs9XJj3F0q7SiXzCojl7u4H9/sCbLIq4bI2EsrkutG6kdGgfc4U3lbdZUDf9M=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr26961544wrp.361.1628524972261;
+ Mon, 09 Aug 2021 09:02:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210809151021.5137-1-david@ixit.cz> <20210809152421.GU22278@shell.armlinux.org.uk>
+In-Reply-To: <20210809152421.GU22278@shell.armlinux.org.uk>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 9 Aug 2021 18:02:36 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0qB3Nj8-wKPiAJvPrnH9LZjeXdkQA1MfS998RYk5foRA@mail.gmail.com>
+Message-ID: <CAK8P3a0qB3Nj8-wKPiAJvPrnH9LZjeXdkQA1MfS998RYk5foRA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: atags_to_fdt: don't warn about stack size
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     David Heidelberg <david@ixit.cz>, Arnd Bergmann <arnd@arndb.de>,
+        Jon Medhurst <tixy@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Nicolas Pitre <nico@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:JHbLjBvBEkhCf/gZ9up+jTdcITXZ3jckpbAQ0yRHxqo16N/DNbC
+ OIiALZPwn4uNoGPUG2AFFrYDpv7Mfa7oj2P3jMjpE+w0HyVZf0NQgLWQ2NEgtwnoAh/gTR7
+ 49jRaYVaT+fK+g/l0ZJfMsMAmw4OdC0710GWeuWqZy/2auDKCTnRNAmjLzgKp7E7JheJIuh
+ MYmFiZCevSNP2aDyTgiLg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TlLvCqvG8A0=:I+nR5dESaFJIAl4KNvhVmK
+ ZXay8kdyJGrWfcf0bWlIplvVp0iEoFseuBeEzGAjMiKVs/f8avyzmyC61luuSfXC1CRYydMer
+ afLkuvCq7jf3/mBp6SVRG74KwbkGshEZWztc35CjQLZiDPdGddndX54vm18IVENi7AvjTBKSI
+ H0cxFX2yQTdbzs9VjTQwjrA3smFOP8fmVuZv814oLfFzssPdV/2nYbeZ7Veec6L16o3gV32x+
+ 12rFLSDP3D4H+60QxCKRWQm6QcdJqEaBPcugIklWUkJg+cnyW4CEH1w8m/I+D8dIe7koFVIj4
+ PzwvbPFmcBUZEA5G6ny1qrbr+H93J3St497y+Ni3Mht6LDMa1ypr4cJj1DYvEcRV820PKCqj3
+ tp4IOmO2zUrrlsWWDWOu5ur3tUXgTH7cmI2nSwhYZkJVyYt2RLFKjkfiFz9wMVzn80cr2Ys2P
+ 8XdPdItpR3MFKBsd4K6lyiavjlZfuiE8RpbC3mM4+3DYgPmfLZUhjvvO51fYu5CEktJzF2vi6
+ vZ3bPWJSxIcQQTMvq1gIUB1o/4SxCDt/tV/MQHyqBCilFkeXe9cTXwC2mcdb9A5QiZ5AvQmor
+ gtBMY8D/W6tx27tBmE44PzV1LY5vlEkLS7t6uB/+WVIgM7h19YNF24qHlWRoiEhZowywj4fQk
+ xEopjqnj0KwqkQHwrBRIDQUbM+W8+rTYaJcqCzMPPElahXaCj2+fFbh+RoPvZB/3yW9lLxIhQ
+ mgjBk83eHr1IqcpdrdT84w/IlBExTtPqp8SgZCmtJx5ablHVbpcpl9jw77ePfXAwWOqdtiqL4
+ /hzVSbuwX0egRplaWjm43AFP4h5PKl54F7oYgLm53y/oK63yc0GoaZNgpf2L2LjDBgVm8N/LY
+ WyRXu7cBZm/4rQ+2Ppy2cTyxJmUZWJeg+i5zW+5Srw3EsTCtTRVsdJyUlJPNfp/yMqihki8Kw
+ XPI0AATbwbi2l5yt30gcfubX1UbqkN8QVEt6tjaBM7MI45oFBOeYi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping?  This patch fixes a real problem seen in the field.  Can I get
-some review?
+On Mon, Aug 9, 2021 at 5:24 PM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+> On Mon, Aug 09, 2021 at 05:10:21PM +0200, David Heidelberg wrote:
+> > Signed-off-by: David Heidelberg <david@ixit.cz>
 
-Thanks!
-Jeff
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Jeff Moyer <jmoyer@redhat.com> writes:
+(or keep my original Signed-off-by if you like)
 
-> memtype_reserve takes an address range of the form [start, end).  It
-> then passes the start and end addresses to sanitize_phys, which is meant
-> to operate on the inclusive addresses.  If end falls at the end of the
-> physical address space, sanitize_phys will return 0.  This can result in
-> drivers failing to load:
->
-> [   10.000087] mpt3sas_cm0: unable to map adapter memory! or resource not found
-> [   10.000334] mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10597/_scsih_probe()!
->
-> Fix this by passing the inclusive end address to sanitize_phys.
->
-> Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "decoy" addresses")
-> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
-> --
-> It might be worth adding a comment, here.  If there are any suggestions
-> on what a sane wording would be, I'm all ears.
->
-> diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-> index 3112ca7786ed..482557905294 100644
-> --- a/arch/x86/mm/pat/memtype.c
-> +++ b/arch/x86/mm/pat/memtype.c
-> @@ -583,7 +583,7 @@ int memtype_reserve(u64 start, u64 end, enum page_cache_mode req_type,
->  	int err = 0;
->  
->  	start = sanitize_phys(start);
-> -	end = sanitize_phys(end);
-> +	end = sanitize_phys(end - 1) + 1;
->  	if (start >= end) {
->  		WARN(1, "%s failed: [mem %#010Lx-%#010Lx], req %s\n", __func__,
->  				start, end - 1, cattr_name(req_type));
+> I assume Arnd never sent his v3 from what I see in the thread you link
+> to above.
 
+Yes, it's in my ever-growing backlog of things I plan to eventually resubmit.
+
+In this case, I actually have a different patch in my tree, but that in turn
+depends on other stuff I have to submit first (reorganizing the way that
+warning options get handled based on compiler version etc), and the
+version here is what works on current mainline kernels.
+
+     Arnd
