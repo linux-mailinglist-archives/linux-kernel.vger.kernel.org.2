@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D1F3E48C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CCA3E48C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235625AbhHIP0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S235694AbhHIP0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235685AbhHIPZw (ORCPT
+        with ESMTP id S235707AbhHIPZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:25:52 -0400
-Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551FCC0617A5
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:25:30 -0700 (PDT)
-Received: by mail-ej1-x64a.google.com with SMTP id qf6-20020a1709077f06b029057e66b6665aso4669862ejc.18
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:25:30 -0700 (PDT)
+        Mon, 9 Aug 2021 11:25:53 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E560EC0617B9
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:25:31 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id h186-20020a37b7c30000b02903b914d9e335so12725120qkf.17
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:25:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=dKAdWq+um7+5WCTr7spdVMqonShc4XNlQTBou41SonA=;
-        b=X5MaIqpMDpsgElSyO+XEpl5K8TmNOlWy9iyRmNdtwE3HyEvHRuU55AsAcW15E0tQE+
-         jA7MindYid7mLIBWyt24HUfu2l9pN2kywv5tYtKGVJmJSXG3gEPe8HQuJ1uE3t82jb2R
-         R6I208HaQXPyBO8Gljjafvuzdzjrx0AwC2KgLjl1Or4B38Z2ft0Z6BYxVAt6gyfpwqgX
-         w/kusFQ9wey4B0Z5v7QvjKeXWm8jUbg0/0P+Q1bns7OQUUAjlTXjCQ02a2bo96MuFmHS
-         bWb4AiP60ALuRjZ7a9zAqWfFUrcREzLPOMvxQHN87KICnFZF4oBK0KjWIxyjZ+LcJyBH
-         yhMQ==
+        bh=MNGuBytX5NXMQPGh03MXz48l5IrVanSNLiyhXmu6HLc=;
+        b=PARTJpvAdy7O5RqWHTAlFxcXu05/69ppZA0ujC1MkD/awV08LT++mW1Ot31gr/o2oE
+         L7mInUCVpVyODycSxKTxKYGD7JUtSxBxwDtsTSLz4lX0jlNM2ZmxK+CywSCOB5nMw02q
+         yJsSlJNdEe8QcdmwQo5IEqgbCrY9NLZRHKscsVzqrj8H6XZ0z2glBxgii77jHP/IrnNf
+         ycRYzjVA6vW1A8kqhst9lDLKuRB3MV7VBWf7GNDsfD6uxVDkw/mErsEmhhp3lPDDd6p1
+         8bMcTEPHuzFSiF3VHwnYVS/IR5yd2vUrfefNVmIVJfrlBSdnquN33PGrAdR1ZKp4pfDj
+         f1Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=dKAdWq+um7+5WCTr7spdVMqonShc4XNlQTBou41SonA=;
-        b=XJkZXbT7L5n6ylEvJNvQAZSnWPJPXBkB1wT91C25xOClyRvY5FSEFusbXqItMtH0/9
-         vEgUlqMyVSWE5H55ULuJ+M3yqFDfIWGd87uvS/HTG3y0FI6a6CySGm3pFMi43yld7rJW
-         IKWzXC0z9xEc8XXkO2mo5+aJPYU70JD/rifNmKQibmiNsbeMijVBN5owf7tWgJXDK0cO
-         38eHeTNog2VsmBrc52SglLeH/q4uHkV0dXRg77U/jqzv2zFV5urT0YcXhHXAQYdLve0Z
-         WE8qvOg9Y3bfT/FBkjZo/hyK/3oHIFw5WxAgjOg/3GMaTmpavB7cYpu9hT1YCyEgiCP0
-         Tr4w==
-X-Gm-Message-State: AOAM532j2PWO5sJCNDzXxQeNv9trjnaNR8fN0zD5YpG9qcoNCcoZCoco
-        CsrlKQzYYQ/5WCgqI2VMQEX4DFb62LOw
-X-Google-Smtp-Source: ABdhPJzPp9qFi5jNPXGgwRFOFgI/f0ff/7l9UlxcQ8qnZH4O21lc+UlEQ/M6EMuoSsJAxxc6uAUQfLyq71O/
+        bh=MNGuBytX5NXMQPGh03MXz48l5IrVanSNLiyhXmu6HLc=;
+        b=b6NfEvEmkANvULmGCr73Y+U6Ufy9Ft+Ev4fQGocbsbnH7U4G1HiP8SR8c92wiFRMHZ
+         oEbka73ZxfqQuiCOxCLWwlXglh7uR4NEMsJVvVLeV3VzPfBkCLhPzIZ+K77lQU1SwKZk
+         MBVPh09k+ppDE9TbTvZvWC9A0qaheR8QGHITtlt1tCcZw2m9gGFT1e/jKRaPk1F7Vyfi
+         tFq4kZyltv1haoGqIN+02Jhf14PXDkd1TrekSNVL4KsYEJgqcrTEKmaaFqWXpa8MRWVq
+         MpyFwF8YJ1s1CSu+rK7mE22sce4nyUklxlZmM46JrHY7eganJoL+lX1LXxlXeGrySfo8
+         /RKA==
+X-Gm-Message-State: AOAM5313nQOSBdtRvguxBvRmfcyWLI3m8f1E/cX4GLXu4fsomJrFS9i6
+        difgT0Isf5+dJXsZr5KYXKBY+OeGay3O
+X-Google-Smtp-Source: ABdhPJw4mf35HGX4mhejZnF84rlhADJ8aR2DHNMQwNPUuRpUPyARXjrqqyYC3OYWgsFBlllhXreLHcRP/iXd
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:b0e8:d460:758b:a0ae])
- (user=qperret job=sendgmr) by 2002:aa7:cd9a:: with SMTP id
- x26mr30279924edv.26.1628522728841; Mon, 09 Aug 2021 08:25:28 -0700 (PDT)
-Date:   Mon,  9 Aug 2021 16:24:44 +0100
+ (user=qperret job=sendgmr) by 2002:a0c:f5c8:: with SMTP id
+ q8mr6468132qvm.5.1628522731047; Mon, 09 Aug 2021 08:25:31 -0700 (PDT)
+Date:   Mon,  9 Aug 2021 16:24:45 +0100
 In-Reply-To: <20210809152448.1810400-1-qperret@google.com>
-Message-Id: <20210809152448.1810400-18-qperret@google.com>
+Message-Id: <20210809152448.1810400-19-qperret@google.com>
 Mime-Version: 1.0
 References: <20210809152448.1810400-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH v4 17/21] KVM: arm64: Mark host bss and rodata section as shared
+Subject: [PATCH v4 18/21] KVM: arm64: Remove __pkvm_mark_hyp
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
         suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
@@ -64,148 +64,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the hypervisor maps the host's .bss and .rodata sections in its
-stage-1, make sure to tag them as shared in hyp and host page-tables.
+Now that we mark memory owned by the hypervisor in the host stage-2
+during __pkvm_init(), we no longer need to rely on the host to
+explicitly mark the hyp sections later on.
 
-But since the hypervisor relies on the presence of these mappings, we
-cannot let the host in complete control of the memory regions -- it
-must not unshare or donate them to another entity for example. To
-prevent this, let's transfer the ownership of those ranges to the
-hypervisor itself, and share the pages back with the host.
+Remove the __pkvm_mark_hyp() hypercall altogether.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/nvhe/setup.c | 82 +++++++++++++++++++++++++++++----
- 1 file changed, 74 insertions(+), 8 deletions(-)
+ arch/arm64/include/asm/kvm_asm.h              |  3 +-
+ arch/arm64/kvm/arm.c                          | 46 -------------------
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  1 -
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  9 ----
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 19 --------
+ 5 files changed, 1 insertion(+), 77 deletions(-)
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
-index 0b574d106519..57c27846320f 100644
---- a/arch/arm64/kvm/hyp/nvhe/setup.c
-+++ b/arch/arm64/kvm/hyp/nvhe/setup.c
-@@ -58,6 +58,7 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
+diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+index 9f0bf2109be7..432a9ea1f02e 100644
+--- a/arch/arm64/include/asm/kvm_asm.h
++++ b/arch/arm64/include/asm/kvm_asm.h
+@@ -63,8 +63,7 @@
+ #define __KVM_HOST_SMCCC_FUNC___pkvm_create_private_mapping	17
+ #define __KVM_HOST_SMCCC_FUNC___pkvm_cpu_set_vector		18
+ #define __KVM_HOST_SMCCC_FUNC___pkvm_prot_finalize		19
+-#define __KVM_HOST_SMCCC_FUNC___pkvm_mark_hyp			20
+-#define __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc			21
++#define __KVM_HOST_SMCCC_FUNC___kvm_adjust_pc			20
+ 
+ #ifndef __ASSEMBLY__
+ 
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index e9a2b8f27792..2f378482471b 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1954,57 +1954,11 @@ static void _kvm_host_prot_finalize(void *discard)
+ 	WARN_ON(kvm_call_hyp_nvhe(__pkvm_prot_finalize));
+ }
+ 
+-static inline int pkvm_mark_hyp(phys_addr_t start, phys_addr_t end)
+-{
+-	return kvm_call_hyp_nvhe(__pkvm_mark_hyp, start, end);
+-}
+-
+-#define pkvm_mark_hyp_section(__section)		\
+-	pkvm_mark_hyp(__pa_symbol(__section##_start),	\
+-			__pa_symbol(__section##_end))
+-
+ static int finalize_hyp_mode(void)
  {
- 	void *start, *end, *virt = hyp_phys_to_virt(phys);
- 	unsigned long pgt_size = hyp_s1_pgtable_pages() << PAGE_SHIFT;
-+	enum kvm_pgtable_prot prot;
- 	int ret, i;
+-	int cpu, ret;
+-
+ 	if (!is_protected_kvm_enabled())
+ 		return 0;
  
- 	/* Recreate the hyp page-table using the early page allocator */
-@@ -83,10 +84,6 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
- 	if (ret)
- 		return ret;
- 
--	ret = pkvm_create_mappings(__start_rodata, __end_rodata, PAGE_HYP_RO);
+-	ret = pkvm_mark_hyp_section(__hyp_idmap_text);
 -	if (ret)
 -		return ret;
 -
- 	ret = pkvm_create_mappings(__hyp_rodata_start, __hyp_rodata_end, PAGE_HYP_RO);
- 	if (ret)
- 		return ret;
-@@ -95,10 +92,6 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
- 	if (ret)
- 		return ret;
- 
--	ret = pkvm_create_mappings(__hyp_bss_end, __bss_stop, PAGE_HYP_RO);
+-	ret = pkvm_mark_hyp_section(__hyp_text);
 -	if (ret)
 -		return ret;
 -
- 	ret = pkvm_create_mappings(virt, virt + size, PAGE_HYP);
- 	if (ret)
- 		return ret;
-@@ -117,6 +110,24 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
- 			return ret;
- 	}
+-	ret = pkvm_mark_hyp_section(__hyp_rodata);
+-	if (ret)
+-		return ret;
+-
+-	ret = pkvm_mark_hyp_section(__hyp_bss);
+-	if (ret)
+-		return ret;
+-
+-	ret = pkvm_mark_hyp(hyp_mem_base, hyp_mem_base + hyp_mem_size);
+-	if (ret)
+-		return ret;
+-
+-	for_each_possible_cpu(cpu) {
+-		phys_addr_t start = virt_to_phys((void *)kvm_arm_hyp_percpu_base[cpu]);
+-		phys_addr_t end = start + (PAGE_SIZE << nvhe_percpu_order());
+-
+-		ret = pkvm_mark_hyp(start, end);
+-		if (ret)
+-			return ret;
+-
+-		start = virt_to_phys((void *)per_cpu(kvm_arm_hyp_stack_page, cpu));
+-		end = start + PAGE_SIZE;
+-		ret = pkvm_mark_hyp(start, end);
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	/*
+ 	 * Flip the static key upfront as that may no longer be possible
+ 	 * once the host stage 2 is installed.
+diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+index 49db0ec5a606..0118527b07b0 100644
+--- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
++++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+@@ -49,7 +49,6 @@ extern struct host_kvm host_kvm;
+ extern const u8 pkvm_hyp_id;
  
-+	/*
-+	 * Map the host's .bss and .rodata sections RO in the hypervisor, but
-+	 * transfer the ownership from the host to the hypervisor itself to
-+	 * make sure it can't be donated or shared with another entity.
-+	 *
-+	 * The ownership transition requires matching changes in the host
-+	 * stage-2. This will be done later (see finalize_host_mappings()) once
-+	 * the hyp_vmemmap is addressable.
-+	 */
-+	prot = pkvm_mkstate(PAGE_HYP_RO, PKVM_PAGE_SHARED_OWNED);
-+	ret = pkvm_create_mappings(__start_rodata, __end_rodata, prot);
-+	if (ret)
-+		return ret;
-+
-+	ret = pkvm_create_mappings(__hyp_bss_end, __bss_stop, prot);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
+ int __pkvm_prot_finalize(void);
+-int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
  
-@@ -148,6 +159,57 @@ static void hpool_put_page(void *addr)
- 	hyp_put_page(&hpool, addr);
- }
- 
-+static int finalize_host_mappings_walker(u64 addr, u64 end, u32 level,
-+					 kvm_pte_t *ptep,
-+					 enum kvm_pgtable_walk_flags flag,
-+					 void * const arg)
-+{
-+	enum kvm_pgtable_prot prot;
-+	enum pkvm_page_state state;
-+	kvm_pte_t pte = *ptep;
-+	phys_addr_t phys;
-+
-+	if (!kvm_pte_valid(pte))
-+		return 0;
-+
-+	if (level != (KVM_PGTABLE_MAX_LEVELS - 1))
-+		return -EINVAL;
-+
-+	phys = kvm_pte_to_phys(pte);
-+	if (!addr_is_memory(phys))
-+		return 0;
-+
-+	/*
-+	 * Adjust the host stage-2 mappings to match the ownership attributes
-+	 * configured in the hypervisor stage-1.
-+	 */
-+	state = pkvm_getstate(kvm_pgtable_hyp_pte_prot(pte));
-+	switch (state) {
-+	case PKVM_PAGE_OWNED:
-+		return host_stage2_set_owner_locked(phys, PAGE_SIZE, pkvm_hyp_id);
-+	case PKVM_PAGE_SHARED_OWNED:
-+		prot = pkvm_mkstate(PKVM_HOST_MEM_PROT, PKVM_PAGE_SHARED_BORROWED);
-+		break;
-+	case PKVM_PAGE_SHARED_BORROWED:
-+		prot = pkvm_mkstate(PKVM_HOST_MEM_PROT, PKVM_PAGE_SHARED_OWNED);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return host_stage2_idmap_locked(phys, PAGE_SIZE, prot);
-+}
-+
-+static int finalize_host_mappings(void)
-+{
-+	struct kvm_pgtable_walker walker = {
-+		.cb	= finalize_host_mappings_walker,
-+		.flags	= KVM_PGTABLE_WALK_LEAF,
-+	};
-+
-+	return kvm_pgtable_walk(&pkvm_pgtable, 0, BIT(pkvm_pgtable.ia_bits), &walker);
-+}
-+
- void __noreturn __pkvm_init_finalise(void)
+ bool addr_is_memory(phys_addr_t phys);
+ int host_stage2_idmap_locked(phys_addr_t addr, u64 size, enum kvm_pgtable_prot prot);
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+index 1632f001f4ed..7900d5b66ba3 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+@@ -163,14 +163,6 @@ static void handle___pkvm_prot_finalize(struct kvm_cpu_context *host_ctxt)
  {
- 	struct kvm_host_data *host_data = this_cpu_ptr(&kvm_host_data);
-@@ -167,6 +229,10 @@ void __noreturn __pkvm_init_finalise(void)
- 	if (ret)
- 		goto out;
+ 	cpu_reg(host_ctxt, 1) = __pkvm_prot_finalize();
+ }
+-
+-static void handle___pkvm_mark_hyp(struct kvm_cpu_context *host_ctxt)
+-{
+-	DECLARE_REG(phys_addr_t, start, host_ctxt, 1);
+-	DECLARE_REG(phys_addr_t, end, host_ctxt, 2);
+-
+-	cpu_reg(host_ctxt, 1) = __pkvm_mark_hyp(start, end);
+-}
+ typedef void (*hcall_t)(struct kvm_cpu_context *);
  
-+	ret = finalize_host_mappings();
-+	if (ret)
-+		goto out;
-+
- 	pkvm_pgtable_mm_ops = (struct kvm_pgtable_mm_ops) {
- 		.zalloc_page = hyp_zalloc_hyp_page,
- 		.phys_to_virt = hyp_phys_to_virt,
+ #define HANDLE_FUNC(x)	[__KVM_HOST_SMCCC_FUNC_##x] = (hcall_t)handle_##x
+@@ -196,7 +188,6 @@ static const hcall_t host_hcall[] = {
+ 	HANDLE_FUNC(__pkvm_create_mappings),
+ 	HANDLE_FUNC(__pkvm_create_private_mapping),
+ 	HANDLE_FUNC(__pkvm_prot_finalize),
+-	HANDLE_FUNC(__pkvm_mark_hyp),
+ };
+ 
+ static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
+diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+index cb023d31666e..2991dc6996b9 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
++++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+@@ -339,25 +339,6 @@ static int host_stage2_idmap(u64 addr)
+ 	return ret;
+ }
+ 
+-int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end)
+-{
+-	int ret;
+-
+-	/*
+-	 * host_stage2_unmap_dev_all() currently relies on MMIO mappings being
+-	 * non-persistent, so don't allow changing page ownership in MMIO range.
+-	 */
+-	if (!range_is_memory(start, end))
+-		return -EINVAL;
+-
+-	hyp_spin_lock(&host_kvm.lock);
+-	ret = host_stage2_try(kvm_pgtable_stage2_set_owner, &host_kvm.pgt,
+-			      start, end - start, &host_s2_pool, pkvm_hyp_id);
+-	hyp_spin_unlock(&host_kvm.lock);
+-
+-	return ret != -EAGAIN ? ret : 0;
+-}
+-
+ void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt)
+ {
+ 	struct kvm_vcpu_fault_info fault;
 -- 
 2.32.0.605.g8dce9f2422-goog
 
