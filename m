@@ -2,389 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1DA3E48F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772D23E48FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhHIPgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:36:11 -0400
-Received: from mail-mw2nam10on2052.outbound.protection.outlook.com ([40.107.94.52]:11233
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234708AbhHIPgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:36:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wkxl7zXcwx6x5pGY4qMJYgTpjgNDanH0/g7CodZe+RMDMUq9RKCXmJlymkXtKG3iC4Fv+zytpGKQCvhPdkmVkjNT1YGhnBuSP7uzLRBJ4FqqIbvHNvyoRQmqF9SbtU6HoS6Jc//nXSL05PvjmibJRxea91WiPENtE8ak5x7dHjify/X+Ca8PdZ8lF3bAKAaFotdMamPOWq9Os1nhlMP+RWQb1I5Fk8qKHVsYqI8vqY83BVLXWl9vQpWtOrhIBz5Y5lXD0DDQlJXiPwWlItN9WdHkJQITib+cTd6lm4TURpXZAHxp7c9sPiY1u3e4i1SifHuWfb4la6SpW65Dpz4leA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mvp/x8s0Eq+oMJ1wW2gDN65tItXzRZ6IGgy6hBtvUDI=;
- b=k9mkyibx/R7lEgCcqkuThPXH1HlF3f7MyP4DET0LC1LSBe8tC+MH6OxCJU02O3vigx16Soct4Eh1frGzQgU4Ye07bfrw1TD3HM9+ixDDOQAdULnYH09XrTXK4VCG1cOvWSXnguqSnvRXAV3AeJUA6Hz0joGGvmjOYIY6H2G/PoBSeURUML1j37a3izi9zna60jcDetYzr4yRvYk3jDG2IIhtOnYpWbTmfEkbJxW1P7XnR9LojntK+l8hv+nb2pmUxKw4lL2g2Zstu8eHJ68Z1m8MBzsHPeRlASSrsTM1lJ4GrWyWKoSX4IGnwLF2nm3keld8v79pbeYauhuAOZ5T4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mvp/x8s0Eq+oMJ1wW2gDN65tItXzRZ6IGgy6hBtvUDI=;
- b=f4oqWCOaVUgqFdu0ZKrlI4mIV5kl1aNc3IExqD3kZFT68OWwdBPuV1A1giOfQwjlogEHOQQOZ7K08+uKp88oXlqaT6L9NOnwA1KFYcg9wNbSOlZmSK1qR5jw4WrPpqZaPFGsiF2l4DBL5t/crII3dSPPpzaNoNqCdFGFClJh0cMssC/rJQ4/ubixRSfcGsdxrRc5UITB9wHEoMby45ncW6ATTnQolqsdz/CFzoJC+tWmq0Po4Yn+9IVHxGW1xj5G9jQS5hqZPYnJuQAKzlC6np9u2bMlgBAclguDbKEInjPvuX9R1beNFDWZmjXG4qLYCVodDrbU7zZeAxT6vwlw9A==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by MN2PR12MB4080.namprd12.prod.outlook.com (2603:10b6:208:1d9::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Mon, 9 Aug
- 2021 15:35:46 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dcee:535c:30e:95f4]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dcee:535c:30e:95f4%6]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
- 15:35:46 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu
-Subject: Re: [RFC PATCH 14/15] mm: introduce MIN_MAX_ORDER to replace MAX_ORDER as compile time constant.
-Date:   Mon, 09 Aug 2021 11:35:39 -0400
-X-Mailer: MailMate (1.14r5820)
-Message-ID: <D69C9107-F7ED-4E18-86D8-77877992F08F@nvidia.com>
-In-Reply-To: <YQ+UbJtSWciIVqr4@kernel.org>
-References: <20210805190253.2795604-1-zi.yan@sent.com>
- <20210805190253.2795604-15-zi.yan@sent.com> <YQ+UbJtSWciIVqr4@kernel.org>
-Content-Type: multipart/signed;
- boundary="=_MailMate_C2137725-FB75-444B-91CC-971BC3B89A78_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL1P222CA0016.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::21) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+        id S234718AbhHIPix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:38:53 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:42649 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230175AbhHIPip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:38:45 -0400
+Received: by mail-io1-f70.google.com with SMTP id y10-20020a5e870a0000b029058d2e067004so7305435ioj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:38:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2AWmyZbYF2miWHRd07OXoGKLLhbkOyy6We+e1i3wDoc=;
+        b=joi6HXOc/AZSCZjsmDeW27N4iyU0dfJaSmML37K7WSj6D1RurhKUjKKbGj7pb7kNgo
+         TvCUmll/Q63MtAUbBsiopUX1zeRTNAWjv6cDhltkbaJ6cUQCXzEbVx5jPPI7rbgT+nPI
+         t5FfHILx2HRJDvUElOQy/Dc3qfjQVscUKs/VXkC3JgsAOd3/ieNn24bcEE9YzXAaq9nb
+         7UR05OWPE38CqF4uc54tO6BTXc4MJzS9hDPlYutgnZj0+o9Giy0GyowA1miDKMys1QWA
+         QiAsCUo6vkCvUeDZuebDyA4CrJ3TSx5pra6/udofhweU82EiDkJA+DurP8YeoOnf59xm
+         jGxA==
+X-Gm-Message-State: AOAM533LHKOAoJnTLoWaD7CyJGHizLjpv0Q+LYWHgjOIWlRQOKdDKq9L
+        dItx+BnDcre2nNtufsbGp44fT3zRRjGFr95bto/HuE26WCg7
+X-Google-Smtp-Source: ABdhPJxp86uGTQexH7AMPAi1cbwGD52Vm/Jx4CcXokDitnEb6QNM9zQDTgYdSIQBa/87hoMMq/H3nXlHP6DSMTV+3kN1ptxjSOgW
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.2.60.152] (216.228.112.21) by BL1P222CA0016.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Mon, 9 Aug 2021 15:35:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 615ac12c-7c4c-4ab2-8624-08d95b4b5b64
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4080:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4080117513DC649CA321542CC2F69@MN2PR12MB4080.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tXrRjzkyQ4LcfLy4bJJwJyiZAnjM/RokXMpaUJW3Pk72QQhwTL4cUnCDtzjHafx9NBDWFKi0O22keLi48Tq+1JuiPxoz22V4y+XcZl3Gl6ri2/yjTlZj78SyBhT7PociyDisPoWQq2yVz5upUPIqmQwCuB9FFGNhgkt7sX9mxMlh62R5P5yFKJkFppwZBNKS6v/D96yMInRNh26SKb+z2lXaNq2vMGaZQNgY8Qn+7bVFohXvfPqMqo8vt9twSaVlYNu5tu0JYBxf6YR8IR/1/uVJYuUfVhdC41Vh3/BfMnnE88BNWTvdjZ3L12/E5NlI44z3pNXMr9AFfyYGO+6j4otDL76BjicG/3KMSvsBuNUJ+5ETIOMnbidFx1wHSIG5vJp9YbSgZLD3In/F8+otkk2irVyAB4ISUTfcw/ExToYhwqCG11RgX3/Z202k7V3En455p2bkA3Igl7Caz2yPK2SWA2EKTx1ng6IhXiZivMkY/wUQU4zqRLvTTEMZEYkVjZMniaT677Ie+ekoA+9/PzfR/vjuRUmjRU2d7fn3vTLTvBl+/9N1CSBNyCGbCBlsfW/7fDQgvQcFcEDT3z+m9dYxdfHZsPsYH+em7YoG8I9U4/7LcPIe3VEZN6AD3NyEjlW3R1Q6+dqzqZDGAFtlahhhXYMaYQEB/Z/c04MfKfiv5qaR8s3zNrGdBGNAueczW1sTVONitZjayLpC8Ccj/eVMnuGhL4lC9j4Zj52uIGU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39860400002)(396003)(136003)(66946007)(66476007)(21480400003)(5660300002)(2906002)(235185007)(186003)(66574015)(6486002)(26005)(6666004)(83380400001)(66556008)(36756003)(8676002)(33964004)(478600001)(8936002)(38100700002)(4326008)(956004)(2616005)(33656002)(7416002)(16576012)(316002)(86362001)(53546011)(54906003)(6916009)(45980500001)(72826004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZEd4dzQyemVOMmtuNHBmZDBlcjNzUTlTcWRoemc4MHl3Snp5VU5WdEV2RnZi?=
- =?utf-8?B?QlN3SmRxdlE4Y01YeDk3L0RJWUpYdUlHSVY0WE41RThHTTBsTEJDYUh0bGx3?=
- =?utf-8?B?YWl2U09mZ1F5azNHeUhuY3hhN1FFZXRvTFArUGdYQ0JDWDAwUzRpeDhId2J2?=
- =?utf-8?B?SGwwVTdCcmJBeENxeVN2ZG91Z0tiSURDRXdwRDg3MEdGa1BGb2NjT1ZMM2JV?=
- =?utf-8?B?Nk16Q0p5b3UwaVp0eU5IaVNnVXVVYzdkNDM0dDBnNFpvQVhSaERZSUc0NnNY?=
- =?utf-8?B?U0tRdXZJem5SWXYrM1VQaXM0TzFsNEtCTjd4Uml2YktvRVl4U2w5OEhNU1Ez?=
- =?utf-8?B?RnpFK2ErT0l5aUJkMmtEUGlQY1VDUEpVSjZJeCtmaHVLYnlRUVhXZFRjTVZo?=
- =?utf-8?B?a3hWNE5qMzdvWTdJUG9iVWEyTWJaK2lJaFVlSllNcFlUa0pGVmNKZTVMS3Fs?=
- =?utf-8?B?elI1MmFGNW4yaWgxeEtzWFhBd09pUEtiU2I1cU5MTG5xZ0Y0Yk9OamEvZ0RD?=
- =?utf-8?B?ZnZGMklrSk1CbWkzSGJSYXJISitzNEVhNnZTS2p0QzRiOVloZHYxenJXV2th?=
- =?utf-8?B?U05KQmNwbm1tRzZpS1c1cEVkamZqc2tLdnFkeGlhWlpwcm5UL294b1F2bGVN?=
- =?utf-8?B?M2piY2RleDFwMEwwVW5JaHpIU1RMdWxldERla1A0cEtERzNzNzdVMmJpSXBj?=
- =?utf-8?B?R2d1ZXVCZ1Bmb0RqZkVXK1ZmUE5TRDM4UXpBeFJkMnFobjlHSnl1UEIrWWZw?=
- =?utf-8?B?OHlyajdDSHdYUUFXMm9CeVhOT3dFb2ZXMDJVRVZYSnN6eExOZFNwNjh4eThU?=
- =?utf-8?B?UVNOU1d4RHFWTWQ4MUdjaHhsOU1ueUh6NEIraHFmaVhqQkZkMXlJUFhqcFMv?=
- =?utf-8?B?NCthaVM3YkRzTmk5dmc4d05GQlArb1UybXlRVEgzbkNLNkYrUWNnOWR4Tmg4?=
- =?utf-8?B?anByOEJOQ1cxd3ptRTBPTks2SmwwSzVaQ21NbmlaOTFOWnJLSU54NEFXZ0lZ?=
- =?utf-8?B?ejBmcWFLR3luRWtDaEkxaUtqckFJdmlHZlJSQzFZZG9PRW9Vc2I4RmZvcUd5?=
- =?utf-8?B?ODZ2VVJJWUxHb2tEVllxaTBMUVRxb2VwUU9KSUM2OUhLaHVXcWkwMHI0UUNt?=
- =?utf-8?B?UXZrNTVhSEdGblRiTFZQT0hKRG5TNDY2OWhrdU9aUzR2a3ZLcTcrZkNaKzgy?=
- =?utf-8?B?L0l1N0xobzN2aUE5Z3JxaDhWNENnb3k0YzRRUytBbTdqSmVFQTJ0N3laNTQv?=
- =?utf-8?B?WkpVODdaeXcwblFQTHhyNnhEUStDTW9DL3R5L1hoQ0RPMHZ6S0ZLejdRb2pS?=
- =?utf-8?B?OGVITW1SUEVtTU5VaVIydi85Q0IrZGY1bXVSMEpVNENNUFJrS1hYYTRQMFVo?=
- =?utf-8?B?Y0tsVS9QQTdZMGxEcFcxTUw3VnYyMlM5d2tkd0w0UXFlR1lzQnJ3V0xtQXhN?=
- =?utf-8?B?UG1GVURCWVczZWxpbkpyRitHbG9ZMEU3UVdpelZjMThMbnFaYWV6aDFxNUM2?=
- =?utf-8?B?b0kxZDJFb0lCMkplbk1KdWo1QkJLWXBOWHRvMFA3WGlHelpSQURwU2IrbzF0?=
- =?utf-8?B?Ui9raDhmNzUyK2NpdHR3bmxDbE1mNFYwWWtUNGh1M2xtMG13N0YrdkI0UXVj?=
- =?utf-8?B?SFhJWG50eG95aEwrMSs5NWtjRFppRms0a01QTkpyWmhMMStSeWd3eXVnNFZ0?=
- =?utf-8?B?MitTK3NCWm1lUDFiVFBoVGZKSXFaVzNpTjM3WGNpckY0K2RCNEdKczlOQlUw?=
- =?utf-8?Q?dlpYmh6REs58cPPWus9oUldMEmKPsW3VgixVOGB?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 615ac12c-7c4c-4ab2-8624-08d95b4b5b64
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 15:35:46.5903
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SRJ53KmhIU4qN1z6998AIaihV+iwsM42Z8L157KIw/AgyKjDS3zKWndBH6AVDYLa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4080
+X-Received: by 2002:a05:6e02:106d:: with SMTP id q13mr337344ilj.164.1628523504883;
+ Mon, 09 Aug 2021 08:38:24 -0700 (PDT)
+Date:   Mon, 09 Aug 2021 08:38:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000004601605c9222d92@google.com>
+Subject: [syzbot] WARNING in destroy_conntrack
+From:   syzbot <syzbot+a1eb62c681423ee5c0d7@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_C2137725-FB75-444B-91CC-971BC3B89A78_=
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On 8 Aug 2021, at 4:23, Mike Rapoport wrote:
+syzbot found the following issue on:
 
-> On Thu, Aug 05, 2021 at 03:02:52PM -0400, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> For other MAX_ORDER uses (described below), there is no need or too mu=
-ch
->> hassle to convert certain static array to dynamic ones. Add
->> MIN_MAX_ORDER to serve as compile time constant in place of MAX_ORDER.=
+HEAD commit:    f9be84db09d2 net: bonding: bond_alb: Remove the dependency..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12755626300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8075b2614f3db143
+dashboard link: https://syzkaller.appspot.com/bug?extid=a1eb62c681423ee5c0d7
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1241d9d6300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=168e66e9300000
 
->>
->> ARM64 hypervisor maintains its own free page list and does not import
->> any core kernel symbols, so soon-to-be runtime variable MAX_ORDER is n=
-ot
->> accessible in ARM64 hypervisor code. Also there is no need to allocati=
-ng
->> very large pages.
->>
->> In SLAB/SLOB/SLUB, 2-D array kmalloc_caches uses MAX_ORDER in its seco=
-nd
->> dimension. It is too much hassle to allocate memory for kmalloc_caches=
+The issue was bisected to:
 
->> before any proper memory allocator is set up.
->>
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Christoph Lameter <cl@linux.com>
->> Cc: Vlastimil Babka <vbabka@suse.cz>
->> Cc: Quentin Perret <qperret@google.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: kvmarm@lists.cs.columbia.edu
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> ---
->>  arch/arm64/kvm/hyp/include/nvhe/gfp.h | 2 +-
->>  arch/arm64/kvm/hyp/nvhe/page_alloc.c  | 3 ++-
->>  include/linux/mmzone.h                | 3 +++
->>  include/linux/slab.h                  | 8 ++++----
->>  mm/slab.c                             | 2 +-
->>  mm/slub.c                             | 7 ++++---
->>  6 files changed, 15 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/hyp/include/nvhe/gfp.h b/arch/arm64/kvm/hy=
-p/include/nvhe/gfp.h
->> index fb0f523d1492..c774b4a98336 100644
->> --- a/arch/arm64/kvm/hyp/include/nvhe/gfp.h
->> +++ b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
->> @@ -16,7 +16,7 @@ struct hyp_pool {
->>  	 * API at EL2.
->>  	 */
->>  	hyp_spinlock_t lock;
->> -	struct list_head free_area[MAX_ORDER];
->> +	struct list_head free_area[MIN_MAX_ORDER];
->>  	phys_addr_t range_start;
->>  	phys_addr_t range_end;
->>  	unsigned short max_order;
->> diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp=
-/nvhe/page_alloc.c
->> index 41fc25bdfb34..a1cc1b648de0 100644
->> --- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
->> +++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
->> @@ -226,7 +226,8 @@ int hyp_pool_init(struct hyp_pool *pool, u64 pfn, =
-unsigned int nr_pages,
->>  	int i;
->>
->>  	hyp_spin_lock_init(&pool->lock);
->> -	pool->max_order =3D min(MAX_ORDER, get_order(nr_pages << PAGE_SHIFT)=
-);
->> +
->> +	pool->max_order =3D min(MIN_MAX_ORDER, get_order(nr_pages << PAGE_SH=
-IFT));
->>  	for (i =3D 0; i < pool->max_order; i++)
->>  		INIT_LIST_HEAD(&pool->free_area[i]);
->>  	pool->range_start =3D phys;
->> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
->> index 09aafc05aef4..379dada82d4b 100644
->> --- a/include/linux/mmzone.h
->> +++ b/include/linux/mmzone.h
->> @@ -27,11 +27,14 @@
->>  #ifndef CONFIG_ARCH_FORCE_MAX_ORDER
->>  #ifdef CONFIG_SET_MAX_ORDER
->>  #define MAX_ORDER CONFIG_SET_MAX_ORDER
->> +#define MIN_MAX_ORDER CONFIG_SET_MAX_ORDER
->>  #else
->>  #define MAX_ORDER 11
->> +#define MIN_MAX_ORDER MAX_ORDER
->>  #endif /* CONFIG_SET_MAX_ORDER */
->>  #else
->>  #define MAX_ORDER CONFIG_ARCH_FORCE_MAX_ORDER
->> +#define MIN_MAX_ORDER CONFIG_ARCH_FORCE_MAX_ORDER
->>  #endif /* CONFIG_ARCH_FORCE_MAX_ORDER */
->>  #define MAX_ORDER_NR_PAGES (1 << (MAX_ORDER - 1))
->
-> The end result of this #ifdef explosion looks entirely unreadable:
+commit 65038428b2c6c5be79d3f78a6b79c0cdc3a58a41
+Author: Pablo Neira Ayuso <pablo@netfilter.org>
+Date:   Tue Mar 17 13:13:46 2020 +0000
 
-Just to clarify the use of #ifdef:
+    netfilter: nf_tables: allow to specify stateful expression in set definition
 
-MAX_ORDER is changed to a boot time variable and it cannot be used
-for static array declaration, so I added MIN_MAX_ORDER.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1683f1f1300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1583f1f1300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1183f1f1300000
 
-At the moment, there are three cases of setting MAX_ORDER and
-MIN_MAX_ORDER:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a1eb62c681423ee5c0d7@syzkaller.appspotmail.com
+Fixes: 65038428b2c6 ("netfilter: nf_tables: allow to specify stateful expression in set definition")
 
-1. CONFIG_ARCH_FORCE_MAX_ORDER tells the MAX_ORDER certain arch
-needs at compilation time.
-2. CONFIG_SET_MAX_ORDER allows to change MAX_ORDER when an arch
-does not set its MAX_ORER and SPARSEMEM_VMEMMAP is set.
-3. !SPARSEMEM_VMEMMAP and no CONFIG_ARCH_FORCE_MAX_ORDER, then
-MAX_ORDER is set to 11 by default.
-
-I agree the code is hard to read, I will clean this up.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8989 at net/netfilter/nf_conntrack_core.c:610 destroy_conntrack+0x232/0x2c0 net/netfilter/nf_conntrack_core.c:610
+Modules linked in:
+CPU: 0 PID: 8989 Comm: syz-executor188 Not tainted 5.14.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:destroy_conntrack+0x232/0x2c0 net/netfilter/nf_conntrack_core.c:610
+Code: da fc ff eb 90 e8 ae 27 19 fa 48 89 ef e8 c6 53 02 00 48 89 ef e8 ee 1c 5f fa 5b 5d 41 5c 41 5d e9 93 27 19 fa e8 8e 27 19 fa <0f> 0b e9 2f fe ff ff e8 82 27 19 fa 4c 8d a5 e8 00 00 00 48 b8 00
+RSP: 0018:ffffc90002d7f080 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000
+RDX: ffff88802eeb8000 RSI: ffffffff875c8632 RDI: 0000000000000003
+RBP: ffff888147d35400 R08: 0000000000000000 R09: ffff888147d35403
+R10: ffffffff875c8460 R11: 0000000000000000 R12: ffff888147d35400
+R13: ffffffff8b31b880 R14: 0000000000000000 R15: 0000000000000001
+FS:  00007fb18d49a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f37c403d088 CR3: 00000000182c1000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ nf_conntrack_destroy+0xab/0x230 net/netfilter/core.c:677
+ nf_conntrack_put include/linux/netfilter/nf_conntrack_common.h:34 [inline]
+ nf_ct_put include/net/netfilter/nf_conntrack.h:176 [inline]
+ nft_ct_tmpl_put_pcpu+0x15e/0x1e0 net/netfilter/nft_ct.c:356
+ __nft_ct_set_destroy net/netfilter/nft_ct.c:529 [inline]
+ __nft_ct_set_destroy net/netfilter/nft_ct.c:518 [inline]
+ nft_ct_set_init+0x41e/0x750 net/netfilter/nft_ct.c:614
+ nf_tables_newexpr net/netfilter/nf_tables_api.c:2742 [inline]
+ nft_expr_init+0x145/0x2d0 net/netfilter/nf_tables_api.c:2780
+ nft_set_elem_expr_alloc+0x27/0x280 net/netfilter/nf_tables_api.c:5284
+ nf_tables_newset+0x20cb/0x3340 net/netfilter/nf_tables_api.c:4389
+ nfnetlink_rcv_batch+0x1710/0x25f0 net/netfilter/nfnetlink.c:513
+ nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
+ nfnetlink_rcv+0x3af/0x420 net/netfilter/nfnetlink.c:652
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4477b9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 01 16 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb18d49a318 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004d2298 RCX: 00000000004477b9
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 00000000004d2290 R08: 0000000000007463 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004d229c
+R13: 00007ffe3c4609ef R14: 00007fb18d49a400 R15: 0000000000022000
 
 
->
-> /* Free memory management - zoned buddy allocator.  */
-> #ifndef CONFIG_ARCH_FORCE_MAX_ORDER
-> #ifdef CONFIG_SET_MAX_ORDER
-> /* Defined in mm/page_alloc.c */
-> extern int buddy_alloc_max_order;
->
-> #define MAX_ORDER buddy_alloc_max_order
-> #define MIN_MAX_ORDER CONFIG_SET_MAX_ORDER
-> #else
-> #define MAX_ORDER 11
-> #define MIN_MAX_ORDER MAX_ORDER
-> #endif /* CONFIG_SET_MAX_ORDER */
-> #else
->
-> #ifdef CONFIG_SPARSEMEM_VMEMMAP
-> /* Defined in mm/page_alloc.c */
-> extern int buddy_alloc_max_order;
->
-> #define MAX_ORDER buddy_alloc_max_order
-> #else
-> #define MAX_ORDER CONFIG_ARCH_FORCE_MAX_ORDER
-> #endif /* CONFIG_SPARSEMEM_VMEMMAP */
-> #define MIN_MAX_ORDER CONFIG_ARCH_FORCE_MAX_ORDER
-> #endif /* CONFIG_ARCH_FORCE_MAX_ORDER */
->
->> diff --git a/include/linux/slab.h b/include/linux/slab.h
->> index 2c0d80cca6b8..d8747c158db6 100644
->> --- a/include/linux/slab.h
->> +++ b/include/linux/slab.h
->> @@ -244,8 +244,8 @@ static inline void __check_heap_object(const void =
-*ptr, unsigned long n,
->>   * to do various tricks to work around compiler limitations in order =
-to
->>   * ensure proper constant folding.
->>   */
->> -#define KMALLOC_SHIFT_HIGH	((MAX_ORDER + PAGE_SHIFT - 1) <=3D 25 ? \
->> -				(MAX_ORDER + PAGE_SHIFT - 1) : 25)
->> +#define KMALLOC_SHIFT_HIGH	((MIN_MAX_ORDER + PAGE_SHIFT - 1) <=3D 25 =
-? \
->> +				(MIN_MAX_ORDER + PAGE_SHIFT - 1) : 25)
->>  #define KMALLOC_SHIFT_MAX	KMALLOC_SHIFT_HIGH
->>  #ifndef KMALLOC_SHIFT_LOW
->>  #define KMALLOC_SHIFT_LOW	5
->> @@ -258,7 +258,7 @@ static inline void __check_heap_object(const void =
-*ptr, unsigned long n,
->>   * (PAGE_SIZE*2).  Larger requests are passed to the page allocator.
->>   */
->>  #define KMALLOC_SHIFT_HIGH	(PAGE_SHIFT + 1)
->> -#define KMALLOC_SHIFT_MAX	(MAX_ORDER + PAGE_SHIFT - 1)
->> +#define KMALLOC_SHIFT_MAX	(MIN_MAX_ORDER + PAGE_SHIFT - 1)
->>  #ifndef KMALLOC_SHIFT_LOW
->>  #define KMALLOC_SHIFT_LOW	3
->>  #endif
->> @@ -271,7 +271,7 @@ static inline void __check_heap_object(const void =
-*ptr, unsigned long n,
->>   * be allocated from the same page.
->>   */
->>  #define KMALLOC_SHIFT_HIGH	PAGE_SHIFT
->> -#define KMALLOC_SHIFT_MAX	(MAX_ORDER + PAGE_SHIFT - 1)
->> +#define KMALLOC_SHIFT_MAX	(MIN_MAX_ORDER + PAGE_SHIFT - 1)
->>  #ifndef KMALLOC_SHIFT_LOW
->>  #define KMALLOC_SHIFT_LOW	3
->>  #endif
->> diff --git a/mm/slab.c b/mm/slab.c
->> index d0f725637663..0041de8ec0e9 100644
->> --- a/mm/slab.c
->> +++ b/mm/slab.c
->> @@ -466,7 +466,7 @@ static int __init slab_max_order_setup(char *str)
->>  {
->>  	get_option(&str, &slab_max_order);
->>  	slab_max_order =3D slab_max_order < 0 ? 0 :
->> -				min(slab_max_order, MAX_ORDER - 1);
->> +				min(slab_max_order, MIN_MAX_ORDER - 1);
->>  	slab_max_order_set =3D true;
->>
->>  	return 1;
->> diff --git a/mm/slub.c b/mm/slub.c
->> index b6c5205252eb..228e4a77c678 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -3564,8 +3564,9 @@ static inline int calculate_order(unsigned int s=
-ize)
->>  	/*
->>  	 * Doh this slab cannot be placed using slub_max_order.
->>  	 */
->> -	order =3D slab_order(size, 1, MAX_ORDER, 1);
->> -	if (order < MAX_ORDER)
->> +
->> +	order =3D slab_order(size, 1, MIN_MAX_ORDER, 1);
->> +	if (order < MIN_MAX_ORDER)
->>  		return order;
->>  	return -ENOSYS;
->>  }
->> @@ -4079,7 +4080,7 @@ __setup("slub_min_order=3D", setup_slub_min_orde=
-r);
->>  static int __init setup_slub_max_order(char *str)
->>  {
->>  	get_option(&str, (int *)&slub_max_order);
->> -	slub_max_order =3D min(slub_max_order, (unsigned int)MAX_ORDER - 1);=
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
->> +	slub_max_order =3D min(slub_max_order, (unsigned int)MIN_MAX_ORDER -=
- 1);
->>
->>  	return 1;
->>  }
->> -- =
-
->> 2.30.2
->>
->
-> -- =
-
-> Sincerely yours,
-> Mike.
-
-
-=E2=80=94
-Best Regards,
-Yan, Zi
-
---=_MailMate_C2137725-FB75-444B-91CC-971BC3B89A78_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmERS0sPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKP2MQAKvlLqyN8YT/m8eUCmoSnNHzcukGKeh5MVde
-/lNE1TGyGVyhqRb3SG1SbbTcp/BL56Hh54K178gNs1TrD5herman8TPZyRnYw3Rp
-J0OZOej150aLip0edg1VOEJeeOzwP04S9nos1AjhRIjfUmL7J6mPms0xpe62tpu4
-Yci6dpf6XpYVbpdfAr9lSZCF52QFWroIRmCIzvOok9EUpTylXBSlIiuZ6xBslp8U
-cbRhMcml2g6Gi9M+qtdb0UxmJtoWzecadyYKXKnGb6PtODKXFeMrpCtCMu4/jl61
-/Pz529Q3wgP00kWjEE57DQmgnY97qUy6JPIdQnVClsqK28b8Myq4qfDl3HWhMFIK
-jB51Z0tx38BAKZi9TWVJfIDXiPQJTyT2hI8P2ryl/zZMwvH+wYwCzeffYhKW9CkU
-7JnHADbwqtVKn8Su8k3sAYTW7Jvgj4E9I03byYLh4QsUWTVq4dz2MUs6HQRFapfe
-YZpFBiu7S8zEMfy3mCRV8D7ctouEuc5AG/L5h+oyrZbHBBtFtas1JVqJsdvO5sn+
-E+lN/7Ln8s06aVw8Up5aF0WaXV0/3l2B/Vmc0JZhZaB4hlGW1crp4tlzmmMePAVs
-3CFc9oxAmqXeEIl14rRNHABGvfkwdSNyz0U6yDLCDj0PfxlUpz/sGql2oH1Agmcm
-Upo59qtp
-=4zJc
------END PGP SIGNATURE-----
-
---=_MailMate_C2137725-FB75-444B-91CC-971BC3B89A78_=--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
