@@ -2,148 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596F93E4D82
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666D53E4D89
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbhHIUAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:00:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233496AbhHIUAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:00:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC16A61004;
-        Mon,  9 Aug 2021 20:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628539230;
-        bh=TW5Z07X1gH/zM2GID6GiUFMpFybiFvmvsv9FOxzh5o0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dBHO6UaxxzJVdReLbDg484WhhgWTM1F/t1GqhCijWvk1radTKDstUpHIpmJOqDWVL
-         9I2+V39XpMc+FrgUUTwCW0yXE3K81rY/ZYJiSxUl3zZcNOpoFy/nd45gkMqrI/fcoR
-         +hYCvSxD5vjKQpnkVVsDmaJkHCtsa8eiy2nk144pg71cMUiQiDxs9ORIeIJTD4GTzc
-         PtckQdCGzBNoaCBK5C4cutSccsNpwI1ut/44l9gb587+Ouh+7iRzYssGZch6UOfIUj
-         6dxur5Db9oN8w6RAUIWrEAKNdz3EkMLBRBHYFL+/8zTlQ7BCACu7fQidW295SpLvZA
-         N2Un9nK7SJpGA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 86626403F2; Mon,  9 Aug 2021 17:00:27 -0300 (-03)
-Date:   Mon, 9 Aug 2021 17:00:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Michael Petlan <mpetlan@redhat.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>, x86@kernel.org,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org
-Subject: Re: [PATCH v5 6/9] perf auxtrace: Drop legacy __sync functions
-Message-ID: <YRGJW2+ku/AOrCll@kernel.org>
-References: <20210809111407.596077-1-leo.yan@linaro.org>
- <20210809111407.596077-7-leo.yan@linaro.org>
+        id S236173AbhHIUBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235812AbhHIUBH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 16:01:07 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157FFC061798;
+        Mon,  9 Aug 2021 13:00:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=Om3EEuXdHWjYj9gS/+HAJ1lLyTQFKGdm9B9GiLl+f8Y=;
+        t=1628539246; x=1629748846; b=DaCNr5SrePeGkwD19tm3CVKB3cEUTAUuL1sDroRaaSmLFFY
+        S+alGsOVFMBS1TtyTKqNAQIz9jaKCo9kc965iX8EMgNfhWq7Yl/Bq0t6Re2VT9tEQkTD4U9JGUr1I
+        ucglAaL0JP/CDmBoFsc+QtMwogYxO+X/xepDddxrWh+XtC7F7N5YA/zz+Sz8rL26i09+xyVyDYDx2
+        VqOJgs7nj9Y70RwmFavLngn1QnTQCbjHZ7pjcoAZtYSG8oZvn8bB8bHqCNn6hTg39NycIsAFye/Hr
+        5tNfJ74MCfgamAe4g0O7k3obTG87lm+H9DWXqGGXDUz9OwM8KRH/3FTxUNXFtpkQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mDBPI-008GAP-OL; Mon, 09 Aug 2021 22:00:35 +0200
+Message-ID: <d61f3947cddec660cbb2a59e2424d2bd8c01346a.camel@sipsolutions.net>
+Subject: Re: [PATCH RFC v1 3/7] rtw88: Use rtw_iterate_stas where the
+ iterator reads or writes registers
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Pkshih <pkshih@realtek.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Neo Jou <neojou@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Date:   Mon, 09 Aug 2021 22:00:34 +0200
+In-Reply-To: <981001e2981346ada4dcc08558b87a18@realtek.com>
+References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
+         <20210717204057.67495-4-martin.blumenstingl@googlemail.com>
+         <27d8246ef3c9755b3e6e908188ca36f7b0fab3fc.camel@sipsolutions.net>
+         <CAFBinCAzoPmtvH1Wn9dY4pFsERQ5N+0xXRG=UB1eEGe_qTf+6w@mail.gmail.com>
+         <981001e2981346ada4dcc08558b87a18@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809111407.596077-7-leo.yan@linaro.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 09, 2021 at 07:14:04PM +0800, Leo Yan escreveu:
-> The main purpose for using __sync built-in functions is to support
-> compat mode for 32-bit perf with 64-bit kernel.  But using these
-> built-in functions might cause potential issues.
 > 
-> __sync functions originally support Intel Itanium processoer [1]
-> but it cannot promise to support all 32-bit archs.  Now these
-> functions have become the legacy functions.
-> 
-> Considering __sync functions cannot really fix the 64-bit value
-> atomicity on 32-bit archs, thus this patch drops __sync functions.
-> 
-> Credits to Peter for detailed analysis.
+> I am thinking rtw88 needs to maintain sta and vif lists itself, 
 
-Thanks, applied to perf/core.
+I would tend to prefer drivers do not maintain separate lists - that's
+just duplicated book-keeping and prone to state mismatch errors?
 
-- Arnaldo
+But OTOH the locking does make things complex.
 
- 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html#g_t_005f_005fsync-Builtins
-> 
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/auxtrace.h | 19 -------------------
->  1 file changed, 19 deletions(-)
-> 
-> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> index 79227b8864cd..4f9176368134 100644
-> --- a/tools/perf/util/auxtrace.h
-> +++ b/tools/perf/util/auxtrace.h
-> @@ -440,12 +440,6 @@ struct auxtrace_cache;
->  
->  #ifdef HAVE_AUXTRACE_SUPPORT
->  
-> -/*
-> - * In snapshot mode the mmapped page is read-only which makes using
-> - * __sync_val_compare_and_swap() problematic.  However, snapshot mode expects
-> - * the buffer is not updated while the snapshot is made (e.g. Intel PT disables
-> - * the event) so there is not a race anyway.
-> - */
->  static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
->  {
->  	struct perf_event_mmap_page *pc = mm->userpg;
-> @@ -459,11 +453,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
->  static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->  {
->  	struct perf_event_mmap_page *pc = mm->userpg;
-> -#if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
->  	u64 head = READ_ONCE(pc->aux_head);
-> -#else
-> -	u64 head = __sync_val_compare_and_swap(&pc->aux_head, 0, 0);
-> -#endif
->  
->  	/* Ensure all reads are done after we read the head */
->  	smp_rmb();
-> @@ -473,19 +463,10 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->  static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
->  {
->  	struct perf_event_mmap_page *pc = mm->userpg;
-> -#if BITS_PER_LONG != 64 && defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
-> -	u64 old_tail;
-> -#endif
->  
->  	/* Ensure all reads are done before we write the tail out */
->  	smp_mb();
-> -#if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
->  	WRITE_ONCE(pc->aux_tail, tail);
-> -#else
-> -	do {
-> -		old_tail = __sync_val_compare_and_swap(&pc->aux_tail, 0, 0);
-> -	} while (!__sync_bool_compare_and_swap(&pc->aux_tail, old_tail, tail));
-> -#endif
->  }
->  
->  int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
-> -- 
-> 2.25.1
-> 
+johannes
 
--- 
-
-- Arnaldo
