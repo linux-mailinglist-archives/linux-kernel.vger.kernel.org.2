@@ -2,195 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460DD3E40DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618983E40E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhHIHdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:33:43 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:43174 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233161AbhHIHd3 (ORCPT
+        id S233468AbhHIHfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232094AbhHIHf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:33:29 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210809073308epoutp0457119cc2af1110e1d76cc8939599b436~ZkwS0JhZ30816508165epoutp04s
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:33:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210809073308epoutp0457119cc2af1110e1d76cc8939599b436~ZkwS0JhZ30816508165epoutp04s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1628494388;
-        bh=BarSdkHshT/gTYvSx0tpdUc5GNfRUbjeEuC83HMkYOs=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=trGBpE4HZ19pGjjueVOC/VbIUh3RS+F3DCZPiIS6VsEJ0oMHjAOibsOa4qcPj3Pw2
-         II7K9CkLI43uNL19T37tpw3mPyPjVsmmn9zm+fxiqcpp5RuwHh3uGvmCA20oVq3Rwu
-         JmeKqVJlaN8n6pKStUemDuaDox/vZQP93gpo335k=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210809073308epcas2p2af97bbb6adcec236e519806da98a0881~ZkwSUhisg2196921969epcas2p2A;
-        Mon,  9 Aug 2021 07:33:08 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.189]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Gjnqj0Qt4z4x9QT; Mon,  9 Aug
-        2021 07:33:05 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        85.7D.09921.03AD0116; Mon,  9 Aug 2021 16:33:04 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210809073304epcas2p4d9784b7bef6558d8e31bc09466efa0e3~ZkwO96QKH1938819388epcas2p4d;
-        Mon,  9 Aug 2021 07:33:04 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210809073304epsmtrp16b286a923107b42a73dcd2c165b3fc4f~ZkwO8rNHt3132131321epsmtrp1W;
-        Mon,  9 Aug 2021 07:33:04 +0000 (GMT)
-X-AuditID: b6c32a45-fb3ff700000026c1-a6-6110da3012bd
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EF.B0.08394.03AD0116; Mon,  9 Aug 2021 16:33:04 +0900 (KST)
-Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210809073304epsmtip111568ad4b7d147724de1e470462a8a00~ZkwOsAp8l2353823538epsmtip1R;
-        Mon,  9 Aug 2021 07:33:04 +0000 (GMT)
-From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
-To:     "'Bart Van Assche'" <bvanassche@acm.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
-        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
-        <bhoon95.kim@samsung.com>
-In-Reply-To: <9ed9f56c-d7a4-8e68-0968-da0eccb0b38d@acm.org>
-Subject: RE: [RFC PATCH v1 1/2] scsi: ufs: introduce vendor isr
-Date:   Mon, 9 Aug 2021 16:33:04 +0900
-Message-ID: <000501d78cf0$ca3157b0$5e940710$@samsung.com>
+        Mon, 9 Aug 2021 03:35:28 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF75C0613CF;
+        Mon,  9 Aug 2021 00:35:08 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gjnt03XPsz9shx;
+        Mon,  9 Aug 2021 17:35:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628494505;
+        bh=yDC+PPA0/uo1+KW7uR6PWWOckmv1+FExHE9V6IyCagM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FLcHlgOkxjbxg4ZiTPMBBpIgsusdjLOZywcCFVC2Js4RnNoG1yfgnH+X+PTfFIYG+
+         B+MHjYVYskub0DcaeXBPqRcsnoX4MAiXpJ8vQTPYE9Sm3PvbcdVqcRmjm6diZGrPLG
+         jWT9c/Wj7feOlWivZ9+2siefR1Yd2sHnUiKnauXY96+QFMsDsbPrwvHFeyAxq0ZRre
+         yuxncLCxX3X+SIv6WZaXSvVlcM3OUwzySLnk8OZil8CWGi7nbksnM3pzoIZ/33UMCV
+         IVzB9rm1TwsTrK+r8BolxEqcMWvnBLBduf9f4o8e2VXWR2vfQeD8tqQ6FXfGwNOBul
+         n0YQ3F7rK3VWQ==
+Date:   Mon, 9 Aug 2021 17:35:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: linux-next: manual merge of the staging tree with the char-misc
+ tree
+Message-ID: <20210809173503.07581f5c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQK++sB58EgqqX1myvhKfEGyIJx4UQKuf+SdAls7Bv0CEI0oaqljGZjw
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xbVRzOuff2th2Cl6fHumB32RRWgbZSvOB4ZM7lbpDIlJiMqN0NvQJZ
-        X+ulxscMxCBPVxhzuHYPJmOVh5GHgAwoss6FVB0LUrJJIIADNuZQVmQTJyjl1sh/3+/3fd/5
-        Pc45IjToOi4R5enzWZOe0ZL4FqzrSpQqWj5GMPK2eYpyzXyJU1PnunBqfmUUpy5Pl2HU8sU5
-        AVWzuIJSnha7gGq+MIVRdTe7EGqk5wxOVdzoxqkvBtcQqnziJqAuri1gqQH0iDuNHrEcQ+gL
-        ffMIXVU3AOiHLaU4fX92DKMtHU2AXmoPp0sGKpAMcZZ2Vy7LaFiTlNVnGzR5+pwkMu019Utq
-        VbxcEa1IoF4gpXpGxyaRe9IzovfmadebJ6XvMFrzeiqD4TgyNnmXyWDOZ6W5Bi4/iWSNGq1R
-        oTDGcIyOM+tzYrINukSFXK5UrSsPaXOHKm5jxtqwd4cf1QsLwVpgORCJIBEH71/Xl4MtoiCi
-        G8Cp6vMIH3gArO6dxvngAYADY01oORBvOGo8rUKecADY3L3gU90BsKphUehV4YQM1kz3CrxE
-        CFGEQrfDg3gJMfEitI46MC8OJlJg649zuBdjxHbo6FjayPsTCfA312nA40Doss5s5FHiafjN
-        whlfG1K4MmsXeHEIsRfOu79CeE0IPF1WjHoLQ2JcBO/aXDhv2AOLTjZjPA6Gdwc7hDyWwPnK
-        Yh8ugP0nCwW8+RMAZ/vXAE88D21zJcC7MpSIgi09sfz2IuB3Y77eAmDplVUhn/aHpcVBvDEC
-        /lV9wnfIk9D687ivEg2X5iqFVWCbbdOUtk1T2jZNY/u/7nmANYEw1sjpclhOaVRsvu12sPGy
-        d77cDU4sLMY4ASICTgBFKBni33IqgAny1zDvvc+aDGqTWctyTqBa3/txVBKabVj/Gvp8tUKl
-        jI+XJ6goVbySIp/wj3xr+VAQkcPks4dZ1sia/vMhIrGkEFE2D507+mtkeuK2liMyTdvrkaH2
-        wILtKdo2CgUOZPjD0M6HPyCjz+zYmlL2U+zyDecdnfxeuNq+W/a557ljPZd3HDjavBWLOFjy
-        mCzz76t+tcmDbx+v+qixviHdaFWnZg0/8pOudGmWhfUTq1/XOgV9Fd1iR4F2v8xjOXiv/1b1
-        qt3ssnxPh8fdQpaqZhvK2sxo/++feiZn8FdqwlrDgg8HyFNBhKzTEtWYW/J4+599Dz7u3OfO
-        OnLps2+5N/WNf1yTPIUOJlY2uuP8Bpg6LKXXPnVgcnxCdko6mXnJ+mpqQ5vkavJZPA3Fi8qe
-        7Zz45wPLvrklw5D1diJ5rf2XzDfEUSTG5TKKnaiJY/4FA7USsmIEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsWy7bCSnK7BLYFEg8vvxSxOPlnDZvFg3jY2
-        i5c/r7JZHHzYyWLxdekzVotpH34yW3xav4zVYvXiBywWi25sY7K4vGsOm0X39R1sFsuP/2Oy
-        6Lp7g9Fi6b+3LA58HpeveHtc7utl8li85yWTx4RFBxg9vq/vYPP4+PQWi0ffllWMHp83yXm0
-        H+hmCuCM4rJJSc3JLEst0rdL4Mo41/2cpWC+WMXF30vYGxj/CXYxcnJICJhITPu0gb2LkYtD
-        SGA3o0TTv6MsEAlJiRM7nzNC2MIS91uOsILYQgLPGCVanpiB2GwC2hLTHu5mBWkWEZjCLHHn
-        2lE2iEmdTBKNXa+YQao4BawlZl7dCzZVWMBeYsOZZ2wgNouAisTeLZ/B4rwClhLvTs5mhLAF
-        JU7OfAIWZwba8PTmUyhbXmL72znMEBcpSPx8ugzsIhEBN4mXV9YxQdSISMzubGOewCg0C8mo
-        WUhGzUIyahaSlgWMLKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYKjVEtzB+P2VR/0
-        DjEycTAeYpTgYFYS4V0/gy9RiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2amp
-        BalFMFkmDk6pBiaZPsaIw4US17WbtSr7/xzv3vg1uuHD7pfJ5w993rysf2sfq0v0wX/rzMW0
-        8i0KG4N/ugabrqzPz9BltH59RonXc6Hv5yJPV6O8M4vWq/yfeGnirNeHuJsqTMVsc1N/azR5
-        d4vtr33a9cRpt8NJIykmkc07/12+Nb9Gk9+C2e3Zglpn/jsc7w6W3j02Y5ZeyqWWOaKrjCue
-        lkvm3qjLnTTZhvH6vOXbjypskXPY+JVN8JfbnPsOOw5NDNq+x81X17yfyVPd7MWW6RO7a24d
-        jI/We6Oh/V41cpe7WoLK1iXv4r+9Kz9+sccvmXNShJxO3EWHBy0Bk5+GPHgo5fC25nvJq12s
-        pxnYBVLU7pyur1FiKc5INNRiLipOBABzhMOIQQMAAA==
-X-CMS-MailID: 20210809073304epcas2p4d9784b7bef6558d8e31bc09466efa0e3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210806064924epcas2p4572538fd1fa7a73d8262737e38a9b537
-References: <cover.1628231581.git.kwmad.kim@samsung.com>
-        <CGME20210806064924epcas2p4572538fd1fa7a73d8262737e38a9b537@epcas2p4.samsung.com>
-        <0f6f2337e98f8a8a7dfae816bc001af28fa3a7be.1628231581.git.kwmad.kim@samsung.com>
-        <9ed9f56c-d7a4-8e68-0968-da0eccb0b38d@acm.org>
+Content-Type: multipart/signed; boundary="Sig_/8Yvy4sqXOeCi5Do2g6w.i5I";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 8/5/21 11:34 PM, Kiwoong Kim wrote:
-> > This patch is to activate some interrupt sources that aren't defined
-> > in UFSHCI specifications. Those purpose could be error handling,
-> > workaround or whatever.
-> >
-> > Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
-> > ---
-> >   drivers/scsi/ufs/ufshcd.c | 10 ++++++++++
-> >   drivers/scsi/ufs/ufshcd.h |  8 ++++++++
-> >   2 files changed, 18 insertions(+)
-> >
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index 05495c34a2b7..f85a9b335e0b 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -6428,6 +6428,16 @@ static irqreturn_t ufshcd_tmc_handler(struct
-> ufs_hba *hba)
-> >   static irqreturn_t ufshcd_sl_intr(struct ufs_hba *hba, u32 intr_status)
-> >   {
-> >   	irqreturn_t retval = IRQ_NONE;
-> > +	int res = 0;
-> > +	unsigned long flags;
-> > +
-> > +	retval = ufshcd_vops_intr(hba, &res);
-> > +	if (res) {
-> > +		spin_lock_irqsave(hba->host->host_lock, flags);
-> > +		hba->force_reset = true;
-> > +		ufshcd_schedule_eh_work(hba);
-> > +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > +	}
-> 
-> How can a non-standard extension have error handling code in common code?
-> Please move the code under if (res) into the vendor code.
-Got it.
+--Sig_/8Yvy4sqXOeCi5Do2g6w.i5I
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> >   	if (intr_status & UFSHCD_UIC_MASK)
-> >   		retval |= ufshcd_uic_cmd_compl(hba, intr_status); diff --git
-> > a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h index
-> > 971cfabc4a1e..1ed0a911f864 100644
-> > --- a/drivers/scsi/ufs/ufshcd.h
-> > +++ b/drivers/scsi/ufs/ufshcd.h
-> > @@ -356,6 +356,7 @@ struct ufs_hba_variant_ops {
-> >   			       const union ufs_crypto_cfg_entry *cfg, int slot);
-> >   	void	(*event_notify)(struct ufs_hba *hba,
-> >   				enum ufs_event_type evt, void *data);
-> > +	irqreturn_t	(*intr)(struct ufs_hba *hba, int *res);
-> >   };
-> >
-> >   /* clock gating state  */
-> > @@ -1296,6 +1297,13 @@ static inline void
-> ufshcd_vops_config_scaling_param(struct ufs_hba *hba,
-> >   		hba->vops->config_scaling_param(hba, profile, data);
-> >   }
-> >
-> > +static inline irqreturn_t ufshcd_vops_intr(struct ufs_hba *hba, int
-> > +*res) {
-> > +	if (hba->vops && hba->vops->intr)
-> > +		return hba->vops->intr(hba, res);
-> > +	return IRQ_NONE;
-> > +}
-> > +
-> >   extern struct ufs_pm_lvl_states ufs_pm_lvl_states[];
-> 
-> So this code adds an indirect function call in the interrupt handler?
-> This will have a negative impact on performance, especially on a kernel
-> with security mitigations enabled. See also
-> https://protect2.fireeye.com/v1/url?k=fe14d1e9-a18fe89c-fe155aa6-
-> 0cc47a31ce4e-8200591154f8c42c&q=1&e=7cf22799-390c-4209-8a19-
-> 6ad1fa5fa811&u=https%3A%2F%2Flwn.net%2FArticles%2F774743%2F.
-Interesting. I'll refer to this. Thanks.
+Hi all,
 
-> 
-> Thanks,
-> 
-> Bart.
+Today's linux-next merge of the staging tree got a conflict in:
 
+  drivers/misc/Kconfig
+
+between commit:
+
+  0f920277dc22 ("misc: gehc-achc: new driver")
+
+from the char-misc tree and commit:
+
+  bb3b6552a5b0 ("staging: hikey9xx: split hi6421v600 irq into a separate dr=
+iver")
+
+from the staging tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/misc/Kconfig
+index a420b59917db,29294c52d5af..000000000000
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@@ -208,18 -208,16 +208,28 @@@ config CS5535_CLOCK_EVENT_SR
+  	  MFGPTs have a better resolution and max interval than the
+  	  generic PIT, and are suitable for use as high-res timers.
+ =20
+ +config GEHC_ACHC
+ +	tristate "GEHC ACHC support"
+ +	depends on SPI && SYSFS
+ +	depends on SOC_IMX53 || COMPILE_TEST
+ +	select FW_LOADER
+ +	help
+ +	  Support for GE ACHC microcontroller, that is part of the GE
+ +	  PPD device.
+ +
+ +	  To compile this driver as a module, choose M here: the
+ +	  module will be called gehc-achc.
+ +
++ config HI6421V600_IRQ
++ 	tristate "HiSilicon Hi6421v600 IRQ and powerkey"
++ 	depends on OF
++ 	depends on SPMI
++ 	select MFD_CORE
++ 	select REGMAP_SPMI
++ 	help
++ 	  This driver provides IRQ handling for Hi6421v600, used on
++ 	  some Kirin chipsets, like the one at Hikey 970.
++=20
+  config HP_ILO
+  	tristate "Channel interface driver for the HP iLO processor"
+  	depends on PCI
+
+--Sig_/8Yvy4sqXOeCi5Do2g6w.i5I
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEQ2qcACgkQAVBC80lX
+0GyJugf/bJ9PD70pOzCOEHicSMq0o2mKSyzj4KTVuMVGZJQGJO260ti+o3k4NAWE
+4rxQ9RNMcItLNdhQxEtfvhdKvMkn6RuFZvr3eA85arUudtKkBNy01B6cHvGMg5wM
+H3g559Yc8nROgzpZzZWxdOrySS1Dne/138dqFGnkH8kk0dql7rAbxQ3AcLqc8Lec
+rczxJcmEyEBlkOfagvWlWnI/iNQhoIQzEE6r48OmhxZHi7GHG8op4J1cmBVyTKjQ
+7S87TXTyjtuTx4n/TgtlEMmi90uGHYfDtoh0QHnOBCshGefNBHxckIahSuyPf+jt
+x7+zeD+5JD2Kc+FcTcV9039uvRIfxQ==
+=uvL7
+-----END PGP SIGNATURE-----
+
+--Sig_/8Yvy4sqXOeCi5Do2g6w.i5I--
