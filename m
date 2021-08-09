@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEE33E4739
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164E73E473E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbhHIOJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40254 "EHLO
+        id S234507AbhHIOK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233795AbhHIOJA (ORCPT
+        with ESMTP id S233795AbhHIOK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:09:00 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF26C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:08:39 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id c25so15319512ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 07:08:39 -0700 (PDT)
+        Mon, 9 Aug 2021 10:10:57 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19979C0613D3;
+        Mon,  9 Aug 2021 07:10:37 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so31608394pji.5;
+        Mon, 09 Aug 2021 07:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zR6+b4jMQHu+xJ/A9TlI8gnwYind6t4cL5CmTg0J/sg=;
-        b=laQXcY5+l2yqZ9bgjlwSlIh613HtIDArhrDi5bmvioCLPLweoajCRMFawJpgJDsC3C
-         s8KladoRM2g6c7xOCe6VjpAuP5eh79bw0GdM8eWYtRACCZjEHjHMZqVCSTxmXDWJ+vUz
-         FWv1LJdCNk4/TF0UFzvsNTzy4tDDAPsR53mstI20F0Ry+jyesy8fxEtCrzNpMTShAGfd
-         tUGZKXwNFdaVPqoIaJ3/n90RHpL4C0jKEyuPFIyTMJTlFOazUZI9bfO7vusiM4JUi3ts
-         cuWxU1vc0xSyqgSgXvFEUO6at1JDkZKFWdkJ6MnqUTdOvzf8GI+RcV5/OilNBicyUKk2
-         OkCQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MUFNVlpNdlRwJoHqLGAZnu3q9EuzmxJ1VBkQMu2Z0H4=;
+        b=f6mvq4ui2kWc0N6EALaDC8ssLCvnvtkvKy/P95WQ1nivu/AcJkT3bRlsK5ayCJddpb
+         gdPpCb25NwZNBWcEHlLjZMU8yELiwt5nuswOPx9+HeXY9mCgf6CfmZgqaYbnIL3LfLMq
+         GYMWsdE9Q2yDriL13wKIF3JX1IDLqHUkjMUIuN75yx30/YwN7BO909Jz/eN2qHamC793
+         Sim30bCUv57QdSZErsEr7v34HNwdB04ODzTT6wf25IyW/cGSVTUYH1S2oT+LNkx61ABX
+         sFDAvqNxUFddyqqEwTNjnEcAOimOgEjEMlEhTwBBs+M5RdboRh0oLIydbZCVcXSHrppu
+         sCGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zR6+b4jMQHu+xJ/A9TlI8gnwYind6t4cL5CmTg0J/sg=;
-        b=VDGBCgkcyunHxVndpHCB+yz3YenXWfs8q+j8rZhXM17Wv7s0qiqcJdUZJjV0vu4L9B
-         TzeWokpMyCFmWL8VMWa87+6JgvCA0eEC2HczW4+VkmtaM91G0BOxwoe8KaYa9mz/BfZb
-         acZ4EZOcHlVr9JvowqYKFKYAJs636oaBWQCcH1N+oEGB/gVKlbCF3rAdSW3Jwzv69f1G
-         7m6XsSFq27IuVpdU45GL37ENN6ZQGzXGlxC52K48qRvtOfKaamthITAYVO2QBJdETzMk
-         m+XLNnIPzZQAIFYZ07MzyXKDkNFtRexZu9g1s3PYcjLxw6DKpYJPs2DtZSemxeETrqiW
-         okug==
-X-Gm-Message-State: AOAM5316QNnDuQ/geofrSAr9vsf0EE/lq5xwkkpGndFEmhOGRgZwJpi2
-        Q3Cxcf/+kwD6GUb73cEUvJW9qTTuRsjvB3QH5X9sa3R8
-X-Google-Smtp-Source: ABdhPJwTh+xvPOetWpwQq87E8NuXpPo+Arodp6MN1X8piZv3IFZ/2VSBmQdMIXxfBXGnLDrhZ3HSqMJvjpRDf3vl7Ok=
-X-Received: by 2002:a17:907:9851:: with SMTP id jj17mr5002781ejc.489.1628518117708;
- Mon, 09 Aug 2021 07:08:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MUFNVlpNdlRwJoHqLGAZnu3q9EuzmxJ1VBkQMu2Z0H4=;
+        b=g8Y3Db9fRNDdEi5+qcURreZqLw9yxyCFhyC1/FSDGhZeZrL3/LIS1LI9lG2/7QcbOc
+         5//w0lg15lo27qSu6/Flp9xH7EI35VSAxIGaBUAlza4d4H2XwGucw0BFReY7NraWgyhd
+         9nrmHvz5ui8XDCAB2TJBZK+XWlCCo2rAYPCmadmOA68H3S5seMmmWdWken2baegvFvTm
+         S4WBaU4sJ+gGM5UAYeZICc49a4LCDhrR9+P/WWcwHwMVIdlfnHA4OYHeLufzQ2HkH4Ze
+         zddcWWt4GKEO22S1mPA7YJ9brXSInEpjveFHRHQYWWldl/MdRG8cCwWU9rH5CSkrRVBE
+         r6YQ==
+X-Gm-Message-State: AOAM530v5xbE78qr1WYnVJX7seyB9cyHzC5FN9rq9WVJNxX94lLW502k
+        gNjqms4V8MArq+Ql9Do1mOY=
+X-Google-Smtp-Source: ABdhPJw7uIFi2b2Q6gjI2GPARWEmnnM1MxiiZJN+wFz9CDDFStnpfUdNCBDI36LTrAzrpSApLWsabg==
+X-Received: by 2002:a17:90a:150d:: with SMTP id l13mr25476491pja.93.1628518236573;
+        Mon, 09 Aug 2021 07:10:36 -0700 (PDT)
+Received: from fedora.. ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.googlemail.com with ESMTPSA id 136sm24551417pge.77.2021.08.09.07.10.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 07:10:36 -0700 (PDT)
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, ardb@kernel.org
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Subject: [PATCH] crypto: xts_crypt() return if walk.nbytes is 0
+Date:   Mon,  9 Aug 2021 19:40:27 +0530
+Message-Id: <20210809141027.860850-1-chouhan.shreyansh630@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YQ0Qm+Xs1g/7Eant@fedora>
+References: <YQ0Qm+Xs1g/7Eant@fedora>
 MIME-Version: 1.0
-References: <20210805190253.2795604-1-zi.yan@sent.com> <20210805190253.2795604-12-zi.yan@sent.com>
-In-Reply-To: <20210805190253.2795604-12-zi.yan@sent.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 9 Aug 2021 07:08:26 -0700
-Message-ID: <CAKgT0Uckb4_EOaCmfp4UsDCMi7jROThFUpDa_5f4s7jH0oxaNA@mail.gmail.com>
-Subject: Re: [RFC PATCH 11/15] mm/page_reporting: report pages at section size
- instead of MAX_ORDER.
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 12:04 PM Zi Yan <zi.yan@sent.com> wrote:
->
-> From: Zi Yan <ziy@nvidia.com>
->
-> page_reporting_order was set to MAX_ORDER, which is always smaller than
-> a memory section size. An upcoming change will make MAX_ORDER larger
-> than a memory section size. Set page_reporting_order to
-> PFN_SECTION_SHIFT to match existing size assumption.
->
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  mm/page_reporting.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-> index 382958eef8a9..dc4a2d699862 100644
-> --- a/mm/page_reporting.c
-> +++ b/mm/page_reporting.c
-> @@ -11,7 +11,8 @@
->  #include "page_reporting.h"
->  #include "internal.h"
->
-> -unsigned int page_reporting_order = MAX_ORDER;
-> +/* Set page_reporting_order at section size */
-> +unsigned int page_reporting_order = PFN_SECTION_SHIFT;
->  module_param(page_reporting_order, uint, 0644);
->  MODULE_PARM_DESC(page_reporting_order, "Set page reporting order");
+xts_crypt() code doesn't call kernel_fpu_end() after calling
+kernel_fpu_begin() if walk.nbytes is 0. The correct behavior should be
+not calling kernel_fpu_begin() if walk.nbytes is 0.
 
-The MAX_ORDER assumption is correct. The general idea with this being
-set to MAX_ORDER is that the processing is from page_reporting_order
-to MAX_ORDER. So with it set to MAX_ORDER then page reporting is
-disabled.
+Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+---
+ arch/x86/crypto/aesni-intel_glue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+index 388643ca2177..ec6eac57c493 100644
+--- a/arch/x86/crypto/aesni-intel_glue.c
++++ b/arch/x86/crypto/aesni-intel_glue.c
+@@ -849,7 +849,7 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
+ 		return -EINVAL;
+ 
+ 	err = skcipher_walk_virt(&walk, req, false);
+-	if (err)
++	if (err || !walk.nbytes)
+ 		return err;
+ 
+ 	if (unlikely(tail > 0 && walk.nbytes < walk.total)) {
+-- 
+2.31.1
+
