@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CF63E3E11
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 05:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E7A3E3E08
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 04:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbhHIDBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 23:01:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30539 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231675AbhHIDBb (ORCPT
+        id S232743AbhHIC4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 22:56:13 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13250 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232650AbhHICz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 23:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628478070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H4dSjgKQoH8rg2Z/W5pbCkJL08kojd3OkQAS8xVSCOU=;
-        b=J4uttgq1fiwPm/Yhe9CE3K4lwRrr5s/EuHAdUe6RzXu1ryFMmAOjRqsfO/toMZ+JXbYQLT
-        eYExN1X0XgjmzBQKclW2q9AjJ7vv61L9KMHEEF1xDQqAo5GtibUSV4DL3v+W5lD+U8j0rN
-        xDNZUHF9RZzwZV7odUNy4N4OJkR/xGw=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-ClZJs3R-Nzybgsds2964xQ-1; Sun, 08 Aug 2021 23:01:09 -0400
-X-MC-Unique: ClZJs3R-Nzybgsds2964xQ-1
-Received: by mail-qk1-f199.google.com with SMTP id w2-20020a3794020000b02903b54f40b442so11712292qkd.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 20:01:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=H4dSjgKQoH8rg2Z/W5pbCkJL08kojd3OkQAS8xVSCOU=;
-        b=UkmDmRy/Fa1OyWhpSLljdDAXqO4UWJaNzOi2v5LBG2PYNKMPsjIlq4vZVPPxWL2DSm
-         n1P456V7FWgi1w/KKW0b2Puj7iRvq0khEe/xp0xiol5+r/sjjqwNcHjDGn/FlV4pMVvB
-         ynxkwjcHZYju6vzYd933Mn0Vqx/E4KTK1s7GihAvC/oyAt2xxRDai1KDfjE1GbaNxoY2
-         M0cHXyW/TLHFFQDRuaG8d/vF35PJfpdoNptXE9eNYbIci/ydPgJOHHL5LDrFsd9kTv2q
-         S51NhrwRKiXBbEO2jcSkeD5wtedWaE4CoLVmFH2AHgEoUJFWTJzoU8R3LDeMAlWnZUBN
-         +olg==
-X-Gm-Message-State: AOAM531srVRD/QthG8p2kOcSBDSuefppxKg6+9Anzw+Aafemm8+xxrud
-        oI8/Dx+26r+kK7eVhEEHsCMvCDZMOoYcXIrTLyiBzc2TK0DLQuRea4IqzPvtzPy6iA9b5zPLtI8
-        yplnPS9oJEx0DLMZL3WrYcb/d
-X-Received: by 2002:a05:6214:2025:: with SMTP id 5mr21702146qvf.8.1628478069239;
-        Sun, 08 Aug 2021 20:01:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJznP2SlYCtkfufBoqLxZD0LFRK8nq3ZjtlpzYJkfqhIZ7O/uh5mzNL5YLYMpdvnmvx4jNf5Uw==
-X-Received: by 2002:a05:6214:2025:: with SMTP id 5mr21702132qvf.8.1628478069069;
-        Sun, 08 Aug 2021 20:01:09 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id l4sm8574579qkd.77.2021.08.08.20.01.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Aug 2021 20:01:08 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] semaphore: Add might_sleep() to down_*() family
-To:     Xiaoming Ni <nixiaoming@huawei.com>, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        boqun.feng@gmail.com
-Cc:     wangle6@huawei.com, xiaoqian9@huawei.com, shaolexi@huawei.com
-References: <20210809021215.19991-1-nixiaoming@huawei.com>
-Message-ID: <48cddad4-0388-ae8b-f98b-1629b9ae590a@redhat.com>
-Date:   Sun, 8 Aug 2021 23:01:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 8 Aug 2021 22:55:59 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GjggJ6G3pz1CTqN;
+        Mon,  9 Aug 2021 10:55:24 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 10:55:36 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 9 Aug 2021
+ 10:55:35 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>
+CC:     <roopa@nvidia.com>, <nikolay@nvidia.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+Subject: [PATCH net] net: bridge: fix memleak in br_add_if()
+Date:   Mon, 9 Aug 2021 11:01:35 +0800
+Message-ID: <20210809030135.2445844-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210809021215.19991-1-nixiaoming@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/21 10:12 PM, Xiaoming Ni wrote:
-> Semaphore is sleeping lock. Add might_sleep() to down*() family
-> (with exception of down_trylock()) to detect atomic context sleep.
->
-> Previously discussed with Peter Zijlstra, see link:
->   https://lore.kernel.org/lkml/20210806082320.GD22037@worktop.programming.kicks-ass.net
->
-> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> ---
->   kernel/locking/semaphore.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/kernel/locking/semaphore.c b/kernel/locking/semaphore.c
-> index 9aa855a96c4a..9ee381e4d2a4 100644
-> --- a/kernel/locking/semaphore.c
-> +++ b/kernel/locking/semaphore.c
-> @@ -54,6 +54,7 @@ void down(struct semaphore *sem)
->   {
->   	unsigned long flags;
->   
-> +	might_sleep();
->   	raw_spin_lock_irqsave(&sem->lock, flags);
->   	if (likely(sem->count > 0))
->   		sem->count--;
-> @@ -77,6 +78,7 @@ int down_interruptible(struct semaphore *sem)
->   	unsigned long flags;
->   	int result = 0;
->   
-> +	might_sleep();
->   	raw_spin_lock_irqsave(&sem->lock, flags);
->   	if (likely(sem->count > 0))
->   		sem->count--;
-> @@ -103,6 +105,7 @@ int down_killable(struct semaphore *sem)
->   	unsigned long flags;
->   	int result = 0;
->   
-> +	might_sleep();
->   	raw_spin_lock_irqsave(&sem->lock, flags);
->   	if (likely(sem->count > 0))
->   		sem->count--;
-> @@ -157,6 +160,7 @@ int down_timeout(struct semaphore *sem, long timeout)
->   	unsigned long flags;
->   	int result = 0;
->   
-> +	might_sleep();
->   	raw_spin_lock_irqsave(&sem->lock, flags);
->   	if (likely(sem->count > 0))
->   		sem->count--;
+I got a memleak report:
 
-I think it is simpler to just put a "might_sleep()" in __down_common() 
-which is the function where sleep can actually happen.
+BUG: memory leak
+unreferenced object 0x607ee521a658 (size 240):
+comm "syz-executor.0", pid 955, jiffies 4294780569 (age 16.449s)
+hex dump (first 32 bytes, cpu 1):
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+backtrace:
+[<00000000d830ea5a>] br_multicast_add_port+0x1c2/0x300 net/bridge/br_multicast.c:1693
+[<00000000274d9a71>] new_nbp net/bridge/br_if.c:435 [inline]
+[<00000000274d9a71>] br_add_if+0x670/0x1740 net/bridge/br_if.c:611
+[<0000000012ce888e>] do_set_master net/core/rtnetlink.c:2513 [inline]
+[<0000000012ce888e>] do_set_master+0x1aa/0x210 net/core/rtnetlink.c:2487
+[<0000000099d1cafc>] __rtnl_newlink+0x1095/0x13e0 net/core/rtnetlink.c:3457
+[<00000000a01facc0>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
+[<00000000acc9186c>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5550
+[<00000000d4aabb9c>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
+[<00000000bc2e12a3>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+[<00000000bc2e12a3>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
+[<00000000e4dc2d0e>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
+[<000000000d22c8b3>] sock_sendmsg_nosec net/socket.c:654 [inline]
+[<000000000d22c8b3>] sock_sendmsg+0x139/0x170 net/socket.c:674
+[<00000000e281417a>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
+[<00000000237aa2ab>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+[<000000004f2dc381>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
+[<0000000005feca6c>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
+[<000000007304477d>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Cheers,
-Longman
+On error path of br_add_if(), p->mcast_stats allocated in
+new_nbp() need be freed, or it will be leaked.
+
+Fixes: 1080ab95e3c7 ("net: bridge: add support for IGMP/MLD stats and export them via netlink")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ net/bridge/br_if.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index 6e4a32354a13..e2867547d303 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -616,6 +616,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+ 
+ 	err = dev_set_allmulti(dev, 1);
+ 	if (err) {
++		free_percpu(p->mcast_stats);
+ 		kfree(p);	/* kobject not yet init'd, manually free */
+ 		goto err1;
+ 	}
+@@ -729,6 +730,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+ err3:
+ 	sysfs_remove_link(br->ifobj, p->dev->name);
+ err2:
++	free_percpu(p->mcast_stats);
+ 	kobject_put(&p->kobj);
+ 	dev_set_allmulti(dev, -1);
+ err1:
+-- 
+2.25.1
 
