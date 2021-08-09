@@ -2,196 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3666D3E4F88
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23A33E4F8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236887AbhHIWw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:52:29 -0400
-Received: from mail-eopbgr140040.outbound.protection.outlook.com ([40.107.14.40]:50718
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233266AbhHIWw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:52:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nkiwl6inDYmm1Qi1bRArYiDIby7m0EDaorC45LXNef0qP3+5kOW9Ba3G4N0dCT4NF6tUb7Iy7pO3pTSRmRz1fOYxA86sp86IbdqqNCBORhsZ/Vaetqrc2y+lvLUsK/hfefIKOK9xbtYfWXHSnRUMegpqoue7MmbvIO9Nsl31KQqqLR0q2JAfZsTfeUlLzAaF8mtaaifx4n3WPUrmeZBG6u8ZDDAVfyuFVreio7dbI7NV0/292BVt43/t3ykFTEhuRgLrk73IbU83Oqo6UNP1P0Phv+phW7rUq3nCRnIhW70h2AogO/4ST/oSap8jYwdmHX7raJ/0wtYHR4Dzcihp/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BezF/EkhsKFiWIncWLfoNgKUUbITtVWxJLMpkT0MhXk=;
- b=QS0+Xt45aJWuuHqDCOCeVxVo7P032a7XC7KGSaBnYcPJ75iXOlT0cc1JNYxi4Dw2WPxrTP7zS6QovI81+MTSlpWfoTA8D4BmPkG6I2u7dRch3Hyf2PkiVISCf2VWRkYvCTfuPQbdcspMxw8DunJp61XEIITf7hUcXgqQCPAWh8DUqg3KXptVATdiBYXBmkJK04QwEW7ieUqxayXA1y6tQspM9NIQ1K52yp0IZFKOVINSxZyRf/KviMAmxeU7d/q6zH/5sJ+tk+ZI98Q6ggZJxQe+5VBuPCSAD7I4futXzVj+CWuiLVP+T/PVsRLcK5dP+7f8b81N7hyLSvlciT19eg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BezF/EkhsKFiWIncWLfoNgKUUbITtVWxJLMpkT0MhXk=;
- b=UaPdTgvHtZb3mibkOegX+VOegBGflcT7eMVReMnT0QHKvR6ZX1DfeU7iDCvzuxth1no27dwWIEQ8mnZ3K3lH1IUEzTH+wlb75VSCQcwxysBDMlFgL6E/WwK0GkutPMq73q9L6XvlnxbLJ8qAZKTMtsHC0SrrWmp630OqjZ/YOwg=
-Received: from AS8PR04MB8946.eurprd04.prod.outlook.com (2603:10a6:20b:42d::18)
- by AS8PR04MB8562.eurprd04.prod.outlook.com (2603:10a6:20b:421::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Mon, 9 Aug
- 2021 22:52:04 +0000
-Received: from AS8PR04MB8946.eurprd04.prod.outlook.com
- ([fe80::4d62:f78d:cea9:1ba6]) by AS8PR04MB8946.eurprd04.prod.outlook.com
- ([fe80::4d62:f78d:cea9:1ba6%6]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
- 22:52:04 +0000
-From:   Leo Li <leoyang.li@nxp.com>
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
- LX2160A UART
-Thread-Topic: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
- LX2160A UART
-Thread-Index: AQHXYejVx8YR0SiBXEyplsaWZ0dlkatsHV6Q
-Date:   Mon, 9 Aug 2021 22:52:04 +0000
-Message-ID: <AS8PR04MB8946D0EB15D631346F4D13198FF69@AS8PR04MB8946.eurprd04.prod.outlook.com>
-References: <20210615131605.616-1-thunder.leizhen@huawei.com>
- <20210615131605.616-2-thunder.leizhen@huawei.com>
-In-Reply-To: <20210615131605.616-2-thunder.leizhen@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5029487d-38ff-4ad0-cedf-08d95b884ee2
-x-ms-traffictypediagnostic: AS8PR04MB8562:
-x-microsoft-antispam-prvs: <AS8PR04MB8562E3AC8D74E29C2BD7223E8FF69@AS8PR04MB8562.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1284;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 39ByvojyGeRcogw1eerwB3v6HooAB7zxc+ww7H49ZNQHD5Wm/3tT23fQRqGL/qCzckHFbwhrXxyo11cMZlR+f96rBpv5vXcQVLQkRuzyBMXTQtevopCTK1fGCWryJ95UTZUKHRTMRPYb2LonQVoSjXqGE+eM5rjGIc4njvPXk3Ltg+lXHEpfREWx5MXjWLB0ydKisIHq7r8Cgd2OMGSGbLXDwlEq9vLyoYiQLIE9icXDOzUGEaYIqvuzv/CLlHqNOQUEJTwEvTVyvfiiblR1+z+h+lZhoS6oOmiTwRCnXdB/BiIBC9nbKWnWkan7ppfZQJwfT66MjjDz23G1fM8kh5gNjtoC7OBJ9TLWpWDwhEH2qobQy/fTdAhLnIvhf+kXgImrypN6j9n2yTVTvdNRZ/sm2bxyIPzxtGdh/AIdO7jH3Owyv3WqXJEpgks+osLoSI7jycT6u1ucril2NpUKMki20RdiCssaraXvUTnaeyuff5yl1v5uvHBo2PBk5r2BYcaTVZkwy+mYpaX+gj9XuZH5qbhCSzegCsv8wJTUpkXqswvUkR6EgM8iwrZ84oUtdaJt0MdOgnD9+NFUmdnkOWVzTlRwEokboUW9UJC5HkLYs3DUHvlHdpyLyf/hfX80JeCTO7nCLJZWGjS15zaXXNXaykqnD042+ag1MNYvx3RwUN4U02yxvFFJhvywNk/b89Iiv+8AA0saKYAzkeh2wQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8946.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(346002)(366004)(136003)(376002)(478600001)(64756008)(66556008)(66446008)(76116006)(66476007)(66946007)(26005)(2906002)(7696005)(110136005)(38100700002)(86362001)(316002)(33656002)(6506007)(83380400001)(53546011)(71200400001)(186003)(8676002)(38070700005)(8936002)(55016002)(5660300002)(52536014)(9686003)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?j8gZWWwOpKHSJdJWtT53x+e2gipCciMD4Y/WKCERN+b8v373DqKzCWd1DOFW?=
- =?us-ascii?Q?5BANfMEPMUFEV2YTJ1EhVk+4Cs27mzWxhjlbOU7rj6Rhpv9uqo0UPJe9QBoc?=
- =?us-ascii?Q?/7zWbX6wfmnDzeVUCg//aXe99o5guibiBYwVGSyeTVW22jWQC5DEt+5w7Pwl?=
- =?us-ascii?Q?iTUsMdK78bkdTexGJZkXBHQqrrCIvkjmVYu+Dzz/Y+pipKW50oTIzBazdLQD?=
- =?us-ascii?Q?0OZqg/NMuTKeIn4O3ETigNETiMG4qpuko0I3zRVBgZI7fVPpiMz5CMW1M5JZ?=
- =?us-ascii?Q?hnfNgex4S6FjA1V+gBYua2vG24unl9MMgZ1b415iYO/BkY65yDS32kdvj5cE?=
- =?us-ascii?Q?0cVlbnHQeFlpfwSmGDSnzpPLeFjOGS4YOgacDJyX3rPlvg362C9IYg/ys5nN?=
- =?us-ascii?Q?l9+52kRG1HdObOK+0O99vAMenJY4uQVsfr8OnCieefzVmo0MjwTLxkOUcscS?=
- =?us-ascii?Q?UTxymtJpuSIUFFBE+nn6PTbV2u0ng+GplKIQriColzEFRT3BKvnP855o8pSL?=
- =?us-ascii?Q?YN/NwJk62ydcTH+mf7KBhpnR7szrN5N4MpNO/NJacJ//w+YN3vS/ObMLE+Fk?=
- =?us-ascii?Q?aNyqwcGgaZ6yiqtA1tpj3eHc3QEse7bwuCQNesEx4grRX2Le867uEnM0h2m9?=
- =?us-ascii?Q?50dOzoP5Xl8DQytzeGXyvnz+AlP03S+UZnrG9RtEWEG3yisCa/WTIgGlgr9S?=
- =?us-ascii?Q?RFHjtMwropcrgAeytcR6SC80AUuB22BVxZ2kgdqkwbTF5VLt1V8dqH698cWo?=
- =?us-ascii?Q?nxtyL1Kakw2pX3V8WTFk4XDEThWRrb5zQ902zLJlKvRhQTRfuKrW9WCLbkXs?=
- =?us-ascii?Q?W55KbrH1DT0i+COeQVQlWa14r8ctkxxSkskqULyGvHK1iZHufrifKeZ8+qEr?=
- =?us-ascii?Q?lLU/ZAKoVExnLzT1MYVPk6mSreLpqYw5wDRSPGFd6EtWPj2lYLaXMElwLREW?=
- =?us-ascii?Q?DICP4pmpXDmg7eXHJ45XRCvyITZMGaH139KgKCPWpupZwTL2txb8rEvDYqB5?=
- =?us-ascii?Q?ncd4i47OLSwz6nCc8gjd6xXjJIFSfYkwUS/VM9HyI0cnB5miVKUbm0JUl9kd?=
- =?us-ascii?Q?3/zMVFgxMzVfspUHKlgOOz/fRnaaGN8ZetPn0NKG6pEzsDJwYBgkYZESECGl?=
- =?us-ascii?Q?AV1YZLxpZIr+LyZVoS5wN5t4l/lWGDWOuFGWoO7alMR/jrULUVPzDfo1CaB/?=
- =?us-ascii?Q?tJLpLJSn+Zlpq7429WMiVI1x6+il4Dht1b803tofuNsLzEKylN4QC2HZsYYt?=
- =?us-ascii?Q?XZ3X+9ro3wYXr5VYDaDE88kBf9I6vBC2sI/Ld0mR/S7gVAxJ9yeNAL0/5asz?=
- =?us-ascii?Q?P2gj1c9lU2y06pcfZ/snc+FL?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S236903AbhHIWyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232158AbhHIWyb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 18:54:31 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF0EC061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 15:54:10 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id l4so11354436ljq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 15:54:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mo9sTPGJOqzFeMz9BuM1/7f023SwhVFLBwgC/tDCeG4=;
+        b=H1MH0WQdrSqsAhvN6tM8XnVyFU8NIzsmtZXoCR3VncrWF//u+fqxKHHv4nsEtp3Msf
+         +Ot1wq285rMUypYU8V24TiSrGriOHZEPA5TWuuojxKBdTl9fpQ3pNKalSqgpsTEtxZwv
+         JqAQ7q1jya+7lph7N23aBf8FvXJwHqLYwfNVJWnCDuYjDv45XkzP5BkbOeFTQUM64HZT
+         39OcMoB55J5/qO0VXySO1robXl9XgXjbbQuTTRfX66mYoAxywPIhl/AzX+/qVX3pwpwu
+         rpT7mJ4OQ+9vv+1rWDkqDS7ffodBQHRHDZSmle+lo+lF7Jkzqge2b5O1fM61e984UH9W
+         qxnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mo9sTPGJOqzFeMz9BuM1/7f023SwhVFLBwgC/tDCeG4=;
+        b=UDfKk3ACTZ8ZPozGh8djFNSqofwJnZHSYssT0yCn1hXMPYUBQDLWaseDULF45Hm4Y3
+         aAmjDiE3R3XrSYKARP9dD5cz0fNObJ5abynWJv9mbbILmVgIF1b7Bb74jFcgZlmUNyVP
+         15yVqf3+WYQIkaQ37Xs8kdoTp7mG9VwJ7EQiH56YRJAVLLdLAIm5WRaGBb0PjFXpDH8N
+         KzXI8JnaC25lNjvQJ1oJZtQmWsrgeHnINZBMFWY8sXjwP6/vEP+tPMKCZzSS3neEJd2z
+         Z8OU5lNCLVqrezTXEbkwqQlieWeW0krgzkjVvmR5RAmgYLLTsLtwSqhP2H1MO2i+rHBz
+         Zwvw==
+X-Gm-Message-State: AOAM533MqpJMyskDsnbY1LpEwnY+f6AVudVqRgKh1h/kP+flxF0hAYhW
+        HBetd2fkEuMKfK0yk6YzZZ+KFyGQES3Jm/bgunc/zw==
+X-Google-Smtp-Source: ABdhPJyxwm+xxC4OgLqY7GZAH2a4/ycT9O3c0a/bKoMK3KYy1W/iRCsdHkXpNcu/Pg6Lt6g6wkOnUCP/15hHcZQilOQ=
+X-Received: by 2002:a2e:bf09:: with SMTP id c9mr17209682ljr.128.1628549648846;
+ Mon, 09 Aug 2021 15:54:08 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8946.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5029487d-38ff-4ad0-cedf-08d95b884ee2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 22:52:04.6065
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5nJDTls1oY+wpxcrxkc71Izwg2VZJKbgGqhcZvvQ5cuhnchh8imgCz5xCYLQT6L4JLuCUkEOxQJj8uNYmEM3pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8562
+References: <CANcMJZCEVxVLyFgLwK98hqBEdc0_n4P0x_K6Gih8zNH3ouzbJQ@mail.gmail.com>
+ <20210809223159.2342385-1-john.stultz@linaro.org> <4e1bef57-8520-36b9-f5cb-bbc925626a19@synopsys.com>
+In-Reply-To: <4e1bef57-8520-36b9-f5cb-bbc925626a19@synopsys.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 9 Aug 2021 15:53:57 -0700
+Message-ID: <CALAqxLXPGt69ceiXkGT-nDjeP72mmCUgEzDdMpXr=rSNwpespw@mail.gmail.com>
+Subject: Re: [RFC][PATCH] dwc3: gadget: Fix losing list items in dwc3_gadget_ep_cleanup_completed_requests()
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Jack Pham <jackp@codeaurora.org>, Todd Kjos <tkjos@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Petri Gynther <pgynther@google.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 9, 2021 at 3:44 PM Thinh Nguyen <Thinh.Nguyen@synopsys.com> wrote:
+>
+> John Stultz wrote:
+> > In commit d25d85061bd8 ("usb: dwc3: gadget: Use
+> > list_replace_init() before traversing lists"), a local list_head
+> > was introduced to process the started_list items to avoid races.
+> >
+> > However, in dwc3_gadget_ep_cleanup_completed_requests() if
+> > dwc3_gadget_ep_cleanup_completed_request() fails, we break early,
+> > causing the items on the local list_head to be lost.
+> >
+> > This issue showed up as problems on the db845c/RB3 board, where
+> > adb connetions would fail, showing the device as "offline".
+> >
+> > This patch tries to fix the issue by if we are returning early
+> > we splice in the local list head back into the started_list
+> > and return (avoiding an infinite loop, as the started_list is
+> > now non-null).
+> >
+> > Not sure if this is fully correct, but seems to work for me so I
+> > wanted to share for feedback.
+> >
+> > Cc: Wesley Cheng <wcheng@codeaurora.org>
+> > Cc: Felipe Balbi <balbi@kernel.org>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Alan Stern <stern@rowland.harvard.edu>
+> > Cc: Jack Pham <jackp@codeaurora.org>
+> > Cc: Thinh Nguyen <thinh.nguyen@synopsys.com>
+> > Cc: Todd Kjos <tkjos@google.com>
+> > Cc: Amit Pundir <amit.pundir@linaro.org>
+> > Cc: YongQin Liu <yongqin.liu@linaro.org>
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: Petri Gynther <pgynther@google.com>
+> > Cc: linux-usb@vger.kernel.org
+> > Fixes: d25d85061bd8 ("usb: dwc3: gadget: Use list_replace_init() before traversing lists")
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
+> > ---
+> >  drivers/usb/dwc3/gadget.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> > index b8d4b2d327b23..a73ebe8e75024 100644
+> > --- a/drivers/usb/dwc3/gadget.c
+> > +++ b/drivers/usb/dwc3/gadget.c
+> > @@ -2990,6 +2990,12 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
+> >                       break;
+> >       }
+> >
+> > +     if (!list_empty(&local)) {
+> > +             list_splice_tail(&local, &dep->started_list);
+> > +             /* Return so we don't hit the restart case and loop forever */
+> > +             return;
+> > +     }
+> > +
+> >       if (!list_empty(&dep->started_list))
+> >               goto restart;
+> >  }
+> >
+>
+> No, we should revert the change for
+> dwc3_gadget_ep_cleaup_completed_requests(). As I mentioned previously,
+> we don't cleanup the entire started_list. If the original problem is due
+> to disconnection in the middle of request completion, then we can just
+> check for pullup_connected and exit the loop and let the
+> dwc3_remove_requests() do the cleanup.
 
+Ok, sorry, I didn't read your mail in depth until I had this patch
+sent out. If a revert of d25d85061bd8 is the better fix, I'm fine with
+that too.
 
-> -----Original Message-----
-> From: Zhen Lei <thunder.leizhen@huawei.com>
-> Sent: Tuesday, June 15, 2021 8:16 AM
-> To: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
-> Herring <robh+dt@kernel.org>; Mark Kettenis <mark.kettenis@xs4all.nl>;
-> devicetree <devicetree@vger.kernel.org>; linux-arm-kernel <linux-arm-
-> kernel@lists.infradead.org>; linux-kernel <linux-kernel@vger.kernel.org>
-> Cc: Zhen Lei <thunder.leizhen@huawei.com>
-> Subject: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
-> LX2160A UART
->=20
-> Mark Kettenis told us that:
-> According to the NXP documentation, the LX2160A has a real PL011 UART.
->=20
-> Therefore, rewrite it to the compatible string of pl011. The property "cu=
-rrent-
-> speed" specific to "arm,sbsa-uart" is also deleted.
-
-Sorry that I missed the discussion on the v1.  But looks like this change b=
-reaks the LX2160 boot.  The AMBA matching doesn't seem to work.  And the co=
-nsole is not registered correctly.
-
-[    0.639055] OF: amba_device_add() failed (-2) for /soc/serial@21c0000
-[    0.645612] OF: amba_device_add() failed (-2) for /soc/serial@21d0000
-
->=20
-> Suggested-by: Shawn Guo <shawnguo@kernel.org>
-> Suggested-by: Mark Kettenis <mark.kettenis@xs4all.nl>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> index c4b1a59ba424..d2e6f7285674 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> @@ -920,34 +920,30 @@ QORIQ_CLK_PLL_DIV(8)>,
->  		};
->=20
->  		uart0: serial@21c0000 {
-> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> +			compatible =3D "arm,pl011", "arm,primecell";
->  			reg =3D <0x0 0x21c0000 0x0 0x1000>;
->  			interrupts =3D <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-> -			current-speed =3D <115200>;
->  			status =3D "disabled";
->  		};
->=20
->  		uart1: serial@21d0000 {
-> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> +			compatible =3D "arm,pl011", "arm,primecell";
->  			reg =3D <0x0 0x21d0000 0x0 0x1000>;
->  			interrupts =3D <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-> -			current-speed =3D <115200>;
->  			status =3D "disabled";
->  		};
->=20
->  		uart2: serial@21e0000 {
-> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> +			compatible =3D "arm,pl011", "arm,primecell";
->  			reg =3D <0x0 0x21e0000 0x0 0x1000>;
->  			interrupts =3D <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-> -			current-speed =3D <115200>;
->  			status =3D "disabled";
->  		};
->=20
->  		uart3: serial@21f0000 {
-> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> +			compatible =3D "arm,pl011", "arm,primecell";
->  			reg =3D <0x0 0x21f0000 0x0 0x1000>;
->  			interrupts =3D <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
-> -			current-speed =3D <115200>;
->  			status =3D "disabled";
->  		};
->=20
-> --
-> 2.25.1
->=20
-
+thanks
+-john
