@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1DC3E4616
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5538A3E4619
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhHINGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:06:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48174 "EHLO mail.kernel.org"
+        id S235117AbhHINHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:07:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234684AbhHINGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:06:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BDA161004;
-        Mon,  9 Aug 2021 13:06:27 +0000 (UTC)
+        id S235120AbhHINGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:06:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC3B61019;
+        Mon,  9 Aug 2021 13:06:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628514388;
-        bh=Iq+gT7aGbB5jwY5mIoHM84WkEfnTWJ0Yz9CFdGjS3LQ=;
+        s=k20201202; t=1628514393;
+        bh=CRqBoGFylYHRZ1UbXvc/U4Ue+E5qLCQBP7JZAgce/N0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j90/GNuhpO/S45HPQO5n+SrZ76G1v5D2A87vUXMDapxRzr0V+aMWqln0KfTIuo/zQ
-         KbT3LgsatHRJSHwkF19znprb6a47Ef5K7lMaLT7ddWXKOVZEF7vWClrLPOLZcy3Hxt
-         IqgJ3GVfWmSXmKNTvfJMZ4qNF1a3wALvNzy4O4yCa+0vW6LThSZWok09ZI25Ciu6lA
-         G3/uYm2/XOXBrt7339peaSQhLatuwCJA5m1jJakCxKhgnqFycGzww8hBQf6PMnEFKE
-         ETWdbyNscFuDCRyFqDo3CksWBQ3MxLU/6fKZsRbLIcQpuEPzEAhq9dKI5OI7vmpqDG
-         qd3GEXnR+kC0A==
+        b=OQBxW0IYh7CRpz79C5+yLw6/UkgLqIqg+a3kiPEh25bvAvLGZVWPYotYt2zC/Kkpe
+         PBxLyo2rMqNhxPxX7cSpqJ7UNqB+iFCP2da1J3HZHHCLBzwyViv8amP3RynYXVrZ0C
+         zfDx6pi3SX8GDyeWZPFagOqqEd/y+9lT6zDdDpxKBETwBGB2kmMqliqCbvYKL3GNPe
+         e3D6uCeTtOgIbR9H2tGqn24VB/GKJF/FbxBZ4bh0kh16fmmpLaUVezdM8d6UGM6GXa
+         fNaw9kFw2x6Vynx2/BeIeulHYOvMuENe33pbUWaCbJyMMJDf4O/mI8JX/9dpaJpV5o
+         SxIYvsDS2an5w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] spi: tegra20-slink: Improve runtime PM usage
-Date:   Mon,  9 Aug 2021 14:06:04 +0100
-Message-Id: <162851432638.51983.14201816544596196314.b4-ty@kernel.org>
+To:     robh+dt@kernel.org, Alistair Francis <alistair@alistair23.me>,
+        kernel@pengutronix.de, lee.jones@linaro.org, linux-imx@nxp.com,
+        lgirdwood@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        alistair23@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH v9 00/12] Add support for the silergy,sy7636a
+Date:   Mon,  9 Aug 2021 14:06:06 +0100
+Message-Id: <162851420625.43909.14537871976699842823.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210731192731.5869-1-digetx@gmail.com>
-References: <20210731192731.5869-1-digetx@gmail.com>
+In-Reply-To: <20210806091058.141-1-alistair@alistair23.me>
+References: <20210806091058.141-1-alistair@alistair23.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,26 +42,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 22:27:30 +0300, Dmitry Osipenko wrote:
-> The Tegra SPI driver supports runtime PM, which controls the clock
-> enable state, but the clk is also enabled separately from the RPM
-> at the driver probe time, and thus, stays always on. Fix it.
+On Fri, 6 Aug 2021 19:10:46 +1000, Alistair Francis wrote:
+> This series applied on top of the "mfd: simple-mfd-i2c: Add support for
+> registering devices via MFD cells" patch. Once "mfd: simple-mfd-i2c: Add
+> support for registering devices via MFD cells" is merged this series is
+> ready to go.
 > 
-> Runtime PM now is always available on Tegra, hence there is no need to
-> check the RPM presence in the driver anymore. Remove these checks.
+> v9:
+>  - Convert to use the simple-mfd-i2c instead
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/2] spi: tegra20-slink: Improve runtime PM usage
-      commit: e4bb903fda0e9bbafa1338dcd2ee5e4d3ccc50da
-[2/2] spi: tegra20-slink: Don't use resource-managed spi_register helper
-      commit: 26c863418221344b1cfb8e6c11116b2b81144281
+[05/12] regulator: sy7636a: Use the regmap directly
+        commit: 27fdd3bbb7a13830c05b6bf777e45c392cb00f63
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
