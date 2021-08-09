@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8393E494C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA1D3E494D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235843AbhHIPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53750 "EHLO mail.kernel.org"
+        id S235847AbhHIPzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:55:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235828AbhHIPzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:55:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 585C161040;
-        Mon,  9 Aug 2021 15:54:56 +0000 (UTC)
+        id S235842AbhHIPzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1F4361051;
+        Mon,  9 Aug 2021 15:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628524496;
-        bh=vcdfpziR404S9Inxgldn37afl9+I3dbup99eK9aqxGo=;
+        s=k20201202; t=1628524499;
+        bh=/beiuNqmW6puIkcAFW4NOFWD2PbeHLQ7YuvfsAjXtmI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZNhK56xUZLtUfoniWZUVjzUT91PTJeFQugmf6HM4iT3EcyaJweL7JIqkzRS4cDohB
-         MAK2gigZ58SQ1tPT2yAWNLc6pg4KHpImDVAnhkKR7MssVjlgbBsCJ5FV36mKWSbHIe
-         MnO7kSgVeDkcs8YCd5pN8xfNOCzPpj8ZNDRbqoLeOEJ2P1ZQLWnNUbxcAV441Z3jQu
-         97D/1eVQE8ieQsXURdwdb8dUda82TvM+KVhZeKEq0gdrVza7BQABaqqP0Y1h4UCbjq
-         rW3fjSKU5LA5xDEZxDiaa56Ra2e53/mEwAhRDeEczKs6uFvU8JorYiZA1zKMyc25Am
-         dhhN8G96dwWiQ==
+        b=V/d/GAouFH4eCxPEAF6unNhKCz5jUCGKU8VmWNiWdJTXh6376Qn3PnHqQFZez0dP0
+         grOHKphPtDGbmI6/hLKD/YXxzXsfUui+PuxPD1keH3hdydRF1D7gWgP0IqFc5HMrRU
+         yKJwkvjRuzSxako/9uWbxrvqrxw0kdKo61W0Y71TyB6cVesUC/ZVA3a0IJCupN2Xvy
+         MNJ91YCD5grxG8t9yQSOPMBYwQahFoF1RgoFmNCzTiUprTSk9de39NBPQ9JSLOk84e
+         lwiCjsxe99IzuWT/Rvu5wiNqFFLn7Bn/U1WajpfNbSoelh+hS+TYZAt3/mTLHcIHcd
+         KS8KBdm+RQf3g==
 From:   Mark Brown <broonie@kernel.org>
-To:     robh@kernel.org, Jack Yu <jack.yu@realtek.com>, lgirdwood@gmail.com
-Cc:     Mark Brown <broonie@kernel.org>,
-        "Flove(HsinFu)" <flove@realtek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        =?UTF-8?q?Shuming=20=5B=E8=8C=83=E6=9B=B8=E9=8A=98=5D?= 
-        <shumingf@realtek.com>,
-        =?UTF-8?q?Derek=20=5B=E6=96=B9=E5=BE=B7=E7=BE=A9=5D?= 
-        <derek.fang@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
-        lars@metafoo.de,
-        =?UTF-8?q?kent=5Fchen=20=40=20realtek=20=2E=20com=20=5B=E9=99=B3=E5=BB=BA=E5=AE=8F=5D?= 
-        <kent_chen@realtek.com>
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: rt1015p: add new compatible id
-Date:   Mon,  9 Aug 2021 16:54:34 +0100
-Message-Id: <162852418088.21716.5893582085716795538.b4-ty@kernel.org>
+To:     jack.yu@realtek.com, geert@linux-m68k.org,
+        Steve Lee <steves.lee@maximintegrated.com>, krzk@kernel.org,
+        alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org,
+        linux-kernel@vger.kernel.org, rf@opensource.wolfsonmicro.com,
+        ckeepax@opensource.cirrus.com, dmurphy@ti.com, perex@perex.cz,
+        nuno.sa@analog.com, shumingf@realtek.com, lgirdwood@gmail.com,
+        tiwai@suse.com
+Cc:     Mark Brown <broonie@kernel.org>, steves.lee.maxim@gmail.com,
+        ryan.lee.maxim@gmail.com
+Subject: Re: [PATCH v2] ASoC: max98390: Add support change dsm param name
+Date:   Mon,  9 Aug 2021 16:54:35 +0100
+Message-Id: <162852418087.21716.3746148896944040139.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
-References: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
+In-Reply-To: <20210809142140.9293-1-steves.lee@maximintegrated.com>
+References: <20210809142140.9293-1-steves.lee@maximintegrated.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -48,8 +46,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 10:27:14 +0000, Jack Yu wrote:
-> Add new compatible ID for rt1015p in dt-bindings document.
+On Mon, 9 Aug 2021 23:21:40 +0900, Steve Lee wrote:
+>   In case of using different type of speaker, support
+>  using different dsm parameter bin file for each amp connected.
 > 
 > 
 > 
@@ -61,8 +60,8 @@ Applied to
 
 Thanks!
 
-[2/2] ASoC: dt-bindings: rt1015p: add new compatible id
-      commit: 064478e4877c76b0c1fd1155934f226f1561aab3
+[1/1] ASoC: max98390: Add support change dsm param name
+      commit: a10facb752535c078c914b1910dd72eb2e8d584b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
