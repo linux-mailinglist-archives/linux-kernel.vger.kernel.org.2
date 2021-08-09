@@ -2,258 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771BA3E3ECF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7473E3ED1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhHIEWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 00:22:12 -0400
-Received: from mailgw.kylinos.cn ([123.150.8.42]:3822 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229483AbhHIEWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 00:22:12 -0400
-X-UUID: 68c7f6f2d1794d9487d91d9de1613079-20210809
-X-CPASD-INFO: fc68ffb3077b4d5f849751365bdafc3c@r7NwWJOYkGNcV3mug6eAoFhlaWdlXVO
-        Fd5yEkZSTX4OVhH5xTWJsXVKBfG5QZWNdYVN_eGpQYl9gZFB5i3-XblBgXoZgUZB3taVwWJaUkg==
-X-CPASD-FEATURE: 0.0
-X-CLOUD-ID: fc68ffb3077b4d5f849751365bdafc3c
-X-CPASD-SUMMARY: SIP:-1,APTIP:-2.0,KEY:0.0,FROMBLOCK:1,EXT:0.0,OB:0.0,URL:-5,T
-        VAL:137.0,ESV:0.0,ECOM:-5.0,ML:0.0,FD:0.0,CUTS:257.0,IP:-2.0,MAL:0.0,ATTNUM:0
-        .0,PHF:-5.0,PHC:-5.0,SPF:4.0,EDMS:-3,IPLABEL:4480.0,FROMTO:0,AD:0,FFOB:0.0,CF
-        OB:0.0,SPC:0.0,SIG:-5,AUF:1,DUF:7903,ACD:5,DCD:107,SL:0,AG:0,CFC:0.519,CFSR:0
-        .078,UAT:0,RAF:2,VERSION:2.3.4
-X-CPASD-ID: 68c7f6f2d1794d9487d91d9de1613079-20210809
-X-CPASD-BLOCK: 1000
-X-CPASD-STAGE: 1, 1
-X-UUID: 68c7f6f2d1794d9487d91d9de1613079-20210809
-X-User: liuyun01@kylinos.cn
-Received: from [172.16.31.99] [(116.128.244.169)] by nksmu.kylinos.cn
-        (envelope-from <liuyun01@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1277910942; Mon, 09 Aug 2021 12:20:06 +0800
-Subject: Re: [RFC PATCH v2 05/10] block: Add block device sysfs attribute to
- set/clear/show LED
-To:     Ian Pilcher <arequipeno@gmail.com>, linux-block@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
- <20210809033217.1113444-6-arequipeno@gmail.com>
-From:   Jackie Liu <liuyun01@kylinos.cn>
-Message-ID: <d2322db3-992a-f9c1-53c4-39efc9d957a4@kylinos.cn>
-Date:   Mon, 9 Aug 2021 12:21:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232608AbhHIEYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 00:24:47 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:45426
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229483AbhHIEYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 00:24:46 -0400
+Received: from HP-EliteBook-840-G7.. (1-171-221-113.dynamic-ip.hinet.net [1.171.221.113])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 10DEE3F044;
+        Mon,  9 Aug 2021 04:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628483065;
+        bh=rNTKmk2f1FxpFVDQvfWr910vGJV6I98CEVlT78OYqBE=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=TUHQykpM0pxI6F8Cq4R0iDbUXHb9/c46e6JafcYChga/jtxDXltw+/m/H7l6grPn5
+         xoVetVE+Jq3Z9JcZ+smqUeTj/TgJAvC2uHaLeDqTa7J2UpWCHbPvZxNFIJbhO4W6xF
+         6RWF8IFAyNX0z/WpeuEb1GsqE1M8YJajx+P7OdTPU7B+Jux1Agu3owmL6rP8Optowq
+         0Eo/HWShE3+QFaU1XIJc8YxgsUlcqndKSssbCeyjdUjY0i+MB0kglKV9i50GHU7XRC
+         0/uS19cjV2fzhZcMVVootW/DjcrCk7+YGqTQw87jeoyBg4zXCgt0snSiqCfArVsl/A
+         59FyswxOkgX1Q==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     bhelgaas@google.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] PCI/portdrv: Disallow runtime suspend when waekup is required but PME service isn't supported
+Date:   Mon,  9 Aug 2021 12:24:12 +0800
+Message-Id: <20210809042414.107430-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
+References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210809033217.1113444-6-arequipeno@gmail.com>
-Content-Type: multipart/mixed;
-        boundary="Add_By_Label_Mail_Nextpart_001"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Add_By_Label_Mail_Nextpart_001
-Content-Type: text/plain;
-Content-Transfer-Encoding: 8bit
+Some platforms cannot detect ethernet hotplug once its upstream port is
+runtime suspended because PME isn't enabled in _OSC. The issue can be
+workarounded by "pcie_ports=native".
 
+The vendor confirmed that the PME in _OSC is disabled intentionally for
+stability issues on the other OS, so we should also honor the PME
+setting here.
 
+Disallow port runtime suspend when any child device requires wakeup, so
+pci_pme_list_scan() can still read the PME status from the devices
+behind the port.
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213873
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/pci/pcie/portdrv_pci.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-ÔÚ 2021/8/9 ÉÏÎç11:32, Ian Pilcher Ð´µÀ:
-> Add show & store functions in blk-ledtrig.c (attributes defined in genhd.c)
-> 
-> Show function shows all available LEDs (LEDs associated with blkdev trigger);
-> currently associated LED is shown in square brackets ([])
-> 
-> Store function accepts either all whitespace or "none" to clear LED
-> 
-> Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
-> ---
->   block/blk-ledtrig.c | 109 ++++++++++++++++++++++++++++++++++++++++++++
->   block/blk-ledtrig.h |   8 ++++
->   block/genhd.c       |   8 ++++
->   3 files changed, 125 insertions(+)
-> 
-> diff --git a/block/blk-ledtrig.c b/block/blk-ledtrig.c
-> index 280fa9edc2dd..1af94dc7ea51 100644
-> --- a/block/blk-ledtrig.c
-> +++ b/block/blk-ledtrig.c
-> @@ -6,6 +6,7 @@
->    *	Copyright 2021 Ian Pilcher <arequipeno@gmail.com>
->    */
->   
-> +#include <linux/ctype.h>
->   #include <linux/genhd.h>
->   #include <linux/leds.h>
->   #include <linux/mutex.h>
-> @@ -139,3 +140,111 @@ static int blk_ledtrig_dev_set(struct gendisk *const disk,
->   led_set_exit_return:
->   	return ret;
->   }
-> +
-> +
-> +/*
-> + *
-> + *	sysfs attribute store function to set or clear device LED
-> + *
-> + */
-> +
-> +// Returns a pointer to the first non-whitespace character in s (or a pointer
-> +// to the terminating null).
-> +static const char *blk_ledtrig_skip_whitespace(const char *s)
-> +{
-> +	while (*s != 0 && isspace(*s))
-> +		++s;
-> +
-> +	return s;
-> +}
-> +
-> +// Returns a pointer to the first whitespace character in s (or a pointer to
-> +// the terminating null), which is effectively a pointer to the position *after*
-> +// the last character in the non-whitespace token at the beginning of s.  (s is
-> +// expected to be the result of a previous call to blk_ledtrig_skip_whitespace.)
+diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
+index c7ff1eea225a..e693d243c90d 100644
+--- a/drivers/pci/pcie/portdrv_pci.c
++++ b/drivers/pci/pcie/portdrv_pci.c
+@@ -59,14 +59,30 @@ static int pcie_port_runtime_suspend(struct device *dev)
+ 	return pcie_port_device_runtime_suspend(dev);
+ }
+ 
++static int pcie_port_wakeup_check(struct device *dev, void *data)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++
++	if (!pdev)
++		return 0;
++
++	return pdev->wakeup_prepared;
++}
++
+ static int pcie_port_runtime_idle(struct device *dev)
+ {
++	struct pci_dev *pdev = to_pci_dev(dev);
++
++	if (!pcie_port_find_device(pdev, PCIE_PORT_SERVICE_PME) &&
++	    device_for_each_child(dev, NULL, pcie_port_wakeup_check))
++		return -EBUSY;
++
+ 	/*
+ 	 * Assume the PCI core has set bridge_d3 whenever it thinks the port
+ 	 * should be good to go to D3.  Everything else, including moving
+ 	 * the port to D3, is handled by the PCI core.
+ 	 */
+-	return to_pci_dev(dev)->bridge_d3 ? 0 : -EBUSY;
++	return pdev->bridge_d3 ? 0 : -EBUSY;
+ }
+ 
+ static const struct dev_pm_ops pcie_portdrv_pm_ops = {
+-- 
+2.31.1
 
-These are not linux kernel style comments.
-
-> +static const char *blk_ledtrig_find_whitespace(const char *s)
-> +{
-> +	while (*s != 0 && !isspace(*s))
-> +		++s;
-> +
-> +	return s;
-> +}
-> +
-> +static bool blk_ledtrig_name_is_none(const char *const name, const size_t len)
-> +{
-> +	static const char none[4] = "none";	// no terminating null
-> +
-> +	return len == sizeof(none) && memcmp(name, none, sizeof(none)) == 0;
-> +}
-> +
-> +ssize_t blk_ledtrig_dev_led_store(struct device *const dev,
-> +				  struct device_attribute *const attr,
-> +				  const char *const buf, const size_t count)
-> +{
-> +	struct gendisk *const disk = dev_to_disk(dev);
-> +	const char *const led_name = blk_ledtrig_skip_whitespace(buf);
-> +	const char *const endp = blk_ledtrig_find_whitespace(led_name);
-> +	const ptrdiff_t name_len = endp - led_name;	// always >= 0
-> +	int ret;
-> +
-> +	if (name_len == 0 || blk_ledtrig_name_is_none(led_name, name_len)) {
-> +		blk_ledtrig_dev_clear(disk);
-> +		ret = 0;
-> +	} else {
-> +		ret = blk_ledtrig_dev_set(disk, led_name, name_len);
-> +	}
-> +
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return count;
-> +}
-> +
-> +
-> +/*
-> + *
-> + *	sysfs attribute show function for device LED
-> + *
-> + */
-> +
-> +ssize_t blk_ledtrig_dev_led_show(struct device *const dev,
-> +				 struct device_attribute *const attr,
-> +				 char *const buf)
-> +{
-> +	struct gendisk *const disk = dev_to_disk(dev);
-> +	struct blk_ledtrig_led *bd_led, *disk_led;
-> +	int ret, c = 0;
-> +
-> +	ret = mutex_lock_interruptible(&blk_ledtrig_mutex);
-> +	if (ret != 0)
-> +		goto led_show_exit_return;
-> +
-> +	disk_led = rcu_dereference_protected(disk->led,
-> +					lockdep_is_held(&blk_ledtrig_mutex));
-> +
-> +	if (disk_led == NULL)
-> +		c += sprintf(buf, "[none]");
-> +	else
-> +		c += sprintf(buf, "none");
-> +
-> +	list_for_each_entry(bd_led, &blk_ledtrig_leds, leds_list_node) {
-> +
-> +		ret = snprintf(buf + c, PAGE_SIZE - c - 1,
-> +			       bd_led == disk_led ? " [%s]" : " %s",
-> +			       bd_led->led->name);
-> +		if (ret >= PAGE_SIZE - c - 1) {
-> +			ret = -EOVERFLOW;
-> +			goto led_show_exit_unlock;
-> +		}
-> +
-> +		c += ret;
-> +	}
-> +
-> +	buf[c] = '\n';
-> +	ret = c + 1;
-> +
-> +led_show_exit_unlock:
-> +	mutex_unlock(&blk_ledtrig_mutex);
-> +led_show_exit_return:
-> +	return ret;
-> +}
-> diff --git a/block/blk-ledtrig.h b/block/blk-ledtrig.h
-> index 66a1302a4174..771000d43647 100644
-> --- a/block/blk-ledtrig.h
-> +++ b/block/blk-ledtrig.h
-> @@ -18,6 +18,14 @@ static inline void blk_ledtrig_disk_init(struct gendisk *const disk)
->   
->   void blk_ledtrig_dev_clear(struct gendisk *const disk);
->   
-> +ssize_t blk_ledtrig_dev_led_store(struct device *const dev,
-> +				  struct device_attribute *const attr,
-> +				  const char *const buf, const size_t count);
-> +
-> +ssize_t blk_ledtrig_dev_led_show(struct device *const dev,
-> +				 struct device_attribute *const attr,
-> +				 char *const buf);
-> +
->   #else	// CONFIG_BLK_LED_TRIGGERS
->   
->   static inline void blk_ledtrig_disk_init(const struct gendisk *disk) {}
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 9fa734aeab0f..d5413a633410 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -1012,6 +1012,11 @@ static struct device_attribute dev_attr_fail_timeout =
->   	__ATTR(io-timeout-fail, 0644, part_timeout_show, part_timeout_store);
->   #endif
->   
-> +#ifdef CONFIG_BLK_LED_TRIGGERS
-> +static struct device_attribute dev_attr_led =
-> +	__ATTR(led, 0644, blk_ledtrig_dev_led_show, blk_ledtrig_dev_led_store);
-> +#endif
-> +
->   static struct attribute *disk_attrs[] = {
->   	&dev_attr_range.attr,
->   	&dev_attr_ext_range.attr,
-> @@ -1033,6 +1038,9 @@ static struct attribute *disk_attrs[] = {
->   #endif
->   #ifdef CONFIG_FAIL_IO_TIMEOUT
->   	&dev_attr_fail_timeout.attr,
-> +#endif
-> +#ifdef CONFIG_BLK_LED_TRIGGERS
-> +	&dev_attr_led.attr,
->   #endif
->   	NULL
->   };
-> 
-
---Add_By_Label_Mail_Nextpart_001
-
-Content-type: Text/plain
-
-No virus found
-		Checked by Hillstone Network AntiVirus
-
---Add_By_Label_Mail_Nextpart_001--
