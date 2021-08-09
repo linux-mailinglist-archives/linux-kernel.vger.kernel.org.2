@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EBE3E4BB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABA03E4BB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhHISA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
+        id S234754AbhHISBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233473AbhHISAq (ORCPT
+        with ESMTP id S233874AbhHISAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Aug 2021 14:00:46 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01695C0619E3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:58:36 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id t128so24759380oig.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 10:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=4djiLnstO6wNm5dbfz6GkwUhLMxD4qnGqmOobmKJsZI=;
-        b=N0Or96M7aOJWZYUH7SjZ+jABZ8KfI3HYyYZ8WV2SQjolwax13kczXpC88nlv5hSMxj
-         gNCVS8m2JuKwd7BNPkv2h+Qto+O+e9MXJjQ+T6+A4D3In7YFA0zho8eEqa945fib9PNd
-         DseInCVPLXOvKb6uWLXrGipkaVWjw2nWCuJ/g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=4djiLnstO6wNm5dbfz6GkwUhLMxD4qnGqmOobmKJsZI=;
-        b=je8pfKxVNZANXMquMyLQw6tDWFnVx0jW9F+ZOV4h2VnAtsjQ26gUk1cLEynsMs2sxi
-         CbYcLG2b15pwEj8M1MZnY875CgVKxaky73hXMdyIiLypDRrC7kYP/RP1A2yHtiqhIBub
-         X0+pCuyA0ewmw2Gl9/o1A4in2lC+LyTFCg9+RCb6uR5n9FnEFYHpoKu9pd3OeL2llQG2
-         9h8tl/tdsGz8YApyx6kXnX0G0uOEGOkeS82L6aE/wPC8LZg0sRX7fXKW4I3gYY9Huexx
-         lp3JmmE0oHbNg3/FyHhwKswd1cCMEZEdXeE4bNJuvVNhK31boqPAr5ieUCKXWElDSBYG
-         RMQg==
-X-Gm-Message-State: AOAM533W2o4/q1jt5UWH+nshZPOxK7yA2lFIvtk8+q2YY1QoK1NuagtV
-        AaVZN8RWy7KW/ITmTaQ9I4M5D1xqlCI3qWSIpW/mgw==
-X-Google-Smtp-Source: ABdhPJxqoY3xYfEbdhBxxGGW7jgDxDDtkRxO1ZmZ7Cw1eBlkW2LNeRhEp0vUHIT6TuAWSHIn/gAh9ovhPr0Ka+R+htA=
-X-Received: by 2002:a05:6808:984:: with SMTP id a4mr302594oic.166.1628531915413;
- Mon, 09 Aug 2021 10:58:35 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 9 Aug 2021 10:58:34 -0700
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67291C0617A0
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:59:18 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mD9YS-0003yC-SO
+        for linux-kernel@vger.kernel.org; Mon, 09 Aug 2021 19:59:16 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 76052663774
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 17:59:15 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 98D0566376E;
+        Mon,  9 Aug 2021 17:59:14 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4a9ddbcc;
+        Mon, 9 Aug 2021 17:59:13 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Joe Perches <joe@perches.com>, socketcan@esd.eu,
+        =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>
+Subject: [PATCH v3] =?UTF-8?q?mailmap:=20update=20email=20address=20of=20M?= =?UTF-8?q?atthias=20Fuchs=20and=20Thomas=20K=C3=B6rper?=
+Date:   Mon,  9 Aug 2021 19:58:44 +0200
+Message-Id: <20210809175843.207864-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <bf2b00c5-0826-00d2-ca95-b4ae6a030211@codeaurora.org>
-References: <1628180254-758-1-git-send-email-deesin@codeaurora.org>
- <CAE-0n5203g4CkF5WP1fQYU57fntXbdyVBsMsTKU_xPkgvbt+7Q@mail.gmail.com> <bf2b00c5-0826-00d2-ca95-b4ae6a030211@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 9 Aug 2021 10:58:34 -0700
-Message-ID: <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
-Subject: Re: [PATCH V1 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P IRQ
-To:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Deepak Kumar Singh (2021-08-09 04:05:08)
->
-> On 8/6/2021 1:10 AM, Stephen Boyd wrote:
-> > Quoting Deepak Kumar Singh (2021-08-05 09:17:33)
-> >> Some use cases require SMP2P interrupts to wake up the host
-> >> from suspend.
-> > Please elaborate on this point so we understand what sort of scenarios
-> > want to wakeup from suspend.
->
-> Once such scenario is where WiFi/modem crashes and notifies crash to
-> local host through smp2p
->
-> if local host is in suspend it should wake up to handle the crash and
-> reboot the WiFi/modem.
+Matthias Fuchs's and Thomas Körper's email addresses aren't valid
+anymore. Use the newly created role account instead.
 
-Does anything go wrong if the firmware crashes during suspend and the
-local host doesn't handle it until it wakes for some other reason? I'd
-like to understand if the crash handling can be delayed/combined with
-another wakeup.
+Cc: socketcan@esd.eu
+Cc: Stefan Mätje <Stefan.Maetje@esd.eu>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Changes since v2:
+- use name, not only email address (thanks, Joe)
+Changes since v1:
+- also replace Thomas Körper's email
 
->
-> >> Mark smp2p interrupt as wakeup capable to abort
-> >> the suspend.
-> >>
-> >> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> >> ---
-> >>   drivers/soc/qcom/smp2p.c | 11 +++++++++++
-> >>   1 file changed, 11 insertions(+)
-> >>
-> >> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
-> >> index 2df4883..f8659b0 100644
-> >> --- a/drivers/soc/qcom/smp2p.c
-> >> +++ b/drivers/soc/qcom/smp2p.c
-> >> @@ -18,6 +18,7 @@
-> >>   #include <linux/soc/qcom/smem.h>
-> >>   #include <linux/soc/qcom/smem_state.h>
-> >>   #include <linux/spinlock.h>
-> >> +#include <linux/pm_wakeirq.h>
-> >>
-> >>   /*
-> >>    * The Shared Memory Point to Point (SMP2P) protocol facilitates communication
-> >> @@ -538,9 +539,19 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
-> >>                  goto unwind_interfaces;
-> >>          }
-> >>
-> >> +       ret = device_init_wakeup(&pdev->dev, true);
-> > Is smp2p supposed to wake up the device by default? If not, then this
-> > should be device_set_wakeup_capable() instead so that userspace can
-> > decide if it wants to get the wakeup.
-> yes, we want smp2p to be wake up capable by default.
+ .mailmap | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Why?
+diff --git a/.mailmap b/.mailmap
+index a35ae244dfda..6e849110cb4e 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -229,6 +229,7 @@ Matthew Wilcox <willy@infradead.org> <mawilcox@microsoft.com>
+ Matthew Wilcox <willy@infradead.org> <willy@debian.org>
+ Matthew Wilcox <willy@infradead.org> <willy@linux.intel.com>
+ Matthew Wilcox <willy@infradead.org> <willy@parisc-linux.org>
++Matthias Fuchs <socketcan@esd.eu> <matthias.fuchs@esd.eu>
+ Matthieu CASTET <castet.matthieu@free.fr>
+ Matt Ranostay <matt.ranostay@konsulko.com> <matt@ranostay.consulting>
+ Matt Ranostay <mranostay@gmail.com> Matthew Ranostay <mranostay@embeddedalley.com>
+@@ -341,6 +342,7 @@ Sumit Semwal <sumit.semwal@ti.com>
+ Takashi YOSHII <takashi.yoshii.zj@renesas.com>
+ Tejun Heo <htejun@gmail.com>
+ Thomas Graf <tgraf@suug.ch>
++Thomas Körper <socketcan@esd.eu> <thomas.koerper@esd.eu>
+ Thomas Pedersen <twp@codeaurora.org>
+ Tiezhu Yang <yangtiezhu@loongson.cn> <kernelpatch@126.com>
+ Todor Tomov <todor.too@gmail.com> <todor.tomov@linaro.org>
+-- 
+2.30.2
+
+
