@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FEA3E4900
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E93E3E4906
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbhHIPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhHIPjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:39:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B2116101E;
-        Mon,  9 Aug 2021 15:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628523527;
-        bh=FL2Y67qQKqHbmqaV1S2aZjqQmb/E5C5ZK3+E4BtHn/c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ThBmEC6NAEFNIVe7zi0ikhLlp1LQUgLjgcr1OHxgamGrdkou1CxI8/WW9Quz41dkj
-         9bAqNN/LbbdCxU8sbgiYC/OhTxhbY/ZvDKgsn5r2cgZlMnCshpui5qhmh/D7FR4Bmc
-         tN5Bc2X/B50H2gtHnAO/HAgwZz2H6PkjJ2qJNES3jBNB3Fh1emea2LlxtZx07wG+jG
-         loBVXuxenCFZimPsmxiFJgLXYIWLD88fa3JX4aF73WNbaBkUyrU4E5x14Jh3o0aOvL
-         Q2LMCk2EG8/DpV2F51j9nzmvamtxk6/tMDaeO1/5f9WSEWj4U0LzdAC0t8dNpds7I2
-         4jnu+qdwaxtRg==
-Received: by mail-ed1-f42.google.com with SMTP id k9so7971412edr.10;
-        Mon, 09 Aug 2021 08:38:46 -0700 (PDT)
-X-Gm-Message-State: AOAM533fJ6Wq58iLGWhYma0b0x5pfFrJtZa5PE6A1Hh9l9ha36RRPfEk
-        pMT/JjCqS/vYvMsXGRq0brT2weopM5yyq9ZHyg==
-X-Google-Smtp-Source: ABdhPJwHWW7SqmOjHtOtDmm2lqoa/xhxT33kYVNt+5rEFpgw+r5ogOrkLJOTa6lP4ZuTcsVI90qDJqnl+p/h4q514Ag=
-X-Received: by 2002:a05:6402:104b:: with SMTP id e11mr14192653edu.62.1628523525547;
- Mon, 09 Aug 2021 08:38:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
-In-Reply-To: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
+        id S235324AbhHIPkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:40:35 -0400
+Received: from mail-il1-f176.google.com ([209.85.166.176]:45702 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230095AbhHIPkd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:40:33 -0400
+Received: by mail-il1-f176.google.com with SMTP id a4so2790467ilj.12;
+        Mon, 09 Aug 2021 08:40:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=WGG1rgFtRWD1atfnJsAF0SThE8u/EvqDg7sgN/w+dis=;
+        b=HL9X881+3xa+TfKMUkGg+aoKCemBW2IUhTVhvfAK21/G5qm33RHxVPynZlXJL9cNTD
+         mQQ9zGtC6B5lPqfXcaiMbJdWhakq8r7tm0tjLiAoN2z+p4ZiaVXVmUXoSxyaEuzlFArK
+         +EquFj8UK2HKdHOQsRSMvcmRGCt14XWFldtW2bLxUZiNIrdaPYgiiOP+aEi0ryzeh96A
+         asJU4o9zy0RcfoocG9Rsa/94bAFHJgx+pVollJeW6QKf8CDcmXqNhPLzMlVKgiD/BwUY
+         d/edjXU+rawdG2+ULI3HQgTRLY2cU74fY9sQIaBjbicRUt0IxqPWz9POt+ps6JP8uNHx
+         ti0w==
+X-Gm-Message-State: AOAM533kYNL0tWGZkbduYfL86iq4y/qgx648Q1qnWBwl3lpfyMwzBx5q
+        /GMNtc13+YX9cxnPugEbtg==
+X-Google-Smtp-Source: ABdhPJywuE2hAgbXEHN6zUQXjeNJC1IZeSbz903m/sxmpQ1vfDQzR1MYr8dFmcKRUxYh9JmHI9ys0A==
+X-Received: by 2002:a92:3f0b:: with SMTP id m11mr216280ila.265.1628523613009;
+        Mon, 09 Aug 2021 08:40:13 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id k4sm9351790ilu.67.2021.08.09.08.40.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 08:40:12 -0700 (PDT)
+Received: (nullmailer pid 3895397 invoked by uid 1000);
+        Mon, 09 Aug 2021 15:40:08 -0000
 From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 9 Aug 2021 09:38:33 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKbHF12TVnktAh6Hq0mLnx9xV__rM_kHcyaJt58sXK0ww@mail.gmail.com>
-Message-ID: <CAL_JsqKbHF12TVnktAh6Hq0mLnx9xV__rM_kHcyaJt58sXK0ww@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: rt1015p: add new compatible id
-To:     Jack Yu <jack.yu@realtek.com>
-Cc:     "broonie@kernel.org" <broonie@kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Flove(HsinFu)" <flove@realtek.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
-        =?UTF-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
-        =?UTF-8?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d?= 
-        <kent_chen@realtek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>
+In-Reply-To: <20210809135942.100744-3-krzysztof.kozlowski@canonical.com>
+References: <20210809135942.100744-1-krzysztof.kozlowski@canonical.com> <20210809135942.100744-3-krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 2/3] dt-bindings: clock: samsung: convert S5Pv210 AudSS to dtschema
+Date:   Mon, 09 Aug 2021 09:40:08 -0600
+Message-Id: <1628523608.157762.3895394.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 4:27 AM Jack Yu <jack.yu@realtek.com> wrote:
->
-> Add new compatible ID for rt1015p in dt-bindings document.
-
-Please resend without the winmail.dat attachment. And run 'make
-dt_binding_check' as this will fail.
-
->
-> Signed-off-by: Jack Yu <jack.yu@realtek.com>
+On Mon, 09 Aug 2021 15:59:41 +0200, Krzysztof Kozlowski wrote:
+> Convert Samsung S5Pv210 Audio SubSystem clock controller bindings to DT
+> schema format using json-schema.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
->  Documentation/devicetree/bindings/sound/realtek,rt1015p.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/realtek,rt1015p.yaml b/Documentation/devicetree/bindings/sound/realtek,rt1015p.yaml
-> index 644b68edf3e1..8fcb5f79a1b5 100644
-> --- a/Documentation/devicetree/bindings/sound/realtek,rt1015p.yaml
-> +++ b/Documentation/devicetree/bindings/sound/realtek,rt1015p.yaml
-> @@ -15,7 +15,9 @@ description: |
->
->  properties:
->    compatible:
-> -    const: realtek,rt1015p
-> +      oneOf:
-> +        const: realtek,rt1015p
-> +        const: realtek,rt1019p
->
->    sdb-gpios:
->      description:
-> --
-> 2.31.1
->
+>  .../bindings/clock/clk-s5pv210-audss.txt      | 53 -------------
+>  .../clock/samsung,s5pv210-audss-clock.yaml    | 75 +++++++++++++++++++
+>  2 files changed, 75 insertions(+), 53 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/clk-s5pv210-audss.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/samsung,s5pv210-audss-clock.yaml
+> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/clock/samsung,s5pv210-audss-clock.example.dts:24.31-32 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/clock/samsung,s5pv210-audss-clock.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1419: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1515121
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
