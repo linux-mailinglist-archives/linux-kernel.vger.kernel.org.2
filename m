@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975393E465E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578463E464F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235408AbhHINT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:19:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54452 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbhHINTz (ORCPT
+        id S235311AbhHINO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:14:58 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:13405 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234207AbhHINO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:19:55 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4A5AB21F4B;
-        Mon,  9 Aug 2021 13:19:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628515173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QX1f69WbRiWu5Eg3CL5L0jwPsMknl/HQ42nsUY/VTWg=;
-        b=GosZusxyRFNBNmD8DfIK8+2PEdI3WjLBBd311s7hV+O0VT9gz3Gq3AuPmyg5hW7qbUbbeF
-        WLrVKNIb0/vqs/f8tgH7FDlZr8dM7AXcjvhKvj2fhV6G7c3Tg3IzBZDXp7LUIEeZuLihue
-        1FRI/+zqbTa7m8pHgf7x+ihdfZFxwcs=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 07737A3B81;
-        Mon,  9 Aug 2021 13:19:32 +0000 (UTC)
-Date:   Mon, 9 Aug 2021 15:19:32 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v7 3/5] mm/hugetlb: add support for mempolicy
- MPOL_PREFERRED_MANY
-Message-ID: <YRErZFQGZx4aPYuU@dhcp22.suse.cz>
-References: <1627970362-61305-1-git-send-email-feng.tang@intel.com>
- <1627970362-61305-4-git-send-email-feng.tang@intel.com>
- <YQ06tNiDEsvl8004@dhcp22.suse.cz>
- <20210809024430.GA46432@shbuild999.sh.intel.com>
- <YRDqRMTXVZO9EkoC@dhcp22.suse.cz>
- <20210809123747.GB46432@shbuild999.sh.intel.com>
+        Mon, 9 Aug 2021 09:14:57 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GjxKX3D6Zzcm59;
+        Mon,  9 Aug 2021 21:10:56 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 21:14:34 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 9 Aug 2021
+ 21:14:33 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>
+CC:     <roopa@nvidia.com>, <nikolay@nvidia.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+Subject: [PATCH net v3] net: bridge: fix memleak in br_add_if()
+Date:   Mon, 9 Aug 2021 21:20:23 +0800
+Message-ID: <20210809132023.978546-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809123747.GB46432@shbuild999.sh.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 09-08-21 20:37:47, Feng Tang wrote:
-> On Mon, Aug 09, 2021 at 10:41:40AM +0200, Michal Hocko wrote:
-> [snip]
-> > > >From fc30718c40f02ba5ea73456af49173e66b5032c1 Mon Sep 17 00:00:00 2001
-> > > From: Ben Widawsky <ben.widawsky@intel.com>
-> > > Date: Thu, 5 Aug 2021 23:01:11 -0400
-> > > Subject: [PATCH] mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY
-> > > 
-> > > Implement the missing huge page allocation functionality while obeying the
-> > > preferred node semantics.  This is similar to the implementation for
-> > > general page allocation, as it uses a fallback mechanism to try multiple
-> > > preferred nodes first, and then all other nodes. 
-> > > 
-> > > To avoid adding too many "#ifdef CONFIG_NUMA" check, add a helper function
-> > > in mempolicy.h to check whether a mempolicy is MPOL_PREFERRED_MANY.
-> > > 
-> > > [akpm: fix compling issue when merging with other hugetlb patch]
-> > > [Thanks to 0day bot for catching the !CONFIG_NUMA compiling issue]
-> > > [Michal Hocko: suggest to remove the #ifdef CONFIG_NUMA check]
-> > > Link: https://lore.kernel.org/r/20200630212517.308045-12-ben.widawsky@intel.com
-> > > Link: https://lkml.kernel.org/r/1627970362-61305-4-git-send-email-feng.tang@intel.com
-> > > Suggested-by: Michal Hocko <mhocko@suse.com>
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > Co-developed-by: Feng Tang <feng.tang@intel.com>
-> > > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > 
-> > Yeah. This looks much better. Thanks!
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> Thank you!
-> 
-> > Do you think you can provide same helpers for other policies as well?
-> > Maybe we can get rid of some other ifdefery as well.
-> 
-> Sure. I can make separate patch(es) for that.
-> 
-> And you mean helper like mpol_is_bind/default/local/preferred? 
-> 
-> I just run 'git-grep MPOL', and for places using "mode == MPOL_XXX",
-> mostly they are in mempolicy.[ch], the only another place is in
-> shmem.c, do we need to create all the helpers for it and the
-> potential future users? 
+I got a memleak report:
 
-I would just go with those instances which need to ifdef for NUMA.
-Thanks!
+BUG: memory leak
+unreferenced object 0x607ee521a658 (size 240):
+comm "syz-executor.0", pid 955, jiffies 4294780569 (age 16.449s)
+hex dump (first 32 bytes, cpu 1):
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+backtrace:
+[<00000000d830ea5a>] br_multicast_add_port+0x1c2/0x300 net/bridge/br_multicast.c:1693
+[<00000000274d9a71>] new_nbp net/bridge/br_if.c:435 [inline]
+[<00000000274d9a71>] br_add_if+0x670/0x1740 net/bridge/br_if.c:611
+[<0000000012ce888e>] do_set_master net/core/rtnetlink.c:2513 [inline]
+[<0000000012ce888e>] do_set_master+0x1aa/0x210 net/core/rtnetlink.c:2487
+[<0000000099d1cafc>] __rtnl_newlink+0x1095/0x13e0 net/core/rtnetlink.c:3457
+[<00000000a01facc0>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
+[<00000000acc9186c>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5550
+[<00000000d4aabb9c>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
+[<00000000bc2e12a3>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+[<00000000bc2e12a3>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
+[<00000000e4dc2d0e>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
+[<000000000d22c8b3>] sock_sendmsg_nosec net/socket.c:654 [inline]
+[<000000000d22c8b3>] sock_sendmsg+0x139/0x170 net/socket.c:674
+[<00000000e281417a>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
+[<00000000237aa2ab>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+[<000000004f2dc381>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
+[<0000000005feca6c>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
+[<000000007304477d>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+On error path of br_add_if(), p->mcast_stats allocated in
+new_nbp() need be freed, or it will be leaked.
+
+Fixes: 1080ab95e3c7 ("net: bridge: add support for IGMP/MLD stats and export them via netlink")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+v3:
+  use br_multicast_del_port() to free mcast_stats
+---
+ net/bridge/br_if.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index 5aa508a08a691..b5fb2b682e191 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -604,6 +604,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+ 
+ 	err = dev_set_allmulti(dev, 1);
+ 	if (err) {
++		br_multicast_del_port(p);
+ 		kfree(p);	/* kobject not yet init'd, manually free */
+ 		goto err1;
+ 	}
+@@ -708,6 +709,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+ err3:
+ 	sysfs_remove_link(br->ifobj, p->dev->name);
+ err2:
++	br_multicast_del_port(p);
+ 	kobject_put(&p->kobj);
+ 	dev_set_allmulti(dev, -1);
+ err1:
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
