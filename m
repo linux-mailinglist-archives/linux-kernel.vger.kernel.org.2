@@ -2,189 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B213E3DF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 04:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123DD3E3DFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 04:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbhHICf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 22:35:29 -0400
-Received: from mail-mw2nam08on2095.outbound.protection.outlook.com ([40.107.101.95]:45120
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229891AbhHICf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 22:35:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M+5tE/WIDLc4PvwMT4NXy0dv26PSbsAgPBhGdc/BpVB0KoPjNEIxUzD+0+8QGi78IBqHi0uwn6G9H0XU0pcR6Ma1jJFUcRP69nVC4DLyGoc8JVFdlv6EGVjwAUJM0GHZudrAlWsxl9GYyjcEkoxGAGXYYz9yFhLsya0tUu2xBzWFRLEUta+WwLqUdAua4I1PnseEfw0XI6aZCUjOgO23TX6K8kgAuMpbv6cfwHdLthTIDSA0HHnegzSArzDuWqNyvN9htC/khg4sYn5qVFGjAJjqFpOZjI1MlyKkbrEt9QEQpFXgiZqLd1dvG0DGC4hSleDvNFd75zOe2UHT5K/KdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y5IkY3vbvf1SjpHj5GQVKVnSBrSazxgl1H3XhA0GVEU=;
- b=VwgiKT2PDJR4+2w04ziQc1Nyg+aaxdQ9/iOBNqZ6Ii6NGAI9iHOX6GhHa7WII0gly5cuymkCTcCwrGTVDJqPSCwoWEw5VYQZvTTvpQhb4l4uMIDULxZftJTqEeurtIVKnQc3r5FQe4Dcg7c8Dy1YoEzRlU7ziu6ycY5vTn0QSSkn5e0s/vf4KNr80jpqEb8r8gB7ENd5V+c13BJ4Kvxoo0fe+VYRqf3vt5n/acWU3dKZderTdCkyErOzwz7b1j01ppfdp/QW5nisZMb9vs9WkaIgMTj854S5QrzGrA7fg20tY/kir1oddueABvCqqJMxqevynjzM/LHjkrIRxoawIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y5IkY3vbvf1SjpHj5GQVKVnSBrSazxgl1H3XhA0GVEU=;
- b=C7Fvok6o8IUHaTwO/QGGE3T0XS0X61V6S15r/tslGQHDWWj75cyDK01ji2P00vTuTvEuBMVGzw2VYLtL3x8nCJuLVdxXWulVatCElhTp7pK7cbVsXTuppXOgjT1Ffoj34TZrr5ZWuCP4FnnJGtgvj7NSDKJXMpXQcrN5UnZecsk=
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com (2603:10b6:303:68::18)
- by MWHPR2101MB0730.namprd21.prod.outlook.com (2603:10b6:301:7f::39) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.5; Mon, 9 Aug
- 2021 02:35:05 +0000
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::601a:d59b:f64e:5433]) by MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::601a:d59b:f64e:5433%6]) with mapi id 15.20.4436.005; Mon, 9 Aug 2021
- 02:35:05 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Boqun Feng <Boqun.Feng@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: RE: [EXTERNAL] Re: [RFC 1/1] irqchip/gic-v3-its: Add irq domain and
- chip for Direct LPI without ITS
-Thread-Topic: [EXTERNAL] Re: [RFC 1/1] irqchip/gic-v3-its: Add irq domain and
- chip for Direct LPI without ITS
-Thread-Index: Add0L2f934gE0okbTBC5z2WK9cOcFQCFdR6AAvoodNAA8PnXAACGZfqQAA3HAwAAM+eEgAAWMdVAABp8m4AAR9tVAABSpR6AACDuVUA=
-Date:   Mon, 9 Aug 2021 02:35:05 +0000
-Message-ID: <MW4PR21MB200286E2CF4DA229D7059598C0F69@MW4PR21MB2002.namprd21.prod.outlook.com>
-References: <MW4PR21MB2002BA20FA4A8DAA1C27F4C6C0199@MW4PR21MB2002.namprd21.prod.outlook.com>
-        <87a6mt2jke.wl-maz@kernel.org>
-        <MW4PR21MB2002E51429F7E13B61A34FFEC0E89@MW4PR21MB2002.namprd21.prod.outlook.com>
-        <87tuka24kj.wl-maz@kernel.org>
-        <MW4PR21MB20027EAC23E8053210364E2BC0F09@MW4PR21MB2002.namprd21.prod.outlook.com>
-        <b2dea108-9166-dc9d-abd0-d22491f78568@arm.com>  <87r1f9wooc.wl-maz@kernel.org>
-        <MW4PR21MB2002860BAED850B2B52D6E2BC0F19@MW4PR21MB2002.namprd21.prod.outlook.com>
-        <87wnp0b86y.wl-maz@kernel.org>
-        <MW4PR21MB2002ABD170CC9786CDF5D493C0F39@MW4PR21MB2002.namprd21.prod.outlook.com>
- <87o8a81boi.wl-maz@kernel.org>
-In-Reply-To: <87o8a81boi.wl-maz@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4ab11917-8e3e-45f7-743f-08d95ade4c42
-x-ms-traffictypediagnostic: MWHPR2101MB0730:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR2101MB0730A86AF257432059C8E3E6C0F69@MWHPR2101MB0730.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AxcqoXNFLGrlNV9QumKzHAT11tvrc1yQTxeFDiQMMssTvP4vuERxg5gud6y/Dw1x/baIbGtncJ+um2XItJhrSVhJ3K+RipvY2dcF/mDctaUxLuZmYyAyLwwgdYiM3V5DdeW0tko80RMTK7KFBLIFfAeE8GqRyfjIS/6T7ABV+GgkaGX/VYa8qguoM51uVOxU3ZydXFhu0C8AnVv7N9YOalTvYpXZ/xAwOI2w5XYRLUk+0JdyPIWhpVp3wRKKU5XICt+QRK6GkKkkxdRT/KFu7QPvYYJVCN3Ef1PyveBYvG6m8R5sfUH8+sixoUnkHCEmNXAEmDdsBOR03xBcXGclsuOfLq/C/mGbT081uwkyeSNNHt0gGWnRs0/J+5jiYa/oNCazYvWMlwX8whk+XCaR4WbqKmMalUHx4jl4VG0agr84FJwAzgsrw/3x4Kr26FGOaq79f6HRgBMItxAcMnAQK/XkhdStG8DQVVi5IkJWVuQaEA7sV8WgUDpgFQm6gjQqao6P/MZBVob3wmeZOrQRfV73Lr0lb2R/kEmTvuPS8geXaosKxEF8cLLx1iJRNvlKCu1OBNoeZUs9+xewZ/b/73RAs3+THWwrZohYXGwHhWFY/ck52B0vTKfbvkdvOhQCJR0FDIy1dXlhs0Vfwckh81go15r0OCXxkEz/V4386L8jQ+yKWYYmhkx6wdy1OZ7WLX1EYEZxwe/o7WCBWnSx/MVwHO5FmW5DBj0sP6lYI0k=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB2002.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(52536014)(122000001)(64756008)(5660300002)(6916009)(9686003)(6506007)(66446008)(66556008)(54906003)(82950400001)(55016002)(186003)(82960400001)(38070700005)(8936002)(10290500003)(86362001)(76116006)(508600001)(2906002)(8676002)(71200400001)(8990500004)(33656002)(83380400001)(316002)(66476007)(7696005)(4326008)(66946007)(134034003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bBTf0wtRUAl2Ek2Be9xTAYifaVMy1TTXl4lgkeA3JeNuR+Bmedcm/U/44bvf?=
- =?us-ascii?Q?mdyI8UFJ2L0yEgfez9b10SveEm7Nrsv4zyFFELiNBBvS8EDgbwEwtfvOxXVH?=
- =?us-ascii?Q?kquVBH3Mz6AKBEw7IFbQz87+8ek2cgvxo3haPGhpt/sSXgMTBFxp9w2SMIwV?=
- =?us-ascii?Q?Cktes+Aw6TWx59QO6zu7UyZFA6vxH1YCBWQ3hYlvNWKfQZEWcQaxwqHKgGd6?=
- =?us-ascii?Q?JIf6t1cdicu26QmK/BLKiFUsgVR5CerTKTznAt/5JnCpvGCpuYzBJ5JfJLMB?=
- =?us-ascii?Q?k37NxY2e5XuZL8pqa1OkCMCHSR47C9EtUDp0i72ngOIoqBEX856ibjnmb6sS?=
- =?us-ascii?Q?3ZkL/jD2WhNMB7UnQnG4ifXG6iHtivgtbqU2fxxVHvVcJVY5oCkXxMNNSbzG?=
- =?us-ascii?Q?mSksHr7s5rG29om6kjxDN+AEO41O1cj3Y6Sum7AnSX297TwR76a6TTM0jZ8O?=
- =?us-ascii?Q?KiNRf12+FZvIL5tBF6MbFpC2r+/7dFZEx1Eo073n/jot3/lKLyZJ1LDzOY/f?=
- =?us-ascii?Q?IB+tF4Tguu+2Vl2n6WSxDeC7PlkDladyb/0TlrGc/D86/DKwDGe4O+yYsQ2D?=
- =?us-ascii?Q?TJGMqY9uRlmm0nZFBhW3ZAWcphfK6b70Gl9ulY2Rm0F15AMZHIb1f8EHsSam?=
- =?us-ascii?Q?HtgOPirH6KfKec1gy3v7oCsLBI5SMD5rxWhJDTXUBF1o8nZ9jLmERtqBrECz?=
- =?us-ascii?Q?KER+L2qusIVk573upl6EccwMvGFtrHj2Ncz+CnTVJUahul5IuOXoF1jh6jhw?=
- =?us-ascii?Q?rGCQ5InRQ7UOL9INaIKb+c6P9J9Qgg2GX7rwm4Qtn2NnvVytZAcwClIyrEup?=
- =?us-ascii?Q?SELP8dszlDNZmxcEzI+RwAqZPXuPWqU1xuGT58wEVkHWyeCNAUSqtZEIceWV?=
- =?us-ascii?Q?/7ZWFLOpkThL0IpO0pWO1gzfDisllx/eMtjr0r3/h7OrrnwE0G98cJl4zeKu?=
- =?us-ascii?Q?NIbiXizHZOR6RQbtHmDZ3PwJrpV6ZIkJene8jgHLee9cPvag0Tf8BaJpz+ms?=
- =?us-ascii?Q?iTcOV1hD1AmzypH2LqZUWW0EgNvXPrEnbL7GiGZrEjIJcdQqehqEVi6rNS8d?=
- =?us-ascii?Q?tNqOF+jjAGgaq348iBzFZBG0rDXIEEFUH1UjBDrMuvN0MmCeO3ucO3AuEPAO?=
- =?us-ascii?Q?QFcvRIYqOhYawC5wKunhVUw1otsV7GAPPda/p2cgMO08ve8SxPqc73Gj9bFL?=
- =?us-ascii?Q?T3oA52AwTlO16EF2x4ZQERB+sfj491vDCGYcEniwVoRkESj5UdcMGYdWPoQR?=
- =?us-ascii?Q?xBPTOqF9gbiEZM9S4oUiFeBb2o7Z+bMr0DtfiB5yFvDjJCMXGtDI8ucx3eJH?=
- =?us-ascii?Q?RsumfEy1jrh+ydPD3wYEORfwIs3V828rhzZtRAsGD5pcU5nYzZQosSL2K8+7?=
- =?us-ascii?Q?7gWxdPg5eHyObouWavaReCxHWSxt?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232736AbhHIChS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 22:37:18 -0400
+Received: from mx.ucr.edu ([138.23.62.67]:30677 "EHLO mx5.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232616AbhHIChQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 22:37:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1628476617; x=1660012617;
+  h=mime-version:references:in-reply-to:from:date:message-id:
+   subject:to:cc;
+  bh=S5CPTabNoTndrACQMK6Rmlxzof5oq7hgo1skvEPN0Y8=;
+  b=pkX+g00D+xyKcHECM113YL92k9A4mfSQF/vDN6ADq7j7vMp7g17NeIfl
+   3/2Fi4JgmeiIcrTJiT8QpmDZkeE4ohTnu++3Q46SXAUq6YlbfRkqbQk2g
+   uyWeaVAu/KHZEihcoOI6butUxv53bJHODSNBqg21JVeiAXYulwBy6P543
+   luHwC22Fj46cFcloN0KqoVoRgmF03j7K2fEElVTWzrOAWynIbIMYdY4rd
+   v+BCNE9F/qy4NhAQlbii21cFWZMDKlon9uq73mtloRU+5tMtHLp0xYdBj
+   5bWQDLgfnCl6LmPc/Jfv9weuEZReJOsRrL+PLCzt/ExzvfvT9aIKSec7p
+   g==;
+IronPort-SDR: 320KQQVrh91PhjLY7g9dCFIiGI+W+IqRRKpYuN1OT9csQ8kI+uSez6eQNTMiTcCoKxDXpDAOzK
+ Blrxp/H/Qs1efa/t6xl8o9SGOLYffXCfbVUdkPyaLmngyhfRZZhm1bjUMY10+HcH82vz6wqjjh
+ 0+TFQBFah+znLEH4MEBLT33IVMryHe+q4O4GeConRpbOma5BI01a2nbQviIzhCXgTMPo0VctzC
+ rrta4eX0eshcJ+Z8ggpOWAj4cBcKie4Btt7nx/S5BIrLJXIw5ADvE/LAFp2nzXnBDjfWMjg921
+ lljHkLXUpj+TVCzs5vZLVffl
+X-IPAS-Result: =?us-ascii?q?A2EeAgArlBBhhkfYVdFaHgEBCxIMQIFOC4N4bIRIkW0Di?=
+ =?us-ascii?q?lmRCYF8AgkBAQEPQQQBAYRYAoMFAiU0CQ4BAgQBAQEBAwIDAQEBAQEBAwEBB?=
+ =?us-ascii?q?gEBAQEBAQUEAQECEAEBAQGBIAtZC2OBT4F5BgQ9gjUpAYNtAQEBAxIRBFIQC?=
+ =?us-ascii?q?wsDCgICJgICIQESAQUBHAYTIoJPglYDLwWcWoEEPYsyfzKBAYdZDU4BCQ2BY?=
+ =?us-ascii?q?xJ+KocLhmQngimBS4EFgTM3PoIghTuCZASCLGMHARUnFigTHDIHBmktPREqE?=
+ =?us-ascii?q?X8BAQGTWwGLUJw8WwEGAoMOHJJKhRkJfIVjK4Nli2CGQ5BnLZAslSiVQhAjg?=
+ =?us-ascii?q?T2CFTMaJX8GZ4FLTQECAQIBDAIBAgECAQIBAggBAQKOKA0JFY44JC84AgYLA?=
+ =?us-ascii?q?QEDCYpQAQE?=
+IronPort-PHdr: A9a23:vygK8BSraYHxs/AOY6ykcSTSItpsorWfAWYlg6HPa5pwe6iut67vI
+ FbYra00ygOTBcOEtbkZ0qL/iOPJYSQ4+5GPsXQPItRndiQuroEopTEmG9OPEkbhLfTnPGQQF
+ cVGU0J5rTngaRAGUMnxaEfPrXKs8DUcBgvwNRZvJuTyB4Xek9m72/q99pHNfwlEnjiwbLJ9I
+ Bi2sAnaq9Ubj5ZlJqst0BXCv2FGe/5RxWNmJFKTmwjz68Kt95N98Cpepuws+ddYXar1Y6o3Q
+ 7pYDC87M28u/83kqQPDTQqU6XQCVGgdjwdFDBLE7BH+WZfxrzf6u+9g0ySUIcH6UbY5Uim54
+ qx1VBHnljsINz8h8GHWlMNwir5boAm8rBB72oLYfZ2ZOOZ7cq7bYNgUR3dOXtxJWiNODIOzb
+ YsBAeQCM+hFsYfyu0ADrQeiCQS2GO/j1iNEi33w0KYn0+ohCwbG3Ak4Et0MsXTVrdX1NLoVU
+ euoz6bIzS/Mb/JL0jr66InJcxAhruuNXb5sbcbcx1IiFx7ZgVWKs4DqIS6a1vkUvmWd8uFvW
+ v6hhXQ9pAFtvjig2N0sio/Ri48azl3J8SV0zogrKdC3TEN1bt2pHZReuiyaOYZ7XsIvTn1pt
+ Ss0ybAKpIO2cDUJxZk5yRPSZP+KfpWG7B/+SOucJypzinF9eL+nmRq+7Uytxvf/W8S0ylpGs
+ DdJn9jWun0PyhDe7NWMROFn8Ue7wzmP0hje6uRDIU8pi6XWM4UhwrsslpoLtkTDAzP2lF32j
+ KCIckUk/fCl6+H9bbXnop+QLpd0igPjPqg3lMyyA/k0PhIBX2ic/uS827nj8lPjTLpWif02l
+ 7HVsJHcJcsFuq60GxFZ3pon5hqlDDqr0M4UkWcaIF9EYh6KjZXlN0nLIP/iDPe/h1qskC1sx
+ /DDJrDgApTMLnjZn7fgYbpx90BRxREuzd9D/ZJYEK8OL+/uWkPprtzXEgc5MxCow+bgENh90
+ oIeWWSSAq6WKa/SskGH5vgpI+aSYI8Yoyj9K/c76P70l3M5mkESfbOv3ZQJbHC0BPNmI1+WY
+ SmkvtBUM2AMtxY+Reqio1SHXCRUYT7mXaM3vGoTC4+8C4rHAIe3j+rS8j28G8hnZ3JGF1fEI
+ 3fhds3QSuUMYSPKepRJjzceE7WtVtlyhlmVqAbmxu8/faLv8SoCuMemjYAtj9A=
+IronPort-HdrOrdr: A9a23:kuDo1quu/7YYG/17skaM344a7skDTdV00zEX/kB9WHVpmwKj5r
+ mTdZUgpGfJYVkqKRQdcLy7Scu9qDbnhP1ICOoqXItKPjOW3FdARbsKheDfKn/bexEWndQtsp
+ uIHZIObuEYzmIWsS852mOF+hobr+VvOZrF69vj8w==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="231012977"
+Received: from mail-pj1-f71.google.com ([209.85.216.71])
+  by smtpmx5.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Aug 2021 19:36:55 -0700
+Received: by mail-pj1-f71.google.com with SMTP id mi10-20020a17090b4b4ab0290178b6d7574aso534283pjb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 19:36:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TXT+reKNAAdaXSEr1r6kToV8qtLfQIdGnpz4v9GHBhI=;
+        b=DGJQj2tk9PPDrJLKLhRQMk1wMcg3Aq9Y//dOwiO0zJTWiWPSqBjSoU997eyYgwnl1C
+         PIEB2QKAwjdGTVeDWeJARete5foFwudwiHmgjGIjtSTjwg1n2ITnSXPnfWFVvyhcJf2F
+         rdViZvi+yzi4T/hBp8KLc2SM9jsYzijzL/mrrWBj0ytYfWvRfcUC/rQmhewTPTPNzlmJ
+         lTZgcgX8M2Oz70NuAjkeGAYfOqJ1/IHI5Mwmxdtk1i7SCOceR69uhX9DNMEjrsbiF09c
+         c5TgeKPTTHhLBMkPTHokOzuVSqavVskXY1KkT/8rPmriF1HfWDrPVMHcitStxURu/94p
+         DmUg==
+X-Gm-Message-State: AOAM5314a3tL8o3cTqoWfX5H9z7wklLXxdkHkeL/hQUTg9vpqw66iDu5
+        4T/E4a5zJ5dL/HBMhzjjvDwAfjDlWSWsm233cLXrHLyOqM5OrJ5k4ecryUVunIb5zMZVjKPj2KQ
+        4ClhUjxdjbXvAmqwFhBdMN5PpSHS2UbE4XX/FW2UU2g==
+X-Received: by 2002:a17:90a:448f:: with SMTP id t15mr22860884pjg.21.1628476615285;
+        Sun, 08 Aug 2021 19:36:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmi7KyD7gC/LNsTSN7LbNllZcAdD362fcg3154hLUGjINb7m4IUt/iss0EBAvzX9fyKwU+IE1XNo2+BlsUz3s=
+X-Received: by 2002:a17:90a:448f:: with SMTP id t15mr22860872pjg.21.1628476615053;
+ Sun, 08 Aug 2021 19:36:55 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB2002.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ab11917-8e3e-45f7-743f-08d95ade4c42
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 02:35:05.6178
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jGBKdCB8eMJqaAZ1Olc/ZsbLg+TClPPZEwpZprz3unJgZn5OsEoEQFNm8ojuCuRj7lJmtWPPXmcCA+nvUFEfqP/jZ4B4NK8fT3E1hakqz6g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2101MB0730
+References: <20210719195313.40341-1-yzhai003@ucr.edu> <20210724164840.7381053b@jic23-huawei>
+ <20210808183243.70619aa8@jic23-huawei>
+In-Reply-To: <20210808183243.70619aa8@jic23-huawei>
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Date:   Sun, 8 Aug 2021 19:36:44 -0700
+Message-ID: <CABvMjLRHs61AAYqTeRWV0DHciLBoqHwJ5Djg7ZseYkjE=JhbQg@mail.gmail.com>
+Subject: Re: [PATCH] iio: adc: stm32-dfsdm: Fix the uninitialized use if
+ regmap_read() fails
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sunday, August 8, 2021 3:19 AM,
-Marc Zyngier <maz@kernel.org> wrote:
->=20
-> [+Lorenzo, as he deals with both PCI and ACPI]
->=20
-> I think it is clear enough, but I don't see what this buys us other
-> than turning DirectLPI into something that is essentially private to
-> Hyper-V, just for the sake of sidestepping a firmware description.
-> Furthermore, the Hyper-V "single MSI address" model doesn't match the
-> way DirectLPI works (after all, this is one of the many reasons why we
-> have the ITS).
->=20
-> The architecture already gives you everything you need to make things
-> work in Hyper-V. You can easily implement the DirectLPI support (you
-> definitely need most of it anyway), and the PCI-MSI layer is
-> *free*. All you need is a firmware description. Which I don't believe
-> is the end of the world, given that DT is freely hackable and that
-> IORT is an ARM-private extension to ACPI. I'm sure you know who to
-> reach out to in order to start a draft (and if you don't, I can give
-> you names offline).
->=20
-That sounds reasonable. The DT extension here alone wont suffice for
-Hyper-V and we would need the ACPI IORT extension here as well. Our
-general experience with ACPI extension is that they can take time. But,
-I am curious to hear from Lorenzo on his thoughts here and if just an
-IORT extension means anything else in terms of timelines.
+Hi Jonathan:
+Thanks for your effort, and yes please take a look just in case.
+FYI, I made the modifications align with Alexandru's help, this is the
+original reply:
 
-> I am not interested in expanding the GICv3 architecture support if it
-> cannot be generally used in a way that is *compliant with the
-> architecture*. If you think DirectLPIs can make the hypervisor
-> simpler, I'm fine with it. But let's fully embrace the concept instead
-> of hiding it behind a layer of PV muck. It will even have a chance of
-> working on bare metal (such as on the machine that is humming behind
-> me, or even the Fast Model).
->=20
-Appreciate your inputs. Since we are discussing options, there is one more
-option to enable Hyper-V virtual PCI for ARM64 that I do would like to
-discuss. That option is to implement the IRQ chip completely within the
-Hyper-V module itself. That IRQ chip will take care of allocating LPI vecto=
-rs,
-enabling the interrupt (unmask, mask etc..). It won't be a Direct LPI based=
-,
-but based on custom Hyper-V methods. That chip will parent itself to the
-GIC v3 IRQ domain. The only extra thing needed for this is for the Hyper-V
-IRQ chip to be able to discover the GIC v3 IRQ domain, for which it
-cannot use the 'irq_find_matching_fwnode' method as Hyper-V virtual
-PCI bus/devices are not firmware enumerated. I am not sure if there is any
-other way to discover the GIC (DOMAIN_BUS_WIRED) domain.
+On Mon, Jul 19, 2021 at 12:47 AM Alexandru Ardelean
+<ardeleanalex@gmail.com> wrote:
+>
+> On Mon, Jul 19, 2021 at 2:39 AM Yizhuo Zhai <yzhai003@ucr.edu> wrote:
+> >
+> > Hi All:
+> > Inside function stm32_dfsdm_irq(), the variable "status", "int_en"
+> > could be uninitialized if the regmap_read() fails and returns an error
+> > code.  However, they are directly used in the later context to decide
+> > the control flow, which is potentially unsafe. However,
+> > stm32_dfsdm_irq() returns the type irqreturn_t and I could not return
+>
+> Just curious: are you seeing any issues with these variables being
+> uninitialized?
+>
+> > the error code directly. Could you please advise me here?
+>
+> The correct way to do it, would be:
+>
+> ret = regmap_read(regmap, DFSDM_ISR(adc->fl_id), &status);
+> if (ret)
+>     return IRQ_HANDLED;
+>
+> IRQ handlers should return one of
+> enum irqreturn {
+>     IRQ_NONE        = (0 << 0),
+>     IRQ_HANDLED     = (1 << 0),
+>     IRQ_WAKE_THREAD     = (1 << 1),
+> };
+>
+> If you want to fully optimize/correct this, then it may be something like:
+>
+>         ret = regmap_read(regmap, DFSDM_ISR(adc->fl_id), &status);
+>         if (ret)
+>                 return IRQ_HANDLED;
+>
+>         if (status & DFSDM_ISR_REOCF_MASK) {
+>                 /* Read the data register clean the IRQ status */
+>                 regmap_read(regmap, DFSDM_RDATAR(adc->fl_id), adc->buffer);
+>
+> // in this point, we could check for regmap_read(), but it won't make
+> sense; we should call the complete() handler, either way
+>
+>                 complete(&adc->completion);
+>         }
+>
+>         if (status & DFSDM_ISR_ROVRF_MASK) {
+>                 ret = regmap_read(regmap, DFSDM_CR2(adc->fl_id), &int_en);
+>                 if (ret)
+>                         return IRQ_HANDLED;
+>                 if (int_en & DFSDM_CR2_ROVRIE_MASK)
+>                         dev_warn(&indio_dev->dev, "Overrun detected\n");
+>                 regmap_update_bits(regmap, DFSDM_ICR(adc->fl_id),
+>                                    DFSDM_ICR_CLRROVRF_MASK,
+>                                    DFSDM_ICR_CLRROVRF_MASK);
+>
+> // in this point, we could also check the ret code; but we still need
+> to call IRQ_HANDLED anyway;
+>         }
+>
+>
+> Quite often, when regmap_read() returns errors, then something is
+> seriously wrong in the system.
+> Something else would usually fail or crash worse than this interrupt handler.
+> That being said, properly handling regmap_read() here is a good idea.
+>
+> >
+> > The related code:
+> >
+> > static irqreturn_t stm32_dfsdm_irq(int irq, void *arg) {
+> >     unsigned int status, int_en;
+> >
+> >     regmap_read(regmap, DFSDM_ISR(adc->fl_id), &status);
+> >     regmap_read(regmap, DFSDM_CR2(adc->fl_id), &int_en);
+> >
+> >     if (status & DFSDM_ISR_REOCF_MASK) {}
+> >     if (status & DFSDM_ISR_ROVRF_MASK) {}
+> > }
+> >
+> >
+> > --
+> > Kind Regards,
+> >
+> > Yizhuo Zhai
+> >
+> > Computer Science, Graduate Student
+> > University of California, Riverside
 
-What are your thoughts/feedback on the above? This will allow us to
-enable the scenario for the business timelines we are targeting for, while
-we wait for firmware spec updates. Long term we also want to use
-architectural methods here as that helps the Hypervisor as well, and I
-would be glad to pursue the firmware spec updates in parallel.
 
-Thanks,
-Sunil
+On Sun, Aug 8, 2021 at 10:29 AM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sat, 24 Jul 2021 16:48:40 +0100
+> Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> > On Mon, 19 Jul 2021 19:53:11 +0000
+> > Yizhuo <yzhai003@ucr.edu> wrote:
+> >
+> > > Inside function stm32_dfsdm_irq(), the variable "status", "int_en"
+> > > could be uninitialized if the regmap_read() fails and returns an error
+> > > code.  However, they are directly used in the later context to decide
+> > > the control flow, which is potentially unsafe.
+> > >
+> > > Fixes: e2e6771c64625 ("IIO: ADC: add STM32 DFSDM sigma delta ADC support")
+> > >
+> > > Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+> >
+> > Hi Yizhou
+> >
+> > I want to get some review of this from people familiar with the
+> > hardware as there is a small possibility your reordering might have
+> > introduced a problem.
+>
+> To stm32 people, can someone take a look at this?
+>
+> Thanks,
+>
+> Jonathan
+>
+> >
+> > > ---
+> > >  drivers/iio/adc/stm32-dfsdm-adc.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
+> > > index 1cfefb3b5e56..d8b78aead942 100644
+> > > --- a/drivers/iio/adc/stm32-dfsdm-adc.c
+> > > +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+> > > @@ -1292,9 +1292,11 @@ static irqreturn_t stm32_dfsdm_irq(int irq, void *arg)
+> > >     struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
+> > >     struct regmap *regmap = adc->dfsdm->regmap;
+> > >     unsigned int status, int_en;
+> > > +   int ret;
+> > >
+> > > -   regmap_read(regmap, DFSDM_ISR(adc->fl_id), &status);
+> > > -   regmap_read(regmap, DFSDM_CR2(adc->fl_id), &int_en);
+> >
+> > Moving this later is only valid if there aren't any side effects.
+> > The current ordering is strange enough it makes me wonder if there might be!
+> >
+> > Jonathan
+> >
+> > > +   ret = regmap_read(regmap, DFSDM_ISR(adc->fl_id), &status);
+> > > +   if (ret)
+> > > +           return IRQ_HANDLED;
+> > >
+> > >     if (status & DFSDM_ISR_REOCF_MASK) {
+> > >             /* Read the data register clean the IRQ status */
+> > > @@ -1303,6 +1305,9 @@ static irqreturn_t stm32_dfsdm_irq(int irq, void *arg)
+> > >     }
+> > >
+> > >     if (status & DFSDM_ISR_ROVRF_MASK) {
+> > > +           ret = regmap_read(regmap, DFSDM_CR2(adc->fl_id), &int_en);
+> > > +           if (ret)
+> > > +                   return IRQ_HANDLED;
+> > >             if (int_en & DFSDM_CR2_ROVRIE_MASK)
+> > >                     dev_warn(&indio_dev->dev, "Overrun detected\n");
+> > >             regmap_update_bits(regmap, DFSDM_ICR(adc->fl_id),
+> >
+>
 
 
+--
+Kind Regards,
 
+Yizhuo Zhai
+
+Computer Science, Graduate Student
+University of California, Riverside
