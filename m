@@ -2,111 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959563E44DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AFC3E44F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235259AbhHILaK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Aug 2021 07:30:10 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48696 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234982AbhHILaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:30:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214401531"
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="214401531"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 04:29:44 -0700
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="514915165"
-Received: from scotter-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.9.32])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 04:29:42 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S235279AbhHILch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:32:37 -0400
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:44895 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235183AbhHILce (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 07:32:34 -0400
+Received: by mail-vk1-f173.google.com with SMTP id n198so2893600vkc.11;
+        Mon, 09 Aug 2021 04:32:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mxj7N5l+b6Ocx4OGg4kcLd2JjUTHm+lBGfue7CumrBY=;
+        b=BN+TNEis+XtWOynXwScQmCRpb7Nx9IdHEiAqgkxRPw1iIPjyl3nC5K64oZBOgcRjSo
+         3o37EDOhAbGNILFu3km1hH9wPIaVoT1eg0tzyqfDfa2wTNMRQiVSCikxdyyhLjbc7yZM
+         IRcBXkARt8EgAGfCot7iBiMLjVl9Akg3/NGF4617JmsR4Mnx35YQPTuIqcprct6C1p/X
+         5wnooWYL/3/mb19C4zctv2zBZr1RYv+LCzBioccffWyjSj1dSE9l2Mq4T/fbQp5c9scC
+         0ltgnGZRF4CCSuBab6CmkTtyy8wJYjK3TeR4BJbM2TjcpedA1FJT7fqYSqx0SnfN2z7E
+         5dsw==
+X-Gm-Message-State: AOAM532/xVSvM9yDoXF/8ANJDl1W2EQFGr9Z4/kFS8FT05QYWB3oBEb/
+        QL9lzcYHNZoTMt1PgIFoc5d4i3QWCpcASwzhmCXHCTktz0ptqg==
+X-Google-Smtp-Source: ABdhPJx3wAYkRm3eJ+66cSDjS8+PNQXarfaMmWelDYznJPqBIfXcwRcmEQZsQpKVkJcV+6qXUld4wYZQW+kt2AXQ5Dc=
+X-Received: by 2002:a1f:99cf:: with SMTP id b198mr573186vke.2.1628508733075;
+ Mon, 09 Aug 2021 04:32:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210721155355.173183-5-hch@lst.de>
-References: <20210721155355.173183-1-hch@lst.de> <20210721155355.173183-5-hch@lst.de>
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-To:     Christoph Hellwig <hch@lst.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Subject: Re: [PATCH 04/21] drm/i915/gvt: move the gvt code into kvmgt.ko
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <162850857939.5634.17747219922172884449@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Mon, 09 Aug 2021 14:29:39 +0300
+References: <20210809075016.414276-1-geert@linux-m68k.org>
+In-Reply-To: <20210809075016.414276-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 9 Aug 2021 13:32:02 +0200
+Message-ID: <CAMuHMdUDPic==++UDbdTWTa_a+qThiJ2_8uYw6gNe_v0Rn4XpA@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.14-rc5
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Christoph Hellwig (2021-07-21 18:53:38)
-> Instead of having an option to build the gvt code into the main i915
-> module, just move it into the kvmgt.ko module.  This only requires
-> a new struct with three entries that the main i915 module needs to
-> request before enabling VGPU passthrough operations.
-> 
-> This also conveniently streamlines the GVT initialization and avoids
-> the need for the global device pointer.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Mon, Aug 9, 2021 at 11:51 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.14-rc5[1] to v5.14-rc4[3], the summaries are:
+>   - build errors: +4/-9
 
-Hi,
+  + error: arch/sparc/kernel/head_32.o: relocation truncated to fit:
+R_SPARC_WDISP22 against `.init.text':  => (.head.text+0x5040),
+(.head.text+0x5100)
+  + error: arch/sparc/kernel/head_32.o: relocation truncated to fit:
+R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text
+section in arch/sparc/kernel/trampoline_32.o:  => (.init.text+0xa4)
+  + error: arch/sparc/kernel/process_32.o: relocation truncated to
+fit: R_SPARC_WDISP22 against `.text':  => (.fixup+0xc), (.fixup+0x4)
+  + error: arch/sparc/kernel/signal_32.o: relocation truncated to fit:
+R_SPARC_WDISP22 against `.text':  => (.fixup+0x4), (.fixup+0x34),
+(.fixup+0x1c), (.fixup+0x10), (.fixup+0x28)
 
-Thanks for putting the work into this. This conversion has been
-requested for a long time. For clarity, should we call the module
-i915_kvmgt?
+sparc64/sparc-allmodconfig
 
-How far would we be from dynamically modprobing/rmmoding the kvmgt
-module in order to eliminate the enable_gvt parameter?
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/36a21d51725af2ce0700c6ebcb6b9594aac658a6/ (182 out of 189 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/c500bee1c5b2f1d59b1081ac879d73268ab0ff17/ (182 out of 189 configs)
 
-<SNIP>
+Gr{oetje,eeting}s,
 
-> +
-> +/*
-> + * Exported here so that the exports only get created when GVT support is
-> + * actually enabled.
-> + */
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_alloc, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_create_shmem, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_init, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_ggtt_pin_ww, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_pin_map, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_set_to_cpu_domain, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(__i915_gem_object_flush_map, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(__i915_gem_object_set_pages, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_gtt_insert, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_prime_export, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_ww_ctx_init, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_ww_ctx_backoff, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_gem_ww_ctx_fini, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_ppgtt_create, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_request_add, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_request_create, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_request_wait, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_reserve_fence, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_unreserve_fence, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_vm_release, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(i915_vma_move_to_active, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_context_create, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_context_unpin, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(__intel_context_do_pin, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_ring_begin, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_runtime_pm_get, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_runtime_pm_put_unchecked, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_uncore_forcewake_for_reg, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_uncore_forcewake_get, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(intel_uncore_forcewake_put, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(shmem_pin_map, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(shmem_unpin_map, I915_GVT);
-> +EXPORT_SYMBOL_NS_GPL(__px_dma, I915_GVT);
+                        Geert
 
-This list is also a concern. At the least the double underscore
-functions should be eliminated from being exported.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Zhi and Zhenyu, can we have some further patches to clean that up?
-
-Regards, Joonas
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
