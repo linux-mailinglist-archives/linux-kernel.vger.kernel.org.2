@@ -2,64 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465A53E414C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53443E414F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhHIICz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
+        id S233764AbhHIIEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:04:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233706AbhHIICq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:02:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0D2060E93;
-        Mon,  9 Aug 2021 08:02:09 +0000 (UTC)
+        id S233697AbhHIIEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 04:04:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC43A60C41;
+        Mon,  9 Aug 2021 08:03:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628496130;
-        bh=MVV30goOOfSt5BwOYFBNw0gw59D3pYD277pFi+TFBCg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jzbvk3aYuaIDwlwxC+S7/YP74FnO1+VH2sb6NjhIYU6QyxHBIaVTUxxq6mzNcHtwG
-         WcuN5WtIjRPaH4ne8UYeWQxW9jOJl4OQMTIFIhuRc/DCQXHkrl0+ZMVJzrirru6Psl
-         dnaKhFSyMoVizH2vcln97TsTeHgv85bOe2C7SyLLS9TOhh9bi2zmtC/KPE8y8bttxj
-         O9SFnUS0nlXDKBNQH5rzriemyQ1pr6ezbnrfJ/XuBzZsZDVEmgNkdGmkifNldSxsyq
-         W+6Lc2rFrVv4v/qRTMgoOQrWa4g0RobkppUsy8O57ABRTr0aPKn+jcRbfpMdlUZXrp
-         YIBu+iG6uTbFQ==
+        s=k20201202; t=1628496235;
+        bh=BgZ+4KPqzAbLsG8u4CXByZNOUReuukaF29yR436Xm60=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VaFZ1hlqVY2K0WlwjIEb4ulccFUv3JQrmQ7f9Ud1m0FBK0spesGU+ipppeGTxhMnO
+         +4V4Cq9NwQWEbyKkAgF8xGwMBnRETvlylYwLL+zphIUX3OYH2tkx2wzKu6IAAFuqHD
+         qAQP5OBxkG5bk2A1c+amL/l5ReV+wOZ+NNTv/nZmYZpvlR9hosT+EEinNCbZpX21OK
+         AllR0G75t6ZD1VA2+h1a8p6+qecIePHptsEa7okHsk4qTfkpT2qbeuxyW50Xcb0IVs
+         P2yEgBIaLIp4DFm4qAVjJ6OKR5u9wTvNxZWJEGvEv18SlIObOX+FaiYgSTSjCwGGW6
+         sTqetlZDnLGkg==
+Date:   Mon, 9 Aug 2021 16:03:47 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH RESEND] get_maintainer: add email addresses from dts files
-Date:   Mon,  9 Aug 2021 16:02:04 +0800
-Message-Id: <20210809080204.8381-1-shawnguo@kernel.org>
-X-Mailer: git-send-email 2.17.1
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH 8/8] MAINTAINERS: Add an entry for NXP S32G2 boards
+Message-ID: <20210809080346.GO30984@dragon>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-9-clin@suse.com>
+ <32310c2a-9800-8b04-b6ac-d8ada044c0f8@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32310c2a-9800-8b04-b6ac-d8ada044c0f8@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MAINTAINER file will get bloated quickly if individual section entry
-is created for each .dts/.dtsi file.  Add the email address from dts
-files to get_maintainer output for saving unnecessary patching on
-MAINTAINER file.
+On Thu, Aug 05, 2021 at 09:49:51AM +0200, Krzysztof Kozlowski wrote:
+> On 05/08/2021 08:54, Chester Lin wrote:
+> > Add a new entry for the maintenance of NXP S32G2 DT files.
+> > 
+> > Signed-off-by: Chester Lin <clin@suse.com>
+> > ---
+> >  MAINTAINERS | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 36aee8517ab0..3c6ba6cefd8f 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -2281,6 +2281,12 @@ F:	arch/arm/boot/dts/nuvoton-wpcm450*
+> >  F:	arch/arm/mach-npcm/wpcm450.c
+> >  F:	drivers/*/*wpcm*
+> >  
+> > +ARM/NXP S32G2 ARCHITECTURE
+> > +M:	Chester Lin <clin@suse.com>
+> > +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> > +S:	Maintained
+> > +F:	arch/arm64/boot/dts/freescale/s32g2*
+> 
+> I support the idea of sub-sub-architecture maintainers but I think idea
+> of in-file addresses was preferred:
+> https://lore.kernel.org/lkml/20200830122922.3884-1-shawnguo@kernel.org/
 
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- scripts/get_maintainer.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for reminding that the patch didn't land.  I just resent it with
+your Reviewed-by tag added.  Thanks!
 
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index 2075db0c08b8..15aa8f947f4b 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -436,7 +436,7 @@ sub maintainers_in_file {
- 
-     return if ($file =~ m@\bMAINTAINERS$@);
- 
--    if (-f $file && ($email_file_emails || $file =~ /\.yaml$/)) {
-+    if (-f $file && ($email_file_emails || $file =~ /\.(?:yaml|dtsi?)$/)) {
- 	open(my $f, '<', $file)
- 	    or die "$P: Can't open $file: $!\n";
- 	my $text = do { local($/) ; <$f> };
--- 
-2.17.1
-
+Shawn
