@@ -2,147 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F713E4B2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F96E3E4B35
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234689AbhHIRuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234383AbhHIRue (ORCPT
+        id S234752AbhHIRvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:51:06 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:57452 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234749AbhHIRvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:50:34 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC98C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:50:13 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id s48so31020320ybi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 10:50:13 -0700 (PDT)
+        Mon, 9 Aug 2021 13:51:03 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179HkOGq001586;
+        Mon, 9 Aug 2021 17:50:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=3xhsy4uuZJLG4lyzGTY4jQyrr0SbaWwXY0j71VHFisk=;
+ b=IAu8UDn0O9a/FdKoEpKNHw246NOs9/t6bhWFSfAxPaJ5zv4JDbkxwUGriocdh3zKP0o+
+ s8/bFL9KvMqh/9NQn6wBdnT/+bAZdMwFRFbRWGgKvA+HrguLGVNMtMnjctoE5/8zaxac
+ yMYt7LXqFfO6w66ccSWr+0msm3adM2n/DRcGRgN1KhVywLS7rwosDLwDF0Kqh4rs0iGk
+ FYmDvKC7DUwAEQFZK+wofeTIZSktYZyK0Yg5e1rGieNMnqrjg+xc0WVkGsveT21fpW0w
+ C3umkBVbnKRSPk/neGAaGGRj8p6kaCV/vVe2pP/uNVwS/9mITsqc2Ahyad4AENGTR014 eg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=3xhsy4uuZJLG4lyzGTY4jQyrr0SbaWwXY0j71VHFisk=;
+ b=P38HoIu6gFUDO4T/IV5FsSOoNOW+EvQTUFpgkM+2V6X5S3FmuV4uwgWzBInvqS94AO3v
+ Jy2ulekEa3ZFhmHyo1qC5KiMwYl/0OTS4MjcF6qxgCfNWE3qMMOFnWZ7iMN8BjhEBc4O
+ 1aC59LKFAxh/4RGcXBCnoGtXjZqwYZHcZUjEbjmWuSd4mFbMQFU6wfeN7d2G/zIr3jTc
+ jMmVwk7kCAy7NcVvAA1OK8hxAa++ngOmc2pHI+lDupf2sQI56+PGAxToKzD7EZvQrfoT
+ nAPEP5kLfKW6vVuSGytZTGGD047b7XRiZrozcz/hr3SQcPSOSrygmKKDWFzHsd2MRvhu og== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ab17ds996-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Aug 2021 17:50:33 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 179HoS3M028155;
+        Mon, 9 Aug 2021 17:50:32 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by aserp3030.oracle.com with ESMTP id 3aa8qrqcq1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Aug 2021 17:50:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hdmkTgLxTqswxv2R4LLb+xTELURE1B7vP0Nn0vhX8cGsSk32koLFefqJXtSob9mpEVmjpIL8lYCulBFpfIRI2r29Fdxt+gWvF/mIPEStyWOOIUKL9F/vfUPQSGKXfb9UmCdPHrhrdRTFXYEtPQVMpUgsMZrQHwrGplBdefxuyKLZDD/B7/NioeQ4ySKF7FuI63NLfn2aGUsvcHQ0PBbco9RDceIZFy0rVjEsqYt2UDILIZ+tauC8MSAu5YcNM+j9Yj1YPSIb0dWsVyH49lji9NwdNdU82mazsrZLwAOJGZVZDNzCareGFH4eI34JZpFS2dWY+j5Hp0c8NfrGmm2rng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3xhsy4uuZJLG4lyzGTY4jQyrr0SbaWwXY0j71VHFisk=;
+ b=iw6OV4vZ1fd9eJ+AkwxiW4Mub6HIFS400GhMieNk+6IzKA6jQlKX3re/q/0cXRUWVPASXvsfegqYlaqaBV2GMRMsO96uoeuRpOXRnP764kiRywxhJiX0z8ECTb0nDviUG8qE2ehHj/mZ+LH2IuqZ/vQRIX3LSqk33i6N6FYbmBFTqjB2Wvw+oyrp7/FLc/rPHzv+OdloZKlINAzBLxwoua2PAcTQ1TPexrsGJzAcKZAz8+qavgAto663G91ydA81YVUrsRwWji8mKFbbqW3042zoc/vaFQ1tJxl3cMQCbBwFM7n0KnDEFQbhrtNz0r7ONcsKktFDMr8121mH7/mNDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:cc;
-        bh=O4NMEur8QcJc4TO2WBpgWKn95vBrSIQfedD9EZ6Ad6E=;
-        b=NHSFXr9JCzbE3KrdVbFqcn19A5Tnb4DkN29Tnro3GkqWCJWCuRqRtTFAVO2jsqaqW/
-         K7EI9t7uVRC4FZCKZPflxqwmsKEQUewMajfHpt5YIxOg3Mn3Jclpk7Acdcm2gJJ2vtGA
-         LpZkzh8B9fvK93BQU9AHJ0TMjib1XARHHAvje+yQDm4q147tIS5lwyqx4jLf3v1mK0o8
-         KKEfqKxLpypWUSiZqA6ktVERUx01WFghhswcD3ubgJB2/kmlR7Kdcspq+Rv4ot5FnUcm
-         S7FmYkdTYK+RvV+4nqyJD93BPa7TN0eyPZxnnifidYPgLf3D/cP44xCbz1SHIrycrx+R
-         p6lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:cc;
-        bh=O4NMEur8QcJc4TO2WBpgWKn95vBrSIQfedD9EZ6Ad6E=;
-        b=VUDmqW+VO4BJ4Iwaat2DcR3aa+iZMUyXWXrzGy1mxhOM841QPKs6vYGGRDcJQD1zch
-         IqICc2fb/jd9qtrt1cAlBMvUOdgUlYNhyYjwzOmT+9H/hAS2GCyMej9WQDiT8kNnImdM
-         FOKj6t+EsGepXutn3jdvwftk7pNsAZV8F5xlyD8qlwD54w46c8KVMeM1exjVBMzXy25P
-         TiWnmbmv9Ap0Boobm9d0fh4jPMcL5rqBabWgJWGVwQpTSNYgxo+BGYCbvllxZFB/OFCO
-         4HRoUjyM8XXu2KS9LSxeRD+3XiZ+iGHuIDTFlQHxkIVADM4ZBemy35JlZ9mESFP1NU2/
-         1TFA==
-X-Gm-Message-State: AOAM531fdOHwRmGJKV0KuYHHa0PD/dF7L5H/cAyo+LtPEpBfqeg5FNZ0
-        G2aorKNoJQFY0KkWfjnuEv6xkFNV1pcEFBvtUk8=
-X-Received: by 2002:a25:690f:: with SMTP id e15mt24884000ybc.473.1628531412783;
- Mon, 09 Aug 2021 10:50:12 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3xhsy4uuZJLG4lyzGTY4jQyrr0SbaWwXY0j71VHFisk=;
+ b=n3DntOE8B9d9Vqv4gKy6F+v9YX7zkVuoEu/BNxuNYmjDIPYf8PyOQq6efD9ySVbHjuc/wALws2vBGUB/8PyXHaG0c/dqgGlG9diu0t9Klm81pf92ooyOX4pBWpmDbKnIhVCmqMP9P4B8GJf/L/0BIXgOX0PCaJUrrVHd48e4+MM=
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
+ by SJ0PR10MB5454.namprd10.prod.outlook.com (2603:10b6:a03:304::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Mon, 9 Aug
+ 2021 17:50:17 +0000
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::a8db:4fc8:ded5:e64]) by SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::a8db:4fc8:ded5:e64%5]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 17:50:17 +0000
+From:   Chuck Lever III <chuck.lever@oracle.com>
+To:     Thomas Huth <thuth@redhat.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Bruce Fields <bfields@fieldses.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Jia He <hejianet@gmail.com>,
+        Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
+Subject: Re: [PATCH 0/2] Fix /proc/sys/fs/nfs/nsm_use_hostnames on big endian
+ machines
+Thread-Topic: [PATCH 0/2] Fix /proc/sys/fs/nfs/nsm_use_hostnames on big endian
+ machines
+Thread-Index: AQHXiFazbCL8ap5xPUS5u/husB93VqtrfVgA
+Date:   Mon, 9 Aug 2021 17:50:17 +0000
+Message-ID: <00D67F02-1AA6-43FD-B2F4-EC5015D59A7E@oracle.com>
+References: <20210803105937.52052-1-thuth@redhat.com>
+In-Reply-To: <20210803105937.52052-1-thuth@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d23f6091-77c9-4278-9449-08d95b5e2643
+x-ms-traffictypediagnostic: SJ0PR10MB5454:
+x-microsoft-antispam-prvs: <SJ0PR10MB5454DFB73500721202CAAAA293F69@SJ0PR10MB5454.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i7PBivYbZn3dCFMGu/Rj0Stck7dk0xHlVB3xXvKz6PBKH8pTm/MLT4SXWfP+pzBPsRVWiS2SLc7PLF0I8soNFlJz6Df/jsXf5OtJfVjUkb1PD0stFb5fKV5CUJMqlKR57mnpkVy2V6pS0VuRGThA+dlg5yKQKrLQ1ifCSMu6B/LnwLbXFaBNRSizLDjGrYDX/E0W8r0z1IFPqA4HDvUNJJ5jRWIcJs2PL6y/GWoWozNbYjvzJqO+b6MUAxeuIuzcGqiE7iU/44Xi4hGHcsY97X6SnBzTQn9Qp4UgXN5R0wnStI21KHd4pFKNCOyG+568oCCUv+RcvAKKeOxCIOHKLm09rnmTQHx0Oq83H8i7Oei8Tj6AihjxvpKshISrTBvDnVKwdYmihxcvItWGuuA6nGPTt8IfPx6F63xEBUkiz9KX7PeyV8po95zExyJwVkNw0NFN4Mpukx7dOuIVeZmfXgbjJtJjck5qkbTSXxq/gIVIac275sSLTkFlJqxcikYMmPl6IPKHJGwo9+czo/4wn2uknBNaTf0FFpT/hqtt4zO62w9CBDOvIZmfd3BOSamkt7CprjXPN8fKTg/GXxAsnI9ZZpVdzGAxqW8WNY3wvfBI5ZwiPRlHqmiY3FFgZTzvJva6ofLgx8BdPrE5jl9kHFSOTCzqxunyAHF/IymIvkfuM3sKnkbfrwsKdwPN2m/piClCUZcZD1r/4qvs8RO8Ln/BcY1SQAXI0DOoxDoB51k0tBZ0VYhigzEwOrnNvAReacJNOBG38eNehD35/BwCGY4/KUije3ZfoYXsxLhW+0K+wKs/KwAZs+YOPi8JMbK9lfQ0oBqVC5TmoVrhnEFdfBuJ8HScgWP+SoLE0FfKTXs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(76116006)(8936002)(36756003)(186003)(508600001)(7416002)(91956017)(66556008)(54906003)(316002)(71200400001)(8676002)(66476007)(66446008)(966005)(66946007)(64756008)(5660300002)(6512007)(6506007)(6916009)(33656002)(53546011)(2906002)(86362001)(38100700002)(122000001)(38070700005)(4326008)(6486002)(2616005)(26005)(83380400001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/nqNI/cH/6BtFlfozVfRFyG0BoyiXEm6uRb82d3+pSRq1aQKwaAWX6Eoirw9?=
+ =?us-ascii?Q?A8qeMhXY7Bum/78DtpZjfiweZmgqPhDgFwdbkVRKtXHKnw00m8QTr/3Ev6Vm?=
+ =?us-ascii?Q?dxJcz1wtqwEor7yXkrgkZtKq8A8zadZWZRfz/40JecRlNOXOFnK/abVIj5yg?=
+ =?us-ascii?Q?M99lpQ0+tJIqSZij0VBC1mOFtgcuQmcF/sPjR0MiM97300Z0L0/7QG8u6R5K?=
+ =?us-ascii?Q?/GQ38KmVS1Di2uMDOVca2ItTJGOWUuxy4vcL2Re2f/LEhmzRqC5JwUSH55N/?=
+ =?us-ascii?Q?7hzDM2GapnGW7OkOAI8PfXMU2PnAm0rYrYWFsljVpr1j+MQcs2xG4ze6ZszG?=
+ =?us-ascii?Q?mgf3bIMK437eehl9mi319fj7E6hqT1FC61bsTUuR4Yj4p7xoavUn+QHNgZvt?=
+ =?us-ascii?Q?HQxXHi/QrfuHvlhVcGWFW4ovoNHc0yQsFFjHrvGFm+bGfsqoS900x3nXYkMK?=
+ =?us-ascii?Q?r3Wm9tjpF/a1lw6zaQ0oMW7lwt/EhkDX82KLSJDYD7ieZoJRjL8gePQEV42d?=
+ =?us-ascii?Q?DuJCqyYRFyXzuvIDWR0bI3JhigLUW3QhY4LKt7S6cF0sHGRJYqah46XFedJO?=
+ =?us-ascii?Q?mxQh541wK4Vw7N0ZraeaG8dbYTlJNrMbGCub2ax+1UdgTyEa7AsK1mgiIXsb?=
+ =?us-ascii?Q?i+qCZ0DPlTL6brezJIIeipqwDouEL0AwdYfN3JLWCw3eKzwArfogLnv82fri?=
+ =?us-ascii?Q?vK39JE5vQmDHd1GiuEixa34MkN0VJoSnS1LvuG5m9p9all4XBd5jaPT5SAFp?=
+ =?us-ascii?Q?XfaPNs7rl47p1QuRbaoWQWLBhDAgJiEkRj5eTliM+Tdob0KqnUcPqoXt797r?=
+ =?us-ascii?Q?cSzO8MdRxz9WD4ktbYzE+vP5L5Uh2f1ic0us20wdk3yTpQ6BF6ALdM2jFogL?=
+ =?us-ascii?Q?zq/6BzN3KAvy7PxtaZ27CSe+7eGeqa3ryN2cJnLXSSYqkPfMX/iOyi1TVhPI?=
+ =?us-ascii?Q?ErAL1Ai6s4eYyznfmmZZyMFZpKfCzdz4XyhxOqCAENxBHF2a0VqyAqcOK0Ss?=
+ =?us-ascii?Q?y7genk/SAXdodcgnVxY8lzs9J+GMQ0roTQzAUMr/FZ1eZ4eHIIK9y5sHcLMa?=
+ =?us-ascii?Q?vbqmv3gLTO2XjpW/k/scQ57CIGLo3/n5309Fs+24Kk3HtlSWYVeF3j6qQgWn?=
+ =?us-ascii?Q?0BOBPBdLCWHV/C2eVEODXnUi+v/hwKvk4QoTsxd6v1FAQumv30OnsvkoclfY?=
+ =?us-ascii?Q?3DPz5qXjMnrkNL5N6+b0SBtfzsyejjfFFN2ni3SiD8dDta/dSrhE4EBR15aC?=
+ =?us-ascii?Q?hyP5n6RF1tQHgsYLRAGcvd8RyXYOoBn8FoclqQVqwdrmaiFHNQQGPyp0+5Oq?=
+ =?us-ascii?Q?UpPSV90Fx6+k9P9WQ9W4wv+7e4AKzdaaBrc9akpnNwlEWg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D08953FEDCCDF24EA43539FDE271F485@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: by 2002:a05:7110:918f:b029:eb:d45:8011 with HTTP; Mon, 9 Aug 2021
- 10:50:12 -0700 (PDT)
-Reply-To: mp034367@gmail.com
-In-Reply-To: <CAOpEvtiGXf=qs3wB-vc20O6K1isE+rSqoWCH2YV0VuExuRyJJA@mail.gmail.com>
-References: <CAOpEvtgnxJTxQRyYoNSawaG_ft3hEWGPBySGw-qp751NfYWEYA@mail.gmail.com>
- <CAOpEvtgYVEKzj-5FbN30nrTXdoHydxxc___NL+eog8gfteeP-g@mail.gmail.com>
- <CAOpEvtj+sRP4ioG3J=wjzh8eZ-jL-ivKaDN2gpXzA0EpjZPA7Q@mail.gmail.com>
- <CAOpEvtjBCMV4qaQtnwd1yyJ_Dyx+3Qt2zC_m=-QfRYPGcN=tPw@mail.gmail.com>
- <CAOpEvtjR3cRRzeucmJJLu-JXJkXhimxaoZwGpBpY2+AwQaOJgg@mail.gmail.com>
- <CAOpEvtjR6U1HKDonr1hLJsF+LOucxdimdgqHz2mrcQQe69ejxA@mail.gmail.com>
- <CAOpEvtjd4W0VC+q6mbTGCFsYXuVRSr5WjBBHGpCJHhPts8Rscw@mail.gmail.com>
- <CAOpEvthys1Bm3w3fG6thrKz6dBCUiky3yF63tjpBpupfu=EA_w@mail.gmail.com>
- <CAOpEvtjj5pu_QB_2jm2YoWrAe4Hw7GB72KX1Je0zxQjDEvobig@mail.gmail.com>
- <CAOpEvthB4BxxJJw-UV-q9=ZX3LzTgVTiXhPYaT3MOKyq=MpKxQ@mail.gmail.com>
- <CAOpEvti=ONcEt_Y4ZF3aDZhGa8vhHkDT1wMuEkQnWZDP+XG-AQ@mail.gmail.com>
- <CAOpEvtgnaMMzoK0pgEmVr1KfqQD0Cw1YuKTPhYxV4NrMn624PQ@mail.gmail.com>
- <CAOpEvtju2ocU313kd0oUyKtpcfaXYSeyiCya=EvBjb8UwmO2DA@mail.gmail.com>
- <CAOpEvtjy+U92RBKX4cZxPZk0Q16tkb+vrZ_BO8x_cTn5A5LweQ@mail.gmail.com>
- <CAOpEvtgHohF9p1T+G+FQkc6X4ogo_BsVgY3Enb69ssxoMTFpeQ@mail.gmail.com>
- <CAOpEvtitFdiE-C6q9NDpnRzweHviTHChXB+ep6DC2DD74uGjEg@mail.gmail.com>
- <CAOpEvtgBaumHG9PJ+U1fa+SH6LWw=P5QEyjowF=dMsTa6AM8Xw@mail.gmail.com>
- <CAOpEvtij7-GduJxc4NZS6ZdCuQiorT9BpSj_AZPJS7ZrOMjquw@mail.gmail.com>
- <CAOpEvtidVNK0THUroBU2Wbku0TyowKxABNJuNA3Ux5=m6SKiDA@mail.gmail.com>
- <CAOpEvtgbSVja2VOMiAAa-acR8prhd9j37Cuv2bP3CMTWmhCo9A@mail.gmail.com>
- <CAOpEvtiWc=-BXEKpfavFs6xBc5aRpV_Eb=-oAeYD1iXK3MxjZg@mail.gmail.com>
- <CAOpEvtg0yLRBvSSagsi0kORPn7sObHvSzrm2bzc2-q08Y=oEkg@mail.gmail.com>
- <CAOpEvtgkXP4_A6fNnxqaNDzxBV5gwQrfrpesv7c3qu2mdzM-kw@mail.gmail.com>
- <CAOpEvtgOCukSLLPdcTz6LszQAjUSMNv9gRC8pMHHF9knf1QJbA@mail.gmail.com>
- <CAOpEvtjJXjrVUR4Yfgv9AgeBbALbW2LqjrQfAwWis1-Ut6s36w@mail.gmail.com>
- <CAOpEvtitmX-jrXUfyvrtL4BymXGTXArCaZV5Rx6gFWA1TxqAAQ@mail.gmail.com>
- <CAOpEvti21qkZhAgwMDKTpxdQX69EBHoDxmD0719zjbXNpWtGTg@mail.gmail.com>
- <CAOpEvtiJDf2LWujDcogwNv9jgx+tA8yX2im+Um6Rz_QoMdP6CQ@mail.gmail.com>
- <CAOpEvtjCaCK8TkBQ1Q1nDxDuE6tTbYp2GYgKXMe7hWdzoVb+OA@mail.gmail.com>
- <CAOpEvtjz_YJOtkbA4+x-NU7z3S9fkK7RTmW2yd5HryO0wQpUKw@mail.gmail.com>
- <CAOpEvtjF9yMMFChLrTeUdujM6-kaDmFtsCNWpGxPKOB-ysyzvw@mail.gmail.com>
- <CAOpEvtj+iA3woj3H1D2KwFu+O=yQO+SWtDaU7a+smHOLMSDwMQ@mail.gmail.com>
- <CAOpEvtiRLpAsRNJp7EQ7UPhMO+KWi-2Tc=v3MaxiJG5=b2Gu+A@mail.gmail.com>
- <CAOpEvti46Nk+y9v5hbhMfrn5k7+wRXbVRTKWMfeyYUabGAQr+A@mail.gmail.com>
- <CAOpEvtjBQYcmseiuTy=L7rt-RqbngeuLcSMA1ZvsHW3SAJ9h7w@mail.gmail.com>
- <CAOpEvthfrRCLXWA7oFvs+GopY4rKPpvovy35zQdxLFcTkNU-Ow@mail.gmail.com>
- <CAOpEvtiQSXNWJBioXkW_-rSP9ZJ5y5kyfN9m3fRp7Q58uN+UoA@mail.gmail.com>
- <CAOpEvtiS-qnLZhPAxmjwqosYjY7qz9svLkZXnt05bUv_8iTQLQ@mail.gmail.com>
- <CAOpEvtjwMbXxqpzTiCRP25Y778EdrBcqto_YX8XahAPVQYbyDg@mail.gmail.com>
- <CAOpEvtjmYjNUB+FqEnGaVzkkq1Sb1-yZU9F5kyGUoCsgS5XN7Q@mail.gmail.com>
- <CAOpEvtjt1dfVhy1wtju-dnZg+EdW0VbbJbrp8g0n0JKVuO1e-g@mail.gmail.com>
- <CAOpEvthNydMqkxJx6qx9C2ebY1n6jMpaSfK+dRuv68=adHRq0w@mail.gmail.com>
- <CAOpEvtjLNLrNAGh9k+s=g1DYa=7XS48-twnHBU8KYFfSXr-HOg@mail.gmail.com>
- <CAOpEvtgV5GTcgf0T90Keoa1MUTmMF4yW9RPRa=bv2919ne5Kdg@mail.gmail.com>
- <CAOpEvtgaszVp-MfhLbH4Wg4bfod2HysxzQbOmYqkFtSyTiZBcg@mail.gmail.com>
- <CAOpEvtiU+6JhxtykD5bRA8cKrPrgwVU+Gz4i6EboCNVpzVysdQ@mail.gmail.com>
- <CAOpEvtj+zgYow+Q8ckp5mev2y_bTrhBirWExw-NF3JqCDS80CA@mail.gmail.com> <CAOpEvtiGXf=qs3wB-vc20O6K1isE+rSqoWCH2YV0VuExuRyJJA@mail.gmail.com>
-From:   Pepe Edem <amedodziyaovi@gmail.com>
-Date:   Mon, 9 Aug 2021 18:50:12 +0100
-Message-ID: <CAOpEvtj_hAfg9DETt6ZiQpSrT56ZaspVX7fMgQjGJyb1d+yZPQ@mail.gmail.com>
-Subject: Greetings
-Cc:     mp034367@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d23f6091-77c9-4278-9449-08d95b5e2643
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 17:50:17.5467
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KA4i5kUp6T+ohJPeDxOiXdyE+hEzp4n9GJh1zxOqhgrcm7RGWdAzEXHb407ZlfmDdG+1t1N3F4OmFTURWzVSgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5454
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10071 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 mlxscore=0
+ spamscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108090126
+X-Proofpoint-GUID: NYHpcgp8-rSSOLjDL9VjfJLN2cT_9ca3
+X-Proofpoint-ORIG-GUID: NYHpcgp8-rSSOLjDL9VjfJLN2cT_9ca3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day My Good Friend.
 
-I am deeply sorry if I have in any manner disturbed your privacy.
-Please forgive this unusual manner of contacting you, there is
-absolutely going to be a great doubt and distrust in your heart in
-respect of this email. There is no way for me to know whether I will
-be properly understood, but it is my duty to write and reach out to
-you as a person of transparency, honesty and high caliber. I'll
-introduce myself once again, i am Mr. Pepe Edem, from Togo Republic. I
-am also the Branch Bank Manager of Biatogo Bank, I was also the
-Account Manager of my late client Mrs. Stella  Who might or might
-not be related to you.
 
-She traveled down to china on the 28th of December 2019 on a five
-weeks business trip and after the successful transaction in china, she
-flew back, not knowing she has been infected with the deadly
-Coronavirus (COVID-19). And she sadly passed away on March 20th 2020.
-She left the sum of $3.2 Million (Three Million, Two Hundred Thousand
-United States Dollars) in our financial institute (Bank), she
-specifically confided in me told me that "no one else knows about her
-funds in our bank" that the funds was for a project before she passed
-away while she was ill. And down here in our country at this present
-day, once anyone passes away, after 1 Year if no relatives of the late
-customer doesn't come to claim the funds/assets it'll be recycled, and
-reported to the Central Bank where the greedy government will then
-want to have their hands on the funds.
+> On Aug 3, 2021, at 6:59 AM, Thomas Huth <thuth@redhat.com> wrote:
+>=20
+> There is an endianess problem with /proc/sys/fs/nfs/nsm_use_hostnames
+> (which can e.g. be seen on an s390x host) :
+>=20
+> # modprobe lockd nsm_use_hostnames=3D1
+> # cat /proc/sys/fs/nfs/nsm_use_hostnames
+> 16777216
+>=20
+> The nsm_use_hostnames variable is declared as "bool" which is required
+> for the correct type for the module parameter. However, this does not
+> work correctly with the entry in the /proc filesystem since this
+> currently requires "int".
+>=20
+> Jia He already provided patches for this problem a couple of years ago,
+> but apparently they felt through the cracks and never got merged. So
+> here's a rebased version to finally fix this issue.
+>=20
+> Buglink: https://bugzilla.redhat.com/show_bug.cgi?id=3D1764075
+>=20
+> Jia He (2):
+>  sysctl: introduce new proc handler proc_dobool
+>  lockd: change the proc_handler for nsm_use_hostnames
+>=20
+> fs/lockd/svc.c         |  2 +-
+> include/linux/sysctl.h |  2 ++
+> kernel/sysctl.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+> 3 files changed, 45 insertions(+), 1 deletion(-)
+>=20
+> --=20
+> 2.27.0
 
-That's where you come in, since you bear the same surnames with her, I
-want you to stand as her next of kin since no one else knows about
-this funds in our bank besides me, and i don't think anyone will be
-coming for it. I promise you that if you agree to assist in claiming
-this funds from my Bank, we'll not bridge the law in any way because
-I'll be your eyes and ears here in the Bank.
+To get these patches in front of our zero-day apparatus,
+I've applied them to the for-next topic branch here:
 
-After all is settled we'll share the fund $3.2 Million 50% equally or
-rather invest on whatever we choose. So I would really like to know
-what you have to say in regards to my proposal.
+https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git/log/?h=3Dfor-=
+next
 
-Thanks
-Mr. Pepe Edem.
+However I haven't seen an Ack for the kernel/sysctl.c change yet.
+
+
+--
+Chuck Lever
+
+
+
