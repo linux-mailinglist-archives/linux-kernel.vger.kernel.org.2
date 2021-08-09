@@ -2,327 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE7A3E4100
+	by mail.lfdr.de (Postfix) with ESMTP id 981713E4101
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbhHIHqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbhHIHpv (ORCPT
+        id S233552AbhHIHqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:46:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20171 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233575AbhHIHpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:45:51 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E90AC0613CF;
-        Mon,  9 Aug 2021 00:45:30 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id a8so26534764pjk.4;
-        Mon, 09 Aug 2021 00:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SrLgkSJMzgJNstGssttga51BfllZQtA+A4n81rJJdYk=;
-        b=bt2QYH2bo+Ta8686hD+/L9PL5tWBdaw+0JPkFoW5Xcs0GIqNjHVYjxF7jCTarkseyr
-         K9WKNd8mEO5xsbhDucq5aS4rrKEV/egPdFV3egO8kGl1CmXNV7OfaiN0re3nvcFPOcCx
-         03mmAhgvLCDAD5LUnIUP+aQ3LwBdL7KiG+P2x80SzYkk8ibqU2iVDBVWMdJHqjMktA8S
-         ePI0eiZKzNDeaAvtVdNELlB4l77uGkZrpJhm+qWLhqvAUlKfEw66lFK5883TrF/yBzSi
-         dm0qFElVyKz9AzwFkjEWVC5J2NWTvuL2jr3LjPHgNrmB434xmxEd0w87oMr1D4zglPGp
-         5WxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SrLgkSJMzgJNstGssttga51BfllZQtA+A4n81rJJdYk=;
-        b=QO24tqPVH3cmO+Ts50wgmmaD4V7glwhbFo2u1k0a4Ar22i2f/MC3qCX7mZiYyhdiZj
-         NtW1sRtwliAQfCalj8fLgRmdQhqzx//uiWE6tPRA/vekdXDOWzoYdqGZuuSZInzl3xlD
-         S6I+T7dk0wTmRvlZGgk10R2F/qJdM/I61qGC0RIR2KQt9aNs3Mqeh67WjZIgrRufLeES
-         fGVY3/MrPSyNhDKVZcFESMh1TamqmnMCTZO+n5BWYH5q9h13RpcNOOfRc3sjXm++qU5G
-         hViMLqjKyATTUpR+saDWVdZ4dngTxV1aPisuYH4NXv+AZDhEmd6MHpuI7FuKbEtXZEUl
-         b3tw==
-X-Gm-Message-State: AOAM532TilL8LHuCRJcJSTD2ofmiLBmfhTpDdzWvHzzTLjc7gqRQBVrT
-        zAetP7GrhItMOcL20be60So=
-X-Google-Smtp-Source: ABdhPJz1MdG3dMJgJY5Wf3BRU5Up00cijzh9YQEitGKAFx+YcWr19cbmdBm6L47QZOLxsx4MqAD+Tw==
-X-Received: by 2002:a63:f54:: with SMTP id 20mr261208pgp.106.1628495130171;
-        Mon, 09 Aug 2021 00:45:30 -0700 (PDT)
-Received: from localhost.localdomain ([27.255.251.44])
-        by smtp.googlemail.com with ESMTPSA id h16sm18602524pfn.215.2021.08.09.00.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 00:45:29 -0700 (PDT)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     Michael.Hennerich@analog.com, jic23@kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lars@metafoo.de,
-        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
-Cc:     Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH v9 2/2] iio: accel: adxl355: Add triggered buffer support
-Date:   Mon,  9 Aug 2021 13:15:12 +0530
-Message-Id: <20210809074512.34757-3-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210809074512.34757-1-puranjay12@gmail.com>
-References: <20210809074512.34757-1-puranjay12@gmail.com>
+        Mon, 9 Aug 2021 03:45:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628495135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sNLQyoKHz3doB3VgHoSYiw/2Wi9gt/WD6yUBM0vzV9U=;
+        b=VNnMWS2LtZVDxEc26SFpnM2pJHwnVJlX1Vh/l6NcSRvsFuah8KlwzNlg4EYD7sFLI0xyAX
+        yxbTxd9os+zvqQtj+TAuQXO6ABOQWCcSKbYbrq19zVfqdGW4ZB84vSAPFpEZQ2FriGhWJg
+        xkWkhMbCgEyVE4h/qbAtRp6qImXr5dM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-z6TTFUY7OwO2e0ffebZ4jA-1; Mon, 09 Aug 2021 03:45:32 -0400
+X-MC-Unique: z6TTFUY7OwO2e0ffebZ4jA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 887631853028;
+        Mon,  9 Aug 2021 07:45:30 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AC1BD60CC9;
+        Mon,  9 Aug 2021 07:45:28 +0000 (UTC)
+Message-ID: <33d01b8bb31541be7911f95581cdf608c6c79bf6.camel@redhat.com>
+Subject: Re: [PATCH] selftests: KVM: avoid failures due to reserved
+ HyperTransport region
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Joao Martins <joao.m.martins@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     stable@vger.kernel.org, David Matlack <dmatlack@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Date:   Mon, 09 Aug 2021 10:45:27 +0300
+In-Reply-To: <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
+References: <20210805105423.412878-1-pbonzini@redhat.com>
+         <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a way for continuous data capture by setting up buffer support. The
-data ready signal exposed at the DRDY pin of the ADXL355 is exploited as
-a hardware interrupt which triggers to fill the buffer.
+On Fri, 2021-08-06 at 11:57 +0100, Joao Martins wrote:
+> 
+> On 8/5/21 11:54 AM, Paolo Bonzini wrote:
+> > Accessing guest physical addresses at 0xFFFD_0000_0000 and above causes
+> > a failure on AMD processors because those addresses are reserved by
+> > HyperTransport (this is not documented).  
+> 
+> Oh, but it's actually documented in the AMD IOMMU manual [0] (and AMD IOMMU in linux do
+> mark it as a reserved IOVA region i.e. HT_RANGE_START..HT_RANGE_END). And it's usually
+> marked as a reserved type in E820. At least on the machines I've seen.
+> 
+> See manual section '2.1.2 IOMMU Logical Topology':
+> 
+> "Special address controls in Table 3 are interpreted against untranslated guest physical
+> addressess (GPA) that lack a PASID TLP prefix."
+> 
+>  Base Address   Top Address   Use
+> 
+>   FD_0000_0000h FD_F7FF_FFFFh Reserved interrupt address space
+>   FD_F800_0000h FD_F8FF_FFFFh Interrupt/EOI IntCtl
+>   FD_F900_0000h FD_F90F_FFFFh Legacy PIC IACK
+>   FD_F910_0000h FD_F91F_FFFFh System Management
+>   FD_F920_0000h FD_FAFF_FFFFh Reserved Page Tables
+>   FD_FB00_0000h FD_FBFF_FFFFh Address Translation
+>   FD_FC00_0000h FD_FDFF_FFFFh I/O Space
+>   FD_FE00_0000h FD_FFFF_FFFFh Configuration
+>   FE_0000_0000h FE_1FFF_FFFFh Extended Configuration/Device Messages
+>   FE_2000_0000h FF_FFFF_FFFFh Reserved
+> 
+> It covers the range starting that address you fixed up ... up to 1Tb, fwiw.
+> 
+> You mark it ~1010G as max gfn so shouldn't be a problem.
+> 
+> [0] https://www.amd.com/system/files/TechDocs/48882_IOMMU.pdf
+> 
+> > Avoid selftests failures
+> > by reserving those guest physical addresses.
+> > 
+> > Fixes: ef4c9f4f6546 ("KVM: selftests: Fix 32-bit truncation of vm_get_max_gfn()")
+> > Cc: stable@vger.kernel.org
+> > Cc: David Matlack <dmatlack@google.com>
+> > Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> > ---
+> >  tools/testing/selftests/kvm/lib/kvm_util.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > index 10a8ed691c66..d995cc9836ee 100644
+> > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > @@ -309,6 +309,12 @@ struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+> >  	/* Limit physical addresses to PA-bits. */
+> >  	vm->max_gfn = ((1ULL << vm->pa_bits) >> vm->page_shift) - 1;
+> >  
+> > +#ifdef __x86_64__
+> > +	/* Avoid reserved HyperTransport region on AMD processors.  */
+> > +	if (vm->pa_bits == 48)
+> > +		vm->max_gfn = 0xfffcfffff;
+> > +#endif
+> > +
+> 
+> Not sure if it's worth the trouble having a macro with the same name as AMD iommu like:
+> 
+> #define HT_RANGE_START                (0xfd00000000ULL)
+> #define MAX_GFN			      (HT_RANGE_START - 1ULL)
+> 
+> #ifdef __x86_64__
+> 	/* Avoid reserved HyperTransport region on AMD processors.  */
+> 	if (vm->pa_bits == 48)
+> 		vm->max_gfn = MAX_GFN;
+> #endif
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- drivers/iio/accel/Kconfig        |   4 ++
- drivers/iio/accel/adxl355.h      |   2 +-
- drivers/iio/accel/adxl355_core.c | 102 ++++++++++++++++++++++++++++++-
- drivers/iio/accel/adxl355_i2c.c  |   3 +-
- drivers/iio/accel/adxl355_spi.c  |   2 +-
- 5 files changed, 108 insertions(+), 5 deletions(-)
+I guess now that we know that it is documented, it is worth it,
+to remove '== 48' check and add check for an AMD cpu, and add reference
+to this manual.
 
-diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
-index d0c45c809..9c16c1841 100644
---- a/drivers/iio/accel/Kconfig
-+++ b/drivers/iio/accel/Kconfig
-@@ -69,6 +69,8 @@ config ADXL355_I2C
- 	depends on I2C
- 	select ADXL355
- 	select REGMAP_I2C
-+	select IIO_BUFFER
-+	select IIO_TRIGGERED_BUFFER
- 	help
- 	  Say Y here if you want to build i2c support for the Analog Devices
- 	  ADXL355 3-axis digital accelerometer.
-@@ -82,6 +84,8 @@ config ADXL355_SPI
- 	depends on SPI
- 	select ADXL355
- 	select REGMAP_SPI
-+	select IIO_BUFFER
-+	select IIO_TRIGGERED_BUFFER
- 	help
- 	  Say Y here if you want to build spi support for the Analog Devices
- 	  ADXL355 3-axis digital accelerometer.
-diff --git a/drivers/iio/accel/adxl355.h b/drivers/iio/accel/adxl355.h
-index 322b0abb8..f0a376e6d 100644
---- a/drivers/iio/accel/adxl355.h
-+++ b/drivers/iio/accel/adxl355.h
-@@ -15,5 +15,5 @@ extern const struct regmap_access_table adxl355_readable_regs_tbl;
- extern const struct regmap_access_table adxl355_writeable_regs_tbl;
- 
- int adxl355_core_probe(struct device *dev, struct regmap *regmap,
--		       const char *name);
-+		       const char *name, int irq);
- #endif /* _ADXL355_H_ */
-diff --git a/drivers/iio/accel/adxl355_core.c b/drivers/iio/accel/adxl355_core.c
-index d1163cde1..45397dcce 100644
---- a/drivers/iio/accel/adxl355_core.c
-+++ b/drivers/iio/accel/adxl355_core.c
-@@ -9,6 +9,10 @@
- 
- #include <asm/unaligned.h>
- #include <linux/bitfield.h>
-+#include <linux/iio/buffer.h>
-+#include <linux/iio/trigger.h>
-+#include <linux/iio/triggered_buffer.h>
-+#include <linux/iio/trigger_consumer.h>
- #include <linux/iio/iio.h>
- #include <linux/limits.h>
- #include <linux/math64.h>
-@@ -153,6 +157,7 @@ static const struct adxl355_chan_info adxl355_chans[] = {
- };
- 
- struct adxl355_data {
-+	int irq;
- 	struct regmap *regmap;
- 	struct device *dev;
- 	struct mutex lock; /* lock to protect op_mode */
-@@ -162,6 +167,12 @@ struct adxl355_data {
- 	int calibbias[3];
- 	int adxl355_hpf_3db_table[7][2];
- 	u8 transf_buf[3] ____cacheline_aligned;
-+	struct iio_trigger      *dready_trig;
-+	/* Ensure correct alignment of timestamp when present */
-+	struct {
-+		__be32 channels[3];
-+		s64 ts;
-+	} buffer ____cacheline_aligned;
- };
- 
- static int adxl355_set_op_mode(struct adxl355_data *data,
-@@ -493,12 +504,46 @@ static int adxl355_read_avail(struct iio_dev *indio_dev,
- 	}
- }
- 
-+static const unsigned long adxl355_avail_scan_masks[] = {
-+	GENMASK(3, 0),
-+	0
-+};
-+
- static const struct iio_info adxl355_info = {
- 	.read_raw	= adxl355_read_raw,
- 	.write_raw	= adxl355_write_raw,
- 	.read_avail	= &adxl355_read_avail
- };
- 
-+static const struct iio_trigger_ops adxl355_trigger_ops = {
-+	.validate_device = &iio_trigger_validate_own_device,
-+};
-+
-+static irqreturn_t adxl355_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct adxl355_data *data = iio_priv(indio_dev);
-+	int ret;
-+
-+	mutex_lock(&data->lock);
-+
-+	ret = regmap_bulk_read(data->regmap, ADXL355_XDATA3_REG,
-+			       data->buffer.channels,
-+			       9);
-+	if (ret)
-+		goto out_unlock_notify;
-+
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
-+					   pf->timestamp);
-+
-+out_unlock_notify:
-+	mutex_unlock(&data->lock);
-+	iio_trigger_notify_done(indio_dev->trig);
-+
-+	return IRQ_HANDLED;
-+}
-+
- #define ADXL355_ACCEL_CHANNEL(index, reg, axis) {			\
- 	.type = IIO_ACCEL,						\
- 	.address = reg,							\
-@@ -512,6 +557,7 @@ static const struct iio_info adxl355_info = {
- 	.info_mask_shared_by_type_available =				\
- 		BIT(IIO_CHAN_INFO_SAMP_FREQ) |				\
- 		BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),	\
-+	.scan_index = index,						\
- 	.scan_type = {							\
- 		.sign = 's',						\
- 		.realbits = 20,						\
-@@ -531,17 +577,56 @@ static const struct iio_chan_spec adxl355_channels[] = {
- 		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
- 				      BIT(IIO_CHAN_INFO_SCALE) |
- 				      BIT(IIO_CHAN_INFO_OFFSET),
-+		.scan_index = 3,
- 		.scan_type = {
- 			.sign = 's',
- 			.realbits = 12,
- 			.storagebits = 16,
- 			.endianness = IIO_BE,
- 		},
--	}
-+	},
-+	IIO_CHAN_SOFT_TIMESTAMP(4)
- };
- 
-+static int adxl355_probe_trigger(struct iio_dev *indio_dev)
-+{
-+	struct adxl355_data *data = iio_priv(indio_dev);
-+	int ret;
-+
-+	if (!data->irq) {
-+		dev_info(data->dev, "no irq, using polling\n");
-+		return 0;
-+	}
-+
-+	data->dready_trig = devm_iio_trigger_alloc(data->dev, "%s-dev%d",
-+						   indio_dev->name,
-+						   indio_dev->id);
-+	if (!data->dready_trig)
-+		return -ENOMEM;
-+
-+	data->dready_trig->ops = &adxl355_trigger_ops;
-+	iio_trigger_set_drvdata(data->dready_trig, indio_dev);
-+
-+	ret = devm_request_irq(data->dev, data->irq,
-+			       &iio_trigger_generic_data_rdy_poll,
-+			       IRQF_ONESHOT, "adxl355_irq", data->dready_trig);
-+	if (ret < 0)
-+		return dev_err_probe(data->dev, ret, "request irq %d failed\n",
-+				     data->irq);
-+
-+	ret = devm_iio_trigger_register(data->dev, data->dready_trig);
-+	if (ret) {
-+		dev_err(data->dev, "iio trigger register failed\n");
-+		return ret;
-+	}
-+
-+	indio_dev->trig = iio_trigger_get(data->dready_trig);
-+
-+	return 0;
-+}
-+
- int adxl355_core_probe(struct device *dev, struct regmap *regmap,
--		       const char *name)
-+		       const char *name, int irq)
- {
- 	struct adxl355_data *data;
- 	struct iio_dev *indio_dev;
-@@ -554,6 +639,7 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
- 	data = iio_priv(indio_dev);
- 	data->regmap = regmap;
- 	data->dev = dev;
-+	data->irq = irq;
- 	data->op_mode = ADXL355_STANDBY;
- 	mutex_init(&data->lock);
- 
-@@ -562,6 +648,7 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->channels = adxl355_channels;
- 	indio_dev->num_channels = ARRAY_SIZE(adxl355_channels);
-+	indio_dev->available_scan_masks = adxl355_avail_scan_masks;
- 
- 	ret = adxl355_setup(data);
- 	if (ret < 0) {
-@@ -569,6 +656,17 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
- 		return ret;
- 	}
- 
-+	ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
-+					      &iio_pollfunc_store_time,
-+					      &adxl355_trigger_handler, NULL);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret,
-+				     "iio triggered buffer setup failed\n");
-+
-+	ret = adxl355_probe_trigger(indio_dev);
-+	if (ret < 0)
-+		return ret;
-+
- 	return devm_iio_device_register(dev, indio_dev);
- }
- EXPORT_SYMBOL_GPL(adxl355_core_probe);
-diff --git a/drivers/iio/accel/adxl355_i2c.c b/drivers/iio/accel/adxl355_i2c.c
-index e3070ee81..c18521819 100644
---- a/drivers/iio/accel/adxl355_i2c.c
-+++ b/drivers/iio/accel/adxl355_i2c.c
-@@ -31,7 +31,8 @@ static int adxl355_i2c_probe(struct i2c_client *client)
- 		return PTR_ERR(regmap);
- 	}
- 
--	return adxl355_core_probe(&client->dev, regmap, client->name);
-+	return adxl355_core_probe(&client->dev, regmap, client->name,
-+				  client->irq);
- }
- 
- static const struct i2c_device_id adxl355_i2c_id[] = {
-diff --git a/drivers/iio/accel/adxl355_spi.c b/drivers/iio/accel/adxl355_spi.c
-index a16bd1407..f9ba153f6 100644
---- a/drivers/iio/accel/adxl355_spi.c
-+++ b/drivers/iio/accel/adxl355_spi.c
-@@ -34,7 +34,7 @@ static int adxl355_spi_probe(struct spi_device *spi)
- 		return PTR_ERR(regmap);
- 	}
- 
--	return adxl355_core_probe(&spi->dev, regmap, id->name);
-+	return adxl355_core_probe(&spi->dev, regmap, id->name, spi->irq);
- }
- 
- static const struct spi_device_id adxl355_spi_id[] = {
--- 
-2.30.1
+I am mentioning the 48 bit check because I have seen that AMD just recently
+posted 5 level NPT support, so I guess CPUs which > 48 bit max physical address
+are also probably on horison.
+
+And long term solution for this I guess is to add these areas to a blacklist
+and avoid them.
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> It's a detail, but *perhaps* would help people grepping around it.
+> 
+> Also, not sure if checking against AMD cpuid vendor is worth, considering this is
+> a limitation only on AMD.
+> 
+> 
+> >  	/* Allocate and setup memory for guest. */
+> >  	vm->vpages_mapped = sparsebit_alloc();
+> >  	if (phy_pages != 0)
+> > 
+
 
