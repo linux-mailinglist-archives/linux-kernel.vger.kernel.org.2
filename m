@@ -2,262 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A973E49C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC773E49C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhHIQ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbhHIQZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:25:14 -0400
-Received: from mail-io1-xd49.google.com (mail-io1-xd49.google.com [IPv6:2607:f8b0:4864:20::d49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8D9C061796
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:24:51 -0700 (PDT)
-Received: by mail-io1-xd49.google.com with SMTP id j22-20020a5d9d160000b0290583f3b421c0so11255217ioj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=dkSZUU/uk6SQ3+U96D2KBe64exlQSNW3hRG9Cvg1J6M=;
-        b=arIgfx29ADeLHR6v3iYGNKL/T7V3tRuRqYs+iHq+beL0yf4YRJZVTiOT8Py0cXbgFR
-         h1mkfr4V57RmkGROMWfkWDP73t2D8hEBXpGbeH3f2XLhaHik9gNinFLgFK2LPQbaJzVz
-         VkwnefzNxdVs1BGGoZKyZiAXuQoj9jlq6S4AZW/LJ0baaMB0rOrb5/+zGIU4Ua3gDKzY
-         ATWjEO9tFcYnk5mHRcxqZ8iUPuM8gX7s4pLzixEv1QLzHFCl+BjeHOPP21vBNvw5Sj5A
-         I2Max9spj5AZAUDPZbmH9WhmTQb+nGpEOyIx1XPHBiOw4ZYKKRv3smBs7A/D9MsQPuN/
-         hiuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=dkSZUU/uk6SQ3+U96D2KBe64exlQSNW3hRG9Cvg1J6M=;
-        b=jEPFf3Vrva62zmF2itRN0UZ3C3Pe3tYQZaPuagS0KbipG8xqseUFaaPQFPJB+czne8
-         5hLZ/HOLwQbqAfwxD3vLbgSArpwPvosHZf6h43Tfy3biCgGssHzxy9bd62iJsRjTpGE3
-         Oz9UsGzaf9m37KniwqmN+2eDSZQjtqkMalinKiEvyKnoW2IzmTkqyEsC9iqWNJtY6Gss
-         5aEqSkvaNMETrTAByNXMGWs2mwW8oVyGJ0HztekZnuyk2sHr8nva/RsDS1s9Gv95y4yT
-         liXTHLkXvP/zTAQggtrIII/14y/vAfZXTELiyjcoeyx4UV49Sy0hn8fSFrTmWZOS9FPL
-         OmcA==
-X-Gm-Message-State: AOAM530fPFSD/aGl5lCgcRv+MDIBc3/ll0wzxMwlu6LCsLbFdIq92i7p
-        Fv0nc0P4vC5bJXg0NrS8qlZ3ilR7k9Y=
-X-Google-Smtp-Source: ABdhPJy34N/JVJ9R5jnBqAyeklN5JtjdIsU1Y6h1jnwsk9KtyNgf0aMgg7pit1xElxU1RTd1dmbe0pMciwE=
-X-Received: from cjense.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:6d0])
- (user=cjense job=sendgmr) by 2002:a02:b682:: with SMTP id i2mr21694190jam.97.1628526290736;
- Mon, 09 Aug 2021 09:24:50 -0700 (PDT)
-Date:   Mon,  9 Aug 2021 16:24:28 +0000
-Message-Id: <20210809162427.1471314-1-cjense@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH 1/1] perf test: Add test for CSV output.
-From:   Claire Jensen <cjense@google.com>
-To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, irogers@google.com,
-        eranian@google.com
-Cc:     Claire Jensen <cjense@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232638AbhHIQZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:25:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:36284 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232310AbhHIQZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 12:25:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5FD6D6E;
+        Mon,  9 Aug 2021 09:24:51 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C00E3F718;
+        Mon,  9 Aug 2021 09:24:51 -0700 (PDT)
+Subject: Re: [PATCH 3/3] PCI/ACPI: Add new quirk detection, enable bcm2711
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210806221256.GA1891371@bjorn-Precision-5520>
+ <5f4f484b-9eef-2722-405d-a7ff6259aa0f@arm.com>
+ <CAL_JsqL=ipGBOsMUaCDvAETX5DQ2tCunNSAtFs6VZybOW7Xrdg@mail.gmail.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <ba0409df-dbd7-b765-48d4-a2db846de689@arm.com>
+Date:   Mon, 9 Aug 2021 11:24:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqL=ipGBOsMUaCDvAETX5DQ2tCunNSAtFs6VZybOW7Xrdg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add field checking tests for perf stat CSV output. Counts expected
-fields for various commands. No testing added for summary mode
-since it is broken.
+Hi,
 
-An example of the summary output is:
+Thanks for looking at this.
 
-         summary,263831,,instructions:u,1435072,100.0,0.46,insn per cycle
-,,,,,1.37,stalled cycles per insn
+On 8/9/21 10:27 AM, Rob Herring wrote:
+> On Fri, Aug 6, 2021 at 6:35 PM Jeremy Linton <jeremy.linton@arm.com> wrote:
+>>
+>> Hi,
+>>
+>> Thanks for looking at this.
+>>
+>> On 8/6/21 5:12 PM, Bjorn Helgaas wrote:
+>>> In subject, this or similar would match history:
+>>>
+>>>     PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
+>>>
+>>> On Thu, Aug 05, 2021 at 04:12:00PM -0500, Jeremy Linton wrote:
+>>>> Now that we have a bcm2711 quirk, we need to be able to
+>>>> detect it when the MCFG is missing. Use a namespace
+>>>> property as an alternative to the MCFG OEM.
+>>>
+>>> Rewrap to use ~75 columns.
+>>>
+>>> Mention the DT namespace property here.
+>>>
+>>>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+>>>> ---
+>>>>    drivers/acpi/pci_mcfg.c | 14 ++++++++++++++
+>>>>    1 file changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+>>>> index 53cab975f612..7d77fc72c2a4 100644
+>>>> --- a/drivers/acpi/pci_mcfg.c
+>>>> +++ b/drivers/acpi/pci_mcfg.c
+>>>> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
+>>>>       ALTRA_ECAM_QUIRK(1, 13),
+>>>>       ALTRA_ECAM_QUIRK(1, 14),
+>>>>       ALTRA_ECAM_QUIRK(1, 15),
+>>>> +
+>>>> +    { "bcm2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
+>>>> +      DEFINE_RES_MEM(0xFD500000, 0xA000) },
+>>>>    };
+>>>>
+>>>>    static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
+>>>> @@ -198,8 +201,19 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
+>>>>       u16 segment = root->segment;
+>>>>       struct resource *bus_range = &root->secondary;
+>>>>       struct mcfg_fixup *f;
+>>>> +    const char *soc;
+>>>>       int i;
+>>>>
+>>>> +    /*
+>>>> +     * This could be a machine with a PCI/SMC conduit,
+>>>> +     * which means it doens't have MCFG. Get the machineid from
+>>>> +     * the namespace definition instead.
+>>>
+>>> s/SMC/SMCCC/ ?  Cover letter uses SMCCC (not sure it's relevant anyway)
+>>> s/doens't/doesn't/
+>>>
+>>> Rewrap comment to use ~80 columns.
+>>>
+>>> Seems pretty reasonable that a platform without standard ECAM might
+>>> not have MCFG, since MCFG basically implies ECAM.
+>>
+>>
+>> Sure, on all the above comments.
+>>
+>>>
+>>> Is "linux,pcie-quirk" the right property to look for?  It doesn't
+>>> sound very generic, and it doesn't sound like anything related to
+>>> ECAM.  Is it new?  I don't see it in the tree yet.  Should it be in
+>>> Documentation/devicetree/bindings/pci/pci.txt so we don't get a
+>>> different property name for every new platform?
+> 
+> No, it should not be in pci.txt. Nothing to do with DT and I don't
+> review ACPI bindings (someone should) if I can help it.
 
-This should be:
+That is the intention of the uefi properties registry I referred to 
+earlier. It has a code first model too, which allows us to review it 
+here and then update the document with the property and the intended 
+behavior.
 
-         summary,263831,,instructions:u,1435072,100.0,0.46,insn per cycle
-         summary,,,,,,1.37,stalled cycles per insn
+> 
+>> Yes, I made it up. Someone else commented about the "linux," partially
+>> because it should be "linux-" to conform with
+>> https://github.com/UEFI/DSD-Guide. But also in the same context of it
+>> being linux specific.  I think that guide is where it should end up,
+>> rather than the devicetree bindings.
+>>
+>> I guess we can request addition to the uefi- but that seems like a
+>> mistake this is really (hopefully?) a Linux specific properly as other
+>> OS's will simply use the SMC. I think we could request another prefix if
+>> we come up with a good one and think it belongs in that guide.
+> 
+> It's only Linux specific until it's not.
+> 
+> What happens when there's a second PCIe quirk here? Say what the quirk
+> is (and not in terms of Linux policy).
 
-The output has 7 fields when it should have 8. Additionally, the newline
-spacing is wrong, so it was excluded from testing until a fix is made.
+This is really just a stand in for the existing MCFG oem id, its an 
+identifier to key off, nothing else.  Maybe a better name is 
+"linux-ecam-quirk-id" or something to that effect?
 
-Signed-off-by: Claire Jensen <cjense@google.com>
----
- .../tests/shell/lib/perf_csv_output_lint.py   |  51 ++++++++
- tools/perf/tests/shell/stat+csv_output.sh     | 110 ++++++++++++++++++
- 2 files changed, 161 insertions(+)
- create mode 100644 tools/perf/tests/shell/lib/perf_csv_output_lint.py
- create mode 100644 tools/perf/tests/shell/stat+csv_output.sh
+> 
+> Don't you know the device here and can imply all this (like implying
+> off of 'compatible' in DT)? Adding properties to address issues
+> creates compatibility issues. Maybe not an issue in this case if the
+> firmware is not stable, but not a good practice to be in.
 
-diff --git a/tools/perf/tests/shell/lib/perf_csv_output_lint.py b/tools/perf/tests/shell/lib/perf_csv_output_lint.py
-new file mode 100644
-index 000000000000..b6f8adfb6a26
---- /dev/null
-+++ b/tools/perf/tests/shell/lib/perf_csv_output_lint.py
-@@ -0,0 +1,51 @@
-+#!/usr/bin/python
-+# SPDX-License-Identifier: GPL-2.0
-+
-+from __future__ import print_function
-+import argparse
-+import sys
-+
-+# Basic sanity check of perf CSV output as specified in the man page.
-+# Currently just checks the number of fields per line in output.
-+
-+ap = argparse.ArgumentParser()
-+ap.add_argument('--no-args', action='store_true')
-+ap.add_argument('--interval', action='store_true')
-+ap.add_argument('--all-cpus-no-aggr', action='store_true')
-+ap.add_argument('--all-cpus', action='store_true')
-+ap.add_argument('--event', action='store_true')
-+ap.add_argument('--per-core', action='store_true')
-+ap.add_argument('--per-thread', action='store_true')
-+ap.add_argument('--per-die', action='store_true')
-+ap.add_argument('--per-node', action='store_true')
-+ap.add_argument('--per-socket', action='store_true')
-+ap.add_argument('--separator', const=',', nargs='?')
-+args = ap.parse_args()
-+
-+Lines = sys.stdin.readlines()
-+ch = args.separator
-+
-+
-+def check_csv_output(exp):
-+  for line in Lines:
-+    if 'failed' not in line:
-+      count = 0
-+      count = line.count(args.separator)
-+      if count != exp:
-+        sys.stdout.write(''.join(Lines))
-+        raise RuntimeError('wrong number of fields.'
-+                           ' expected {0} in {1}\n'.format(exp, line))
-+
-+try:
-+  if args.no_args or args.all_cpus or args.event:
-+    check_csv_output(6)
-+
-+  if args.interval or args.per_thread:
-+    check_csv_output(7)
-+
-+  if args.per_core or args.per_socket or args.per_node or args.per_die:
-+    check_csv_output(8)
-+
-+except:
-+  sys.stdout.write('Test failed for input: ' + ''.join(Lines))
-+  raise
-diff --git a/tools/perf/tests/shell/stat+csv_output.sh b/tools/perf/tests/shell/stat+csv_output.sh
-new file mode 100644
-index 000000000000..c84b02fcae69
---- /dev/null
-+++ b/tools/perf/tests/shell/stat+csv_output.sh
-@@ -0,0 +1,110 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# perf stat csv output test
-+# Tests various perf stat CSV output commands for the
-+# correct number of fields and the CSV separator set to ','.
-+
-+set -e
-+
-+pythonchecker=$(dirname $0)/lib/perf_csv_output_lint.py
-+file="/proc/sys/kernel/perf_event_paranoid"
-+paranoia=$(cat "$file" | grep -o -E '[0-9]+')
-+echo $paranoia
-+
-+check_no_args()
-+{
-+	perf stat -x, sleep 1 2>&1 | \
-+	python $pythonchecker --no-args --separator
-+}
-+
-+if [ $paranoia -gt 0 ]; then
-+	echo check_all_cpus test skipped because of paranoia level.
-+else
-+	check_all_cpus()
-+	{
-+		perf stat -x, -a 2>&1 sleep 1 | \
-+		python $pythonchecker --all-cpus --separator
-+	}
-+	check_all_cpus
-+fi
-+
-+check_interval()
-+{
-+	perf stat -x, -I 1000 2>&1 sleep 1 | \
-+	python $pythonchecker --interval --separator
-+}
-+
-+check_all_cpus_no_aggr()
-+{
-+	perf stat -x, -A -a --no-merge 2>&1 sleep 1 | \
-+	python $pythonchecker --all-cpus-no-aggr --separator
-+}
-+
-+check_event()
-+{
-+	perf stat -x, -e cpu-clock 2>&1 sleep 1 | \
-+	python $pythonchecker --event --separator
-+}
-+
-+if [ $paranoia -gt 0 ]; then
-+	echo check_all_cpus test skipped because of paranoia level.
-+else
-+	check_per_core()
-+	{
-+		perf stat -x, --per-core -a 2>&1 sleep 1 | \
-+		python $pythonchecker --per-core --separator
-+	}
-+	check_per_core
-+fi
-+
-+if [ $paranoia -gt 0 ]; then
-+	echo check_all_cpus test skipped because of paranoia level.
-+else
-+	check_per_thread()
-+	{
-+		perf stat -x, --per-thread -a 2>&1 sleep 1 | \
-+		python $pythonchecker --per-thread --separator
-+	}
-+	check_per_thread
-+fi
-+
-+if [ $paranoia -gt 0 ]; then
-+	echo check_per_die test skipped because of paranoia level.
-+else
-+	check_per_die()
-+	{
-+		perf stat -x, --per-die -a 2>&1 sleep 1 | \
-+		python $pythonchecker --per-die --separator
-+	}
-+	check_per_die
-+fi
-+
-+if [ $paranoia -gt 0 ]; then
-+	echo check_per_node test skipped because of paranoia level.
-+else
-+	check_per_node()
-+	{
-+		perf stat -x, --per-node -a 2>&1 sleep 1 | \
-+		python $pythonchecker --per-node --separator
-+	}
-+	check_per_node
-+fi
-+
-+if [ $paranoia -gt 0 ]; then
-+	echo check_per_socket test skipped because of paranoia level.
-+else
-+	check_per_socket()
-+	{
-+		perf stat -x, --per-socket -a 2>&1 sleep 1 | \
-+		python $pythonchecker --per-socket --separator
-+	}
-+	check_per_socket
-+fi
-+
-+check_no_args
-+check_interval
-+check_all_cpus_no_aggr
-+check_event
-+
-+exit 0
--- 
-2.32.0.605.g8dce9f2422-goog
+Yes, and no, I think there was some discussion a few years back about 
+using non standard HID's for these nonstandard implementations, but that 
+was discouraged at the time in favor of using the standard identifiers 
+and and keying off a Soc/platform specific ID to enable a "quirk". Given 
+we are a bit far down that path and the decision was made to continue 
+down it (rather than solving much of it with a new firmware interface) 
+this seems like the straightforward solution. The vast majority of these 
+are SoC specific, and just minor tweaks for alignment/etc. Given its an 
+ACPI/UEFI machine we are already hiding a lot of the platform specific 
+behavior for configuring the bridge/etc that might require DT like 
+properties in the firmware.
+
+
+Thanks again.
 
