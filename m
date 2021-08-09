@@ -2,141 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7E83E4723
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319B53E4726
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhHIOE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:04:58 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13406 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhHIOE5 (ORCPT
+        id S233678AbhHIOFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231478AbhHIOFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:04:57 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GjyRC3s7NzclyL;
-        Mon,  9 Aug 2021 22:00:55 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 22:04:33 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 9 Aug 2021 22:04:32 +0800
-Subject: Re: [PATCH v2 2/2] nbd: convert to use blk_mq_get_rq_by_tag()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <bvanassche@acm.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@other.debian.org>, <yi.zhang@huawei.com>
-References: <20210809030927.1946162-1-yukuai3@huawei.com>
- <20210809030927.1946162-3-yukuai3@huawei.com> <YRDK9tBFscK5ScK8@T590>
- <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com> <YRD5krmF/C7JxchE@T590>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <3adf6183-bf40-10cd-b8ed-552120028ca3@huawei.com>
-Date:   Mon, 9 Aug 2021 22:04:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 9 Aug 2021 10:05:41 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C130C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:05:21 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id z3so16419290plg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 07:05:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IGxi92yHd6EYivICtZF6F80ifWW8YGcYHwCnM5eJIwE=;
+        b=PXOxm2aYFYheeQSTGHlO9lncIQYdCJo/K2qhR7K+U3s2Lbn4Mh9y5VLFSCpT654Uv7
+         bcznhF3bI0wtmWbShG3zu25IQ1itvhtyxSYGmB1EpFokQW7Qa68fO4v1iMAa2zhzml5S
+         2rXBFGXcEYL4VUmwxqalK4WLyEPxtYXV9PJ1Perui2GBITgzgLM7tzcxMYK2iczPB27a
+         kCQFJTKW3ssDXmO3vixFu2xBEcpTu4k13z0Hg8uqbnwx7uBJ79z74N5h0lnRi27KsIud
+         rlqrOneWGVViCYIo6+/WAZuJYCu4MWwExelNEADlCka5E3aByN0Zwmh4hM+nzC+5+rXn
+         bRWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IGxi92yHd6EYivICtZF6F80ifWW8YGcYHwCnM5eJIwE=;
+        b=TvMZPTvM2vQaWM2SuAmS3vugiqmIdiOUDyn3eG+jmS560pb4DBkBwabDfoFpETNq5R
+         ca/XEo0dC4p5ZNJySoscLKGfz7buCC8uRIxlC72cS73bu0FMtsBf8Bo6vnCpCse9yXIU
+         5/gBRWMjwu3eappeg5N46WhfI495g6NaFAc7wcxu7A8x1rEV5M1Wdh3g0TPVf1cYBEpD
+         2c1nlPTzM9SuotpXYlvMiPY7RKfCHpnZd6xmFP0htydRTgTOAru8BlolBfBlO+wERgFU
+         P3Spl1aL+/BAP8On9KbKAtf9G/In3+3iI7aKWo7JCxxipzk1ZucsCn7jkR4aO5dH2IUS
+         W77g==
+X-Gm-Message-State: AOAM5322gBir/A6UEOGkkrE8rD1FuVscvrEwze6DCQymytETVKSiJFLg
+        53X/dUfyV/h0T7aDcKXtcjRbww==
+X-Google-Smtp-Source: ABdhPJzoGjsjX+2i5pu7wV/PquDe3EppQ30OCmAXPpOvutCn++xCdrI7OP9hCcd+aQ8H1Ux3MBgZaw==
+X-Received: by 2002:a17:902:c405:b029:12c:cbce:26b9 with SMTP id k5-20020a170902c405b029012ccbce26b9mr20378611plk.69.1628517920864;
+        Mon, 09 Aug 2021 07:05:20 -0700 (PDT)
+Received: from [192.168.1.116] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id d31sm23798686pgd.33.2021.08.09.07.05.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 07:05:20 -0700 (PDT)
+Subject: Re: linux-next: manual merge of the block tree with Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Hao Xu <haoxu@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210809142909.1d5fab20@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <037df910-899c-688c-a4f1-a280cb3b5987@kernel.dk>
+Date:   Mon, 9 Aug 2021 08:05:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YRD5krmF/C7JxchE@T590>
-Content-Type: text/plain; charset="gbk"; format=flowed
+In-Reply-To: <20210809142909.1d5fab20@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/09 17:46, Ming Lei wrote:
-> On Mon, Aug 09, 2021 at 03:08:26PM +0800, yukuai (C) wrote:
->> On 2021/08/09 14:28, Ming Lei wrote:
->>> On Mon, Aug 09, 2021 at 11:09:27AM +0800, Yu Kuai wrote:
->>>> blk_mq_tag_to_rq() might return freed request, use
->>>> blk_mq_get_rq_by_tag() instead.
->>>>
->>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->>>> ---
->>>>    drivers/block/nbd.c | 11 ++++++-----
->>>>    1 file changed, 6 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
->>>> index c38317979f74..9e56975a8eee 100644
->>>> --- a/drivers/block/nbd.c
->>>> +++ b/drivers/block/nbd.c
->>>> @@ -713,11 +713,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->>>>    	tag = nbd_handle_to_tag(handle);
->>>>    	hwq = blk_mq_unique_tag_to_hwq(tag);
->>>>    	if (hwq < nbd->tag_set.nr_hw_queues)
->>>> -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
->>>> -				       blk_mq_unique_tag_to_tag(tag));
->>>> -	if (!req || !blk_mq_request_started(req)) {
->>>> -		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
->>>> -			tag, req);
->>>> +		req = blk_mq_get_rq_by_tag(nbd->tag_set.tags[hwq],
->>>> +					   blk_mq_unique_tag_to_tag(tag));
->>>> +	if (!req) {
->>>> +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d\n", tag);
->>>>    		return ERR_PTR(-ENOENT);
->>>>    	}
->>>>    	trace_nbd_header_received(req, handle);
->>>> @@ -779,6 +778,8 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->>>>    	}
->>>>    out:
->>>>    	trace_nbd_payload_received(req, handle);
->>>> +	if (req)
->>>> +		blk_mq_put_rq_ref(req);
->>>>    	mutex_unlock(&cmd->lock);
->>>>    	return ret ? ERR_PTR(ret) : cmd;
->>>
->>> After blk_mq_put_rq_ref() returns, this request may have been freed,
->>> so the returned 'cmd' may have been freed too.
->>>
->>> As I replied in your another thread, it is driver's responsibility to
->>> cover race between normal completion and timeout/error handling, that
->>> means the caller of blk_mq_tag_to_rq need to make sure that the request
->>> represented by the passed 'tag' can't be freed.
->>
->> Hi, Ming
->>
->> There are two problems here in nbd, both reported by our syzkaller.
->>
->> The first is that blk_mq_tag_to_rq() returned a freed request, which is
->> because tags->static_rq[] is freed without clearing tags->rq[].
->> Syzkaller log shows that a reply package is sent to client without
->> the client's request package. And this patch is trying to solve this
->> problem.
+On 8/8/21 10:29 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> It is still driver's problem:
+> Today's linux-next merge of the block tree got a conflict in:
 > 
-> ->static_rq is freed in blk_mq_free_tag_set() which is called after
-> blk_cleanup_disk() returns. Once blk_cleanup_disk() returns, there
-> shouldn't be any driver activity, including calling blk_mq_tag_to_rq()
-> by passing one invalid tag.
+>   fs/io-wq.c
 > 
+> between commit:
+> 
+>   21698274da5b ("io-wq: fix lack of acct->nr_workers < acct->max_workers judgement")
+> 
+> from Linus' tree and commit:
+> 
+>   e16aa0c614c6 ("io-wq: remove GFP_ATOMIC allocation off schedule out path")
+> 
+> from the block tree.
+> 
+> I fixed it up (I just used the latter version, but more may be needed?) and
+> can carry the fix as necessary. This is now fixed as far as linux-next
+> is concerned, but any non trivial conflicts should be mentioned to your
+> upstream maintainer when your tree is submitted for merging.  You may
+> also want to consider cooperating with the maintainer of the conflicting
+> tree to minimise any particularly complex conflicts.
 
-Hi, Ming
+I'm going to re-shuffle the 5.15 branch, I knew we'd be hitting this
+conflict after the merge for 5.14 on Saturday. Hence it'll be a short
+lived conflict.
 
-I understand if static_rq is freed through blk_mq_free_tag_set(),
-drivers should not use static_rq anymore.
+-- 
+Jens Axboe
 
-By the way, I was thinking about another path:
-
-blk_mq_update_nr_requests
-  if (!hctx->sched_tags) -> if this is true
-   ret = blk_mq_tag_update_depth(hctx, &hctx->tags, nr, false)
-    blk_mq_free_rqs -> static_rq is freed here
-
-If this path concurrent with nbd_read_stat(), nbd_read_stat() can
-get a freed request by blk_mq_tag_to_rq(), since tags->lock is not
-held.
-
-t1: nbd_read_stat	  t2: blk_mq_update_nr_requests
-rq = blk_mq_tag_to_rq()
-			  blk_mq_free_rqs
-
-By holding tags->lock, we can check that rq state is idle, and it's
-ref is 0.
-
-Thanks
-Kuai
