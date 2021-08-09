@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270133E43B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED7D3E43BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhHIKR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
+        id S234943AbhHIKSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbhHIKRW (ORCPT
+        with ESMTP id S234904AbhHIKSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:17:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC3FC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 03:17:01 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mD2L1-0006Uv-IB; Mon, 09 Aug 2021 12:16:55 +0200
-Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
- trusted keys
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Gstir <david@sigma-star.at>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Richard Weinberger <richard@nod.at>,
-        James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        linux-integrity@vger.kernel.org,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
- <b9e44f8e-84a0-90be-6cfc-d3a0bde12178@pengutronix.de>
- <20210809093519.er32rmspuvkrww45@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <8321cac9-350b-1325-4b7e-390f4f292070@pengutronix.de>
-Date:   Mon, 9 Aug 2021 12:16:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 9 Aug 2021 06:18:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB1EC0613D3;
+        Mon,  9 Aug 2021 03:17:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628504266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mUREw8STJ2JWCIPIy1C7QUNcphVARQ51gXSM8DV+C24=;
+        b=KQ+99kkaNjD1Av179Orlm992PCKb9LQzNHyTyYJk474sOaLFDMzrbEBo6VnDQwMIVOj0HH
+        7Vg0WcdSPCRQOEQHqYYuIK+UBl0jXtaYiAhTcrzrh+SUhwdbKclZKG1jj/plt0+/CcVGcA
+        bLD8R9rMzuCZvr7xK0abr8E/CwnBZvfI5WSt0o3fFHoYUOOITjejDc5B+fezadwrhIRLTt
+        TZJcnsSoWyvZ+APsd/QLAupLicHnGocK0NwpIqTyYUG/V0JngnJh0tjRsTvpLNuam6kfzH
+        EKUTywhCFPQ1Z/zEOg3hcVfw7+bbs7rkMddgaG6HbkkL3lwOCAbxndQBkwxKRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628504266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mUREw8STJ2JWCIPIy1C7QUNcphVARQ51gXSM8DV+C24=;
+        b=dhN5EycmkS7LI28GcBkJIEkszO1KtksoHgVU9B71fNWgSUeiW3cJKGvECK+nH+MgDE/3J0
+        WdvR44JAO/80+iCA==
+To:     "Chen, Rong A" <rong.a.chen@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>
+Subject: Re: [kbuild-all] Re: sparc64-linux-gcc: error: unrecognized
+ command-line option '-mxsave'
+In-Reply-To: <277810e0-3887-f5d4-a150-60fdb1626e60@intel.com>
+References: <202107271153.7QWf3g6F-lkp@intel.com>
+ <efd7ab16-ed45-0ab0-a123-4e8e45c100d0@intel.com>
+ <8bee8632-9129-bb02-ab94-f65786e65268@intel.com> <87a6lu68xv.ffs@tglx>
+ <277810e0-3887-f5d4-a150-60fdb1626e60@intel.com>
+Date:   Mon, 09 Aug 2021 12:17:46 +0200
+Message-ID: <87im0eudkl.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210809093519.er32rmspuvkrww45@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.08.21 11:35, Jarkko Sakkinen wrote:
-> On Fri, Aug 06, 2021 at 05:12:19PM +0200, Ahmad Fatoum wrote:
->> Dear trusted key maintainers,
->>
->> On 21.07.21 18:48, Ahmad Fatoum wrote:
->>> Series applies on top of
->>> https://lore.kernel.org/linux-integrity/20210721160258.7024-1-a.fatoum@pengutronix.de/T/#u
+On Mon, Aug 09 2021 at 09:54, Rong A. Chen wrote:
+> On 8/6/2021 8:42 PM, Thomas Gleixner wrote:
+>> On Wed, Aug 04 2021 at 17:04, Rong A. Chen wrote:
+>>> On 7/27/2021 10:52 PM, Dave Hansen wrote:
+>>>> On 7/26/21 8:11 PM, kernel test robot wrote:
+>>>>>>> sparc64-linux-gcc: error: unrecognized command-line option '-mxsave'
+>>>>
+>>>> Is there something else funky going on here?  All of the "-mxsave" flags
+>>>> that I can find are under checks for x86 builds, like:
+>>>>
+>>>> 	ifeq ($(CAN_BUILD_I386),1)
+>>>> 	$(BINARIES_32): CFLAGS += -m32 -mxsave
+>>>> 	..
+>>>>
+>>>> I'm confused how we could have a sparc64 compiler (and only a sparc64
+>>>> compiler) that would end up with "-mxsave" in CFLAGS.
 >>>
->>> v2 -> v3:
->>>  - Split off first Kconfig preparation patch. It fixes a regression,
->>>    so sent that out, so it can be applied separately (Sumit)
->>>  - Split off second key import patch. I'll send that out separately
->>>    as it's a development aid and not required within the CAAM series
->>>  - add MAINTAINERS entry
->>
->> Gentle ping. I'd appreciate feedback on this series.
-> 
-> Simple question: what is fscrypt?
+>>> Hi Dave,
+>>>
+>>> We can reproduce the error and have no idea too, but we have disabled
+>>> the test for selftests on non-x86 arch.
+>> 
+>> This smells like a host/target compiler mixup. Can you please make the
+>> kernel build verbose with 'V=1' and provide the full build output?
+>
+> Hi Thomas,
+>
+> I run the below command:
+>
+> $make V=1 --keep-going CROSS_COMPILE=sparc64-linux- -j1 O=build_dir 
+> ARCH=sparc64 -C tools/testing/selftests/vm
+> ...
+> sparc64-linux-gcc -Wall -I ../../../../usr/include  -no-pie -m32 -mxsave 
+>   protection_keys.c -lrt -lpthread -lrt -ldl -lm -o 
+> /root/linux/tools/testing/selftests/vm/protection_keys_32
+> sparc64-linux-gcc: error: unrecognized command-line option '-mxsave'
+> make: *** [Makefile:107:
 
-For supported file systems, fscrypt[1] allows you to encrypt at a directory level.
-It has no trusted key integration yet, which is something I am trying to upstream
-in parallel to this series, so I eventually can use fscrypt together with CAAM-backed
-trusted keys on an unpatched kernel.
+Right. That's clearly broken because all these x8664 muck is derived
+from:
 
-If it interests you, I described[2] my CAAM+ubifs+fscrypt use case in the
-discussion thread on my fscrypt-trusted-keys v1. Jan, a colleague of mine, held a
-talk[3] on the different solutions for authenticated and encrypted storage, which
-you may want to check out.
+  MACHINE ?= $(shell echo $(uname_M) | sed -e 's/aarch64.*/arm64/' -e 's/ppc64.*/ppc64/')
 
-I'd really appreciate feedback here on the the CAAM parts of this series, so this can
-eventually go mainline.
+which obviously fails for cross compiling because it's looking at the
+compile machine and not at the target.
+
+Something like the below should cure that, but TBH I lost track
+which one of ARCH, SUBARCH, UTS_MACHINE should be used here. The kbuild
+folks should know.
 
 Thanks,
-Ahmad
 
+        tglx
 
-[1]: https://www.kernel.org/doc/html/v5.13/filesystems/fscrypt.html
-[2]: https://lore.kernel.org/linux-fscrypt/367ea5bb-76cf-6020-cb99-91b5ca82d679@pengutronix.de/
-[3]: https://www.youtube.com/watch?v=z_y84v9076c
-
-> 
-> /Jarkko
-> 
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+---
+--- a/tools/testing/selftests/vm/Makefile
++++ b/tools/testing/selftests/vm/Makefile
+@@ -4,7 +4,6 @@
+ include local_config.mk
+ 
+ uname_M := $(shell uname -m 2>/dev/null || echo not)
+-MACHINE ?= $(shell echo $(uname_M) | sed -e 's/aarch64.*/arm64/' -e 's/ppc64.*/ppc64/')
+ 
+ # Without this, failed build products remain, with up-to-date timestamps,
+ # thus tricking Make (and you!) into believing that All Is Well, in subsequent
+@@ -46,7 +45,7 @@ TEST_GEN_FILES += transhuge-stress
+ TEST_GEN_FILES += userfaultfd
+ TEST_GEN_FILES += split_huge_page_test
+ 
+-ifeq ($(MACHINE),x86_64)
++ifeq ($(UTS_MACHINE),x86_64)
+ CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
+ CAN_BUILD_X86_64 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_64bit_program.c)
+ CAN_BUILD_WITH_NOPIE := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_program.c -no-pie)
+@@ -68,7 +67,7 @@ TEST_GEN_FILES += $(BINARIES_64)
+ endif
+ else
+ 
+-ifneq (,$(findstring $(MACHINE),ppc64))
++ifneq (,$(findstring $(UTS_MACHINE),ppc64))
+ TEST_GEN_FILES += protection_keys
+ endif
+ 
+@@ -87,7 +86,7 @@ TEST_FILES := test_vmalloc.sh
+ KSFT_KHDR_INSTALL := 1
+ include ../lib.mk
+ 
+-ifeq ($(MACHINE),x86_64)
++ifeq ($(UTS_MACHINE),x86_64)
+ BINARIES_32 := $(patsubst %,$(OUTPUT)/%,$(BINARIES_32))
+ BINARIES_64 := $(patsubst %,$(OUTPUT)/%,$(BINARIES_64))
+ 
