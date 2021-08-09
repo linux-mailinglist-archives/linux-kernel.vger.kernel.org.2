@@ -2,193 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9673E446A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B613E446D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhHILJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:09:25 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39422 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233516AbhHILJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:09:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628507343; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=iVGYr8BvmR6QN2P1ZSMux09dzqkFjV+3tlj3x4l+kQ8=; b=R3BDJWPured8aLTvLzYCURa5+qgx3mogCioS5irPC1RqRhsabfBUwdAHWElJzZNsgHqXXAJR
- oinqBrt+Ob77IX2B2g+my0sbNHXllnMB9CBKZRoIf5uKWPnw2LMiW7LPBc/1qMwiR/cY98a4
- I2pDeLev/Rq/Si4e0IUmWs6qjVA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61110cc98c78eaf8089be409 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 11:08:57
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 41654C433F1; Mon,  9 Aug 2021 11:08:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.220.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4BFD7C433D3;
-        Mon,  9 Aug 2021 11:08:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4BFD7C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
- <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
- <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <2afd0fac-ed28-c090-a345-3fd4284b4125@codeaurora.org>
-Date:   Mon, 9 Aug 2021 16:38:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234649AbhHILKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:10:35 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16998 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233516AbhHILKe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 07:10:34 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GjtZ11gHqzb06D;
+        Mon,  9 Aug 2021 19:06:33 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 19:10:10 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 19:10:10 +0800
+Subject: Re: [PATCH v3 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash with
+ KASAN_VMALLOC
+To:     <will@kernel.org>, <catalin.marinas@arm.com>,
+        <ryabinin.a.a@gmail.com>, <andreyknvl@gmail.com>,
+        <dvyukov@google.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <elver@google.com>
+References: <20210809093750.131091-1-wangkefeng.wang@huawei.com>
+ <20210809093750.131091-4-wangkefeng.wang@huawei.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <ae15c02e-d825-dbef-1419-5b5220f826c1@huawei.com>
+Date:   Mon, 9 Aug 2021 19:10:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210809093750.131091-4-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2021/8/9 17:37, Kefeng Wang wrote:
+> With KASAN_VMALLOC and NEED_PER_CPU_PAGE_FIRST_CHUNK, it crashs,
+>
+> Unable to handle kernel paging request at virtual address ffff7000028f2000
+> ...
+> swapper pgtable: 64k pages, 48-bit VAs, pgdp=0000000042440000
+> [ffff7000028f2000] pgd=000000063e7c0003, p4d=000000063e7c0003, pud=000000063e7c0003, pmd=000000063e7b0003, pte=0000000000000000
+> Internal error: Oops: 96000007 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.0-rc4-00003-gc6e6e28f3f30-dirty #62
+> Hardware name: linux,dummy-virt (DT)
+> pstate: 200000c5 (nzCv daIF -PAN -UAO -TCO BTYPE=--)
+> pc : kasan_check_range+0x90/0x1a0
+> lr : memcpy+0x88/0xf4
+> sp : ffff80001378fe20
+> ...
+> Call trace:
+>   kasan_check_range+0x90/0x1a0
+>   pcpu_page_first_chunk+0x3f0/0x568
+>   setup_per_cpu_areas+0xb8/0x184
+>   start_kernel+0x8c/0x328
+>
+> The vm area used in vm_area_register_early() has no kasan shadow memory,
+> Let's add a new kasan_populate_early_vm_area_shadow() function to populate
+> the vm area shadow memory to fix the issue.
 
-On 8/6/2021 3:02 PM, Ulf Hansson wrote:
-> On Wed, 4 Aug 2021 at 12:58, Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>
->> Some devices within power domains with performance states do not
->> support DVFS, but still need to vote on a default/static state
->> while they are active. They can express this using the 'required-opps'
->> property in device tree, which points to the phandle of the OPP
->> supported by the corresponding power-domains.
->>
->> Add support to parse this information from DT and then set the
->> specified performance state during attach and drop it on detach.
->> runtime suspend/resume callbacks already have logic to drop/set
->> the vote as needed and should take care of dropping the default
->> perf state vote on runtime suspend and restore it back on runtime
->> resume.
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   drivers/base/power/domain.c | 28 ++++++++++++++++++++++++++--
->>   include/linux/pm_domain.h   |  1 +
->>   2 files changed, 27 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
->> index a934c67..b9b5a9b 100644
->> --- a/drivers/base/power/domain.c
->> +++ b/drivers/base/power/domain.c
->> @@ -2598,6 +2598,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
->>
->>          dev_dbg(dev, "removing from PM domain %s\n", pd->name);
->>
->> +       /* Drop the default performance state */
->> +       if (dev_gpd_data(dev)->default_pstate) {
->> +               dev_pm_genpd_set_performance_state(dev, 0);
->> +               dev_gpd_data(dev)->default_pstate = 0;
->> +       }
->> +
->>          for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
->>                  ret = genpd_remove_device(pd, dev);
->>                  if (ret != -EAGAIN)
->> @@ -2637,6 +2643,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>   {
->>          struct of_phandle_args pd_args;
->>          struct generic_pm_domain *pd;
->> +       struct device_node *np;
->> +       int pstate;
->>          int ret;
->>
->>          ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
->> @@ -2675,10 +2683,26 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>                  genpd_unlock(pd);
->>          }
->>
->> -       if (ret)
->> +       if (ret) {
->>                  genpd_remove_device(pd, dev);
->> +               return -EPROBE_DEFER;
->> +       }
->> +
->> +       /* Set the default performance state */
->> +       np = dev->of_node;
->> +       if (of_parse_phandle(np, "required-opps", index)) {
-> 
-> Looks like Viresh thinks it's a good idea to drop the error print in
-> of_get_required_opp_performance_state() when there is no
-> "required-opps" specifier.
-> 
-> Would you mind folding in a patch for that in the series, so this code
-> can be simplified according to our earlier discussions?
+Should add Acked-by: Marco Elver <elver@google.com> [for KASAN parts] ,
 
-Sure, I can do that, apart from the error print, the function currently also
-returns a -EINVAL in case of the missing 'required-opps', are we suggesting
-we change that to not return an error also?
+missed here :(
 
-Since this is completely optional in the device node, we would want the function to
-ideally not return error and only do so in case 'required-opps' exists and the
-translation to performance state fails.
-I am not sure that's the behavior we expect in case of 'required-opps' in the OPP
-tables also, Viresh?
-
-> 
->> +               pstate = of_get_required_opp_performance_state(np, index);
->> +               if (pstate < 0) {
->> +                       ret = pstate;
->> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
->> +                               pd->name, ret);
->> +               } else {
->> +                       dev_pm_genpd_set_performance_state(dev, pstate);
->> +                       dev_gpd_data(dev)->default_pstate = pstate;
->> +               }
->> +       }
->>
->> -       return ret ? -EPROBE_DEFER : 1;
->> +       return ret ? ret : 1;
->>   }
->>
->>   /**
->> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
->> index 21a0577..67017c9 100644
->> --- a/include/linux/pm_domain.h
->> +++ b/include/linux/pm_domain.h
->> @@ -198,6 +198,7 @@ struct generic_pm_domain_data {
->>          struct notifier_block *power_nb;
->>          int cpu;
->>          unsigned int performance_state;
->> +       unsigned int default_pstate;
->>          unsigned int rpm_pstate;
->>          ktime_t next_wakeup;
->>          void *data;
-> 
-> Other than the above, this looks good to me!
-> 
-> Kind regards
-> Uffe
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   arch/arm64/mm/kasan_init.c | 16 ++++++++++++++++
+>   include/linux/kasan.h      |  6 ++++++
+>   mm/kasan/init.c            |  5 +++++
+>   mm/vmalloc.c               |  1 +
+>   4 files changed, 28 insertions(+)
+>
+> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> index 61b52a92b8b6..5b996ca4d996 100644
+> --- a/arch/arm64/mm/kasan_init.c
+> +++ b/arch/arm64/mm/kasan_init.c
+> @@ -287,6 +287,22 @@ static void __init kasan_init_depth(void)
+>   	init_task.kasan_depth = 0;
+>   }
+>   
+> +#ifdef CONFIG_KASAN_VMALLOC
+> +void __init kasan_populate_early_vm_area_shadow(void *start, unsigned long size)
+> +{
+> +	unsigned long shadow_start, shadow_end;
+> +
+> +	if (!is_vmalloc_or_module_addr(start))
+> +		return;
+> +
+> +	shadow_start = (unsigned long)kasan_mem_to_shadow(start);
+> +	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
+> +	shadow_end = (unsigned long)kasan_mem_to_shadow(start + size);
+> +	shadow_end = ALIGN(shadow_end, PAGE_SIZE);
+> +	kasan_map_populate(shadow_start, shadow_end, NUMA_NO_NODE);
+> +}
+> +#endif
+> +
+>   void __init kasan_init(void)
+>   {
+>   	kasan_init_shadow();
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index dd874a1ee862..3f8c26d9ef82 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -133,6 +133,8 @@ struct kasan_cache {
+>   	bool is_kmalloc;
+>   };
+>   
+> +void kasan_populate_early_vm_area_shadow(void *start, unsigned long size);
+> +
+>   slab_flags_t __kasan_never_merge(void);
+>   static __always_inline slab_flags_t kasan_never_merge(void)
+>   {
+> @@ -303,6 +305,10 @@ void kasan_restore_multi_shot(bool enabled);
+>   
+>   #else /* CONFIG_KASAN */
+>   
+> +static inline void kasan_populate_early_vm_area_shadow(void *start,
+> +						       unsigned long size)
+> +{ }
+> +
+>   static inline slab_flags_t kasan_never_merge(void)
+>   {
+>   	return 0;
+> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+> index cc64ed6858c6..d39577d088a1 100644
+> --- a/mm/kasan/init.c
+> +++ b/mm/kasan/init.c
+> @@ -279,6 +279,11 @@ int __ref kasan_populate_early_shadow(const void *shadow_start,
+>   	return 0;
+>   }
+>   
+> +void __init __weak kasan_populate_early_vm_area_shadow(void *start,
+> +						       unsigned long size)
+> +{
+> +}
+> +
+>   static void kasan_free_pte(pte_t *pte_start, pmd_t *pmd)
+>   {
+>   	pte_t *pte;
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 1e8fe08725b8..66a7e1ea2561 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2253,6 +2253,7 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+>   	vm->addr = (void *)addr;
+>   
+>   	vm_area_add_early(vm);
+> +	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
+>   }
+>   
+>   static void vmap_init_free_space(void)
