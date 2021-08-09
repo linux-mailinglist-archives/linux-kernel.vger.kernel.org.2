@@ -2,141 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075663E450E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140783E4513
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbhHILvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        id S235147AbhHILxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbhHILvC (ORCPT
+        with ESMTP id S234506AbhHILxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:51:02 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC24C0613D3;
-        Mon,  9 Aug 2021 04:50:41 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so34110367pjs.0;
-        Mon, 09 Aug 2021 04:50:41 -0700 (PDT)
+        Mon, 9 Aug 2021 07:53:35 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEF9C0613D3;
+        Mon,  9 Aug 2021 04:53:14 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id l14so4055953wrw.4;
+        Mon, 09 Aug 2021 04:53:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=lEzRqawbCO3Oz7zqhJzZDzxmM9xxyvbKbGJKK51n77s=;
-        b=CGGbHiQxQHOtVwEfubzZ9ceQPWqmETo95FQMcSqJ0TCV2NzJ9F0fuC3wm/RCnSVZRG
-         Z5wfMX20T4zAnugcvmObELxDMvAfiA9i05R3D86KdMluIyMeW7LNQ7qDLkiZGME09a+n
-         /qspJvkO+BTbNWqmzQqscmIVX799p/dhOPaHU9sg4Ev+7YK54vf4byFGi7Idl0ioojXN
-         +c3GokUwZvjCMXT4CFAFbtPnB6Hak/lmGqHob1fNDdTCHPN1n6Y9rAcDfX4xy3k+eV1J
-         tkXE1oibwbxSXIyroWAAjsNdKB0kvGXA4l2ghjQisC/7svtWGQSnq7O97HsqM+P3aNba
-         ovxA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7px3/RhhfdEQF1GCZtJ+l7Qs0X8n7TnykM1fetOVG0=;
+        b=Ip81nm8TIohzme1FL99Mnae76HMIpXm6YRYKJSYKq8a7Xh8bjM5Fml9R4+FLewtWun
+         9uomycwLZbn0i4C/UsJKY6h5lNuiy9cRQUEjOij+FNM/BglKG8vPNGRII4yv727yxcg4
+         eS8KDezFVDiMFM34MGymXDCenUHhZPaYj0rsbdFqbfUZHMcfTGTZ7JgYw/3nHPKoWRyD
+         FrMB6GX/gD5lpSBk5SfaIXhe1k2JF+P6mblrdYiUtPB2CNPEfrNrWwp3RrNR6eLSBQ6D
+         6w7ZuG01VoSmLH60kxJqR+XTvfTeTaiq1wdAvPN+is7nbToIC2p0DHIQfUsvFfRAmUfo
+         KNdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=lEzRqawbCO3Oz7zqhJzZDzxmM9xxyvbKbGJKK51n77s=;
-        b=A97jSCOkVTzJB3GNNsADe4xz+yuX/nmKbigmMzHf909KxQdnuJus0AHSzM3/61bWmv
-         O5Aa0wxCQuOF7r2m1gVMWs4xDIHtP3jTOLfepLZs+NG4N+ssB5f7Gi1iy1r/vVqAXc69
-         uKn+/hSHni0nqKaI5QjE1VPa9OdPujhmyHdnrYeumO8D5K8pVIwdusbjglapT2VDBDvq
-         K/2cQSqPabn/gOrX8/2Wg80YJHuO8Ilw4jYuOVTz/BcckCXT0Eh+jglPfWHZhPtI1gYX
-         ZSJaRDy4Q9zvE0X9qw779Cqzi6EjVjnv3xi0N6sV9Kt7zXhk+jdKVVYmm6Av95QoIf7H
-         iMMQ==
-X-Gm-Message-State: AOAM533/mHWAHH0uRzB90rbjosJ8cDt51kYcTbGBv+7yzAgISvvn0qbh
-        Alyr0G1zB8AWkamDI17hMiY=
-X-Google-Smtp-Source: ABdhPJxJrRwYquMEhsP80YPY2COvRlMDmLJN3BmTl+5y3TJFofzDG7vEJ3GquXp8SItJi85ZD/nmGw==
-X-Received: by 2002:a17:902:c641:b029:12c:ef04:fa86 with SMTP id s1-20020a170902c641b029012cef04fa86mr9762891pls.40.1628509841418;
-        Mon, 09 Aug 2021 04:50:41 -0700 (PDT)
-Received: from [10.177.0.134] ([85.203.23.214])
-        by smtp.gmail.com with ESMTPSA id z16sm22469492pgu.21.2021.08.09.04.50.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 04:50:41 -0700 (PDT)
-Subject: Re: [PATCH] scsi: target: pscsi: Fix possible null-pointer
- dereference in pscsi_complete_cmd()
-To:     Bodo Stroesser <bostroesser@gmail.com>
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        TOTE Robot <oslab@tsinghua.edu.cn>, martin.petersen@oracle.com
-References: <20210807134651.245436-1-islituo@gmail.com>
- <dea07ecc-7700-5ee7-aa40-2d4455dc6c3f@gmail.com>
-From:   Tuo Li <islituo@gmail.com>
-Message-ID: <7c6622d0-2f28-27a7-250e-9a8fd79691a8@gmail.com>
-Date:   Mon, 9 Aug 2021 19:50:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7px3/RhhfdEQF1GCZtJ+l7Qs0X8n7TnykM1fetOVG0=;
+        b=KEdF5keCk3ZT0TeWSEophFmSj3s1ZmiTJLtAteJC8z0cv+tX08tjXxLq/b+Fv5FBVJ
+         0WofNkleo9IYlBx/dj9YOBODN+GsP+tRh+ImT0/VY0225Ou6mw6HQVd9yDKp1G5SndjI
+         vwI4fLczkbCMVUMQIk7EDQ1FUy0P+7+dMxtso3b1DI77Rl3MOOKDl9a5G0cqKEF/cX56
+         1RWzlKgWuyL5P8kcHwNaRWXW2Du1oMsSK2wkR/+vu0/W2z5AZ0HowQsKbiHU+ARIKT4h
+         te7SBUaADVeYp/l5ca2Yd4b4HwdfP2iWGwy9ba+HEyW6bDcnrwL/EAhCcS0UKGBHdwqP
+         JHQw==
+X-Gm-Message-State: AOAM533nWRWahB6AItpv7XKTR8GplAUyDTM71nULGKZjkM3BN3vsQNat
+        L19weuqqvQTqOICRoFOwqOkB5kk80ak=
+X-Google-Smtp-Source: ABdhPJwISBEJDYiL9EQjEdEjcWaKg904G1jcSrpfXgLSDjfRcrjAwioIz4x5Dx286nV1QTkGyDHPQQ==
+X-Received: by 2002:adf:fb8f:: with SMTP id a15mr24916254wrr.92.1628509993282;
+        Mon, 09 Aug 2021 04:53:13 -0700 (PDT)
+Received: from localhost.localdomain ([85.255.236.119])
+        by smtp.gmail.com with ESMTPSA id f17sm22876828wrt.18.2021.08.09.04.53.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 04:53:12 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        io-uring@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, asml.silence@gmail.com
+Subject: [PATCH 0/2] iter revert problems
+Date:   Mon,  9 Aug 2021 12:52:35 +0100
+Message-Id: <cover.1628509745.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <dea07ecc-7700-5ee7-aa40-2d4455dc6c3f@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your feedback. We will prepare a V2 patch and put the 
-transport_kunmap_data_sg()
-into the else-branch of the if (!buf).
+For the bug description see 2/2. As mentioned there the current problems
+is because of generic_write_checks(), but there was also a similar case
+fixed in 5.12, which should have been triggerable by normal
+write(2)/read(2) and others.
 
-Best wishes,
-Tuo Li
+It may be better to enforce reexpands as a long term solution, but for
+now this patchset is quickier and easier to backport.
 
-On 2021/8/9 18:36, Bodo Stroesser wrote:
-> On 07.08.21 15:46, Tuo Li wrote:
->> The return value of transport_kmap_data_sg() is assigned to the variable
->> buf:
->>    buf = transport_kmap_data_sg(cmd);
->>
->> And then it is checked:
->>    if (!buf) {
->>
->> This indicates that buf can be NULL. However, it is dereferenced in the
->> following statements:
->>    if (!(buf[3] & 0x80))
->>      buf[3] |= 0x80;
->>    if (!(buf[2] & 0x80))
->>     buf[2] |= 0x80;
->>
->> To fix these possible null-pointer dereferences, dereference buf only 
->> when
->> it is not NULL.
->>
->> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
->> Signed-off-by: Tuo Li <islituo@gmail.com>
->> ---
->>   drivers/target/target_core_pscsi.c | 14 +++++++-------
->>   1 file changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/target/target_core_pscsi.c 
->> b/drivers/target/target_core_pscsi.c
->> index 2629d2ef3970..560815729182 100644
->> --- a/drivers/target/target_core_pscsi.c
->> +++ b/drivers/target/target_core_pscsi.c
->> @@ -620,14 +620,14 @@ static void pscsi_complete_cmd(struct se_cmd 
->> *cmd, u8 scsi_status,
->>               buf = transport_kmap_data_sg(cmd);
->>               if (!buf) {
->>                   ; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
->> -            }
->> -
->> -            if (cdb[0] == MODE_SENSE_10) {
->> -                if (!(buf[3] & 0x80))
->> -                    buf[3] |= 0x80;
->>               } else {
->> -                if (!(buf[2] & 0x80))
->> -                    buf[2] |= 0x80;
->> +                if (cdb[0] == MODE_SENSE_10) {
->> +                    if (!(buf[3] & 0x80))
->> +                        buf[3] |= 0x80;
->> +                } else {
->> +                    if (!(buf[2] & 0x80))
->> +                        buf[2] |= 0x80;
->> +                }
->>               }
->>                 transport_kunmap_data_sg(cmd);
->>
->
-> I'm wondering whether we should better put the
-> transport_kunmap_data_sg into the else-branch of the if (!buf)?
-> AFAICS, calling it after transport_kmap_data_sg failed does not
-> cause problems, but I feel it would be cleaner.
->
-> Otherwise it looks good to me.
+Pavel Begunkov (2):
+  iov_iter: mark truncated iters
+  io_uring: don't retry with truncated iter
+
+ fs/io_uring.c       | 6 ++++++
+ include/linux/uio.h | 5 ++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+-- 
+2.32.0
 
