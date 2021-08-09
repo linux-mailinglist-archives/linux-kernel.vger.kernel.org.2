@@ -2,103 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8F63E3DBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3953E3DC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhHIBlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhHIBlG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:41:06 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98210C061757;
-        Sun,  8 Aug 2021 18:40:45 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id b25-20020a4ac2990000b0290263aab95660so3941214ooq.13;
-        Sun, 08 Aug 2021 18:40:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l6laj60gF3EBJJf37/HSy0mFR0yiQYrPH8paT5cifVc=;
-        b=PE9uHRpOY1P83cQ2hvR2ffdRd8QYhA/QCQGXlf0XNi9HScWL10UfLVELo9OElLoVKJ
-         guUr6ubqcBYENkIxJyhURG7z9aOfuhCVXnBxr+ueFEZwA4jNYSOfF6GmuFh2J8dWxjR6
-         gn7DCDMxUj4iSw8XOpdD0q+pGqEGeyrv67TgFNCLTQb1YaYfefVqRIBM0erRfXIqM9cq
-         Go8TAaxVkg9yDG4MFnpNoXfLK8Y5UrbOW9WNX3jAs0RCmrnuO9avgRADQW1QbQgCk8vi
-         cTG2cz8I3v97hOvYQg/85a4XQYSZ0Xz0gNB9bYD+oceRThPLq2TtrTJQ3oyqfaoqAeBA
-         yJLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=l6laj60gF3EBJJf37/HSy0mFR0yiQYrPH8paT5cifVc=;
-        b=JCMtzu4EuAs3jWiUavuccAUEesnPgUz+tHTuJ7wc8h5PONlrDEQo2uIzHHSvGNDC/W
-         LiEVaFrTp/jQb8Agf2R1943K3Q+wAYVDeKjaS6U7zMU34VIbI1X/oUXXyI12q9Al9nmU
-         d2FsNip1+aNkJ9CwKWt1L6LpnN2qIf7xbJ8oUwL1RH2COptnrg/CQ6GnhI0Pl4IFBiMm
-         m9/H+75NjVbuhGyOZxD3HHOMqCe0a88Kmhn8mpcHnYtNBRZbVKtX+xFznITddsTT6ELk
-         9sGcG+USAQGog2Vqj33zvQP4AtA1k0sdmNpHqsyhzHbb8WZW/YZia1saPyMCgw2/lbGP
-         O85A==
-X-Gm-Message-State: AOAM531EhogJ6JfqffyKJqX8Ak+6U/D4HXJ7sdGrOzPif0HlHMcrtpMr
-        x0H9xTXyeumZF7gQRemNCfA=
-X-Google-Smtp-Source: ABdhPJxmYGx4zWxL0fvSC8obf6Owik82jL1rJv6TpMkpJSNz9YpFtbBh/bwCdkpsgL/mIdLLfcypaw==
-X-Received: by 2002:a4a:b98c:: with SMTP id e12mr13534396oop.67.1628473245038;
-        Sun, 08 Aug 2021 18:40:45 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l13sm3020531oii.11.2021.08.08.18.40.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 18:40:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 8 Aug 2021 18:40:43 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        andrew@lunn.ch, netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH V1 4/5] net: fec: add eee mode tx lpi support
-Message-ID: <20210809014043.GA3712165@roeck-us.net>
-References: <20210709075355.27218-1-qiangqing.zhang@nxp.com>
- <20210709075355.27218-5-qiangqing.zhang@nxp.com>
+        id S232705AbhHIBmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:42:22 -0400
+Received: from mga12.intel.com ([192.55.52.136]:16048 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232678AbhHIBmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 21:42:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="194200409"
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="194200409"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 18:41:59 -0700
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="670624711"
+Received: from ctrondse-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.77.4])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 18:41:57 -0700
+Subject: Re: [PATCH 00/11] Implement generic prot_guest_has() helper function
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>
+References: <cover.1627424773.git.thomas.lendacky@amd.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <0d75f283-50b7-460d-3165-185cb955bd70@linux.intel.com>
+Date:   Sun, 8 Aug 2021 18:41:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709075355.27218-5-qiangqing.zhang@nxp.com>
+In-Reply-To: <cover.1627424773.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 03:53:54PM +0800, Joakim Zhang wrote:
-> From: Fugang Duan <fugang.duan@nxp.com>
-> 
-> The i.MX8MQ ENET version support IEEE802.3az eee mode, add
-> eee mode tx lpi enable to support ethtool interface.
-> 
-> usage:
-> 1. set sleep and wake timer to 5ms:
-> ethtool --set-eee eth0 eee on tx-lpi on tx-timer 5000
-> 2. check the eee mode:
-> ~# ethtool --show-eee eth0
-> EEE Settings for eth0:
->         EEE status: enabled - active
->         Tx LPI: 5000 (us)
->         Supported EEE link modes:  100baseT/Full
->                                    1000baseT/Full
->         Advertised EEE link modes:  100baseT/Full
->                                     1000baseT/Full
->         Link partner advertised EEE link modes:  100baseT/Full
-> 
-> Note: For realtime case and IEEE1588 ptp case, it should disable
-> EEE mode.
-> 
-> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Hi Tom,
 
-This patch results in:
+On 7/27/21 3:26 PM, Tom Lendacky wrote:
+> This patch series provides a generic helper function, prot_guest_has(),
+> to replace the sme_active(), sev_active(), sev_es_active() and
+> mem_encrypt_active() functions.
+> 
+> It is expected that as new protected virtualization technologies are
+> added to the kernel, they can all be covered by a single function call
+> instead of a collection of specific function calls all called from the
+> same locations.
+> 
+> The powerpc and s390 patches have been compile tested only. Can the
+> folks copied on this series verify that nothing breaks for them.
 
-drivers/net/ethernet/freescale/fec_main.c: In function 'fec_enet_eee_mode_set':
-drivers/net/ethernet/freescale/fec_main.c:2801:40: error: 'FEC_LPI_SLEEP' undeclared
-drivers/net/ethernet/freescale/fec_main.c:2802:39: error: 'FEC_LPI_WAKE' undeclared
+With this patch set, select ARCH_HAS_PROTECTED_GUEST and set
+CONFIG_AMD_MEM_ENCRYPT=n, creates following error.
 
-when building m68k:m5272c3_defconfig.
+ld: arch/x86/mm/ioremap.o: in function `early_memremap_is_setup_data':
+arch/x86/mm/ioremap.c:672: undefined reference to `early_memremap_decrypted'
 
-Guenter
+It looks like early_memremap_is_setup_data() is not protected with
+appropriate config.
+
+
+> 
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+> Cc: Will Deacon <will@kernel.org>
+> 
+> ---
+> 
+> Patches based on:
+>    https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+>    commit 79e920060fa7 ("Merge branch 'WIP/fixes'")
+> 
+> Tom Lendacky (11):
+>    mm: Introduce a function to check for virtualization protection
+>      features
+>    x86/sev: Add an x86 version of prot_guest_has()
+>    powerpc/pseries/svm: Add a powerpc version of prot_guest_has()
+>    x86/sme: Replace occurrences of sme_active() with prot_guest_has()
+>    x86/sev: Replace occurrences of sev_active() with prot_guest_has()
+>    x86/sev: Replace occurrences of sev_es_active() with prot_guest_has()
+>    treewide: Replace the use of mem_encrypt_active() with
+>      prot_guest_has()
+>    mm: Remove the now unused mem_encrypt_active() function
+>    x86/sev: Remove the now unused mem_encrypt_active() function
+>    powerpc/pseries/svm: Remove the now unused mem_encrypt_active()
+>      function
+>    s390/mm: Remove the now unused mem_encrypt_active() function
+> 
+>   arch/Kconfig                               |  3 ++
+>   arch/powerpc/include/asm/mem_encrypt.h     |  5 --
+>   arch/powerpc/include/asm/protected_guest.h | 30 +++++++++++
+>   arch/powerpc/platforms/pseries/Kconfig     |  1 +
+>   arch/s390/include/asm/mem_encrypt.h        |  2 -
+>   arch/x86/Kconfig                           |  1 +
+>   arch/x86/include/asm/kexec.h               |  2 +-
+>   arch/x86/include/asm/mem_encrypt.h         | 13 +----
+>   arch/x86/include/asm/protected_guest.h     | 27 ++++++++++
+>   arch/x86/kernel/crash_dump_64.c            |  4 +-
+>   arch/x86/kernel/head64.c                   |  4 +-
+>   arch/x86/kernel/kvm.c                      |  3 +-
+>   arch/x86/kernel/kvmclock.c                 |  4 +-
+>   arch/x86/kernel/machine_kexec_64.c         | 19 +++----
+>   arch/x86/kernel/pci-swiotlb.c              |  9 ++--
+>   arch/x86/kernel/relocate_kernel_64.S       |  2 +-
+>   arch/x86/kernel/sev.c                      |  6 +--
+>   arch/x86/kvm/svm/svm.c                     |  3 +-
+>   arch/x86/mm/ioremap.c                      | 16 +++---
+>   arch/x86/mm/mem_encrypt.c                  | 60 +++++++++++++++-------
+>   arch/x86/mm/mem_encrypt_identity.c         |  3 +-
+>   arch/x86/mm/pat/set_memory.c               |  3 +-
+>   arch/x86/platform/efi/efi_64.c             |  9 ++--
+>   arch/x86/realmode/init.c                   |  8 +--
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c    |  4 +-
+>   drivers/gpu/drm/drm_cache.c                |  4 +-
+>   drivers/gpu/drm/vmwgfx/vmwgfx_drv.c        |  4 +-
+>   drivers/gpu/drm/vmwgfx/vmwgfx_msg.c        |  6 +--
+>   drivers/iommu/amd/init.c                   |  7 +--
+>   drivers/iommu/amd/iommu.c                  |  3 +-
+>   drivers/iommu/amd/iommu_v2.c               |  3 +-
+>   drivers/iommu/iommu.c                      |  3 +-
+>   fs/proc/vmcore.c                           |  6 +--
+>   include/linux/mem_encrypt.h                |  4 --
+>   include/linux/protected_guest.h            | 37 +++++++++++++
+>   kernel/dma/swiotlb.c                       |  4 +-
+>   36 files changed, 218 insertions(+), 104 deletions(-)
+>   create mode 100644 arch/powerpc/include/asm/protected_guest.h
+>   create mode 100644 arch/x86/include/asm/protected_guest.h
+>   create mode 100644 include/linux/protected_guest.h
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
