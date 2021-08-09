@@ -2,233 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1CF3E47F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84AA3E47F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbhHIOxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:53:09 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:14256 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhHIOxH (ORCPT
+        id S233872AbhHIOwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:52:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46682 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233366AbhHIOwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:53:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628520767; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=84DInYak3ob6ws+4P8+9QbEz8S5I95euQDi0WGUvz1I=; b=G3diNabJ1SvneaCUufua5OyZdOPrH6b9okYTQEVksiCxi1l/NwJOrr/bzJ7N9PWKkilx/UTn
- kzzLTMfxoquK+LwGPy0nmYtSOc8kerGB+wPrkwHp2hoesQx+JDvB9bmrXBX7CLO1BargPjaV
- ROrSYVKPPYLcG+mTyu0KEWWAq0Y=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6111411a76c3a9a17283506d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 14:52:10
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5E9F5C433D3; Mon,  9 Aug 2021 14:52:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [59.89.230.160])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B3AFC4338A;
-        Mon,  9 Aug 2021 14:52:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3B3AFC4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Rob Clark <robdclark@gmail.com>,
-        Caleb Connolly <caleb.connolly@linaro.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-References: <20210729183942.2839925-1-robdclark@gmail.com>
- <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
- <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
- <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
- <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
- <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
- <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org>
- <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
-Date:   Mon, 9 Aug 2021 20:21:59 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 9 Aug 2021 10:52:33 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5930F21E6F;
+        Mon,  9 Aug 2021 14:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628520732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZXgNCxd+SgCE6NDh3ACmakqiEC7xEF9v8cmNkXeJUIE=;
+        b=X0Oidp/S5+jDO7n1DPIspWjc6BTt1aMmhTMSP8APb4I53V+f6rT4nLB2HAopFbM7IzEFeV
+        eRuT/tqZXvN6iVrl0Zl/NfBxvIgy2mbFTxidkqKqb3azI+SqhA+by91kCl01QFGlx3eUfa
+        JROa1viu6jvhC4EC3WeFIWuYiVFNVXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628520732;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZXgNCxd+SgCE6NDh3ACmakqiEC7xEF9v8cmNkXeJUIE=;
+        b=xVX39Xvg39qjvpnY+gAct0TQaIe0pNbw5tvxcKgZNQuFShfmvugNKd9iQHHXSTvaWZTnBD
+        CauzAw33LbSK4OCg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 4244BA3B81;
+        Mon,  9 Aug 2021 14:52:12 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1D0C01E3BFC; Mon,  9 Aug 2021 16:52:09 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 16:52:09 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>
+Cc:     dvyukov@google.com, jack@suse.com, jack@suse.cz,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzkaller@googlegroups.com, tytso@mit.edu
+Subject: Re: [syzbot] possible deadlock in dquot_commit
+Message-ID: <20210809145209.GD30319@quack2.suse.cz>
+References: <000000000000a05b3b05baf9a856@google.com>
+ <000000000000aa4cd605c91fe2b3@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="Nq2Wo0NMKNjxTN9z"
+Content-Disposition: inline
+In-Reply-To: <000000000000aa4cd605c91fe2b3@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/2021 10:22 PM, Rob Clark wrote:
-> On Sun, Aug 8, 2021 at 7:33 AM Caleb Connolly <caleb.connolly@linaro.org> wrote:
->>
->>
->>
->> On 07/08/2021 21:04, Rob Clark wrote:
->>> On Sat, Aug 7, 2021 at 12:21 PM Caleb Connolly
->>> <caleb.connolly@linaro.org> wrote:
->>>>
->>>> Hi Rob, Akhil,
->>>>
->>>> On 29/07/2021 21:53, Rob Clark wrote:
->>>>> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
->>>>> <caleb.connolly@linaro.org> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 29/07/2021 21:24, Rob Clark wrote:
->>>>>>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
->>>>>>> <caleb.connolly@linaro.org> wrote:
->>>>>>>>
->>>>>>>> Hi Rob,
->>>>>>>>
->>>>>>>> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
->>>>>>>> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
->>>>>>>> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
->>>>>>>
->>>>>>> *ohh*, yeah, ok, that would explain it
->>>>>>>
->>>>>>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
->>>>>>>> at the higher frequencies.
->>>>>>>>
->>>>>>>> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
->>>>>>>> glxgear.
->>>>>>>>
->>>>>>>> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
->>>>>>>> at the voltage the hardware needs to be stable.
->>>>>>>>
->>>>>>>> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
->>>>>>>> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
->>>>>>>>
->>>>>>>
->>>>>>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
->>>>>>> on CC and I added sboyd, maybe one of them knows better.
->>>>>>>
->>>>>>> In the short term, removing the higher problematic OPPs from dts might
->>>>>>> be a better option than this patch (which I'm dropping), since there
->>>>>>> is nothing stopping other workloads from hitting higher OPPs.
->>>>>> Oh yeah that sounds like a more sensible workaround than mine .
->>>>>>>
->>>>>>> I'm slightly curious why I didn't have problems at higher OPPs on my
->>>>>>> c630 laptop (sdm850)
->>>>>> Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
->>>>>>
->>>>>> Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
->>>>>> crash where yours doesn't?
->>>>>
->>>>> I've not heard any reports of similar issues from the handful of other
->>>>> folks with c630's on #aarch64-laptops.. but I can't really say if that
->>>>> is luck or not.
->>>> It looks like this affects at least the OnePlus 6 and PocoPhone F1, I've done some more poking and the following diff
->>>> seems to fix the stability issues completely, it seems the delay is required to let the update propagate.
->>>>
->>>> This doesn't feel like the right fix, but hopefully it's enough to come up with a better solution than disabling the new
->>>> devfreq behaviour on a630.
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->>>> index d7cec7f0dde0..69e2a5e84dae 100644
->>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->>>> @@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
->>>>                    return;
->>>>            }
->>>>
->>>> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
->>>> +
->>>> +       usleep_range(300, 500);
->>>> +
->>>
 
-I am a bit confused. We don't define a power domain for gpu in dt, 
-correct? Then what exactly set_opp do here? Do you think this usleep is 
-what is helping here somehow to mask the issue?
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I feel we should just leave the new dcvs feature (shall we call it NAP?) 
-disabled for a630 (and 10ms devfreq interval), until this is root caused.
-
->>> Hmm, this is going to be in the critical path on idle -> active
->>> transition (ie. think response time to user-input).. so we defn don't
->>> want to do this unconditionally..
->>>
->>> If I understand the problem, we just want to limit how far we jump the
->>> gpu freq in one go.. maybe deleting the lowest (and perhaps highest)
->>> OPP would accomplish that?  Could that be done in the board(s)'s
->>> toplevel dts files?
->> That would be a workaround, however I'd really like to avoid limiting performance as a solution if I can help it,
->> especially as the fix might just be "set the opp first, wait for it to apply, then set the core clock".
->>
->> Is there a sensible way to get a callback from the opp notify chain? Or from rpmh directly? Or is this solution really
->> not the right way to go?
+On Mon 09-08-21 05:54:27, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> It does seem a bit strange to me that we are telling GMU to change
-> freq before calling dev_pm_opp_set_opp()..  if dev_pm_opp_set_opp() is
-> increasing voltage, it seems like you'd want to do that *before*
-> increasing freq (but reverse the order when decreasing freq).. But I'm
-> not an expert on the ways of the GMU..  maybe Akhil or Jordan knows
-> better how this is supposed to work.
-
-For legacy gmu, we trigger DCVS using DCVS OOB which comes later in this 
-function. But the order between regulator and clock which you mentioned 
-is correct.
-
+> HEAD commit:    66745863ecde Merge tag 'char-misc-5.14-rc5' of git://git.k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13edca6e300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=702bfdfbf389c324
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3b6f9218b1301ddda3e2
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15aeba6e300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a609e6300000
 > 
-> But the delay seems like papering something over, and I'm trying to go
-> in the other direction and reduce latency between user input and
-> pageflip..
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
 > 
-> BR,
-> -R
+> loop0: detected capacity change from 0 to 4096
+> EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue. Quota mode: writeback.
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.14.0-rc4-syzkaller #0 Not tainted
+> ------------------------------------------------------
+> syz-executor211/9242 is trying to acquire lock:
+> ffff88803a37ece8 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x57/0x360 fs/quota/dquot.c:474
 > 
->>>
->>> BR,
->>> -R
->>>
->>>>            gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
->>>>
->>>>            gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
->>>> @@ -158,7 +162,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
->>>>            if (ret)
->>>>                    dev_err(gmu->dev, "GMU set GPU frequency error: %d\n", ret);
->>>>
->>>> -       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
->>>>            pm_runtime_put(gmu->dev);
->>>>     }
->>>>>
->>>>> Maybe just remove it for affected devices?  But I'll defer to Bjorn.
->>>>>
->>>>> BR,
->>>>> -R
->>>>>
->>>>
->>>> --
->>>> Kind Regards,
->>>> Caleb (they/them)
->>
->> --
->> Kind Regards,
->> Caleb (they/them)
+> but task is already holding lock:
+> ffff88803a303e48 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x9e5/0x1cb0 fs/ext4/inode.c:631
+> 
+> which lock already depends on the new lock.
 
+Hmm, looks like hidden quota file got linked from directory hierarchy.
+Attached patch should fix this.
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 902e7f373fff2476b53824264c12e4e76c7ec02a
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-ext4-Make-sure-quota-files-are-not-grabbed-accidenta.patch"
+
+From 6efc0878a8c8f498eb138bdb57fad8a6c85d115c Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Mon, 9 Aug 2021 16:09:27 +0200
+Subject: [PATCH] ext4: Make sure quota files are not grabbed accidentally
+
+If ext4 filesystem is corrupted so that quota files are linked from
+directory hirerarchy, bad things can happen. E.g. quota files can get
+corrupted or deleted. Make sure we are not grabbing quota file inodes
+when we expect normal inodes.
+
+Reported-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inode.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index d8de607849df..2c33c795c4a7 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4603,6 +4603,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	struct ext4_iloc iloc;
+ 	struct ext4_inode *raw_inode;
+ 	struct ext4_inode_info *ei;
++	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+ 	struct inode *inode;
+ 	journal_t *journal = EXT4_SB(sb)->s_journal;
+ 	long ret;
+@@ -4613,9 +4614,12 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	projid_t i_projid;
+ 
+ 	if ((!(flags & EXT4_IGET_SPECIAL) &&
+-	     (ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO)) ||
++	     ((ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO) ||
++	      ino == le32_to_cpu(es->s_usr_quota_inum) ||
++	      ino == le32_to_cpu(es->s_grp_quota_inum) ||
++	      ino == le32_to_cpu(es->s_prj_quota_inum))) ||
+ 	    (ino < EXT4_ROOT_INO) ||
+-	    (ino > le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count))) {
++	    (ino > le32_to_cpu(es->s_inodes_count))) {
+ 		if (flags & EXT4_IGET_HANDLE)
+ 			return ERR_PTR(-ESTALE);
+ 		__ext4_error(sb, function, line, false, EFSCORRUPTED, 0,
+-- 
+2.26.2
+
+
+--Nq2Wo0NMKNjxTN9z--
