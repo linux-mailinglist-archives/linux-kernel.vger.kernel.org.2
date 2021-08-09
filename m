@@ -1,140 +1,69 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6623E468A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:28:00 +0200 (CEST)
+Received: from vger.kernel.org (unknown [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 811F23E4692
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235453AbhHIN15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:27:57 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:39946 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhHIN1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:27:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=XPcwLD3bV7njc8ZJSvv3i6NpD/qthpMV+YNj6jBN0Nc=; b=KNANoakmu9zX5ptv9bakmVwzXS
-        VhNg7Xgh4r8JcEz2d/r7StCSFlBrCdT6nizpMQvSR6eZDWoHowQEhCab2rTuxnlRqvAg03GA9qfhG
-        CGcKdyzU14BLkcvu+cBUt4bsUFXysNI69XyiroliVyLi4Lphx+4BzbcPptiDqpkWu7wU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mD5JK-00GhzY-HE; Mon, 09 Aug 2021 15:27:22 +0200
-Date:   Mon, 9 Aug 2021 15:27:22 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Gabriel Somlo <gsomlo@gmail.com>, David Shah <dave@ds0.me>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: net: Add bindings for LiteETH
-Message-ID: <YREtOlBnRl42lwhD@lunn.ch>
-References: <20210806054904.534315-1-joel@jms.id.au>
- <20210806054904.534315-2-joel@jms.id.au>
- <YQ7ZXu7hHTCNBwNz@lunn.ch>
- <CACPK8XdKi3f60h2PNjuWsEiw5Rz+F7Ngtw0yF0ZOg+N3kOy0tQ@mail.gmail.com>
+        id S235401AbhHIN2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhHIN2O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:28:14 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5B7C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 06:27:54 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id u3so29003622ejz.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 06:27:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=lIEHTypOMV6OIwvhIProWzVfgV7bT0xhlTel77/g5/w=;
+        b=cOK7LN50P0rVL0Ks4tgkX4WHNHA2xJ1yKJQQ8a7eggKyKgu9uwyx1Gm71IXgzPL7PC
+         v753LirX2jC8HP38crjvoRTF6BioxoGT8k/rwNhLNCKhd5sHrCVi7khU+M3J1LpulWPu
+         YJwEg741DW9Jpj7S37PHpM6xNMd6vJfnGUezFpuSw8iL4iGGJR6ZGoghF1b5H/Cb+EWN
+         nLRf1uYW7BHRX+z5uge8W8epHTQD3AoWcLvMgr1nBIUsjEzMkwQLda40CXx5q6acBTan
+         tKzvjqG1MIT971P8Ry0R2uIQW8bx3VMvzX86rEUtmB87+xDV8J5jNoeJmFOD1Cz9LyOS
+         M59A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=lIEHTypOMV6OIwvhIProWzVfgV7bT0xhlTel77/g5/w=;
+        b=b99RhnNWrKE3HR1AioCXe1ghBBoke+faaoFXoQUbrJWnRJ8bgiq1XwCc85og2ChfBw
+         CKE5oCDKAMc/5SeHX3T1qYftP/INPROW8hI035qd1FACZIM3t9grBZGJGKV6ztiTKHZD
+         tgUDE1Pp0/wx9yAr0U29waGdOSHlxM4CpOzSseiETTNkEbmasCW557rM26mZJ03LWLcP
+         e7aTjDlaHpnaPDlraxuOpARxgLEAGp3VWWairqEg5HEokBds+O6gTq+johgFth8A8xAJ
+         ew/n5KGoktfrZGyCed4QOEhZnWziYDt9E0ffXAh/unKu2HmoLfxnQIgY6ZLcel98UMY2
+         eFxQ==
+X-Gm-Message-State: AOAM531AL1XR5ge7UEwZxRTMpekaJLAw4pvQlv7e/fswj3pDMTF7b5kk
+        XBTmLFnEzIWTbvsEOnEvD9WdHSQDv9g=
+X-Google-Smtp-Source: ABdhPJx7gEPHcUs9aViJR+QqwoOQujoxTmgMQj3jkabrlNVS1+qRRcxc5eXf6G/mJ8VSE/z2IZDFPQ==
+X-Received: by 2002:a17:907:7da5:: with SMTP id oz37mr22066868ejc.396.1628515672457;
+        Mon, 09 Aug 2021 06:27:52 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id lk14sm5912316ejb.9.2021.08.09.06.27.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 06:27:52 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 16:27:51 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: info@cestasdeplastico.com spam
+Message-ID: <20210809132751.kwmgd2movxgoc4v6@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACPK8XdKi3f60h2PNjuWsEiw5Rz+F7Ngtw0yF0ZOg+N3kOy0tQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Hi Joel
-> >
-> > How configurable is the synthesis? Can the MDIO bus be left out? You
-> > can have only the MDIO bus and no MAC?
-> >
-> > I've not looked at the driver yet, but if the MDIO bus has its own
-> > address space, you could consider making it a standalone
-> > device. Somebody including two or more LiteETH blocks could then have
-> > one shared MDIO bus. That is a supported Linux architecture.
-> 
-> It's currently integrated as one device. If you instatined two blocks,
-> you would end up with two mdio controllers, each inside those two
-> liteeth blocks.
+Every time I send an email to a few mailing lists, like
+linux-kernel@vger.kernel.org, and (I believe)
+linux-arm-kernel@lists.infradead.org, I get an auto-reply from said
+email address which says:
 
-O.K. So at the moment, that is the default architecture, and the
-driver should then support it. But since there appears to be a clean
-address space split, the Linux MDIO driver could still be
-separate. But it might depend on the reset, since the register is in
-the MDIO address space. So again, we need to understand what that
-reset is about.
+	Hemos recibido correctamente su consulta, en breve le contestaremos. Gracias.
 
-> Obviously being software someone could change that. We've had a few
-> discussions about the infinite possibilities of a soft SoC and what
-> that means for adding driver support to mainline.
-
-Has any thought been given to making the hardware somehow
-enumerable/self describing? A register containing features which have
-been synthesised? There could be a bit indicating is the MDIO bus
-master is present, etc.
-
-> As the soft core project evolves, we can revisit what goes in
-> mainline, how flexible that driver support needs to be, and how best
-> to manage that.
-
-We can do that, but we have to keep backwards compatibility in
-mind. We cannot break older synthesised IP blobs because a new feature
-has come along and the driver has changed. It is best to put some
-thought into that now, how forward/backward compatibility will work.
-A revision register, a self description register, something which
-helps the software driver identify what the 'hardware' is.
-
-      Andrew
-
-> 
-> >
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  rx-fifo-depth:
-> > > +    description: Receive FIFO size, in units of 2048 bytes
-> > > +
-> > > +  tx-fifo-depth:
-> > > +    description: Transmit FIFO size, in units of 2048 bytes
-> > > +
-> > > +  mac-address:
-> > > +    description: MAC address to use
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - interrupts
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    mac: ethernet@8020000 {
-> > > +        compatible = "litex,liteeth";
-> > > +        reg = <0x8021000 0x100
-> > > +               0x8020800 0x100
-> > > +               0x8030000 0x2000>;
-> > > +        rx-fifo-depth = <2>;
-> > > +        tx-fifo-depth = <2>;
-> > > +        interrupts = <0x11 0x1>;
-> > > +    };
-> >
-> > You would normally expect to see some MDIO properties here, a link to
-> > the standard MDIO yaml, etc.
-> 
-> Do you have a favourite example that I could follow?
-
-Documentation/devicetree/bindings/net/mdio.yaml describes all the
-standard properties. Picking a file at random:
-
-Documentation/devicetree/bindings/net/socionext,uniphier-ave4.yaml
-
+It is really annoying. Can we make it stop?
