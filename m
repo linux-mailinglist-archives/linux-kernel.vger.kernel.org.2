@@ -2,33 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1423E4425
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1CC3E4427
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234915AbhHIKrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:47:24 -0400
-Received: from relay.sw.ru ([185.231.240.75]:48882 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234773AbhHIKq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:46:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=+MinV0OqyhZKB/6ILPnbXLBy7PE/pthP+8hU4YA1Y5w=; b=Evb/rDmJ0dSj1YQsIh4
-        jnW17qSVSdOiX7CtxlAxi9jOg2BJGgs4iDCg2Gey45lgxrgFfjJ26dTLDHkZa1pNlsqSXDm8/b6/6
-        //83YZGr+vS5g7kqcA+kdB6Y/Gb3fKagw4sWivHtSPrd72gjSFc5ihPHntbLUpeT7mp4Sj2xowc=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mD2nA-006q0n-VV; Mon, 09 Aug 2021 13:46:00 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH] mm: use in_task() in mempolicy_slab_node()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-Message-ID: <984ee771-4834-21da-801f-c15c18ddf4d1@virtuozzo.com>
-Date:   Mon, 9 Aug 2021 13:46:00 +0300
+        id S234853AbhHIKrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:47:35 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:40370
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234738AbhHIKqp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 06:46:45 -0400
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5EF6A3F34E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:46:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628505983;
+        bh=yt7czbeHRo3zFzMadQuUQl5b/q3O9yrC7ug3tMqy3VU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=NVArT16GalAihELtXdtq9GDh1w1YvayhWRnEGJUxReMr6kYARwUFQDffcXOGkHkyd
+         7HvpkmOjm3X92OIbZX9WOSYX9NZ5uB4RY1QdoQV3gACmhsXeGq2wgThzP0P0CxE/Yg
+         lmP0205ZNpuDPYfYrqPfgqRlD8Ly0JTvm1qquowqZmgf0ItadXr3zAtpTbbRzlVHsz
+         fJ9s4ibKdedgowu0Iv1n+hgDYheked6sY7yZpARrtVc799JIvcgyMUU7lLHymsCRTm
+         y91N+xmdXUIRRd2c1L9/CEjh974JqpwFmTiGRZ5BVwGrQHQqSnjSnVLAsFDTU3JPot
+         D3jiZ7WELkD4g==
+Received: by mail-ej1-f69.google.com with SMTP id gg1-20020a170906e281b029053d0856c4cdso4362417ejb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 03:46:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yt7czbeHRo3zFzMadQuUQl5b/q3O9yrC7ug3tMqy3VU=;
+        b=Cnh2E+eK6LLdwHS75H3YV6v3v1wXqi//1jeW84KPsoP1iPT4KBJeDtiMe5Y1NOYVhJ
+         tLl5BXc6PO2CqttV8Hz7Bsf6hEYtIoFlS/AHS3ZRtHdIoF0R3tBgBHz+T80NhDNjtNJH
+         eWV2fQU5xrXLgpeud9ak04IOSfKz5cxRj4JWw4d31wYyM9NoO7XXu014rjJ3lbIST/c6
+         jpxvakxGBsh3OLLAaMFh1nzlysXUkTG4IyGf4s9NuG3zF8IsqtqissF+9MRceZd+JZau
+         UBdwK5FrA4soRnJKjJ+oKfP2tdi+QLSIuCUPCTuejgMln0U0jDd6DwEPAxsFaQRgKEqe
+         gA7A==
+X-Gm-Message-State: AOAM531Jj1xIeC7FOEGbRrpmSQr+y1PVArlddXKkl7b7bs6RAX3x/9/8
+        jyeM060VlGB+fy6A0FlMh+s5CkgDbF9hX67dk3hTIHYL+EErRhrU0ik4Vh2VIKzQfw8TdRhTxSy
+        4b6avAGsOWOAQDZ7+IuJeCupcHj4Mr17sfwY1/TKsag==
+X-Received: by 2002:a17:906:4346:: with SMTP id z6mr2946650ejm.403.1628505982425;
+        Mon, 09 Aug 2021 03:46:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwilRElb69ECVZp5XBCmIh/rGOdeWiuwyHyABm9gfRG9GvWksDs334T+DetejTgQ1+PQ9rACw==
+X-Received: by 2002:a17:906:4346:: with SMTP id z6mr2946634ejm.403.1628505982295;
+        Mon, 09 Aug 2021 03:46:22 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id f5sm5733019ejj.45.2021.08.09.03.46.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 03:46:21 -0700 (PDT)
+Subject: Re: [PATCH v2 6/8] tty: serial: samsung: Add Exynos850 SoC data
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20210806152146.16107-1-semen.protsenko@linaro.org>
+ <20210806152146.16107-7-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6169e25b-2829-628a-f910-348ddd4b3030@canonical.com>
+Date:   Mon, 9 Aug 2021 12:46:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210806152146.16107-7-semen.protsenko@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -36,27 +93,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Obsoleted in_intrrupt() include task context with disabled BH,
-it's better to use in_task() instead.
+On 06/08/2021 17:21, Sam Protsenko wrote:
+> Add serial driver data for Exynos850 SoC. This driver data is basically
+> reusing EXYNOS_COMMON_SERIAL_DRV_DATA, which is common for all Exynos
+> chips, but also enables USI init, which was added in previous commit:
+> "tty: serial: samsung: Init USI to keep clocks running".
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+> Changes in v2:
+>   - Fixed default fifo sizes
+> 
+>  drivers/tty/serial/samsung_tty.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- mm/mempolicy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 2f8ee67..f436c53 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1922,7 +1922,7 @@ unsigned int mempolicy_slab_node(void)
- 	struct mempolicy *policy;
- 	int node = numa_mem_id();
- 
--	if (in_interrupt())
-+	if (!in_task())
- 		return node;
- 
- 	policy = current->mempolicy;
--- 
-1.8.3.1
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
+
+Best regards,
+Krzysztof
