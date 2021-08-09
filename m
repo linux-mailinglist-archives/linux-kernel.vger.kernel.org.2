@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A74B3E4F46
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F343E4F48
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbhHIWbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:31:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56865 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233565AbhHIWbu (ORCPT
+        id S236740AbhHIWc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235444AbhHIWc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:31:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628548289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h0IrbGHuas1nNnO8JBZWCL0Gr/6ftbCs5KjGl2Z6+gw=;
-        b=hpp/Pb9cB12r+fwxuDpIl4mAA9ZQztr7otwPMk1AQl2T1fSinrP6ZiL+TCsdEtSWQJUKbi
-        lqtzl0ORzG8kPBKRSfeIf2Tr9As9FYZiNdY7EMEL5W3EAy+ARSxPeAsqTm9SEXyuufIkrK
-        DlMSCg4dmEyWH14edNDfx92lv1JU6ks=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-4u18nSmkM02QCl6r0ESoyw-1; Mon, 09 Aug 2021 18:31:27 -0400
-X-MC-Unique: 4u18nSmkM02QCl6r0ESoyw-1
-Received: by mail-qk1-f199.google.com with SMTP id h186-20020a37b7c30000b02903b914d9e335so13786591qkf.17
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 15:31:27 -0700 (PDT)
+        Mon, 9 Aug 2021 18:32:26 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BD7C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 15:32:05 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so2380703pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 15:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NzjcRfEcACJvgTVpHXjAyUs8UkB1tiZkWLbrVQy12/Q=;
+        b=lCeiJTQknowjGfNbQ7NgspnLemPOUVn1UFwleOgZ4LEWrQA4rxLT/TgvxY+b09YLAM
+         8W2JTMDxAPXYwsa3HMlpXlo7bLCBE1FIJt4oScW8PSWY4IbA+tkRBuCIjWKKGE30HnzV
+         5IL8ctqS7sgFHbHCXKBk/BtnYPBMbsLzMn9i5LKFzM+Q7mKl1fqYndx8Ayadu+zZEa0T
+         zGzo2QrVXImVJPKmVB4nu5xYF+YV0OrMzbbP20/sPybAf9HXogBSvpHKIjakVElD8cd0
+         eFFCg3qK2R89ox8dNg66yyRp6ikD5OQPfD7nUa8y8sSAEZNSNoTJluZFeNYS4+4CwixC
+         exmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=h0IrbGHuas1nNnO8JBZWCL0Gr/6ftbCs5KjGl2Z6+gw=;
-        b=SxTFfoZxc1Hztfic87GCQmt6PflnF0eN4bteS0y/k5QAUB+dNawYgxNcWfQXRRpVhj
-         4IA8vAec8gkjoQ2oLdFluJNnTW1c0n4Q7U176CC9tmW8iL85NRnMSzjanTCXNEj5uQXm
-         SAtk5yqWNVIav9H/skYeQ3dzBCSGqv5Dx1/kOqlIRiXEitwsyjqtt2h8a9ySo/2dfTvm
-         0Vwa4NRZkMBjlpARp2G0SyxQP5EE1SIc9iarMiYdKaRg+1ncYY5+gy2SxK2YQrYAVYk4
-         NQk/u1BQ4KRtWm2iuVJwhLTvCH0snFIzrE8NwK2aNW1i+eBUCdibWNMmlMMRIKQKFKZV
-         wPOw==
-X-Gm-Message-State: AOAM533M5YYsoe/goJzp8UdrnC7huK4RgZzvpHhdHBapfOfi1+BSTKnr
-        lvXwz10fRx2U4osG4u6w+kuWZH8Ts7P1sqtk9umg+6FwdRwJPcaBDZ+472UZubxlmzoZT05iaaX
-        aKL2aGF1KNO3kgLVheOsJy4MZ
-X-Received: by 2002:a05:622a:1106:: with SMTP id e6mr21967275qty.172.1628548287326;
-        Mon, 09 Aug 2021 15:31:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPycnDHiYPL6a31SVTX6Z6ed2srcb++34DmueTwq0TlFWbTo44l36FO7A/a/2h7olBKZh6Eg==
-X-Received: by 2002:a05:622a:1106:: with SMTP id e6mr21967256qty.172.1628548287114;
-        Mon, 09 Aug 2021 15:31:27 -0700 (PDT)
-Received: from ?IPv6:2601:184:4180:af10::540e? ([2601:184:4180:af10::540e])
-        by smtp.gmail.com with ESMTPSA id m197sm9910149qke.54.2021.08.09.15.31.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 15:31:26 -0700 (PDT)
-Subject: Re: [PATCH] vm_swappiness=0 should still try to avoid swapping anon
- memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Waiman Long <longman@redhat.com>, mhocko@suse.com
-References: <20210806231701.106980-1-npache@redhat.com>
- <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
- <91605888-e343-2712-c097-bcade4cb389d@redhat.com>
- <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
-From:   Nico Pache <npache@redhat.com>
-Message-ID: <7301b496-d2fd-b5d1-8159-6613c958f487@redhat.com>
-Date:   Mon, 9 Aug 2021 18:31:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NzjcRfEcACJvgTVpHXjAyUs8UkB1tiZkWLbrVQy12/Q=;
+        b=PDy2XKzvPj4JNxKTs9chL0UmnERjKq0/D4NtKldpGtCqMjUA0ZLb2K5u6KwEe6XFQy
+         IposwOEpSTMV45mzTq1aR6zMf4R2ZY9PBld2M18kmFxAiUDJ42rJoo+irLlFqtxZd0YQ
+         URgqQ+JlzrBmtHC+4Wsx4QQ2x6yvcGq4M84yeg7F7AfLzBHVzRRqHrfRQTNvJIvHJPMO
+         DbEaEj4VyEsdjjgwU1UfKIVsCAz3ZCeVsB2i08l0LNUHTuWkmVwCMiN2oMcT1FBoyI5P
+         SVPfDj4lyfi8ylk8cEqS9bJinxmmI9KIfZZdCpBYfP9wET/cC8JgqjKJcomOWBG87v+q
+         QVNg==
+X-Gm-Message-State: AOAM532VD2NXWKONcxkpOCDM3TFgA0FIRwxq9uscO5A1SvsJdMPCgAgD
+        Zmr6QVWiXgjEiEji3KeGW+hF5GJgpKx/vQ==
+X-Google-Smtp-Source: ABdhPJxElfD99iLkdqdtMOOjJGVjntQCDrUuzUrKYce2aY57R9QMXv0KBqjCPSJ4IkXYSZ+4NCvvUw==
+X-Received: by 2002:a05:6a00:c81:b029:30e:21bf:4c15 with SMTP id a1-20020a056a000c81b029030e21bf4c15mr26160813pfv.70.1628548325071;
+        Mon, 09 Aug 2021 15:32:05 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id x26sm21276226pfm.77.2021.08.09.15.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 15:32:04 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Jack Pham <jackp@codeaurora.org>,
+        Thinh Nguyen <thinh.nguyen@synopsys.com>,
+        Todd Kjos <tkjos@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Petri Gynther <pgynther@google.com>, linux-usb@vger.kernel.org
+Subject: [RFC][PATCH] dwc3: gadget: Fix losing list items in dwc3_gadget_ep_cleanup_completed_requests()
+Date:   Mon,  9 Aug 2021 22:31:59 +0000
+Message-Id: <20210809223159.2342385-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CANcMJZCEVxVLyFgLwK98hqBEdc0_n4P0x_K6Gih8zNH3ouzbJQ@mail.gmail.com>
+References: <CANcMJZCEVxVLyFgLwK98hqBEdc0_n4P0x_K6Gih8zNH3ouzbJQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In commit d25d85061bd8 ("usb: dwc3: gadget: Use
+list_replace_init() before traversing lists"), a local list_head
+was introduced to process the started_list items to avoid races.
 
-> First, the shrink_list() will not be called for anon LRU if get_scan_count()
-> has decided to not scan the anon LRU.
+However, in dwc3_gadget_ep_cleanup_completed_requests() if
+dwc3_gadget_ep_cleanup_completed_request() fails, we break early,
+causing the items on the local list_head to be lost.
 
-get_scan_count() will decide to scan the anon LRU if(sc->is_file_tiny) which is set in shrink_node().
+This issue showed up as problems on the db845c/RB3 board, where
+adb connetions would fail, showing the device as "offline".
 
- In shrink_node() the MAY_DEACTIVATE/DEACTIVATE_ANON allows this the be activated.
+This patch tries to fix the issue by if we are returning early
+we splice in the local list head back into the started_list
+and return (avoiding an infinite loop, as the started_list is
+now non-null).
 
-> Second, I would like to get your attention to the following comment in
-> get_scan_count():
->
-> "Global reclaim will swap to prevent OOM even with no swappiness"
+Not sure if this is fully correct, but seems to work for me so I
+wanted to share for feedback.
 
-AFAIK my patchset doesn't prevent any of the OOM cases. It only prevents the anon workingset refaults
+Cc: Wesley Cheng <wcheng@codeaurora.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Jack Pham <jackp@codeaurora.org>
+Cc: Thinh Nguyen <thinh.nguyen@synopsys.com>
+Cc: Todd Kjos <tkjos@google.com>
+Cc: Amit Pundir <amit.pundir@linaro.org>
+Cc: YongQin Liu <yongqin.liu@linaro.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Petri Gynther <pgynther@google.com>
+Cc: linux-usb@vger.kernel.org
+Fixes: d25d85061bd8 ("usb: dwc3: gadget: Use list_replace_init() before traversing lists")
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/usb/dwc3/gadget.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-from challenging the anon if swappiness=0. 
-
-> It seems like the behavior you are seeing is actually working as intended.
-> You may decide to change that behavior but you will need to motivate the
-> change.
-
-My V3 has a lot more in the commit log. Hopefully it will clear up my motivation. I will post that now.
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index b8d4b2d327b23..a73ebe8e75024 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -2990,6 +2990,12 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
+ 			break;
+ 	}
+ 
++	if (!list_empty(&local)) {
++		list_splice_tail(&local, &dep->started_list);
++		/* Return so we don't hit the restart case and loop forever */
++		return;
++	}
++
+ 	if (!list_empty(&dep->started_list))
+ 		goto restart;
+ }
+-- 
+2.25.1
 
