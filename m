@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C045B3E4850
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B443E4855
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbhHIPHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:07:44 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:38661 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234421AbhHIPHn (ORCPT
+        id S235362AbhHIPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235196AbhHIPIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:07:43 -0400
-Received: by mail-vs1-f43.google.com with SMTP id t29so10242418vsr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:07:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DTs5CtLWyXBG0DLVLRK1Nq+J/mFgqyrFa3Bq0XHKiyY=;
-        b=skEjSN+C58DWBQtj5oBTI9ayWbPHEc22pm+GEhdZJwIWq0w5LspoxpXHCoJ3HcxOLl
-         MpGiTS9w1VNNkuQ0g4FrU6tjNRpED/wlerWJwRelbKjGkBqdrdX0+zCvfKp9mpKkqOzC
-         7HmPPw8w4/XLyx0L0qSyE/yeUAmYXpkYwzrbti4nylM7R8nc1veeeoC0wL558/tmzUEP
-         3c4rLQUB5fKhWA493Pq0N3ICPSDwgaFU+8LMh3229DbYc9PYWr4NOPoVUkjo1KamA8JH
-         rTAzinYGVCwjf/vEfEJIjhGOg/3EiZ0clKqp8fUDSO0gZzZR8jv+Kfdu/qNa+6jHz1Ml
-         u5XQ==
-X-Gm-Message-State: AOAM53071pKoaOLJIF+8Gv4Vblc6/y6cchJc9e3vJjn4okNFkfd3qPlJ
-        KjilB7YbXLzmWjy8qWlTPprNxJcW21We9OONos0=
-X-Google-Smtp-Source: ABdhPJwoyk8XAGm4vmp+Ctx5jM2BnC5S9BUXjB4D0vk1aiOLNj+y1qF9/zVQr0myFBBlFBK2vGAJK6LwCiz8OCvVmgw=
-X-Received: by 2002:a05:6102:d9:: with SMTP id u25mr7768616vsp.42.1628521642116;
- Mon, 09 Aug 2021 08:07:22 -0700 (PDT)
+        Mon, 9 Aug 2021 11:08:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C27C0613D3;
+        Mon,  9 Aug 2021 08:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lVisPR5KYrIvMXDw9TO9BYr5cUWzTK5uEBjREsWaDZw=; b=FZAC+JOHKOolQ0tQy9niwPLdJY
+        ZPBp2OAOsqp/iUYEibb87Zogf2D10l8lnVlSq/lwCZAwZi/mphoKiVWRGKVoKhIKlq3bfSu568mFa
+        moyOiJGlg0B/Ha9fNfYWhsdXSfoUKvWXD02eLBsgHv3pGg2BMwWw91GpvmeLmifT5JzzpRpw5iKk6
+        ZLuDMXg42FiE4YsZOcsMPDLHQkTWSSXFNwSAN4x0XxnROurFGseOV1SX48PHp0m1dUS9b4XG3jpNa
+        Z7KcNSFFGkqitSX3e9Ik35/qWyXPKLhtRkJhSbUw3MKzWiy7t5tKei8p7Q+irVo5IbFWEMNux+L/0
+        NAW9/boQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mD6sG-00B6dW-2h; Mon, 09 Aug 2021 15:07:43 +0000
+Date:   Mon, 9 Aug 2021 16:07:32 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        arnd@arndb.de
+Subject: Re: [PATCH 3/5] xfs: automatic resource cleanup of for_each_perag*
+Message-ID: <YRFEtK1CNr0Q+4nz@infradead.org>
+References: <162814684332.2777088.14593133806068529811.stgit@magnolia>
+ <162814685996.2777088.11268635137040103857.stgit@magnolia>
 MIME-Version: 1.0
-References: <202108010312.8uIaWK0u-lkp@intel.com> <3bdd5b29-b6a1-54a8-ac99-adb59e8e91a7@vt.edu>
-In-Reply-To: <3bdd5b29-b6a1-54a8-ac99-adb59e8e91a7@vt.edu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Aug 2021 17:07:11 +0200
-Message-ID: <CAMuHMdXueYTAYFgt-gP79e1NaFzmPmsE1if+DsiZaB5VmNqCXA@mail.gmail.com>
-Subject: Re: [PATCH v4.1] include: linux: Reorganize timekeeping and ktime headers
-To:     Carlos Bilbao <bilbao@vt.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162814685996.2777088.11268635137040103857.stgit@magnolia>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 1, 2021 at 10:13 PM Carlos Bilbao <bilbao@vt.edu> wrote:
-> Reorganize and separate the headers by making ktime.h take care of the
-> ktime_get() family of functions, and reserve timekeeping.h for the actual
-> timekeeping. This also helps to avoid implicit function errors and strengthens
-> the header dependencies, since timekeeping.h was using ktime_to_ns(), a static
-> function defined in a header it does no include, ktime.h. Include the header
-> timekeeping.h wherever it is necessary for a successful compilation after the
-> header code reorganization.
->
-> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
-> Reported-by: kernel test robot <lkp@intel.com>
+> +# Required for for_each_perag*
+> +ccflags-y += -std=gnu99
 
->  arch/m68k/atari/time.c         |   1 +
->  arch/m68k/hp300/time.c         |   2 +
->  arch/m68k/mac/via.c            |   1 +
->  arch/m68k/mvme16x/config.c     |   1 +
->  arch/m68k/sun3/sun3ints.c      |   1 +
+I don't think it is up to an individual subsystem to pick a specific C
+dialect.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I think the most important reason why the kernel sticks with gnu89 is
+to avoid the misfeature of variable declarations in the middle of
+blocks, and this change would lose it.
 
-Gr{oetje,eeting}s,
+> +	xfs_agnumber_t		last_agno = 0;
+>  	int			saved_error = 0;
+>  	int			error = 0;
+>  	LIST_HEAD		(buffer_list);
+>  
+>  	/* update secondary superblocks. */
+> -	for_each_perag_from(mp, agno, pag) {
+> +	for_each_perag_from(mp, iter, 1) {
+>  		struct xfs_buf		*bp;
+>  
+> +		last_agno = iter.pag->pag_agno;
 
-                        Geert
+This is a really horrible API as it magically injects a local variable
+in a macro.  It also leads to worse code generation and a small but
+noticable increase in .text sie:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+hch@brick:~/work/xfs$ size xfs.o.*
+   text	   data	    bss	    dec	    hex	filename
+1521421	 301161	   1880	1824462	 1bd6ce	xfs.o.old
+1521516	 301161	   1880	1824557	 1bd72d	xfs.o.new
