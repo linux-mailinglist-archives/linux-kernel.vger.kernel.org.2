@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCB43E4D97
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE6D3E4D9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhHIUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:03:43 -0400
-Received: from smtprelay0112.hostedemail.com ([216.40.44.112]:37658 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236195AbhHIUDh (ORCPT
+        id S233733AbhHIUFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:05:10 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:58844 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233617AbhHIUFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:03:37 -0400
-Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E60851809CDF4;
-        Mon,  9 Aug 2021 20:03:13 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 5B4E5B2797;
-        Mon,  9 Aug 2021 20:03:12 +0000 (UTC)
-Message-ID: <6a75b875a01e8697b5a3556d14f3ee9bd72d5050.camel@perches.com>
-Subject: Re: [PATCH v5 1/5] iio: adc: ad7949: define and use bitfield names
-From:   Joe Perches <joe@perches.com>
-To:     Liam Beguin <liambeguin@gmail.com>, lars@metafoo.de,
-        Michael.Hennerich@analog.com, jic23@kernel.org,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Date:   Mon, 09 Aug 2021 13:03:10 -0700
-In-Reply-To: <CDEHW1G78JUJ.CQG08OEMNYLQ@shaak>
-References: <20210808015659.2955443-1-liambeguin@gmail.com>
-         <20210808015659.2955443-2-liambeguin@gmail.com>
-         <b52eb842e1c681b88dbffba262075957b9741262.camel@perches.com>
-         <CDEHW1G78JUJ.CQG08OEMNYLQ@shaak>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Mon, 9 Aug 2021 16:05:08 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDBVo-009Lfx-Ey; Mon, 09 Aug 2021 20:04:40 +0000
+Date:   Mon, 9 Aug 2021 20:04:40 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
+ _copy_to_iter
+Message-ID: <YRGKWP7/n7+st7Ko@zeniv-ca.linux.org.uk>
+References: <0000000000006bd0b305c914c3dc@google.com>
+ <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
+ <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
+ <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
+ <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
+ <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 5B4E5B2797
-X-Spam-Status: No, score=-1.38
-X-Stat-Signature: ponw9bnqokmxfbtn5trjcqttcnxy4tz6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1878J4i44xS1a+IwmyG+Xhs1fXR3KBpfaM=
-X-HE-Tag: 1628539392-208200
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-08-08 at 18:46 -0400, Liam Beguin wrote:
-> On Sun Aug 8, 2021 at 12:51 PM EDT, Joe Perches wrote:
-> > On Sat, 2021-08-07 at 21:56 -0400, Liam Beguin wrote:
-> > > Replace raw configuration register values by using FIELD_PREP and
-> > > defines to improve readability.
-> > []
-> > > diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-> > []
-> > +#define AD7949_CFG_BIT_INCC GENMASK(12, 10)
-> > 
-> 
-> Hi Joe,
-> 
-> > I think the naming is a bit confusing as it appears as if
-> > these bitfield ranges are single bits.
-> 
-> That makes sense.
-> Would AD7949_CFG_BITS_* be good enough?
+On Mon, Aug 09, 2021 at 12:40:03PM -0700, Shoaib Rao wrote:
 
-Sure, or add MASK or something else like AD7949_CFG_MASK_INCC.
+> Page faults occur all the time, the page may not even be in the cache or the
+> mapping is not there (mmap), so I would not consider this a bug. The code
+> should complain about all other calls as they are also copying  to user
+> pages. I must not be following some semantics for the code to be triggered
+> but I can not figure that out. What is the recommended interface to do user
+> copy from kernel?
 
-It's pretty common to define _MASK and _SHIFT for these types
-of uses.
+	What are you talking about?  Yes, page faults happen.  No, they
+must not be triggered in contexts when you cannot afford going to sleep.
+In particular, you can't do that while holding a spinlock.
 
-For instance:
-include/drm/drm_dp_helper.h-# define DP_DSC_MAJOR_MASK                  (0xf << 0)
-include/drm/drm_dp_helper.h-# define DP_DSC_MINOR_MASK                  (0xf << 4)
-include/drm/drm_dp_helper.h:# define DP_DSC_MAJOR_SHIFT                 0
-include/drm/drm_dp_helper.h:# define DP_DSC_MINOR_SHIFT                 4
-
-
+	There are things that can't be done under a spinlock.  If your
+commit is attempting that, it's simply broken.
