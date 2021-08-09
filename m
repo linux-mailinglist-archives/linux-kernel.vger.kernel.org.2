@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9083E3F00
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B32A3E3F02
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhHIE2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 00:28:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41164 "EHLO mail.kernel.org"
+        id S232867AbhHIE3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 00:29:35 -0400
+Received: from ozlabs.org ([203.11.71.1]:54619 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229483AbhHIE2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 00:28:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C13F861019;
-        Mon,  9 Aug 2021 04:27:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628483276;
-        bh=g7PphkAa3cD92atJZV/1mpJ0V0vTYF+zw05ecvPmRM8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mq24T1NDmDxEicfUHFl9aisZ2oYPmgQ+AoPeZXlz2aqq7lsuXYPcP/9Rio6eLI683
-         MbfYiVTQZAoFhJDi9toRhyuiTTCNaJWatjDqkgvWg3wzDhsxsIc9D3HbcWEsS6c+Ho
-         VBHDFoctwN3YILvl4tkPXgsl5V8V3v0gqNC7OQz79JUUeSupnyTTtTD3+RCZMicMkk
-         jhIVVaIvxs6nfIP0BXiWp8Hu+lQro/HS8Gxur1fEq+Npp0HJyWwjWu9ScjK9FMu3Nv
-         lKXpaHS01/Ie/ivQ1ZuRfwccsnV8H/We13zPZgRjTMkxfVb1QxHZCT/+2WHvnYGeeE
-         aGJgrhQx4EFlQ==
-Date:   Mon, 9 Aug 2021 07:27:53 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, peterhuewe@gmx.de,
-        jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-Subject: Re: [PATCH v3 1/2] tpm: ibmvtpm: Rename tpm_process_cmd to
- tpm_status and define flag
-Message-ID: <20210809042753.lmvqrvcbk6bu5bu6@kernel.org>
-References: <20210805215256.1293987-1-stefanb@linux.vnet.ibm.com>
- <20210805215256.1293987-2-stefanb@linux.vnet.ibm.com>
- <20210806112557.y7q2av6pk7r4xorm@kernel.org>
- <cddf0b42-c69f-c110-9543-e16d30c9927a@linux.ibm.com>
+        id S231788AbhHIE3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 00:29:34 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GjjlX1C8Jz9sWl;
+        Mon,  9 Aug 2021 14:29:11 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628483353;
+        bh=GpY6Zpn0SSFgumfgOMSV7jxmKuyw+SXkuDGzfUxWPiQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rMIV98B5besjXwdXARZHs89+uThHLwRTLEEC6cmFGyU6hOI0o3h5I+X5uXg9VjUyf
+         wblK8QThLE2rMgALuvISHZGWpPXQLmZzLBODKQ/e9Leu486SM7qx8usT56WeWkBwu0
+         uIeXpNIvQwzzQ0UcLiCZSPY41Z4iJanRwCDa1bMlbrIG0pP78I9WXoySMCZnheqtQ5
+         fgpSuEunC1sRfhJ9tmeivGXYf1oN5NzNYYVUzOkRe6Gq3725WmbZ3HfRgnJEYjcy62
+         ecmfVNVqU1WtH+x8zxvHStrriWf3N1loLsfDmTqU6A8ZuaYPDKk4K/+i987Xs1UK7l
+         2mqzIkuqVxSzw==
+Date:   Mon, 9 Aug 2021 14:29:09 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Hao Xu <haoxu@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the block tree with Linus' tree
+Message-ID: <20210809142909.1d5fab20@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cddf0b42-c69f-c110-9543-e16d30c9927a@linux.ibm.com>
+Content-Type: multipart/signed; boundary="Sig_/KIEW3llqG=OJyd2dUqLGnUW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 08:08:27AM -0400, Stefan Berger wrote:
-> 
-> On 8/6/21 7:25 AM, Jarkko Sakkinen wrote:
-> > On Thu, Aug 05, 2021 at 05:52:55PM -0400, Stefan Berger wrote:
-> > > From: Stefan Berger <stefanb@linux.ibm.com>
-> > > 
-> > > Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
-> > > the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
-> > > 
-> > > Fixes: 6674ff145eef ("tpm_ibmvtpm: properly handle interrupted packet receptions")
-> > > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > > Cc: Nayna Jain <nayna@linux.ibm.com>
-> > > Cc: George Wilson <gcwilson@linux.ibm.com>
-> > Please put the bug fix first because otherwise it will be dependent of this
-> > patch, which is bad thing when it comes to backporting.
-> 
-> Yes, and that's why I have this one here also with a Fix tag. I basically
-> don't want to logically '&' with the 'true' flag but want this
-> TPM_STATUS_BUSY flag first.
-> 
->    Stefan
+--Sig_/KIEW3llqG=OJyd2dUqLGnUW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-You can then just change the type to 'u8'.
+Hi all,
 
-/Jarkko
+Today's linux-next merge of the block tree got a conflict in:
+
+  fs/io-wq.c
+
+between commit:
+
+  21698274da5b ("io-wq: fix lack of acct->nr_workers < acct->max_workers ju=
+dgement")
+
+from Linus' tree and commit:
+
+  e16aa0c614c6 ("io-wq: remove GFP_ATOMIC allocation off schedule out path")
+
+from the block tree.
+
+I fixed it up (I just used the latter version, but more may be needed?) and
+can carry the fix as necessary. This is now fixed as far as linux-next
+is concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/KIEW3llqG=OJyd2dUqLGnUW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEQrxUACgkQAVBC80lX
+0GyVngf+JaunBYc+g+eedHe1Gl8MavVh6SlLSYUYi7K0Hc7OWQWiWVT629MpN0+z
+wbONyHFF/ttbjgnf4rYhKt/OTJwCvGb9RkEECUv9nphPzSPtFseMZZSGYOF8dOXb
+PMbUj1o/CPjKufamBWpi9WoIURk0FwU3+GJoch9bzUUAmKX9Ow4v7aVZOiQmbPgL
+0N4WJLo7+h/8TLjfq1ULTcYSO/p+FfBGtWoN8AVNZDJIp/pMmTfa2zOlgSk75NRC
+Bej+lE3lWJdtD3qcUoU5XFbn7fckBgf/keQjMqwP49l8z/rKBj0rnYiDPaHfhzo9
+kQ9S9U05wRrBkhne5UUTytRRMaUsAA==
+=Ynxb
+-----END PGP SIGNATURE-----
+
+--Sig_/KIEW3llqG=OJyd2dUqLGnUW--
