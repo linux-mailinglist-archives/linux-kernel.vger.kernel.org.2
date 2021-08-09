@@ -2,250 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C392E3E3EB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFF33E3EC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhHIEMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 00:12:12 -0400
-Received: from mail-dm6nam11on2082.outbound.protection.outlook.com ([40.107.223.82]:38816
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230365AbhHIEML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 00:12:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eR/In7lgUYEyTHsR1gKxRpU/qV9au/cD9daFrbV8fD6Y3kedKW5zTTP8iJCsTHg7zHACmqnMyf51PWyPT8V3Lenrni1b6Zxs4zL8QbQEwG802uAQwJw9NCIWjWkOb9iwAwCdAI649qpGzpppm/HhGC7kVPIrSA34jOLW+IJ4J2uredw8Nht6eYPeqBRS9xfaq9CNAWwWaqiGo8hn+v38MI8yW/JtFZW15ViFK5mMwhdL9tWAz6KNmbCJVtJLxX/phR0YPnrBdBXUz37E8wQOZkh/0PeTA+vIHnXgvTKiPhnyqjKikH+9PAQv9T3x3lRIKpfqZknVy5Q/KhzVibHbNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G5YRSY8t6RTaPAUrAO85JONkzm0w5SkkP7wmol4b9zg=;
- b=DTy4zVxVEdw76otObIzGyX2f7vi3FbBaeykvnF+iG4el1ZxyZdj3C7NjKq0wWOJnKP9ZIAVhYnSdXtONFokU4mtjIuarY1ZWE6FgelfxIqD36TPSFk6yI30xpB9QlLQYokIbNj0JKf4dxo2fqQUM4EryGyD9ve+ZLT3qMOoY9GrRE81RdosOkOkxmKFrBCCOj9ytW4tYGKaZ/fiAhghxdpxl/HF42DEXM9O/gFd89QuXntBhjquq5BRCvdsSklW3Vll9W2vyvwDkptirSCe11cT76gH/lVBfIkzWOagaJu0GMIiRfO11VeHJHeVAoOcJXLK4OEwky825+USscvO6WA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G5YRSY8t6RTaPAUrAO85JONkzm0w5SkkP7wmol4b9zg=;
- b=MH83VOyZz6M2TiV7GUlHrcfHAhjRaaNE36ZNVqxIZFr/1oCndq5RiU202UGQTNoDDUQFtbYhzE4H56338ZWWfRCfS21GN4cDPMWrjDAH77OitN1AphYDjdgiLmDllfArvZ7kVn18QodoC5XRyXcPwRD9nqZRSOfdK9/A326tiYk=
-Authentication-Results: zytor.com; dkim=none (message not signed)
- header.d=none;zytor.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21)
- by DM5PR12MB1434.namprd12.prod.outlook.com (2603:10b6:3:77::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Mon, 9 Aug
- 2021 04:11:44 +0000
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::7410:8a22:1bdb:d24d]) by DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::7410:8a22:1bdb:d24d%6]) with mapi id 15.20.4394.022; Mon, 9 Aug 2021
- 04:11:44 +0000
-Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
- level
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-References: <20210808192658.2923641-1-wei.huang2@amd.com>
- <20210808192658.2923641-2-wei.huang2@amd.com>
- <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
-From:   Wei Huang <wei.huang2@amd.com>
-Message-ID: <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
-Date:   Sun, 8 Aug 2021 23:11:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
+        id S231325AbhHIEQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 00:16:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:52216 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229483AbhHIEQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 00:16:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAC666D;
+        Sun,  8 Aug 2021 21:15:40 -0700 (PDT)
+Received: from [10.57.67.185] (unknown [10.57.67.185])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 535B43F40C;
+        Sun,  8 Aug 2021 21:15:36 -0700 (PDT)
+Subject: Re: [PATCH v2] arm64: kprobe: Enable OPTPROBE for arm64
+To:     Qi Liu <liuqi115@huawei.com>, catalin.marinas@arm.com,
+        will@kernel.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        mhiramat@kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     song.bao.hua@hisilicon.com, prime.zeng@hisilicon.com,
+        robin.murphy@arm.com, f.fangjian@huawei.com, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+References: <20210804060209.95817-1-liuqi115@huawei.com>
+From:   Amit Kachhap <amit.kachhap@arm.com>
+Message-ID: <2fd3c78f-741a-4693-acae-4ea5465ad798@arm.com>
+Date:   Mon, 9 Aug 2021 09:45:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210804060209.95817-1-liuqi115@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR13CA0170.namprd13.prod.outlook.com
- (2603:10b6:806:28::25) To DM5PR1201MB0201.namprd12.prod.outlook.com
- (2603:10b6:4:5b::21)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.10.87] (165.204.77.11) by SA9PR13CA0170.namprd13.prod.outlook.com (2603:10b6:806:28::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.4 via Frontend Transport; Mon, 9 Aug 2021 04:11:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2e1249f7-30c8-4115-e3b1-08d95aebcc12
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1434:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB14349840F4C6B3B223B27891CFF69@DM5PR12MB1434.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oq1h1XDFrjBSJy0P08VhulezI4lgEVwof+a750LO7IY6VeJL24uJcs4RzJKoEEPcMfK8vkGvHyFAIsni9bxkQYi+619SobT5+tWe9CcRgcWWNZ+Ne4zf/sPyJWkYUGzhnxsYmcORpzYejhpoqZ6i/jZ6tLFZySpGf02OQFIo7M/DcuYZr1BP2sUH9nx+mshiXOrZUWYw+mQUtveXAlVdAhokytlv4892HQde7Nba/XR9R2/KN/K9ziJKanFPMfOgry63nBeAVmJWSOKkodGukmp0YAMbmDASm9AxJnP/IU5HfJpJXhpehzBtuqtHhmD08osOOmb4aG1yjFq3nJl+WbvO2T+CwTafbo0SFgpvQNyZeu371H0k5HV4LYRKgWgg8CQKkx5++eDkZHtZINP8QIaTQ7Gb9y6EfVT8jepgGEjButFi8nTJF+QCLzRJaIfAWc/swhPCW9MB2a2hLF0hsR0vWT9IpsTGJhqAIehxuU9rfv/HaHHEe3ehiQxoALZoKZ32it0ltuIRi7c4dd1uaxgBE1Xep11w19P5fKsCBPyKwHLPPKhgvdQQOknaV3OapIr6pnV2zkDIfRRgDCrGXPT8rGPI+v5/+fdKkIRwynVSWQri3MATu5KIavIpJ5Bj3tRqRTrteTYIZ2ZYqZ21rh4H9YAwtQ/OJOMxjCrX6ilwze6PRUF+LwYU8ItXY27v5E47byyH7egDFCnef+tHTAIZAthS4sQAXmCHHDheEBSRiOG53waC5pEd8Vqe3UYH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(366004)(396003)(36756003)(956004)(16576012)(38100700002)(38350700002)(2616005)(66476007)(8936002)(53546011)(52116002)(6486002)(2906002)(31696002)(26005)(316002)(66946007)(478600001)(86362001)(4326008)(6916009)(31686004)(83380400001)(186003)(8676002)(66556008)(7416002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MURncGhaTGtsSFVaWlBKWGxreWN0K2prNnlSVnFRSVpQMm5VbU81WUcvOW9r?=
- =?utf-8?B?NUZqQjZIY2lQZGxWYW42QXh0RjRzVlFHQUozUGErWFYrZjMvdkhqbWVIblUr?=
- =?utf-8?B?SC85dWlwZE5CVmZuUVFzTWdWYnpaaVhZcmViWG5OZGZlWjlpVGJybHpSOEdY?=
- =?utf-8?B?YnlwN3J2cFVGU3FBV3ROWGx0NURsSVJMd25lYndsUW44dDY1UzNIb3I1d2tM?=
- =?utf-8?B?ekdHRHZrSVVKYlRsT3hOV2N3emtRMXRvbXI3T2wvc2lwSG5tMTlXeDlmczlN?=
- =?utf-8?B?N1ZrNEZBdHJ4aFlXWHRhbUJibkdDRm1RWTV0R2lURWVRWEo1Y1N2VjZ6c2xL?=
- =?utf-8?B?bGJKTHJwTDc4MWt5c1RSMFlrOTZyNFZDUHhLNHlVclFkbTBJV2tVOHAyaGgv?=
- =?utf-8?B?aWVMb2QwdUMrTXRWMGtiQjdGaHI1ZldPdDYwTHJEa2ZwUytkeVFjUDRGTm54?=
- =?utf-8?B?OEhKN1N2S3BjYlAzU0tSTFBRZmFINEwyMXYzS1Bjd2x3ZGFhTHRYMFBacUtj?=
- =?utf-8?B?ZjZiYXJvTmIvQ3BDT2t5U1dqOENPemYyVzVpcnF4djdwVEc3QkRybzNHdTZx?=
- =?utf-8?B?dk5JSVdRckpqN3VWdjhVZ2dzNjM2M0ZQcGNVNEVkeTR2VjY0RmpMQ0FqdjZa?=
- =?utf-8?B?V2dwK0dsa002SVJxM2dJc21RSHQ5N1JjQzZWb2x5V0tQMGhJR2NkSlRXb3BY?=
- =?utf-8?B?aHlJZjR2cXM3OG1Fcmh5djRiTDNGVmxQb0lrTStwQkpWUno0RUtPclVxQkQy?=
- =?utf-8?B?SEpVeWVXMkRYQXd1bHBzRU5WMFR4bFE5SGtuZ3RBaE44OUtTeG5RMGJqU1R5?=
- =?utf-8?B?eHRLRUF5a1oxWWtMOExBVEtWRHVoOUUxYVg0eHplUWhNMXFXYUlxM1JIWTFj?=
- =?utf-8?B?UFlNVSsxNDhNb0QrbzJkOXNIN0tEZUthNWJ4bVZTTnVWeUVieWI1RytjRnBG?=
- =?utf-8?B?ZXMrbFBlWVNNRDZWZ3FrU1J6OG1iMnFvallpWFk3RzAvY25ESjVoZ0FMck1i?=
- =?utf-8?B?cUZDdnpLM2dhMkQ3cXpvYjg0eUc2OGtNWU56R2ozSGdsdy9sV3lPYlZuUlVE?=
- =?utf-8?B?VVNOZWYyaEFUcXVUcHVkMDJsTzE4TUxYMytqRHBPRFMzNlpBTjUwa1ErQmJ5?=
- =?utf-8?B?NXJzaW9iNXlQYUoxakNQdHl5OGYyRVJaUys5Z2pTWGxNNlpUNzNnS2hlcS90?=
- =?utf-8?B?c1hybjN1cWtDY2MwZTJwR0RsblVCREdDTVVwbzlyVERLTDFWLzBOY2lRZ3Ar?=
- =?utf-8?B?YUhiaWVRWWZnVW54MmZKRW9JYUptOUVqWk1pWHZITEtPbFNPRmlWZ2Z5NjVD?=
- =?utf-8?B?TUlMaEJhQmFlU2lURnpvNWJidjNLZFA2Zjdnek11VEFMandtMnN3eXNoTWNU?=
- =?utf-8?B?T1htSkNMd0h6aWRWRHJVTWk0QzlwZmJod2ZibWNNWHhXU0hRTFRtQklRYjhB?=
- =?utf-8?B?d3ZsWVdQV0hkMU9qMFpXdEJNbEhmQWNMWDFBYllITHVkNmh4WWo0M1ozTWdE?=
- =?utf-8?B?Z1ZGUDM1Zmt4RW5scjRlSzVVV0NwUnVDSDBESE4wTmVWQS95bnNPVTVsR29v?=
- =?utf-8?B?NkVkYzZNRnFKZE1PbllzUk4yd01iM3hNN3loeWdCODFaMHRjNkdMdkRkdVBq?=
- =?utf-8?B?N0laSHQzWWc3SXJYdnJWZjdWLzRmSlpKcDd3NHNWbHJIN1BUR1FYTUg4THVm?=
- =?utf-8?B?a0g3QzEzOUxlU1ZmQ0RSTUdDenU0WGdiUFBDczV1ZXN0TjdpUlZEcERJVlFL?=
- =?utf-8?Q?Evdoxa5GAVZIAARPowIZEpzQNHErgmkD2r94diC?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e1249f7-30c8-4115-e3b1-08d95aebcc12
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 04:11:43.9139
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qne8r56diZaP6B7rmxwuMZL0nbJEwTSO9KQ9xFckWy57fMtbwn69UDynU4EBDi4h
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1434
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Liu,
 
+I am few minor comments.
 
-On 8/8/21 10:58 PM, Yu Zhang wrote:
-> On Sun, Aug 08, 2021 at 02:26:56PM -0500, Wei Huang wrote:
->> AMD future CPUs will require a 5-level NPT if host CR4.LA57 is set.
+On 8/4/21 11:32 AM, Qi Liu wrote:
+> This patch introduce optprobe for ARM64. In optprobe, probed
+> instruction is replaced by a branch instruction to detour
+> buffer. Detour buffer contains trampoline code and a call to
+> optimized_callback(). optimized_callback() calls opt_pre_handler()
+> to execute kprobe handler.
 > 
-> Sorry, but why? NPT is not indexed by HVA.
-
-NPT is not indexed by HVA - it is always indexed by GPA. What I meant is 
-NPT page table level has to be the same as the host OS page table: if 
-5-level page table is enabled in host OS (CR4.LA57=1), guest NPT has to 
-5-level too.
-
+> Limitations:
+> - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+> guarantee the offset between probe point and kprobe pre_handler
+> is not larger than 128MiB.
 > 
->> To prevent kvm_mmu_get_tdp_level() from incorrectly changing NPT level
->> on behalf of CPUs, add a new parameter in kvm_configure_mmu() to force
->> a fixed TDP level.
->>
->> Signed-off-by: Wei Huang <wei.huang2@amd.com>
->> ---
->>   arch/x86/include/asm/kvm_host.h |  5 ++---
->>   arch/x86/kvm/mmu/mmu.c          | 10 ++++++++--
->>   arch/x86/kvm/svm/svm.c          |  4 +++-
->>   arch/x86/kvm/vmx/vmx.c          |  3 ++-
->>   4 files changed, 15 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index 974cbfb1eefe..6d16f75cc8da 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -723,7 +723,6 @@ struct kvm_vcpu_arch {
->>   
->>   	u64 reserved_gpa_bits;
->>   	int maxphyaddr;
->> -	int max_tdp_level;
->>   
->>   	/* emulate context */
->>   
->> @@ -1747,8 +1746,8 @@ void kvm_mmu_invalidate_gva(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->>   void kvm_mmu_invpcid_gva(struct kvm_vcpu *vcpu, gva_t gva, unsigned long pcid);
->>   void kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd);
->>   
->> -void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
->> -		       int tdp_huge_page_level);
->> +void kvm_configure_mmu(bool enable_tdp, int tdp_forced_root_level,
->> +		       int tdp_max_root_level, int tdp_huge_page_level);
->>   
->>   static inline u16 kvm_read_ldt(void)
->>   {
->> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->> index 66f7f5bc3482..c11ee4531f6d 100644
->> --- a/arch/x86/kvm/mmu/mmu.c
->> +++ b/arch/x86/kvm/mmu/mmu.c
->> @@ -97,6 +97,7 @@ module_param_named(flush_on_reuse, force_flush_and_sync_on_reuse, bool, 0644);
->>   bool tdp_enabled = false;
->>   
->>   static int max_huge_page_level __read_mostly;
->> +static int tdp_root_level __read_mostly;
+> Performance of optprobe on Hip08 platform is test using kprobe
+> example module[1] to analyze the latency of a kernel function,
+> and here is the result:
 > 
-> I think this is a broken design - meaning KVM can only use 5-level or
-> 4-level NPT for all VMs.
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
 
-Broken normally means non-functional or buggy, which doesn't apply here. 
-A good TLB design should be able to offset the potential overhead of 
-5-level page table for most cases.
+> +	 *
+> +	 * kprobe opt use a 'b' instruction to branch to optinsn.insn.
+> +	 * According to ARM manual, branch instruction is:
+> +	 *
+> +	 *   31  30                  25              0
+> +	 *  +----+---+---+---+---+---+---------------+
+> +	 *  |cond| 0 | 0 | 1 | 0 | 1 |     imm26     |
+> +	 *  +----+---+---+---+---+---+---------------+
+> +	 *
+> +	 * imm26 is a signed 26 bits integer. The real branch offset is computed
+> +	 * by: imm64 = SignExtend(imm26:'00', 64);
+> +	 *
+> +	 * So the maximum forward branch should be:
+> +	 *   (0x01ffffff << 2) = 1720x07fffffc =  0x07fffffc
 
+7120x07fffffc ? Shouldn't it be just 0x07fffffc.
+
+> +	 * The maximum backward branch should be:
+> +	 *   (0xfe000000 << 2) = 0xFFFFFFFFF8000000 = -0x08000000
+> +	 *
+> +	 * We can simply check (rel & 0xf8000003):
+> +	 *  if rel is positive, (rel & 0xf8000003) should be 0
+> +	 *  if rel is negitive, (rel & 0xf8000003) should be 0xf8000000
+> +	 *  the last '3' is used for alignment checking.
+> +	 */
+> +	return (offset >= -0x08000000 && offset <= 0x07fffffc && !(offset & 0x3));
+> +}
+> +
+> +int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
+> +{
+> +	kprobe_opcode_t *code;
+> +	u32 insn;
+> +	int ret, i;
+> +	void *addrs[TMPL_END_IDX];
+> +	void *addr;
+> +
+> +	code = get_optinsn_slot();
+> +	if (!code)
+> +		return -ENOMEM;
+> +
+> +	if (!is_offset_in_range((unsigned long)code,
+> +				(unsigned long)orig->addr + 8))
+> +		goto error;
+> +
+> +	if (!is_offset_in_range((unsigned long)code + TMPL_CALL_BACK,
+> +				(unsigned long)optimized_callback))
+> +		goto error;
+> +
+> +	if (!is_offset_in_range((unsigned long)&code[TMPL_RESTORE_END],
+> +				(unsigned long)op->kp.addr + 4))
+> +		goto error;
+> +
+> +	/* Setup template */
+> +	for (i = 0; i < TMPL_END_IDX; i++)
+> +		addrs[i] = code + i;
+> +
+> +	ret = aarch64_insn_patch_text(addrs, optprobe_template_entry,
+> +				      TMPL_END_IDX);
+
+Here it copies nops for restore_orig_insn, restore_orig_insn and
+again overwrites them with new values below.
+
+> +	if (ret < 0)
+> +		goto error;
+> +
+> +	/* Set probe information */
+> +	addr = code + TMPL_VAL_IDX;
+> +	insn =  (unsigned long long)op & 0xffffffff;
+> +	aarch64_insn_patch_text(&addr, &insn, 1);
+> +
+> +	addr = addr + 4;
+> +	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
+> +	aarch64_insn_patch_text(&addr, &insn, 1);
+> +
+> +	addr = code + TMPL_CALL_BACK;
+> +	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
+> +				(unsigned long)optimized_callback,
+> +				AARCH64_INSN_BRANCH_LINK);
+> +	aarch64_insn_patch_text(&addr, &insn, 1);
+> +
+> +	/* The original probed instruction */
+> +	addr = code + TMPL_RESTORE_ORIGN_INSN;
+> +	insn =  orig->opcode;
+> +	aarch64_insn_patch_text(&addr, &insn, 1);
+
+As commented above.
+
+> +
+> +	/* Jump back to next instruction */
+> +	addr = code + TMPL_RESTORE_END;
+> +	insn = aarch64_insn_gen_branch_imm(
+> +				(unsigned long)(&code[TMPL_RESTORE_END]),
+> +				(unsigned long)(op->kp.addr) + 4,
+> +				AARCH64_INSN_BRANCH_NOLINK);
+> +	aarch64_insn_patch_text(&addr, &insn, 1);
+
+As commented above.
+
+> +
+> +	flush_icache_range((unsigned long)code,
+> +			   (unsigned long)(&code[TMPL_END_IDX]));
+> +	/* Set op->optinsn.insn means prepared. */
+> +	op->optinsn.insn = code;
+> +
+> +	return 0;
+> +
+> +error:
+> +	free_optinsn_slot(code, 0);
+> +	return -ERANGE;
+> +}
+> +
+> +void arch_optimize_kprobes(struct list_head *oplist)
+> +{
+> +	struct optimized_kprobe *op, *tmp;
+> +
+> +	list_for_each_entry_safe(op, tmp, oplist, list) {
+> +		u32 insn;
+> +
+> +		WARN_ON(kprobe_disabled(&op->kp));
+> +
+> +		/*
+> +		 * Backup instructions which will be replaced
+> +		 * by jump address
+> +		 */
+> +		memcpy(op->optinsn.copied_insn, op->kp.addr,
+> +			RELATIVEJUMP_SIZE);
+> +		insn = aarch64_insn_gen_branch_imm((unsigned long)op->kp.addr,
+> +				(unsigned long)op->optinsn.insn,
+> +				AARCH64_INSN_BRANCH_NOLINK);
+> +
+> +		WARN_ON(insn == 0);
+> +
+> +		aarch64_insn_patch_text_nosync((void*)op->kp.addr, insn);
+> +
+> +		list_del_init(&op->list);
+> +	}
+> +}
+> +
+> +void arch_unoptimize_kprobe(struct optimized_kprobe *op)
+> +{
+> +	arch_arm_kprobe(&op->kp);
+> +}
+> +
+> +/*
+> + * Recover original instructions and breakpoints from relative jumps.
+> + * Caller must call with locking kprobe_mutex.
+> + */
+> +void arch_unoptimize_kprobes(struct list_head *oplist,
+> +			    struct list_head *done_list)
+> +{
+> +	struct optimized_kprobe *op, *tmp;
+> +
+> +	list_for_each_entry_safe(op, tmp, oplist, list) {
+> +		arch_unoptimize_kprobe(op);
+> +		list_move(&op->list, done_list);
+> +	}
+> +}
+> +
+> +void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
+> +{
+> +	if (op->optinsn.insn) {
+> +		free_optinsn_slot(op->optinsn.insn, 1);
+> +		op->optinsn.insn = NULL;
+> +	}
+> +}
+> diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S b/arch/arm64/kernel/probes/optprobe_trampoline.S
+> new file mode 100644
+> index 000000000000..13729cb279b8
+> --- /dev/null
+> +++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
+> @@ -0,0 +1,80 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * trampoline entry and return code for optprobes.
+> + */
+> +
+> +#include <linux/linkage.h>
+> +#include <asm/asm-offsets.h>
+> +#include <asm/assembler.h>
+> +
+> +	.global optprobe_template_entry
+> +optprobe_template_entry:
+> +	sub sp, sp, #PT_REGS_SIZE
+> +	stp x0, x1, [sp, #S_X0]
+> +	stp x2, x3, [sp, #S_X2]
+> +	stp x4, x5, [sp, #S_X4]
+> +	stp x6, x7, [sp, #S_X6]
+> +	stp x8, x9, [sp, #S_X8]
+> +	stp x10, x11, [sp, #S_X10]
+> +	stp x12, x13, [sp, #S_X12]
+> +	stp x14, x15, [sp, #S_X14]
+> +	stp x16, x17, [sp, #S_X16]
+> +	stp x18, x19, [sp, #S_X18]
+> +	stp x20, x21, [sp, #S_X20]
+> +	stp x22, x23, [sp, #S_X22]
+> +	stp x24, x25, [sp, #S_X24]
+> +	stp x26, x27, [sp, #S_X26]
+> +	stp x28, x29, [sp, #S_X28]
+> +	add x0, sp, #PT_REGS_SIZE
+> +	stp lr, x0, [sp, #S_LR]
+> +	/*
+> +	 * Construct a useful saved PSTATE
+> +	 */
+> +	mrs x0, nzcv
+> +	mrs x1, daif
+> +	orr x0, x0, x1
+> +	mrs x1, CurrentEL
+> +	orr x0, x0, x1
+> +	mrs x1, SPSel
+> +	orr x0, x0, x1
+> +	stp xzr, x0, [sp, #S_PC]
+> +	/* Get parameters to optimized_callback() */
+> +	ldr	x0, 1f
+> +	mov	x1, sp
+
+Most of the codes here are same as save_all_base_regs macro in file
+arch/arm64/kernel/probes/kprobes_trampoline.S. May be they
+can be made common macros and kept in asm/assembler.h
+
+> +	/* Branch to optimized_callback() */
+> +	.global optprobe_template_call
+> +optprobe_template_call:
+> +	nop
+> +        /* Restore registers */
+> +	ldr x0, [sp, #S_PSTATE]
+> +	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
+> +	msr nzcv, x0
+> +	ldp x0, x1, [sp, #S_X0]
+> +	ldp x2, x3, [sp, #S_X2]
+> +	ldp x4, x5, [sp, #S_X4]
+> +	ldp x6, x7, [sp, #S_X6]
+> +	ldp x8, x9, [sp, #S_X8]
+> +	ldp x10, x11, [sp, #S_X10]
+> +	ldp x12, x13, [sp, #S_X12]
+> +	ldp x14, x15, [sp, #S_X14]
+> +	ldp x16, x17, [sp, #S_X16]
+> +	ldp x18, x19, [sp, #S_X18]
+> +	ldp x20, x21, [sp, #S_X20]
+> +	ldp x22, x23, [sp, #S_X22]
+> +	ldp x24, x25, [sp, #S_X24]
+> +	ldp x26, x27, [sp, #S_X26]
+> +	ldp x28, x29, [sp, #S_X28]
+> +	ldr lr, [sp, #S_LR]
+> +        add sp, sp, #PT_REGS_SIZE
+
+Same as previous comment.
+
+BR.
+//Amit
+
+> +	.global optprobe_template_restore_orig_insn
+> +optprobe_template_restore_orig_insn:
+> +	nop
+> +	.global optprobe_template_restore_end
+> +optprobe_template_restore_end:
+> +	nop
+> +	.global optprobe_template_end
+> +optprobe_template_end:
+> +	.global optprobe_template_val
+> +optprobe_template_val:
+> +	1:	.long 0
+> +		.long 0
 > 
-> B.R.
-> Yu
-> 
->>   static int max_tdp_level __read_mostly;
->>   
->>   enum {
->> @@ -4562,6 +4563,10 @@ static union kvm_mmu_role kvm_calc_mmu_role_common(struct kvm_vcpu *vcpu,
->>   
->>   static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
->>   {
->> +	/* tdp_root_level is architecture forced level, use it if nonzero */
->> +	if (tdp_root_level)
->> +		return tdp_root_level;
->> +
->>   	/* Use 5-level TDP if and only if it's useful/necessary. */
->>   	if (max_tdp_level == 5 && cpuid_maxphyaddr(vcpu) <= 48)
->>   		return 4;
->> @@ -5253,10 +5258,11 @@ void kvm_mmu_invpcid_gva(struct kvm_vcpu *vcpu, gva_t gva, unsigned long pcid)
->>   	 */
->>   }
->>   
->> -void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
->> -		       int tdp_huge_page_level)
->> +void kvm_configure_mmu(bool enable_tdp, int tdp_forced_root_level,
->> +		       int tdp_max_root_level, int tdp_huge_page_level)
->>   {
->>   	tdp_enabled = enable_tdp;
->> +	tdp_root_level = tdp_forced_root_level;
->>   	max_tdp_level = tdp_max_root_level;
->>   
->>   	/*
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index e8ccab50ebf6..f361d466e18e 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -1015,7 +1015,9 @@ static __init int svm_hardware_setup(void)
->>   	if (!boot_cpu_has(X86_FEATURE_NPT))
->>   		npt_enabled = false;
->>   
->> -	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
->> +	/* Force VM NPT level equal to the host's max NPT level */
->> +	kvm_configure_mmu(npt_enabled, get_max_npt_level(),
->> +			  get_max_npt_level(), PG_LEVEL_1G);
->>   	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
->>   
->>   	/* Note, SEV setup consumes npt_enabled. */
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 927a552393b9..034e1397c7d5 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -7803,7 +7803,8 @@ static __init int hardware_setup(void)
->>   		ept_lpage_level = PG_LEVEL_2M;
->>   	else
->>   		ept_lpage_level = PG_LEVEL_4K;
->> -	kvm_configure_mmu(enable_ept, vmx_get_max_tdp_level(), ept_lpage_level);
->> +	kvm_configure_mmu(enable_ept, 0, vmx_get_max_tdp_level(),
->> +			  ept_lpage_level);
->>   
->>   	/*
->>   	 * Only enable PML when hardware supports PML feature, and both EPT
->> -- 
->> 2.31.1
->>
