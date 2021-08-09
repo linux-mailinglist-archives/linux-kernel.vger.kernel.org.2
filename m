@@ -1,113 +1,98 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A4C3E4668
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:21:59 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 38C933E466D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235428AbhHINVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:21:54 -0400
-Received: from mga05.intel.com ([192.55.52.43]:42451 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234597AbhHINVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:21:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="300278504"
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="300278504"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 06:21:03 -0700
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="514951933"
-Received: from lmajkows-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.39.191])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 06:20:59 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>, Karol Herbst <kherbst@redhat.com>
-Cc:     ML nouveau <nouveau@lists.freedesktop.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: [PATCH] nouveau: make backlight support non optional
-In-Reply-To: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210723224617.3088886-1-kherbst@redhat.com> <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com> <CACO55tuNWk6emjnnukgv9h-9jbpVP564Ogmi7TGbybc9n5v+ZQ@mail.gmail.com> <CAK8P3a1BceSaiqkTf+9Pr4Br-G3kgqD4ztwiaS7fxNiUg9t7Dg@mail.gmail.com> <CACO55tsoi2akTKvFdz3p48UHRjFXDW7dUnOM8qVePBFWet-3UQ@mail.gmail.com> <CACO55tuceMUz2pgOM23wvcmtaTqbo6S6rCB+mfLptqJRt=fMWA@mail.gmail.com> <CAK8P3a3+AD02-8nbULMdae2Hc=hJ+-Zb_CL+bHF-9oGieYiZWQ@mail.gmail.com> <CACO55tswMuDE9u3asU2Ls7BhA0uKGGarLk+E-WTD6MVnLwc3tw@mail.gmail.com> <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
-Date:   Mon, 09 Aug 2021 16:20:55 +0300
-Message-ID: <87tujyoitk.fsf@intel.com>
+        id S234860AbhHINWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:22:41 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:48199 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234597AbhHINWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:22:23 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N0WLC-1n0o5p203g-00wTwj; Mon, 09 Aug 2021 15:21:57 +0200
+Received: by mail-wr1-f47.google.com with SMTP id z4so21434557wrv.11;
+        Mon, 09 Aug 2021 06:21:57 -0700 (PDT)
+X-Gm-Message-State: AOAM532BvkF3fCxklp8+n4ewXggk/INBd2ipbzViDrFrLKXJ8xS/FRYd
+        TCjRh3kvdEHDinpJ8PdFHjtbPlKoy6q5OuJOQuk=
+X-Google-Smtp-Source: ABdhPJy16990ho4qpaTAmbDTUFeqQ/A0wIjvh9as86tRp9Mkq8co1Vb/ON23QRD87IMks8uku7CxYKSzhHKXaR/99pw=
+X-Received: by 2002:adf:a309:: with SMTP id c9mr7600369wrb.99.1628515317048;
+ Mon, 09 Aug 2021 06:21:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210809202046.596dad87@canb.auug.org.au>
+In-Reply-To: <20210809202046.596dad87@canb.auug.org.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 9 Aug 2021 15:21:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a103SSaMmFEKehPQO0p9idVwhfck-OX5t1_3-gW4ox2tw@mail.gmail.com>
+Message-ID: <CAK8P3a103SSaMmFEKehPQO0p9idVwhfck-OX5t1_3-gW4ox2tw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:nRo0NssWTaHIckkiOOW6M6iRtbxvF9MxcMIP4z3c/ABpnuJNra4
+ SYOatWYBUamU60cy+ljuBDmYQitchtOAiDL2fLXOhIjdykDDo59yIFGc6XuY8Xmw4oOqU2o
+ x7fQPXJEAbHS5Aj0Bz2S3cYbADxLkJjQrhc2MlTRWMLh/vDZmd0eglWwsWnu8+fae/M7ZHm
+ VLbPxx9a1Y9tctUruqalA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:x/xcfGnN9Mc=:jBHmHL/MQhSZ4mnIDnIhx+
+ s5HMze53RsAAvrWcmHuYbNoKqf3xYe1bqP2fSaxEWzOA+BzYm72pANl/vfUhcBynU3LZ+aoju
+ 1MQIUXYroZgM/pgb8Kz9pH9CKDqC9Dui2YE1JgY1FQrZYkpHQAdv9GO+ooVw7OcwFySPMxeH9
+ ek1EWRqgmKiF3ZARwdFIDbZkihCSOAJAW1OfNRjbOtz9/jWjYPLsO5PW5KsAS21upiZNW53oa
+ z5qDqNJ10ZdhNXd41dzLby4a6w7RcgUDJtUVGyp9ep8Vgaodah9gTWjEkqxSic2pZBGwGN5w0
+ UN4bEPs8dPrQBbxzrskio0GikvJ8RxIA69K4Hvv48GLA/824JyA5DuhMGl/aqgjbzCVDtQZRp
+ 1zO9dW+RDFKHhW4JZd3KbhgC7OZaAQHQURoaJPSseKHrY+MNm1ZyoYR5XpU6JddF79wGj7SOM
+ AYRtuH5xtgU/y1mZ/bDz/QjNFouToOWvqT5AIAX84BA0OFPKUE9EOiGefLe+ijdbRMQP5vHwO
+ s40bjgBmsJTM25bkSO8j3+du6THpapBYccgisE1PKv4ZC7bYQYgAMLgZwHrnIDQIM44THe8RG
+ S3cEEr1Encivn4ilGxtGGwLNYU6wx1jXYSRvkf52WIuwMyobDRUdhBxnRFedX9wA8trQuOXIg
+ /kFVe5Kg/Xyj5CI1o5IupXpJjt9Qwdqq3jkugzkC0pkFIeyi2g7WAsjbGiVLkV3gvlxHi47Ff
+ +vsoLM6xdPFBzZsCVnDlYAUylblJXEw0EYjRVFdLHOyeJOzm2W5eHGve9RVCKvH9N7vSAhK7E
+ eZQaXuctUFutRUFnHhkzJdApg/JwV2gSRlk/6fORuKZNnHObD4lkQ/q/DCR75RpaC+jnX5i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Jul 2021, Arnd Bergmann <arnd@kernel.org> wrote:
-> On Sat, Jul 24, 2021 at 4:14 PM Karol Herbst <kherbst@redhat.com> wrote:
->>
->> we use the MXM_WMI in code. We also have to keep arm in mind and not
->> break stuff there. So I will try to play around with your changes and
->> see how that goes.
+On Mon, Aug 9, 2021 at 12:20 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> Ok, should find any randconfig build failures for arm, arm64 or x86 over the
-> weekend. I also this on linux-next today
+> Hi all,
 >
-> ld: drivers/gpu/drm/i915/display/intel_panel.o: in function
-> `intel_backlight_device_register':
-> intel_panel.c:(.text+0x2804): undefined reference to `backlight_device_register'
-> ld: intel_panel.c:(.text+0x284e): undefined reference to
-> `backlight_device_register'
-> ld: drivers/gpu/drm/i915/display/intel_panel.o: in function
-> `intel_backlight_device_unregister':
-> intel_panel.c:(.text+0x28b1): undefined reference to
-> `backlight_device_unregister'
+> After merging the net-next tree, today's linux-next build (powerpc
+> allyesconfig) failed like this:
 >
-> and I added this same thing there to see how it goes:
+> drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
+> drivers/net/ethernet/cirrus/cs89x0.c:897:20: error: implicit declaration of function 'isa_virt_to_bus' [-Werror=implicit-function-declaration]
+>   897 |     (unsigned long)isa_virt_to_bus(lp->dma_buff));
+>       |                    ^~~~~~~~~~~~~~~
 
-Last I checked (and it was a while a go) you really had to make all
-users of BACKLIGHT_CLASS_DEVICE depend not select it, otherwise you end
-up with recursive dependencies.
+Thank you for the report! I already sent a patch for m68knommu running into
+this issue, but it seems there are other architectures that still have it.
 
-BR,
-Jani.
+The driver checks CONFIG_ISA_DMA_API at compile time to determine
+whether isa_virt_to_bus(), set_dma_mode(), set_dma_addr(), ... are all
+defined.
 
->
-> diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
-> index 87825d36335b..69c6b7aec49e 100644
-> --- a/drivers/gpu/drm/i915/Kconfig
-> +++ b/drivers/gpu/drm/i915/Kconfig
-> @@ -3,6 +3,8 @@ config DRM_I915
->         tristate "Intel 8xx/9xx/G3x/G4x/HD Graphics"
->         depends on DRM
->         depends on X86 && PCI
-> +       depends on ACPI_VIDEO || !ACPI
-> +       depends on BACKLIGHT_CLASS_DEVICE
->         select INTEL_GTT
->         select INTERVAL_TREE
->         # we need shmfs for the swappable backing store, and in particular
-> @@ -16,10 +18,6 @@ config DRM_I915
->         select IRQ_WORK
->         # i915 depends on ACPI_VIDEO when ACPI is enabled
->         # but for select to work, need to select ACPI_VIDEO's dependencies, ick
-> -       select DRM_I915_BACKLIGHT if ACPI
-> -       select INPUT if ACPI
-> -       select ACPI_VIDEO if ACPI
-> -       select ACPI_BUTTON if ACPI
->         select SYNC_FILE
->         select IOSF_MBI
->         select CRC32
-> @@ -64,13 +62,7 @@ config DRM_I915_FORCE_PROBE
->           Use "*" to force probe the driver for all known devices.
->
->  config DRM_I915_BACKLIGHT
-> -       tristate "Control backlight support"
-> -       depends on DRM_I915
-> -       default DRM_I915
-> -       select BACKLIGHT_CLASS_DEVICE
-> -       help
-> -          Say Y here if you want to control the backlight of your display
-> -          (e.g. a laptop panel).
-> +       def_tristate DRM_I915
->
->  config DRM_I915_CAPTURE_ERROR
->         bool "Enable capturing GPU state following a hang"
+It seems that isa_virt_to_bus() is only implemented on most of the
+architectures that set ISA_DMA_API: alpha, arm, mips, parisc and x86,
+but not on m68k/coldfire and powerpc.
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Before my patch, the platform driver could only be built on ARM,
+so maybe we should just go back to that dependency or something
+like
+
+         depends on ARM || ((X86 || !ISA_DMA_API) && COMPILE_TEST)
+
+for extra build coverage. Then again, it's hard to find any machine
+actually using these: we have a couple of s3c24xx machines that
+use the wrong device name, so the device never gets probed, the imx
+machines that used to work are gone, and the ep7211-edb7211.dts
+is missing a device node for it. Most likely, neither the platform nor
+the ISA driver are actually used by anyone.
+
+     Arnd
