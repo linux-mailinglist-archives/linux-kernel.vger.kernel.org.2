@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF363E4DA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612EF3E4DAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236197AbhHIUMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:12:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60388 "EHLO mail.kernel.org"
+        id S236215AbhHIUMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234637AbhHIUMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:12:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 595A560F11;
-        Mon,  9 Aug 2021 20:11:48 +0000 (UTC)
+        id S233122AbhHIUMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 16:12:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBE960F11;
+        Mon,  9 Aug 2021 20:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628539908;
-        bh=jfw1tYl8A57CAPEONb9M989EngiLdenLu91eHbvweiM=;
+        s=k20201202; t=1628539953;
+        bh=EspkTptJWNcCjEtEuHL0zQWAAqCwaT5wWDI6oGL/1k8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V3LnA/nWmB4VMIgXB5zLdw3UbeVYfh+ASo0VL1cbKjFSCSlEqn1ybGRY0ABX2k0Nj
-         sLU8j+z1Tn0qF0pURIfTcATOdsRO+V2ykQAPf3QKTSvEu4u9SeHuzxT6gLUlHCbHV2
-         Cj6YYkFsGIG31l6razoaqfr225X6B/Jx56PVU8IB/i0kyMUmTVxAkvMR+mX1MS4aDz
-         cyVddGWOwFJty4b9ItsJw28+7jsKDh0bPKPR4rv0vB24dBideQaF+MOpFq8kDoaUu1
-         qLt9P4Qn9cKJBpWEOX8sA/mb1osBUJOYiktjQzNbRPJ3lwI8LTQJZwOTYbexSQLdAY
-         QA2KMv9bO3rmw==
+        b=qBLCrVvg2GzJPYenRNLdT7QMI/+D2knBb4vII0Zw07u3kQ65Ya4frlonmGpCKkqtb
+         MSae/GGFCW+7+F5egPQbiWiTOvpgWV0MlmKvW8vyVPgNtuWlUrCn3iRfKJW2H12x3K
+         K/Q+OJxHItA+oeXX895OCKrfrNnDK7MMeNFsFzM/7uCO1Jyz7OS1vIW/Z6epW5hvCM
+         3LhIn39UiQ2EbasVR5roYLis2bDreoRp4BZ+8GfhamevVM3rIl7p4aa9Nac6rqVSJD
+         FNAMDlW7pQGE+4f9GoHeXzZfswom6E61a91XyTzAk6KaT5xpvx7beMz79alab7V9Rf
+         SiClhTWraTehQ==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 14A8C403F2; Mon,  9 Aug 2021 17:11:44 -0300 (-03)
-Date:   Mon, 9 Aug 2021 17:11:44 -0300
+        id 42B58403F2; Mon,  9 Aug 2021 17:12:30 -0300 (-03)
+Date:   Mon, 9 Aug 2021 17:12:30 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Leo Yan <leo.yan@linaro.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -47,104 +47,219 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Jin Yao <yao.jin@linux.intel.com>,
         Li Huafei <lihuafei1@huawei.com>, coresight@lists.linaro.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v1 1/3] perf env: Track kernel 64-bit mode in environment
-Message-ID: <YRGMAHj3MUndBEUq@kernel.org>
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] perf auxtrace: Add
+ compat_auxtrace_mmap__{read_head|write_tail}
+Message-ID: <YRGMLsEnWI+opAqB@kernel.org>
 References: <20210809112727.596876-1-leo.yan@linaro.org>
- <20210809112727.596876-2-leo.yan@linaro.org>
+ <20210809112727.596876-3-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809112727.596876-2-leo.yan@linaro.org>
+In-Reply-To: <20210809112727.596876-3-leo.yan@linaro.org>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 09, 2021 at 07:27:25PM +0800, Leo Yan escreveu:
-> It's useful to know that the kernel is running in 32-bit or 64-bit
-> mode.  E.g. We can decide if perf tool is running in compat mode
-> based on the info.
+Em Mon, Aug 09, 2021 at 07:27:26PM +0800, Leo Yan escreveu:
+> When perf runs in compat mode (kernel in 64-bit mode and the perf is in
+> 32-bit mode), the 64-bit value atomicity in the user space cannot be
+> assured, E.g. on some architectures, the 64-bit value accessing is split
+> into two instructions, one is for the low 32-bit word accessing and
+> another is for the high 32-bit word.
 > 
-> This patch adds an item "kernel_is_64_bit" into session's environment
-> structure perf_env, its value is initialized based on the architecture
-> string.
+> This patch introduces weak functions compat_auxtrace_mmap__read_head()
+> and compat_auxtrace_mmap__write_tail(), as their naming indicates, when
+> perf tool works in compat mode, it uses these two functions to access
+> the AUX head and tail.  These two functions can allow the perf tool to
+> work properly in certain conditions, e.g. when perf tool works in
+> snapshot mode with only using AUX head pointer, or perf tool uses the
+> AUX buffer and the incremented tail is not bigger than 4GB.
+> 
+> When perf tool cannot handle the case when the AUX tail is bigger than
+> 4GB, the function compat_auxtrace_mmap__write_tail() returns -1 and
+> tells the caller to bail out for the error.
+> 
+> These two functions are declared as weak attribute, this allows to
+> implement arch specific functions if any arch can support the 64-bit
+> value atomicity in compat mode.
 
-Thanks, applied.
+Adrian, ARM guys, can you please review this?
+
+Thanks,
 
 - Arnaldo
-
  
-> Suggested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
 > Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
->  tools/perf/util/env.c | 24 +++++++++++++++++++++++-
->  tools/perf/util/env.h |  3 +++
->  2 files changed, 26 insertions(+), 1 deletion(-)
+>  tools/perf/util/auxtrace.c | 88 ++++++++++++++++++++++++++++++++++++--
+>  tools/perf/util/auxtrace.h | 22 ++++++++--
+>  2 files changed, 103 insertions(+), 7 deletions(-)
 > 
-> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-> index ab341050be46..8f7ff0035c41 100644
-> --- a/tools/perf/util/env.c
-> +++ b/tools/perf/util/env.c
-> @@ -219,13 +219,35 @@ void perf_env__exit(struct perf_env *env)
->  	zfree(&env->hybrid_cpc_nodes);
+> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+> index f33f09b8b535..60975df05d54 100644
+> --- a/tools/perf/util/auxtrace.c
+> +++ b/tools/perf/util/auxtrace.c
+> @@ -1669,6 +1669,82 @@ int perf_event__process_auxtrace_error(struct perf_session *session,
+>  	return 0;
 >  }
 >  
-> -void perf_env__init(struct perf_env *env __maybe_unused)
-> +void perf_env__init(struct perf_env *env)
+> +/*
+> + * In the compat mode kernel runs in 64-bit and perf tool runs in 32-bit mode,
+> + * 32-bit perf tool cannot access 64-bit value atomically, which might lead to
+> + * the issues caused by the below sequence on multiple CPUs: when perf tool
+> + * accesses either the load operation or the store operation for 64-bit value,
+> + * on some architectures the operation is divided into two instructions, one
+> + * is for accessing the low 32-bit value and another is for the high 32-bit;
+> + * thus these two user operations can give the kernel chances to access the
+> + * 64-bit value, and thus leads to the unexpected load values.
+> + *
+> + *   kernel (64-bit)                        user (32-bit)
+> + *
+> + *   if (LOAD ->aux_tail) { --,             LOAD ->aux_head_lo
+> + *       STORE $aux_data      |       ,--->
+> + *       FLUSH $aux_data      |       |     LOAD ->aux_head_hi
+> + *       STORE ->aux_head   --|-------`     smp_rmb()
+> + *   }                        |             LOAD $data
+> + *                            |             smp_mb()
+> + *                            |             STORE ->aux_tail_lo
+> + *                            `----------->
+> + *                                          STORE ->aux_tail_hi
+> + *
+> + * For this reason, it's impossible for the perf tool to work correctly when
+> + * the AUX head or tail is bigger than 4GB (more than 32 bits length); and we
+> + * can not simply limit the AUX ring buffer to less than 4GB, the reason is
+> + * the pointers can be increased monotonically, whatever the buffer size it is,
+> + * at the end the head and tail can be bigger than 4GB and carry out to the
+> + * high 32-bit.
+> + *
+> + * To mitigate the issues and improve the user experience, we can allow the
+> + * perf tool working in certain conditions and bail out with error if detect
+> + * any overflow cannot be handled.
+> + *
+> + * For reading the AUX head, it reads out the values for three times, and
+> + * compares the high 4 bytes of the values between the first time and the last
+> + * time, if there has no change for high 4 bytes injected by the kernel during
+> + * the user reading sequence, it's safe for use the second value.
+> + *
+> + * When update the AUX tail and detects any carrying in the high 32 bits, it
+> + * means there have two store operations in user space and it cannot promise
+> + * the atomicity for 64-bit write, so return '-1' in this case to tell the
+> + * caller an overflow error has happened.
+> + */
+> +u64 __weak compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+> +{
+> +	struct perf_event_mmap_page *pc = mm->userpg;
+> +	u64 first, second, last;
+> +	u64 mask = (u64)(UINT32_MAX) << 32;
+> +
+> +	do {
+> +		first = READ_ONCE(pc->aux_head);
+> +		/* Ensure all reads are done after we read the head */
+> +		smp_rmb();
+> +		second = READ_ONCE(pc->aux_head);
+> +		/* Ensure all reads are done after we read the head */
+> +		smp_rmb();
+> +		last = READ_ONCE(pc->aux_head);
+> +	} while ((first & mask) != (last & mask));
+> +
+> +	return second;
+> +}
+> +
+> +int __weak compat_auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+> +{
+> +	struct perf_event_mmap_page *pc = mm->userpg;
+> +	u64 mask = (u64)(UINT32_MAX) << 32;
+> +
+> +	if (tail & mask)
+> +		return -1;
+> +
+> +	/* Ensure all reads are done before we write the tail out */
+> +	smp_mb();
+> +	WRITE_ONCE(pc->aux_tail, tail);
+> +	return 0;
+> +}
+> +
+>  static int __auxtrace_mmap__read(struct mmap *map,
+>  				 struct auxtrace_record *itr,
+>  				 struct perf_tool *tool, process_auxtrace_t fn,
+> @@ -1680,8 +1756,9 @@ static int __auxtrace_mmap__read(struct mmap *map,
+>  	size_t size, head_off, old_off, len1, len2, padding;
+>  	union perf_event ev;
+>  	void *data1, *data2;
+> +	int kernel_is_64_bit = perf_env__kernel_is_64_bit(evsel__env(NULL));
+>  
+> -	head = auxtrace_mmap__read_head(mm);
+> +	head = auxtrace_mmap__read_head(mm, kernel_is_64_bit);
+>  
+>  	if (snapshot &&
+>  	    auxtrace_record__find_snapshot(itr, mm->idx, mm, data, &head, &old))
+> @@ -1764,10 +1841,13 @@ static int __auxtrace_mmap__read(struct mmap *map,
+>  	mm->prev = head;
+>  
+>  	if (!snapshot) {
+> -		auxtrace_mmap__write_tail(mm, head);
+> -		if (itr->read_finish) {
+> -			int err;
+> +		int err;
+> +
+> +		err = auxtrace_mmap__write_tail(mm, head, kernel_is_64_bit);
+> +		if (err < 0)
+> +			return err;
+>  
+> +		if (itr->read_finish) {
+>  			err = itr->read_finish(itr, mm->idx);
+>  			if (err < 0)
+>  				return err;
+> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+> index d68a5e80b217..5f383908ca6e 100644
+> --- a/tools/perf/util/auxtrace.h
+> +++ b/tools/perf/util/auxtrace.h
+> @@ -440,23 +440,39 @@ struct auxtrace_cache;
+>  
+>  #ifdef HAVE_AUXTRACE_SUPPORT
+>  
+> -static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+> +u64 compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm);
+> +int compat_auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail);
+> +
+> +static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm,
+> +					   int kernel_is_64_bit __maybe_unused)
 >  {
->  #ifdef HAVE_LIBBPF_SUPPORT
->  	env->bpf_progs.infos = RB_ROOT;
->  	env->bpf_progs.btfs = RB_ROOT;
->  	init_rwsem(&env->bpf_progs.lock);
->  #endif
-> +	env->kernel_is_64_bit = -1;
-> +}
+>  	struct perf_event_mmap_page *pc = mm->userpg;
+> -	u64 head = READ_ONCE(pc->aux_head);
+> +	u64 head;
 > +
-> +static void perf_env__init_kernel_mode(struct perf_env *env)
-> +{
-> +	const char *arch = perf_env__raw_arch(env);
-> +
-> +	if (!strncmp(arch, "x86_64", 6) || !strncmp(arch, "aarch64", 7) ||
-> +	    !strncmp(arch, "arm64", 5) || !strncmp(arch, "mips64", 6) ||
-> +	    !strncmp(arch, "parisc64", 8) || !strncmp(arch, "riscv64", 7) ||
-> +	    !strncmp(arch, "s390x", 5) || !strncmp(arch, "sparc64", 7))
-> +		env->kernel_is_64_bit = 1;
-> +	else
-> +		env->kernel_is_64_bit = 0;
-> +}
-> +
-> +int perf_env__kernel_is_64_bit(struct perf_env *env)
-> +{
-> +	if (env->kernel_is_64_bit == -1)
-> +		perf_env__init_kernel_mode(env);
-> +
-> +	return env->kernel_is_64_bit;
+> +#if BITS_PER_LONG == 32
+> +	if (kernel_is_64_bit)
+> +		return compat_auxtrace_mmap__read_head(mm);
+> +#endif
+> +	head = READ_ONCE(pc->aux_head);
+>  
+>  	/* Ensure all reads are done after we read the head */
+>  	smp_rmb();
+>  	return head;
 >  }
 >  
->  int perf_env__set_cmdline(struct perf_env *env, int argc, const char *argv[])
-> diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-> index 6824a7423a2d..1f5175820a05 100644
-> --- a/tools/perf/util/env.h
-> +++ b/tools/perf/util/env.h
-> @@ -61,6 +61,7 @@ struct perf_env {
->  	unsigned long long	total_mem;
->  	unsigned int		msr_pmu_type;
->  	unsigned int		max_branches;
-> +	int			kernel_is_64_bit;
+> -static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+> +static inline int auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail,
+> +					    int kernel_is_64_bit __maybe_unused)
+>  {
+>  	struct perf_event_mmap_page *pc = mm->userpg;
 >  
->  	int			nr_cmdline;
->  	int			nr_sibling_cores;
-> @@ -143,6 +144,8 @@ extern struct perf_env perf_env;
+> +#if BITS_PER_LONG == 32
+> +	if (kernel_is_64_bit)
+> +		return compat_auxtrace_mmap__write_tail(mm, tail);
+> +#endif
+>  	/* Ensure all reads are done before we write the tail out */
+>  	smp_mb();
+>  	WRITE_ONCE(pc->aux_tail, tail);
+> +	return 0;
+>  }
 >  
->  void perf_env__exit(struct perf_env *env);
->  
-> +int perf_env__kernel_is_64_bit(struct perf_env *env);
-> +
->  int perf_env__set_cmdline(struct perf_env *env, int argc, const char *argv[]);
->  
->  int perf_env__read_cpuid(struct perf_env *env);
+>  int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
 > -- 
 > 2.25.1
 > 
