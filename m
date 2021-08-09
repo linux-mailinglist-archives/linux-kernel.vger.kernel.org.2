@@ -2,101 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4546B3E49A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B804A3E49AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhHIQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:21:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:50344 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232874AbhHIQUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:20:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="201899277"
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="201899277"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 09:19:41 -0700
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="588935639"
-Received: from mdroper-desk1.fm.intel.com (HELO mdroper-desk1.amr.corp.intel.com) ([10.1.27.134])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 09:19:41 -0700
-Date:   Mon, 9 Aug 2021 09:19:39 -0700
-From:   Matt Roper <matthew.d.roper@intel.com>
-To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the drm-intel
- tree
-Message-ID: <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com>
-References: <20210715141854.1ad4a956@canb.auug.org.au>
- <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com>
- <YRE2RwQ6XlUqbgmn@phenom.ffwll.local>
+        id S232985AbhHIQV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233003AbhHIQVP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 12:21:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94903C06179A
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:20:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=eUQciBda9Y37TXzkfjlsG8pAQz1mayNlgBbkWTxZA0w=; b=WTl6NUjuxgbZdI6QWmlDG+pxh4
+        sA1TsPcP6uXAy25IrF0S0q9zWflcV60HJn0pC/x1V3ODRa3KeMCfmIB/qvliyCof7P5k7yfinfr5R
+        8cT50/VlC5D7CTQO8okTjRw7IDwZdSvlWBOJuawqOyO/f67ke1vYbL76i2KJsCbToicJo8Dxw61uc
+        G5q238wTJlhDn9huasLfYJW6Gd1YjeFhtr1/bUU1nhIQTxdaFWfrZkiIno8IJL0xH+qvsxUaUOOp9
+        wHrKJRfQ7gEOHmDuHRFdb4eNFBuDytt4gmQaeItyNyxhHyYHHgRMXdbJVHt6yK+ilcLQMA9vrfTRE
+        3PLjhQjg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mD80Y-00BAy5-DR; Mon, 09 Aug 2021 16:20:30 +0000
+Subject: Re: Build regressions/improvements in v5.14-rc5
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+References: <20210809075016.414276-1-geert@linux-m68k.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <47e64acf-5537-bf5a-5a49-0a6897de17ff@infradead.org>
+Date:   Mon, 9 Aug 2021 09:20:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRE2RwQ6XlUqbgmn@phenom.ffwll.local>
+In-Reply-To: <20210809075016.414276-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
-> On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
-> > Hi Matt,
-> > 
-> > Always use the dim tooling when applying patches, it will do the right
-> > thing with regards to adding the S-o-b.
+On 8/9/21 12:50 AM, Geert Uytterhoeven wrote:
+> *** ERRORS ***
 > 
-> fd.o server rejects any pushes that haven't been done by dim, so how did
-> this get through?
+> 13 error regressions:
+>    + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'boot_cpu_has' [-Werror=implicit-function-declaration]:  => 74:6
+>    + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_eax' [-Werror=implicit-function-declaration]:  => 64:18
+>    + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_ebx' [-Werror=implicit-function-declaration]:  => 17:31
+>    + /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_HIGH' undeclared (first use in this function):  => 150:20
+>    + /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_LOW' undeclared (first use in this function):  => 151:35
+>    + /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'base_address':  => 151:19
+>    + /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'destid_0_7':  => 152:19
+>    + /kisskb/src/drivers/pci/controller/vmd.c: error: control reaches end of non-void function [-Werror=return-type]:  => 127:1
+>    + /kisskb/src/drivers/pci/controller/vmd.c: error: dereferencing pointer to incomplete type 'struct pci_sysdata':  => 700:4
+>    + /kisskb/src/drivers/pci/controller/vmd.c: error: field 'sysdata' has incomplete type:  => 116:21
+>    + /kisskb/src/include/linux/compiler_attributes.h: error: "__GCC4_has_attribute___no_sanitize_coverage__" is not defined [-Werror=undef]:  => 29:29
+>    + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1857' declared with attribute error: FIELD_PREP: value too large for the field:  => 328:38
+>    + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1864' declared with attribute error: FIELD_PREP: value too large for the field:  => 328:38
 
-I definitely used dim for all of these patches, but I'm not sure how I
-lost my s-o-b on this one.  Maybe when I edited the commit message after
-'dim extract-tags' I accidentally deleted an extra line when I removed
-the extract-tags marker?  It's the only patch where the line is missing,
-so it's almost certainly human error on my part rather than something
-dim did wrong.
+Hi Geert,
+Would you tell me what arch & config these build errors are from?
 
-> Matt, can you pls figure out and type up the patch to
-> plug that hole?
-
-Are you referring to a patch for dim here?  The i915 patch has already
-landed, so we can't change its commit message now.
-
-
-Matt
-
-> 
-> Thanks, Daniel
-> 
-> > 
-> > Regards, Joonas
-> > 
-> > Quoting Stephen Rothwell (2021-07-15 07:18:54)
-> > > Hi all,
-> > > 
-> > > Commit
-> > > 
-> > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
-> > > 
-> > > is missing a Signed-off-by from its committer.
-> > > 
-> > > -- 
-> > > Cheers,
-> > > Stephen Rothwell
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-
+thanks.
 -- 
-Matt Roper
-Graphics Software Engineer
-VTT-OSGC Platform Enablement
-Intel Corporation
-(916) 356-2795
+~Randy
+
