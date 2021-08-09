@@ -2,87 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1220C3E497A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE71A3E497D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhHIQJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:09:21 -0400
-Received: from mail-pl1-f180.google.com ([209.85.214.180]:39731 "EHLO
-        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhHIQJU (ORCPT
+        id S231327AbhHIQLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:11:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58642 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhHIQLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:09:20 -0400
-Received: by mail-pl1-f180.google.com with SMTP id l11so5263635plk.6;
-        Mon, 09 Aug 2021 09:09:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=36IFvq2hJqTtdBeE9dQ+kAyJuaNM0YGuzKVOtVidu4E=;
-        b=bEQG9oDpcEtYU0SWatbsusYJStBlSjAwUbaiqRlBOFWp/j4SbT+rus4vomUblHiTlv
-         kiI/N2oo6Ay3RkfX4J+VLlWNL2XuHsDDkSk1hTnFDbBzyfPIvxLGW+KinlcRCkT7IFIC
-         b9ZzdIQtGhnl4KWa0mH1iBwkGbXU6ItjO5Di2c/c5uyJLQCEbN9RWRfT4JkqjrOulZ5f
-         d2U1D7La+mc/WMmhts3b/mLiR4RBYu4N4N6hCXY3HpYHyTUqNbAODHa6jRIUsnf+XZGV
-         /7h8t/QfLgmcsYjWTsJoHFNEkbw9bscpcHbl/Tfb02VzAUIeuce1dFbiuJFSDMVhmLld
-         iIhA==
-X-Gm-Message-State: AOAM531O0erdps8UaVM4jEBk2UU0vDH+P+sxSlhKaKuSDQt/vqGbWHz0
-        0PYdVj8RpkUfvKCtYYy6d7s=
-X-Google-Smtp-Source: ABdhPJw1iLnr943CFtyXg5yRvu7usWeVKxubZloldJl+nJaBk1xWVi9SQjZ9r8hmLHAa24ZrC5Lisg==
-X-Received: by 2002:aa7:800e:0:b029:3a9:e527:c13 with SMTP id j14-20020aa7800e0000b02903a9e5270c13mr19021456pfi.42.1628525339678;
-        Mon, 09 Aug 2021 09:08:59 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:7dd4:e46e:368b:7454? ([2601:647:4000:d7:7dd4:e46e:368b:7454])
-        by smtp.gmail.com with ESMTPSA id l185sm13254376pfd.62.2021.08.09.09.08.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 09:08:58 -0700 (PDT)
-Subject: Re: [RFC PATCH v1 0/2] scsi: ufs: introduce vendor isr
-To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com
-References: <CGME20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229@epcas2p1.samsung.com>
- <cover.1628231581.git.kwmad.kim@samsung.com>
- <b3c18b34-2108-abfa-54ca-096a3eb31318@acm.org>
- <000601d78cf2$a160f820$e422e860$@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <32cc37cd-2f66-0f74-5242-cfcf86f58844@acm.org>
-Date:   Mon, 9 Aug 2021 09:08:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 9 Aug 2021 12:11:39 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AFEF821F91;
+        Mon,  9 Aug 2021 16:11:16 +0000 (UTC)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE0C713AFB;
+        Mon,  9 Aug 2021 16:11:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qvWOIKJTEWFwSgAAMHmgww
+        (envelope-from <dave@stgolabs.net>); Mon, 09 Aug 2021 16:11:14 +0000
+Date:   Mon, 9 Aug 2021 09:11:11 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 4/7] perf/bench-futex: Add --mlockall parameter
+Message-ID: <20210809161111.5miya55l6za2bibh@offworld>
+References: <20210809043301.66002-1-dave@stgolabs.net>
+ <20210809043301.66002-5-dave@stgolabs.net>
+ <YRFCFqM9QBoUrl18@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <000601d78cf2$a160f820$e422e860$@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YRFCFqM9QBoUrl18@kernel.org>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 12:46 AM, Kiwoong Kim wrote:
->> How about extending the UFS spec instead of adding a non-standard
->> mechanism in a driver that is otherwise based on a standard?
-> 
-> It seems to be a great approach but I wonder if extending for the events
-> that all the SoC vendors require in the spec is recommendable.
-> Because I think there is quite possible that many of those things are 
-> originated for architectural reasons.
+On Mon, 09 Aug 2021, Arnaldo Carvalho de Melo wrote:
 
-Has the interrupt mechanism supported by this patch series already been
-implemented or is it still possible to change the ASIC design? In the
-latter case, I propose the following:
-* Drop the new interrupt.
-* Instead of raising an interrupt if the UFS controller detects an
-inconsistency, report this via a check condition code, e.g. LOGICAL UNIT
-NOT READY, HARD RESET REQUIRED (there may be a better choice).
+>Applied.
 
-The above approach has the advantage that it does not slow down the UFS
-interrupt handler.
+Thanks!
+
+>
+>At some point these options could be handled in a common
+>futex_parse_options() function that would consume argv[] and then the
+>specific futex benchmarks would continue from where the common function
+>left off.
+
+I agree. I'll see about a follow up to this series in the future, there
+are a few other things we can share among the programs.
 
 Thanks,
-
-Bart.
-
-
+Davidlohr
