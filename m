@@ -2,135 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878673E4763
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A68C3E4766
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhHIOVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:21:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234570AbhHIOU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:20:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F46B61052
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628518836;
-        bh=9LRxU88+82ajaf5N6re5+zCpHlo2zfOM8jRPwlMyA2s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ep1D8MWdd6qsC45+D94384qcGF3wKXMIn7Os6ajx0NHL0Ep01DPyMIFC71U5rYshE
-         u/j4I5uCgr+Sug9+s5OeI3hwcumOW4ixjMblUxLUleLh4udWT2k6nFj07zB0zVCAmE
-         NacXoSks7Xri5KXRtpHNxKGQ7cS8znosje7vuiBgEkk6sU7TolvfWlwM+D0vrkQyzu
-         gnkLB4muB40f3mngZtJtHPhjYRuS5uxbaFDJ9eSg/+a/2GzaXgap4J+yVS2CzL0Mx+
-         +Nk2lFIfI6PF1BCGDtAJBh8oH9RoejiTDR6gK0qmbMKUaBpAXrX4nrsntChRrqzS6K
-         vDRL9pAwqh5+g==
-Received: by mail-ej1-f54.google.com with SMTP id u3so29319270ejz.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 07:20:36 -0700 (PDT)
-X-Gm-Message-State: AOAM532L431QZbtkxI2JiMw1SKf/GA4yh/KfyxtGAmechubSKndfwvQZ
-        XC9OLxbefEClx8t7wW0mTo8fOnfiIlGoyePBzQ==
-X-Google-Smtp-Source: ABdhPJzx0TkKSySgoxITRUizZYSlaMcXitMA6PjSwWV3of8/FHgQGibBSMEC+8T7JOaUryygvDhhlA38CwdbCmy0Cis=
-X-Received: by 2002:a17:906:fcd7:: with SMTP id qx23mr9314897ejb.267.1628518834966;
- Mon, 09 Aug 2021 07:20:34 -0700 (PDT)
+        id S234926AbhHIOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234891AbhHIOVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 10:21:10 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E211C061798;
+        Mon,  9 Aug 2021 07:20:50 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id gs8so29184736ejc.13;
+        Mon, 09 Aug 2021 07:20:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2cUuPYheF7MpNqTwmGksBjO3uT7MgJxG2duLlVpcdEg=;
+        b=HQhlOG1qilaHj8fq09Fqf0ObdBnluClzIRXwKwTDW/AxKwIKrxPxMr/q4MZoYoGDYO
+         s+Zv6Eu0UyeLWMZQmdexaK8aBnXYOR1JtI8oXxw5YVmlTmyRTUgT9zpiO86oaKfuKw44
+         u0yuho9F5bkPEpDyYQYcoEuCL4fZZwONtHkCeYBNRnVPzDnXwtOISZ3rIwng59X4iSon
+         067t52Cydzh0IBlSg4h32h8gygN/jGHwpsTsYc+cjiZvjkqwr0WnYLMXcYeOW3Mh5tub
+         OvccNfKSMokynCAmKxPCDwdc574IgyBX9VYW20p0VK0vUyBYu0FD9Hs3ybxpIE+m11m1
+         1Xrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2cUuPYheF7MpNqTwmGksBjO3uT7MgJxG2duLlVpcdEg=;
+        b=YjOhnr7gmzaWrItpWWJwIFunDdBGnxqMNvaFq73hLDCyzLzGPAZCycQGbW9OAWpoP8
+         jqiE3YPylCLLb5KsgRKqOwoTHU36wHU9rhu94E6e2tQMXS0q7mSBAykubVksS8a0ary/
+         G7cFvTly6DE9V6J3kqNfXc42WfeN3iFmv+qwCvYqIRnhGK5M8gSk/5fs2CyBiBdcq2Te
+         IZAJneLgTKwkHykQqgWl8Hee/4R1iXz5rdhe7rpEgLIsOo8xGup/Ziyo1fh7wlAT5JPE
+         wUbu32mXM+owHiPLa/OFT1t/Xjj5w04Ywz3dVhKjxBU0rNYgY0UnS8CW17y1s/qJ/L9I
+         +2gg==
+X-Gm-Message-State: AOAM530GsS3IyF96CpIK9c7H1xfG81hoh9cEuzcaICoi+zVBWeb+lHhu
+        iBAm+BREEV72iGZRjx18zi0=
+X-Google-Smtp-Source: ABdhPJz03F2uAVUGP5q+NA2jld4YbX5aZlleBTxfZ444Es0V26qTKLs/CZWAidCDgUSvQO8vJ8sorA==
+X-Received: by 2002:a17:906:a044:: with SMTP id bg4mr19463635ejb.312.1628518848683;
+        Mon, 09 Aug 2021 07:20:48 -0700 (PDT)
+Received: from [192.168.74.110] (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id i10sm8141488edf.12.2021.08.09.07.20.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 07:20:48 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] phy: qcom-qmp: Add support for SM6115 UFS phy
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20210805091727.942471-1-iskren.chernev@gmail.com>
+ <20210805091727.942471-3-iskren.chernev@gmail.com> <YQ0xrgDjxXeNecAS@matsya>
+ <86fcdc11-9f2c-0aa0-ebab-a26fa9ac2aca@gmail.com> <YRCzi9tXsUVi5kHS@matsya>
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+Message-ID: <c780ad2a-2292-6e06-fa89-4c8a5139c253@gmail.com>
+Date:   Mon, 9 Aug 2021 17:20:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210712181209.27023-1-dafna.hirschfeld@collabora.com>
-In-Reply-To: <20210712181209.27023-1-dafna.hirschfeld@collabora.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 9 Aug 2021 22:20:23 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__vy0n_Sw+8a_4h7Er_qdt72x964Dc_uunLg88qx8wPGg@mail.gmail.com>
-Message-ID: <CAAOTY__vy0n_Sw+8a_4h7Er_qdt72x964Dc_uunLg88qx8wPGg@mail.gmail.com>
-Subject: Re: [PATCH] drm/mediatek: Test component initialization earlier in
- the function mtk_drm_crtc_create
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>, dafna3@gmail.com,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YRCzi9tXsUVi5kHS@matsya>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dafna:
 
-Dafna Hirschfeld <dafna.hirschfeld@collabora.com> =E6=96=BC 2021=E5=B9=B47=
-=E6=9C=8813=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=882:12=E5=AF=AB=E9=
-=81=93=EF=BC=9A
->
-> The initialization is currently tested in a later stage in
-> the function for no reason.
-> In addition, the test '!comp' will never fail since comp is
-> set with the '&' operator. Instead, test if a comp was not
-> initialized by testing "!comp->dev".
 
-Applied to mediatek-drm-next [1], thanks.
+On 8/9/21 7:48 AM, Vinod Koul wrote:
+> On 06-08-21, 19:09, Iskren Chernev wrote:
+>> On 8/6/21 3:57 PM, Vinod Koul wrote:
+>>> On 05-08-21, 12:17, Iskren Chernev wrote:
+> 
+>>> why are these registers 660 specific and not V3 like we have for
+>>> other generations..? Quick looks with V3 regs tells me that seem
+>>> similar....
+>>>
+>>
+>> Well, I looked at them for a long time and the only thing that is similar
+>> are the first few QSERDES registers from COM_ATB_SEL1=0x000 to
+>> COM_BIAS_EN_CLKBUFLR_EN=0x034. Everything else is different. So I can re-use
+> 
+> Is the offset different? I thought all Vn registers across chips do have
+> same offsets..
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+Upon closer inspection, for the SERDES registers they are 19 common (the first
+19), the others are different (different values, different names). About the
+offsets that stay in DT -- they are the same for V3 and V3-660 (I haven't send
+DT yet). Just to be clear, offset the is thing you add to each register to get
+an actual register value, mainline uses relative offsets (base / offset in DT),
+downstream uses a macro for each register group and the offset is hardcoded in
+code. Link to the DT (will be submitted after core drivers are merged) [1]
+
+[1] https://gitlab.com/ichernev/linux-postmarketos/-/blob/b44c853caf37dd73e059628a1831ad185356a33e/arch/arm64/boot/dts/qcom/sm4250.dtsi#L878
+
+> 
+>> the V3 for the similar regs, but they are 10%, so I figured instead of combing
+>> through all of the sequences to save 10% of the constants and make it slightly
+>> less readable just use new constants.
+>>
+>> Let me know if I should reuse the 14 regs from V3.
+> 
+> reuse yes, but would like to understand more why offsets are different,
+> 
+> Can you point me to downstream code reference for this?
+
+As I said, the offsets are the same, the first 19 serdes relative
+addresses/names are the same (can be reused), the rest is all different.
+I wrote a tool to compare names and values, I can paste those as well if
+needed.
+
+
+This is a link to the downstream code (header) [2]
+
+
+[2] https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250/blob/oneplus/SM4250_Q_10.0/drivers/phy/qualcomm/phy-qcom-ufs-qmp-v3-660.h
+
+I will do a v2 with the 19 regs reused from the v3 bunch.
 
 Regards,
-Chun-Kuang.
-
->
-> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index 474efb844249..06f40e589922 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -755,14 +755,22 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
->         for (i =3D 0; i < path_len; i++) {
->                 enum mtk_ddp_comp_id comp_id =3D path[i];
->                 struct device_node *node;
-> +               struct mtk_ddp_comp *comp;
->
->                 node =3D priv->comp_node[comp_id];
-> +               comp =3D &priv->ddp_comp[comp_id];
-> +
->                 if (!node) {
->                         dev_info(dev,
->                                  "Not creating crtc %d because component =
-%d is disabled or missing\n",
->                                  pipe, comp_id);
->                         return 0;
->                 }
-> +
-> +               if (!comp->dev) {
-> +                       dev_err(dev, "Component %pOF not initialized\n", =
-node);
-> +                       return -ENODEV;
-> +               }
->         }
->
->         mtk_crtc =3D devm_kzalloc(dev, sizeof(*mtk_crtc), GFP_KERNEL);
-> @@ -787,16 +795,8 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
->         for (i =3D 0; i < mtk_crtc->ddp_comp_nr; i++) {
->                 enum mtk_ddp_comp_id comp_id =3D path[i];
->                 struct mtk_ddp_comp *comp;
-> -               struct device_node *node;
->
-> -               node =3D priv->comp_node[comp_id];
->                 comp =3D &priv->ddp_comp[comp_id];
-> -               if (!comp) {
-> -                       dev_err(dev, "Component %pOF not initialized\n", =
-node);
-> -                       ret =3D -ENODEV;
-> -                       return ret;
-> -               }
-> -
->                 mtk_crtc->ddp_comp[i] =3D comp;
->
->                 if (comp->funcs) {
-> --
-> 2.17.1
->
+Iskren
