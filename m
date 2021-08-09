@@ -2,163 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6360E3E4E6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF9A3E4E6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236442AbhHIVYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:24:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236441AbhHIVYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:24:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 203B860EB9;
-        Mon,  9 Aug 2021 21:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628544264;
-        bh=D2aOWPkZRvo4FPeQiqOYNBi8S+9DKShgichgczsHHWo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iZLhpA+/gitAAaAEJQa+SuwtTRtdWqNg6KiI+uJ7wTvD3Slz3f1q3M9eNHEFeRye0
-         skvrWsmpZpvzteGIgxz4pTEpOgAipWgy9d7eUlNX8TSLP79IWGFGwweo0PtzzXd7OB
-         AEZsAAVVZ292uDGutkHjSqtKaODj/EDag/I63+6go3rh+dCs85LjWzbrvCixe8fofF
-         dgyiqfDqJVa2wzIudk1PTzSFI5sW3HaAMH3j/iQ+w7cgz2z0y4fJVAo4aRdc/zM6FO
-         /bYKoXwAhjmPGJpABv1eqcLcp3CKE5y689yJhJ/+5zZVIW9+Yy4Zn2AvdCx12kotWk
-         fG+pgXQ5/og3w==
-Date:   Mon, 9 Aug 2021 14:24:22 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <YRGdBiJQ3xqZAT4w@gmail.com>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+        id S233837AbhHIVZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhHIVZ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 17:25:57 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F67C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:25:36 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id n6so12440646ljp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GciiGnwukZUcZuMgRkuX2+Oq98OfQGEGL0PbIUMdbwY=;
+        b=DkW8bjkdCbaSSZSwXUD4dP7zGs+heKPA+Oy5FoJ3PhXwaSYav89OxOAcJNbCZqAFmL
+         0h1nLAi6SdzNhvMaS1Nzft4JS4BHDBbOx4s0vutZIhoGZgzoNkz1aA+MU8kA1xMDmbqc
+         PFME9G1HDX5AzRGqzhBS/Ml77jddOYE1oapDY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GciiGnwukZUcZuMgRkuX2+Oq98OfQGEGL0PbIUMdbwY=;
+        b=IwgqDd8xzcbm/vbc0rqLH4CayFkB6O5mazfhyldJsabmY6mfabUOQ6DSqamnZZ83oI
+         qK+73TGpycuCaOwU+biqkrBZvgDSf+Zzlf+QwaCyTABPAYcfY3JvSfD+geV5wZaDoo0l
+         9WY/GrMAKJSiPWNOggxW1ZptvCmhxKT18b/+gYkX0KCIgvaPkIa+q4xoihBLpuZuEqn0
+         4RvdOnH5hzf0cBqL+l+1mkZ8mik7uijXXekS87sw+Lm0n4WBliTI58vlRjC5sErVnKKr
+         zBkNCHKzZsDAQNrSQNkIYTTv7ehNDDfoNUQKYNcEoytBZyIzzjxBEDRCEPSovAi5Ztin
+         NGbg==
+X-Gm-Message-State: AOAM532+HBTY8GTNDRSW+XH16h8StoHJcYI0zKgczThE4I8a2D6QibYJ
+        Bn+0YOOCEKxSsM23AZ4PxBS5zphuV6yefw+2
+X-Google-Smtp-Source: ABdhPJzjjgMaHjJ1yD0pM5ouU+oeyEIJZbz1luvARAHo2iLsIxjbBgLf+aZwWYuq8jZHBG6aAazGtw==
+X-Received: by 2002:a2e:7f1a:: with SMTP id a26mr16644253ljd.183.1628544334269;
+        Mon, 09 Aug 2021 14:25:34 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id d4sm1842725lfg.178.2021.08.09.14.25.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 14:25:33 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id h2so13494282lji.6
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:25:33 -0700 (PDT)
+X-Received: by 2002:a2e:b703:: with SMTP id j3mr7222089ljo.220.1628544333584;
+ Mon, 09 Aug 2021 14:25:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+References: <YRFfGk5lHL0W27oU@miu.piliscsaba.redhat.com>
+In-Reply-To: <YRFfGk5lHL0W27oU@miu.piliscsaba.redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 9 Aug 2021 14:25:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wigKQqEqt9ev_1k5b_DwFGp7JmCdCR1xFSJjOyisEJ61A@mail.gmail.com>
+Message-ID: <CAHk-=wigKQqEqt9ev_1k5b_DwFGp7JmCdCR1xFSJjOyisEJ61A@mail.gmail.com>
+Subject: Re: [GIT PULL] overlayfs fixes for 5.14-rc6
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmad,
+On Mon, Aug 9, 2021 at 10:00 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+>       ovl: fix mmap denywrite
 
-This generally looks okay, but I have some comments below.
+Ugh. Th edances with denywrite and mapping_unmap_writable are really
+really annoying.
 
-On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
-> Kernel trusted keys don't require userspace knowledge of the raw key
-> material and instead export a sealed blob, which can be persisted to
-> unencrypted storage. Userspace can then load this blob into the kernel,
-> where it's unsealed and from there on usable for kernel crypto.
+I've pulled this, but I really get the feeling that there's duplicated
+code for these things, and that all the "if error goto" cases  (some
+old, some new) are really really uglky.
 
-Please be explicit about where and how the keys get generated in this case.
+I get the feeling that the whole thing with deny_write_access and
+mapping_map_writable could possibly be done after-the-fact somehow as
+part of actually inserting the vma in the vma tree, rather than done
+as the vma is prepared.
 
-> This is incompatible with fscrypt, where userspace is supposed to supply
-> the raw key material. For TPMs, a work around is to do key unsealing in
-> userspace, but this may not be feasible for other trusted key backends.
+And most users of vma_set_file() probably really don't want that whole
+thing at all (ie the DRM stuff that just switches out a local thing.
+They also don't check for the new error cases you've added.
 
-As far as I can see, "Key unsealing in userspace" actually is the preferred way
-to implement TPM-bound encryption.  So it doesn't seem fair to call it a "work
-around".
+So I really think this is quite questionable, and those cases should
+probably have been done entirely inside ovlfs rather than polluting
+the cases that don't care and don't check.
 
-> +  Most users leave this 0 and specify the raw key directly.
-> +  "trusted" keys are useful to leverage kernel support for sealing
-> +  and unsealing key material. Sealed keys can be persisted to
-> +  unencrypted storage and later be used to decrypt the file system
-> +  without requiring userspace to have knowledge of the raw key
-> +  material.
-> +  "fscrypt-provisioning" key support is intended mainly to allow
-> +  re-adding keys after a filesystem is unmounted and re-mounted,
->    without having to store the raw keys in userspace memory.
->  
->  - ``raw`` is a variable-length field which must contain the actual
->    key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
->    nonzero, then this field is unused.
->  
-> +.. note::
-> +
-> +   Users should take care not to reuse the fscrypt key material with
-> +   different ciphers or in multiple contexts as this may make it
-> +   easier to deduce the key.
-> +   This also applies when the key material is supplied indirectly
-> +   via a kernel trusted key. In this case, the trusted key should
-> +   perferably be used only in a single context.
-
-Again, please be explicit about key generation.  Note that key generation is
-already discussed in a different section, "Master Keys".  There should be a
-mention of trusted keys there.  The above note about not reusing keys probably
-belongs there too.  (The section you're editing here is
-"FS_IOC_ADD_ENCRYPTION_KEY", which is primarily intended to just document the
-ioctl, so it's not necessarily the best place for this type of information.)
-
-> @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
->  	key_ref_t ref;
->  	struct key *key;
->  	const struct fscrypt_provisioning_key_payload *payload;
-> -	int err;
-> +	int err = 0;
->  
->  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
->  	if (IS_ERR(ref))
->  		return PTR_ERR(ref);
->  	key = key_ref_to_ptr(ref);
->  
-> -	if (key->type != &key_type_fscrypt_provisioning)
-> -		goto bad_key;
-> -	payload = key->payload.data[0];
-> +	if (key->type == &key_type_fscrypt_provisioning) {
-
-This function is getting long; it probably should be broken this up into several
-functions.  E.g.:
-
-static int get_keyring_key(u32 key_id, u32 type,
-                           struct fscrypt_master_key_secret *secret)
-{
-        key_ref_t ref;
-        struct key *key;
-        int err;
-
-        ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
-        if (IS_ERR(ref))
-                return PTR_ERR(ref);
-        key = key_ref_to_ptr(ref);
-
-        if (key->type == &key_type_fscrypt_provisioning) {
-                err = fscrypt_get_provisioning_key(key, type, secret);
-        } else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) &&
-                   key->type == &key_type_trusted) {
-                err = fscrypt_get_trusted_key(key, secret);
-        } else {
-                err = -EKEYREJECTED;
-        }
-        key_ref_put(ref);
-        return err;
-}
-
-> +		/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
-
-Please avoid overly-long lines.
-
-> +		tkp = key->payload.data[0];
-> +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
-> +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
-> +			up_read(&key->sem);
-> +			err = -EINVAL;
-> +			goto out_put;
-> +		}
-
-What does the !tkp case mean?  For "user" and "logon" keys it means "key
-revoked", but the "trusted" key type doesn't implement revoke.  Is this included
-just to be safe?  That might be reasonable, but perhaps the error code in that
-case (but not the invalid length cases) should be -EKEYREVOKED instead?
-
-- Eric
+                 Linus
