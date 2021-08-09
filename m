@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BA33E45EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500943E45EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhHIMuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 08:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36142 "EHLO mail.kernel.org"
+        id S233543AbhHIMuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 08:50:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233365AbhHIMuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 08:50:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29B396103B;
-        Mon,  9 Aug 2021 12:49:40 +0000 (UTC)
+        id S231478AbhHIMt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 08:49:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B53160FE3;
+        Mon,  9 Aug 2021 12:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628513380;
-        bh=HiL45mc8BBJf4XGJxHdRi692t4yfB8rW7Eu6+7IFQIY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XjV5BsQ79iGc6KjcbzdbTkF4g5CznHUMf1isFQkc5qmnLcMe0/f2WtEtHJoBPmofO
-         fXZ5COLMo/c2l9veslFtXsRmNiCYZSG5dCj7qeZCKQ5KFXnwM1tKAUcsLPvyV1gz47
-         jxDAJ1PDbw3TRdVQ9Y1uvBYgFio8vqFPtA1+LL/W4rAaQO22dKKw6rOMR7WOJ8R7Ff
-         nsx9lkymQ842eJKIAx7szc0tyu1bBfJWSRGjNmRmQTHjpg+UUAr9A4IEaEncllU357
-         y/0L08sHgB+qYFv8g5/Fk2/pnwaxxuUPNDdjg5mOYlCebNxhVpiY8gkIDBpUfXmo/7
-         Ewc4f/LK82HmQ==
-Received: by mail-ot1-f52.google.com with SMTP id v24-20020a0568300918b02904f3d10c9742so14435162ott.4;
-        Mon, 09 Aug 2021 05:49:40 -0700 (PDT)
-X-Gm-Message-State: AOAM533cRBIwZ1n0Ck88F2augbgu+AXw9J7aPsbpSSYCcHQGwAOXoPxV
-        Ki5nwCWQ9QLi5WaX92JrB8Cplq2edU4roPga+Tw=
-X-Google-Smtp-Source: ABdhPJwYbKYfkJ7LlR5zDO3AgHbE+zPpStJL+ozb6ycoMhStYzCkKrUlSrMFFtS4MDFkai4LqE8KFKaSDZqSZEHyHGo=
-X-Received: by 2002:a9d:5cb:: with SMTP id 69mr16831515otd.90.1628513379474;
- Mon, 09 Aug 2021 05:49:39 -0700 (PDT)
+        s=k20201202; t=1628513377;
+        bh=DuWuffUzHWTlh5RyIppkfZJMBWUzwes3xWNKxmTLe/0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jk+7pKgZ+88oYQV9NkXW4+7DYuSYjjTwrgQJpOrttxXIl5tKNVCJEgrkyQdFPhMBz
+         f+hMsHunXnbXXesw+l55zR366ZFmUEFCU46XuqwsX9p51Orqm4/orNB9V6uk/Qf427
+         M8lkagHV1KbxaWYI5iHUprg2PxaP5mEWPsbx4edZ51DKNkwnlvb24ksb39kRyXaIUh
+         R4mSwsA0e80ppbX3SHwNrX0m85MhDas0fjY1UT3lTv39wJhvOa8g5cqTbMM2vtoEbn
+         CNkDkUHMlk+b6ei3yicYLMvxr7anZ9IQoNRNMXm/AvyXMBtyTtb5tMvU3WkqdmVQv3
+         Yh+XgBvSP2Q1A==
+Date:   Mon, 9 Aug 2021 13:49:32 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     joro@8bytes.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        john.garry@huawei.com, dianders@chromium.org, rajatja@google.com,
+        chenxiang66@hisilicon.com,
+        Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+Subject: Re: [PATCH v3 25/25] iommu: Allow enabling non-strict mode
+ dynamically
+Message-ID: <20210809124931.GA1097@willie-the-truck>
+References: <cover.1628094600.git.robin.murphy@arm.com>
+ <22b044263f69e2bfe404c4379a435005ea58b3e2.1628094601.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-References: <20210730134552.853350-1-bert@biot.com> <20210730134552.853350-5-bert@biot.com>
- <CAK8P3a3OuJ3pMSdEA4Rt3aWvvuX2+_Bg5x7-kZ1++fvvJvgGxA@mail.gmail.com>
- <1e3070fe-b5da-0acc-f50b-b0986a1045cd@biot.com> <CAMuHMdWni=2ggV7dQiy-nfF1nOmKferbZOCkLp0kDsvMNfwF2Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdWni=2ggV7dQiy-nfF1nOmKferbZOCkLp0kDsvMNfwF2Q@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 9 Aug 2021 14:49:28 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFUpb6JYndtX9LPpr-dOFQ2-m7n0z70+7Bh-JHhnfoMpw@mail.gmail.com>
-Message-ID: <CAMj1kXFUpb6JYndtX9LPpr-dOFQ2-m7n0z70+7Bh-JHhnfoMpw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] ARM: Add basic support for EcoNet EN7523 SoC
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Bert Vermeulen <bert@biot.com>, Arnd Bergmann <arnd@arndb.de>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        John Crispin <john@phrozen.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Felix Fietkau <nbd@nbd.name>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22b044263f69e2bfe404c4379a435005ea58b3e2.1628094601.git.robin.murphy@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 at 14:46, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hoi Bert,
->
-> On Wed, Aug 4, 2021 at 6:43 PM Bert Vermeulen <bert@biot.com> wrote:
-> > On 7/30/21 4:48 PM, Arnd Bergmann wrote:
-> > > On Fri, Jul 30, 2021 at 3:45 PM Bert Vermeulen <bert@biot.com> wrote:
-> > >> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-> > >> index 173da685a52e..1bff0aa29c07 100644
-> > >> --- a/arch/arm/Makefile
-> > >> +++ b/arch/arm/Makefile
-> > >> @@ -152,6 +152,7 @@ textofs-$(CONFIG_ARCH_MSM8X60) := 0x00208000
-> > >>  textofs-$(CONFIG_ARCH_MSM8960) := 0x00208000
-> > >>  textofs-$(CONFIG_ARCH_MESON) := 0x00208000
-> > >>  textofs-$(CONFIG_ARCH_AXXIA) := 0x00308000
-> > >> +textofs-$(CONFIG_ARCH_ECONET) := 0x00088000
-> > >
-> > > Why is this needed?
-> > >
-> > > Note also the comment directly above it exlaining
-> > > # Text offset. This list is sorted numerically by address in order to
-> > > # provide a means to avoid/resolve conflicts in multi-arch kernels.
-> >
-> > I didn't make that patch, but it turns out it's needed to get PSCI working;
-> > detection hangs without it. That makes no sense to me, but I'll examine further.
->
-> Probably PSCI relies on the memory contents at the start of RAM not
-> being overwritten?
-> Does it help if you remove the first 512 KiB from the /memory node
+On Wed, Aug 04, 2021 at 06:15:53PM +0100, Robin Murphy wrote:
+> Allocating and enabling a flush queue is in fact something we can
+> reasonably do while a DMA domain is active, without having to rebuild it
+> from scratch. Thus we can allow a strict -> non-strict transition from
+> sysfs without requiring to unbind the device's driver, which is of
+> particular interest to users who want to make selective relaxations to
+> critical devices like the one serving their root filesystem.
+> 
+> Disabling and draining a queue also seems technically possible to
+> achieve without rebuilding the whole domain, but would certainly be more
+> involved. Furthermore there's not such a clear use-case for tightening
+> up security *after* the device may already have done whatever it is that
+> you don't trust it not to do, so we only consider the relaxation case.
+> 
+> CC: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> 
+> ---
+> 
+> v3: Actually think about concurrency, rework most of the fq data
+>     accesses to be (hopefully) safe and comment it all
+> ---
+>  drivers/iommu/dma-iommu.c | 25 ++++++++++++++++++-------
+>  drivers/iommu/iommu.c     | 16 ++++++++++++----
+>  drivers/iommu/iova.c      |  9 ++++++---
+>  3 files changed, 36 insertions(+), 14 deletions(-)
 
-I /think/ we rely on the first memblock being mappable using section
-mappings, so it might be better to remove the first 1 MB (or 2 MB in
-case the platform is LPAE capable). Note that this memory is discarded
-in any case, so this change is not as costly as it may seem.
+I failed to break this, so hopefully you've caught everything now.
 
+Only thing I wasn't sure of is why we still need the smp_wmb() in
+init_iova_flush_queue(). Can we remove it now that we have one before
+assigning into the cookie?
 
-> (which should be declared in en7523-evb.dts instead of en7523.dtsi
-> BTW)?
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Will
