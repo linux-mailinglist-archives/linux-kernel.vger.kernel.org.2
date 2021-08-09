@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF6F3E4D0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A7F3E4D08
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbhHIT0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 15:26:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
+        id S235965AbhHITYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 15:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231439AbhHIT0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 15:26:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B815260F6F;
-        Mon,  9 Aug 2021 19:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628537148;
-        bh=twBLIsO2gnc36cl6xqHR0kjG3giBwiknGjje0BZ4aR8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mevWqoYdg9oz+jP2iUW+hDcASnMnEF8AD8JOpuzPVEfX+7Jm0qiUChixUYig4fbFE
-         zOdHaYabOmC6Q6tw4f4FF/5aT/9/34+e0EG9SqlFPwMNUd4/cLaeRXqt4iPLpFAyNw
-         oD4GfJjUTwRKrcfLWxTqQFyopLbtaeSRd+rV8qytKcph0mNGzbtdgDJGdkz1hkebuQ
-         epnnuU+naQDJ0TxhHVBkVPvAbCgPBp3T7Cx9FGbFXxWj838XBoXc+Oc+QV7tjgGCX4
-         upfmc7oBT9npF/pY/57RTfKkqDG0zAao37oipVyYhG+RHxuhbmrPweF8rvu3Q8g+hh
-         NQfiJgLmw1MYQ==
-Date:   Mon, 9 Aug 2021 12:25:46 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guillaume Nault <gnault@redhat.com>, linux-ppp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying
- ppp unit id
-Message-ID: <20210809122546.758e41de@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210807163749.18316-1-pali@kernel.org>
-References: <20210807163749.18316-1-pali@kernel.org>
+        id S235487AbhHITYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 15:24:11 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C65C260FDA;
+        Mon,  9 Aug 2021 19:23:45 +0000 (UTC)
+Date:   Mon, 9 Aug 2021 20:26:37 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v15 01/13] counter: 104-quad-8: Describe member 'lock'
+ in 'quad8'
+Message-ID: <20210809202637.4aac5c81@jic23-huawei>
+In-Reply-To: <43b4acab9e238638c7067dd4a363a42f94c94ccb.1628511445.git.vilhelm.gray@gmail.com>
+References: <cover.1628511445.git.vilhelm.gray@gmail.com>
+        <43b4acab9e238638c7067dd4a363a42f94c94ccb.1628511445.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  7 Aug 2021 18:37:49 +0200 Pali Roh=C3=A1r wrote:
-> Currently there are two ways how to create a new ppp interface. Old method
-> via ioctl(PPPIOCNEWUNIT) and new method via rtnl RTM_NEWLINK/NLM_F_CREATE
-> which was introduced in v4.7 by commit 96d934c70db6 ("ppp: add rtnetlink
-> device creation support").
->=20
-> ...
+On Mon,  9 Aug 2021 21:37:26 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Your 2 previous patches were fixes and went into net, this patch seems
-to be on top of them but is a feature, so should go to net-next.=20
-But it doesn't apply to net-next given net was not merged into net-next.
-Please rebase on top of net-next or (preferably) wait until next week
-so that the trees can get merged and then you can repost without causing
-any conflicts.
+> This adds a kernel-doc comment line describing the 'lock' member of the
+> 'quad8' structure.
+> 
+> Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Initially I was confused as to when Syed had acked a new patch, but
+then realised you have pulled it out of the later spinlock conversion
+patch which Syed had indeed acked, so fair enough.
 
->  static const struct nla_policy ppp_nl_policy[IFLA_PPP_MAX + 1] =3D {
->  	[IFLA_PPP_DEV_FD]	=3D { .type =3D NLA_S32 },
-> +	[IFLA_PPP_UNIT_ID]	=3D { .type =3D NLA_S32 },
->  };
+Applied to the togreg branch of iio.git and (unlike yesterday)
+pushed out as testing for 0-day to poke at it.
+> ---
+>  drivers/counter/104-quad-8.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index 5283ff128c17..0caa60537b14 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -28,6 +28,7 @@ MODULE_PARM_DESC(base, "ACCES 104-QUAD-8 base addresses");
+>  
+>  /**
+>   * struct quad8 - device private data structure
+> + * @lock:		lock to prevent clobbering device states during R/W ops
+>   * @counter:		instance of the counter_device
+>   * @fck_prescaler:	array of filter clock prescaler configurations
+>   * @preset:		array of preset values
 
-set .strict_start_type, please so new attrs get validated better
-
->  static int ppp_nl_validate(struct nlattr *tb[], struct nlattr *data[],
-> @@ -1274,6 +1277,15 @@ static int ppp_nl_validate(struct nlattr *tb[], st=
-ruct nlattr *data[],
-> =20
->  	if (!data[IFLA_PPP_DEV_FD])
->  		return -EINVAL;
-> +
-> +	/* Check for IFLA_PPP_UNIT_ID before IFLA_PPP_DEV_FD to allow userspace
-> +	 * detect if kernel supports IFLA_PPP_UNIT_ID or not by specifying
-> +	 * negative IFLA_PPP_DEV_FD. Previous kernel versions ignored
-> +	 * IFLA_PPP_UNIT_ID attribute.
-> +	 */
-> +	if (data[IFLA_PPP_UNIT_ID] && nla_get_s32(data[IFLA_PPP_UNIT_ID]) < -1)
-> +		return -EINVAL;
-
-please use NLA_POLICY_MIN() instead, no need to open-code
-
->  	if (nla_get_s32(data[IFLA_PPP_DEV_FD]) < 0)
->  		return -EBADF;
