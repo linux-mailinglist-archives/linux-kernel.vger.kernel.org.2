@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297CC3E4F45
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A74B3E4F46
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhHIWa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:30:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41094 "EHLO
+        id S236733AbhHIWbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:31:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56865 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233565AbhHIWa6 (ORCPT
+        by vger.kernel.org with ESMTP id S233565AbhHIWbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:30:58 -0400
+        Mon, 9 Aug 2021 18:31:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628548236;
+        s=mimecast20190719; t=1628548289;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BjH3lVoue/JL4btoApF2k0x+vF5e5YSb7pGpRSYghz4=;
-        b=S4Z9kfVRVKSrl58elQHd88VMjyS448HjrxXXSeitZg8Z7R0cd2WmNamwFQgQd0JnfjkPSY
-        R04IsLlwaKNM1hLJpPNP49B31IzVE2wdkzgTkVcXZOM/lsGLpMGuuW2Ul6fOXj3TRecM2Y
-        DylNkmBCSvgEQ11HFDtug3UoTEjXCZQ=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-EYYXHZfXPiGnEdhhT4YxpQ-1; Mon, 09 Aug 2021 18:30:35 -0400
-X-MC-Unique: EYYXHZfXPiGnEdhhT4YxpQ-1
-Received: by mail-qt1-f199.google.com with SMTP id r13-20020ac85c8d0000b029028efef0404cso6518062qta.14
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 15:30:35 -0700 (PDT)
+        bh=h0IrbGHuas1nNnO8JBZWCL0Gr/6ftbCs5KjGl2Z6+gw=;
+        b=hpp/Pb9cB12r+fwxuDpIl4mAA9ZQztr7otwPMk1AQl2T1fSinrP6ZiL+TCsdEtSWQJUKbi
+        lqtzl0ORzG8kPBKRSfeIf2Tr9As9FYZiNdY7EMEL5W3EAy+ARSxPeAsqTm9SEXyuufIkrK
+        DlMSCg4dmEyWH14edNDfx92lv1JU6ks=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-4u18nSmkM02QCl6r0ESoyw-1; Mon, 09 Aug 2021 18:31:27 -0400
+X-MC-Unique: 4u18nSmkM02QCl6r0ESoyw-1
+Received: by mail-qk1-f199.google.com with SMTP id h186-20020a37b7c30000b02903b914d9e335so13786591qkf.17
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 15:31:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BjH3lVoue/JL4btoApF2k0x+vF5e5YSb7pGpRSYghz4=;
-        b=SGZomgxAB7bxwk45iqsELwek8foy9lCQho1e9fJd0Q9vWKF77KwTS6sAsYBl3h0ImP
-         H2k73npY1WxIf/dMCdembjb+UocD15GJ8X2q3snWoBtZMAucwhBxpul/D8lzfT7CA22+
-         qmqyHidhGNDyC48MSj7rUeDNkRs5Bi1WYHRz3GBAzOV//MusNV0BLdtQNq6hsxV2b20d
-         h8k997vZVIkRj6ksfULOHFeML81wBGI2ghmPTirQ+zOFX5rDSxn2/q2598dWDcEPakXp
-         TtzxxdB+mE6Kxby3pHgVbERj4wl8CZSoXOZPXNMWJ+2Y1qj1YXn52FcvbVqCg5UG/RTT
-         07bA==
-X-Gm-Message-State: AOAM530tEc4VOg5b1eHzt757s925ZjW+5Nky7eYbPw+nfpEb42g3Uh/b
-        hOXiWhfIrPBG8qrgp9PH/vskBFZRYU1aCnZMN1lSt2CBZrxM4iedLFDosS6HmoI+H1H0WkDFKOM
-        zyuqS5h278Q8RIirg0icpx+jha7NtR/obatw754Xr9fWOrSrkjwG2mcIyNsA+k6Ve+nt/FDiD06
-        oK
-X-Received: by 2002:ad4:5f09:: with SMTP id fo9mr14663292qvb.35.1628548235207;
-        Mon, 09 Aug 2021 15:30:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJys63neYYC0CsWGSSBTnSkVTM1U47S3lEOoT7cddDJABMx3HwrVAydq7pk663/OgQKN+d7p4Q==
-X-Received: by 2002:ad4:5f09:: with SMTP id fo9mr14663273qvb.35.1628548234963;
-        Mon, 09 Aug 2021 15:30:34 -0700 (PDT)
-Received: from jtoppins.rdu.csb ([107.15.110.69])
-        by smtp.gmail.com with ESMTPSA id v19sm5439662qta.60.2021.08.09.15.30.34
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=h0IrbGHuas1nNnO8JBZWCL0Gr/6ftbCs5KjGl2Z6+gw=;
+        b=SxTFfoZxc1Hztfic87GCQmt6PflnF0eN4bteS0y/k5QAUB+dNawYgxNcWfQXRRpVhj
+         4IA8vAec8gkjoQ2oLdFluJNnTW1c0n4Q7U176CC9tmW8iL85NRnMSzjanTCXNEj5uQXm
+         SAtk5yqWNVIav9H/skYeQ3dzBCSGqv5Dx1/kOqlIRiXEitwsyjqtt2h8a9ySo/2dfTvm
+         0Vwa4NRZkMBjlpARp2G0SyxQP5EE1SIc9iarMiYdKaRg+1ncYY5+gy2SxK2YQrYAVYk4
+         NQk/u1BQ4KRtWm2iuVJwhLTvCH0snFIzrE8NwK2aNW1i+eBUCdibWNMmlMMRIKQKFKZV
+         wPOw==
+X-Gm-Message-State: AOAM533M5YYsoe/goJzp8UdrnC7huK4RgZzvpHhdHBapfOfi1+BSTKnr
+        lvXwz10fRx2U4osG4u6w+kuWZH8Ts7P1sqtk9umg+6FwdRwJPcaBDZ+472UZubxlmzoZT05iaaX
+        aKL2aGF1KNO3kgLVheOsJy4MZ
+X-Received: by 2002:a05:622a:1106:: with SMTP id e6mr21967275qty.172.1628548287326;
+        Mon, 09 Aug 2021 15:31:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPycnDHiYPL6a31SVTX6Z6ed2srcb++34DmueTwq0TlFWbTo44l36FO7A/a/2h7olBKZh6Eg==
+X-Received: by 2002:a05:622a:1106:: with SMTP id e6mr21967256qty.172.1628548287114;
+        Mon, 09 Aug 2021 15:31:27 -0700 (PDT)
+Received: from ?IPv6:2601:184:4180:af10::540e? ([2601:184:4180:af10::540e])
+        by smtp.gmail.com with ESMTPSA id m197sm9910149qke.54.2021.08.09.15.31.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 15:30:34 -0700 (PDT)
-Subject: Re: [PATCH] netlink: NL_SET_ERR_MSG - remove local static array
-To:     Joe Perches <joe@perches.com>, netdev <netdev@vger.kernel.org>
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <1f99c69f4e640accaf7459065e6625e73ec0f8d4.camel@perches.com>
-From:   Jonathan Toppins <jtoppins@redhat.com>
-Message-ID: <c32a4a3c-c7df-cb8d-ecb4-7c1738cfd15c@redhat.com>
-Date:   Mon, 9 Aug 2021 18:30:33 -0400
+        Mon, 09 Aug 2021 15:31:26 -0700 (PDT)
+Subject: Re: [PATCH] vm_swappiness=0 should still try to avoid swapping anon
+ memory
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Waiman Long <longman@redhat.com>, mhocko@suse.com
+References: <20210806231701.106980-1-npache@redhat.com>
+ <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
+ <91605888-e343-2712-c097-bcade4cb389d@redhat.com>
+ <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
+From:   Nico Pache <npache@redhat.com>
+Message-ID: <7301b496-d2fd-b5d1-8159-6613c958f487@redhat.com>
+Date:   Mon, 9 Aug 2021 18:31:25 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1f99c69f4e640accaf7459065e6625e73ec0f8d4.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 1:04 PM, Joe Perches wrote:
-> The want was to have some separate object section for netlink messages
-> so all netlink messages could be specifically listed by some tool but
-> the effect is duplicating static const char arrays in the object code.
-> 
-> It seems unused presently so change the macro to avoid the local static
-> declarations until such time as these actually are wanted and used.
-> 
-> This reduces object size ~8KB in an x86-64 defconfig without modules.
-> 
-> $ size vmlinux.o*
->     text	   data	    bss	    dec	    hex	filename
-> 20110471	3460344	 741760	24312575	172faff	vmlinux.o.new
-> 20119444	3460344	 741760	24321548	1731e0c	vmlinux.o.old
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
 
-Seems reasonable.
+> First, the shrink_list() will not be called for anon LRU if get_scan_count()
+> has decided to not scan the anon LRU.
 
-Acked-by: Jonathan Toppins <jtoppins@redhat.com>
+get_scan_count() will decide to scan the anon LRU if(sc->is_file_tiny) which is set in shrink_node().
+
+ In shrink_node() the MAY_DEACTIVATE/DEACTIVATE_ANON allows this the be activated.
+
+> Second, I would like to get your attention to the following comment in
+> get_scan_count():
+>
+> "Global reclaim will swap to prevent OOM even with no swappiness"
+
+AFAIK my patchset doesn't prevent any of the OOM cases. It only prevents the anon workingset refaults
+
+from challenging the anon if swappiness=0. 
+
+> It seems like the behavior you are seeing is actually working as intended.
+> You may decide to change that behavior but you will need to motivate the
+> change.
+
+My V3 has a lot more in the commit log. Hopefully it will clear up my motivation. I will post that now.
 
