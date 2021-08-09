@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EA83E41E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA9A3E41EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbhHII44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:56:56 -0400
-Received: from m12-17.163.com ([220.181.12.17]:41950 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234003AbhHII4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:56:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=SaLiU
-        6rl8I1fehJTnnti4e5laXVkApwI2Fxq28Tv9oc=; b=jSW1ffuodRCzBZgodTEWc
-        PwjQDbLJg4nCWZGIGlLcFMbeHZusG4YSRXTZRDT2snBdOP4b5ic5Y8ShAlXM0YZs
-        AlFCsUyVeLarrgD5xXyw0ZkslGyLCinwxaxUuWWCo5pZU/Zfj0R1hIZzKrAAdk8/
-        9DYRNYSasgRTTA7hbSvm6Y=
-Received: from asura.lan (unknown [182.149.135.186])
-        by smtp13 (Coremail) with SMTP id EcCowACHrYmK7RBhJOasFA--.10715S2;
-        Mon, 09 Aug 2021 16:55:38 +0800 (CST)
-From:   chaochao2021666@163.com
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: [PATCH 2/2] net:phy:dp83867:implement the binding for status led
-Date:   Mon,  9 Aug 2021 16:55:10 +0800
-Message-Id: <20210809085510.324205-1-chaochao2021666@163.com>
-X-Mailer: git-send-email 2.32.0
+        id S234119AbhHII63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:58:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39460 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234003AbhHII62 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 04:58:28 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ADD161FDAD;
+        Mon,  9 Aug 2021 08:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628499487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DcWWQK19Xa6GOBXM7LflCcqBUTWsQXKfbG2mDyL0SxU=;
+        b=padfdtL4ld65kA1j8ASFunpTuCaQEeDyeltyz6XAOhqz+lA7V01Vkx08xKncHn8cXQN15B
+        FcjnC0XRgwDa7iRVNGgiiP5MeDchU1WbdMa2I06fIzTlfKCzJSBfHTCNFftPLrlssgkt5D
+        fg/ZIMh06KcKGDEHaZx1mBhezmfPnpo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628499487;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DcWWQK19Xa6GOBXM7LflCcqBUTWsQXKfbG2mDyL0SxU=;
+        b=tEH0w+p3OnOz/t86IhLTtsNTIxHjArVIP4uUz0SIdIA6/6AIE+7gPMhivvQcO8vJJygI9g
+        upu+H6b3V9IsatCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9CE43132AB;
+        Mon,  9 Aug 2021 08:58:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id FIfbJR/uEGG6KwAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Mon, 09 Aug 2021 08:58:07 +0000
+Date:   Mon, 9 Aug 2021 10:58:07 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>
+Subject: Re: [PATCH v4 8/8] nvme-rdma: Unfreeze queues on reconnect
+Message-ID: <20210809085807.p5agrbuqxhlznmkr@carbon>
+References: <20210802112658.75875-1-dwagner@suse.de>
+ <20210802112658.75875-9-dwagner@suse.de>
+ <46d4d7cb-314a-3822-f59d-00588609421a@grimberg.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowACHrYmK7RBhJOasFA--.10715S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7AFyUJF1ftw43Aw4kZw47Jwb_yoW8Wr1xpr
-        4Y9Fy3A3yUtF4xGw4SqF4kCryYgw4IqryfKrWagan5Zw15AFy8AF1jqFyUXF93CrWrAFy3
-        uF4rAFW2gas8Z3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jhYFZUUUUU=
-X-Originating-IP: [182.149.135.186]
-X-CM-SenderInfo: 5fkd0uhkdrjiasrwlli6rwjhhfrp/1tbiqwvpdVUMacs2JAAAsV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46d4d7cb-314a-3822-f59d-00588609421a@grimberg.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Zeng <chao.zeng@siemens.com>
+Hi Sagi,
 
-the DP83867 has different function option for the status led.
-It is possible to set the status led for different function
+On Fri, Aug 06, 2021 at 12:59:15PM -0700, Sagi Grimberg wrote:
+> 
+> > During the queue teardown in nvme_rdma_teardown_io_queues() freeze is
+> > called unconditionally. When we reconnect we need to pair the freeze
+> > with an unfreeze to avoid hanging I/Os. For newly created connection
+> > this is not needed.
+> > 
+> > Fixes: 9f98772ba307 ("nvme-rdma: fix controller reset hang during traffic")
+> > Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> > ---
+> >   drivers/nvme/host/rdma.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+> > index de2a8950d282..21a8a5353af0 100644
+> > --- a/drivers/nvme/host/rdma.c
+> > +++ b/drivers/nvme/host/rdma.c
+> > @@ -901,6 +901,8 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
+> >   			error = PTR_ERR(ctrl->ctrl.admin_q);
+> >   			goto out_cleanup_fabrics_q;
+> >   		}
+> > +	} else {
+> > +		nvme_unfreeze(&ctrl->ctrl);
+> 
+> That seems misplaced.. unfreezing the I/O queues when setting up the admin
+> queue?
 
-Signed-off-by: Chao Zeng <chao.zeng@siemens.com>
----
- drivers/net/phy/dp83867.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Indeed. After looking again on it, this should be almost identically to
+the tcp.c fix in nvme_rdma_configure_io_queues.
 
-diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
-index 6bbc81ad295f..71dc3101ce28 100644
---- a/drivers/net/phy/dp83867.c
-+++ b/drivers/net/phy/dp83867.c
-@@ -148,6 +148,10 @@
- /* FLD_THR_CFG */
- #define DP83867_FLD_THR_CFG_ENERGY_LOST_THR_MASK	0x7
- 
-+/* Led Configuration */
-+#define DP83867_LEDCR_1      0x0018
-+#define LED_GPIO_NUM_SEL	 0x4
-+
- enum {
- 	DP83867_PORT_MIRROING_KEEP,
- 	DP83867_PORT_MIRROING_EN,
-@@ -527,6 +531,9 @@ static int dp83867_of_init(struct phy_device *phydev)
- 	struct device *dev = &phydev->mdio.dev;
- 	struct device_node *of_node = dev->of_node;
- 	int ret;
-+	u32 led_conf;
-+	u32 led_select_value;
-+	int index;
- 
- 	if (!of_node)
- 		return -ENODEV;
-@@ -614,6 +621,19 @@ static int dp83867_of_init(struct phy_device *phydev)
- 		return -EINVAL;
- 	}
- 
-+	/* Optional LED configuration */
-+	for (index = 0; index < LED_GPIO_NUM_SEL; index++) {
-+		ret = of_property_read_u32_index(of_node, "ti,led-sel",
-+						 index, &led_select_value);
-+		if (ret < 0) {
-+			phydev_info(phydev, "Use default value for led configuration\n");
-+			return -EINVAL;
-+		}
-+		led_conf = led_conf << 4 | led_select_value;
-+	}
-+
-+	phy_write_mmd(phydev, DP83867_DEVADDR, DP83867_LEDCR_1, led_conf);
-+
- 	return 0;
- }
- #else
--- 
-2.32.0
+BTW, I am working on getting a RDMA test setup running. Hopefully I have
+all the right licenses on the array.
 
-
+Daniel
