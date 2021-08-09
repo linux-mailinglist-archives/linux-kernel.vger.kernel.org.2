@@ -2,162 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D0F3E4363
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48B03E4366
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbhHIJ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:57:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50774 "EHLO mail.kernel.org"
+        id S233680AbhHIJ54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:57:56 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60990 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233528AbhHIJ5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:57:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCB6660F11;
-        Mon,  9 Aug 2021 09:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628503009;
-        bh=siHqB30+J8sLOp7pEGFo9z0ErNUa2pMXDyohhHMW7U8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kevZHtdJYJPiRj0NYnYLFNKteyuj7hA/3N6StyCDAJnl9mszdPiYnuhSH2mqjlnq4
-         WtYS5CV8PlkYUHLSys+qFSJbIJh84/P6OSbhYCAHeckZZuBQ/2NVw3u+GY++pu/xed
-         l14Vq78Yr7dxIE2hki8H9zO0jo6NgQmwm3DfgomeezsJZ7yGAhQX1jiFDRnFx457nQ
-         +HK/EnQDZW1XX6O5PBu4X/sR1VXruhpIdGGtz2hN4+9EEOKfyQU9DwNffq0QDFghHT
-         lxYtXA121HNVgRoIU05N0p2enG/6gtH7nFUgNiY8mxJ814WTgXmO0XJsYoRASpqbnP
-         dxaypa2KMthug==
-Date:   Mon, 9 Aug 2021 12:56:47 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Richard Weinberger <richard@nod.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH 2/4] KEYS: trusted: allow trust sources to use kernel RNG
- for key material
-Message-ID: <20210809095647.7xcxjeot5gyvmlpj@kernel.org>
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
- <7b771da7b09a01c8b4da2ed21f05251ea797b2e8.1626885907.git-series.a.fatoum@pengutronix.de>
- <CAFA6WYOskwZNe5Wb5PTtnSHQBonSXZ48eEex0w9jQ+JW4vG=+w@mail.gmail.com>
- <7537c853-3641-a6d3-91d8-70fea9f01a89@pengutronix.de>
+        id S233500AbhHIJ5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 05:57:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628503054; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Z2qKMHaBBf4V2dXurrhUXPgNh/wH4eq/5Nkqig/rsv0=; b=GHycJDzudl9CzmWJ/czh05cUNNsYj1ikSwGL4kbn1BpFhXCZQCqXw6g8V9SJRmztMR2zu0sk
+ 3b5QmIvnFyX/4VroUffwIaeF1x72ktupM8gwL4ziipjvpSgg2hR8anc11Vc0z9xrHLgJwDQQ
+ lF7X2e2soYE07dJGnhRB7/P78rE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6110fc0dad1af6394935be46 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 09:57:33
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC4A4C433F1; Mon,  9 Aug 2021 09:57:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.3] (unknown [106.202.252.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CB63C433D3;
+        Mon,  9 Aug 2021 09:57:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6CB63C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
+Subject: Re: [PATCH V5 1/2] soc: qcom: aoss: Expose send for generic usecase
+To:     Stephen Boyd <swboyd@chromium.org>, bjorn.andersson@linaro.org,
+        clew@codeaurora.org, sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+References: <1628161974-7182-1-git-send-email-deesin@codeaurora.org>
+ <1628161974-7182-2-git-send-email-deesin@codeaurora.org>
+ <CAE-0n50fN42fhAcoCJBz-PEW5sEdqSKT5YuaxWE_29J=P1=vQw@mail.gmail.com>
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+Message-ID: <4b3b6b0f-8c21-53ce-4341-1e8686d3b73c@codeaurora.org>
+Date:   Mon, 9 Aug 2021 15:27:26 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7537c853-3641-a6d3-91d8-70fea9f01a89@pengutronix.de>
+In-Reply-To: <CAE-0n50fN42fhAcoCJBz-PEW5sEdqSKT5YuaxWE_29J=P1=vQw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 09:52:20AM +0200, Ahmad Fatoum wrote:
-> Hello Sumit,
-> 
-> On 22.07.21 08:31, Sumit Garg wrote:
-> > On Wed, 21 Jul 2021 at 22:19, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>
-> >> The two existing trusted key sources don't make use of the kernel RNG,
-> >> but instead let the hardware that does the sealing/unsealing also
-> >> generate the random key material. While a previous change offers users
-> >> the choice to use the kernel RNG instead for both, new trust sources
-> >> may want to unconditionally use the kernel RNG for generating key
-> >> material, like it's done elsewhere in the kernel.
-> >>
-> >> This is especially prudent for hardware that has proven-in-production
-> >> HWRNG drivers implemented, as otherwise code would have to be duplicated
-> >> only to arrive at a possibly worse result.
-> >>
-> >> Make this possible by turning struct trusted_key_ops::get_random
-> >> into an optional member. If a driver leaves it NULL, kernel RNG
-> >> will be used instead.
-> >>
-> >> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> >> ---
-> >> To: James Bottomley <jejb@linux.ibm.com>
-> >> To: Jarkko Sakkinen <jarkko@kernel.org>
-> >> To: Mimi Zohar <zohar@linux.ibm.com>
-> >> To: David Howells <dhowells@redhat.com>
-> >> Cc: James Morris <jmorris@namei.org>
-> >> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> >> Cc: "Horia Geantă" <horia.geanta@nxp.com>
-> >> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-> >> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> >> Cc: "David S. Miller" <davem@davemloft.net>
-> >> Cc: Udit Agarwal <udit.agarwal@nxp.com>
-> >> Cc: Eric Biggers <ebiggers@kernel.org>
-> >> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
-> >> Cc: David Gstir <david@sigma-star.at>
-> >> Cc: Richard Weinberger <richard@nod.at>
-> >> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
-> >> Cc: Sumit Garg <sumit.garg@linaro.org>
-> >> Cc: keyrings@vger.kernel.org
-> >> Cc: linux-crypto@vger.kernel.org
-> >> Cc: linux-integrity@vger.kernel.org
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Cc: linux-security-module@vger.kernel.org
-> >> ---
-> >>  include/keys/trusted-type.h               | 2 +-
-> >>  security/keys/trusted-keys/trusted_core.c | 2 +-
-> >>  2 files changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/include/keys/trusted-type.h b/include/keys/trusted-type.h
-> >> index d89fa2579ac0..4eb64548a74f 100644
-> >> --- a/include/keys/trusted-type.h
-> >> +++ b/include/keys/trusted-type.h
-> >> @@ -64,7 +64,7 @@ struct trusted_key_ops {
-> >>         /* Unseal a key. */
-> >>         int (*unseal)(struct trusted_key_payload *p, char *datablob);
-> >>
-> >> -       /* Get a randomized key. */
-> >> +       /* Optional: Get a randomized key. */
-> >>         int (*get_random)(unsigned char *key, size_t key_len);
-> >>
-> >>         /* Exit key interface. */
-> >> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> >> index 569af9af8df0..d2b7626cde8b 100644
-> >> --- a/security/keys/trusted-keys/trusted_core.c
-> >> +++ b/security/keys/trusted-keys/trusted_core.c
-> >> @@ -334,7 +334,7 @@ static int __init init_trusted(void)
-> >>                         continue;
-> >>
-> >>                 get_random = trusted_key_sources[i].ops->get_random;
-> >> -               if (trusted_kernel_rng)
-> >> +               if (trusted_kernel_rng || !get_random)
-> >>                         get_random = kernel_get_random;
-> >>
-> > 
-> > For ease of understanding, I would prefer to write it as:
-> > 
-> >                   get_random = trusted_key_sources[i].ops->get_random ?:
-> >                                          kernel_get_random;
-> >                   if (trusted_kernel_rng)
-> >                         get_random = kernel_get_random;
-> > 
-> > With that:
-> > 
-> > Acked-by: Sumit Garg <sumit.garg@linaro.org>
-> 
-> I don't think it improves readability to split up the conditional.
-> At least I need to take a second pass over the code to understand
-> the second conditional.
 
-Ternary operators are pain to read, unless a super trivial case.
-
-I'd stick to what you did.
-
-/Jarkko
+On 8/6/2021 12:04 AM, Stephen Boyd wrote:
+> Quoting Deepak Kumar Singh (2021-08-05 04:12:53)
+>> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+>> index 934fcc4..b84cb31 100644
+>> --- a/drivers/soc/qcom/qcom_aoss.c
+>> +++ b/drivers/soc/qcom/qcom_aoss.c
+>> @@ -515,6 +521,43 @@ static void qmp_cooling_devices_remove(struct qmp *qmp)
+>>                  thermal_cooling_device_unregister(qmp->cooling_devs[i].cdev);
+>>   }
+>>
+>> +/**
+>> + * qmp_get() - get a qmp handle from a device
+>> + * @dev: client device pointer
+>> + *
+>> + * Return: handle to qmp device on success, ERR_PTR() on failure
+>> + */
+>> +struct qmp *qmp_get(struct device *dev)
+>> +{
+>> +       struct platform_device *pdev;
+>> +       struct device_node *np;
+>> +       struct qmp *qmp;
+>> +
+>> +       if (!dev || !dev->of_node)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       np = of_parse_phandle(dev->of_node, "qcom,qmp", 0);
+>> +       if (!np)
+>> +               return ERR_PTR(-ENODEV);
+>> +
+>> +       pdev = of_find_device_by_node(np);
+>> +       of_node_put(np);
+>> +       if (!pdev)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       qmp = platform_get_drvdata(pdev);
+>> +
+>> +       return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
+>> +}
+>> +EXPORT_SYMBOL(qmp_get);
+>> +
+>> +void qmp_put(struct qmp *qmp)
+>> +{
+>> +       if (!IS_ERR_OR_NULL(qmp))
+>> +               put_device(qmp->dev);
+> Where is the corresponding get_device() call?
+of_find_device_by_node() internally calls get_device(), so no need to 
+call get_device() explicitly.
+>
+>> +}
+>> +EXPORT_SYMBOL(qmp_put);
+>> +
+>>   static int qmp_probe(struct platform_device *pdev)
+>>   {
+>>          struct resource *res;
