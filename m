@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255303E4CE3
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2F03E4CE4
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236139AbhHITQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 15:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        id S236105AbhHITQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 15:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236051AbhHITQh (ORCPT
+        with ESMTP id S236067AbhHITQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 15:16:37 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87969C0617B0
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 12:16:13 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id z24so13418230qtn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 12:16:13 -0700 (PDT)
+        Mon, 9 Aug 2021 15:16:38 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5BFC0617BE
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 12:16:14 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id w10so13414925qtj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 12:16:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Gv+OB+zM5345b30boI1Lb87AMcz6Zm625J86U+m0DDQ=;
-        b=u66mof9UZWfzozysTRhTFMa9uWwaPMPgEfMLgNOAo7IkTgPRCA5TW77iQaHcCBhAat
-         AEbjRBTLS46wv7WROSGETRDxspeu4zVZY5Ehjd7Ne+/K01BlLWqrvVoBbAociBeOcIuK
-         GRsA0F0AcacQm38xfXATCKlu/IQaxs735+fdkRzVQuJOpUC1Xs5x9MYqPKRCHcGesFGm
-         6MXrGM7JfT2fTXZtjI4YbPuDwU/tgaxO9tLa3ReOsQuQUjqKxOTgFrBLi3pweFUPpAkX
-         7f6TALay4zXZF85OAQbS47wbTNRGlGMVO93HP+RYybUpWTrkMwNnmaogXYYU083Y0uDc
-         1Hvw==
+        bh=0GY9KQcjEymb02nsjXZD/KTbbQ/O1w3OkJI+xrCTdDs=;
+        b=Li2v0KU+Gu03jnQGQqlZeFPG7cOqI/ohK8tZGLnWnG46FYirUfxz7sTqSHS4EkfW49
+         L0bodG6eiqT5+GuJTn6H93rOeCw9Iw57rFfSVycCAatbtg6u70+zaaf+rdqanCxhiv+V
+         H55WRZm2LDitH+/pwqQfjybHXtjNZ4joFIj3kZWdLt5fN+3l2WjntZ212VPJfxeh6ZGh
+         H39O1zfVwfG7LEuv3bH7pKSd4wSashsnLyyuyOwbdZ7zJODduH7K8aqnF3uV1NJ8kYeu
+         tnEQy81v8UIMlk6Hrs9XOACZlCneyl5pGGivlF/EV331r22OwuwxU0QOwt34ylfKmfsO
+         flbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Gv+OB+zM5345b30boI1Lb87AMcz6Zm625J86U+m0DDQ=;
-        b=NCRIMfmk6N3jMvg45QHlpWh2PFy9lIpYLxcSV8QDzKlbnqGbNchUXNPT1gufiUve9a
-         XLpRLn3waAJniJ+qEMWLvEIuj9dm2NLen++2C/O+zDCQOblf7GEmRAi7wXFcALGEyacJ
-         VDgrzTRqlO7tKDhC03+lhIbWp/vetp/kEsIjFfWm04LZ3vi5oQRJPLWiMeQ5H02SaVWl
-         V6xDRBXoYX1UIDa4m2hREj5kU0gVLwkbz9kJ4ujgvvXkinoFhtVikvAIbG4zV+CRhMz9
-         DoIPCDtgwV7FIzuhqYiT1L4CjrkxZi2woBV8T9rW2O9n9Fr/EpyIlyJec3tF7hWUjthp
-         KAVw==
-X-Gm-Message-State: AOAM5335OvAOqfynMlR5PL4iqzQ+j7LrTqFWttGUHWz5BZEquXiXQYbD
-        ZkTDjXjTFF6hSoI3fMNVB4mUqw==
-X-Google-Smtp-Source: ABdhPJw5/xxDaedKxpjvJ6yLlI9xIoe/03yr2dJSVYEpzYIHPS8T9azPUbXY6puHqWC3RXKBjJlQFA==
-X-Received: by 2002:ac8:5a91:: with SMTP id c17mr9079858qtc.42.1628536572691;
-        Mon, 09 Aug 2021 12:16:12 -0700 (PDT)
+        bh=0GY9KQcjEymb02nsjXZD/KTbbQ/O1w3OkJI+xrCTdDs=;
+        b=CTenGPwciQ5zcJD6BHvczP0ykPB9gOTQJVkF4pDMNgexDGiVsttfzLvWI/A7srKvpr
+         44ngsXrEjXsEIVg6EuFIrWeWtgVh1kWZsqe7+bU0Q+U485GPgu18THO51MCcK9GyzP+h
+         eecYNe0alJB8QB9diUHNF3dRV/h6XjB65gSyxI7MK9MMdJdjw2WwiqzWxQPaCP2W2cxd
+         xhHdEyqrLmPWkfDT+jAaUzY7Ec0aqY9+4gX+IEwwUZJ6V8SUkFBBzBmcjtTzBapc00rQ
+         yzi0V7gG4WcLgIxnxq83J11XqlrNOUaEXKlDDVdCuRUhPUBTi8v5W+6LPsAjeJljYVk8
+         rjIg==
+X-Gm-Message-State: AOAM533fe48Mv6DrcZgKgPQ5uerUxvxsOuUlY+lFjV7fhnI/VrasSEqC
+        A1euWh+g47rxGydOXukoWNaHmw==
+X-Google-Smtp-Source: ABdhPJy+iUYyDlhSijDmVTrFTRJ3Wyb4OKW2GfCzrzpu/kd8CZPTVxbVWk2sMm4eGYuVqizaFhwGjg==
+X-Received: by 2002:ac8:43cb:: with SMTP id w11mr17984815qtn.224.1628536573626;
+        Mon, 09 Aug 2021 12:16:13 -0700 (PDT)
 Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id n14sm7303398qti.47.2021.08.09.12.16.11
+        by smtp.googlemail.com with ESMTPSA id n14sm7303398qti.47.2021.08.09.12.16.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 12:16:12 -0700 (PDT)
+        Mon, 09 Aug 2021 12:16:13 -0700 (PDT)
 From:   Thara Gopinath <thara.gopinath@linaro.org>
 To:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
         daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
@@ -56,8 +56,8 @@ Cc:     steev@kali.org, tdas@codeaurora.org, mka@chromium.org,
         linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Subject: [Patch v5 6/6] dt-bindings: thermal: Add dt binding for QCOM LMh
-Date:   Mon,  9 Aug 2021 15:16:04 -0400
-Message-Id: <20210809191605.3742979-7-thara.gopinath@linaro.org>
+Date:   Mon,  9 Aug 2021 15:16:05 -0400
+Message-Id: <20210809191605.3742979-8-thara.gopinath@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210809191605.3742979-1-thara.gopinath@linaro.org>
 References: <20210809191605.3742979-1-thara.gopinath@linaro.org>
@@ -74,11 +74,7 @@ Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 ---
 
 v4->v5:
-	- Renamed dt binding property qcom,lmh-cpu to cpus as per
-	  Rob Herring's review comments.
-	- Fixed examples and consolidated to just one example.
-	- Other minor fixes as pointed out by Rob Herring.
-
+	- Renam
 v3->v4:
 	- Changed dt property qcom,lmh-cpu-id to qcom,lmh-cpu and made it
 	  a phandle pointing to the cpu node instead of a number as per
