@@ -2,138 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FD03E42D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2785D3E42D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234566AbhHIJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
+        id S234683AbhHIJfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234650AbhHIJex (ORCPT
+        with ESMTP id S234669AbhHIJe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:34:53 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B91C0613D3;
-        Mon,  9 Aug 2021 02:34:33 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id k2so15672547plk.13;
-        Mon, 09 Aug 2021 02:34:33 -0700 (PDT)
+        Mon, 9 Aug 2021 05:34:58 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FECC061796;
+        Mon,  9 Aug 2021 02:34:37 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id l18so20532868wrv.5;
+        Mon, 09 Aug 2021 02:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=biNAy5h7oVY1q9CMKi2TrD2G8iCaEg6EwP+zpkG0x9I=;
-        b=KOFlhkZ8VT9Gg9IfumWNsU68mB6qyhv3ke4WeNu4vQGPDja7D1rSsGobfSJIEz+trR
-         tO10tcI5Hsvj8CxNRUpQLmai/t3R9HPXZ5Hmed/L/L7VveGjC9KkQOocGuCJ2kT9PodI
-         wJdX5yFTlyHJ/2XcQS23jBgqwZPNeHKskN59LNx5u5k+qRP8DlSvjgPrPR6MPqSQhK+b
-         jeUio+sEk/0O7teaVuE4PNUumxMPAsUNNedzbRoTF/xU0ZDvauzppZXLw4npMgEMbNlQ
-         ZxhZeWFhU+fCA4cbtTIW8adOo9zshLEb0xohK0qyccRqe729ErkEWDbBBat+wdIF74sV
-         2eBg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vjxCT+VJ0iUMgOfKLV2Avr5JuRXfNiXW4v7j2+9ljXo=;
+        b=jIcKNRea72ZTofO1kxXWEISoqgUDKhrkqztw/Fm1UPM4Cyy6wKBo5pUxaM5c8m2xTF
+         CpaE9PaIVutrEbligPqYOq+fxBSz4h+ph3u3sd36VceBkqOCraoPb8HaLl9RGaIWBfZV
+         YlpSAZzuAnOyXYd4TbS7RRoC4xSZqF9QP4RxxSqsOQdqTyvnPJECum35Xc8eYbBZa2Kr
+         zvQWgV30Dy8DIB4zVUyn1p7U1JrcPJwtLN2u6cxfMDtc0ViOw9Ip8U0GAHlBp1mtJLLw
+         euJKXX0htb5TRY21gxtgly2ut6HHgyolFnMQRWgMx8nFK12UX101n1WMjSwjGVq4OwLF
+         I6nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=biNAy5h7oVY1q9CMKi2TrD2G8iCaEg6EwP+zpkG0x9I=;
-        b=Y2Zjz5eF0dec/wfwAww9DYRJozS+ezuT92sFM88W8ijJHKK7yDRUGlTrs15IVuavKH
-         zZeL0o/3DtgJkoHLXQmZwdRJgu8dtrkoDjAKArGy3XqaArJz5lvXK0HDMBNJ8lVsYOcU
-         +YPLDEKiKXuAgOtC+CWUFVkutPk3E8mU326fMZQjc+RLdYQ7ro/VcrCNMVYKzJoDyayU
-         izPkk58vRLBozsxGhWdM4LKqSs9OmOz0QdyHAExzflanYqaXAhFBRqLh4R0DWlCm30CY
-         lrSooBGE6Zdo/5VXXBKu8d3jzGD4Luznqn0MiXV0Xn0ITl20phP+XDETAGEauhi0srOg
-         1sbA==
-X-Gm-Message-State: AOAM531iZ8wQwzN7TM3EzI89yLIIPJYgpAY4YOvmpvcgcbZiFpglH0qb
-        3FJHI+f7jAOQKUWP7bbBwJU=
-X-Google-Smtp-Source: ABdhPJxKQ+0mIcms3UnGJli7b+FS7AElw6vbE0y7uJR2PIKScPY3i57ziCBYSkdhDkTL5xfz7FhBKA==
-X-Received: by 2002:a17:903:31c3:b029:ed:6f74:49c7 with SMTP id v3-20020a17090331c3b02900ed6f7449c7mr19366644ple.12.1628501673150;
-        Mon, 09 Aug 2021 02:34:33 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id h188sm10839982pfg.45.2021.08.09.02.34.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Aug 2021 02:34:32 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] KVM: x86: Clean up redundant pr_fmt(fmt) macro definition for svm
-Date:   Mon,  9 Aug 2021 17:34:10 +0800
-Message-Id: <20210809093410.59304-6-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210809093410.59304-1-likexu@tencent.com>
-References: <20210809093410.59304-1-likexu@tencent.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vjxCT+VJ0iUMgOfKLV2Avr5JuRXfNiXW4v7j2+9ljXo=;
+        b=LfC/cjhet7IuapOII513nuYE3PxI3sd1C6XoRqvyKgANTv4+IHhlDNlQ6wh07W9M4X
+         fYV4XxVdVQ1gjA9y/i0nqds6xtOYbNWkCqZWqhmZKB+T95AZUs5Eme+pkQp80W+fNmtE
+         8DPGyPKArPmqiuHxMxO8QYwMgNoiKGgw3L+SLMZOB2z8wNdN0Rl6LeezP70E0Ep/lJTx
+         u+DzXmzEd+Kx63wlaP6ICaFBK5YbslWgaqo0UH1GSBsQKaChHLypaQQCBi91M+45sosu
+         sErpQ9aJ4cmFai/LBRi+hHFnB8f3e/G9LRUQOTEtCFDSIT4dPkjbVITg1226Nbs6112o
+         Z2XQ==
+X-Gm-Message-State: AOAM533YtfkVdtF9K7uCDM/tq/J2ESplTdqbngZbeeqrhUvAB/GjDms2
+        3/fLz/YXKTiy/D9Lv+JK6gzsSh0VQ8w=
+X-Google-Smtp-Source: ABdhPJwJcUz69IuHP2soEK1Z4uum8Tr5ERBWvoVNlAmm+OyO3YcRONVXA8ElkmBRUXzzsLEVnjTgVw==
+X-Received: by 2002:adf:8287:: with SMTP id 7mr7428804wrc.360.1628501675820;
+        Mon, 09 Aug 2021 02:34:35 -0700 (PDT)
+Received: from [10.0.0.18] ([37.165.146.152])
+        by smtp.gmail.com with ESMTPSA id n10sm1651671wmq.3.2021.08.09.02.34.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 02:34:34 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: sock: add the case if sk is NULL
+To:     yajun.deng@linux.dev, Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210806061136.54e6926e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210806063815.21541-1-yajun.deng@linux.dev>
+ <489e6f1ce9f8de6fd8765d82e1e47827@linux.dev>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <79e7c9a8-526c-ae9c-8273-d1d4d6170b69@gmail.com>
+Date:   Mon, 9 Aug 2021 11:34:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <489e6f1ce9f8de6fd8765d82e1e47827@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
 
-The svm specific pr_fmt(fmt) macro is repeatedly defined in svm code
-and the new one has never been used outside the svm context.
 
-Let's move it to svm.h without any intended functional changes.
+On 8/9/21 8:12 AM, yajun.deng@linux.dev wrote:
+> August 6, 2021 9:11 PM, "Jakub Kicinski" <kuba@kernel.org> wrote:
+> 
+>> On Fri, 6 Aug 2021 14:38:15 +0800 Yajun Deng wrote:
+>>
+>>> Add the case if sk is NULL in sock_{put, hold},
+>>> The caller is free to use it.
+>>>
+>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>>
+>> The obvious complaint about this patch (and your previous netdev patch)
+>> is that you're spraying branches everywhere in the code. Sure, it may
+> 
+> Sorry for that, I'll be more normative in later submission.
+>> be okay for free(), given how expensive of an operation that is but
+>> is having refcounting functions accept NULL really the best practice?
+>>
+>> Can you give us examples in the kernel where that's the case?
+> 
+> 0   include/net/neighbour.h         neigh_clone()
+> 1   include/linux/cgroup.h          get_cgroup_ns() and put_cgroup_ns()  (This is very similar to my submission)
+> 2   include/linux/ipc_namespace.h   get_ipc_ns()
+> 3   include/linux/posix_acl.h       posix_acl_dup()
+> 4   include/linux/pid.h             get_pid()
+> 5   include/linux/user_namespace.h  get_user_ns()
+> 
 
-Signed-off-by: Like Xu <likexu@tencent.com>
----
- arch/x86/kvm/svm/avic.c   | 2 --
- arch/x86/kvm/svm/nested.c | 2 --
- arch/x86/kvm/svm/svm.c    | 2 --
- arch/x86/kvm/svm/svm.h    | 3 +++
- 4 files changed, 3 insertions(+), 6 deletions(-)
+These helpers might be called with NULL pointers by design.
 
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index a8ad78a2faa1..8b055f9ad9fe 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -12,8 +12,6 @@
-  *   Avi Kivity   <avi@qumranet.com>
-  */
- 
--#define pr_fmt(fmt) "SVM: " fmt
--
- #include <linux/kvm_types.h>
- #include <linux/hashtable.h>
- #include <linux/amd-iommu.h>
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 57c288ba6ef0..3080776a55a5 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -12,8 +12,6 @@
-  *   Avi Kivity   <avi@qumranet.com>
-  */
- 
--#define pr_fmt(fmt) "SVM: " fmt
--
- #include <linux/kvm_types.h>
- #include <linux/kvm_host.h>
- #include <linux/kernel.h>
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 2b6632d4c76f..4a3f8ef56daa 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1,5 +1,3 @@
--#define pr_fmt(fmt) "SVM: " fmt
--
- #include <linux/kvm_host.h>
- 
- #include "irq.h"
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index bd0fe94c2920..76d5fe3f00dc 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -15,6 +15,9 @@
- #ifndef __SVM_SVM_H
- #define __SVM_SVM_H
- 
-+#undef pr_fmt
-+#define pr_fmt(fmt) "SVM: " fmt
-+
- #include <linux/kvm_types.h>
- #include <linux/kvm_host.h>
- #include <linux/bits.h>
--- 
-2.32.0
+sock_put() and sock_hold() are never called with NULL.
+
+Same for put_page() and hundreds of other functions.
+
+By factorizing a conditional in the function, hoping to remove one in few callers,
+we add more conditional branches (and increase code size)
 
