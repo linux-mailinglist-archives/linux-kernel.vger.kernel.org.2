@@ -2,200 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094D53E46DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0873E46E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbhHINrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:47:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40202 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234155AbhHINq6 (ORCPT
+        id S234377AbhHINtF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Aug 2021 09:49:05 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3960 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233420AbhHINtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628516797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kC60/FWvUwVd7y01o36qa1ToUR0hILQPRSMtA/mfOk4=;
-        b=MXs95t3Tfp8QCDmiftr8m5T/NMPGoLy+pfhVTakq44+nfeoCA1RDxgsB1w6Om77WKxwjdM
-        Q+5Qk+lViLgNSZIHJD6yWiJSdoBVCJGBKTokcWlJcmhm6HoC7zMIHfeP1+w518YXaghSlf
-        CC4Z7kaiR/G1+oNkZq38LNOvmjKJfI0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-WeHJt-ooMMOa3Q7ID4zj0Q-1; Mon, 09 Aug 2021 09:46:36 -0400
-X-MC-Unique: WeHJt-ooMMOa3Q7ID4zj0Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9CF7190A7A0;
-        Mon,  9 Aug 2021 13:46:34 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E22295D6A1;
-        Mon,  9 Aug 2021 13:46:33 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com>,
-        bcrl@kvack.org, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] INFO: task hung in sys_io_destroy
-References: <0000000000007db08f05c79fc81f@google.com>
-        <x498s1ee26t.fsf@segfault.boston.devel.redhat.com>
-        <CACT4Y+Y=7aT65CA4n+sy5n75e53rWc+E3_K+-e6jxU=QQQOATg@mail.gmail.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Mon, 09 Aug 2021 09:47:57 -0400
-In-Reply-To: <CACT4Y+Y=7aT65CA4n+sy5n75e53rWc+E3_K+-e6jxU=QQQOATg@mail.gmail.com>
-        (Dmitry Vyukov's message of "Mon, 9 Aug 2021 11:24:22 +0200")
-Message-ID: <x498s1aenle.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 9 Aug 2021 09:49:04 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Gjy4X68kLz81kl;
+        Mon,  9 Aug 2021 21:44:44 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 21:48:39 +0800
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2176.012; Mon, 9 Aug 2021 14:48:38 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Will Deacon <will@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
+        "qperret@google.com" <qperret@google.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule
+ out
+Thread-Topic: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule
+ out
+Thread-Index: AQHXhGar1JrryboKrU+7h+yU/0K2/6thny2AgAAaZCCAACXigIAAEl3QgAR0ioCABL+ZgIAAETIA
+Date:   Mon, 9 Aug 2021 13:48:37 +0000
+Message-ID: <85b1c1a7861a4cb2a92fc87af800bf4c@huawei.com>
+References: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
+ <20210729104009.382-5-shameerali.kolothum.thodi@huawei.com>
+ <20210803114034.GB30853@willie-the-truck>
+ <ee2863107d614ef8a36006b5aa912eca@huawei.com>
+ <20210803153036.GA31125@willie-the-truck>
+ <b2146ea5db47485f8410a4c1ab0c15fe@huawei.com>
+ <20210809130917.GA1207@willie-the-truck>
+In-Reply-To: <20210809130917.GA1207@willie-the-truck>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.88.4]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Vyukov <dvyukov@google.com> writes:
 
-> On Fri, 6 Aug 2021 at 22:39, Jeff Moyer <jmoyer@redhat.com> wrote:
->>
->> syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com> writes:
->>
->> > Hello,
->> >
->> > syzbot found the following issue on:
->> >
->> > HEAD commit:    1d67c8d993ba Merge tag 'soc-fixes-5.14-1' of git://git.ker..
->> > git tree:       upstream
->> > console output: https://syzkaller.appspot.com/x/log.txt?x=11b40232300000
->> > kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b998c1afc13578
->> > dashboard link: https://syzkaller.appspot.com/bug?extid=d40a01556c761b2cb385
->> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12453812300000
->> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11225922300000
->> >
->> > Bisection is inconclusive: the issue happens on the oldest tested release.
->> >
->> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127cac6a300000
->> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=117cac6a300000
->> > console output: https://syzkaller.appspot.com/x/log.txt?x=167cac6a300000
->> >
->> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> > Reported-by: syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com
->> >
->> > INFO: task syz-executor299:8807 blocked for more than 143 seconds.
->> >       Not tainted 5.14.0-rc1-syzkaller #0
->> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> > task:syz-executor299 state:D stack:29400 pid: 8807 ppid:  8806 flags:0x00000000
->> > Call Trace:
->> >  context_switch kernel/sched/core.c:4683 [inline]
->> >  __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
->> >  schedule+0xd3/0x270 kernel/sched/core.c:6019
->> >  schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1854
->> >  do_wait_for_common kernel/sched/completion.c:85 [inline]
->> >  __wait_for_common kernel/sched/completion.c:106 [inline]
->> >  wait_for_common kernel/sched/completion.c:117 [inline]
->> >  wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
->> >  __do_sys_io_destroy fs/aio.c:1402 [inline]
->> >  __se_sys_io_destroy fs/aio.c:1380 [inline]
->> >  __x64_sys_io_destroy+0x17e/0x1e0 fs/aio.c:1380
->> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
->>
->> The reproducer is creating a thread, issuing a IOCB_CMD_PREAD from a
->> pipe in that thread, and then calling io_destroy from another thread.
->> Because there is no writer on the other end of the pipe, the read will
->> block.  Note that it also is not submitted asynchronously, as that's not
->> supported.
->>
->> io_destroy is "hanging" because it's waiting for the read to finish.  If
->> the read thread is killed, cleanup happens as usual.  I'm not sure I
->> could classify this as a kernel bug.
->
-> Hi Jeff,
->
-> Thanks for looking into this. I suspect the reproducer may create a
-> fork bomb that DoSed the kernel so that it can't make progress for 140
-> seconds. FTR, I've added it to
-> https://github.com/google/syzkaller/issues/498#issuecomment-895071514
-> to take a closer look.
 
-No, I described exactly what happens.  You can reproduce the hung task
-timeout with a much simpler program, attached below.
+> -----Original Message-----
+> From: Will Deacon [mailto:will@kernel.org]
+> Sent: 09 August 2021 14:09
+> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
+> linux-kernel@vger.kernel.org; maz@kernel.org; catalin.marinas@arm.com;
+> james.morse@arm.com; julien.thierry.kdev@gmail.com;
+> suzuki.poulose@arm.com; jean-philippe@linaro.org;
+> Alexandru.Elisei@arm.com; qperret@google.com; Linuxarm
+> <linuxarm@huawei.com>
+> Subject: Re: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU
+> schedule out
+> 
+> On Fri, Aug 06, 2021 at 12:24:36PM +0000, Shameerali Kolothum Thodi
+> wrote:
+> > These are some test numbers with and without this patch, run on two
+> > different test setups.
+> >
+> >
+> > a)Test Setup -1
+> > -----------------------
+> >
+> > Platform: HiSilicon D06 with 128 CPUs, VMID bits = 16
+> > Run 128 VMs concurrently each with 2 vCPUs. Each Guest will execute
+> hackbench
+> > 5 times before exiting.
+> >
+> > Measurements taken avg. of 10 Runs.
+> >
+> > Image : 5.14-rc3
+> > ---------------------------
+> >   Time(s)       44.43813888
+> >   No. of exits    145,348,264
+> >
+> > Image: 5.14-rc3 + vmid-v3
+> > ----------------------------------------
+> >   Time(s)        46.59789034
+> >   No. of exits     133,587,307
+> >
+> > %diff against 5.14-rc3
+> >   Time: 4.8% more
+> >   Exits: 8% less
+> >
+> > Image: 5.14-rc3 + vmid-v3 + Without active_asid clear
+> > ---------------------------------------------------------------------------
+> >   Time(s)         44.5031782
+> >   No. of exits      144,443,188
+> >
+> > %diff against 5.14-rc3
+> >   Time: 0.15% more
+> >   Exits: 2.42% less
+> >
+> > b)Test Setup -2
+> > -----------------------
+> >
+> > Platform: HiSilicon D06 + Kernel with maxcpus set to 8 and VMID bits set to
+> 4.
+> > Run 40 VMs concurrently each with 2 vCPUs. Each Guest will execute
+> hackbench
+> > 5 times before exiting.
+> >
+> > Measurements taken avg. of 10 Runs.
+> >
+> > Image : 5.14-rc3-vmid4bit
+> > ------------------------------------
+> >   Time(s)        46.19963266
+> >   No. of exits     23,699,546
+> >
+> > Image: 5.14-rc3-vmid4bit + vmid-v3
+> > ---------------------------------------------------
+> >   Time(s)          45.83307736
+> >   No. of exits      23,260,203
+> >
+> > %diff against 5.14-rc3-vmid4bit
+> >   Time: 0.8% less
+> >   Exits: 1.85% less
+> >
+> > Image: 5.14-rc3-vmid4bit + vmid-v3 + Without active_asid clear
+> > -----------------------------------------------------------------------------------------
+> >   Time(s)           44.5031782
+> >   No. of exits        144,443,188
+> 
+> Really? The *exact* same numbers as the "Image: 5.14-rc3 + vmid-v3 +
+> Without
+> active_asid clear" configuration? Guessing a copy-paste error here.
+> 
+> > %diff against 5.14-rc3-vmid4bit
+> >   Time: 1.05% less
+> >   Exits: 2.06% less
+> >
+> > As expected, the active_asid clear on schedule out is not helping.
+> > But without this patch, the numbers seems to be better than the
+> > vanilla kernel when we force the setup(cpus=8, vmd=4bits)
+> > to perform rollover.
+> 
+> I'm struggling a bit to understand these numbers. Are you saying that
+> clearing the active_asid helps in the 16-bit VMID case but not in the
+> 4-bit case?
 
-Cheers,
-Jeff
+Nope, the other way around.. The point I was trying to make is that
+clearing the active_vmids definitely have an impact in 16-bit vmid
+case, where rollover is not happening, as it ends up taking the slow
+path more frequently.
 
-#define _GNU_SOURCE
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <unistd.h>
-#include <libaio.h>
-#include <pthread.h>
+Test setup-1, case 2(with active_vmids clear): Around 4.8% more time
+to finish the test compared to vanilla kernel.
 
-#define BUFSZ 512
+Test setup-1, case 3(Without clear): 0.15% more time compared to
+vanilla kernel.
 
-void *
-submit_thread(void *arg)
-{
-	io_context_t *ctx = arg;
-	int ret;
-	int fds[2];
-	char buf[BUFSZ];
-	struct iocb iocb, *iocbp = &iocb;
+For the 4-bit vmid case, the impact of clearing vmids is not that obvious
+probably because we have more rollovers.
 
-	ret = pipe(fds);
-	if (ret) {
-		perror("pipe");
-		exit(1);
-	}
+Test setup-2, case 2(with active_vmids clear):0.8% less time compared to vanilla.
+Test setup-2, case 3(Without clear): 1.05% less time compared to vanilla kernel.
+ 
+So between the two(with and without clearing the active_vmids), the "without" 
+one has better numbers for both Test setups.
 
-	io_prep_pread(iocbp, fds[0], buf, BUFSZ, 0);
+> Why would the active_asid clear have any impact on the number of exits?
 
-	ret = io_submit(*ctx, 1, &iocbp);
-	if (ret != 1) {
-		printf("io_submit failed with %d\n", ret);
-		exit(1);
-	}
+In 16 bit vmid case, it looks like the no. of exits is considerably lower if we clear
+active_vmids. . Not sure it is because of the frequent slow path or not. But anyway,
+the time to finish the test is higher.
+ 
+> The problem I see with not having the active_asid clear is that we will
+> roll over more frequently as the number of reserved VMIDs increases.
 
-	/* NOTREACHED */
-	printf("Read submitted.\n");
-	return 0;
-}
+Ok. The idea of running the 4-bit test setup was to capture that. It doesn't
+look like it has a major impact when compared to the original kernel. May be
+I should take an average of more test runs. Please let me know if there is a 
+better way to measure that impact.
 
-int
-main(void)
-{
-	int ret;
-	io_context_t ctx;
-	pthread_t pth;
+Hope, I am clear.
 
-	memset(&ctx, 0, sizeof(ctx));
-	ret = io_setup(1, &ctx);
-	if (ret) {
-		printf("io_setup failed with %d\n", ret);
-		exit(1);
-	}
-
-	ret = pthread_create(&pth, NULL, submit_thread, &ctx);
-	if (ret) {
-		perror("pthread_create");
-		exit(1);
-	}
-
-	usleep(1000); /* give the thread time to run */
-
-	ret = io_destroy(ctx);
-	if (ret) {
-		printf("io_destroy failed with %d\n", ret);
-		exit(1);
-	}
-
-	exit(0);
-}
-
+Thanks,
+Shameer
