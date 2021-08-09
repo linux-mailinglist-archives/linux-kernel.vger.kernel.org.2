@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF9A3E4E6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56F53E4E71
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbhHIVZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhHIVZ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:25:57 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F67C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:25:36 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id n6so12440646ljp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GciiGnwukZUcZuMgRkuX2+Oq98OfQGEGL0PbIUMdbwY=;
-        b=DkW8bjkdCbaSSZSwXUD4dP7zGs+heKPA+Oy5FoJ3PhXwaSYav89OxOAcJNbCZqAFmL
-         0h1nLAi6SdzNhvMaS1Nzft4JS4BHDBbOx4s0vutZIhoGZgzoNkz1aA+MU8kA1xMDmbqc
-         PFME9G1HDX5AzRGqzhBS/Ml77jddOYE1oapDY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GciiGnwukZUcZuMgRkuX2+Oq98OfQGEGL0PbIUMdbwY=;
-        b=IwgqDd8xzcbm/vbc0rqLH4CayFkB6O5mazfhyldJsabmY6mfabUOQ6DSqamnZZ83oI
-         qK+73TGpycuCaOwU+biqkrBZvgDSf+Zzlf+QwaCyTABPAYcfY3JvSfD+geV5wZaDoo0l
-         9WY/GrMAKJSiPWNOggxW1ZptvCmhxKT18b/+gYkX0KCIgvaPkIa+q4xoihBLpuZuEqn0
-         4RvdOnH5hzf0cBqL+l+1mkZ8mik7uijXXekS87sw+Lm0n4WBliTI58vlRjC5sErVnKKr
-         zBkNCHKzZsDAQNrSQNkIYTTv7ehNDDfoNUQKYNcEoytBZyIzzjxBEDRCEPSovAi5Ztin
-         NGbg==
-X-Gm-Message-State: AOAM532+HBTY8GTNDRSW+XH16h8StoHJcYI0zKgczThE4I8a2D6QibYJ
-        Bn+0YOOCEKxSsM23AZ4PxBS5zphuV6yefw+2
-X-Google-Smtp-Source: ABdhPJzjjgMaHjJ1yD0pM5ouU+oeyEIJZbz1luvARAHo2iLsIxjbBgLf+aZwWYuq8jZHBG6aAazGtw==
-X-Received: by 2002:a2e:7f1a:: with SMTP id a26mr16644253ljd.183.1628544334269;
-        Mon, 09 Aug 2021 14:25:34 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id d4sm1842725lfg.178.2021.08.09.14.25.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 14:25:33 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id h2so13494282lji.6
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:25:33 -0700 (PDT)
-X-Received: by 2002:a2e:b703:: with SMTP id j3mr7222089ljo.220.1628544333584;
- Mon, 09 Aug 2021 14:25:33 -0700 (PDT)
+        id S235256AbhHIV0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230366AbhHIV0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 17:26:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 893AB60EB9;
+        Mon,  9 Aug 2021 21:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628544358;
+        bh=OVk9UHdUYnGUAQ/9b5LQEesj/Z+2icrT45MDhBuum7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k3zkEbpe3SR2ifocQzBNaNV4JTESvreRYDOITb5EhKP8EF1VxpwWoy+RBCTjiYmKG
+         v1qC5xH3ZnW5mGznhtox5enskOXyHSnXgsen3YDz0BndDX9twm/bgcx4pfzEYCaSTN
+         4XTcBM/zRN4/bJViHUON4w3GNQslKscKPWCGx7Q3xYbB4TUm3Wqi2t6+RAMDLGRuAN
+         gRWcEfpioDK297C83BT0zf/omKPI/Lqh9aO/PfhsA5pH+7K1y0OV5zWmYsuYhYuCTk
+         gmaJUaIsg0ijm4gpMEBQFUZBGw5V4pZFH6p1K+X46nz64ONI6umzfOUp2j44Pu+/X7
+         AbZ/qMVdtS+AQ==
+Received: by pali.im (Postfix)
+        id 41BACC7C; Mon,  9 Aug 2021 23:25:56 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 23:25:56 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 02/20] hfsplus: Add iocharset= mount option as alias
+ for nls=
+Message-ID: <20210809212556.3ygj6atbc5ma642m@pali>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-3-pali@kernel.org>
+ <20210809204921.3ovrnbtzywsui4pt@kari-VirtualBox>
 MIME-Version: 1.0
-References: <YRFfGk5lHL0W27oU@miu.piliscsaba.redhat.com>
-In-Reply-To: <YRFfGk5lHL0W27oU@miu.piliscsaba.redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 9 Aug 2021 14:25:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wigKQqEqt9ev_1k5b_DwFGp7JmCdCR1xFSJjOyisEJ61A@mail.gmail.com>
-Message-ID: <CAHk-=wigKQqEqt9ev_1k5b_DwFGp7JmCdCR1xFSJjOyisEJ61A@mail.gmail.com>
-Subject: Re: [GIT PULL] overlayfs fixes for 5.14-rc6
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210809204921.3ovrnbtzywsui4pt@kari-VirtualBox>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 10:00 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
->
->       ovl: fix mmap denywrite
+On Monday 09 August 2021 23:49:21 Kari Argillander wrote:
+> On Sun, Aug 08, 2021 at 06:24:35PM +0200, Pali Rohár wrote:
+> > Other fs drivers are using iocharset= mount option for specifying charset.
+> > So add it also for hfsplus and mark old nls= mount option as deprecated.
+> 
+> It would be good to also update Documentation/filesystems/hfsplus.rst.
 
-Ugh. Th edances with denywrite and mapping_unmap_writable are really
-really annoying.
-
-I've pulled this, but I really get the feeling that there's duplicated
-code for these things, and that all the "if error goto" cases  (some
-old, some new) are really really uglky.
-
-I get the feeling that the whole thing with deny_write_access and
-mapping_map_writable could possibly be done after-the-fact somehow as
-part of actually inserting the vma in the vma tree, rather than done
-as the vma is prepared.
-
-And most users of vma_set_file() probably really don't want that whole
-thing at all (ie the DRM stuff that just switches out a local thing.
-They also don't check for the new error cases you've added.
-
-So I really think this is quite questionable, and those cases should
-probably have been done entirely inside ovlfs rather than polluting
-the cases that don't care and don't check.
-
-                 Linus
+Good point! I'm making a note.
