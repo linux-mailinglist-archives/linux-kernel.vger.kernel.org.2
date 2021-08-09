@@ -2,224 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890753E4BE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E023E4BE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbhHISMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:12:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:63413 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbhHISMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:12:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628532716; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=9TqUje2MoCMQzd+dIsYu9+PEOEmUemOLRzy3tfFy+3A=;
- b=hg2Q7u7qJdnaBVdc1jZwR1kr3I44eddr7cxPAhSC2uU6RaXtzyNH2xXBB3Fek/3Z0u41m+h0
- ibGULlhylNMCyaNNp/c+CnD4EFI69D2pRBxH/wis3yJEmPlPmm/hV+gMcWcME73OY8E/sUOx
- lvd9u31HyCTO0u4b6JQFC6CqZ7o=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 61116fb691487ad520898c26 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 18:11:01
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4A84FC433F1; Mon,  9 Aug 2021 18:11:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S234597AbhHISLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231357AbhHISLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 14:11:40 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 54F1FC433D3;
-        Mon,  9 Aug 2021 18:10:57 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 09 Aug 2021 23:40:57 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Will Deacon <will@kernel.org>, Georgi Djakov <djakov@kernel.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        David Airlie <airlied@linux.ie>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
-        <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [Freedreno] [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters
- to use system cache
-In-Reply-To: <CAF6AEGtiVgHc7rcfzOpBmtVGQBvGPCBmtKJ3AJx887NSMj0EzQ@mail.gmail.com>
-References: <20210728140052.GB22887@mms-0441>
- <8b2742c8891abe4fec3664730717a089@codeaurora.org>
- <20210802105544.GA27657@willie-the-truck>
- <CAF6AEGvtpFu8st=ZFNoKjP9YsAenciLxL1zMFi_iqMCvdby73w@mail.gmail.com>
- <20210802151409.GE28735@willie-the-truck>
- <CAF6AEGtzvyEUm0Fc8QT5t9KNK7i0FbFyi7zDM2_PMCzZBp7qbw@mail.gmail.com>
- <20210809145651.GC1458@willie-the-truck>
- <CAF6AEGsSUojA=V0n2iRWTCn++buqN=Eoxo0r3=+=PBu1O=H-AQ@mail.gmail.com>
- <20210809170508.GB1589@willie-the-truck>
- <CAF6AEGtmZ3LzAJdtnKDQDbEN-a6_JgdN-fZ96pkU3dZqkiW91g@mail.gmail.com>
- <20210809174022.GA1840@willie-the-truck>
- <76bfd0b4248148dfbf9d174ddcb4c2a2@codeaurora.org>
- <CAF6AEGtiVgHc7rcfzOpBmtVGQBvGPCBmtKJ3AJx887NSMj0EzQ@mail.gmail.com>
-Message-ID: <8e5edd6886a0c3a5f6c8cb4dff517224@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        by mail.kernel.org (Postfix) with ESMTPSA id C336060F6F;
+        Mon,  9 Aug 2021 18:11:19 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mD9k5-003sfH-Tt; Mon, 09 Aug 2021 19:11:18 +0100
+Date:   Mon, 09 Aug 2021 19:11:17 +0100
+Message-ID: <87im0ebi9m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 13/13] arm64: Add CNT{P,V}CTSS_EL0 alternatives to cnt{p,v}ct_el0
+In-Reply-To: <CAOQ_QshjRWh=onT-j3dWgmVfnAXsMFJoz0i7OEezQxkW4O9KZA@mail.gmail.com>
+References: <20210809152651.2297337-1-maz@kernel.org>
+        <20210809152651.2297337-14-maz@kernel.org>
+        <CAOQ_QshjRWh=onT-j3dWgmVfnAXsMFJoz0i7OEezQxkW4O9KZA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oupton@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-09 23:37, Rob Clark wrote:
-> On Mon, Aug 9, 2021 at 10:47 AM Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
->> 
->> On 2021-08-09 23:10, Will Deacon wrote:
->> > On Mon, Aug 09, 2021 at 10:18:21AM -0700, Rob Clark wrote:
->> >> On Mon, Aug 9, 2021 at 10:05 AM Will Deacon <will@kernel.org> wrote:
->> >> >
->> >> > On Mon, Aug 09, 2021 at 09:57:08AM -0700, Rob Clark wrote:
->> >> > > On Mon, Aug 9, 2021 at 7:56 AM Will Deacon <will@kernel.org> wrote:
->> >> > > > On Mon, Aug 02, 2021 at 06:36:04PM -0700, Rob Clark wrote:
->> >> > > > > On Mon, Aug 2, 2021 at 8:14 AM Will Deacon <will@kernel.org> wrote:
->> >> > > > > > On Mon, Aug 02, 2021 at 08:08:07AM -0700, Rob Clark wrote:
->> >> > > > > > > On Mon, Aug 2, 2021 at 3:55 AM Will Deacon <will@kernel.org> wrote:
->> >> > > > > > > > On Thu, Jul 29, 2021 at 10:08:22AM +0530, Sai Prakash Ranjan wrote:
->> >> > > > > > > > > On 2021-07-28 19:30, Georgi Djakov wrote:
->> >> > > > > > > > > > On Mon, Jan 11, 2021 at 07:45:02PM +0530, Sai Prakash Ranjan wrote:
->> >> > > > > > > > > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
->> >> > > > > > > > > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
->> >> > > > > > > > > > > the memory type setting required for the non-coherent masters to use
->> >> > > > > > > > > > > system cache. Now that system cache support for GPU is added, we will
->> >> > > > > > > > > > > need to set the right PTE attribute for GPU buffers to be sys cached.
->> >> > > > > > > > > > > Without this, the system cache lines are not allocated for GPU.
->> >> > > > > > > > > > >
->> >> > > > > > > > > > > So the patches in this series introduces a new prot flag IOMMU_LLC,
->> >> > > > > > > > > > > renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
->> >> > > > > > > > > > > and makes GPU the user of this protection flag.
->> >> > > > > > > > > >
->> >> > > > > > > > > > Thank you for the patchset! Are you planning to refresh it, as it does
->> >> > > > > > > > > > not apply anymore?
->> >> > > > > > > > > >
->> >> > > > > > > > >
->> >> > > > > > > > > I was waiting on Will's reply [1]. If there are no changes needed, then
->> >> > > > > > > > > I can repost the patch.
->> >> > > > > > > >
->> >> > > > > > > > I still think you need to handle the mismatched alias, no? You're adding
->> >> > > > > > > > a new memory type to the SMMU which doesn't exist on the CPU side. That
->> >> > > > > > > > can't be right.
->> >> > > > > > > >
->> >> > > > > > >
->> >> > > > > > > Just curious, and maybe this is a dumb question, but what is your
->> >> > > > > > > concern about mismatched aliases?  I mean the cache hierarchy on the
->> >> > > > > > > GPU device side (anything beyond the LLC) is pretty different and
->> >> > > > > > > doesn't really care about the smmu pgtable attributes..
->> >> > > > > >
->> >> > > > > > If the CPU accesses a shared buffer with different attributes to those which
->> >> > > > > > the device is using then you fall into the "mismatched memory attributes"
->> >> > > > > > part of the Arm architecture. It's reasonably unforgiving (you should go and
->> >> > > > > > read it) and in some cases can apply to speculative accesses as well, but
->> >> > > > > > the end result is typically loss of coherency.
->> >> > > > >
->> >> > > > > Ok, I might have a few other sections to read first to decipher the
->> >> > > > > terminology..
->> >> > > > >
->> >> > > > > But my understanding of LLC is that it looks just like system memory
->> >> > > > > to the CPU and GPU (I think that would make it "the point of
->> >> > > > > coherence" between the GPU and CPU?)  If that is true, shouldn't it be
->> >> > > > > invisible from the point of view of different CPU mapping options?
->> >> > > >
->> >> > > > You could certainly build a system where mismatched attributes don't cause
->> >> > > > loss of coherence, but as it's not guaranteed by the architecture and the
->> >> > > > changes proposed here affect APIs which are exposed across SoCs, then I
->> >> > > > don't think it helps much.
->> >> > > >
->> >> > >
->> >> > > Hmm, the description of the new mapping flag is that it applies only
->> >> > > to transparent outer level cache:
->> >> > >
->> >> > > +/*
->> >> > > + * Non-coherent masters can use this page protection flag to set cacheable
->> >> > > + * memory attributes for only a transparent outer level of cache, also known as
->> >> > > + * the last-level or system cache.
->> >> > > + */
->> >> > > +#define IOMMU_LLC      (1 << 6)
->> >> > >
->> >> > > But I suppose we could call it instead IOMMU_QCOM_LLC or something
->> >> > > like that to make it more clear that it is not necessarily something
->> >> > > that would work with a different outer level cache implementation?
->> >> >
->> >> > ... or we could just deal with the problem so that other people can reuse
->> >> > the code. I haven't really understood the reluctance to solve this properly.
->> >> >
->> >> > Am I missing some reason this isn't solvable?
->> >>
->> >> Oh, was there another way to solve it (other than foregoing setting
->> >> INC_OCACHE in the pgtables)?  Maybe I misunderstood, is there a
->> >> corresponding setting on the MMU pgtables side of things?
->> >
->> > Right -- we just need to program the CPU's MMU with the matching memory
->> > attributes! It's a bit more fiddly if you're just using ioremap_wc()
->> > though, as it's usually the DMA API which handles the attributes under
->> > the
->> > hood.
->> >
->> > Anyway, sorry, I should've said that explicitly earlier on. We've done
->> > this
->> > sort of thing in the Android tree so I assumed Sai knew what needed to
->> > be
->> > done and then I didn't think to explain to you :(
->> >
->> 
->> Right I was aware of that but even in the android tree there is no 
->> user
->> :)
->> I think we can't have a new memory type without any user right in
->> upstream
->> like android tree?
->> 
->> @Rob, I think you  already tried adding a new MT and used
->> pgprot_syscached()
->> in GPU driver but it was crashing?
+On Mon, 09 Aug 2021 17:42:00 +0100,
+Oliver Upton <oupton@google.com> wrote:
 > 
-> Correct, but IIRC there were some differences in the code for memory
-> types compared to the android tree.. I couldn't figure out the
-> necessary patches to cherry-pick to get the android patch to apply
-> cleanly, so I tried re-implementing it without having much of a clue
-> about how that code works (which was probably the issue) ;-)
+> On Mon, Aug 9, 2021 at 8:48 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > CNTPCTSS_EL0 and CNTVCTSS_EL0 are alternatives to the usual
+> > CNTPCT_EL0 and CNTVCT_EL0 that do not require a previous ISB
+> > to be synchronised (SS stands for Self-Synchronising).
+> >
+> > Use the ARM64_HAS_ECV capability to control alternative sequences
+> > that switch to these low(er)-cost primitives. Note that the
+> > counter access in the VDSO is for now left alone until we decide
+> > whether we want to allow this.
 > 
+> What remains to be figured out before we add this to the vDSO (and
+> presumably advertise to userspace through some standard convention)?
 
-Hehe no, even I get the same crash after porting/modifying the required
-patches from android ;) and I think crashes would be seen in android as
-well, its just that they don't have any user exercising that code.
+We need to understand what breaks if we runtime-patch the VDSO just
+like we do with the rest of the kernel. To start with, the debug
+version of the shared object is not the same as the object presented
+to the process. Maybe that's not a problem, but I would tend to err on
+the side of caution.
 
-Thing is I can't make head and tail of the GPU crash logs, maybe you 
-know
-how to decode those errors, if not I can start a thread with QC GPU team
-and ask them to decode?
+An alternative suggested by Ard was to have a separate function
+altogether for the counter access and an ifunc mapping to pick the
+right one.
+
+> It would be nice to skip the trap handler altogether, unless there's a
+> can of worms lurking that I'm not aware of.
+
+The trap handlers are only there to work around errata. If you look at
+the arch timer code, you will notice that there is a bunch of SoCs and
+CPUs that do not have a reliable counter, and for which we have to
+trap the virtual counter accesses from userspace (as well as the
+VDSO).
+
+On sane platforms, userspace is free to use the virtual counter
+without any trap.
 
 Thanks,
-Sai
+
+	M.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Without deviation from the norm, progress is not possible.
