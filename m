@@ -2,152 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EA43E42BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68643E42C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbhHIJcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:32:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234597AbhHIJcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:32:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A2D611C5;
-        Mon,  9 Aug 2021 09:31:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628501518;
-        bh=FOrdcQNSfE4qcKwJIDhTp8LMWfTjCfvnygplnr9i9uo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HhNsKRBO35VbzPgqXJX5LVF37nhqTKYJQAlDmw2WuYUyK93k+4x3vOxQZyseSE33j
-         VozV6SoUhJyypy01Gud8Uz+cJ5XA9pisqiZEAs0fa0EEUp+BZ9vPk/x4m0o62FSj+v
-         EKYkLTWvPLixsy6iWgUmv8io64YY81ny81mveiKZ1EwsNgewMmKB+sucTY2tIcOIjs
-         AOXThBbO5ebGOniQqHIJh9O47P5c4Qo7BTv3T9C1D095RZPtFzOlsAovAvNzowNGft
-         YgMsxbdoLNwo74Mt+9jYj8qS1ORfbbfGZXxEklq7GzaUYjGNgc02/FOl6Z+t+GrvM7
-         7EMyDa9vFaoVQ==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] selftests/sgx: Add a new kselftest: unclobbered_vdso_oversubscribed
-Date:   Mon,  9 Aug 2021 12:31:27 +0300
-Message-Id: <20210809093127.76264-9-jarkko@kernel.org>
+        id S234500AbhHIJem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234375AbhHIJel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 05:34:41 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D249C0613CF;
+        Mon,  9 Aug 2021 02:34:20 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id j3so15726179plx.4;
+        Mon, 09 Aug 2021 02:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCGpUr2j9D66mSgiwXstiBVBXY4god79WtpOChDFv8g=;
+        b=MyyZfcT+a7lJSGQmSG+ij13zxJebAJBwFWfy01VL9LEY79KcZNDZm/Wq9KaDhahy+K
+         bdQc/1FkC9S6fuKFBN/YnnL1zqJuXpW+sNMFzEIxoBzvZptfj5L6fv1KFQK3OF7Pcj6q
+         eFp1Bj08ZbUPbidkpnU8mMN1Lk53zdkgU7ogs33bwemXZCoqyOJ7YPxRSiI1k49EV0aQ
+         ONMaEr8jUSfGsJyU59SzFn+ilJUcshewMPyPu9hVLD8nphqwFaQWc9uBDNMetg7YrN18
+         zqnaXCjDTfRjObbzhvokfq044MmcCoPo87AIBsdTSzLE7pE2At7jh50++aFOVvJZHX+u
+         ChuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCGpUr2j9D66mSgiwXstiBVBXY4god79WtpOChDFv8g=;
+        b=BRBYX65T7M3wnlCyQVnZneLR64TX3uq4cjALwXu+B66DXAPcpCz1B2APBq8hbpzt/d
+         CbUBZVCkrRSRyhn+9MBavZujQwSJENv0F4wzVEvYqrhy9AliTKwhD0Zesk/1kCyIhI2C
+         ym4C+fcBEsOsxpu0B0gdTUC67qoaUK65rPMP9jvPkRQ5nYp9vV4hY6UbTd+oZuydTikT
+         3oXx0462yNqnpEwMKjnE71VGucbudmknGOK7waVVcA+PfB55R8pRc8N4YUJJAmxOSUg/
+         nVQkk9MAmCHYnagl3q/8gAjhjSI7FRXaP+xAfntlBBzs9S1u7NF8Z2KREcL1iWDu8jM3
+         DR0w==
+X-Gm-Message-State: AOAM531AtIr58r4uco0CMnq5O4FhxlVlNwoBPa/6pkfKspVxRfEz8b1S
+        5IQHNBor1rnsT+aeAo2Fyw8=
+X-Google-Smtp-Source: ABdhPJwBg42DZycaIhZuLLnIypdZvj48GYhu+t8A6d8TpgO3cQ+OhYWXxvpY6o8p7c5TpsRMytPg8Q==
+X-Received: by 2002:a63:dd51:: with SMTP id g17mr716156pgj.47.1628501659697;
+        Mon, 09 Aug 2021 02:34:19 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id h188sm10839982pfg.45.2021.08.09.02.34.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Aug 2021 02:34:19 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] KVM: x86: Clean up redundant macro definitions
+Date:   Mon,  9 Aug 2021 17:34:05 +0800
+Message-Id: <20210809093410.59304-1-likexu@tencent.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210809093127.76264-1-jarkko@kernel.org>
-References: <20210809093127.76264-1-jarkko@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a variation of the unclobbered_vdso test.
+In KVM/x86 code, there are macros with the same name that are
+defined and used separately in the evolving code, and if the scope
+of the code review is only on iterations of the patch set, it can be
+difficult to spot these fragmented macros being defined repeatedly.
 
-In the new test, create a heap for the test enclave, which has the same
-size as all available Enclave Page Cache (EPC) pages in the system. This
-will guarantee that all test_encl.elf pages *and* SGX Enclave Control
-Structure (SECS) have been swapped out by the page reclaimer during the
-load time..
+IMO, it's necessary to clean this up to improve the consistency and
+readability of the code, and it also helps to avoid software defects
+caused by inconsistencies in the scope of influence of macros.
 
-This test will trigger both the page reclaimer and the page fault handler.
-The page reclaimer triggered, while the heap is being created during the
-load time. The page fault handler is triggered for all the required pages,
-while the test case is executing.
+Like Xu (5):
+  KVM: x86: Clean up redundant mod_64(x, y) macro definition
+  KVM: x86: Clean up redundant CC macro definition
+  KVM: x86: Clean up redundant ROL16(val, n) macro definition
+  KVM: x86: Clean up redundant __ex(x) macro definition
+  KVM: x86: Clean up redundant pr_fmt(fmt) macro definition for svm
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
+ arch/x86/include/asm/kvm_host.h | 2 ++
+ arch/x86/kvm/i8254.c            | 6 ------
+ arch/x86/kvm/lapic.c            | 6 ------
+ arch/x86/kvm/svm/avic.c         | 2 --
+ arch/x86/kvm/svm/nested.c       | 4 ----
+ arch/x86/kvm/svm/sev.c          | 2 --
+ arch/x86/kvm/svm/svm.c          | 4 ----
+ arch/x86/kvm/svm/svm.h          | 3 +++
+ arch/x86/kvm/vmx/evmcs.c        | 1 -
+ arch/x86/kvm/vmx/evmcs.h        | 4 ----
+ arch/x86/kvm/vmx/nested.c       | 2 --
+ arch/x86/kvm/vmx/vmcs.h         | 2 ++
+ arch/x86/kvm/vmx/vmcs12.c       | 1 -
+ arch/x86/kvm/vmx/vmcs12.h       | 4 ----
+ arch/x86/kvm/vmx/vmx_ops.h      | 2 --
+ arch/x86/kvm/x86.h              | 8 ++++++++
+ 16 files changed, 15 insertions(+), 38 deletions(-)
 
-v4:
-* Wrap setup_test_encl() and get_sysfs_long() with ASSERT_TRUE().
-
- tools/testing/selftests/sgx/main.c | 59 ++++++++++++++++++++++++++++++
- tools/testing/selftests/sgx/main.h |  1 +
- 2 files changed, 60 insertions(+)
-
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index f41fba919d06..2e0a6523c60c 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -245,6 +245,65 @@ TEST_F(enclave, unclobbered_vdso)
- 	EXPECT_EQ(self->run.user_data, 0);
- }
- 
-+static bool sysfs_get_ulong(const char *path, unsigned long *value)
-+{
-+	struct stat sbuf;
-+	char buf[128];
-+	ssize_t ret;
-+	int fd;
-+
-+	ret = stat(path, &sbuf);
-+	if (ret)
-+		return false;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
-+		return false;
-+
-+	ret = read(fd, buf, sizeof(buf));
-+	if (ret < 0) {
-+		close(fd);
-+		return false;
-+	}
-+
-+	errno = 0;
-+	*value = strtoul(buf, NULL, 0);
-+
-+	close(fd);
-+
-+	return errno ? false : true;
-+}
-+
-+TEST_F(enclave, unclobbered_vdso_oversubscribed)
-+{
-+	unsigned long total_mem;
-+	struct encl_op op;
-+
-+	ASSERT_TRUE(sysfs_get_ulong(SGX_TOTAL_MEM_PATH, &total_mem));
-+	ASSERT_TRUE(setup_test_encl(total_mem, &self->encl, _metadata));
-+
-+	memset(&self->run, 0, sizeof(self->run));
-+	self->run.tcs = self->encl.encl_base;
-+
-+	op.type = ENCL_OP_PUT;
-+	op.buffer = MAGIC;
-+
-+	EXPECT_EQ(ENCL_CALL(&op, &self->run, false), 0);
-+
-+	EXPECT_EEXIT(&self->run);
-+	EXPECT_EQ(self->run.user_data, 0);
-+
-+	op.type = ENCL_OP_GET;
-+	op.buffer = 0;
-+
-+	EXPECT_EQ(ENCL_CALL(&op, &self->run, false), 0);
-+
-+	EXPECT_EQ(op.buffer, MAGIC);
-+	EXPECT_EEXIT(&self->run);
-+	EXPECT_EQ(self->run.user_data, 0);
-+
-+}
-+
- TEST_F(enclave, clobbered_vdso)
- {
- 	struct encl_op op;
-diff --git a/tools/testing/selftests/sgx/main.h b/tools/testing/selftests/sgx/main.h
-index b45c52ec7ab3..dd7767364107 100644
---- a/tools/testing/selftests/sgx/main.h
-+++ b/tools/testing/selftests/sgx/main.h
-@@ -7,6 +7,7 @@
- #define MAIN_H
- 
- #define ENCL_HEAP_SIZE_DEFAULT	4096
-+#define SGX_TOTAL_MEM_PATH	"/sys/kernel/debug/x86/sgx_total_mem"
- 
- struct encl_segment {
- 	void *src;
 -- 
 2.32.0
 
