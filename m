@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A82C3E43B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32A23E43DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234910AbhHIKRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:17:46 -0400
-Received: from mga06.intel.com ([134.134.136.31]:23475 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233204AbhHIKRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:17:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="275698807"
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="275698807"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 03:17:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
-   d="scan'208";a="588682762"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Aug 2021 03:17:14 -0700
-Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
-        by linux.intel.com (Postfix) with ESMTP id 4008C58093E;
-        Mon,  9 Aug 2021 03:17:10 -0700 (PDT)
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Voon Weifeng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] stmmac: intel: Enable 2.5Gbps on Intel AlderLake-S
-Date:   Mon,  9 Aug 2021 18:22:29 +0800
-Message-Id: <20210809102229.933748-3-vee.khee.wong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
-References: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
+        id S234782AbhHIKXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:23:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33998 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234717AbhHIKXq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 06:23:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628504605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lBMgmsHqw0YdLKVpdWLFV60bEE3X7POBff7kY81z7+0=;
+        b=NhlXYLePc588orL/szPFEExZ9i7+Pshae1FCaohyK8yBodDc3nu5qbWGLUSefMte5AOn0H
+        58CHccqgoN1hmB39/7jJ7443v8n1PkJLH2L70S5NUv3rNhT01hJBG5yNa0AovJvUw1tptP
+        509QgW/zCjl0LQOCrAXFu0ozgBzmbBc=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-L5MAZnY9PK2tEHK1qezajg-1; Mon, 09 Aug 2021 06:23:24 -0400
+X-MC-Unique: L5MAZnY9PK2tEHK1qezajg-1
+Received: by mail-ej1-f70.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso4356879ejc.22
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 03:23:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lBMgmsHqw0YdLKVpdWLFV60bEE3X7POBff7kY81z7+0=;
+        b=bXF5hgqWrPsMd0+5gzxve5hTnvx5sGwu/jTgPq2bceAARacqR/48OGV1jJKd6fC5DO
+         W+Ox2fD+iMOIT38WWCe1LLHyf9ZDSas3mN3kJGz1QBlAswI7EkQ0YJCRpOMeU6tEgtp0
+         wvl/vosyaDhtn4ocDZCc2xPztV2AVvS7g5HFHZ04kYTMCyitSVj8/JqbZolsSIVwYye7
+         /2pRx4rT8QQZiF8WHLcuaSsz9lJgNLvzrwFN+2UPrJZfEknzOn43f+8gT7VyPwzjDtPz
+         VpTklhcJfk0Ah9CUzw2fKMN4STbzoIUG2igvC1u16EkSbo5Gl7T/U0AYGkgmbX0aenvH
+         N/DA==
+X-Gm-Message-State: AOAM530P0g1PvLTvcjs2FiPV5zNwvFpmq0l4dzmWlfzmk36VUBw8aySq
+        5xopQqFL0ycUMLC89t/c0Ja4twM1nhu7KhUiTpVvbR7TJ2mKorI9rp5kNK5jArPTalqpnbxMOof
+        C93Lk2YsjIxJdxsOZCnZiJgRc
+X-Received: by 2002:aa7:c647:: with SMTP id z7mr28762252edr.52.1628504603585;
+        Mon, 09 Aug 2021 03:23:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxu4/FLaxiABAh3xlH1zEltzZAqe/JpBP91yZt7peMzpTB2Jakv6WmDhskp7f5QhwHz26t4Ug==
+X-Received: by 2002:aa7:c647:: with SMTP id z7mr28762236edr.52.1628504603409;
+        Mon, 09 Aug 2021 03:23:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id l9sm7953930edt.55.2021.08.09.03.23.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 03:23:22 -0700 (PDT)
+To:     Joao Martins <joao.m.martins@oracle.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     stable@vger.kernel.org, David Matlack <dmatlack@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210805105423.412878-1-pbonzini@redhat.com>
+ <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
+ <5f3c13be-f65d-1793-bd91-7491d3e149b0@redhat.com>
+ <bab67d1c-f9b7-0a91-2d4f-9881e3f47218@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] selftests: KVM: avoid failures due to reserved
+ HyperTransport region
+Message-ID: <ac72b77c-f633-923b-8019-69347db706be@redhat.com>
+Date:   Mon, 9 Aug 2021 12:23:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <bab67d1c-f9b7-0a91-2d4f-9881e3f47218@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+On 09/08/21 12:00, Joao Martins wrote:
+> [0]https://developer.amd.com/wp-content/resources/56323-PUB_0.78.pdf
+> 
+> 1286 Spurious #GP May Occur When Hypervisor Running on
+> Another Hypervisor
+> 
+> Description
+> 
+> The processor may incorrectly generate a #GP fault if a hypervisor running on a hypervisor
+> attempts to access the following secure memory areas:
+> 
+> • The reserved memory address region starting at FFFD_0000_0000h and extending up to
+> FFFF_FFFF_FFFFh.
+> • ASEG and TSEG memory regions for SMM (System Management Mode)
+> • MMIO APIC Space
 
-Intel AlderLake-S platform is capable of 2.5Gbps link speed.
+This errata took a few months to debug so we're quite familiar with it 
+:) but I only knew about the ASEG/TSEG/APIC cases.
 
-This patch enables the 2.5Gbps link speed by adding the callback
-function in the AlderLake-S PCI info struct.
+So this HyperTransport region is not related to this issue, but the 
+errata does point out that FFFD_0000_0000h and upwards is special in guests.
 
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 4 ++++
- 1 file changed, 4 insertions(+)
+The Xen folks also had to deal with it only a couple months ago 
+(https://yhbt.net/lore/all/1eb16baa-6b1b-3b18-c712-4459bd83e1aa@citrix.com/):
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 8e8778cfbbad..c1db7e53e78f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -770,6 +770,8 @@ static int adls_sgmii_phy0_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 1;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
-+	plat->skip_xpcs_soft_reset = 1;
- 
- 	/* SerDes power up and power down are done in BIOS for ADL */
- 
-@@ -785,6 +787,8 @@ static int adls_sgmii_phy1_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 2;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
-+	plat->skip_xpcs_soft_reset = 1;
- 
- 	/* SerDes power up and power down are done in BIOS for ADL */
- 
--- 
-2.25.1
+   From "Open-Source Register Reference for AMD Family 17h Processors 
+(PUB)":
+   https://developer.amd.com/wp-content/resources/56255_3_03.PDF
+
+   "The processor defines a reserved memory address region starting at
+   FFFD_0000_0000h and extending up to FFFF_FFFF_FFFFh."
+
+   It's still doesn't say that it's at the top of physical address space
+   although I understand that's how it's now implemented. The official
+   document doesn't confirm it will move along with physical address space
+   extension.
+
+   [...]
+
+   1) On parts with <40 bits, its fully hidden from software
+   2) Before Fam17h, it was always 12G just below 1T, even if there was
+   more RAM above this location
+   3) On Fam17h and later, it is variable based on SME, and is either
+   just below 2^48 (no encryption) or 2^43 (encryption)
+
+> It's
+> interesting that fn8000_000A EDX[28] is part of the reserved bits from that CPUID leaf.
+
+It's only been defined after AMD deemed that the errata was not fixable 
+in current generation processors); it's X86_FEATURE_SVME_ADDR_CHK now.
+
+I'll update the patch based on the findings from the Xen team.
+
+Paolo
 
