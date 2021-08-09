@@ -2,163 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED9A3E4DC9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235C13E4DCA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233901AbhHIU2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:28:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52578 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233632AbhHIU2f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:28:35 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2C59A21F2A;
-        Mon,  9 Aug 2021 20:28:14 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A5DE13AD4;
-        Mon,  9 Aug 2021 20:28:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NVF4E9uPEWEEAwAAMHmgww
-        (envelope-from <dave@stgolabs.net>); Mon, 09 Aug 2021 20:28:11 +0000
-Date:   Mon, 9 Aug 2021 13:28:06 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        id S234102AbhHIU2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:28:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233500AbhHIU2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 16:28:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26DB36101E;
+        Mon,  9 Aug 2021 20:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628540895;
+        bh=GZtBG4eVbD+pfnOgxDdLXHWQqpxXh98WNaGc/VD+0es=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nqM3Dxu0VqOYHIQgS5X7WK06Bz8MJ9XQvR2hdi81N+wwzBy7sD5CNmv7GaNEB7yPG
+         2lYOFtBtydzP/hbZHdOkmhlX8fhyz+L1JAhX7yI2GwARmtUyLzkPQdVVhdXdElgMdp
+         KS8LyqEA85Z9ImwSrZQQbNehvCmbf5msAoDIEeBIh1le92TGUCHAxrmR2vQvACvE8X
+         35uKLdg1/IoNPJk9AXODVtfBcjD2Ks/lqmKGC42giD+t9pAIhx41Shgxuntv3MXV4r
+         CBVHMxJYT+63qizkXsfcsdleFOy1XeygSOF2vFgM+XKbaNMJdkbtUz1CJVuVL1TpWu
+         AmGG/b1V9RilQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 45CD2403F2; Mon,  9 Aug 2021 17:28:12 -0300 (-03)
+Date:   Mon, 9 Aug 2021 17:28:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [patch V3 64/64] locking/rtmutex: Add adaptive spinwait mechanism
-Message-ID: <20210809202806.whkrk6cvtejaxqcz@offworld>
-References: <20210805151300.330412127@linutronix.de>
- <20210805153956.507589092@linutronix.de>
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf bench: add benchmark for evlist open/close
+ operations
+Message-ID: <YRGP3DR8f6ZEvn/P@kernel.org>
+References: <20210809201101.277594-1-rickyman7@gmail.com>
+ <YRGOwx3xlPRxNAXM@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805153956.507589092@linutronix.de>
-User-Agent: NeoMutt/20201120
+In-Reply-To: <YRGOwx3xlPRxNAXM@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021, Thomas Gleixner wrote:
+Em Mon, Aug 09, 2021 at 05:23:31PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Aug 09, 2021 at 10:11:02PM +0200, Riccardo Mancini escreveu:
+> > +static struct evlist *bench__create_evlist(char *evstr)
+> > +{
+> > +	struct evlist *evlist;
+> > +	struct parse_events_error err;
+> > +	int ret;
 
->+#ifdef CONFIG_SMP
->+/*
->+ * Note that owner is a speculative pointer and dereferencing relies
->+ * on rcu_read_lock() and the check against the lock owner.
->+ */
+> > +	evlist = evlist__new();
+> > +	if (!evlist) {
+> > +		pr_err("Not enough memory to create evlist\n");
+> > +		return NULL;
+> > +	}
 
-I think the description we have in mutex.c is better.
+> > +	bzero(&err, sizeof(err));
 
->+static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
->+				     struct task_struct *owner)
+> man bzero
+> 
+>        The bzero() function is deprecated (marked as LEGACY in POSIX.1-2001); use memset(3) in new programs.  POSIX.1-2008 removes the specification of bzero().  The bzero() function first appeared in 4.3BSD.
 
-I realize that adaptive spinning is the original term from Greg Haskins,
-but as Peter suggested, rt_mutex_spin_on_owner() would probably be a
-better name upstream considering all our other sleeping locks.
+> I'm replacing it with a memset().
 
->+{
->+	bool res = true;
->+
->+	rcu_read_lock();
->+	for (;;) {
->+		/* Owner changed. Trylock again */
->+		if (owner != rt_mutex_owner(lock))
->+			break;
->+		/*
->+		 * Ensure that owner->on_cpu is dereferenced _after_
->+		 * checking the above to be valid.
->+		 */
->+		barrier();
->+		if (!owner->on_cpu || need_resched() ||
->+		    vcpu_is_preempted(task_cpu(owner))) {
+This one is also equivalent:
 
-I'm thinking we should also check for if the spinning waiter is no
-longer the top-waiter, which could have changed while busy waiting.
+tools/perf/tests/pmu-events.c:	struct parse_events_error error = { .idx = 0, };
 
-Thanks,
-Davidlohr
+https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
 
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 7522c3abacb6..c6925ebb3c9f 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1284,12 +1284,9 @@ static __always_inline void __rt_mutex_unlock(struct rt_mutex_base *lock)
-  }
-  
-  #ifdef CONFIG_SMP
--/*
-- * Note that owner is a speculative pointer and dereferencing relies
-- * on rcu_read_lock() and the check against the lock owner.
-- */
-  static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
--				     struct task_struct *owner)
-+				   struct rt_mutex_waiter *waiter,
-+				   struct task_struct *owner)
-  {
-  	bool res = true;
-  
-@@ -1299,11 +1296,18 @@ static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
-  		if (owner != rt_mutex_owner(lock))
-  			break;
-  		/*
--		 * Ensure that owner->on_cpu is dereferenced _after_
--		 * checking the above to be valid.
-+		 * Ensure we emit the owner->on_cpu, dereference _after_
-+		 * checking lock->owner still matches owner. If that fails,
-+		 * owner might point to freed memory. If it still matches,
-+		 * the rcu_read_lock() ensures the memory stays valid.
-+		 *
-+		 * Also account for changes in the lock's top-waiter, if
-+		 * it's not us, it was updated while busy waiting.
-  		 */
-  		barrier();
-+
-  		if (!owner->on_cpu || need_resched() ||
-+		    waiter != rt_mutex_top_waiter(lock) ||
-  		    vcpu_is_preempted(task_cpu(owner))) {
-  			res = false;
-  			break;
-@@ -1315,7 +1319,8 @@ static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
-  }
-  #else
-  static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
--				     struct task_struct *owner)
-+				   struct rt_mutex_waiter *waiter,
-+				   struct task_struct *owner)
-  {
-  	return false;
-  }
-@@ -1434,7 +1439,7 @@ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
-  			owner = NULL;
-  		raw_spin_unlock_irq(&lock->wait_lock);
-  
--		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
-+		if (!owner || !rtmutex_adaptive_spinwait(lock, waiter, owner))
-  			schedule();
-  
-  		raw_spin_lock_irq(&lock->wait_lock);
-@@ -1616,7 +1621,7 @@ static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
-  			owner = NULL;
-  		raw_spin_unlock_irq(&lock->wait_lock);
-  
--		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
-+		if (!owner || !rtmutex_adaptive_spinwait(lock, waiter, owner))
-  			schedule_rtlock();
-  
-  		raw_spin_lock_irq(&lock->wait_lock);
+That text is a bit roundabout, as it says that the members that are not
+explicitely initialized will be initialized as variables with static
+storage duration, i.e. zeroed.
+
+- Arnaldo
