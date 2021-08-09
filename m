@@ -2,361 +2,433 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0054D3E4DA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB503E4DAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbhHIUJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
+        id S236200AbhHIUMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234637AbhHIUJu (ORCPT
+        with ESMTP id S233122AbhHIUMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:09:50 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A739C061799
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 13:09:29 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id a201so31755701ybg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 13:09:29 -0700 (PDT)
+        Mon, 9 Aug 2021 16:12:32 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFD1C0613D3;
+        Mon,  9 Aug 2021 13:12:11 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id go31so31106118ejc.6;
+        Mon, 09 Aug 2021 13:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OO5LEGEeXZheZc61jn43xpvF0yyA0eu2Wu38bpsZbgM=;
-        b=U4l20XSP0fR5javBl3YF99Yd/uPQs2/9EQ5msIfVnt4EPzZQW5/+8plyAIxD4byuPc
-         F5PHyeNli5a6sbmRp/IxYr8619MXW01pMwDGA0aSugX1LNG9WKsMxyuEVdIYej5/7URw
-         wPp5yPm/wZ0kx9MsW6/QSUfO+6AuGmnuFSxBn0+RE/vJ24pMJlwVAV9AT/Nc8/IwVc6v
-         uauHMWskRahVK2DfBWrIBqud/QMF0vBXqJRNlzl321RDuh3UngyfRPuCftsCCmDf92f/
-         nr1ED6YXzR/KvxDPrS+WezITdXjSQCuJJ2Eqxc/LhUyr4+pNER5pky9/UHq+edroHlhn
-         CYKw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w+dBzHW48cveY5JsyQnk8n0R9kV70jWvNFWpGE+wfRU=;
+        b=YU9UiG5QIKr4XDzOWUqLc9Zm3kFStGD4O+HM2N3art3vHr9eRYtjO1rL5p/Noz8hiY
+         51Y60Z2ktKL2GlMfppfq63EeHH3odlxNux7BTB6SctBuFtG4nrS60Htk3Bv8pCDAAlIJ
+         GevLHfoJsTPz4NS3p54/XGAgP7gpBOr/2Wfio90kVI6eCMV2F4DmRrFTR2sga5wKuidU
+         XLPkZE8/XuqpQIMBRs/tARKXo4j7MOx7ibSUCsP18vwK+7Ms0J9x58KsUIz0iCGE1TfB
+         SDXKdopK4IgCK896S/tsQ0BDVIzHMQEHFjQmp+bB3v/4HAsVuoDhUGwuecYAlUbLwjsw
+         Pxkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OO5LEGEeXZheZc61jn43xpvF0yyA0eu2Wu38bpsZbgM=;
-        b=j44FQv/OmrRH0Hjzj1W6nGjk3GGXkKNcRFE2YSyD8VZ3N7FfXZ833dXq9NDJmIUV7h
-         9M7xMs1eVGHgI1Ld9onzzO0+TjfBSBU3NVlrB/ajclaIBREMG9akIt2zgFMY9mqrb705
-         JIDulYqCwPsr1TrdBp71WPqEZj4AqWuif6WCYLn+n/MAOrTlCIht6WYtkSdgvKhPETqN
-         gNQP/tAwlsbYbStuDIc43sf8begAw7jsjWgehCpZB8jqEsVIGbFb/qz3izmd+VZ6lq6U
-         5zBoF3lXjLZrKsUwLEyPFxS+O4n43jj83IkTMm5NaW9o/fZGHHg37jlMfdPGhERPnKo1
-         DNiA==
-X-Gm-Message-State: AOAM531pUgrmTBl7dyOKKu/vsXgxwo25+emfOkQWgwj7t0Dje3hW7SpW
-        s/fPJmwDFv7QC2Y2pAUEupRAFIG5sqQFZtaPoNY3aA==
-X-Google-Smtp-Source: ABdhPJyF4a8VnObmS/uNPoJBz2RXe7SCrtvWtsTAzeLoZ3LKGkK+1xUg5eGMh0KyINljHooFARj+ZhCbJ7QZMaqbYG0=
-X-Received: by 2002:a25:ad57:: with SMTP id l23mr35153130ybe.303.1628539768032;
- Mon, 09 Aug 2021 13:09:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w+dBzHW48cveY5JsyQnk8n0R9kV70jWvNFWpGE+wfRU=;
+        b=PlwDdNhy+Xj9u/3gUwRkf9eZ55uYT9r+D4Ndxtp0TZRL34C6wBTRyVkg5fWCi7b0dG
+         O2i7iyvD40u8C3ofb72sx+qwEKOtC4tNuMF/j7rEKyf84RaMd0IfBEbB81JbU5FWEvIa
+         GMPVFwfhtzc8QFTzNg1tgNMquQrCNufKzmQKY0M1BSuSirVAYvAvJwGt9nyzkY4ZriSt
+         t+o3DYbwk0jkbfmnUDyI0+0+r+fDIxBF4ZmycH06zusDWiFnuEaSO4VZ+Q+Nqixr3bb/
+         McCDRLt+bW8OysftdSRu8tDXhh0c3rYUA64rtsSXnONQX5bYvecJksPMlkvBZyDtXF+2
+         +7pQ==
+X-Gm-Message-State: AOAM5337DJlx4VrHDUtWcdct6ZZZ6nfSFSQQ9I6eg6RsS4YgRGI381qC
+        8K9aJF8f9D884O2ftBV7bTjHcQKEo97xRiUhpkE=
+X-Google-Smtp-Source: ABdhPJwnKX2MyVHQs1+p42xzm2fb5BCCV6yKk9mjFk/cJfh+atSSAOvJDNEDE4FJCUT3JjwS/Up7Aw==
+X-Received: by 2002:a17:906:2bd0:: with SMTP id n16mr20559410ejg.132.1628539929826;
+        Mon, 09 Aug 2021 13:12:09 -0700 (PDT)
+Received: from honeypot.epfl.ch ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.googlemail.com with ESMTPSA id h19sm8611109edt.87.2021.08.09.13.11.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 13:12:03 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [PATCH] perf bench: add benchmark for evlist open/close operations
+Date:   Mon,  9 Aug 2021 22:11:02 +0200
+Message-Id: <20210809201101.277594-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <0000000000006bd0b305c914c3dc@google.com> <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
- <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
- <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com> <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
- <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com> <CANn89iKcSvJ5U37q1Jz2gVYxVS=_ydNmDuTRZuAW=YvB+jGChg@mail.gmail.com>
-In-Reply-To: <CANn89iKcSvJ5U37q1Jz2gVYxVS=_ydNmDuTRZuAW=YvB+jGChg@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 9 Aug 2021 22:09:16 +0200
-Message-ID: <CANn89iKqv4Ca8A1DmQsjvOqKvgay3-5j9gKPJKwRkwtUkmETYg@mail.gmail.com>
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in _copy_to_iter
-To:     Shoaib Rao <rao.shoaib@oracle.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        jamorris@linux.microsoft.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 10:02 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Mon, Aug 9, 2021 at 9:40 PM Shoaib Rao <rao.shoaib@oracle.com> wrote:
-> >
-> >
-> > On 8/9/21 12:21 PM, Dmitry Vyukov wrote:
-> > > On Mon, 9 Aug 2021 at 21:16, Shoaib Rao <rao.shoaib@oracle.com> wrote=
-:
-> > >> On 8/9/21 11:06 AM, Dmitry Vyukov wrote:
-> > >>> On Mon, 9 Aug 2021 at 19:33, Shoaib Rao <rao.shoaib@oracle.com> wro=
-te:
-> > >>>> This seems like a false positive. 1) The function will not sleep b=
-ecause
-> > >>>> it only calls copy routine if the byte is present. 2). There is no
-> > >>>> difference between this new call and the older calls in
-> > >>>> unix_stream_read_generic().
-> > >>> Hi Shoaib,
-> > >>>
-> > >>> Thanks for looking into this.
-> > >>> Do you have any ideas on how to fix this tool's false positive? Too=
-ls
-> > >>> with false positives are order of magnitude less useful than tools =
-w/o
-> > >>> false positives. E.g. do we turn it off on syzbot? But I don't
-> > >>> remember any other false positives from "sleeping function called f=
-rom
-> > >>> invalid context" checker...
-> > >> Before we take any action I would like to understand why the tool do=
-es
-> > >> not single out other calls to recv_actor in unix_stream_read_generic=
-().
-> > >> The context in all cases is the same. I also do not understand why t=
-he
-> > >> code would sleep, Let's assume the user provided address is bad, the
-> > >> code will return EFAULT, it will never sleep,
-> > > I always assumed that it's because if user pages are swapped out, it
-> > > may need to read them back from disk.
-> >
-> > Page faults occur all the time, the page may not even be in the cache o=
-r
-> > the mapping is not there (mmap), so I would not consider this a bug. Th=
-e
-> > code should complain about all other calls as they are also copying  to
-> > user pages. I must not be following some semantics for the code to be
-> > triggered but I can not figure that out. What is the recommended
-> > interface to do user copy from kernel?
->
-> Are you aware of the difference between a mutex and a spinlock ?
->
-> When copying data from/to user, you can not hold a spinlock.
->
->
+This new benchmark finds the total time that is taken to open, mmap,
+enable, disable, munmap, close an evlist (time taken for new,
+create_maps, config, delete is not counted in).
+The evlist can be configured as in perf-record using the
+-a,-C,-e,-u,--per-thread,-t,-p options.
+The events can be duplicated in the evlist to quickly test performance
+with many events using the -n options.
+Furthermore, also the number of iterations used to calculate the
+statistics is customizable.
 
-I am guessing that even your test would trigger the warning,
-if you make sure to include CONFIG_DEBUG_ATOMIC_SLEEP=3Dy in your kernel bu=
-ild.
+Examples:
+- Open one dummy event system-wide:
+$ sudo ./perf bench internals evlist-open-close
+  Number of cpus:       4
+  Number of threads:    1
+  Number of events:     1 (4 fds)
+  Number of iterations: 100
+  Average open-close took: 613.870 usec (+- 32.852 usec)
 
-> >
-> > Shoaib
-> >
-> > >
-> > >> if the kernel provided
-> > >> address is bad the system will panic. The only difference I see is t=
-hat
-> > >> the new code holds 2 locks while the previous code held one lock, bu=
-t
-> > >> the locks are acquired before the call to copy.
-> > >>
-> > >> So please help me understand how the tool works. Even though I have
-> > >> evaluated the code carefully, there is always a possibility that the
-> > >> tool is correct.
-> > >>
-> > >> Shoaib
-> > >>
-> > >>>
-> > >>>
-> > >>>> On 8/8/21 4:38 PM, syzbot wrote:
-> > >>>>> Hello,
-> > >>>>>
-> > >>>>> syzbot found the following issue on:
-> > >>>>>
-> > >>>>> HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb o=
-verride
-> > >>>>> git tree:       net-next
-> > >>>>> console output: https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/x/log.txt?x=3D12e3a69e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU=
-93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPHEdQcWD$
-> > >>>>> kernel config:  https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/x/.config?x=3Daba0c23f8230e048__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6y=
-rU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPLGp1-Za$
-> > >>>>> dashboard link: https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/bug?extid=3D8760ca6c1ee783ac4abd__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl=
-6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPCORTNOH$
-> > >>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GN=
-U Binutils for Debian) 2.35.1
-> > >>>>> syz repro:      https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/x/repro.syz?x=3D15c5b104300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6y=
-rU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPAjhi2yc$
-> > >>>>> C reproducer:   https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/x/repro.c?x=3D10062aaa300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU=
-93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPNzAjzQJ$
-> > >>>>>
-> > >>>>> The issue was bisected to:
-> > >>>>>
-> > >>>>> commit 314001f0bf927015e459c9d387d62a231fe93af3
-> > >>>>> Author: Rao Shoaib <rao.shoaib@oracle.com>
-> > >>>>> Date:   Sun Aug 1 07:57:07 2021 +0000
-> > >>>>>
-> > >>>>>        af_unix: Add OOB support
-> > >>>>>
-> > >>>>> bisection log:  https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/x/bisect.txt?x=3D10765f8e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6=
-yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPK2iWt2r$
-> > >>>>> final oops:     https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/x/report.txt?x=3D12765f8e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6=
-yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPKAb0dft$
-> > >>>>> console output: https://urldefense.com/v3/__https://syzkaller.app=
-spot.com/x/log.txt?x=3D14765f8e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU=
-93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPNlW_w-u$
-> > >>>>>
-> > >>>>> IMPORTANT: if you fix the issue, please add the following tag to =
-the commit:
-> > >>>>> Reported-by: syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.co=
-m
-> > >>>>> Fixes: 314001f0bf92 ("af_unix: Add OOB support")
-> > >>>>>
-> > >>>>> BUG: sleeping function called from invalid context at lib/iov_ite=
-r.c:619
-> > >>>>> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8443, name=
-: syz-executor700
-> > >>>>> 2 locks held by syz-executor700/8443:
-> > >>>>>     #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_strea=
-m_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
-> > >>>>>     #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock in=
-clude/linux/spinlock.h:354 [inline]
-> > >>>>>     #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_=
-read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
-> > >>>>> Preemption disabled at:
-> > >>>>> [<0000000000000000>] 0x0
-> > >>>>> CPU: 1 PID: 8443 Comm: syz-executor700 Not tainted 5.14.0-rc3-syz=
-kaller #0
-> > >>>>> Hardware name: Google Google Compute Engine/Google Compute Engine=
-, BIOS Google 01/01/2011
-> > >>>>> Call Trace:
-> > >>>>>     __dump_stack lib/dump_stack.c:88 [inline]
-> > >>>>>     dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
-> > >>>>>     ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
-> > >>>>>     __might_fault+0x6e/0x180 mm/memory.c:5258
-> > >>>>>     _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
-> > >>>>>     copy_to_iter include/linux/uio.h:139 [inline]
-> > >>>>>     simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
-> > >>>>>     __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
-> > >>>>>     skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
-> > >>>>>     skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
-> > >>>>>     unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
-> > >>>>>     unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
-> > >>>>>     unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:250=
-4
-> > >>>>>     unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
-> > >>>>>     sock_recvmsg_nosec net/socket.c:944 [inline]
-> > >>>>>     sock_recvmsg net/socket.c:962 [inline]
-> > >>>>>     sock_recvmsg net/socket.c:958 [inline]
-> > >>>>>     ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
-> > >>>>>     ___sys_recvmsg+0x127/0x200 net/socket.c:2664
-> > >>>>>     do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
-> > >>>>>     __sys_recvmmsg net/socket.c:2837 [inline]
-> > >>>>>     __do_sys_recvmmsg net/socket.c:2860 [inline]
-> > >>>>>     __se_sys_recvmmsg net/socket.c:2853 [inline]
-> > >>>>>     __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
-> > >>>>>     do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >>>>>     do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> > >>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >>>>> RIP: 0033:0x43ef39
-> > >>>>> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8=
- 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> > >>>>> RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 00000000000=
-0012b
-> > >>>>> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
-> > >>>>> RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
-> > >>>>> RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
-> > >>>>> R10: 0000000000000007 R11: 0000000000000246 R12: 0000000000402fb0
-> > >>>>> R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-> > >>>>>
-> > >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> > >>>>> [ BUG: Invalid wait context ]
-> > >>>>> 5.14.0-rc3-syzkaller #0 Tainted: G        W
-> > >>>>> -----------------------------
-> > >>>>> syz-executor700/8443 is trying to lock:
-> > >>>>> ffff8880212b6a28 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_faul=
-t+0xa3/0x180 mm/memory.c:5260
-> > >>>>> other info that might help us debug this:
-> > >>>>> context-{4:4}
-> > >>>>> 2 locks held by syz-executor700/8443:
-> > >>>>>     #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_strea=
-m_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
-> > >>>>>     #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock in=
-clude/linux/spinlock.h:354 [inline]
-> > >>>>>     #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_=
-read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
-> > >>>>> stack backtrace:
-> > >>>>> CPU: 1 PID: 8443 Comm: syz-executor700 Tainted: G        W       =
-  5.14.0-rc3-syzkaller #0
-> > >>>>> Hardware name: Google Google Compute Engine/Google Compute Engine=
-, BIOS Google 01/01/2011
-> > >>>>> Call Trace:
-> > >>>>>     __dump_stack lib/dump_stack.c:88 [inline]
-> > >>>>>     dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
-> > >>>>>     print_lock_invalid_wait_context kernel/locking/lockdep.c:4666=
- [inline]
-> > >>>>>     check_wait_context kernel/locking/lockdep.c:4727 [inline]
-> > >>>>>     __lock_acquire.cold+0x213/0x3ab kernel/locking/lockdep.c:4965
-> > >>>>>     lock_acquire kernel/locking/lockdep.c:5625 [inline]
-> > >>>>>     lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-> > >>>>>     __might_fault mm/memory.c:5261 [inline]
-> > >>>>>     __might_fault+0x106/0x180 mm/memory.c:5246
-> > >>>>>     _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
-> > >>>>>     copy_to_iter include/linux/uio.h:139 [inline]
-> > >>>>>     simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
-> > >>>>>     __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
-> > >>>>>     skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
-> > >>>>>     skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
-> > >>>>>     unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
-> > >>>>>     unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
-> > >>>>>     unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:250=
-4
-> > >>>>>     unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
-> > >>>>>     sock_recvmsg_nosec net/socket.c:944 [inline]
-> > >>>>>     sock_recvmsg net/socket.c:962 [inline]
-> > >>>>>     sock_recvmsg net/socket.c:958 [inline]
-> > >>>>>     ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
-> > >>>>>     ___sys_recvmsg+0x127/0x200 net/socket.c:2664
-> > >>>>>     do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
-> > >>>>>     __sys_recvmmsg net/socket.c:2837 [inline]
-> > >>>>>     __do_sys_recvmmsg net/socket.c:2860 [inline]
-> > >>>>>     __se_sys_recvmmsg net/socket.c:2853 [inline]
-> > >>>>>     __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
-> > >>>>>     do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >>>>>     do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> > >>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >>>>> RIP: 0033:0x43ef39
-> > >>>>> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8=
- 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> > >>>>> RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 00000000000=
-0012b
-> > >>>>> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
-> > >>>>> RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
-> > >>>>> RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
-> > >>>>> R10: 0000000000000007 R11: 0000000000000246 R12: 0000
-> > >>>>>
-> > >>>>>
-> > >>>>> ---
-> > >>>>> This report is generated by a bot. It may contain errors.
-> > >>>>> See https://urldefense.com/v3/__https://goo.gl/tpsmEJ__;!!ACWV5N9=
-M2RV99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPG1UhbpZ$ =
- for more information about syzbot.
-> > >>>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > >>>>>
-> > >>>>> syzbot will keep track of this issue. See:
-> > >>>>> https://urldefense.com/v3/__https://goo.gl/tpsmEJ*status__;Iw!!AC=
-WV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPKlEx=
-5v1$  for how to communicate with syzbot.
-> > >>>>> For information about bisection process see: https://urldefense.c=
-om/v3/__https://goo.gl/tpsmEJ*bisection__;Iw!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl=
-6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPJk7KaIr$
-> > >>>>> syzbot can test patches for this issue, for details see:
-> > >>>>> https://urldefense.com/v3/__https://goo.gl/tpsmEJ*testing-patches=
-__;Iw!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs=
-6JKlPMhq2hD3$
-> > >>>> --
-> > >>>> You received this message because you are subscribed to the Google=
- Groups "syzkaller-bugs" group.
-> > >>>> To unsubscribe from this group and stop receiving emails from it, =
-send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > >>>> To view this discussion on the web visit https://urldefense.com/v3=
-/__https://groups.google.com/d/msgid/syzkaller-bugs/0c106e6c-672f-474e-5815=
--97b65596139d*40oracle.com__;JQ!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa=
-_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPHjmYAGZ$ .
+- Open the group '{cs,cycles}' on CPU 0
+$ sudo ./perf bench internals evlist-open-close -e '{cs,cycles}' -C 0
+  Number of cpus:       1
+  Number of threads:    1
+  Number of events:     2 (2 fds)
+  Number of iterations: 100
+  Average open-close took: 8503.220 usec (+- 252.652 usec)
+
+- Open 10 'cycles' events for user 0, calculate average over 100 runs
+$ sudo ./perf bench internals evlist-open-close -e cycles -n 10 -u 0 -i 100
+  Number of cpus:       4
+  Number of threads:    328
+  Number of events:     10 (13120 fds)
+  Number of iterations: 100
+  Average open-close took: 180043.140 usec (+- 2295.889 usec)
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/bench/Build               |   1 +
+ tools/perf/bench/bench.h             |   1 +
+ tools/perf/bench/evlist-open-close.c | 275 +++++++++++++++++++++++++++
+ tools/perf/builtin-bench.c           |   1 +
+ 4 files changed, 278 insertions(+)
+ create mode 100644 tools/perf/bench/evlist-open-close.c
+
+diff --git a/tools/perf/bench/Build b/tools/perf/bench/Build
+index e43f46931b41b78f..61d45fcb4057c945 100644
+--- a/tools/perf/bench/Build
++++ b/tools/perf/bench/Build
+@@ -13,6 +13,7 @@ perf-y += synthesize.o
+ perf-y += kallsyms-parse.o
+ perf-y += find-bit-bench.o
+ perf-y += inject-buildid.o
++perf-y += evlist-open-close.o
+ 
+ perf-$(CONFIG_X86_64) += mem-memcpy-x86-64-asm.o
+ perf-$(CONFIG_X86_64) += mem-memset-x86-64-asm.o
+diff --git a/tools/perf/bench/bench.h b/tools/perf/bench/bench.h
+index eac36afab2b39fa5..b3480bc33fe84885 100644
+--- a/tools/perf/bench/bench.h
++++ b/tools/perf/bench/bench.h
+@@ -48,6 +48,7 @@ int bench_epoll_ctl(int argc, const char **argv);
+ int bench_synthesize(int argc, const char **argv);
+ int bench_kallsyms_parse(int argc, const char **argv);
+ int bench_inject_build_id(int argc, const char **argv);
++int bench_evlist_open_close(int argc, const char **argv);
+ 
+ #define BENCH_FORMAT_DEFAULT_STR	"default"
+ #define BENCH_FORMAT_DEFAULT		0
+diff --git a/tools/perf/bench/evlist-open-close.c b/tools/perf/bench/evlist-open-close.c
+new file mode 100644
+index 0000000000000000..40bce06f5ca7bef3
+--- /dev/null
++++ b/tools/perf/bench/evlist-open-close.c
+@@ -0,0 +1,275 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdio.h>
++#include <stdlib.h>
++#include <limits.h>
++#include "bench.h"
++#include "../util/debug.h"
++#include "../util/stat.h"
++#include "../util/evlist.h"
++#include "../util/evsel.h"
++#include "../util/strbuf.h"
++#include "../util/record.h"
++#include "../util/parse-events.h"
++#include "internal/threadmap.h"
++#include "internal/cpumap.h"
++#include <linux/perf_event.h>
++#include <linux/kernel.h>
++#include <linux/time64.h>
++#include <linux/string.h>
++#include <subcmd/parse-options.h>
++
++#define MMAP_FLUSH_DEFAULT 1
++
++static int iterations = 100;
++static int nr_events = 1;
++static const char *event_string = "dummy";
++
++static struct record_opts opts = {
++	.sample_time	     = true,
++	.mmap_pages	     = UINT_MAX,
++	.user_freq	     = UINT_MAX,
++	.user_interval	     = ULLONG_MAX,
++	.freq		     = 4000,
++	.target		     = {
++		.uses_mmap   = true,
++		.default_per_cpu = true,
++	},
++	.mmap_flush          = MMAP_FLUSH_DEFAULT,
++	.nr_threads_synthesize = 1,
++	.ctl_fd              = -1,
++	.ctl_fd_ack          = -1,
++};
++
++static const struct option options[] = {
++	OPT_STRING('e', "event", &event_string, "event",
++		     "event selector. use 'perf list' to list available events"),
++	OPT_INTEGER('n', "nr-events", &nr_events,
++		     "number of dummy events to create (default 1). If used with -e, it clones those events n times (1 = no change)"),
++	OPT_INTEGER('i', "iterations", &iterations,
++		"Number of iterations used to compute average (default=100)"),
++	OPT_BOOLEAN('a', "all-cpus", &opts.target.system_wide,
++		"system-wide collection from all CPUs"),
++	OPT_STRING('C', "cpu", &opts.target.cpu_list, "cpu",
++		    "list of cpus where to open events"),
++	OPT_STRING('p', "pid", &opts.target.pid, "pid",
++		    "record events on existing process id"),
++	OPT_STRING('t', "tid", &opts.target.tid, "tid",
++		    "record events on existing thread id"),
++	OPT_STRING('u', "uid", &opts.target.uid_str, "user",
++		   "user to profile"),
++	OPT_BOOLEAN(0, "per-thread", &opts.target.per_thread,
++		    "use per-thread mmaps"),
++	OPT_END()
++};
++
++static const char *const bench_usage[] = {
++	"perf bench internals evlist-open-close <options>",
++	NULL
++};
++
++static int evlist__count_evsel_fds(struct evlist *evlist)
++{
++	struct evsel *evsel;
++	int cnt = 0;
++
++	evlist__for_each_entry(evlist, evsel) {
++		cnt += evsel->core.threads->nr * evsel->core.cpus->nr;
++	}
++
++	return cnt;
++}
++
++static struct evlist *bench__create_evlist(char *evstr)
++{
++	struct evlist *evlist;
++	struct parse_events_error err;
++	int ret;
++
++	evlist = evlist__new();
++	if (!evlist) {
++		pr_err("Not enough memory to create evlist\n");
++		return NULL;
++	}
++
++	bzero(&err, sizeof(err));
++	ret = parse_events(evlist, evstr, &err);
++	if (ret) {
++		parse_events_print_error(&err, evstr);
++		pr_err("Run 'perf list' for a list of valid events\n");
++		ret = 1;
++		goto out_delete_evlist;
++	}
++
++	ret = evlist__create_maps(evlist, &opts.target);
++	if (ret < 0) {
++		pr_err("Not enough memory to create thread/cpu maps\n");
++		goto out_delete_evlist;
++	}
++
++	evlist__config(evlist, &opts, NULL);
++
++	return evlist;
++
++out_delete_evlist:
++	evlist__delete(evlist);
++	return NULL;
++}
++
++static int bench__do_evlist_open_close(struct evlist *evlist)
++{
++	int err = -1;
++	char sbuf[STRERR_BUFSIZE];
++
++	err = evlist__open(evlist);
++	if (err < 0) {
++		pr_err("evlist__open: %s\n",
++			 str_error_r(errno, sbuf, sizeof(sbuf)));
++		return err;
++	}
++
++	err = evlist__mmap(evlist, opts.mmap_pages);
++	if (err < 0) {
++		pr_err("evlist__mmap: %s\n",
++			 str_error_r(errno, sbuf, sizeof(sbuf)));
++		return err;
++	}
++
++	evlist__enable(evlist);
++
++	evlist__disable(evlist);
++	evlist__munmap(evlist);
++	evlist__close(evlist);
++
++	return 0;
++}
++
++static int bench_evlist_open_close__run(char *evstr)
++{
++	struct evlist *evlist;
++	struct timeval start, end, diff;
++	double time_average, time_stddev;
++	int i;
++	int err;
++	u64 runtime_us;
++	struct stats time_stats;
++
++	init_stats(&time_stats);
++
++	// used to print statistics only
++	evlist = bench__create_evlist(evstr);
++
++	printf("  Number of cpus:\t%d\n", evlist->core.cpus->nr);
++	printf("  Number of threads:\t%d\n", evlist->core.threads->nr);
++	printf("  Number of events:\t%d (%d fds)\n",
++		evlist->core.nr_entries, evlist__count_evsel_fds(evlist));
++	printf("  Number of iterations:\t%d\n", iterations);
++
++	evlist__delete(evlist);
++
++	for (i = 0; i < iterations; i++) {
++		pr_debug("Started iteration %d\n", i);
++		evlist = bench__create_evlist(evstr);
++		gettimeofday(&start, NULL);
++		err = bench__do_evlist_open_close(evlist);
++		if (err) {
++			evlist__delete(evlist);
++			return err;
++		}
++
++		gettimeofday(&end, NULL);
++		timersub(&end, &start, &diff);
++		runtime_us = diff.tv_sec * USEC_PER_SEC + diff.tv_usec;
++		update_stats(&time_stats, runtime_us);
++
++		evlist__delete(evlist);
++		pr_debug("Iteration %d took:\t%ldus\n", i, runtime_us);
++	}
++
++	time_average = avg_stats(&time_stats);
++	time_stddev = stddev_stats(&time_stats);
++	printf("  Average open-close took: %.3f usec (+- %.3f usec)\n",
++		time_average, time_stddev);
++
++	return 0;
++}
++
++static char *bench__repeat_event_string(const char *evstr, int n)
++{
++	int err, i, final_size, str_size;
++	struct strbuf buf;
++	char sbuf[STRERR_BUFSIZE];
++
++	str_size = strlen(evstr);
++	final_size = str_size * n + n;
++
++	err = strbuf_init(&buf, final_size);
++	if (err) {
++		pr_err("strbuf_init: %s\n",
++			 str_error_r(err, sbuf, sizeof(sbuf)));
++		goto out_error;
++	}
++
++	for (i = 0; i < n; i++) {
++		err = strbuf_add(&buf, evstr, str_size);
++		if (err) {
++			pr_err("strbuf_add: %s\n",
++				str_error_r(err, sbuf, sizeof(sbuf)));
++			goto out_error;
++		}
++
++		err = strbuf_addch(&buf, i == n-1 ? '\0' : ',');
++		if (err) {
++			pr_err("strbuf_addch: %s\n",
++				str_error_r(err, sbuf, sizeof(sbuf)));
++			goto out_error;
++		}
++	}
++
++	return strbuf_detach(&buf, NULL);
++
++out_error:
++	strbuf_release(&buf);
++	return NULL;
++}
++
++
++int bench_evlist_open_close(int argc, const char **argv)
++{
++	int err = 0;
++	char *evstr, errbuf[BUFSIZ];
++
++	argc = parse_options(argc, argv, options, bench_usage, 0);
++	if (argc) {
++		usage_with_options(bench_usage, options);
++		exit(EXIT_FAILURE);
++	}
++
++	err = target__validate(&opts.target);
++	if (err) {
++		target__strerror(&opts.target, err, errbuf, BUFSIZ);
++		pr_err("%s\n", errbuf);
++		goto out;
++	}
++
++	err = target__parse_uid(&opts.target);
++	if (err) {
++		target__strerror(&opts.target, err, errbuf, BUFSIZ);
++		pr_err("%s", errbuf);
++		goto out;
++	}
++
++	/* Enable ignoring missing threads when -u/-p option is defined. */
++	opts.ignore_missing_thread = opts.target.uid != UINT_MAX || opts.target.pid;
++
++	evstr = bench__repeat_event_string(event_string, nr_events);
++	if (!evstr) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	err = bench_evlist_open_close__run(evstr);
++
++	free(evstr);
++out:
++	return err;
++}
+diff --git a/tools/perf/builtin-bench.c b/tools/perf/builtin-bench.c
+index 62a7b7420a448517..d0895162c2ba6411 100644
+--- a/tools/perf/builtin-bench.c
++++ b/tools/perf/builtin-bench.c
+@@ -88,6 +88,7 @@ static struct bench internals_benchmarks[] = {
+ 	{ "synthesize", "Benchmark perf event synthesis",	bench_synthesize	},
+ 	{ "kallsyms-parse", "Benchmark kallsyms parsing",	bench_kallsyms_parse	},
+ 	{ "inject-build-id", "Benchmark build-id injection",	bench_inject_build_id	},
++	{ "evlist-open-close", "Benchmark evlist open and close",	bench_evlist_open_close	},
+ 	{ NULL,		NULL,					NULL			}
+ };
+ 
+-- 
+2.31.1
+
