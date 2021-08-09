@@ -1,69 +1,92 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811F23E4692
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:28:17 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id B54F93E46A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbhHIN2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHIN2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:28:14 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5B7C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 06:27:54 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id u3so29003622ejz.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 06:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=lIEHTypOMV6OIwvhIProWzVfgV7bT0xhlTel77/g5/w=;
-        b=cOK7LN50P0rVL0Ks4tgkX4WHNHA2xJ1yKJQQ8a7eggKyKgu9uwyx1Gm71IXgzPL7PC
-         v753LirX2jC8HP38crjvoRTF6BioxoGT8k/rwNhLNCKhd5sHrCVi7khU+M3J1LpulWPu
-         YJwEg741DW9Jpj7S37PHpM6xNMd6vJfnGUezFpuSw8iL4iGGJR6ZGoghF1b5H/Cb+EWN
-         nLRf1uYW7BHRX+z5uge8W8epHTQD3AoWcLvMgr1nBIUsjEzMkwQLda40CXx5q6acBTan
-         tKzvjqG1MIT971P8Ry0R2uIQW8bx3VMvzX86rEUtmB87+xDV8J5jNoeJmFOD1Cz9LyOS
-         M59A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=lIEHTypOMV6OIwvhIProWzVfgV7bT0xhlTel77/g5/w=;
-        b=b99RhnNWrKE3HR1AioCXe1ghBBoke+faaoFXoQUbrJWnRJ8bgiq1XwCc85og2ChfBw
-         CKE5oCDKAMc/5SeHX3T1qYftP/INPROW8hI035qd1FACZIM3t9grBZGJGKV6ztiTKHZD
-         tgUDE1Pp0/wx9yAr0U29waGdOSHlxM4CpOzSseiETTNkEbmasCW557rM26mZJ03LWLcP
-         e7aTjDlaHpnaPDlraxuOpARxgLEAGp3VWWairqEg5HEokBds+O6gTq+johgFth8A8xAJ
-         ew/n5KGoktfrZGyCed4QOEhZnWziYDt9E0ffXAh/unKu2HmoLfxnQIgY6ZLcel98UMY2
-         eFxQ==
-X-Gm-Message-State: AOAM531AL1XR5ge7UEwZxRTMpekaJLAw4pvQlv7e/fswj3pDMTF7b5kk
-        XBTmLFnEzIWTbvsEOnEvD9WdHSQDv9g=
-X-Google-Smtp-Source: ABdhPJx7gEPHcUs9aViJR+QqwoOQujoxTmgMQj3jkabrlNVS1+qRRcxc5eXf6G/mJ8VSE/z2IZDFPQ==
-X-Received: by 2002:a17:907:7da5:: with SMTP id oz37mr22066868ejc.396.1628515672457;
-        Mon, 09 Aug 2021 06:27:52 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id lk14sm5912316ejb.9.2021.08.09.06.27.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 06:27:52 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 16:27:51 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: info@cestasdeplastico.com spam
-Message-ID: <20210809132751.kwmgd2movxgoc4v6@skbuf>
+        id S232569AbhHINbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:31:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhHINbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:31:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 104326103B
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 13:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628515855;
+        bh=3Q+Y76mabCBAkeS1OkTLTBG6PO19Eb+uHYKiEoMf0rc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aykCzZcVQyfJZbqutziyiWp5pX2Phw84+xn9RYd5qb9P5wBQcbZFW6eAm/pPM9Ew6
+         tpUrj0CpsCmYmTT5jVWMx4ZYKtT39aJVyQH1ketghOvZhQwLPEGcVaGhqfHY3yXdV+
+         OKPx1TGNOYLN5eyA1IAwewopTb3BISluGMoVYDf2hnBjb7ONWpHZuArr3pyJS63TKN
+         Wvf760llZoqNTOYU3L5ub9DIEPWH2AKKOYLSC0Sn4aOceZ0XBNo+PNTR5EyKUuePiM
+         fZXSZe7eatqySpm5foEFGe304cGSs404nlJejOEO9uT5TgGDn4YqAosEf66DsL9kLZ
+         SBH96J32zDT/A==
+Received: by mail-wm1-f42.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so370842wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 06:30:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531Mq/YrAGRQ8DmvRt8deKcpqoALLCs1+IYFtEKCOyc+Tg0RjsqA
+        8AAdyA8pJzAdZL6zZ1wEpwBkNzySe8JQSpNRg3Q=
+X-Google-Smtp-Source: ABdhPJxl4QPAglGMMc6y1IGMVOChD84KKdMB8PjGKNXhkhWJ/ORYqy5JYUFXKgx8V4dc9Ov25B5IISYTC15U0yrTqRs=
+X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr16521594wmq.43.1628515853670;
+ Mon, 09 Aug 2021 06:30:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210723224617.3088886-1-kherbst@redhat.com> <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com>
+ <CACO55tuNWk6emjnnukgv9h-9jbpVP564Ogmi7TGbybc9n5v+ZQ@mail.gmail.com>
+ <CAK8P3a1BceSaiqkTf+9Pr4Br-G3kgqD4ztwiaS7fxNiUg9t7Dg@mail.gmail.com>
+ <CACO55tsoi2akTKvFdz3p48UHRjFXDW7dUnOM8qVePBFWet-3UQ@mail.gmail.com>
+ <CACO55tuceMUz2pgOM23wvcmtaTqbo6S6rCB+mfLptqJRt=fMWA@mail.gmail.com>
+ <CAK8P3a3+AD02-8nbULMdae2Hc=hJ+-Zb_CL+bHF-9oGieYiZWQ@mail.gmail.com>
+ <CACO55tswMuDE9u3asU2Ls7BhA0uKGGarLk+E-WTD6MVnLwc3tw@mail.gmail.com>
+ <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com> <87tujyoitk.fsf@intel.com>
+In-Reply-To: <87tujyoitk.fsf@intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 9 Aug 2021 15:30:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a30acg_FX9iHqftKeVmS=L81bqYw3XMQJ8=1fP5aU7jMQ@mail.gmail.com>
+Message-ID: <CAK8P3a30acg_FX9iHqftKeVmS=L81bqYw3XMQJ8=1fP5aU7jMQ@mail.gmail.com>
+Subject: Re: [PATCH] nouveau: make backlight support non optional
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Karol Herbst <kherbst@redhat.com>,
+        ML nouveau <nouveau@lists.freedesktop.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Every time I send an email to a few mailing lists, like
-linux-kernel@vger.kernel.org, and (I believe)
-linux-arm-kernel@lists.infradead.org, I get an auto-reply from said
-email address which says:
+On Mon, Aug 9, 2021 at 3:20 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>
+> On Sat, 24 Jul 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> > On Sat, Jul 24, 2021 at 4:14 PM Karol Herbst <kherbst@redhat.com> wrote:
+> >>
+> >> we use the MXM_WMI in code. We also have to keep arm in mind and not
+> >> break stuff there. So I will try to play around with your changes and
+> >> see how that goes.
+> >
+> > Ok, should find any randconfig build failures for arm, arm64 or x86 over the
+> > weekend. I also this on linux-next today
+> >
+> > ld: drivers/gpu/drm/i915/display/intel_panel.o: in function
+> > `intel_backlight_device_register':
+> > intel_panel.c:(.text+0x2804): undefined reference to `backlight_device_register'
+> > ld: intel_panel.c:(.text+0x284e): undefined reference to
+> > `backlight_device_register'
+> > ld: drivers/gpu/drm/i915/display/intel_panel.o: in function
+> > `intel_backlight_device_unregister':
+> > intel_panel.c:(.text+0x28b1): undefined reference to
+> > `backlight_device_unregister'
+> >
+> > and I added this same thing there to see how it goes:
+>
+> Last I checked (and it was a while a go) you really had to make all
+> users of BACKLIGHT_CLASS_DEVICE depend not select it, otherwise you end
+> up with recursive dependencies.
 
-	Hemos recibido correctamente su consulta, en breve le contestaremos. Gracias.
+Yes, that is correct. It turns out that my randconfig tree already had a local
+patch to change most of the other users (everything outside of drivers/gpu)
+to 'depends on'.
 
-It is really annoying. Can we make it stop?
+      Arnd
