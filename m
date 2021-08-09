@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A053E5182
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD553E4B17
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236789AbhHJD3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 23:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236766AbhHJD2o (ORCPT
+        id S234519AbhHIRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:47:36 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:49196
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234821AbhHIRot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 23:28:44 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7888FC06179A;
-        Mon,  9 Aug 2021 20:28:22 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id c16so19096809plh.7;
-        Mon, 09 Aug 2021 20:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oQaSu3/uNQlLHnyxKtqiLR/ueYipRzXi0gFVIbgJ54I=;
-        b=F5Cq35dGPpe5HlnZMU3GHX7E7V9ET5CZBOUM6Vyvf7JLIr07COtmMYAzqcdjhvgCdN
-         9C5HkyX6UWAnN2dKNH1cjen4z3X2QG6r/O7A62viI6Sbxnk/6Prl6QEqO9SF1V14n0V8
-         BehTnXMfSYyyx4nykirRBJNVyB2o521fa/00s3uPQ+0MuscZ8O2gOA5ziGX4lqJMh3zk
-         0oxQWFc10qo//DvQmXaYzFU7OSxPaznTsrg7SrmEjtYQMaBAEjCh3hLxNwBoLeI2IuEU
-         PiIAlTEazqTv31iWiY16gVNKRoB1caL8GQAIrT3/SN5V/2/xo8ofdlJEjKkMSy2d5AtQ
-         7TKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oQaSu3/uNQlLHnyxKtqiLR/ueYipRzXi0gFVIbgJ54I=;
-        b=WZGkH1Rui0g1aFbGjggsLlKW6af6tSYk/+6pSYFhVu0DVaYqO0BmhV9bdpIp53RcVq
-         FT/vCvKRoD1uZGR4cCVUGwmBD+CRTeHIr1rd9Q17bnBWYsBhgIVnUPxNpqIIhWVCTSVz
-         aHohjnkiOSAUNkMD59B54E+VsDFMkZzY7dqxeI2bQcorvmHHUfK7NylAcH5jBwCNq8jJ
-         hUxZQ63VxNEoONn+dxBm2A7N46Eyq+cyldGEsejH2at/JGa+sGXhH1NqxJZxI3pVyqlW
-         KdHlpA+oKhqE2KPX5Bt5py8WZsj85pWZDcKFR8PYJWtpwEPwwAIJx5UNgsgnePx6cJq/
-         cQ7g==
-X-Gm-Message-State: AOAM5317znHvzjUbv7/4ZilvM+W6AsikgsCwoU9G/46pfSaL1y33K9T8
-        MSrbruIVTwvuFTlm720NPjmmWvooI3w=
-X-Google-Smtp-Source: ABdhPJzEjXv5vh/rIyYWJn3jIsi83U0AqC8CMvkaWXbITe3simdU5QuMcmARBJF8OPPzkukw3JqxiQ==
-X-Received: by 2002:a65:6658:: with SMTP id z24mr52181pgv.266.1628566101983;
-        Mon, 09 Aug 2021 20:28:21 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id e12sm19862037pjh.33.2021.08.09.20.28.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Aug 2021 20:28:21 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH V2 3/3] KVM: X86: Reset DR6 only when KVM_DEBUGREG_WONT_EXIT
-Date:   Tue, 10 Aug 2021 01:43:07 +0800
-Message-Id: <20210809174307.145263-3-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210809174307.145263-1-jiangshanlai@gmail.com>
-References: <YRFdq8sNuXYpgemU@google.com>
- <20210809174307.145263-1-jiangshanlai@gmail.com>
+        Mon, 9 Aug 2021 13:44:49 -0400
+Received: from localhost.localdomain (1-171-221-113.dynamic-ip.hinet.net [1.171.221.113])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E04A83F108;
+        Mon,  9 Aug 2021 17:44:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628531052;
+        bh=iEu8pX3ziO36ryx3wRkOZPEyw/YMnEi7g0A9wLQ7fqg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=uFqOjEyOSzWGs9RABUyWVaLle2NxDyK0Y/3sDI7zraOizwLyHI/+VdKvjK1pYw3ib
+         zoQgeCJ1QbEaW9Rwfg2iJ+X+d5sCK2ISC4Z3ZLuu6omo+DCsJczQjhUJbZvwU3q7PB
+         WVZPYukTzf73a+gQwTpV4VLcw/QnJ3f8dCz++4mKB1zOEZ+t2mbjWga+1B1WKJLIPi
+         ju4HB3FVh0xmredvVnO9hV/hdUQExnuAKhv+YmrItROVQNfVwFPwKduMLZ9eGCo05/
+         zwFEIZmd6bpbsSyc5FetxiCNPYUqGlggPdJii2T2YtfD9hSB5CjBhfsb1zVc0TJDaD
+         lVwzh8iRUPW/w==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth@vger.kernel.org (open list:BLUETOOTH SUBSYSTEM),
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] Bluetooth: Move shutdown callback before flushing tx and rx queue
+Date:   Tue, 10 Aug 2021 01:43:58 +0800
+Message-Id: <20210809174358.163525-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
+are flushed or cancelled") introduced a regression that makes mtkbtsdio
+driver stops working:
+[   36.593956] Bluetooth: hci0: Firmware already downloaded
+[   46.814613] Bluetooth: hci0: Execution of wmt command timed out
+[   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
 
-The commit efdab992813fb ("KVM: x86: fix escape of guest dr6 to the host")
-fixed a bug by reseting DR6 unconditionally when the vcpu being scheduled out.
+The shutdown callback depends on the result of hdev->rx_work, so we
+should call it before flushing rx_work:
+-> btmtksdio_shutdown()
+ -> mtk_hci_wmt_sync()
+  -> __hci_cmd_send()
+   -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
 
-But writing to debug registers is slow, and it can be shown in perf results
-sometimes even neither the host nor the guest activate breakpoints.
+-> btmtksdio_recv_event()
+ -> hci_recv_frame()
+  -> queue_work(hdev->workqueue, &hdev->rx_work)
+   -> clears BTMTKSDIO_TX_WAIT_VND_EVT
 
-It'd be better to reset it conditionally and this patch moves the code of
-reseting DR6 to the path of VM-exit and only reset it when
-KVM_DEBUGREG_WONT_EXIT which is the only case that DR6 is guest value.
+So move the shutdown callback before flushing TX/RX queue to resolve the
+issue.
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- arch/x86/kvm/x86.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ net/bluetooth/hci_core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d2aa49722064..f40cdd7687d8 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4309,12 +4309,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index cb2e9e513907..8da04c899197 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1735,6 +1735,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
  
- 	static_call(kvm_x86_vcpu_put)(vcpu);
- 	vcpu->arch.last_host_tsc = rdtsc();
--	/*
--	 * If userspace has set any breakpoints or watchpoints, dr6 is restored
--	 * on every vmexit, but if not, we might have a stale dr6 from the
--	 * guest. do_debug expects dr6 to be cleared after it runs, do the same.
--	 */
--	set_debugreg(0, 6);
- }
+ 	hci_leds_update_powered(hdev, false);
  
- static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
-@@ -9630,6 +9624,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		static_call(kvm_x86_sync_dirty_debug_regs)(vcpu);
- 		kvm_update_dr0123(vcpu);
- 		kvm_update_dr7(vcpu);
-+		/* Reset Dr6 which is guest value. */
-+		set_debugreg(DR6_RESERVED, 6);
++	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
++	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
++	    test_bit(HCI_UP, &hdev->flags)) {
++		/* Execute vendor specific shutdown routine */
++		if (hdev->shutdown)
++			hdev->shutdown(hdev);
++	}
++
+ 	/* Flush RX and TX works */
+ 	flush_work(&hdev->tx_work);
+ 	flush_work(&hdev->rx_work);
+@@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 		clear_bit(HCI_INIT, &hdev->flags);
  	}
  
- 	/*
+-	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+-	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+-	    test_bit(HCI_UP, &hdev->flags)) {
+-		/* Execute vendor specific shutdown routine */
+-		if (hdev->shutdown)
+-			hdev->shutdown(hdev);
+-	}
+-
+ 	/* flush cmd  work */
+ 	flush_work(&hdev->cmd_work);
+ 
 -- 
-2.19.1.6.gb485710b
+2.31.1
 
