@@ -2,128 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C03D3E4BC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E313E4BD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhHISDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:03:17 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:32087 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232642AbhHISDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:03:01 -0400
+        id S232619AbhHISGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232599AbhHISGk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 14:06:40 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E79EC061798
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:06:19 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id c130so11060780qkg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 11:06:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1628532161;
-  x=1660068161;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=BAbSpS9w1mb8jC0QX4qPtgQN+0VrGOBi0Yz/oH4kaGk=;
-  b=YY8PvX1jrekqd/1mEnjIsAWbHhO2WJlLAGQK5NcMy9PSRGCFVunsfg7C
-   mqIbwbYYOyA3Wy+OmVu9QQaWyIO2jPbtr6Z9l9E0hEtXjwyjiWHX+scJE
-   IdTGItMmKvW44L5mDWGTQlTEucffoR1feVO2hHdThX0NmS4RxYwcCTG8K
-   wBJGO1VQNwkI5mNR2w4upFtmqyO/L1NZrLHjHFTO3y2gboH7QQqdRyUlV
-   OE9AMel2ECdCO1lgNQqiv+dfJ03i6OaKfzCnkP4junh5s/+L+3i7cVX7Q
-   cjAFbpTQ+wMkkSn4dhBvX+Pem5iZIAx2RZbt9ZWZNmgVaiNoJpNDFf20q
-   g==;
-Subject: Re: [PATCH v4] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Borys Movchan <Borys.Movchan@axis.com>
-CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel <kernel@axis.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210806141808.6537-1-borysmn@axis.com>
- <20210809045529.wz54przgpqgjs67q@kernel.org>
-From:   Borys Movchan <borysmn@axis.com>
-Message-ID: <36bc0c9d-d34a-9711-7d14-69d23993da57@axis.com>
-Date:   Mon, 9 Aug 2021 20:05:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CGmEoCtBX+aMJQ4a81RMibRVxxMCeoipo6oy6wjvfSQ=;
+        b=jRV0H6Z2ydK10xOgbktUO/i/wkll9LyxEjGa5LjNWcliEDU8ZsvmcJ+Gc/hqQvpyXj
+         B6bCrJs/He3A61egpX3Ah1n5Ip0SSwnmSxOVmA+OO2tSg4gUMj6SZdXBCRBUA8+EacfI
+         895Y6N7YVtjuPR15arE9vULuRy5Q9Yd6+5OkQhDW5PK11e9u7JIfSwOvrj6PsiFPl2e2
+         7iMK4eTy5udO0c27wrYr4MbA4RA3rdkt3Fa/j47kXwY+d+NFV3+I7l0c4PCVXmmjop59
+         gi6iFz8TnfJNPsPvW25iD6QP1BmZzRSM4NZu4vKjPNag+tbB9MHK9b7rd+clVPaPnYAm
+         4O6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CGmEoCtBX+aMJQ4a81RMibRVxxMCeoipo6oy6wjvfSQ=;
+        b=WlejtYf1NSPESZsyBXKjgruRwc6ulxAkuF7md2TZdxIt1AjHFLzKVO6yMo0fzmtoIj
+         tEQNpm4bbaSfp+xbY1iuz3hKtmSPSyp17hw/ZhzNv7XQtMlNG2XbyEMXWp7nqvn14XwO
+         TA11qJZCWMOi2qMpHhmtfOl6KlZjnD4EJB2ATtjQZRP84lpJGpiZoLdv777qhF2eztKu
+         0Njj6lH08x6VDeyKT7cRNdpJHfuWlzOjg56aayiaqUrmR6PG+Y/E+b+MOg3eIB6s170d
+         F+LdeWcWDxy/kvohH5jePK+BFpX2fOUYRKKWm8RDpVPu+piekGh3Trj8TyHlXYmsseCE
+         qvWw==
+X-Gm-Message-State: AOAM5313Ecz+l7nioBVdabaKVMYnJT9BUvh4G4y0P24TQNUpm+QL2eQy
+        CJYUQBDUmeKjaP00Gc6UIQJs8EjQMrQub3R9btHxnA==
+X-Google-Smtp-Source: ABdhPJy0sRwnoX2TrDLzLvLmgEYmEH0OEZngM0N3qvIsUY0vMGaZL3Qvv8ZLyhSQZB20TWM1tctSbAPyMh4yHQFKMXI=
+X-Received: by 2002:a05:620a:811:: with SMTP id s17mr7321838qks.350.1628532378369;
+ Mon, 09 Aug 2021 11:06:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210809045529.wz54przgpqgjs67q@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail08w.axis.com (10.20.40.14) To se-mail07w.axis.com
- (10.20.40.13)
+References: <0000000000006bd0b305c914c3dc@google.com> <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
+In-Reply-To: <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 9 Aug 2021 20:06:06 +0200
+Message-ID: <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in _copy_to_iter
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/9/21 6:55 AM, Jarkko Sakkinen wrote:
-> On Fri, Aug 06, 2021 at 04:18:08PM +0200, Borys Movchan wrote:
->> If something went wrong during the TPM firmware upgrade, like power
->> failure or the firmware image file get corrupted, the TPM might end
->> up in Upgrade or Failure mode upon the next start. The state is
->> persistent between the TPM power cycle/restart.
->>
->> According to TPM specification:
->>  * If the TPM is in Upgrade mode, it will answer with TPM2_RC_UPGRADE
->>    to all commands except Field Upgrade related ones.
->>  * If the TPM is in Failure mode, it will allow performing TPM
->>    initialization but will not provide any crypto operations.
->>    Will happily respond to Field Upgrade calls.
->>
->> Change the behavior of the tpm2_auto_startup(), so it detects the active
->> running mode of the TPM.  It is easy to determine that TPM is in Upgrade
->> mode by relying on the fact that tpm2_do_selftest() will return
->> TPM2_RC_UPGRADE. In such a case, there is no point to finish the
->> start-up procedure as the TPM will not accept any commands, except
->> firmware upgrade related.
->>
->> On the other hand, if the TPM is in Failure mode, it will successfully
->> respond to both tpm2_do_selftest() and tpm2_startup() calls. Although,
->> will fail to answer to tpm2_get_cc_attrs_tbl(). Use this fact to
->> conclude that TPM is in Failure mode.
->>
->> If the chip is in the Upgrade or Failure mode, the function returns -EIO
->> error code.
->>
->> The return value is checked in the tpm_chip_register() call to determine
->> the state of the TPM. If the TPM is not in normal operation mode, set
->> the `limited_mode` flag. If the flag is set then the TPM is not able to
-> Nit: do not use hyphens for limited mode. 'limited_mode' is fine. I'm
-> also fine with just limited_mode.
-
-
-Done
-
-
->> provide any crypto functionality.  Correspondignly, the calls to
->> tpm2_get_cc_attrs_tbl(), tpm_add_hwrng() and tpm_get_pcr_allocation()
->> will fail. Use the flag to exclude them from the initialization
->> sequence.
-> This is blacklisting. E.g. I'm not sure why all of the sysfs attributes
-> would still be exported. Some of them use TPM commands. That was just
-> one random example I came up with.
+On Mon, 9 Aug 2021 at 19:33, Shoaib Rao <rao.shoaib@oracle.com> wrote:
 >
-> It's easy to come up other examples, like, why you provide still tpmrm0,
-> which is dependent on a TPM running normal mode?
+> This seems like a false positive. 1) The function will not sleep because
+> it only calls copy routine if the byte is present. 2). There is no
+> difference between this new call and the older calls in
+> unix_stream_read_generic().
+
+Hi Shoaib,
+
+Thanks for looking into this.
+Do you have any ideas on how to fix this tool's false positive? Tools
+with false positives are order of magnitude less useful than tools w/o
+false positives. E.g. do we turn it off on syzbot? But I don't
+remember any other false positives from "sleeping function called from
+invalid context" checker...
+
+
+
+> On 8/8/21 4:38 PM, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb override
+> > git tree:       net-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=12e3a69e300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=aba0c23f8230e048
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=8760ca6c1ee783ac4abd
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c5b104300000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10062aaa300000
+> >
+> > The issue was bisected to:
+> >
+> > commit 314001f0bf927015e459c9d387d62a231fe93af3
+> > Author: Rao Shoaib <rao.shoaib@oracle.com>
+> > Date:   Sun Aug 1 07:57:07 2021 +0000
+> >
+> >      af_unix: Add OOB support
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10765f8e300000
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=12765f8e300000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=14765f8e300000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com
+> > Fixes: 314001f0bf92 ("af_unix: Add OOB support")
+> >
+> > BUG: sleeping function called from invalid context at lib/iov_iter.c:619
+> > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8443, name: syz-executor700
+> > 2 locks held by syz-executor700/8443:
+> >   #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
+> >   #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+> >   #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
+> > Preemption disabled at:
+> > [<0000000000000000>] 0x0
+> > CPU: 1 PID: 8443 Comm: syz-executor700 Not tainted 5.14.0-rc3-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >   __dump_stack lib/dump_stack.c:88 [inline]
+> >   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+> >   ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
+> >   __might_fault+0x6e/0x180 mm/memory.c:5258
+> >   _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
+> >   copy_to_iter include/linux/uio.h:139 [inline]
+> >   simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
+> >   __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
+> >   skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
+> >   skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
+> >   unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
+> >   unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
+> >   unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
+> >   unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
+> >   sock_recvmsg_nosec net/socket.c:944 [inline]
+> >   sock_recvmsg net/socket.c:962 [inline]
+> >   sock_recvmsg net/socket.c:958 [inline]
+> >   ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
+> >   ___sys_recvmsg+0x127/0x200 net/socket.c:2664
+> >   do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
+> >   __sys_recvmmsg net/socket.c:2837 [inline]
+> >   __do_sys_recvmmsg net/socket.c:2860 [inline]
+> >   __se_sys_recvmmsg net/socket.c:2853 [inline]
+> >   __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
+> >   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > RIP: 0033:0x43ef39
+> > Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+> > RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
+> > RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
+> > RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
+> > R10: 0000000000000007 R11: 0000000000000246 R12: 0000000000402fb0
+> > R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+> >
+> > =============================
+> > [ BUG: Invalid wait context ]
+> > 5.14.0-rc3-syzkaller #0 Tainted: G        W
+> > -----------------------------
+> > syz-executor700/8443 is trying to lock:
+> > ffff8880212b6a28 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0xa3/0x180 mm/memory.c:5260
+> > other info that might help us debug this:
+> > context-{4:4}
+> > 2 locks held by syz-executor700/8443:
+> >   #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
+> >   #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+> >   #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
+> > stack backtrace:
+> > CPU: 1 PID: 8443 Comm: syz-executor700 Tainted: G        W         5.14.0-rc3-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >   __dump_stack lib/dump_stack.c:88 [inline]
+> >   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+> >   print_lock_invalid_wait_context kernel/locking/lockdep.c:4666 [inline]
+> >   check_wait_context kernel/locking/lockdep.c:4727 [inline]
+> >   __lock_acquire.cold+0x213/0x3ab kernel/locking/lockdep.c:4965
+> >   lock_acquire kernel/locking/lockdep.c:5625 [inline]
+> >   lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+> >   __might_fault mm/memory.c:5261 [inline]
+> >   __might_fault+0x106/0x180 mm/memory.c:5246
+> >   _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
+> >   copy_to_iter include/linux/uio.h:139 [inline]
+> >   simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
+> >   __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
+> >   skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
+> >   skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
+> >   unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
+> >   unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
+> >   unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
+> >   unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
+> >   sock_recvmsg_nosec net/socket.c:944 [inline]
+> >   sock_recvmsg net/socket.c:962 [inline]
+> >   sock_recvmsg net/socket.c:958 [inline]
+> >   ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
+> >   ___sys_recvmsg+0x127/0x200 net/socket.c:2664
+> >   do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
+> >   __sys_recvmmsg net/socket.c:2837 [inline]
+> >   __do_sys_recvmmsg net/socket.c:2860 [inline]
+> >   __se_sys_recvmmsg net/socket.c:2853 [inline]
+> >   __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
+> >   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > RIP: 0033:0x43ef39
+> > Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+> > RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
+> > RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
+> > RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
+> > R10: 0000000000000007 R11: 0000000000000246 R12: 0000
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> > syzbot can test patches for this issue, for details see:
+> > https://goo.gl/tpsmEJ#testing-patches
 >
-> This misses completely the rationale for ever acking this change: which
-> parts of the uapi are export and *why*.
->
-> Please whitelist the things that should still work. Even the obvious
-> ones like /dev/tpm0 (because of TPM_RC_UPGRADE).
->
-> This is clearly a faulty and incomplete patch in its current form.
-
-
-I expected something like this. In new patch version I tried to disable all
-functionality which should not work in Upgrade/Failure mode.
-
-Basically, I am interested in getting /dev/tpm0 working when TPM is in limited mode.
-In this state, the TPM is not capable to provide any other functionality except firmware
-upgrade/recovery. So the rest of features should be disabled/removed.
-Physical reset of the TPM is mandatory part of the firmware upgrade/recovery. Which will
-lead to driver rebind/reload and reappearance of all interfaces applicable to normal operational
-mode.
-
-
-> /Jarkko
->
-
-Kind regards,
-Borys
-
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0c106e6c-672f-474e-5815-97b65596139d%40oracle.com.
