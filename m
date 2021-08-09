@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1033E4F74
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458A93E4F7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236857AbhHIWpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
+        id S236865AbhHIWrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236864AbhHIWpB (ORCPT
+        with ESMTP id S235679AbhHIWrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:45:01 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88782C06179F;
-        Mon,  9 Aug 2021 15:44:16 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x27so14569254lfu.5;
-        Mon, 09 Aug 2021 15:44:16 -0700 (PDT)
+        Mon, 9 Aug 2021 18:47:22 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D97C0613D3;
+        Mon,  9 Aug 2021 15:47:01 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id t3so18290218plg.9;
+        Mon, 09 Aug 2021 15:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AmgysG4X1Rf9LeXjKhIGoZjfBo/p5PA6DCR3EkiU4wQ=;
-        b=WM87OFwLnP183x1t/ZJ9piOCZWSTEAQ/e+rTfcACaqC+6VB+knooVJU+v54Wp8gOr8
-         pF3TR6grRAA4SfwOM+US/+3Y8lKhrta9yheMZZUMhiVXFF7gn4kmYqt9lGcN99rNhDeS
-         /E9N+oLBnvbBiU/gcgl7XDzfMNM9mkpIoMlzy/5Jnbx0U9pKUtH924+GwGor+qTso44o
-         mhd27gfloNLKFhGUOFPXSwbPdK79y00oBMrTkP9ydMev7lJoFehQnHGLQf3B0slv+m2x
-         6P+q+mHfGphaic1/laYPTTMImBKidFaPFwONw83BxWZ4oxEUWB201onkOSVIUxLj73wR
-         BS7Q==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XNgzSBl2ViZgrzMacCsKUZKoLxV/azVHoL6Wpcoyx1o=;
+        b=aEhH+GbMzUwYKoNDDFkuXlWKEVtNn+ncfDq/pdkGJJN4UnbE3CmPYayiSuTemIyIyr
+         lZHcTi35GE2BjPN9IB00dF6+Ir6KSDgrQCmP3pcBi4w34uvF+JWOSVOnitMB59NUcNHn
+         IolBa8d9/W36apIoy0H1KpO34GW9m7kGbkT4hpaH4/SwFT52bQk8bc/vpD4DYViw/8RM
+         wR3xDD4TI4UESH3BPx9xBe1a5yt+1l/7X14ojMklyUd91+GtS+/TEBViIswe/IDwYXai
+         tpMJsJJw8HlHXlt10zIKo2l+e889s0F8JMxguiNcQdSJYXN2M05+5urFXjP33WKrLDMc
+         bH/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AmgysG4X1Rf9LeXjKhIGoZjfBo/p5PA6DCR3EkiU4wQ=;
-        b=dglLkp5LB3BcjbV8WnlzWZ00eqDbL+/ZDiioza9BPXHvCZhKl9opw2wZ0kmOaeeD6i
-         0n+aBOd2YL9nS9orsbt2eOVpFQVHKRAZJMT3p5qKr8xGm7imF7JLirzuFhgufKLyVN8T
-         jpWDeVI5h8OKRRMM7ggySD5/uAcp9BzHT4n8MOYq+rpjq8dnt4+veuRLus0GJLiuZwGm
-         nLuueO+V0WDq3mrPOn+VUTXIBEAoN+mUJ5BXd6b06FMtIH3e+VDeOvhIvoVaI3VNnMBX
-         dTjPF2tAWzgPwL7bK6DdnzpuWkUMEZIvOgW/ukB9ug4xvh7au03gwKWn+8/65oUqsMKj
-         09Sw==
-X-Gm-Message-State: AOAM5329CzmWsExNkcf+OpD9Mi0iJJSkShyycOu3h3VTvAf/fmDJFQ/5
-        NGWj1Vz/Z4K+phqY0/j5w1I=
-X-Google-Smtp-Source: ABdhPJwY0+X6GydW9/IVBGp4QE7x9ka/TjKvAIof+YwzJm+k98YIqyPDMi7M5DUyaHEPfKXLbBlgxA==
-X-Received: by 2002:a19:ee1a:: with SMTP id g26mr7016457lfb.611.1628549054904;
-        Mon, 09 Aug 2021 15:44:14 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
-        by smtp.googlemail.com with ESMTPSA id c19sm968742lfc.70.2021.08.09.15.44.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 15:44:14 -0700 (PDT)
-Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rajendra Nayak <rnayak@codeaurora.org>, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net
-References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
- <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
- <f58e631d-67a7-4981-ce59-6a4772b44564@gmail.com>
-Message-ID: <c43ddc6b-32ca-433d-76f2-901cb594eaf1@gmail.com>
-Date:   Tue, 10 Aug 2021 01:44:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XNgzSBl2ViZgrzMacCsKUZKoLxV/azVHoL6Wpcoyx1o=;
+        b=IYYmJFk+A3PHvtsDy6el00O4M3pz9E8AtzehmcoIzDs2OrytSmaJfCj7kPio5mWQUR
+         3eGt1H8YAVk16bxZJNNl6s22Fq1Fv/m+9DNSJj6T3d5eGEM1mctdnj7ILM2NTm354wti
+         E5ReFVjuRez7LUnM0TRQxuOfpro5Kczo0YdArm5V0IwM0t70pRiUFr7h6Aojyi+aY97v
+         GhtwLxTZMg6ZsbxMNCJ7e9AwNRNrLX4ikoGsH931Qhqz5Dt3Kme+cKyXhEAsTFNybwpG
+         bRBeFElGNz4Qh8BmZuqNeJ5ZoUZjVmZtrX1b0UQAmjrcZL/FdzIRldd/yR9HvzzXGmCH
+         c0yA==
+X-Gm-Message-State: AOAM531eET7QTYJd19+OBcvvkv50tNiaJx8b/SguTRMCz08Bne8Askfs
+        pty9DRSiBZZGwgqS800ly7hwI0E7XzrTKw==
+X-Google-Smtp-Source: ABdhPJyEsd06c5zbOMTazRPdLGXEAi0H/IIo/OTte6VZV5DwrEtvZyvvw3OtbCISVsJWDXUCT2Dx3A==
+X-Received: by 2002:a65:5083:: with SMTP id r3mr166335pgp.161.1628549220702;
+        Mon, 09 Aug 2021 15:47:00 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:df1c])
+        by smtp.gmail.com with ESMTPSA id c133sm4203621pfb.174.2021.08.09.15.46.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 15:47:00 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 9 Aug 2021 12:46:55 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v3 0/9] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+Message-ID: <YRGwXw3KW8eFhEa8@mtj.duckdns.org>
+References: <20210720141834.10624-1-longman@redhat.com>
+ <YP9ChFvrGrDMGzbe@slm.duckdns.org>
+ <b2f49b2e-d5a4-1504-bd0c-0bd82943d855@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <f58e631d-67a7-4981-ce59-6a4772b44564@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2f49b2e-d5a4-1504-bd0c-0bd82943d855@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-10.08.2021 01:26, Dmitry Osipenko пишет:
-> 04.08.2021 13:58, Rajendra Nayak пишет:
->> @@ -2637,6 +2643,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>  {
->>  	struct of_phandle_args pd_args;
->>  	struct generic_pm_domain *pd;
->> +	struct device_node *np;
->> +	int pstate;
->>  	int ret;
->>  
->>  	ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
->> @@ -2675,10 +2683,26 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>  		genpd_unlock(pd);
->>  	}
->>  
->> -	if (ret)
->> +	if (ret) {
->>  		genpd_remove_device(pd, dev);
->> +		return -EPROBE_DEFER;
->> +	}
->> +
->> +	/* Set the default performance state */
->> +	np = dev->of_node;
->> +	if (of_parse_phandle(np, "required-opps", index)) {
->> +		pstate = of_get_required_opp_performance_state(np, index);
->> +		if (pstate < 0) {
->> +			ret = pstate;
->> +			dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
->> +				pd->name, ret);
->> +		} else {
->> +			dev_pm_genpd_set_performance_state(dev, pstate);
+Hello, Waiman. Sorry about the delay. Was off for a while.
 
-Where is error handling?
+On Tue, Jul 27, 2021 at 05:14:27PM -0400, Waiman Long wrote:
+> However, if we have a complicated partition setup with multiple child
+> partitions. Invalid cpuset.cpus change in a parent partition will cause all
+> the child partitions to become invalid too. That is the scenario that I
+> don't want to happen inadvertently. Alternatively, we can restrict those
 
->> +			dev_gpd_data(dev)->default_pstate = pstate;
->> +		}
->> +	}
+I don't think there's anything fundamentally wrong with it given the
+requirement that userland has to monitor invalid state transitions.
+The same mass transition can happen through cpu hotplug operations,
+right?
+
+> invalid changes if a child partition exist and let it pass through and make
+> it invalid if it is a standalone partition.
 > 
-> Why performance state is set after genpd_power_on()?
-> 
+> Please let me know which approach do you want me to take.
 
+I think it'd be best if we can stick to some principles rather than
+trying to adjust it for specific scenarios. e.g.:
+
+* If a given state can be reached through cpu hot [un]plug, any
+  configuration attempt which reaches the same state should be allowed
+  with the same end result as cpu hot [un]plug.
+
+* If a given state can't ever be reached in whichever way, the
+  configuration attempting to reach such state should be rejected.
+
+Thanks.
+
+-- 
+tejun
