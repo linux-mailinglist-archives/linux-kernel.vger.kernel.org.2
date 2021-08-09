@@ -2,177 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A013E4C62
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C4C3E4C6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235580AbhHISwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:52:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230175AbhHISwD (ORCPT
+        id S235763AbhHISwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235655AbhHISwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:52:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628535102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iMS8DmFOfu2rnAzje99qeWnCj6sFSKFUDctsU0VRGyM=;
-        b=K91GxlFaoN6qFa9jYjmTvIXMFfl001DoAlpiCntXhCLGu9M7SdM24q7ZQHjiuaJbTBaUFv
-        yWgj7BGQb+uUj5emnE5t0SMYr6n1++zovifRw8odXIs7EEAkUk0X5lNOcA1q4FypAMF3py
-        iheNHn346xQ5vLdQ5m+Oj1f8qt/xl8A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-r1wtH50IP_qVo2CDsnWqkw-1; Mon, 09 Aug 2021 14:51:41 -0400
-X-MC-Unique: r1wtH50IP_qVo2CDsnWqkw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBDFE100806D;
-        Mon,  9 Aug 2021 18:51:39 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 378C81036D35;
-        Mon,  9 Aug 2021 18:51:35 +0000 (UTC)
-Message-ID: <d3e0ba8085a8b6054e757dac696823f1181a712b.camel@redhat.com>
-Subject: Re: [PATCH v3 06/12] KVM: x86: don't disable APICv memslot when
- inhibited
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Date:   Mon, 09 Aug 2021 21:51:34 +0300
-In-Reply-To: <f221e94c-fb64-a859-de3c-30f883eac657@redhat.com>
-References: <20210802183329.2309921-1-mlevitsk@redhat.com>
-         <20210802183329.2309921-7-mlevitsk@redhat.com>
-         <f221e94c-fb64-a859-de3c-30f883eac657@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 9 Aug 2021 14:52:22 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEA0C061798
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:52:01 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id q3so4173288vkd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 11:52:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d/b2tS7YMRHPjI6VGiV4WlYzcCT+N2pnoJeTL1fGmn8=;
+        b=x+VgKgaGdpHjdkRUURCM+NYQxSTBy0MkPCmpbM3VIbSGIOsKT8McvVHvOqpCfPDp7H
+         M4W8cRoidhuJJ6xT+Q0fvemdLheGyBHuuf5PbDY/5f/gJVpiXvdbLy8wi5Fwg9b41XRO
+         y0nFK2KV9XPrj+MkW1Ph1EeavmWj8Yhtfftbfkr0al6WVOiySz908r+BA0cssptNHJQc
+         6Z4Rfg52GaKWJPr5qdvIIg51iZXrOjEC+yV4RslNN/Crz2zsd1wfyKnhglVo780qMky2
+         4hfrfphfWh78WUlxasiDzHL7OqWsWdhaRa6FjMADzGi5pnL3DD5vxXq06vA/PITiesQu
+         WXiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d/b2tS7YMRHPjI6VGiV4WlYzcCT+N2pnoJeTL1fGmn8=;
+        b=TQvsR5sqK8g5b/o+A0fP+cS4hvj91tzwAfj1ypE/rqlTcmQSyXGjLpEKl3EGRCXRmg
+         wFSj0SYHpE7XIbtFATOeGxN0cGor1SusyHNhNHdtb9KaKwjxDqLOQBuILxIE2RGz2mZI
+         pr/99S6qkIJ9jTBY+8OTeHjLcmI52HwwBTSzOVbBT7I96ggHrX94WQ05mGgnIdI85A+G
+         R3cjjWUAuSSdkxyIBjar22dWoXwxBoZ6dknGMfClB14sZ1BHHeuUtypUT+RO9OX5j0bm
+         bz/3JYitYKW8Whu5v6jWBQQSd50hq9ko/4kGHZjR2cQ88GEBD6xLlY7P7rxXgud/hM3w
+         v4oA==
+X-Gm-Message-State: AOAM533gMdBcQiGwFWYqS/1sQ9yQ24QxyR+SdOgiqDqOgQc/OmsKNEY8
+        o8cIKOi/LLpvT87zXuDy9FZIkaXA5Dbd9qpwTI0UZA==
+X-Google-Smtp-Source: ABdhPJztTV7fFHE7DAa32TUbP4AmYOxZsrntgIge/gVbMCQBwXCNWE/Kq/pQ1JbUoXC+yXA/gvcXiKD7IlttIEP5jKE=
+X-Received: by 2002:a1f:6203:: with SMTP id w3mr15362595vkb.24.1628535120427;
+ Mon, 09 Aug 2021 11:52:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210806152146.16107-1-semen.protsenko@linaro.org>
+ <20210806152146.16107-8-semen.protsenko@linaro.org> <7110b1e2-1aee-6ddf-803f-ee392e494f2d@canonical.com>
+In-Reply-To: <7110b1e2-1aee-6ddf-803f-ee392e494f2d@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Mon, 9 Aug 2021 21:51:48 +0300
+Message-ID: <CAPLW+4=yK-dfWjKjLEOKL2o2sG1eyqSNqgVCnQNYvbUHo+Om4w@mail.gmail.com>
+Subject: Re: [PATCH v2 7/8] clk: samsung: Add Exynos850 clock driver stub
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-03 at 10:44 +0200, Paolo Bonzini wrote:
-> Reviewing this patch and the next one together.
-> 
-> On 02/08/21 20:33, Maxim Levitsky wrote:
-> > +static int avic_alloc_access_page(struct kvm *kvm)
-> >  {
-> >  	void __user *ret;
-> >  	int r = 0;
-> >  
-> >  	mutex_lock(&kvm->slots_lock);
+On Mon, 9 Aug 2021 at 13:55, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 06/08/2021 17:21, Sam Protsenko wrote:
+> > For now it's just a stub driver to make the serial driver work. Later it
+> > will be implemented properly. This driver doesn't really change clocks,
+> > only registers the UART clock as a fixed-rate clock. Without this clock
+> > driver the UART driver won't work, as it's trying to obtain "uart" clock
+> > and fails if it's not able to.
+>
+> You know that as temporary solution you can add necessary clocks
+> directly in your DTS as fixed-rate-clocks? Effect would be quite similar
+> to the one here for UART driver but instead adding some temporary code
+> you would add temporary DTS nodes and references.
+>
+> I am fine with this approach although the binding (if ever defined...)
+> would need to be marked as experimental.
+>
+
+Let's keep this driver then. My next step would be implementing the
+proper clk driver, so this review would be a good starting point for
+me. I will, of course, address your other comments.
+
+> >
+> > In order to get a functional serial console we have to implement that
+> > minimal clock driver with "uart" clock. It's not necessary to actually
+> > configure clocks, as those are already configured in bootloader, so
+> > kernel can rely on that for now.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> > Changes in v2:
+> >   - Used hard coded clock indexes, as clock bindings were removed; will
+> >     add clock bindings back (reimplemented) once proper clock driver is
+> >     ready
+> >   - Removed .data = 0 for exynos850-oscclk, as it's in BSS section
+> >   - Removed comma for terminator {}
+> >   - Made exynos850_clk_init() static
+> >   - Removed checking np for NULL, as it's already done in of_iomap()
+> >
+> >  drivers/clk/samsung/Makefile        |  1 +
+> >  drivers/clk/samsung/clk-exynos850.c | 64 +++++++++++++++++++++++++++++
+> >  2 files changed, 65 insertions(+)
+> >  create mode 100644 drivers/clk/samsung/clk-exynos850.c
+> >
+> > diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
+> > index 028b2e27a37e..c46cf11e4d0b 100644
+> > --- a/drivers/clk/samsung/Makefile
+> > +++ b/drivers/clk/samsung/Makefile
+> > @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)       += clk-exynos5433.o
+> >  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
+> >  obj-$(CONFIG_EXYNOS_CLKOUT)  += clk-exynos-clkout.o
+> >  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)        += clk-exynos7.o
+> > +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)        += clk-exynos850.o
+> >  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
+> >  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
+> >  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
+> > diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
+> > new file mode 100644
+> > index 000000000000..36c7c7fe7cf0
+> > --- /dev/null
+> > +++ b/drivers/clk/samsung/clk-exynos850.c
+> > @@ -0,0 +1,64 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
+> > + * Copyright (C) 2021 Linaro Ltd.
+> > + *
+> > + * Common Clock Framework support for Exynos850 SoC.
+> > + */
 > > +
-> > +	if (kvm->arch.apic_access_memslot_enabled)
-> >  		goto out;
-> 
-> This variable is overloaded between "is access enabled" and "is the 
-> memslot allocated".  I think you should check 
-> kvm->arch.apicv_inhibit_reasons instead in kvm_faultin_pfn.
-> 
-> 
-> > +	if (!activate)
-> > +		kvm_zap_gfn_range(kvm, gpa_to_gfn(APIC_DEFAULT_PHYS_BASE),
-> > +				  gpa_to_gfn(APIC_DEFAULT_PHYS_BASE + PAGE_SIZE));
+> > +#include <linux/clk.h>
+> > +#include <linux/clkdev.h>
+> > +#include <linux/clk-provider.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_address.h>
 > > +
-> 
-> Off by one, the last argument of kvm_zap_gfn_range is inclusive:
+> > +#include "clk.h"
+> > +
+> > +/* Will be extracted to bindings header once proper clk driver is implemented */
+> > +#define OSCCLK               1
+> > +#define DOUT_UART    2
+> > +#define CLK_NR_CLKS  3
+> > +
+> > +/* Fixed rate clocks generated outside the SoC */
+> > +static struct samsung_fixed_rate_clock exynos850_fixed_rate_ext_clks[] __initdata = {
+> > +     FRATE(OSCCLK, "fin_pll", NULL, 0, 26000000),
+> > +};
+> > +
+> > +/*
+> > + * Model the UART clock as a fixed-rate clock for now, to make serial driver
+> > + * work. This clock is already configured in the bootloader.
+> > + */
+> > +static const struct samsung_fixed_rate_clock exynos850_peri_clks[] __initconst = {
+> > +     FRATE(DOUT_UART, "DOUT_UART", NULL, 0, 200000000),
+> > +};
+> > +
+> > +static const struct of_device_id ext_clk_match[] __initconst = {
+> > +     { .compatible = "samsung,exynos850-oscclk" },
+> > +     {}
+> > +};
+> > +
+> > +static void __init exynos850_clk_init(struct device_node *np)
+> > +{
+> > +     void __iomem *reg_base;
+> > +     struct samsung_clk_provider *ctx;
+> > +
+> > +     reg_base = of_iomap(np, 0);
+> > +     if (!reg_base)
+> > +             panic("%s: failed to map registers\n", __func__);
+> > +
+> > +     ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
+> > +     if (!ctx)
+> > +             panic("%s: unable to allocate ctx\n", __func__);
+>
+> Not needed, the samsung_clk_init() panics or returns valid memory.
+>
 
-Actually is it? 
+Done. Btw, I noticed that similar check is present in clk-exynos5433.c.
 
-There are 3 uses of this function.
-Two of them (kvm_post_set_cr0 and one case in update_mtrr) use 0,~0ULL which is indeed inclusive,
-but for variable mtrrs I see that in var_mtrr_range this code:
-
-*end = (*start | ~mask) + 1;
-
-and the *end is passed to kvm_zap_gfn_range.
-
-
-Another thing I noticed that I added calls to kvm_inc_notifier_count/kvm_dec_notifier_count
-in the kvm_zap_gfn_range but these do seem to have non inclusive ends, thus 
-I need to fix them sadly if this is the case.
-This depends on mmu_notifier_ops and it is not documented well.
-
-However at least mmu_notifier_retry_hva, does assume a non inclusive range since it checks
-
-
-hva >= kvm->mmu_notifier_range_start &&
-	    hva < kvm->mmu_notifier_range_end
-
-
-Also looking at the algorithm of the kvm_zap_gfn_range.
-Suppose that gfn_start == gfn_end and we have a memslot with one page at gfn_start
-
-Then:
-
-
-start = max(gfn_start, memslot->base_gfn); // start = memslot->base_gfn
-end = min(gfn_end, memslot->base_gfn + memslot->npages); // end = memslot->base_gfn
-
-if (start >= end)
-	continue;
-
-In this case it seems that it will do nothing. So I suspect that kvm_zap_gfn_range
-actually needs non inclusive range but due to the facts that it was used much
-it didn't cause trouble.
-
-
-Another thing I found in kvm_zap_gfn_range:
-
-kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
-
-But kvm_flush_remote_tlbs_with_address expects (struct kvm *kvm, u64 start_gfn, u64 pages)
-
-kvm_flush_remote_tlbs_with_address is also for some reason called twice with the same parameters.
-
-Could you help with that? Am I missing something?
-
-Thanks in advance,
-Best regards,
-	Maxim Levitsky
-
-
-
-
-> Also, checking "activate" is a bit ugly when we have "new" available as 
-> well.  Yes, they are the same if !!old != !!new, but we care about the 
-> global state, not the single bit.
-> 
-> Putting everything together, this could become something like
-> 
->          trace_kvm_apicv_update_request(activate, bit);
->          if (!!old != !!new) {
-> 		/*
-> 		 * Kick all CPUs out of guest mode.  When
-> 		 * kvm_vcpu_update_apicv succeeds in taking
-> 		 * apicv_update_lock, it will see the
-> 		 * new apicv_inhibit_reasons that we set below.
-> 		 */
-> 	        kvm_make_all_cpus_request(kvm, KVM_REQ_APICV_UPDATE);
-> 
-> 	        if (new) {
-> 	                unsigned long gfn = gpa_to_gfn(APIC_DEFAULT_PHYS_BASE);
-> 	                kvm_zap_gfn_range(kvm, gfn, gfn);
-> 	        }
-> 	}
->          kvm->arch.apicv_inhibit_reasons = new;
->          mutex_unlock(&kvm->arch.apicv_update_lock);
-> 
-> Paolo
-> 
-
-
+> > +
+> > +     samsung_clk_of_register_fixed_ext(ctx,
+> > +                     exynos850_fixed_rate_ext_clks,
+> > +                     ARRAY_SIZE(exynos850_fixed_rate_ext_clks),
+> > +                     ext_clk_match);
+> > +
+> > +     samsung_clk_register_fixed_rate(ctx, exynos850_peri_clks,
+> > +                     ARRAY_SIZE(exynos850_peri_clks));
+> > +
+> > +     samsung_clk_of_add_provider(np, ctx);
+> > +}
+> > +
+> > +CLK_OF_DECLARE(exynos850_clk, "samsung,exynos850-clock", exynos850_clk_init);
+> >
+>
+> Best regards,
+> Krzysztof
