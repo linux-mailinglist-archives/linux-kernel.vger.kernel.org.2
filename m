@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946B03E40A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB7A3E40AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhHIHBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233131AbhHIHBV (ORCPT
+        id S233227AbhHIHIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:08:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7810 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232979AbhHIHIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:01:21 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C8CC0613CF;
-        Mon,  9 Aug 2021 00:01:00 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f3so4720162plg.3;
-        Mon, 09 Aug 2021 00:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=0xn3ZbqPT48Qgutw2euPm9KYmANN2Fb5eOs99RKHa2g=;
-        b=OiQiolbXBBg21BcB+jFcTqKHBF65SZt7UW4g9TyU7NTo3At8QSS9Y49DckMg+tISHQ
-         7aTRCmlio4qq4fgQtnM9LxAl+zCUnWy59WI25tU/qyiNUwVfVOX0AGzkt7YXCtrfQp4O
-         eQijjet6ZsCH8KbdpaBjwk3+LcgiDcU1Rk7LWvmeHgaQoLtkP+Qzv7QB0J865rDconzl
-         K+pOEk8DJp91Zj+S1Y2xD/VGXpFpqWP1w93y+3hZDoiAVpKSvyfTsJXAeZcBt4TL7TFd
-         Q3YZsDyABAUslsqwXFCE2wtLyqA8XxZLtx6pybySy1WcbV9z8Zsb73S6DzZrHGcJyRyM
-         6ofg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=0xn3ZbqPT48Qgutw2euPm9KYmANN2Fb5eOs99RKHa2g=;
-        b=rNg37sAoiB74oNU6Z/xbt8jWbhfCVUWz8GlViPdHDbbw2/5W4HyESwRWU9tSg4FGwV
-         WecMHD665I4ljCuRQvG0EtKfe9k/gvbHhAURMPf/LFLje3eOvg1TyhGxnwKo6baKrsM5
-         YMgjrFKrxeXIBT5oJD8sg7g064qJbeSPGr+N6UvkgR06ksqYxIqucy4zTl6Kujtq7ALV
-         pDtUcrOZ+o1+3xHga+ykVQYlI1wRlYsat319WFagYzRUBdqgmysxaZCs89n67vuV/R0h
-         fjBuOJbm5qyYDx6k+EycQeau57KIsZ6vPli1xbUVutSYJfuRCJLkWpqXaT3e2tAW03XA
-         46nQ==
-X-Gm-Message-State: AOAM5302qLSkr/5yScMKu9EtO0GEu5C9bIhGLSi6rV0Hu1r9hN2taZ5m
-        l1t3Vgf+wsFLB7MeXlet5jk=
-X-Google-Smtp-Source: ABdhPJxhcuCCQPGjmmyHGpv2DWq8jotYFUGzVA6dVcieOgSg+FCjCfe7/I8f08fl3ZTLCXzBKVnV1w==
-X-Received: by 2002:a17:90a:509:: with SMTP id h9mr12526469pjh.71.1628492459944;
-        Mon, 09 Aug 2021 00:00:59 -0700 (PDT)
-Received: from u18.mshome.net ([167.220.238.132])
-        by smtp.gmail.com with ESMTPSA id n11sm17316165pjf.17.2021.08.09.00.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 00:00:59 -0700 (PDT)
-From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>
-Subject: [PATCH] samples: bpf: add an explict comment to handle nested vlan tagging.
-Date:   Mon,  9 Aug 2021 12:30:46 +0530
-Message-Id: <20210809070046.32142-1-falakreyaz@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 9 Aug 2021 03:08:51 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GjnH41nFGzYmZN;
+        Mon,  9 Aug 2021 15:08:16 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 15:08:28 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 15:08:27 +0800
+Subject: Re: [PATCH v2 2/2] nbd: convert to use blk_mq_get_rq_by_tag()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <bvanassche@acm.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nbd@other.debian.org>, <yi.zhang@huawei.com>
+References: <20210809030927.1946162-1-yukuai3@huawei.com>
+ <20210809030927.1946162-3-yukuai3@huawei.com> <YRDK9tBFscK5ScK8@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
+Date:   Mon, 9 Aug 2021 15:08:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <YRDK9tBFscK5ScK8@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A codeblock for handling nested vlan trips newbies into thinking it as
-duplicate code. Explicitly add a comment to clarify.
+On 2021/08/09 14:28, Ming Lei wrote:
+> On Mon, Aug 09, 2021 at 11:09:27AM +0800, Yu Kuai wrote:
+>> blk_mq_tag_to_rq() might return freed request, use
+>> blk_mq_get_rq_by_tag() instead.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/block/nbd.c | 11 ++++++-----
+>>   1 file changed, 6 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+>> index c38317979f74..9e56975a8eee 100644
+>> --- a/drivers/block/nbd.c
+>> +++ b/drivers/block/nbd.c
+>> @@ -713,11 +713,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
+>>   	tag = nbd_handle_to_tag(handle);
+>>   	hwq = blk_mq_unique_tag_to_hwq(tag);
+>>   	if (hwq < nbd->tag_set.nr_hw_queues)
+>> -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
+>> -				       blk_mq_unique_tag_to_tag(tag));
+>> -	if (!req || !blk_mq_request_started(req)) {
+>> -		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
+>> -			tag, req);
+>> +		req = blk_mq_get_rq_by_tag(nbd->tag_set.tags[hwq],
+>> +					   blk_mq_unique_tag_to_tag(tag));
+>> +	if (!req) {
+>> +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d\n", tag);
+>>   		return ERR_PTR(-ENOENT);
+>>   	}
+>>   	trace_nbd_header_received(req, handle);
+>> @@ -779,6 +778,8 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
+>>   	}
+>>   out:
+>>   	trace_nbd_payload_received(req, handle);
+>> +	if (req)
+>> +		blk_mq_put_rq_ref(req);
+>>   	mutex_unlock(&cmd->lock);
+>>   	return ret ? ERR_PTR(ret) : cmd;
+> 
+> After blk_mq_put_rq_ref() returns, this request may have been freed,
+> so the returned 'cmd' may have been freed too.
+> 
+> As I replied in your another thread, it is driver's responsibility to
+> cover race between normal completion and timeout/error handling, that
+> means the caller of blk_mq_tag_to_rq need to make sure that the request
+> represented by the passed 'tag' can't be freed.
 
-Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
----
- samples/bpf/xdp1_kern.c | 2 ++
- samples/bpf/xdp2_kern.c | 2 ++
- 2 files changed, 4 insertions(+)
+Hi, Ming
 
-diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-index 34b64394ed9c..f0c5d95084de 100644
---- a/samples/bpf/xdp1_kern.c
-+++ b/samples/bpf/xdp1_kern.c
-@@ -57,6 +57,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 
- 	h_proto = eth->h_proto;
- 
-+	/* Handle VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
-@@ -66,6 +67,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 			return rc;
- 		h_proto = vhdr->h_vlan_encapsulated_proto;
- 	}
-+	/* Handle double VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
-diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-index c787f4b49646..d8a64ab077b0 100644
---- a/samples/bpf/xdp2_kern.c
-+++ b/samples/bpf/xdp2_kern.c
-@@ -73,6 +73,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 
- 	h_proto = eth->h_proto;
- 
-+	/* Handle VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
-@@ -82,6 +83,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 			return rc;
- 		h_proto = vhdr->h_vlan_encapsulated_proto;
- 	}
-+	/* Handle double VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
--- 
-2.17.1
+There are two problems here in nbd, both reported by our syzkaller.
 
+The first is that blk_mq_tag_to_rq() returned a freed request, which is
+because tags->static_rq[] is freed without clearing tags->rq[].
+Syzkaller log shows that a reply package is sent to client without
+the client's request package. And this patch is trying to solve this
+problem.
+
+The second is that flush_end_io() decrement it's refcount to -1. I guess
+this is because nbd_clear_que concurrent with normal completion /
+timeout / error handling, and somehow trigger the problem.
+However I'm still trying to understand the logic in nbd. I tried to
+add a check in flush_end_io() to fix this, as you replied, it's
+driver's responsibility to fix the problem.
+
+It seems that the two problems are not related. And this patch is ok
+to fix the first problem. Any suggestions?
+
+Thanks
+Kuai
+> 
+> I'd suggest to understand why nbd_read_stat()/blk_mq_tag_to_rq() may return
+> one freed request first, who frees the request and how when calling
+> blk_mq_tag_to_rq() before figuring out solutions.
