@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489343E3E68
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 05:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1EC3E3E69
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 05:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhHIDdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 23:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
+        id S232769AbhHIDlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 23:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232905AbhHIDdV (ORCPT
+        with ESMTP id S231459AbhHIDlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 23:33:21 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA35C06179E;
-        Sun,  8 Aug 2021 20:32:57 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so5605239otl.1;
-        Sun, 08 Aug 2021 20:32:57 -0700 (PDT)
+        Sun, 8 Aug 2021 23:41:01 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80375C061760
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 20:40:41 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id oz16so10362581ejc.7
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 20:40:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jYD0I1JcL0BH0vCCzrjiH0y23RAOPCoB1MhwiKSdk1I=;
-        b=ASwNRcZC+WslkMmnYkzKeAg3z3EdGFgbbNCh31jouaKVo60A66evSpkvvLRWbhw+5g
-         nIxp6BJ+01A7BQZ+UxzSo2yFWVCtQn7mVg/tr93Q4V35bGHssqSPJf4XS8cVQ/jLxId+
-         C2xa9ZsEMKYB1hbS6WzLr2lJXzEe58ij8m148DOuQ9uqhuELQLOTxwSOtwwPv7h/9Yqd
-         Uf/lGePC7NMPiDt3EShFA8vO9bPmxpemnTIZO4WfCQ5iV2tfygJwCiCr2l3C6wvTU7VZ
-         NlFjMC2rbG6YyoXWz9LvgaRTZHAoQK3u+OqovsGJcXU8FZT2SBtRc6ZCHd5v5CPNhGTF
-         NlMQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4cLY9sgUFeqLVG8RY76RwvNnVEYKobl7puuBKIKFwgw=;
+        b=gM0E3hXuGckUHWxXj0uv4NdJxUHs6kvfmlWLO0jkmq2JJVdzob2k8qNuiXLKJoUTn9
+         X5/IGAKRLGZt3/NXNGg0MbMH+tSuiFVvK6wj8ZNnKyZCjJIDkX2PnvLBCoHejGhzzp2Y
+         uibRcJz//L4hH9I6j+Px7DxETExDxEUA9dAvuyzY6cRAMXHKnCJPrFGw2q1t2YQgqHwW
+         duoJO8Xbf+wKat5lMKbv7gbbWr0Jw80K3PGNdBR6/vhjoxfdR56W2rUQKbhTlG9AxxF6
+         tKFYWCCHlZ2Clhcex4I8zDwzqNUBhbBU0zvfs2mpH5LkYGb7ULu1utQ/Qg/Gkax0Skqo
+         mVxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jYD0I1JcL0BH0vCCzrjiH0y23RAOPCoB1MhwiKSdk1I=;
-        b=b+4+YwlOEm67fpWc0ezLeh02lKOvuKq1d2tqMq5OqPc3ZiRTJrdKwZmvdsKiKFLpAV
-         RPvZa76djgP9tdElRWaZA2Ae8ah4MlsYjsRwC72oDUHGWWSjZ4MY7KgQ2mUCYGyjuWjq
-         jQ2WNbV23huEP3GrpfKsN80XOf78MgS7pLJyn5lpKX4XjFpAQQYHUKdG0/NZzPx8xs+/
-         27ust1ZnZXipbmIVSMPGRO82XcKnWwhSp0qoA5OI31/+lB4HJewz3nlvPSGF26VsMzeS
-         pDiXA8Bbf5CzZYzmyWQcDu08IrNSf9d3LFtQVk6szve5sCXi/owdfqr3ejk30yh8gxNm
-         9Huw==
-X-Gm-Message-State: AOAM533nJVqJn7UnUc9F4NxaoVFuG83RDAEy4V3IeAZamoHQHCO57/2A
-        YX6powhQogULnjEbknCVcl5F9wlwIm0dv8tF
-X-Google-Smtp-Source: ABdhPJznv0VzS5EFBDhxNOvRXEEZpBoNS4yw7oHByexjC6HrCWiHLgymSQWFvxuqHAhXUc10JmKamQ==
-X-Received: by 2002:a9d:5e0b:: with SMTP id d11mr15767902oti.371.1628479976891;
-        Sun, 08 Aug 2021 20:32:56 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id r7sm1463646oij.14.2021.08.08.20.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 20:32:56 -0700 (PDT)
-From:   Ian Pilcher <arequipeno@gmail.com>
-To:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org
-Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
-Subject: [RFC PATCH v2 10/10] block: Add config option to enable block device LED triggers
-Date:   Sun,  8 Aug 2021 22:32:17 -0500
-Message-Id: <20210809033217.1113444-11-arequipeno@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210809033217.1113444-1-arequipeno@gmail.com>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4cLY9sgUFeqLVG8RY76RwvNnVEYKobl7puuBKIKFwgw=;
+        b=dYOfCaV0faCyIujd3t23gaHUn+TquYyGIqRvOTH76o8VbVDZiPEgLe1XOQozV9QyQ2
+         JIy6vJaEFAkPiFQys8TZrahEU97hbp7STquZziuhTbaSNCwvJV2sb0I1z+eyDpwhzbYC
+         HZ9Zrseunk5x9V0o6VVPrTvsnU8q9ZMQKEyVNXb/Ev6SDMXcMVdPImUVLorudYRa5bre
+         650uo3ElXvumJ2QII609HDh00nnodLj83x9dlB3SzrRBL1Wi5Pke5S0B4beYL9ml48rR
+         GrtKDWCf9JMqRkepQ610VWDXH33vkF+wQxAxMDIrLx316zEVK5uUy+8g7+UbjHsle9ap
+         Xfkg==
+X-Gm-Message-State: AOAM531viSJgDDZKxUSi/tyc1oiMnSlb6iHrHpcIC6Z2oeaEzicpzxX6
+        Tr09mF4diF3avtzL6HR6tdl9IAWpfFxt96/zquQ=
+X-Google-Smtp-Source: ABdhPJzKuSfup2sRDZ7kB9/1qqRB425HNqbVtcHB1daSWJ09aNadRvOCLRdh1Ocv6p+y9lqa8GbDcp3xUbPvL5MNU7w=
+X-Received: by 2002:a17:906:a890:: with SMTP id ha16mr21342380ejb.73.1628480440037;
+ Sun, 08 Aug 2021 20:40:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210721111137.1523229-1-mudongliangabcd@gmail.com>
+ <20210721111137.1523229-2-mudongliangabcd@gmail.com> <YQvXfQ4A04cy5MEA@kroah.com>
+In-Reply-To: <YQvXfQ4A04cy5MEA@kroah.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 9 Aug 2021 11:40:13 +0800
+Message-ID: <CAD-N9QX7A=Z4=bpjw63zCZ=KTTJTYP=n9g29Kp1d39DxgK2_Eg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ipack: tpci200: fix many double free issues in tpci200_pci_probe
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        industrypack-devel@lists.sourceforge.net,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
----
- block/Kconfig  | 8 ++++++++
- block/Makefile | 1 +
- 2 files changed, 9 insertions(+)
+On Thu, Aug 5, 2021 at 8:20 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jul 21, 2021 at 07:11:31PM +0800, Dongliang Mu wrote:
+> > The function tpci200_register called by tpci200_install and
+> > tpci200_unregister called by tpci200_uninstall are in pair. However,
+> > tpci200_unregister has some cleanup operations not in the
+> > tpci200_register. So the error handling code of tpci200_pci_probe has
+> > many different double free issues.
+> >
+> > Fix this problem by moving those cleanup operations out of
+> > tpci200_unregister, into tpci200_pci_remove and reverting
+> > the previous commit 9272e5d0028d
+> >
+> > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > ---
+> >  drivers/ipack/carriers/tpci200.c | 35 ++++++++++++++++----------------
+> >  1 file changed, 17 insertions(+), 18 deletions(-)
+>
+> This needs to be applied to the tree now, and should not depend on your
+> patch 1/3 here as it is a bugfix.  Please redo this series and send 2,
+> one to be merged for 5.14-final and to go to the stable kernels, and a
+> separate "clean up things" series that can wait until 5.15-rc1.
 
-diff --git a/block/Kconfig b/block/Kconfig
-index fd732aede922..ef05b36b5251 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -220,6 +220,14 @@ config BLK_INLINE_ENCRYPTION_FALLBACK
- 	  by falling back to the kernel crypto API when inline
- 	  encryption hardware is not present.
- 
-+config BLK_LED_TRIGGERS
-+	bool "Enable the blkdev LED trigger"
-+	depends on LEDS_TRIGGERS
-+	help
-+	  The blkdev LED trigger allows LEDs to be controlled by
-+	  block device activity (reads and writes).  See
-+	  Documentation/block/blk-ledtrig.rst.
-+
- menu "Partition Types"
- 
- source "block/partitions/Kconfig"
-diff --git a/block/Makefile b/block/Makefile
-index bfbe4e13ca1e..bcd97ee26462 100644
---- a/block/Makefile
-+++ b/block/Makefile
-@@ -42,3 +42,4 @@ obj-$(CONFIG_BLK_SED_OPAL)	+= sed-opal.o
- obj-$(CONFIG_BLK_PM)		+= blk-pm.o
- obj-$(CONFIG_BLK_INLINE_ENCRYPTION)	+= keyslot-manager.o blk-crypto.o
- obj-$(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK)	+= blk-crypto-fallback.o
-+obj-$(CONFIG_BLK_LED_TRIGGERS)	+= blk-ledtrig.o
--- 
-2.31.1
+No problem. I will send a separate fix.
 
+BTW, how about the PATCH 3/3 in this series [1]? It does not depend on
+PATCH 1/3, however, it does not include the fix to memleak, but also
+moves the unregister function. Shall I send it separately?
+
+[1] https://lkml.org/lkml/2021/7/21/370
+
+>
+> thanks,
+>
+> greg k-h
