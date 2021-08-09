@@ -2,311 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200FD3E4A6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4FF3E4A74
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbhHIRBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:01:11 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:8246 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232979AbhHIRBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:01:08 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179Gwqw1022833;
-        Mon, 9 Aug 2021 19:00:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=02jCAhpFUnn47oyWIEk4dg1QdVAKJIUUqwcrrITXrNY=;
- b=txF/eMLc/FuVstdNIQlhpHS8hHVdPA0lSUP3lryXj+hnc28KX2R9OpRi2XOpU34KKKxA
- gAYs7xQmlwleNPEE6PVneZgU4UcUnUnU7HXpbPs7bjT8+/ZosMYHkhqNyE2mOnGTXFNr
- br2ZLZHge/gsR/8khg5yIpaF9eU4hTzsUGOyatDQbE0woTtqEc/jVq/MT9bzwB/yteU0
- JqrAs4GjOmB6pTuQz5XtfjX8bCCC5+XRBphG41qGG6sTMYKKBxw+RMzyE00JzywSjJmA
- CF/dU9f6GnfIJ+4XFcMN8i/83UPSNoiP5HUl/WeTtesO4FmAzbBZW7/bO77q38zTP4Z+ Cg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3aax1kk1r1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 19:00:31 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AC5D910002A;
-        Mon,  9 Aug 2021 19:00:28 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1920B2128CE;
-        Mon,  9 Aug 2021 19:00:28 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Aug
- 2021 19:00:27 +0200
-Subject: Re: [PATCH v2 1/5] remoteproc: Add support for detach-only during
- shutdown
-To:     Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Loic Pallardy <loic.pallardy@st.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210723220248.6554-1-s-anna@ti.com>
- <20210723220248.6554-2-s-anna@ti.com> <20210802184431.GC3051951@p14s>
- <cd399fef-6db7-72eb-933f-7454a043ed14@ti.com> <20210803162311.GB3091608@p14s>
- <7e264184-60ea-a035-7bd3-1fc2c76a160d@ti.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <1c526c7c-40cd-90b5-c5b3-0e130f54bc1e@foss.st.com>
-Date:   Mon, 9 Aug 2021 19:00:26 +0200
+        id S233740AbhHIREM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:04:12 -0400
+Received: from mail-bn1nam07on2076.outbound.protection.outlook.com ([40.107.212.76]:58497
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233265AbhHIREL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 13:04:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nVG+CK+HwvZc/i+wXy44Ek+ujpqv1HJZ1nsFx+NtpHBFbuqz6flzpjfmrcSVvAlAqzzKqCPVooUDItlVmVEJ5FoYrPRfBaRoMUqNXsPw4s/gcyMF6nP/6pbq3/fLxLa4UYhpy8E1ZZSlHQ/x9d1i2SRJBiT9F09mB4rGRy0MWgCNwVcjG2Tf10NyvAIlSZJJEcXlkjXKOo7gwCVw6dMbErO8w3tzprV5dmBNFYEGJHDUCI4tm0LxKY9he6Tummzty+fUILBpd6OTwJ46NV43QESS3YxCwIslNx2+uNqHGtH0LBPuU3fY/Yzax8fz6HwIaeTwW2jhzGFRfPCaM6WxEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5v1a2gehKOpexdL4ayIoEKPRO8p4CJ7ein6k1pfdQYg=;
+ b=dArsREfEwFEXDatGMVJkoXRLJRpLBiW5bs2xVpsz3r41PddiMbchItFUCyN50zxJfvu4y5tPj4QL/A2oyni7UdqZo6Wy8OF1BVVI9ZruLxWHkZX4bCPgv0de7XcNgDDaOdk2Ae7r7Tcd0ORxmG3b2xHZaNXz3MqobzI0ijj8ChAWp0GNCFqOABay4c+eJlgswCALEkYaEja/Bkl1P2B4whADWtJOSSS6tsSoZqf/RZKUupDlaHvDlMphHgsI1rHSFz3Wy47LdCA4Cwcb3IHTKK8qJ4gfqXC/BbHGj21qdXiY1aWAXJ7jntMVWK5DRWFcqI5FjDBMEohxAUjFl7tGbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5v1a2gehKOpexdL4ayIoEKPRO8p4CJ7ein6k1pfdQYg=;
+ b=FhhB6c0bQjnNBZ8O+8IWCzHKsJCfZwUf0KLnoBrVk6jUO7W2NC8H/cf1WXG3IVQH1I3fzHmBK4a7wqHN/+6MLCvxFoGUH9vPTUB1q33UrT7SRfj5Tz+PPIhfM9g0StyCEzLsU41U+dBFHKLYBUuCzP/b6OIYrNh+NuQqsHUWeqs=
+Authentication-Results: zytor.com; dkim=none (message not signed)
+ header.d=none;zytor.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21)
+ by DM5PR1201MB0107.namprd12.prod.outlook.com (2603:10b6:4:55::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Mon, 9 Aug
+ 2021 17:03:48 +0000
+Received: from DM5PR1201MB0201.namprd12.prod.outlook.com
+ ([fe80::7410:8a22:1bdb:d24d]) by DM5PR1201MB0201.namprd12.prod.outlook.com
+ ([fe80::7410:8a22:1bdb:d24d%6]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 17:03:48 +0000
+Subject: Re: [PATCH v2 2/3] KVM: x86: Handle the case of 5-level shadow page
+ table
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
+References: <20210808192658.2923641-1-wei.huang2@amd.com>
+ <20210808192658.2923641-3-wei.huang2@amd.com> <YRFG+NDkjVK0myDn@google.com>
+From:   Wei Huang <wei.huang2@amd.com>
+Message-ID: <52fe9c7d-a97b-06cc-570a-ba2d83f26d7c@amd.com>
+Date:   Mon, 9 Aug 2021 12:03:45 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <7e264184-60ea-a035-7bd3-1fc2c76a160d@ti.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YRFG+NDkjVK0myDn@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-09_06:2021-08-06,2021-08-09 signatures=0
+X-ClientProxiedBy: SN6PR16CA0052.namprd16.prod.outlook.com
+ (2603:10b6:805:ca::29) To DM5PR1201MB0201.namprd12.prod.outlook.com
+ (2603:10b6:4:5b::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.84] (165.204.77.1) by SN6PR16CA0052.namprd16.prod.outlook.com (2603:10b6:805:ca::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Mon, 9 Aug 2021 17:03:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1011b8f4-66cb-45d7-bc74-08d95b57a781
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0107:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0107954DFD5F0CE24A3F6963CFF69@DM5PR1201MB0107.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o9sXNXBWfO3Kd7uou9MjK5A+uD6H34D0Ck831RpvRvk8+VyDZlYi6G0OhDa6O1PD5rVU/2fEWok8G4FOR7D6GDaaoVmet8brf2BqJOTYvSiqUGHCFxC13YYfl+5erxkt2AxWHWc6picrM6H7DXbmE5JuX2dxQLu6qbHzq7um5r21CRbbrSH8os4hvMe3MSLle2YCaqBNas/F54gkgpSooHFfewAH6IV/jovXBWDmgtBReWaYFP98kP6WN0GQGnpwKTwwqZ5U6OZTYjZxIDO+6JfY8qp7eKHl41M+dItQd4Vt40XxyzrGQU05V/Th/gxKg5nw8o3Hac2qNfQowmTim/SedwsPuzz0WyApNe3Zq0k8OjBZkt9T+knnxztcjVmvmIaie3av6uPoKRFpNWXLIjkTtpt0OEjgsv6QPr1i5iylCVqUToDLCTGgiFRzh99mOid4LrlYwL9fT3KnmrB5OHip5Rpt9+vDg/Rpx2EkPxuKkQOt6H2yHEDWxT0KWCO+ZBDjCY39OrqIw3Ql6j/ZvtNWj5ixZXuqIwvnM7dyFq+TYQ2xS+srOqUBOn3X3XECS2mKrkx/lXHqGqY9i+sMi85/3T7ZZPZH4BuZbp90YT40ah4P81gHcKgsKkkKZ8JMZ52TEW+pnYgLesEt2nutjc6UJXMLclIdmSvvFfM3bUldp5zStUbSAd4vVNH0oypQht7vsVCmcqPifIR9Oza2kHhES5ik9r6lPnPTJ/mk2GJPgWaZNfI5NvX4OfB7t8L5q7j+YZePmLk1U2aeuBr2Yw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(136003)(396003)(346002)(66946007)(86362001)(66556008)(66476007)(16576012)(6916009)(31696002)(8936002)(316002)(478600001)(38350700002)(38100700002)(4326008)(956004)(5660300002)(8676002)(2616005)(52116002)(7416002)(36756003)(31686004)(6486002)(186003)(26005)(53546011)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1kzWnUzMEkvdURvWWlLNy9aYjJvQ2tERDMveVdLWGhvUDZwdDhnanN4Ym1i?=
+ =?utf-8?B?TzYxaWlDSWZ0VmtlN0N3U0VnV3FPRlAwSERTdHluRWtNakFpY0s4TVovN2pR?=
+ =?utf-8?B?ekNaaTBNcWJBUDdtZUhMRFV1aURqZEdhb3k2UFdseDlTcDBQbUVhVzFxb0hl?=
+ =?utf-8?B?bjZkMDdvNU81ZUNuUHVlZGI3Tm5CRDJ2bHlONlk5bVlGNG55clZBM2RCK0w1?=
+ =?utf-8?B?bmJvaUhqUElrWkp2UjJhRGp3WXZXTkM1MC9EbEtYV0kzZm5hMDVCSnloL0Y4?=
+ =?utf-8?B?K2ZHZ0xFRDFiNXFPQTAwWlFVcXRYSnBBcUJFeCsvY2k5M2F6L2pxdFlNbTla?=
+ =?utf-8?B?aEJtUmhwbEF1aVFGemZLOCtVaGRUeGpwYXl5aHhSencrb3FscnYvR1NrRnR4?=
+ =?utf-8?B?SU9Mc1JtREZEMVJxTWp2UGtDYVl4YitoZmdVcXJBelJTUHdsbkRSTmYyQnB4?=
+ =?utf-8?B?NWNpanFDUWoxSmtTYlBpSXVkdlcvRlNPYmsyKzNoRXB0TTBzVDlsWkJONEY1?=
+ =?utf-8?B?TWpNbXF2UnlDMjk0WXdBZlR4ZnZ4citvZDh6L2p0K1BEa3RVU2FQbTBRRDZn?=
+ =?utf-8?B?Z1ZuTW1PWEtlUDRlUm5LMWlXdWlxVU9Tb3g3eW9sUUp2WWEvM3YzUVdlUXU2?=
+ =?utf-8?B?b2pGTTBnUEw4WXRyTldpcHpIbDJyWURzcUVvNno5ZkU4cXhqeDRMRzlLeHJm?=
+ =?utf-8?B?SlpVeEJIcDh5cW0vdWhydXVuUjFaN285Y3QxbmZKZFZ3a05MTzJYbkdsY0lI?=
+ =?utf-8?B?bEFEdzNmKzl1WFBFd0dKQTl1TlBjVXRRUXorTnZOQzZEMXh1ckhEWTFkNzVW?=
+ =?utf-8?B?c01Bc1QxUWxHZHdMTGRlWFdRdi84Vy9DbDk3RklNZm5ybElMMXEyc1RZSlov?=
+ =?utf-8?B?a3RYUDBvNHdsODlYMVovdTZnN2VnWkF0U2dnaE1wblFrckpXb01RWG1vS01q?=
+ =?utf-8?B?eW5veUQxcE1VdVVkZWZjUkZydjFDSVdjanpBaDdERk1oQUxyVE1KTFpiaElF?=
+ =?utf-8?B?eVg3aE1DTjZCN0FmN0RpbnlyRXpmcWp4a2FZeFk2UVpRMThBeWVWZ211N0hV?=
+ =?utf-8?B?Y1JiWHUxVzVWOUR4TkppcHZmN1RWZlFTZ21QbE5vUWh1d3VZMEVaTGc4MDgw?=
+ =?utf-8?B?d2NzU1hYUDR4VlpaYWlWNmtvU0hjR29EVmxvTDBRN2t5akI5N3k0T0VlT3M4?=
+ =?utf-8?B?TzNGeXM4N055NWgwdVdRcEY5NEJXd0VjTFRGTTdHOXhHRnBvZThCaTJVYkQx?=
+ =?utf-8?B?ZG1kRDBNVk5mMndVRm5xMEJVRUJaTjgvR3FvZTY2Y25oTFpZTWxzMkpOTkp0?=
+ =?utf-8?B?MHJ1c0l0ZnY0cnVwRTNSRFdCNzRvUW5RNWkzY05YcFlHbFdoNXQ0SjAyUFVx?=
+ =?utf-8?B?OGNmWVBvMGRTQSs3Z2RZM2w4N3VOb0xPSnU4YThUSG94d3lmMWFFaW9RTnMz?=
+ =?utf-8?B?VW9ESlVPb1I5c3MzQkxPTTBiektLVWFjVWtZM2RTYUlUVUYzcDUxTG1xK212?=
+ =?utf-8?B?bkVTU3FER1ZHVDhGZWJOUXFKKzFvMENSQy9EQVpManRqMVpvWDBHS21jZ0FL?=
+ =?utf-8?B?T1c5U0x1SUdGWm1jL0xLZWV5RllCenRudC9hR1ArUC8zTGQ3UWsyUGZKU2Ns?=
+ =?utf-8?B?L1RYbnRVbHVoUjNjbEhaU2E1NnAzcGR1bU5rdmtZVzk5QTJvOVpsM1o4TU9B?=
+ =?utf-8?B?bUMrSldOT0kzVFV2VlJuZ05KanJRdnhQOXFoSEpmRzFZdTIwT2xJZW54Y0pq?=
+ =?utf-8?Q?e8+5WLJr6vgxv3fqQYFMnATXD7GzPPKyjQ6CHBq?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1011b8f4-66cb-45d7-bc74-08d95b57a781
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0201.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 17:03:48.2174
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aP8hzMQ+JETK+UeTAgMSUPugpYfwc/tT1hlE2RDkjMv+qSndBfDV7FazEtjITRXZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suman, Mathieu,
 
 
-On 8/4/21 9:17 PM, Suman Anna wrote:
-> Hi Mathieu,
+On 8/9/21 10:17 AM, Sean Christopherson wrote:
+> On Sun, Aug 08, 2021, Wei Huang wrote:
+>> @@ -3457,10 +3457,19 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>>  		mmu->pae_root[i] = root | pm_mask;
+>>  	}
+>>  
+>> -	if (mmu->shadow_root_level == PT64_ROOT_4LEVEL)
+>> +	/*
+>> +	 * Depending on the shadow_root_level, build the root_hpa table by
+>> +	 * chaining either pml5->pml4->pae or pml4->pae.
+>> +	 */
+>> +	mmu->root_hpa = __pa(mmu->pae_root);
+>> +	if (mmu->shadow_root_level >= PT64_ROOT_4LEVEL) {
+>> +		mmu->pml4_root[0] = mmu->root_hpa | pm_mask;
+>>  		mmu->root_hpa = __pa(mmu->pml4_root);
+>> -	else
+>> -		mmu->root_hpa = __pa(mmu->pae_root);
+>> +	}
+>> +	if (mmu->shadow_root_level == PT64_ROOT_5LEVEL) {
+>> +		mmu->pml5_root[0] = mmu->root_hpa | pm_mask;
+>> +		mmu->root_hpa = __pa(mmu->pml5_root);
+>> +	}
 > 
-> On 8/3/21 11:23 AM, Mathieu Poirier wrote:
->> Good morning,
->>
->> On Mon, Aug 02, 2021 at 06:21:38PM -0500, Suman Anna wrote:
->>> Hi Mathieu,
->>>
->>> On 8/2/21 1:44 PM, Mathieu Poirier wrote:
->>>> On Fri, Jul 23, 2021 at 05:02:44PM -0500, Suman Anna wrote:
->>>>> The remoteproc core has support for both stopping and detaching a
->>>>> remote processor that was attached to previously, through both the
->>>>> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
->>>>> unconditionally only uses the stop functionality at present. This
->>>>> may not be the default desired functionality for all the remoteproc
->>>>> platform drivers.
->>>>>
->>>>> Enhance the remoteproc core logic to key off the presence of the
->>>>> .stop() ops and allow the individual remoteproc drivers to continue
->>>>> to use the standard rproc_add() and rproc_del() API. This allows
->>>>> the remoteproc drivers to only do detach if supported when the driver
->>>>> is uninstalled, and the remote processor continues to run undisturbed
->>>>> even after the driver removal.
->>>>>
->>>>> Signed-off-by: Suman Anna <s-anna@ti.com>
->>>>> ---
->>>>> v2: Addressed various review comments from v1
->>>>>  - Reworked the logic to not use remoteproc detach_on_shutdown and
->>>>>    rely only on rproc callback ops
->>>>>  - Updated the last para of the patch description
->>>>> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210522000309.26134-3-s-anna@ti.com/
->>>>>
->>>>>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
->>>>>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
->>>>>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
->>>>>  3 files changed, 17 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
->>>>> index 4ad98b0b8caa..16c932beed88 100644
->>>>> --- a/drivers/remoteproc/remoteproc_cdev.c
->>>>> +++ b/drivers/remoteproc/remoteproc_cdev.c
->>>>> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
->>>>>  		    rproc->state != RPROC_ATTACHED)
->>>>>  			return -EINVAL;
->>>>>  
->>>>> +		if (rproc->state == RPROC_ATTACHED &&
->>>>
->>>> This is already checked just above.
->>>>
->>>>> +		    !rproc->ops->stop) {
->>>
->>> Well, this is checking for both conditions, and not just the stop ops
->>> independently. We expect to have .stop() defined normally for both regular
->>> remoteproc mode and attached mode where you want to stop (and not detach), but
->>> as you can see, I am supporting only detach and so will not have .stop() defined
->>>  with RPROC_ATTACHED.
->>>
->>>>
->>>> This is checked in rproc_stop() where -EINVAL is returned if ops::stop has not
->>>> been provided.
->>>
->>> rproc_shutdown() actually doesn't return any status, so all its internal
->>> checking gets ignored and a success is returned today.
->>>
->>
->> That is correct, and I have suggested to add a return value in my previous
->> review.
+> I still really dislike this approach, it requires visually connecting multiple
+> statements to understand the chain.  I don't see any advantage (the 6-level paging
+> comment was 99.9% a joke) of rewriting root_hpa other than that's how it's done today.
 > 
-> Yeah ok. I can add a separate patch fixing that, and couple of these checks then
-> become redundant.
+
+I can change this part in v3, unless different comments from other
+reviewers.
+
+> In the future, please give reviewers ample opportunity to respond before sending
+> a new version if there's disagreement, otherwise the conversation gets carried
+> over into a different thread and loses the original context.
 > 
->>
->>>>
->>>>> +			dev_err(&rproc->dev,
->>>>> +				"stop not supported for this rproc, use detach\n");
->>>>
->>>> The standard error message from the shell should be enough here, the same way it
->>>> is enough when the "start" and "stop" scenarios fail.
->>>
->>> Thought this was a bit more informative, but sure this trace can be dropped.
->>>
->>>>
->>>>> +			return -EINVAL;
->>>>> +		}
->>>>> +
->>>>>  		rproc_shutdown(rproc);
->>>>>  	} else if (!strncmp(cmd, "detach", len)) {
->>>>>  		if (rproc->state != RPROC_ATTACHED)
->>>>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->>>>> index 7de5905d276a..ab9e52180b04 100644
->>>>> --- a/drivers/remoteproc/remoteproc_core.c
->>>>> +++ b/drivers/remoteproc/remoteproc_core.c
->>>>> @@ -2075,7 +2075,10 @@ void rproc_shutdown(struct rproc *rproc)
->>>>>  	if (!atomic_dec_and_test(&rproc->power))
->>>>>  		goto out;
->>>>>  
->>>>> -	ret = rproc_stop(rproc, false);
->>>>> +	if (rproc->state == RPROC_ATTACHED && !rproc->ops->stop)
->>>>> +		ret = __rproc_detach(rproc);
->>>>> +	else
->>>>> +		ret = rproc_stop(rproc, false);
->>>>
->>>> As I indicated in my last review I think rproc_shutdown() and rproc_del() should
->>>> be decoupled and the right call made in the platform drivers based on the state
->>>> of the remote processor.  
-
-Agree With Mathieu. More than that it looks to me that the stop ops is not
-optional and mandatory to implement the remoteproc shutdown. It should be the
-role of the platform driver to decide if a stop is a detachment.
-
-This behavior may also depend on the project for multi purpose platforms. In
-this case DT property might be more appropriate than a null stop ops to
-determine the behavior.
-
->>>
->>> We have various remoteproc API provided in pairs - rproc_alloc()/rproc_free(),
->>> rproc_add()/rproc_del(), rproc_boot()/rproc_shutdown() and
->>> rproc_attach()/rproc_detach(). The drivers are configuring conditions for
->>> auto-boot and RPROC_DETACHED. The reason they are coupled is primarily because
->>> of the auto-boot done during rproc_add(). And we handle the RPROC_DETACHED case
->>> just as well in rproc_boot().
->>>
->>
->> The difference with rproc_boot() is that we are checking only the state of the
->> remoteproc, everything else related to the remote processor operations is
->> seamlessly handles by the state machine.  It is also tied to the
->> rproc_trigger_auto_boot() mechanic - decoupling that would be messy without
->> bringing any advantages other than keeping with a semantic symmetry.
-> 
-> Most of this is actually tied to auto_boot if you think about it, not just the
-> rproc state. If we have auto_boot set to false, then rproc_add() would not do
-> anything, and the decision to start or attach can either be done through the
-> sysfs/cdev or a kernel remoteproc or some consumer driver. And the state machine
-> is getting influenced by this flag. auto-boot is a very useful feature.
-> 
-> You are asking is to do things differently between the regular start/stop case
-> and attach/detach case ignoring the auto-boot. The semantic symmetry actually
-> makes it easier to follow the state machine given that there are some internal
-> reference counts as well.
-> 
-> Note that we also have the devres API, and rproc_alloc()/rproc_free() and
-> rproc_add()/rproc_del() form the main remoteproc subsystem API. The drivers
-> would end up using matching calls if we don't have auto_boot.
-> 
->>
->>> While what you have suggested works, but I am not quite convinced on this
->>> asymmetric usage, and why this state-machine logic should be split between the
->>> core and remoteproc drivers differently between attach and detach. To me,
->>> calling rproc_detach() in remoteproc drivers would have made sense only if they
->>> are also calling rproc_attach().
-
-In current implementation to be able to detach a remote processor we need to be
-in RPROC_ATTACHED state. If I well remember the reason is the backup of the
-resource table to reinitialize it on detach.should we improve this?
-
-We could also consider the attach and detach as 2 separate features:
-- attach is used for a pre loaded firmware (e.g early action use case waiting
-Linux boot)
-   => can be stopped as a loaded firmware.
-
-- boot a remote firmware loaded from sysfs but detach it on Linux shutdown to
-allow it to property stop it own activities (e.g Linux independent reboot).
-
->>
->> As pointed out above I see rproc_boot() as a special case but if that really
->> concerns you I'm open to consider patches that will take rproc_attach() out of
->> rproc_boot(). 
->>
-> 
-> We are talking about a bigger behavioral change to remoteproc core here. So I
-> would definitely want to hear from others as well on this before we spend any
-> time reworking code.
-
-I'm not sure to understand what would be behind this rework. What is exactly the
-issue on the rproc_boot? having a semantic symmetry? In this case do you expect
-that the user application determines the current state of the remote processor
-and "start" it or "attach" it, depending on state? Or does it be implemented in
-rproc_sysfs and rpcroc_cdev (and few platform drivers).
-
-Look to me that take rproc_attach() out of rproc_boot() could break or
-complexify some legacy APIs.
-
-Regards,
-Arnaud
-
-> 
-> Meanwhile, how do I take this series forward? One option I can probably do is
-> turn off auto-boot for early-boot case in my drivers and do the matching
-> attach/detach.
-> 
-> regards
-> Suman
-> 
->>>
->>>
->>> Conditions such as the above make the core code
->>>> brittle, difficult to understand and tedious to maintain.
->>>
->>> The logic I have added actually makes rproc_shutdown behavior to be on par with
->>> the rproc_boot().
->>>
->>> regards
->>> Suman
->>>
->>>>
->>>> Thanks,
->>>> Mathieu
->>>>
->>>>>  	if (ret) {
->>>>>  		atomic_inc(&rproc->power);
->>>>>  		goto out;
->>>>> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
->>>>> index ea8b89f97d7b..133e766f38d4 100644
->>>>> --- a/drivers/remoteproc/remoteproc_sysfs.c
->>>>> +++ b/drivers/remoteproc/remoteproc_sysfs.c
->>>>> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
->>>>>  		    rproc->state != RPROC_ATTACHED)
->>>>>  			return -EINVAL;
->>>>>  
->>>>> +		if (rproc->state == RPROC_ATTACHED &&
->>>>> +		    !rproc->ops->stop) {
->>>>> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
->>>>> +			return -EINVAL;
->>>>> +		}
->>>>> +
->>>>>  		rproc_shutdown(rproc);
->>>>>  	} else if (sysfs_streq(buf, "detach")) {
->>>>>  		if (rproc->state != RPROC_ATTACHED)
->>>>> -- 
->>>>> 2.32.0
->>>>>
->>>
-> 
+>>  
+>>  set_root_pgd:
+>>  	mmu->root_pgd = root_pgd;
