@@ -2,142 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0233E500F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE0D3E5010
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237033AbhHIXir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 19:38:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235649AbhHIXip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 19:38:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C48E460E52;
-        Mon,  9 Aug 2021 23:38:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628552304;
-        bh=DVYy3vnM+x/KAEwbOsFZgEawHFEU9uV6mOJ99WBM1uM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KKGRRX4QBd6fjDtCJU8PqxpmCHRBFc0ASDcCFiis6Q66mAbWWNtIjZVAUEtpLVXoJ
-         GebjrxflflXyQL8FwlMshB/L62vfD02LFN8OvZM7eQSAEPQ6JgC5cEiHhjDNwGEdUV
-         pLDjNZYiDvVv88hLhlEcrEDW7ARggewkNSgkbXU4eZ0RBIonD/F66GTm9UsENGjYab
-         M/9QIa6FydMs+Dds2JnPilrgjevKr3weLKNH630vHylVag1S+QgPssOqr9DTUMAlvo
-         Z3m2aNs/8/3xwo4Xg1sgmn0Pu6SuR0v0pbUSJv4iL+Tv6iq292dOLXK4wvgr901L+w
-         mpxeMjRLLK+9g==
-Date:   Tue, 10 Aug 2021 08:38:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH v2 00/10] tracing/boot: Add histogram syntax support in
- boot-time tracing
-Message-Id: <20210810083822.ea1834e5e9ae403b1c8c2ed9@kernel.org>
-In-Reply-To: <162852406891.143877.12110677006587392853.stgit@devnote2>
-References: <162852406891.143877.12110677006587392853.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S237050AbhHIXkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 19:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232717AbhHIXkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 19:40:12 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE92C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 16:39:50 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id b133so32720955ybg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 16:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z2sv71HcZIH8w7D7A/0VLfE0bixNsEfaj8nrBK5Ia/4=;
+        b=F/alD07719E2mkeZgWEmK+Eo5daOtDtHehShv5eD43zAsP3Kb3G87QtYVLh5TnKP71
+         pQHGPWoR1lrjlG0Y9Ic0OKDoGUFUZssu0u0K5e5z4gAI6Ko4rA1/3qGwVuzlpFdTDMZz
+         ZKkooqURDu7lOA/XYwe+D8PnlayGmHmxKTF+m7QvalhOWL8UcEJLf9ASk3ZNU1X1MBws
+         HjvABe5UzhplC0ye47QP2k9+pQqb9WgphG3YlKEUe/Xo+qSvCj7Bkn8U7mzZpHZmRS2z
+         M3qhDBMQm99MehVHuC1snHxmRAWn70YepAxV+1c24mvFczpVl3+I3G2sCdp6uEiKA3X3
+         lYjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z2sv71HcZIH8w7D7A/0VLfE0bixNsEfaj8nrBK5Ia/4=;
+        b=g2WgKSPHI8iWUr6xc6EEA3Z4CJ/8OhMy3XenEAN0GVMNUbmWQojFqUQo9ayed8rLPF
+         Yh3JvF1t8tXRGmF2AcrDKO+ACHQOyhD4kZnzWxdLChtjdycxp7BNPqC8Fg6z3d7a8NmR
+         fGAhJlkR6NClyac0KKcNygSUQO+kOsCBxTpJFvoM8JkGGJh20SzNeD3P6rkDj3Jw6uID
+         Zrb/v8Lp6PMGiCUP8NFDc32+3UTJlLoqhJLOUKvjqO8OPpcTF8O8YBggDT72OaJkyP02
+         1c8mwFe1ckfCC0l5Of7S5Oo2nXPm6AqPa/WNAcCtzKXbDilvkZqAWotJP9PQ+iWMwmsL
+         7qJA==
+X-Gm-Message-State: AOAM5308pC4+rocdnbe3eCySPgT6gMRP8BcRtqCsjngAMwCxKO4uab9z
+        L6L9jdohtpcPHgb6yohbAJ7o06+Y59sXhHC6Ui3mkA==
+X-Google-Smtp-Source: ABdhPJxWYxhydUIWOD3ZzWBo89a1UYk5eGApGILG8emt1qHslvSuVQgxJHDMpMSrHMfszqLA3lthBo5TbtWQo4FKVtI=
+X-Received: by 2002:a25:694a:: with SMTP id e71mr26414477ybc.114.1628552389863;
+ Mon, 09 Aug 2021 16:39:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210803044607.599629-1-mizhang@google.com> <20210803044607.599629-4-mizhang@google.com>
+ <CALMp9eR4AB0O7__VwGNbnm-99Pp7fNssr8XGHpq+6Pwkpo_oAw@mail.gmail.com>
+In-Reply-To: <CALMp9eR4AB0O7__VwGNbnm-99Pp7fNssr8XGHpq+6Pwkpo_oAw@mail.gmail.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 9 Aug 2021 16:39:38 -0700
+Message-ID: <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jim,
 
-Oops, I forgot to update the title. This is v3.
+No, I don't think 512G is supported. So, I will remove the
+'pages_512G' metric in my next version.
 
-On Tue, 10 Aug 2021 00:47:49 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Thanks.
+-Mingwei
 
-> Hi,
-> 
-> Here is the 3rd version of boot-time tracing to add histogram
-> syntax extension with a bugfix related hist-trigger.
-> 
-> In this version, I updated the first bugfix to use IS_ENABLED()
-> and show error if CONFIG_HIST_TRIGGERS=n ([1/10]), allow the spaces
-> in the variable expressions ([2/10]), and update ktest bootconfig
-> testcase ([10/10]).
-> 
-> 
-> 'Histogram' options
-> -------------------
-> Currently, the boot-time tracing only supports per-event actions
-> for setting trigger actions. This is enough for short actions
-> like 'traceon', 'traceoff', 'snapshot' etc. However, it is not good
-> for the 'hist' trigger action because it is usually too long to write
-> it in a single string especially if it has an 'onmatch' action.
-> 
-> Here is the new syntax.
-> 
->     ftrace[.instance.INSTANCE].event.GROUP.EVENT.hist[.N] {
->          keys = <KEY>[,...]
->          values = <VAL>[,...]
->          sort = <SORT-KEY>[,...]
->          size = <ENTRIES>
->          name = <HISTNAME>
->          var { <VAR> = <EXPR> ... }
->          pause|continue|clear
->          onmax|onchange[.M] { var = <VAR>, <ACTION> [= <PARAM>] }
->          onmatch[.M] { event = <EVENT>, <ACTION> [= <PARAM>] }
->          filter = <FILTER>
->     }
->     
-> Where <ACTION> is one of below;
->     
->     trace = <EVENT>, <ARG1>[, ...]
->     save = <ARG1>[, ...]
->     snapshot
-> 
-> And "N" and "M" are digit started strings for multiple histograms
-> and actions.
-> 
-> For example,
-> 
-> initcall.initcall_finish.actions =
-> "hist:keys=func:lat=common_timestamp.usecs-$ts0:onmatch(initcall.initcall_start).trace(initcall_latency,func,$lat)"
-> 
-> This can be written as below;
-> 
-> initcall.initcall_finish.hist {
->     keys = func
->     var.lat = common_timestamp.usecs-$ts0
->     onmatch {
->         event = initcall.initcall_start
->         trace = initcall_latency, func, $lat
->     }
-> }
-> 
-> Also, you can add comments for each options.
-> 
-> 
-> Thank you,
-> 
-> ---
-> 
-> Masami Hiramatsu (10):
->       tracing/boot: Fix a hist trigger dependency for boot time tracing
->       tracing/boot: Add per-event histogram action options
->       tracing/boot: Support multiple handlers for per-event histogram
->       tracing/boot: Support multiple histograms for each event
->       tracing/boot: Show correct histogram error command
->       Documentation: tracing: Add histogram syntax to boot-time tracing
->       tools/bootconfig: Support per-group/all event enabling option
->       tools/bootconfig: Add histogram syntax support to bconf2ftrace.sh
->       tools/bootconfig: Use per-group/all enable option in ftrace2bconf script
->       bootconfig/tracing/ktest: Update ktest example for boot-time tracing
-> 
-> 
->  Documentation/trace/boottime-trace.rst             |   85 +++++-
->  kernel/trace/trace_boot.c                          |  301 ++++++++++++++++++++
->  tools/bootconfig/scripts/bconf2ftrace.sh           |   97 ++++++
->  tools/bootconfig/scripts/ftrace2bconf.sh           |   24 +-
->  tools/bootconfig/scripts/xbc.sh                    |    4 
->  .../ktest/examples/bootconfigs/boottrace.bconf     |   20 +
->  .../ktest/examples/bootconfigs/verify-boottrace.sh |    2 
->  7 files changed, 508 insertions(+), 25 deletions(-)
-> 
-> -- 
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+On Mon, Aug 9, 2021 at 3:26 PM Jim Mattson <jmattson@google.com> wrote:
+>
+> On Mon, Aug 2, 2021 at 9:46 PM Mingwei Zhang <mizhang@google.com> wrote:
+> >
+> > Existing KVM code tracks the number of large pages regardless of their
+> > sizes. Therefore, when large page of 1GB (or larger) is adopted, the
+> > information becomes less useful because lpages counts a mix of 1G and 2M
+> > pages.
+> >
+> > So remove the lpages since it is easy for user space to aggregate the info.
+> > Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
+>
+> There is no such thing as a 512GiB page, is there? If this is an
+> attempt at future-proofing, why not go to 256TiB?
