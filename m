@@ -2,151 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED7D3E43BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB8F3E43BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234943AbhHIKSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        id S233920AbhHIKTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbhHIKSK (ORCPT
+        with ESMTP id S233496AbhHIKTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:18:10 -0400
+        Mon, 9 Aug 2021 06:19:01 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB1EC0613D3;
-        Mon,  9 Aug 2021 03:17:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEA0C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 03:18:41 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628504266;
+        s=2020; t=1628504320;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mUREw8STJ2JWCIPIy1C7QUNcphVARQ51gXSM8DV+C24=;
-        b=KQ+99kkaNjD1Av179Orlm992PCKb9LQzNHyTyYJk474sOaLFDMzrbEBo6VnDQwMIVOj0HH
-        7Vg0WcdSPCRQOEQHqYYuIK+UBl0jXtaYiAhTcrzrh+SUhwdbKclZKG1jj/plt0+/CcVGcA
-        bLD8R9rMzuCZvr7xK0abr8E/CwnBZvfI5WSt0o3fFHoYUOOITjejDc5B+fezadwrhIRLTt
-        TZJcnsSoWyvZ+APsd/QLAupLicHnGocK0NwpIqTyYUG/V0JngnJh0tjRsTvpLNuam6kfzH
-        EKUTywhCFPQ1Z/zEOg3hcVfw7+bbs7rkMddgaG6HbkkL3lwOCAbxndQBkwxKRQ==
+        bh=tcLoIG3HGYk//UUYYRZEh/brzBYA8yS/UBc0wd4yoLw=;
+        b=Nqb0TyHf9m8AFz3BhgMa4hJNlf2wNv3qXL+nk0e6Di8YjuRMnM6TQI0BomlPLAs5FyaW9n
+        0eOVL+AX2+6GKVAjXeON4G9bY7iO1hOyHPljFf7OyNxchZZJPwEn7CFL2wNgMMQgVj+yW4
+        lWKUos9t5eAnwvEkNh3DM5E0uRiEl/bO4hkU+a6feVhqaHtuAVd9EcrxRDTt8/yJw6nrSJ
+        J/iVIDX9V8Mw4y+fHQYDwQWybd7knyK+u1tT6HGq0RTfqJZgUsC2POclVSjjyX+ndcYl3L
+        U0XnNUZ32MKLU+/DwAsPVuu+afZWdEOD+cKUtElistQdfV/2lXOYVTwIb20lhg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628504266;
+        s=2020e; t=1628504320;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mUREw8STJ2JWCIPIy1C7QUNcphVARQ51gXSM8DV+C24=;
-        b=dhN5EycmkS7LI28GcBkJIEkszO1KtksoHgVU9B71fNWgSUeiW3cJKGvECK+nH+MgDE/3J0
-        WdvR44JAO/80+iCA==
-To:     "Chen, Rong A" <rong.a.chen@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>
-Subject: Re: [kbuild-all] Re: sparc64-linux-gcc: error: unrecognized
- command-line option '-mxsave'
-In-Reply-To: <277810e0-3887-f5d4-a150-60fdb1626e60@intel.com>
-References: <202107271153.7QWf3g6F-lkp@intel.com>
- <efd7ab16-ed45-0ab0-a123-4e8e45c100d0@intel.com>
- <8bee8632-9129-bb02-ab94-f65786e65268@intel.com> <87a6lu68xv.ffs@tglx>
- <277810e0-3887-f5d4-a150-60fdb1626e60@intel.com>
-Date:   Mon, 09 Aug 2021 12:17:46 +0200
-Message-ID: <87im0eudkl.ffs@tglx>
+        bh=tcLoIG3HGYk//UUYYRZEh/brzBYA8yS/UBc0wd4yoLw=;
+        b=bYSoL7Xm9kZ9+5HdvQNGqzKvbI68F69CkBoObsBfKgqbmiDmGq+ny8EIlCp9wMPo0qZFLM
+        OmPi5Jxumm0E01CA==
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [patch V3 15/64] rtmutex: Provide rt_mutex_base_is_locked()
+In-Reply-To: <20210808204116.rckeqq7hu4ofbitg@offworld>
+References: <20210805151300.330412127@linutronix.de>
+ <20210805153953.683678014@linutronix.de>
+ <20210808204116.rckeqq7hu4ofbitg@offworld>
+Date:   Mon, 09 Aug 2021 12:18:39 +0200
+Message-ID: <87fsviudj4.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09 2021 at 09:54, Rong A. Chen wrote:
-> On 8/6/2021 8:42 PM, Thomas Gleixner wrote:
->> On Wed, Aug 04 2021 at 17:04, Rong A. Chen wrote:
->>> On 7/27/2021 10:52 PM, Dave Hansen wrote:
->>>> On 7/26/21 8:11 PM, kernel test robot wrote:
->>>>>>> sparc64-linux-gcc: error: unrecognized command-line option '-mxsave'
->>>>
->>>> Is there something else funky going on here?  All of the "-mxsave" flags
->>>> that I can find are under checks for x86 builds, like:
->>>>
->>>> 	ifeq ($(CAN_BUILD_I386),1)
->>>> 	$(BINARIES_32): CFLAGS += -m32 -mxsave
->>>> 	..
->>>>
->>>> I'm confused how we could have a sparc64 compiler (and only a sparc64
->>>> compiler) that would end up with "-mxsave" in CFLAGS.
->>>
->>> Hi Dave,
->>>
->>> We can reproduce the error and have no idea too, but we have disabled
->>> the test for selftests on non-x86 arch.
->> 
->> This smells like a host/target compiler mixup. Can you please make the
->> kernel build verbose with 'V=1' and provide the full build output?
+On Sun, Aug 08 2021 at 13:41, Davidlohr Bueso wrote:
+>>+/**
+>>+ * rt_mutex_base_is_locked - is the rtmutex locked
+>>+ * @lock: the mutex to be queried
+>>+ *
+>>+ * Returns true if the mutex is locked, false if unlocked.
+>>+ */
+>>+static inline bool rt_mutex_base_is_locked(struct rt_mutex_base *lock)
+>>+{
+>>+	return lock->owner != NULL;
 >
-> Hi Thomas,
->
-> I run the below command:
->
-> $make V=1 --keep-going CROSS_COMPILE=sparc64-linux- -j1 O=build_dir 
-> ARCH=sparc64 -C tools/testing/selftests/vm
-> ...
-> sparc64-linux-gcc -Wall -I ../../../../usr/include  -no-pie -m32 -mxsave 
->   protection_keys.c -lrt -lpthread -lrt -ldl -lm -o 
-> /root/linux/tools/testing/selftests/vm/protection_keys_32
-> sparc64-linux-gcc: error: unrecognized command-line option '-mxsave'
-> make: *** [Makefile:107:
+> Does this want to be READ_ONCE()? While not a big deal because
+> it's ultimately only used by drm debugging, I don't see any harm
+> in avoiding potential tearing.
 
-Right. That's clearly broken because all these x8664 muck is derived
-from:
-
-  MACHINE ?= $(shell echo $(uname_M) | sed -e 's/aarch64.*/arm64/' -e 's/ppc64.*/ppc64/')
-
-which obviously fails for cross compiling because it's looking at the
-compile machine and not at the target.
-
-Something like the below should cure that, but TBH I lost track
-which one of ARCH, SUBARCH, UTS_MACHINE should be used here. The kbuild
-folks should know.
-
-Thanks,
-
-        tglx
-
----
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -4,7 +4,6 @@
- include local_config.mk
- 
- uname_M := $(shell uname -m 2>/dev/null || echo not)
--MACHINE ?= $(shell echo $(uname_M) | sed -e 's/aarch64.*/arm64/' -e 's/ppc64.*/ppc64/')
- 
- # Without this, failed build products remain, with up-to-date timestamps,
- # thus tricking Make (and you!) into believing that All Is Well, in subsequent
-@@ -46,7 +45,7 @@ TEST_GEN_FILES += transhuge-stress
- TEST_GEN_FILES += userfaultfd
- TEST_GEN_FILES += split_huge_page_test
- 
--ifeq ($(MACHINE),x86_64)
-+ifeq ($(UTS_MACHINE),x86_64)
- CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
- CAN_BUILD_X86_64 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_64bit_program.c)
- CAN_BUILD_WITH_NOPIE := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_program.c -no-pie)
-@@ -68,7 +67,7 @@ TEST_GEN_FILES += $(BINARIES_64)
- endif
- else
- 
--ifneq (,$(findstring $(MACHINE),ppc64))
-+ifneq (,$(findstring $(UTS_MACHINE),ppc64))
- TEST_GEN_FILES += protection_keys
- endif
- 
-@@ -87,7 +86,7 @@ TEST_FILES := test_vmalloc.sh
- KSFT_KHDR_INSTALL := 1
- include ../lib.mk
- 
--ifeq ($(MACHINE),x86_64)
-+ifeq ($(UTS_MACHINE),x86_64)
- BINARIES_32 := $(patsubst %,$(OUTPUT)/%,$(BINARIES_32))
- BINARIES_64 := $(patsubst %,$(OUTPUT)/%,$(BINARIES_64))
- 
+Makes sense.
