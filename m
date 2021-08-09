@@ -2,144 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7341E3E4BB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BC13E4BC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235004AbhHISBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhHISA4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:00:56 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE89AC06179F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:00:34 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id l24so13205778qtj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 11:00:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=AAhrsJC66Dx61Rd+R0En9xSeyn+Y7a3fdKNMwl3SmV8=;
-        b=C0z7fOVtv7xwyNq2ULxDTWBgiDiksaU5+3HrkSSE0+YAMfOwDGb3z2QxgMzpBwRhPv
-         IJIv8Jcn2zdkSUNM5svDTPmzFJom/BDy2o4AuFQLhDPHTF6I15WVw/dSxJoqsVOSZ1Cb
-         W4oQq3okSZ+c6t9/tXu1mtxGEjfyOfLs5PO3JPTOAzr1aESarTGuxT4PlJIfCs78j5tf
-         EJr6/POmRH4eknj1regIdXrAR5fCHCeWaaDHnTNfXNqLroOKMPWZWQrn4b1SAFksBLPj
-         3ozwqoWMzQNUQaaWHVTFNsV2eGVzErWUtSvwp7srUzrIDAjM/UP1OEZMwfJ6NvEMbgyW
-         6e0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=AAhrsJC66Dx61Rd+R0En9xSeyn+Y7a3fdKNMwl3SmV8=;
-        b=WoZ5qGmildwr/2zlJsoZVRAFJQL3dnrYjVcpxWdTUSgnN8+C3CLCgG0Ykjlf6fE/Hm
-         egTJGx/kxge0Gfdn+zavlHTDlLnzGsLDX2CUZWPX9VFqLAdeqWUuLGmCx5lmO/Qu8QHV
-         03QKsjPWm+tc2bbhr4jEuSBTNAGQsrHmjX1JpJ7FVSYJSFhUeU/Wq3YVNumTFtgcEseM
-         uqfhm/v/ocB6yNCnGTncTZHWCWK0xlGGkKBmdBCYF0crSeLb+hrLd1WBtB7M3PoCrj0Q
-         RMVD6LXGjomquL5t1jz2KYqcSfJzNtBxqm1a/Ezs1jaiz+FCwaz1lx6eFAbC/0pOxCSK
-         InvA==
-X-Gm-Message-State: AOAM531ZUHHdw8ENkMtaB4h907OvZJC6ljX3ic1kms6MuIS1JRE1IV8y
-        pYGOBxud4JY0/H6tKgyE25fEwQ==
-X-Google-Smtp-Source: ABdhPJzBGaMUF7I+EqzTqVqs/l3Cby4L23FljkyG1TqQehnViMfTh5LhLZoOh/mvaEH+yytNB+IJ1g==
-X-Received: by 2002:a05:622a:243:: with SMTP id c3mr10162127qtx.61.1628532033991;
-        Mon, 09 Aug 2021 11:00:33 -0700 (PDT)
-Received: from smtpclient.apple ([2600:1700:42f0:6600:615b:6e84:29a:3bc6])
-        by smtp.gmail.com with ESMTPSA id m188sm9658536qkc.99.2021.08.09.11.00.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Aug 2021 11:00:33 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [RFC PATCH 11/20] hfs: Explicitly set hsb->nls_disk when
- hsb->nls_io is set
-From:   Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <YRFnz6kn1UbSCN/S@casper.infradead.org>
-Date:   Mon, 9 Aug 2021 11:00:29 -0700
-Cc:     =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        =?utf-8?Q?Marek_Beh=C3=BAn?= <marek.behun@nic.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E85E6FF7-AA14-4FA6-82AA-859D93BD0069@dubeyko.com>
-References: <20210808162453.1653-1-pali@kernel.org>
- <20210808162453.1653-12-pali@kernel.org>
- <D0302F93-BAE5-48F0-87D0-B68B10D7757B@dubeyko.com>
- <YRFnz6kn1UbSCN/S@casper.infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S231217AbhHISDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230366AbhHISC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 14:02:56 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B33D8610EA;
+        Mon,  9 Aug 2021 18:02:35 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mD9bd-003sZZ-Mp; Mon, 09 Aug 2021 19:02:33 +0100
+Date:   Mon, 09 Aug 2021 19:02:33 +0100
+Message-ID: <87k0kubio6.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 12/13] arm64: Add a capability for FEAT_EVC
+In-Reply-To: <CAOQ_QsjT8DUoXQsxWGgGiZkwNe2itRswGomtq6-p+7_oU01orQ@mail.gmail.com>
+References: <20210809152651.2297337-1-maz@kernel.org>
+        <20210809152651.2297337-13-maz@kernel.org>
+        <CAOQ_QsjT8DUoXQsxWGgGiZkwNe2itRswGomtq6-p+7_oU01orQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oupton@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Oliver,
 
+Thanks for having a look.
 
-> On Aug 9, 2021, at 10:37 AM, Matthew Wilcox <willy@infradead.org> =
-wrote:
->=20
-> On Mon, Aug 09, 2021 at 10:31:55AM -0700, Viacheslav Dubeyko wrote:
->>> On Aug 8, 2021, at 9:24 AM, Pali Roh=C3=A1r <pali@kernel.org> wrote:
->>>=20
->>> It does not make any sense to set hsb->nls_io (NLS iocharset used =
-between
->>> VFS and hfs driver) when hsb->nls_disk (NLS codepage used between =
-hfs
->>> driver and disk) is not set.
->>>=20
->>> Reverse engineering driver code shown what is doing in this special =
-case:
->>>=20
->>>   When codepage was not defined but iocharset was then
->>>   hfs driver copied 8bit character from disk directly to
->>>   16bit unicode wchar_t type. Which means it did conversion
->>>   from Latin1 (ISO-8859-1) to Unicode because first 256
->>>   Unicode code points matches 8bit ISO-8859-1 codepage table.
->>>   So when iocharset was specified and codepage not, then
->>>   codepage used implicit value "iso8859-1".
->>>=20
->>> So when hsb->nls_disk is not set and hsb->nls_io is then explicitly =
-set
->>> hsb->nls_disk to "iso8859-1".
->>>=20
->>> Such setup is obviously incompatible with Mac OS systems as they do =
-not
->>> support iso8859-1 encoding for hfs. So print warning into dmesg =
-about this
->>> fact.
->>>=20
->>> After this change hsb->nls_disk is always set, so remove code paths =
-for
->>> case when hsb->nls_disk was not set as they are not needed anymore.
->>=20
->>=20
->> Sounds reasonable. But it will be great to know that the change has =
-been tested reasonably well.
->=20
-> I don't think it's reasonable to ask Pali to test every single =
-filesystem.
-> That's something the maintainer should do, as you're more likely to =
-have
-> the infrastructure already set up to do testing of your filesystem and
-> be aware of fun corner cases and use cases than someone who's working
-> across all filesystems.
+On Mon, 09 Aug 2021 17:30:45 +0100,
+Oliver Upton <oupton@google.com> wrote:
+> 
+> Hi Marc,
+> 
+> On Mon, Aug 9, 2021 at 8:48 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > Add a new capability to detect the Enhanced Counter Virtualization
+> > feature (FEAT_EVC).
+> >
+> 
+> s/FEAT_EVC/FEAT_ECV/g
 
-I see the point. But the whole approach needs to be tested as minimum =
-for one particular file system. :) And it could be any favorite one.
+I'm the knig fo tpyoes :).
+
+> 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/kernel/cpufeature.c | 10 ++++++++++
+> >  arch/arm64/tools/cpucaps       |  1 +
+> >  2 files changed, 11 insertions(+)
+> >
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index 0ead8bfedf20..9c2ce5408811 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -1899,6 +1899,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
+> >                 .sign = FTR_UNSIGNED,
+> >                 .min_field_value = 1,
+> >         },
+> > +       {
+> > +               .desc = "Enhanced counter virtualization",
+> > +               .capability = ARM64_HAS_ECV,
+> > +               .type = ARM64_CPUCAP_SYSTEM_FEATURE,
+> > +               .matches = has_cpuid_feature,
+> > +               .sys_reg = SYS_ID_AA64MMFR0_EL1,
+> > +               .field_pos = ID_AA64MMFR0_ECV_SHIFT,
+> > +               .sign = FTR_UNSIGNED,
+> > +               .min_field_value = 1,
+> > +       },
+> 
+> Per one of your other patches in the series, it sounds like userspace
+> access to the self-synchronized registers hasn't been settled yet.
+> However, if/when available to userspace, should this cpufeature map to
+> an ELF HWCAP?
+
+We can't prevent the access to userspace, unless we also trap
+cntvct_el0 and cntfreq_el0. Which we try not to do. But you are indeed
+correct, we probably have a HWCAP if we decide to advertise it to
+userspace.
+
+> Also, w.r.t. my series I have out for ECV in KVM. All the controls
+> used in EL2 depend on ECV=0x2. I agree that ECV=0x1 needs a cpufeature
+> bit, but what about EL2's use case?
+
+My idea was to have a ARM64_HAS_ECV2 to capture the EL2 extensions
+with min_field_value=2.
+
+> Besides the typo:
+> 
+> Reviewed-by: Oliver Upton <oupton@google.com>
 
 Thanks,
-Slava.
 
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
