@@ -2,227 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD10C3E4E32
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D533E4E37
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhHIU7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:59:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34896 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233102AbhHIU7i (ORCPT
+        id S236337AbhHIVCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:02:47 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36353 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhHIVCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:59:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628542756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=S7fF4unWqHGSW7W12PTgvCvQxdQEsv3txHXrxBi0k2k=;
-        b=YUO8ERBW6u5dHoppEcHjLlzJB3tKhp4vL2Fq/TlOCtYHOZ4tfzl98CYNBkKpkTVsrffYI/
-        es4K29x6ynjvZt5oSEoW/0/vqyAs+etxZYD86ou2FdGriV2f6O2sEtyA3d/aV1yLDt+M90
-        mXtIPhNrWKjM1y5aWVwgSFfVmKp8jPE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-135-3rzxQRduPMaafSiN6M_uFg-1; Mon, 09 Aug 2021 16:59:13 -0400
-X-MC-Unique: 3rzxQRduPMaafSiN6M_uFg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF646801AC0;
-        Mon,  9 Aug 2021 20:59:11 +0000 (UTC)
-Received: from theseus.lan (unknown [10.22.34.100])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E2A4B604CC;
-        Mon,  9 Aug 2021 20:59:10 +0000 (UTC)
-Date:   Mon, 9 Aug 2021 15:59:09 -0500
-From:   Clark Williams <williams@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH PREEMPT_RT] kcov:  fix locking splat from
- kcov_remote_start()
-Message-ID: <20210809155909.333073de@theseus.lan>
-Organization: Red Hat, Inc
+        Mon, 9 Aug 2021 17:02:44 -0400
+Received: by mail-il1-f198.google.com with SMTP id c20-20020a9294140000b02902141528bc7cso6374147ili.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:02:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=VGe3Z5M4JpJQGp07PVsxWzU3in6lwjZc9g6V+3kwV5s=;
+        b=SQXytvMgAjxVmc4kHw/His9WY2HDiuqDwqv1lc/yaLh/6vqhSQ/8QKt/CzXik3SlYM
+         U66xxuGApvjdJuSIZ9REBXp1gS6Bb9+Ya+wtQT+5OS2DpFNBZ2nagHbo83oP83/WeIl4
+         +hvAqRyLJTHyLErlFGMA031U6U9BNn2GWJt7RsvVQVN5ALiFyph8mTykeouux6kXzhGR
+         rJiDkc8JBxy73rwIMfzViGcioKFCWEUoU/2bgkVjrog+nrQRs/EdhX0kqE7xTNyvoAZr
+         3J8qzjIddb2GTfSJIPgMmTX/WmS3FtTg15SFj+tKhHD4zAsOhbbvKHE1/cHtDWPAZMys
+         vL5A==
+X-Gm-Message-State: AOAM532cBKS4Y7EJEU+uIQXux2nODHjkZlJCBM1AFozHRFoHF4/4lcNo
+        smyAXr0QUK0JYduZvvhpGVvrERKLV/Qxyz419neRPCdXXRkJ
+X-Google-Smtp-Source: ABdhPJy2mpVy0vGDnE8XXuXP8CkA/Nh9fDV41Lbp9RhnbI9FunWT9fAkZM+tztzsVgB88xupeuMvpUr2T99kJLajF8mM70p0G3cm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Received: by 2002:a92:d3c7:: with SMTP id c7mr614438ilh.59.1628542942901;
+ Mon, 09 Aug 2021 14:02:22 -0700 (PDT)
+Date:   Mon, 09 Aug 2021 14:02:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009cfcda05c926b34b@google.com>
+Subject: [syzbot] kernel BUG in find_lock_entries
+From:   syzbot <syzbot+c87be4f669d920c76330@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bp@alien8.de, frederic@kernel.org,
+        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, masahiroy@kernel.org,
+        mingo@redhat.com, npiggin@gmail.com, pbonzini@redhat.com,
+        peterz@infradead.org, rafael.j.wysocki@intel.com,
+        rostedt@goodmis.org, seanjc@google.com, sedat.dilek@gmail.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Saw the following splat on 5.14-rc4-rt5 with:
+Hello,
 
-CONFIG_KCOV=y
-CONFIG_KCOV_INSTRUMENT_ALL=y
-CONFIG_KCOV_IRQ_AREA_SIZE=0x40000
-CONFIG_RUNTIME_TESTING_MENU=y
+syzbot found the following issue on:
 
-kernel: ehci-pci 0000:00:1d.0: USB 2.0 started, EHCI 1.00
-kernel: BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
-kernel: in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 34, name: ksoftirqd/3
-kernel: 4 locks held by ksoftirqd/3/34:
-kernel:  #0: ffff944376d989f8 ((softirq_ctrl.lock).lock){+.+.}-{2:2}, at: __local_bh_disable_ip+0xe0/0x190
-kernel:  #1: ffffffffbbfb61e0 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock+0x5/0xd0
-kernel:  #2: ffffffffbbfb61e0 (rcu_read_lock){....}-{1:2}, at: __local_bh_disable_ip+0xbd/0x190
-kernel:  #3: ffffffffbc086518 (kcov_remote_lock){....}-{2:2}, at: kcov_remote_start+0x119/0x4a0
-kernel: irq event stamp: 4653
-kernel: hardirqs last  enabled at (4652): [<ffffffffbafb85ce>] _raw_spin_unlock_irqrestore+0x6e/0x80
-kernel: hardirqs last disabled at (4653): [<ffffffffba2517c8>] kcov_remote_start+0x298/0x4a0
-kernel: softirqs last  enabled at (4638): [<ffffffffba110a5b>] run_ksoftirqd+0x9b/0x100
-kernel: softirqs last disabled at (4644): [<ffffffffba149f12>] smpboot_thread_fn+0x2b2/0x410
-kernel: CPU: 3 PID: 34 Comm: ksoftirqd/3 Not tainted 5.14.0-rc4-rt5+ #3
-kernel: Hardware name:  /NUC5i7RYB, BIOS RYBDWi35.86A.0359.2016.0906.1028 09/06/2016
-kernel: Call Trace:
-kernel:  dump_stack_lvl+0x7a/0x9b
-kernel:  ___might_sleep.cold+0xf3/0x107
-kernel:  rt_spin_lock+0x3a/0xd0
-kernel:  ? kcov_remote_start+0x119/0x4a0
-kernel:  kcov_remote_start+0x119/0x4a0
-kernel:  ? led_trigger_blink_oneshot+0x83/0xa0
-kernel:  __usb_hcd_giveback_urb+0x161/0x1e0
-kernel:  usb_giveback_urb_bh+0xb6/0x110
-kernel:  tasklet_action_common.constprop.0+0xe8/0x110
-kernel:  __do_softirq+0xe2/0x525
-kernel:  ? smpboot_thread_fn+0x31/0x410
-kernel:  run_ksoftirqd+0x8c/0x100
-kernel:  smpboot_thread_fn+0x2b2/0x410
-kernel:  ? smpboot_register_percpu_thread+0x130/0x130
-kernel:  kthread+0x1de/0x210
-kernel:  ? set_kthread_struct+0x60/0x60
-kernel:  ret_from_fork+0x22/0x30
-kernel: usb usb1: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.14
+HEAD commit:    902e7f373fff Merge tag 'net-5.14-rc5' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15337cd6300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=702bfdfbf389c324
+dashboard link: https://syzkaller.appspot.com/bug?extid=c87be4f669d920c76330
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157afce9300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=152fc43a300000
+
+The issue was bisected to:
+
+commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Jan 11 15:37:07 2021 +0000
+
+    lockdep: report broken irq restoration
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=137296e6300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10f296e6300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=177296e6300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c87be4f669d920c76330@syzkaller.appspotmail.com
+Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
+
+ __pagevec_release+0x7d/0xf0 mm/swap.c:992
+ pagevec_release include/linux/pagevec.h:81 [inline]
+ shmem_undo_range+0x5da/0x1a60 mm/shmem.c:931
+ shmem_truncate_range mm/shmem.c:1030 [inline]
+ shmem_setattr+0x4f0/0x890 mm/shmem.c:1091
+ notify_change+0xbb8/0x1060 fs/attr.c:398
+ do_truncate fs/open.c:64 [inline]
+ vfs_truncate+0x6be/0x880 fs/open.c:112
+ do_sys_truncate fs/open.c:135 [inline]
+ __do_sys_truncate fs/open.c:147 [inline]
+ __se_sys_truncate fs/open.c:145 [inline]
+ __x64_sys_truncate+0x110/0x1b0 fs/open.c:145
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+------------[ cut here ]------------
+kernel BUG at mm/filemap.c:2041!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 24786 Comm: syz-executor626 Not tainted 5.14.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:find_lock_entries+0x10d5/0x1110 mm/filemap.c:2041
+Code: e8 00 3d d8 ff 4c 89 e7 48 c7 c6 20 70 39 8a e8 71 bf 0d 00 0f 0b e8 ea 3c d8 ff 4c 89 e7 48 c7 c6 40 62 39 8a e8 5b bf 0d 00 <0f> 0b e8 d4 3c d8 ff 4c 89 e7 48 c7 c6 80 6a 39 8a e8 45 bf 0d 00
+RSP: 0018:ffffc9000a52f7e0 EFLAGS: 00010246
+RAX: c75c992acedb0700 RBX: 0000000000000001 RCX: ffff8880161ab880
+RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
+RBP: ffffc9000a52f930 R08: ffffffff81d080d4 R09: ffffed1017383f24
+R10: ffffed1017383f24 R11: 0000000000000000 R12: ffffea0000f40000
+R13: 0000000000001000 R14: fffffffffffffffe R15: 0000000000001140
+FS:  00007f1334d1f700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007faaa593a000 CR3: 00000000165b1000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ shmem_undo_range+0x1ea/0x1a60 mm/shmem.c:910
+ shmem_truncate_range mm/shmem.c:1030 [inline]
+ shmem_setattr+0x4f0/0x890 mm/shmem.c:1091
+ notify_change+0xbb8/0x1060 fs/attr.c:398
+ do_truncate fs/open.c:64 [inline]
+ vfs_truncate+0x6be/0x880 fs/open.c:112
+ do_sys_truncate fs/open.c:135 [inline]
+ __do_sys_truncate fs/open.c:147 [inline]
+ __se_sys_truncate fs/open.c:145 [inline]
+ __x64_sys_truncate+0x110/0x1b0 fs/open.c:145
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x44a9a9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 71 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1334d1f208 EFLAGS: 00000246 ORIG_RAX: 000000000000004c
+RAX: ffffffffffffffda RBX: 00000000004cb4f8 RCX: 000000000044a9a9
+RDX: 00007f1334d1f700 RSI: 0000000000000001 RDI: 0000000020000340
+RBP: 00000000004cb4f0 R08: 00007f1334d1f700 R09: 0000000000000000
+R10: 00007f1334d1f700 R11: 0000000000000246 R12: 00000000004cb4fc
+R13: 00007ffdec06b36f R14: 00007f1334d1f300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 4dcd0c81778c7d51 ]---
+RIP: 0010:find_lock_entries+0x10d5/0x1110 mm/filemap.c:2041
+Code: e8 00 3d d8 ff 4c 89 e7 48 c7 c6 20 70 39 8a e8 71 bf 0d 00 0f 0b e8 ea 3c d8 ff 4c 89 e7 48 c7 c6 40 62 39 8a e8 5b bf 0d 00 <0f> 0b e8 d4 3c d8 ff 4c 89 e7 48 c7 c6 80 6a 39 8a e8 45 bf 0d 00
+RSP: 0018:ffffc9000a52f7e0 EFLAGS: 00010246
+RAX: c75c992acedb0700 RBX: 0000000000000001 RCX: ffff8880161ab880
+RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
+RBP: ffffc9000a52f930 R08: ffffffff81d080d4 R09: ffffed1017383f24
+R10: ffffed1017383f24 R11: 0000000000000000 R12: ffffea0000f40000
+R13: 0000000000001000 R14: fffffffffffffffe R15: 0000000000001140
+FS:  00007f1334d1f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557a29364160 CR3: 00000000165b1000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-Change kcov_remote_lock from regular spinlock_t to raw_spinlock_t so that
-we don't get "sleeping function called from invalid context" on PREEMPT_RT kernel.
-
-Signed-off-by: Clark Williams <williams@redhat.com>
 ---
- kernel/kcov.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/kcov.c b/kernel/kcov.c
-index 80bfe71bbe13..60f903f8a46c 100644
---- a/kernel/kcov.c
-+++ b/kernel/kcov.c
-@@ -82,7 +82,7 @@ struct kcov_remote {
- 	struct hlist_node	hnode;
- };
- 
--static DEFINE_SPINLOCK(kcov_remote_lock);
-+static DEFINE_RAW_SPINLOCK(kcov_remote_lock);
- static DEFINE_HASHTABLE(kcov_remote_map, 4);
- static struct list_head kcov_remote_areas = LIST_HEAD_INIT(kcov_remote_areas);
- 
-@@ -375,7 +375,7 @@ static void kcov_remote_reset(struct kcov *kcov)
- 	struct hlist_node *tmp;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&kcov_remote_lock, flags);
-+	raw_spin_lock_irqsave(&kcov_remote_lock, flags);
- 	hash_for_each_safe(kcov_remote_map, bkt, tmp, remote, hnode) {
- 		if (remote->kcov != kcov)
- 			continue;
-@@ -384,7 +384,7 @@ static void kcov_remote_reset(struct kcov *kcov)
- 	}
- 	/* Do reset before unlock to prevent races with kcov_remote_start(). */
- 	kcov_reset(kcov);
--	spin_unlock_irqrestore(&kcov_remote_lock, flags);
-+	raw_spin_unlock_irqrestore(&kcov_remote_lock, flags);
- }
- 
- static void kcov_disable(struct task_struct *t, struct kcov *kcov)
-@@ -638,18 +638,18 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
- 		kcov->t = t;
- 		kcov->remote = true;
- 		kcov->remote_size = remote_arg->area_size;
--		spin_lock_irqsave(&kcov_remote_lock, flags);
-+		raw_spin_lock_irqsave(&kcov_remote_lock, flags);
- 		for (i = 0; i < remote_arg->num_handles; i++) {
- 			if (!kcov_check_handle(remote_arg->handles[i],
- 						false, true, false)) {
--				spin_unlock_irqrestore(&kcov_remote_lock,
-+				raw_spin_unlock_irqrestore(&kcov_remote_lock,
- 							flags);
- 				kcov_disable(t, kcov);
- 				return -EINVAL;
- 			}
- 			remote = kcov_remote_add(kcov, remote_arg->handles[i]);
- 			if (IS_ERR(remote)) {
--				spin_unlock_irqrestore(&kcov_remote_lock,
-+				raw_spin_unlock_irqrestore(&kcov_remote_lock,
- 							flags);
- 				kcov_disable(t, kcov);
- 				return PTR_ERR(remote);
-@@ -658,7 +658,7 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
- 		if (remote_arg->common_handle) {
- 			if (!kcov_check_handle(remote_arg->common_handle,
- 						true, false, false)) {
--				spin_unlock_irqrestore(&kcov_remote_lock,
-+				raw_spin_unlock_irqrestore(&kcov_remote_lock,
- 							flags);
- 				kcov_disable(t, kcov);
- 				return -EINVAL;
-@@ -666,14 +666,14 @@ static int kcov_ioctl_locked(struct kcov *kcov, unsigned int cmd,
- 			remote = kcov_remote_add(kcov,
- 					remote_arg->common_handle);
- 			if (IS_ERR(remote)) {
--				spin_unlock_irqrestore(&kcov_remote_lock,
-+				raw_spin_unlock_irqrestore(&kcov_remote_lock,
- 							flags);
- 				kcov_disable(t, kcov);
- 				return PTR_ERR(remote);
- 			}
- 			t->kcov_handle = remote_arg->common_handle;
- 		}
--		spin_unlock_irqrestore(&kcov_remote_lock, flags);
-+		raw_spin_unlock_irqrestore(&kcov_remote_lock, flags);
- 		/* Put either in kcov_task_exit() or in KCOV_DISABLE. */
- 		kcov_get(kcov);
- 		return 0;
-@@ -845,10 +845,10 @@ void kcov_remote_start(u64 handle)
- 		return;
- 	}
- 
--	spin_lock(&kcov_remote_lock);
-+	raw_spin_lock(&kcov_remote_lock);
- 	remote = kcov_remote_find(handle);
- 	if (!remote) {
--		spin_unlock_irqrestore(&kcov_remote_lock, flags);
-+		raw_spin_unlock_irqrestore(&kcov_remote_lock, flags);
- 		return;
- 	}
- 	kcov_debug("handle = %llx, context: %s\n", handle,
-@@ -869,7 +869,7 @@ void kcov_remote_start(u64 handle)
- 		size = CONFIG_KCOV_IRQ_AREA_SIZE;
- 		area = this_cpu_ptr(&kcov_percpu_data)->irq_area;
- 	}
--	spin_unlock_irqrestore(&kcov_remote_lock, flags);
-+	raw_spin_unlock_irqrestore(&kcov_remote_lock, flags);
- 
- 	/* Can only happen when in_task(). */
- 	if (!area) {
-@@ -1008,9 +1008,9 @@ void kcov_remote_stop(void)
- 	spin_unlock(&kcov->lock);
- 
- 	if (in_task()) {
--		spin_lock(&kcov_remote_lock);
-+		raw_spin_lock(&kcov_remote_lock);
- 		kcov_remote_area_put(area, size);
--		spin_unlock(&kcov_remote_lock);
-+		raw_spin_unlock(&kcov_remote_lock);
- 	}
- 
- 	local_irq_restore(flags);
--- 
-2.31.1
-
-
-
--- 
-The United States Coast Guard
-Ruining Natural Selection since 1790
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
