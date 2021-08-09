@@ -2,115 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25BC3E41F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745733E41E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234165AbhHIJBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:01:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54712 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234061AbhHIJBW (ORCPT
+        id S234118AbhHII4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:56:35 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:13300 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233940AbhHII4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:01:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628499661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FoO0nUKoGU4+yW1m7cbdBKZwkrdjkhDY5qQ8aeTmSZA=;
-        b=I60bjBeTNWvzFpR5meDG9pLosEixjlpA20TNZkSpeeD1y2QaBYFBQlPTHOSjv5vO32jfZW
-        lH1md2ggHOV6MKf+W3zYU+SV81Z4Z9WkuQAK8INznrgPyYoKf0A8xtgsJ3HL2iymJNq0qU
-        YfBxEzJkmdLi4G8bMj16vFiS8WU8Q5w=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-FWJvWbbNMEmBK2A1dMxAvw-1; Mon, 09 Aug 2021 05:01:00 -0400
-X-MC-Unique: FWJvWbbNMEmBK2A1dMxAvw-1
-Received: by mail-ej1-f70.google.com with SMTP id kf21-20020a17090776d5b02905af6ad96f02so573173ejc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 02:01:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FoO0nUKoGU4+yW1m7cbdBKZwkrdjkhDY5qQ8aeTmSZA=;
-        b=WZovf9+zQKFrD5pmRoKuZ+A5fuGRObaq4Y7tYBKLWIwJ9DI4iTg1brD4ydQTUTfDaq
-         G6q22j56LTagCWXCQZbvyRm/Rs3HgDB5oGQuYg5lQqemV4/kGCL/PavEk0EghgdW2HAO
-         Yl4oh7aalk5mzY7IGuHSL1P59wzp5nwYKbzzHYdng+9cfHYJs5+SQAtR3zaUMtMN+5B/
-         Bmxu9T/OFbAqxm62j7I/S4+2i9KhMrpk6vl2hCrf5b/bEN6I5gSAlRKrpLjHws1946nl
-         HVN79UV+P8cMZtgKdUNXT2qB0kjoBb5XOiRTCgpaoTwHUwqquGweTzfM8kqCZPPNfAPB
-         /SmA==
-X-Gm-Message-State: AOAM532xAK+ihrk4oA7UMBnpKHKFb7jw7BEIbiH/N1CR6A0Ufnu9Vp8Z
-        sc/gjEwjmnwrPtE7A67NCQqVU9OlceVGAQWVhTcCFipg7+izT0ULdEdDgsr4fqpJFiBrGN4FPrE
-        DDa/nPZY5aisJADHQQpr9Mfh8
-X-Received: by 2002:aa7:d499:: with SMTP id b25mr264726edr.360.1628499659237;
-        Mon, 09 Aug 2021 02:00:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzciqT2dLJpKtZTsjmfVHRPiQE1ErZUf+FdcUCtHWDBh7wF3C/mmtt1TDR33+wvBc5LmB/EFQ==
-X-Received: by 2002:aa7:d499:: with SMTP id b25mr264710edr.360.1628499659137;
-        Mon, 09 Aug 2021 02:00:59 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id o17sm5666699ejb.84.2021.08.09.02.00.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 02:00:58 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] platform/x86/intel: int3472: Use y instead of objs
- in Makefile
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>
-References: <20210806154951.4564-1-andriy.shevchenko@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <5ac33176-3c70-681c-578b-639af929c0f4@redhat.com>
-Date:   Mon, 9 Aug 2021 11:00:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 9 Aug 2021 04:56:34 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GjqYv5Nk6z84LP;
+        Mon,  9 Aug 2021 16:51:15 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 16:56:11 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 9 Aug 2021
+ 16:56:11 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>
+CC:     <roopa@nvidia.com>, <nikolay@nvidia.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+Subject: [PATCH net v2] net: bridge: fix memleak in br_add_if()
+Date:   Mon, 9 Aug 2021 17:02:11 +0800
+Message-ID: <20210809090211.65677-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210806154951.4564-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I got a memleak report:
 
-On 8/6/21 5:49 PM, Andy Shevchenko wrote:
-> The 'objs' is for user space tools, for the kernel modules
-> we should use 'y'.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+BUG: memory leak
+unreferenced object 0x607ee521a658 (size 240):
+comm "syz-executor.0", pid 955, jiffies 4294780569 (age 16.449s)
+hex dump (first 32 bytes, cpu 1):
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+backtrace:
+[<00000000d830ea5a>] br_multicast_add_port+0x1c2/0x300 net/bridge/br_multicast.c:1693
+[<00000000274d9a71>] new_nbp net/bridge/br_if.c:435 [inline]
+[<00000000274d9a71>] br_add_if+0x670/0x1740 net/bridge/br_if.c:611
+[<0000000012ce888e>] do_set_master net/core/rtnetlink.c:2513 [inline]
+[<0000000012ce888e>] do_set_master+0x1aa/0x210 net/core/rtnetlink.c:2487
+[<0000000099d1cafc>] __rtnl_newlink+0x1095/0x13e0 net/core/rtnetlink.c:3457
+[<00000000a01facc0>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
+[<00000000acc9186c>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5550
+[<00000000d4aabb9c>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
+[<00000000bc2e12a3>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+[<00000000bc2e12a3>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
+[<00000000e4dc2d0e>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
+[<000000000d22c8b3>] sock_sendmsg_nosec net/socket.c:654 [inline]
+[<000000000d22c8b3>] sock_sendmsg+0x139/0x170 net/socket.c:674
+[<00000000e281417a>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
+[<00000000237aa2ab>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+[<000000004f2dc381>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
+[<0000000005feca6c>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
+[<000000007304477d>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+On error path of br_add_if(), p->mcast_stats allocated in
+new_nbp() need be freed, or it will be leaked.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Fixes: 1080ab95e3c7 ("net: bridge: add support for IGMP/MLD stats and export them via netlink")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+v2:
+  move free_percpu(p->mcast_stats) in release_nbp() and
+  fix the compile error when CONFIG_BRIDGE_IGMP_SNOOPING
+  is disabled.
+---
+ net/bridge/br_if.c        | 5 ++++-
+ net/bridge/br_multicast.c | 1 -
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-> ---
->  drivers/platform/x86/intel/int3472/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/intel/int3472/Makefile b/drivers/platform/x86/intel/int3472/Makefile
-> index 48bd97f0a04e..2362e04db18d 100644
-> --- a/drivers/platform/x86/intel/int3472/Makefile
-> +++ b/drivers/platform/x86/intel/int3472/Makefile
-> @@ -1,5 +1,5 @@
->  obj-$(CONFIG_INTEL_SKL_INT3472)		+= intel_skl_int3472.o
-> -intel_skl_int3472-objs			:= intel_skl_int3472_common.o \
-> +intel_skl_int3472-y			:= intel_skl_int3472_common.o \
->  					   intel_skl_int3472_discrete.o \
->  					   intel_skl_int3472_tps68470.o \
->  					   intel_skl_int3472_clk_and_regulator.o
-> 
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index 6e4a32354a13..c5547772614a 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -250,6 +250,9 @@ static void release_nbp(struct kobject *kobj)
+ {
+ 	struct net_bridge_port *p
+ 		= container_of(kobj, struct net_bridge_port, kobj);
++#if IS_ENABLED(CONFIG_BRIDGE_IGMP_SNOOPING)
++	free_percpu(p->mcast_stats);
++#endif
+ 	kfree(p);
+ }
+ 
+@@ -616,7 +619,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+ 
+ 	err = dev_set_allmulti(dev, 1);
+ 	if (err) {
+-		kfree(p);	/* kobject not yet init'd, manually free */
++		release_nbp(&p->kobj);	/* kobject not yet init'd, manually free */
+ 		goto err1;
+ 	}
+ 
+diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+index d0434dc8c03b..1d3436279d2f 100644
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -1715,7 +1715,6 @@ void br_multicast_del_port(struct net_bridge_port *port)
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	del_timer_sync(&port->ip6_mc_router_timer);
+ #endif
+-	free_percpu(port->mcast_stats);
+ }
+ 
+ static void br_multicast_enable(struct bridge_mcast_own_query *query)
+-- 
+2.25.1
 
