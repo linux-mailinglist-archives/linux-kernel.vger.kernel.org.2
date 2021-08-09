@@ -2,155 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939533E48D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F5B3E48E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235850AbhHIP2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235778AbhHIP1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:27:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5921610A4;
-        Mon,  9 Aug 2021 15:27:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628522834;
-        bh=1yD6V5YYEokX5B0rQ6t8LnnMturN0d6B+H9Rzr2ePkc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GOAYeokh8GrdF7C/AvDAIIKSptbh2HpqYejVxyWVx6bBa+5d2MH29qaQQH8DAB+/W
-         sKwbrZ9SytvKO2XEd6pFS8+H6UdjZ+ZCfew23EBRnaOXX7uPgU8VG4fHSSsfFG2hn3
-         maxfaSjCkoOlcEz5NnNJEVkQKDT7Wz03fbIpAKxpixXxm7plLo7RcrSZi6bdLuEMf7
-         GntCEm1BjPVireUD2v6rM3ELqOLHFqtISAhJdBuJ/PdyjMvTcWcBHcDcLqWT/rY3PN
-         CG3zq5w8eIEChtrO24oj3N8N5ZTmpgBNdwyFU/h9vw0UAox8KYpJsdbcDdjlZ7txd/
-         ny4hWuh04vMlA==
-Received: by mail-ej1-f45.google.com with SMTP id c25so15796728ejb.3;
-        Mon, 09 Aug 2021 08:27:14 -0700 (PDT)
-X-Gm-Message-State: AOAM530y8G085LhkUXyDNR7y4fq8uIKAhKE+y8f4sGmQyG8YGzJ1C3VV
-        xUqEaeoMF1O3l2Gn10WQAg5J/7uIG9Pk5UFJZA==
-X-Google-Smtp-Source: ABdhPJwNSzt5P0dsLVvJ9d/PPbBsKhqS8CaRCWNvJwEWmLp/8/EgBK3DkDbdiNvt5XWcWpYYkYD8eTiEnnf+pIKALIE=
-X-Received: by 2002:a17:906:fa92:: with SMTP id lt18mr4028759ejb.359.1628522833303;
- Mon, 09 Aug 2021 08:27:13 -0700 (PDT)
+        id S235345AbhHIPd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235537AbhHIPbW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:31:22 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA92C061798
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:30:13 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id l11so5110895plk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0AECcEi2rpt5gm0PQCPyfbI2DBqYy38YFfxxfkJxtfU=;
+        b=nvgDcF9oG4oweN91pNjyW0PwF3Wwq1kdB8edecupp/0AAlGgeVxfi6VaUQYhaBKIEQ
+         KfxX7PsGRvTGaymoz7UKsMn7m6U3/pvHIAtH9dSiNosjr6WZeZAhce0vGW8uDjdRtKax
+         a6u7Ig4lBKVRJw5VhquaWiKNLQ3TVn7Q6byy7hy4H8juTQJEau+Z6YqtOXl1dN4R4Mij
+         bqpUPJNiavaIwG/MtPnpZ81XQ1+n8tDBylpVsX3eAbu8sPwPVk7UfHhNHRcSvnMto/9O
+         q9iNpgDuNR3OjvkApqeNWTi1MltBiczdHnuiMlcCoaP/YwLWHkMDcMXHnNt53lnK9vCY
+         cFaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0AECcEi2rpt5gm0PQCPyfbI2DBqYy38YFfxxfkJxtfU=;
+        b=Ov9Yt/XvaMkkrpS+pLReBd/K2Txoc9fjHKIo+yS+XSwqKfIOdelI/y48X+eUF1hjII
+         zkYqY3Bju4dvkxhfPgS+nUrIc8eEFzhtpdKEOXcWuv+QdAt/pyRE6dfn/FTyD19t1Eyu
+         vts9hnWRI32OzcYuvaOa86PvC2KF+ZiuQ7H+1duJfCMCqxlzA5eqU1twBNJ/lxvXDsrA
+         G7kbCZgC7z6R5JHZ8725PzJLHO4eGC8heQ8lsS+ghoVgvLmkdXeEHnLNYLlA7DuFxp+e
+         +vLEs4SYq38BhTE/Y1VPiH9APRAln10G8D+ADWaZdbnRR67eA1MNz8Bol3zEchQNJPDB
+         Q2Ng==
+X-Gm-Message-State: AOAM532CzUFIfe3XHYeepK62OhW3LiO5UvM8t5y10k+5XVI0/UyTGywo
+        EWdOBWjYiUkepw6WhKVKxvQwpw==
+X-Google-Smtp-Source: ABdhPJz3gQIyTN45i1aPVFveM3Bul2uCaHAGbhBoyHJdaWipsW4dCYaNLy3z+6I5IMCotxAlOsp8pQ==
+X-Received: by 2002:a17:90a:bb0b:: with SMTP id u11mr36773910pjr.18.1628523012466;
+        Mon, 09 Aug 2021 08:30:12 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y2sm19717321pjl.6.2021.08.09.08.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 08:30:11 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 15:30:08 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com
+Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
+ level
+Message-ID: <YRFKABg2MOJxcq+y@google.com>
+References: <20210808192658.2923641-1-wei.huang2@amd.com>
+ <20210808192658.2923641-2-wei.huang2@amd.com>
+ <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
+ <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
+ <20210809042703.25gfuuvujicc3vj7@linux.intel.com>
+ <73bbaac0-701c-42dd-36da-aae1fed7f1a0@amd.com>
+ <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
 MIME-Version: 1.0
-References: <20210806221256.GA1891371@bjorn-Precision-5520> <5f4f484b-9eef-2722-405d-a7ff6259aa0f@arm.com>
-In-Reply-To: <5f4f484b-9eef-2722-405d-a7ff6259aa0f@arm.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 9 Aug 2021 09:27:01 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL=ipGBOsMUaCDvAETX5DQ2tCunNSAtFs6VZybOW7Xrdg@mail.gmail.com>
-Message-ID: <CAL_JsqL=ipGBOsMUaCDvAETX5DQ2tCunNSAtFs6VZybOW7Xrdg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] PCI/ACPI: Add new quirk detection, enable bcm2711
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 6:35 PM Jeremy Linton <jeremy.linton@arm.com> wrote:
->
-> Hi,
->
-> Thanks for looking at this.
->
-> On 8/6/21 5:12 PM, Bjorn Helgaas wrote:
-> > In subject, this or similar would match history:
-> >
-> >    PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
-> >
-> > On Thu, Aug 05, 2021 at 04:12:00PM -0500, Jeremy Linton wrote:
-> >> Now that we have a bcm2711 quirk, we need to be able to
-> >> detect it when the MCFG is missing. Use a namespace
-> >> property as an alternative to the MCFG OEM.
-> >
-> > Rewrap to use ~75 columns.
-> >
-> > Mention the DT namespace property here.
-> >
-> >> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> >> ---
-> >>   drivers/acpi/pci_mcfg.c | 14 ++++++++++++++
-> >>   1 file changed, 14 insertions(+)
-> >>
-> >> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-> >> index 53cab975f612..7d77fc72c2a4 100644
-> >> --- a/drivers/acpi/pci_mcfg.c
-> >> +++ b/drivers/acpi/pci_mcfg.c
-> >> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
-> >>      ALTRA_ECAM_QUIRK(1, 13),
-> >>      ALTRA_ECAM_QUIRK(1, 14),
-> >>      ALTRA_ECAM_QUIRK(1, 15),
-> >> +
-> >> +    { "bcm2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
-> >> +      DEFINE_RES_MEM(0xFD500000, 0xA000) },
-> >>   };
-> >>
-> >>   static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
-> >> @@ -198,8 +201,19 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
-> >>      u16 segment = root->segment;
-> >>      struct resource *bus_range = &root->secondary;
-> >>      struct mcfg_fixup *f;
-> >> +    const char *soc;
-> >>      int i;
-> >>
-> >> +    /*
-> >> +     * This could be a machine with a PCI/SMC conduit,
-> >> +     * which means it doens't have MCFG. Get the machineid from
-> >> +     * the namespace definition instead.
-> >
-> > s/SMC/SMCCC/ ?  Cover letter uses SMCCC (not sure it's relevant anyway)
-> > s/doens't/doesn't/
-> >
-> > Rewrap comment to use ~80 columns.
-> >
-> > Seems pretty reasonable that a platform without standard ECAM might
-> > not have MCFG, since MCFG basically implies ECAM.
->
->
-> Sure, on all the above comments.
->
-> >
-> > Is "linux,pcie-quirk" the right property to look for?  It doesn't
-> > sound very generic, and it doesn't sound like anything related to
-> > ECAM.  Is it new?  I don't see it in the tree yet.  Should it be in
-> > Documentation/devicetree/bindings/pci/pci.txt so we don't get a
-> > different property name for every new platform?
+On Mon, Aug 09, 2021, Yu Zhang wrote:
+> On Sun, Aug 08, 2021 at 11:33:44PM -0500, Wei Huang wrote:
+> > 
+> > On 8/8/21 11:27 PM, Yu Zhang wrote:
+> > > On Sun, Aug 08, 2021 at 11:11:40PM -0500, Wei Huang wrote:
+> > > > 
+> > > > 
+> > > > On 8/8/21 10:58 PM, Yu Zhang wrote:
+> > > > > On Sun, Aug 08, 2021 at 02:26:56PM -0500, Wei Huang wrote:
+> > > > > > AMD future CPUs will require a 5-level NPT if host CR4.LA57 is set.
+> > > > > 
+> > > > > Sorry, but why? NPT is not indexed by HVA.
+> > > > 
+> > > > NPT is not indexed by HVA - it is always indexed by GPA. What I meant is NPT
+> > > > page table level has to be the same as the host OS page table: if 5-level
+> > > > page table is enabled in host OS (CR4.LA57=1), guest NPT has to 5-level too.
+> > > 
+> > > I know what you meant. But may I ask why?
+> > 
+> > I don't have a good answer for it. From what I know, VMCB doesn't have a
+> > field to indicate guest page table level. As a result, hardware relies on
+> > host CR4 to infer NPT level.
+> 
+> I guess you mean not even in the N_CR3 field of VMCB? 
 
-No, it should not be in pci.txt. Nothing to do with DT and I don't
-review ACPI bindings (someone should) if I can help it.
+Correct, nCR3 is a basically a pure representation of a regular CR3.
 
-> Yes, I made it up. Someone else commented about the "linux," partially
-> because it should be "linux-" to conform with
-> https://github.com/UEFI/DSD-Guide. But also in the same context of it
-> being linux specific.  I think that guide is where it should end up,
-> rather than the devicetree bindings.
->
-> I guess we can request addition to the uefi- but that seems like a
-> mistake this is really (hopefully?) a Linux specific properly as other
-> OS's will simply use the SMC. I think we could request another prefix if
-> we come up with a good one and think it belongs in that guide.
+> Then it's not a broken design - it's a limitation of SVM. :)
 
-It's only Linux specific until it's not.
+That's just a polite way of saying it's a broken design ;-)
 
-What happens when there's a second PCIe quirk here? Say what the quirk
-is (and not in terms of Linux policy).
-
-Don't you know the device here and can imply all this (like implying
-off of 'compatible' in DT)? Adding properties to address issues
-creates compatibility issues. Maybe not an issue in this case if the
-firmware is not stable, but not a good practice to be in.
-
-Rob
+Joking aside, NPT opted for a semblance of backwards compatibility at the cost of
+having to carry all the baggage that comes with a legacy design.  Keeping the core
+functionality from IA32 paging presumably miminizes design and hardware costs, and
+required minimal enabling in hypervisors.  The downside is that it's less flexible
+than EPT and has a few warts, e.g. shadowing NPT is gross because the host can't
+easily mirror L1's desired paging mode.
