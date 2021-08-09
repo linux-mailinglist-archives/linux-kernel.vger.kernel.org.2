@@ -2,132 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32A23E43DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFA93E43EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbhHIKXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:23:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33998 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234717AbhHIKXq (ORCPT
+        id S233677AbhHIK2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:28:04 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:55986 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232963AbhHIK2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:23:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628504605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lBMgmsHqw0YdLKVpdWLFV60bEE3X7POBff7kY81z7+0=;
-        b=NhlXYLePc588orL/szPFEExZ9i7+Pshae1FCaohyK8yBodDc3nu5qbWGLUSefMte5AOn0H
-        58CHccqgoN1hmB39/7jJ7443v8n1PkJLH2L70S5NUv3rNhT01hJBG5yNa0AovJvUw1tptP
-        509QgW/zCjl0LQOCrAXFu0ozgBzmbBc=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-L5MAZnY9PK2tEHK1qezajg-1; Mon, 09 Aug 2021 06:23:24 -0400
-X-MC-Unique: L5MAZnY9PK2tEHK1qezajg-1
-Received: by mail-ej1-f70.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso4356879ejc.22
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 03:23:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lBMgmsHqw0YdLKVpdWLFV60bEE3X7POBff7kY81z7+0=;
-        b=bXF5hgqWrPsMd0+5gzxve5hTnvx5sGwu/jTgPq2bceAARacqR/48OGV1jJKd6fC5DO
-         W+Ox2fD+iMOIT38WWCe1LLHyf9ZDSas3mN3kJGz1QBlAswI7EkQ0YJCRpOMeU6tEgtp0
-         wvl/vosyaDhtn4ocDZCc2xPztV2AVvS7g5HFHZ04kYTMCyitSVj8/JqbZolsSIVwYye7
-         /2pRx4rT8QQZiF8WHLcuaSsz9lJgNLvzrwFN+2UPrJZfEknzOn43f+8gT7VyPwzjDtPz
-         VpTklhcJfk0Ah9CUzw2fKMN4STbzoIUG2igvC1u16EkSbo5Gl7T/U0AYGkgmbX0aenvH
-         N/DA==
-X-Gm-Message-State: AOAM530P0g1PvLTvcjs2FiPV5zNwvFpmq0l4dzmWlfzmk36VUBw8aySq
-        5xopQqFL0ycUMLC89t/c0Ja4twM1nhu7KhUiTpVvbR7TJ2mKorI9rp5kNK5jArPTalqpnbxMOof
-        C93Lk2YsjIxJdxsOZCnZiJgRc
-X-Received: by 2002:aa7:c647:: with SMTP id z7mr28762252edr.52.1628504603585;
-        Mon, 09 Aug 2021 03:23:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxu4/FLaxiABAh3xlH1zEltzZAqe/JpBP91yZt7peMzpTB2Jakv6WmDhskp7f5QhwHz26t4Ug==
-X-Received: by 2002:aa7:c647:: with SMTP id z7mr28762236edr.52.1628504603409;
-        Mon, 09 Aug 2021 03:23:23 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id l9sm7953930edt.55.2021.08.09.03.23.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 03:23:22 -0700 (PDT)
-To:     Joao Martins <joao.m.martins@oracle.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     stable@vger.kernel.org, David Matlack <dmatlack@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210805105423.412878-1-pbonzini@redhat.com>
- <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
- <5f3c13be-f65d-1793-bd91-7491d3e149b0@redhat.com>
- <bab67d1c-f9b7-0a91-2d4f-9881e3f47218@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] selftests: KVM: avoid failures due to reserved
- HyperTransport region
-Message-ID: <ac72b77c-f633-923b-8019-69347db706be@redhat.com>
-Date:   Mon, 9 Aug 2021 12:23:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 9 Aug 2021 06:28:02 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 179AR7gbC006808, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 179AR7gbC006808
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 9 Aug 2021 18:27:07 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 9 Aug 2021 18:27:06 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 9 Aug 2021 18:27:06 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::50bb:7602:98b5:697f]) by
+ RTEXMBS01.realtek.com.tw ([fe80::50bb:7602:98b5:697f%5]) with mapi id
+ 15.01.2106.013; Mon, 9 Aug 2021 18:27:06 +0800
+Content-Type: multipart/mixed;
+        boundary="_000_22be83429956486f9f64b424c26be810realtekcom_"
+From:   Jack Yu <jack.yu@realtek.com>
+To:     "broonie@kernel.org" <broonie@kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh@kernel.org" <robh@kernel.org>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Flove(HsinFu)" <flove@realtek.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        =?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>,
+        =?big5?B?RGVyZWsgW6TovHe4cV0=?= <derek.fang@realtek.com>,
+        =?big5?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFuzr6vYp7td?= 
+        <kent_chen@realtek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] ASoC: rt1015p: add new acpi id and comapatible id
+Thread-Topic: [PATCH 1/2] ASoC: rt1015p: add new acpi id and comapatible id
+Thread-Index: AdeNCRmArV+K/sD3TgOSsZfh5My2dA==
+Date:   Mon, 9 Aug 2021 10:27:05 +0000
+Message-ID: <22be83429956486f9f64b424c26be810@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: <22be83429956486f9f64b424c26be810@realtek.com>
+x-originating-ip: [172.22.102.167]
+x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzgvOSCkV6TIIDA3OjA0OjAw?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
 MIME-Version: 1.0
-In-Reply-To: <bab67d1c-f9b7-0a91-2d4f-9881e3f47218@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/09/2021 10:15:06
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165459 [Aug 09 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: jack.yu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
+X-KSE-AntiSpam-Info: {tnef_exp}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/09/2021 10:18:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/21 12:00, Joao Martins wrote:
-> [0]https://developer.amd.com/wp-content/resources/56323-PUB_0.78.pdf
-> 
-> 1286 Spurious #GP May Occur When Hypervisor Running on
-> Another Hypervisor
-> 
-> Description
-> 
-> The processor may incorrectly generate a #GP fault if a hypervisor running on a hypervisor
-> attempts to access the following secure memory areas:
-> 
-> • The reserved memory address region starting at FFFD_0000_0000h and extending up to
-> FFFF_FFFF_FFFFh.
-> • ASEG and TSEG memory regions for SMM (System Management Mode)
-> • MMIO APIC Space
+--_000_22be83429956486f9f64b424c26be810realtekcom_
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 
-This errata took a few months to debug so we're quite familiar with it 
-:) but I only knew about the ASEG/TSEG/APIC cases.
+QWRkIG5ldyBhY3BpIGlkIGFuZCBjb21wYXRpYmxlIGlkIGZvciBydDEwMTVwLg0KDQpTaWduZWQt
+b2ZmLWJ5OiBKYWNrIFl1IDxqYWNrLnl1QHJlYWx0ZWsuY29tPg0KLS0tDQogc291bmQvc29jL2Nv
+ZGVjcy9ydDEwMTVwLmMgfCAyICsrDQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0K
+DQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9ydDEwMTVwLmMgYi9zb3VuZC9zb2MvY29k
+ZWNzL3J0MTAxNXAuYw0KaW5kZXggNDBmMjA2M2FlZmJlLi40MTVjZmIzYjJmMGQgMTAwNjQ0DQot
+LS0gYS9zb3VuZC9zb2MvY29kZWNzL3J0MTAxNXAuYw0KKysrIGIvc291bmQvc29jL2NvZGVjcy9y
+dDEwMTVwLmMNCkBAIC0xMjcsNiArMTI3LDcgQEAgc3RhdGljIGludCBydDEwMTVwX3BsYXRmb3Jt
+X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQogI2lmZGVmIENPTkZJR19PRg0K
+IHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIHJ0MTAxNXBfZGV2aWNlX2lkW10gPSB7
+DQogCXsgLmNvbXBhdGlibGUgPSAicmVhbHRlayxydDEwMTVwIiB9LA0KKwl7IC5jb21wYXRpYmxl
+ID0gInJlYWx0ZWsscnQxMDE5cCIgfSwNCiAJe30NCiB9Ow0KIE1PRFVMRV9ERVZJQ0VfVEFCTEUo
+b2YsIHJ0MTAxNXBfZGV2aWNlX2lkKTsNCkBAIC0xMzUsNiArMTM2LDcgQEAgTU9EVUxFX0RFVklD
+RV9UQUJMRShvZiwgcnQxMDE1cF9kZXZpY2VfaWQpOw0KICNpZmRlZiBDT05GSUdfQUNQSQ0KIHN0
+YXRpYyBjb25zdCBzdHJ1Y3QgYWNwaV9kZXZpY2VfaWQgcnQxMDE1cF9hY3BpX21hdGNoW10gPSB7
+DQogCXsgIlJUTDEwMTUiLCAwfSwNCisJeyAiUlRMMTAxOSIsIDB9LA0KIAl7IH0sDQogfTsNCiBN
+T0RVTEVfREVWSUNFX1RBQkxFKGFjcGksIHJ0MTAxNXBfYWNwaV9tYXRjaCk7DQotLSANCjIuMzEu
+MQ0KDQo=
 
-So this HyperTransport region is not related to this issue, but the 
-errata does point out that FFFD_0000_0000h and upwards is special in guests.
+--_000_22be83429956486f9f64b424c26be810realtekcom_
+Content-Disposition: attachment; filename="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Type: application/ms-tnef; name="winmail.dat"
 
-The Xen folks also had to deal with it only a couple months ago 
-(https://yhbt.net/lore/all/1eb16baa-6b1b-3b18-c712-4459bd83e1aa@citrix.com/):
+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
+EAAAAKSXu9JNFsdAl8jo7Hut3LsDABcAAQAAAEAAOQCA4lUZCY3XAUAACDCCougZCY3XAQsAKQAA
+AAAAHwDZPwEAAAAAAgAAQQBkAGQAIABuAGUAdwAgAGEAYwBwAGkAIABpAGQAIABhAG4AZAAgAGMA
+bwBtAHAAYQB0AGkAYgBsAGUAIABpAGQAIABmAG8AcgAgAHIAdAAxADAAMQA1AHAALgANAAoADQAK
+AFMAaQBnAG4AZQBkAC0AbwBmAGYALQBiAHkAOgAgAEoAYQBjAGsAIABZAHUAIAA8AGoAYQBjAGsA
+LgB5AHUAQAByAGUAYQBsAHQAZQBrAC4AYwBvAG0APgANAAoALQAtAC0ADQAKACAAcwBvAHUAbgBk
+AC8AcwBvAGMALwBjAG8AZABlAGMAcwAvAHIAdAAxADAAMQA1AHAALgBjACAAfAAgADIAIAArACsA
+DQAKACAAMQAgAGYAaQBsAGUAIABjAGgAYQBuAGcAZQBkACwAIAAyACAAaQBuAHMAZQByAHQAaQBv
+AG4AcwAoACsAKQANAAoADQAKAGQAaQBmAGYAIAAtAC0AZwBpAHQAIABhAC8AcwBvAHUAbgBkAC8A
+cwBvAGMALwBjAG8AZABlAGMAcwAvAHIAdAAxADAAMQA1AHAALgBjACAAYgAvAHMAbwB1AG4AZAAv
+AHMAbwBjAC8AYwBvAGQAZQBjAHMALwByAHQAMQAwADEANQBwAC4AYwANAAoAaQBuAGQAZQB4ACAA
+NAAwAGYAMgAwADYAAAALAACACCAGAAAAAADAAAAAAAAARgAAAAAUhQAAAQAAAB8AAICGAwIAAAAA
+AMAAAAAAAABGAQAAAB4AAABhAGMAYwBlAHAAdABsAGEAbgBnAHUAYQBnAGUAAAAAAAEAAAAaAAAA
+egBoAC0AVABXACwAIABlAG4ALQBVAFMAAAAAAAMAAIAIIAYAAAAAAMAAAAAAAABGAQAAADIAAABF
+AHgAYwBoAGEAbgBnAGUAQQBwAHAAbABpAGMAYQB0AGkAbwBuAEYAbABhAGcAcwAAAAAAIAAAAEgA
+AIAIIAYAAAAAAMAAAAAAAABGAQAAACIAAABOAGUAdAB3AG8AcgBrAE0AZQBzAHMAYQBnAGUASQBk
+AAAAAADEZrae7RpVTaAyCNlbIDxzHwAAgBOP8kH0gxRBpYTu21prC/8BAAAAFgAAAEMAbABpAGUA
+bgB0AEkAbgBmAG8AAAAAAAEAAAAqAAAAQwBsAGkAZQBuAHQAPQBNAFMARQB4AGMAaABhAG4AZwBl
+AFIAUABDAAAAAAAfAPo/AQAAABAAAABKAGEAYwBrACAAWQB1AAAAHwA3AAEAAAB8AAAAWwBQAEEA
+VABDAEgAIAAxAC8AMgBdACAAQQBTAG8AQwA6ACAAcgB0ADEAMAAxADUAcAA6ACAAYQBkAGQAIABu
+AGUAdwAgAGEAYwBwAGkAIABpAGQAIABhAG4AZAAgAGMAbwBtAGEAcABhAHQAaQBiAGwAZQAgAGkA
+ZAAAAB8APQABAAAAAgAAAAAAAAADADYAAAAAAAIBcQABAAAAFgAAAAHXjQkZgK1fiv7A904DkrGX
+4eTMtnQAAB8AcAABAAAAfAAAAFsAUABBAFQAQwBIACAAMQAvADIAXQAgAEEAUwBvAEMAOgAgAHIA
+dAAxADAAMQA1AHAAOgAgAGEAZABkACAAbgBlAHcAIABhAGMAcABpACAAaQBkACAAYQBuAGQAIABj
+AG8AbQBhAHAAYQB0AGkAYgBsAGUAIABpAGQAAAAfADUQAQAAAF4AAAA8ADIAMgBiAGUAOAAzADQA
+MgA5ADkANQA2ADQAOAA2AGYAOQBmADYANABiADQAMgA0AGMAMgA2AGIAZQA4ADEAMABAAHIAZQBh
+AGwAdABlAGsALgBjAG8AbQA+AAAAAAADAN4/tgMAAAMAExIAAAAAAgEAgBOP8kH0gxRBpYTu21pr
+C/8BAAAALgAAAEgAZQBhAGQAZQByAEIAbwBkAHkARgByAGEAZwBtAGUAbgB0AEwAaQBzAHQAAAAA
+AAEAAAAiAAAAAQAKAAAABAAAAAAAAAAUAAAAAAAAAAAAAAD/////AAAAAAAACwAAgBOP8kH0gxRB
+pYTu21prC/8BAAAAHAAAAEgAYQBzAFEAdQBvAHQAZQBkAFQAZQB4AHQAAAAAAAAACwAAgBOP8kH0
+gxRBpYTu21prC/8BAAAAKAAAAEkAcwBRAHUAbwB0AGUAZABUAGUAeAB0AEMAaABhAG4AZwBlAGQA
+AAAAAAAAQAAHMGuM4BkJjdcBAgELAAEAAAAQAAAApJe70k0Wx0CXyOjse63cuwMAJgAAAAAACwAG
+DAAAAAACARAwAQAAAEYAAAAAAAAA2+nESiSg50GTGyq7K7NtTAcATLd9DVWheUS+c4U5YtAApQAA
+AGlg9wAAMq84BUqwTkaAx8c4IroPWgAAAdeoiAAAAAACARMwAQAAABAAAACtX4r+wPdOA5Kxl+Hk
+zLZ0AgEUMAEAAAAMAAAATAAAAFQ0TEVBAAAAHwD4PwEAAAAQAAAASgBhAGMAawAgAFkAdQAAAB8A
+IkABAAAABgAAAEUAWAAAAAAAHwAjQAEAAAC2AAAALwBPAD0AUgBUAEUAWABDAEgALwBPAFUAPQBF
+AFgAQwBIAEEATgBHAEUAIABBAEQATQBJAE4ASQBTAFQAUgBBAFQASQBWAEUAIABHAFIATwBVAFAA
+IAAoAEYAWQBEAEkAQgBPAEgARgAyADMAUwBQAEQATABUACkALwBDAE4APQBSAEUAQwBJAFAASQBF
+AE4AVABTAC8AQwBOAD0AVQBTAEUAUgA1ADkAOAA2ADUAMQAwADkAAAAAAB8AJEABAAAABgAAAEUA
+WAAAAAAAHwAlQAEAAAC2AAAALwBPAD0AUgBUAEUAWABDAEgALwBPAFUAPQBFAFgAQwBIAEEATgBH
+AEUAIABBAEQATQBJAE4ASQBTAFQAUgBBAFQASQBWAEUAIABHAFIATwBVAFAAIAAoAEYAWQBEAEkA
+QgBPAEgARgAyADMAUwBQAEQATABUACkALwBDAE4APQBSAEUAQwBJAFAASQBFAE4AVABTAC8AQwBO
+AD0AVQBTAEUAUgA1ADkAOAA2ADUAMQAwADkAAAAAAB8AMEABAAAAEAAAAEoAYQBjAGsAIABZAHUA
+AAAfADFAAQAAABAAAABKAGEAYwBrACAAWQB1AAAAHwA4QAEAAAAQAAAASgBhAGMAawAgAFkAdQAA
+AB8AOUABAAAAEAAAAEoAYQBjAGsAIABZAHUAAAADAFlAAAAAAAMAWkAAAAAAAwAJWQEAAAAfAApd
+AQAAACgAAABqAGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAAHwALXQEAAAAo
+AAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABlAGsALgBjAG8AbQAAAB8AAIAfpOszqHouQr57
+eeGpjlSzAQAAADgAAABDAG8AbgB2AGUAcgBzAGEAdABpAG8AbgBJAG4AZABlAHgAVAByAGEAYwBr
+AGkAbgBnAEUAeAAAAAEAAAAkAQAASQBJAD0AWwBDAEkARAA9AGYAZQA4AGEANQBmAGEAZAAtAGYA
+NwBjADAALQAwADMANABlAC0AOQAyAGIAMQAtADkANwBlADEAZQA0AGMAYwBiADYANwA0ADsASQBE
+AFgASABFAEEARAA9AEQANwA4AEQAMAA5ADEAOQA4ADAAOwBJAEQAWABDAE8AVQBOAFQAPQAxAF0A
+OwBQAFMAPQBVAG4AawBuAG8AdwBuADsAVgBlAHIAcwBpAG8AbgA9AFYAZQByAHMAaQBvAG4AIAAx
+ADUALgAxACAAKABCAHUAaQBsAGQAIAAyADEAMAA2AC4AMAApACwAIABTAHQAYQBnAGUAPQBIADQA
+OwBVAFAAPQAxADAAOwBEAFAAPQAxAEMANQAAAAsAAIAIIAYAAAAAAMAAAAAAAABGAAAAAIKFAAAA
+AAAAAwANNP0/AAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAgAAAAeAAtAG0AcwAtAGgAYQBzAC0A
+YQB0AHQAYQBjAGgAAAABAAAAAgAAAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAiAAAAeAAt
+AG8AcgBpAGcAaQBuAGEAdABpAG4AZwAtAGkAcAAAAAAAAQAAACIAAABbADEANwAyAC4AMgAyAC4A
+MQAwADIALgAxADYANwBdAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAiAAAAeAAtAGsAcwBl
+AC0AcwBlAHIAdgBlAHIAaQBuAGYAbwAAAAAAAQAAADgAAABSAFQARQBYAE0AQgBTADAAMwAuAHIA
+ZQBhAGwAdABlAGsALgBjAG8AbQAuAHQAdwAsACAAOQAAAB8AAICGAwIAAAAAAMAAAAAAAABGAQAA
+AFYAAAB4AC0AawBzAGUALQBhAHQAdABhAGMAaABtAGUAbgB0AGYAaQBsAHQAZQByAGkAbgBnAC0A
+aQBuAHQAZQByAGMAZQBwAHQAbwByAC0AaQBuAGYAbwAAAAAAAQAAAF4AAABuAG8AIABhAHAAcABs
+AGkAYwBhAGIAbABlACAAYQB0AHQAYQBjAGgAbQBlAG4AdAAgAGYAaQBsAHQAZQByAGkAbgBnACAA
+cgB1AGwAZQBzACAAZgBvAHUAbgBkAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAABCAAAAeAAt
+AGsAcwBlAC0AYQBuAHQAaQB2AGkAcgB1AHMALQBpAG4AdABlAHIAYwBlAHAAdABvAHIALQBpAG4A
+ZgBvAAAAAAABAAAAIAAAAHMAYwBhAG4AIABzAHUAYwBjAGUAcwBzAGYAdQBsAAAAHwAAgIYDAgAA
+AAAAwAAAAAAAAEYBAAAAKgAAAHgALQBrAHMAZQAtAGEAbgB0AGkAdgBpAHIAdQBzAC0AaQBuAGYA
+bwAAAAAAAQAAAEYAAABDAGwAZQBhAG4ALAAgAGIAYQBzAGUAcwA6ACAAMgAwADIAMQAvADgALwA5
+ACAACk5IUyAAMAA3ADoAMAA0ADoAMAAwAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAABQAAAA
+eAAtAGsAcwBlAC0AYgB1AGwAawBtAGUAcwBzAGEAZwBlAHMAZgBpAGwAdABlAHIAaQBuAGcALQBz
+AGMAYQBuAC0AcgBlAHMAdQBsAHQAAAABAAAAKAAAAHAAcgBvAHQAZQBjAHQAaQBvAG4AIABkAGkA
+cwBhAGIAbABlAGQAAAAr1A==
 
-   From "Open-Source Register Reference for AMD Family 17h Processors 
-(PUB)":
-   https://developer.amd.com/wp-content/resources/56255_3_03.PDF
-
-   "The processor defines a reserved memory address region starting at
-   FFFD_0000_0000h and extending up to FFFF_FFFF_FFFFh."
-
-   It's still doesn't say that it's at the top of physical address space
-   although I understand that's how it's now implemented. The official
-   document doesn't confirm it will move along with physical address space
-   extension.
-
-   [...]
-
-   1) On parts with <40 bits, its fully hidden from software
-   2) Before Fam17h, it was always 12G just below 1T, even if there was
-   more RAM above this location
-   3) On Fam17h and later, it is variable based on SME, and is either
-   just below 2^48 (no encryption) or 2^43 (encryption)
-
-> It's
-> interesting that fn8000_000A EDX[28] is part of the reserved bits from that CPUID leaf.
-
-It's only been defined after AMD deemed that the errata was not fixable 
-in current generation processors); it's X86_FEATURE_SVME_ADDR_CHK now.
-
-I'll update the patch based on the findings from the Xen team.
-
-Paolo
-
+--_000_22be83429956486f9f64b424c26be810realtekcom_--
