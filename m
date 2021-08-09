@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472893E3F4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183F03E3F5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhHIFRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 01:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232991AbhHIFRE (ORCPT
+        id S233170AbhHIFUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 01:20:42 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58048 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233043AbhHIFUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 01:17:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722D8C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 22:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=yOCXxJNJC7NkOSL+GguHSuO1cbstODpX5rkv0qL5ll4=; b=jlaFl/QaGutsB8c4wKzt+l8tmx
-        Q4JhRy1K84sSfiEg//hGs4M9tm9YOnTLi0v5R+9R1gFA0H2C0tLxdsa8oUaA3L8fHzwe0BAHZz2Ov
-        mwGi9i8ogik+pxknPz5JAGZdz/Jd6LO+l8piJeeZFu/8xLudnS1ySxa5B8Hec1rUnwvq3KGUWZEav
-        d+UaV+azTckXQCEv9tlJ/pU/hcq5FjAV3RIjNH8/Du6AabJvUsz9aC6gHvHbVbR54ZHOH441b/Zb5
-        cP1JqAlzwNxzWBxPe2UMsEWrUY09ZvXEkUNb0mQ3JUVA+yuHB5xR3ZTwTWKUEt+2rXuOfAg2MDR5/
-        a2vs02aQ==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCxeV-00H9MK-VM; Mon, 09 Aug 2021 05:16:44 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] lib/dump_stack: correct kernel-doc notation
-Date:   Sun,  8 Aug 2021 22:16:43 -0700
-Message-Id: <20210809051643.17567-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 9 Aug 2021 01:20:30 -0400
+X-UUID: e1b3ec17cfd2468dac4f5f0a6656b548-20210809
+X-UUID: e1b3ec17cfd2468dac4f5f0a6656b548-20210809
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <tinghan.shen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 362521809; Mon, 09 Aug 2021 13:20:03 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 9 Aug 2021 13:20:01 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 9 Aug 2021 13:20:01 +0800
+From:   Tinghan Shen <tinghan.shen@mediatek.com>
+To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>, <krzysztof.kozlowski@canonical.com>,
+        <shawnguo@kernel.org>, <sam@ravnborg.org>,
+        <linux@rempel-privat.de>, <daniel@0x0f.com>,
+        <Max.Merchel@tq-group.com>, <geert+renesas@glider.be>,
+        <fanghao11@huawei.com>
+CC:     <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tinghan Shen <tinghan.shen@mediatek.com>
+Subject: [PATCH v6 0/6] Mediatek MT8195 SCP support
+Date:   Mon, 9 Aug 2021 13:19:53 +0800
+Message-ID: <20210809051959.31136-1-tinghan.shen@mediatek.com>
+X-Mailer: git-send-email 2.15.GIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warnings in dump_stack.c:
+Change since v5:
+- Drop adding new vendor-prefix
+- Rename rpmsg property from "mtk," to "mediatek," to use the name defined in 
+  vendor-prefix.yaml for Mediatek Co.
 
-lib/dump_stack.c:97: warning: Function parameter or member 'log_lvl' not described in 'dump_stack_lvl'
-lib/dump_stack.c:97: warning: expecting prototype for dump_stack(). Prototype was for dump_stack_lvl() instead
+Changes since v4:
+- Move clock acquirement to mtk_scp_of_data
+- Add new vendor-prefix for Mediatek SCP
+- Refine mtk,scp.yaml
+  - Remove '|' in 'description'
+  - Add 'items' to replace 'description' in reg-names property
+  - Add 'const' to replace 'description' in clock-names property
+  - Add required property for mt8183 and mt8192
+  - Rewrite 'patternProperties' by 'additionalProperties'
+  - Rewrite example with 1 address and size-cell.
+  - Drop dts label from example 
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- lib/dump_stack.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes since v3:
+- Add missing patch version in mail subject
+- No change to patches.
 
---- linux-next-20210806.orig/lib/dump_stack.c
-+++ linux-next-20210806/lib/dump_stack.c
-@@ -89,7 +89,8 @@ static void __dump_stack(const char *log
- }
- 
- /**
-- * dump_stack - dump the current task information and its stack trace
-+ * dump_stack_lvl - dump the current task information and its stack trace
-+ * @log_lvl: log level
-  *
-  * Architectures can override this implementation by implementing its own.
-  */
+Changes since v2:
+- Add compatible for mt8192
+- Convert mtk,scp.txt to mtk,scp.yaml 
+- Refine clock checking method
+
+Changes since v1:
+- Fix missing 'compatible' line in binding document
+
+Tinghan Shen (6):
+  dt-bindings: remoteproc: mediatek: Add binding for mt8195 scp
+  dt-bindings: remoteproc: mediatek: Add binding for mt8192 scp
+  dt-bindings: remoteproc: mediatek: Convert mtk,scp to json-schema
+  remoteproc: mediatek: Support mt8195 scp
+  rpmsg: change naming of mediatek rpmsg property
+  arm64: dts: mt8183: change rpmsg property name
+
+ .../bindings/remoteproc/mtk,scp.txt           | 36 --------
+ .../bindings/remoteproc/mtk,scp.yaml          | 92 +++++++++++++++++++
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |  2 +-
+ drivers/remoteproc/mtk_common.h               |  1 +
+ drivers/remoteproc/mtk_scp.c                  | 48 +++++++++-
+ drivers/rpmsg/mtk_rpmsg.c                     |  2 +-
+ 6 files changed, 138 insertions(+), 43 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
+
+-- 
+2.18.0
+
