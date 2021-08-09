@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918343E3F25
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E033E3F32
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhHIEzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 00:55:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44542 "EHLO mail.kernel.org"
+        id S232908AbhHIFHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 01:07:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:52890 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230491AbhHIEzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 00:55:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B3C360FF2;
-        Mon,  9 Aug 2021 04:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628484931;
-        bh=Xhq31Aj6JwOeLN6Kq+2I1x9CB4ydFudhm88N++LwBg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lABV//HLnmoHidSLNYscM6Asks1mfMOMQce4eq1V4ZcZO8lHWJb26tczrIUudxUBN
-         oU9aK87d7nuzaamYxAGJ/PnPUx/PwwtlbB4nCeZHYN3lT0G/9A1By4S8yuTipXRvm0
-         ttwLrqpkOMFdBgnaqGkd9t5KxmQxw7HnJwpc065ULVKllzny/32BkP2OS3SAeGbVVO
-         2ZgOZt5vbpyAbSJJ1D7rS7qdHJcKNlxpX1i/f2Lw76dfeFnBvfN9EfjIneAOuIUaZE
-         gmYYwCXa9u6RwNY2ofDElR29x0wARZ34Iy8do/wG3J6aSpDUB4P5obSwfVaxuZNB3u
-         ExBO10A7ZZXig==
-Date:   Mon, 9 Aug 2021 07:55:29 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borys Movchan <borysmn@axis.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel@axis.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Message-ID: <20210809045529.wz54przgpqgjs67q@kernel.org>
-References: <20210806141808.6537-1-borysmn@axis.com>
+        id S229516AbhHIFHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 01:07:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7699131B;
+        Sun,  8 Aug 2021 21:57:56 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0EB983F718;
+        Sun,  8 Aug 2021 21:57:53 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        anton.yakovlev@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com, souvik.chakravarty@arm.com,
+        Jonathan.Cameron@Huawei.com, peter.hilber@opensynergy.com,
+        james.quinlan@broadcom.com, vincent.guittot@linaro.org,
+        etienne.carriere@linaro.org, jean-philippe@linaro.org,
+        Vasyl.Vavrychuk@opensynergy.com, igor.skalkin@opensynergy.com,
+        mikhail.golubev@opensynergy.com, f.fainelli@gmail.com,
+        alex.bennee@linaro.org
+Subject: Re: [PATCH v7 00/15] Introduce SCMI transport based on VirtIO
+Date:   Mon,  9 Aug 2021 05:57:36 +0100
+Message-Id: <162848483974.232214.9506203742448269364.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210803131024.40280-1-cristian.marussi@arm.com>
+References: <20210803131024.40280-1-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806141808.6537-1-borysmn@axis.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 04:18:08PM +0200, Borys Movchan wrote:
-> If something went wrong during the TPM firmware upgrade, like power
-> failure or the firmware image file get corrupted, the TPM might end
-> up in Upgrade or Failure mode upon the next start. The state is
-> persistent between the TPM power cycle/restart.
+On Tue, 3 Aug 2021 14:10:09 +0100, Cristian Marussi wrote:
+> While reworking this series starting from the work done up to V3 by
+> OpenSynergy, I am keeping the original autorship and list distribution
+> unchanged.
 > 
-> According to TPM specification:
->  * If the TPM is in Upgrade mode, it will answer with TPM2_RC_UPGRADE
->    to all commands except Field Upgrade related ones.
->  * If the TPM is in Failure mode, it will allow performing TPM
->    initialization but will not provide any crypto operations.
->    Will happily respond to Field Upgrade calls.
+> The main aim of this rework, as said, is to simplify where possible the
+> SCMI VirtIO support added in V3 by adding at first some new general
+> mechanisms in the SCMI Transport layer.
 > 
-> Change the behavior of the tpm2_auto_startup(), so it detects the active
-> running mode of the TPM.  It is easy to determine that TPM is in Upgrade
-> mode by relying on the fact that tpm2_do_selftest() will return
-> TPM2_RC_UPGRADE. In such a case, there is no point to finish the
-> start-up procedure as the TPM will not accept any commands, except
-> firmware upgrade related.
-> 
-> On the other hand, if the TPM is in Failure mode, it will successfully
-> respond to both tpm2_do_selftest() and tpm2_startup() calls. Although,
-> will fail to answer to tpm2_get_cc_attrs_tbl(). Use this fact to
-> conclude that TPM is in Failure mode.
-> 
-> If the chip is in the Upgrade or Failure mode, the function returns -EIO
-> error code.
-> 
-> The return value is checked in the tpm_chip_register() call to determine
-> the state of the TPM. If the TPM is not in normal operation mode, set
-> the `limited_mode` flag. If the flag is set then the TPM is not able to
+> [...]
 
-Nit: do not use hyphens for limited mode. 'limited_mode' is fine. I'm
-also fine with just limited_mode.
+Applied to sudeep.holla/linux (for-next/scmi), thanks!
 
-> provide any crypto functionality.  Correspondignly, the calls to
-> tpm2_get_cc_attrs_tbl(), tpm_add_hwrng() and tpm_get_pcr_allocation()
-> will fail. Use the flag to exclude them from the initialization
-> sequence.
+[01/15] firmware: arm_scmi: Add support for type handling in common functions
+        https://git.kernel.org/sudeep.holla/c/63b282f172
+[02/15] firmware: arm_scmi: Remove scmi_dump_header_dbg() helper
+        https://git.kernel.org/sudeep.holla/c/3669032514
+[03/15] firmware: arm_scmi: Add optional transport_init/exit support
+        https://git.kernel.org/sudeep.holla/c/ceac257db0
+[04/15] firmware: arm_scmi: Introduce monotonically increasing tokens
+        https://git.kernel.org/sudeep.holla/c/9ca5a1838e
+[05/15] firmware: arm_scmi: Handle concurrent and out-of-order messages
+        https://git.kernel.org/sudeep.holla/c/ed7c04c1fe
+[06/15] firmware: arm_scmi: Make .clear_channel optional
+        https://git.kernel.org/sudeep.holla/c/e9b21c9618
+[07/15] firmware: arm_scmi: Make polling mode optional
+        https://git.kernel.org/sudeep.holla/c/2930abcffd
+[08/15] firmware: arm_scmi: Make SCMI transports configurable
+        https://git.kernel.org/sudeep.holla/c/e8419c24ba
+[09/15] firmware: arm_scmi: Make shmem support optional for transports
+        https://git.kernel.org/sudeep.holla/c/a7b1138b92
+[10/15] firmware: arm_scmi: Add method to override max message number
+        https://git.kernel.org/sudeep.holla/c/c92c3e382e
+[11/15] firmware: arm_scmi: Add message passing abstractions for transports
+        https://git.kernel.org/sudeep.holla/c/f301bba0ca
+[12/15] firmware: arm_scmi: Add optional link_supplier() transport op
+        https://git.kernel.org/sudeep.holla/c/7885281260
+[13/15] dt-bindings: arm: Add virtio transport for SCMI
+        https://git.kernel.org/sudeep.holla/c/60625667c4
+[14/15] firmware: arm_scmi: Add priv parameter to scmi_rx_callback
+        https://git.kernel.org/sudeep.holla/c/13fba878cc
+[15/15] firmware: arm_scmi: Add virtio transport
+        https://git.kernel.org/sudeep.holla/c/46abe13b5e
 
-This is blacklisting. E.g. I'm not sure why all of the sysfs attributes
-would still be exported. Some of them use TPM commands. That was just
-one random example I came up with.
+--
 
-It's easy to come up other examples, like, why you provide still tpmrm0,
-which is dependent on a TPM running normal mode?
+Regards,
+Sudeep
 
-This misses completely the rationale for ever acking this change: which
-parts of the uapi are export and *why*.
-
-Please whitelist the things that should still work. Even the obvious
-ones like /dev/tpm0 (because of TPM_RC_UPGRADE).
-
-This is clearly a faulty and incomplete patch in its current form.
-
-/Jarkko
