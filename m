@@ -2,73 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D933E4AB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DA33E4AB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhHIRT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:19:27 -0400
-Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:56044 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233656AbhHIRTX (ORCPT
+        id S233656AbhHIRW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233817AbhHIRW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:19:23 -0400
-Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 96F2F1802F048;
-        Mon,  9 Aug 2021 17:19:01 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id 0A01517275;
-        Mon,  9 Aug 2021 17:18:59 +0000 (UTC)
-Message-ID: <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
-Subject: Re: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-From:   Joe Perches <joe@perches.com>
-To:     Robert Richter <rric@kernel.org>, Len Baker <len.baker@gmx.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        Mon, 9 Aug 2021 13:22:57 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D47EC061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:22:37 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id b2-20020a0cc9820000b0290352b2c7d7e1so3649295qvk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 10:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Xcvol7SaEf5nEJ4TIhNgU4+/eKyMOxhUuZoxthy3jEs=;
+        b=fYl/S4P1NIh2MYIlfqgl72NRDM0lxRXloBDtiD8Qa+o8CfCffKEeMu8z+6YjTeuFN8
+         8D/m2Nq4EXJEZTGw6m+Q4v3riPs2kKn1W49g3pQZ1ySREQ/ej7BwSfwZ/esSbTvAFRjd
+         BjMdI7Na4vj4+/eOfGLZ6qnA7o6//dvDRj8Z+4AGm/WpYqXKOh1yS4M1hCrjh39j4oOW
+         rgDIMZIhNlh3aW5gdMsVnfXJLp8ElGk7DPwRhbcTGyk+4W1XvvFuMFu7npurnmMQzeUy
+         yecTyiRF8c1Ct8aMNXdGSiqCn3h+p6F2aQEEct7TbMLsVU40xyrBKLJnFwIGe4+NFcyS
+         vZXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Xcvol7SaEf5nEJ4TIhNgU4+/eKyMOxhUuZoxthy3jEs=;
+        b=SZUK1hxfkNLtlA6iQtoexmN7EgeLE41pZ1fwurzYlcgssTEX1SF//4ALbcvVu6KuHO
+         7Nc7HAqrMoQ21RgW0F31fWzDwjrzGrijMxabWKxDcE4RDH70Vuu6gcszaaKnWe4fd3+h
+         yIhUH87bGRQ9mSD7soe73soLKpvlSP1CsXm+aMlPEeuJT+VDi3jXxQYOPhKrGQa+EIi1
+         EVH4hr3rKTnzcqsdUgm0jw+pyw/ATTUHbWVV+isUZe9K7KsC3vN493zpaysbW1e7Sy/g
+         Hn8JolPSNsLubSPqr/VTACctc3jiR9iHZFB/QMmVzUft4VmRLs/Lgfr5VRHwIduiQA1/
+         Vz3Q==
+X-Gm-Message-State: AOAM53071ovGwzP8StKLus4XslUYpx8TL27PgA3zAVtyaC/WbR7glU3e
+        x5Hst3UVcf5ZMKESf1kZ/SIygvdzJ54WSJa2hoGwXg==
+X-Google-Smtp-Source: ABdhPJx4Y6ZEwN5YeJJLko9DVHdYfNRD0QB2UZW2bQjvIauG2uZeJC3L2Tg6y4dLnB919OKLgKb8wKCH7o60FyM+hfqiEQ==
+X-Received: from mustash.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:337b])
+ (user=richardsonnick job=sendgmr) by 2002:ad4:498a:: with SMTP id
+ t10mr6749325qvx.8.1628529756242; Mon, 09 Aug 2021 10:22:36 -0700 (PDT)
+Date:   Mon,  9 Aug 2021 17:22:01 +0000
+Message-Id: <20210809172207.3890697-1-richardsonnick@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH 0/3] Add IMIX mode
+From:   Nicholas Richardson <richardsonnick@google.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     nrrichar@ncsu.edu, arunkaly@google.com,
+        Nick Richardson <richardsonnick@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Yejune Deng <yejune.deng@gmail.com>,
+        Di Zhu <zhudi21@huawei.com>, Ye Bin <yebin10@huawei.com>,
+        Leesoo Ahn <dev@ooseel.net>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Mon, 09 Aug 2021 10:18:58 -0700
-In-Reply-To: <YRD90L6PMoVbbv+9@rric.localdomain>
-References: <20210807155957.10069-1-len.baker@gmx.com>
-         <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
-         <20210808112617.GA1927@titan> <YRD90L6PMoVbbv+9@rric.localdomain>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 0A01517275
-X-Spam-Status: No, score=-1.58
-X-Stat-Signature: p5kr8prgqazzpziseafgjpraffk61fyt
-X-Rspamd-Server: rspamout02
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX180VX6TKfp7KxpfCdiqElP3tLF2OZGglEw=
-X-HE-Tag: 1628529539-872985
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-09 at 12:05 +0200, Robert Richter wrote:
-> On 08.08.21 13:26:17, Len Baker wrote:
-> 
-> > > Perhaps this should use scnprintf rather than strscpy
-> > > Something like:
-> > > 			n += scnprintf(buf + n, len - n, "%s",
-> > > 				       p == e->label ? dim->label : OTHER_LABEL);
-> > > 
-> > In the first version [1] the scnprintf was used but Robert Richter don't
-> > see any benefit compared with the current implementation.
-> > 
-> > [1] https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gmx.com/
-> 
-> Reason is that there is the assumption that p must always point at the
-> end of the string and its trailing zero byte. I am not opposed using
-> the string function's return code instead of strlen() to get the
-> length. But why using formated output if strscpy() can be used?
+From: Nick Richardson <richardsonnick@google.com>
 
-strscpy and scnprintf have different return values and it's simpler
-and much more common to use scnprintf for appended strings that are
-limited to a specific buffer length.
+Adds internet mix (IMIX) mode to pktgen. Internet mix is
+included in many user-space network perf testing tools. It allows
+for the user to specify a distribution of discrete packet sizes to be
+generated. This type of test is common among vendors when perf testing 
+their devices.
+[RFC link: https://datatracker.ietf.org/doc/html/rfc2544#section-9.1]
 
+This allows users to get a
+more complete picture of how their device will perform in the
+real-world.
 
+This feature adds a command that allows users to specify an imix
+distribution in the following format:
+  imix_weights size_1,weight_1 size_2,weight_2 ... size_n,weight_n
+
+The distribution of packets with size_i will be 
+(weight_i / total_weights) where
+total_weights = weight_1 + weight_2 + ... + weight_n
+
+For example:
+  imix_weights 40,7 576,4 1500,1
+
+The pkt_size "40" will account for 7 / (7 + 4 + 1) = ~58% of the total
+packets sent.
+
+This patch was tested with the following:
+1. imix_weights = 40,7 576,4 1500,1
+2. imix_weights = 0,7 576,4 1500,1
+  - Packet size of 0 is resized to the minimum, 42
+3. imix_weights = 40,7 576,4 1500,1 count = 0
+  - Zero count.
+  - Runs until user stops pktgen.
+Invalid Configurations
+1. clone_skb = 200 imix_weights = 40,7 576,4 1500,1
+    - Returns error code -524 (-ENOTSUPP) when setting imix_weights
+2. len(imix_weights) > MAX_IMIX_ENTRIES
+    - Returns -7 (-E2BIG)
+
+This patch is split into three parts, each provide different aspects of
+required functionality:
+  1. Parse internet mix input.
+  2. Add IMIX Distribution representation.
+  3. Process and output IMIX results.
+
+Nick Richardson (3):
+  pktgen: Parse internet mix (imix) input
+  pktgen: Add imix distribution bins
+  pktgen: Add output for imix results
+
+ net/core/pktgen.c | 163 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 162 insertions(+), 1 deletion(-)
+
+-- 
+2.32.0.605.g8dce9f2422-goog
 
