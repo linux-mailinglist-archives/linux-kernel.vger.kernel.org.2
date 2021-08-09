@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F793E3D77
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C573E3D79
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhHIBR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
+        id S232583AbhHIBTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhHIBRY (ORCPT
+        with ESMTP id S229977AbhHIBTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:17:24 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF32FC061757;
-        Sun,  8 Aug 2021 18:17:03 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id q2so14613688plr.11;
-        Sun, 08 Aug 2021 18:17:03 -0700 (PDT)
+        Sun, 8 Aug 2021 21:19:48 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48193C061757;
+        Sun,  8 Aug 2021 18:19:28 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d17so14622643plr.12;
+        Sun, 08 Aug 2021 18:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pYYxiw41X17NhD1Q5oNmXyZafkiZ20OypLI54Gm/l6w=;
-        b=m0glI4mtBx6gFQq7XMZbzWzpo2QRbQ5tvHAayhoG3rePzTciRkb4aOzdynj+DXti0X
-         nTlMMB9pQo8sS2OWyRSvJUO9u1Zvz2ghDQHWPc/d1Ccg3QCJ1pEfaRcSy8cKLZZFZoRP
-         hojFkdOnZ5b216Ykb6e6sUHC0x5PRWCKFtTpVniwAqVb20F4Ugx4SFP369IXh7BUr+4O
-         +ZljzuH34cczn4FsMhdHgQsyQGsvKqpgv5FfnR6q+/E4+5OW8p+mHagCu+cA0kAqwUWB
-         8Z2yKVeCK3kJs8CeL10SC+umJsnWCGhCAzYtjxwzeGiGvnsvNIaIPr+xB1RZlgBJbqQ7
-         SkWA==
+        bh=qSsRfeOAJJimPe0eYAMPrHD413ivEpqTS/QEGrDm3js=;
+        b=tzdhaor+KWi2luHy4aIsq/oDv7z6BnwlKGNnzFo54tohcAHzGG09bYbISDA29hVh5d
+         utvwjNQc3vEasqddOcjEUciGzEzUhtPWG1STAMWffZdZpQpOLMguCTIV34+hCoUUWsK2
+         GtWmjhK0m9VbuhSDUrLCS/plOAgsn9lNvVLv/3bj6BG1Asz8Lg5+w4Nu+vaFRGHRJuOt
+         Ag9ZXoFGlvq0iVPlhPKPaH+hHo5lOWatwb9xciUsKf9NeI238oB10CmiCIBhshuBF6q9
+         GfOVTLS2XbBQ7MfUhNUyYksA7VeLGBgO+2jpk0ObWd52x9o6niNu+dmUme7XTzd6pO7Y
+         Zb2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=pYYxiw41X17NhD1Q5oNmXyZafkiZ20OypLI54Gm/l6w=;
-        b=ejgzmpp6W1l5UAM/r57bO0ZzHW7TH2WTcO3n3Lg82OhEX9HERZQFN9khRqa/maIJtx
-         iI0M/mwH1pt5csiFrxv7Itgk37QnD3cqLq/2S5CgoymvGl4VciX9J9AGH/T2QTtTYElp
-         ZvjXVtdEO3AER3GYCsplwvN/N/8bAL55QLcMZz1D5W3wNco1N0D3SckH0+1YIcgMFsQ6
-         Ep1ZsC8WE5dfX/bmO2EeLvcUgpW+tZFOke1eTrXb0TUj/RHD+/SQqnQiwy7Xs5ugq/Qk
-         tEIArp4yQy+J9tcsug0uNKiu1gBMJYdzQKbgpcuv+7JGSn++avj+t/K1hfUho8cHuxko
-         6wrA==
-X-Gm-Message-State: AOAM533daJ3ALuMH90JPZb4j5FNa1af6ybhXCkWhxNE/GxSLPHN/nFiD
-        +HlFLcKhc9EE6FvolotGyMZ152uNeJs=
-X-Google-Smtp-Source: ABdhPJyG9Po7iac+KbYe3ueM8VeOhZbaOdLuwfqWPTwGCZ+vDB74YliMgaxhhxyJz+howoukoUiT5Q==
-X-Received: by 2002:a63:1155:: with SMTP id 21mr574134pgr.346.1628471823431;
-        Sun, 08 Aug 2021 18:17:03 -0700 (PDT)
+        bh=qSsRfeOAJJimPe0eYAMPrHD413ivEpqTS/QEGrDm3js=;
+        b=iZkLOjBePo2PBQzM/PQXUstYa9EPm/DhrXm0JLU/ev/cjqVGTgbzSXLXTRxvh47JIk
+         BLWB4t3jF0JxJfybE3AbVJVr7zlL+WI2Fmms4CwCHHgiiJctwWkpeZTwn62/bMtEnGs6
+         onGyOpWT5Ibut3CnmXGQAgCXxLsSLqLFlChwQfsV6FzyxAVnyY9ytteAZyYMACMI15ig
+         i98E67CgWx/iho/XmjT0RIh17zjdxY3f2NZ4BOUSp4hsrJ1KQBa+aPLkJnIcfD6rb+OP
+         THW1qKW+ELSs/jA6ZO+Zoorgfc2wiAGGdA/YFiHtpe2HjZAL0GmTHt5sfyNY/r3oD45t
+         utdg==
+X-Gm-Message-State: AOAM532P5mM+msJ2e/IH/lqHH7EWf7oIXjf+DEM4dpLMVwJqwxUyJRR5
+        KDJ0CTtsm9Zs80nob6mTaIw=
+X-Google-Smtp-Source: ABdhPJwDWq6qqUtoCrPVMRIThw3Y8oif2IZPY6bP6brvW6y+ivxDA5o6j20MdJD5baBXqlPuahKPRg==
+X-Received: by 2002:a17:90b:1882:: with SMTP id mn2mr33491627pjb.213.1628471967707;
+        Sun, 08 Aug 2021 18:19:27 -0700 (PDT)
 Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id v16sm9573074pje.24.2021.08.08.18.17.01
+        by smtp.gmail.com with ESMTPSA id p7sm7037839pfn.211.2021.08.08.18.19.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Aug 2021 18:17:03 -0700 (PDT)
-Subject: [PATCH v4 3/9] docs: pdfdocs: Choose Serif font as CJK mainfont if
- possible
+        Sun, 08 Aug 2021 18:19:27 -0700 (PDT)
+Subject: [PATCH v4 4/9] docs: pdfdocs: Preserve inter-phrase space in Korean
+ translations
 To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
@@ -58,8 +58,8 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
 References: <39d0fb0f-b248-bca4-2dac-df69e8d697b1@gmail.com>
 From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <5e454140-5d0c-35d4-8c31-3ffb2420793a@gmail.com>
-Date:   Mon, 9 Aug 2021 10:17:00 +0900
+Message-ID: <68de2e52-e6d1-3f01-c097-15ba7b28a319@gmail.com>
+Date:   Mon, 9 Aug 2021 10:19:24 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
@@ -71,101 +71,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Noto Serif CJK SC" and its variants suit better with the roman font
-of Latin letters.
-
-On some distros such as Fedora, it is possible to partially install
-"Noto Sans CJK" fonts.
-So, if the Serif fonts are not found on the system, fall back to the
-Sans fonts.
+In Korean typesetting, inter-phrase spaces in Hangul text have
+a similar role as the the inter-word spaces in Latin text.
+They can be preserved by the \xeCJKsetup{CJKspace=true} option.
 
 Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 ---
- Documentation/conf.py | 41 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 36 insertions(+), 5 deletions(-)
+ Documentation/conf.py | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 24e5427588e7..980be06df723 100644
+index 980be06df723..2ccfe4442acc 100644
 --- a/Documentation/conf.py
 +++ b/Documentation/conf.py
-@@ -360,20 +360,48 @@ latex_elements['preamble']  += '''
-     \\IfFontExistsTF{Noto Sans CJK SC}{
- 	% This is needed for translations
- 	\\usepackage{xeCJK}
--	\\setCJKmainfont{Noto Sans CJK SC}
-+	\\IfFontExistsTF{Noto Serif CJK SC}{
-+	    \\setCJKmainfont{Noto Serif CJK SC}
-+	}{
-+	    \\setCJKmainfont{Noto Sans CJK SC}
-+	}
- 	\\setCJKsansfont{Noto Sans CJK SC}
- 	\\setCJKmonofont{Noto Sans Mono CJK SC}
- 	% CJK Language-specific font choices
--	\\newCJKfontfamily[SCmain]\\scmain{Noto Sans CJK SC}
-+	\\IfFontExistsTF{Noto Serif CJK SC}{
-+	    \\newCJKfontfamily[SCmain]\\scmain{Noto Serif CJK SC}
-+	    \\newCJKfontfamily[SCserif]\\scserif{Noto Serif CJK SC}
-+	}{
-+	    \\newCJKfontfamily[SCmain]\\scmain{Noto Sans CJK SC}
-+	    \\newCJKfontfamily[SCserif]\\scserif{Noto Sans CJK SC}
-+	}
- 	\\newCJKfontfamily[SCsans]\\scsans{Noto Sans CJK SC}
- 	\\newCJKfontfamily[SCmono]\\scmono{Noto Sans Mono CJK SC}
--	\\newCJKfontfamily[TCmain]\\tcmain{Noto Sans CJK TC}
-+	\\IfFontExistsTF{Noto Serif CJK TC}{
-+	    \\newCJKfontfamily[TCmain]\\tcmain{Noto Serif CJK TC}
-+	    \\newCJKfontfamily[TCserif]\\tcserif{Noto Serif CJK TC}
-+	}{
-+	    \\newCJKfontfamily[TCmain]\\tcmain{Noto Sans CJK TC}
-+	    \\newCJKfontfamily[TCserif]\\tcserif{Noto Sans CJK TC}
-+	}
- 	\\newCJKfontfamily[TCsans]\\tcsans{Noto Sans CJK TC}
- 	\\newCJKfontfamily[TCmono]\\tcmono{Noto Sans Mono CJK TC}
--	\\newCJKfontfamily[KRmain]\\krmain{Noto Sans CJK KR}
-+	\\IfFontExistsTF{Noto Serif CJK KR}{
-+	    \\newCJKfontfamily[KRmain]\\krmain{Noto Serif CJK KR}
-+	    \\newCJKfontfamily[KRserif]\\krserif{Noto Serif CJK KR}
-+	}{
-+	    \\newCJKfontfamily[KRmain]\\krmain{Noto Sans CJK KR}
-+	    \\newCJKfontfamily[KRserif]\\krserif{Noto Sans CJK KR}
-+	}
- 	\\newCJKfontfamily[KRsans]\\krsans{Noto Sans CJK KR}
- 	\\newCJKfontfamily[KRmono]\\krmono{Noto Sans Mono CJK KR}
--	\\newCJKfontfamily[JPmain]\\jpmain{Noto Sans CJK JP}
-+	\\IfFontExistsTF{Noto Serif CJK JP}{
-+	    \\newCJKfontfamily[JPmain]\\jpmain{Noto Serif CJK JP}
-+	    \\newCJKfontfamily[JPserif]\\jpserif{Noto Serif CJK JP}
-+	}{
-+	    \\newCJKfontfamily[JPmain]\\jpmain{Noto Sans CJK JP}
-+	    \\newCJKfontfamily[JPserif]\\jpserif{Noto Sans CJK JP}
-+	}
- 	\\newCJKfontfamily[JPsans]\\jpsans{Noto Sans CJK JP}
- 	\\newCJKfontfamily[JPmono]\\jpmono{Noto Sans Mono CJK JP}
- 	% Define custom macros to on/off CJK
-@@ -387,6 +415,7 @@ latex_elements['preamble']  += '''
- 	\\newcommand{\\kerneldocBeginTC}{%
- 	    \\begingroup%
- 	    \\tcmain%
-+	    \\renewcommand{\\CJKrmdefault}{TCserif}%
- 	    \\renewcommand{\\CJKsfdefault}{TCsans}%
- 	    \\renewcommand{\\CJKttdefault}{TCmono}%
- 	}
-@@ -394,6 +423,7 @@ latex_elements['preamble']  += '''
- 	\\newcommand{\\kerneldocBeginKR}{%
- 	    \\begingroup%
- 	    \\krmain%
-+	    \\renewcommand{\\CJKrmdefault}{KRserif}%
+@@ -426,6 +426,7 @@ latex_elements['preamble']  += '''
+ 	    \\renewcommand{\\CJKrmdefault}{KRserif}%
  	    \\renewcommand{\\CJKsfdefault}{KRsans}%
  	    \\renewcommand{\\CJKttdefault}{KRmono}%
++	    \\xeCJKsetup{CJKspace = true} % For inter-phrase space
  	}
-@@ -401,6 +431,7 @@ latex_elements['preamble']  += '''
+ 	\\newcommand{\\kerneldocEndKR}{\\endgroup}
  	\\newcommand{\\kerneldocBeginJP}{%
- 	    \\begingroup%
- 	    \\jpmain%
-+	    \\renewcommand{\\CJKrmdefault}{JPserif}%
- 	    \\renewcommand{\\CJKsfdefault}{JPsans}%
- 	    \\renewcommand{\\CJKttdefault}{JPmono}%
- 	}
 -- 
 2.17.1
 
