@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122A23E40C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA4E3E40CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhHIHYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbhHIHYk (ORCPT
+        id S233378AbhHIH0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:26:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233122AbhHIHZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:24:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13639C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 00:24:20 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mCzdx-0001FG-P9; Mon, 09 Aug 2021 09:24:17 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:565a:9e00:3ca4:4826])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 049EF66309F;
-        Mon,  9 Aug 2021 07:24:15 +0000 (UTC)
-Date:   Mon, 9 Aug 2021 09:24:14 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: Re: [PATCH] mailmap: update email address of Matthias Fuchs
-Message-ID: <20210809072414.syapcl2v7urytygg@pengutronix.de>
-References: <20210806104833.102081-1-mkl@pengutronix.de>
- <10024d316c23d7be2ce6037f7994aa2af033208f.camel@esd.eu>
+        Mon, 9 Aug 2021 03:25:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628493929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JNaWugcsqwEhxVIGKp2CI/wz2iOjAFTuqVT1m8pDKbo=;
+        b=dMMfCPMcOJ92dqFSBnJMaFS4Pd0PlB8TM+Abjt43v3i+FJMfLQ6SSshNC/ySnnETG6zflK
+        SA2nidEtMD1obvNR0nEM+XnEP9BGsTf3n9mBPZH0v16fJB1rgLmRV8nY34MkytaOJdm9Uu
+        y1806E+8/aNgXF1gIqOJSncCTJ2SD6A=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-qqEpUQM9NhKMArZBYgdahg-1; Mon, 09 Aug 2021 03:25:28 -0400
+X-MC-Unique: qqEpUQM9NhKMArZBYgdahg-1
+Received: by mail-wm1-f69.google.com with SMTP id g70-20020a1c20490000b02902e6753bf473so2280963wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:25:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=JNaWugcsqwEhxVIGKp2CI/wz2iOjAFTuqVT1m8pDKbo=;
+        b=DX+5xBAWM1jqEM7uqVd+NKpK6J1WR8cZNL1MuSJysYHBQZ7v97VH07Cy1fiu9el54Q
+         3W/7YwmiVD6FKsg+aUlT9y4GRPmNnQFIrsub3sW72mN0OePmJjGMWWHWQWXduM0KCqJs
+         LYWyswQOsEy0+P6tYtGIHpylhu01jm2h/eoqo2tKePEgpEnYt3OV5tej+dF49MnixhSi
+         58QIYaA9YREj0VsZYH6pR9ejRNtMI+b/wSWgUD8f88e3VEwW3oj4KOEDV2lA3j9owitG
+         FTb7PwpTqG2e1ddEBxzifhVc5KeqsTHM48RLzcL6BDgeNqBsAbcRjg3P8jC2in58Dxd2
+         NNUA==
+X-Gm-Message-State: AOAM532zWXxZ5Vg9I/fkFcKfD3B/vMQXbBu4ES+TLiuurqgk4ZEzNBob
+        Ty0ftvbwxcJfnIfOCX0pRj0ZlhgDa0igPRN76p2fAG3CRXdHKn9yli2npkw7a3AsjFod2xREHeD
+        yNn270I+qp8zhJKitrJcXJdZnNqxQfz8MvcC/KJU5igFinBU2/vSbhlbIK4T31VkMBR1nmDPh
+X-Received: by 2002:a1c:2547:: with SMTP id l68mr5833033wml.23.1628493927580;
+        Mon, 09 Aug 2021 00:25:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsNDeS2Y+pJvAumXMRLknJnzonRHwbbWrYqQynr09Sy5T089ASO/i2XYYeqmf3R64rIt02mQ==
+X-Received: by 2002:a1c:2547:: with SMTP id l68mr5832998wml.23.1628493927224;
+        Mon, 09 Aug 2021 00:25:27 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id 9sm16720849wmf.34.2021.08.09.00.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 00:25:26 -0700 (PDT)
+Subject: Re: [RFC PATCH 11/15] mm/page_reporting: report pages at section size
+ instead of MAX_ORDER.
+To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20210805190253.2795604-1-zi.yan@sent.com>
+ <20210805190253.2795604-12-zi.yan@sent.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <c2fa6c99-ac48-bf0b-a8ca-d1c0ffb633b6@redhat.com>
+Date:   Mon, 9 Aug 2021 09:25:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="risgigwcdpvsdsfu"
-Content-Disposition: inline
-In-Reply-To: <10024d316c23d7be2ce6037f7994aa2af033208f.camel@esd.eu>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210805190253.2795604-12-zi.yan@sent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05.08.21 21:02, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> page_reporting_order was set to MAX_ORDER, which is always smaller than
+> a memory section size. An upcoming change will make MAX_ORDER larger
+> than a memory section size. Set page_reporting_order to
+> PFN_SECTION_SHIFT to match existing size assumption.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>   mm/page_reporting.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+> index 382958eef8a9..dc4a2d699862 100644
+> --- a/mm/page_reporting.c
+> +++ b/mm/page_reporting.c
+> @@ -11,7 +11,8 @@
+>   #include "page_reporting.h"
+>   #include "internal.h"
+>   
+> -unsigned int page_reporting_order = MAX_ORDER;
+> +/* Set page_reporting_order at section size */
+> +unsigned int page_reporting_order = PFN_SECTION_SHIFT;
+>   module_param(page_reporting_order, uint, 0644);
+>   MODULE_PARM_DESC(page_reporting_order, "Set page reporting order");
+>   
+> 
 
---risgigwcdpvsdsfu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If you look closely, this is only a placeholder and will get overwritten 
+in page_reporting_register(). I don't recall why we have the module 
+parameter at all. Most probably, to adjust the reporting order after we 
+already registered a user. Can't we just initialize that to 0 ?
 
-On 06.08.2021 15:07:43, Stefan M=C3=A4tje wrote:
-> I was not aware of the .mailmap file and its workings.=20
+-- 
+Thanks,
 
-The mailmap file works on the git log, and thus tools using it: e.g.
-scripts/get_maintainer.pl.
+David / dhildenb
 
-> My question is should then also <thomas.koerper@esd.eu> be put in this
-> file
-
-Probably yes, as there are two patches by him in the Linux kernel:
-
-| Thomas K=C3=B6rper (2):
-|       can: dev: avoid calling kfree_skb() from interrupt context
-|       can: esd_usb2: Fix sparse warnings
-
-I'll update this patch.
-
-> because he is the co-author of the patch you're reviewing atm.
-
-For co-authorship, use the Co-developed-by tag, that was recently added:
-
-https://elixir.bootlin.com/linux/v5.12/source/Documentation/process/submitt=
-ing-patches.rst#L449
-
-Speaking of that patch. Can you please create an entry in the
-MAINTAINERS file, too? I suggest to add yourself as M: and the
-socketcan@e.u as R:. The change in the MAINTAINERS file will be a second
-patch in that series. Just include it the next iteration of that series.
-
-> and his email address shows up in MODULE_AUTHOR() macro. He also left
-> our company already.
-
-In newly added changes, it makes sense that all email addresses are
-working. :D
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---risgigwcdpvsdsfu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEQ2BsACgkQqclaivrt
-76lOqwgAr1IYSf0dfTCapqSbuZ1GmzEx7tywKkkZFHcm7YGuOyEq7k0xoD8rXXdl
-8Z/aYTe+XVdhv8tHJD0vpk7kYjn31ac18RBEKgmyHhwoA8ucCc3FZrOWuGxOXxBM
-U4IbWzOpZQe9YUraeiznYS+SxvMyKS5jxaqBjKC9qen/5UU9DdzOISbiXFhHr2Cn
-n1ejuJwSt0nCKQjKEuHTl1TwWocn8VsjkdQAJIO0J4XAaKQT6tzElvvUQp+/YX4X
-wj/uoa/LzXbyA3CHuFiMAc+RLd5Lj+x+NyRVnVomf6Z03j5tBkWMuvcDrqwOebPe
-swed81X6voXLlQHZ4j+MMENh7UsTXQ==
-=tAUi
------END PGP SIGNATURE-----
-
---risgigwcdpvsdsfu--
