@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F5F3E40EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC543E40F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbhHIHmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:42:03 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:54933 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232094AbhHIHmB (ORCPT
+        id S233520AbhHIHmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:42:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233467AbhHIHmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:42:01 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 2A8762B006D0;
-        Mon,  9 Aug 2021 03:41:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 09 Aug 2021 03:41:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=RjIBzrlZGQfh73r05Ozevdc3Gz9
-        BndFcrU4vim+1dgI=; b=LIJQnGLwWIwpczK+/wppS6Z6DhvaxLuWenVOO4WkDSk
-        WBqweY+kB8uhlDUWXRfS6LkDiJJxwHLn3QViBzpze9dWsO6uCrRBO9EgpHJeBzrw
-        /sH6Z4rvUjJkxebbutdYMbuhzbRLJsJMKe/VAJ9y8BfHEWNenyUt/F5KOXKaERr5
-        IFM5Vlxi4y4M5+Y0bYkEH5xZGWTJ5/T06XTrzd7Pf4qQSlnJka4EvNAOzWQgVnCG
-        awoeWTuM+ldN2rOiG4xcCRT27FNBazBkJKBoQotpK+7sDu4BBnvVyg1k4pPDhyrI
-        SHNQlgmoFM/N46FOF+QAw6u9SiOKDRu4/lPpJsCdaxg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=RjIBzr
-        lZGQfh73r05Ozevdc3Gz9BndFcrU4vim+1dgI=; b=m3o5OyDvRmElTGpvF1PD2a
-        SHt9xnNx37kBFVR1sj6s9Ek/QOV8NM7vWiAwK9Ce57OwRB+X9/SOeHIw16Lr5fYf
-        Calf73y+/+KZ+P6t5GdlN0JmYmHzstHNYY6UZCrYoRYPFI2/jJNAkx7yLyQajcHd
-        N3Tx4YD3wMhbpE0Xaffm6ZDT0L6JCbyN13hyu134VD/Sn0kWm9K2Z5t/geR66Mhw
-        t69hBKB6v46sGM0Cs5610g5aTusw65Nwp1h66BF7B42EEjkaLpMWIGUol8IzUPfw
-        JgjeyvyOOrBzDjxu1kQxmr2GWMY1nkdRePzS0FdxFIVXgzN2/myf3C8VWIGG3i/w
-        ==
-X-ME-Sender: <xms:MtwQYdVjRp-e4X9XJNWKFY9fmyJwhyuLpIe9hKNHnphk2Nd_mZHJVg>
-    <xme:MtwQYdn7-xSNCvtqJf_esMNrEtbY6ZPDdjvfD4ZOsn0xFfvxjjjU4eUbqn3HKhYKI
-    mocgVx7OAmAjw>
-X-ME-Received: <xmr:MtwQYZaJ-6S7rX_2Tg2G8IRp_8AWAu8o1Kl3EcF-o1I3tEWDZ8NzTtw9v0OqRu7TojEohCfZwNaHxZLGPB5AGHB52UkhmNKo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeeigdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:MtwQYQXF4Wsf3kXa68Go4mvBWAKVNogxaiSPKTPpjqMTI_U9eFrOaA>
-    <xmx:MtwQYXklA_l8rnDHcvE81twcvQUTNODtjR76jU3GpUj7LH7_QxIOZw>
-    <xmx:MtwQYddGdNQ_AjcD-FuSJiV5V8iY6FaF1g637Hv85bBcd_GGIO9krw>
-    <xmx:M9wQYQcIUit4FrZNJb4rVr65i_CJszaCfo6znoUgpCO5SHLBY4hHAllT8co>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 9 Aug 2021 03:41:38 -0400 (EDT)
-Date:   Mon, 9 Aug 2021 09:41:36 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: Re: linux-next: manual merge of the staging tree with the char-misc
- tree
-Message-ID: <YRDcMERBir/y4RwL@kroah.com>
-References: <20210809173503.07581f5c@canb.auug.org.au>
+        Mon, 9 Aug 2021 03:42:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628494952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rpTchTW2WHBbp1FKZwjHPai3s4d7skP1b3ls4uFFkQM=;
+        b=VOMQEzhr9grrnoTBTxRICfIpqMVHm8yvO2nxzJvBZMLEhjXc3E7KbcJIfMKmVEXnuBqiZ9
+        AYtQHVKC15CoTGkp4CNRQeqccgBgE+f1K1ppzDRedIkMO89vMQ1vvV48O9CAP51S7OuxFv
+        rczKIFfdSryWYJstljIZuUCorH7Ffpg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-Q7RPeezcP8epFNQAXxi9qA-1; Mon, 09 Aug 2021 03:42:29 -0400
+X-MC-Unique: Q7RPeezcP8epFNQAXxi9qA-1
+Received: by mail-wr1-f72.google.com with SMTP id z1-20020adfdf810000b0290154f7f8c412so168337wrl.21
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:42:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=rpTchTW2WHBbp1FKZwjHPai3s4d7skP1b3ls4uFFkQM=;
+        b=HmUc1UGEhnCS7prnb0ZuSQpvQLbHBmAZSr3tq38YHKbEUuaIvB5Q6AeMP4j/shBfID
+         Vd3tCm/RHqQm4Wk69G5caeoV/V2kKXqdcfrPuhC6pe0CHzJTcgvBfvT9J7m/0zIYoAAT
+         8PUkadJqT0t9R6efGt0Q6Lstl/nwTh9XDIOv3THyrKUciPjoiUksKxaq691wCrftq9Rv
+         5yq2zQ0sW6p/5zfIwNdnXvdzJYAL+gnsQbc+Y1j1wEGy5n+7laXdnllGkyX+Jxlq1ggh
+         ZtUNSGq+41LOdIlUeT64Vl17+Uw9mMKb8YFVxrR9RZLfWobGjGWYf1cUWuFnHDVFSt2/
+         GRZA==
+X-Gm-Message-State: AOAM530lfxrCb29rKBwu3u4RdwsWUpkNjdbeIimRnO+J8ll7lzgA8HoE
+        iWKpy7bdfszg3jUP8napMCqIGtYkVVsPwB8Y8lVP/5rL/npd00yhH9gpNIb8yOO3Ts95S4s10XY
+        hMGr1BhmVQ1dFQxy45jiRnhTO
+X-Received: by 2002:a5d:4a50:: with SMTP id v16mr785820wrs.77.1628494948483;
+        Mon, 09 Aug 2021 00:42:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxIs0Mx3OKFD9xz5+nORNxkQlRcKGJL37rseXuAmlE7FZXZNGrGWmsWEyh3ihAd2BaJSF+0Q==
+X-Received: by 2002:a5d:4a50:: with SMTP id v16mr785813wrs.77.1628494948372;
+        Mon, 09 Aug 2021 00:42:28 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id a11sm4453865wrw.67.2021.08.09.00.42.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 00:42:28 -0700 (PDT)
+Subject: Re: [RFC PATCH 10/15] virtio: virtio_balloon: use PAGES_PER_SECTION
+ instead of MAX_ORDER_NR_PAGES.
+To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org
+References: <20210805190253.2795604-1-zi.yan@sent.com>
+ <20210805190253.2795604-11-zi.yan@sent.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <3e27818c-970d-7138-0258-928274bf294e@redhat.com>
+Date:   Mon, 9 Aug 2021 09:42:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809173503.07581f5c@canb.auug.org.au>
+In-Reply-To: <20210805190253.2795604-11-zi.yan@sent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 05:35:03PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On 05.08.21 21:02, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
-> Today's linux-next merge of the staging tree got a conflict in:
+> It keeps the existing behavior when MAX_ORDER grows beyond a section.
 > 
->   drivers/misc/Kconfig
+
+... but it breaks/changes existing behavior if MAX_ORDER is smaller than 
+a section?
+
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>   drivers/virtio/virtio_balloon.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> between commit:
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 47dce91f788c..de8d0355d827 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -36,7 +36,7 @@
+>   #define VIRTIO_BALLOON_FREE_PAGE_ALLOC_FLAG (__GFP_NORETRY | __GFP_NOWARN | \
+>   					     __GFP_NOMEMALLOC)
+>   /* The order of free page blocks to report to host */
+> -#define VIRTIO_BALLOON_HINT_BLOCK_ORDER (MAX_ORDER - 1)
+> +#define VIRTIO_BALLOON_HINT_BLOCK_ORDER (PFN_SECTION_SHIFT - 1)
+>   /* The size of a free page block in bytes */
+>   #define VIRTIO_BALLOON_HINT_BLOCK_BYTES \
+>   	(1 << (VIRTIO_BALLOON_HINT_BLOCK_ORDER + PAGE_SHIFT))
 > 
->   0f920277dc22 ("misc: gehc-achc: new driver")
-> 
-> from the char-misc tree and commit:
-> 
->   bb3b6552a5b0 ("staging: hikey9xx: split hi6421v600 irq into a separate driver")
-> 
-> from the staging tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc drivers/misc/Kconfig
-> index a420b59917db,29294c52d5af..000000000000
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@@ -208,18 -208,16 +208,28 @@@ config CS5535_CLOCK_EVENT_SR
->   	  MFGPTs have a better resolution and max interval than the
->   	  generic PIT, and are suitable for use as high-res timers.
->   
->  +config GEHC_ACHC
->  +	tristate "GEHC ACHC support"
->  +	depends on SPI && SYSFS
->  +	depends on SOC_IMX53 || COMPILE_TEST
->  +	select FW_LOADER
->  +	help
->  +	  Support for GE ACHC microcontroller, that is part of the GE
->  +	  PPD device.
->  +
->  +	  To compile this driver as a module, choose M here: the
->  +	  module will be called gehc-achc.
->  +
-> + config HI6421V600_IRQ
-> + 	tristate "HiSilicon Hi6421v600 IRQ and powerkey"
-> + 	depends on OF
-> + 	depends on SPMI
-> + 	select MFD_CORE
-> + 	select REGMAP_SPMI
-> + 	help
-> + 	  This driver provides IRQ handling for Hi6421v600, used on
-> + 	  some Kirin chipsets, like the one at Hikey 970.
-> + 
->   config HP_ILO
->   	tristate "Channel interface driver for the HP iLO processor"
->   	depends on PCI
 
 
+-- 
+Thanks,
 
-Looks good, thanks!
+David / dhildenb
+
