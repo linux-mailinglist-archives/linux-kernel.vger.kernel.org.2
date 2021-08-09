@@ -2,75 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83B13E47E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13043E47DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbhHIOqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:46:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59630 "EHLO mail.kernel.org"
+        id S232488AbhHIOp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:45:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhHIOqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:46:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00E4B61002;
-        Mon,  9 Aug 2021 14:41:10 +0000 (UTC)
+        id S229474AbhHIOpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 10:45:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5F8261058;
+        Mon,  9 Aug 2021 14:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628520072;
-        bh=LEtGDd/n8Dwr8IsRoI3nBLpetn6vDVygX+cnpP3VZco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xh3ZxqmYpkQ2uvzmkdNL0Rr3K4yYfz6iTv2r8rd4cBL2iHaEXejM6yQ5UcyUNXDgn
-         /QRI92NOHUbtvEnB5MYnQll+fn1U/6p2FsUoXVjUXbCsVlNuxB6dXCVL4044yVt0tL
-         TTRRqaLd42GWHYRDfTTE7q0KgYOyHd8iGvOu1Hmyk4z9yfgsKnvDu51y2oXl86yxGX
-         lqFVXjbRYBCPjiJnzOw2DPeVjtAJ+mutGsr2HaJNJsz7abCB7FPcB1qQT+jAE9M1O4
-         O3vNBi4fL/YBWiFwgYH5wOsr6sLkcu0f/ljqrbBD08SuAeyLI2ByhEHY0yKFeKSZwJ
-         YoIxNTVzC6BIQ==
-Date:   Mon, 9 Aug 2021 15:41:07 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] locking/rtmutex: Add the missing 'ES' of macro
- CONFIG_DEBUG_RT_MUTEXES
-Message-ID: <20210809144107.GA1458@willie-the-truck>
-References: <20210731123011.4555-1-thunder.leizhen@huawei.com>
+        s=k20201202; t=1628520304;
+        bh=95QsABHXN+pKNxd1hFR4tyhFhuhVRX4HItHjBlDAOAM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZHHc2tqQt4FtLxY3aH4lGfE3tn50kdJD0e6njJSMxYHMB/2u1a150CuHr67VD3wfG
+         CgAcy29+9FWnwthQBGb1NuD5jcOC21zUsG3dPdQmSNiYLWBb2uYi6cIIPMiFOXtpls
+         OhI09RLY5jwhcvlbdbxP69f3Fk8voUeu+3X+EHhHiS3J88UDQFa0Zg6JT+JztDLHUE
+         GwYqvqGQUlmFEPlv5wB3ZvWNCuD5YoGoWaI69DkgujioU5euX/MKOdbsQp+7HZr/w7
+         NZUhExbNiy1LJ//dVeUhOhmpI3ubH+pJFcns5NlPqxRN1EDOuQp7K65K6LeeaPiO0k
+         dacPEHNlPdsQw==
+Received: by mail-ej1-f43.google.com with SMTP id e19so29388323ejs.9;
+        Mon, 09 Aug 2021 07:45:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530E1pHItuPKHy/EuNyYAe56dY1BumDqJ/Ot3U218WGCZoid20xk
+        a/Ng1uvnp6kMTxu6lL/HCM6SA4lDhTu79O/MfQ==
+X-Google-Smtp-Source: ABdhPJzN+KSXTc2XGkL/912N2+WxTOmmqX40r8nDWbVnU03DlFFuQZ0jsZTTmMWJ4Ylfu7wo2OO4OoF580G8wMPF7Kw=
+X-Received: by 2002:a17:907:98fb:: with SMTP id ke27mr1266398ejc.303.1628520303167;
+ Mon, 09 Aug 2021 07:45:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731123011.4555-1-thunder.leizhen@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210808134117.66798-1-jitao.shi@mediatek.com> <20210808134117.66798-2-jitao.shi@mediatek.com>
+In-Reply-To: <20210808134117.66798-2-jitao.shi@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 9 Aug 2021 22:44:52 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_90UteUjOgJ5w7vKW6amXCfps7=SennwYYk2=TUrr6aYA@mail.gmail.com>
+Message-ID: <CAAOTY_90UteUjOgJ5w7vKW6amXCfps7=SennwYYk2=TUrr6aYA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/1] drm/mediatek: force hsa hbp hfp packets multiple
+ of lanenum to avoid screen shift
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        CK Hu <ck.hu@mediatek.com>, stonea168@163.com,
+        huijuan.xie@mediatek.com, Rex-BC Chen <rex-bc.chen@mediatek.com>,
+        shuijing.li@mediatek.com, Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 08:30:11PM +0800, Zhen Lei wrote:
-> The build option name is defined as DEBUG_RT_MUTEXES in lib/Kconfig.debug,
-> commit f41dcc18698e ("locking/rtmutex: Move debug functions as inlines
-> into common header") can also corroborate this.
-> 
-> Fixes: f7efc4799f81 ("locking/rtmutex: Inline chainwalk depth check")
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Hi, Jitao:
+
+Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=888=E6=97=
+=A5 =E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=889:41=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> The bridge chip ANX7625 requires the packets on lanes aligned at the end,
+> or ANX7625 will shift the screen.
+
+In anx7625_attach_dsi(), it call mipi_dsi_attach(), and it call into
+mtk_dsi_host_attach().
+I would like to pass this information from anx7623 driver to mtk_dsi
+driver when attach.
+
+Regards,
+Chun-Kuang.
+
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
 > ---
->  kernel/locking/rtmutex.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-> index b5d9bb5202c6..ad0db322ed3b 100644
-> --- a/kernel/locking/rtmutex.c
-> +++ b/kernel/locking/rtmutex.c
-> @@ -343,7 +343,7 @@ static __always_inline bool
->  rt_mutex_cond_detect_deadlock(struct rt_mutex_waiter *waiter,
->  			      enum rtmutex_chainwalk chwalk)
->  {
-> -	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEX))
-> +	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES))
->  		return waiter != NULL;
->  	return chwalk == RT_MUTEX_FULL_CHAINWALK;
-
-Oops, yes. How did you find this?
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index ae403c67cbd9..033234d51e86 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -194,6 +194,8 @@ struct mtk_dsi {
+>         struct clk *hs_clk;
+>
+>         u32 data_rate;
+> +       /* force dsi line end without dsi_null data */
+> +       bool force_dsi_end_without_null;
+>
+>         unsigned long mode_flags;
+>         enum mipi_dsi_pixel_format format;
+> @@ -499,6 +501,13 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi=
+ *dsi)
+>                 DRM_WARN("HFP + HBP less than d-phy, FPS will under 60Hz\=
+n");
+>         }
+>
+> +       if (dsi->force_dsi_end_without_null) {
+> +               horizontal_sync_active_byte =3D roundup(horizontal_sync_a=
+ctive_byte, dsi->lanes) - 2;
+> +               horizontal_frontporch_byte =3D roundup(horizontal_frontpo=
+rch_byte, dsi->lanes) - 2;
+> +               horizontal_backporch_byte =3D roundup(horizontal_backporc=
+h_byte, dsi->lanes) - 2;
+> +               horizontal_backporch_byte -=3D (vm->hactive * dsi_tmp_buf=
+_bpp + 2) % dsi->lanes;
+> +       }
+> +
+>         writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
+>         writel(horizontal_backporch_byte, dsi->regs + DSI_HBP_WC);
+>         writel(horizontal_frontporch_byte, dsi->regs + DSI_HFP_WC);
+> @@ -1095,6 +1104,10 @@ static int mtk_dsi_probe(struct platform_device *p=
+dev)
+>         dsi->bridge.of_node =3D dev->of_node;
+>         dsi->bridge.type =3D DRM_MODE_CONNECTOR_DSI;
+>
+> +       if (dsi->next_bridge)
+> +               dsi->force_dsi_end_without_null =3D of_device_is_compatib=
+le(dsi->next_bridge->of_node,
+> +                                                                        =
+ "analogix,anx7625");
+> +
+>         drm_bridge_add(&dsi->bridge);
+>
+>         ret =3D component_add(&pdev->dev, &mtk_dsi_component_ops);
+> --
+> 2.25.1
