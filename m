@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458A93E4F7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D563E4F8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236865AbhHIWrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
+        id S236896AbhHIWx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbhHIWrW (ORCPT
+        with ESMTP id S232158AbhHIWxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:47:22 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D97C0613D3;
-        Mon,  9 Aug 2021 15:47:01 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id t3so18290218plg.9;
-        Mon, 09 Aug 2021 15:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XNgzSBl2ViZgrzMacCsKUZKoLxV/azVHoL6Wpcoyx1o=;
-        b=aEhH+GbMzUwYKoNDDFkuXlWKEVtNn+ncfDq/pdkGJJN4UnbE3CmPYayiSuTemIyIyr
-         lZHcTi35GE2BjPN9IB00dF6+Ir6KSDgrQCmP3pcBi4w34uvF+JWOSVOnitMB59NUcNHn
-         IolBa8d9/W36apIoy0H1KpO34GW9m7kGbkT4hpaH4/SwFT52bQk8bc/vpD4DYViw/8RM
-         wR3xDD4TI4UESH3BPx9xBe1a5yt+1l/7X14ojMklyUd91+GtS+/TEBViIswe/IDwYXai
-         tpMJsJJw8HlHXlt10zIKo2l+e889s0F8JMxguiNcQdSJYXN2M05+5urFXjP33WKrLDMc
-         bH/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=XNgzSBl2ViZgrzMacCsKUZKoLxV/azVHoL6Wpcoyx1o=;
-        b=IYYmJFk+A3PHvtsDy6el00O4M3pz9E8AtzehmcoIzDs2OrytSmaJfCj7kPio5mWQUR
-         3eGt1H8YAVk16bxZJNNl6s22Fq1Fv/m+9DNSJj6T3d5eGEM1mctdnj7ILM2NTm354wti
-         E5ReFVjuRez7LUnM0TRQxuOfpro5Kczo0YdArm5V0IwM0t70pRiUFr7h6Aojyi+aY97v
-         GhtwLxTZMg6ZsbxMNCJ7e9AwNRNrLX4ikoGsH931Qhqz5Dt3Kme+cKyXhEAsTFNybwpG
-         bRBeFElGNz4Qh8BmZuqNeJ5ZoUZjVmZtrX1b0UQAmjrcZL/FdzIRldd/yR9HvzzXGmCH
-         c0yA==
-X-Gm-Message-State: AOAM531eET7QTYJd19+OBcvvkv50tNiaJx8b/SguTRMCz08Bne8Askfs
-        pty9DRSiBZZGwgqS800ly7hwI0E7XzrTKw==
-X-Google-Smtp-Source: ABdhPJyEsd06c5zbOMTazRPdLGXEAi0H/IIo/OTte6VZV5DwrEtvZyvvw3OtbCISVsJWDXUCT2Dx3A==
-X-Received: by 2002:a65:5083:: with SMTP id r3mr166335pgp.161.1628549220702;
-        Mon, 09 Aug 2021 15:47:00 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:df1c])
-        by smtp.gmail.com with ESMTPSA id c133sm4203621pfb.174.2021.08.09.15.46.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 15:47:00 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 9 Aug 2021 12:46:55 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v3 0/9] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Message-ID: <YRGwXw3KW8eFhEa8@mtj.duckdns.org>
-References: <20210720141834.10624-1-longman@redhat.com>
- <YP9ChFvrGrDMGzbe@slm.duckdns.org>
- <b2f49b2e-d5a4-1504-bd0c-0bd82943d855@redhat.com>
+        Mon, 9 Aug 2021 18:53:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78E8C0613D3;
+        Mon,  9 Aug 2021 15:53:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JyJ5X/zIVvUaHKHLTr1RSzm14FwgxMoXR2aQx+rj2lM=; b=ip6fHkA6nYgf1O0oDkmv/N+zFM
+        ejIOmIgJxrAsLAwqK0PN1apifHvOcnA5BtGDJJlyYj8ibialXcQTvG1Gqe5qkC5l+e+8Yp4t8BRww
+        A06LGLE9MtI2A8cexKCBtzOJr5G5mfQUYI9RqGmhKt19aDeRerkplAI93ory9lF9P4e2qilCi7HKc
+        qHbPOqX4qpcQZEvoW0M9h+SCTkX8rSwcNQu2I67lbreHDmy5kvkk7hBcGQoRc6tOLMPuA4sPd33y5
+        2LjZgHdrPEFkUq7MtRrKnTlnULUp4HvyH0Iv210+V6+Ljeietd3I5+v2+xcTEEt2/s4hsh//F1DRu
+        tQsDGY/A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDE6H-00BV4B-IC; Mon, 09 Aug 2021 22:50:38 +0000
+Date:   Mon, 9 Aug 2021 23:50:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     syzbot <syzbot+c87be4f669d920c76330@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, bp@alien8.de, frederic@kernel.org,
+        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, masahiroy@kernel.org,
+        mingo@redhat.com, npiggin@gmail.com, pbonzini@redhat.com,
+        peterz@infradead.org, rafael.j.wysocki@intel.com,
+        rostedt@goodmis.org, seanjc@google.com, sedat.dilek@gmail.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org
+Subject: Re: [syzbot] kernel BUG in find_lock_entries
+Message-ID: <YRGxNaVc1cGsyd0Y@casper.infradead.org>
+References: <0000000000009cfcda05c926b34b@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b2f49b2e-d5a4-1504-bd0c-0bd82943d855@redhat.com>
+In-Reply-To: <0000000000009cfcda05c926b34b@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Waiman. Sorry about the delay. Was off for a while.
-
-On Tue, Jul 27, 2021 at 05:14:27PM -0400, Waiman Long wrote:
-> However, if we have a complicated partition setup with multiple child
-> partitions. Invalid cpuset.cpus change in a parent partition will cause all
-> the child partitions to become invalid too. That is the scenario that I
-> don't want to happen inadvertently. Alternatively, we can restrict those
-
-I don't think there's anything fundamentally wrong with it given the
-requirement that userland has to monitor invalid state transitions.
-The same mass transition can happen through cpu hotplug operations,
-right?
-
-> invalid changes if a child partition exist and let it pass through and make
-> it invalid if it is a standalone partition.
+On Mon, Aug 09, 2021 at 02:02:22PM -0700, syzbot wrote:
+> The issue was bisected to:
 > 
-> Please let me know which approach do you want me to take.
+> commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+> Author: Mark Rutland <mark.rutland@arm.com>
+> Date:   Mon Jan 11 15:37:07 2021 +0000
+> 
+>     lockdep: report broken irq restoration
 
-I think it'd be best if we can stick to some principles rather than
-trying to adjust it for specific scenarios. e.g.:
+That's just a bogus bisection.  The correct bad commit is 5c211ba29deb.
 
-* If a given state can be reached through cpu hot [un]plug, any
-  configuration attempt which reaches the same state should be allowed
-  with the same end result as cpu hot [un]plug.
+> kernel BUG at mm/filemap.c:2041!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 24786 Comm: syz-executor626 Not tainted 5.14.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:find_lock_entries+0x10d5/0x1110 mm/filemap.c:2041
 
-* If a given state can't ever be reached in whichever way, the
-  configuration attempting to reach such state should be rejected.
+This patch should fix it.  It's not just removing the warning; this
+warning duplicates the warning a few lines down (after taking the
+lock).  It's not safe to make this assertion without holding the page
+lock as the page can move between the page cache and the swap cache.
 
-Thanks.
+#syz test
 
--- 
-tejun
+diff --git a/mm/filemap.c b/mm/filemap.c
+index d1458ecf2f51..34de0b14aaa9 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2038,7 +2038,6 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
+ 		if (!xa_is_value(page)) {
+ 			if (page->index < start)
+ 				goto put;
+-			VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
+ 			if (page->index + thp_nr_pages(page) - 1 > end)
+ 				goto put;
+ 			if (!trylock_page(page))
