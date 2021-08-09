@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E1D3E448E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BF83E449E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbhHILUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:20:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234657AbhHILUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:20:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2E0C61004;
-        Mon,  9 Aug 2021 11:19:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628507986;
-        bh=RQCOogQ9mJQxyDapNiOoSY73gdfpVbaZ71bUZ+LL2NA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UecVt6vx5862rMgdKPGDZ5nFaiR+XCtrI3nH+YgZsgyeEKU90IQCTUDJDcMrc5RIs
-         rzNFq6Cr7K/UCqkqE+l8NDoZTRhcriNtyLxa8hAL4SGxKdQPJlq2ONRsiAqbdLjsGi
-         viqiDZkMG8P3wC+M6vl0DgTScfTiMGhpxpJEXXD2IQF1cOOG9HswP2s/mQh39rPD9K
-         Y2z9wmRMTiQg7S6NTOBfgMdXdtVY92U25PWyc21ggvb14icB25KljZbxyfmPJjgZ+5
-         eQSRZ12YxcYBr1udpSMl+45fFv/RcCKjwgRqLC4/nVMarGPfnZi0iGL0ZCXeFRVbI9
-         BQGMcor8YjzwA==
-Received: by mail-wm1-f44.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so11246950wmd.3;
-        Mon, 09 Aug 2021 04:19:46 -0700 (PDT)
-X-Gm-Message-State: AOAM532whSvAqbLHq+ULgFyvnTXXFP6aS+iX9wJx/gY9Dds7+uxO8pMH
-        IUJyCZ5PQRFxMMs6F7qlnIAJZJhSpGfEhrBBz08=
-X-Google-Smtp-Source: ABdhPJy/gQFqWtKPTewnQcS4i0Qy8/1Qz0/EDjK/S5Yypcd1Jcj8yNomlxp6WiiR0A3m4+JYUiJaXCS6t1ZWV4FzDA0=
-X-Received: by 2002:a7b:ce10:: with SMTP id m16mr32350595wmc.75.1628507985226;
- Mon, 09 Aug 2021 04:19:45 -0700 (PDT)
+        id S235099AbhHILXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:23:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34390 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235007AbhHILXo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 07:23:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6D8F421ED4;
+        Mon,  9 Aug 2021 11:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628508202;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEHaigBd+p4Kdq3FOyfyiQahnEWWgwrbyI9p3sYy9Jg=;
+        b=FUJg+QaU7zw3qTf6t8q9Qr96X0Utqfsl+nS4wyhc9/5vWZMS539Of9T5SM02pWzim1Cnda
+        RMrFBB4C9IiCbCzLy7hKe0Nw5kCTqLiYUG2RwoYyBydeMv59tIlgL5Vpa/xsWEDauKkWvj
+        09N1MMAWFSlJkFOi7ijKkWYVWovvXhs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628508202;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEHaigBd+p4Kdq3FOyfyiQahnEWWgwrbyI9p3sYy9Jg=;
+        b=4VeRarVySJZv/AlngzeBW/O6mbVTRAHHGwmwBsPvaCbeLhv85RY/VfIGPtUkorqnnpUTKq
+        o+aHpptVRlTrrwAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 53C44A3B8E;
+        Mon,  9 Aug 2021 11:23:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BAE5EDA880; Mon,  9 Aug 2021 13:20:30 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 13:20:30 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 47/64] btrfs: Use memset_after() to clear end of struct
+Message-ID: <20210809112030.GM5047@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-48-keescook@chromium.org>
+ <20210728094215.GX5047@twin.jikos.cz>
+ <202107281455.2A0753F5@keescook>
+ <20210729103337.GS5047@suse.cz>
+ <202107310822.31BEB6E543@keescook>
 MIME-Version: 1.0
-References: <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
- <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
- <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
- <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
- <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7> <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
- <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
- <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
- <20210809073020.y6ruibdm37xnx7hg@vireshk-i7> <CAK8P3a3TabswETDAUec-2rbiNBk_K48-UdpTA5Ckvu5ogOyHjQ@mail.gmail.com>
- <0100017b2a85eaf8-08b905fc-89f7-43a4-857e-070ca9691ce1-000000@email.amazonses.com>
-In-Reply-To: <0100017b2a85eaf8-08b905fc-89f7-43a4-857e-070ca9691ce1-000000@email.amazonses.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 9 Aug 2021 13:19:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0L3Wg8a8ips97KQ4OskGCZp-5i=LUV0DqcVq__wrEZAw@mail.gmail.com>
-Message-ID: <CAK8P3a0L3Wg8a8ips97KQ4OskGCZp-5i=LUV0DqcVq__wrEZAw@mail.gmail.com>
-Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202107310822.31BEB6E543@keescook>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 12:47 PM Viresh Kumar via Stratos-dev
-<stratos-dev@op-lists.linaro.org> wrote:
->
-> On 09-08-21, 09:55, Arnd Bergmann wrote:
-> > Ah, right. There is already a flag that gets checked by the caller.
-> >
-> > It does feel odd to have an empty 'irq_mask' callback though, so
-> > maybe there is still something missing, just not what I thought.
-> >
-> > It's probably the result of calling handle_level_irq(), which as you
-> > said is closer to what we want, but is not exactly what we need for
-> > this protocol.
->
-> Okay, I have tried to take care of locking as well now and used local
-> flags only to make sure I can depend on them to get the locking
-> working properly. Lets see what's broken in this now :)
+On Sat, Jul 31, 2021 at 08:25:51AM -0700, Kees Cook wrote:
+> On Thu, Jul 29, 2021 at 12:33:37PM +0200, David Sterba wrote:
+> > On Wed, Jul 28, 2021 at 02:56:31PM -0700, Kees Cook wrote:
+> > > On Wed, Jul 28, 2021 at 11:42:15AM +0200, David Sterba wrote:
+> > > > On Tue, Jul 27, 2021 at 01:58:38PM -0700, Kees Cook wrote:
+> > > > >  	}
+> > > > >  	if (need_reset) {
+> > > > > -		memset(&item->generation_v2, 0,
+> > > > > -			sizeof(*item) - offsetof(struct btrfs_root_item,
+> > > > > -					generation_v2));
+> > > > > -
+> > > > 
+> > > > Please add
+> > > > 		/* Clear all members from generation_v2 onwards */
+> > > > 
+> > > > > +		memset_after(item, 0, level);
+> > > 
+> > > Perhaps there should be another helper memset_starting()? That would
+> > > make these cases a bit more self-documenting.
+> > 
+> > That would be better, yes.
+> > 
+> > > +		memset_starting(item, 0, generation_v2);
+> > 
+> > memset_from?
+> 
+> For v2, I bikeshed this to "memset_startat" since "from" is semantically
+> close to "source" which I thought might be confusing. (I, too, did not
+> like "starting".) :)
 
-I don't see anything wrong with this version, but let's see what
-Marc thinks. I expect that he can still poke some holes in it, or
-at least find some simplifications.
-
-I was slightly surprised at the relation between the disabled and
-masked states, where 'disable' always implies 'mask' and
-'enable' always implies 'unmask', but I don't actually know how
-those two are actually defined in the irqchip code in Linux, so
-I assume you did this correctly.
-
-          Arnd
+memset_startat works for me, thanks.
