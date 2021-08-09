@@ -2,102 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CD33E5015
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06653E501A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237066AbhHIXoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 19:44:13 -0400
-Received: from mga05.intel.com ([192.55.52.43]:31239 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232717AbhHIXoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 19:44:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="300392518"
-X-IronPort-AV: E=Sophos;i="5.84,308,1620716400"; 
-   d="scan'208";a="300392518"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 16:43:50 -0700
-X-IronPort-AV: E=Sophos;i="5.84,308,1620716400"; 
-   d="scan'208";a="525563317"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 16:43:47 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
-References: <20210723080000.93953-1-ying.huang@intel.com>
-        <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
-        <YPs6cQo7iG1JcOn8@casper.infradead.org>
-        <8735rr54i9.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <YQkwBdpWTPjv4xIx@casper.infradead.org>
-        <704d597-443b-32f-84eb-524a58dd8ef@google.com>
-        <CAHbLzkrShKORwU-Zrf5_5c6_o_iVwoXRTT+7ABZALLj7p0w-Ug@mail.gmail.com>
-        <d1c768c-8b6-6a9d-ddde-39ac51286927@google.com>
-        <CAHbLzkrqY=L2bEeEfAkApkoz=sRUk-Nk_KBDWGAbsqapY+xG1Q@mail.gmail.com>
-        <CAHbLzko7LJmxkVuZTX35Aj65V29ukXmioJtrkiTtGrTyK9q7Sw@mail.gmail.com>
-Date:   Tue, 10 Aug 2021 07:43:46 +0800
-In-Reply-To: <CAHbLzko7LJmxkVuZTX35Aj65V29ukXmioJtrkiTtGrTyK9q7Sw@mail.gmail.com>
-        (Yang Shi's message of "Mon, 9 Aug 2021 14:26:49 -0700")
-Message-ID: <87k0ku89ql.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S237073AbhHIXrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 19:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232717AbhHIXrI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 19:47:08 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05D1C0613D3;
+        Mon,  9 Aug 2021 16:46:46 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id m9so26180114ljp.7;
+        Mon, 09 Aug 2021 16:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xiApi7G+VnFykOPRYjvLWbpQLitx31kBAvkrkjs55U4=;
+        b=hj6cjc6vEf6M1bmBMLNtoe6SXdhi0jjQcbBuoAfWb3QrIfBuZowJ/IBymxQw8deQmb
+         FNxfrP6mBH6cLjLTIbp3JOIA51xXIb99Xd9u61kZV7kJgXepwSBSdGQ8oP9unEBplgAZ
+         LxD2vTliuGcvvkHR3MPuteQ3QVkeViStJK09Vk+uEVsg9ZfY7a9U+xisUucy02KOJvzw
+         THeyJei7nvht+d/r3Y6iqf8745DrwHTeLEd/4qChHyuf33aLAr4doh5pJjZopC1eEA1K
+         J8CM8i8O8zXsewXV8iU21Mr7bhpj/U2uw+P3yx9RmvttEnf/VCuWlqxt/AzS7KtlFO00
+         hM4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xiApi7G+VnFykOPRYjvLWbpQLitx31kBAvkrkjs55U4=;
+        b=mQlOJSgo6KLp/6v89mnlocGrE48LTq5s4L0XM52nWd0yRgT/KCHrMuW0oGAC6ACZzG
+         r62eYn0RFNf18D9GAxu6hx2IZzeSe2S0MD2hl4HLqonAk2tB9Q2nus3R0i99FSGyLdnv
+         9V6PIIPZ3T7dbjFKulmydK+Jv9FCTsutKIGE+EUIQVwNb2biQWwmgkF9MLm1rx8hHObK
+         oA3X1KN4trK/zb9sHHe9qcTmNE0R6xMoJT/GqOyLg0vYmtkKKqHyA4ILlpsxHESo2jkD
+         79Y7zs1GGShnn++Syv5CCy3IVOSEpWCLalTu6A4YqyoPoFqUM3S1+jLeYYDtxww/H93S
+         ad3A==
+X-Gm-Message-State: AOAM532/kZkZOoA6dYZPcUmAQPKQkuNlRvLSJY1RHVCYjRD97eCzTT6u
+        U6SwM/Td++ExYpuRYHSS5WE=
+X-Google-Smtp-Source: ABdhPJx5RIySknB2pRdg4ziQQNjaT4cVz4nC+C+8kafzn7EsIH2nl0aRqJ2NE3O26Edu6kPTlrLkog==
+X-Received: by 2002:a2e:b532:: with SMTP id z18mr6586507ljm.309.1628552805027;
+        Mon, 09 Aug 2021 16:46:45 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
+        by smtp.googlemail.com with ESMTPSA id q23sm1872117lfp.169.2021.08.09.16.46.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 16:46:44 -0700 (PDT)
+Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Rajendra Nayak <rnayak@codeaurora.org>, ulf.hansson@linaro.org,
+        bjorn.andersson@linaro.org, viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net
+References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
+ <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
+ <f58e631d-67a7-4981-ce59-6a4772b44564@gmail.com>
+ <c43ddc6b-32ca-433d-76f2-901cb594eaf1@gmail.com>
+Message-ID: <9588f01d-1cb6-7ca3-eb41-74259f1678f6@gmail.com>
+Date:   Tue, 10 Aug 2021 02:46:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <c43ddc6b-32ca-433d-76f2-901cb594eaf1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
+10.08.2021 01:44, Dmitry Osipenko пишет:
+> 10.08.2021 01:26, Dmitry Osipenko пишет:
+>> 04.08.2021 13:58, Rajendra Nayak пишет:
+>>> @@ -2637,6 +2643,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>>>  {
+>>>  	struct of_phandle_args pd_args;
+>>>  	struct generic_pm_domain *pd;
+>>> +	struct device_node *np;
+>>> +	int pstate;
+>>>  	int ret;
+>>>  
+>>>  	ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
+>>> @@ -2675,10 +2683,26 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>>>  		genpd_unlock(pd);
+>>>  	}
+>>>  
+>>> -	if (ret)
+>>> +	if (ret) {
+>>>  		genpd_remove_device(pd, dev);
+>>> +		return -EPROBE_DEFER;
+>>> +	}
+>>> +
+>>> +	/* Set the default performance state */
+>>> +	np = dev->of_node;
+>>> +	if (of_parse_phandle(np, "required-opps", index)) {
 
-> On Fri, Aug 6, 2021 at 1:37 PM Yang Shi <shy828301@gmail.com> wrote:
+The OF node returned by of_parse_phandle() must be put.
+
+>>> +		pstate = of_get_required_opp_performance_state(np, index);
+
+If you have more than one power domain, then this will override the
+pstate which was set for a previous domain. This code doesn't feel solid
+to me, at least a clarifying comment is needed about how it's supposed
+to work.
+
+>>> +		if (pstate < 0) {
+>>> +			ret = pstate;
+>>> +			dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+>>> +				pd->name, ret);
+>>> +		} else {
+>>> +			dev_pm_genpd_set_performance_state(dev, pstate);
+> 
+> Where is error handling?
+> 
+>>> +			dev_gpd_data(dev)->default_pstate = pstate;
+>>> +		}
+>>> +	}
 >>
->> On Thu, Aug 5, 2021 at 11:01 PM Hugh Dickins <hughd@google.com> wrote:
->> >
->> > On Thu, 5 Aug 2021, Yang Shi wrote:
->> > > On Tue, Aug 3, 2021 at 10:34 PM Hugh Dickins <hughd@google.com> wrote:
->> > > >
->> > > > I've never seen the swapoff race claimed by Miaohe, and don't expect to;
->> > > > but he's probably right, given the current code.  I just dislike adding
->> > > > unnecessary complexity, and siting it in the wrong place (mm/shmem.c).
->> > > >
->> > > > Yang, is it possible that 5.1 commit 8fd2e0b505d1 ("mm: swap: check if
->> > > > swap backing device is congested or not") was actually developed and
->> > > > measured on 4.1 or earlier, which still had blk_set_queue_congested()?
->> > >
->> > > I forgot the exact version, but definitely not 4.1 or earlier. Maybe
->> > > 4.19 or earlier. I'm not familiar with how block layer detect
->> > > congestion, if the logic was changed, hence the optimization doesn't
->> > > stand anymore nowadays, I'm totally fine to remove it.
->> >
->> > You drove me back to look more closely.  blk_set_queue_congested()
->> > vanished from include/linux/blkdev.h in 4.2, but blk_set_congested()
->> > appeared then in block/blk-core.c to replace it.  blk_set_congested()
->> > vanished (along with all references to "congested" in blk-core.c) in
->> > 5.0, then your commit (most probably tested on 4.19) went into 5.1 -
->> > just after it had become redundant!
->> >
->> > Thanks, yes, let's revert that and Miaohe's and Huang's, later on.
->>
->> It should be easier to revert Huang Ying's , then Miaohe's, then mine.
->
-> Hi Ying,
->
-> I just prepared the reverts since I need to revert yours and Miaohe's
-> in order to revert my problematic commit.
+>> Why performance state is set after genpd_power_on()?
 
-If your original commit will be reverted, then mine and Miaohe's can be
-reverted from the race condition point of view.
+Should set_performance_state() be invoked when power_on=false?
 
-Although I still think it's better to call get/put_swap_device() in
-shmem_swapin_page(), that can be discussed with another patch.
+I assume it should be:
 
-Best Regards,
-Huang, Ying
+if (power_on) {
+	dev_pm_genpd_set_performance_state(dev, pstate);
+	dev_gpd_data(dev)->default_pstate = pstate;
+} else {
+	dev_gpd_data(dev)->rpm_pstate = pstate;
+}
