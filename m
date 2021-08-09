@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941953E484B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C045B3E4850
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbhHIPE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:04:28 -0400
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:42690 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234721AbhHIPE1 (ORCPT
+        id S235211AbhHIPHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:07:44 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:38661 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234421AbhHIPHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:04:27 -0400
-Received: by mail-ua1-f51.google.com with SMTP id m39so1883060uad.9;
-        Mon, 09 Aug 2021 08:04:07 -0700 (PDT)
+        Mon, 9 Aug 2021 11:07:43 -0400
+Received: by mail-vs1-f43.google.com with SMTP id t29so10242418vsr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:07:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2WVMYOqEa/bLtuXQ6WMOZh3F4v9HS1yFs7MrmGYYVUc=;
-        b=HmnC0WIVazwQ6nhvLaz9JWNnR3JKueiwHpbLS3p1AsIsmISF/mR9J+falMrlTdV0wd
-         irHa/+sveSz8A4chUUm7v3Id3ezK/LCOZ2gQGEVFwlBik5JZ3YVOpr70rszHKOAmhtSa
-         XOYqHppA57yWOQ/+Hc3rB4FGEzd6M2aksEjR3b0Eye7kqEJkQ2wLbGi5M8saoNbfNlo4
-         MbJgFZmo0MwrcaSfltF3mV3OeW2s4lsMDYCogRv5LEjZD6RVp3PJJ+2hkiQTPuBgWumn
-         itvSn2ds6/UziN4mvdP/hGGkqMQGbK7zFigwawgqcovbSJxYuuc3c3UkpWJHP+qtnIJG
-         Y0/g==
-X-Gm-Message-State: AOAM531h3XxDVEc8n6QA3rTXJaPD3rsjjiLUDfvdb+S7nyoppBavKbrO
-        d1H8kdcbBO1Ugs6dUQfzAdLauQsDaWAZDsYQaek=
-X-Google-Smtp-Source: ABdhPJxZA2LpZiU8DOllIwZGZvqRRctpyutcM8ui5lDbadGe9QWO10AogpNXRHIIp09OCdbbh1DuGYgr2ki/2pYlsTo=
-X-Received: by 2002:a9f:2341:: with SMTP id 59mr15759589uae.4.1628521446744;
- Mon, 09 Aug 2021 08:04:06 -0700 (PDT)
+        bh=DTs5CtLWyXBG0DLVLRK1Nq+J/mFgqyrFa3Bq0XHKiyY=;
+        b=skEjSN+C58DWBQtj5oBTI9ayWbPHEc22pm+GEhdZJwIWq0w5LspoxpXHCoJ3HcxOLl
+         MpGiTS9w1VNNkuQ0g4FrU6tjNRpED/wlerWJwRelbKjGkBqdrdX0+zCvfKp9mpKkqOzC
+         7HmPPw8w4/XLyx0L0qSyE/yeUAmYXpkYwzrbti4nylM7R8nc1veeeoC0wL558/tmzUEP
+         3c4rLQUB5fKhWA493Pq0N3ICPSDwgaFU+8LMh3229DbYc9PYWr4NOPoVUkjo1KamA8JH
+         rTAzinYGVCwjf/vEfEJIjhGOg/3EiZ0clKqp8fUDSO0gZzZR8jv+Kfdu/qNa+6jHz1Ml
+         u5XQ==
+X-Gm-Message-State: AOAM53071pKoaOLJIF+8Gv4Vblc6/y6cchJc9e3vJjn4okNFkfd3qPlJ
+        KjilB7YbXLzmWjy8qWlTPprNxJcW21We9OONos0=
+X-Google-Smtp-Source: ABdhPJwoyk8XAGm4vmp+Ctx5jM2BnC5S9BUXjB4D0vk1aiOLNj+y1qF9/zVQr0myFBBlFBK2vGAJK6LwCiz8OCvVmgw=
+X-Received: by 2002:a05:6102:d9:: with SMTP id u25mr7768616vsp.42.1628521642116;
+ Mon, 09 Aug 2021 08:07:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210808160823.3553954-1-surenb@google.com> <20210808160823.3553954-2-surenb@google.com>
-In-Reply-To: <20210808160823.3553954-2-surenb@google.com>
+References: <202108010312.8uIaWK0u-lkp@intel.com> <3bdd5b29-b6a1-54a8-ac99-adb59e8e91a7@vt.edu>
+In-Reply-To: <3bdd5b29-b6a1-54a8-ac99-adb59e8e91a7@vt.edu>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Aug 2021 17:03:55 +0200
-Message-ID: <CAMuHMdX7YyBRmKNkQJ0k0chaHrziPa=OfKOXStEgXjZNfgg5Nw@mail.gmail.com>
-Subject: Re: [PATCH v8 2/2] mm: wire up syscall process_mrelease
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>, shakeelb@google.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>, jengelh@inai.de,
-        timmurray@google.com, Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
+Date:   Mon, 9 Aug 2021 17:07:11 +0200
+Message-ID: <CAMuHMdXueYTAYFgt-gP79e1NaFzmPmsE1if+DsiZaB5VmNqCXA@mail.gmail.com>
+Subject: Re: [PATCH v4.1] include: linux: Reorganize timekeeping and ktime headers
+To:     Carlos Bilbao <bilbao@vt.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, kbuild-all@lists.01.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+        kbuild test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 8, 2021 at 6:23 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> Split off from prev patch in the series that implements the syscall.
+On Sun, Aug 1, 2021 at 10:13 PM Carlos Bilbao <bilbao@vt.edu> wrote:
+> Reorganize and separate the headers by making ktime.h take care of the
+> ktime_get() family of functions, and reserve timekeeping.h for the actual
+> timekeeping. This also helps to avoid implicit function errors and strengthens
+> the header dependencies, since timekeeping.h was using ktime_to_ns(), a static
+> function defined in a header it does no include, ktime.h. Include the header
+> timekeeping.h wherever it is necessary for a successful compilation after the
+> header code reorganization.
 >
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+> Reported-by: kernel test robot <lkp@intel.com>
 
->  arch/m68k/kernel/syscalls/syscall.tbl       | 2 ++
+>  arch/m68k/atari/time.c         |   1 +
+>  arch/m68k/hp300/time.c         |   2 +
+>  arch/m68k/mac/via.c            |   1 +
+>  arch/m68k/mvme16x/config.c     |   1 +
+>  arch/m68k/sun3/sun3ints.c      |   1 +
 
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
