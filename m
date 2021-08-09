@@ -2,114 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29A43E41D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2D13E41D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhHIIuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:50:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37926 "EHLO
+        id S234093AbhHIIvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:51:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34141 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234008AbhHIIuX (ORCPT
+        by vger.kernel.org with ESMTP id S233977AbhHIIvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:50:23 -0400
+        Mon, 9 Aug 2021 04:51:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628499002;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=mimecast20190719; t=1628499061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=igdJGS9Q0HZjFSDZhJ/yUBrXs2QalJMPtlJmQqZe3xk=;
-        b=bFXjmPugLl2PSg1zVNOJGzIF/Da/Bo2VAVaIphHdrFTRoXeLTwgp/eOEkG/x3BqqGDPYi9
-        7qo1Q+83WSeQt6AHPSfSi34hfWZP91ZqnrrxwK75qv/LNhOf38Y0kb2AdKMEuDxUN0asMc
-        5IMzUxRUUWcLilyB5WikXWwUXCFB6UE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-kEsk062ZPhaprm013Y8gFA-1; Mon, 09 Aug 2021 04:50:01 -0400
-X-MC-Unique: kEsk062ZPhaprm013Y8gFA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A195100CEC9;
-        Mon,  9 Aug 2021 08:49:59 +0000 (UTC)
-Received: from [10.64.54.155] (vpn2-54-155.bne.redhat.com [10.64.54.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A8A6269FAD;
-        Mon,  9 Aug 2021 08:49:48 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [mm/debug_vm_pgtable] 08cb589cb3:
- BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Qian Cai <cai@lca.pw>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Chunyu Hu <chuhu@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com
-References: <20210808142553.GD27482@xsang-OptiPlex-9020>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <7a891ba4-dc7d-8fa3-5f0e-da99d34702d6@redhat.com>
-Date:   Mon, 9 Aug 2021 18:49:53 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        bh=eXR+JIzWEYNeD1UnXjRtYb+ykUgRxVjnQJbgR8HpkXE=;
+        b=Uq5jtkqbNeTZUqLwcYVXbwK22o3IM5QSl616zVZ6BL0NnVsP4icrkNTx1QQXzDzs8UmMTu
+        OYxdgTYM7GRWUNBo+/dfglc7Wbrmn2Ol7NVFTy6NberfBo3VQZG3QMcnxP5ppD5qW9bjQ+
+        A2lKoxbXNWkvRCGuDZJfgFNAuLWknhw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-4GqFYvspPuyKd4eCQ0qUuw-1; Mon, 09 Aug 2021 04:50:59 -0400
+X-MC-Unique: 4GqFYvspPuyKd4eCQ0qUuw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so1498997wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 01:50:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=eXR+JIzWEYNeD1UnXjRtYb+ykUgRxVjnQJbgR8HpkXE=;
+        b=nqBaP/ULQ+5M8FsYQeEicr6U+7chmHX2MG5B/dgd7dZgmjHEBnhEtSE3005VHfIX6A
+         qU7e5a1OtPEtzHJ96nxv1XHK8R0dJFqCjDYpjWz5xiAdMxlC+veYl/PxWgDg0cqbt6nP
+         qI+3zZJBOGuIiZKErPuH2V6WIu/HBBMuPifrpCvHgzuBlfA50Drdwp7hodiNymwXimIf
+         Vij4hIfOoe5XL7EFF+5ERPxZ3bMRq7bCQimBHsosw+w7sxewkyQOWSXHUk5Oa/swKmQh
+         p1Z7XSZ5dduHW1HDfMi4IzVIlK0y4FksoC3rbJ8P1OU7Obm83VbYjTB5fcA9CqMI3ZUQ
+         Gdgw==
+X-Gm-Message-State: AOAM533rMsUPQ2X9G6GRWbiH1nhJ7XBCzG0dmcJ7JlAx7u6UD9Dkq+gI
+        RelXEBJPYv2wsUm0dPC7UEYRptlXR0bqG0jpm4+ABnNznnieTaVZibXMBKsZtdLjFG+0lB+NV2k
+        htxV+KE4JGALbEgF6unemgcAf
+X-Received: by 2002:a05:600c:1d12:: with SMTP id l18mr15423197wms.88.1628499058627;
+        Mon, 09 Aug 2021 01:50:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyn8BfKomzEPX0PtqpbGSxmBgVo/T64uydRSEX/+7aDK1leW+8vEKtx+wRwoAiMKr32K3b/YA==
+X-Received: by 2002:a05:600c:1d12:: with SMTP id l18mr15423168wms.88.1628499058304;
+        Mon, 09 Aug 2021 01:50:58 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id j4sm16841393wmi.4.2021.08.09.01.50.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 01:50:57 -0700 (PDT)
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210804154046.88552-1-imbrenda@linux.ibm.com>
+ <86b114ef-41ea-04b6-327c-4a036f784fad@redhat.com>
+ <20210806113005.0259d53c@p-imbrenda>
+ <ada27c6d-4dc9-04c3-d5b9-566e65359701@redhat.com>
+ <20210806154400.2ca55563@p-imbrenda>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v3 00/14] KVM: s390: pv: implement lazy destroy
+Message-ID: <8f1502a4-8ee3-f70f-ca04-4a13d44368fb@redhat.com>
+Date:   Mon, 9 Aug 2021 10:50:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210808142553.GD27482@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210806154400.2ca55563@p-imbrenda>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 12:25 AM, kernel test robot wrote:
->
-
-[...]
-
+On 06.08.21 15:44, Claudio Imbrenda wrote:
+> On Fri, 6 Aug 2021 13:30:21 +0200
+> David Hildenbrand <david@redhat.com> wrote:
 > 
-> [    9.433105][    T1] BUG: sleeping function called from invalid context at mm/page_alloc.c:5170
-> [    9.434513][    T1] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
-> [    9.436116][    T1] no locks held by swapper/0/1.
-> [    9.436923][    T1] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc4-00161-g08cb589cb3d2 #1
-> [    9.438398][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [    9.439880][    T1] Call Trace:
-> [ 9.440404][ T1] ? dump_stack_lvl (lib/dump_stack.c:106)
-> [ 9.441154][ T1] ? dump_stack (lib/dump_stack.c:113)
-> [ 9.441827][ T1] ? ___might_sleep.cold (kernel/sched/core.c:9155)
-> [ 9.442645][ T1] ? __might_sleep (kernel/sched/core.c:9109 (discriminator 14))
-> [ 9.444795][ T1] ? __alloc_pages (include/linux/kernel.h:104 mm/page_alloc.c:5170 mm/page_alloc.c:5380)
-> [ 9.445583][ T1] ? mem_encrypt_init+0x1/0x1
-> [ 9.446389][ T1] ? destroy_args (mm/debug_vm_pgtable.c:1219)
-> [ 9.447193][ T1] ? debug_vm_pgtable (mm/debug_vm_pgtable.c:1208 mm/debug_vm_pgtable.c:1237)
-> [ 9.448076][ T1] ? destroy_args (mm/debug_vm_pgtable.c:1219)
-> [ 9.448863][ T1] ? do_one_initcall (init/main.c:1282)
-> [ 9.449676][ T1] ? parse_args (kernel/params.c:190)
-> [ 9.450470][ T1] ? kernel_init_freeable (init/main.c:1354 init/main.c:1371 init/main.c:1390 init/main.c:1592)
-> [ 9.451358][ T1] ? rest_init (init/main.c:1476)
-> [ 9.452063][ T1] ? kernel_init (init/main.c:1486)
-> [ 9.452759][ T1] ? ret_from_fork (arch/x86/entry/entry_32.S:775)
-> [    9.453815][    T1] ------------[ cut here ]------------
+> [...]
+> 
+>>>>> When the system runs out of memory, if a guest has terminated and
+>>>>> its memory is being cleaned asynchronously, the OOM killer will
+>>>>> wait a little and then see if memory has been freed. This has the
+>>>>> practical effect of slowing down memory allocations when the
+>>>>> system is out of memory to give the cleanup thread time to
+>>>>> cleanup and free memory, and avoid an actual OOM situation.
+>>>>
+>>>> ... and this sound like the kind of arch MM hacks that will bite us
+>>>> in the long run. Of course, I might be wrong, but already doing
+>>>> excessive GFP_ATOMIC allocations or messing with the OOM killer
+>>>> that
+>>>
+>>> they are GFP_ATOMIC but they should not put too much weight on the
+>>> memory and can also fail without consequences, I used:
+>>>
+>>> GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN
+>>>
+>>> also notice that after every page allocation a page gets freed, so
+>>> this is only temporary.
+>>
+>> Correct me if I'm wrong: you're allocating unmovable pages for
+>> tracking (e.g., ZONE_DMA, ZONE_NORMAL) from atomic reserves and will
+>> free a movable process page, correct? Or which page will you be
+>> freeing?
+> 
+> we are transforming ALL moveable pages belonging to userspace into
+> unmoveable pages. every ~500 pages one page gets actually
+> allocated (unmoveable), and another (moveable) one gets freed.
+> 
+>>>
+>>> I would not call it "messing with the OOM killer", I'm using the
+>>> same interface used by virtio-baloon
+>>
+>> Right, and for virtio-balloon it's actually a workaround to restore
+>> the original behavior of a rarely used feature: deflate-on-oom.
+>> Commit da10329cb057 ("virtio-balloon: switch back to OOM handler for
+>> VIRTIO_BALLOON_F_DEFLATE_ON_OOM") tried to document why we switched
+>> back from a shrinker to VIRTIO_BALLOON_F_DEFLATE_ON_OOM:
+>>
+>> "The name "deflate on OOM" makes it pretty clear when deflation should
+>>    happen - after other approaches to reclaim memory failed, not while
+>>    reclaiming. This allows to minimize the footprint of a guest -
+>> memory will only be taken out of the balloon when really needed."
+>>
+>> Note some subtle differences:
+>>
+>> a) IIRC, before running into the OOM killer, will try reclaiming
+>>      anything  else. This is what we want for deflate-on-oom, it might
+>> not be what you want for your feature (e.g., flushing other
+>> processes/VMs to disk/swap instead of waiting for a single process to
+>> stop).
+> 
+> we are already reclaiming the memory of the dead secure guest.
+> 
+>> b) Migration of movable balloon inflated pages continues working
+>> because we are dealing with non-lru page migration.
+>>
+>> Will page reclaim, page migration, compaction, ... of these movable
+>> LRU pages still continue working while they are sitting around
+>> waiting to be cleaned up? I can see that we're grabbing an extra
+>> reference when we put them onto the list, that might be a problem:
+>> for example, we can most certainly not swap out these pages or write
+>> them back to disk on memory pressure.
+> 
+> this is true. on the other hand, swapping a moveable page would be even
+> slower, because those pages would need to be exported and not destroyed.
+> 
+>>>    
+>>>> way for a pure (shutdown) optimization is an alarm signal. Of
+>>>> course, I might be wrong.
+>>>>
+>>>> You should at least CC linux-mm. I'll do that right now and also CC
+>>>> Michal. He might have time to have a quick glimpse at patch #11 and
+>>>> #13.
+>>>>
+>>>> https://lkml.kernel.org/r/20210804154046.88552-12-imbrenda@linux.ibm.com
+>>>> https://lkml.kernel.org/r/20210804154046.88552-14-imbrenda@linux.ibm.com
+>>>>
+>>>> IMHO, we should proceed with patch 1-10, as they solve a really
+>>>> important problem ("slow reboots") in a nice way, whereby patch 11
+>>>> handles a case that can be worked around comparatively easily by
+>>>> management tools -- my 2 cents.
+>>>
+>>> how would management tools work around the issue that a shutdown can
+>>> take very long?
+>>
+>> The traditional approach is to wait starting a new VM on another
+>> hypervisor instead until memory has been freed up, or start it on
+>> another hypervisor. That raises the question about the target use
+>> case.
+>>
+>> What I don't get is that we have to pay the price for freeing up that
+>> memory. Why isn't it sufficient to keep the process running and let
+>> ordinary MM do it's thing?
+> 
+> what price?
+> 
+> you mean let mm do the slowest possible thing when tearing down a dead
+> guest?
+> 
+> without this, the dying guest would still take up all the memory. and
+> swapping it would not be any faster (it would be slower, in fact). the
+> system would OOM anyway.
+> 
+>> Maybe you should clearly spell out what the target use case for the
+>> fast shutdown (fast quitting of the process?) is?. I assume it is,
+>> starting a new VM / process / whatsoever on the same host
+>> immediately, and then
+>>
+>> a) Eventually slowing down other processes due heavy reclaim.
+> 
+> for each dying guest, only one CPU is used by the reclaim; depending on
+> the total load of the system, this might not even be noticeable
+> 
+>> b) Slowing down the new process because you have to pay the price of
+>> cleaning up memory.
+> 
+> do you prefer to OOM because the dying guest will need ages to clean up
+> its memory?
+> 
+>> I think I am missing why we need the lazy destroy at all when killing
+>> a process. Couldn't you instead teach the OOM killer "hey, we're
+>> currently quitting a heavy process that is just *very* slow to free
+>> up memory, please wait for that before starting shooting around" ?
+> 
+> isn't this ^ exactly what the OOM notifier does?
+> 
+> 
+> another note here:
+> 
+> when the process quits, the mm starts the tear down. at this point, the
+> mm has no idea that this is a dying KVM guest, so the best it can do is
+> exporting (which is significantly slower than destroy page)
+> 
+> kvm comes into play long after the mm is gone, and at this point it
+> can't do anything anymore. the memory is already gone (very slowly).
+> 
+> if I kill -9 qemu (or if qemu segfaults), KVM will never notice until
+> the mm is gone.
+> 
 
-[...]
+Summarizing what we discussed offline:
 
-Thanks for reporting the issue. The same issue was reported against v4 series before,
-but this time, it's raised on v5 series. Fortunately, this report provides more useful
-information so that I can reproduce the issue locally and I'm going to fix the issue
-in v6 since I need to address Anshuman's last comment on v5.
+1. We should optimize for proper shutdowns first, this is the most 
+important use case. We should look into letting QEMU tear down the KVM 
+secure context such that we can just let MM teardown do its thing -> 
+destroy instead of export secure pages. If no kernel changes are 
+required to get that implemented, even better.
 
-As to the root cause, pte_alloc_map() is used in init_args(). The PTE entry is mapped
-in atomic mode when CONFIG_HIGHPTE is enabled on i386. It means GFP_KERNEL isn't right
-option to be used by alloc_pages() in init_args(). The fix is use pte_alloc() to replace
-pte_alloc_map() and args->pte will be mapped when it's used in debug_vm_pgtable() for
-PTE modifying tests. We need avoid atomic context lasting for too long.
+2. If we want to optimize "there is a big process dying horribly slow, 
+please OOM killer please wait a bit instead of starting killing other 
+processes", we might want to do that in a more generic way (if not 
+already in place, no expert).
 
+3. If we really want to go down the path of optimizing "kill -9" and 
+friends to e.g., take 40min instead of 20min on a huge VM (who cares? 
+especially, the OOM handler will struggle already if memory is getting 
+freed that slowly, no matter if 40 or 20 minutes), we should look into 
+being able to release the relevant KVM secure context before tearing 
+down MM. We should avoid any arch specific hacks.
+
+-- 
 Thanks,
-Gavin
+
+David / dhildenb
 
