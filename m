@@ -2,231 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A71A3E4806
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1CF3E47F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234788AbhHIOyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:54:51 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7813 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234275AbhHIOyr (ORCPT
+        id S233953AbhHIOxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:53:09 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:14256 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231478AbhHIOxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:54:47 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gjzch36SKzYmc9;
-        Mon,  9 Aug 2021 22:54:12 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 22:54:25 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 9 Aug 2021 22:54:24 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 4/4] net: hns3: add support ethtool extended link state
-Date:   Mon, 9 Aug 2021 22:50:42 +0800
-Message-ID: <1628520642-30839-5-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1628520642-30839-1-git-send-email-huangguangbin2@huawei.com>
-References: <1628520642-30839-1-git-send-email-huangguangbin2@huawei.com>
+        Mon, 9 Aug 2021 10:53:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628520767; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=84DInYak3ob6ws+4P8+9QbEz8S5I95euQDi0WGUvz1I=; b=G3diNabJ1SvneaCUufua5OyZdOPrH6b9okYTQEVksiCxi1l/NwJOrr/bzJ7N9PWKkilx/UTn
+ kzzLTMfxoquK+LwGPy0nmYtSOc8kerGB+wPrkwHp2hoesQx+JDvB9bmrXBX7CLO1BargPjaV
+ ROrSYVKPPYLcG+mTyu0KEWWAq0Y=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6111411a76c3a9a17283506d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 14:52:10
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5E9F5C433D3; Mon,  9 Aug 2021 14:52:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [59.89.230.160])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B3AFC4338A;
+        Mon,  9 Aug 2021 14:52:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3B3AFC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Rob Clark <robdclark@gmail.com>,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+References: <20210729183942.2839925-1-robdclark@gmail.com>
+ <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
+ <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
+ <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+ <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org>
+ <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
+Date:   Mon, 9 Aug 2021 20:21:59 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to know the reason of link up failure, add supporting ethtool
-extended link state. Driver reads the link status code from firmware if
-in link down state and converts it to ethtool extended link state.
+On 8/8/2021 10:22 PM, Rob Clark wrote:
+> On Sun, Aug 8, 2021 at 7:33 AM Caleb Connolly <caleb.connolly@linaro.org> wrote:
+>>
+>>
+>>
+>> On 07/08/2021 21:04, Rob Clark wrote:
+>>> On Sat, Aug 7, 2021 at 12:21 PM Caleb Connolly
+>>> <caleb.connolly@linaro.org> wrote:
+>>>>
+>>>> Hi Rob, Akhil,
+>>>>
+>>>> On 29/07/2021 21:53, Rob Clark wrote:
+>>>>> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+>>>>> <caleb.connolly@linaro.org> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 29/07/2021 21:24, Rob Clark wrote:
+>>>>>>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+>>>>>>> <caleb.connolly@linaro.org> wrote:
+>>>>>>>>
+>>>>>>>> Hi Rob,
+>>>>>>>>
+>>>>>>>> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+>>>>>>>> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+>>>>>>>> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+>>>>>>>
+>>>>>>> *ohh*, yeah, ok, that would explain it
+>>>>>>>
+>>>>>>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+>>>>>>>> at the higher frequencies.
+>>>>>>>>
+>>>>>>>> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+>>>>>>>> glxgear.
+>>>>>>>>
+>>>>>>>> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+>>>>>>>> at the voltage the hardware needs to be stable.
+>>>>>>>>
+>>>>>>>> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+>>>>>>>> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+>>>>>>>>
+>>>>>>>
+>>>>>>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+>>>>>>> on CC and I added sboyd, maybe one of them knows better.
+>>>>>>>
+>>>>>>> In the short term, removing the higher problematic OPPs from dts might
+>>>>>>> be a better option than this patch (which I'm dropping), since there
+>>>>>>> is nothing stopping other workloads from hitting higher OPPs.
+>>>>>> Oh yeah that sounds like a more sensible workaround than mine .
+>>>>>>>
+>>>>>>> I'm slightly curious why I didn't have problems at higher OPPs on my
+>>>>>>> c630 laptop (sdm850)
+>>>>>> Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+>>>>>>
+>>>>>> Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+>>>>>> crash where yours doesn't?
+>>>>>
+>>>>> I've not heard any reports of similar issues from the handful of other
+>>>>> folks with c630's on #aarch64-laptops.. but I can't really say if that
+>>>>> is luck or not.
+>>>> It looks like this affects at least the OnePlus 6 and PocoPhone F1, I've done some more poking and the following diff
+>>>> seems to fix the stability issues completely, it seems the delay is required to let the update propagate.
+>>>>
+>>>> This doesn't feel like the right fix, but hopefully it's enough to come up with a better solution than disabling the new
+>>>> devfreq behaviour on a630.
+>>>>
+>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>>> index d7cec7f0dde0..69e2a5e84dae 100644
+>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>>>> @@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+>>>>                    return;
+>>>>            }
+>>>>
+>>>> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+>>>> +
+>>>> +       usleep_range(300, 500);
+>>>> +
+>>>
 
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  2 +
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 66 ++++++++++++++++++++++
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.h |  6 ++
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |  3 +
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 27 +++++++++
- 5 files changed, 104 insertions(+)
+I am a bit confused. We don't define a power domain for gpu in dt, 
+correct? Then what exactly set_opp do here? Do you think this usleep is 
+what is helping here somehow to mask the issue?
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index e0b7c3c44e7b..848bed866193 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -718,6 +718,8 @@ struct hnae3_ae_ops {
- 			    u32 nsec, u32 sec);
- 	int (*get_ts_info)(struct hnae3_handle *handle,
- 			   struct ethtool_ts_info *info);
-+	int (*get_link_diagnosis_info)(struct hnae3_handle *handle,
-+				       u32 *status_code);
- };
- 
- struct hnae3_dcb_ops {
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index b7ba5f780c5e..931168a33092 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -1657,6 +1657,71 @@ static int hns3_get_ts_info(struct net_device *netdev,
- 	return ethtool_op_get_ts_info(netdev, info);
- }
- 
-+static const struct hns3_ethtool_link_ext_state_mapping
-+hns3_link_ext_state_map[] = {
-+	{1, ETHTOOL_LINK_EXT_STATE_AUTONEG,
-+		ETHTOOL_LINK_EXT_SUBSTATE_AN_NO_HCD},
-+	{2, ETHTOOL_LINK_EXT_STATE_AUTONEG,
-+		ETHTOOL_LINK_EXT_SUBSTATE_AN_ACK_NOT_RECEIVED},
-+
-+	{256, ETHTOOL_LINK_EXT_STATE_LINK_TRAINING_FAILURE,
-+		ETHTOOL_LINK_EXT_SUBSTATE_LT_KR_LINK_INHIBIT_TIMEOUT},
-+	{257, ETHTOOL_LINK_EXT_STATE_LINK_TRAINING_FAILURE,
-+		ETHTOOL_LINK_EXT_SUBSTATE_LT_KR_LINK_PARTNER_DID_NOT_SET_RECEIVER_READY},
-+	{512, ETHTOOL_LINK_EXT_STATE_LINK_TRAINING_FAILURE,
-+		ETHTOOL_LINK_EXT_SUBSTATE_LT_REMOTE_FAULT},
-+
-+	{513, ETHTOOL_LINK_EXT_STATE_LINK_LOGICAL_MISMATCH,
-+		ETHTOOL_LINK_EXT_SUBSTATE_LLM_PCS_DID_NOT_ACQUIRE_BLOCK_LOCK},
-+	{515, ETHTOOL_LINK_EXT_STATE_LINK_LOGICAL_MISMATCH,
-+		ETHTOOL_LINK_EXT_SUBSTATE_LLM_FC_FEC_IS_NOT_LOCKED},
-+	{516, ETHTOOL_LINK_EXT_STATE_LINK_LOGICAL_MISMATCH,
-+		ETHTOOL_LINK_EXT_SUBSTATE_LLM_RS_FEC_IS_NOT_LOCKED},
-+
-+	{768, ETHTOOL_LINK_EXT_STATE_BAD_SIGNAL_INTEGRITY,
-+		ETHTOOL_LINK_EXT_SUBSTATE_BSI_LARGE_NUMBER_OF_PHYSICAL_ERRORS},
-+	{769, ETHTOOL_LINK_EXT_STATE_BAD_SIGNAL_INTEGRITY,
-+		ETHTOOL_LINK_EXT_SUBSTATE_BSI_SERDES_REFERENCE_CLOCK_LOST},
-+	{770, ETHTOOL_LINK_EXT_STATE_BAD_SIGNAL_INTEGRITY,
-+		ETHTOOL_LINK_EXT_SUBSTATE_BSI_SERDES_ALOS},
-+
-+	{1024, ETHTOOL_LINK_EXT_STATE_NO_CABLE, 0},
-+	{1025, ETHTOOL_LINK_EXT_STATE_CABLE_ISSUE,
-+		ETHTOOL_LINK_EXT_SUBSTATE_CI_UNSUPPORTED_CABLE},
-+
-+	{1026, ETHTOOL_LINK_EXT_STATE_EEPROM_ISSUE, 0},
-+};
-+
-+static int hns3_get_link_ext_state(struct net_device *netdev,
-+				   struct ethtool_link_ext_state_info *info)
-+{
-+	const struct hns3_ethtool_link_ext_state_mapping *map;
-+	struct hnae3_handle *h = hns3_get_handle(netdev);
-+	u32 status_code, i;
-+	int ret;
-+
-+	if (netif_carrier_ok(netdev))
-+		return -ENODATA;
-+
-+	if (!h->ae_algo->ops->get_link_diagnosis_info)
-+		return -EOPNOTSUP;
-+
-+	ret = h->ae_algo->ops->get_link_diagnosis_info(h, &status_code);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(hns3_link_ext_state_map); i++) {
-+		map = &hns3_link_ext_state_map[i];
-+		if (map->status_code == status_code) {
-+			info->link_ext_state = map->link_ext_state;
-+			info->__link_ext_substate = map->link_ext_substate;
-+			return 0;
-+		}
-+	}
-+
-+	return -ENODATA;
-+}
-+
- static const struct ethtool_ops hns3vf_ethtool_ops = {
- 	.supported_coalesce_params = HNS3_ETHTOOL_COALESCE,
- 	.get_drvinfo = hns3_get_drvinfo,
-@@ -1726,6 +1791,7 @@ static const struct ethtool_ops hns3_ethtool_ops = {
- 	.get_ts_info = hns3_get_ts_info,
- 	.get_tunable = hns3_get_tunable,
- 	.set_tunable = hns3_set_tunable,
-+	.get_link_ext_state = hns3_get_link_ext_state,
- };
- 
- void hns3_ethtool_set_ops(struct net_device *netdev)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.h b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.h
-index 2f186607c6e0..822d6fcbc73b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.h
-@@ -22,4 +22,10 @@ struct hns3_pflag_desc {
- 	void (*handler)(struct net_device *netdev, bool enable);
- };
- 
-+struct hns3_ethtool_link_ext_state_mapping {
-+	u32 status_code;
-+	enum ethtool_link_ext_state link_ext_state;
-+	u8 link_ext_substate;
-+};
-+
- #endif
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-index 18bde77ef944..8e5be127909b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-@@ -316,6 +316,9 @@ enum hclge_opcode_type {
- 	/* PHY command */
- 	HCLGE_OPC_PHY_LINK_KSETTING	= 0x7025,
- 	HCLGE_OPC_PHY_REG		= 0x7026,
-+
-+	/* Query link diagnosis info command */
-+	HCLGE_OPC_QUERY_LINK_DIAGNOSIS	= 0x702A,
- };
- 
- #define HCLGE_TQP_REG_OFFSET		0x80000
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index f15d76ec0068..70167ade234e 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -12837,6 +12837,32 @@ static int hclge_get_module_eeprom(struct hnae3_handle *handle, u32 offset,
- 	return 0;
- }
- 
-+static int hclge_get_link_diagnosis_info(struct hnae3_handle *handle,
-+					 u32 *status_code)
-+{
-+	struct hclge_vport *vport = hclge_get_vport(handle);
-+	struct hclge_dev *hdev = vport->back;
-+	struct hclge_desc desc;
-+	int ret;
-+
-+	if (hdev->ae_dev->dev_version <= HNAE3_DEVICE_VERSION_V2) {
-+		dev_err(&hdev->pdev->dev,
-+			"unsupported to get link diagnosis info\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	hclge_cmd_setup_basic_desc(&desc, HCLGE_OPC_QUERY_LINK_DIAGNOSIS, true);
-+	ret = hclge_cmd_send(&hdev->hw, &desc, 1);
-+	if (ret) {
-+		dev_err(&hdev->pdev->dev,
-+			"failed to query link diagnosis info, ret = %d\n", ret);
-+		return ret;
-+	}
-+
-+	*status_code = le32_to_cpu(desc.data[0]);
-+	return 0;
-+}
-+
- static const struct hnae3_ae_ops hclge_ops = {
- 	.init_ae_dev = hclge_init_ae_dev,
- 	.uninit_ae_dev = hclge_uninit_ae_dev,
-@@ -12937,6 +12963,7 @@ static const struct hnae3_ae_ops hclge_ops = {
- 	.set_tx_hwts_info = hclge_ptp_set_tx_info,
- 	.get_rx_hwts = hclge_ptp_get_rx_hwts,
- 	.get_ts_info = hclge_ptp_get_ts_info,
-+	.get_link_diagnosis_info = hclge_get_link_diagnosis_info,
- };
- 
- static struct hnae3_ae_algo ae_algo = {
--- 
-2.8.1
+I feel we should just leave the new dcvs feature (shall we call it NAP?) 
+disabled for a630 (and 10ms devfreq interval), until this is root caused.
+
+>>> Hmm, this is going to be in the critical path on idle -> active
+>>> transition (ie. think response time to user-input).. so we defn don't
+>>> want to do this unconditionally..
+>>>
+>>> If I understand the problem, we just want to limit how far we jump the
+>>> gpu freq in one go.. maybe deleting the lowest (and perhaps highest)
+>>> OPP would accomplish that?  Could that be done in the board(s)'s
+>>> toplevel dts files?
+>> That would be a workaround, however I'd really like to avoid limiting performance as a solution if I can help it,
+>> especially as the fix might just be "set the opp first, wait for it to apply, then set the core clock".
+>>
+>> Is there a sensible way to get a callback from the opp notify chain? Or from rpmh directly? Or is this solution really
+>> not the right way to go?
+> 
+> It does seem a bit strange to me that we are telling GMU to change
+> freq before calling dev_pm_opp_set_opp()..  if dev_pm_opp_set_opp() is
+> increasing voltage, it seems like you'd want to do that *before*
+> increasing freq (but reverse the order when decreasing freq).. But I'm
+> not an expert on the ways of the GMU..  maybe Akhil or Jordan knows
+> better how this is supposed to work.
+
+For legacy gmu, we trigger DCVS using DCVS OOB which comes later in this 
+function. But the order between regulator and clock which you mentioned 
+is correct.
+
+> 
+> But the delay seems like papering something over, and I'm trying to go
+> in the other direction and reduce latency between user input and
+> pageflip..
+> 
+> BR,
+> -R
+> 
+>>>
+>>> BR,
+>>> -R
+>>>
+>>>>            gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
+>>>>
+>>>>            gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
+>>>> @@ -158,7 +162,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+>>>>            if (ret)
+>>>>                    dev_err(gmu->dev, "GMU set GPU frequency error: %d\n", ret);
+>>>>
+>>>> -       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+>>>>            pm_runtime_put(gmu->dev);
+>>>>     }
+>>>>>
+>>>>> Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+>>>>>
+>>>>> BR,
+>>>>> -R
+>>>>>
+>>>>
+>>>> --
+>>>> Kind Regards,
+>>>> Caleb (they/them)
+>>
+>> --
+>> Kind Regards,
+>> Caleb (they/them)
 
