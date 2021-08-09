@@ -2,120 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA2A3E4988
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BC23E498A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhHIQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhHIQQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:16:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17D4860EB9;
-        Mon,  9 Aug 2021 16:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628525782;
-        bh=C5/2dVgJImM/dgrdIjcufSzzf7XvsOxZHwVOIj8pShE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eSokIi1AXe7eH/E/RW+03kMmrL/YNf2bMht4nF6os6Baba65ELy1ADAw+/nYc6QBD
-         1OH8WiLaKIcj1WbbpQMm9wTFh5ZDq7oc23tbUxElV9gtgpYRmlh8LCmUszq5N2CNXf
-         I4yJHMaNWuqrRN0ZNc1p+0m+tdNrPwEBcMyagB/8Xas1ECKfWqTvN+neYebAHWPViB
-         HlS/1l1FSxTUQiTrethkTKArmDhVFEnbewVICG95sc+6HdfgBUtnc6/y4uC9Euyiw6
-         zvL6Q+wEMLwN2QI1HM1IS1KGIuFylqsQWc9viRx+33kiY5Ya0Mafv1az+ujYi3DTZn
-         cdJ1STGr2qReg==
-Date:   Mon, 9 Aug 2021 09:16:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Gabriel Somlo <gsomlo@gmail.com>, David Shah <dave@ds0.me>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] net: Add driver for LiteX's LiteETH network
- interface
-Message-ID: <20210809091621.40c91f01@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CACPK8XcCjNWm=85uXX2tubP=WAgfF8ewqMAMWO_wJVeHB-U_0w@mail.gmail.com>
-References: <20210806054904.534315-1-joel@jms.id.au>
-        <20210806054904.534315-3-joel@jms.id.au>
-        <20210806161030.52a7ae93@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CACPK8XcCjNWm=85uXX2tubP=WAgfF8ewqMAMWO_wJVeHB-U_0w@mail.gmail.com>
+        id S232658AbhHIQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:17:02 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:43718 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232707AbhHIQRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 12:17:00 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 377AA8204F;
+        Mon,  9 Aug 2021 19:16:33 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1628525793;
+        bh=hV8BuQ4XGeVeEzQJ9C3R5KKb0YJVQwXbWV5mttl1z2s=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=OERvHu/Co4Ip6GwS5PcB9LI8PkAj68oAnuc6PpSekkvqoJ7J6TYgBoJupWYwRbPs+
+         2EsbNTtZrdcdMB33hw1YfrUpIe7YfsN0XHxzZP3FcPs9JX3YgRNxYWs24uUV7l7a6I
+         3goVLSgIM5jeXhezAjQ7ivNSDlWz9SA+Yu64ypxg=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 19:16:32 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.2176.009; Mon, 9 Aug 2021 19:16:32 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "andy.lavr@gmail.com" <andy.lavr@gmail.com>,
+        "kari.argillander@gmail.com" <kari.argillander@gmail.com>,
+        "oleksandr@natalenko.name" <oleksandr@natalenko.name>
+Subject: RE: [PATCH v27 10/10] fs/ntfs3: Add MAINTAINERS
+Thread-Topic: [PATCH v27 10/10] fs/ntfs3: Add MAINTAINERS
+Thread-Index: AQHXhICc1pQ/IBT4qUef2OyFKHPZBatq3zkAgACJiZA=
+Date:   Mon, 9 Aug 2021 16:16:32 +0000
+Message-ID: <918ff89414fa49f8bcb2dfd00a7b0f0b@paragon-software.com>
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210729134943.778917-11-almaz.alexandrovich@paragon-software.com>
+ <20210809105652.GK5047@twin.jikos.cz>
+In-Reply-To: <20210809105652.GK5047@twin.jikos.cz>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 12:03:36 +0000 Joel Stanley wrote:
-> On Fri, 6 Aug 2021 at 23:10, Jakub Kicinski <kuba@kernel.org> wrote:
-> > > +static int liteeth_start_xmit(struct sk_buff *skb, struct net_device *netdev)
-> > > +{
-> > > +     struct liteeth *priv = netdev_priv(netdev);
-> > > +     void __iomem *txbuffer;
-> > > +     int ret;
-> > > +     u8 val;
-> > > +
-> > > +     /* Reject oversize packets */
-> > > +     if (unlikely(skb->len > MAX_PKT_SIZE)) {
-> > > +             if (net_ratelimit())
-> > > +                     netdev_dbg(netdev, "tx packet too big\n");
-> > > +             goto drop;
-> > > +     }
-> > > +
-> > > +     txbuffer = priv->tx_base + priv->tx_slot * LITEETH_BUFFER_SIZE;
-> > > +     memcpy_toio(txbuffer, skb->data, skb->len);
-> > > +     writeb(priv->tx_slot, priv->base + LITEETH_READER_SLOT);
-> > > +     writew(skb->len, priv->base + LITEETH_READER_LENGTH);
-> > > +
-> > > +     ret = readl_poll_timeout_atomic(priv->base + LITEETH_READER_READY, val, val, 5, 1000);  
+> From: David Sterba <dsterba@suse.cz>
+> Sent: Monday, August 9, 2021 1:57 PM
+> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@=
+vger.kernel.org; pali@kernel.org; dsterba@suse.cz;
+> aaptel@suse.com; willy@infradead.org; rdunlap@infradead.org; joe@perches.=
+com; mark@harmstone.com; nborisov@suse.com;
+> linux-ntfs-dev@lists.sourceforge.net; anton@tuxera.com; dan.carpenter@ora=
+cle.com; hch@lst.de; ebiggers@kernel.org;
+> andy.lavr@gmail.com; kari.argillander@gmail.com; oleksandr@natalenko.name
+> Subject: Re: [PATCH v27 10/10] fs/ntfs3: Add MAINTAINERS
+>=20
+> On Thu, Jul 29, 2021 at 04:49:43PM +0300, Konstantin Komarov wrote:
+> > This adds MAINTAINERS
 > >
-> > Why the need for poll if there is an interrupt?
-> > Why not stop the Tx queue once you're out of slots and restart
-> > it when the completion interrupt comes?  
-> 
-> That makes sense.
-> 
-> In testing I have not been able to hit the LITEETH_READER_READY
-> not-ready state. I assume it's there to say that the slots are full.
-
-In that case it's probably best to stop the Tx queue in the xmit routine
-once all the lots are used, and restart it from the interrupt. I was
-guessing maybe the IRQ is not always there, but that doesn't seem to be
-the case.
- 
-> > > +     if (ret == -ETIMEDOUT) {
-> > > +             netdev_err(netdev, "LITEETH_READER_READY timed out\n");  
+> > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software=
+.com>
+> > ---
+> >  MAINTAINERS | 7 +++++++
+> >  1 file changed, 7 insertions(+)
 > >
-> > ratelimit this as well, please
-> >  
-> > > +             goto drop;
-> > > +     }
-> > > +
-> > > +     writeb(1, priv->base + LITEETH_READER_START);
-> > > +
-> > > +     netdev->stats.tx_bytes += skb->len;  
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 9c3428380..3b6b48537 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -13279,6 +13279,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kern=
+el/git/aia21/ntfs.git
+> >  F:	Documentation/filesystems/ntfs.rst
+> >  F:	fs/ntfs/
 > >
-> > Please count bytes and packets in the same place  
-> 
-> AFAIK we don't know the length when the interrupt comes in, so we need
-> to count both here in xmit?
-
-Either that or allocate a small array (num_tx_slots) to save the
-lengths for IRQ routine to use.
-
-> > > +     priv->tx_slot = (priv->tx_slot + 1) % priv->num_tx_slots;
-> > > +     dev_kfree_skb_any(skb);
-> > > +     return NETDEV_TX_OK;
-> > > +drop:
-> > > +     /* Drop the packet */
-> > > +     dev_kfree_skb_any(skb);
-> > > +     netdev->stats.tx_dropped++;
-> > > +
-> > > +     return NETDEV_TX_OK;
-> > > +}  
+> > +NTFS3 FILESYSTEM
+> > +M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> > +S:	Supported
+> > +W:	http://www.paragon-software.com/
+> > +F:	Documentation/filesystems/ntfs3.rst
+> > +F:	fs/ntfs3/
+>=20
+> Can you please add a git tree and mailing list entries?
+Hi David, I'll add the git tree link for the sources to MAINTAINERS in the =
+next patch. As for the mailing list,
+apologies for the newbie question here, but will it possible to have the @v=
+ger.kernel.org list for the ntfs3,
+or it must be external for our case?
+Thanks!
