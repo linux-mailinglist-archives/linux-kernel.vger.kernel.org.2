@@ -2,138 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CC53E4DAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D028F3E4DB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhHIUPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:15:54 -0400
-Received: from mail-bn7nam10on2050.outbound.protection.outlook.com ([40.107.92.50]:12261
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231127AbhHIUPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:15:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=atVVmLxpQtME6L7fddT/u7G3wKKctaeanu5n5g/PpB7/VapUBZBRVFwIvwqA+n8jYARXW/22v0t9iEmHuHZ1oPGxIU+8NES7jqdfubcfolh/KZSBsNc2awR1NkCVBCdWyi2FLcXxHTs2AJgc+W6c8waxlJ75y0yIqAGDi+9snHe0DJ3aFL7kku/YQp3vNItUJz0uxJCbUuGIqbQ06ydX5ppR91cFmqK/8bHn950joGgDEtmkiF3HwLMzH7UzpM/EB9Hmsy+3Fe11qjMqZEAkRoTP2oekEL0E8JXZzzGqW930qAyadg/i97lT4nFmRenJjs8Oaxv3FFVmbrckKPYV5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dl+2fhG/bRH2ArXFhel/A8dD9wEXzEd+tRy20ExMRPM=;
- b=KJD7R2a3yDKF+SbZYV7xfLqTZQzoC4tomsrGgVXAQeJbIYCxmnHUt4sbVdUgCSwsddkFpD9c6AVz1SWoW+oBbcfPS0lj17lNPtlSauX1Cf1G0uff+Gk30TqgybIr90dp859LMXpol6SrwsCPX5kfW8zEI+TRDsU7cfhlToSOBECeIxmuMiNdURYgHpB5ptWyXkUjtCJulK7pgm4IDi4ZQtYW75ObIcBuAJsSQurWrRYFxr8FLz+NPh0/IoqhTGKWR8s9myno/dZJpH6MEBWxmaIGAC5dtigNWW349TCx5jiuWkrD4cPVCtuMS6/dyVNqEb+LShXxpXZs8DQqyMweXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dl+2fhG/bRH2ArXFhel/A8dD9wEXzEd+tRy20ExMRPM=;
- b=DerSC6StxaY8zJJ8dzJHMF2xGm+wX14ZYcWRJLHQBUJTzI4jpI5evPYSSzscuUANzxnpInyvn2KuFb7GwFFgOOje0DyDWmJ4LToCANppAI1WkzWnMSkduwJP2niHSEJBhQXAyBK7V3vfr0ttdoRkPe3zoaVKqoHlWZMWFZD+1JM=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=amd.com;
-Received: from SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8)
- by SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.20; Mon, 9 Aug
- 2021 20:15:30 +0000
-Received: from SA0PR12MB4510.namprd12.prod.outlook.com
- ([fe80::e8ae:ebd6:7f5d:4b36]) by SA0PR12MB4510.namprd12.prod.outlook.com
- ([fe80::e8ae:ebd6:7f5d:4b36%7]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
- 20:15:30 +0000
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Raul E Rangel <rrangel@chromium.org>
-Cc:     linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list),
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        nix.or.die@googlemail.com
-Subject: [PATCH] pinctrl: amd: Fix an issue with shutdown when system set to s0ix
-Date:   Mon,  9 Aug 2021 15:15:13 -0500
-Message-Id: <20210809201513.12367-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BN6PR13CA0059.namprd13.prod.outlook.com
- (2603:10b6:404:11::21) To SA0PR12MB4510.namprd12.prod.outlook.com
- (2603:10b6:806:94::8)
+        id S234691AbhHIUQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhHIUQo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 16:16:44 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E7AC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 13:16:23 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id j1so29784678pjv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 13:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=44GhGqOetVs4KhXXElqDGKK3CH2oBjGziCm5x/a7ZJs=;
+        b=ppVc9A9KMhJFgV6NVDkUHp9yBZ4jvRiPZUcI20A2cQjGlIn028xMoBHpww2tDAiKFl
+         9iPhbobR9SHL2adYikPHqF5G4SlWpowSr2j8S6b8do8TbaUnU36v1GfI26941juwBtq0
+         lg5uO8fP8v07UWSN2Md7iUeWq8bIHopmUzjvgBBzTK3O6/A+996ZEREB2/UhRgsIQp4H
+         MeNfIz09c15Sltk3GsM1Mi4vP42DP3K751s00uC2X0eFx85qHl4u6HDdfFK1q/oVXcJv
+         /ei/Pth5mKrn9l+/cEg8baudOVk+TGkbagMYGHp38fVDHIDAu3ZCTHC9yyVDLEU8ttwq
+         mKdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=44GhGqOetVs4KhXXElqDGKK3CH2oBjGziCm5x/a7ZJs=;
+        b=TmP10Q2VOCwkKSBJUiUjyEzrqR03B7vbXuu/4HfNKmS10bLJYdSkes//4kuuuajC2g
+         4KoUc69siqdN9yqQ0OCi17nd1RnwxsFUkPxLdJVIpY8r9X+cRm3APnq3K5qXRAril8bW
+         M+Irr9qk9BBRFogjK15Umddqs/9OmWw49VWyw1fMGA/ieSz12VCY/+Rvj4/aiJbSRR4J
+         pysZ6+0V9N/jVVlywXP6yZuTm3shVra8jqTC1vkquBOXvnFeWUK/VvzAhMbUPnn8W2ki
+         3q51r409Nj0iXuf6KpJZBad2a9O69Eo3gSPOWpX96kgBHg3xrsTsQGZ6RPqwArlkcZp9
+         QT0A==
+X-Gm-Message-State: AOAM533BGwXEx+vkhJYCpYqRp+O9AOk3f60QxNU31q9p0NaBwE5HxVLr
+        StB0qscrODiGhoDdIAlAj8FddNLzSX8S2hdly/xOS58BWZTCAQ==
+X-Google-Smtp-Source: ABdhPJxHyBboh3cabRdq1cEgdkUUmLFgelCu6EWKllya4Av27+xhycvWAEKPW0Mj0+bvONvbUJBoXz9ti/IsYYB08zs=
+X-Received: by 2002:a65:50cb:: with SMTP id s11mr424292pgp.236.1628540182405;
+ Mon, 09 Aug 2021 13:16:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from AUS-LX-MLIMONCI.amd.com (165.204.84.11) by BN6PR13CA0059.namprd13.prod.outlook.com (2603:10b6:404:11::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.4 via Frontend Transport; Mon, 9 Aug 2021 20:15:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4f6ae3d4-22f2-4923-d66c-08d95b726f39
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4510:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB45100E4A540667C80CC34274E2F69@SA0PR12MB4510.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:227;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qrxJwDpurnDxwBGH+n8jzp0ojrh5cLgAkG7DIA4NhXvPsP8PFDAOk6Rpe5lJGd+JELDjRhZ2dzurHZP0ty+5w0sv67QznSMrsnR6+1okisFQj7NOCqJ23jFuParETE6drT5QVXKysJq/ZM4HwExyzPtsIQpDjtA1R0L5wBcFxmjK7a5YVvgEUz3rzlkWXBiJDT58RG4mZEV5GZCl0v1AQUcFv7nlwfb8hrq7GBhjppJ2g9piV5W0SgrONyMqXk83/L1yhlRpIo7YlJra91pf8rssafaQJN/HRln982xYSzUudDTvB0wNOzJWcdUqkfDc5vUOgcWfbKKp9vURdBSYTgolxNnVAllq3lOyRQIV0o/8pKJ+lm4lzXzaDPHhHBSNtO417bzH1ZlhtTowbiAaSzjetsDt0Q1yjTFhvj3LYpjQ0UQMenf4DEfHjiXQuzResqfqthMEvmXjLL57TeFBQiVQ5LKMNFdispmHHV0VrtBmXlHsx/icX0bA99g6+rex80HoQkxWARhtvzNnCT9UJ57Jz6dlSSqV0CZ0kLKbmxjQarzYvKQUGHnon+bH2QEVoElzY6kMUQxCmt+FI2K+llAP8TINtoUN2DsKw5ntCUb4+Dbxb4H56m5OHwsBEaNWLx2woSijjTZ+5+ibIYksj6u/w4epTW51hCjiu6r86pPv9fjmbSeyKpmSS6JHhViAoiN2V0o5p5gFzSW+7uAzFjr++Icz7K0j42bcXmBl3IjUUhGUkw4pRUaKiIfcWXU7/4J+ulhWLtVLqugq8MiLnArjJ7DQHKD0DUQRlP+fJLUGU0X6taRVdHJsMsCpnVq5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4510.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(2906002)(110136005)(6486002)(66946007)(66556008)(36756003)(4326008)(26005)(44832011)(83380400001)(5660300002)(54906003)(186003)(1076003)(8676002)(7696005)(52116002)(2616005)(956004)(86362001)(966005)(316002)(508600001)(38100700002)(38350700002)(8936002)(6666004)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CD1GJX+K8pJmcs/cgTpYzyHkQ7Ok7UiDAQ2ulJizeTnC9cM06fLlzRruFASP?=
- =?us-ascii?Q?PPvFmrOOfFi5XznQrmGmhU/0LCaIK1aJjkhrkvzBZKJ4MbH+rpN768Wmo3bW?=
- =?us-ascii?Q?Pw59nC+xq0Mizkd2vvSyen85c07FQY9SLvLtHIpxH/q9kQ9HhcHdt3QyAm+f?=
- =?us-ascii?Q?BzZ4L2jMSoE0pOMglpGoNSHB54HTV6VXlzjn+K38p4qHfFJGD9Ff70gvXv3h?=
- =?us-ascii?Q?sSvciwFzXONUQIbC0NuU3Se+2SdvtMIu9B7KB6LG2pT9Cs0B+xpQZoADywno?=
- =?us-ascii?Q?Q3IJikQTZDv6HnsOsqBkoc6rAdd7/nwXj58wDotKlQiPB2pM74BPyt8fQ/E+?=
- =?us-ascii?Q?P3CF9sAo9/0jIjwbdzcInvEh5LeYzf8iNwADYjiRFp74wOQKK02bAw28j57b?=
- =?us-ascii?Q?d+ejqsjVhEV9x9jCkSDszAF7B2EKzv8Yc4HOU9v7YWtuj5x+YR53PnntFYTz?=
- =?us-ascii?Q?KiEClqp0qn2nAllofEouTYgjyg76m9BMaoJekZyv0sxNNbAB9fM3xvSrzl7O?=
- =?us-ascii?Q?H6Di8YdFX8nPwZU8jqh4qz+YkteZF4xoqs3AE+zXRBVKGlnyAQ5dczdqrXmw?=
- =?us-ascii?Q?WX+pevdBw4ldruG/9kyao+ocsa46vG9vOJaOepsl2xf9Jr21ecq9z2bHItzh?=
- =?us-ascii?Q?teRee0zraXjfD5Kcr4sjBYMM9YjaBEmhgu+pxwKA6h26i8w0uf3x+qoqE5kF?=
- =?us-ascii?Q?dQHIC893jj3LkNZZdlPoqDVGDH7fdnel7Vd2PSIWCyAMZOlt7CXvzj/+tD7A?=
- =?us-ascii?Q?gGWFN3YdK/FbLFYKj91KFLNgQxnL+DlNpxB4ZFwQFNt2RmZ/d/7hmxonjfN1?=
- =?us-ascii?Q?UVH+Nkggq8p/BqGQwXTk9xUc1O4cVMDIxDt4Y4EEmlg5q1zwoMoD5gZRSdA0?=
- =?us-ascii?Q?ntfxFnf4NUCQvkUjuy8HC3Gmh+XnnBi0W3pXkgw6KT+VSDd7Zc36zzb2f9/c?=
- =?us-ascii?Q?C6x/odHrAGSHiskiV8rKcEGbOpyjxvipUyQ9j6LSOouyDSF+6+c+zraLY+Ya?=
- =?us-ascii?Q?+J0Y+GhLu8sgOF4mhK2bKJiLdtbIwyBsHLbtyPqzmG9wkAsYAs79FowkfBfT?=
- =?us-ascii?Q?8SLXRwQMoxoImGUYyGYL3IyK7fX4urNIO9W2r5KxNPariz+9tA5qsjz2AF6R?=
- =?us-ascii?Q?vkZbyX0UiMjCnRICQ4Whcn4oNPe2322/10diOmX52T1f0t7lHNo9FX5UtmGU?=
- =?us-ascii?Q?juJO5SD/3uIc9CE1t6Ac+YEALRDBJECYs67AzMU7h8HGDTvoiyVCCWicssYP?=
- =?us-ascii?Q?LC1YJ+h1CjAogcnCXF/ldIdwIA4Uwm8Pb2YUIRqRhncWg0vhHJ2KUDSjWGwj?=
- =?us-ascii?Q?1/DZgxHsxx3lWMvMgK6P2QuE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f6ae3d4-22f2-4923-d66c-08d95b726f39
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4510.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 20:15:30.2545
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ja9WQBagpc38bNuYAnH0zouEWcQivxJ2O1L7AohqXKg+0gzMtWZgwE2q5Q6bglZgIRZ8maG38JLhZLBtXrtBWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4510
+References: <cover.1628094600.git.robin.murphy@arm.com> <3b5284ee394f267ba966839173f874fc9a996bb2.1628094601.git.robin.murphy@arm.com>
+ <CACK8Z6HSM678q=BZ3FY7spN2S3ZkhdJ3ecnMCbKWrqB5dNWaMA@mail.gmail.com> <00baf83a-5eb3-4d72-309c-5adfd3242c07@arm.com>
+In-Reply-To: <00baf83a-5eb3-4d72-309c-5adfd3242c07@arm.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 9 Aug 2021 13:15:46 -0700
+Message-ID: <CACK8Z6Gb1O8Ok1GEy80nQJ4ZQeFJ3TOgFHRYfH3Yb=8CNT=ysw@mail.gmail.com>
+Subject: Re: [PATCH v3 24/25] iommu/dma: Factor out flush queue init
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        john.garry@huawei.com, dianders@chromium.org,
+        chenxiang66@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IRQs are getting armed on shutdown causing the system to immediately
-wake back up.
+On Mon, Aug 9, 2021 at 12:59 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-08-09 20:05, Rajat Jain wrote:
+> > On Wed, Aug 4, 2021 at 10:16 AM Robin Murphy <robin.murphy@arm.com> wrote:
+> >>
+> >> Factor out flush queue setup from the initial domain init so that we
+> >> can potentially trigger it from sysfs later on in a domain's lifetime.
+> >>
+> >> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+> >> Reviewed-by: John Garry <john.garry@huawei.com>
+> >> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> >> ---
+> >>   drivers/iommu/dma-iommu.c | 30 ++++++++++++++++++++----------
+> >>   include/linux/dma-iommu.h |  9 ++++++---
+> >>   2 files changed, 26 insertions(+), 13 deletions(-)
+> >>
+> >> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> >> index 2e19505dddf9..f51b8dc99ac6 100644
+> >> --- a/drivers/iommu/dma-iommu.c
+> >> +++ b/drivers/iommu/dma-iommu.c
+> >> @@ -310,6 +310,25 @@ static bool dev_is_untrusted(struct device *dev)
+> >>          return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
+> >>   }
+> >>
+> >> +int iommu_dma_init_fq(struct iommu_domain *domain)
+> >> +{
+> >> +       struct iommu_dma_cookie *cookie = domain->iova_cookie;
+> >> +
+> >> +       if (domain->type != IOMMU_DOMAIN_DMA_FQ)
+> >> +               return -EINVAL;
+> >> +       if (cookie->fq_domain)
+> >> +               return 0;
+> >> +
+> >> +       if (init_iova_flush_queue(&cookie->iovad, iommu_dma_flush_iotlb_all,
+> >> +                                 iommu_dma_entry_dtor)) {
+> >> +               pr_warn("iova flush queue initialization failed\n");
+> >> +               domain->type = IOMMU_DOMAIN_DMA;
+> >> +               return -ENODEV;
+> >> +       }
+> >> +       cookie->fq_domain = domain;
+> >> +       return 0;
+> >> +}
+> >> +
+> >>   /**
+> >>    * iommu_dma_init_domain - Initialise a DMA mapping domain
+> >>    * @domain: IOMMU domain previously prepared by iommu_get_dma_cookie()
+> >> @@ -362,16 +381,7 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
+> >>          }
+> >>
+> >>          init_iova_domain(iovad, 1UL << order, base_pfn);
+> >> -
+> >> -       if (domain->type == IOMMU_DOMAIN_DMA_FQ && !cookie->fq_domain) {
+> >> -               if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
+> >> -                                         iommu_dma_entry_dtor)) {
+> >> -                       pr_warn("iova flush queue initialization failed\n");
+> >> -                       domain->type = IOMMU_DOMAIN_DMA;
+> >> -               } else {
+> >> -                       cookie->fq_domain = domain;
+> >> -               }
+> >> -       }
+> >> +       iommu_dma_init_fq(domain);
+> >>
+> >>          return iova_reserve_iommu_regions(dev, domain);
+> >>   }
+> >> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
+> >> index 758ca4694257..81ab647f1618 100644
+> >> --- a/include/linux/dma-iommu.h
+> >> +++ b/include/linux/dma-iommu.h
+> >> @@ -20,6 +20,7 @@ void iommu_put_dma_cookie(struct iommu_domain *domain);
+> >>
+> >>   /* Setup call for arch DMA mapping code */
+> >>   void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit);
+> >> +int iommu_dma_init_fq(struct iommu_domain *domain);
+> >>
+> >>   /* The DMA API isn't _quite_ the whole story, though... */
+> >>   /*
+> >> @@ -37,9 +38,6 @@ void iommu_dma_compose_msi_msg(struct msi_desc *desc,
+> >>
+> >>   void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list);
+> >>
+> >> -void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+> >> -               struct iommu_domain *domain);
+> >> -
+> >
+> > This looks like an unrelated code cleanup. Should this be a separate patch?
+>
+> Ha, busted! Much of this was done in the "stream of consciousness" style
+> where I made a big sprawling mess then split it up into patches and
+> branches afterwards. TBH it was already feeling pretty tenuous having a
+> separate patch just to move this one function, and it only gets more so
+> with the simplification Will pointed out earlier. I think I'll squash
+> iommu_dma_init_fq() into the next patch then do a thorough header sweep,
+> since I've now spotted some things in iova.h which could probably go as
+> well.
 
-Link: https://lkml.org/lkml/2021/8/2/1114
-Reported-by: nix.or.die@googlemail.com
-CC: Raul E Rangel <rrangel@chromium.org>
-Fixes: d62bd5ce12d7 ("pinctrl: amd: Implement irq_set_wake")
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/pinctrl/pinctrl-amd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Thank you. I chanced upon this only because I've backported your
+patchset (and some other changes that it depends on) to 5.10 which is
+the kernel we currently use for our Intel platforms, and this cleanup
+hunk was creating a problem (since 5.10 still uses the symbol you
+removed). I'll be giving your v3 patchset a spin in my setup and
+update you in case I see any issue.
 
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index a76be6cc26ee..5b764740b829 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -444,8 +444,7 @@ static int amd_gpio_irq_set_wake(struct irq_data *d, unsigned int on)
- 	unsigned long flags;
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct amd_gpio *gpio_dev = gpiochip_get_data(gc);
--	u32 wake_mask = BIT(WAKE_CNTRL_OFF_S0I3) | BIT(WAKE_CNTRL_OFF_S3) |
--			BIT(WAKE_CNTRL_OFF_S4);
-+	u32 wake_mask = BIT(WAKE_CNTRL_OFF_S0I3) | BIT(WAKE_CNTRL_OFF_S3);
- 
- 	raw_spin_lock_irqsave(&gpio_dev->lock, flags);
- 	pin_reg = readl(gpio_dev->base + (d->hwirq)*4);
--- 
-2.25.1
+Thanks,
 
+Rajat
+
+
+>
+> Thanks for the poke!
+>
+> Robin.
+>
+> >
+> > Thanks,
+> >
+> > Rajat
+> >
+> >
+> >>   extern bool iommu_dma_forcedac;
+> >>
+> >>   #else /* CONFIG_IOMMU_DMA */
+> >> @@ -54,6 +52,11 @@ static inline void iommu_setup_dma_ops(struct device *dev, u64 dma_base,
+> >>   {
+> >>   }
+> >>
+> >> +static inline int iommu_dma_init_fq(struct iommu_domain *domain)
+> >> +{
+> >> +       return -EINVAL;
+> >> +}
+> >> +
+> >>   static inline int iommu_get_dma_cookie(struct iommu_domain *domain)
+> >>   {
+> >>          return -ENODEV;
+> >> --
+> >> 2.25.1
+> >>
