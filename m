@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C573E3D79
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9588F3E3D7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhHIBTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        id S232613AbhHIBVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhHIBTs (ORCPT
+        with ESMTP id S229977AbhHIBVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:19:48 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48193C061757;
-        Sun,  8 Aug 2021 18:19:28 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d17so14622643plr.12;
-        Sun, 08 Aug 2021 18:19:28 -0700 (PDT)
+        Sun, 8 Aug 2021 21:21:53 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EF1C061757;
+        Sun,  8 Aug 2021 18:21:33 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f3so4023931plg.3;
+        Sun, 08 Aug 2021 18:21:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qSsRfeOAJJimPe0eYAMPrHD413ivEpqTS/QEGrDm3js=;
-        b=tzdhaor+KWi2luHy4aIsq/oDv7z6BnwlKGNnzFo54tohcAHzGG09bYbISDA29hVh5d
-         utvwjNQc3vEasqddOcjEUciGzEzUhtPWG1STAMWffZdZpQpOLMguCTIV34+hCoUUWsK2
-         GtWmjhK0m9VbuhSDUrLCS/plOAgsn9lNvVLv/3bj6BG1Asz8Lg5+w4Nu+vaFRGHRJuOt
-         Ag9ZXoFGlvq0iVPlhPKPaH+hHo5lOWatwb9xciUsKf9NeI238oB10CmiCIBhshuBF6q9
-         GfOVTLS2XbBQ7MfUhNUyYksA7VeLGBgO+2jpk0ObWd52x9o6niNu+dmUme7XTzd6pO7Y
-         Zb2g==
+        bh=qt3JSp3w7IVZ6nUcMxFL1E+Q1Rl42RnvY6bsLilfOP0=;
+        b=ZQwpyZ+oMI7Vub1eMk6YmC/nOH3cVNSQhFDU6QMHq2mNhNdg854h0Q+om7j8VhPexT
+         sZdWOKtYiKhizL+D5Gh0712PCjpAF7YHRitheIe+CBKI5eiZZ+IsQjtcAt47FJYleHP4
+         2lJiQ/JlTWaA1xWXZIkpNK8KXdTtvx0VE7Fd+p5dCdQAFLFUTuZbBdSE9zx+KRiVyIMF
+         Zx5kirwRyGp5E2qA42AK6jmJR0wDxzuYetI+y6v7f9lfiZnAnmCF7gDhnEEi/hyLwr8J
+         rT4c9UnOC5W1kpjcZkdqgW78pzIHHqSS0bzRmJcJwrWBMGznMrXmEbmKw6o6DXDlhAKc
+         vhhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qSsRfeOAJJimPe0eYAMPrHD413ivEpqTS/QEGrDm3js=;
-        b=iZkLOjBePo2PBQzM/PQXUstYa9EPm/DhrXm0JLU/ev/cjqVGTgbzSXLXTRxvh47JIk
-         BLWB4t3jF0JxJfybE3AbVJVr7zlL+WI2Fmms4CwCHHgiiJctwWkpeZTwn62/bMtEnGs6
-         onGyOpWT5Ibut3CnmXGQAgCXxLsSLqLFlChwQfsV6FzyxAVnyY9ytteAZyYMACMI15ig
-         i98E67CgWx/iho/XmjT0RIh17zjdxY3f2NZ4BOUSp4hsrJ1KQBa+aPLkJnIcfD6rb+OP
-         THW1qKW+ELSs/jA6ZO+Zoorgfc2wiAGGdA/YFiHtpe2HjZAL0GmTHt5sfyNY/r3oD45t
-         utdg==
-X-Gm-Message-State: AOAM532P5mM+msJ2e/IH/lqHH7EWf7oIXjf+DEM4dpLMVwJqwxUyJRR5
-        KDJ0CTtsm9Zs80nob6mTaIw=
-X-Google-Smtp-Source: ABdhPJwDWq6qqUtoCrPVMRIThw3Y8oif2IZPY6bP6brvW6y+ivxDA5o6j20MdJD5baBXqlPuahKPRg==
-X-Received: by 2002:a17:90b:1882:: with SMTP id mn2mr33491627pjb.213.1628471967707;
-        Sun, 08 Aug 2021 18:19:27 -0700 (PDT)
+        bh=qt3JSp3w7IVZ6nUcMxFL1E+Q1Rl42RnvY6bsLilfOP0=;
+        b=b+ScfOpiHeh4BZUEWJgi1DIy8iEZM3nAnplASdgDCrFcxdiIi73I+v7W7ibgEG+MBk
+         R5f3W29mUDhDdL9gcVDbfjctRj5YvjDFKr0zpHT0qwvuuaHzsXKqqF+5N82op9awITMZ
+         U3hy9cC4Pp2ySm/Ij+R7Hpqzb8kKSiF+DIJzRTpyGv3YltjOxLlu3wYT5BKri7HTVvlo
+         q7qweHs/Ck1y2utItqOLsEwZlxjIkAEQRtl+DONojJw4HuVC2LvrpKdxevdr+exxva2U
+         Ynx/6kaGOwsHaVsRXhUyIYviS+snAkEIkiIYokyTPbpEr5HJdSkbWh+9MXiUGm76GtF6
+         IXfw==
+X-Gm-Message-State: AOAM530G1kJe/aldneEWNtTRnfuwY1HqKHHZoD5f0MKH1LHG+zLoLUJl
+        5HgZEehtoXA8bWR3Jjkw8jA=
+X-Google-Smtp-Source: ABdhPJwQOmRestr/bZCmmkkZiGbnzhAGivd+6MhiLaM4ZJQ5qEpW0lMFIFiFFr61Pl4kmlrcWYWwZQ==
+X-Received: by 2002:a17:90b:33c5:: with SMTP id lk5mr33779775pjb.129.1628472093067;
+        Sun, 08 Aug 2021 18:21:33 -0700 (PDT)
 Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id p7sm7037839pfn.211.2021.08.08.18.19.25
+        by smtp.gmail.com with ESMTPSA id 11sm17482904pfl.41.2021.08.08.18.21.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Aug 2021 18:19:27 -0700 (PDT)
-Subject: [PATCH v4 4/9] docs: pdfdocs: Preserve inter-phrase space in Korean
- translations
+        Sun, 08 Aug 2021 18:21:32 -0700 (PDT)
+Subject: [PATCH v4 5/9] docs: pdfdocs: Add conf.py local to translations for
+ ascii-art alignment
 To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
@@ -58,8 +58,8 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
 References: <39d0fb0f-b248-bca4-2dac-df69e8d697b1@gmail.com>
 From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <68de2e52-e6d1-3f01-c097-15ba7b28a319@gmail.com>
-Date:   Mon, 9 Aug 2021 10:19:24 +0900
+Message-ID: <79a876fc-a552-f972-4a1b-c6df4cbb36dd@gmail.com>
+Date:   Mon, 9 Aug 2021 10:21:29 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
@@ -71,27 +71,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In Korean typesetting, inter-phrase spaces in Hangul text have
-a similar role as the the inter-word spaces in Latin text.
-They can be preserved by the \xeCJKsetup{CJKspace=true} option.
+Globally choosing "Noto Sans Mono CJK SC" would result in sub-optimal look
+of literal blocks in Latin documents.
+Therefore, localize the font choice to translations by adding conf.py under
+Documentation/translations/.
+
+The local conf.py is enabled when the command:
+
+    make SPHINXDIRS=translations pdfdocs
+
+is used to build the PDF.
+Resulting translations.pdf (under Documentation/output/translations/pdf)
+will have properly aligned ascii-art figures.
+
+NOTE: There remain mis-aligned ascii-art figures in Korean translations.
+This is due to the font designer's decision to assign slightly narrower
+widths (920) to Hangul characters in "Noto Sans Mono CJK KR" than those
+of Hanja (Hanzi/Kanji) characters (1000) [1].
+
+[1]: https://github.com/googlefonts/noto-cjk/issues/17
 
 Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 ---
- Documentation/conf.py | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/translations/conf.py | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644 Documentation/translations/conf.py
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 980be06df723..2ccfe4442acc 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -426,6 +426,7 @@ latex_elements['preamble']  += '''
- 	    \\renewcommand{\\CJKrmdefault}{KRserif}%
- 	    \\renewcommand{\\CJKsfdefault}{KRsans}%
- 	    \\renewcommand{\\CJKttdefault}{KRmono}%
-+	    \\xeCJKsetup{CJKspace = true} % For inter-phrase space
- 	}
- 	\\newcommand{\\kerneldocEndKR}{\\endgroup}
- 	\\newcommand{\\kerneldocBeginJP}{%
+diff --git a/Documentation/translations/conf.py b/Documentation/translations/conf.py
+new file mode 100644
+index 000000000000..e859c2e19e8b
+--- /dev/null
++++ b/Documentation/translations/conf.py
+@@ -0,0 +1,12 @@
++# -*- coding: utf-8 -*-
++# SPDX-License-Identifier: GPL-2.0
++
++# -- Additinal options for LaTeX output ----------------------------------
++# font config for ascii-art alignment
++
++latex_elements['preamble']  += '''
++    \\IfFontExistsTF{Noto Sans CJK SC}{
++	% For CJK ascii-art alignment
++	\\setmonofont{Noto Sans Mono CJK SC}
++    }{}
++'''
 -- 
 2.17.1
 
