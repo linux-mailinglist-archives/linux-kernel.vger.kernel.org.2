@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E35B3E41F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4A23E41F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhHIJBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:01:00 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:46309 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233940AbhHIJA7 (ORCPT
+        id S234160AbhHIJBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:01:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51464 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234151AbhHIJBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:00:59 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UiPJFgZ_1628499636;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UiPJFgZ_1628499636)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 09 Aug 2021 17:00:37 +0800
-Subject: Re: [PATCH] riscv: add ARCH_DMA_MINALIGN support
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210807145537.124744-1-xianting.tian@linux.alibaba.com>
- <20210809003044.6692ddce@xhacker>
- <c09fc86d-1e6a-3315-7489-9e269935ba55@linux.alibaba.com>
- <CAK8P3a1wyhLp1hUUotzwqc1pyCyfWhO7O_pvt5O_U=qZp-ZhnA@mail.gmail.com>
-From:   Xianting TIan <xianting.tian@linux.alibaba.com>
-Message-ID: <5b7bfc3f-4fe8-bd7e-561b-0f99cf1df9b0@linux.alibaba.com>
-Date:   Mon, 9 Aug 2021 17:00:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Mon, 9 Aug 2021 05:01:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628499650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L8HttrntNZPFs0juELsB3vTreBKXm0ssKSUN1T2UgVs=;
+        b=M3Dibxjd0J6Y6jcbcdndZhgBDBmnK6AvaMyxaT9mW+2XNxZbUe8UEkS/VwzuZZRE8nA8Zl
+        1sIRJsgVbB+LThiqnpztcA8mm3ayAMFRv1hENnq/GheAuNNhk7xTdFQkLzFxsBd5GI/tT5
+        VC8Re40rt/qJPQi7rWmDNscWK/L1ck8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-luxxXI36MsipE0-e8bZQVQ-1; Mon, 09 Aug 2021 05:00:41 -0400
+X-MC-Unique: luxxXI36MsipE0-e8bZQVQ-1
+Received: by mail-ej1-f69.google.com with SMTP id k22-20020a1709061596b02905a370b2f477so4309802ejd.17
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 02:00:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L8HttrntNZPFs0juELsB3vTreBKXm0ssKSUN1T2UgVs=;
+        b=sNLl652wIeqpljHF+HVF+oUEVnjYozDpTCLMktnxw4vcZyP1qXEjxl1ugmRfjs7woj
+         Sc9V7jIQEKwOkSGrDQHgXloxjUqe/wRnl2omJc8+BlqDlXBMV1f8emgHCFQfflaTeCAG
+         yd5oyijMNCaRFJEHn2EqaHIS0/uC2V2BroI0stacKuZd9SUjrbd0PqoYyMJI6AqJJVdN
+         NkHtVwTrk0LgKfvewL8zsjOh9cQ54LVSD9/FA5ZBA2JGY5ox9bqkSrjMLYA37BU1R89U
+         P6cua9HQ9y4v1a1UidezsG6O86GlVfIjs3ZwGLKAuXRXfbbMNTJS/694lpRxZtGI2vqI
+         BhbA==
+X-Gm-Message-State: AOAM531tZWXKcBpmZOjUug834/n4JkVYyCymLfKQsf7HZe5Y6J2mbQvd
+        Mc/IRMMY2UE0oUcKyar4MxQuwJIS5lB89rCm6YZXwRVHcCC09QDtmaFzVU6VstvewaxltxQHd1e
+        LowIRJzg9coPEEmZWauPS1Fef
+X-Received: by 2002:a17:906:5e45:: with SMTP id b5mr21620411eju.301.1628499640036;
+        Mon, 09 Aug 2021 02:00:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw09sn2gDpVU46Yw+tmDb/2htDgapIE6hFOQ5zm1XmYLbdAv6Pp+VPMXn88sB/Yp0DTV5l6UA==
+X-Received: by 2002:a17:906:5e45:: with SMTP id b5mr21620400eju.301.1628499639906;
+        Mon, 09 Aug 2021 02:00:39 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id v13sm5669377ejh.62.2021.08.09.02.00.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 02:00:39 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] platform/x86/intel: pmt: Use y instead of objs in
+ Makefile
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>
+References: <20210806155017.4633-1-andriy.shevchenko@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a6b48303-1a43-5cc2-ec4a-41fed5ae02cb@redhat.com>
+Date:   Mon, 9 Aug 2021 11:00:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1wyhLp1hUUotzwqc1pyCyfWhO7O_pvt5O_U=qZp-ZhnA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210806155017.4633-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-在 2021/8/9 下午3:49, Arnd Bergmann 写道:
-> On Mon, Aug 9, 2021 at 8:20 AM Xianting TIan
-> <xianting.tian@linux.alibaba.com> wrote:
->>>> +#define ARCH_DMA_MINALIGN   L1_CACHE_BYTES
->>> It's not a good idea to blindly set this for all riscv. For "coherent"
->>> platforms, this is not necessary and will waste memory.
->> I checked ARCH_DMA_MINALIGN definition,  "If an architecture isn't fully
->> DMA-coherent, ARCH_DMA_MINALIGN must be set".
->>
->> so that the memory allocator makes sure that kmalloc'ed buffer doesn't
->> share a cache line with the others.
->>
->> Documentation/core-api/dma-api-howto.rst
->>
->> 2) ARCH_DMA_MINALIGN
->>
->>      Architectures must ensure that kmalloc'ed buffer is
->>      DMA-safe. Drivers and subsystems depend on it. If an architecture
->>      isn't fully DMA-coherent (i.e. hardware doesn't ensure that data in
->>      the CPU cache is identical to data in main memory),
->>      ARCH_DMA_MINALIGN must be set so that the memory allocator
->>      makes sure that kmalloc'ed buffer doesn't share a cache line with
->>      the others. See arch/arm/include/asm/cache.h as an example.
->>
->>      Note that ARCH_DMA_MINALIGN is about DMA memory alignment
->>      constraints. You don't need to worry about the architecture data
->>      alignment constraints (e.g. the alignment constraints about 64-bit
->>      objects).
-> The platform spec [1] says about this:
->
-> | Memory accesses by I/O masters can be coherent or non-coherent
-> | with respect to all hart-related caches.
->
-> So the kernel in its default configuration can not assume that DMA is
-> cache coherent on RISC-V. Making this configurable implies that
-> a kernel that is configured for cache-coherent machines can no longer
-> run on all hardware that follows the platform spec.
->
-> We have the same problem on arm64, where most of the server parts
-> are cache coherent, but the majority of the low-end embedded devices
-> are not, and we require that a single kernel ran run on all of the above.
->
-> One idea that we have discussed several times is to start the kernel
-> without the small kmalloc caches and defer their creation until a
-> later point in the boot process after determining whether any
-> non-coherent devices have been discovered. Any in-kernel structures
-> that have an explicit ARCH_DMA_MINALIGN alignment won't
-> benefit from this, but any subsequent kmalloc() calls can use the
-> smaller caches. The tricky bit is finding out whether /everything/ on
-> the system is cache-coherent or not, since we do not have a global
-> flag for that in the DT. See [2] for a recent discussion.
->
->         Arnd
->
-> [1] https://github.com/riscv/riscv-platform-specs/blob/main/riscv-platform-spec.adoc#architecture
-> [2] https://lore.kernel.org/linux-arm-kernel/20210527124356.22367-1-will@kernel.org/
-Arnd, thanks for info,  according to the description, seems we need to 
-apply this patch to riscv.
+On 8/6/21 5:50 PM, Andy Shevchenko wrote:
+> The 'objs' is for user space tools, for the kernel modules
+> we should use 'y'.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+> ---
+> 
+> Hans, feel free to fold in the original commit
+> 
+>  drivers/platform/x86/intel/pmt/Makefile | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/pmt/Makefile b/drivers/platform/x86/intel/pmt/Makefile
+> index 019103ee6522..279e158c7c23 100644
+> --- a/drivers/platform/x86/intel/pmt/Makefile
+> +++ b/drivers/platform/x86/intel/pmt/Makefile
+> @@ -4,9 +4,9 @@
+>  # Intel Platform Monitoring Technology Drivers
+>  #
+>  
+> -pmt_class-objs				+= class.o
+>  obj-$(CONFIG_INTEL_PMT_CLASS)		+= pmt_class.o
+> -pmt_telemetry-objs			+= telemetry.o
+> +pmt_class-y				:= class.o
+>  obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= pmt_telemetry.o
+> -pmt_crashlog-objs			+= crashlog.o
+> +pmt_telemetry-y				:= telemetry.o
+>  obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= pmt_crashlog.o
+> +pmt_crashlog-y				:= crashlog.o
+> 
+
