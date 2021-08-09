@@ -2,68 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB543E4F2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA423E4F27
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbhHIW1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S236672AbhHIW1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233660AbhHIW1o (ORCPT
+        with ESMTP id S233660AbhHIW1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:27:44 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4410C0613D3;
-        Mon,  9 Aug 2021 15:27:23 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso490974wms.1;
-        Mon, 09 Aug 2021 15:27:23 -0700 (PDT)
+        Mon, 9 Aug 2021 18:27:11 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08D9C0613D3;
+        Mon,  9 Aug 2021 15:26:50 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id p38so9658318lfa.0;
+        Mon, 09 Aug 2021 15:26:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
-        b=T9CVn4B3EbbMGcnO1AU5wqcQcpb0tQ5LH9fRYZaJKi+82sEjgmu6fE93vJvxRB74AZ
-         g+mLp+yoYEfHT9LYe3fE1IcYiC6cZ/2VZJB1bZ4dpOQv2kX3HkKsvGqQbxtzUO8OFhrH
-         omfekMWXfxgsqwExp3WuYGlCT1kzsLiIi6EAHoKU+Xou4X+SQdG7Iitmp6Mx3RGbFpKW
-         U4jUEeYQL7eYku6T/x+/QN5BUfJLOsTDZgZRKDYfvHnvNI90CAFIQO5/aayz1zN5jzOT
-         1tXp0/iJbkh19qVfqCGwfPQldLql6kOFGUQ0AX3RlDOqd32+Q98bOpOTbKB5TAS9FfFW
-         1nHw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N/whK2ArPuahMrM2cd5J1XOG8XcsWkVdPG8JL6J/dco=;
+        b=OQQoY9JTkgZ+eeE84IsXtazaykY74v6n1xmcL8OKEj6ywKOp1zCdL5ab06V8pH3GIh
+         cHQELYZ6wlJsgt9bd+gql97JS+8HVdCFGID1ifmYnQP2W/dkpPFA4OT6fImuO9oSrYEs
+         S3zEIJ5svweqcwgIkTOivpU7EptcUYX5DOpDAGVrojxHAomUD18vfM1TY/nWsSn3pp6k
+         aKu8UA+vHPop+LyuB0GMrwotbuke9Vu7uM6eq91K8+kbgegPrJ5AIHuV3uDola7Jy1Zl
+         ZvZ64p7hco2iUsaInMBfwHXUOaHpOSRZ+K6zpw0b724Wi9bj9vvMvOVDQss3DBGs/bFy
+         AykQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=5NTJSky9UX3JbuB9riY3wCYfXDpCwy2c7hzO0kF4AHA=;
-        b=P/ZMhzT+OyiGS7cKltG5wJ8tgQ9cUQOka1a2S3NK3IikG9gdWWgZnStCq9P5gmEmTe
-         /RRoDNaU4KOMN9rkcZ2BhlamZdfuVbxmWB1UAxa5LxBP9JbEqPwQuQuZO7FEigY8NTD2
-         QAkQCGiarPlddt0BWDi80ZDg/etY4mFyM1W+uBut/Q+Go82IadG9EAjVllIFqgRXE+TK
-         AWPtnlynODarChetB7IDY4d4tVQmPk9JqFr5npC9ed5CMmclqnvg3aMIa1nfFFOwubSO
-         hrTAQG+yF88k59RqfY+nis0ojV1fRT0Gx9+UxDC4XWqzNvkw4uBPhufon02yemS5q3YJ
-         mm0Q==
-X-Gm-Message-State: AOAM531NlblAehxeVvnNu6OsA4nhciIFbIFJtnvwGAvWvpjKyQbj/zjO
-        tbKqflirLGSrlJX+SQggxDo=
-X-Google-Smtp-Source: ABdhPJwO3S+QbUSf4MsX925O2tFZCneo+LHwa5uyb5fImBml5m6s6N/lCY3YDL1LfexaiuQFBSJ5dg==
-X-Received: by 2002:a7b:c30f:: with SMTP id k15mr1300333wmj.128.1628548042376;
-        Mon, 09 Aug 2021 15:27:22 -0700 (PDT)
-Received: from [192.168.1.70] ([102.64.223.208])
-        by smtp.gmail.com with ESMTPSA id j4sm18778506wmi.4.2021.08.09.15.27.06
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Mon, 09 Aug 2021 15:27:21 -0700 (PDT)
-Message-ID: <6111abc9.1c69fb81.8b5d4.7653@mx.google.com>
-From:   Vanina curth <curtisvani0020@gmail.com>
-X-Google-Original-From: Vanina  curth
-Content-Type: text/plain; charset="iso-8859-1"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N/whK2ArPuahMrM2cd5J1XOG8XcsWkVdPG8JL6J/dco=;
+        b=DW0W1w/UdchvZulvSrxoqZMkjOJT/QY7a08Bx7RqI0nAaL/SQbUP7ckLIcOQNdy3L6
+         pUfBk0Qc2HcF3wRc5TJcfDconfGGjnaOFyAKahJG8ebtnyQpeS3GyxvGIA9AZiu8laLC
+         1U6MiFF17tptvH88ucLmm+uUxZvRJ/hmjMLy6XQxqg6s7cuuh3S2shltkN6eSPF7q29y
+         8U8DB+lLU27hR5adcd9AkfgWOdMI8qefkSSNJr0NuSj6NBVQzJJMwda8JDRiUE9+r/dr
+         SrYqTRY9iwILNxsIrrO3+nadvlsSYwviQ/ZNqmK4gnHklI3hXlNGvR/gzK0lD3xzGQN7
+         UTrA==
+X-Gm-Message-State: AOAM530W6Nl0lZX95sfpUjiNnyBiU8m1k69gW8GT+tra9FA3Yaicx4L0
+        ifzRnLnoXeSsdxqh8FMFXH/zsZI+9YY=
+X-Google-Smtp-Source: ABdhPJxTvlD8j92g4+drEBzsM/F8WCazuqFL8+afwB97ArNej7RnaTkv8ZpdSztaBssc0qOsbQWPFA==
+X-Received: by 2002:a05:6512:1281:: with SMTP id u1mr19456096lfs.136.1628548009126;
+        Mon, 09 Aug 2021 15:26:49 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
+        by smtp.googlemail.com with ESMTPSA id g5sm1706297ljn.78.2021.08.09.15.26.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 15:26:48 -0700 (PDT)
+Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+To:     Rajendra Nayak <rnayak@codeaurora.org>, ulf.hansson@linaro.org,
+        bjorn.andersson@linaro.org, viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net
+References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
+ <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f58e631d-67a7-4981-ce59-6a4772b44564@gmail.com>
+Date:   Tue, 10 Aug 2021 01:26:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Dear
-To:     Recipients <Vanina@vger.kernel.org>
-Date:   Mon, 09 Aug 2021 22:26:25 +0000
-Reply-To: curtisvani9008@gmail.com
+In-Reply-To: <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How are you? I'm Vanina. I'm interested to know you and I would like to kno=
-w more about you and establish relationship with you. i will wait for your =
-response. thank you.
+04.08.2021 13:58, Rajendra Nayak пишет:
+> @@ -2637,6 +2643,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>  {
+>  	struct of_phandle_args pd_args;
+>  	struct generic_pm_domain *pd;
+> +	struct device_node *np;
+> +	int pstate;
+>  	int ret;
+>  
+>  	ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
+> @@ -2675,10 +2683,26 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>  		genpd_unlock(pd);
+>  	}
+>  
+> -	if (ret)
+> +	if (ret) {
+>  		genpd_remove_device(pd, dev);
+> +		return -EPROBE_DEFER;
+> +	}
+> +
+> +	/* Set the default performance state */
+> +	np = dev->of_node;
+> +	if (of_parse_phandle(np, "required-opps", index)) {
+> +		pstate = of_get_required_opp_performance_state(np, index);
+> +		if (pstate < 0) {
+> +			ret = pstate;
+> +			dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+> +				pd->name, ret);
+> +		} else {
+> +			dev_pm_genpd_set_performance_state(dev, pstate);
+> +			dev_gpd_data(dev)->default_pstate = pstate;
+> +		}
+> +	}
+
+Why performance state is set after genpd_power_on()?
