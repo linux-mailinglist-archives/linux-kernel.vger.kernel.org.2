@@ -2,176 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB0D3E45FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493CF3E4603
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbhHINCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:02:54 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:32986 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234075AbhHINCw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:02:52 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 179D1wGH2026755, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 179D1wGH2026755
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 9 Aug 2021 21:01:58 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 9 Aug 2021 21:01:57 +0800
-Received: from localhost (172.21.132.185) by RTEXMBS03.realtek.com.tw
- (172.21.6.96) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 9 Aug 2021
- 21:01:56 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <luiz.dentz@gmail.com>, <matthias.bgg@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
-        <kidman@realtek.com>, <apusaka@chromium.org>,
-        <abhishekpandit@chromium.org>, <josephsih@chromium.org>,
-        <max.chou@realtek.com>
-Subject: [PATCH] Bluetooth: btusb: Remove WAKEUP_DISABLE and add WAKEUP_AUTOSUSPEND  for Realtek devices
-Date:   Mon, 9 Aug 2021 21:01:52 +0800
-Message-ID: <20210809130152.12528-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        id S234982AbhHINEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:04:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18672 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234492AbhHINDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:03:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628514203; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=cbwIb9m2aBLsgyW6JA1PFRM6qSmHBK9Kh5nIILv8l3Q=; b=Q0p4yFajQQJ+mrztWSFGtY9DgpUV/2bn5fCz1Y0oA6B85yRNbXLmdYpXN0fpLngotQ2W8m0T
+ fL5M/WdyCtYUeFcME4o17HJ3/NByBdsRc3Zal4w2295o64cw22e3DPdnetmblJmnmMUIHS/n
+ VyOogkkOHK8jCKnuno6N6tvj+E4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6111278676c3a9a172f32281 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 13:03:02
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC847C43217; Mon,  9 Aug 2021 13:03:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.92.0.248] (unknown [180.166.53.36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ADF07C433F1;
+        Mon,  9 Aug 2021 13:02:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ADF07C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=luoj@codeaurora.org
+Subject: Re: [PATCH v1 1/2] net: mdio: Add the reset function for IPQ MDIO
+ driver
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+References: <20210808072111.8365-1-luoj@codeaurora.org>
+ <20210808072111.8365-2-luoj@codeaurora.org> <YQ/4aK3yYPvYQdhD@lunn.ch>
+From:   Jie Luo <luoj@codeaurora.org>
+Message-ID: <403a4418-88b4-eb4e-47fd-d75bf6cdccf2@codeaurora.org>
+Date:   Mon, 9 Aug 2021 21:02:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.185]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS03.realtek.com.tw (172.21.6.96)
-X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/09/2021 12:50:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzgvOSCkV6TIIDA3OjA0OjAw?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/09/2021 12:47:36
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165471 [Aug 09 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: max.chou@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/09/2021 12:50:00
+In-Reply-To: <YQ/4aK3yYPvYQdhD@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
 
-For the commit of 9e45524a011107a73bc2cdde8370c61e82e93a4d, wakeup is
-always disabled for Realtek devices. However, there's the capability
-for Realtek devices to apply USB wake-up.
-
-In this commit, remove WAKEUP_DISABLE feature for Realtek devices.
-If users would switch wake-up, they should access
-"/sys/bus/usb/.../power/wakeup"
-
-In this commit, it also adds the feature as WAKEUP_AUTOSUSPEND
-for Realtek devices because it should set do_remote_wakeup on autosuspend.
-
-Signed-off-by: Max Chou <max.chou@realtek.com>
-Tested-by: Hilda Wu <hildawu@realtek.com>
-Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
----
- drivers/bluetooth/btusb.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 488f110e17e2..73a835bf37f7 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -527,7 +527,7 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
- #define BTUSB_OOB_WAKE_ENABLED	11
- #define BTUSB_HW_RESET_ACTIVE	12
- #define BTUSB_TX_WAIT_VND_EVT	13
--#define BTUSB_WAKEUP_DISABLE	14
-+#define BTUSB_WAKEUP_AUTOSUSPEND	14
- 
- struct btusb_data {
- 	struct hci_dev       *hdev;
-@@ -1349,13 +1349,6 @@ static int btusb_open(struct hci_dev *hdev)
- 
- 	data->intf->needs_remote_wakeup = 1;
- 
--	/* Disable device remote wakeup when host is suspended
--	 * For Realtek chips, global suspend without
--	 * SET_FEATURE (DEVICE_REMOTE_WAKEUP) can save more power in device.
--	 */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
--		device_wakeup_disable(&data->udev->dev);
--
- 	if (test_and_set_bit(BTUSB_INTR_RUNNING, &data->flags))
- 		goto done;
- 
-@@ -1422,7 +1415,7 @@ static int btusb_close(struct hci_dev *hdev)
- 	data->intf->needs_remote_wakeup = 0;
- 
- 	/* Enable remote wake up for auto-suspend */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
-+	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags))
- 		data->intf->needs_remote_wakeup = 1;
- 
- 	usb_autopm_put_interface(data->intf);
-@@ -3877,11 +3870,8 @@ static int btusb_probe(struct usb_interface *intf,
- 		hdev->shutdown = btrtl_shutdown_realtek;
- 		hdev->cmd_timeout = btusb_rtl_cmd_timeout;
- 
--		/* Realtek devices lose their updated firmware over global
--		 * suspend that means host doesn't send SET_FEATURE
--		 * (DEVICE_REMOTE_WAKEUP)
--		 */
--		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
-+		/* Realtek devices need to set remote wakeup on auto-suspend */
-+		set_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags);
- 	}
- 
- 	if (!reset)
-@@ -4056,12 +4046,15 @@ static int btusb_suspend(struct usb_interface *intf, pm_message_t message)
- 	 * Actually, it depends on whether the usb host sends
- 	 * set feature (enable wakeup) or not.
- 	 */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags)) {
-+	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags)) {
- 		if (PMSG_IS_AUTO(message) &&
- 		    device_can_wakeup(&data->udev->dev))
- 			data->udev->do_remote_wakeup = 1;
--		else if (!PMSG_IS_AUTO(message))
-+		else if (!PMSG_IS_AUTO(message) &&
-+			 !device_may_wakeup(&data->udev->dev)) {
-+			data->udev->do_remote_wakeup = 0;
- 			data->udev->reset_resume = 1;
-+		}
- 	}
- 
- 	return 0;
--- 
-2.17.1
-
+On 8/8/2021 11:29 PM, Andrew Lunn wrote:
+>> +	/* Configure MDIO clock source frequency if clock is specified in the device tree */
+>> +	if (!IS_ERR_OR_NULL(priv->mdio_clk)) {
+> Please document the clock in the binding. Make it clear which devices
+> require the clock, and which don't.
+>
+> 	Andrew
+sure, will document it in the next patch set, thanks Andrew.
