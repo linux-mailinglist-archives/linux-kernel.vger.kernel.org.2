@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34B83E40B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F563E40B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbhHIHK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:10:59 -0400
-Received: from ozlabs.org ([203.11.71.1]:48499 "EHLO ozlabs.org"
+        id S233293AbhHIHMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:12:09 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:4125 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232094AbhHIHKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:10:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GjnKb37SYz9sWl;
-        Mon,  9 Aug 2021 17:10:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628493028;
-        bh=12Ug9aympOqjWoCUZE9P/aDbqJ6Wd/R7MXq209qhHyo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BfSfjVTKpEEsSHzI6XakVEIwiiYkK/8ylsgtPsTUSVIhk7GvU0iisnr3OJ6UoQ+QI
-         rWGlJO7Ff8gDqke2Ube8Zq3cy/ki8QAZ3qA7uiUU4gU6JUuIXdcdgDV7m/oCCwPWkN
-         SuGWdtXbGlDhvjU8SwJashW3x5ew41P/hvvdgsvEOrxqpEDkHP1jpL2stArNRa8ki0
-         i6hf69hvV1Zs2VsHT78VIsb3HHxB1g17kWhMR0LtIwo06TG6TptZ+cD4NnV8QevMMb
-         cvtGJGXt1W2OQscOkSzO72kfEuEyDuWgAeAZu/yRQmwNnDDrYuURfGjLsCtAZ8PIpC
-         RPla37SmhOgnQ==
-Date:   Mon, 9 Aug 2021 17:10:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Greg KH <greg@kroah.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: linux-next: manual merge of the phy-next tree with the usb tree
-Message-ID: <20210809171023.4d387ed3@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FT3AZRVW3dQuq_Qnw.a9/u+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S232094AbhHIHMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 03:12:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1628493108; x=1660029108;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Jchn+0QaoRgRfHcg8wEX42Cbtdnk/xP5dCyP3/ZW7kU=;
+  b=CGzrxVLUXPVOXIuCvtzTD1l2im0+xPddDZ6/5NKPCzyKH8hVMsltJjXE
+   ZHdVsXDjY0434MtAJUXZtp2QCi5ph2sZhfLe7BwA4PDGER8/xAQgSZ+6h
+   A95U4msjfwJ5ghQPczhR6XuifVZtS9qR3CfM3utRG7LTNk/aOdVJ0+qEo
+   x6k1gChyZgjMv3ObosDO291ZFe/cgcKN+7zkkVh/Fg8u73kqtbPf+GxC/
+   508ovVYGvpHeBlvdWj8c2Mgaq4mCRrcUICMtFHbpbS4jDXr14TkOuOtxM
+   q8ro9OabA3Jn/P2+zxY4SYx0EvMI53/OFh66J041mSx4F6Fm8XBs5+KBB
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.84,305,1620684000"; 
+   d="scan'208";a="18880859"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 09 Aug 2021 09:11:46 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Mon, 09 Aug 2021 09:11:46 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Mon, 09 Aug 2021 09:11:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1628493106; x=1660029106;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Jchn+0QaoRgRfHcg8wEX42Cbtdnk/xP5dCyP3/ZW7kU=;
+  b=AV7WBQqYwhGgX+hTgUW+47B9c9O6rFIC0RmlirE4K8RmqxkPk1gtN4/U
+   nxWvIL/kJEDgpXDh3DwUOJLTcCdl8+VPWgMcJrF7SAOF1+q1EoWz+prpW
+   6KTO2444O6D8TerRIEbNkpr/rFCBRSvullUThQcPRu1c/FKe25ufo4m+a
+   PpsUcz00QNDzq8QpFepfyl4FXzd1TGkeQm2nUex1IAn0dTmeQS34ZgxRR
+   UMFkAotBzcCq+j//+BYGVxskMebJ1o/FEDHhJuJQAzdCyu1Q6ugMhj6Lv
+   uduGRJn2K2yo1BRFOOhTYRCg4n9frlRwBzOjprqgQpxTlK1Va9coXum/v
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.84,305,1620684000"; 
+   d="scan'208";a="18880858"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 09 Aug 2021 09:11:46 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 5D561280070;
+        Mon,  9 Aug 2021 09:11:46 +0200 (CEST)
+Message-ID: <8419a1b779a65ab3df8c90e7abc46759360066aa.camel@ew.tq-group.com>
+Subject: Re: [PATCH v3 2/7] mfd: tqmx86: clear GPIO IRQ resource when no IRQ
+ is set
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 09 Aug 2021 09:11:44 +0200
+In-Reply-To: <CAHp75VeQxr3pkX9j10wUi3NjZY-Nkn=waPsMDxG=pDprY3Wsyg@mail.gmail.com>
+References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
+         <65f9787ebd6725e90fad9ea7f936ee0d5712da94.1626429286.git.matthias.schiffer@ew.tq-group.com>
+         <YQvn9dkFluRYj80r@google.com>
+         <9dc9fb4b37f7afa661bf1bb9148e5109b3f4329c.camel@ew.tq-group.com>
+         <CAHp75VeQxr3pkX9j10wUi3NjZY-Nkn=waPsMDxG=pDprY3Wsyg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FT3AZRVW3dQuq_Qnw.a9/u+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2021-08-05 at 16:42 +0300, Andy Shevchenko wrote:
+> On Thu, Aug 5, 2021 at 4:40 PM Matthias Schiffer
+> <matthias.schiffer@ew.tq-group.com> wrote:
+> > On Thu, 2021-08-05 at 14:30 +0100, Lee Jones wrote:
+> > > On Fri, 16 Jul 2021, Matthias Schiffer wrote:
+> 
+> ...
+> 
+> > > Strange - why is this !0 in the first place?
+> > 
+> > I don't see anything strange here. DEFINE_RES_IRQ() sets flags to
+> > IORESOURCE_IRQ. We reset it to 0 when there is no IRQ to clear that
+> > resource entry.
+> > 
+> > An alternative would be to start with an empty entry and only fill in
+> > the fields when an IRQ is used, but that seems more cumbersome than the
+> > current code to me.
+> 
+> Another alternative is to start using the IRQ DISABLED resource flag,
+> but I'm afraid that OF code is not ready for that.
+> https://elixir.bootlin.com/linux/latest/source/include/linux/ioport.h#L331
+> 
 
-Hi all,
+As this patch is a fairly simple bugfix, I'd prefer to get it (or a
+similar fix) applied without having to wait for improvements of the
+core code - also for the sake of stable backports.
 
-Today's linux-next merge of the phy-next tree got a conflict in:
-
-  Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-
-between commit:
-
-  e516ac5d48fe ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SC7280=
-")
-
-from the usb tree and commit:
-
-  1a00d130596f ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for sc8180=
-x")
-
-from the phy-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-index 20199833f144,1d49cc3d4eae..000000000000
---- a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-@@@ -14,7 -14,7 +14,8 @@@ properties
-    compatible:
-      enum:
-        - qcom,sc7180-qmp-usb3-dp-phy
- +      - qcom,sc7280-qmp-usb3-dp-phy
-+       - qcom,sc8180x-qmp-usb3-dp-phy
-        - qcom,sdm845-qmp-usb3-dp-phy
-        - qcom,sm8250-qmp-usb3-dp-phy
-    reg:
-
---Sig_/FT3AZRVW3dQuq_Qnw.a9/u+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEQ1N8ACgkQAVBC80lX
-0GyxNAf+PFYPm48tqWx0/2cCb2JxyJONnKL41F1sPJAY5YA4zzaRMDUUfX2f1WKO
-gZQtjL/KViJy3NEsQa4LmeRuj7z+xKHaXLDW4oyDr2UDk+BHneVkQGVCuhvxzNef
-i9saLdGQYrV6PiefeXHynmIaX1iezUpRKjUkEZGjqt0X8o8IbDAyxLrjnVQDIt0t
-m6YEuSLg+6hB0HQW7NnRSTIbIO4fhHmp4Ef2ZAktNEEAZ59fF6oRtVIm9BxO8j9h
-lqz0vFJXnwunU2wDuopyaD+m/TSUHWvXmuwcfEZX2hE0P08krWMgSkacibqwQGs4
-qHQOU8rx4hiWGmW+Db/nEtcafvVo3g==
-=+d1V
------END PGP SIGNATURE-----
-
---Sig_/FT3AZRVW3dQuq_Qnw.a9/u+--
