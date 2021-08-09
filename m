@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213E73E4751
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDF63E4752
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234825AbhHIOQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:16:25 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.135.51]:25938 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234707AbhHIOQX (ORCPT
+        id S234876AbhHIORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232717AbhHIORB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:16:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1628518562; x=1660054562;
-  h=to:cc:references:subject:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=4x9sjHeD5a8VARosMaEyBrjLPXQdoIE6Gb2m/Ff3xKs=;
-  b=pm8lt8eAk1wNnmMKDg6tTD4jh3xzjbBDgGkpfEZQqsHZMEXdnh7uMGJ3
-   NgB951MUPtAPoy2RX4S8+lmMfW4RTImEb4oL89kgrhN/8grlulDalyVV2
-   SF5Qtw3U48fjmEqLBdfph719YVNDz+oXXOOjBt31wEEe64kjdok1a7PSM
-   4=;
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Aug 2021 10:16:00 -0400
-Received: from [10.42.0.123] (10.32.240.218) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 9 Aug
- 2021 10:15:59 -0400
-To:     <posk@google.com>
-CC:     <avagin@google.com>, <bsegall@google.com>, <jannh@google.com>,
-        <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <pabuhr@uwaterloo.ca>, <peterz@infradead.org>,
-        <pjt@google.com>, <posk@posk.io>, <tdelisle@uwaterloo.ca>,
-        <tglx@linutronix.de>
-References: <CAPNVh5cQG8WjRryYXhrApNmV-7ybJ7ePpjXqtS6RUdguXO4e=A@mail.gmail.com>
-Subject: Re: [PATCH 3/4 v0.4] sched/umcg: add
- Documentation/userspace-api/umcg.rst
-In-Reply-To: <CAPNVh5cQG8WjRryYXhrApNmV-7ybJ7ePpjXqtS6RUdguXO4e=A@mail.gmail.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <b6308f50-8e0a-c0bc-d25a-d8f515e5183d@uwaterloo.ca>
-Date:   Mon, 9 Aug 2021 10:15:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 9 Aug 2021 10:17:01 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D958C0613D3;
+        Mon,  9 Aug 2021 07:16:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=D8/i3ET5VXTfKdXr5AovFWuXvAt8S5q6TsZVbHBUl2o=; b=FQPqCuusjbdarU0d1SoXdE+fa
+        m39+5zINzDSvd2bQ+DsNurZSMWxZjbl0/qqAqRoqCM7Hzu/A5cJUVK2DWuvUrKD2YXEX6Fw0ckKsz
+        8kC8/mRzPslpsRZY+bVNNiFkTJZrTwFFOLDfv6svyxHxJ+gQRUirgy5/AHvP6AXAU0LP8FzCfZ9OA
+        tkcXKfgzsRc5tsChWA03DgvAide/Y3sdERK/xJ/Am3UyTKsAi7MuRvwC6QjucrH6eJFKySy7Xfntg
+        FjPtcseuYs5zqIJKR+qfKLeacRKdAsZtSTiS103lRZ/AdM2cU1LWFP74XmMU6F5k8wnaqLNgBV9Lx
+        mRlYNPcYw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47114)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mD64x-0005ms-2v; Mon, 09 Aug 2021 15:16:35 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mD64v-0001FH-FO; Mon, 09 Aug 2021 15:16:33 +0100
+Date:   Mon, 9 Aug 2021 15:16:33 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Ivan T. Ivanov" <iivanov@suse.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: leds: Trigger leds only if PHY speed is known
+Message-ID: <20210809141633.GT22278@shell.armlinux.org.uk>
+References: <20210716141142.12710-1-iivanov@suse.de>
+ <YPGjnvB92ajEBKGJ@lunn.ch>
+ <162646032060.16633.4902744414139431224@localhost>
+ <20210719152942.GQ22278@shell.armlinux.org.uk>
+ <162737250593.8289.392757192031571742@localhost>
+ <162806599009.5748.14837844278631256325@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.32.240.218]
-X-ClientProxiedBy: connhm01.connect.uwaterloo.ca (172.16.137.65) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162806599009.5748.14837844278631256325@localhost>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > This is a wake, not a context switch, right?
+On Wed, Aug 04, 2021 at 11:33:10AM +0300, Ivan T. Ivanov wrote:
+> I have sent new patch[1] which I think is proper fix for this.
+> 
+> [1] https://lore.kernel.org/netdev/20210804081339.19909-1-iivanov@suse.de/T/#u
 
-I followed the "worker to worker context switch" procedure in the
-documentation.
+Thanks.
 
- > I'm not sure why you are concerned with context switching here. And even
- > if it were a context switch, the kernel manages thread stacks properly,
- > there's nothing to worry about.
+I haven't reviewed the driver, but the patch itself LGTM from the
+point of view that phy_read_status() should definitely only be
+called with phydev->lock held.
 
-The reason I'm interested in this particular operation is because the
-outcome is decided by an invisible race (between W1 and W2) in the
-kernel. W2 might context-switch to W1 and it might not. Note I don't mean
-race in the problematic sense, just that there are two possible outcomes
-that are decided by relative speed. I'm wondering how many outcomes the
-users needs to program for and if they may have to back-track anything.
+I think we also need the "Doing it all yourself" section in
+Documentation/networking/phy.rst fixed to specify that if you
+call this function, you must be holding phydev->lock.
 
-For example, if W2 wants to "yield to", it must enqueue itself in the
-user scheduler before the system call. But if the system call doesn't
-context-switch and W2 keeps running, it may need to undo the enqueue.
+Lastly, I'm wondering how many other places call phy_read_status()
+without holding phydev->lock - sounds like something that needs a
+kernel-wide review, and then possibly we should introduce a lockdep
+check for this in phy_read_status() to catch any new introductions.
 
-I agree the comment about the stack was a tangent and I expected the
-kernel to handle it. But, I believe, how the kernel handles this case
-affects the number of outcomes for this scenario.
-
- > If both cmpxchg() succeeded, but W1 was never put to sleep, ttwu()
- > will do nothing and W1 will continue running on its initial CPU, while
- > W2 will continue running on its own CPU. WF_CURRENT_CPU is an advisory
- > flag, and in this situation it will not do anything.
-
-This does not sound right to me. If ttwu does nothing, W1 and W2 keep
-running. Who sets W2's state back to RUNNING?
-
-Is W2 responsible for doing that? It's not "the party initiating
-the state transition" in this case.
-
-Since there is no way for W2 to tell if it did context-switch to W1, does
-that mean that W2 should always cmpxchg() its state to RUNNING after a
-sys_umcg_wait()?
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
