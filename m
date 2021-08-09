@@ -2,71 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4CD3E40CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122A23E40C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbhHIH0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:26:05 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:55490 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232094AbhHIHZ7 (ORCPT
+        id S233305AbhHIHYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232094AbhHIHYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:25:59 -0400
-X-UUID: 2574f97aa48d4b3da3cff3efa9822d64-20210809
-X-UUID: 2574f97aa48d4b3da3cff3efa9822d64-20210809
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <derong.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 664108739; Mon, 09 Aug 2021 15:25:29 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 9 Aug 2021 15:25:28 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 9 Aug 2021 15:25:27 +0800
-From:   Derong Liu <derong.liu@mediatek.com>
-To:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsp_upstream@mediatek.com>,
-        Peng Zhou <peng.zhou@mediatek.com>,
-        Derong Liu <derong.liu@mediatek.com>
-Subject: [PATCH v2] mmc: mediatek: add wait dma stop done flow
-Date:   Mon, 9 Aug 2021 15:23:16 +0800
-Message-ID: <20210809072315.1127-1-derong.liu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 9 Aug 2021 03:24:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13639C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 00:24:20 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mCzdx-0001FG-P9; Mon, 09 Aug 2021 09:24:17 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:565a:9e00:3ca4:4826])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 049EF66309F;
+        Mon,  9 Aug 2021 07:24:15 +0000 (UTC)
+Date:   Mon, 9 Aug 2021 09:24:14 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Subject: Re: [PATCH] mailmap: update email address of Matthias Fuchs
+Message-ID: <20210809072414.syapcl2v7urytygg@pengutronix.de>
+References: <20210806104833.102081-1-mkl@pengutronix.de>
+ <10024d316c23d7be2ce6037f7994aa2af033208f.camel@esd.eu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="risgigwcdpvsdsfu"
+Content-Disposition: inline
+In-Reply-To: <10024d316c23d7be2ce6037f7994aa2af033208f.camel@esd.eu>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found this issue on a 5G platform, during CMDQ error handling, if DMA status is active when it call msdc_reset_hw, it means mmc host hw reset and DMA transfer will be parallel, mmc host may access sram region unexpectedly.
 
-According to the programming guide of mtk mmc host,it needs to wait for dma stop done after set dma stop.
-This change should be applied to all SoCs.
+--risgigwcdpvsdsfu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Derong Liu <derong.liu@mediatek.com>
----
- drivers/mmc/host/mtk-sd.c | 2 ++
- 1 file changed, 2 insertions(+)
+On 06.08.2021 15:07:43, Stefan M=C3=A4tje wrote:
+> I was not aware of the .mailmap file and its workings.=20
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 4dfc246c5f95..1dfd2842471b 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -2339,6 +2339,8 @@ static void msdc_cqe_disable(struct mmc_host *mmc, bool recovery)
- 	if (recovery) {
- 		sdr_set_field(host->base + MSDC_DMA_CTRL,
- 			      MSDC_DMA_CTRL_STOP, 1);
-+		while (readl(host->base + MSDC_DMA_CFG) & MSDC_DMA_CFG_STS)
-+			cpu_relax();
- 		msdc_reset_hw(host);
- 	}
- }
--- 
-2.18.0
+The mailmap file works on the git log, and thus tools using it: e.g.
+scripts/get_maintainer.pl.
 
+> My question is should then also <thomas.koerper@esd.eu> be put in this
+> file
+
+Probably yes, as there are two patches by him in the Linux kernel:
+
+| Thomas K=C3=B6rper (2):
+|       can: dev: avoid calling kfree_skb() from interrupt context
+|       can: esd_usb2: Fix sparse warnings
+
+I'll update this patch.
+
+> because he is the co-author of the patch you're reviewing atm.
+
+For co-authorship, use the Co-developed-by tag, that was recently added:
+
+https://elixir.bootlin.com/linux/v5.12/source/Documentation/process/submitt=
+ing-patches.rst#L449
+
+Speaking of that patch. Can you please create an entry in the
+MAINTAINERS file, too? I suggest to add yourself as M: and the
+socketcan@e.u as R:. The change in the MAINTAINERS file will be a second
+patch in that series. Just include it the next iteration of that series.
+
+> and his email address shows up in MODULE_AUTHOR() macro. He also left
+> our company already.
+
+In newly added changes, it makes sense that all email addresses are
+working. :D
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--risgigwcdpvsdsfu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEQ2BsACgkQqclaivrt
+76lOqwgAr1IYSf0dfTCapqSbuZ1GmzEx7tywKkkZFHcm7YGuOyEq7k0xoD8rXXdl
+8Z/aYTe+XVdhv8tHJD0vpk7kYjn31ac18RBEKgmyHhwoA8ucCc3FZrOWuGxOXxBM
+U4IbWzOpZQe9YUraeiznYS+SxvMyKS5jxaqBjKC9qen/5UU9DdzOISbiXFhHr2Cn
+n1ejuJwSt0nCKQjKEuHTl1TwWocn8VsjkdQAJIO0J4XAaKQT6tzElvvUQp+/YX4X
+wj/uoa/LzXbyA3CHuFiMAc+RLd5Lj+x+NyRVnVomf6Z03j5tBkWMuvcDrqwOebPe
+swed81X6voXLlQHZ4j+MMENh7UsTXQ==
+=tAUi
+-----END PGP SIGNATURE-----
+
+--risgigwcdpvsdsfu--
