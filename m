@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0823E41C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005BF3E41C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhHIIor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48428 "EHLO mail.kernel.org"
+        id S234067AbhHIIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:45:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233926AbhHIIoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:44:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B464A60462;
-        Mon,  9 Aug 2021 08:44:25 +0000 (UTC)
+        id S233940AbhHIIpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 04:45:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F0AD61004;
+        Mon,  9 Aug 2021 08:45:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628498666;
-        bh=grKMIOHGb1ru2VuvTfMUqYUzzhQ8CKPOf/66tvSq5SE=;
+        s=korg; t=1628498718;
+        bh=EcmaJregycm6/qVSvcmyKPkSmG1lwe85pKw2N0uoBEQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ohGQ0pIcLDIwANoZV7kjmnxzXBUNFuQw6YcdqMD1JTOKpdiE6h+u0gZ5iu3NX63/T
-         CPB4KgXOi9pLRJOZ+1urLnJehhN9tao6D/3eWOk8UGUXGdioLpf5JzVALc8ziIGs2X
-         aM3cyJpa5ApvCP2z9kjuNxY7spMM/MyhH07XkHb4=
-Date:   Mon, 9 Aug 2021 10:44:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Muni Sekhar <munisekharrms@gmail.com>
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: read() via USB bus
-Message-ID: <YRDq530N/9uu2J0x@kroah.com>
-References: <CAHhAz+jKREfXERKj7XB7U3Wh1g4STO2Dt0qnMkcPV5nXB3_bwg@mail.gmail.com>
- <8923f2b8-0be0-ffbf-70a4-c03c9a02d58a@suse.com>
+        b=N/vkNIaN7ow+se6o1ZwW9aNp1vHhLfosQvhscN6Gnnxl0IpE776+D7SXlSIb+W88Q
+         zRC+ouAabJK3pMAGDZz2BryN8krKyzawtY6o/f6zWQVQOEy8XI3eWpiI2hnO+ZKTKE
+         UEgQZdBAM/L/QTp0JiuyfY8+ku0IBuWgUDF+HrbA=
+Date:   Mon, 9 Aug 2021 10:45:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        industrypack-devel@lists.sourceforge.net,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] ipack: tpci200: fix many double free issues in
+ tpci200_pci_probe
+Message-ID: <YRDrHPcC8Nb3g0sg@kroah.com>
+References: <20210721111137.1523229-1-mudongliangabcd@gmail.com>
+ <20210721111137.1523229-2-mudongliangabcd@gmail.com>
+ <YQvXfQ4A04cy5MEA@kroah.com>
+ <CAD-N9QX7A=Z4=bpjw63zCZ=KTTJTYP=n9g29Kp1d39DxgK2_Eg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8923f2b8-0be0-ffbf-70a4-c03c9a02d58a@suse.com>
+In-Reply-To: <CAD-N9QX7A=Z4=bpjw63zCZ=KTTJTYP=n9g29Kp1d39DxgK2_Eg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 10:15:29AM +0200, Oliver Neukum wrote:
-> 
-> On 09.08.21 09:58, Muni Sekhar wrote:
-> > Hi all,
+On Mon, Aug 09, 2021 at 11:40:13AM +0800, Dongliang Mu wrote:
+> On Thu, Aug 5, 2021 at 8:20 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > >
-> > PCIe memory mapped registers can be read via readb(), readw(), readl()
-> > kernel API's. Similarly what are the kernel API to read the device
-> > registers via USB bus
+> > On Wed, Jul 21, 2021 at 07:11:31PM +0800, Dongliang Mu wrote:
+> > > The function tpci200_register called by tpci200_install and
+> > > tpci200_unregister called by tpci200_uninstall are in pair. However,
+> > > tpci200_unregister has some cleanup operations not in the
+> > > tpci200_register. So the error handling code of tpci200_pci_probe has
+> > > many different double free issues.
+> > >
+> > > Fix this problem by moving those cleanup operations out of
+> > > tpci200_unregister, into tpci200_pci_remove and reverting
+> > > the previous commit 9272e5d0028d
+> > >
+> > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
+> > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > ---
+> > >  drivers/ipack/carriers/tpci200.c | 35 ++++++++++++++++----------------
+> > >  1 file changed, 17 insertions(+), 18 deletions(-)
 > >
+> > This needs to be applied to the tree now, and should not depend on your
+> > patch 1/3 here as it is a bugfix.  Please redo this series and send 2,
+> > one to be merged for 5.14-final and to go to the stable kernels, and a
+> > separate "clean up things" series that can wait until 5.15-rc1.
 > 
-> Hi,
+> No problem. I will send a separate fix.
 > 
-> I am afraid this is based on a fundamental misunderstanding on how
-> USB works. It is based on passing messages, not reading and writing
-> registers.
+> BTW, how about the PATCH 3/3 in this series [1]? It does not depend on
+> PATCH 1/3, however, it does not include the fix to memleak, but also
+> moves the unregister function. Shall I send it separately?
 > 
-> USB devices are primarily based on endpoints, not registers. A literal
-> answer to your question would point you to the clear/set/get_feature
-> standard requests of chapter 9 of the specification, but that really
-> will not help you, as you are making assumption that fundamentally
-> do not apply.
-> 
-> I hope this list stays friendly to newcomers and we will answer
-> specific questions, but at this point I must advise you to first
-> read an introductory book.
+> [1] https://lkml.org/lkml/2021/7/21/370
 
-Along these lines, take a look at the book, Linux Device Drivers, third
-edition, which is free online, as it has a chapter about USB drivers and
-how they work.  That should help you out to understand the issues
-involved with USB devices.
-
-If you have specific questions after looking at that, and reading the
-basic usb-skeleton.c driver in the kernel source tree, please let us
-know!
+Please resend everything, as none of these were applied and are all gone
+from my queue.
 
 thanks,
 
