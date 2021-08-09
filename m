@@ -2,200 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D028F3E4DB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F144B3E4DB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbhHIUQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHIUQo (ORCPT
+        id S235736AbhHIURC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:17:02 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:59044 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhHIURB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:16:44 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E7AC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 13:16:23 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j1so29784678pjv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 13:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=44GhGqOetVs4KhXXElqDGKK3CH2oBjGziCm5x/a7ZJs=;
-        b=ppVc9A9KMhJFgV6NVDkUHp9yBZ4jvRiPZUcI20A2cQjGlIn028xMoBHpww2tDAiKFl
-         9iPhbobR9SHL2adYikPHqF5G4SlWpowSr2j8S6b8do8TbaUnU36v1GfI26941juwBtq0
-         lg5uO8fP8v07UWSN2Md7iUeWq8bIHopmUzjvgBBzTK3O6/A+996ZEREB2/UhRgsIQp4H
-         MeNfIz09c15Sltk3GsM1Mi4vP42DP3K751s00uC2X0eFx85qHl4u6HDdfFK1q/oVXcJv
-         /ei/Pth5mKrn9l+/cEg8baudOVk+TGkbagMYGHp38fVDHIDAu3ZCTHC9yyVDLEU8ttwq
-         mKdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=44GhGqOetVs4KhXXElqDGKK3CH2oBjGziCm5x/a7ZJs=;
-        b=TmP10Q2VOCwkKSBJUiUjyEzrqR03B7vbXuu/4HfNKmS10bLJYdSkes//4kuuuajC2g
-         4KoUc69siqdN9yqQ0OCi17nd1RnwxsFUkPxLdJVIpY8r9X+cRm3APnq3K5qXRAril8bW
-         M+Irr9qk9BBRFogjK15Umddqs/9OmWw49VWyw1fMGA/ieSz12VCY/+Rvj4/aiJbSRR4J
-         pysZ6+0V9N/jVVlywXP6yZuTm3shVra8jqTC1vkquBOXvnFeWUK/VvzAhMbUPnn8W2ki
-         3q51r409Nj0iXuf6KpJZBad2a9O69Eo3gSPOWpX96kgBHg3xrsTsQGZ6RPqwArlkcZp9
-         QT0A==
-X-Gm-Message-State: AOAM533BGwXEx+vkhJYCpYqRp+O9AOk3f60QxNU31q9p0NaBwE5HxVLr
-        StB0qscrODiGhoDdIAlAj8FddNLzSX8S2hdly/xOS58BWZTCAQ==
-X-Google-Smtp-Source: ABdhPJxHyBboh3cabRdq1cEgdkUUmLFgelCu6EWKllya4Av27+xhycvWAEKPW0Mj0+bvONvbUJBoXz9ti/IsYYB08zs=
-X-Received: by 2002:a65:50cb:: with SMTP id s11mr424292pgp.236.1628540182405;
- Mon, 09 Aug 2021 13:16:22 -0700 (PDT)
+        Mon, 9 Aug 2021 16:17:01 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDBhJ-009Lr8-Ed; Mon, 09 Aug 2021 20:16:33 +0000
+Date:   Mon, 9 Aug 2021 20:16:33 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
+ _copy_to_iter
+Message-ID: <YRGNIduUvw/kCLIU@zeniv-ca.linux.org.uk>
+References: <0000000000006bd0b305c914c3dc@google.com>
+ <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
+ <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
+ <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
+ <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
+ <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com>
+ <YRGKWP7/n7+st7Ko@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-References: <cover.1628094600.git.robin.murphy@arm.com> <3b5284ee394f267ba966839173f874fc9a996bb2.1628094601.git.robin.murphy@arm.com>
- <CACK8Z6HSM678q=BZ3FY7spN2S3ZkhdJ3ecnMCbKWrqB5dNWaMA@mail.gmail.com> <00baf83a-5eb3-4d72-309c-5adfd3242c07@arm.com>
-In-Reply-To: <00baf83a-5eb3-4d72-309c-5adfd3242c07@arm.com>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Mon, 9 Aug 2021 13:15:46 -0700
-Message-ID: <CACK8Z6Gb1O8Ok1GEy80nQJ4ZQeFJ3TOgFHRYfH3Yb=8CNT=ysw@mail.gmail.com>
-Subject: Re: [PATCH v3 24/25] iommu/dma: Factor out flush queue init
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org,
-        chenxiang66@hisilicon.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRGKWP7/n7+st7Ko@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 12:59 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-08-09 20:05, Rajat Jain wrote:
-> > On Wed, Aug 4, 2021 at 10:16 AM Robin Murphy <robin.murphy@arm.com> wrote:
-> >>
-> >> Factor out flush queue setup from the initial domain init so that we
-> >> can potentially trigger it from sysfs later on in a domain's lifetime.
-> >>
-> >> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> >> Reviewed-by: John Garry <john.garry@huawei.com>
-> >> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> >> ---
-> >>   drivers/iommu/dma-iommu.c | 30 ++++++++++++++++++++----------
-> >>   include/linux/dma-iommu.h |  9 ++++++---
-> >>   2 files changed, 26 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> >> index 2e19505dddf9..f51b8dc99ac6 100644
-> >> --- a/drivers/iommu/dma-iommu.c
-> >> +++ b/drivers/iommu/dma-iommu.c
-> >> @@ -310,6 +310,25 @@ static bool dev_is_untrusted(struct device *dev)
-> >>          return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
-> >>   }
-> >>
-> >> +int iommu_dma_init_fq(struct iommu_domain *domain)
-> >> +{
-> >> +       struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> >> +
-> >> +       if (domain->type != IOMMU_DOMAIN_DMA_FQ)
-> >> +               return -EINVAL;
-> >> +       if (cookie->fq_domain)
-> >> +               return 0;
-> >> +
-> >> +       if (init_iova_flush_queue(&cookie->iovad, iommu_dma_flush_iotlb_all,
-> >> +                                 iommu_dma_entry_dtor)) {
-> >> +               pr_warn("iova flush queue initialization failed\n");
-> >> +               domain->type = IOMMU_DOMAIN_DMA;
-> >> +               return -ENODEV;
-> >> +       }
-> >> +       cookie->fq_domain = domain;
-> >> +       return 0;
-> >> +}
-> >> +
-> >>   /**
-> >>    * iommu_dma_init_domain - Initialise a DMA mapping domain
-> >>    * @domain: IOMMU domain previously prepared by iommu_get_dma_cookie()
-> >> @@ -362,16 +381,7 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
-> >>          }
-> >>
-> >>          init_iova_domain(iovad, 1UL << order, base_pfn);
-> >> -
-> >> -       if (domain->type == IOMMU_DOMAIN_DMA_FQ && !cookie->fq_domain) {
-> >> -               if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
-> >> -                                         iommu_dma_entry_dtor)) {
-> >> -                       pr_warn("iova flush queue initialization failed\n");
-> >> -                       domain->type = IOMMU_DOMAIN_DMA;
-> >> -               } else {
-> >> -                       cookie->fq_domain = domain;
-> >> -               }
-> >> -       }
-> >> +       iommu_dma_init_fq(domain);
-> >>
-> >>          return iova_reserve_iommu_regions(dev, domain);
-> >>   }
-> >> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
-> >> index 758ca4694257..81ab647f1618 100644
-> >> --- a/include/linux/dma-iommu.h
-> >> +++ b/include/linux/dma-iommu.h
-> >> @@ -20,6 +20,7 @@ void iommu_put_dma_cookie(struct iommu_domain *domain);
-> >>
-> >>   /* Setup call for arch DMA mapping code */
-> >>   void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit);
-> >> +int iommu_dma_init_fq(struct iommu_domain *domain);
-> >>
-> >>   /* The DMA API isn't _quite_ the whole story, though... */
-> >>   /*
-> >> @@ -37,9 +38,6 @@ void iommu_dma_compose_msi_msg(struct msi_desc *desc,
-> >>
-> >>   void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list);
-> >>
-> >> -void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
-> >> -               struct iommu_domain *domain);
-> >> -
-> >
-> > This looks like an unrelated code cleanup. Should this be a separate patch?
->
-> Ha, busted! Much of this was done in the "stream of consciousness" style
-> where I made a big sprawling mess then split it up into patches and
-> branches afterwards. TBH it was already feeling pretty tenuous having a
-> separate patch just to move this one function, and it only gets more so
-> with the simplification Will pointed out earlier. I think I'll squash
-> iommu_dma_init_fq() into the next patch then do a thorough header sweep,
-> since I've now spotted some things in iova.h which could probably go as
-> well.
+On Mon, Aug 09, 2021 at 08:04:40PM +0000, Al Viro wrote:
+> On Mon, Aug 09, 2021 at 12:40:03PM -0700, Shoaib Rao wrote:
+> 
+> > Page faults occur all the time, the page may not even be in the cache or the
+> > mapping is not there (mmap), so I would not consider this a bug. The code
+> > should complain about all other calls as they are also copying  to user
+> > pages. I must not be following some semantics for the code to be triggered
+> > but I can not figure that out. What is the recommended interface to do user
+> > copy from kernel?
+> 
+> 	What are you talking about?  Yes, page faults happen.  No, they
+> must not be triggered in contexts when you cannot afford going to sleep.
+> In particular, you can't do that while holding a spinlock.
+> 
+> 	There are things that can't be done under a spinlock.  If your
+> commit is attempting that, it's simply broken.
 
-Thank you. I chanced upon this only because I've backported your
-patchset (and some other changes that it depends on) to 5.10 which is
-the kernel we currently use for our Intel platforms, and this cleanup
-hunk was creating a problem (since 5.10 still uses the symbol you
-removed). I'll be giving your v3 patchset a spin in my setup and
-update you in case I see any issue.
+... in particular, this
 
-Thanks,
++#if IS_ENABLED(CONFIG_AF_UNIX_OOB)
++               mutex_lock(&u->iolock);
++               unix_state_lock(sk);
++
++               err = unix_stream_recv_urg(state);
++
++               unix_state_unlock(sk);
++               mutex_unlock(&u->iolock);
++#endif
 
-Rajat
+is 100% broken, since you *are* attempting to copy data to userland between
+spin_lock(&unix_sk(s)->lock) and spin_unlock(&unix_sk(s)->lock).
 
+You can't do blocking operations under a spinlock.  And copyout is inherently
+a blocking operation - it can require any kind of IO to complete.  If you
+have the destination (very much valid - no bad addresses there) in the middle
+of a page mmapped from a file and currently not paged in, you *must* read
+the current contents of the page, at least into the parts of page that
+are not going to be overwritten by your copyout.  No way around that.  And
+that can involve any kind of delays and any amount of disk/network/whatnot
+traffic.
 
->
-> Thanks for the poke!
->
-> Robin.
->
-> >
-> > Thanks,
-> >
-> > Rajat
-> >
-> >
-> >>   extern bool iommu_dma_forcedac;
-> >>
-> >>   #else /* CONFIG_IOMMU_DMA */
-> >> @@ -54,6 +52,11 @@ static inline void iommu_setup_dma_ops(struct device *dev, u64 dma_base,
-> >>   {
-> >>   }
-> >>
-> >> +static inline int iommu_dma_init_fq(struct iommu_domain *domain)
-> >> +{
-> >> +       return -EINVAL;
-> >> +}
-> >> +
-> >>   static inline int iommu_get_dma_cookie(struct iommu_domain *domain)
-> >>   {
-> >>          return -ENODEV;
-> >> --
-> >> 2.25.1
-> >>
+You fundamentally can not do that kind of thing without giving the CPU up.
+And under a spinlock you are not allowed to do that.
+
+In the current form that commit is obviously broken.
