@@ -2,170 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B613E446D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3AC3E446F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhHILKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:10:35 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16998 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbhHILKe (ORCPT
+        id S234901AbhHILO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:14:28 -0400
+Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:41574 "EHLO
+        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233516AbhHILO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:10:34 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GjtZ11gHqzb06D;
-        Mon,  9 Aug 2021 19:06:33 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 19:10:10 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 19:10:10 +0800
-Subject: Re: [PATCH v3 3/3] kasan: arm64: Fix pcpu_page_first_chunk crash with
- KASAN_VMALLOC
-To:     <will@kernel.org>, <catalin.marinas@arm.com>,
-        <ryabinin.a.a@gmail.com>, <andreyknvl@gmail.com>,
-        <dvyukov@google.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <elver@google.com>
-References: <20210809093750.131091-1-wangkefeng.wang@huawei.com>
- <20210809093750.131091-4-wangkefeng.wang@huawei.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <ae15c02e-d825-dbef-1419-5b5220f826c1@huawei.com>
-Date:   Mon, 9 Aug 2021 19:10:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210809093750.131091-4-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+        Mon, 9 Aug 2021 07:14:27 -0400
+Received: from pps.filterd (m0127840.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179BDvXh017245;
+        Mon, 9 Aug 2021 04:13:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version;
+ s=proofpoint20171006; bh=Zel9s0+ucEEWQyXUu8dmUdK+9mkzNE9P9tZDb41iyqI=;
+ b=dLfd35sIhgUT2+TEJMJ5H8UFB2+puYjv6pWdvdUJboWr66VKmxWljixbNbRsnfo9d8Hd
+ RPAkj5pyk1dzSyjFMKHX82bX+EyB0xBXbPOvZ8xR/6r+gWdAKQJypzUvg4UGINEmT5dq
+ //J92SKfHjle3mdE5LoOjsvKfPMisps97twtfGIvTuGzpQFtN5yfujKT1F+xupfUaOAv
+ TbRR70AzxmBOf/nilojRrw+Am+ol5V/1cBUAfxwW+4W/xSgEPmAfn51+4Fzj9UQQc9xM
+ CyJ3M/jvmi312cB/QctONmAnT/wEWAOVH12fAosxs00RuwgzjoDAmiD1UVgiQonABvmn Kw== 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2049.outbound.protection.outlook.com [104.47.73.49])
+        by mx0a-002c1b01.pphosted.com with ESMTP id 3aawvg8jx3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Aug 2021 04:13:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NXgHTtXS5clZggXGYoVsVUEF6++4T8Bvd9VPhtW5HOwT/Wja4aj5yipzwxae7HNa82v9NzVWvGXLo54QGo61bmZ5VPKaB0WBmZHA4C9VmSOVFfXz8SGbrx/uYGyyfi/mHWP6fe/YffTm+EtJdfF3vhJt+YXZ0pbVLQw2+AkTfSimnBBkE53coP0Ab2b7u3/cRrE+xe9G37fbt0QdGzHnnPmguKvqzybUeQeHSSow/ZglD7EhxYbceIZqJhbQvzkJ0VBQkTDX4YeBhHJ+UUPGgaBWPFyysAAaLnRbuIYa515361h+81fxjhUiHLpziZrCFsfs9noUK39qULimVC3IEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zel9s0+ucEEWQyXUu8dmUdK+9mkzNE9P9tZDb41iyqI=;
+ b=aJhW8XyzedE3c5p+eqklxwItvbXn+Xq9I8gpZkOXdy3GHSLEGkjX38QSFB5G6X6hxjWy0doBzhMnPKZer383FObT2KijyqCrWv9jy24iqh1Dh2xMzMqTBNvxN340j1TP/QRQEWSP7eINuqHfhLvi71w54Vn1613zbrRUNSFlVa2oqk8OLJzAG47M4Ffi/spIiYTSkcCNr4fD4hTVh03CKsS7gd9M61LNjABh4cyi8lDYob+knOMZuwluy8SqVfULqr7NYHBNIKw8xQgjTnMHlfi+p2P/xElk8GF9KMRI+LK4Ilg/Z/d5MPG9B0k4Ufg+gYwfh2KcL+gdk6uv5SOm7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com (2603:10b6:805:b1::24)
+ by SA2PR02MB7754.namprd02.prod.outlook.com (2603:10b6:806:148::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Mon, 9 Aug
+ 2021 11:13:55 +0000
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::182b:62b8:51c1:ba59]) by SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::182b:62b8:51c1:ba59%5]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 11:13:55 +0000
+From:   Raphael Norwitz <raphael.norwitz@nutanix.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kw@linux.com" <kw@linux.com>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v15 1/9] PCI: Cache PCIe FLR capability
+Thread-Topic: [PATCH v15 1/9] PCI: Cache PCIe FLR capability
+Thread-Index: AQHXihcaLdQv1XRRNU+UHrH2m10VyatrCxOA
+Date:   Mon, 9 Aug 2021 11:13:54 +0000
+Message-ID: <20210809111349.GA867@raphael-debian-dev>
+References: <20210805162917.3989-1-ameynarkhede03@gmail.com>
+ <20210805162917.3989-2-ameynarkhede03@gmail.com>
+In-Reply-To: <20210805162917.3989-2-ameynarkhede03@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mutt/1.10.1 (2018-07-13)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nutanix.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8d91687c-072f-4a3c-2b55-08d95b26c6c1
+x-ms-traffictypediagnostic: SA2PR02MB7754:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR02MB77546A18E04EDAB63F43F800EAF69@SA2PR02MB7754.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: soRoC9wnKqAZewzGzMMbWBU4Y8nHGAVVqqkW+kSa22j+WPeNtuYWDD+Qei2E5MXvYUerBb/VIE8sOx0zZSaFa5So9rw47RhZRM/iyHJJEptaNd+CCiyhgT2XRSE93jYkwSx4G22LsR5203ysTNbqmtRbDnIChvE1BJBvpfSXKBgY+F/EVPfAahLN+uqfvA9WPvTLo0dOeHQDHXJouj92axpusm1RFMmb4/o97S7paazZGY4fU/iXhSaY4EK4Q2mteG425rYeRQEhXT/x3GaNrRGaQ6LHxgUupDPVHRlSzQL9ULCDx45/5dIPbnDFE5pgNZi98hixb6gIJBj0yLxebRhTTT2Iu5y7ys97f1STdH76uTHD2mNPCd9wC1bHhhSi3d5yVCpes5e7lZFlXFwfOnSroy+bmfo22s73fxBgNdRvyxhTG+J04uuDOyPtI/z54eHMG9dPSVfWnWEzQ2eYxmJwteMaHNP6LKaCa5hBfnpHK+vDiNak63ynMiDQ1/oWUZC8nVCCPqw46auXEaWcR31WWB3+EpEfB1/keThhGUf/FKxR5uIlEe06pPw2oVsNJDKcbyrLql/xTTn6VZK8PlWtFCZWtEl6myOilT0UpTucgIiZdlF4uzeiRhsWfOmygur4tue3LODdnW7sm8wWVkghGa48V6PP2Wn686xVHi/RBQEHVD1gLw48I0+GecNBBsCtEHJvdHJ/BSFhm/uLpg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4543.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(376002)(39860400002)(136003)(396003)(346002)(8676002)(4326008)(64756008)(5660300002)(66476007)(66446008)(66946007)(1076003)(83380400001)(6512007)(76116006)(66556008)(186003)(478600001)(6486002)(33716001)(6506007)(38070700005)(8936002)(26005)(33656002)(9686003)(44832011)(2906002)(7416002)(91956017)(38100700002)(71200400001)(86362001)(316002)(122000001)(6916009)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?2bevv05JIWAgbuah9sclOBV/aDvcjH5HBLSU3yDA0ki7Mqir5bEAE3TKpcrn?=
+ =?us-ascii?Q?sJ19JL3+c/zHgjtv/yRWlRBpmB1AN0w0xo2hgMPghVjkab6v9SSWpjNBb407?=
+ =?us-ascii?Q?l9UD/EPIvc6+CVLMr6Lc/G9FgGO3/PVjrpxy26tpukFBBkgXs5SRAmTsqlOG?=
+ =?us-ascii?Q?ZnD1x2gRqLZp/Ru5swziwO8TScXs1YZp5jXD3Y3muS+k4F6fJ96gRN4HlCEP?=
+ =?us-ascii?Q?eKL0HLXuYz4KyVTwJ1lnbH2BIcv/skmM4WN4VIUULZRmd3kAms8sKnGaKtVT?=
+ =?us-ascii?Q?NYyjCp9wnALFUt38pCqgGcozXbYQsgDtoGDTfykbuCdruMO0bCiMFbQGEdIL?=
+ =?us-ascii?Q?PJPGB3+XdT+cmuX7QtuQYraJYJkjO0peetC1J5inKTfAdn3IHGgUmhqlc/xN?=
+ =?us-ascii?Q?wh1ZxFXp26uYSe6lio8lHdSyrsAu4ab9AqdpdfaZLRsAea+ypZEJs4T0/fOg?=
+ =?us-ascii?Q?3lgFLxZ8HRjzK4UeKKbRzZKvGW2Z9O4aRADmpQUHvT5G8//Ny3YVxC6O/n2Q?=
+ =?us-ascii?Q?HOGNupRciaLYhQBcPlWLRCizH+U7Uv1JPm/Vbyubrw24k2L9C2GCNfj5N7Z3?=
+ =?us-ascii?Q?+C2g4a+a/6NyZvi6TKQqu/XDIeeltuPaSxy0Ll2eKS0A+fV8JGSm5pHNAdKB?=
+ =?us-ascii?Q?cQqRwk8dtzuI5puNgUggtwBK1c/mlZQPqWwXPBGBNbD9XsX1PRZhWnJ97OrJ?=
+ =?us-ascii?Q?BMKq3VGDztGK49pdK4i1A2HlWLxh8x4C/1EWfmDa+vBpDDrYPyfzbmy/xVuB?=
+ =?us-ascii?Q?dGi7NoVrkujWnPeXycPDSmZaN+y4aVcfTW02Y05IC2QsjD3lDdV2NvlILmNi?=
+ =?us-ascii?Q?+QI1NONb1V530TJlf4Pl1W37geHQtlFd2x00gHmoAFI+P8pppaM+cCXspu1o?=
+ =?us-ascii?Q?tz2K71HTU5UtBVeed+NX4235DfWno6mLWkeSW4ua0l0HeZDxSuA7Ct4sm95T?=
+ =?us-ascii?Q?U/88iSc8QFh9HoiW4z8YS36JYAuCMlC6nlpY+FlOuJhw2zwJ80Vg58qVDChh?=
+ =?us-ascii?Q?2CVtGGe2kSHksGDJjatyScxUAGj8CKn27Ffni4CUUjRdDCndff+W1z4vU/M2?=
+ =?us-ascii?Q?BdfWdDKPQ9GPhpGnPdyVZae7+0t9XSV4IRL4YLnQIyB1NuK6v4DL+WQw9fiq?=
+ =?us-ascii?Q?p/b876ZCiLQVgW9PDviV9+M2s33QHhQUiApv8U+4Rp0pWpSWGTuCkiwEDSkq?=
+ =?us-ascii?Q?kRmgf++3kf8d4ieavnL2clK0Eke+GdaQkvrRbKz7DvaUWky1gJFpbWaiBzKF?=
+ =?us-ascii?Q?Oo3ljlNezK6rjCnsrx6y2kw7b/hMymjcCkuwCGaOFrX3xlZbWJ6Ea2KnJhfx?=
+ =?us-ascii?Q?j+1kr0SkynoWJFzCmnU9XM2f?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <756CE8A2531071478BBA56B8E8D34D12@namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4543.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d91687c-072f-4a3c-2b55-08d95b26c6c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 11:13:54.9399
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: L8QZyNgrATqSd+k5dX0HF676avENCFidDU8/7Gn/FOPQOY5aXHcvaEa0A8aKMRoJGv0KVEsRJTyRqFMna1xp5MfC4ovejPS5fKlAMW9ATyk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7754
+X-Proofpoint-GUID: v1RV6wKsvDyfqd5MPRiiQlXMGkk5LqMe
+X-Proofpoint-ORIG-GUID: v1RV6wKsvDyfqd5MPRiiQlXMGkk5LqMe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-09_04:2021-08-06,2021-08-09 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 05, 2021 at 09:59:09PM +0530, Amey Narkhede wrote:
+> Add a new member called devcap in struct pci_dev for caching the device
+> capabilities to avoid reading PCI_EXP_DEVCAP multiple times.
+>=20
+> Refactor pcie_has_flr() to use cached device capabilities.
+>=20
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
 
-On 2021/8/9 17:37, Kefeng Wang wrote:
-> With KASAN_VMALLOC and NEED_PER_CPU_PAGE_FIRST_CHUNK, it crashs,
->
-> Unable to handle kernel paging request at virtual address ffff7000028f2000
-> ...
-> swapper pgtable: 64k pages, 48-bit VAs, pgdp=0000000042440000
-> [ffff7000028f2000] pgd=000000063e7c0003, p4d=000000063e7c0003, pud=000000063e7c0003, pmd=000000063e7b0003, pte=0000000000000000
-> Internal error: Oops: 96000007 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.0-rc4-00003-gc6e6e28f3f30-dirty #62
-> Hardware name: linux,dummy-virt (DT)
-> pstate: 200000c5 (nzCv daIF -PAN -UAO -TCO BTYPE=--)
-> pc : kasan_check_range+0x90/0x1a0
-> lr : memcpy+0x88/0xf4
-> sp : ffff80001378fe20
-> ...
-> Call trace:
->   kasan_check_range+0x90/0x1a0
->   pcpu_page_first_chunk+0x3f0/0x568
->   setup_per_cpu_areas+0xb8/0x184
->   start_kernel+0x8c/0x328
->
-> The vm area used in vm_area_register_early() has no kasan shadow memory,
-> Let's add a new kasan_populate_early_vm_area_shadow() function to populate
-> the vm area shadow memory to fix the issue.
+Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
 
-Should add Acked-by: Marco Elver <elver@google.com> [for KASAN parts] ,
-
-missed here :(
-
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->   arch/arm64/mm/kasan_init.c | 16 ++++++++++++++++
->   include/linux/kasan.h      |  6 ++++++
->   mm/kasan/init.c            |  5 +++++
->   mm/vmalloc.c               |  1 +
->   4 files changed, 28 insertions(+)
->
-> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> index 61b52a92b8b6..5b996ca4d996 100644
-> --- a/arch/arm64/mm/kasan_init.c
-> +++ b/arch/arm64/mm/kasan_init.c
-> @@ -287,6 +287,22 @@ static void __init kasan_init_depth(void)
->   	init_task.kasan_depth = 0;
->   }
->   
-> +#ifdef CONFIG_KASAN_VMALLOC
-> +void __init kasan_populate_early_vm_area_shadow(void *start, unsigned long size)
-> +{
-> +	unsigned long shadow_start, shadow_end;
-> +
-> +	if (!is_vmalloc_or_module_addr(start))
-> +		return;
-> +
-> +	shadow_start = (unsigned long)kasan_mem_to_shadow(start);
-> +	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
-> +	shadow_end = (unsigned long)kasan_mem_to_shadow(start + size);
-> +	shadow_end = ALIGN(shadow_end, PAGE_SIZE);
-> +	kasan_map_populate(shadow_start, shadow_end, NUMA_NO_NODE);
-> +}
-> +#endif
-> +
->   void __init kasan_init(void)
->   {
->   	kasan_init_shadow();
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index dd874a1ee862..3f8c26d9ef82 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -133,6 +133,8 @@ struct kasan_cache {
->   	bool is_kmalloc;
->   };
->   
-> +void kasan_populate_early_vm_area_shadow(void *start, unsigned long size);
-> +
->   slab_flags_t __kasan_never_merge(void);
->   static __always_inline slab_flags_t kasan_never_merge(void)
->   {
-> @@ -303,6 +305,10 @@ void kasan_restore_multi_shot(bool enabled);
->   
->   #else /* CONFIG_KASAN */
->   
-> +static inline void kasan_populate_early_vm_area_shadow(void *start,
-> +						       unsigned long size)
-> +{ }
-> +
->   static inline slab_flags_t kasan_never_merge(void)
->   {
->   	return 0;
-> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-> index cc64ed6858c6..d39577d088a1 100644
-> --- a/mm/kasan/init.c
-> +++ b/mm/kasan/init.c
-> @@ -279,6 +279,11 @@ int __ref kasan_populate_early_shadow(const void *shadow_start,
->   	return 0;
->   }
->   
-> +void __init __weak kasan_populate_early_vm_area_shadow(void *start,
-> +						       unsigned long size)
-> +{
-> +}
-> +
->   static void kasan_free_pte(pte_t *pte_start, pmd_t *pmd)
->   {
->   	pte_t *pte;
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 1e8fe08725b8..66a7e1ea2561 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2253,6 +2253,7 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
->   	vm->addr = (void *)addr;
->   
->   	vm_area_add_early(vm);
-> +	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
->   }
->   
->   static void vmap_init_free_space(void)
+>  drivers/pci/pci.c   | 6 ++----
+>  drivers/pci/probe.c | 5 +++--
+>  include/linux/pci.h | 1 +
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 452351025a09..1fafd05caa41 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/vmalloc.h>
+>  #include <asm/dma.h>
+>  #include <linux/aer.h>
+> +#include <linux/bitfield.h>
+>  #include "pci.h"
+> =20
+>  DEFINE_MUTEX(pci_slot_mutex);
+> @@ -4620,13 +4621,10 @@ EXPORT_SYMBOL(pci_wait_for_pending_transaction);
+>   */
+>  bool pcie_has_flr(struct pci_dev *dev)
+>  {
+> -	u32 cap;
+> -
+>  	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+>  		return false;
+> =20
+> -	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
+> -	return cap & PCI_EXP_DEVCAP_FLR;
+> +	return FIELD_GET(PCI_EXP_DEVCAP_FLR, dev->devcap) =3D=3D 1;
+>  }
+>  EXPORT_SYMBOL_GPL(pcie_has_flr);
+> =20
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 3a62d09b8869..df3f9db6e151 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/hypervisor.h>
+>  #include <linux/irqdomain.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/bitfield.h>
+>  #include "pci.h"
+> =20
+>  #define CARDBUS_LATENCY_TIMER	176	/* secondary latency timer */
+> @@ -1497,8 +1498,8 @@ void set_pcie_port_type(struct pci_dev *pdev)
+>  	pdev->pcie_cap =3D pos;
+>  	pci_read_config_word(pdev, pos + PCI_EXP_FLAGS, &reg16);
+>  	pdev->pcie_flags_reg =3D reg16;
+> -	pci_read_config_word(pdev, pos + PCI_EXP_DEVCAP, &reg16);
+> -	pdev->pcie_mpss =3D reg16 & PCI_EXP_DEVCAP_PAYLOAD;
+> +	pci_read_config_dword(pdev, pos + PCI_EXP_DEVCAP, &pdev->devcap);
+> +	pdev->pcie_mpss =3D FIELD_GET(PCI_EXP_DEVCAP_PAYLOAD, pdev->devcap);
+> =20
+>  	parent =3D pci_upstream_bridge(pdev);
+>  	if (!parent)
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index c20211e59a57..697b1f085c7b 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -333,6 +333,7 @@ struct pci_dev {
+>  	struct rcec_ea	*rcec_ea;	/* RCEC cached endpoint association */
+>  	struct pci_dev  *rcec;          /* Associated RCEC device */
+>  #endif
+> +	u32		devcap;		/* PCIe device capabilities */
+>  	u8		pcie_cap;	/* PCIe capability offset */
+>  	u8		msi_cap;	/* MSI capability offset */
+>  	u8		msix_cap;	/* MSI-X capability offset */
+> --=20
+> 2.32.0
+>=20
+> =
