@@ -2,245 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05073E4311
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEEB3E4314
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbhHIJob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:44:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234365AbhHIJoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:44:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3151160F35;
-        Mon,  9 Aug 2021 09:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628502250;
-        bh=fpRT7uTTq1OKVtdrHaU+I/oKylPE+Adc/m7Bb1QlWfI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Of83jRNJEoYUJ6zgx6BkQsugPLTztElCOYd3F3c7VidT6u3txvUOFKckWl0YGukK9
-         EDMyhrlzsMtAh7woX1ydovxaX2jqLObXDE6tu6Ur9S5m03trDH01McBvQ9UKLsfKQp
-         kcfEpT8977IheTxTCVgRUvfHQJCSQ7iRi6uPLoEcwxOKxksCApH3y0VRiBAEzsW0GK
-         Uwf5YQ4lIaTuO6RcBVKV4aIYy7eIvB3+NzueSOAVZR35WPThXsc8cpWFmKPqfNNAid
-         PNBnnT4OL0T16xnVEIe9Yt/yBDkPX/KmfmGjShYvkjaJ2gqbYOqtoShhPfH2So95fH
-         aYG51tdGU5lJA==
-Date:   Mon, 9 Aug 2021 12:44:08 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <20210809094408.4iqwsx77u64usfx6@kernel.org>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+        id S234677AbhHIJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:47:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20705 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234365AbhHIJre (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 05:47:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628502433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YIzxW1n4ek2sfIW3v4j8n0cb8MmPxkckfn2o3SBMVJk=;
+        b=gX6z3SrFcr6OeD6qW2lQuLyqsYx4pZGlgErfWK/DlGDvig3vRUkKGGIG9l9kbirhTBu2JD
+        FVb/GJ2e52CY7SovJqX4QeHDBrT47tQJwD0udjBhy7OAKImpd8MiaNt9k9qTSGic0bSTvJ
+        9cczNwO9JLNFqp3q/nllsayWe53UjAU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-LewsWq59NQC-jFhdWak5mw-1; Mon, 09 Aug 2021 05:47:12 -0400
+X-MC-Unique: LewsWq59NQC-jFhdWak5mw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8BB61074661;
+        Mon,  9 Aug 2021 09:47:10 +0000 (UTC)
+Received: from T590 (ovpn-13-190.pek2.redhat.com [10.72.13.190])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F3EEC7A8D5;
+        Mon,  9 Aug 2021 09:47:03 +0000 (UTC)
+Date:   Mon, 9 Aug 2021 17:46:58 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, bvanassche@acm.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v2 2/2] nbd: convert to use blk_mq_get_rq_by_tag()
+Message-ID: <YRD5krmF/C7JxchE@T590>
+References: <20210809030927.1946162-1-yukuai3@huawei.com>
+ <20210809030927.1946162-3-yukuai3@huawei.com>
+ <YRDK9tBFscK5ScK8@T590>
+ <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+In-Reply-To: <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
-> Kernel trusted keys don't require userspace knowledge of the raw key
-> material and instead export a sealed blob, which can be persisted to
-> unencrypted storage. Userspace can then load this blob into the kernel,
-> where it's unsealed and from there on usable for kernel crypto.
+On Mon, Aug 09, 2021 at 03:08:26PM +0800, yukuai (C) wrote:
+> On 2021/08/09 14:28, Ming Lei wrote:
+> > On Mon, Aug 09, 2021 at 11:09:27AM +0800, Yu Kuai wrote:
+> > > blk_mq_tag_to_rq() might return freed request, use
+> > > blk_mq_get_rq_by_tag() instead.
+> > > 
+> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > > ---
+> > >   drivers/block/nbd.c | 11 ++++++-----
+> > >   1 file changed, 6 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> > > index c38317979f74..9e56975a8eee 100644
+> > > --- a/drivers/block/nbd.c
+> > > +++ b/drivers/block/nbd.c
+> > > @@ -713,11 +713,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
+> > >   	tag = nbd_handle_to_tag(handle);
+> > >   	hwq = blk_mq_unique_tag_to_hwq(tag);
+> > >   	if (hwq < nbd->tag_set.nr_hw_queues)
+> > > -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
+> > > -				       blk_mq_unique_tag_to_tag(tag));
+> > > -	if (!req || !blk_mq_request_started(req)) {
+> > > -		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
+> > > -			tag, req);
+> > > +		req = blk_mq_get_rq_by_tag(nbd->tag_set.tags[hwq],
+> > > +					   blk_mq_unique_tag_to_tag(tag));
+> > > +	if (!req) {
+> > > +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d\n", tag);
+> > >   		return ERR_PTR(-ENOENT);
+> > >   	}
+> > >   	trace_nbd_header_received(req, handle);
+> > > @@ -779,6 +778,8 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
+> > >   	}
+> > >   out:
+> > >   	trace_nbd_payload_received(req, handle);
+> > > +	if (req)
+> > > +		blk_mq_put_rq_ref(req);
+> > >   	mutex_unlock(&cmd->lock);
+> > >   	return ret ? ERR_PTR(ret) : cmd;
+> > 
+> > After blk_mq_put_rq_ref() returns, this request may have been freed,
+> > so the returned 'cmd' may have been freed too.
+> > 
+> > As I replied in your another thread, it is driver's responsibility to
+> > cover race between normal completion and timeout/error handling, that
+> > means the caller of blk_mq_tag_to_rq need to make sure that the request
+> > represented by the passed 'tag' can't be freed.
 > 
-> This is incompatible with fscrypt, where userspace is supposed to supply
-> the raw key material. For TPMs, a work around is to do key unsealing in
-> userspace, but this may not be feasible for other trusted key backends.
+> Hi, Ming
 > 
-> Make it possible to benefit from both fscrypt and trusted key sealing
-> by extending fscrypt_add_key_arg::key_id to hold either the ID of a
-> fscrypt-provisioning or a trusted key.
+> There are two problems here in nbd, both reported by our syzkaller.
 > 
-> A non fscrypt-provisioning key_id was so far prohibited, so additionally
-> allowing trusted keys won't break backwards compatibility.
-> 
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
-> Tested with:
-> https://github.com/google/fscryptctl/pull/23
-> 
-> v1 here:
-> https://lore.kernel.org/linux-fscrypt/20210727144349.11215-1-a.fatoum@pengutronix.de/T/#u
-> 
-> v1 -> v2:
->   - Drop encrypted key support and key_extract_material
->   - Use key_id instead of repurposing raw (Eric)
->   - Shift focus to trusted key sealing for non-TPM as a rationale
->     why this integration is worthwhile (Eric)
->   - Extend documentation with rationale on why one would
->     use trusted keys and warn about trusted key reuse
-> 
-> To: "Theodore Y. Ts'o" <tytso@mit.edu>
-> To: Jaegeuk Kim <jaegeuk@kernel.org>
-> To: Eric Biggers <ebiggers@kernel.org>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: James Bottomley <jejb@linux.ibm.com>
-> Cc: Mimi Zohar <zohar@linux.ibm.com>
-> Cc: Sumit Garg <sumit.garg@linaro.org>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: linux-fscrypt@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-integrity@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  Documentation/filesystems/fscrypt.rst | 31 ++++++++++++++-----
->  fs/crypto/keyring.c                   | 43 +++++++++++++++++++--------
->  2 files changed, 54 insertions(+), 20 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> index 44b67ebd6e40..c1811fa4285a 100644
-> --- a/Documentation/filesystems/fscrypt.rst
-> +++ b/Documentation/filesystems/fscrypt.rst
-> @@ -734,23 +734,40 @@ as follows:
->  
->  - ``key_id`` is 0 if the raw key is given directly in the ``raw``
->    field.  Otherwise ``key_id`` is the ID of a Linux keyring key of
-> -  type "fscrypt-provisioning" whose payload is
-> +  type "fscrypt-provisioning" or "trusted":
-> +  "fscrypt-provisioning" keys have a payload of
->    struct fscrypt_provisioning_key_payload whose ``raw`` field contains
->    the raw key and whose ``type`` field matches ``key_spec.type``.
->    Since ``raw`` is variable-length, the total size of this key's
->    payload must be ``sizeof(struct fscrypt_provisioning_key_payload)``
-> -  plus the raw key size.  The process must have Search permission on
-> -  this key.
-> -
-> -  Most users should leave this 0 and specify the raw key directly.
-> -  The support for specifying a Linux keyring key is intended mainly to
-> -  allow re-adding keys after a filesystem is unmounted and re-mounted,
-> +  plus the raw key size.
-> +  For "trusted" keys, the payload is directly taken as the raw key.
-> +
-> +  The process must have Search permission on this key.
-> +
-> +  Most users leave this 0 and specify the raw key directly.
-> +  "trusted" keys are useful to leverage kernel support for sealing
-> +  and unsealing key material. Sealed keys can be persisted to
-> +  unencrypted storage and later be used to decrypt the file system
-> +  without requiring userspace to have knowledge of the raw key
-> +  material.
-> +  "fscrypt-provisioning" key support is intended mainly to allow
-> +  re-adding keys after a filesystem is unmounted and re-mounted,
->    without having to store the raw keys in userspace memory.
->  
->  - ``raw`` is a variable-length field which must contain the actual
->    key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
->    nonzero, then this field is unused.
->  
-> +.. note::
-> +
-> +   Users should take care not to reuse the fscrypt key material with
-> +   different ciphers or in multiple contexts as this may make it
-> +   easier to deduce the key.
-> +   This also applies when the key material is supplied indirectly
-> +   via a kernel trusted key. In this case, the trusted key should
-> +   perferably be used only in a single context.
-> +
->  For v2 policy keys, the kernel keeps track of which user (identified
->  by effective user ID) added the key, and only allows the key to be
->  removed by that user --- or by "root", if they use
-> diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-> index 0b3ffbb4faf4..721f5da51416 100644
-> --- a/fs/crypto/keyring.c
-> +++ b/fs/crypto/keyring.c
-> @@ -20,6 +20,7 @@
->  
->  #include <crypto/skcipher.h>
->  #include <linux/key-type.h>
-> +#include <keys/trusted-type.h>
->  #include <linux/random.h>
->  #include <linux/seq_file.h>
->  
-> @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
->  	key_ref_t ref;
->  	struct key *key;
->  	const struct fscrypt_provisioning_key_payload *payload;
-> -	int err;
-> +	int err = 0;
->  
->  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
->  	if (IS_ERR(ref))
->  		return PTR_ERR(ref);
->  	key = key_ref_to_ptr(ref);
->  
-> -	if (key->type != &key_type_fscrypt_provisioning)
-> -		goto bad_key;
-> -	payload = key->payload.data[0];
-> +	if (key->type == &key_type_fscrypt_provisioning) {
+> The first is that blk_mq_tag_to_rq() returned a freed request, which is
+> because tags->static_rq[] is freed without clearing tags->rq[].
+> Syzkaller log shows that a reply package is sent to client without
+> the client's request package. And this patch is trying to solve this
+> problem.
 
-Why does fscrypt have own key type, and does not extend 'encrypted' with a
-new format [*]?
+It is still driver's problem:
 
-> +		payload = key->payload.data[0];
->  
-> -	/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
-> -	if (payload->type != type)
-> -		goto bad_key;
-> +		/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
-> +		if (payload->type != type) {
-> +			err = -EKEYREJECTED;
-> +			goto out_put;
-> +		}
->  
-> -	secret->size = key->datalen - sizeof(*payload);
-> -	memcpy(secret->raw, payload->raw, secret->size);
-> -	err = 0;
-> -	goto out_put;
-> +		secret->size = key->datalen - sizeof(*payload);
-> +		memcpy(secret->raw, payload->raw, secret->size);
-> +	} else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) && key->type == &key_type_trusted) {
-> +		struct trusted_key_payload *tkp;
-> +
-> +		/* avoid reseal changing payload while we memcpy key */
-> +		down_read(&key->sem);
-> +		tkp = key->payload.data[0];
-> +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
-> +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
-> +			up_read(&key->sem);
-> +			err = -EINVAL;
-> +			goto out_put;
-> +		}
-> +
-> +		secret->size = tkp->key_len;
-> +		memcpy(secret->raw, tkp->key, secret->size);
-> +		up_read(&key->sem);
-> +	} else {
+->static_rq is freed in blk_mq_free_tag_set() which is called after
+blk_cleanup_disk() returns. Once blk_cleanup_disk() returns, there
+shouldn't be any driver activity, including calling blk_mq_tag_to_rq()
+by passing one invalid tag.
 
 
-I don't think this is right, or at least it does not follow the pattern
-in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
+Thanks, 
+Ming
 
-
-> +		err = -EKEYREJECTED;
-> +	}
->  
-> -bad_key:
-> -	err = -EKEYREJECTED;
->  out_put:
->  	key_ref_put(ref);
->  	return err;
-> -- 
-> 2.30.2
-> 
-> 
-
-[*] https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
-
-/Jarkko
