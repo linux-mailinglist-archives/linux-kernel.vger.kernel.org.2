@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8ED3E462C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D504C3E4630
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbhHINJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:09:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51566 "EHLO mail.kernel.org"
+        id S235085AbhHINKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:10:04 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39888 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234597AbhHINJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:09:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BE6E60EC0;
-        Mon,  9 Aug 2021 13:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628514563;
-        bh=c6YJj4mhhNAXx6eVWt/9O44DDuMRQSozD29Cp4nkeC4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dFUthAbq5qF7TRptNmUkrRcgE3Pm/TgwlG5vaCI/Ih4nOb914rc2Bq7Gr9nus0F8/
-         Vsa6CRs0lYZSkOP9/cr4LkgbhSuVGenhJwpPSL7P2PaET/jZr7ZHKDhDihvmLtxQDc
-         s9TJwQeB4dhkYTlAmkI9sJ3tMFKGKQabR2B3WVd25EP1h1RJq2dnn29Q+xNHxqc9i8
-         nXswAkf6pI0o8d0y/fWall3OsWwIywpekINKrCHLjLruXzjGu1X0TBO9T9nbENsCZJ
-         R+N2mE4pZfJGPXm1KU6tzZPY/5bXitA5fG8vCUna4bQwd/FOr8dvIAeZ/EGqSoHRzv
-         D2cYdhCIQBTXQ==
-Date:   Mon, 9 Aug 2021 14:09:17 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Alexandru.Elisei@arm.com" <Alexandru.Elisei@arm.com>,
-        "qperret@google.com" <qperret@google.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule
- out
-Message-ID: <20210809130917.GA1207@willie-the-truck>
-References: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
- <20210729104009.382-5-shameerali.kolothum.thodi@huawei.com>
- <20210803114034.GB30853@willie-the-truck>
- <ee2863107d614ef8a36006b5aa912eca@huawei.com>
- <20210803153036.GA31125@willie-the-truck>
- <b2146ea5db47485f8410a4c1ab0c15fe@huawei.com>
+        id S234207AbhHINJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:09:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=bj4IgXIg32jZPQDCAO7n9XK4DWEWjo8Tf/ELTxnwevk=; b=Di5e2m5iSa/uhBcJoEare1Zxg6
+        pQL10khiMNUk8jvmuQneGR5vwzw2XfxYtfnfw5I+p1BnI0Wz67WwkCn8Kn+onYvpSMhNyDzFU2Wwr
+        Ugc9+90IbMvOISMPqZdjx3r6rbpOC6nyhS4zF/MapHTZoFKFITwDmj+ib4TlFXzjqS0k=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mD51r-00Ghnx-S3; Mon, 09 Aug 2021 15:09:19 +0200
+Date:   Mon, 9 Aug 2021 15:09:19 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Gabriel Somlo <gsomlo@gmail.com>, David Shah <dave@ds0.me>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] net: Add driver for LiteX's LiteETH network interface
+Message-ID: <YREo/wS8iagiuYBA@lunn.ch>
+References: <20210806054904.534315-1-joel@jms.id.au>
+ <20210806054904.534315-3-joel@jms.id.au>
+ <YQ7czmvIm6FTZAol@lunn.ch>
+ <CACPK8XdOUhz8U0NqOcLRPC3=rjfVB1FFhwyJzMy2AE+7Omm_2g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b2146ea5db47485f8410a4c1ab0c15fe@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CACPK8XdOUhz8U0NqOcLRPC3=rjfVB1FFhwyJzMy2AE+7Omm_2g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 12:24:36PM +0000, Shameerali Kolothum Thodi wrote:
-> These are some test numbers with and without this patch, run on two
-> different test setups.
+On Mon, Aug 09, 2021 at 03:20:57AM +0000, Joel Stanley wrote:
+> On Sat, 7 Aug 2021 at 19:19, Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > > +static void liteeth_reset_hw(struct liteeth *priv)
+> > > +{
+> > > +     /* Reset, twice */
+> > > +     writeb(0, priv->base + LITEETH_PHY_CRG_RESET);
+> > > +     udelay(10);
+> > > +     writeb(1, priv->base + LITEETH_PHY_CRG_RESET);
+> > > +     udelay(10);
+> > > +     writeb(0, priv->base + LITEETH_PHY_CRG_RESET);
+> > > +     udelay(10);
+> >
+> > What is this actually resetting?
 > 
+> This comes from the reference firmware that many (but not all) litex
+> systems run before loading their operating system.
 > 
-> a)Test Setup -1
-> -----------------------
-> 
-> Platform: HiSilicon D06 with 128 CPUs, VMID bits = 16
-> Run 128 VMs concurrently each with 2 vCPUs. Each Guest will execute hackbench
-> 5 times before exiting.
-> 
-> Measurements taken avg. of 10 Runs.
-> 
-> Image : 5.14-rc3
-> ---------------------------
->   Time(s)       44.43813888
->   No. of exits    145,348,264
-> 
-> Image: 5.14-rc3 + vmid-v3
-> ----------------------------------------
->   Time(s)        46.59789034
->   No. of exits     133,587,307
-> 
-> %diff against 5.14-rc3
->   Time: 4.8% more
->   Exits: 8% less 
-> 
-> Image: 5.14-rc3 + vmid-v3 + Without active_asid clear
-> ---------------------------------------------------------------------------
->   Time(s)         44.5031782
->   No. of exits      144,443,188
-> 
-> %diff against 5.14-rc3
->   Time: 0.15% more
->   Exits: 2.42% less
-> 
-> b)Test Setup -2
-> -----------------------
-> 
-> Platform: HiSilicon D06 + Kernel with maxcpus set to 8 and VMID bits set to 4.
-> Run 40 VMs concurrently each with 2 vCPUs. Each Guest will execute hackbench
-> 5 times before exiting.
-> 
-> Measurements taken avg. of 10 Runs.
-> 
-> Image : 5.14-rc3-vmid4bit
-> ------------------------------------
->   Time(s)        46.19963266
->   No. of exits     23,699,546
-> 
-> Image: 5.14-rc3-vmid4bit + vmid-v3
-> ---------------------------------------------------
->   Time(s)          45.83307736
->   No. of exits      23,260,203
-> 
-> %diff against 5.14-rc3-vmid4bit
->   Time: 0.8% less
->   Exits: 1.85% less 
-> 
-> Image: 5.14-rc3-vmid4bit + vmid-v3 + Without active_asid clear
-> -----------------------------------------------------------------------------------------
->   Time(s)           44.5031782
->   No. of exits        144,443,188
+> I'm not completely sure how necessary it still is; I will drop it for now.
 
-Really? The *exact* same numbers as the "Image: 5.14-rc3 + vmid-v3 + Without
-active_asid clear" configuration? Guessing a copy-paste error here.
+Which did not answer my question. Once we know what is being reset, we
+can maybe suggest when/how it should be reset.
 
-> %diff against 5.14-rc3-vmid4bit
->   Time: 1.05% less
->   Exits: 2.06% less
+> > > +static int liteeth_probe(struct platform_device *pdev)
+> > > +{
+> > > +     struct net_device *netdev;
+> > > +     void __iomem *buf_base;
+> > > +     struct resource *res;
+> > > +     struct liteeth *priv;
+> > > +     int irq, err;
+> > > +
+> > > +     netdev = alloc_etherdev(sizeof(*priv));
+> > > +     if (!netdev)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     priv = netdev_priv(netdev);
+> > > +     priv->netdev = netdev;
+> > > +     priv->dev = &pdev->dev;
+> > > +
+> > > +     irq = platform_get_irq(pdev, 0);
+> > > +     if (irq < 0) {
+> > > +             dev_err(&pdev->dev, "Failed to get IRQ\n");
+> > > +             goto err;
+> > > +     }
+> > > +
+> > > +     res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > > +     priv->base = devm_ioremap_resource(&pdev->dev, res);
+> > > +     if (IS_ERR(priv->base)) {
+> > > +             err = PTR_ERR(priv->base);
+> > > +             goto err;
+> > > +     }
+> > > +
+> > > +     res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> > > +     priv->mdio_base = devm_ioremap_resource(&pdev->dev, res);
+> > > +     if (IS_ERR(priv->mdio_base)) {
+> > > +             err = PTR_ERR(priv->mdio_base);
+> > > +             goto err;
+> > > +     }
+> >
+> > So you don't have any PHY handling, or any MDIO bus master code. So i
+> > would drop this, until the MDIO architecture question is answered. I
+> > also wonder how much use the MAC driver is without any PHY code?
+> > Unless you have a good reason, i don't think we should merge this
+> > until it makes the needed calls into phylib. It is not much code to
+> > add.
 > 
-> As expected, the active_asid clear on schedule out is not helping.
-> But without this patch, the numbers seems to be better than the
-> vanilla kernel when we force the setup(cpus=8, vmd=4bits)
-> to perform rollover.
+> You mean I should skip out the parsing of the mdio base until I'm
+> using it? That's reasonable.
 
-I'm struggling a bit to understand these numbers. Are you saying that
-clearing the active_asid helps in the 16-bit VMID case but not in the
-4-bit case?
+It could be we insist you add MDIO and PHY handling. But first we need
+to understand the architecture.
 
-Why would the active_asid clear have any impact on the number of exits?
-
-The problem I see with not having the active_asid clear is that we will
-roll over more frequently as the number of reserved VMIDs increases.
-
-Will
+   Andrew
