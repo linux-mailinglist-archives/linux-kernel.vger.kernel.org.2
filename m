@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F1E3E406D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814FC3E406E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhHIGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 02:46:38 -0400
-Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:44544
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S233440AbhHIGqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 02:46:49 -0400
+Received: from mail-mw2nam08on2047.outbound.protection.outlook.com ([40.107.101.47]:22401
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233266AbhHIGqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 02:46:36 -0400
+        id S233244AbhHIGqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 02:46:48 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iOFSSPW2T8uReHxft03i+FLtgcfHIbX+smiSZQvIqCdTYqL6dVR81W9MDaVkZNDUXT1SCuPNP9lQAk06xqoWsZCtiiT6Kqn46Q0EunYG2TZboim/KnplCs5k3R5I1lhZ5zu7Fq91+3mufR5lD5jDVeZDnjJYc6pGXagv8wAs/Q55hCzCdQuUroo0bV5J8Tg7DLes9K3dSQX4hwFw/d4zUbdM55Clhd5ZNT9aQfzMeeKl/7I1jgMtUDFKuEuEoWzj4o9ABMeQKGml09t3QzCjaKoNXvE5TGbcvhhnQHjo7tGZXjCb4H8B5wm5XmvdJAwljR+W7oeM1/MMGnHc4odVeg==
+ b=C4D+IkMV5P+uHGTgI6OalzUv8eHpegDaLnID1tmQCaEwk5TLcRpH6iTC3rBrK5c3owy8HmScEf8Ei4Z5TS7UASdjXaDfnoE7fQ3zrOjCGqJXCP0l7wvgySBrdWmUGoHkDuS8VtzT9wDcjH4Owm/h9iApfP/ThrpX1TUWW7YoTOw2WxpeqFzf2hvr4wFr0OSzhZ+qlTgkmhh3N7eMkWyAJox5jgGjOgrisaWhujdmsv3YSUnAZMrKpVetdZLKJVP9BZmvbnt0F8ZLfkl5JjxfFfHUXWc6S9wgJnusX2AaDK1oyYGUvXpKmUB13lymMRIrVnj25Uj/mefiWeF3dqwcSg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rx3tKlKqWswfrIZU+xPcvaIqyLthUji4ByCjuz1DjfA=;
- b=ahgcgnQRx0/DN28MHuiYjMn9Q0sQEbf8vRg/bYdAY4gLeaFokkR1m9qXY/TQmUB+zKeAkUManVzug1Q7evDefVRz0HcASzZYKV7lnmqIgmg2sPVEZwyf7pIbk1tz4N0NHJOif1ZFrHZor8wJiE+PQeB6FowDyikWiqfbXgRtg+WNKSCd411BnVTb57lrUtUKB8ekVlCHGlXVohS2PApeyIyxeAPOOwZBJB/j+qLylgAbGZGuYMKH3oBoVpHR9ACFXleGg8Pa8fSuTII2ipQ5fTn3tM2NDqVid2/mb/31QrjEYzrEDoOUQ5HCoh8IkYj2kcst4NAa/SV2fSDwfEJ0yw==
+ bh=182BdK9qCEGpLdZM845Jeu/tUcen8s7scL7fM/Rr/W4=;
+ b=iH9IMjYc3sl4TI+iftgFw43XHGtW2zg2DYI7gDb8rWo8TR5OWeltgnWz8vEQ2diAA8DsBnXfGHEoHgW984SPAMWVPgDEfzcjPc/sCQBjH8ljFnWHEoNTk56MAYgPWf2WfxujyKt4T0BHWH4ZGL5/IxgJlu/EykkTJYPhffM1I9s31flFBxkGaFygGnt8t8NCvQ2df5CPrFgHJM/8WLhm/f1ZzKADCi4JlbbCQcHesH3x89JPx+eqxa10I+yj493CPiLtN3LeVl4qVsY7e9lJk618MiYr0/wVU2L+hQdznn2HpzvsCD1d+dwhg/lLVuOGqAUN9sEyddc+wR7aOKf6Ig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=kvack.org smtp.mailfrom=nvidia.com;
+ 216.228.112.32) smtp.rcpttodomain=kvack.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rx3tKlKqWswfrIZU+xPcvaIqyLthUji4ByCjuz1DjfA=;
- b=Pu29Oyzm5J95LWvx5uZEylF6FaPPN4QlnUApMO4VbuWZ4Ldmf5ZeKZGHmbV/LkolmErqSJEd+gdbKxpSdcrZ/u176g3JEqtdPlB2I6Vaz6SHvWQPlQstd4c8SReZN9gLC4Cd/ZzHaR6Uwg+ihkPy6Ij8MXPVKypnIvUHJFKHvn0JnHegA8jG0X430h50a8ECwdlxCtshprxHf4Lx8L5RslRSeN3EdvmbgFHBilMugl+5GgwlewxaL/UbDsza2b00utqtHtI1ipfg/zll9J/3+HYulO+1KhIXsUfvBB+utIJ3vEhM1vzuPC4PQoSkZeNXtVt/0OjE3B571Wq43bfiQQ==
-Received: from BN1PR12CA0012.namprd12.prod.outlook.com (2603:10b6:408:e1::17)
- by CH2PR12MB4280.namprd12.prod.outlook.com (2603:10b6:610:ac::11) with
+ bh=182BdK9qCEGpLdZM845Jeu/tUcen8s7scL7fM/Rr/W4=;
+ b=HUYq6kaHPma6z9csAwsVejo5/pZdOvk/GigccyRLerReKG7c7yqIdFMFxEuYvhdTQxfbq3f5Ifbs4E73yZWmMO7OLd+u1Byuftz9sbRkSKRW5TGAS592QzQSxHx7N/i+WD/Wh/7L9dpvDLJNOz26d9gAKvHhu1zmVW5Okn7CxYBQj1PssIQzFOzzboU3bFS1IHOeTr1J+tInDIJ8eJxWvlukVhylkSNlVAD5OBSk+V4XOFDkjztKiwxUx/JGSxD3U0bmNyQuHlwU8HRPIV2UTIVHF8DQbVuy43As9vw1hg26+1gCWlLoD1REHGbXBxu9wR/ptUYMw3qE1UmDXkr6zw==
+Received: from BN6PR22CA0038.namprd22.prod.outlook.com (2603:10b6:404:37::24)
+ by CY4PR12MB1848.namprd12.prod.outlook.com (2603:10b6:903:11d::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Mon, 9 Aug
- 2021 06:46:15 +0000
-Received: from BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e1:cafe::23) by BN1PR12CA0012.outlook.office365.com
- (2603:10b6:408:e1::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend
- Transport; Mon, 9 Aug 2021 06:46:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ 2021 06:46:27 +0000
+Received: from BN8NAM11FT064.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:37:cafe::91) by BN6PR22CA0038.outlook.office365.com
+ (2603:10b6:404:37::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend
+ Transport; Mon, 9 Aug 2021 06:46:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
  smtp.mailfrom=nvidia.com; kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- BN8NAM11FT012.mail.protection.outlook.com (10.13.177.55) with Microsoft SMTP
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT064.mail.protection.outlook.com (10.13.176.160) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4394.16 via Frontend Transport; Mon, 9 Aug 2021 06:46:15 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Aug
- 2021 06:46:10 +0000
+ 15.20.4394.16 via Frontend Transport; Mon, 9 Aug 2021 06:46:26 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 8 Aug
+ 2021 23:46:25 -0700
 Received: from [10.2.53.40] (172.20.187.5) by HQMAIL105.nvidia.com
  (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Aug
- 2021 06:46:10 +0000
-Subject: Re: [PATCH 2/3] mm/gup: small refactoring: simplify try_grab_page()
-To:     Christoph Hellwig <hch@infradead.org>
+ 2021 06:46:26 +0000
+Subject: Re: [PATCH 1/3] mm/gup: documentation corrections for gup/pup
+To:     Matthew Wilcox <willy@infradead.org>
 CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
 References: <20210808235018.1924918-1-jhubbard@nvidia.com>
- <20210808235018.1924918-3-jhubbard@nvidia.com>
- <YRDNeZZQxUzbFxrQ@infradead.org>
+ <20210808235018.1924918-2-jhubbard@nvidia.com>
+ <YRCHZObkj/BJgCmR@casper.infradead.org>
 From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <e46fbd0f-21f7-9cd5-d216-8ec0b9e2221d@nvidia.com>
-Date:   Sun, 8 Aug 2021 23:46:08 -0700
+Message-ID: <eaaa8340-d736-e6de-cce0-7d717bee7f7a@nvidia.com>
+Date:   Sun, 8 Aug 2021 23:46:25 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YRDNeZZQxUzbFxrQ@infradead.org>
+In-Reply-To: <YRCHZObkj/BJgCmR@casper.infradead.org>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -77,75 +76,61 @@ X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
  HQMAIL105.nvidia.com (172.20.187.12)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 12371092-fd63-43f7-34c4-08d95b01626f
-X-MS-TrafficTypeDiagnostic: CH2PR12MB4280:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB4280472B970EA98FCB9B284DA8F69@CH2PR12MB4280.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Office365-Filtering-Correlation-Id: 695c84f3-dd83-4221-266f-08d95b016954
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1848:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB18485395173B44E477F7402BA8F69@CY4PR12MB1848.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /cck3VLkQtWsSRLWth5iDMDks87GpWtzIJ4HXEbpAym3s7cF2pvr95N5LSBQ/ATtXhcPNxyML10WWZf7Lgs9IdRexERrvW+kvY9XS55mSYn02bco49BBUwCCeChr+1m3ViJKDxtgKPnGJX9QedUAscFCMqsznyDjKFUiytTDYkjYBMYsRu5wpwLo1JyRkkw3AiGdjwln3l7Eo/eKD4bd/fpWdZavQGW1NM8Wx1gpSJ/u8E/SFVhg7cT1nbh01JFacveLtASt3iaQvmoJ/CVC5NCWLL8SV4sYRQrXyR5YIlTYU3XsxMPZM1iUPolSIFIPMm4Sxc6Qh2TF3lgZNQW9YST0GwSrJMDe9y0WdkfdrCpplmf2ZjrygVUHtGMCrjAdygZj3JZkOItQ3EjWiC3Khr+Cd7oZ8CyH4oC61l4yPaC3QOt8BhivQAksb5Czy+OhKJXH3PgLmwkwmn4S41xZlJUaazh2wFV9DIJDovCrSV/IM8KpcFh/d6VzrOn/acMo9ZLXMedm/rYJqZW2yNdDvJlTglfy90U3mEcFcE+gV/6Xl6IGk+HNH5pMy3pJW4Kf48neG2LBGE4i/CN5I7oOj0cMXnAFXnQEryD5Dbacrnpby1lxNMUF6V12AQSi75tuTkuQHxx50Po5BZH3Yf666K+2mkGe9GJaViCJXgytZIYcOUFUIaOj84sPJLCUmn0uxB2oCVlCDpnGC2Zevkky6oEi6QjoB4X6bkjXP20zP2Y=
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(36840700001)(46966006)(8936002)(26005)(186003)(6916009)(4326008)(16526019)(426003)(36756003)(8676002)(83380400001)(478600001)(5660300002)(31696002)(86362001)(31686004)(53546011)(336012)(54906003)(70586007)(70206006)(36860700001)(2906002)(316002)(16576012)(36906005)(82310400003)(7636003)(2616005)(47076005)(82740400003)(356005)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: s1/l3NDiWNYdcQWmTAj5u1tkwC76veJ76tXx6sJiEK29syw918146lIIDI/u2DNbIaoim7pGschXCQ8lckuacBjm8PFD64OqavlxMhTJ17DW6/mfKQtScdcRd1tGQp3DOQbxcbGiTQA60rvF6rPBGmIFoNSvo14spTjdsFkFN+Bjm+BBxcKGrL0VyKjrge9d3OzepXw5jyJN2d55ptSX7z/qWuDb52ebIpQuj4EDyyXR+fGu24jWfh+JXez83XGQ2YvGzMZ7+Jp7ADq5fNOGiNxwPAaGx329W78vmyh8e045GLcvkqG0SwwzwgBJDEP5MzlwdpxK9zQRG7YjK+/gYgQdSNM74MBuNfKf8g421eNSHvFkUmyFF7ygO5qySPP2XhMjOolMprMikrI9AEBPLI5pXnBiltmDD+3ms/NkkYZZFd5u5figRllCNPQFVjtSuPkS64ivRYD0es2OJSDtJDD2K0tz9zMcPzAEl/+5hSV4urfvD2BM2NBFq/OCiCHPqiaPcXTzGIOJehk1C7oE7lV3IjQZ8TBs2bmlXMfurGwm9em34H/WHlDUbstTuK/cD+AK79DuH5ZMjh23kW0t9K7Vjt7KvEGz594Rb53ZaJGM3NE6wG+v011nceRX63xPsBvRiagFMUBc3RNCDygYDjQZuGOXSgP1hZxI7lgdjET+zF3kDTdaIy6Z0C0O86eQ2/SPJLiRZcXG0XTsopU5byhSPpXphyKmCsWG1tZjY8Y=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(46966006)(36840700001)(54906003)(2906002)(478600001)(36756003)(7636003)(5660300002)(47076005)(26005)(31696002)(16526019)(336012)(86362001)(16576012)(186003)(82740400003)(82310400003)(316002)(356005)(36860700001)(53546011)(8936002)(83380400001)(70586007)(70206006)(6916009)(2616005)(4326008)(8676002)(31686004)(426003)(43740500002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 06:46:15.2536
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 06:46:26.8194
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12371092-fd63-43f7-34c4-08d95b01626f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 695c84f3-dd83-4221-266f-08d95b016954
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT064.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4280
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1848
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/21 11:38 PM, Christoph Hellwig wrote:
-> On Sun, Aug 08, 2021 at 04:50:17PM -0700, John Hubbard wrote:
->> try_grab_page() does the same thing as try_grab_compound_head(...,
->> refs=1, ...), just with a different API. So there is a lot of code
->> duplication there.
->>
->> Change try_grab_page() to call try_grab_compound_head(), while keeping
->> the API contract identical for callers.
->>
->> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
->> ---
->>   mm/gup.c | 29 ++---------------------------
->>   1 file changed, 2 insertions(+), 27 deletions(-)
->>
->> diff --git a/mm/gup.c b/mm/gup.c
->> index 5cb18b62921c..4be6f060fa0b 100644
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -203,33 +203,8 @@ static void put_compound_head(struct page *page, int refs, unsigned int flags)
->>    */
->>   bool __must_check try_grab_page(struct page *page, unsigned int flags)
->>   {
->> +	if (flags & (FOLL_GET | FOLL_PIN))
->> +		return try_grab_compound_head(page, 1, flags) != NULL;
->>   
->>   	return true;
+On 8/8/21 6:39 PM, Matthew Wilcox wrote:
+> On Sun, Aug 08, 2021 at 04:50:16PM -0700, John Hubbard wrote:
+>> @@ -103,8 +103,14 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+>>    * same time. (That's true throughout the get_user_pages*() and
+>>    * pin_user_pages*() APIs.) Cases:
+>>    *
+>> - *    FOLL_GET: page's refcount will be incremented by 1.
+>> - *    FOLL_PIN: page's refcount will be incremented by GUP_PIN_COUNTING_BIAS.
+>> + *    FOLL_GET: page's refcount will be incremented by refs.
 > 
-> Nit: something like:
+> I think this would read more clearly if it said @refs (throughout).
+
+OK, will change that for v2.
+
 > 
-> 	if (!(flags & (FOLL_GET | FOLL_PIN)))
-> 		return true;
-> 	return try_grab_compound_head(page, 1, flags) != NULL;
+>> + *
+>> + *    FOLL_PIN on compound pages that are > two pages long: page's refcount will
+>> + *        be incremented by refs, and page[2].hpage_pinned_refcount will be
+>> + *        incremented by refs * GUP_PIN_COUNTING_BIAS.
+>> + *
+>> + *    FOLL_PIN on normal pages, or compound pages that are two pages long:
+>> + *        page's refcount will be incremented by refs * GUP_PIN_COUNTING_BIAS.
+>>    *
+>>    * Return: head page (with refcount appropriately incremented) for success, or
+>>    * NULL upon failure. If neither FOLL_GET nor FOLL_PIN was set, that's
 > 
-> would be a little easier to read.
+> Did you run 'make htmldocs' and see how it renders?  I haven't looked,
+> but this might work better as an rst list?
 > 
 
-Really? Well I'll be darned, that's what I wrote in my first draft. And then
-I looked at the diffs and thought, "positive logic is clearer, and the diffs
-are smaller too", and went with the current version. Which now is apparently
-a little worse. oops.
-
-Well, "50-50/90", as we used to say in an earlier job: 50% chance of either
-outcome, and due to The Way Things Go, a 90% chance of picking the wrong one!
-
-I can no longer tell which one is easier to read now, so I'll be glad to change
-it. :)
+Hadn't occurred to me, due to my own incorrect mental separation between
+comment kernel docs, and rst formatting ("rst == Documentation/"). I'll give it a try.
 
 thanks,
 -- 
