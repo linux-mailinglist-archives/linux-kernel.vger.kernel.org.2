@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13043E4173
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9533E4176
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhHIIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:16:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233853AbhHIIQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:16:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D16E61056;
-        Mon,  9 Aug 2021 08:16:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628496995;
-        bh=Uc410ukGR38DA8yxPgvyY/khZPNN121wh2ES85u3arY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B5Eg4duG5OszBVXZa1zxa1ps4nf52e8utmvHT1Genz0R8CJbcwbN5i/EBeRUAJU67
-         s4vt95iOzyxiJkbrgXkp0YkOFrQuhT0q6OxnCZ1/p48pp/YFBpjzPN8Ixi0Cl/OctU
-         k9YoNuILeILl1Go1kgxKatwmu9y9oFc/UcE8LbxipfYijFgu4Lb5/RmUdV/unqvKaA
-         pPiiWow0yrge4CmO8Ke2Bw7iaGwyisAHsXRCIybjS+hXGkJyLH156YaU05cqYkaa4n
-         ohbA5kG3SfmYGDNZgbafbyU1zlgLDO7y0j536auwDNsz3f55MjyFtW2dZz3iVi7jzU
-         IaJ1idaeqaUvw==
-Date:   Mon, 9 Aug 2021 16:16:29 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, p.zabel@pengutronix.de,
-        l.stach@pengutronix.de, krzk@kernel.org, agx@sigxcpu.org,
-        marex@denx.de, andrew.smirnov@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, aisheng.dong@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] arm64: dts: imx8qm: add smmu node
-Message-ID: <20210809081628.GT30984@dragon>
-References: <20210807104517.24066-1-peng.fan@oss.nxp.com>
+        id S233807AbhHIIS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233588AbhHIIS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 04:18:26 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 01:18:06 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id c3so10478419ilh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 01:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=751eA1uQO4HF5gHFweY3ZmO6ePS/SCnXrLp5FdNhCLU=;
+        b=oRnrFLcsRXR4V3rAX9P3z6Y0njga//lPW14J4slgAP33NqxYT7dbkDsgX1tD8RKhho
+         +VssYbgVwq07VOTLq6X4SNMgX0iZF5lGVtU5l3Z79DTFROA/cmopRVml/x4Yke6GPfXs
+         mNzyyE/1sFZ3QC2uvykHxn5urr+6YkUH1R7mqZ/SJaZl8uYPgctTAdd1tNco8uoAdCZK
+         +7ybbW2h3wYdUy/OeY5HCZlPYXLgiQnZwqbTs/xoi4PLdxPRwgD1w7waNbUNtVjD/wFw
+         y8gELOCPuJLtW27gfwo/zLc+qGZ94JfuvRgM2tMqcsJup/zcbDhgCD2TEl/d2vG59IZU
+         xLWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=751eA1uQO4HF5gHFweY3ZmO6ePS/SCnXrLp5FdNhCLU=;
+        b=oxQqyQJZVwiQqqtRhSWVMutAuO61BpYqI3xX6ae6M4d9wA9fidKCf8SvtCqaLcuyD+
+         w74i1FtkLjrnfAHUtWUqLqJliA6tzAtZdhyCnhCIcc92k3VCCEif8aag2Vk6cNr4wKU5
+         I4/buh6XLOF+KVPt43QQPKBVbFGIzn/frQDdGk96UU4D68Fy3NOj3HxQk1Hxg9POuHyL
+         K1KykvnscPowsE2lY7opB2MoHmcHf0c7EOsbQ4+K6IvKIUyNR6262pdicYZn2VPDHa+i
+         EusxVPbFbfTrHWsElv0SMv4ECNj752pbFJ/36QLCRnFCHpW3BoqIznfRaEIquaYsQjCg
+         Naow==
+X-Gm-Message-State: AOAM530U1a8VJAKcJiLIrl3dIIExeeW05BhB6IdttE4OdQBWNCE1iEzo
+        CpbDGU77PloFG0UBIAWgKxpTMtlDTymqmWwRI7wu9aHLwM0=
+X-Google-Smtp-Source: ABdhPJwUpad/wTCFCcLmRKVX3CBaujek8ydGzwciiessjKDUj2IqKiKh2Uiin8VuGPW3J4j0FbQ2mtFKbzBhahBpob4=
+X-Received: by 2002:a92:dd12:: with SMTP id n18mr280956ilm.180.1628497085560;
+ Mon, 09 Aug 2021 01:18:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210807104517.24066-1-peng.fan@oss.nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CAK=B_CvNi1O93Sjy_WG5VSH_+njHsKrOk9ZwHDh5VH8MNTCTGg@mail.gmail.com>
+In-Reply-To: <CAK=B_CvNi1O93Sjy_WG5VSH_+njHsKrOk9ZwHDh5VH8MNTCTGg@mail.gmail.com>
+From:   EJ Choi <ejpiper308@gmail.com>
+Date:   Mon, 9 Aug 2021 17:17:54 +0900
+Message-ID: <CAK=B_Ct98PFTZHJg7XYy9BJCV9eawM-nfmbfU=Ky+PE++i0dNw@mail.gmail.com>
+Subject: Fwd: Registering the supplementary patch of CVE-2013-0290 as CVE
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021 at 06:45:17PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> i.MX8QM has an iommu unit: SMMU-V2(mmu-500), add it.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8qm.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qm.dtsi b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> index aebbe2b84aa1..b8ffd5be6a3e 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> @@ -165,6 +165,22 @@ iomuxc: pinctrl {
->  
->  	};
->  
-> +	smmu: iommu@51400000 {
-> +		compatible = "arm,mmu-500";
-> +		reg = <0 0x51400000 0 0x40000>;
-> +		#iommu-cells = <2>;
-> +		#global-interrupts = <1>;
-> +		interrupts = <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>;
+Hi,
+I'm Eunji Choi, and I'm working on incomplete security patch detection for OSS.
 
-Use macro to make it more readable.
+While I was looking for some cases, I found commit
+add05ad4e9f5c4efee9b98535db5efa32b0d0492
+which is the supplementary patch for commit
+77c1090f94d1b0b5186fb13a1b71b47b1343f87f (fixes CVE-2013-0290).
 
-Shawn
+It seems that the problem related to system call failure occurred
+due to the previous patch and has been fixed.
+(Incomplete fix for CVE-2013-0290)
 
-> +	};
-> +
->  	/* sorted in register address */
->  	#include "imx8-ss-img.dtsi"
->  	#include "imx8-ss-dma.dtsi"
-> -- 
-> 2.30.0
-> 
+I searched the multiple public security vulnerability database(such as NVD),
+and couldn't find any information about the patch(add05a).
+
+Registering the problem and its patch commit as new CVE seems to be
+helpful for people using Linux.
+Because some people can apply the previous patch to their SW to fix
+CVE-2013-0290.
+
+I'd like to hear your opinion.
+
+Thank you,
+Eunjin Choi.
