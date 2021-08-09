@@ -2,307 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5753E4396
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2113E439B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233390AbhHIKF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:05:58 -0400
-Received: from mail-bn8nam11on2069.outbound.protection.outlook.com ([40.107.236.69]:5600
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234800AbhHIKF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:05:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fYws0lVhLxAeu8qkgiqdcpyQj8X9vnDJUkVgJ2h2WOTkj14h6nBcafZo/soki9aKEBz45YPkGZaJy/8MGHf8h6ZW9WDtVStTOClTyBt1eaLIOxtKtQtPGrBmttjBXFOIus6pw8k1zRsFiSJpQBdWC38ew7Rz4vGHzZDBGY55tcQErtUGPJMa3FVYo5i1/DbOtC/q7lZOGDqwfyVx8hBwC735MO0jhdmB3ATrYB+jjeXLgSWs4HQztx0EyZgNKeQIt/LPWSgZSRwf087dhKE6e2hFLhxhCzzv4DsyHGsRoYNIKS0c3/QG07oMUwYNJQD8fqGHoU/cTk+8iFnIpBOt5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LiYGJr1aRtZjg1RPfb9AqelgaRpYuD3koeEbdkYKmhk=;
- b=MoFcs7A5Ot72EkioGB3dXjwYUi7XgE65ppccpPNVBYDXMJE9lXEq1aB4EWuH61IR+1ugUTWuQVpCvC7mLlBvn5AUTVy/UTL70FqTo+p47Od3lR6B/aUtM231wvItnMbdcywq8fMueM0m+HgA09JlJDNrI2Zd0mrAezaPLeA6kmdZyuvcVTm3ixHVIhPt8c/j7BetbxE7cnu/u5QIYIp3oV8+o+Qp6DUyMK+dknh6tb/OcCa+k/1PhC06QuO89qf7ABN9sgcc4frc2SCbaNPFa++5D+GAPmpXr0JFIWHq/0lxr+UKaZPaJ70yUbiPPL6ePaLjRTpksTx21COBnG0+vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LiYGJr1aRtZjg1RPfb9AqelgaRpYuD3koeEbdkYKmhk=;
- b=KmMDOO1AZMxtr39nakwNCU3xWaYOtxi56PFBvAfyyr0MAsjZ3aRA1c9ERD95x8lS/kGwkzzGkvrDoRmaKFuHV0bsnh0j7y5+qrm+39yGCtYzYpXjE9gx8qhg2qFI8ZzP+5tPmWMYxID74EuPbp8fuoQtsjpX+NOgy6HplcHX/P4=
-Received: from DM6PR02MB5386.namprd02.prod.outlook.com (2603:10b6:5:75::25) by
- DM6PR02MB5179.namprd02.prod.outlook.com (2603:10b6:5:44::30) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4394.21; Mon, 9 Aug 2021 10:05:33 +0000
-Received: from DM6PR02MB5386.namprd02.prod.outlook.com
- ([fe80::90fb:2d02:150c:cd10]) by DM6PR02MB5386.namprd02.prod.outlook.com
- ([fe80::90fb:2d02:150c:cd10%6]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
- 10:05:33 +0000
-From:   Srinivas Neeli <sneeli@xilinx.com>
-To:     Srinivas Neeli <sneeli@xilinx.com>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        Michal Simek <michals@xilinx.com>,
-        Srinivas Goud <sgoud@xilinx.com>,
-        Shubhrajyoti Datta <shubhraj@xilinx.com>
-CC:     "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>
-Subject: RE: [PATCH] rtc: zynqmp: Add calibration set and get support
-Thread-Topic: [PATCH] rtc: zynqmp: Add calibration set and get support
-Thread-Index: AQHXeIdtredUt0IFlkqy5cg9C3sl76trGtLg
-Date:   Mon, 9 Aug 2021 10:05:33 +0000
-Message-ID: <DM6PR02MB53863D113E167A4C789201EAAFF69@DM6PR02MB5386.namprd02.prod.outlook.com>
-References: <20210714080809.34289-1-srinivas.neeli@xilinx.com>
-In-Reply-To: <20210714080809.34289-1-srinivas.neeli@xilinx.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: xilinx.com; dkim=none (message not signed)
- header.d=none;xilinx.com; dmarc=none action=none header.from=xilinx.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b8ccb898-8f64-4d0a-f09f-08d95b1d39d5
-x-ms-traffictypediagnostic: DM6PR02MB5179:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR02MB5179A702CB5EF1DA2F20C955AFF69@DM6PR02MB5179.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Hlbv0MjM0gA5I2nD7/nO+BboXAgxjKKOjUFAMEk4t0hiA8dVGhW8GlllRpTk0eIO+miT2/Je0lKEndlTjKBPtr1w4WZLIH6+teNyY06UCDg1wJrsh1LiLPCRArNSV1x4Mu8Aqz49CApTfvOl15+4b10GgikRPIyCE/oKVj99cB2NjILT9x8Dx8jL/A8zKpLqUlySfoEqU8TVNYdle167xw/40AYBLXZD6Apwz7jqv//G9RGop5Uyc4D4glfyF5jPVv2N/svXPOaBaVb5IoOhrYpPijS7DscP6gX31IfpkhivJ6rGoI6DbR8o+MP589761bF4kEZJd8l0z1xiVlZs3181qW9ZrGpSjstEwot9g3BH16/zVZcg/s6Hmr4fSV18Ka11R0jBSJLCBvcC0bJSzdiT7jaW0sfwJSA9khG2Ua3/w5krgjyQaMdjOIov+BeNZgsjph2MMfeMciQ68H2W6EsJsZm2CMJwacyTv660cIMUEk1fBY5UwPdsUKW8mbrF6H6yxmNJqFPESc+5jE7FHvd97YVpKNg74KXE4uKy65IKTQIUCpdb45sXe3+k1ZRE7gNevhJnG9VmkE807+GZXtaoBw4F5qOt1/gqjL4OZ1B9rZ2e/dnMX4lGLM3hy7X8Naq33omk8vslTJ/C7YXwplQjiXR5SezweF5XD5WeSljtmFM1nZ2RuBwmbJrtc5ToiEHdBzC8Yo4yz35gQj5gXA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB5386.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(376002)(396003)(136003)(346002)(186003)(107886003)(2906002)(66946007)(8936002)(86362001)(6506007)(53546011)(33656002)(316002)(38070700005)(26005)(8676002)(71200400001)(66476007)(66556008)(64756008)(83380400001)(76116006)(7696005)(5660300002)(6636002)(66446008)(55016002)(9686003)(38100700002)(110136005)(52536014)(478600001)(54906003)(122000001)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NsAgfmOnpcInqeIiOjIb1Hoe5HJ5vPMWxwcamuE6wMqWi/6hmPbeKo9jND6d?=
- =?us-ascii?Q?H6wAdvca1xU4b9rimMJ9emruWCAkMyQXlsFRXP30LhUhFl7RYNpX8D3sXTvj?=
- =?us-ascii?Q?NPwCikyHzHwG5FDvNXeVrKMBjO4TEMmLWCRRfy8JRQ2L+8PFZ5s09eo236rw?=
- =?us-ascii?Q?yktZ6Eocky0BPTHssL5bDiRm5RgYyMxlTVXmWpYrnkbbaXvSrJHb2jthD7Pw?=
- =?us-ascii?Q?SX2KF0stDaL/N11C44yHyHFCdDq6ruqBJqPd2Q2CVAN2zDMj3i2DGzIvRp+N?=
- =?us-ascii?Q?mKS7G1H6sETygGXETCmQQK5SfzPm2azhfljfjhQC3IGEfxoxmW9OPqrJMymg?=
- =?us-ascii?Q?eRu38DmMP7OUqKMKfn7kR3BGk/Isjoj1OHjEda0dBZLpajXuJkEGQ8QsdWXs?=
- =?us-ascii?Q?4bfPEMw5825I8aephrN33++G9KpZKQAsbKEEt9xkAWrmnd/qOGRH6AcEaZe5?=
- =?us-ascii?Q?elP2INowkhLUfUfdYkxiui0UyqCBkIhy9CxXXsASmwaVN6958wsN6gRk6M4t?=
- =?us-ascii?Q?Yi7jZBLk+sYUiy1k0G8G94ZZR0xxQmvOcVtF/0gUPF5uTGpvp2qTSah2jy8M?=
- =?us-ascii?Q?X6IkEbznl8Vf/XKGfpm01ag5RbqDfE4Vskw85s627mT/1+QeFd7yP+l4gJaq?=
- =?us-ascii?Q?fsG6+fgAjcbvpDhFigSDlnQ9McEEJoUZB2zKTL4fcBIRrHTcfWDGSKYz8ynb?=
- =?us-ascii?Q?zq3B2KVtiZlNw16cviC7YVaYU5FAu1HPXyFf2zchYrGWOKaMFdfas01vM1x7?=
- =?us-ascii?Q?J8w8+oI/yCCw3YZhuWeQbm7mrWjXcOrb+8YZQRgg5VO/uN3vDvLD26Tqdwoy?=
- =?us-ascii?Q?sp0KSiZh89A+gku7OpiHO8zkpSWiB4Q3OqjklT7P1zUV0tkTYB1qvHCIfkTh?=
- =?us-ascii?Q?GxNC07UlxpV9uGWaA2O7VVI/COXgkjXINfZP+zz4CT2RI3IeV8Nw9d3uawhX?=
- =?us-ascii?Q?+9Au4iwrscx7oUq0Ez+iu5h4x1GJO+5/Kg6wVan931/KJnxa4m9n1toM9pPH?=
- =?us-ascii?Q?y+HbXwMLiHDGsxv0gCcxSMXZdb0jeaWCn0MGdEs682wGtOnorgwl8ykZ5hAe?=
- =?us-ascii?Q?hS+ludwf0imh0mtUqbL7PqZPco++aqHYMNMmjhGrGMd7Vxoj8eMKseLvQd8E?=
- =?us-ascii?Q?gv1T1sk0BYnEwFqTGfHNDGYZokf75cNaPaNCWcfNUYJEKFbAQ/xcnHaV+n7a?=
- =?us-ascii?Q?zWXPjzblekfCN0Lael04YB33P13V4O3ZgZAhBS3ZK6PLjpMAGEkUbm/6WWLC?=
- =?us-ascii?Q?kvhlE4nxIFKpPAlEo8kPdSQW8Xe2Vu2pOr4vR31EwRdhtUUexgv3C5XvUdku?=
- =?us-ascii?Q?/x/IVY0PM4TJ2rm47YsmdcY1?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234862AbhHIKIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:08:48 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:46787 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233514AbhHIKIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 06:08:47 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GjsGx561wz9sTC;
+        Mon,  9 Aug 2021 12:08:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Ozi7H-OO-Jzo; Mon,  9 Aug 2021 12:08:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GjsGx3lZGz9sT5;
+        Mon,  9 Aug 2021 12:08:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5A2138B840;
+        Mon,  9 Aug 2021 12:08:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 0BxLooPSeYzi; Mon,  9 Aug 2021 12:08:25 +0200 (CEST)
+Received: from [172.25.230.102] (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 13AF38B83C;
+        Mon,  9 Aug 2021 12:08:25 +0200 (CEST)
+Subject: Re: [PATCH v6 00/12] mm/debug_vm_pgtable: Enhancements
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        gerald.schaefer@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
+        vgupta@synopsys.com, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210809092631.1888748-1-gshan@redhat.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <34b03b31-f13e-1f8d-a8db-49b2e501ef57@csgroup.eu>
+Date:   Mon, 9 Aug 2021 12:08:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB5386.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8ccb898-8f64-4d0a-f09f-08d95b1d39d5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 10:05:33.0957
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +q+eUFQMjRsdiGgvWSBU8OQHWYfnzXImwLPILm7B2QDUQkxFqLLm01AJptzVLilv/MHEvZyN/Q5G5eoaeKn/ug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5179
+In-Reply-To: <20210809092631.1888748-1-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Is this patch fine?
 
-Thanks
-Srinivas Neeli
+Le 09/08/2021 à 11:26, Gavin Shan a écrit :
+> There are couple of issues with current implementations and this series
+> tries to resolve the issues:
+> 
+>    (a) All needed information are scattered in variables, passed to various
+>        test functions. The code is organized in pretty much relaxed fashion.
+> 
+>    (b) The page isn't allocated from buddy during page table entry modifying
+>        tests. The page can be invalid, conflicting to the implementations
+>        of set_xxx_at() on ARM64. The target page is accessed so that the
+>        iCache can be flushed when execution permission is given on ARM64.
+>        Besides, the target page can be unmapped and accessing to it causes
+>        kernel crash.
+> 
+> "struct pgtable_debug_args" is introduced to address issue (a). For issue
+> (b), the used page is allocated from buddy in page table entry modifying
+> tests. The corresponding tets will be skipped if we fail to allocate the
+> (huge) page. For other test cases, the original page around to kernel
+> symbol (@start_kernel) is still used.
+> 
+> The patches are organized as below. PATCH[2-10] could be combined to one
+> patch, but it will make the review harder:
+> 
+>    PATCH[1] introduces "struct pgtable_debug_args" as place holder of all
+>             needed information. With it, the old and new implementation
+>             can coexist.
+>    PATCH[2-10] uses "struct pgtable_debug_args" in various test functions.
+>    PATCH[11] removes the unused code for old implementation.
+>    PATCH[12] fixes the issue of corrupted page flag for ARM64
 
-> -----Original Message-----
-> From: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> Sent: Wednesday, July 14, 2021 1:38 PM
-> To: a.zummo@towertech.it; alexandre.belloni@bootlin.com; Michal Simek
-> <michals@xilinx.com>; Srinivas Goud <sgoud@xilinx.com>; Shubhrajyoti
-> Datta <shubhraj@xilinx.com>
-> Cc: linux-rtc@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linu=
-x-
-> kernel@vger.kernel.org; git <git@xilinx.com>; Srinivas Neeli
-> <sneeli@xilinx.com>
-> Subject: [PATCH] rtc: zynqmp: Add calibration set and get support
->=20
-> Zynqmp RTC controller has a calibration feature to compensate time
-> deviation due to input clock inaccuracy.
-> Set and get calibration API's are used for setting and getting calibratio=
-n value
-> from the controller calibration register.
->=20
-> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> ---
->  drivers/rtc/rtc-zynqmp.c | 101 ++++++++++++++++++++++++++++++++----
-> ---
->  1 file changed, 84 insertions(+), 17 deletions(-)
->=20
-> diff --git a/drivers/rtc/rtc-zynqmp.c b/drivers/rtc/rtc-zynqmp.c index
-> f440bb52be92..718f60d42760 100644
-> --- a/drivers/rtc/rtc-zynqmp.c
-> +++ b/drivers/rtc/rtc-zynqmp.c
-> @@ -36,10 +36,16 @@
->  #define RTC_OSC_EN		BIT(24)
->  #define RTC_BATT_EN		BIT(31)
->=20
-> -#define RTC_CALIB_DEF		0x198233
-> +#define RTC_CALIB_DEF		0x8000
->  #define RTC_CALIB_MASK		0x1FFFFF
->  #define RTC_ALRM_MASK          BIT(1)
->  #define RTC_MSEC               1000
-> +#define RTC_FR_MASK		0xF0000
-> +#define RTC_SEC_MAX_VAL		0xFFFFFFFF
-> +#define RTC_FR_MAX_TICKS	16
-> +#define RTC_OFFSET_MAX		150000
-> +#define RTC_OFFSET_MIN		-150000
-> +#define RTC_PPB			1000000000LL
->=20
->  struct xlnx_rtc_dev {
->  	struct rtc_device	*rtc;
-> @@ -61,13 +67,6 @@ static int xlnx_rtc_set_time(struct device *dev, struc=
-t
-> rtc_time *tm)
->  	 */
->  	new_time =3D rtc_tm_to_time64(tm) + 1;
->=20
-> -	/*
-> -	 * Writing into calibration register will clear the Tick Counter and
-> -	 * force the next second to be signaled exactly in 1 second period
-> -	 */
-> -	xrtcdev->calibval &=3D RTC_CALIB_MASK;
-> -	writel(xrtcdev->calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
-> -
->  	writel(new_time, xrtcdev->reg_base + RTC_SET_TM_WR);
->=20
->  	/*
-> @@ -174,14 +173,76 @@ static void xlnx_init_rtc(struct xlnx_rtc_dev
-> *xrtcdev)
->  	rtc_ctrl |=3D RTC_BATT_EN;
->  	writel(rtc_ctrl, xrtcdev->reg_base + RTC_CTRL);
->=20
-> -	/*
-> -	 * Based on crystal freq of 33.330 KHz
-> -	 * set the seconds counter and enable, set fractions counter
-> -	 * to default value suggested as per design spec
-> -	 * to correct RTC delay in frequency over period of time.
-> +	/* Update calibvalue */
-> +	xrtcdev->calibval =3D readl(xrtcdev->reg_base + RTC_CALIB_RD); }
-> +
-> +static int xlnx_rtc_read_offset(struct device *dev, long *offset) {
-> +	struct xlnx_rtc_dev *xrtcdev =3D dev_get_drvdata(dev);
-> +	long offset_val =3D 0;
-> +	unsigned int tick_mult =3D RTC_PPB / (xrtcdev->calibval &
-> +RTC_TICK_MASK);
-> +
-> +	/* Offset with seconds ticks */
-> +	offset_val =3D xrtcdev->calibval & RTC_TICK_MASK;
-> +	offset_val =3D offset_val - RTC_CALIB_DEF;
-> +	offset_val =3D offset_val * tick_mult;
-> +
-> +	/* Offset with fractional ticks */
-> +	if (xrtcdev->calibval & RTC_FR_EN)
-> +		offset_val +=3D ((xrtcdev->calibval & RTC_FR_MASK) >>
-> RTC_FR_DATSHIFT)
-> +			* (tick_mult / RTC_FR_MAX_TICKS);
-> +	*offset =3D offset_val;
-> +
-> +	return 0;
-> +}
-> +
-> +static int xlnx_rtc_set_offset(struct device *dev, long offset) {
-> +	struct xlnx_rtc_dev *xrtcdev =3D dev_get_drvdata(dev);
-> +	short int  max_tick;
-> +	unsigned char fract_tick =3D 0;
-> +	unsigned int calibval;
-> +	int fract_offset;
-> +	unsigned int tick_mult =3D RTC_PPB / (xrtcdev->calibval &
-> +RTC_TICK_MASK);
-> +
-> +	/* Make sure offset value is within supported range */
-> +	if (offset < RTC_OFFSET_MIN || offset > RTC_OFFSET_MAX)
-> +		return -ERANGE;
-> +
-> +	/* Number ticks for given offset */
-> +	max_tick =3D div_s64_rem(offset, tick_mult, &fract_offset);
-> +
-> +	/* Number fractional ticks for given offset */
-> +	if (fract_offset) {
-> +		if (fract_offset < 0) {
-> +			fract_offset =3D fract_offset + tick_mult;
-> +			max_tick--;
-> +		}
-> +		if (fract_offset > (tick_mult / RTC_FR_MAX_TICKS)) {
-> +			for (fract_tick =3D 1; fract_tick < 16; fract_tick++) {
-> +				if (fract_offset <=3D
-> +				    (fract_tick *
-> +				     (tick_mult / RTC_FR_MAX_TICKS)))
-> +					break;
-> +			}
-> +		}
-> +	}
-> +
-> +	/* Zynqmp RTC uses second and fractional tick
-> +	 * counters for compensation
->  	 */
-> -	xrtcdev->calibval &=3D RTC_CALIB_MASK;
-> -	writel(xrtcdev->calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
-> +	calibval =3D max_tick + RTC_CALIB_DEF;
-> +
-> +	if (fract_tick)
-> +		calibval |=3D RTC_FR_EN;
-> +
-> +	calibval |=3D (fract_tick << RTC_FR_DATSHIFT);
-> +
-> +	writel(calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
-> +	xrtcdev->calibval =3D calibval;
-> +
-> +	return 0;
->  }
->=20
->  static const struct rtc_class_ops xlnx_rtc_ops =3D { @@ -190,6 +251,8 @@
-> static const struct rtc_class_ops xlnx_rtc_ops =3D {
->  	.read_alarm	  =3D xlnx_rtc_read_alarm,
->  	.set_alarm	  =3D xlnx_rtc_set_alarm,
->  	.alarm_irq_enable =3D xlnx_rtc_alarm_irq_enable,
-> +	.read_offset	  =3D xlnx_rtc_read_offset,
-> +	.set_offset	  =3D xlnx_rtc_set_offset,
->  };
->=20
->  static irqreturn_t xlnx_rtc_interrupt(int irq, void *id) @@ -215,6 +278,=
-7 @@
-> static int xlnx_rtc_probe(struct platform_device *pdev)  {
->  	struct xlnx_rtc_dev *xrtcdev;
->  	int ret;
-> +	unsigned int calibval;
->=20
->  	xrtcdev =3D devm_kzalloc(&pdev->dev, sizeof(*xrtcdev),
-> GFP_KERNEL);
->  	if (!xrtcdev)
-> @@ -256,9 +320,12 @@ static int xlnx_rtc_probe(struct platform_device
-> *pdev)
->  	}
->=20
->  	ret =3D of_property_read_u32(pdev->dev.of_node, "calibration",
-> -				   &xrtcdev->calibval);
-> +				   &calibval);
->  	if (ret)
-> -		xrtcdev->calibval =3D RTC_CALIB_DEF;
-> +		calibval =3D RTC_CALIB_DEF;
-> +	ret =3D readl(xrtcdev->reg_base + RTC_CALIB_RD);
-> +	if (!ret)
-> +		writel(calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
->=20
->  	xlnx_init_rtc(xrtcdev);
->=20
-> --
-> 2.31.1
 
+I tested this series on powerpc 8xx, no failure reported.
+
+Christophe
+
+> 
+> Changelog
+> =========
+> v6:
+>     * Populate saved page table entry pointers after
+>       they're allocated in init_args()                        (Anshuman)
+>     * Fix imbalanced preemption count issue by replacing
+>       pte_alloc_mmap() with pte_alloc() in init_args()        (syzbot)
+> v5:
+>     * Pick r-bs from Anshuman and rebase to 5.14.rc4          (Gavin)
+>     * Use args->start_p4dp to free p4d entries                (Anshuman)
+>     * Introduce helper to allocate huge page in init_arg()    (Anshuman)
+>     * Bail early if the allocated page doesn't exist in
+>       swap_migration_tests() and correct the comments         (Anshuman)
+>     * Add fixes tag to PATCH[v4 12/12]                        (Christophe)
+>     * Address misc comments                                   (Anshuman)
+> v4:
+>     * Determine the page allocation method according to
+>       MAX_ORDER                                               (Anshuman)
+>     * Move existing comments to init_args()                   (Anshuman)
+>     * Code refactoring as suggested by Anshuman               (Anshuman)
+>     * Improved commit log and add comments for flush_dcache_page()
+>       in PATCH[v4 12/12]                                      (Anshuman)
+>     * Address misc comments                                   (Anshuman)
+> v3:
+>     * Fix the warning caused by allocating more pages than
+>       (1 << (MAX_ORDER - 1)) in init_args()                   (syzbot)
+>     * Fix build warning by dropping unused variables in separate
+>       patches                                                 (0-day)
+>     * Missed "WARN_ON(!pud_none(pud))" in pud_huge_tests() in
+>       PATCH[v2 09/12]                                         (0-day)
+>     * Fix the subjects for PATCH[05/12] and PATCH[09/12]      (Gavin)
+> v2:
+>     * Rename struct vm_pgtable_debug to struct pgtable_debug_args.
+>       The parameter name to various test functions are renamed
+>       to "@args"                                              (Anshuman)
+>     * Code changes as suggested by Anshuman                   (Anshuman)
+> 
+> Gavin Shan (12):
+>    mm/debug_vm_pgtable: Introduce struct pgtable_debug_args
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in basic tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in leaf and
+>      savewrite tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in protnone and
+>      devmap tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in soft_dirty and
+>      swap tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in migration and
+>      thp tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in PTE modifying
+>      tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in PMD modifying
+>      tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in PUD modifying
+>      tests
+>    mm/debug_vm_pgtable: Use struct pgtable_debug_args in PGD and P4D
+>      modifying tests
+>    mm/debug_vm_pgtable: Remove unused code
+>    mm/debug_vm_pgtable: Fix corrupted page flag
+> 
+>   mm/debug_vm_pgtable.c | 918 +++++++++++++++++++++++++-----------------
+>   1 file changed, 559 insertions(+), 359 deletions(-)
+> 
