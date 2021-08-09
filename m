@@ -2,117 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67363E41B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16013E41B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234004AbhHIIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:37:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25617 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233903AbhHIIhk (ORCPT
+        id S234019AbhHIIln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:41:43 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:5302 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233926AbhHIIlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:37:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628498240;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4zFuJFjv7Ipoe76Y1gRIQ97+xgK+EKCcRN1n5Om9DKw=;
-        b=ZgZqXTCYd3uiZfYid87oOvYM9QqKqfN49q/7i/6c10y62rabRh1fLDk+CYBZ3j4zNv3mrw
-        KsVDF5vjYENAQ6t7LTaBB3bh5QrhKeF6KS0E2nGCREZNluRFPp/Fuygn9zCFZgeZEJjIvA
-        8i53De6UgKdm3erZc75uduCHhurACZg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-gYe1LvleM0CdWKXB2u4VeA-1; Mon, 09 Aug 2021 04:37:18 -0400
-X-MC-Unique: gYe1LvleM0CdWKXB2u4VeA-1
-Received: by mail-ed1-f71.google.com with SMTP id g3-20020a0564024243b02903be33db5ae6so4403051edb.18
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 01:37:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4zFuJFjv7Ipoe76Y1gRIQ97+xgK+EKCcRN1n5Om9DKw=;
-        b=FTrnJZurSW9N5L3es/2Y0QqupI8o7i8s96ZYnOTRbhePuQjVGg5foMtcTqaoGSkv4O
-         s7i0XIZOczMaTmvvdx/BiGpycs/PHclfqVILCkGfBvnVih3iZP1oON1RwqXLpgeTqdqt
-         srGivVNmrlO9Jr2r2T6PjNAh0JsRy6bogwzIFLZG8CgeWBD29zPi5HwPrI0tEVXpeMi1
-         VupDYi+e33VTyrcQ2ufipp2paHmKniap6Buwu7I8KDbu/nf4G88KTrvPcbfD7DtmGi/t
-         dZ8lOboWrJUcIBnZXFtkbpcvR18X2yMXA/ZWfFbv58lxdAKM3rlg+WFTRGD+0mAdaP6R
-         8SMg==
-X-Gm-Message-State: AOAM530EJ0iPYzOe/05TcZbGFkzrpdjbGJmxQMiGjvTkdARxt4RKEXXa
-        1MC76m9yDIWj2FkNarcRZTXUZUvQ0MpabHf2QFBShjbbRKAs02WFLDDUTPzuFT+DlNTFCZpP3y3
-        iH8QcPgG3gMfLia0jSaX6OPed
-X-Received: by 2002:aa7:d14b:: with SMTP id r11mr1782828edo.259.1628498237672;
-        Mon, 09 Aug 2021 01:37:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKNxwEsj+x2THIlv9zeYGA+s+C8pcSHCNUrpZGYVIEAkWyJQp3S5D/aRvXISxF3+JkGCcXPA==
-X-Received: by 2002:aa7:d14b:: with SMTP id r11mr1782808edo.259.1628498237475;
-        Mon, 09 Aug 2021 01:37:17 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.52.108])
-        by smtp.gmail.com with ESMTPSA id g11sm7767671edt.85.2021.08.09.01.37.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 01:37:17 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 10:37:15 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
-Message-ID: <YRDpO6CC0LEWcj8a@localhost.localdomain>
-References: <20210805080123.16320-1-juri.lelli@redhat.com>
- <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
- <20210806080455.wkhlebgt7howjcrk@linutronix.de>
- <20210806174411.GQ4397@paulmck-ThinkPad-P17-Gen-1>
+        Mon, 9 Aug 2021 04:41:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1628498482; x=1660034482;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=DU1g/T5dXElKAXIzpdruxb6PTcIKn4VMYYEnzci/P3Q=;
+  b=kdwFCxqhA+b4Uq6S2AXj/obbKT8YtZmYzjyxvVFy3JJHEhuCgafobj2b
+   PPcMRDnoPDl5p8KzkEHoxrlhlp3cN1damxcRpuLMx3xzkc999pnHUYOxr
+   ge5+4MPiisniLvxFmAG6n3IWvncAt9MQBBqNU8VrLJtMy3/htbW111Ak4
+   EpjlAGRDmbyyUrVVLoa+qUM4uXcllKqsI91cf9BFrWaLCfyETZm4D+l6n
+   2aHUZvK9bM+AeSW05ywdP816N590dfMwvF4PmJIVz3FtFAt7t15r/plba
+   gamKhAj/J8kTllf6aT/CihHv8RKW+HV5nvkd5lNKAPPbOBE6NxFnD8L3q
+   A==;
+X-IronPort-AV: E=Sophos;i="5.84,307,1620662400"; 
+   d="scan'208";a="177226256"
+Received: from mail-mw2nam10lp2108.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.108])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Aug 2021 16:41:21 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dgr8PCTyglQJSl5+14KrF2NCtlAwbIWtw6zZ9wzBjO9uvvAq1bBW0fBUJDIknut2mYIjE+lo2ohxt8n18ZquVn0X0wgc/IuO1fK/0JRc438GGXmwxcVQlR9DmV1uije1sDmDUXu/sSRbN/CKSjR9jbJdviYlSJBLPR5O/V6hE5XDEBvr4kPoDKmVQcMam4XAGtYKDDnHYL7bNKfsmpbMAJInEtKEyXLmH6P+NPF0clIHbQ3X1w8wjKzpWuMNaLBg/uLjxxfYhC5m13VCVVhoC/XgxkBP6Vm4xDnja/RhJ66VkkY6VkK6BVQ78dIAvM83jXAoJEB9V0jYZHJlbRtcgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C3cjLLB3TJ3aHoVkp02Zsvq0XJEEPHQGPvwlD5r8imE=;
+ b=c9WAEMCz9c2WPR+h4sOz5dxKSTvk2rFNm/C7cvyKJSZrKr0txmxuQ/mmAEBDtmQSTstiW3eG5sLrHmOX9KM0V7TSoktX93mrhyntjmfCWy5FxGscai33qFvalNis+8dAiN7FoeZH6eWQl5pTfl+0Ztzstr3xQLZ7HsWPm9oDa0RduJaWlvWWlUP+XdE9DbdW2gw/Kv8Euqn7WfzObPYkI88z4DgfSdoPTWI9738V4u5b3w4P2lzWsAzZviXBFqOO9kV2E25UNvo9slCMs09NwZChJdDewxlF3VfQ6b70o0ouhxpLXOB797WZY4ob1xyLy2O9FQX7lyN4H2bij2I62A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C3cjLLB3TJ3aHoVkp02Zsvq0XJEEPHQGPvwlD5r8imE=;
+ b=J46Urj6Vdkb5RZsAyTsk1cVqJFwBRNof0fCEPFVzB0CdaaofdTEAfdDTc+mwqkbrxynjHBDTV9jIhVNILCcs97upzyZIn98pDpFIIWhBzrPSXPzvyGlVVGDq7jSIGHtbGKbHzPx8ksfYrZUQm19nHyDxkte/GIXHopCepW85tAg=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB4428.namprd04.prod.outlook.com (2603:10b6:5:9b::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4394.20; Mon, 9 Aug 2021 08:41:19 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::b448:90b7:c333:40a3]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::b448:90b7:c333:40a3%6]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 08:41:19 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Nishad Kamdar <nishadkamdar@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] mmc: core: Return correct emmc response in case of
+ ioctl error
+Thread-Topic: [PATCH v2] mmc: core: Return correct emmc response in case of
+ ioctl error
+Thread-Index: AQHXjHpellXktnu2k0aKNPm/Pz8mzatq2HAA
+Date:   Mon, 9 Aug 2021 08:41:19 +0000
+Message-ID: <DM6PR04MB6575FA52433A1A3C7F89453BFCF69@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210808172448.4641-1-nishadkamdar@gmail.com>
+In-Reply-To: <20210808172448.4641-1-nishadkamdar@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7ed9125f-2264-4b43-205b-08d95b1175ba
+x-ms-traffictypediagnostic: DM6PR04MB4428:
+x-microsoft-antispam-prvs: <DM6PR04MB4428E3CBA1C53DDEE15C83D8FCF69@DM6PR04MB4428.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:93;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: e4v+/yNCJFcTYqDo1MrL0swowdN0zqvaT3bSkunZfEuGSugUKkiTxKPexKLoIyYLXSNSS3NaQu6XiivsFQGUuFCAPAmDJW4MEPtAHCa+R0tOlHE3+nnI674SZodXfpO1gTT7Wjpz6MGpqhuQZoOjCbDhOBpEiEn+KG+FHtI29VVvEIXraK7poHpbLyJNooRCpzfB+vT7csN+BrFcnSYK7lAd3N6rrygSsfdxj5L3akGnTIbEZ/Ao2FCxiCUabTsEtzng0JWGZQV3nbpdTCPl3xfQcHEm1EvhbCGJU1G6yaRLA9B/CnCpa0A9A6wsOsgX99Yaa6GEiLbxxvmpU38Y/Mu0z3D5s/PK0yWnxB4X0vSeLDskBgM4DW1np91Xp9rXefjaiuebq76qJG4/27WfHbxIb9O/IrD9Wx5352sMBVKvCHlJRuU1fCYtevjzHx9Ri7nLfoHYI9muMVpIU8mXAAazlD/x1YN6n8Qqi3UbWQdunhmghoFbBulPJWjVHJ7qvOlP8RLm/2PhmrWwmi7nujdhvqdXvaqhtVgmCi3XzIETK2Luee8kgGRNdU1eZ9McpnUXhwRQfAmuV/u78pa5yy/3mE1QPgSTcC7sseNtNB7fQO3yBQzgMyCI3hpaVBo9VLXSnLCTgOE+7KheEpBQt5evhMSreRBBen4sUPI4sv7U+TI3Gt3gpSzpz1V7z3TzlzIgqq9eglNh6IPnIdqZdQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(366004)(136003)(346002)(64756008)(66476007)(66556008)(66446008)(76116006)(66946007)(186003)(71200400001)(86362001)(8676002)(9686003)(6506007)(55016002)(26005)(83380400001)(2906002)(4326008)(33656002)(38070700005)(478600001)(5660300002)(52536014)(8936002)(7696005)(38100700002)(316002)(122000001)(110136005)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5Ple2/eT+RcicRWLibyuQHcHIZfYj7WmDU54w/zC5YIKuh/cAUwt0w/toxgT?=
+ =?us-ascii?Q?oC56KrFI9xXBm0cFHZV5YVuhyd3Y5gZ9D9rx4z0m8Gq445s9716gt+E/0LXA?=
+ =?us-ascii?Q?EwlHBAZSrRwmwZp7hHdiVNxLx9sHC9tSuKIKM9h/6z1o3aQNLYhgRgRTaGmK?=
+ =?us-ascii?Q?ZWML1GUzvdqpa6wAEi4If0XihfLM1PmzzoaO4oDg1rn3zg3gNUL8A2lKJgma?=
+ =?us-ascii?Q?NfTNyzQDtsZVNzO8uKCKjxB6tYFWdn9Kei/bbOVKbLDdN5zbiqP4hsLPO1Fl?=
+ =?us-ascii?Q?lUo59JOJTEeiiKRZpICEbTdLHgtvlOP2udX+a7yZXQFCW/5y6MplGuzmqoXt?=
+ =?us-ascii?Q?UyM+hkSNf5AX1vziN4ZhUfvAKaJrwpgn2kvtzjri6SAE83fcJx6vezMO3YnQ?=
+ =?us-ascii?Q?PYKmlF+XstfDK6lb6mNKbidLfyF4q5rPG14cEaDJx5TRXAxTKzaD0ZAI0Jz/?=
+ =?us-ascii?Q?mNfdyvtBwNNkAjWCNjIndRQl7oEWhFFMwnbNSnyz0ZdEu69A4FFxvmRpCvgu?=
+ =?us-ascii?Q?GU2TJZsvBLRf2Fp7slIG/VZ5Fd9OYcrhy6fwzh8ES/nh6q0BXI61lIAz8xal?=
+ =?us-ascii?Q?il4NxtXdpTo1TAUulE33p1MSuySWqqqtQ8goA3jhPR4i1IxZekPmtkrKRYbs?=
+ =?us-ascii?Q?s5fBfjVyM9qxbVttL+6LQBwkUldnL+oLb6X5X9xibhPHWKgndC8OnquX+iTm?=
+ =?us-ascii?Q?M6uxnbMHfmYkRVKRffJ63l3m+QNYgSI6yfVHGWQxkGWaN7gn6ZA+bPhOSyuV?=
+ =?us-ascii?Q?gHDpJWxhCQVJUQVEOYmd5mSTYEZZzCrz4R7OxQ1mCnJGgJLbfq8wrYyibBxf?=
+ =?us-ascii?Q?slDF3pOoJW1uvwNnuYYc4pSe872myZFixAKKKOK4ME0QHco1eQgqxMLrfjN2?=
+ =?us-ascii?Q?gjLZOY0tUBn7UaG7NdCrAj/+vvghgggpCOq6zMge4XlzGwjo/HW0EUMTvfoh?=
+ =?us-ascii?Q?4I6p49ebYVWh9/RBPeIKyomJepKHdXkfyUr5LyZ0//0r0JAYpdeFGwAzJgAg?=
+ =?us-ascii?Q?yFUggrbIxS+pAQFLTTdr9EQYNDLXmvwxTPFofzdVe5I8urIwexdye1jSdup8?=
+ =?us-ascii?Q?e/hmI2376Uf+0OnUOtH8re94Ppo8jsA12TI59zuN+a57tVbwEcD/UD4w+eSz?=
+ =?us-ascii?Q?m1VbgjKLZzvDDup8ZE5R/VIRiMny+7X/0lDwvuaaygcO80H8AzLr34zN833s?=
+ =?us-ascii?Q?1o6Xdwp6diSCte3lQvpEmzY+yf5oIGb7UVD0pTpS6RgkpiezFa+s6cDZYyaP?=
+ =?us-ascii?Q?CoaA0oFH6yF6UGK0xFdNfIUFQDffpl9JezclAVrsHBYXmd5Ug0SvV4UedOus?=
+ =?us-ascii?Q?9f5mpa66b7r/N/lpKygGcqXT?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806174411.GQ4397@paulmck-ThinkPad-P17-Gen-1>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ed9125f-2264-4b43-205b-08d95b1175ba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 08:41:19.6354
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vpW/kWYbKWC65ZGxc8P0NOdVCNserJdmMPHRRb1OhtTEOC+vuAJwoSdkNisLfHTSwtrkRufmV1s2W6SmEa6suA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4428
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 10:44, Paul E. McKenney wrote:
-> On Fri, Aug 06, 2021 at 10:04:55AM +0200, Sebastian Andrzej Siewior wrote:
-> > On 2021-08-05 09:03:37 [-0700], Paul E. McKenney wrote:
-> > > Makes sense to me!
-> > > 
-> > > But would another of the -rt people be willing to give an Acked-by?
-> > > For example, maybe they would prefer this kernel boot parameter to be
-> > > exposed only if (!PREEMPT_RT || NO_HZ_FULL).  Or are there !NO_HZ_FULL
-> > > situations where rcu_normal_after_boot makes sense?
-> > 
-> > Julia crafted that "rcu_normal_after_boot = 1" for RT after we had more
-> > and more synchronize_rcu_expedited() users popping up. I would like to
-> > keep that part (default value) since it good to have for most users.
-> > 
-> > I don't mind removing CONFIG_PREEMPT_RT part here if there are legitimate
-> > use cases for using "rcu_normal_after_boot = 0".
-> > Paul suggested initially to restrict that option for PREEMPT_RT and I
-> > would follow here Paul's guidance to either remove it or restrict it to
-> > NO_HZ_FULL in RT's case (as suggested).
-> 
-> Given what I know now, I suggest the following:
-> 
-> o	Restrict the option to !PREEMPT_RT unless NO_HZ_FULL.
-> 	Maybe "!defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)".
-> 
-> 	If there is some non-NO_HZ_FULL PREEMPT_RT configuration that
-> 	tolerates expedited grace periods, this would need to change.
-> 
-> o	Change the permissions from "0" to "0444", if desired.	If you
-> 	would rather not, I can do this in a follow-up patch.  (No idea
-> 	why I let such an ugly serviceability issue through, but the
-> 	previous pair of module_param() instances have the same problem.)
-> 
-> Anything I am missing?
+> When a read/write command is sent via ioctl to the kernel,
+> and the command fails, the actual error response of the emmc
+> is not sent to the user.
+>=20
+> Following are the tests carried out using commands
+> 17 (Single BLock Read),
+> 24 (Single Block Write),
+> 18 (Multi Block Read),
+> 25 (Multi Block Write)
+>=20
+> The tests are carried out on a 64Gb emmc device. All of these
+> tests try to access an "out of range" sector address (0x09B2FFFF).
+>=20
+> It is seen that without the patch the response received by the user
+> is not OUT_OF_RANGE error (R1 response 31st bit is not set) as per
+> JEDEC specification. After applying the patch proper response is seen.
+>=20
+> The user level ioctl testcode for the above commands and their
+> respective outputs without and with the patch are shown below:
+>=20
+> CMD17 (Test Code Snippet):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>         printf("Forming CMD%d\n", opt_idx);
+>         /*  single block read */
+>         cmd.blksz =3D 512;
+>         cmd.blocks =3D 1;
+>         cmd.write_flag =3D 0;
+>         cmd.opcode =3D 17;
+>         //cmd.arg =3D atoi(argv[3]);
+>         cmd.arg =3D 0x09B2FFFF;
+>         /* Expecting response R1B */
+>         cmd.flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+>=20
+>         memset(data, 0, sizeof(__u8) * 512);
+>         mmc_ioc_cmd_set_data(cmd, data);
+>=20
+>         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+>         if(ioctl(fd, MMC_IOC_CMD, &cmd))
+>                 perror("Error");
+>=20
+>         printf("\nResponse: %08x\n", cmd.response[0]);
+>=20
+> CMD17 (Output without patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17 09B2FFFF
+No need for arg 3 - you are hardcoded overriding it.
 
-Not that I can think of right now. :)
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17,
+> 0x09B2FFF]
+> Forming CMD17
+> Sending CMD17: ARG[0x09b2ffff]
+> Error: Connection timed out
+>=20
+> Response: 00000000  (Wrong response)
+>=20
+> CMD17 (Output with patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 17 09B2FFFF
+> [sudo] password for test:
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[17, 09B2FFFF]
+> Forming CMD17
+> Sending CMD17: ARG[0x09b2ffff]
+> Error: Connection timed out
+>=20
+> Response: 80000900
+> (Correct OUT_OF_ERROR response as per JEDEC specification)
 
-Will implement your suggestions and submit v2 soon. Thank again to you
-and Sebastian for the review!
 
-Best,
-Juri
+>=20
+> CMD24 (Test Code Snippet):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>         printf("Forming CMD%d\n", opt_idx);
+>         cmd.opcode =3D 24;
+>         //cmd.arg =3D atoi(argv[3]);
+>         cmd.arg =3D 0x09B2FFFF;
+>         cmd.flags =3D MMC_RSP_R1 | MMC_CMD_ADTC;
+>         cmd.blksz =3D 512;
+>         cmd.blocks =3D 1;
+>         cmd.write_flag =3D 1;
+>=20
+>         memset(data, 0xA5, sizeof(__u8) * 512);
+>         mmc_ioc_cmd_set_data(cmd, data);
+>=20
+>         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+>         if(ioctl(fd, MMC_IOC_CMD, &cmd))
+>                 perror("Error");
+>=20
+>         printf("\nResponse: %08x\n", cmd.response[0]);
+>=20
+> CMD24 (Output without patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 24 0x09B2FFF
+> [sudo] password for test:
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[24,
+> 0x09B2FFF]
+> Forming CMD24
+> Sending CMD24: ARG[0x09b2ffff]
+> Error: Connection timed out
+>=20
+> Response: 00000000 (Incorrect response)
+>=20
+> CMD24 (Output with patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 24 09B2FFFF
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[24, 09B2FFFF]
+> Forming CMD24
+> Sending CMD24: ARG[0x09b2ffff]
+> Error: Connection timed out
+>=20
+> Response: 80000900
+> (Correct OUT_OF_RANGE response as per JEDEC specification)
+>=20
+> CMD18 (Test Code Snippet):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>         printf("Forming CMD%d\n", opt_idx);
+>=20
+>         cmd.blksz =3D 512;
+>         cmd.blocks =3D 1;
+>         cmd.write_flag =3D 0;
+>         cmd.opcode =3D 18;
+>         //cmd.arg =3D atoi(argv[3]);
+>         cmd.arg =3D 0x09B2FFFF;
+>=20
+>         cmd.flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+>=20
+>         memset(data, 0, sizeof(__u8) * 512);
+>         mmc_ioc_cmd_set_data(cmd, data);
+>=20
+>         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+>         if(ioctl(fd, MMC_IOC_CMD, &cmd)) {
+>                 printf(" error ioctl \n");
+>                 perror("Error");
+>         }
+>=20
+>         printf("\nResponse: %08x\n", cmd.response[0]);
+>=20
+> CMD18 (Output without patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 18 0x09B2FFF
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[18,
+> 0x09B2FFF]
+> Forming CMD18
+> Sending CMD18: ARG[0x09b2ffff]
+>  error ioctl
+> Error: Connection timed out
+>=20
+> Response: 00000000 (Incorrect response)
+>=20
+> CMD18 (Output with patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 18 09B2FFFF
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[18, 09B2FFFF]
+> Forming CMD18
+> Sending CMD18: ARG[0x09b2ffff]
+>  error ioctl
+> Error: Connection timed out
+>=20
+> Response: 80000900
+> (Correct OUT_OF_RANGE response as per JEDEC specification)
+>=20
+> CMD25 (Test Code Snippet):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>         printf("Forming CMD%d\n", opt_idx);
+>         cmd.opcode =3D 25;
+>         //cmd.arg =3D atoi(argv[3]);
+>         cmd.arg =3D 0x09B2FFFF;
+>         cmd.flags =3D MMC_RSP_R1 | MMC_CMD_ADTC;
+>=20
+>         cmd.blksz =3D 512;
+>         cmd.blocks =3D 1;
+>         cmd.write_flag =3D 1;
+>=20
+>         memset(data, 0xA5, sizeof(__u8) * 512);
+>         mmc_ioc_cmd_set_data(cmd, data);
+>=20
+>         printf("Sending CMD%d: ARG[0x%08x]\n", opt_idx, cmd.arg);
+>         if(ioctl(fd, MMC_IOC_CMD, &cmd)) {
+>                 printf("\nerror ioctl\n");
+>                 perror("Error");
+>         }
+>=20
+>         printf("\nResponse: %08x\n", cmd.response[0]);
+>=20
+> CMD25 (Output without patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 25 0x09B2FFF
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[25,
+> 0x09B2FFF]
+> Forming CMD25
+> Sending CMD25: ARG[0x09b2ffff]
+>=20
+> error ioctl
+> Error: Connection timed out
+>=20
+> Response: 00000000 (Incorrect response)
+>=20
+> CMD25 (Output with patch):
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> test@test-LIVA-Z:~$ sudo ./mmc cmd_test /dev/mmcblk0 25 09B2FFFF
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 nargs:4
+> Entering the do_mmc_commands:Device: /dev/mmcblk0 options[25, 09B2FFFF]
+> Forming CMD25
+> Sending CMD25: ARG[0x09b2ffff]
+>=20
+> error ioctl
+> Error: Connection timed out
+>=20
+> Response: 80000900
+> (Correct OUT_OF_RANGE response as per JEDEC specification)
+>=20
+> Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
+
+> ---
+> Changes in v2:
+>   - Make commit message clearer by adding test cases as outputs
+A little overwhelming IMO
+
+>=20
+>  drivers/mmc/core/block.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index a9ad9f5fa9491..efa92aa7e2368 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -522,11 +522,13 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card
+> *card, struct mmc_blk_data *md,
+>         if (cmd.error) {
+>                 dev_err(mmc_dev(card->host), "%s: cmd error %d\n",
+>                                                 __func__, cmd.error);
+> +               memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
+>                 return cmd.error;
+>         }
+>         if (data.error) {
+>                 dev_err(mmc_dev(card->host), "%s: data error %d\n",
+>                                                 __func__, data.error);
+> +               memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
+>                 return data.error;
+>         }
+>=20
+> --
+> 2.17.1
 
