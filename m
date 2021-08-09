@@ -2,178 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D542D3E3E45
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 05:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A958E3E3E75
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 05:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhHID2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 23:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbhHID2c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 23:28:32 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F95C061757;
-        Sun,  8 Aug 2021 20:28:13 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so28032031pjb.2;
-        Sun, 08 Aug 2021 20:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l+cxRO1Gc4pNzjnbnXj/dz1Ypz3ztoOKH1tuHXAAFPA=;
-        b=dMDKcCTXOQUUnwBpX6jWEo4XdtHuAFjrY3QbiOYjWEih0TEyGFOUZmyMgDkEKP3VCh
-         TL6LbtX/P561/GeI09SwbM6ASMxRM0+e5HOmHQUW69fdNKHm7N5kTyjoncse9I0i3/Vg
-         numvEbfERNgevBc5i3W82u2uKe8d5a5R03CHy0rWVJTvU6pWckbXxLbwd/+UcujLAH1j
-         kqAzuGJWmwEoWFMsU9e/yCffWy65Wh0ZRmlRJJ+1RXA3G0gL1FWAb8Vi+ctFdNwqhJJw
-         iuRfyOXlU7JSmvaYDW1auo542Ku3GKCpLVFQY83jp1G0vVejLoDGAT80Na20ja2rGk7g
-         UOyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=l+cxRO1Gc4pNzjnbnXj/dz1Ypz3ztoOKH1tuHXAAFPA=;
-        b=UxjiIe1APhUbgRqWBq7bkA6XpgrPwaAZj/vnLDZvz5k7WyMxBwtr/ewG+osCL9AkUM
-         yPXRQA6bT2ir1PcZ5DKw6lwdYFcMSmUEKWEc7Y/BayDxoOXn1cFuCf84joO+9+hvouiD
-         3oVF7y1I7HadXxA0zyoggNE2jAY1hCAnGLRGp3QLFd5iCiopEWCkjur0RgbhwEGxYiV0
-         wyUGOwe0gT86TkP7jS1tCq3Elohizqmg9osR7hk+wlzb5fW9hQPOYl0XSXuYV32ymvET
-         kIhLP4Q4p5PAAjQZZG8G90Zni4ERseI1DDZZhYKf+14ijKS7FXIq1jSjRUeZsbSogw8l
-         lUPg==
-X-Gm-Message-State: AOAM5327AXkd6IeOC+ZYEhJlR0tsb8p0pcPkU2DJM58+RxZ8cOgDNyDZ
-        UOgGegX+c1lTZKh8AWGXs+k=
-X-Google-Smtp-Source: ABdhPJzk+1tL/wgq/qc8SHCp97UXVBnISsMEN+Hqc+0boje+yOIv2HOFgmy/pIJto2v3w++RNimBXw==
-X-Received: by 2002:a17:90a:4404:: with SMTP id s4mr13380103pjg.153.1628479692586;
-        Sun, 08 Aug 2021 20:28:12 -0700 (PDT)
-Received: from localhost (61-220-137-34.HINET-IP.hinet.net. [61.220.137.34])
-        by smtp.gmail.com with ESMTPSA id 22sm18218071pgn.88.2021.08.08.20.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 20:28:11 -0700 (PDT)
-Sender: AceLan Kao <acelan@gmail.com>
-From:   AceLan Kao <acelan.kao@canonical.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Antoine Tenart <atenart@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND][PATCH] net: called rtnl_unlock() before runpm resumes devices
-Date:   Mon,  9 Aug 2021 11:28:09 +0800
-Message-Id: <20210809032809.1224002-1-acelan.kao@canonical.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232844AbhHIDyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 23:54:51 -0400
+Received: from mga11.intel.com ([192.55.52.93]:3427 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231459AbhHIDyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 23:54:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="211513539"
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="211513539"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 20:54:29 -0700
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="483122375"
+Received: from arthur-vostro-3668.sh.intel.com ([10.239.13.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 20:54:24 -0700
+From:   Zeng Guang <guang.zeng@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kai Huang <kai.huang@intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Robert Hu <robert.hu@intel.com>, Gao Chao <chao.gao@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>
+Subject: [PATCH v4 0/6] IPI virtualization support for VM
+Date:   Mon,  9 Aug 2021 11:29:19 +0800
+Message-Id: <20210809032925.3548-1-guang.zeng@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+Current IPI process in guest VM will virtualize the writing to interrupt
+command register(ICR) of the local APIC which will cause VM-exit anyway
+on source vCPU. Frequent VM-exit could induce much overhead accumulated
+if running IPI intensive task.
 
-The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
-__dev_open() it calls pm_runtime_resume() to resume devices, and in
-some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
-again. That leads to a recursive lock.
+IPI virtualization as a new VT-x feature targets to eliminate VM-exits
+when issuing IPI on source vCPU. It introduces a new VM-execution
+control - "IPI virtualization"(bit4) in the tertiary processor-based
+VM-execution controls and a new data structure - "PID-pointer table
+address" and "Last PID-pointer index" referenced by the VMCS. When "IPI
+virtualization" is enabled, processor emulates following kind of writes
+to APIC registers that would send IPIs, moreover without causing VM-exits.
+- Memory-mapped ICR writes
+- MSR-mapped ICR writes
+- SENDUIPI execution
 
-It should leave the devices' resume function to decide if they need to
-call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
-pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
+This patch series implements IPI virtualization support in KVM.
 
-[  967.723577] INFO: task ip:6024 blocked for more than 120 seconds.
-[  967.723588]       Not tainted 5.12.0-rc3+ #1
-[  967.723592] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  967.723594] task:ip              state:D stack:    0 pid: 6024 ppid:  5957 flags:0x00004000
-[  967.723603] Call Trace:
-[  967.723610]  __schedule+0x2de/0x890
-[  967.723623]  schedule+0x4f/0xc0
-[  967.723629]  schedule_preempt_disabled+0xe/0x10
-[  967.723636]  __mutex_lock.isra.0+0x190/0x510
-[  967.723644]  __mutex_lock_slowpath+0x13/0x20
-[  967.723651]  mutex_lock+0x32/0x40
-[  967.723657]  rtnl_lock+0x15/0x20
-[  967.723665]  igb_resume+0xee/0x1d0 [igb]
-[  967.723687]  ? pci_pm_default_resume+0x30/0x30
-[  967.723696]  igb_runtime_resume+0xe/0x10 [igb]
-[  967.723713]  pci_pm_runtime_resume+0x74/0x90
-[  967.723718]  __rpm_callback+0x53/0x1c0
-[  967.723725]  rpm_callback+0x57/0x80
-[  967.723730]  ? pci_pm_default_resume+0x30/0x30
-[  967.723735]  rpm_resume+0x547/0x760
-[  967.723740]  __pm_runtime_resume+0x52/0x80
-[  967.723745]  __dev_open+0x56/0x160
-[  967.723753]  ? _raw_spin_unlock_bh+0x1e/0x20
-[  967.723758]  __dev_change_flags+0x188/0x1e0
-[  967.723766]  dev_change_flags+0x26/0x60
-[  967.723773]  do_setlink+0x723/0x10b0
-[  967.723782]  ? __nla_validate_parse+0x5b/0xb80
-[  967.723792]  __rtnl_newlink+0x594/0xa00
-[  967.723800]  ? nla_put_ifalias+0x38/0xa0
-[  967.723807]  ? __nla_reserve+0x41/0x50
-[  967.723813]  ? __nla_reserve+0x41/0x50
-[  967.723818]  ? __kmalloc_node_track_caller+0x49b/0x4d0
-[  967.723824]  ? pskb_expand_head+0x75/0x310
-[  967.723830]  ? nla_reserve+0x28/0x30
-[  967.723835]  ? skb_free_head+0x25/0x30
-[  967.723843]  ? security_sock_rcv_skb+0x2f/0x50
-[  967.723850]  ? netlink_deliver_tap+0x3d/0x210
-[  967.723859]  ? sk_filter_trim_cap+0xc1/0x230
-[  967.723863]  ? skb_queue_tail+0x43/0x50
-[  967.723870]  ? sock_def_readable+0x4b/0x80
-[  967.723876]  ? __netlink_sendskb+0x42/0x50
-[  967.723888]  ? security_capable+0x3d/0x60
-[  967.723894]  ? __cond_resched+0x19/0x30
-[  967.723900]  ? kmem_cache_alloc_trace+0x390/0x440
-[  967.723906]  rtnl_newlink+0x49/0x70
-[  967.723913]  rtnetlink_rcv_msg+0x13c/0x370
-[  967.723920]  ? _copy_to_iter+0xa0/0x460
-[  967.723927]  ? rtnl_calcit.isra.0+0x130/0x130
-[  967.723934]  netlink_rcv_skb+0x55/0x100
-[  967.723939]  rtnetlink_rcv+0x15/0x20
-[  967.723944]  netlink_unicast+0x1a8/0x250
-[  967.723949]  netlink_sendmsg+0x233/0x460
-[  967.723954]  sock_sendmsg+0x65/0x70
-[  967.723958]  ____sys_sendmsg+0x218/0x290
-[  967.723961]  ? copy_msghdr_from_user+0x5c/0x90
-[  967.723966]  ? lru_cache_add_inactive_or_unevictable+0x27/0xb0
-[  967.723974]  ___sys_sendmsg+0x81/0xc0
-[  967.723980]  ? __mod_memcg_lruvec_state+0x22/0xe0
-[  967.723987]  ? kmem_cache_free+0x244/0x420
-[  967.723991]  ? dentry_free+0x37/0x70
-[  967.723996]  ? mntput_no_expire+0x4c/0x260
-[  967.724001]  ? __cond_resched+0x19/0x30
-[  967.724007]  ? security_file_free+0x54/0x60
-[  967.724013]  ? call_rcu+0xa4/0x250
-[  967.724021]  __sys_sendmsg+0x62/0xb0
-[  967.724026]  ? exit_to_user_mode_prepare+0x3d/0x1a0
-[  967.724032]  __x64_sys_sendmsg+0x1f/0x30
-[  967.724037]  do_syscall_64+0x38/0x90
-[  967.724044]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+Patches 1-4 add tertiary processor-based VM-execution support
+framework.
 
-Fixes: bd869245a3dc ("net: core: try to runtime-resume detached device in __dev_open")
-Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
----
- net/core/dev.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Patch 5 implements interrupt dispatch support in x2APIC mode with
+APIC-write VM exit. In previous platform, no CPU would produce
+APIC-write VM exit with exit qualification 300H when the "virtual x2APIC
+mode" VM-execution control was 1.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 8f1a47ad6781..dd43a29419fd 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -1585,8 +1585,11 @@ static int __dev_open(struct net_device *dev, struct netlink_ext_ack *extack)
- 
- 	if (!netif_device_present(dev)) {
- 		/* may be detached because parent is runtime-suspended */
--		if (dev->dev.parent)
-+		if (dev->dev.parent) {
-+			rtnl_unlock();
- 			pm_runtime_resume(dev->dev.parent);
-+			rtnl_lock();
-+		}
- 		if (!netif_device_present(dev))
- 			return -ENODEV;
- 	}
+Patch 6 implement IPI virtualization related function including
+feature enabling through tertiary processor-based VM-execution in
+various scenarios of VMCS configuration, PID table setup in vCPU creation
+and vCPU block consideration.
+
+Document for IPI virtualization is now available at the latest "Intel
+Architecture Instruction Set Extensions Programming Reference".
+
+Document Link:
+https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
+
+We did experiment to measure average time sending IPI from source vCPU
+to the target vCPU completing the IPI handling by kvm unittest w/ and
+w/o IPI virtualization. When IPI virtualization enabled, it will reduce
+22.21% and 15.98% cycles consuming in xAPIC mode and x2APIC mode
+respectively.
+
+KVM unittest:vmexit/ipi, 2 vCPU, AP was modified to run in idle loop
+instead of halt to ensure no VM exit impact on target vCPU.
+
+                Cycles of IPI
+                xAPIC mode              x2APIC mode
+        test    w/o IPIv  w/ IPIv       w/o IPIv  w/ IPIv
+        1       6106      4816          4265      3768
+        2       6244      4656          4404      3546
+        3       6165      4658          4233      3474
+        4       5992      4710          4363      3430
+        5       6083      4741          4215      3551
+        6       6238      4904          4304      3547
+        7       6164      4617          4263      3709
+        8       5984      4763          4518      3779
+        9       5931      4712          4645      3667
+        10      5955      4530          4332      3724
+        11      5897      4673          4283      3569
+        12      6140      4794          4178      3598
+        13      6183      4728          4363      3628
+        14      5991      4994          4509      3842
+        15      5866      4665          4520      3739
+        16      6032      4654          4229      3701
+        17      6050      4653          4185      3726
+        18      6004      4792          4319      3746
+        19      5961      4626          4196      3392
+        20      6194      4576          4433      3760
+
+Average cycles  6059      4713.1        4337.85   3644.8
+%Reduction                -22.21%                 -15.98%
+
+--------------------------------------
+IPI microbenchmark:
+(https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com)
+
+2 vCPUs, 1:1 pin vCPU to pCPU, guest VM runs with idle=poll, x2APIC mode
+
+Result with IPIv enabled:
+
+Dry-run:                         0,             272798 ns
+Self-IPI:                  5094123,           11114037 ns
+Normal IPI:              131697087,          173321200 ns
+Broadcast IPI:                   0,          155649075 ns
+Broadcast lock:                  0,          161518031 ns
+
+Result with IPIv disabled:
+
+Dry-run:                         0,             272766 ns
+Self-IPI:                  5091788,           11123699 ns
+Normal IPI:              145215772,          174558920 ns
+Broadcast IPI:                   0,          175785384 ns
+Broadcast lock:                  0,          149076195 ns
+
+
+As IPIv can benefit unicast IPI to other CPU, Normal IPI test case gain
+about 9.73% time saving on average out of 15 test runs when IPIv is
+enabled.
+
+Normal IPI statistics (unit:ns):
+	test	w/o IPIv	w/ IPIv
+	1	153346049	140907046
+	2	147218648	141660618
+	3	145215772	117890672
+	4	146621682	136430470
+	5	144821472	136199421
+	6	144704378	131676928
+	7	141403224	131697087
+	8	144775766	125476250
+	9	140658192	137263330
+	10      144768626	138593127
+	11	145166679	131946752
+	12	145020451	116852889
+	13	148161353	131406280
+	14	148378655	130174353
+	15	148903652	127969674 
+
+Average time	145944306.6	131742993.1 ns
+%Reduction			-9.73%
+
+--------------------------------------
+hackbench:
+
+8 vCPUs, guest VM free run, x2APIC mode
+./hackbench -p -l 100000
+
+                w/o IPIv        w/ IPIv
+Time            91.887          74.605
+%Reduction                      -18.808%
+
+96 vCPUs, guest VM free run, x2APIC mode
+./hackbench -p -l 1000000
+
+                w/o IPIv        w/ IPIv
+Time            287.504         235.185
+%Reduction                      -18.198%
+
+--------------------------------------
+v3 -> v4:
+1. Refine code style of patch 2
+2. Move tertiary control shadow build into patch 3
+3. Make vmx_tertiary_exec_control to be static function
+
+v2 -> v3:
+1. Misc change on tertiary execution control
+   definition and capability setup
+2. Alternative to get tertiary execution
+   control configuration
+
+v1 -> v2:
+1. Refine the IPIv enabling logic for VM.
+   Remove ipiv_active definition per vCPU.
+
+Gao Chao (1):
+  KVM: VMX: enable IPI virtualization
+
+Robert Hoo (4):
+  x86/feat_ctl: Add new VMX feature, Tertiary VM-Execution control
+  KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to support 64-bit
+    variation
+  KVM: VMX: Detect Tertiary VM-Execution control when setup VMCS config
+  KVM: VMX: dump_vmcs() reports tertiary_exec_control field as well
+
+Zeng Guang (1):
+  KVM: x86: Support interrupt dispatch in x2APIC mode with APIC-write VM
+    exit
+
+ arch/x86/include/asm/msr-index.h   |   1 +
+ arch/x86/include/asm/vmx.h         |  11 +++
+ arch/x86/include/asm/vmxfeatures.h |   5 +-
+ arch/x86/kernel/cpu/feat_ctl.c     |  11 ++-
+ arch/x86/kvm/lapic.c               |   9 ++-
+ arch/x86/kvm/vmx/capabilities.h    |  14 ++++
+ arch/x86/kvm/vmx/evmcs.c           |   2 +
+ arch/x86/kvm/vmx/evmcs.h           |   1 +
+ arch/x86/kvm/vmx/posted_intr.c     |  22 ++++--
+ arch/x86/kvm/vmx/vmcs.h            |   1 +
+ arch/x86/kvm/vmx/vmx.c             | 114 +++++++++++++++++++++++++++--
+ arch/x86/kvm/vmx/vmx.h             |  55 ++++++++------
+ 12 files changed, 208 insertions(+), 38 deletions(-)
+
 -- 
 2.25.1
 
