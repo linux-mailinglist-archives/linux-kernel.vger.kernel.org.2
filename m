@@ -2,179 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9C13E4981
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FBD3E4976
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhHIQN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        id S231788AbhHIQJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhHIQN0 (ORCPT
+        with ESMTP id S229456AbhHIQJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:13:26 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6885C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:13:05 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id m9so24401993ljp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:13:05 -0700 (PDT)
+        Mon, 9 Aug 2021 12:09:03 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875D5C0613D3;
+        Mon,  9 Aug 2021 09:08:42 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id l14so5177557wrw.4;
+        Mon, 09 Aug 2021 09:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=b8WlEulb8AeNf7tLXeGzmUmh0+aQ67ZSDKgWkCZGD2g=;
-        b=Wmmb6YeOUVKER5jbjnYHxfSNQjOSZj55iWqnDPXkzFAb8OD9KSMBRZoq1LaWBK7kq4
-         7b6pjbS65xRoguQIvH7MMqPf8PMjr7NbETu82gNBnG3tqjvRTBKDGhwvvYu8eIr2IMe3
-         0j0WtFlrS+oxYIz56+OejE+nct0e6AW3/YzRwfRblETl3cxHcq7cERE4ZVisx8wK5cF5
-         jLURDwnpNwL4sBRe8AoSVJfk3X81zrYZCtREnJcRNazW8Nwy7unv1vG27Q/UzmgshWa7
-         +/1OTS6sMrDMImXQiCATUhbIQzPJktCqu1OJZ8Z+JdD4W8HbOQqPf7OA6wS/XORb+BHP
-         Us8w==
+        bh=q53d8G5kWOf4SS+fjXRtH8Ez6cE2HYq6UNctarCj+nM=;
+        b=ZqpTtesNoIb8JAsIbc4kwfEwn9QcduU1DyNy35SXxRaBkKvTpb/MD9CAq7zt/N8uTX
+         SfsNB8K94EDzZqYgWiqM8YexfGvbBG+K+3bVNyKtYZ6Bvw6vFOLzKVhy2YjOt1Z2i2ke
+         9dyOxB0DTRZ2y1U8BDUKZ3KpM5cM+NOOXS/ooepVZU2uvGnssYDNU4wCoEd7tcp/7LS+
+         ZEo9BSJySV41eRoGkLhhD9bBsiZQR6J+oO5qBn+MY02vEaHoAnDI10lmXoN85ZBDE4KG
+         xmCvggeKy1oQHLOnpTO7zNj4LFcu7WHkTNeiq0PsABTl32Ffq0pFtUmdq9Sp98TLGcPU
+         SpNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=b8WlEulb8AeNf7tLXeGzmUmh0+aQ67ZSDKgWkCZGD2g=;
-        b=fxftp1Wa1Eq9c9LLbFgJq+t9jVoncEQiB4TiMCwajmS9zCa7coAcfysimmb/U2GY4Y
-         zOguzEpdooMCKDmtg6R/420d1HwRIbnnak0mZApLgSol3y8M0wwStgQbG8vNCGycVQCu
-         N+SahFuQivaYMhi9ypSUqXWfFFSQ8AzPmZcfMyAxqB54oGY5egWvcuCwI+QOS1dsPX6s
-         rhRlD3vkHtSfscTAoOylvcvNZRnImhXfspaslj+dVaBFOtlkIR/TpfKc4fMdSP8I1nIX
-         gm4wh/WAM0+6T75vEmu5QnLqxXgAynABdNMnURu4LMPYNknryQQfcLwHrMI8+kcru0g2
-         8UrQ==
-X-Gm-Message-State: AOAM531eKkiVTNgctsj4BaYKl61n+Vbb8u6QAv7PF+ZXf9fUVK+18N2c
-        1n4x/8038dosk3CBaH0H6FI7iq+fSqv0T0rjKUl+yA==
-X-Google-Smtp-Source: ABdhPJwzSyZYjH3UrLs0ru2MScYXvgbMeFrTs3QH5sLg+tJb6Ljh51wWJ/dDF2HKs11fOWRuSRkTSuDbWV67bYBxoOU=
-X-Received: by 2002:a2e:b8d3:: with SMTP id s19mr13761082ljp.388.1628525583623;
- Mon, 09 Aug 2021 09:13:03 -0700 (PDT)
+        bh=q53d8G5kWOf4SS+fjXRtH8Ez6cE2HYq6UNctarCj+nM=;
+        b=iW1iaFbgsTmlMCVmIybOz5cTV6mOixmm/QLJP5me/6d/PN5JWZYbcx6fxkas8fXWey
+         mB5QzMSBf/Wo3IB3YpuYPd2RgT5epA/bgyiQMhogig97A8H6sZOYb/pQJExnsayeINI/
+         SuAETo2uC2sN5JIt2zGKi6XXO9jJo0mYI1qi5PoJ2VIDvIPXB65xblI+ouAb1HHxj5RL
+         Zbqqm1X5ULBvPKIxV8h9mwYoeextkOGUxqDk+cEbsa59XwbfQOT8V09p76c4n1hziuV7
+         JyiVrJS0oLQXdacMV0awuuzPQ3WRBrHNLX8yiXiQTjvVdWafnElyJx2s2D/QPAZVYGAR
+         v+nA==
+X-Gm-Message-State: AOAM5308g9/DEaf5ZkB4DstgV3xnmGj2XSDxe5oMGThSeZKwqmoWQGvr
+        a6wUvmHDpDLggFUQI51Y9SMWrFbfLqQAp0VcMYw=
+X-Google-Smtp-Source: ABdhPJy3pG/6+VfjOqn3jkwRT0PbqDMKObWHzi8f2K7QQhuOcwS7fFkPd65O49HnnBXkF3VTjk+lLukWJ0voi6+LWyg=
+X-Received: by 2002:adf:e3c7:: with SMTP id k7mr25039733wrm.327.1628525321161;
+ Mon, 09 Aug 2021 09:08:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210809152651.2297337-1-maz@kernel.org> <20210809152651.2297337-3-maz@kernel.org>
-In-Reply-To: <20210809152651.2297337-3-maz@kernel.org>
-From:   Oliver Upton <oupton@google.com>
-Date:   Mon, 9 Aug 2021 09:12:52 -0700
-Message-ID: <CAOQ_QshJmjSUGVVLOqGJFicDpGfvf159W8utDWMpuT6i4fCBQQ@mail.gmail.com>
-Subject: Re: [PATCH 02/13] clocksource/arm_arch_timer: Extend write side of
- timer register accessors to u64
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org> <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+ <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org> <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+ <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
+In-Reply-To: <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 9 Aug 2021 09:12:56 -0700
+Message-ID: <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     Caleb Connolly <caleb.connolly@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 8:27 AM Marc Zyngier <maz@kernel.org> wrote:
+On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
 >
-> The various accessors for the timer sysreg and MMIO registers are
-> currently hardwired to 32bit. However, we are about to introduce
-> the use of the CVAL registers, which require a 64bit access.
+> On 8/8/2021 10:22 PM, Rob Clark wrote:
+> > On Sun, Aug 8, 2021 at 7:33 AM Caleb Connolly <caleb.connolly@linaro.org> wrote:
+> >>
+> >>
+> >>
+> >> On 07/08/2021 21:04, Rob Clark wrote:
+> >>> On Sat, Aug 7, 2021 at 12:21 PM Caleb Connolly
+> >>> <caleb.connolly@linaro.org> wrote:
+> >>>>
+> >>>> Hi Rob, Akhil,
+> >>>>
+> >>>> On 29/07/2021 21:53, Rob Clark wrote:
+> >>>>> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> >>>>> <caleb.connolly@linaro.org> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 29/07/2021 21:24, Rob Clark wrote:
+> >>>>>>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> >>>>>>> <caleb.connolly@linaro.org> wrote:
+> >>>>>>>>
+> >>>>>>>> Hi Rob,
+> >>>>>>>>
+> >>>>>>>> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> >>>>>>>> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> >>>>>>>> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> >>>>>>>
+> >>>>>>> *ohh*, yeah, ok, that would explain it
+> >>>>>>>
+> >>>>>>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> >>>>>>>> at the higher frequencies.
+> >>>>>>>>
+> >>>>>>>> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> >>>>>>>> glxgear.
+> >>>>>>>>
+> >>>>>>>> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> >>>>>>>> at the voltage the hardware needs to be stable.
+> >>>>>>>>
+> >>>>>>>> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> >>>>>>>> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> >>>>>>> on CC and I added sboyd, maybe one of them knows better.
+> >>>>>>>
+> >>>>>>> In the short term, removing the higher problematic OPPs from dts might
+> >>>>>>> be a better option than this patch (which I'm dropping), since there
+> >>>>>>> is nothing stopping other workloads from hitting higher OPPs.
+> >>>>>> Oh yeah that sounds like a more sensible workaround than mine .
+> >>>>>>>
+> >>>>>>> I'm slightly curious why I didn't have problems at higher OPPs on my
+> >>>>>>> c630 laptop (sdm850)
+> >>>>>> Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+> >>>>>>
+> >>>>>> Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> >>>>>> crash where yours doesn't?
+> >>>>>
+> >>>>> I've not heard any reports of similar issues from the handful of other
+> >>>>> folks with c630's on #aarch64-laptops.. but I can't really say if that
+> >>>>> is luck or not.
+> >>>> It looks like this affects at least the OnePlus 6 and PocoPhone F1, I've done some more poking and the following diff
+> >>>> seems to fix the stability issues completely, it seems the delay is required to let the update propagate.
+> >>>>
+> >>>> This doesn't feel like the right fix, but hopefully it's enough to come up with a better solution than disabling the new
+> >>>> devfreq behaviour on a630.
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> >>>> index d7cec7f0dde0..69e2a5e84dae 100644
+> >>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> >>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> >>>> @@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+> >>>>                    return;
+> >>>>            }
+> >>>>
+> >>>> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+> >>>> +
+> >>>> +       usleep_range(300, 500);
+> >>>> +
+> >>>
 >
-> Upgrade the write side of the accessors to take a 64bit value
-> (the read side is left untouched as we don't plan to ever read
-> back any of these registers).
->
-> No functional change expected.
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> I am a bit confused. We don't define a power domain for gpu in dt,
+> correct? Then what exactly set_opp do here? Do you think this usleep is
+> what is helping here somehow to mask the issue?
 
-Reviewed-by: Oliver Upton <oupton@google.com>
+Hmm, I thought "opp-level = RPMH_REGULATOR_LEVEL_*" did *something*,
+but tbh I'm not sure exactly what..
 
-> ---
->  arch/arm/include/asm/arch_timer.h    | 10 +++++-----
->  arch/arm64/include/asm/arch_timer.h  |  2 +-
->  drivers/clocksource/arm_arch_timer.c | 10 +++++-----
->  3 files changed, 11 insertions(+), 11 deletions(-)
+> I feel we should just leave the new dcvs feature (shall we call it NAP?)
+> disabled for a630 (and 10ms devfreq interval), until this is root caused.
+
+I suppose "NAP" is a reasonable name.
+
+But I think that reverting to previous behavior would not be enough,
+there is nothing stopping devfreq from jumping from min to max freq,
+which AFAIU should be enough to trigger this.  I guess that there just
+hasn't been enough testing with different game workloads on those
+phones to trigger this.
+
+That said, I haven't seen similar issues on my sdm850 laptop, where I
+defn have triggered mix->max freq transitions.. I guess it would be
+interesting to know if this issue could be reproduced on db845c, or if
+it really is board specific?
+
+To workaround, I think we'd need to implement some way to limit that
+maximum frequency jump (and then use delayed work to continue ramping
+up the freq over time until we hit the target).. which seems like a
+lot of work if this is just a board(s) specific workaround and isn't
+needed once CPR is supported
+
+BR,
+-R
+
+> >>> Hmm, this is going to be in the critical path on idle -> active
+> >>> transition (ie. think response time to user-input).. so we defn don't
+> >>> want to do this unconditionally..
+> >>>
+> >>> If I understand the problem, we just want to limit how far we jump the
+> >>> gpu freq in one go.. maybe deleting the lowest (and perhaps highest)
+> >>> OPP would accomplish that?  Could that be done in the board(s)'s
+> >>> toplevel dts files?
+> >> That would be a workaround, however I'd really like to avoid limiting performance as a solution if I can help it,
+> >> especially as the fix might just be "set the opp first, wait for it to apply, then set the core clock".
+> >>
+> >> Is there a sensible way to get a callback from the opp notify chain? Or from rpmh directly? Or is this solution really
+> >> not the right way to go?
+> >
+> > It does seem a bit strange to me that we are telling GMU to change
+> > freq before calling dev_pm_opp_set_opp()..  if dev_pm_opp_set_opp() is
+> > increasing voltage, it seems like you'd want to do that *before*
+> > increasing freq (but reverse the order when decreasing freq).. But I'm
+> > not an expert on the ways of the GMU..  maybe Akhil or Jordan knows
+> > better how this is supposed to work.
 >
-> diff --git a/arch/arm/include/asm/arch_timer.h b/arch/arm/include/asm/arch_timer.h
-> index 0c09afaa590d..88075c7f4bfd 100644
-> --- a/arch/arm/include/asm/arch_timer.h
-> +++ b/arch/arm/include/asm/arch_timer.h
-> @@ -24,24 +24,24 @@ int arch_timer_arch_init(void);
->   * the code. At least it does so with a recent GCC (4.6.3).
->   */
->  static __always_inline
-> -void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u32 val)
-> +void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
->  {
->         if (access == ARCH_TIMER_PHYS_ACCESS) {
->                 switch (reg) {
->                 case ARCH_TIMER_REG_CTRL:
-> -                       asm volatile("mcr p15, 0, %0, c14, c2, 1" : : "r" (val));
-> +                       asm volatile("mcr p15, 0, %0, c14, c2, 1" : : "r" ((u32)val));
->                         break;
->                 case ARCH_TIMER_REG_TVAL:
-> -                       asm volatile("mcr p15, 0, %0, c14, c2, 0" : : "r" (val));
-> +                       asm volatile("mcr p15, 0, %0, c14, c2, 0" : : "r" ((u32)val));
->                         break;
->                 }
->         } else if (access == ARCH_TIMER_VIRT_ACCESS) {
->                 switch (reg) {
->                 case ARCH_TIMER_REG_CTRL:
-> -                       asm volatile("mcr p15, 0, %0, c14, c3, 1" : : "r" (val));
-> +                       asm volatile("mcr p15, 0, %0, c14, c3, 1" : : "r" ((u32)val));
->                         break;
->                 case ARCH_TIMER_REG_TVAL:
-> -                       asm volatile("mcr p15, 0, %0, c14, c3, 0" : : "r" (val));
-> +                       asm volatile("mcr p15, 0, %0, c14, c3, 0" : : "r" ((u32)val));
->                         break;
->                 }
->         }
-> diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
-> index 8e3b2ac60c30..107afb721749 100644
-> --- a/arch/arm64/include/asm/arch_timer.h
-> +++ b/arch/arm64/include/asm/arch_timer.h
-> @@ -89,7 +89,7 @@ static inline notrace u64 arch_timer_read_cntvct_el0(void)
->   * the code.
->   */
->  static __always_inline
-> -void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u32 val)
-> +void arch_timer_reg_write_cp15(int access, enum arch_timer_reg reg, u64 val)
->  {
->         if (access == ARCH_TIMER_PHYS_ACCESS) {
->                 switch (reg) {
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index 9db5c16e31e7..0b2bac3ef7ce 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -100,27 +100,27 @@ early_param("clocksource.arm_arch_timer.evtstrm", early_evtstrm_cfg);
->   */
+> For legacy gmu, we trigger DCVS using DCVS OOB which comes later in this
+> function. But the order between regulator and clock which you mentioned
+> is correct.
 >
->  static __always_inline
-> -void arch_timer_reg_write(int access, enum arch_timer_reg reg, u32 val,
-> +void arch_timer_reg_write(int access, enum arch_timer_reg reg, u64 val,
->                           struct clock_event_device *clk)
->  {
->         if (access == ARCH_TIMER_MEM_PHYS_ACCESS) {
->                 struct arch_timer *timer = to_arch_timer(clk);
->                 switch (reg) {
->                 case ARCH_TIMER_REG_CTRL:
-> -                       writel_relaxed(val, timer->base + CNTP_CTL);
-> +                       writel_relaxed((u32)val, timer->base + CNTP_CTL);
->                         break;
->                 case ARCH_TIMER_REG_TVAL:
-> -                       writel_relaxed(val, timer->base + CNTP_TVAL);
-> +                       writel_relaxed((u32)val, timer->base + CNTP_TVAL);
->                         break;
->                 }
->         } else if (access == ARCH_TIMER_MEM_VIRT_ACCESS) {
->                 struct arch_timer *timer = to_arch_timer(clk);
->                 switch (reg) {
->                 case ARCH_TIMER_REG_CTRL:
-> -                       writel_relaxed(val, timer->base + CNTV_CTL);
-> +                       writel_relaxed((u32)val, timer->base + CNTV_CTL);
->                         break;
->                 case ARCH_TIMER_REG_TVAL:
-> -                       writel_relaxed(val, timer->base + CNTV_TVAL);
-> +                       writel_relaxed((u32)val, timer->base + CNTV_TVAL);
->                         break;
->                 }
->         } else {
-> --
-> 2.30.2
+> >
+> > But the delay seems like papering something over, and I'm trying to go
+> > in the other direction and reduce latency between user input and
+> > pageflip..
+> >
+> > BR,
+> > -R
+> >
+> >>>
+> >>> BR,
+> >>> -R
+> >>>
+> >>>>            gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
+> >>>>
+> >>>>            gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
+> >>>> @@ -158,7 +162,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+> >>>>            if (ret)
+> >>>>                    dev_err(gmu->dev, "GMU set GPU frequency error: %d\n", ret);
+> >>>>
+> >>>> -       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+> >>>>            pm_runtime_put(gmu->dev);
+> >>>>     }
+> >>>>>
+> >>>>> Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+> >>>>>
+> >>>>> BR,
+> >>>>> -R
+> >>>>>
+> >>>>
+> >>>> --
+> >>>> Kind Regards,
+> >>>> Caleb (they/them)
+> >>
+> >> --
+> >> Kind Regards,
+> >> Caleb (they/them)
 >
