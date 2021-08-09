@@ -2,91 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F893E3D7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC773E3D7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhHIBXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S232507AbhHIBYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbhHIBXA (ORCPT
+        with ESMTP id S229891AbhHIBYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:23:00 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D35C061757
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 18:22:39 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id z6-20020a0568302906b02904f268d34f86so15908166otu.2
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 18:22:39 -0700 (PDT)
+        Sun, 8 Aug 2021 21:24:21 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF519C061760;
+        Sun,  8 Aug 2021 18:24:00 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id a8so25417492pjk.4;
+        Sun, 08 Aug 2021 18:24:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=90ci/n6jLsbwK/bkwHeIPPX127Rbh+qCSTmy7nz6yIs=;
-        b=hc31EG9utNmLKfIZemAhbVRGRk8plpcYNeZyq8PLJjqfXN66QpESniUSaC5hBgRihO
-         uUnlXMtVmbiVheMl7CHee2nk1wgJ7sxQiYQpTP/1FW9PZyAB3qVLzWIbR809kshLUuqT
-         +LYZ2rLWCmatuO9lIHXabv3T22cGXD+QBFarSrGGtlt04nYNCzIsQ41uUoc51yp+xRpk
-         HPtAHnDMVduLNCjRvHvDyf5b9j+GceT4C54htutvAEdsxzmB7iuB+xIs9BuVugH+DBPn
-         jYj+q9rNe9LTbdCe7VnenNgjjnsmJ+tyf3cjGbFB7oNNxbxKZuakVYH5bwcUXxpaEEPg
-         o4Lg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=65uq92+uPfX201VDvmSTKZbSUN3WhilhgfG4rF4gYBQ=;
+        b=Iokl1Pdx38bGc8N5LxtjlSPrwWf2MQ3RZbCEuhb2oRZnT8eRjpKKA7b4jznKdYq3SJ
+         lHkVePrUQcfN+aHDl1rcHmSHztiBn3hk3ebt1svGRp5yFgbllkUuVFNGlqDJlYxWUGp+
+         2VlKGjmbyYLddQtooHV8CRwS8XWDPKqlmW9L3eF0eEt82HzIr3XkE74DZpC1gPY1KE/Q
+         HqGYD4Z1XKZ10v3fJTTRajWDaJbbDYO+DTgx1HjALqFm+AsQS22drQRxAPhCJhw9bohg
+         lfYzBbkpR1cLwG122cvqDqw3ZYJdEAZX5K6yU1zZcrFch9P0qEtNsRYsHuPyHEWsQFuZ
+         Xh0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=90ci/n6jLsbwK/bkwHeIPPX127Rbh+qCSTmy7nz6yIs=;
-        b=WmOCDsFIQ5n+UmlklsGZEqV06ur1UxAeIv1vGAfx/WOtax1q4bWKHTQb6SxB8mOsXh
-         pvZ6BKDcQLUZhUq50c1Osq2+TUFwNiCRupiUiF6rvLepoqnE+xh4YwTcbvmZUUbft8iB
-         agESBieWmtqGANTeijYk24RzzpS2U5oMX4WtmLLxSe4uHogJGLrjWoIkToDPHtFFkEoc
-         7OEx+3b2A6XnjyFuY1DJpXv4Hi/78qxlH2/VVGnuqeYM2Vfku2QURNoWr+D1fviOffg9
-         lHkFMpgOAb4BvUEvfnjaRIVCh1HefFUS2N+gNHmLllxD71x2xWazXVIqs/q1xNOvn0zQ
-         pk/g==
-X-Gm-Message-State: AOAM533cKqfvCcKzBtD88Iad9Wv6PmI8AiOOjnUThF3l4rxjoEuVlLOf
-        yiQ1sRLr6peBYVAoECZuVN/i3YO03ws=
-X-Google-Smtp-Source: ABdhPJzW8kyCCB4IizJ0T8zvuOtr1T6TILFcX0hrK0AwWNoE2Jaw/l/gr+LCm5eu5aeL4Aj2DTjOqg==
-X-Received: by 2002:a05:6830:2a09:: with SMTP id y9mr15556562otu.217.1628472159257;
-        Sun, 08 Aug 2021 18:22:39 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e13sm1495572oiw.38.2021.08.08.18.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 18:22:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 8 Aug 2021 18:22:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.14-rc5
-Message-ID: <20210809012237.GA3681747@roeck-us.net>
-References: <CAHk-=wg8QmMMBCEYCV0gPM2GqRQObsQ__fK0r8C6SYAg3Upyjg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=65uq92+uPfX201VDvmSTKZbSUN3WhilhgfG4rF4gYBQ=;
+        b=qj/fbYXX0lZtaUIsEwKllCYRVHsVI4cKF6zVBib0rAQqsX0wgSsoDp+K/VWQ3gAHKM
+         QIqcX/+ZeTLJddz07Ln2bMo/KmdlLW7UH9lsjsZJGVZHHh25YjQo0DPHEuy+1tUuKQs9
+         Kkyd/IPeNujDhP2+x1jM4Uzhj3MfkFd3oSDDq4eKeC62xNCsZxnxElX1zmiydmzRpw/+
+         wEGz5VBuuSh4n2KR0/Z2Mq7T4OJzuh8lZTLd82qFhBsw04sKfJx+PJhD38cKnOCDEBQL
+         sDsu+K1UJqFjqxIwR/SrCJnbPm+9PVLqM/rgdnyetsHlOfPo/FS3mrMLKtc3DTfBIMx/
+         iYSg==
+X-Gm-Message-State: AOAM5312ncZbyuVfo4jbuNCE1nIJ95f5gVIQnXE94ZCAXzzqDUf20o3x
+        tERDx5lz9WvAfykrmpHPSOk=
+X-Google-Smtp-Source: ABdhPJzqDgD3D1BVfv5dPas/nj/OdblGE2h3Arz+ZTKGupLDSDn7I1jBTcCtcj7rE20LT645sAaekQ==
+X-Received: by 2002:a65:6785:: with SMTP id e5mr195805pgr.199.1628472240324;
+        Sun, 08 Aug 2021 18:24:00 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id q13sm18837759pjq.10.2021.08.08.18.23.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Aug 2021 18:24:00 -0700 (PDT)
+Subject: [PATCH v4 6/9] docs: pdfdocs: One-half spacing for CJK translations
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <39d0fb0f-b248-bca4-2dac-df69e8d697b1@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <547a1f1c-0bb5-20a7-ea0e-951bfc3c3925@gmail.com>
+Date:   Mon, 9 Aug 2021 10:23:57 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg8QmMMBCEYCV0gPM2GqRQObsQ__fK0r8C6SYAg3Upyjg@mail.gmail.com>
+In-Reply-To: <39d0fb0f-b248-bca4-2dac-df69e8d697b1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 02:00:36PM -0700, Linus Torvalds wrote:
-> Things are looking perfectly normal. Size is nominal, diffstat looks
-> pretty normal, and the changes are all in the usual places, with just
-> under 60% being drivers, and the rest the usual mix of architecture
-> updates, core kernel, networking, and some selftests.
-> 
-> The shortlog is appended for people who want to scan the details, but
-> I can't think of anything in here that looks odd or noteworthy.
-> 
-> Which is just how it should be by rc5.  Let's hope the trend continues,
-> 
+CJK documents are much easier to read with a wider baseline stretch.
+Applying onehalfspacing option of "setspace" package looks reasonable.
 
-Nothing new on the testing side of things.
+Note: \usepackage{setspace} needs to be before that of hyperref in the
+preamble.
+The 'extrapackages' key (available since Sphinx 2.3) is for this purpose.=
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 481 pass: 480 fail: 1
-Failed tests:
-	arm:z2:pxa_defconfig:nodebug:nocd:nofs:nonvme:noscsi:notests:novirt:nofdt:flash8,384k,2:rootfs
+For systems with Sphinx < 2.3, dummy commands of \onehalfspacing and
+\singlespacing are provided instead.
+One-half spacing is not effective in LaTeX sources generated by such
+revisions of Sphinx.
 
-The fix for the failing test is queued in -next and in pending-fixes
-and has been there for a while. See commit 45bb1faa29ef ("mtd: core:
-handle flashes without OTP gracefully").
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ Documentation/conf.py                      | 12 ++++++++++--
+ Documentation/translations/ja_JP/howto.rst |  8 ++++++++
+ Documentation/translations/ko_KR/howto.rst |  8 ++++++++
+ 3 files changed, 26 insertions(+), 2 deletions(-)
 
-Guenter
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 2ccfe4442acc..f219a7a41f48 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -341,6 +341,9 @@ latex_elements =3D {
+         verbatimhintsturnover=3Dfalse,
+     ''',
+=20
++    # For CJK One-half spacing, need to be in front of hyperref
++    'extrapackages': r'\usepackage{setspace}',
++
+     # Additional stuff for the LaTeX preamble.
+     'preamble': '''
+ 	% Prevent column squeezing of tabulary.
+@@ -404,9 +407,12 @@ latex_elements['preamble']  +=3D '''
+ 	}
+ 	\\newCJKfontfamily[JPsans]\\jpsans{Noto Sans CJK JP}
+ 	\\newCJKfontfamily[JPmono]\\jpmono{Noto Sans Mono CJK JP}
++	% Dummy commands for Sphinx < 2.3 (no 'extrapackages' support)
++	\\providecommand{\\onehalfspacing}{}
++	\\providecommand{\\singlespacing}{}
+ 	% Define custom macros to on/off CJK
+-	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive}
+-	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive}
++	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive\\onehalfspacing}
++	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive\\singlespacing}
+ 	\\newcommand{\\kerneldocBeginSC}{%
+ 	    \\begingroup%
+ 	    \\scmain%
+@@ -437,6 +443,8 @@ latex_elements['preamble']  +=3D '''
+ 	    \\renewcommand{\\CJKttdefault}{JPmono}%
+ 	}
+ 	\\newcommand{\\kerneldocEndJP}{\\endgroup}
++	% Single spacing in literal blocks
++	\\fvset{baselinestretch=3D1}
+ 	% To customize \\sphinxtableofcontents
+ 	\\usepackage{etoolbox}
+ 	% Inactivate CJK after tableofcontents
+diff --git a/Documentation/translations/ja_JP/howto.rst b/Documentation/t=
+ranslations/ja_JP/howto.rst
+index 73ebdab4ced7..d667f9d8a02a 100644
+--- a/Documentation/translations/ja_JP/howto.rst
++++ b/Documentation/translations/ja_JP/howto.rst
+@@ -1,3 +1,7 @@
++.. raw:: latex
++
++	\kerneldocCJKoff
++
+ NOTE:
+ This is a version of Documentation/process/howto.rst translated into Jap=
+anese.
+ This document is maintained by Tsugikazu Shibata <tshibata@ab.jp.nec.com=
+>
+@@ -11,6 +15,10 @@ try to update the original English file first.
+=20
+ ----------------------------------
+=20
++.. raw:: latex
++
++	\kerneldocCJKon
++
+ =E3=81=93=E3=81=AE=E6=96=87=E6=9B=B8=E3=81=AF=E3=80=81
+ Documentation/process/howto.rst
+ =E3=81=AE=E5=92=8C=E8=A8=B3=E3=81=A7=E3=81=99=E3=80=82
+diff --git a/Documentation/translations/ko_KR/howto.rst b/Documentation/t=
+ranslations/ko_KR/howto.rst
+index a2bdd564c907..e3cdf0c84892 100644
+--- a/Documentation/translations/ko_KR/howto.rst
++++ b/Documentation/translations/ko_KR/howto.rst
+@@ -1,3 +1,7 @@
++.. raw:: latex
++
++	\kerneldocCJKoff
++
+ NOTE:
+ This is a version of Documentation/process/howto.rst translated into kor=
+ean
+ This document is maintained by Minchan Kim <minchan@kernel.org>
+@@ -11,6 +15,10 @@ try to update the original English file first.
+=20
+ ----------------------------------
+=20
++.. raw:: latex
++
++	\kerneldocCJKon
++
+ =EC=9D=B4 =EB=AC=B8=EC=84=9C=EB=8A=94
+ Documentation/process/howto.rst
+ =EC=9D=98 =ED=95=9C=EA=B8=80 =EB=B2=88=EC=97=AD=EC=9E=85=EB=8B=88=EB=8B=A4=
+=2E
+--=20
+2.17.1
+
+
+
