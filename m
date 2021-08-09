@@ -1,110 +1,113 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578463E464F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:14:41 +0200 (CEST)
+Received: from vger.kernel.org (unknown [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id C4A4C3E4668
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbhHINO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:14:58 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13405 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhHINO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:14:57 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GjxKX3D6Zzcm59;
-        Mon,  9 Aug 2021 21:10:56 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 21:14:34 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 9 Aug 2021
- 21:14:33 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>
-CC:     <roopa@nvidia.com>, <nikolay@nvidia.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-Subject: [PATCH net v3] net: bridge: fix memleak in br_add_if()
-Date:   Mon, 9 Aug 2021 21:20:23 +0800
-Message-ID: <20210809132023.978546-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S235428AbhHINVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:21:54 -0400
+Received: from mga05.intel.com ([192.55.52.43]:42451 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234597AbhHINVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:21:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="300278504"
+X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
+   d="scan'208";a="300278504"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 06:21:03 -0700
+X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
+   d="scan'208";a="514951933"
+Received: from lmajkows-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.39.191])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 06:20:59 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>, Karol Herbst <kherbst@redhat.com>
+Cc:     ML nouveau <nouveau@lists.freedesktop.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH] nouveau: make backlight support non optional
+In-Reply-To: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210723224617.3088886-1-kherbst@redhat.com> <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com> <CACO55tuNWk6emjnnukgv9h-9jbpVP564Ogmi7TGbybc9n5v+ZQ@mail.gmail.com> <CAK8P3a1BceSaiqkTf+9Pr4Br-G3kgqD4ztwiaS7fxNiUg9t7Dg@mail.gmail.com> <CACO55tsoi2akTKvFdz3p48UHRjFXDW7dUnOM8qVePBFWet-3UQ@mail.gmail.com> <CACO55tuceMUz2pgOM23wvcmtaTqbo6S6rCB+mfLptqJRt=fMWA@mail.gmail.com> <CAK8P3a3+AD02-8nbULMdae2Hc=hJ+-Zb_CL+bHF-9oGieYiZWQ@mail.gmail.com> <CACO55tswMuDE9u3asU2Ls7BhA0uKGGarLk+E-WTD6MVnLwc3tw@mail.gmail.com> <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
+Date:   Mon, 09 Aug 2021 16:20:55 +0300
+Message-ID: <87tujyoitk.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a memleak report:
+On Sat, 24 Jul 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> On Sat, Jul 24, 2021 at 4:14 PM Karol Herbst <kherbst@redhat.com> wrote:
+>>
+>> we use the MXM_WMI in code. We also have to keep arm in mind and not
+>> break stuff there. So I will try to play around with your changes and
+>> see how that goes.
+>
+> Ok, should find any randconfig build failures for arm, arm64 or x86 over the
+> weekend. I also this on linux-next today
+>
+> ld: drivers/gpu/drm/i915/display/intel_panel.o: in function
+> `intel_backlight_device_register':
+> intel_panel.c:(.text+0x2804): undefined reference to `backlight_device_register'
+> ld: intel_panel.c:(.text+0x284e): undefined reference to
+> `backlight_device_register'
+> ld: drivers/gpu/drm/i915/display/intel_panel.o: in function
+> `intel_backlight_device_unregister':
+> intel_panel.c:(.text+0x28b1): undefined reference to
+> `backlight_device_unregister'
+>
+> and I added this same thing there to see how it goes:
 
-BUG: memory leak
-unreferenced object 0x607ee521a658 (size 240):
-comm "syz-executor.0", pid 955, jiffies 4294780569 (age 16.449s)
-hex dump (first 32 bytes, cpu 1):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-backtrace:
-[<00000000d830ea5a>] br_multicast_add_port+0x1c2/0x300 net/bridge/br_multicast.c:1693
-[<00000000274d9a71>] new_nbp net/bridge/br_if.c:435 [inline]
-[<00000000274d9a71>] br_add_if+0x670/0x1740 net/bridge/br_if.c:611
-[<0000000012ce888e>] do_set_master net/core/rtnetlink.c:2513 [inline]
-[<0000000012ce888e>] do_set_master+0x1aa/0x210 net/core/rtnetlink.c:2487
-[<0000000099d1cafc>] __rtnl_newlink+0x1095/0x13e0 net/core/rtnetlink.c:3457
-[<00000000a01facc0>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
-[<00000000acc9186c>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5550
-[<00000000d4aabb9c>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
-[<00000000bc2e12a3>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-[<00000000bc2e12a3>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
-[<00000000e4dc2d0e>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
-[<000000000d22c8b3>] sock_sendmsg_nosec net/socket.c:654 [inline]
-[<000000000d22c8b3>] sock_sendmsg+0x139/0x170 net/socket.c:674
-[<00000000e281417a>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
-[<00000000237aa2ab>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
-[<000000004f2dc381>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
-[<0000000005feca6c>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
-[<000000007304477d>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Last I checked (and it was a while a go) you really had to make all
+users of BACKLIGHT_CLASS_DEVICE depend not select it, otherwise you end
+up with recursive dependencies.
 
-On error path of br_add_if(), p->mcast_stats allocated in
-new_nbp() need be freed, or it will be leaked.
+BR,
+Jani.
 
-Fixes: 1080ab95e3c7 ("net: bridge: add support for IGMP/MLD stats and export them via netlink")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v3:
-  use br_multicast_del_port() to free mcast_stats
----
- net/bridge/br_if.c | 2 ++
- 1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
+> index 87825d36335b..69c6b7aec49e 100644
+> --- a/drivers/gpu/drm/i915/Kconfig
+> +++ b/drivers/gpu/drm/i915/Kconfig
+> @@ -3,6 +3,8 @@ config DRM_I915
+>         tristate "Intel 8xx/9xx/G3x/G4x/HD Graphics"
+>         depends on DRM
+>         depends on X86 && PCI
+> +       depends on ACPI_VIDEO || !ACPI
+> +       depends on BACKLIGHT_CLASS_DEVICE
+>         select INTEL_GTT
+>         select INTERVAL_TREE
+>         # we need shmfs for the swappable backing store, and in particular
+> @@ -16,10 +18,6 @@ config DRM_I915
+>         select IRQ_WORK
+>         # i915 depends on ACPI_VIDEO when ACPI is enabled
+>         # but for select to work, need to select ACPI_VIDEO's dependencies, ick
+> -       select DRM_I915_BACKLIGHT if ACPI
+> -       select INPUT if ACPI
+> -       select ACPI_VIDEO if ACPI
+> -       select ACPI_BUTTON if ACPI
+>         select SYNC_FILE
+>         select IOSF_MBI
+>         select CRC32
+> @@ -64,13 +62,7 @@ config DRM_I915_FORCE_PROBE
+>           Use "*" to force probe the driver for all known devices.
+>
+>  config DRM_I915_BACKLIGHT
+> -       tristate "Control backlight support"
+> -       depends on DRM_I915
+> -       default DRM_I915
+> -       select BACKLIGHT_CLASS_DEVICE
+> -       help
+> -          Say Y here if you want to control the backlight of your display
+> -          (e.g. a laptop panel).
+> +       def_tristate DRM_I915
+>
+>  config DRM_I915_CAPTURE_ERROR
+>         bool "Enable capturing GPU state following a hang"
 
-diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
-index 5aa508a08a691..b5fb2b682e191 100644
---- a/net/bridge/br_if.c
-+++ b/net/bridge/br_if.c
-@@ -604,6 +604,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
- 
- 	err = dev_set_allmulti(dev, 1);
- 	if (err) {
-+		br_multicast_del_port(p);
- 		kfree(p);	/* kobject not yet init'd, manually free */
- 		goto err1;
- 	}
-@@ -708,6 +709,7 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
- err3:
- 	sysfs_remove_link(br->ifobj, p->dev->name);
- err2:
-+	br_multicast_del_port(p);
- 	kobject_put(&p->kobj);
- 	dev_set_allmulti(dev, -1);
- err1:
 -- 
-2.25.1
-
+Jani Nikula, Intel Open Source Graphics Center
