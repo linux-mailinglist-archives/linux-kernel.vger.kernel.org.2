@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AF43E4046
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0D03E404E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbhHIGku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 02:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233264AbhHIGkt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 02:40:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AD5C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 23:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UOfsezeh2Rb2IHtiMvyy621DrExWSUzedq6b1M16AvE=; b=uzvq4Qo0mtKVu0YIlmp1mW0eek
-        X/hjctzSksRyyLoyzQveO6Yko4Obw+RfWgBi/ltcaxWjZ6/RTyRlKUBzx7+Tt8CafYWhMz9cU+Zft
-        2LUQvkci7hUaizGb98YLijBrxYvPExZBLf+8Mw/peK9ipZqy7yvkYOojRYG0MsPlWp+sNAQhCRxHi
-        mFvDlLHfozvD23UAYrLGhsrTLN7iTHkS38ZhObcEBmqweB1JJLWw4Keskwmrd3bQz8J7oxCaOwJq8
-        DKuz4oFxslJT5LfLzWnnrynYtfLtCHZZEAewnEe15ap6ES6twT7waZ46QeG4W2YLOuMrbBLjJthUB
-        nZ04TlAg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCyvx-00AiNV-H2; Mon, 09 Aug 2021 06:38:56 +0000
-Date:   Mon, 9 Aug 2021 07:38:49 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-Subject: Re: [PATCH 2/3] mm/gup: small refactoring: simplify try_grab_page()
-Message-ID: <YRDNeZZQxUzbFxrQ@infradead.org>
-References: <20210808235018.1924918-1-jhubbard@nvidia.com>
- <20210808235018.1924918-3-jhubbard@nvidia.com>
+        id S233321AbhHIGmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 02:42:24 -0400
+Received: from verein.lst.de ([213.95.11.211]:59610 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233234AbhHIGmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 02:42:22 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1B3D667373; Mon,  9 Aug 2021 08:42:00 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 08:41:59 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>
+Subject: Re: [PATCH V4 0/7] loop: cleanup charging io to mem/blkcg
+Message-ID: <20210809064159.GA19070@lst.de>
+References: <20210806080302.298297-1-ming.lei@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210808235018.1924918-3-jhubbard@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210806080302.298297-1-ming.lei@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 04:50:17PM -0700, John Hubbard wrote:
-> try_grab_page() does the same thing as try_grab_compound_head(...,
-> refs=1, ...), just with a different API. So there is a lot of code
-> duplication there.
-> 
-> Change try_grab_page() to call try_grab_compound_head(), while keeping
-> the API contract identical for callers.
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  mm/gup.c | 29 ++---------------------------
->  1 file changed, 2 insertions(+), 27 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 5cb18b62921c..4be6f060fa0b 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -203,33 +203,8 @@ static void put_compound_head(struct page *page, int refs, unsigned int flags)
->   */
->  bool __must_check try_grab_page(struct page *page, unsigned int flags)
->  {
-> +	if (flags & (FOLL_GET | FOLL_PIN))
-> +		return try_grab_compound_head(page, 1, flags) != NULL;
->  
->  	return true;
+FYI, I am still of the firm opinion that the current cgroup support in
+the loop driver needs to be reverted and be redone cleanly from scratch
+without impacting the normal non-cgroup path at all.
 
-Nit: something like:
-
-	if (!(flags & (FOLL_GET | FOLL_PIN)))
-		return true;
-	return try_grab_compound_head(page, 1, flags) != NULL;
-
-would be a little easier to read.
+On Fri, Aug 06, 2021 at 04:02:55PM +0800, Ming Lei wrote:
+> Hello Guys,
+> 
+> Cleanup charging io to mem/blkcg a bit:
+> 
+> - avoid to store blkcg_css/memcg_css in loop_cmd, and store blkcg_css in
+> loop_worker instead
+> 
+> - avoid to acquire ->lo_work_lock in IO path
+> 
+> - simplify blkcg_css query via xarray
+> 
+> - other misc cleanup
+> 
+> V4:
+> 	- fix build failure in case of !CONFIG_CGROUPS: changed to use
+> 	'struct cgroup_subsys_state' as parameter of the added memcg helper;
+> 	meantime add helper loop_blkcg_css_id()
+> 
+> V3:
+> 	- one patch style change in 7/7
+> 	- rebase patch 4/7 against for-5.15/block
+> 	- add acked-by tag
+> 
+> V2:
+> 	- add helper of memcg_get_e_css
+> 	- cleanup #ifdef
+> 	- improve the last patch, as discussed with Dan Schatzberg
+> 
+> 
+> Ming Lei (7):
+>   mm: memcontrol: add helper of memcg_get_e_css
+>   loop: clean up blkcg association
+>   loop: conver timer for monitoring idle worker into dwork
+>   loop: add __loop_free_idle_workers() for covering freeing workers in
+>     clearing FD
+>   loop: improve loop_process_work
+>   loop: use xarray to store workers
+>   loop: don't add worker into idle list
+> 
+>  drivers/block/loop.c       | 331 +++++++++++++++++++++----------------
+>  drivers/block/loop.h       |   7 +-
+>  include/linux/memcontrol.h |  10 ++
+>  3 files changed, 201 insertions(+), 147 deletions(-)
+> 
+> -- 
+> 2.31.1
+---end quoted text---
