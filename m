@@ -2,256 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F2D3E40E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655933E40EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhHIHiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbhHIHiG (ORCPT
+        id S233507AbhHIHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:40:21 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:56113 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232094AbhHIHkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:38:06 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23DEC06179A
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 00:37:42 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:85c3:1250:92e5:c526])
-        by andre.telenet-ops.be with bizsmtp
-        id fKde2500G4aJ70U01Kde8M; Mon, 09 Aug 2021 09:37:39 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mCzqs-000u8z-KA
-        for linux-kernel@vger.kernel.org; Mon, 09 Aug 2021 09:37:38 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mCzqs-000q6S-4d
-        for linux-kernel@vger.kernel.org; Mon, 09 Aug 2021 09:37:38 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.14-rc4
-Date:   Mon,  9 Aug 2021 09:37:38 +0200
-Message-Id: <20210809073738.200237-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 9 Aug 2021 03:40:16 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id A79552B006E9;
+        Mon,  9 Aug 2021 03:39:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 09 Aug 2021 03:39:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=fsl0bScebyCgyftSZKkh5Fsv2Dm
+        gmxJgk8SqbFNWzGc=; b=VdKldzfdZ9YJnDWsMfMhiMlw3N9V/nZ+vMNm1g0L+c4
+        XfxpgU5MoUSOpPUOxHaxENeCINP3lVMuZGcWIL0LBNX9TdEEvMCvKiSfsiDYcLN7
+        uSCPsi9yzqGc17hxUjY8BSvP97mvwy0S4a8MaW/G3JWCcdtZojV7dle3sfG7LbQN
+        KKYXk/tnHmMCh5psMCwO593IVsoeSGZyS7AqsCnpji3WDzlkSnmZ3EKVd3W5GoFR
+        So+7Hw6k/B4tyUJG4t+Ei4E5ncsFBCZfa2RhrHIeRwron9I5I7XNbFEu1tP5KToA
+        R7opcxzLXOo3YR6UQanEEgo3dfloYWeGeWfLx1FgcvA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fsl0bS
+        cebyCgyftSZKkh5Fsv2DmgmxJgk8SqbFNWzGc=; b=bf1O8R1xfcPM9Fc9MizKHC
+        iKyxRBFvFF0vU9RzUlOhgmV6vhd63oqpEOU7I9zkyG/bea0opZ9nMvZiTicEmfea
+        L+/Dyvz1FgVsnHjKinlWGlLdOGOxJxT8hq8apHoyNA4346sXrjbxAqYx6SeZRt0Z
+        P3SQZkJtOmL4CDBj/UCgT6IY5MTw2yLzbQH/1UhI8eWtK/PRvNRTK0i6EDBWxl+O
+        6n5yAotaFzSFe2DKy2C5aSFQFKo2u5rAYBcEw7QQ/Lx1nTi+MXHGt1N/72QP/OCc
+        JOnCngaBwyVZ46WroMPVANIjV3BBaWUTbYZb8VTAJ3NqyLKHfRd5jJwzP1940xrA
+        ==
+X-ME-Sender: <xms:ydsQYdSl_q_T4EznDAuGz44PHPcObE1oovBRTm9TRHNXASewMzFipA>
+    <xme:ydsQYWwvz7eQeyfKoTKP33WIP8xnNcEA7RkI4YBedh7aujLBfkK4kzHNWxX7cOxrG
+    C9Ye1xWm0ZE1A>
+X-ME-Received: <xmr:ydsQYS2Rwr73k_IY75wDyhpK1YPyYBCT1X8l6McGFzMbe5Lx9AFY6yPisF91AAuCLvxy8TJsfLUnyisfhYQ3GafjLYXus6Gz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeeigdduudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:ydsQYVCqpScmfjeIYWZ7ac8IeGFnMAKWzhZyvBoyBEHW5u5YQbUUrA>
+    <xmx:ydsQYWgokVYHOUVMfaXZ_lTarPnZF5rm3CxNr9dJpof3mviKOYTuOA>
+    <xmx:ydsQYZpA4jZmDFlUVlHMWrpjf2B7gzmp_Cm_2X7JInb2pTb0R_xOqw>
+    <xmx:ytsQYXZlu1YWRydBED1fEi5y6hTTugQVRXgZxezUgNwd9dal4YmOLrq-TfY>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 9 Aug 2021 03:39:52 -0400 (EDT)
+Date:   Mon, 9 Aug 2021 09:39:50 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: Re: linux-next: manual merge of the phy-next tree with the usb tree
+Message-ID: <YRDbxuNwX/0y7+L/@kroah.com>
+References: <20210809171023.4d387ed3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809171023.4d387ed3@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.14-rc4[1] compared to v5.13+[2].
-
-Summarized:
-  - build errors: +22/-4
-  - build warnings: +78/-65
-
-JFYI, when comparing v5.14-rc4[1] to v5.14-rc3[3], the summaries are:
-  - build errors: +5/-0
-  - build warnings: +3/-0
-
-Note that there may be false regressions, as some logs are incomplete.
-Still, they're build errors/warnings.
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/c500bee1c5b2f1d59b1081ac879d73268ab0ff17/ (182 out of 189 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/66d9282523b3228183b14d9f812872dd2620704d/ (all 189 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ff1176468d368232b684f75e82563369208bc371/ (182 out of 189 configs)
-
-
-*** ERRORS ***
-
-22 error regressions:
-  + /kisskb/src/drivers/dma/idxd/init.c: error: implicit declaration of function 'cpu_feature_enabled' [-Werror=implicit-function-declaration]:  => 805:7
-  + /kisskb/src/drivers/dma/idxd/perfmon.h: error: 'struct perf_event' has no member named 'pmu':  => 35:13, 24:13
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'boot_cpu_has' [-Werror=implicit-function-declaration]:  => 74:6
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_eax' [-Werror=implicit-function-declaration]:  => 64:18
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_ebx' [-Werror=implicit-function-declaration]:  => 17:31
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_HIGH' undeclared (first use in this function):  => 150:20
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_LOW' undeclared (first use in this function):  => 151:35
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'base_address':  => 151:19
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'destid_0_7':  => 152:19
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: control reaches end of non-void function [-Werror=return-type]:  => 127:1
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: dereferencing pointer to incomplete type 'struct pci_sysdata':  => 700:4
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: field 'sysdata' has incomplete type:  => 116:21
-  + /kisskb/src/include/linux/compiler_attributes.h: error: "__GCC4_has_attribute___no_sanitize_coverage__" is not defined [-Werror=undef]:  => 29:29
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1857' declared with attribute error: FIELD_PREP: value too large for the field:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1864' declared with attribute error: FIELD_PREP: value too large for the field:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_399' declared with attribute error: Unsupported width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_417' declared with attribute error: Unsupported width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_418' declared with attribute error: Unsupported width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_431' declared with attribute error: Unsupported width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_433' declared with attribute error: Unsupported width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_450' declared with attribute error: Unsupported width, must be <= 40:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_517' declared with attribute error: Unsupported width, must be <= 40:  => 328:38
-
-4 error improvements:
-  - error: arch/sparc/kernel/head_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.init.text': (.head.text+0x5100), (.head.text+0x5040) => 
-  - error: arch/sparc/kernel/head_32.o: relocation truncated to fit: R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text section in arch/sparc/kernel/trampoline_32.o: (.init.text+0xa4) => 
-  - error: arch/sparc/kernel/process_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.text': (.fixup+0x4), (.fixup+0xc) => 
-  - error: arch/sparc/kernel/signal_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.text': (.fixup+0x34), (.fixup+0x10), (.fixup+0x28), (.fixup+0x1c), (.fixup+0x4) => 
+On Mon, Aug 09, 2021 at 05:10:23PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the phy-next tree got a conflict in:
+> 
+>   Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+> 
+> between commit:
+> 
+>   e516ac5d48fe ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SC7280")
+> 
+> from the usb tree and commit:
+> 
+>   1a00d130596f ("dt-bindings: phy: qcom,qmp-usb3-dp: Add support for sc8180x")
+> 
+> from the phy-next tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+> index 20199833f144,1d49cc3d4eae..000000000000
+> --- a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+> @@@ -14,7 -14,7 +14,8 @@@ properties
+>     compatible:
+>       enum:
+>         - qcom,sc7180-qmp-usb3-dp-phy
+>  +      - qcom,sc7280-qmp-usb3-dp-phy
+> +       - qcom,sc8180x-qmp-usb3-dp-phy
+>         - qcom,sdm845-qmp-usb3-dp-phy
+>         - qcom,sm8250-qmp-usb3-dp-phy
+>     reg:
 
 
-*** WARNINGS ***
 
-78 warning regressions:
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_RANDSTRUCT:  => 11822, 11597
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_SANCOV:  => 11819, 11594
-  + /kisskb/src/arch/parisc/math-emu/fpudispatch.c: warning: this statement may fall through [-Wimplicit-fallthrough=]:  => 890:5, 749:18, 438:5, 738:18, 1042:8, 744:5, 521:7, 343:18, 637:5, 625:5, 815:3, 728:3, 483:5, 314:18, 361:18, 320:5, 755:5, 574:5, 359:18, 661:5, 300:3, 766:5, 498:5, 905:5, 453:5, 1030:5, 830:5, 649:5, 368:5, 408:3, 345:18, 860:5, 760:18, 410:5, 1075:5, 312:18, 845:5, 336:5, 817:5, 305:5, 423:5, 327:18, 875:5, 733:5, 777:5, 771:18, 1021:5, 329:18, 938:7, 352:5, 468:5
-  + /kisskb/src/arch/s390/kernel/perf_cpum_cf.c: warning: 'cfdiag_push_sample' uses dynamic stack allocation:  => 651:1
-  + /kisskb/src/drivers/cxl/core.c: warning: (near initialization for '(anonymous).hdm_decoder') [-Wmissing-braces]:  => 567:17
-  + /kisskb/src/drivers/cxl/core.c: warning: (near initialization for '(anonymous).status') [-Wmissing-braces]:  => 831:17
-  + /kisskb/src/drivers/cxl/core.c: warning: missing braces around initializer [-Wmissing-braces]:  => 567:17, 831:17
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_psr.c: warning: (near initialization for 'params.triggers') [-Wmissing-braces]:  => 104:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_psr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 104:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: (near initialization for 'dummy_wms.WatermarkRow') [-Wmissing-braces]:  => 402:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 157:11, 179:10
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 402:15, 179:10, 157:11
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_smu.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 240:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_smu.c: warning: missing braces around initializer [-Wmissing-braces]:  => 240:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: (near initialization for 'data.inbox0_cmd_common') [-Wmissing-braces]:  => 58:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 58:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'ddc_init_data.id') [-Wmissing-braces]:  => 3725:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 451:15 => 3725:9, 451:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_resource.c: warning: (near initialization for 'ddc_init_data.id') [-Wmissing-braces]:  => 2542:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_resource.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2542:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn31.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]:  => 318:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn31.c: warning: missing braces around initializer [-Wmissing-braces]:  => 318:8
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2128 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2144 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2152 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/net/dsa/sja1105/sja1105_spi.c: warning: (near initialization for 'xfers[0]') [-Wmissing-braces]:  => 40:9
-  + /kisskb/src/drivers/net/dsa/sja1105/sja1105_spi.c: warning: missing braces around initializer [-Wmissing-braces]:  => 40:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]: 654:9, 604:9, 754:9 => 631:9, 845:9, 681:9, 774:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]: 655:9, 605:9, 755:9 => 632:9, 682:9, 846:9, 775:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]: 654:9, 655:9, 604:9, 754:9, 755:9, 605:9 => 846:9, 774:9, 845:9, 682:9, 632:9, 775:9, 681:9, 631:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'alloc_req.hdr') [-Wmissing-braces]:  => 144:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'alloc_rsp.hdr') [-Wmissing-braces]:  => 145:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'free_req.hdr') [-Wmissing-braces]:  => 147:9, 198:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]:  => 41:9, 13:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]:  => 42:9, 14:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'uninstall_req.hdr') [-Wmissing-braces]:  => 146:9, 197:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: missing braces around initializer [-Wmissing-braces]:  => 147:9, 145:9, 13:9, 14:9, 146:9, 41:9, 198:9, 197:9, 144:9, 42:9
-  + /kisskb/src/drivers/net/ethernet/marvell/prestera/prestera_flower.c: warning: (near initialization for 'm_entry.list') [-Wmissing-braces]:  => 52:9
-  + /kisskb/src/drivers/net/ethernet/marvell/prestera/prestera_flower.c: warning: missing braces around initializer [-Wmissing-braces]:  => 52:9
-  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.39' uses dynamic stack allocation:  => 481:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3136 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3168 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3176 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7192 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2367:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7208 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2367:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7264 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2367:1
-  + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: warning: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]:  => 1439:10, 1414:10
-  + /kisskb/src/drivers/video/fbdev/riva/fbdev.c: warning: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]:  => 2059:11, 2092:11
-  + /kisskb/src/drivers/virtio/virtio_vdpa.c: warning: (near initialization for 'state.<anonymous>') [-Wmissing-braces]:  => 146:9
-  + /kisskb/src/drivers/virtio/virtio_vdpa.c: warning: missing braces around initializer [-Wmissing-braces]:  => 146:9
-  + /kisskb/src/fs/cifs/connect.c: warning: (near initialization for 'mount_id.b') [-Wmissing-braces]:  => 3466:2
-  + /kisskb/src/fs/cifs/connect.c: warning: missing braces around initializer [-Wmissing-braces]:  => 3466:2
-  + /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2208 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 1311:1
-  + /kisskb/src/include/linux/compiler_attributes.h: warning: "__GCC4_has_attribute___no_sanitize_coverage__" is not defined [-Wundef]:  => 29:29
-  + /kisskb/src/kernel/trace/trace_osnoise.c: warning: 'main' is usually a function [-Wmain]:  => 1461:8
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2128 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 530:1, 437:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2144 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2464 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2472 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 530:1, 437:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2480 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2488 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2512 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 530:1, 437:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2616 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2640 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2952 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2960 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2976 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2992 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 3008 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/xxhash.c: warning: the frame size of 1656 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 236:1
-  + /kisskb/src/lib/xxhash.c: warning: the frame size of 1672 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 236:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1192 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1393:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1384 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2051:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1432 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2262:1
-  + arch/powerpc/configs/mpc885_ads_defconfig: warning: override: reassigning to symbol IPV6:  => 79
-  + modpost: WARNING: modpost: EXPORT symbol "_mcount" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "clear_page" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "copy_page" [vmlinux] version ...:  => N/A
-
-65 warning improvements:
-  - .config: warning: override: reassigning to symbol GCC_PLUGIN_CYC_COMPLEXITY: 4582, 4553 => 
-  - .config: warning: override: reassigning to symbol GCC_PLUGIN_LATENT_ENTROPY: 4584, 4555 => 
-  - /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation: 176:1 => 
-  - /kisskb/src/arch/s390/kernel/perf_cpum_cf_diag.c: warning: 'cf_diag_push_sample' uses dynamic stack allocation: 503:1 => 
-  - /kisskb/src/arch/s390/kernel/traps.c: warning: '__do_pgm_check' uses dynamic stack allocation: 359:1 => 
-  - /kisskb/src/arch/xtensa/include/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 173:3 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: warning: (near initialization for 'params.triggers') [-Wmissing-braces]: 10583:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: warning: missing braces around initializer [-Wmissing-braces]: 10583:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: (near initialization for 'info.head') [-Wmissing-braces]: 610:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: missing braces around initializer [-Wmissing-braces]: 610:9 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2320 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2336 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation: 1092:1 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation: 481:1 => 
-  - /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: warning: this statement may fall through [-Wimplicit-fallthrough=]: 580:8, 566:8, 542:37, 563:8, 596:5 => 
-  - /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2224 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/lib/xxhash.c: warning: the frame size of 1616 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 236:1 => 
-  - /kisskb/src/lib/xxhash.c: warning: the frame size of 1624 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 236:1 => 
-  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1348 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2262:1 => 
-  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1584 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1393:1 => 
-  - arch/arm64/configs/defconfig: warning: override: reassigning to symbol MTK_PMIC_WRAP: 1018 => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_enter" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_exit" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_try" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_write_enter" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ashldi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ashrdi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__copy_1page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__divdi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__lshrdi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__muldi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ndelay" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__udelay" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "_mcount" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "bzero_1page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "clear_page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "copy_page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "empty_zero_page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3570): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3588): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35a0): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35b8): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35d0): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35e8): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3600): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3618): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3630): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3648): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3660): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3678): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3690): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36a8): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36c0): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36d8): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x13c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x154): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x16c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x184): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x19c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1b4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1cc): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: lib/find_bit_benchmark.o(.text.unlikely+0x0): Section mismatch in reference from the (unknown reference) (unknown) to the variable .init.data:bitmap2: N/A => 
-  - modpost: WARNING: modpost: lib/test_bitmap.o(.text.unlikely+0x58): Section mismatch in reference from the function bitmap_equal() to the variable .init.rodata:clump_exp: N/A => 
-  - warning: 4 bad relocations: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Looks good, thanks!
