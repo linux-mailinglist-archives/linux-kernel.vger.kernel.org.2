@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE103E4EAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992873E4EB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbhHIVlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:41:52 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:60482 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234846AbhHIVls (ORCPT
+        id S235904AbhHIVqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233541AbhHIVq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:41:48 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDD1L-009NHX-Gh; Mon, 09 Aug 2021 21:41:19 +0000
-Date:   Mon, 9 Aug 2021 21:41:19 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Shoaib Rao <rao.shoaib@oracle.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
- _copy_to_iter
-Message-ID: <YRGg/yTXTAL/1whP@zeniv-ca.linux.org.uk>
-References: <0000000000006bd0b305c914c3dc@google.com>
- <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
- <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
- <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
- <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
- <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com>
- <YRGKWP7/n7+st7Ko@zeniv-ca.linux.org.uk>
- <YRGNIduUvw/kCLIU@zeniv-ca.linux.org.uk>
- <c1ec22f6-ed3b-fe70-2c7e-38a534f01d2b@oracle.com>
+        Mon, 9 Aug 2021 17:46:27 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C22DC061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:46:06 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id bo18so8053214pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:46:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zGW8AK3cSSlo8RoEaUz/Ru79mfjJirEiShCzSUYbZDc=;
+        b=IYn4wY/cc10AdW5DkSXpKUyci6JFskg0/plcbC6LMEC23bfo03QYBYZkcW3heSRYnT
+         sbMu87nJhtTXIwXVLVQCbNB/2Kj5sTxIriSZpcJhwHB/pqX9QZLsyaw/cPlH2UyaU121
+         2I7Fe+u6U6o3xdQtZvPzProj6C6RX/mYYlKrU1nRmETiIr5nYM6+eNQpKDFfJM7LL3nE
+         RfsdHVj6H7HYd2xxPZeUF5RdogHURz0XGCyrXFfVfIIqik3AO8qWf20x5EtMK8F58JBc
+         RiI5Z8SCJfQ+ACHEvvuJj1DE/FQRkvJDBqYjLD0Njdw10rltJXyzxwkinG7zyx5RCpsr
+         z7cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zGW8AK3cSSlo8RoEaUz/Ru79mfjJirEiShCzSUYbZDc=;
+        b=O8oPT+b7541ivQOBDm0QZ3amJcMhlAkOo2xTUDgDG0zZ7tUqrh3xoGsLeUn/xpgBVS
+         oRT8mGHparV+6VonRPSjFbldQlXrS9bLrMyzl7+tvrjU1jF2CBEASGYLUXochzfO8BOz
+         CS6RoRh8I7U11CD2fVM/WGU7rvdA387/kqVEo4wyUzIYB9i1M1S127X+hBIG676Ig+B5
+         yp+yR7r9aMf8NVZBjjLK3ZnlbiSRoNIj5LecfeDmNt64XRf6MznnyuONSoeDVRh7zJJF
+         xInNJ6s+BcAgKyi9ueMrwEhGQsGrqVxKB2zrxv5nt1iLPmEMJwusAW0A6vMlQo3n5vND
+         aLRQ==
+X-Gm-Message-State: AOAM5328aCqrqF9+RLTC5j6/peNYO4VCPpZ/c3m/oMVnqKLp3wtlRxxl
+        A/YBD0KJDiCgeGF/CS+9qzdxyPh/FtWcaXg762DYxg==
+X-Google-Smtp-Source: ABdhPJwA1iCEPVv6xMPuIgTpyMXDCiaEK1oOBUUdRZ0jC5qaLQMdY99BUh7Lz/ffhkeFBkT99YrevNK4NyvINN6wtxI=
+X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr3935613pjq.217.1628545566041;
+ Mon, 09 Aug 2021 14:46:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1ec22f6-ed3b-fe70-2c7e-38a534f01d2b@oracle.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20210802233339.25285-1-broonie@kernel.org> <CAA=Fs0k95E3FN-9rwzSQcK4JmejHDKBbvk-yhRynJBTbqBNVxQ@mail.gmail.com>
+ <CAK8P3a0HWO1tPwCkhasRE1iXt+-rC72nAzsUuO6jb4XasGAAPg@mail.gmail.com>
+ <20210809175502.226ce4cd@elm.ozlabs.ibm.com> <CAA=Fs0nF31NdEoPLM-a2RCupQPtHgHMzxejK67UuLh0wu32EVA@mail.gmail.com>
+ <CAK8P3a0WRMNmBmBDerZ0nWPdFZKALnxrj-uUFBkTP-MOtv48vg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0WRMNmBmBDerZ0nWPdFZKALnxrj-uUFBkTP-MOtv48vg@mail.gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Mon, 9 Aug 2021 22:45:55 +0100
+Message-ID: <CAA=Fs0nJDKheZA99+c-BWjpZCFrC=U4_-O2Hgxv2cg9hRGgDxA@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the staging tree with the net-next tree
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Stephen Rothwell <sfr@rothwell.id.au>,
+        Mark Brown <broonie@kernel.org>, Greg KH <greg@kroah.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 01:37:08PM -0700, Shoaib Rao wrote:
+On Mon, 9 Aug 2021 at 21:00, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Mon, Aug 9, 2021 at 2:48 PM Phillip Potter <phil@philpotter.co.uk> wrote:
+> > On Mon, 9 Aug 2021 at 08:55, Stephen Rothwell <sfr@rothwell.id.au> wrote:
+> > > On Tue, 3 Aug 2021 11:23:29 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
+> > >
+> > > So, can that be done in the staging tree as it is, or does Greg need to
+> > > merge (part of) the net-next tree?  Or will someone just supply me with
+> > > a reasonable merge resolution patch?  Or does Greg reset the staging
+> > > tree to 5c872e1d2595 and try again next time?  Or similar for Dave
+> > > (revert Arnd's work)?
+> > >
+> > > Currently it is a mess in linux-next and probably will not work even
+> > > though it does build.
+> > >
+> >
+> > Happy to try and provide a merge resolution patch if that is easier?
+> > Will be this evening UK time though.
+>
+> Most likely there is no user space that actually wants this function at all,
+> so I think the easiest way would be to remove all of rtw_ioctl in the
+> staging tree version of this driver.
+>
+>         Arnd
 
-> > +#if IS_ENABLED(CONFIG_AF_UNIX_OOB)
-> > +               mutex_lock(&u->iolock);
-> > +               unix_state_lock(sk);
-> > +
-> > +               err = unix_stream_recv_urg(state);
-> > +
-> > +               unix_state_unlock(sk);
-> > +               mutex_unlock(&u->iolock);
-> > +#endif
-> > 
-> > is 100% broken, since you *are* attempting to copy data to userland between
-> > spin_lock(&unix_sk(s)->lock) and spin_unlock(&unix_sk(s)->lock).
-> 
-> Yes, but why are we calling it unix_state_lock() why not
-> unix_state_spinlock() ?
+Sounds good. I will put something together to take out rtw_ioctl in
+that case, and submit through Greg/linux-staging. Many thanks.
 
-We'd never bothered with such naming conventions; keep in mind that
-locking rules can and do change from time to time, and encoding the
-nature of locking primitive into the name would result in tons of
-noise.
-
-> I have tons of experience doing kernel coding and you can never ever cover
-> everything, that is why I wanted to root cause the issue instead of just
-> turning off the check.
-> 
-> Imagine you or Eric make a mistake and break the kernel, how would you guys
-> feel if I were to write a similar email?
-
-Moderately embarrassed, at a guess, but what would that have to do with
-somebody pointing the bug out?  Bonehead mistakes happen, they are embarrassing
-no matter who catches them - trust me, it's no less unpleasant when you end
-up being one who finds your own bug months after it went into the tree.  Been
-there, done that...
-
-Since you asked, as far as my reactions normally go:
-	* I made a mistake that ended up screwing people over => can be
-hideously embarrassing, no matter what.  No cause for that in your case,
-AFAICS - it hadn't even gone into mainline yet.
-	* I made a dumb mistake that got caught (again, doesn't matter
-by whom) => unpleasant; shit happens (does it ever), but that's not
-a tragedy.  Ought to look for the ways to catch the same kind of mistakes
-and see if I have stepped into the same problem anywhere else - often
-enough the blind spots strike more than once.  If the method of catching
-the same kind of crap ends up being something like 'grep for <pattern>,
-manually check the instances to weed out the false positive'... might
-be worth running over the tree; often enough the blind spots are shared.
-Would be partially applicable in your case ("if using an unfamiliar locking
-helper, check what it does"), but not easily greppable.
-	* I kept looking at bug report, missing the relevant indicators
-despite the increasingly direct references to those by other people =>
-mildly embarrassing (possibly more than mildly, if that persists for long).
-Ought to get some coffee, wake up properly (if applicable, that is) and make
-notes for myself re what to watch out for.  Partially applicable here;
-I'm no telepath, but at a guess you missed the list of locks in the report
-_and_ missed repeated references to some spinlock being involved.
-Since the call chain had not (AFAICS) been missed, the question
-"which spinlock do they keep blathering about?" wouldn't have been hard.
-Might be useful to make note of, for the next time you have to deal with
-such reports.
-	* Somebody starts asking whether I bloody understand something
-trivial => figure out what does that have to do with the situation at
-hand, reply with the description of what I'd missed (again, quite possibly
-the answer will be "enough coffee") and move on to figuring out how to
-fix the damn bug.  Not exactly applicable here - the closest I can see
-is Eric's question regarding the difference between mutex and spinlock.
-In similar situation I'd go with something along the lines of "Sorry,
-hadn't spotted the spinlock in question"; your reply had been a bit
-more combative than that, but that's a matter of taste.  None of my
-postings would fit into that class, AFAICS...
-	* Somebody explains (in painful details) what's wrong with the
-code => more or less the same as above, only with less temptation (for
-me) to get defensive.  Reactions vary - some folks find it more offensive
-than the previous one, but essentially it's the same thing.
-
-	The above describes my reactions, in case it's not obvious -
-I'm not saying that everyone should react the same way, but you've
-asked how would I (or Eric) react in such-and-such case.  And I can't
-speak for Eric, obviously...
+Regards,
+Phil
