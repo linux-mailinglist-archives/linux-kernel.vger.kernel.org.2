@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682733E412A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA693E412D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233663AbhHIHyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:54:45 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:38440 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233604AbhHIHyn (ORCPT
+        id S233671AbhHIHzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:55:33 -0400
+Received: from gimli.rothwell.id.au ([103.230.158.156]:38301 "EHLO
+        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233550AbhHIHzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:54:43 -0400
-Received: by mail-il1-f199.google.com with SMTP id h27-20020a056e021d9bb02902021736bb95so5307201ila.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:54:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8QI5/Ow9wqoi4wS1cgAAg/FGKAVs9yNR1XeA3INMSiI=;
-        b=GNz+SJqBgUKBlAt+eaHDggRdZWFmJgRv3CqJygG4xv5BftkGxS867vzZwrwO9G2E6b
-         p3k4dST+3cCf7ZjSCwmaTB3jYncsNKF7H5UA9Rcgd1ytat7RR+ncEwadZb4xMobR9B6W
-         kUd9ZALzUYHf+O3wM0SM7GDWte4Bvr8FpdLDT5iCxpl+1OAdKz3m1taNS3ARKRJ/ptqA
-         eoiPTYqkJcG8+8cbFHn2MmHTorW9trtuvwE7RRxq7jKaj7JhknJ06vXz+vefB6ZQe2Ju
-         z7Uhf3Wt+aO9f8yeL5Y4miEewqiQHMXahVexplYdNntVK7uupMhPcsZ1YqnCuZfng06R
-         eovg==
-X-Gm-Message-State: AOAM531E68RBLOKsuQwzFLDcEjEJUa+Silx2c3fZbOI1Vm1KPRedyfmH
-        CQFwrajOAharBO+YBmOqDR/kbUrL93gz/XgEHCDlthHvow9c
-X-Google-Smtp-Source: ABdhPJzDTxXN99MnJc7AwyZ3LSbWPzB44Tpctll5ZoYah9KsWRfMfr1x8ws3pfWMST+ETOzo7j30x+Y7r2qnja6UlBgBeNp8RmeT
+        Mon, 9 Aug 2021 03:55:32 -0400
+Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4GjpK46W8xzyXZ;
+        Mon,  9 Aug 2021 17:55:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothwell.id.au;
+        s=201702; t=1628495706;
+        bh=Ax7yStg3wWAtuh2tZBdEAtQJchvZ6pdPo94W58ORdIY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FWPgSATxjInAWqoMSEq7J5Jj/y64wp2eAHlw64ch+LJiz1l5aejqnAT566lNvjpPR
+         xROf5KSJJb8ygt0lmDlHPN8/SwusqC2FS1jfnoKsj3s56D73X/MO+WzmIR4axIOi2i
+         e3oJoobMFXYg+Ir7vNwLyHLHDXBILburbDN3uGI5CoULKDuq6EOvL73HZTx/K7pLuj
+         dZ+fu/Ac4G6uhCKFIwAC9gFPA2GvayEYeY7hllXbsd5NSyik5gmnDt0rppw8bgMwIq
+         FJP1GZHrQFLxQ5nzCxh2cp9RGT/48IYDTYi962zV4XkuvUuBowd1aFg0CdOa/VzHXG
+         VdYB9nxAKWRew==
+Date:   Mon, 9 Aug 2021 17:55:02 +1000
+From:   Stephen Rothwell <sfr@rothwell.id.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Phillip Potter <phil@philpotter.co.uk>,
+        Mark Brown <broonie@kernel.org>, Greg KH <greg@kroah.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the staging tree with the net-next
+ tree
+Message-ID: <20210809175502.226ce4cd@elm.ozlabs.ibm.com>
+In-Reply-To: <CAK8P3a0HWO1tPwCkhasRE1iXt+-rC72nAzsUuO6jb4XasGAAPg@mail.gmail.com>
+References: <20210802233339.25285-1-broonie@kernel.org>
+        <CAA=Fs0k95E3FN-9rwzSQcK4JmejHDKBbvk-yhRynJBTbqBNVxQ@mail.gmail.com>
+        <CAK8P3a0HWO1tPwCkhasRE1iXt+-rC72nAzsUuO6jb4XasGAAPg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a92:da4a:: with SMTP id p10mr138371ilq.290.1628495662787;
- Mon, 09 Aug 2021 00:54:22 -0700 (PDT)
-Date:   Mon, 09 Aug 2021 00:54:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007faf7505c91bb19d@google.com>
-Subject: [syzbot] general protection fault in hwsim_new_edge_nl
-From:   syzbot <syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/2.RNl=5PYs033Lo8A0nkNzX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/2.RNl=5PYs033Lo8A0nkNzX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-syzbot found the following issue on:
+Hi all,
 
-HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb override
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1226099a300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aba0c23f8230e048
-dashboard link: https://syzkaller.appspot.com/bug?extid=fafb46da3f65fdbacd16
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+On Tue, 3 Aug 2021 11:23:29 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, Aug 3, 2021 at 10:57 AM Phillip Potter <phil@philpotter.co.uk> wr=
+ote:
+> > On Tue, 3 Aug 2021 at 00:33, Mark Brown <broonie@kernel.org> wrote:
+> >
+> > Thank you for your e-mail - not sure what is going on here as the
+> > r8188eu files are totally new - the net-next commit is touching files
+> > from a different directory (rtl8188eu) so perhaps it is getting
+> > confused and considering it a rename or similar? Regardless, all
+> > commits for r8188eu subdirectory should come from staging, as it is a
+> > different driver. =20
+>=20
+> In net-next, the .ndo_do_ioctl() callback behaves differently, as it no
+> longer gets called from user space. If you have any
+> SIOCDEVPRIVATE ioctls in the driver, those need to be
+> moved over to the new .ndo_siocdevprivate callback, while any
+> nonstandard ioctl commands outside of that range can just be
+> removed.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+So, can that be done in the staging tree as it is, or does Greg need to
+merge (part of) the net-next tree?  Or will someone just supply me with
+a reasonable merge resolution patch?  Or does Greg reset the staging
+tree to 5c872e1d2595 and try again next time?  Or similar for Dave
+(revert Arnd's work)?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com
+Currently it is a mess in linux-next and probably will not work even
+though it does build.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 1403 Comm: syz-executor.2 Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
-RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
-RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
-Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d f2 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
-RSP: 0018:ffffc90009a47568 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000dd59000
-RDX: 0000000000000000 RSI: ffffffff8534ab43 RDI: ffff88801c2b44d0
-RBP: ffffc90009a47678 R08: 0000000000000001 R09: ffffc90009a476a8
-R10: fffff52001348ed6 R11: 0000000000000000 R12: ffffc90009a47698
-R13: ffff888025945c14 R14: ffff888071f0cdc0 R15: 0000000000000000
-FS:  00007f8448923700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000032f4708 CR3: 0000000033eed000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665e9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8448923188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
-RDX: 0000000000000000 RSI: 0000000020001ac0 RDI: 0000000000000004
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffd8ac8e60f R14: 00007f8448923300 R15: 0000000000022000
-Modules linked in:
----[ end trace d1679fe789931133 ]---
-RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
-RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
-RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
-Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d f2 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
-RSP: 0018:ffffc90009a47568 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000dd59000
-RDX: 0000000000000000 RSI: ffffffff8534ab43 RDI: ffff88801c2b44d0
-RBP: ffffc90009a47678 R08: 0000000000000001 R09: ffffc90009a476a8
-R10: fffff52001348ed6 R11: 0000000000000000 R12: ffffc90009a47698
-R13: ffff888025945c14 R14: ffff888071f0cdc0 R15: 0000000000000000
-FS:  00007f8448923700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055bb2ea2f160 CR3: 0000000033eed000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/2.RNl=5PYs033Lo8A0nkNzX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-----BEGIN PGP SIGNATURE-----
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEQ31YACgkQAVBC80lX
+0GxbZwf/WZEoB2hfI0N7PW8yTIZDQh2G06KzRBebc6GQGX5hRJCReF7XwXVfs8sD
+sKoL231BaSOQKn1+HJ5b6oqwyiU1pLUEsQ2qIryQ3Bh3ZMBs+/AyRArvztU0id8D
+UZ1jqcnd/g29OhmuCzsZR2TfvvW1A1EiQOfHU7hnDyOnmLVIcFmREWyMLDuiVhhK
+Pkg3+LMtcqZnGksqzVv1M5VYzGjMVgMz/mT7Lyuqik/wg8N6O+E1n79K+LA3JATh
+823R6tYX/uhH2JILrztYQz+YkqM5uWa0kbfR01HWbqeaAPcnmPQ72gM7gHX6yDZd
+QLSWIGqPB41OenIkYbTf4Q41k31/hA==
+=MvfM
+-----END PGP SIGNATURE-----
+
+--Sig_/2.RNl=5PYs033Lo8A0nkNzX--
