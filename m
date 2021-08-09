@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2440F3E4112
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15373E4117
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhHIHt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:49:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233533AbhHIHt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:49:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 029DE61056
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:49:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628495376;
-        bh=q/S/ccLXHytgWzYsEEYPeb1axvMFlx+hkfDx9JyqjhI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZXkLPeDSnu/5fSVRxKq0MAg7wIhU9SY3SUjybAvltMCLBCcoXhz08WyVaEetNEy8O
-         eyMorI6OqeuXLwlS4DFnzwkr/53N5tAv/hau8SIZ2UcyM00eKIEXtPQapzBSomI/s6
-         IB0VrFfCIJV4LcEnhMlmTJArCU0HpC3W/D3EaNtEqG7jXOMJ/7jTcM5ELT7KXHAQgO
-         3kC8CaJKV3XrUVg+/Fzds11q7/0sDUpAS2UZoxvHra0RbbxZTmZoQgtVO+li9uoVdr
-         ZbD7NiTkgToVF3oc4zdn63svc3dtk75DvHp5JKmqdPRhn68B2iAxM13/xy9KMk+AdI
-         wFhqRAgwA/Pug==
-Received: by mail-wr1-f47.google.com with SMTP id k29so7332456wrd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:49:35 -0700 (PDT)
-X-Gm-Message-State: AOAM533DZVYV14bImdZ2uFVI5m6vrq7oS8lMl/k8tfJIF5N/dypBFfRb
-        AgO7/S/5hN5PXowQKipOx6TgOU6SRswMzwBq1+8=
-X-Google-Smtp-Source: ABdhPJwK0fcoyVP2S8sGrZY8yRoZXSzaTqRROq5Jut72S+v1w47Bga5OiaWNKFfeoKGo83RQrK3xtnVhG0enY+78Ey0=
-X-Received: by 2002:adf:fd90:: with SMTP id d16mr24684354wrr.105.1628495374617;
- Mon, 09 Aug 2021 00:49:34 -0700 (PDT)
+        id S233609AbhHIHuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233533AbhHIHue (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 03:50:34 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5362AC0613CF;
+        Mon,  9 Aug 2021 00:50:13 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id m9so22353189ljp.7;
+        Mon, 09 Aug 2021 00:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=xeQTd8WFfNiYHxuCQgb+lEPVNjpYB2abuY/bC8H0Mm8=;
+        b=Y0Q6dOxaL9BLhnxssQNnKXDz4S1loz1rity1kFMZicbvND0S+U9AGuRLod+BgQJLYI
+         JZBEai+lp0bQKjm6+p0M1vcQD/SbOSNO3LzwwUMBIfkEfGbBQx2al9yMccKBV+Sya2Qj
+         lfCDSytZdnnSTJrliDpMjDQWWX1MGDL+JA4r3qcNSQk+NiDvLoIsvWspm1yxRbIBLqus
+         bUUd5dF77k+iP9qIGiPkfoAOPMoWlZPQrH75VGTcKBaLUI6GmmIBV0RVexNQNKr8pBts
+         uU9QnMGKK/LgkgEheBFPrEwCfa+yLl+Wyc1iVBXHxj9qMnoktVtjM0+ueoU3j9HuoInp
+         ezyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=xeQTd8WFfNiYHxuCQgb+lEPVNjpYB2abuY/bC8H0Mm8=;
+        b=U9pkSTTwrMBRVNjqto1BHb8f3tQ2REPmT2O20qczPZByyDTW+yT6XF86C9kYVFzSGb
+         Xgb8Pi0nzrcMCvrcqJ3n6z9OkbHeXQ3pBqEXZBh3q5syDrfFxFqs3v0CS1/KYW7k4aLr
+         vmpVoJLqIadc9L4ncN2tXEQZlP5OXCWjsRGe799k4gFBJAIGaU1pDkM4X0ju7lXJuVd+
+         wP7xf8rRvLsq+2b/K3fh/wqUDtRJZNx/cz7Tx1FtSwceDwPTaDiTKNYd6ib2fh00wT58
+         vm+pjgDBU4Ivpf6HuYF1ifYwxg0dzgKOX03NuBVbTLBhQn6i+5vSDd0ctY2MyoeXhJ7U
+         ttLA==
+X-Gm-Message-State: AOAM5311zXXJMQSKXqtFQ/OgG++45/miFrGhvCBu6xEDPDCklMzJhKRO
+        vSPw8SR3AVnddBZ8kkINaO8T5C3a6xOjbDSAFxA=
+X-Google-Smtp-Source: ABdhPJycu5aXMJNRQU9wK0uEgoATdntiITAi+qlSFNojJ2knwBQyRMAwFw/BPUh9xIHPRoHRuzhv9eLnPYIVvLiiGFE=
+X-Received: by 2002:a05:651c:204e:: with SMTP id t14mr14263386ljo.40.1628495411677;
+ Mon, 09 Aug 2021 00:50:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210807145537.124744-1-xianting.tian@linux.alibaba.com>
- <20210809003044.6692ddce@xhacker> <c09fc86d-1e6a-3315-7489-9e269935ba55@linux.alibaba.com>
-In-Reply-To: <c09fc86d-1e6a-3315-7489-9e269935ba55@linux.alibaba.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 9 Aug 2021 09:49:18 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1wyhLp1hUUotzwqc1pyCyfWhO7O_pvt5O_U=qZp-ZhnA@mail.gmail.com>
-Message-ID: <CAK8P3a1wyhLp1hUUotzwqc1pyCyfWhO7O_pvt5O_U=qZp-ZhnA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add ARCH_DMA_MINALIGN support
-To:     Xianting TIan <xianting.tian@linux.alibaba.com>
-Cc:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210809074512.34757-1-puranjay12@gmail.com>
+In-Reply-To: <20210809074512.34757-1-puranjay12@gmail.com>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Mon, 9 Aug 2021 13:20:00 +0530
+Message-ID: <CANk7y0gpTaf97=7PdK5xKxD276Jxxrf6uSsWyYRT=AyBOPtC4w@mail.gmail.com>
+Subject: Re: [PATCH v9 0/2] iio: accel: add support for ADXL355
+To:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 8:20 AM Xianting TIan
-<xianting.tian@linux.alibaba.com> wrote:
->
-> >> +#define ARCH_DMA_MINALIGN   L1_CACHE_BYTES
-> > It's not a good idea to blindly set this for all riscv. For "coherent"
-> > platforms, this is not necessary and will waste memory.
->
-> I checked ARCH_DMA_MINALIGN definition,  "If an architecture isn't fully
-> DMA-coherent, ARCH_DMA_MINALIGN must be set".
->
-> so that the memory allocator makes sure that kmalloc'ed buffer doesn't
-> share a cache line with the others.
->
-> Documentation/core-api/dma-api-howto.rst
->
-> 2) ARCH_DMA_MINALIGN
->
->     Architectures must ensure that kmalloc'ed buffer is
->     DMA-safe. Drivers and subsystems depend on it. If an architecture
->     isn't fully DMA-coherent (i.e. hardware doesn't ensure that data in
->     the CPU cache is identical to data in main memory),
->     ARCH_DMA_MINALIGN must be set so that the memory allocator
->     makes sure that kmalloc'ed buffer doesn't share a cache line with
->     the others. See arch/arm/include/asm/cache.h as an example.
->
->     Note that ARCH_DMA_MINALIGN is about DMA memory alignment
->     constraints. You don't need to worry about the architecture data
->     alignment constraints (e.g. the alignment constraints about 64-bit
->     objects).
+Please Ignore this I will resend this properly.
+I made some mistakes while sending the patches.
+I am really sorry for the noise.
 
-The platform spec [1] says about this:
+On Mon, Aug 9, 2021 at 1:15 PM Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> Add the dt-bindings and the driver for ADXL355 3-axis MEMS Accelerometer.
+>
+> Changes since v8:
+> 1. Make scale and offset defines inline and remove them.
+> 2. Change dt-binding doc to state interrupt polarity only for DRDY pin.
+> 3. Remove triggered buffer support from this patch series.
+>
+> Changes since v7:
+> 1. Update MAINTAINERS to show all driver files.
+> 2. Set CONFIGS for buffered support in Kconfig.
+>
+> Changes since v6:
+> 1. Use interrupt-names property in device tree document.
+> 2. Add triggered buffer support.
+> 3. Use a static table for offset and data registers.
+> 4. Fix coding style issues.
+> 5. move defines from header to c file.
+>
+> Changes since v5:
+> 1. Used get_unaligned_be24() and  get_unaligned_be16() to parse
+> acceleration and temperature data. This solves sparse errors and also
+> make the code more understandable.
+>
+> Changes since v4:
+> 1. Fix errors reported by sparse.
+>
+> Changes since v3:
+> 1. Fix errors in yaml DT doc.
+> 2. Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause
+>
+> Changes since v2:
+> 1. Add separate DT binding doc in yaml.
+> 2. Use ____cacheline_aligned buffer for regmap_bulk_read/write calls.
+> 3. Make code consistent by using same style in switch case.
+> 4. Use FIELD_PREP in place of custom macros.
+> 5. Make Kconfig description more informative.
+>
+> Changes since v1:
+> 1. Remove the declarations for static regmap structures from adxl355.h.
+> This was missed in the v1 and caused errors.
+> 2. Make switch case statements consistent by directly returning from
+> each case rather than saving the return in a variable.
+> 3. Some coding style changes.
+>
+> Changes since v0:
+> 1. Move adxl355_hpf_3db_table to adxl355_data structure. This is done to make
+> sure that each device gets its own table.
+> 2. Make local regmap definitions private to adxl355_core.c.
+> 3. Other minor coding style changes.
+>
+> Puranjay Mohan (2):
+>   iio: accel: Add driver support for ADXL355
+>   iio: accel: adxl355: Add triggered buffer support
+>
+>  MAINTAINERS                      |  10 +
+>  drivers/iio/accel/Kconfig        |  33 ++
+>  drivers/iio/accel/Makefile       |   3 +
+>  drivers/iio/accel/adxl355.h      |  19 +
+>  drivers/iio/accel/adxl355_core.c | 676 +++++++++++++++++++++++++++++++
+>  drivers/iio/accel/adxl355_i2c.c  |  65 +++
+>  drivers/iio/accel/adxl355_spi.c  |  67 +++
+>  7 files changed, 873 insertions(+)
+>  create mode 100644 drivers/iio/accel/adxl355.h
+>  create mode 100644 drivers/iio/accel/adxl355_core.c
+>  create mode 100644 drivers/iio/accel/adxl355_i2c.c
+>  create mode 100644 drivers/iio/accel/adxl355_spi.c
+>
+> --
+> 2.30.1
+>
 
-| Memory accesses by I/O masters can be coherent or non-coherent
-| with respect to all hart-related caches.
 
-So the kernel in its default configuration can not assume that DMA is
-cache coherent on RISC-V. Making this configurable implies that
-a kernel that is configured for cache-coherent machines can no longer
-run on all hardware that follows the platform spec.
+-- 
+Thanks and Regards
 
-We have the same problem on arm64, where most of the server parts
-are cache coherent, but the majority of the low-end embedded devices
-are not, and we require that a single kernel ran run on all of the above.
+Yours Truly,
 
-One idea that we have discussed several times is to start the kernel
-without the small kmalloc caches and defer their creation until a
-later point in the boot process after determining whether any
-non-coherent devices have been discovered. Any in-kernel structures
-that have an explicit ARCH_DMA_MINALIGN alignment won't
-benefit from this, but any subsequent kmalloc() calls can use the
-smaller caches. The tricky bit is finding out whether /everything/ on
-the system is cache-coherent or not, since we do not have a global
-flag for that in the DT. See [2] for a recent discussion.
-
-       Arnd
-
-[1] https://github.com/riscv/riscv-platform-specs/blob/main/riscv-platform-spec.adoc#architecture
-[2] https://lore.kernel.org/linux-arm-kernel/20210527124356.22367-1-will@kernel.org/
+Puranjay Mohan
