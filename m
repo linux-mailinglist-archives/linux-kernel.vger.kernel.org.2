@@ -2,146 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E56B3E4800
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CD53E4802
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbhHIOyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:54:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42328 "EHLO mail.kernel.org"
+        id S234339AbhHIOyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:54:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231478AbhHIOya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:54:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34A1560C41;
-        Mon,  9 Aug 2021 14:54:10 +0000 (UTC)
+        id S231478AbhHIOyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 10:54:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1060361019;
+        Mon,  9 Aug 2021 14:54:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628520850;
-        bh=83f7z34kd8o684E4Kj/wmBh4rlOyA2DHLiEBx97X158=;
+        s=k20201202; t=1628520865;
+        bh=bmXVwPlv6jk+hRMVAM5D4Cs70KB/HmWxl8NzlqT1h3Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fUr/klYIPb1ZxcX3jinvYOy2b8MjWGO8+yaNWW2gar+4NLhMo3wajUvqFSNzXUQ9x
-         b00BroZDDo+qIJqtZWwhdutBAnoblHirWHXAIkpTMaXzFW566kgwkpQXJ2DX7lZZno
-         8c5Q+IvC5tal2Gxv2FOiphBCtTCsCIv70bDYOK65WIrOVFue+LuP0udJznyNb19hxS
-         cMQupg68tfc19herrrrqN/RS2kJTcfN+BxHVGbc+vdX3HjnBGRx11AmWjmmftUf0t9
-         /JFsnVpPs/CQumKeKK/NiIFmYtcxt21aOg8O2k+E70CYlJUrtsxOEOWMRsxebCxA/Q
-         wIvvcZ5ROVIrA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 65DBC403F2; Mon,  9 Aug 2021 11:54:07 -0300 (-03)
-Date:   Mon, 9 Aug 2021 11:54:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     mingo@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 3/7] perf/bench-futex: Factor out futex_flag
-Message-ID: <YRFBj3jGABt1zkQX@kernel.org>
-References: <20210809043301.66002-1-dave@stgolabs.net>
- <20210809043301.66002-4-dave@stgolabs.net>
+        b=V7uTiTy2Kf1c07ZG3hdoJ0Z0CAd7XAPl8BYfYNci13TAph9dskWb7jRojZJIntqy0
+         Z5TLF+8ycGekFWW2v+N94vRD3YKFQkQAWZc9PsE2q4D+uJsXpTQL6LQk1iS+yn2U6p
+         8awKSOLddbyn7XQ3tCY5bqnVPkJIdkv7DE97jO1qJP/EY6E8rEyWfLhp+k9B6cgdQ4
+         mgvkx/fnD/U32LrnmYk6XDiYt6z5v7N/Qzkp3hBvMw0+m4LZ9uEGD9Ypj553UiVlU+
+         xY1Ik/3nNsdT7bs14C5m1wF3tXjF3bCgTpB/4hnVAEg3TXDHF4aMEKzroKESa84wSz
+         LoNspFqPTrubw==
+Date:   Mon, 9 Aug 2021 15:54:20 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Ashish Mhetre <amhetre@nvidia.com>, vdumpa@nvidia.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [Patch V2 0/2] iommu/arm-smmu: Fix races in iommu domain/group
+ creation
+Message-ID: <20210809145420.GB1458@willie-the-truck>
+References: <1623961837-12540-1-git-send-email-amhetre@nvidia.com>
+ <20210802151607.GF28735@willie-the-truck>
+ <9c38c53c-c145-097a-4c7e-40f1c06a1f01@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809043301.66002-4-dave@stgolabs.net>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <9c38c53c-c145-097a-4c7e-40f1c06a1f01@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Aug 08, 2021 at 09:32:57PM -0700, Davidlohr Bueso escreveu:
-> This is common across all tests, move it into futex.h.
-
-Wouldn't be better to have it defined in one place and then in futex.h
-just have a 'extern int futex_flag;' declaration?
-
-I applied the first two patches already.
-
-- Arnaldo
- 
-> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
-> ---
->  tools/perf/bench/futex-hash.c          | 1 -
->  tools/perf/bench/futex-lock-pi.c       | 1 -
->  tools/perf/bench/futex-requeue.c       | 1 -
->  tools/perf/bench/futex-wake-parallel.c | 1 -
->  tools/perf/bench/futex-wake.c          | 1 -
->  tools/perf/bench/futex.h               | 3 +++
->  6 files changed, 3 insertions(+), 5 deletions(-)
+On Mon, Aug 02, 2021 at 04:46:37PM +0100, Robin Murphy wrote:
+> On 2021-08-02 16:16, Will Deacon wrote:
+> > On Fri, Jun 18, 2021 at 02:00:35AM +0530, Ashish Mhetre wrote:
+> > > Multiple iommu domains and iommu groups are getting created for the devices
+> > > sharing same SID. It is expected for devices sharing same SID to be in same
+> > > iommu group and same iommu domain.
+> > > This is leading to context faults when one device is accessing IOVA from
+> > > other device which shouldn't be the case for devices sharing same SID.
+> > > Fix this by protecting iommu domain and iommu group creation with mutexes.
+> > 
+> > Robin -- any chance you could take a look at these, please? You had some
+> > comments on the first version which convinced me that they are needed,
+> > but I couldn't tell whether you wanted to solve this a different way or not.
 > 
-> diff --git a/tools/perf/bench/futex-hash.c b/tools/perf/bench/futex-hash.c
-> index ddca7558e559..b71a34204b79 100644
-> --- a/tools/perf/bench/futex-hash.c
-> +++ b/tools/perf/bench/futex-hash.c
-> @@ -30,7 +30,6 @@
->  #include <err.h>
->  
->  static bool done = false;
-> -static int futex_flag = 0;
->  
->  struct timeval bench__start, bench__end, bench__runtime;
->  static pthread_mutex_t thread_lock;
-> diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
-> index ce980df23bb0..bc208edf3de3 100644
-> --- a/tools/perf/bench/futex-lock-pi.c
-> +++ b/tools/perf/bench/futex-lock-pi.c
-> @@ -32,7 +32,6 @@ struct worker {
->  static u_int32_t global_futex = 0;
->  static struct worker *worker;
->  static bool done = false;
-> -static int futex_flag = 0;
->  static pthread_mutex_t thread_lock;
->  static unsigned int threads_starting;
->  static struct stats throughput_stats;
-> diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
-> index 66747bfe22cf..4001312122be 100644
-> --- a/tools/perf/bench/futex-requeue.c
-> +++ b/tools/perf/bench/futex-requeue.c
-> @@ -36,7 +36,6 @@ static pthread_mutex_t thread_lock;
->  static pthread_cond_t thread_parent, thread_worker;
->  static struct stats requeuetime_stats, requeued_stats;
->  static unsigned int threads_starting;
-> -static int futex_flag = 0;
->  
->  static struct bench_futex_parameters params = {
->  	/*
-> diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
-> index 958372ad159c..ea4fdea6e2f3 100644
-> --- a/tools/perf/bench/futex-wake-parallel.c
-> +++ b/tools/perf/bench/futex-wake-parallel.c
-> @@ -53,7 +53,6 @@ static pthread_cond_t thread_parent, thread_worker;
->  static pthread_barrier_t barrier;
->  static struct stats waketime_stats, wakeup_stats;
->  static unsigned int threads_starting;
-> -static int futex_flag = 0;
->  
->  static struct bench_futex_parameters params;
->  
-> diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
-> index 9ed4d65416f3..1cf651c8ee5c 100644
-> --- a/tools/perf/bench/futex-wake.c
-> +++ b/tools/perf/bench/futex-wake.c
-> @@ -37,7 +37,6 @@ static pthread_mutex_t thread_lock;
->  static pthread_cond_t thread_parent, thread_worker;
->  static struct stats waketime_stats, wakeup_stats;
->  static unsigned int threads_starting;
-> -static int futex_flag = 0;
->  
->  static struct bench_futex_parameters params = {
->  	/*
-> diff --git a/tools/perf/bench/futex.h b/tools/perf/bench/futex.h
-> index 6f8b85b67348..f7cd22bbd677 100644
-> --- a/tools/perf/bench/futex.h
-> +++ b/tools/perf/bench/futex.h
-> @@ -13,6 +13,9 @@
->  #include <sys/types.h>
->  #include <linux/futex.h>
->  
-> +/* FUTEX_PRIVATE_FLAG or zero */
-> +static int futex_flag = 0;
-> +
->  struct bench_futex_parameters {
->  	bool silent;
->  	bool fshared;
-> -- 
-> 2.26.2
+> Sorry, I was lamenting that this came to light due to the
+> of_iommu_configure() flow being yucky, but that wasn't meant to imply that
+> there aren't - or couldn't be in future - better reasons for
+> iommu_probe_device() to be robust against concurrency anyway. I do think
+> these are legitimate fixes to make in their own right, even if the current
+> need might get swept back under the rug in future.
 > 
+> I would say, however, that the commit messages seem to focus too much on the
+> wrong details and aren't overly useful, and patch #2 is missing Ashish's
+> sign-off.
 
--- 
+Ashish -- please can you send a v3 fixing these issues?
 
-- Arnaldo
+Will
