@@ -2,208 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD743E3D4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 02:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B54A3E3D51
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 02:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbhHIACS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 20:02:18 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16148 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229903AbhHIACQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 20:02:16 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 178NsjDP022379;
-        Sun, 8 Aug 2021 17:01:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=tX7ndVwz77R9XR7sZ8euhFAHXC2GR1N8gCiS84rLnbg=;
- b=dc/mQnQMBhrKTXkXQHHVYKfW4KWxHkVkc+UZ9HxEPt4A5VrQepfduvDhZiRhJ//oahtV
- K2KhW6BkhanDl/VX5uHPbTkLWc/XIoE28yrgWD3K4m3Hh4y7ETZJqLpHAiYLiu0aFilC
- vBJDRB/Vio/IsHh2V0oS9nNS4rmznSJFEBg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a9p7ne0db-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 08 Aug 2021 17:01:41 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 8 Aug 2021 17:01:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gERi3HDjrX0zZIEZ3Q1XDds2Vm4jfx/IF6Q60IfC61fvZ71QWoPQDFgkx8b+JwWY7KXSBWXbHa9QeRQG/POyDEN3WQ/jwmj6t/b69g/AsXiPVgr/+b7vtmtDc3PkWNLBvKNrV1SAsjIuI0S61pzSx22fWaWm235fniKTqBk7fmRm2zfuVXz1fSwmUj3WzYK7KOWNEDi2u4FlpBYVHMgL2kdh+G9bx1JtuLOvmG4gGWfQqFah0da4dEtmnkb92ZVSOXu+Z8C4a2qqpJ3cSyU8mBYioS1LxyzPClDplVoBmC5/2iXr7nGhmUbX1xnLxfcoiby6q9yjl8AQn/zB1TGUDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tX7ndVwz77R9XR7sZ8euhFAHXC2GR1N8gCiS84rLnbg=;
- b=L5fh3ZQrMXGHUn8TvIex0y86nHcj0YyR7YKLvUyk4bqAZSJ8UHzOfxap0JasDKYOIvc2LRrLJuTS3PRvV3ElDesJ/U3V1xgRL/dFJT6o13QIfVziAt1RxEvxmkYhWs9ubtrSRbp/NSxFb9u2bZvdMrgx/mhSPkvm0neX1zEv+cYXEcbG+Fi8CD7s6nDUF+rtGokBp4HqS2m8gPr39ZfL1coj9acMnoARxmCnKY3HxCvdqjTq4GJpWrJuj7dMpankgPcsov0efEyYSI8Dv8WSKO/d1pVRZ+JTPrMuw5xuDrQ+aKz3P9gpcFWP+rnsZEiW34UegswQA+BpZ0oPSryNpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4386.namprd15.prod.outlook.com (2603:10b6:806:191::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Mon, 9 Aug
- 2021 00:01:32 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4394.022; Mon, 9 Aug 2021
- 00:01:32 +0000
-Subject: Re: [PATCH] samples: bpf: xdp1: remove duplicate code to find
- protocol
-To:     Muhammad Falak Reyaz <falakreyaz@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210808122411.10980-1-falakreyaz@gmail.com>
- <be9121ef-cea7-d3f9-b1cf-edd9e4e1a756@fb.com>
- <CAOmbKqkYDXvMQntk39Ud-63G3ju+Kti2A8UFNodgJ6y1+4=AeA@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <4c897a6a-6f5e-b990-7c36-4258a26e1752@fb.com>
-Date:   Sun, 8 Aug 2021 17:01:29 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <CAOmbKqkYDXvMQntk39Ud-63G3ju+Kti2A8UFNodgJ6y1+4=AeA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0167.namprd03.prod.outlook.com
- (2603:10b6:a03:338::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        id S232340AbhHIAZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 20:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229903AbhHIAZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 20:25:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B1C60E97;
+        Mon,  9 Aug 2021 00:24:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628468696;
+        bh=sJROrAeljodBxlw3SoFcb0zZ337cmyvYLEMOpoWhCfU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OnI9F8gHaI27AMD89Ys3LOkGqEfD0/QnKYMQnONcKYSymJebvCQ7LWTMaXkWD5bB1
+         fV3Nucwtp1kdaZLZtEs6UpTrQAefG47M7drnIhQ+MrEwz9RAy8EANaGa70s1UgC+3D
+         of6NZj6v1e6l3Ssi3CQDpP04pQtMKSfhE6tePlFcBQE7lxrDVwo+rlCEZcqZV0SGw5
+         eZi//NM1WtU6yKiUcsHqO1GrdvInQ7LdI9q4CE268ZwodP8n3BM4R2XxgPCOrkIMAa
+         xIV58VCsBlTxjS+9t6hQSepq/UyL0opAlEiCEtSzUwVFmp4Zh75z6lFiv4taXaOlC9
+         o0nH/y4rqgwlw==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>
+Subject: [PATCH v3 2/2] f2fs: support fault injection for f2fs_kmem_cache_alloc()
+Date:   Mon,  9 Aug 2021 08:24:48 +0800
+Message-Id: <20210809002448.41774-1-chao@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::10d4] (2620:10d:c090:400::5:bbaa) by SJ0PR03CA0167.namprd03.prod.outlook.com (2603:10b6:a03:338::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Mon, 9 Aug 2021 00:01:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 60c8f012-263c-43e5-6686-08d95ac8d846
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4386:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB43869D63338FD63825EE88AFD3F69@SA1PR15MB4386.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wznPYjX1T62pX3Z1K5bfCTuYjyTVvXx6u7uM7NMWG6lln09PBatw4csMAfC2cSKlfmrjyL7ojqy4Uy3jXLJR+heHtXXdKSDm0b3F9IRCXhCDFp/bfZnq1oDIRQzpux+cgT+WTkWXTCUokp11QkH8Qj0qCI/mxQzy83BeJCV3JncD33sGxG4GkYuKXGfSCv00hCi4WJvi/2Z8VYU5ugtMEdDDJAU97opHvT/z0W+E+CSc7IUBhofcHhBA4xvmiAe/0mL4NUbjDDz53ohyPo20jKKYaYG9j7KPRTXB3q2/3nBFB10Td7qDy9WKcWlcXqUr1R4h4KrWyIA1T6VSv/OxHd9IOLF61VBTdfvWZOthniOdA7nKDAh+C74yVntc/7IhyWoiSVD2uSc1GwRxs/wnNuUrC2mCFw6xNV+zQtIrAn9FyV6UqKNq1TIYO0Brmc7suBsCSAcLyyamQQcKNczMPgt4HMTfVCSlwiU+JEe5rHxlxt0/Tjxuzrw6t3AI4TUb4u0AeVZQ+Cm3Ppitxt1HVxC92ry2Mztoi77DNqMiNYv4gke6nI3pUPEqL8f6tFCOzTOMIuY8jnAaSHLT21653NWvXvlZArh5EPLltPwcFAaSLzII9/XeZypxvQKqiuYQ0+ALvtQYcVt02jk5wxHEctlN7UwJ8Z+AEeUIAnvEMZTA621XLvFF8qAncUyB5Gs9yy+9xvfk/fzHsiUgxCViC5fRztOBZ78Hlk5RF2AaLuJbT//UEHyRQbSNBHM8s0ab
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(396003)(376002)(39860400002)(66556008)(38100700002)(53546011)(52116002)(66476007)(5660300002)(66946007)(6486002)(2906002)(186003)(83380400001)(36756003)(6916009)(8676002)(478600001)(2616005)(8936002)(54906003)(31686004)(4326008)(7416002)(316002)(86362001)(31696002)(37363002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUZoRmJZM202QTRRMEF4WUxZeWo0QmgxS0NTRXB3U1ZrcDk1bENCcDMwVnE5?=
- =?utf-8?B?Z3J4QmtCdlZJS3Y3aDdYVEcwaytueXdIRkdYd2wrdVhHY0dOVUEySDM1Wlls?=
- =?utf-8?B?eFVNZGZVOEJhRWJ4NERrNFM4WVFOQkhiVjdJWmZoRFM5VjdWSGdJWlkvcWRM?=
- =?utf-8?B?UGY5NGZyam9reGF2Ulh0NmRqelBKZkE3SG5HdzdKeUl0UnVmOC9QWHo2dUVS?=
- =?utf-8?B?UHd6L3JFOC9CSkdCY1U0SCtHb3YvVml4RUZzSTcvRUNOaE5yaXhhNzhNbDJq?=
- =?utf-8?B?NGVHN3BIeitENm5PSVhkSzltcThMZlcrUGpHc0x2OS9SZEVVN1NjNDk5Q1kv?=
- =?utf-8?B?VnJYTEd5WlF1ZWx2QTQwOHNwQUJYaG1zSnBYc2tRN1lENWFGQmN4Wk1YN1lI?=
- =?utf-8?B?ZHQydGtIK3VNS3lFTWwzSW5wZmk0WW43bUFWaGJQOFA2S0ZaNVBXWGRWWjZE?=
- =?utf-8?B?Vk1wQ1BmQjVIamJWS3NKaVlUSnBPWXZvYXBjRm1EblZnSVpyazZtY3RGUDNW?=
- =?utf-8?B?N0FMN0JQa3N1NlpYb1VJRnlRcmhsTERxSFRrdVZuYVJoM1ZzaFlNTUowR3FX?=
- =?utf-8?B?RXdjMXlzSXR1Vy9iRFoxbEFPcjhDT1ZIYkc1MmY5REJGc3c3WVhWNHZ3T1hp?=
- =?utf-8?B?TXh4ODU0QUFPZDdaUDVyblpZaVptZmF0SVBNWmlMenBUak1PSlJmSWM3YmVS?=
- =?utf-8?B?azUxZ2pPdkpFbWQ2bFpHUm9RWU4wSGRzbVVSeUp1YWVORU11SFBzckhVUFZ3?=
- =?utf-8?B?RlZDbzNhTHk2UWNZM1ppQWUrYXY0d1l3dE9jc2RXdnZ6Y1hrMmViZGw0clE0?=
- =?utf-8?B?SmZubC9LRnVnWTUxOUl6T3BkN0NOT1hvclA5MzlmR2xlK1NCbmJvVFRWdUs5?=
- =?utf-8?B?K3poMTRsR3ZMRGs5M0VDVlRoQXdTd0c5aWNkTGEzLzNKd0NQOUduanBXTHhl?=
- =?utf-8?B?Z0ZNMkF2RlFXZzFDUUdvWnZLdUQyWHRvZ3k5NlU3ZE1iLzJ3Y3R6eWdrbjYr?=
- =?utf-8?B?VkJoazkrZmJNNml4RHNLbDlhQ0p6VnE5U2MxbForK3Q0ZU83cXhTVXJaNlgw?=
- =?utf-8?B?N00vS1B2dTZmN2tGaFFyM1gvR2xWdFlicVFtYUJYbFVuSGFYTUpHWUxabUlD?=
- =?utf-8?B?U2o5Y2p3VC9la1hNb1crNVovMDRLcHpYcC9TdjFKK3J3bHBKakpTY3loY1lh?=
- =?utf-8?B?MCtFem5uNGFHaXJuSGJJdWQ2dllhZ0Q4VzQzSXpaV1NOWnlMRkhlY3lVNjdn?=
- =?utf-8?B?bnA3a1MvQ0xnYjFuc2VaZVRld1NjZ2NHUnZiWUFzZDRyZXpSUlNWbXFydEdC?=
- =?utf-8?B?cDVSNVpXT0Jyd0wrM1lSMXpubFpKcGVzc205ZFVmWjA2RkJoOUVhY2syOWxR?=
- =?utf-8?B?VWMwc1dYcmNGZkhtWGIxQXljSmt4YmZ6RC9Lc0d5RFExSmpGbmoyZkVoMFpk?=
- =?utf-8?B?UVRab3pDTDB5ZzBZU2p2MTFuQVl4QmdxR2N2eU10bjBHazNjdjIzcE1QR0x2?=
- =?utf-8?B?REV1Yno2MXJ0c3RVY1JQaHlhL0RVQWxWNjRqa1VVaTRpbXFPSkw5QkxoN2hU?=
- =?utf-8?B?NVAyaG5qNFhlN2NnMW5aMXdSTGhXQ3RyRGhYOVJHNVVuMGFuQUgzL21iUXZB?=
- =?utf-8?B?NWg4NmhxTzBzYmJVUVJTNlp3VlZGL3dUR2E4dUhmRmh4YWYraWJTRHRPVlQ4?=
- =?utf-8?B?RUdVZ05ta0Z5a0ZZeTNkbWhCNTZYQXE0T25oaWxxVzVQTnhiYklOTEFnbUlp?=
- =?utf-8?B?akVpbHV2YlEySUYvUWlaMjltdDBYY25CQ1pBR3RxZnFULzBRZzd6L2pXcC9z?=
- =?utf-8?B?NGFVdEtyeGNTU3ZIQ2pvQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60c8f012-263c-43e5-6686-08d95ac8d846
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 00:01:31.9826
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 62xyU90/UTV97h//o0tp41OxtIAxMd/ffM/+VTbS5f3ygkYbRtnRrn5ZXQR/dtVR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4386
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: rHKEH-ASB-Tw4fnpd76DCSziQO7e1pqT
-X-Proofpoint-ORIG-GUID: rHKEH-ASB-Tw4fnpd76DCSziQO7e1pqT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-08_08:2021-08-06,2021-08-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
- adultscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108080155
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch supports to inject fault into f2fs_kmem_cache_alloc().
 
+Usage:
+a) echo 32768 > /sys/fs/f2fs/<dev>/inject_type or
+b) mount -o fault_type=32768 <dev> <mountpoint>
 
-On 8/8/21 10:19 AM, Muhammad Falak Reyaz wrote:
-> On Sun, Aug 8, 2021 at 10:23 PM Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 8/8/21 5:24 AM, Muhammad Falak R Wani wrote:
->>> The code to find h_vlan_encapsulated_proto is duplicated.
->>> Remove the extra block.
->>>
->>> Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
->>> ---
->>>    samples/bpf/xdp1_kern.c | 9 ---------
->>>    1 file changed, 9 deletions(-)
->>>
->>> diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
->>> index 34b64394ed9c..a35e064d7726 100644
->>> --- a/samples/bpf/xdp1_kern.c
->>> +++ b/samples/bpf/xdp1_kern.c
->>> @@ -57,15 +57,6 @@ int xdp_prog1(struct xdp_md *ctx)
->>>
->>>        h_proto = eth->h_proto;
->>>
->>> -     if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
->>> -             struct vlan_hdr *vhdr;
->>> -
->>> -             vhdr = data + nh_off;
->>> -             nh_off += sizeof(struct vlan_hdr);
->>> -             if (data + nh_off > data_end)
->>> -                     return rc;
->>> -             h_proto = vhdr->h_vlan_encapsulated_proto;
->>
->> No. This is not a duplicate. The h_proto in the above line will be used
->> in the below "if" condition.
->>
->>> -     }
->>>        if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
->>>                struct vlan_hdr *vhdr;
->>>
->>>
-> Apologies :(
-> I now realize, it could be double vlan encapsulated.
-> Would it make sense to add an explicit comment for newbies like me ?
-> I can send a patch, if it is okay.
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v3:
+- rebase to last g-dev-test branch
+ Documentation/filesystems/f2fs.rst |  1 +
+ fs/f2fs/checkpoint.c               |  3 ++-
+ fs/f2fs/compress.c                 |  8 +++++---
+ fs/f2fs/data.c                     |  2 +-
+ fs/f2fs/dir.c                      |  4 ++--
+ fs/f2fs/extent_cache.c             |  5 +++--
+ fs/f2fs/f2fs.h                     | 17 ++++++++++++++++-
+ fs/f2fs/gc.c                       |  6 ++++--
+ fs/f2fs/node.c                     | 23 ++++++++++++-----------
+ fs/f2fs/recovery.c                 |  3 ++-
+ fs/f2fs/segment.c                  | 10 ++++++----
+ fs/f2fs/super.c                    |  4 +++-
+ fs/f2fs/xattr.c                    |  3 ++-
+ 13 files changed, 59 insertions(+), 30 deletions(-)
 
-This is not the first time people sending a patch trying to remove this
-"duplicated" code. I think it is okay to send a patch with comments to 
-say this is intended to handle nested vlan, so we can save everybody's 
-time. Thanks.
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index 8fe1450670bb..99f8a7c76e5f 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -196,6 +196,7 @@ fault_type=%d		 Support configuring fault injection type, should be
+ 			 FAULT_CHECKPOINT	  0x000001000
+ 			 FAULT_DISCARD		  0x000002000
+ 			 FAULT_WRITE_IO		  0x000004000
++			 FAULT_SLAB_ALLOC	  0x000008000
+ 			 ===================	  ===========
+ mode=%s			 Control block allocation mode which supports "adaptive"
+ 			 and "lfs". In "lfs" mode, there should be no random
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 5b6ddeae1107..41960c55c343 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -475,7 +475,8 @@ static void __add_ino_entry(struct f2fs_sb_info *sbi, nid_t ino,
+ 
+ retry:
+ 	if (!e)
+-		new = f2fs_kmem_cache_alloc(ino_entry_slab, GFP_NOFS);
++		new = f2fs_kmem_cache_alloc(ino_entry_slab,
++						GFP_NOFS, true, NULL);
+ 
+ 	radix_tree_preload(GFP_NOFS | __GFP_NOFAIL);
+ 
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index f25b32a6893a..ec70a0a32327 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -28,7 +28,8 @@ static void *page_array_alloc(struct inode *inode, int nr)
+ 	unsigned int size = sizeof(struct page *) * nr;
+ 
+ 	if (likely(size <= sbi->page_array_slab_size))
+-		return kmem_cache_zalloc(sbi->page_array_slab, GFP_NOFS);
++		return f2fs_kmem_cache_alloc(sbi->page_array_slab,
++					GFP_F2FS_ZERO, false, F2FS_I_SB(inode));
+ 	return f2fs_kzalloc(sbi, size, GFP_NOFS);
+ }
+ 
+@@ -1281,7 +1282,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 
+ 	fio.version = ni.version;
+ 
+-	cic = kmem_cache_zalloc(cic_entry_slab, GFP_NOFS);
++	cic = f2fs_kmem_cache_alloc(cic_entry_slab, GFP_F2FS_ZERO, false, sbi);
+ 	if (!cic)
+ 		goto out_put_dnode;
+ 
+@@ -1559,7 +1560,8 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
+ 	pgoff_t start_idx = start_idx_of_cluster(cc);
+ 	int i;
+ 
+-	dic = kmem_cache_zalloc(dic_entry_slab, GFP_NOFS);
++	dic = f2fs_kmem_cache_alloc(dic_entry_slab, GFP_F2FS_ZERO,
++					false, F2FS_I_SB(cc->inode));
+ 	if (!dic)
+ 		return ERR_PTR(-ENOMEM);
+ 
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index d4c9aeba0842..e6f5bca1575b 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -724,7 +724,7 @@ static void add_bio_entry(struct f2fs_sb_info *sbi, struct bio *bio,
+ 	struct f2fs_bio_info *io = sbi->write_io[DATA] + temp;
+ 	struct bio_entry *be;
+ 
+-	be = f2fs_kmem_cache_alloc(bio_entry_slab, GFP_NOFS);
++	be = f2fs_kmem_cache_alloc(bio_entry_slab, GFP_NOFS, true, NULL);
+ 	be->bio = bio;
+ 	bio_get(bio);
+ 
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index c250bf46ef5e..1820e9c106f7 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -83,8 +83,8 @@ int f2fs_init_casefolded_name(const struct inode *dir,
+ 	struct super_block *sb = dir->i_sb;
+ 
+ 	if (IS_CASEFOLDED(dir)) {
+-		fname->cf_name.name = kmem_cache_alloc(f2fs_cf_name_slab,
+-								GFP_NOFS);
++		fname->cf_name.name = f2fs_kmem_cache_alloc(f2fs_cf_name_slab,
++					GFP_NOFS, false, F2FS_SB(sb));
+ 		if (!fname->cf_name.name)
+ 			return -ENOMEM;
+ 		fname->cf_name.len = utf8_casefold(sb->s_encoding,
+diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
+index b120589d8517..866e72b29bd5 100644
+--- a/fs/f2fs/extent_cache.c
++++ b/fs/f2fs/extent_cache.c
+@@ -239,7 +239,7 @@ static struct extent_node *__attach_extent_node(struct f2fs_sb_info *sbi,
+ {
+ 	struct extent_node *en;
+ 
+-	en = kmem_cache_alloc(extent_node_slab, GFP_ATOMIC);
++	en = f2fs_kmem_cache_alloc(extent_node_slab, GFP_ATOMIC, false, sbi);
+ 	if (!en)
+ 		return NULL;
+ 
+@@ -292,7 +292,8 @@ static struct extent_tree *__grab_extent_tree(struct inode *inode)
+ 	mutex_lock(&sbi->extent_tree_lock);
+ 	et = radix_tree_lookup(&sbi->extent_tree_root, ino);
+ 	if (!et) {
+-		et = f2fs_kmem_cache_alloc(extent_tree_slab, GFP_NOFS);
++		et = f2fs_kmem_cache_alloc(extent_tree_slab,
++					GFP_NOFS, true, NULL);
+ 		f2fs_radix_tree_insert(&sbi->extent_tree_root, ino, et);
+ 		memset(et, 0, sizeof(struct extent_tree));
+ 		et->ino = ino;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index fc3539361db5..55806c2ec7fe 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -54,6 +54,7 @@ enum {
+ 	FAULT_CHECKPOINT,
+ 	FAULT_DISCARD,
+ 	FAULT_WRITE_IO,
++	FAULT_SLAB_ALLOC,
+ 	FAULT_MAX,
+ };
+ 
+@@ -2619,7 +2620,7 @@ static inline struct kmem_cache *f2fs_kmem_cache_create(const char *name,
+ 	return kmem_cache_create(name, size, 0, SLAB_RECLAIM_ACCOUNT, NULL);
+ }
+ 
+-static inline void *f2fs_kmem_cache_alloc(struct kmem_cache *cachep,
++static inline void *f2fs_kmem_cache_alloc_nofail(struct kmem_cache *cachep,
+ 						gfp_t flags)
+ {
+ 	void *entry;
+@@ -2630,6 +2631,20 @@ static inline void *f2fs_kmem_cache_alloc(struct kmem_cache *cachep,
+ 	return entry;
+ }
+ 
++static inline void *f2fs_kmem_cache_alloc(struct kmem_cache *cachep,
++			gfp_t flags, bool nofail, struct f2fs_sb_info *sbi)
++{
++	if (nofail)
++		return f2fs_kmem_cache_alloc_nofail(cachep, flags);
++
++	if (time_to_inject(sbi, FAULT_SLAB_ALLOC)) {
++		f2fs_show_injection_info(sbi, FAULT_SLAB_ALLOC);
++		return NULL;
++	}
++
++	return kmem_cache_alloc(cachep, flags);
++}
++
+ static inline bool is_inflight_io(struct f2fs_sb_info *sbi, int type)
+ {
+ 	if (get_pages(sbi, F2FS_RD_DATA) || get_pages(sbi, F2FS_RD_NODE) ||
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 9dce44619069..3bc0f0162e31 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -371,7 +371,8 @@ static struct victim_entry *attach_victim_entry(struct f2fs_sb_info *sbi,
+ 	struct atgc_management *am = &sbi->am;
+ 	struct victim_entry *ve;
+ 
+-	ve =  f2fs_kmem_cache_alloc(victim_entry_slab, GFP_NOFS);
++	ve =  f2fs_kmem_cache_alloc(victim_entry_slab,
++				GFP_NOFS, true, NULL);
+ 
+ 	ve->mtime = mtime;
+ 	ve->segno = segno;
+@@ -849,7 +850,8 @@ static void add_gc_inode(struct gc_inode_list *gc_list, struct inode *inode)
+ 		iput(inode);
+ 		return;
+ 	}
+-	new_ie = f2fs_kmem_cache_alloc(f2fs_inode_entry_slab, GFP_NOFS);
++	new_ie = f2fs_kmem_cache_alloc(f2fs_inode_entry_slab,
++					GFP_NOFS, true, NULL);
+ 	new_ie->inode = inode;
+ 
+ 	f2fs_radix_tree_insert(&gc_list->iroot, inode->i_ino, new_ie);
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 9d838a7929fb..161173de5a2d 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -162,14 +162,13 @@ static struct page *get_next_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
+ 	return dst_page;
+ }
+ 
+-static struct nat_entry *__alloc_nat_entry(nid_t nid, bool no_fail)
++static struct nat_entry *__alloc_nat_entry(struct f2fs_sb_info *sbi,
++						nid_t nid, bool no_fail)
+ {
+ 	struct nat_entry *new;
+ 
+-	if (no_fail)
+-		new = f2fs_kmem_cache_alloc(nat_entry_slab, GFP_F2FS_ZERO);
+-	else
+-		new = kmem_cache_alloc(nat_entry_slab, GFP_F2FS_ZERO);
++	new = f2fs_kmem_cache_alloc(nat_entry_slab,
++					GFP_F2FS_ZERO, no_fail, sbi);
+ 	if (new) {
+ 		nat_set_nid(new, nid);
+ 		nat_reset_flag(new);
+@@ -242,7 +241,8 @@ static struct nat_entry_set *__grab_nat_entry_set(struct f2fs_nm_info *nm_i,
+ 
+ 	head = radix_tree_lookup(&nm_i->nat_set_root, set);
+ 	if (!head) {
+-		head = f2fs_kmem_cache_alloc(nat_entry_set_slab, GFP_NOFS);
++		head = f2fs_kmem_cache_alloc(nat_entry_set_slab,
++						GFP_NOFS, true, NULL);
+ 
+ 		INIT_LIST_HEAD(&head->entry_list);
+ 		INIT_LIST_HEAD(&head->set_list);
+@@ -329,7 +329,8 @@ static unsigned int f2fs_add_fsync_node_entry(struct f2fs_sb_info *sbi,
+ 	unsigned long flags;
+ 	unsigned int seq_id;
+ 
+-	fn = f2fs_kmem_cache_alloc(fsync_node_entry_slab, GFP_NOFS);
++	fn = f2fs_kmem_cache_alloc(fsync_node_entry_slab,
++					GFP_NOFS, true, NULL);
+ 
+ 	get_page(page);
+ 	fn->page = page;
+@@ -428,7 +429,7 @@ static void cache_nat_entry(struct f2fs_sb_info *sbi, nid_t nid,
+ 	struct f2fs_nm_info *nm_i = NM_I(sbi);
+ 	struct nat_entry *new, *e;
+ 
+-	new = __alloc_nat_entry(nid, false);
++	new = __alloc_nat_entry(sbi, nid, false);
+ 	if (!new)
+ 		return;
+ 
+@@ -451,7 +452,7 @@ static void set_node_addr(struct f2fs_sb_info *sbi, struct node_info *ni,
+ {
+ 	struct f2fs_nm_info *nm_i = NM_I(sbi);
+ 	struct nat_entry *e;
+-	struct nat_entry *new = __alloc_nat_entry(ni->nid, true);
++	struct nat_entry *new = __alloc_nat_entry(sbi, ni->nid, true);
+ 
+ 	down_write(&nm_i->nat_tree_lock);
+ 	e = __lookup_nat_cache(nm_i, ni->nid);
+@@ -2252,7 +2253,7 @@ static bool add_free_nid(struct f2fs_sb_info *sbi,
+ 	if (unlikely(f2fs_check_nid_range(sbi, nid)))
+ 		return false;
+ 
+-	i = f2fs_kmem_cache_alloc(free_nid_slab, GFP_NOFS);
++	i = f2fs_kmem_cache_alloc(free_nid_slab, GFP_NOFS, true, NULL);
+ 	i->nid = nid;
+ 	i->state = FREE_NID;
+ 
+@@ -2842,7 +2843,7 @@ static void remove_nats_in_journal(struct f2fs_sb_info *sbi)
+ 
+ 		ne = __lookup_nat_cache(nm_i, nid);
+ 		if (!ne) {
+-			ne = __alloc_nat_entry(nid, true);
++			ne = __alloc_nat_entry(sbi, nid, true);
+ 			__init_nat_entry(nm_i, ne, &raw_ne, true);
+ 		}
+ 
+diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+index 695eacfe776c..04655511d7f5 100644
+--- a/fs/f2fs/recovery.c
++++ b/fs/f2fs/recovery.c
+@@ -91,7 +91,8 @@ static struct fsync_inode_entry *add_fsync_inode(struct f2fs_sb_info *sbi,
+ 			goto err_out;
+ 	}
+ 
+-	entry = f2fs_kmem_cache_alloc(fsync_entry_slab, GFP_F2FS_ZERO);
++	entry = f2fs_kmem_cache_alloc(fsync_entry_slab,
++					GFP_F2FS_ZERO, true, NULL);
+ 	entry->inode = inode;
+ 	list_add_tail(&entry->list, head);
+ 
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index ca9876a6d396..b4dd22134a73 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -188,7 +188,8 @@ void f2fs_register_inmem_page(struct inode *inode, struct page *page)
+ 
+ 	set_page_private_atomic(page);
+ 
+-	new = f2fs_kmem_cache_alloc(inmem_entry_slab, GFP_NOFS);
++	new = f2fs_kmem_cache_alloc(inmem_entry_slab,
++					GFP_NOFS, true, NULL);
+ 
+ 	/* add atomic page indices to the list */
+ 	new->page = page;
+@@ -1001,7 +1002,7 @@ static struct discard_cmd *__create_discard_cmd(struct f2fs_sb_info *sbi,
+ 
+ 	pend_list = &dcc->pend_list[plist_idx(len)];
+ 
+-	dc = f2fs_kmem_cache_alloc(discard_cmd_slab, GFP_NOFS);
++	dc = f2fs_kmem_cache_alloc(discard_cmd_slab, GFP_NOFS, true, NULL);
+ 	INIT_LIST_HEAD(&dc->list);
+ 	dc->bdev = bdev;
+ 	dc->lstart = lstart;
+@@ -1962,7 +1963,7 @@ static bool add_discard_addrs(struct f2fs_sb_info *sbi, struct cp_control *cpc,
+ 
+ 		if (!de) {
+ 			de = f2fs_kmem_cache_alloc(discard_entry_slab,
+-								GFP_F2FS_ZERO);
++						GFP_F2FS_ZERO, true, NULL);
+ 			de->start_blkaddr = START_BLOCK(sbi, cpc->trim_start);
+ 			list_add_tail(&de->list, head);
+ 		}
+@@ -4099,7 +4100,8 @@ static struct page *get_next_sit_page(struct f2fs_sb_info *sbi,
+ static struct sit_entry_set *grab_sit_entry_set(void)
+ {
+ 	struct sit_entry_set *ses =
+-			f2fs_kmem_cache_alloc(sit_entry_set_slab, GFP_NOFS);
++			f2fs_kmem_cache_alloc(sit_entry_set_slab,
++						GFP_NOFS, true, NULL);
+ 
+ 	ses->entry_cnt = 0;
+ 	INIT_LIST_HEAD(&ses->set_list);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 9e0e3c998142..b556ca38f0fb 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -56,6 +56,7 @@ const char *f2fs_fault_name[FAULT_MAX] = {
+ 	[FAULT_CHECKPOINT]	= "checkpoint error",
+ 	[FAULT_DISCARD]		= "discard error",
+ 	[FAULT_WRITE_IO]	= "write IO error",
++	[FAULT_SLAB_ALLOC]	= "slab alloc",
+ };
+ 
+ void f2fs_build_fault_attr(struct f2fs_sb_info *sbi, unsigned int rate,
+@@ -1300,7 +1301,8 @@ static struct inode *f2fs_alloc_inode(struct super_block *sb)
+ {
+ 	struct f2fs_inode_info *fi;
+ 
+-	fi = kmem_cache_alloc(f2fs_inode_cachep, GFP_F2FS_ZERO);
++	fi = f2fs_kmem_cache_alloc(f2fs_inode_cachep,
++				GFP_F2FS_ZERO, false, F2FS_SB(sb));
+ 	if (!fi)
+ 		return NULL;
+ 
+diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+index c8f34decbf8e..1d2d29dcd41c 100644
+--- a/fs/f2fs/xattr.c
++++ b/fs/f2fs/xattr.c
+@@ -27,7 +27,8 @@ static void *xattr_alloc(struct f2fs_sb_info *sbi, int size, bool *is_inline)
+ {
+ 	if (likely(size == sbi->inline_xattr_slab_size)) {
+ 		*is_inline = true;
+-		return kmem_cache_zalloc(sbi->inline_xattr_slab, GFP_NOFS);
++		return f2fs_kmem_cache_alloc(sbi->inline_xattr_slab,
++					GFP_F2FS_ZERO, false, sbi);
+ 	}
+ 	*is_inline = false;
+ 	return f2fs_kzalloc(sbi, size, GFP_NOFS);
+-- 
+2.32.0
 
-> 
-> -mfrw
-> 
