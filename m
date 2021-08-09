@@ -2,201 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783063E4B23
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6965A3E4B1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbhHIRsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:48:45 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:10974 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbhHIRsl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:48:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628531295; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=8guuvupjL6NqII3stb55gN3OwOOwh2DbzAjTfValqJY=;
- b=FiuKgcQII/ydK0gv8qAIKBfKpDq8LvMC/5opqclIFfOHuEmfW3nxqqGfKnkoFjpZji5eAimI
- T6LqbLNQam9f6TjeFY8gbh1y0lsB0Fv+F9VIKeJOrkPMFLZcAzyjqd6PJj/HCBH+58oaUtqY
- co3yr7EQ28YzV2C3smImq8xWtnw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 61116a3fb3873958f5f1c3ad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 17:47:43
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 22C33C43149; Mon,  9 Aug 2021 17:47:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33FD9C433F1;
-        Mon,  9 Aug 2021 17:47:40 +0000 (UTC)
+        id S234684AbhHIRsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:48:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234667AbhHIRsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 13:48:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 494F960F25;
+        Mon,  9 Aug 2021 17:47:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628531264;
+        bh=/FzF4AX925VDrkN29pMet/SxwvAOYr7kHqZbB1ZleVs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o9ciE2Yankh6D9q5DwKQ3DzDVkkVquO3EdP/FHdqRHOd1fkIm3A+ST2OwIrrfulfy
+         3wC8MIN2AEvGiz8h1lXpYuw7XJVCS55Dr/EC9VvmuxURex858mhjJetQBp/Y6uVgFv
+         dKCuLAG1WlNvfsRzwR1wWREwjzcDJHQuxRSiDexp01/24scKD500LJWlAyU0qh0WZ8
+         Qj1+NQtTiLSWB5tKCdrgD23W6lMhiEcUxUSHKnVNzJZlu+3gApUdPOdkgwMFERJ8+q
+         Se++ZoKZg/xE3wIVbMTEc1fdpnWXII0aGLnAhn8+LCudGPWhxk6EiXOZbOM07sck1T
+         PZPlv55ROfwLw==
+Received: by pali.im (Postfix)
+        id E4EC4C7C; Mon,  9 Aug 2021 19:47:41 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 19:47:41 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 11/20] hfs: Explicitly set hsb->nls_disk when
+ hsb->nls_io is set
+Message-ID: <20210809174741.4wont2drya3rvpsr@pali>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-12-pali@kernel.org>
+ <D0302F93-BAE5-48F0-87D0-B68B10D7757B@dubeyko.com>
+ <YRFnz6kn1UbSCN/S@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 09 Aug 2021 23:17:40 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     Georgi Djakov <djakov@kernel.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        David Airlie <airlied@linux.ie>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
-        <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [Freedreno] [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters
- to use system cache
-In-Reply-To: <20210809174022.GA1840@willie-the-truck>
-References: <20210728140052.GB22887@mms-0441>
- <8b2742c8891abe4fec3664730717a089@codeaurora.org>
- <20210802105544.GA27657@willie-the-truck>
- <CAF6AEGvtpFu8st=ZFNoKjP9YsAenciLxL1zMFi_iqMCvdby73w@mail.gmail.com>
- <20210802151409.GE28735@willie-the-truck>
- <CAF6AEGtzvyEUm0Fc8QT5t9KNK7i0FbFyi7zDM2_PMCzZBp7qbw@mail.gmail.com>
- <20210809145651.GC1458@willie-the-truck>
- <CAF6AEGsSUojA=V0n2iRWTCn++buqN=Eoxo0r3=+=PBu1O=H-AQ@mail.gmail.com>
- <20210809170508.GB1589@willie-the-truck>
- <CAF6AEGtmZ3LzAJdtnKDQDbEN-a6_JgdN-fZ96pkU3dZqkiW91g@mail.gmail.com>
- <20210809174022.GA1840@willie-the-truck>
-Message-ID: <76bfd0b4248148dfbf9d174ddcb4c2a2@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRFnz6kn1UbSCN/S@casper.infradead.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-09 23:10, Will Deacon wrote:
-> On Mon, Aug 09, 2021 at 10:18:21AM -0700, Rob Clark wrote:
->> On Mon, Aug 9, 2021 at 10:05 AM Will Deacon <will@kernel.org> wrote:
->> >
->> > On Mon, Aug 09, 2021 at 09:57:08AM -0700, Rob Clark wrote:
->> > > On Mon, Aug 9, 2021 at 7:56 AM Will Deacon <will@kernel.org> wrote:
->> > > > On Mon, Aug 02, 2021 at 06:36:04PM -0700, Rob Clark wrote:
->> > > > > On Mon, Aug 2, 2021 at 8:14 AM Will Deacon <will@kernel.org> wrote:
->> > > > > > On Mon, Aug 02, 2021 at 08:08:07AM -0700, Rob Clark wrote:
->> > > > > > > On Mon, Aug 2, 2021 at 3:55 AM Will Deacon <will@kernel.org> wrote:
->> > > > > > > > On Thu, Jul 29, 2021 at 10:08:22AM +0530, Sai Prakash Ranjan wrote:
->> > > > > > > > > On 2021-07-28 19:30, Georgi Djakov wrote:
->> > > > > > > > > > On Mon, Jan 11, 2021 at 07:45:02PM +0530, Sai Prakash Ranjan wrote:
->> > > > > > > > > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
->> > > > > > > > > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
->> > > > > > > > > > > the memory type setting required for the non-coherent masters to use
->> > > > > > > > > > > system cache. Now that system cache support for GPU is added, we will
->> > > > > > > > > > > need to set the right PTE attribute for GPU buffers to be sys cached.
->> > > > > > > > > > > Without this, the system cache lines are not allocated for GPU.
->> > > > > > > > > > >
->> > > > > > > > > > > So the patches in this series introduces a new prot flag IOMMU_LLC,
->> > > > > > > > > > > renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
->> > > > > > > > > > > and makes GPU the user of this protection flag.
->> > > > > > > > > >
->> > > > > > > > > > Thank you for the patchset! Are you planning to refresh it, as it does
->> > > > > > > > > > not apply anymore?
->> > > > > > > > > >
->> > > > > > > > >
->> > > > > > > > > I was waiting on Will's reply [1]. If there are no changes needed, then
->> > > > > > > > > I can repost the patch.
->> > > > > > > >
->> > > > > > > > I still think you need to handle the mismatched alias, no? You're adding
->> > > > > > > > a new memory type to the SMMU which doesn't exist on the CPU side. That
->> > > > > > > > can't be right.
->> > > > > > > >
->> > > > > > >
->> > > > > > > Just curious, and maybe this is a dumb question, but what is your
->> > > > > > > concern about mismatched aliases?  I mean the cache hierarchy on the
->> > > > > > > GPU device side (anything beyond the LLC) is pretty different and
->> > > > > > > doesn't really care about the smmu pgtable attributes..
->> > > > > >
->> > > > > > If the CPU accesses a shared buffer with different attributes to those which
->> > > > > > the device is using then you fall into the "mismatched memory attributes"
->> > > > > > part of the Arm architecture. It's reasonably unforgiving (you should go and
->> > > > > > read it) and in some cases can apply to speculative accesses as well, but
->> > > > > > the end result is typically loss of coherency.
->> > > > >
->> > > > > Ok, I might have a few other sections to read first to decipher the
->> > > > > terminology..
->> > > > >
->> > > > > But my understanding of LLC is that it looks just like system memory
->> > > > > to the CPU and GPU (I think that would make it "the point of
->> > > > > coherence" between the GPU and CPU?)  If that is true, shouldn't it be
->> > > > > invisible from the point of view of different CPU mapping options?
->> > > >
->> > > > You could certainly build a system where mismatched attributes don't cause
->> > > > loss of coherence, but as it's not guaranteed by the architecture and the
->> > > > changes proposed here affect APIs which are exposed across SoCs, then I
->> > > > don't think it helps much.
->> > > >
->> > >
->> > > Hmm, the description of the new mapping flag is that it applies only
->> > > to transparent outer level cache:
->> > >
->> > > +/*
->> > > + * Non-coherent masters can use this page protection flag to set cacheable
->> > > + * memory attributes for only a transparent outer level of cache, also known as
->> > > + * the last-level or system cache.
->> > > + */
->> > > +#define IOMMU_LLC      (1 << 6)
->> > >
->> > > But I suppose we could call it instead IOMMU_QCOM_LLC or something
->> > > like that to make it more clear that it is not necessarily something
->> > > that would work with a different outer level cache implementation?
->> >
->> > ... or we could just deal with the problem so that other people can reuse
->> > the code. I haven't really understood the reluctance to solve this properly.
->> >
->> > Am I missing some reason this isn't solvable?
->> 
->> Oh, was there another way to solve it (other than foregoing setting
->> INC_OCACHE in the pgtables)?  Maybe I misunderstood, is there a
->> corresponding setting on the MMU pgtables side of things?
+On Monday 09 August 2021 18:37:19 Matthew Wilcox wrote:
+> On Mon, Aug 09, 2021 at 10:31:55AM -0700, Viacheslav Dubeyko wrote:
+> > > On Aug 8, 2021, at 9:24 AM, Pali Rohár <pali@kernel.org> wrote:
+> > > 
+> > > It does not make any sense to set hsb->nls_io (NLS iocharset used between
+> > > VFS and hfs driver) when hsb->nls_disk (NLS codepage used between hfs
+> > > driver and disk) is not set.
+> > > 
+> > > Reverse engineering driver code shown what is doing in this special case:
+> > > 
+> > >    When codepage was not defined but iocharset was then
+> > >    hfs driver copied 8bit character from disk directly to
+> > >    16bit unicode wchar_t type. Which means it did conversion
+> > >    from Latin1 (ISO-8859-1) to Unicode because first 256
+> > >    Unicode code points matches 8bit ISO-8859-1 codepage table.
+> > >    So when iocharset was specified and codepage not, then
+> > >    codepage used implicit value "iso8859-1".
+> > > 
+> > > So when hsb->nls_disk is not set and hsb->nls_io is then explicitly set
+> > > hsb->nls_disk to "iso8859-1".
+> > > 
+> > > Such setup is obviously incompatible with Mac OS systems as they do not
+> > > support iso8859-1 encoding for hfs. So print warning into dmesg about this
+> > > fact.
+> > > 
+> > > After this change hsb->nls_disk is always set, so remove code paths for
+> > > case when hsb->nls_disk was not set as they are not needed anymore.
+> > 
+> > 
+> > Sounds reasonable. But it will be great to know that the change has been tested reasonably well.
 > 
-> Right -- we just need to program the CPU's MMU with the matching memory
-> attributes! It's a bit more fiddly if you're just using ioremap_wc()
-> though, as it's usually the DMA API which handles the attributes under 
-> the
-> hood.
-> 
-> Anyway, sorry, I should've said that explicitly earlier on. We've done 
-> this
-> sort of thing in the Android tree so I assumed Sai knew what needed to 
-> be
-> done and then I didn't think to explain to you :(
-> 
+> I don't think it's reasonable to ask Pali to test every single filesystem.
+> That's something the maintainer should do, as you're more likely to have
+> the infrastructure already set up to do testing of your filesystem and
+> be aware of fun corner cases and use cases than someone who's working
+> across all filesystems.
 
-Right I was aware of that but even in the android tree there is no user 
-:)
-I think we can't have a new memory type without any user right in 
-upstream
-like android tree?
-
-@Rob, I think you  already tried adding a new MT and used 
-pgprot_syscached()
-in GPU driver but it was crashing?
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+This patch series is currently in RFC form, as stated in cover letter
+mostly untested. So they are not in form for merging or detailed
+reviewing. I just would like to know if this is the right direction with
+filesystems and if I should continue with this my effort or not.
+And I thought that sending RFC "incomplete" patches is better way than
+just describing what to do and how...
