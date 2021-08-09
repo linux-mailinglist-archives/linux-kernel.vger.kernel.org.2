@@ -2,264 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C03D3E452C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1CD3E452E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbhHIMEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 08:04:25 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:22564 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhHIMEX (ORCPT
+        id S235318AbhHIMFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 08:05:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42272 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234519AbhHIMFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 08:04:23 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210809120401euoutp01bed182c711feb8a25b41557ae4ad688b~ZoczeB1FS1527315273euoutp01T
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 12:04:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210809120401euoutp01bed182c711feb8a25b41557ae4ad688b~ZoczeB1FS1527315273euoutp01T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1628510641;
-        bh=ZpAdE0O02GcvZ0ugnxVxhHuRlenLhUmt2jo4GbG8sbM=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=oxxpIbcuho+LNvtjeWlWU9DqKHXU6TDP26YD1WvdrSIXVG5SyHX3AQO10viH400T1
-         eki9xflVhgjgCv8oYw79ujGSwqpEkPDtneIfraXxBC9PcRoPSR76ZQn46A0MxeR65m
-         tDrRPOKFfGogLqowxmOwTrnI9loWQU/umvFtpGC4=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210809120401eucas1p217f603c1dd43bd64680de3ebebb9deb6~ZoczImoc_0524405244eucas1p25;
-        Mon,  9 Aug 2021 12:04:01 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 90.3C.56448.0B911116; Mon,  9
-        Aug 2021 13:04:01 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210809120400eucas1p22e242ab94259e15ae4b2a644d0e9b3b6~Zocyh5FiM1682716827eucas1p2D;
-        Mon,  9 Aug 2021 12:04:00 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210809120400eusmtrp20818b59c61857a280bc93ec96659a7ce~ZocyhAhp02777327773eusmtrp2g;
-        Mon,  9 Aug 2021 12:04:00 +0000 (GMT)
-X-AuditID: cbfec7f5-d53ff7000002dc80-c2-611119b03143
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 5F.59.20981.0B911116; Mon,  9
-        Aug 2021 13:04:00 +0100 (BST)
-Received: from [106.210.131.79] (unknown [106.210.131.79]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210809120359eusmtip20c2fbcf0dc07ba4fd87dc508cb54b2d5~ZocxvHWs-3242032420eusmtip2o;
-        Mon,  9 Aug 2021 12:03:59 +0000 (GMT)
-Message-ID: <95600ccc-e252-ce41-85c0-4df74367799e@samsung.com>
-Date:   Mon, 9 Aug 2021 14:03:59 +0200
+        Mon, 9 Aug 2021 08:05:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628510693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pdmQw9M/85lkFGoQvkACYQul8ZHniMSyZNIJ32g8qMs=;
+        b=UoE3vZXX3UDLT+2egtUeNL2DuqlLNMpxBwSO2+qbfGO7ujvj3oPmKTRHUHUTHlemsaa7pS
+        ikUMRIC1L/zQYpIpUG4j+08IL509LO6Wzltr4pJuUJukcVQOVmtW6Qqe2a18UKK6cr99E0
+        nBvxf7XlUd6ApEss9cvVV7+z6ROGaKI=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-X6plFIqGPbWfzUwdX2bY1g-1; Mon, 09 Aug 2021 08:04:52 -0400
+X-MC-Unique: X6plFIqGPbWfzUwdX2bY1g-1
+Received: by mail-ej1-f69.google.com with SMTP id e8-20020a1709060808b02904f7606bd58fso4444159ejd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 05:04:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pdmQw9M/85lkFGoQvkACYQul8ZHniMSyZNIJ32g8qMs=;
+        b=idvm2vSZQTKHVA/X6UvhLdTH1C1/+86L0j12eFY7f91dR+Xp+53WO7xyQt12R0qz+B
+         lOtiIjAJDaYZ89aBC+mKRIVOUoalh/YY6MOW2v5w3Rtji0mPy9LN3TuQFgmkZQuNjJ6c
+         /4iWSZ8htBwvM8wVFqWe5c2cJjsspK5XK96Nl2vU4sXwN28LaYXBX6YgoiBj+SATTna2
+         mX3LMQiYkBTV8DvQvveG6SOpXgWHuC3zAuGD0xDr4ccamgl6Xt4+NiiJ9+Xa/JNlyO+H
+         frACzRvxvbr9AwPUhCLj8WViEogwcxa9D09D7FZoC5tCj6k1qR4wmhbIk+wojFJrQGok
+         IEqA==
+X-Gm-Message-State: AOAM533Da8gVuSOgvn7F/ocMrAQnm4YFo1SdolXsqmYkLEI06IOyFYjj
+        39JBOFBRdFd67koegIcJdClohbbuz3wM9Z/lEBS15/83N7DUyuaKAYWvR3cOUgEUmpL3fSNMg9K
+        baaFNLTasyLL0qfElAo6HIb27
+X-Received: by 2002:a17:906:5e55:: with SMTP id b21mr22155445eju.121.1628510691265;
+        Mon, 09 Aug 2021 05:04:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3dd3KCaJ6nmDqCrkPBd09x5JE2BzcnTg6Lipo+AhkVGLQgZobgruPTNLzSDLbtovkcN6PHw==
+X-Received: by 2002:a17:906:5e55:: with SMTP id b21mr22155400eju.121.1628510690969;
+        Mon, 09 Aug 2021 05:04:50 -0700 (PDT)
+Received: from krava ([83.240.61.5])
+        by smtp.gmail.com with ESMTPSA id m12sm5895933ejd.21.2021.08.09.05.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 05:04:50 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 14:04:48 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Subject: Re: [RFC PATCH v2 10/10] perf synthetic-events: use workqueue
+ parallel_for
+Message-ID: <YREZ4G1xzncpdsVk@krava>
+References: <cover.1627657061.git.rickyman7@gmail.com>
+ <0e9bdbcb903b24b95841e09bbae180841b6311ca.1627657061.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
-        Gecko/20100101 Thunderbird/91.0
-Subject: Re: [PATCH v2 0/8] drm/bridge: Make panel and bridge probe order
- consistent
-Content-Language: en-GB
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Robert Foss <robert.foss@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-From:   Andrzej Hajda <a.hajda@samsung.com>
-In-Reply-To: <CAMty3ZDLM0Ap4Ni+kExEgVyFw2eQygZNeTxbWjOxvE=uduVkag@mail.gmail.com>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAKsWRmVeSWpSXmKPExsWy7djP87obJQUTDfacZ7LoPXeSyWL5mXXM
-        Fle+vmez+LJpApvF8/nrGC1OvrnKYtE5cQm7xeVdc9gsFn7cymIx48c/RotDfdEWn2Y9ZLZY
-        8XMro8XPXfNYLLa8mcjqwO+x9uN9Vo/3N1rZPe6cO8/msXPWXXaP2R0zWT0W73nJ5HFiwiUm
-        jzvX9rB5bP/2gNVj3slAj/vdx5k8lky7yuax+XS1x+dNcgF8UVw2Kak5mWWpRfp2CVwZM/a2
-        sxR816s4PeE1ewPjLpUuRk4OCQETie/dZ1m6GLk4hARWMErcPfiODcL5wiix7vd3VgjnM6PE
-        xa3trDAtc5e8YAGxhQSWM0rs7i2FKHrPKHFlZgNYEa+AncSiA6fAbBYBFYmGy/uZIeKCEidn
-        PgFrFhVIkJhw+SgjiC0sECYxY8EqdhCbWUBcounLSrBeEQFtiW8zX4OdxCxwnUVi7rUOsGY2
-        AU2Jv5tvsoHYnAKBEr+bnjFDNMtLNG+dzQzSICFwjVNi84Zf7BBnu0jcWfAZ6gVhiVfHt0DF
-        ZST+75zPBGHXS9xf0QLV3MEosXXDTmaIhLXEnXO/gLZxAG3QlFi/Sx8i7Cjxpu0yE0hYQoBP
-        4sZbQYgb+CQmbZvODBHmlehoE4KoVpS4f3Yr1EBxiaUXvrJNYFSahRQss5C8PwvJN7MQ9i5g
-        ZFnFKJ5aWpybnlpsnJdarlecmFtcmpeul5yfu4kRmChP/zv+dQfjilcf9Q4xMnEwHmKU4GBW
-        EuFdP4MvUYg3JbGyKrUoP76oNCe1+BCjNAeLkjjvrq1r4oUE0hNLUrNTUwtSi2CyTBycUg1M
-        0REuPqfY8utLzMofvJ9tKqGSwVv9mbXaOTJk01R+1x7pcFubnVuuKalcP/HeXk9n5oEd7EqM
-        oamp+Zt/TFop3Kf3q/mTWuAk99ojdlrGfxdo7Lbrlp7HXXT6StLB1zOmaMUVCv7bEsMqyXyi
-        pVM3fHqkFDfrq+cRFyeGydQwX5EP+ZKh/4GtyrHHQevkpoZ9hU/43dbGtLMkC1y/vCCV8WCx
-        s5P5hXNLz70/lfHvs2jlywNvLIJrEzXNj4W4zjlgz7Jx5s5y06THv/fM1pr0d2HStYiq9l7J
-        Mxumd1/fzvUptWLn9mtTDMunCJh9Swm1vfXh8v0w1tB7KvF6T733aDQc+vleeM9UERe/O9+U
-        WIozEg21mIuKEwFSMk+wAwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmleLIzCtJLcpLzFFi42I5/e/4Pd0NkoKJBpPOylr0njvJZLH8zDpm
-        iytf37NZfNk0gc3i+fx1jBYn31xlseicuITd4vKuOWwWCz9uZbGY8eMfo8WhvmiLT7MeMlus
-        +LmV0eLnrnksFlveTGR14PdY+/E+q8f7G63sHnfOnWfz2DnrLrvH7I6ZrB6L97xk8jgx4RKT
-        x51re9g8tn97wOox72Sgx/3u40weS6ZdZfPYfLra4/MmuQC+KD2bovzSklSFjPziElulaEML
-        Iz1DSws9IxNLPUNj81grI1MlfTublNSczLLUIn27BL2MGXvbWQq+61WcnvCavYFxl0oXIyeH
-        hICJxNwlL1i6GLk4hASWMkqsmnCPESIhLrF7/ltmCFtY4s+1LjaIoreMEs2fVoMleAXsJBYd
-        OMUKYrMIqEg0XN4PFReUODnzCQuILSqQIHHg+h4wW1ggTGLGglXsIDYz0IKmLyvBekUEtCW+
-        zXwNtoBZ4DaLxKemP2ANQgIdTBJtU9NAbDYBTYm/m2+ygdicAoESv5ueMUMMMpPo2trFCGHL
-        SzRvnc08gVFoFpI7ZiHZNwtJyywkLQsYWVYxiqSWFuem5xYb6RUn5haX5qXrJefnbmIEpoZt
-        x35u2cG48tVHvUOMTByMhxglOJiVRHjXz+BLFOJNSaysSi3Kjy8qzUktPsRoCgyMicxSosn5
-        wOSUVxJvaGZgamhiZmlgamlmrCTOa3JkTbyQQHpiSWp2ampBahFMHxMHp1QDk+py6U8TLt7K
-        v+Lu3en82chhV/eK2rXPNz1eHFNX8tvT5NxT95Cfp1t6074JZF899XmFsO51znmyq+zOcp6v
-        Pvh7Sb5dwY3bVyse3dgX1tjh+uRBYZNvfrtEhmQQR2pQa4ayiYkD/8VPe1P+SXY/XH1Phdn/
-        fH13hM+Rtl7LZxO9Y7916D2V/ebD38twf3mYYuAv5YfcsVOV331942Vm+6bv6hwLRd69xazO
-        XzVXTXrmd27qf+EzcVnPGze7cagr37hwo+2QfaHgin2PjHKZZviVOpgY9UXbRNf5TMhwmsAf
-        oDb/jLvl0w18adPDbByzL2hwVXoVxYrtr3ny43djj/Nv0Xdhj4Pep665dJ5ViaU4I9FQi7mo
-        OBEAj4B3LZYDAAA=
-X-CMS-MailID: 20210809120400eucas1p22e242ab94259e15ae4b2a644d0e9b3b6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210804140941eucas1p2d4d4ec491074530c714797523aec05ea
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210804140941eucas1p2d4d4ec491074530c714797523aec05ea
-References: <CGME20210804140941eucas1p2d4d4ec491074530c714797523aec05ea@eucas1p2.samsung.com>
-        <20210728133229.2247965-1-maxime@cerno.tech>
-        <cc638e20-aa7c-7014-f70b-1bb68e629d87@samsung.com>
-        <CAMty3ZDLM0Ap4Ni+kExEgVyFw2eQygZNeTxbWjOxvE=uduVkag@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e9bdbcb903b24b95841e09bbae180841b6311ca.1627657061.git.rickyman7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
+On Fri, Jul 30, 2021 at 05:34:17PM +0200, Riccardo Mancini wrote:
+> To generate synthetic events, perf has the option to use multiple
+> threads. These threads are created manually using pthread_created.
+> 
+> This patch replaces the manual pthread_create with a workqueue,
+> using the parallel_for utility.
 
-W dniu 09.08.2021 o 10:00, Jagan Teki pisze:
-> Hi Andrzej,
->
-> On Wed, Aug 4, 2021 at 7:48 PM a.hajda <a.hajda@samsung.com> wrote:
->> Hi Maxime,
->>
->> I have been busy with other tasks, and I did not follow the list last
->> time, so sorry for my late response.
->>
->> On 28.07.2021 15:32, Maxime Ripard wrote:
->>> Hi,
->>>
->>> We've encountered an issue with the RaspberryPi DSI panel that prevented the
->>> whole display driver from probing.
->>>
->>> The issue is described in detail in the commit 7213246a803f ("drm/vc4: dsi:
->>> Only register our component once a DSI device is attached"), but the basic idea
->>> is that since the panel is probed through i2c, there's no synchronization
->>> between its probe and the registration of the MIPI-DSI host it's attached to.
->>>
->>> We initially moved the component framework registration to the MIPI-DSI Host
->>> attach hook to make sure we register our component only when we have a DSI
->>> device attached to our MIPI-DSI host, and then use lookup our DSI device in our
->>> bind hook.
->>>
->>> However, all the DSI bridges controlled through i2c are only registering their
->>> associated DSI device in their bridge attach hook, meaning with our change
->>
->> I guess this is incorrect. I have promoted several times the pattern
->> that device driver shouldn't expose its interfaces (for example
->> component_add, drm_panel_add, drm_bridge_add) until it gathers all
->> required dependencies. In this particular case bridges should defer
->> probe until DSI bus becomes available. I guess this way the patch you
->> reverts would work.
->>
->> I advised few times this pattern in case of DSI hosts, apparently I
->> didn't notice the similar issue can appear in case of bridges. Or there
->> is something I have missed???
-> Look like Maxime is correct. I2C based DSI bridge will get probe
-> during bridge_attach which usually called from bridge driver
-> bridge_attach call. Non-I2C bridges and DSI panels will get probe
-> during host.attach.
-> We do get similar situation for dw-mipi-dsi bridges, where icn6211
-> bridge is not I2C-based bridge and it gets probed in host_attach and
-> sn65dsi83 is I2C based bridge and it gets probed in bridge_attach.
->
-> Here is the simple call trace we have observed with dw-mipi-dsi bridge
-> when all possible DSI device are trying to probe.
->
-> 1. DSI panels and bridges will invoke the host attach
->     from probe in order to find the panel_or_bridge.
->
->     chipone_probe()
->         dw_mipi_dsi_host_attach().start
->             dw_mipi_dsi_panel_or_bridge()
->                  ...found the panel_or_bridge...
->
->     ltdc_encoder_init().start
->         dw_mipi_dsi_bridge_attach().start
->                     dw_mipi_dsi_host_attach().start
->                         chipone_attach(). start
->
->                         chipone_attach(). done
->                     dw_mipi_dsi_host_attach().done
->         dw_mipi_dsi_bridge_attach(). done
->     ltdc_encoder_init().done
->
-> 2. I2C based DSI bridge will invoke the drm_bridge_attach
->     from bridge attach in order to find the panel_or_bridge.
->
->     ltdc_encoder_init().start
->         dw_mipi_dsi_bridge_attach().start
->             dw_mipi_dsi_panel_or_bridge()
->                  ...found the panel_or_bridge...
->                     dw_mipi_dsi_host_attach().start
->                         sn65dsi83_attach(). start
->
->                         sn65dsi83_attach(). done
->                     dw_mipi_dsi_host_attach().done
->         dw_mipi_dsi_bridge_attach(). done
->     ltdc_encoder_init().done
->
-> It is correct that the I2C-based bridges will attach the host via
-> mipi_dsi_attach in driver bridge API where as it done in probe for
-> Non-I2C bridges and DSI panels.
+hi,
+I really like this new interface
 
-The call order depends on the registration time of DSI host. In case of 
-dw-mipi-dsi it is called from .component_bind callback (dsi_bind-> 
-dsi_host_init -> mipi_dsi_host_register). And this is "the original sin" :)
+> 
+> Experimental results show that workqueue has a slightly higher overhead,
+> but this is repayed by the improved work balancing among threads.
 
-dw-mipi-dsi calls component_add without prior acquiring its dependency - 
-drm_bridge and before DSI host registration. In such situation bridge 
-author should follow this pattern and perform similar initialization: 
-first drm_bridge_add, then mipi_dsi_attach.
+how did you measure that balancing improvement?
+is there less kernel cycles spent?
 
-And now authors of bridges are in dead end in case they want their 
-bridge/panel drivers cooperate with dw-mipi-dsi host (with pattern look 
-for sink - bridge/panel, then register DSI bus) and with other DSI hosts 
-(most of then use pattern - register DSI bus then look for the sink -  
-panel or bridge).
-
-Quick look at the DSI hosts suggests the pattern 
-get-sink-then-register-bus are used only by kirin/dw_drm_dsi.c and msm/dsi.
-
-All other DSI hosts uses apparently register-bus-then-get-sink pattern - 
-as I said it was not profound analysis - just few greps of some keywords.
+I ran the benchmark and if I'm reading the results correctly I see
+performance drop for high cpu numbers (full list attached below).
 
 
->> Anyway there are already eleven(?) bridge drivers using this pattern. I
->> wonder if fixing it would be difficult, or if it expose other issues???
->> The patches should be quite straightforward - move
->> of_find_mipi_dsi_host_by_node and mipi_dsi_device_register_full to probe
->> time.
->>
->> Finally I think that if we will not fix these bridge drivers we will
->> encounter another set of issues with new platforms connecting "DSI host
->> drivers assuming this pattern" and "i2c/dsi device drivers assuming
->> pattern already present in the bridges".
-> Agreed, I'm trying to understand the several ways to fix this. Right
-> now I'm trying this on sun6i_mipi_dsi and exynos_drm_dsi. Will let you
-> know for any update and suggestions on the same.
+old perf:                                                                 new perf:
+
+[jolsa@dell-r440-01 perf]$ ./perf.old bench internals synthesize -t       [jolsa@dell-r440-01 perf]$ ./perf bench internals synthesize -t
+...
+  Number of synthesis threads: 40                                           Number of synthesis threads: 40
+    Average synthesis took: 2489.400 usec (+- 49.832 usec)                    Average synthesis took: 4576.500 usec (+- 75.278 usec)
+    Average num. events: 956.800 (+- 6.721)                                   Average num. events: 1020.000 (+- 0.000)
+    Average time per event 2.602 usec                                         Average time per event 4.487 usec
+
+maybe profiling will show what's going on?
+
+thanks,
+jirka
 
 
-Quick look at sun6i suggests it uses register-bus-then-get-sink pattern 
-(incompatible with kirin), only issue is that currently it support only 
-panel sink.
+---
+[jolsa@dell-r440-01 perf]$ ./perf.old bench internals synthesize -t       [jolsa@dell-r440-01 perf]$ ./perf bench internals synthesize -t
+# Running 'internals/synthesize' benchmark:                               # Running 'internals/synthesize' benchmark:
+Computing performance of multi threaded perf event synthesis by           Computing performance of multi threaded perf event synthesis by
+synthesizing events on CPU 0:                                             synthesizing events on CPU 0:
+  Number of synthesis threads: 1                                            Number of synthesis threads: 1 
+    Average synthesis took: 7907.100 usec (+- 197.363 usec)                   Average synthesis took: 7972.900 usec (+- 198.158 usec)
+    Average num. events: 956.000 (+- 0.000)                                   Average num. events: 936.000 (+- 0.000)
+    Average time per event 8.271 usec                                         Average time per event 8.518 usec
+  Number of synthesis threads: 2                                            Number of synthesis threads: 2 
+    Average synthesis took: 5616.800 usec (+- 61.253 usec)                    Average synthesis took: 5844.700 usec (+- 87.219 usec)
+    Average num. events: 958.800 (+- 0.327)                                   Average num. events: 940.000 (+- 0.000)
+    Average time per event 5.858 usec                                         Average time per event 6.218 usec
+  Number of synthesis threads: 3                                            Number of synthesis threads: 3 
+    Average synthesis took: 4274.000 usec (+- 93.293 usec)                    Average synthesis took: 4019.700 usec (+- 67.354 usec)
+    Average num. events: 962.000 (+- 0.000)                                   Average num. events: 942.000 (+- 0.000)
+    Average time per event 4.443 usec                                         Average time per event 4.267 usec
+  Number of synthesis threads: 4                                            Number of synthesis threads: 4 
+    Average synthesis took: 3425.700 usec (+- 43.044 usec)                    Average synthesis took: 3382.200 usec (+- 74.652 usec)
+    Average num. events: 959.600 (+- 0.933)                                   Average num. events: 944.000 (+- 0.000)
+    Average time per event 3.570 usec                                         Average time per event 3.583 usec
+  Number of synthesis threads: 5                                            Number of synthesis threads: 5 
+    Average synthesis took: 2958.000 usec (+- 82.951 usec)                    Average synthesis took: 3086.500 usec (+- 48.213 usec)
+    Average num. events: 966.000 (+- 0.000)                                   Average num. events: 946.000 (+- 0.000)
+    Average time per event 3.062 usec                                         Average time per event 3.263 usec
+  Number of synthesis threads: 6                                            Number of synthesis threads: 6 
+    Average synthesis took: 2808.400 usec (+- 66.868 usec)                    Average synthesis took: 2752.200 usec (+- 56.411 usec)
+    Average num. events: 956.800 (+- 0.327)                                   Average num. events: 948.000 (+- 0.000)
+    Average time per event 2.935 usec                                         Average time per event 2.903 usec
+  Number of synthesis threads: 7                                            Number of synthesis threads: 7 
+    Average synthesis took: 2622.900 usec (+- 83.524 usec)                    Average synthesis took: 2548.200 usec (+- 48.042 usec)
+    Average num. events: 958.400 (+- 0.267)                                   Average num. events: 950.000 (+- 0.000)
+    Average time per event 2.737 usec                                         Average time per event 2.682 usec
+  Number of synthesis threads: 8                                            Number of synthesis threads: 8 
+    Average synthesis took: 2271.600 usec (+- 29.181 usec)                    Average synthesis took: 2486.600 usec (+- 47.862 usec)
+    Average num. events: 972.000 (+- 0.000)                                   Average num. events: 952.000 (+- 0.000)
+    Average time per event 2.337 usec                                         Average time per event 2.612 usec
+  Number of synthesis threads: 9                                            Number of synthesis threads: 9 
+    Average synthesis took: 2372.000 usec (+- 95.495 usec)                    Average synthesis took: 2347.300 usec (+- 23.959 usec)
+    Average num. events: 959.200 (+- 0.952)                                   Average num. events: 954.000 (+- 0.000)
+    Average time per event 2.473 usec                                         Average time per event 2.460 usec
+  Number of synthesis threads: 10                                           Number of synthesis threads: 10
+    Average synthesis took: 2544.600 usec (+- 107.569 usec)                   Average synthesis took: 2328.800 usec (+- 14.234 usec)
+    Average num. events: 968.400 (+- 3.124)                                   Average num. events: 957.400 (+- 0.306)
+    Average time per event 2.628 usec                                         Average time per event 2.432 usec
+  Number of synthesis threads: 11                                           Number of synthesis threads: 11
+    Average synthesis took: 2299.300 usec (+- 57.597 usec)                    Average synthesis took: 2340.300 usec (+- 34.638 usec)
+    Average num. events: 956.000 (+- 0.000)                                   Average num. events: 960.000 (+- 0.000)
+    Average time per event 2.405 usec                                         Average time per event 2.438 usec
+  Number of synthesis threads: 12                                           Number of synthesis threads: 12
+    Average synthesis took: 2545.500 usec (+- 69.557 usec)                    Average synthesis took: 2318.700 usec (+- 15.803 usec)
+    Average num. events: 974.800 (+- 0.611)                                   Average num. events: 963.800 (+- 0.200)
+    Average time per event 2.611 usec                                         Average time per event 2.406 usec
+  Number of synthesis threads: 13                                           Number of synthesis threads: 13
+    Average synthesis took: 2386.400 usec (+- 79.244 usec)                    Average synthesis took: 2408.700 usec (+- 27.071 usec)
+    Average num. events: 950.500 (+- 5.726)                                   Average num. events: 966.000 (+- 0.000)
+    Average time per event 2.511 usec                                         Average time per event 2.493 usec
+  Number of synthesis threads: 14                                           Number of synthesis threads: 14 
+    Average synthesis took: 2466.600 usec (+- 57.893 usec)                    Average synthesis took: 2547.200 usec (+- 53.445 usec)
+    Average num. events: 957.600 (+- 0.718)                                   Average num. events: 968.000 (+- 0.000)
+    Average time per event 2.576 usec                                         Average time per event 2.631 usec
+  Number of synthesis threads: 15                                           Number of synthesis threads: 15 
+    Average synthesis took: 2249.700 usec (+- 64.026 usec)                    Average synthesis took: 2647.900 usec (+- 79.014 usec)
+    Average num. events: 956.000 (+- 0.000)                                   Average num. events: 970.000 (+- 0.000)
+    Average time per event 2.353 usec                                         Average time per event 2.730 usec
+  Number of synthesis threads: 16                                           Number of synthesis threads: 16 
+    Average synthesis took: 2311.700 usec (+- 64.304 usec)                    Average synthesis took: 2676.200 usec (+- 34.824 usec)
+    Average num. events: 955.000 (+- 0.907)                                   Average num. events: 972.000 (+- 0.000)
+    Average time per event 2.421 usec                                         Average time per event 2.753 usec
+  Number of synthesis threads: 17                                           Number of synthesis threads: 17 
+    Average synthesis took: 2174.100 usec (+- 36.673 usec)                    Average synthesis took: 2580.100 usec (+- 45.414 usec)
+    Average num. events: 971.600 (+- 3.124)                                   Average num. events: 974.000 (+- 0.000)
+    Average time per event 2.238 usec                                         Average time per event 2.649 usec
+  Number of synthesis threads: 18                                           Number of synthesis threads: 18 
+    Average synthesis took: 2294.200 usec (+- 63.657 usec)                    Average synthesis took: 2810.200 usec (+- 49.113 usec)
+    Average num. events: 953.200 (+- 0.611)                                   Average num. events: 976.000 (+- 0.000)
+    Average time per event 2.407 usec                                         Average time per event 2.879 usec
+  Number of synthesis threads: 19                                           Number of synthesis threads: 19 
+    Average synthesis took: 2410.700 usec (+- 120.169 usec)                   Average synthesis took: 2862.400 usec (+- 36.982 usec)
+    Average num. events: 953.400 (+- 0.306)                                   Average num. events: 978.000 (+- 0.000)
+    Average time per event 2.529 usec                                         Average time per event 2.927 usec
+  Number of synthesis threads: 20                                           Number of synthesis threads: 20 
+    Average synthesis took: 2387.000 usec (+- 91.051 usec)                    Average synthesis took: 2908.800 usec (+- 36.404 usec)
+    Average num. events: 952.800 (+- 0.800)                                   Average num. events: 978.600 (+- 0.306)
+    Average time per event 2.505 usec                                         Average time per event 2.972 usec
+  Number of synthesis threads: 21                                           Number of synthesis threads: 21 
+    Average synthesis took: 2275.700 usec (+- 39.815 usec)                    Average synthesis took: 3141.100 usec (+- 30.896 usec)
+    Average num. events: 954.600 (+- 0.306)                                   Average num. events: 980.000 (+- 0.000)
+    Average time per event 2.384 usec                                         Average time per event 3.205 usec
+  Number of synthesis threads: 22                                           Number of synthesis threads: 22 
+    Average synthesis took: 2373.200 usec (+- 89.528 usec)                    Average synthesis took: 3342.400 usec (+- 112.115 usec)
+    Average num. events: 949.100 (+- 5.843)                                   Average num. events: 982.000 (+- 0.000)
+    Average time per event 2.500 usec                                         Average time per event 3.404 usec
+  Number of synthesis threads: 23                                           Number of synthesis threads: 23 
+    Average synthesis took: 2318.300 usec (+- 39.395 usec)                    Average synthesis took: 3269.700 usec (+- 55.215 usec)
+    Average num. events: 954.600 (+- 0.427)                                   Average num. events: 984.000 (+- 0.000)
+    Average time per event 2.429 usec                                         Average time per event 3.323 usec
+  Number of synthesis threads: 24                                           Number of synthesis threads: 24
+    Average synthesis took: 2241.900 usec (+- 52.577 usec)                    Average synthesis took: 3379.500 usec (+- 56.380 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 986.000 (+- 0.000)
+    Average time per event 2.350 usec                                         Average time per event 3.427 usec
+  Number of synthesis threads: 25                                           Number of synthesis threads: 25
+    Average synthesis took: 2343.400 usec (+- 101.611 usec)                   Average synthesis took: 3382.500 usec (+- 51.535 usec)
+    Average num. events: 956.200 (+- 1.009)                                   Average num. events: 988.000 (+- 0.000)
+    Average time per event 2.451 usec                                         Average time per event 3.424 usec
+  Number of synthesis threads: 26                                           Number of synthesis threads: 26
+    Average synthesis took: 2260.700 usec (+- 18.863 usec)                    Average synthesis took: 3391.600 usec (+- 44.053 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 990.000 (+- 0.000)
+    Average time per event 2.370 usec                                         Average time per event 3.426 usec
+  Number of synthesis threads: 27                                           Number of synthesis threads: 27
+    Average synthesis took: 2373.800 usec (+- 74.213 usec)                    Average synthesis took: 3659.200 usec (+- 113.176 usec)
+    Average num. events: 955.000 (+- 0.803)                                   Average num. events: 992.000 (+- 0.000)
+    Average time per event 2.486 usec                                         Average time per event 3.689 usec
+  Number of synthesis threads: 28                                           Number of synthesis threads: 28
+    Average synthesis took: 2335.500 usec (+- 49.480 usec)                    Average synthesis took: 3625.000 usec (+- 90.131 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 994.000 (+- 0.000)
+    Average time per event 2.448 usec                                         Average time per event 3.647 usec
+  Number of synthesis threads: 29                                           Number of synthesis threads: 29
+    Average synthesis took: 2182.100 usec (+- 41.649 usec)                    Average synthesis took: 3708.400 usec (+- 103.717 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 996.000 (+- 0.000)
+    Average time per event 2.287 usec                                         Average time per event 3.723 usec
+  Number of synthesis threads: 30                                           Number of synthesis threads: 30
+    Average synthesis took: 2246.100 usec (+- 58.252 usec)                    Average synthesis took: 3820.500 usec (+- 95.282 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 998.000 (+- 0.000)
+    Average time per event 2.354 usec                                         Average time per event 3.828 usec
+  Number of synthesis threads: 31                                           Number of synthesis threads: 31
+    Average synthesis took: 2156.900 usec (+- 26.141 usec)                    Average synthesis took: 3881.400 usec (+- 36.277 usec)
+    Average num. events: 948.300 (+- 5.700)                                   Average num. events: 1000.000 (+- 0.000)
+    Average time per event 2.274 usec                                         Average time per event 3.881 usec
+  Number of synthesis threads: 32                                           Number of synthesis threads: 32
+    Average synthesis took: 2295.300 usec (+- 41.538 usec)                    Average synthesis took: 4191.700 usec (+- 149.780 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 1002.000 (+- 0.000)
+    Average time per event 2.406 usec                                         Average time per event 4.183 usec
+  Number of synthesis threads: 33                                           Number of synthesis threads: 33
+    Average synthesis took: 2249.100 usec (+- 59.135 usec)                    Average synthesis took: 3988.200 usec (+- 25.015 usec)
+    Average num. events: 948.500 (+- 5.726)                                   Average num. events: 1004.000 (+- 0.000)
+    Average time per event 2.371 usec                                         Average time per event 3.972 usec
+  Number of synthesis threads: 34                                           Number of synthesis threads: 34
+    Average synthesis took: 2270.400 usec (+- 65.011 usec)                    Average synthesis took: 4064.600 usec (+- 44.158 usec)
+    Average num. events: 954.200 (+- 0.200)                                   Average num. events: 1006.000 (+- 0.000)
+    Average time per event 2.379 usec                                         Average time per event 4.040 usec
+  Number of synthesis threads: 35                                           Number of synthesis threads: 35
+    Average synthesis took: 2259.200 usec (+- 44.287 usec)                    Average synthesis took: 4145.700 usec (+- 37.297 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 1008.000 (+- 0.000)
+    Average time per event 2.368 usec                                         Average time per event 4.113 usec
+  Number of synthesis threads: 36                                           Number of synthesis threads: 36
+    Average synthesis took: 2294.100 usec (+- 38.693 usec)                    Average synthesis took: 4234.900 usec (+- 81.904 usec)
+    Average num. events: 954.000 (+- 0.000)                                   Average num. events: 1010.400 (+- 0.267)
+    Average time per event 2.405 usec                                         Average time per event 4.191 usec
+  Number of synthesis threads: 37                                           Number of synthesis threads: 37
+    Average synthesis took: 2338.900 usec (+- 80.346 usec)                    Average synthesis took: 4337.900 usec (+- 30.071 usec)
+    Average num. events: 954.400 (+- 0.267)                                   Average num. events: 1014.000 (+- 0.000)
+    Average time per event 2.451 usec                                         Average time per event 4.278 usec
+  Number of synthesis threads: 38                                           Number of synthesis threads: 38
+    Average synthesis took: 2406.300 usec (+- 57.140 usec)                    Average synthesis took: 4426.600 usec (+- 27.035 usec)
+    Average num. events: 938.400 (+- 7.730)                                   Average num. events: 1016.000 (+- 0.000)
+    Average time per event 2.564 usec                                         Average time per event 4.357 usec
+  Number of synthesis threads: 39                                           Number of synthesis threads: 39
+    Average synthesis took: 2371.000 usec (+- 35.676 usec)                    Average synthesis took: 5979.000 usec (+- 1518.855 usec)
+    Average num. events: 963.000 (+- 0.000)                                   Average num. events: 1018.000 (+- 0.000)
+    Average time per event 2.462 usec                                         Average time per event 5.873 usec
+  Number of synthesis threads: 40                                           Number of synthesis threads: 40
+    Average synthesis took: 2489.400 usec (+- 49.832 usec)                    Average synthesis took: 4576.500 usec (+- 75.278 usec)
+    Average num. events: 956.800 (+- 6.721)                                   Average num. events: 1020.000 (+- 0.000)
+    Average time per event 2.602 usec                                         Average time per event 4.487 usec
 
-Exynos uses also register-bus-then-get-sink pattern, but it slightly 
-different as it supports dynamic attach/detach of sinks.
-
-
-Regards
-
-Andrzej
-
-
->
-> Thanks,
-> Jagan.
->
