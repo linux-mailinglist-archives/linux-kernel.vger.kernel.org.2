@@ -2,156 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981713E4101
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFC23E4105
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233552AbhHIHqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:46:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20171 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233575AbhHIHpz (ORCPT
+        id S233586AbhHIHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:46:52 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:21046 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233539AbhHIHqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:45:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628495135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sNLQyoKHz3doB3VgHoSYiw/2Wi9gt/WD6yUBM0vzV9U=;
-        b=VNnMWS2LtZVDxEc26SFpnM2pJHwnVJlX1Vh/l6NcSRvsFuah8KlwzNlg4EYD7sFLI0xyAX
-        yxbTxd9os+zvqQtj+TAuQXO6ABOQWCcSKbYbrq19zVfqdGW4ZB84vSAPFpEZQ2FriGhWJg
-        xkWkhMbCgEyVE4h/qbAtRp6qImXr5dM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-z6TTFUY7OwO2e0ffebZ4jA-1; Mon, 09 Aug 2021 03:45:32 -0400
-X-MC-Unique: z6TTFUY7OwO2e0ffebZ4jA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 887631853028;
-        Mon,  9 Aug 2021 07:45:30 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AC1BD60CC9;
-        Mon,  9 Aug 2021 07:45:28 +0000 (UTC)
-Message-ID: <33d01b8bb31541be7911f95581cdf608c6c79bf6.camel@redhat.com>
-Subject: Re: [PATCH] selftests: KVM: avoid failures due to reserved
- HyperTransport region
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Joao Martins <joao.m.martins@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     stable@vger.kernel.org, David Matlack <dmatlack@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Date:   Mon, 09 Aug 2021 10:45:27 +0300
-In-Reply-To: <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
-References: <20210805105423.412878-1-pbonzini@redhat.com>
-         <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 9 Aug 2021 03:46:42 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210809074619epoutp01fa1fb08a686f545a3a216fae55bd3ebf~Zk7zJwH9D0937509375epoutp01r
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:46:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210809074619epoutp01fa1fb08a686f545a3a216fae55bd3ebf~Zk7zJwH9D0937509375epoutp01r
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628495179;
+        bh=4ysh1Qqk1bJT1P7I1/f/ILVbF5iojyPx2CxbDbZD1Mc=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=QcjjmLlwpfuXiPOXSFT3m8XcMtrGHmTOC0mY7OXMd0D3cHjswLm9u3X7PBsao9oe5
+         noi2rdzlioHGN+pCIb4uDdpbh3CY2MLkrnz1Ty8TPq2qgHI/Ddl4wrPxJYoZgoaFLJ
+         xEhG3L+jhAxnzHMcGq67jfHJXCuWHcbROlQ0RC2E=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210809074618epcas2p30de07cce6ee9dd1ef4d85800ec15c998~Zk7yWejYk0062700627epcas2p3d;
+        Mon,  9 Aug 2021 07:46:18 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.189]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Gjp6v4Y6zz4x9Q5; Mon,  9 Aug
+        2021 07:46:15 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1E.C5.09921.74DD0116; Mon,  9 Aug 2021 16:46:15 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210809074615epcas2p31bf27f9463e33ced845c9767a7a42311~Zk7vJOvYb3197331973epcas2p3i;
+        Mon,  9 Aug 2021 07:46:15 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210809074614epsmtrp1e265b2c1252a9fbe11290c31953993e2~Zk7vIOeA50573505735epsmtrp1K;
+        Mon,  9 Aug 2021 07:46:14 +0000 (GMT)
+X-AuditID: b6c32a45-fb3ff700000026c1-4f-6110dd47cd3b
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        01.22.08394.64DD0116; Mon,  9 Aug 2021 16:46:14 +0900 (KST)
+Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210809074614epsmtip23c13e92ab3bc640fb908d78364f6676f~Zk7u4c5h30102201022epsmtip2E;
+        Mon,  9 Aug 2021 07:46:14 +0000 (GMT)
+From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
+To:     "'Bart Van Assche'" <bvanassche@acm.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
+        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
+        <bhoon95.kim@samsung.com>
+In-Reply-To: <b3c18b34-2108-abfa-54ca-096a3eb31318@acm.org>
+Subject: RE: [RFC PATCH v1 0/2] scsi: ufs: introduce vendor isr
+Date:   Mon, 9 Aug 2021 16:46:14 +0900
+Message-ID: <000601d78cf2$a160f820$e422e860$@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQLpLcRe5nxssMVHyiI1GTvVMnlTYwK++sB5AU8a/RupJxVgcA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHJsWRmVeSWpSXmKPExsWy7bCmma77XYFEg5f3FC1OPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxdekzVotpH34yW3xav4zVYvXiBywWi25sY7K4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LA58HpeveHtc7utl8li85yWTx4RFBxg9vq/vYPP4+PQWi0ffllWMHp83yXm0
+        H+hmCuCMyrHJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvM
+        ATpeSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgaFigV5yYW1yal66XnJ9rZWhg
+        YGQKVJmQk/G4ZQprQRNzxYupv9gbGLcwdTFyckgImEg8av7K3sXIxSEksINR4tbrOWwQzidG
+        iY4TZ5ggnG+MEt9XLGCGaTk2aQ1Uy15Gid0N66BaXjBKtBz5xAZSxSagLTHt4W5WkISIQAuz
+        xJW9n8A2cgpYS2y/ug2onYNDWMBe4uU/MZAwi4CKxP5tnxlBbF4BS4mV03azQ9iCEidnPmEB
+        sZkF5CW2v50DdYWCxM+ny1hBbBEBJ4mTi98zQ9SISMzubIOqucMhsfS4KYTtItF66gEjhC0s
+        8er4FnYIW0riZX8blF0vsW9qA9jNEgI9jBJP9/2DajCWmPWsnRHkZmYBTYn1u/RBTAkBZYkj
+        t6BO45PoOPyXHSLMK9HRJgTRqCzxa9JkqCGSEjNv3oHa5CGx6dgptgmMirOQPDkLyZOzkDwz
+        C2HvAkaWVYxiqQXFuempxUYFhsiRvYkRnLC1XHcwTn77Qe8QIxMH4yFGCQ5mJRHe9TP4EoV4
+        UxIrq1KL8uOLSnNSiw8xmgKDfSKzlGhyPjBn5JXEG5oamZkZWJpamJoZWSiJ82rEfU0QEkhP
+        LEnNTk0tSC2C6WPi4JRqYBLyf1W9cWL9khtyZrO8BeZW1W46ri+UsGUWi8M2LYGfFn8/OC8X
+        zz2uLh20+FvhquVHfrq6WaXW3pWICGBc0SVxQPMIU/8iAaFZHM8NCte5zWUXf6Ph331MNMUk
+        pVf994Hc7o8Kl372xLx+vmDTxDl5zE+Tr6wy+du+3O2CT5uEnc9EtWlBAirMIbPCvyXcnHpS
+        nz+gqnRRdcuLRAGbSt8Y2weOsRWCJu8dI+anf0lynBKsoVyVdn9HMqu36MYf35ZaHJu17dWH
+        Jp6lTzy1fx690J0XVHtELTH1Q7nUbo/Za4wn531apblI1if7C9vEjX8E1+cfszbnF6haN/3B
+        JbOtMpt2VPr/6THZccR5pRJLcUaioRZzUXEiAJnLT6phBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsWy7bCSvK7bXYFEg4uLzCxOPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxdekzVotpH34yW3xav4zVYvXiBywWi25sY7K4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LA58HpeveHtc7utl8li85yWTx4RFBxg9vq/vYPP4+PQWi0ffllWMHp83yXm0
+        H+hmCuCM4rJJSc3JLEst0rdL4Mp43DKFtaCJueLF1F/sDYxbmLoYOTkkBEwkjk1aw97FyMUh
+        JLCbUeLsiz52iISkxImdzxkhbGGJ+y1HWCGKnjFKHNjRCJZgE9CWmPZwN1hCRGAKs8Sda0fZ
+        IKp2Mko8+/2KBaSKU8BaYvvVbUBjOTiEBewlXv4TAwmzCKhI7N/2GWwQr4ClxMppu9khbEGJ
+        kzOfgLUyAy14evMplC0vsf3tHGaIixQkfj5dxgpiiwg4SZxc/J4ZokZEYnZnG/MERqFZSEbN
+        QjJqFpJRs5C0LGBkWcUomVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERylWpo7GLev+qB3
+        iJGJg/EQowQHs5II7/oZfIlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhPLEnNTk0t
+        SC2CyTJxcEo1MB188ibtnuCeqweYVERzHkXtLugrkdz5I81n8qqAu7JRr20mprj9L7cNnn3X
+        +/xx7zudPz0cup/LhP08ZSYq/ENk37xN53p1l50MXrH89aU/Ood0Mr4aRctOmHaee9LXklUq
+        dd9ntzBPv30+nmtZ0qFk5ZrCkhC9bY+8iw59Kj90IW/Ro/Wmz1RNk/T/uW6vcouS6zv1/FXG
+        7meKv5+o9x54vFh/Ut2KxIwjV80m58joeddo6V581LiumevraQlVl0238ni8WvYY+96/Gtzy
+        2p314Ef3JwIP1Na8WtVTealikuLOymMs/A4zAmb5SFya1hUkpxdlnlfaevSd/s7THtsZn4hM
+        sEm8mJN42FyP116JpTgj0VCLuag4EQCoRxYvQQMAAA==
+X-CMS-MailID: 20210809074615epcas2p31bf27f9463e33ced845c9767a7a42311
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229
+References: <CGME20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229@epcas2p1.samsung.com>
+        <cover.1628231581.git.kwmad.kim@samsung.com>
+        <b3c18b34-2108-abfa-54ca-096a3eb31318@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-06 at 11:57 +0100, Joao Martins wrote:
-> 
-> On 8/5/21 11:54 AM, Paolo Bonzini wrote:
-> > Accessing guest physical addresses at 0xFFFD_0000_0000 and above causes
-> > a failure on AMD processors because those addresses are reserved by
-> > HyperTransport (this is not documented).  
-> 
-> Oh, but it's actually documented in the AMD IOMMU manual [0] (and AMD IOMMU in linux do
-> mark it as a reserved IOVA region i.e. HT_RANGE_START..HT_RANGE_END). And it's usually
-> marked as a reserved type in E820. At least on the machines I've seen.
-> 
-> See manual section '2.1.2 IOMMU Logical Topology':
-> 
-> "Special address controls in Table 3 are interpreted against untranslated guest physical
-> addressess (GPA) that lack a PASID TLP prefix."
-> 
->  Base Address   Top Address   Use
-> 
->   FD_0000_0000h FD_F7FF_FFFFh Reserved interrupt address space
->   FD_F800_0000h FD_F8FF_FFFFh Interrupt/EOI IntCtl
->   FD_F900_0000h FD_F90F_FFFFh Legacy PIC IACK
->   FD_F910_0000h FD_F91F_FFFFh System Management
->   FD_F920_0000h FD_FAFF_FFFFh Reserved Page Tables
->   FD_FB00_0000h FD_FBFF_FFFFh Address Translation
->   FD_FC00_0000h FD_FDFF_FFFFh I/O Space
->   FD_FE00_0000h FD_FFFF_FFFFh Configuration
->   FE_0000_0000h FE_1FFF_FFFFh Extended Configuration/Device Messages
->   FE_2000_0000h FF_FFFF_FFFFh Reserved
-> 
-> It covers the range starting that address you fixed up ... up to 1Tb, fwiw.
-> 
-> You mark it ~1010G as max gfn so shouldn't be a problem.
-> 
-> [0] https://www.amd.com/system/files/TechDocs/48882_IOMMU.pdf
-> 
-> > Avoid selftests failures
-> > by reserving those guest physical addresses.
-> > 
-> > Fixes: ef4c9f4f6546 ("KVM: selftests: Fix 32-bit truncation of vm_get_max_gfn()")
-> > Cc: stable@vger.kernel.org
-> > Cc: David Matlack <dmatlack@google.com>
-> > Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  tools/testing/selftests/kvm/lib/kvm_util.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > index 10a8ed691c66..d995cc9836ee 100644
-> > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > @@ -309,6 +309,12 @@ struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
-> >  	/* Limit physical addresses to PA-bits. */
-> >  	vm->max_gfn = ((1ULL << vm->pa_bits) >> vm->page_shift) - 1;
-> >  
-> > +#ifdef __x86_64__
-> > +	/* Avoid reserved HyperTransport region on AMD processors.  */
-> > +	if (vm->pa_bits == 48)
-> > +		vm->max_gfn = 0xfffcfffff;
-> > +#endif
-> > +
-> 
-> Not sure if it's worth the trouble having a macro with the same name as AMD iommu like:
-> 
-> #define HT_RANGE_START                (0xfd00000000ULL)
-> #define MAX_GFN			      (HT_RANGE_START - 1ULL)
-> 
-> #ifdef __x86_64__
-> 	/* Avoid reserved HyperTransport region on AMD processors.  */
-> 	if (vm->pa_bits == 48)
-> 		vm->max_gfn = MAX_GFN;
-> #endif
+> How about extending the UFS spec instead of adding a non-standard
+> mechanism in a driver that is otherwise based on a standard?
 
-I guess now that we know that it is documented, it is worth it,
-to remove '== 48' check and add check for an AMD cpu, and add reference
-to this manual.
-
-I am mentioning the 48 bit check because I have seen that AMD just recently
-posted 5 level NPT support, so I guess CPUs which > 48 bit max physical address
-are also probably on horison.
-
-And long term solution for this I guess is to add these areas to a blacklist
-and avoid them.
-
-Best regards,
-	Maxim Levitsky
-
-> 
-> It's a detail, but *perhaps* would help people grepping around it.
-> 
-> Also, not sure if checking against AMD cpuid vendor is worth, considering this is
-> a limitation only on AMD.
-> 
-> 
-> >  	/* Allocate and setup memory for guest. */
-> >  	vm->vpages_mapped = sparsebit_alloc();
-> >  	if (phy_pages != 0)
-> > 
-
+It seems to be a great approach but I wonder if extending for the events
+that all the SoC vendors require in the spec is recommendable.
+Because I think there is quite possible that many of those things are 
+originated for architectural reasons.
 
