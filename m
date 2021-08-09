@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79723E4E53
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B313E4E56
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236417AbhHIVT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:19:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36142 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230056AbhHIVT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:19:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628543975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f5YVhdAcO6l+JL131v6pp68KDpwBPXY9dHoGr3Aj3qU=;
-        b=aoQnqdOXoOnlMwy6uJZSCZ1zV2vm95tmUIh1/U6eyf+tPXJxLP8aRyZmYCR4yzoQ+1FB8P
-        MVZGK6Da5CPSA7kfuqIrdkX1fnCXW2kuUOxmf4NpTs6JABlv/h2EKrnJiyBWokPmRk7A90
-        qEpD6DJSW5AOLX7N6ReCY+EimSzgxo8=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-4UyXUeKhN3-xETnZtCE5Eg-1; Mon, 09 Aug 2021 17:19:33 -0400
-X-MC-Unique: 4UyXUeKhN3-xETnZtCE5Eg-1
-Received: by mail-qk1-f197.google.com with SMTP id p14-20020a05620a22eeb02903b94aaa0909so1569475qki.15
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:19:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=f5YVhdAcO6l+JL131v6pp68KDpwBPXY9dHoGr3Aj3qU=;
-        b=Fjiqp2AfC9i6y3hOEaeE4LpIvSQvid9x7GtVwhGQNWLbh/3ReVYR1GbIT0lFlOWNii
-         suTpseeKMdZPDQRQ6kyzYvToUk+W77uFdLnCqBUWFE0CPHktzwIRNY/Yh7VK8SSKzwOz
-         StGNsYERZjUro2GXje7R9om06AbAiboCATolTUFJuX71ORsiDQ9/EEfFRUagIbJANM/K
-         QhAmifU398jYi4gNpqviNBQwnjyyRSpK2PtsCx+x7QHWxzN0IHFhsW5Lpl+PmBRLNx/F
-         5Yd6849BS7tlJd4rxZozIVgzoaaz8hUc//NMwle8ijejztRfFnu8J60/2kn+tIcpkMO4
-         UtKw==
-X-Gm-Message-State: AOAM533Wyz5A6xKzuOZCfCWepk2gPChX0fKl8JHZrHnpzCHOCn6sFMaW
-        4nsjR9+/7MyWf/zCPPFVbTvT+NWboCE+w/4yiepMWnQclcjf1NHi7b2mhL70D7OVbR1DMqcotEm
-        SF+Wv4HwZ+KCSAl6AEOY/GHKl
-X-Received: by 2002:ac8:4743:: with SMTP id k3mr21805512qtp.124.1628543973576;
-        Mon, 09 Aug 2021 14:19:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMv6D5mkTgs9VqqyMzS/viI7LG43ru1BwIUMuzxkPVULikVpRvSTJFN9CYAqWG9biHqErsLg==
-X-Received: by 2002:ac8:4743:: with SMTP id k3mr21805502qtp.124.1628543973395;
-        Mon, 09 Aug 2021 14:19:33 -0700 (PDT)
-Received: from localhost.localdomain ([2601:184:4180:af10::540e])
-        by smtp.gmail.com with ESMTPSA id j2sm7245809qtn.46.2021.08.09.14.19.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 14:19:32 -0700 (PDT)
-Subject: Re: [PATCH v2] vm_swappiness=0 should still try to avoid swapping
- anon memory
-To:     Alexey Avramov <hakavlad@inbox.lv>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, hannes@cmpxchg.org,
-        aquini@redhat.com, shakeelb@google.com, llong@redhat.com,
-        mhocko@suse.com
-References: <20210807022129.8842-1-npache@redhat.com>
- <20210807151424.76b4ee3a@mail.inbox.lv>
-From:   Nico Pache <npache@redhat.com>
-Message-ID: <c8de174f-751e-0c2a-3fda-0896e42583e9@redhat.com>
-Date:   Mon, 9 Aug 2021 17:19:31 -0400
+        id S234506AbhHIVVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:21:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:41270 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229739AbhHIVVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 17:21:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2705D6D;
+        Mon,  9 Aug 2021 14:21:26 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1DEB3F40C;
+        Mon,  9 Aug 2021 14:21:25 -0700 (PDT)
+Subject: Re: [PATCH 2/3] PCI: brcmstb: Add ACPI config space quirk
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
+        lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210809203323.GA2184624@bjorn-Precision-5520>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <e3d3394d-c241-77f7-e40a-b14726cc0063@arm.com>
+Date:   Mon, 9 Aug 2021 16:21:21 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210807151424.76b4ee3a@mail.inbox.lv>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210809203323.GA2184624@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 8/7/21 2:14 AM, Alexey Avramov wrote:
->> vm_swappiness=0 should still try to avoid swapping anon memory
-> Swapping with swappiness=0 depends on vm.watermark_scale_factor.
-> Decrease vm.watermark_scale_factor to avoid swapping and get OOM,
-> and increase vm.watermark_scale_factor to get successful swapping 
-> even with swappiness=0.
->
-> Maybe I misunderstood you and you are solving some new problem? 
+On 8/9/21 3:33 PM, Bjorn Helgaas wrote:
+> On Mon, Aug 09, 2021 at 02:48:17PM -0500, Jeremy Linton wrote:
+>> Hi,
+>>
+>> On 8/9/21 12:42 PM, Bjorn Helgaas wrote:
+>>> On Fri, Aug 06, 2021 at 09:55:27PM -0500, Jeremy Linton wrote:
+>>>> Hi,
+>>>>
+>>>> On 8/6/21 5:21 PM, Bjorn Helgaas wrote:
+>>>>> On Thu, Aug 05, 2021 at 04:11:59PM -0500, Jeremy Linton wrote:
+>>>>>> The PFTF CM4 is an ACPI platform that is following the PCIe SMCCC
+>>>>>> standard because its PCIe config space isn't ECAM compliant and is
+>>>>>> split into two parts. One part for the root port registers and a
+>>>>>> moveable window which points at a given device's 4K config space.
+>>>>>> Thus it doesn't have a MCFG (and really any MCFG provided would be
+>>>>>> nonsense anyway). As Linux doesn't support the PCIe SMCCC standard
+>>>>>> we key off a Linux specific host bridge _DSD to add custom ECAM
+>>>>>> ops and cfgres. The cfg op selects between those two regions, as
+>>>>>> well as disallowing problematic accesses, particularly if the link
+>>>>>> is down because there isn't an attached device.
+>>>>>
+>>>>> I'm not sure SMCCC is *really* relevant here.  If it is, an expansion
+>>>>> of the acronym and a link to a spec would be helpful.
+>>>>>
+>>>>> But AFAICT the only important thing here is that it doesn't have
+>>>>> standard ECAM, and we're going to work around that.
+>>>>
+>>>> I will reword it a bit.
+>>>>
+>>>>> I don't see anything about _DSD in this series.
+>>>>
+>>>> That is the "linux,pci-quirk" in the next patch.
+>>>
+>>> The next patch doesn't mention _DSD either.  Is it obfuscated by
+>>> being inside fwnode_property_read_string()?  If so, it's well and
+>>> truly hidden; I gave up trying to connect that with ACPI.
+>>
+>> Right, the fwnode stuff works as a DT/ACPI abstraction for reading values
+>> from firmware tables. In this case the ACPI definition looks something like:
+>>
+>> Device(PCI0) {
+>> ...
+>>    Name (_DSD, Package () {
+>>    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+>>      Package () {
+>>      Package () { "linux-pcie-quirk", "bcm2711" },
+>>    }
+>>    })
+>>
+>> ...
+>> }
+>>
+>> Which explains a bit of why the underlying code is a bit uh... complicated.
+> 
+> Wow, that's ... special.
+> 
+> I think I would include "ecam" or something in the name.  There might
+> be a variety of quirks, e.g., "P2PDMA allowed between root ports",
+> that could reasonably fit under "linux-pcie-quirk".
+> 
 
-The problem is new; however, the two workloads that are now running into this issue are not new (one is as old as RHEL5).
+I think I mentioned "linux-ecam-quirk-id" in the bit with Rob. How is that?
 
-Sorry the issue was attributed to the wrong commit in my V1/V2 posting. This may have caused some confusion. The actual commit to blame is 170b04b7ae49 ("mm/workingset: prepare the workingset detection infrastructure for anon LRU"). I will be posting my V3 soon. It has a much better commit log and fixes a issue that was present in my V2.
+I think the description would be something roughly: MCFG oem id override 
+string which selects a platform specific ECAM accessor quirk.
 
-
-This new change allows for challenging the anon memory at a much greater rate. I believe this is ok since it will cause less trashing; however, it may also be the case that the user wants to avoid paying the cost of writing the anon to swap, and would rather throttle the page reads (like has been the case since at least rhel5).
-
-
-Hopefully my V3 clears up a lot of the questions asked, and my motivations for these changes is more clear.
-
-
-Cheers!
-
--- Nico
-
+Thanks,
