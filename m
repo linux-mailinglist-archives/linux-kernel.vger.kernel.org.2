@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84A13E46CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DE23E46CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhHINki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:40:38 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:38628 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbhHINkg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:40:36 -0400
-Received: by mail-vs1-f41.google.com with SMTP id t29so10043738vsr.5;
-        Mon, 09 Aug 2021 06:40:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AjHjg/Z7oYOXjhtSSz+wbVAse1L0K1SEAzZEovVP9hw=;
-        b=WSXL+kp+93fOKM5M6pGt9qTXekQi0OZXno3FOeuJRo42AGbBP01ZQQ1htWt06qnjyC
-         BSkp47ZyyljH8grLxWl7vTMreQu0kxFaEMrGENmTTe/OuCbWO3Bs6DGpoh1q1oC+gwRO
-         /MKhjauqN1ZlOsR/oHqKnNn25F6PT4dnXKEEgZ08t1yvrkJl16xC3DsJXQvjwxKa2kTp
-         Xl/AgGTfr9kd9WWy+hAHcy0DuZp+AwJaBxvlqUhAdgnHFYJkPJ3UdZnMNtozv8BHAKmm
-         jYzSK84J47ceqk+LR2HDp1TZS7De+9FMi7mA7ml5oJDK15cKYl5r16DBGrW8RTCJTcDZ
-         BIwQ==
-X-Gm-Message-State: AOAM530kKV1fy6xrGtURGCW3N2KEICgftilJ43fakEJ19a4DS1aZOut6
-        vlH2sP6p8rsOKInPR3GCgkZ4HhIuT5AqUB41pLw=
-X-Google-Smtp-Source: ABdhPJxYts/o3g7GY6Nn1JTaFCfK/olzu02pgKgcaRpmtI81Tcz0qlR4g3KjlXZF+iOfB0+PkDYWIgmnT/hlOB9LvQo=
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr8882309vsk.40.1628516415894;
- Mon, 09 Aug 2021 06:40:15 -0700 (PDT)
+        id S233640AbhHINke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:40:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:32974 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhHINke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:40:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 751486D;
+        Mon,  9 Aug 2021 06:40:13 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D5783F718;
+        Mon,  9 Aug 2021 06:40:12 -0700 (PDT)
+Subject: Re: [PATCH v3 25/25] iommu: Allow enabling non-strict mode
+ dynamically
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
+        iommu@lists.linux-foundation.org, rajatja@google.com,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1628094600.git.robin.murphy@arm.com>
+ <22b044263f69e2bfe404c4379a435005ea58b3e2.1628094601.git.robin.murphy@arm.com>
+ <20210809124931.GA1097@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <283ba58e-0257-8785-d0e6-eb96ab169e35@arm.com>
+Date:   Mon, 9 Aug 2021 14:40:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
- <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org> <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
- <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org> <CAM43=SO03vCzo4LiwSFJyNbWdVXu_wu1gdm5wzi2ArsWShCqqA@mail.gmail.com>
-In-Reply-To: <CAM43=SO03vCzo4LiwSFJyNbWdVXu_wu1gdm5wzi2ArsWShCqqA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Aug 2021 15:40:04 +0200
-Message-ID: <CAMuHMdUADRtNrVsJZFdymOoGe8LNEg=x2PtzRVJhh0rcyLpHoQ@mail.gmail.com>
-Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on m68k/aranym
-To:     Mikael Pettersson <mikpelinux@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        stable <stable@vger.kernel.org>, Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210809124931.GA1097@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC Mike
+On 2021-08-09 13:49, Will Deacon wrote:
+> On Wed, Aug 04, 2021 at 06:15:53PM +0100, Robin Murphy wrote:
+>> Allocating and enabling a flush queue is in fact something we can
+>> reasonably do while a DMA domain is active, without having to rebuild it
+>> from scratch. Thus we can allow a strict -> non-strict transition from
+>> sysfs without requiring to unbind the device's driver, which is of
+>> particular interest to users who want to make selective relaxations to
+>> critical devices like the one serving their root filesystem.
+>>
+>> Disabling and draining a queue also seems technically possible to
+>> achieve without rebuilding the whole domain, but would certainly be more
+>> involved. Furthermore there's not such a clear use-case for tightening
+>> up security *after* the device may already have done whatever it is that
+>> you don't trust it not to do, so we only consider the relaxation case.
+>>
+>> CC: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>>
+>> ---
+>>
+>> v3: Actually think about concurrency, rework most of the fq data
+>>      accesses to be (hopefully) safe and comment it all
+>> ---
+>>   drivers/iommu/dma-iommu.c | 25 ++++++++++++++++++-------
+>>   drivers/iommu/iommu.c     | 16 ++++++++++++----
+>>   drivers/iommu/iova.c      |  9 ++++++---
+>>   3 files changed, 36 insertions(+), 14 deletions(-)
+> 
+> I failed to break this, so hopefully you've caught everything now.
+> 
+> Only thing I wasn't sure of is why we still need the smp_wmb() in
+> init_iova_flush_queue(). Can we remove it now that we have one before
+> assigning into the cookie?
 
-On Mon, Aug 9, 2021 at 3:32 PM Mikael Pettersson <mikpelinux@gmail.com> wrote:
-> On Mon, Aug 9, 2021 at 3:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > On Sun, 8 Aug 2021, Mikael Pettersson wrote:
-> > > On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > > > On Sat, 7 Aug 2021, Mikael Pettersson wrote:
-> > > > > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
-> > > > > 5.10.47 to 5.10.56, and the new kernel failed to boot:
-> > > > >
-> > > > > ARAnyM 1.1.0
-> > > > > Using config file: 'aranym1.headless.config'
-> > > > > Could not open joystick 0
-> > > > > ARAnyM RTC Timer: /dev/rtc: Permission denied
-> > > > > ARAnyM LILO: Error loading ramdisk 'root.bin'
-> > > > > Blitter tried to read byte from register ff8a00 at 0077ee
-> > > > >
-> > > > > At this point it kept running, but produced no output to the console,
-> > > > > and would never get to the point of starting user-space. Attaching gdb
-> > > > > to aranym showed nothing interesting, i.e. it seemed to be executing
-> > > > > normally.
-> > > > >
-> > > > > A git bisect identified the following commit between 5.10.52 and
-> > > > > 5.10.53 as the culprit:
-> > > > > # first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
-> > > > > mm/userfaultfd: fix uffd-wp special cases for fork()
-> > > > >
-> > > >
-> > > > That commit appeared in mainline between v5.13 and v5.14-rc1. Is mainline
-> > > > also affected? e.g. v5.14-rc4.
-> > >
-> > > 5.14-rc4 boots fine. I suspect the commit has some dependency that
-> > > hasn't been backported to 5.10 stable.
-> > >
-> >
-> > On mainline, 9e1cf2d1ed3 is known as commit 8f34f1eac382 ("mm/userfaultfd:
-> > fix uffd-wp special cases for fork()").
-> >
-> > There are differences between the two commits that may be relevant. I
-> > don't know.
-> >
-> > If you checkout 8f34f1eac382 and if that works, it would indicate either
-> > missing dependencies in -stable, or those differences are important.
-> >
-> > OTOH, if 8f34f1eac382 fails in the same way as linux-5.10.y, it would
-> > indicate that -stable is missing a fix that's present in v5.14-rc4.
->
-> My initial bisect was wrong. I tried reverting 8f34f1eac382 from
-> 5.10.57 but that made no difference, so I re-ran the git bisect with
-> all known good points pre-marked. This landed on:
-> # first bad commit: [ce6ee46e0f39ed97e23ebf7b5a565e0266a8a1a3]
-> mm/page_alloc: fix memory map initialization for descending nodes
->
-> Reverting _that_ from 5.10.57 does unbreak that kernel.
->
-> Sorry about the confusion.
+Mostly because I failed to spot it, I think :)
+
+Indeed now that we don't have any callers other than iommu_dma_init_fq() 
+to worry about, I don't think that one matters any more. It would if 
+were testing cookie->iovad->fq directly as our indicator instead of 
+cookie->fq_domain, but then we'd still need the new barrier to ensure 
+iommu_dma_flush_iotlb_all() properly observes the latter, so we may as 
+well rely on that everywhere and let it fully replace the old one.
+
+Thanks,
+Robin.
