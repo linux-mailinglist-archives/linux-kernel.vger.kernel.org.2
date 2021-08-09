@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B37A3E46F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFED23E46F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbhHINyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234378AbhHINyC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:54:02 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37A9C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 06:53:41 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id a8so28059343pjk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 06:53:41 -0700 (PDT)
+        id S234457AbhHINzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:55:47 -0400
+Received: from mail-bn7nam10on2116.outbound.protection.outlook.com ([40.107.92.116]:51008
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233420AbhHINzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:55:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S8ODhhOZKq36c8koKYd+LF25xvddTOJAkb9b+fQ7JE2nWBWXXxXBy6D6zMatKa1WXt+RyOE1/6T0llDxq1qcCH7AB0DovuIAHq4VUbKN5+EyFhSeAigcLlXxkRhvjM2r4pOsg9/LEoocaE1JO1UuvsheYTmGHaOgnKpl0yowZsT0akQui8aM66Lp+0vsu8Nmwiyn47tahSxMaqRs4bP+WIUSboG1asD+XzEoFunJYPfg9JniUL67+OZMRQ4dLW7xYZCgwz0q2lyocf9W7H9VUGlwX7rNJy/tYMKGe0bEVT+xrPNWPeyrxcX1XaE/Q2uZ+XfMYKwGLdo2iuuSo53bmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p2E3FlWOBeA+zG+URWCrSVtIAJWthWH72hDNipyfH9Y=;
+ b=B+lA/paRfJsIoPUCWLY0dyo7qbtAqK/H96vNDIEMlVJnmM/vtodpHfWWOyiZFszged1GmlIz3YsI4xJTcSAdWWCaIcCCOR+KL9TBJIjdAyNdSvqzSYJ8qj3KZmZ18iWRctiCxgS1VCf8qkO5QjyPKx5YSCVnNN1PFvJ/+AvzodjOWQvwioBEXzEhohwn4IdIq4RovRIP+mTIORtVUNpTxA6K98iXVtTs4HyXCVHqozoWjbT+EyMnNikbzqeSMiJ3NIrmdf4Bem0M6VF3TbS6LQZIBt4pv+R8KsAcXPSiIEKAP1rNoprO4bBjMag2N2BZd7NYrehiomX23qBUEXZ5jQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=igjzrrI7KDCEN5Sq9FeGpvfW+gTd+27rSugH3w+X1u0=;
-        b=GD3tN2UlbJHNlEM061BQghn6cx8kfgkbi5rdG/KbTvYJzyR+F7QVZfRKd5gCzCfFLt
-         cigY9Hre4inJtamCLE9SyUdtnJ0LgWket3V/43ZDnVTLi/whDlCuLu8jJp4BZgqTABf5
-         27mdntgd4HereoVyVQl/U8prTOhuZMR7r28NJpLgPW2a3JNvUJL/A5nlLIwKHUzdkChv
-         OBu+q/AC3+pXoay0qesJ+CLNGIUPmHntyFK0XLb8oIJVPRrzyd00Ca+cCbpAWEAW1Su0
-         DKXQ+jLWN9xonvQSa0LWRi/g50zNum0cfpfnmIHndSB0duo+hfwrX2kprcvdKDjSvaK9
-         mYdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=igjzrrI7KDCEN5Sq9FeGpvfW+gTd+27rSugH3w+X1u0=;
-        b=Dn5Hpq7UM6yfedgXbqFEncguE048873PeFoiBKVIGYCH2peIK+RmJUwsXM8upnNQ0S
-         d82NI1TZVUghs42fwA9d+u40I3C8OW/1noaYIYQzukVpe9XWn5h47E5jrf/Iybb7dKks
-         tZirjOyst3keikp6YpAp8fKWvBtvTkTayUEF9njURNPiXPsKBVQq1kVbcRyab4IULU9g
-         hwLSlQacDog/qXnioYcYTmSDFgvTOaBRX8A7Lh/mBspqWW0uMEr6Z4LtOa7zJY8RymxW
-         3nR/a6tcx9K/jt910zK9oQOZVg0TWa5UzVzWi6UBaeTTwGH2Kpqvk93akGh6YNxBWh9W
-         bITg==
-X-Gm-Message-State: AOAM531p9MRn37pSfq5fwJ+/Og4cB6GXFO+GJqsYDtAavTcDHD1qQ+RS
-        GwksYi4l0qO27UFrdil2mKevWQ==
-X-Google-Smtp-Source: ABdhPJxVIyLaNWIy8ZJG0JfAI6gamyCwcqcGgMwTnQDs8+RsueH+BbTbg4H9/rgmHiQl+2hudgOPjg==
-X-Received: by 2002:a17:90a:a103:: with SMTP id s3mr25707652pjp.121.1628517221091;
-        Mon, 09 Aug 2021 06:53:41 -0700 (PDT)
-Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id q68sm24005654pgq.5.2021.08.09.06.53.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 06:53:40 -0700 (PDT)
-Subject: Re: [PATCH 0/2] io_uring: bug fixes
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20210808001342.964634-1-namit@vmware.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bc323fb8-5b3d-6268-4a26-c6850eb4fb2f@kernel.dk>
-Date:   Mon, 9 Aug 2021 07:53:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210808001342.964634-1-namit@vmware.com>
-Content-Type: text/plain; charset=utf-8
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p2E3FlWOBeA+zG+URWCrSVtIAJWthWH72hDNipyfH9Y=;
+ b=AJVpK41eLhD5IAavpmjbATAukGPL1Vvk45PwhmQJFj91pLxSYZ3x/sGSsj+PkK0zIwzQFT8AtvHkwtNzYAGDvGhZY3ElAqlUxpsOTbh2iAzJH8y8aMFTc7iZUi6R1AC3nVjwvB2NXsXstTIpBnIsubJWeFJCUljGaKG5gRnT9Iw=
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by MWHPR11MB1552.namprd11.prod.outlook.com (2603:10b6:301:e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Mon, 9 Aug
+ 2021 13:55:21 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::adef:da48:ea32:5960]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::adef:da48:ea32:5960%3]) with mapi id 15.20.4394.021; Mon, 9 Aug 2021
+ 13:55:21 +0000
+From:   Steve Lee <SteveS.Lee@maximintegrated.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "rf@opensource.wolfsonmicro.com" <rf@opensource.wolfsonmicro.com>,
+        "shumingf@realtek.com" <shumingf@realtek.com>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "dmurphy@ti.com" <dmurphy@ti.com>,
+        "jack.yu@realtek.com" <jack.yu@realtek.com>,
+        "nuno.sa@analog.com" <nuno.sa@analog.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
+        "steves.lee.maxim@gmail.com" <steves.lee.maxim@gmail.com>
+Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add support change dsm
+ param name
+Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add support change dsm
+ param name
+Thread-Index: AQHXippclk84bnNRdUe7mfrYo+58kKtmUAmAgAQN46CAAL8DgIAAGj1g
+Date:   Mon, 9 Aug 2021 13:55:21 +0000
+Message-ID: <CO1PR11MB5089FBBFCD3D9046F9FF7BD592F69@CO1PR11MB5089.namprd11.prod.outlook.com>
+References: <20210806080834.16705-1-steves.lee@maximintegrated.com>
+ <20210806110301.GW26252@sirena.org.uk>
+ <CO1PR11MB5089212BFBF03F82AE41E34C92F69@CO1PR11MB5089.namprd11.prod.outlook.com>
+ <20210809122125.GC4866@sirena.org.uk>
+In-Reply-To: <20210809122125.GC4866@sirena.org.uk>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none
+ header.from=maximintegrated.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ce9d3c06-ccb2-4f08-a5a0-08d95b3d5457
+x-ms-traffictypediagnostic: MWHPR11MB1552:
+x-microsoft-antispam-prvs: <MWHPR11MB1552B7341B7DDCCAACB5D73492F69@MWHPR11MB1552.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: O+t7b0zcop0fgyPLIZKB/DkgHK/hmYDaE1qQjhtqExz88X+Kdq1H2h/IsDjMC/VF0xiB6m37BnwfqB0w6ZMVvxto6cE7KD8377BKHmpuPISEH5imP8B4+QPP+Y9pxcNEXQata4fsJinVMhgYyQU24to3RDwaCOTtVOFNrThtAl8BfG6jCLarQIoX1r45Cde9cc5ekk28FQLFAEySmEnOvzs2eeArtU7jTFpyS5yk46Ox74eFG5gf0EkLM2OWlB42eDKSX/7p4ZX3OfBm6h4+kytQIE1exlJxJJ9/jI0T9ql5bobC2MZQcMUi/VxLQ9dRa2hj839fDQoY6o+LNsuY0e4RUby7WZDMJZEQ0iYhll+dk6O9gUs2m7bFCnO2/xEbJtdI8CtPY6yHcya9s4nb3+uTgpPgjwx1PAL2Zw0OMIqHv7rJwlVOyL8h3+fNW7/TDZEMSK83kKSBG8Xk7S1VMn02F2kf0LJKBP/N5B2be3DVbVYH+suOSw5+VHs9FLYYjeTLNI0E/QSl5LhdhCkxIvizxg7FVb+0Q1EdrSMpZbzUxrInRyOkceRXrx1OqS3EuYxfGbfryJNE+e/4aJIALPNWPz+Ys1pAHVTqmFMpVHcbf2zoeNQMvRtYQMEkW3STMq1yowUZm4ijCZKIOXlOPdiEB6KCnMZwQj+5DiP+ImTWlkC0hdhn05KcaMshHvl77lHXe5WwaNh1aNZN6OesYw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39860400002)(396003)(136003)(5660300002)(66946007)(66476007)(66556008)(7416002)(9686003)(4326008)(6506007)(64756008)(76116006)(54906003)(52536014)(66446008)(55016002)(4744005)(38100700002)(71200400001)(7696005)(38070700005)(122000001)(86362001)(8936002)(8676002)(33656002)(26005)(6916009)(186003)(478600001)(2906002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Q/2IcC+O7H5bNYZQySmhfN5o6erKk4ncvjQiu2I6RMLtucnvOdyDN2exdu/0?=
+ =?us-ascii?Q?njq3HGcQXojdg8dbY+QgWQ4e6gNKLMPZmEAGUd6CJIaJEz484pk0oJFKeV81?=
+ =?us-ascii?Q?w5dZR1zpu9wUMRuWExtZL/7VQEefi9F96nH2/mXE7LwhM2u8G3lyH+MEfmA4?=
+ =?us-ascii?Q?Qu/cSkjdiDIWZmRcj43toBMMw73uGxukUniMeLweW69/xzKtIA9fqugEBVnx?=
+ =?us-ascii?Q?Hu7LF0ab9auq41oMlj0Tp//Rz07wL8LwwSnq5d/k4H5aTO5sVduIiXArUb0q?=
+ =?us-ascii?Q?p9Uy0AaZjNNSjuxCr6RqjmKfDMpuoyeZtrR9Ccbclf6KDzhH3FDAikzfJxP9?=
+ =?us-ascii?Q?e5mIQ0e9NMylEqgBMzoxjO8Vlo3TeBjgU41h01v5kX7UzTUsEhIO8TH6RpvB?=
+ =?us-ascii?Q?XlgofOwg9PL1mJCvaUq8ysrYu5T9P0Ezeoas5TeYMlBqfh2LK7Y7pFcLJlca?=
+ =?us-ascii?Q?VaX2u5C0ybDGy5wYQ3sicVzmHUMFrG48emW053Kj0nTHf0Dnc3rE7jzqQJDH?=
+ =?us-ascii?Q?aMUe/5KdZwG9CpZdseuTgU7B4RHh7Bs22l0q15DdLI9nVxIEXAthI3EFG//6?=
+ =?us-ascii?Q?oA1U8e4ZJKhbAGVA0Wr9jRmUL6EE6sBSplwLS3dZOl+/OfELGPBuOBeMfzym?=
+ =?us-ascii?Q?v22H19UCBZu6wD79uLgEAH8Qh04GQoH1Yy/sua6HJH4TYGnsv7QLUGFhHykM?=
+ =?us-ascii?Q?Ab66nvoYrLPgK5+DMWuvfxTOAZi2V0aRXc5c6yUW/MgFfSSZodL4e5IcZ/qn?=
+ =?us-ascii?Q?1pT8p1YuGBX6hX46IhQl+wSbw7UeOmprNyAqhCr+5JYTie7tw5fAd0A+hfdc?=
+ =?us-ascii?Q?lXBc+VCfwkv7JBoxeJt3IjGFtf36WGwCqBKuFmNlydKt/dl3LHGc5KUWGxtC?=
+ =?us-ascii?Q?c+pEY6iQQWiLyxwuk3qmqLVxHbi8z7AeRyE17F40fShyauJVa3BYZKRJOq7d?=
+ =?us-ascii?Q?AthzjW9tadLNktR+1X1efYhCrAOFu2G0BRSy178lib+669PykxSNJ5IUzm/4?=
+ =?us-ascii?Q?LddnnSGuDvB//Wiflm8recgepokn8u/Felz0tpZ5JFXLt+aYg61OZDoHOpG6?=
+ =?us-ascii?Q?vmLrzVwIbi7pz/hoqBVJnymPb3F0/27Ncak22IEigrw2FBFuD+WOUxvn4TeN?=
+ =?us-ascii?Q?r7ByJKuDjymmWJIATAV60SJcFj0hugoFgx8xmoP04AdAKLnWZrcpFJ7hZRvV?=
+ =?us-ascii?Q?G6Fvdy+54ufD7bsv3CQr5urCQZTT73paump3WKNoSL7nBJ3VD/kiYBXUA9Eu?=
+ =?us-ascii?Q?xswt4+TKsOGsXBaAWTi8dk4GF7YydqK+Odl3Ogx/ncmTBKaHH/Qv7crTbqxX?=
+ =?us-ascii?Q?dxw5nErx+FmeXo5JvVJGRA0w?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce9d3c06-ccb2-4f08-a5a0-08d95b3d5457
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 13:55:21.2762
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wQ5NMvM+TJqyjNhIAQjukoFIucHvIGlzVIDBNp8P0io5VUgXgFjIWbkQy6TjEdtKwWHpAtxc/Z1CmGbWsUR3deysa7xBHAryizYuN52Xsz4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1552
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/21 6:13 PM, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> Two small bug fixes. The first fix is for a real issue that encountered
-> on 5.13, which caused my workload not to work with a submission queue.
-> Apparently, on 5.14 it is only a performance issue (i.e., not a
-> functionality issue).
-> 
-> The second fix is for a theoretical issue.
-> 
-> I did not cc stable, as I leave this decision to the maintainer.
+>=20
+> > > This will break anything using dsm_param.bin as the default - why
+> > > make the change?
+>=20
+> >  I'd like to make that as same name with other using SoF project line.
+> > This originally production default is "dsm_param_%s_%s.bin with vendor =
+and
+> product name".
+>=20
+> If you want to add a new filename then that's fine but we shouldn't be br=
+eaking
+> backwards compatibility for a minor reason like that.
 
-Applied, thanks!
-
--- 
-Jens Axboe
-
+  Thanks for reply. I will add new filename not to break backwards compatib=
+ility.
