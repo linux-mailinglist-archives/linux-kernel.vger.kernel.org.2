@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB753E4FEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2D03E4FF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236940AbhHIXJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 19:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
+        id S237023AbhHIXKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 19:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236241AbhHIXJc (ORCPT
+        with ESMTP id S236241AbhHIXKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 19:09:32 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8CCC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 16:09:10 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id e19so31813134ejs.9
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 16:09:10 -0700 (PDT)
+        Mon, 9 Aug 2021 19:10:04 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CDBC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 16:09:42 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id by4so8420998edb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 16:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Bdar2Q57ofXvO2DJTkrAdy3Bmtw3CeKG7qPdudkZRAM=;
-        b=SSYRwXnV4LF/UXsrDDjaIiZX+2JxoEFnuHOna68sVDPBcs2PZZabmjTHoSvmvSCPsa
-         SpGhLcDXxfQsmMgvTN63lIDPabx85VTiwmSFhEzB8U6KBBkwTjMhxvSh0cAckxpiZXSN
-         dG6LjI4jCgLtOrAFaThFf9QOZdXriI5mmX6DZmJcIdPyfenSHFjUIEa3U4Ner0O8PuHi
-         KqXpKXDuGhqmU4qoheQXFCDMY7WTZi083syd/AlVvQclpSZ+4DcEZyUWOXEGXu0k2tS2
-         QTxxUmvHVK9aWr6/VjPHn9ViAO6Na8JKb8o7NF6WZr3pn6NfB6bye36slt9AV8hBVAED
-         ediQ==
+        bh=J3zFEfwSvu2lCFCDnTYZyC6wVPdpg5L3usB0NyuTAPM=;
+        b=ofcFqG/XsKzr6mordKLjkSW568uPpGyt7ViMBd0W+9i5FVzj2z/NWmcYwIuXKk2myW
+         FzQTKHMKyq19ViIOgZ7fSvyo5iSs8IvhFFMnPmViEEajXfqZ00E9bHu3cbaqATJOOorr
+         /dG9Wryld0zNzWJvHPcpd9jXqZMO2DeYTQ0R/5No/uZ09W3hnlrityWkJqi1v0UrZyEv
+         K8eHYFtBBJq78hzQ3wfkp1IzWSwOBEggdxLmw0HvSACGjRySLOOA7R7IUW6VJLpeKITH
+         TXVKBBHgv0TY2mNOARD4U06P9jQdGvFnegNkYCa0I3FpseJIWD9OkpeO6KeAjDmd3LKp
+         YPGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Bdar2Q57ofXvO2DJTkrAdy3Bmtw3CeKG7qPdudkZRAM=;
-        b=VOlAnRxYnXK/UitIDBq0paBN9fdulJSx7NJXapf1FaTLED0XKwQvcZg1FGm+ncmTXr
-         1vtJ3arR9EikxKgQwmkBxy8dmmy5ebcZbhmfycdkXEGV4BfZNLyoMpS2ZPJklS97Fhsh
-         PxfygJzaOM6zEPfek9quk62vUgVni3AJ6eXPsEyzle6ZtPj0i9I7axWhQdHCce7GP8Ig
-         A4Hn7o6z/WszJVzwDatCqFtb6mTdeJOYrMZGauAoqMNrtJ6XqDi3JzmPBOTexbYsL+Dt
-         MChxBTThdWQjWylPQFWrST0fMLIts4xLipd/Uo00PeSzLhx+NTfEG2dl2DHL4drjlvwj
-         PuOg==
-X-Gm-Message-State: AOAM531+F3nGIE365MPG4DF7uVgju5fFTWbLCuwPW8lBpwvy/m+8+sq6
-        etyehOtYtEl3DjvSeX0jsAq2pTCQqfdBCicBxzY=
-X-Google-Smtp-Source: ABdhPJwVqW/NcTYgPpaHsjo4bSpu1VkSxs7JX/IgQM4rBW2xBSXEu3650B+wAQskkEU+80O5cqOjqE3/+FX5Xo5Ko6U=
-X-Received: by 2002:a17:906:7f16:: with SMTP id d22mr24843079ejr.135.1628550549136;
- Mon, 09 Aug 2021 16:09:09 -0700 (PDT)
+        bh=J3zFEfwSvu2lCFCDnTYZyC6wVPdpg5L3usB0NyuTAPM=;
+        b=N8knwlZg/Srwp+n5znJ3pl3R6zu06Tl33Twj1ZEWwTucm4tjyAGWVn4YudiaRbkqkQ
+         pfXMRRZKIFlma+OkHLn/RNGvo3nxyOlOrIMB4KxrYf78SRAYSWNKuD/E8L9sRFfxl/LN
+         arS5rMQ6OBq6BHN1QjXplh0xp9k81jX77yDtxsSGAqWUsSwmwKlG2liCkptlyQ3VZGjU
+         aSai7Ojco0FdQQsAtcjfEQ5NLiT6qyAPXu+AEkR+jx7X8DdleKVH51R56izKfCeGUbdL
+         75Y8eMzlaRveowA+dRsUpCmcadElULH2BKz+vITmvrtIQRRugElWAftOlsqQ8NmLsOed
+         GHCw==
+X-Gm-Message-State: AOAM530zImEkTwAC4WnNlldTWsiWJgxygDhUlY2e9Cn43jl4oP2YqexN
+        V/DC4P6bE/80YHopKjymTg5Gtf5ATx5jzMqY0hs=
+X-Google-Smtp-Source: ABdhPJy/CMRTJAfOdtkU+EEdTvKZPaa/ebdH5NXqOStLIC0QCIxSTiBhhnKC/nsbV8PxtZW3M2nibADYjuvi/Z1qrFY=
+X-Received: by 2002:a05:6402:28b0:: with SMTP id eg48mr902528edb.241.1628550581620;
+ Mon, 09 Aug 2021 16:09:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210809143049.3531188-1-mudongliangabcd@gmail.com> <YRFKlOvXKKQX9vr6@kroah.com>
-In-Reply-To: <YRFKlOvXKKQX9vr6@kroah.com>
+References: <20210809143049.3531188-1-mudongliangabcd@gmail.com>
+ <20210809143049.3531188-2-mudongliangabcd@gmail.com> <YRFKnvN+jUoOaCiA@kroah.com>
+In-Reply-To: <YRFKnvN+jUoOaCiA@kroah.com>
 From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 10 Aug 2021 07:08:42 +0800
-Message-ID: <CAD-N9QXFWr2APy294T6v+16d8SXtUuLEoPvZTw1ZDwfQ+D4kFg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ipack: tpci200: fix many double free issues in tpci200_pci_probe
+Date:   Tue, 10 Aug 2021 07:09:15 +0800
+Message-ID: <CAD-N9QXn3K9J+pXtTW08_ty0m9AbWWdWYppnbezBTRRtCNKGWw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] ipack: tpci200: fix memory leak in the tpci200_register
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
         Jens Taprogge <jens.taprogge@taprogge.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
         Aditya Srivastava <yashsri421@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Zhouyang Jia <jiazhouyang09@gmail.com>,
         industrypack-devel@lists.sourceforge.net,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -67,27 +69,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Aug 9, 2021 at 11:32 PM Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> On Mon, Aug 09, 2021 at 10:30:26PM +0800, Dongliang Mu wrote:
-> > The function tpci200_register called by tpci200_install and
-> > tpci200_unregister called by tpci200_uninstall are in pair. However,
-> > tpci200_unregister has some cleanup operations not in the
-> > tpci200_register. So the error handling code of tpci200_pci_probe has
-> > many different double free issues.
+> On Mon, Aug 09, 2021 at 10:30:27PM +0800, Dongliang Mu wrote:
+> > The error handling code in tpci200_register does not free interface_regs
+> > allocated by ioremap and the current version of error handling code is
+> > problematic.
 > >
-> > Fix this problem by moving those cleanup operations out of
-> > tpci200_unregister, into tpci200_pci_remove and reverting
-> > the previous commit 9272e5d0028d ("ipack/carriers/tpci200:
-> > Fix a double free in tpci200_pci_probe").
+> > Fix this by refactoring the error handling code and free interface_regs
+> > when necessary.
 > >
 > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
+> > Fixes: 43986798fd50 ("ipack: add error handling for ioremap_nocache")
 > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 > > ---
-> > v1->v2: revise PATCH 2/3, 3/3, not depending on PATCH 1/3; move the
-> > location change of tpci_unregister into one separate patch;
+> >  drivers/ipack/carriers/tpci200.c | 24 ++++++++++++++----------
+> >  1 file changed, 14 insertions(+), 10 deletions(-)
 >
-> Also needs to go to the stable trees, right?
+> Also for stable?
 
-Yes, this needs to go to the stable trees.
-
->
+Yes, it should.
