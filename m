@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191AD3E4F84
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552953E4F86
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236871AbhHIWvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:51:46 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:54090 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233266AbhHIWvn (ORCPT
+        id S236880AbhHIWwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233266AbhHIWwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:51:43 -0400
-Received: by mail-il1-f198.google.com with SMTP id y14-20020a056e02128eb0290222f480bab8so469918ilq.20
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 15:51:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=ar7510uPsZS2CDiJZAUudQtRn9csYi/4vAIPTZ+i4Us=;
-        b=VFhhb3S6rzZiKPu9MFCJHwJMYDmcKj3zH4ygQZKDqM6PsopAdnkecCII8Lgw1vpNN3
-         2qyV9mXuIrHn/z5EoVO2Q/g0Y2Zl7KmBQn0/O0DONnj5w14v4MJGbrpq0xkdRZ4GBaJJ
-         GHUFXMdRpblHte52Yi3VLYij69LBOiLQ95qDESSYwHbDbd6cJMn5MVA4lzGS2LWQQEAG
-         XD5b43VA1J27nGXO5NtWY9Jf9TTCQTdu6AjhLnNnMp9AToX0ZdqpHgeoOq5yJ49Df99t
-         AM7kMUsgi2f9dnX0qUIrSyzxepRCJc8y8kfG3rZIodjQxnioF1aUig8PJx3hxxP+d0Ih
-         r0cA==
-X-Gm-Message-State: AOAM532+BjX3aNGN+jVZjwBUGfYGO7B9aygyUuMjCKOD/xqDLFxcDGVk
-        vX6Qtz2S6sEApSHRv23LhNI1bGyYIvK4n71xNyaLpMI7280K
-X-Google-Smtp-Source: ABdhPJyWwg+XodjDCutfk8UULLv3kKlpbBwiMBoGdg54lYYRl5oHV1U1ybvHFx8fU08YtLmrSlffKjJIMM0khfAjLer/mhqw+sMi
+        Mon, 9 Aug 2021 18:52:11 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B9AC0613D3;
+        Mon,  9 Aug 2021 15:51:50 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkBCl33j2z9sX3;
+        Tue, 10 Aug 2021 08:51:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628549507;
+        bh=4Cdb0uiDw+lIgSZAAg7qkBMBMNPEC0n2lx0cA61vEQU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=harOZFNcpgkO2jJh64zFlWCbewHGWLX1FUhyWRsfFMAi00dgpD8fsGl2nIdGM4oMo
+         BDSzvbP6GkxHA1qH7QCyCdftzZg3f++TxZvBdwlhZ2cgwfrQPEzUKlF/yIYupzdrij
+         xrpm9jE6q3w0onYkJQhaEV3YYCiD/flvhay4rbAjY/PkA5Mn2cRaYQcXraxTSBrIYu
+         h6TVw3sfS8uMlspVqX7/Ma5qLZLxzv84PA2+y6ccQJFZkIEutIEyNyqZpNJz/92YsR
+         GOtK4kH+5l9p2WGldCSWHWy2Ov0+z69FznOfQ25nmwTWlGFxch8G5Bsi3ArJkmTwhY
+         xWnG5AcD+rH0Q==
+Date:   Tue, 10 Aug 2021 08:51:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the cgroup tree
+Message-ID: <20210810085146.0b9ec2b5@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8ec6:: with SMTP id q189mr79318iod.169.1628549482694;
- Mon, 09 Aug 2021 15:51:22 -0700 (PDT)
-Date:   Mon, 09 Aug 2021 15:51:22 -0700
-In-Reply-To: <YRGxNaVc1cGsyd0Y@casper.infradead.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006a51e205c928399f@google.com>
-Subject: Re: [syzbot] kernel BUG in find_lock_entries
-From:   syzbot <syzbot+c87be4f669d920c76330@syzkaller.appspotmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, bp@alien8.de, frederic@kernel.org,
-        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, masahiroy@kernel.org,
-        mingo@redhat.com, npiggin@gmail.com, pbonzini@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rostedt@goodmis.org, seanjc@google.com, sedat.dilek@gmail.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        will@kernel.org, willy@infradead.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/lPe5o_ueYvGMmroVONd4dSr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Aug 09, 2021 at 02:02:22PM -0700, syzbot wrote:
->> The issue was bisected to:
->> 
->> commit 997acaf6b4b59c6a9c259740312a69ea549cc684
->> Author: Mark Rutland <mark.rutland@arm.com>
->> Date:   Mon Jan 11 15:37:07 2021 +0000
->> 
->>     lockdep: report broken irq restoration
->
-> That's just a bogus bisection.  The correct bad commit is 5c211ba29deb.
->
->> kernel BUG at mm/filemap.c:2041!
->> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
->> CPU: 1 PID: 24786 Comm: syz-executor626 Not tainted 5.14.0-rc4-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> RIP: 0010:find_lock_entries+0x10d5/0x1110 mm/filemap.c:2041
->
-> This patch should fix it.  It's not just removing the warning; this
-> warning duplicates the warning a few lines down (after taking the
-> lock).  It's not safe to make this assertion without holding the page
-> lock as the page can move between the page cache and the swap cache.
->
-> #syz test
+--Sig_/lPe5o_ueYvGMmroVONd4dSr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-want 2 args (repo, branch), got 4
+Hi all,
 
->
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index d1458ecf2f51..34de0b14aaa9 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2038,7 +2038,6 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
->  		if (!xa_is_value(page)) {
->  			if (page->index < start)
->  				goto put;
-> -			VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
->  			if (page->index + thp_nr_pages(page) - 1 > end)
->  				goto put;
->  			if (!trylock_page(page))
+In commit
+
+  f944e005aa9b ("cgroup/cpuset: Fix violation of cpuset locking rule")
+
+Fixes tag
+
+  Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition)
+
+has these problem(s):
+
+  - Subject has leading but no trailing quotes
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lPe5o_ueYvGMmroVONd4dSr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmERsYIACgkQAVBC80lX
+0GzMmggAjb5vf1P4CmaHXIv7z2wqt+dogR2l9ijI5jSgwyO3L4R9sL7DPlj+Vkt4
+W47GW0DENGkKCfyiPNfi383ISz2IrbsOPTPNIsuPT8g00fJhKhZ3AnkFWqd/pU8K
+as9Puos++Yl9w6eYSS3NlV6tl1D/x/lwnPHQPR2pWMON3MEW8rUP/ElTkQADMoEh
+8pNB7VW8CdNcvjn7McVpS2fg8B8AVIYIQBs5kTjgNYZEieY7JoWmiCrgJ0iLGP5U
+TUSX9vNakmX7N6y7tIYYeqnnpBTiaq4p39qyaNOSmJUAZzwqN2hGRczvYts2y5Wx
+B4CApksX+3Dz1PJsLQEnxyxDjJloRw==
+=o3xj
+-----END PGP SIGNATURE-----
+
+--Sig_/lPe5o_ueYvGMmroVONd4dSr--
