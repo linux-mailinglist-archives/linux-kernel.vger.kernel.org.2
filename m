@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862DA3E4598
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7783E45B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234893AbhHIM2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 08:28:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233445AbhHIM2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 08:28:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FA2D60F35;
-        Mon,  9 Aug 2021 12:28:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628512110;
-        bh=JGSvrCfKRW/1RSWBpEUr4Y07/7eMV0KoLH44cKquAlw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Hckv4uIKArYhNLFa1L8Le/ghZAxLW8TUJDZ/QjBn0Jn8SPqfcNR4J541QvqDxyPzA
-         n5AlygZ9kH/q+9s5xGZuEK90R6k34pMG2EG7sp5dxy6bzO+0ltK/pOrUrqCsaD9zsc
-         gS0yzVw5aszJ7Vh9DNDEhP18CiumiK04NA8au8MvgntwbxmkzYNAqgcj8qAiYRDLzl
-         UG5mWLNbLLSxv4RynAhW+EY7JKG1aeGHydqDkc+NmDB1/aRPqUbN4aeqMovS/SMptd
-         Xib/cro1painKGu1/6J+Gxji7eeCEqemnkd/KcnP3IC7es4k393vKvDjmRNh0BZezM
-         2cC2+xDfE5TNw==
-Subject: Re: [PATCH] drivers: interconnect: sdm660: Fix up erroneous paths
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210728222033.52500-1-konrad.dybcio@somainline.org>
-From:   Georgi Djakov <djakov@kernel.org>
-Message-ID: <7844e0fc-3cb7-6653-217b-e615ef7a15ac@kernel.org>
-Date:   Mon, 9 Aug 2021 15:28:26 +0300
+        id S234895AbhHIMiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 08:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232991AbhHIMiO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 08:38:14 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7A9C0613D3;
+        Mon,  9 Aug 2021 05:37:53 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id l11so4540193plk.6;
+        Mon, 09 Aug 2021 05:37:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SRRfOMGRdWmSmqR/jCwDTPGfm5oA2KrQYIknx7HPYGM=;
+        b=I02Ftysn1jyRMA2SJeLr+43VRYWurwqgoEHDJmLgc1b1Bd0xeN53XOIO9KbKJr9Yfi
+         Dk7wx7icdBf8R9qnHBk3xNey7IMzRYLbggFRZNTbiL8HhqPNw6KT789G43ca4XxfaKxT
+         KEMQHvo8riJOkZAwS+gskQLWsGhlCjCWTJKw8ix3nn8YR6mUd80sm/Jc6Kx2rCWXAoHt
+         +nhO5BJabIqH9RS952X36lHKN6WISl/Wire8zRq8iy/Iud9RX+V3IiTHdBDFlrg+Gfa8
+         dOLTjfR79K5QngmF9PGd3kVrgV993G4v+kH65wrzKdivXYj8rHZaWYZ0oq336p/AyUIm
+         joqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SRRfOMGRdWmSmqR/jCwDTPGfm5oA2KrQYIknx7HPYGM=;
+        b=o+XJP8KtK2uq/x1eIEKPSIEO5zZ97DFHfQYoHOd3jvrMfXhnTe8v6vsQYxBjdgBX3V
+         8H6KAsSOyNxKvk1ZQtwmnatliCZTWeFpFZnB8kl85eotefajeY3OAp3sJlaq0p2cXUct
+         JHsMkN+7bouIu7gi1Ruuvl3QCBOPvqmk9XsDYzn0bAN3m/E/gJUXrTTCSYz/3aAu9kRk
+         +yUJYq122Re7D/GUmYt0Uieqr3C3QEMGN6BaJ2rXcHUZtpSzrpZjLhCf/NNtXYnKDWhe
+         XQzFYg1kY8eYNWjmjDqlyUtqY0vsZzP4K2fhvKUrte5mxmXNdhSt3BBk4C43P3gk+h1T
+         eqTw==
+X-Gm-Message-State: AOAM532JaPzF+QFKYVgmrCLeV7D93LQHrEBreHm5cxUJcf7EWRDVLIv5
+        bpA7zryGIZtaZnG2M/kMjjk=
+X-Google-Smtp-Source: ABdhPJzZQp34WPlUWoCcv5TWsKqOi0aBXJs0mxrtXU6YexojYGaftCiT8EJK3MwGkNBMYo1lUU97Rg==
+X-Received: by 2002:a05:6a00:bd3:b029:3c6:9c64:9771 with SMTP id x19-20020a056a000bd3b02903c69c649771mr23237597pfu.78.1628512673418;
+        Mon, 09 Aug 2021 05:37:53 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id e35sm22382177pjk.28.2021.08.09.05.37.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 05:37:52 -0700 (PDT)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: [PATCH v15 00/13] Introduce the Counter character device interface
+Date:   Mon,  9 Aug 2021 21:37:25 +0900
+Message-Id: <cover.1628511445.git.vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210728222033.52500-1-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+Changes in v15:
+ - Move the description for the member 'lock' in the 'quad8' structure
+   as a separate patch
+ - Reorganize the "counter: Internalize sysfs interface code" patch to
+   not call chrdev code; respective code moved to the "counter: Add
+   character device interface" patch with the other chrdev code
+ - Custom enums removed from the ftm-quaddec.c, stm32-lptimer-cnt.c, and
+   stm32-timer-cnt.c files; respective drivers refactored to use the
+   COUNTER_FUNCTION_* and COUNTER_SYNAPSE_* enum constants instead
 
-Thanks for the patch!
+For convenience, this patchset is also available on my personal git
+repo: https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v15
 
-On 29.07.21 1:20, Konrad Dybcio wrote:
-> Fix the earlier porting mistakes to make interconnect work properly.
+The patches preceding "counter: Internalize sysfs interface code" are
+primarily cleanup and fixes that can be picked up and applied now to the
+IIO tree if so desired. The "counter: Internalize sysfs interface code"
+patch as well may be considered for pickup because it is relatively safe
+and makes no changes to the userspace interface.
 
-Could you be more specific, please? Do we need a fixes tag?
+To summarize the main points of this patchset: there are no changes to
+the existing Counter sysfs userspace interface; a Counter character
+device interface is introduced that allows Counter events and associated
+data to be read() by userspace; the events_configure() and
+watch_validate() driver callbacks are introduced to support Counter
+events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
+example of how to support the new Counter events functionality.
 
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->   drivers/interconnect/qcom/sdm660.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/sdm660.c b/drivers/interconnect/qcom/sdm660.c
-> index 632dbdd21915..93856dd6730b 100644
-> --- a/drivers/interconnect/qcom/sdm660.c
-> +++ b/drivers/interconnect/qcom/sdm660.c
-> @@ -264,10 +264,10 @@ DEFINE_QNODE(mas_sdcc_1, SDM660_MASTER_SDCC_1, 8, 33, -1, false, -1, 0, -1, SDM6
->   DEFINE_QNODE(mas_sdcc_2, SDM660_MASTER_SDCC_2, 8, 35, -1, false, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
->   DEFINE_QNODE(mas_blsp_1, SDM660_MASTER_BLSP_1, 4, 41, -1, false, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
->   DEFINE_QNODE(mas_blsp_2, SDM660_MASTER_BLSP_2, 4, 39, -1, false, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
-> -DEFINE_QNODE(mas_ufs, SDM660_MASTER_UFS, 8, 68, -1, true, NOC_QOS_MODE_FIXED, 1, 4, SDM660_SLAVE_A2NOC_SNOC);
-> -DEFINE_QNODE(mas_usb_hs, SDM660_MASTER_USB_HS, 8, 42, -1, true, NOC_QOS_MODE_FIXED, 1, 1, SDM660_SLAVE_A2NOC_SNOC);
-> +DEFINE_QNODE(mas_ufs, SDM660_MASTER_UFS, 8, 68, -1, true, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
-> +DEFINE_QNODE(mas_usb_hs, SDM660_MASTER_USB_HS, 8, 42, -1, true, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
->   DEFINE_QNODE(mas_usb3, SDM660_MASTER_USB3, 8, 32, -1, true, NOC_QOS_MODE_FIXED, 1, 2, SDM660_SLAVE_A2NOC_SNOC);
-> -DEFINE_QNODE(mas_crypto, SDM660_MASTER_CRYPTO_C0, 8, 23, -1, true, NOC_QOS_MODE_FIXED, 1, 11, SDM660_SLAVE_A2NOC_SNOC);
-> +DEFINE_QNODE(mas_crypto, SDM660_MASTER_CRYPTO_C0, 8, 23, -1, false, NOC_QOS_MODE_FIXED, 1, 11, SDM660_SLAVE_A2NOC_SNOC);
->   DEFINE_QNODE(mas_gnoc_bimc, SDM660_MASTER_GNOC_BIMC, 4, 144, -1, true, NOC_QOS_MODE_FIXED, 0, 0, SDM660_SLAVE_EBI);
->   DEFINE_QNODE(mas_oxili, SDM660_MASTER_OXILI, 4, 6, -1, true, NOC_QOS_MODE_BYPASS, 0, 1, SDM660_SLAVE_HMSS_L3, SDM660_SLAVE_EBI, SDM660_SLAVE_BIMC_SNOC);
->   DEFINE_QNODE(mas_mnoc_bimc, SDM660_MASTER_MNOC_BIMC, 4, 2, -1, true, NOC_QOS_MODE_BYPASS, 0, 2, SDM660_SLAVE_HMSS_L3, SDM660_SLAVE_EBI, SDM660_SLAVE_BIMC_SNOC);
-> @@ -596,7 +596,8 @@ static int qcom_icc_set_bimc_qos(struct icc_node *src, u64 max_bw,
->   	if (qn->qos.qos_mode != -1)
->   		mode = qn->qos.qos_mode;
->   
-> -	/* QoS Priority: The QoS Health parameters are getting considered
-> +	/*
-> +	 * QoS Priority: The QoS Health parameters are getting considered
+William Breathitt Gray (13):
+  counter: 104-quad-8: Describe member 'lock' in 'quad8'
+  counter: Internalize sysfs interface code
+  counter: Update counter.h comments to reflect sysfs internalization
+  docs: counter: Update to reflect sysfs internalization
+  counter: Move counter enums to uapi header
+  counter: Add character device interface
+  docs: counter: Document character device interface
+  tools/counter: Create Counter tools
+  counter: Implement signalZ_action_component_id sysfs attribute
+  counter: Implement *_component_id sysfs attributes
+  counter: Implement events_queue_size sysfs attribute
+  counter: 104-quad-8: Replace mutex with spinlock
+  counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
 
-Nit: Unrelated change
+ Documentation/ABI/testing/sysfs-bus-counter   |   38 +-
+ Documentation/driver-api/generic-counter.rst  |  358 +++-
+ .../userspace-api/ioctl/ioctl-number.rst      |    1 +
+ MAINTAINERS                                   |    3 +-
+ drivers/counter/104-quad-8.c                  |  700 ++++----
+ drivers/counter/Kconfig                       |    6 +-
+ drivers/counter/Makefile                      |    1 +
+ drivers/counter/counter-chrdev.c              |  553 ++++++
+ drivers/counter/counter-chrdev.h              |   14 +
+ drivers/counter/counter-core.c                |  191 +++
+ drivers/counter/counter-sysfs.c               |  962 +++++++++++
+ drivers/counter/counter-sysfs.h               |   13 +
+ drivers/counter/counter.c                     | 1496 -----------------
+ drivers/counter/ftm-quaddec.c                 |   60 +-
+ drivers/counter/intel-qep.c                   |  144 +-
+ drivers/counter/interrupt-cnt.c               |   62 +-
+ drivers/counter/microchip-tcb-capture.c       |   91 +-
+ drivers/counter/stm32-lptimer-cnt.c           |  226 +--
+ drivers/counter/stm32-timer-cnt.c             |  179 +-
+ drivers/counter/ti-eqep.c                     |  180 +-
+ include/linux/counter.h                       |  715 ++++----
+ include/linux/counter_enum.h                  |   45 -
+ include/uapi/linux/counter.h                  |  154 ++
+ tools/Makefile                                |   13 +-
+ tools/counter/Build                           |    1 +
+ tools/counter/Makefile                        |   53 +
+ tools/counter/counter_example.c               |   93 +
+ 27 files changed, 3568 insertions(+), 2784 deletions(-)
+ create mode 100644 drivers/counter/counter-chrdev.c
+ create mode 100644 drivers/counter/counter-chrdev.h
+ create mode 100644 drivers/counter/counter-core.c
+ create mode 100644 drivers/counter/counter-sysfs.c
+ create mode 100644 drivers/counter/counter-sysfs.h
+ delete mode 100644 drivers/counter/counter.c
+ delete mode 100644 include/linux/counter_enum.h
+ create mode 100644 include/uapi/linux/counter.h
+ create mode 100644 tools/counter/Build
+ create mode 100644 tools/counter/Makefile
+ create mode 100644 tools/counter/counter_example.c
 
->   	 * only if we are NOT in Bypass Mode.
->   	 */
->   	if (mode != NOC_QOS_MODE_BYPASS) {
-> @@ -916,6 +917,7 @@ static struct platform_driver sdm660_noc_driver = {
->   	.driver = {
->   		.name = "qnoc-sdm660",
->   		.of_match_table = sdm660_noc_of_match,
-> +		.sync_state = icc_sync_state,
 
-Enabling sync_state should be a separate patch.
-
-Thanks,
-Georgi
-
->   	},
->   };
->   module_platform_driver(sdm660_noc_driver);
-> 
+base-commit: c886885336b0b5f1a08ce580f7201a2ca30ab041
+prerequisite-patch-id: 8ca55ffcdd5d060dd5fa2b4dd50bf01dc1026da6
+prerequisite-patch-id: 46ef2668ca6bdc0d08dd488fe1d2b886189a5652
+prerequisite-patch-id: 2df1946c917d6408148306db30a071e67b00ad73
+prerequisite-patch-id: f81579f50552e6041a95403cc743c5f36962b111
+prerequisite-patch-id: 8a6860e75cdec162812c56dc39c5d7fc6fc5154e
+-- 
+2.32.0
 
