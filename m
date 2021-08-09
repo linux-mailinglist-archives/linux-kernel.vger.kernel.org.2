@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3A13E3DD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D573E3DD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhHIB51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhHIB5Z (ORCPT
+        id S232688AbhHIB7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:59:44 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56127 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231459AbhHIB7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:57:25 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8209C061757;
-        Sun,  8 Aug 2021 18:57:05 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2DB85466;
-        Mon,  9 Aug 2021 03:57:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1628474224;
-        bh=QDySkRfNlhrzD4my8PYiajvniAJkaxcCIIW8I51QkMU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gpdrmmmGoH7gJHhyS42mZHme0uw4wZwtkkSm7A8EvXwYS8OrgvLaQnW1Hf0Bd4t79
-         mC/7OKBZzFj8Uz/at/TFWRroS68LUNPGzJzhzxgyP5lAhn9QrNo5mJ9HOYvMNBvrMI
-         7PjewUmgmNwQnmMcuE/gwerWAzZsHNKOBnhWO6Dc=
-Date:   Mon, 9 Aug 2021 04:57:03 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: zynqmp: Fix serial compatible string
-Message-ID: <YRCLb1grspPDh4vX@pendragon.ideasonboard.com>
-References: <89b36e0a6187cc6b05b27a035efdf79173bd4486.1628240307.git.michal.simek@xilinx.com>
+        Sun, 8 Aug 2021 21:59:42 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 52D6C5C010D;
+        Sun,  8 Aug 2021 21:59:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sun, 08 Aug 2021 21:59:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OylQU9
+        vb93bEc/qD54BoqNyoSqL9L9zi1LBegBb5SC4=; b=onQH3F3G6O/fyvoN8JBbFb
+        /TH/8f1xTMnAqHKCVzKrizgo6kEiiyqj+UERZrq6DHux4E9AQE7S3mO2pt4LbnzX
+        WsnB5nB9Xg9OO2qt/cEVEKocfPj+HgkbvNLqiAPcag+i6ElL+jkNJs1jn0bCdb5S
+        vaeApFnXm4idihpqc6oC863We3yN9zg6cpHfclHfMrS2FdsOruOHl3Yw35t/6GFH
+        jfdUPzWe7h4VCFKx6IV6HEYCwLb0G5FT2PrTZnnGOn4cgn1mZN9I/x7+uMeMx7tk
+        9LhEC9EglC4e0LtsWj293vO09bUoD3dCcx/Ll8psGstVJjVve25bok1cw/n7rUWw
+        ==
+X-ME-Sender: <xms:-YsQYaif_8F4BPrLVNrPMvuabgYV_YHdn_KKAWiw9tqmkm9ZaC5NhQ>
+    <xme:-YsQYbAGHmpIXDDrFF2c1Tp8RZEfgDcGG9vSl7180__u3yPkFnETC96FxS-TVUGgk
+    zhnzMXMzcs6ihRddcE>
+X-ME-Received: <xmr:-YsQYSFRa-pRjhNsNVgDuEQkbFex26fJgcUsiIeUN30aJblHGi4eWF4S4YxYHgWb8rBsyY8uoYVH61o5QZ9zpxLrYktcVf0ULoU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeeigdegkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeekgeejkeffhfefgeelieffueethfeludduhfdtteduvddthedtteeftdevfefh
+    jeenucffohhmrghinhepudegqdhrtgdurdhishenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhg
+X-ME-Proxy: <xmx:-YsQYTSd5OdThR58l1aB7eTiLWQnIEg20VATmXtwvjY3zsHtZTMTXw>
+    <xmx:-YsQYXxrx2F3DoTAcXerqBN-k_XGiB7hcOTmyMxCBavUW31MOvjuNA>
+    <xmx:-YsQYR7IsOtutOVOXAvnYFCqWD7BEXQ29aco0FB878OiGwBmrZKIbA>
+    <xmx:-osQYS_sLcD5hF6GQo4MgWbjVdgJIf8LNarRFDq9UB6wGUcuWA-SDw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 8 Aug 2021 21:59:19 -0400 (EDT)
+Date:   Mon, 9 Aug 2021 11:59:11 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Mikael Pettersson <mikpelinux@gmail.com>
+cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, stable@vger.kernel.org,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on
+ m68k/aranym
+In-Reply-To: <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
+Message-ID: <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org>
+References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com> <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org> <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <89b36e0a6187cc6b05b27a035efdf79173bd4486.1628240307.git.michal.simek@xilinx.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Sun, 8 Aug 2021, Mikael Pettersson wrote:
 
-Thank you for the patch.
-
-On Fri, Aug 06, 2021 at 10:58:29AM +0200, Michal Simek wrote:
-> Based on commit 65a2c14d4f00 ("dt-bindings: serial: convert Cadence UART
-> bindings to YAML") compatible string should look like differently that's
-> why fix it to be aligned with dt binding.
+> On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> >
+> > On Sat, 7 Aug 2021, Mikael Pettersson wrote:
+> >
+> > > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
+> > > 5.10.47 to 5.10.56, and the new kernel failed to boot:
+> > >
+> > > ARAnyM 1.1.0
+> > > Using config file: 'aranym1.headless.config'
+> > > Could not open joystick 0
+> > > ARAnyM RTC Timer: /dev/rtc: Permission denied
+> > > ARAnyM LILO: Error loading ramdisk 'root.bin'
+> > > Blitter tried to read byte from register ff8a00 at 0077ee
+> > >
+> > > At this point it kept running, but produced no output to the console,
+> > > and would never get to the point of starting user-space. Attaching gdb
+> > > to aranym showed nothing interesting, i.e. it seemed to be executing
+> > > normally.
+> > >
+> > > A git bisect identified the following commit between 5.10.52 and
+> > > 5.10.53 as the culprit:
+> > > # first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
+> > > mm/userfaultfd: fix uffd-wp special cases for fork()
+> > >
+> >
+> > That commit appeared in mainline between v5.13 and v5.14-rc1. Is mainline
+> > also affected? e.g. v5.14-rc4.
 > 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
+> 5.14-rc4 boots fine. I suspect the commit has some dependency that
+> hasn't been backported to 5.10 stable.
 > 
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> index 6f0fcec28ae2..b5fde9dddca5 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> @@ -786,7 +786,7 @@ ttc3: timer@ff140000 {
->  		};
->  
->  		uart0: serial@ff000000 {
-> -			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-> +			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
->  			status = "disabled";
->  			interrupt-parent = <&gic>;
->  			interrupts = <0 21 4>;
-> @@ -796,7 +796,7 @@ uart0: serial@ff000000 {
->  		};
->  
->  		uart1: serial@ff010000 {
-> -			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-> +			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
->  			status = "disabled";
->  			interrupt-parent = <&gic>;
->  			interrupts = <0 22 4>;
 
--- 
-Regards,
+On mainline, 9e1cf2d1ed3 is known as commit 8f34f1eac382 ("mm/userfaultfd: 
+fix uffd-wp special cases for fork()").
 
-Laurent Pinchart
+There are differences between the two commits that may be relevant. I 
+don't know.
+
+If you checkout 8f34f1eac382 and if that works, it would indicate either 
+missing dependencies in -stable, or those differences are important.
+
+OTOH, if 8f34f1eac382 fails in the same way as linux-5.10.y, it would 
+indicate that -stable is missing a fix that's present in v5.14-rc4.
