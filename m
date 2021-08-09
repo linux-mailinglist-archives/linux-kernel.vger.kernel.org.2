@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075923E4476
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB613E4477
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234968AbhHILPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S234977AbhHILPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234920AbhHILPi (ORCPT
+        with ESMTP id S234920AbhHILPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:15:38 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF09DC061796
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 04:15:17 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id oa17so2437240pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 04:15:17 -0700 (PDT)
+        Mon, 9 Aug 2021 07:15:40 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E1CC061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 04:15:20 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id c16so15967842plh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 04:15:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HF9zwf39YHVZ/xNRzTLJZocl+a9xlESe8qkBXQSh72k=;
-        b=dD7+MJlbjpccJ9M/03ozzehQwpA+sgBRT0zT/Vqfy2jY1oBIRUBEGt0+L5IUx51kNo
-         lXzsu2SFNgVaJC9tgOlvH5Y9gBvQdjb6oTYwmMpMWTkPdfWjZhf+pYc+1MRUBq10IzYq
-         TD4QWBoE2TgFF/VxqEiYgbQCR+oGrXklNgpRebSfz3j6MPYQ42Rk1lZHPbnc4Vf1Y4KU
-         NP+vdAsarUZ4pXUFRxFCuS35xdbT0YPu6CJhykbMZZrr/02/G3UtmjUzCE1qer9Tgniw
-         a4Mt1W3IkSAgzc/zvVrE2UM7rKeHY9b0vIN6ugjsWaIFT30PNdaSd87WrxhR1rc86Yoz
-         5llg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mUfdU9WBYmi8/NBmndyLWLFFhQ6mqBUwjCh/GuP5qb8=;
+        b=qpdVxW5apeotrdM2TF06hZw08s65z4QwLumvU9xv/1WhAR9sgk2/cegXSUJAq5nd4z
+         td9kmETmFcktCDgTZxPCkDSJN6YY1kAaofoZC+aMUG+r6j5hl2gFFJrrXA2dvq78eizO
+         0uDjrQalWkQzu2N0/KVrfSHpa1MUGr04hBRaTN50+g/22xftdVxSfiQRLcbQfeLYmJ1o
+         nvGA41UTpDKNXPh4t743VyFNgURK2k0H70kDUz8cKfqoarcH7wHGvtRPqMGzlZxL/fQ/
+         YurX1u9V3i1s202T4XOfeWwVXlnXd72hrMnJ4AQ5Ob6sBo9wD4xXUrJf/RJci26N+MDy
+         Qohg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HF9zwf39YHVZ/xNRzTLJZocl+a9xlESe8qkBXQSh72k=;
-        b=STjLG0XH0JNuPHKGQKTUcM+NkaZVnqZ+wb7wf1q2iGVr5QX2MBSckKZzio5k1ZcL6H
-         E69FXWbdP4+ORWOrCdDl3KU/SLBiP3ZsQ11OLGhvd5ueizsP1fB738neQNX/mzixBDUI
-         rEa+1ZJBqeuDy/RKLQvCuyevalt6VevXAH42Klc0yNL72atD5aKwkEwYHiFioTiGokmu
-         XizAID/iw6UgtmvGrPD+tLB7DE/lxJgNyM3hpxdizIG6oOUvFuWGzVVekbEs+XVwZLD0
-         /Z5K45cSRntoNPncNXnD7NMRjANl04QWeHR2jK8nTMoBGKpT2jULP41fQxQRloK+I6eR
-         vANA==
-X-Gm-Message-State: AOAM531VmaFBSLtMwjKZGe3Wc03ryHfM9Xm0GYi4F35JfMuGTfiEp5gy
-        SG5cu8KMM+xfCj6QM7CVtDcN5g==
-X-Google-Smtp-Source: ABdhPJwH9Q0NLLJRK5o1bYiE+h3L3lo71E0x7NXitJKkzu+AEVvjTEKGnfv0brl1GKpeUjmpu/ogAw==
-X-Received: by 2002:a65:68d1:: with SMTP id k17mr21274pgt.285.1628507717335;
-        Mon, 09 Aug 2021 04:15:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mUfdU9WBYmi8/NBmndyLWLFFhQ6mqBUwjCh/GuP5qb8=;
+        b=FfF8KL/BeSzmfLiysGtkwoXMVx8UqNKiW4KSOFJl6z80exx2WAhxBA4wCJmDUT4ADf
+         lgmwVlenJ3mgUq5KQi9BfplSF7QwmFGGoX9QLaco/lLsxjM5fij3WgcHu6xQZ4hq1s74
+         q/GcVs/TVr37JujTqpulc/YhBe99OtwXrk05NEd21frFrglP1d/BTounREqI5TdYyp9G
+         HKzZD8nt7bT/k2Z8p7vddzFqWpbzgzt0D3o7uMj9UGYO1Mr6WIbaML4tzK11xM7ZRo+s
+         1vt932Wzp7dUy+/VMOwHY6BpYPfmfpmhpGob1lm1Tb591s5Ne2g13/FwVqkTnhY14Npb
+         FneQ==
+X-Gm-Message-State: AOAM530Ot39UFeNYU9peZpL5BUGJnW3v7amQN+3yzDK5w5DcXqtZa2rx
+        L7lYNPabpHKGc+RdAEP0qAZeuA==
+X-Google-Smtp-Source: ABdhPJxbQmUGGecefTVu1P63BV4lnVu3QGLeQsDHNtt0egqlT6WsDEjcKt0medrp0IYgHlC9XawHvA==
+X-Received: by 2002:a17:903:22c7:b029:12c:4621:a2fd with SMTP id y7-20020a17090322c7b029012c4621a2fdmr9050245plg.61.1628507719959;
+        Mon, 09 Aug 2021 04:15:19 -0700 (PDT)
 Received: from localhost ([210.0.159.74])
-        by smtp.gmail.com with ESMTPSA id 186sm20611228pfg.11.2021.08.09.04.15.15
+        by smtp.gmail.com with ESMTPSA id v15sm17844635pja.53.2021.08.09.04.15.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 04:15:16 -0700 (PDT)
+        Mon, 09 Aug 2021 04:15:19 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -74,86 +74,52 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         coresight@lists.linaro.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v5 0/9] perf: Refine barriers for AUX ring buffer
-Date:   Mon,  9 Aug 2021 19:13:58 +0800
-Message-Id: <20210809111407.596077-1-leo.yan@linaro.org>
+Subject: [PATCH v5 1/9] perf/ring_buffer: Add comment for barriers on AUX ring buffer
+Date:   Mon,  9 Aug 2021 19:13:59 +0800
+Message-Id: <20210809111407.596077-2-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210809111407.596077-1-leo.yan@linaro.org>
+References: <20210809111407.596077-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series is to refine the memory barriers for AUX ring buffer.
+AUX ring buffer applies almost the same barriers as perf ring buffer,
+but there has an exception for ordering between writing the AUX trace
+data and updating user_page::aux_head.
 
-Patches 01 ~ 04 to address the barriers usage in the kernel.  The first
-patch is to make clear comment for how to use the barriers between the
-data store and aux_head store, this asks the driver to make sure the
-data is visible.  Patches 02 ~ 04 is to refine the drivers for barriers
-after the data store.
+This patch adds comment for how to use the barriers on AUX ring buffer,
+and gives comment to ask the drivers to flush the trace data into AUX
+ring buffer prior to updating user_page::aux_head.
 
-Patch 05 is to use WRITE_ONCE() for updating aux_tail.
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/events/ring_buffer.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Patches 06 ~ 09 is to drop the legacy __sync functions, and polish for
-duplicate code and cleanup the build and feature test after
-SYNC_COMPARE_AND_SWAP is not used.
-
-For easier review and more clear patch organization, comparing against
-to the previous patch series, the patches for support compat mode for
-AUX trace have been left out and will be sent out as a separate patch
-set.
-
-This patch set have been tested on Arm64 Juno platform.
-
-Changes from v4:
-- Refined comment for CoreSight ETR/ETF drivers (Suzuki/Peter);
-- Changed to use compiler barrier for BTS (mentioned by Peter, but have
-  not received response from Intel developer);
-- Refined the coding style for patch 07 (Adrian).
-
-Changes from v3:
-- Removed the inapprocate paragraph in the commit log for patch "perf
-  auxtrace: Drop legacy __sync functions" (Adrian);
-- Added new patch to remove feature-sync-compare-and-swap test (Adrian);
-- Th patch for "perf auxtrace: Use WRITE_ONCE() for updating aux_tail",
-  is a standlone and simple change, so moved it ahead in the patch set
-  for better ordering;
-- Minor improvement for commit logs in the last two patches.
-
-Changes from v2:
-- Removed auxtrace_mmap__read_snapshot_head(), which has the duplicated
-  code with auxtrace_mmap__read_head();
-- Cleanuped the build for HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT (Adrian);
-- Added global variable "kernel_is_64_bit" (Adrian);
-- Added compat variants compat_auxtrace_mmap__{read_head|write_tail}
-  (Adrian).
-
-
-Leo Yan (9):
-  perf/ring_buffer: Add comment for barriers on AUX ring buffer
-  coresight: tmc-etr: Add barrier after updating AUX ring buffer
-  coresight: tmc-etf: Add comment for store ordering
-  perf/x86: Add compiler barrier after updating BTS
-  perf auxtrace: Use WRITE_ONCE() for updating aux_tail
-  perf auxtrace: Drop legacy __sync functions
-  perf auxtrace: Remove auxtrace_mmap__read_snapshot_head()
-  perf: Cleanup for HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT
-  tools: Remove feature-sync-compare-and-swap feature detection
-
- arch/x86/events/intel/bts.c                   |  6 ++++
- .../hwtracing/coresight/coresight-tmc-etf.c   |  5 +++
- .../hwtracing/coresight/coresight-tmc-etr.c   |  8 +++++
- kernel/events/ring_buffer.c                   |  9 ++++++
- tools/build/Makefile.feature                  |  1 -
- tools/build/feature/Makefile                  |  4 ---
- tools/build/feature/test-all.c                |  4 ---
- .../feature/test-sync-compare-and-swap.c      | 15 ---------
- tools/perf/Makefile.config                    |  4 ---
- tools/perf/util/auxtrace.c                    | 18 +++--------
- tools/perf/util/auxtrace.h                    | 31 +------------------
- 11 files changed, 34 insertions(+), 71 deletions(-)
- delete mode 100644 tools/build/feature/test-sync-compare-and-swap.c
-
+diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+index 52868716ec35..5cf6579be05e 100644
+--- a/kernel/events/ring_buffer.c
++++ b/kernel/events/ring_buffer.c
+@@ -509,6 +509,15 @@ void perf_aux_output_end(struct perf_output_handle *handle, unsigned long size)
+ 		perf_event_aux_event(handle->event, aux_head, size,
+ 				     handle->aux_flags);
+ 
++	/*
++	 * See perf_output_put_handle(), AUX ring buffer applies the same
++	 * barrier pairing as the perf ring buffer; except for B, since
++	 * AUX ring buffer is written by hardware trace, we cannot simply
++	 * use the generic memory barrier (like smp_wmb()) prior to update
++	 * user_page::aux_head, the hardware trace driver takes the
++	 * responsibility to ensure the trace data has been flushed into
++	 * the AUX buffer before calling perf_aux_output_end().
++	 */
+ 	WRITE_ONCE(rb->user_page->aux_head, rb->aux_head);
+ 	if (rb_need_aux_wakeup(rb))
+ 		wakeup = true;
 -- 
 2.25.1
 
