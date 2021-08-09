@@ -2,180 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A973E4592
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862DA3E4598
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbhHIM0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 08:26:08 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:37842 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234590AbhHIM0H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 08:26:07 -0400
-Received: by mail-vs1-f50.google.com with SMTP id a8so9902867vsl.4;
-        Mon, 09 Aug 2021 05:25:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ed39ptxorz+Qljsxnohhxm3EV/HpSyRjPApFZHxB40o=;
-        b=B/hD5a8YgN6LstwIER4usmVmsmkM4HNzlSkx480eR5w3a8QbhLJimTFngwXcjtTu8w
-         nrmGt1TEdugbd7iSNl9VpYOyxEuRhOV9WcXB+zSSb0h4ftHCK0nJykpaNgSLLJbAAJZe
-         zkATBTf6VquDAWnji4eLf3AgcmFgKUcBVAKvXrcEzuSyl14twO/WAjsRthBuZoOS5o8q
-         ceH2cc2kGt9HQj4J8Jkz+bYz5QhizKFj990VZnYL7JQHdggQky3ut2clZcM3+/rJAvmD
-         HlFU9NvDgPj5k55VQTbwAP4DYJqN1ywYXoVSBfqUyjnuNYJzjWFhJNWU6jEZAX8VMyaQ
-         +TzA==
-X-Gm-Message-State: AOAM533u0VopxgFskEOi16zKvhsGW/PjHJyeWrnarfKW0/AGT2RnzP7W
-        TbOtQHda+A+DglZ/q/U7pLNSNDfkYXzdZEDhH18=
-X-Google-Smtp-Source: ABdhPJxpxyQer/sCCyRp98MCHfnWPm0Avf2x2XZw5lVHvn4En6dF2B1WMF2ZTfcMHDtY6fmj58UK8SBwbA8++u6/RyI=
-X-Received: by 2002:a67:e2c7:: with SMTP id i7mr15546365vsm.3.1628511946682;
- Mon, 09 Aug 2021 05:25:46 -0700 (PDT)
+        id S234893AbhHIM2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 08:28:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233445AbhHIM2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 08:28:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FA2D60F35;
+        Mon,  9 Aug 2021 12:28:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628512110;
+        bh=JGSvrCfKRW/1RSWBpEUr4Y07/7eMV0KoLH44cKquAlw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Hckv4uIKArYhNLFa1L8Le/ghZAxLW8TUJDZ/QjBn0Jn8SPqfcNR4J541QvqDxyPzA
+         n5AlygZ9kH/q+9s5xGZuEK90R6k34pMG2EG7sp5dxy6bzO+0ltK/pOrUrqCsaD9zsc
+         gS0yzVw5aszJ7Vh9DNDEhP18CiumiK04NA8au8MvgntwbxmkzYNAqgcj8qAiYRDLzl
+         UG5mWLNbLLSxv4RynAhW+EY7JKG1aeGHydqDkc+NmDB1/aRPqUbN4aeqMovS/SMptd
+         Xib/cro1painKGu1/6J+Gxji7eeCEqemnkd/KcnP3IC7es4k393vKvDjmRNh0BZezM
+         2cC2+xDfE5TNw==
+Subject: Re: [PATCH] drivers: interconnect: sdm660: Fix up erroneous paths
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210728222033.52500-1-konrad.dybcio@somainline.org>
+From:   Georgi Djakov <djakov@kernel.org>
+Message-ID: <7844e0fc-3cb7-6653-217b-e615ef7a15ac@kernel.org>
+Date:   Mon, 9 Aug 2021 15:28:26 +0300
 MIME-Version: 1.0
-References: <YQ1ToK8EMdAO4CyH@precision>
-In-Reply-To: <YQ1ToK8EMdAO4CyH@precision>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Aug 2021 14:25:35 +0200
-Message-ID: <CAMuHMdUzeN54PtKXQxJ0SDtrWSUMFHbae2a66iD7i075Ls1Y6A@mail.gmail.com>
-Subject: Re: [PATCH v2] rbtree: remove unneeded explicit alignment in struct rb_node
-To:     Mete Polat <metepolat2000@gmail.com>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210728222033.52500-1-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mete,
+Hi Konrad,
 
-On Fri, Aug 6, 2021 at 5:22 PM Mete Polat <metepolat2000@gmail.com> wrote:
-> Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
-> struct rb_node.") adds an explicit alignment to the struct rb_node due to
-> some speciality of the CRIS architecture.
->
-> The support for the CRIS architecture was removed with commit c690eddc2f3b
-> ("CRIS: Drop support for the CRIS port")
->
-> So, remove this now unneeded explicit alignment in struct rb_node as well.
->
-> This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
-> alignment to sizeof(long) for struct rb_node.").
->
-> The rbtree node color is stored in the LSB of '__rb_parent_color'.
-> Only mask the first bit in '__rb_parent()', otherwise it modifies the
-> node's parent address on m68k.
->
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: Mete Polat <metepolat2000@gmail.com>
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Mete Polat <metepolat2000@gmail.com>
+Thanks for the patch!
+
+On 29.07.21 1:20, Konrad Dybcio wrote:
+> Fix the earlier porting mistakes to make interconnect work properly.
+
+Could you be more specific, please? Do we need a fixes tag?
+
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
-> I have tested it on x86, but not on m68k. Can you ack that Geert?
+>   drivers/interconnect/qcom/sdm660.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/interconnect/qcom/sdm660.c b/drivers/interconnect/qcom/sdm660.c
+> index 632dbdd21915..93856dd6730b 100644
+> --- a/drivers/interconnect/qcom/sdm660.c
+> +++ b/drivers/interconnect/qcom/sdm660.c
+> @@ -264,10 +264,10 @@ DEFINE_QNODE(mas_sdcc_1, SDM660_MASTER_SDCC_1, 8, 33, -1, false, -1, 0, -1, SDM6
+>   DEFINE_QNODE(mas_sdcc_2, SDM660_MASTER_SDCC_2, 8, 35, -1, false, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
+>   DEFINE_QNODE(mas_blsp_1, SDM660_MASTER_BLSP_1, 4, 41, -1, false, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
+>   DEFINE_QNODE(mas_blsp_2, SDM660_MASTER_BLSP_2, 4, 39, -1, false, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
+> -DEFINE_QNODE(mas_ufs, SDM660_MASTER_UFS, 8, 68, -1, true, NOC_QOS_MODE_FIXED, 1, 4, SDM660_SLAVE_A2NOC_SNOC);
+> -DEFINE_QNODE(mas_usb_hs, SDM660_MASTER_USB_HS, 8, 42, -1, true, NOC_QOS_MODE_FIXED, 1, 1, SDM660_SLAVE_A2NOC_SNOC);
+> +DEFINE_QNODE(mas_ufs, SDM660_MASTER_UFS, 8, 68, -1, true, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
+> +DEFINE_QNODE(mas_usb_hs, SDM660_MASTER_USB_HS, 8, 42, -1, true, -1, 0, -1, SDM660_SLAVE_A2NOC_SNOC);
+>   DEFINE_QNODE(mas_usb3, SDM660_MASTER_USB3, 8, 32, -1, true, NOC_QOS_MODE_FIXED, 1, 2, SDM660_SLAVE_A2NOC_SNOC);
+> -DEFINE_QNODE(mas_crypto, SDM660_MASTER_CRYPTO_C0, 8, 23, -1, true, NOC_QOS_MODE_FIXED, 1, 11, SDM660_SLAVE_A2NOC_SNOC);
+> +DEFINE_QNODE(mas_crypto, SDM660_MASTER_CRYPTO_C0, 8, 23, -1, false, NOC_QOS_MODE_FIXED, 1, 11, SDM660_SLAVE_A2NOC_SNOC);
+>   DEFINE_QNODE(mas_gnoc_bimc, SDM660_MASTER_GNOC_BIMC, 4, 144, -1, true, NOC_QOS_MODE_FIXED, 0, 0, SDM660_SLAVE_EBI);
+>   DEFINE_QNODE(mas_oxili, SDM660_MASTER_OXILI, 4, 6, -1, true, NOC_QOS_MODE_BYPASS, 0, 1, SDM660_SLAVE_HMSS_L3, SDM660_SLAVE_EBI, SDM660_SLAVE_BIMC_SNOC);
+>   DEFINE_QNODE(mas_mnoc_bimc, SDM660_MASTER_MNOC_BIMC, 4, 2, -1, true, NOC_QOS_MODE_BYPASS, 0, 2, SDM660_SLAVE_HMSS_L3, SDM660_SLAVE_EBI, SDM660_SLAVE_BIMC_SNOC);
+> @@ -596,7 +596,8 @@ static int qcom_icc_set_bimc_qos(struct icc_node *src, u64 max_bw,
+>   	if (qn->qos.qos_mode != -1)
+>   		mode = qn->qos.qos_mode;
+>   
+> -	/* QoS Priority: The QoS Health parameters are getting considered
+> +	/*
+> +	 * QoS Priority: The QoS Health parameters are getting considered
 
-Unfortunately not.  Just booting on ARAnyM gives:
+Nit: Unrelated change
 
-Unable to handle kernel access at virtual address 84abc227
-Oops: 00000000
-Modules linked in:
-PC: [<b45b0005>] 0xb45b0005
-SR: 2700  SP: fc24ede1  a2: 01322b40
-d0: b45aff7c    d1: 00002708    d2: 00000000    d3: 0033a6a4
-d4: 00000005    d5: 95847357    a0: b45b0005    a1: 000f4240
-Process sh (pid: 402, task=672891a8)
-Frame format=7 eff addr=b45b0005 ssw=0546 faddr=b45b0005
-wb 1 stat/addr/data: 0000 00000000 00000000
-wb 2 stat/addr/data: 0000 00000000 00000000
-wb 3 stat/addr/data: 0000 b45b0005 00000000
-push data: 00000000 00000000 00000000 00000000
-Stack from 0131debc:
-        0004ddf4 0122e0a4 0122e0a4 00477c26 00000000 00000000 00000005 95847357
-        00002708 0004558e 0033ab30 00000002 01003180 0047273c 0131df88 0033a6a4
-        00477c3a 00477c24 0004dfee 00000005 95847357 00002708 0000000f 00000001
-        9915a000 0000000d 0004d430 01322b40 00000001 00002604 00000000 00006e50
-        00000001 00000000 0004560c 0000000d 00000000 00000000 efc3aa78 efc3aa78
-        c0158c0c 8009ff68 0047273c efc3aa64 c01537a8 0131df8c 000456b6 0047273c
-Call Trace: [<0004ddf4>] __hrtimer_run_queues.constprop.0+0xba/0x144
- [<00002708>] calibrate_delay+0xd6/0x18a
- [<0004558e>] __irq_wake_thread+0x0/0x40
- [<0033ab30>] printk+0x0/0x18
- [<0033a6a4>] warn_slowpath_fmt+0x0/0x62
- [<0004dfee>] hrtimer_run_queues+0xb4/0xc0
- [<00002708>] calibrate_delay+0xd6/0x18a
- [<0004d430>] update_process_times+0x38/0x8c
- [<00002604>] wait_for_initramfs+0x30/0x58
- [<00006e50>] mfp_timer_c_handler+0x2c/0x3c
- [<0004560c>] __handle_irq_event_percpu+0x3e/0xcc
- [<000456b6>] handle_irq_event_percpu+0x1c/0x52
- [<0004570a>] handle_irq_event+0x1e/0x30
- [<00047aa2>] handle_simple_irq+0x4a/0x4e
- [<00045062>] handle_irq_desc+0x1e/0x28
- [<00002cac>] do_IRQ+0x20/0x32
- [<00002bcc>] user_irqvec_fixup+0xc/0x14
- [<0010c00b>] mb_cache_create+0x47/0xdc
+>   	 * only if we are NOT in Bypass Mode.
+>   	 */
+>   	if (mode != NOC_QOS_MODE_BYPASS) {
+> @@ -916,6 +917,7 @@ static struct platform_driver sdm660_noc_driver = {
+>   	.driver = {
+>   		.name = "qnoc-sdm660",
+>   		.of_match_table = sdm660_noc_of_match,
+> +		.sync_state = icc_sync_state,
 
-Code: dde0 dde0 dde0 dde0 dde0 dde0 dde0 dde0 Bad PC value.
-Disabling lock debugging due to kernel taint
-Kernel panic - not syncing: Aiee, killing interrupt handler!
----[ end Kernel panic - not syncing: Aiee, killing interrupt handler! ]---
+Enabling sync_state should be a separate patch.
 
-> --- a/include/linux/rbtree.h
-> +++ b/include/linux/rbtree.h
-> @@ -25,8 +25,7 @@ struct rb_node {
->         unsigned long  __rb_parent_color;
->         struct rb_node *rb_right;
->         struct rb_node *rb_left;
-> -} __attribute__((aligned(sizeof(long))));
-> -    /* The alignment might seem pointless, but allegedly CRIS needs it */
-> +};
->
->  struct rb_root {
->         struct rb_node *rb_node;
-> diff --git a/include/linux/rbtree_augmented.h b/include/linux/rbtree_augmented.h
-> index d1c53e9d8c75..94b6a0f4499e 100644
-> --- a/include/linux/rbtree_augmented.h
-> +++ b/include/linux/rbtree_augmented.h
-> @@ -145,7 +145,7 @@ RB_DECLARE_CALLBACKS(RBSTATIC, RBNAME,                                            \
->  #define        RB_RED          0
->  #define        RB_BLACK        1
->
-> -#define __rb_parent(pc)    ((struct rb_node *)(pc & ~3))
-> +#define __rb_parent(pc)    ((struct rb_node *)(pc & ~1))
+Thanks,
+Georgi
 
-Are you sure you can do this, i.e. that nothing else relies on the
-alignment to (at least) 4 bytes?
+>   	},
+>   };
+>   module_platform_driver(sdm660_noc_driver);
+> 
 
-There is another definition of rb_parent().  If I make a similar change there:
-
---- a/include/linux/rbtree.h
-+++ b/include/linux/rbtree.h
-@@ -31,7 +31,7 @@ struct rb_root {
-        struct rb_node *rb_node;
- };
-
--#define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~3))
-+#define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~1))
-
- #define RB_ROOT        (struct rb_root) { NULL, }
- #define        rb_entry(ptr, type, member) container_of(ptr, type, member)
-
-the system boots on ARAnyM, but I prefer to be a bit cautious...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
