@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059663E3DCA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6223E3DD0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbhHIBp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S232661AbhHIBwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhHIBpt (ORCPT
+        with ESMTP id S230076AbhHIBwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:45:49 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCD7C061760
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 18:45:28 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id k4so9517926wms.3
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 18:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rDSSFuRHAqlduTyD3s/sFnLYXwNiPitqreRt4wVmrLQ=;
-        b=PPNk3esc06rpcy60qU0BMnxbcfxelQ6BeRLzBHoTR7h75DojUInfos1jCEMiYeAcKk
-         1bQ3AwQnZP6JeyxoWKfCdJYF7QlVKmwYl2ORaTmj51HnDLmG3BHMtAqpNlJzmbiX6jMc
-         nzsGNvykOyNpZ5CnLwBdoxeb4S1vq3yAjV7At1H3hMrPJL1MGxCxUIANJRQDLn+0ppIY
-         DbG+IxI2I4dVg/JXgWRBfoxPaz+Cwe/38vehIBMVnvzzDjOUEToAnHoajSorP/WlCVQJ
-         CKrWwgp1m11FM5mV15oCpj7Rrv6HrtT4ABCVaF1qDIPSJXFk3tKfckPljrDmsZOi+GYN
-         SP0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rDSSFuRHAqlduTyD3s/sFnLYXwNiPitqreRt4wVmrLQ=;
-        b=CHYUyJKTFciERuFGnMWqxaVJ/4+4ysv6Wv8yYrV8yczOncZi0yh7ziKLEeW/+Hvr1r
-         XcxM3oVEPbfQUIGOtmMyT+72YWBLBav6B4owS07gmAK4rq6NwvutazQMFW1lZjvGeSNj
-         bI415IlH4IXKeWi2wIvSAUeP2yG6uaYxSkskROLChOCRg/mQOYXHuAxLCNWJde/y2XqO
-         X9f46xUJ6mEteWY7551YjTiDjCP+76SovxEJFgzRWBh3XAojTMKm4mMMXdR4lU5h9MUu
-         kVHOupQV6tjvmyvM8hEBX7NiguWq1OPFxW47VBw2FZpfcfNyqZxAX7SQieOSXqSNBTOr
-         SFgg==
-X-Gm-Message-State: AOAM530ST7K3o7APdmvMcNutx76oMo6xzFIubr2FDRfbi5vXAtz6GIsR
-        PdE15LKbOFWYjz9Xgc2x26sL98DFYhnq0PkYf9Jkpw==
-X-Google-Smtp-Source: ABdhPJzYahGrDWObkhBOzaVFdSHsevjGagoVWzVQuxcUBs0g1yqLlkDW99cpitAS8iS3a6uOoSTpLfDvryYV5oNM4SE=
-X-Received: by 2002:a7b:ce0f:: with SMTP id m15mr1026737wmc.105.1628473526970;
- Sun, 08 Aug 2021 18:45:26 -0700 (PDT)
+        Sun, 8 Aug 2021 21:52:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C919C061757;
+        Sun,  8 Aug 2021 18:52:16 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6D0C9466;
+        Mon,  9 Aug 2021 03:52:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1628473934;
+        bh=rJCHMhJ96HUgHt/ffb25OzYoSudh7C3dD1C9I9+f0lw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pu9I9ort0ZE5403JARORx+g14DdisbkrNFrjbiiuTSVSZB+74ikVyCqP4VDqu7VcK
+         8Y1R25JFvp/7yPfa/Q2rqd0fVKunpph/pMS4dNmpFnAt3tYBKwkldBmseTezr7XAlk
+         Jjn/MiblDi9v1Dgoi8opaiNdDFjenYs5DsrWdbiE=
+Date:   Mon, 9 Aug 2021 04:52:13 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: zynqmp: Remove not documented is-dual property
+Message-ID: <YRCKTfxmo60uPzp5@pendragon.ideasonboard.com>
+References: <876c53b92f99623bae45d5c0c5ae79ee3e24f745.1628239345.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-References: <CAJk_X9hBB_edByfEvueSyWgKjpYGZbS2rPLPCSpRrPr+icFz_Q@mail.gmail.com>
- <20210804013252.GA16420@nchen> <CAJk_X9gwa+4CZRemKqW7XZzxd438EQHA-Ngp4MdmPVgHM0Q5fg@mail.gmail.com>
- <20210809012747.GA6814@nchen>
-In-Reply-To: <20210809012747.GA6814@nchen>
-From:   Jeaho Hwang <jhhwang@rtst.co.kr>
-Date:   Mon, 9 Aug 2021 10:45:16 +0900
-Message-ID: <CAJk_X9jT7bqLn-wb7AGF6onA2qE9_D_=f4pPpGDEoiCar2BWUw@mail.gmail.com>
-Subject: Re: Chipidea USB device goes infinite loop due to interrupt while hw_ep_prime
-To:     Peter Chen <peter.chen@kernel.org>
-Cc:     linux-usb@vger.kernel.org,
-        =?UTF-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm0=?=
-         =?UTF-8?B?7Jew6rWs7YyA?= <mkbyeon@lselectric.co.kr>,
-        Linux team <team-linux@rtst.co.kr>,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <876c53b92f99623bae45d5c0c5ae79ee3e24f745.1628239345.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 8=EC=9B=94 9=EC=9D=BC (=EC=9B=94) =EC=98=A4=EC=A0=84 10:27, P=
-eter Chen <peter.chen@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On 21-08-04 11:03:44, Jeaho Hwang wrote:
-> > Hi. linux-usb and linux-rt experts.
-> > >
-> > > On 21-08-02 17:35:01, Jeaho Hwang wrote:
-> > > > Hi.
-> > > >
-> > > > We found an infinite loop inside the function hw_ep_set_halt
-> > > > (drivers/usb/chipidea/udc.c) if a cablle is repeatedly
-> > > > connnected/disconnected while ping through RNDIS with chipidea USB =
-device.
-> > > >
-> > > > Using ftrace tracing, we found that hw_ep_set_halt is called due to=
- error
-> > > > return of hw_ep_prime(drivers/usb/chipidea/udc.c:202) which is call=
-ed from
-> > > > isr_tr_complete_handler -> isr_setup_status_phase -> _ep_queue.
-> > > >
-> > > > The comment of function hw_ep_prime says (execute without interrupt=
-ion) but
-> > > > timer interrupt is occurred while hw_ep_prime is executing. We beli=
-eve that
-> > > > the interrupt causes an error return of hw_ep_prime. We tried to pr=
-otect
-> > > > hw_ep_prime from irqs and then no case of the infinite loop is occu=
-rred.
-> > > >
-> > > > I want ask if it is appropriate way that turning off irq inside (th=
-readed)
-> > > > irq handlers. And should we explicitly turn off irqs before calling
-> > > > hw_ep_prime?
-> > > >
-> > >
-> > > Jeaho, do you use RT-Linux or standard Linux? The function hw_ep_prim=
-e is
-> > > only called at udc_irq which is registered as top-half irq handlers.
-> > > Why the timer interrupt is occurred when hw_ep_prime is executing?
-> >
-> > We use preempt_RT so timer interrupt could be occurred. Now I found
-> > out that forced threaded irq handler disables local irq on standard
-> > linux so It is a linux-rt issue. Then should I make patch which
-> > disables local irqs during hw_ep_prime for RT kernel and suggest it to
-> > linux-rt maintainers?
-> >
-> > Thanks for a kind answer Peter.
-> >
->
+Hi Michal,
 
-Thanks Peter.
+Thank you for the patch.
 
-> No, that will lead to deadlock since the normal request queue API functio=
-n
-> ep_queue disables irq which also calls into hw_ep_prime.
+On Fri, Aug 06, 2021 at 10:42:29AM +0200, Michal Simek wrote:
+> Remove is-dual not documented property and also update comment about QSPI
+> sizes to reflect dual configuration as 16MB + 16MB.
+> Only single configuration is supported now.
+> 
+> Reported-by: Quanyang Wang <quanyang.wang@windriver.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
-ep_queue disables irq by calling spin_lock_irqsave but it actually
-does not disable irq for RT kernel.
-Therefore local_irq_save at hw_ep_prime would not cause deadlock if
-ep_queue calls it, i think.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Is it anything wrong?
+> ---
+> 
+>  arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts | 3 +--
+>  arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts | 3 +--
+>  arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts | 3 +--
+>  3 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> index becfc23a5610..3d8d14ef1ede 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> @@ -937,9 +937,8 @@ &psgtr {
+>  
+>  &qspi {
+>  	status = "okay";
+> -	is-dual = <1>;
+>  	flash@0 {
+> -		compatible = "m25p80", "jedec,spi-nor"; /* 32MB */
+> +		compatible = "m25p80", "jedec,spi-nor"; /* 16MB + 16MB */
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		reg = <0x0>;
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> index d2219373580a..057c04352591 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> @@ -931,9 +931,8 @@ &psgtr {
+>  
+>  &qspi {
+>  	status = "okay";
+> -	is-dual = <1>;
+>  	flash@0 {
+> -		compatible = "m25p80", "jedec,spi-nor"; /* 32MB */
+> +		compatible = "m25p80", "jedec,spi-nor"; /* 16MB + 16MB */
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		reg = <0x0>;
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+> index dac5ba67a160..e1fff62a4cd5 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
+> @@ -773,9 +773,8 @@ &psgtr {
+>  
+>  &qspi {
+>  	status = "okay";
+> -	is-dual = <1>;
+>  	flash@0 {
+> -		compatible = "m25p80", "jedec,spi-nor"; /* 32MB */
+> +		compatible = "m25p80", "jedec,spi-nor"; /* 16MB + 16MB */
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  		reg = <0x0>;
 
->
-> For RT kernel, you may try to disable local irq at isr_setup_status_phase=
-.
->
-> --
->
-> Thanks,
-> Peter Chen
->
+-- 
+Regards,
 
-
---=20
-=ED=99=A9=EC=9E=AC=ED=98=B8, Jay Hwang, linux team manager of RTst
-010-7242-1593
+Laurent Pinchart
