@@ -2,358 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AD53E4B46
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6263E4B4B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbhHIRzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232464AbhHIRzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:55:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B37F260E78;
-        Mon,  9 Aug 2021 17:55:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628531710;
-        bh=xt5HUGt3PKLJ5RZuYecvLk5allJyEl1mTduSPvyDnO0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=kOQSutxxbkMJsjoK78auSzAw5REL24ZY99I1nNSZh/QbzXzgMb9NZTXeUVcwefUWE
-         ynYFdakZzkypBhDG7HwX0mdwvhnykx6tp8HHg41T9Hcbog7CbgLLWAKnRwvP6vT3lm
-         9C/y22aYDycMWlMOI6cuxNg1nng+ohUQg7zgB+2Nj9C9xHWSMjBc/57sngDTnjxGID
-         S7BgVJxPO4H7OUHHW+suttm4ixzstakxqYVh94FJYdDSOxdQpYlQMpvy7TX4WazBYL
-         d/YaSms0MIZBFdYUDHfQe7NQanD9IQDYNlkvbC3XJn7FUHPMa0oK0xGqXh1lHaKwj2
-         GHN2r2vBQXZHA==
-Content-Type: text/plain; charset="utf-8"
+        id S234911AbhHIR4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232464AbhHIR4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 13:56:45 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FACC0613D3;
+        Mon,  9 Aug 2021 10:56:24 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id c16so17313000plh.7;
+        Mon, 09 Aug 2021 10:56:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iMjG88RfqbH3GsgcXA5mv3GuI6oCcG41dDNUrFFXLAQ=;
+        b=EViVv89zPeRqrGYf9LSDfx7ltGQyAh4Avv1iqGXrZVN8IJuT63NhOIxiCyk8Rx6sFQ
+         MnHutJOGM4qObGTB3+2cDbzN4XBxMdUdYKKb4gdQgVYXZpLOwn/LJTBX3yu2AGv1TQf3
+         gHD7PNproN/353NWNPLbKsHhp8I5TfXCuEG8GTgqdzoTROjdYr7R+QVuJWXGMX3O1nKM
+         RVW2Isxs0xuZHcR/6YqF12JGhSFNL7twyZAqbDPV4zDkbkQQ1mDpob6v3yKEJ83Wgmje
+         DnZ5wIak32lAhxG4fYr8PeZhzjGZR40FVtp2z4KdVrsEgpAFr/Ky4zrJzy/tHZhuJrQU
+         8oJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iMjG88RfqbH3GsgcXA5mv3GuI6oCcG41dDNUrFFXLAQ=;
+        b=RraRLUPoY3j9EodXKzepl2u09kx/n0wVJEPmIw+ow7OaRrXbGIVFn7uBCY594ud6JO
+         8cfWxASx02+p1ZSJwjRAFrm+6uk4KM0XF8KHXX6JGljw/qei0iwMUb4QA9IUkWnUhiu/
+         fLfhcHYMtEOSOpajBtkrIoVQk3vPVAlesmzjpgad1ZwoRzn0bbh9Gv79O2ifjcYjbk3a
+         pYd1IrwAsaYnQ5v4GNWTvxZ0P30V41zafy4TbrG68eO2tOwM9E9BBwnlsFm/6FhbFYGc
+         oWU6Kihv6ewPN35Muc7Q74WDB6Ph2CQfG1Dm0yxfpJoXSLcWxjGU5HCMKIj66SuD7Z+b
+         5gZw==
+X-Gm-Message-State: AOAM532i++4QEo4hG87ag7ne4yqxi09EiOTGX6JKxovPxmAGTDNInWfy
+        b2VGQjIIqV5IItIp0Q1w0kI=
+X-Google-Smtp-Source: ABdhPJxHfYqFvwoB8xKnP4oxRsbZ9Lzyar+mwb4Rea7hgUEL0NvwGLrtk99GSAXFKwmlrj/fCUWr6A==
+X-Received: by 2002:a17:90a:e018:: with SMTP id u24mr4349253pjy.126.1628531783941;
+        Mon, 09 Aug 2021 10:56:23 -0700 (PDT)
+Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:2:106e:6ed1:5da1:2ac4])
+        by smtp.gmail.com with ESMTPSA id x14sm20589708pfa.127.2021.08.09.10.56.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 10:56:23 -0700 (PDT)
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+Subject: [PATCH V3 00/13] x86/Hyper-V: Add Hyper-V Isolation VM support
+Date:   Mon,  9 Aug 2021 13:56:04 -0400
+Message-Id: <20210809175620.720923-1-ltykernel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1627972461-2627-4-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1627972461-2627-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1627972461-2627-4-git-send-email-hsin-hsiung.wang@mediatek.com>
-Subject: Re: [PATCH v10 3/5] spmi: mediatek: Add support for MT6873/8192
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 09 Aug 2021 10:55:09 -0700
-Message-ID: <162853170949.1975443.12492156194100139076@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Hsin-Hsiung Wang (2021-08-02 23:34:19)
-> diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
-> new file mode 100644
-> index 000000000000..94c45d46ab0c
-> --- /dev/null
-> +++ b/drivers/spmi/spmi-mtk-pmif.c
-> @@ -0,0 +1,465 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Copyright (c) 2021 MediaTek Inc.
-> +
-> +#include <linux/clk.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-include platform_device.h for the platform device driver that this is.
+Hyper-V provides two kinds of Isolation VMs. VBS(Virtualization-based
+security) and AMD SEV-SNP unenlightened Isolation VMs. This patchset
+is to add support for these Isolation VM support in Linux.
 
-> +#include <linux/spmi.h>
-> +
-> +#define SWINF_IDLE     0x00
-> +#define SWINF_WFVLDCLR 0x06
-> +
-> +#define GET_SWINF(x)   (((x) >> 1) & 0x7)
-> +
-> +#define PMIF_CMD_REG_0         0
-> +#define PMIF_CMD_REG           1
-> +#define PMIF_CMD_EXT_REG       2
-> +#define PMIF_CMD_EXT_REG_LONG  3
-> +
-> +#define PMIF_DELAY_US   10
-> +#define PMIF_TIMEOUT_US (10 * 1000)
-> +
-> +#define PMIF_CHAN_OFFSET 0x5
-> +
-> +#define PMIF_MAX_CLKS  3
-> +
-> +#define SPMI_OP_ST_BUSY 1
-> +
-> +struct ch_reg {
-> +       u32 ch_sta;
-> +       u32 wdata;
-> +       u32 rdata;
-> +       u32 ch_send;
-> +       u32 ch_rdy;
-> +};
-> +
-> +struct pmif_data {
-> +       const u32       *regs;
-> +       const u32       *spmimst_regs;
-> +       u32     soc_chan;
-> +};
-> +
-> +struct pmif {
-> +       void __iomem    *base;
-> +       void __iomem    *spmimst_base;
-> +       struct ch_reg   chan;
-> +       struct clk_bulk_data clks[PMIF_MAX_CLKS];
-> +       u32 nclks;
+The memory of these vms are encrypted and host can't access guest
+memory directly. Hyper-V provides new host visibility hvcall and
+the guest needs to call new hvcall to mark memory visible to host
+before sharing memory with host. For security, all network/storage
+stack memory should not be shared with host and so there is bounce
+buffer requests.
 
-size_t? Surely 32-bits isn't important.
+Vmbus channel ring buffer already plays bounce buffer role because
+all data from/to host needs to copy from/to between the ring buffer
+and IO stack memory. So mark vmbus channel ring buffer visible.
 
-> +       const struct pmif_data *data;
-> +};
-> +
-> +static const char * const pmif_clock_names[] =3D {
-> +       "pmif_sys_ck", "pmif_tmr_ck", "spmimst_clk_mux",
-> +};
-[...]
-> +
-> +static bool pmif_is_fsm_vldclr(struct pmif *arb)
-> +{
-> +       u32 reg_rdata;
-> +
-> +       reg_rdata =3D pmif_readl(arb, arb->chan.ch_sta);
+There are two exceptions - packets sent by vmbus_sendpacket_
+pagebuffer() and vmbus_sendpacket_mpb_desc(). These packets
+contains IO stack memory address and host will access these memory.
+So add allocation bounce buffer support in vmbus for these packets.
 
-Newline here please.
+For SNP isolation VM, guest needs to access the shared memory via
+extra address space which is specified by Hyper-V CPUID HYPERV_CPUID_
+ISOLATION_CONFIG. The access physical address of the shared memory
+should be bounce buffer memory GPA plus with shared_gpa_boundary
+reported by CPUID.
 
-> +       return GET_SWINF(reg_rdata) =3D=3D SWINF_WFVLDCLR;
-> +}
-> +
-> +static int pmif_arb_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid)
-> +{
-> +       struct pmif *arb =3D spmi_controller_get_drvdata(ctrl);
-> +       u32 rdata, cmd;
-> +       int ret;
-> +
-> +       /* Check the opcode */
-> +       if (opc < SPMI_CMD_RESET || opc > SPMI_CMD_WAKEUP)
-> +               return -EINVAL;
-> +
-> +       cmd =3D opc - SPMI_CMD_RESET;
-> +
-> +       mtk_spmi_writel(arb, (cmd << 0x4) | sid, SPMI_OP_ST_CTRL);
-> +       ret =3D readl_poll_timeout_atomic(arb->spmimst_base + arb->data->=
-spmimst_regs[SPMI_OP_ST_STA],
-> +                                       rdata, (rdata & SPMI_OP_ST_BUSY) =
-=3D=3D SPMI_OP_ST_BUSY,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0)
-> +               dev_err(&ctrl->dev, "timeout, err =3D %d\n", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 s=
-id,
-> +                             u16 addr, u8 *buf, size_t len)
-> +{
-> +       struct pmif *arb =3D spmi_controller_get_drvdata(ctrl);
-> +       struct ch_reg *inf_reg;
-> +       int ret;
-> +       u32 data, cmd;
-> +
-> +       /* Check for argument validation. */
-> +       if (sid & ~0xf) {
-> +               dev_err(&ctrl->dev, "exceed the max slv id\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (len > 4) {
-> +               dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, =
-but:%zu requested", len);
 
-Missing newline
+Change since V2:
+       - Drop x86_set_memory_enc static call and use platform check
+         in the __set_memory_enc_dec() to run platform callback of
+	 set memory encrypted or decrypted.
 
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (opc >=3D 0x60 && opc <=3D 0x7f)
-> +               opc =3D PMIF_CMD_REG;
-> +       else if ((opc >=3D 0x20 && opc <=3D 0x2f) || (opc >=3D 0x38 && op=
-c <=3D 0x3f))
-> +               opc =3D PMIF_CMD_EXT_REG_LONG;
-> +       else
-> +               return -EINVAL;
-> +
-> +       /* Wait for Software Interface FSM state to be IDLE. */
-> +       inf_reg =3D &arb->chan;
-> +       ret =3D readl_poll_timeout_atomic(arb->base + arb->data->regs[inf=
-_reg->ch_sta],
-> +                                       data, GET_SWINF(data) =3D=3D SWIN=
-F_IDLE,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0) {
-> +               /* set channel ready if the data has transferred */
-> +               if (pmif_is_fsm_vldclr(arb))
-> +                       pmif_writel(arb, 1, inf_reg->ch_rdy);
-> +               dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
-> +               goto out;
-> +       }
-> +
-> +       /* Send the command. */
-> +       cmd =3D (opc << 30) | (sid << 24) | ((len - 1) << 16) | addr;
-> +       pmif_writel(arb, cmd, inf_reg->ch_send);
-> +
-> +       /*
-> +        * Wait for Software Interface FSM state to be WFVLDCLR,
-> +        * read the data and clear the valid flag.
-> +        */
-> +       ret =3D readl_poll_timeout_atomic(arb->base + arb->data->regs[inf=
-_reg->ch_sta],
-> +                                       data, GET_SWINF(data) =3D=3D SWIN=
-F_WFVLDCLR,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0) {
-> +               dev_err(&ctrl->dev, "failed to wait for SWINF_WFVLDCLR\n"=
-);
-> +               goto out;
-> +       }
-> +
-> +       data =3D pmif_readl(arb, inf_reg->rdata);
-> +       memcpy(buf, &data, len);
-> +       pmif_writel(arb, 1, inf_reg->ch_rdy);
-> +
-> +out:
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +
-> +static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 =
-sid,
-> +                              u16 addr, const u8 *buf, size_t len)
-> +{
-> +       struct pmif *arb =3D spmi_controller_get_drvdata(ctrl);
-> +       struct ch_reg *inf_reg;
-> +       int ret;
-> +       u32 data, cmd;
-> +
-> +       if (len > 4) {
-> +               dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, =
-but:%zu requested", len);
+Change since V1:
+       - Introduce x86_set_memory_enc static call and so platforms can
+         override __set_memory_enc_dec() with their implementation
+       - Introduce sev_es_ghcb_hv_call_simple() and share code
+         between SEV and Hyper-V code.
+       - Not remap monitor pages in the non-SNP isolation VM
+       - Make swiotlb_init_io_tlb_mem() return error code and return
+         error when dma_map_decrypted() fails.
 
-Missing newline
+Change since RFC V4:
+       - Introduce dma map decrypted function to remap bounce buffer
+          and provide dma map decrypted ops for platform to hook callback.        
+       - Split swiotlb and dma map decrypted change into two patches
+       - Replace vstart with vaddr in swiotlb changes.
 
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* Check the opcode */
-> +       if (opc >=3D 0x40 && opc <=3D 0x5F)
-> +               opc =3D PMIF_CMD_REG;
-> +       else if ((opc <=3D 0xF) || (opc >=3D 0x30 && opc <=3D 0x37))
-> +               opc =3D PMIF_CMD_EXT_REG_LONG;
-> +       else if (opc >=3D 0x80)
-> +               opc =3D PMIF_CMD_REG_0;
-> +       else
-> +               return -EINVAL;
-> +
-> +       /* Wait for Software Interface FSM state to be IDLE. */
-> +       inf_reg =3D &arb->chan;
-> +       ret =3D readl_poll_timeout_atomic(arb->base + arb->data->regs[inf=
-_reg->ch_sta],
-> +                                       data, GET_SWINF(data) =3D=3D SWIN=
-F_IDLE,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0) {
-> +               /* set channel ready if the data has transferred */
-> +               if (pmif_is_fsm_vldclr(arb))
-> +                       pmif_writel(arb, 1, inf_reg->ch_rdy);
-> +               dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
-> +               goto out;
-> +       }
-> +
-> +       /* Set the write data. */
-> +       memcpy(&data, buf, len);
-> +       pmif_writel(arb, data, inf_reg->wdata);
-> +
-> +       /* Send the command. */
-> +       cmd =3D (opc << 30) | BIT(29) | (sid << 24) | ((len - 1) << 16) |=
- addr;
-> +       pmif_writel(arb, cmd, inf_reg->ch_send);
-> +
-> +out:
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       return 0;
+Change since RFC v3:
+       - Add interface set_memory_decrypted_map() to decrypt memory and
+         map bounce buffer in extra address space
+       - Remove swiotlb remap function and store the remap address
+         returned by set_memory_decrypted_map() in swiotlb mem data structure.
+       - Introduce hv_set_mem_enc() to make code more readable in the __set_memory_enc_dec().
 
-Simplify to=20
+Change since RFC v2:
+       - Remove not UIO driver in Isolation VM patch
+       - Use vmap_pfn() to replace ioremap_page_range function in
+       order to avoid exposing symbol ioremap_page_range() and
+       ioremap_page_range()
+       - Call hv set mem host visibility hvcall in set_memory_encrypted/decrypted()
+       - Enable swiotlb force mode instead of adding Hyper-V dma map/unmap hook
+       - Fix code style
 
-	out:
-		return ret;
 
-> +}
-> +
-> +static const struct pmif_data mt6873_pmif_arb =3D {
-> +       .regs =3D mt6873_regs,
-> +       .spmimst_regs =3D mt6873_spmi_regs,
-> +       .soc_chan =3D 2,
-> +};
-> +
-> +static int mtk_spmi_probe(struct platform_device *pdev)
-> +{
-> +       struct pmif *arb;
-> +       struct spmi_controller *ctrl;
-> +       int err, i;
-> +       u32 chan_offset;
-> +
-> +       ctrl =3D spmi_controller_alloc(&pdev->dev, sizeof(*arb));
-> +       if (!ctrl)
-> +               return -ENOMEM;
-> +
-> +       arb =3D spmi_controller_get_drvdata(ctrl);
-> +       arb->data =3D of_device_get_match_data(&pdev->dev);
+Tianyu Lan (13):
+  x86/HV: Initialize GHCB page in Isolation VM
+  x86/HV: Initialize shared memory boundary in the Isolation VM.
+  x86/HV: Add new hvcall guest address host visibility support
+  HV: Mark vmbus ring buffer visible to host in Isolation VM
+  HV: Add Write/Read MSR registers via ghcb page
+  HV: Add ghcb hvcall support for SNP VM
+  HV/Vmbus: Add SNP support for VMbus channel initiate message
+  HV/Vmbus: Initialize VMbus ring buffer for Isolation VM
+  DMA: Add dma_map_decrypted/dma_unmap_encrypted() function
+  x86/Swiotlb: Add Swiotlb bounce buffer remap function for HV IVM
+  HV/IOMMU: Enable swiotlb bounce buffer for Isolation VM
+  HV/Netvsc: Add Isolation VM support for netvsc driver
+  HV/Storvsc: Add Isolation VM support for storvsc driver
 
-Use device_get_match_data() instead please.
+ arch/x86/hyperv/Makefile           |   2 +-
+ arch/x86/hyperv/hv_init.c          |  75 ++++++--
+ arch/x86/hyperv/ivm.c              | 295 +++++++++++++++++++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h |  20 ++
+ arch/x86/include/asm/mshyperv.h    |  87 ++++++++-
+ arch/x86/include/asm/sev.h         |   3 +
+ arch/x86/kernel/cpu/mshyperv.c     |   5 +
+ arch/x86/kernel/sev-shared.c       |  63 +++---
+ arch/x86/mm/pat/set_memory.c       |  19 +-
+ arch/x86/xen/pci-swiotlb-xen.c     |   3 +-
+ drivers/hv/Kconfig                 |   1 +
+ drivers/hv/channel.c               |  54 +++++-
+ drivers/hv/connection.c            |  71 ++++++-
+ drivers/hv/hv.c                    | 129 +++++++++----
+ drivers/hv/hyperv_vmbus.h          |   3 +
+ drivers/hv/ring_buffer.c           |  84 ++++++--
+ drivers/hv/vmbus_drv.c             |   3 +
+ drivers/iommu/hyperv-iommu.c       |  65 +++++++
+ drivers/net/hyperv/hyperv_net.h    |   6 +
+ drivers/net/hyperv/netvsc.c        | 144 +++++++++++++-
+ drivers/net/hyperv/rndis_filter.c  |   2 +
+ drivers/scsi/storvsc_drv.c         |  68 ++++++-
+ include/asm-generic/hyperv-tlfs.h  |   1 +
+ include/asm-generic/mshyperv.h     |  54 +++++-
+ include/linux/dma-map-ops.h        |   9 +
+ include/linux/hyperv.h             |  17 ++
+ include/linux/swiotlb.h            |   4 +
+ kernel/dma/mapping.c               |  22 +++
+ kernel/dma/swiotlb.c               |  32 +++-
+ 29 files changed, 1212 insertions(+), 129 deletions(-)
+ create mode 100644 arch/x86/hyperv/ivm.c
 
-> +       if (!arb->data) {
-> +               err =3D -EINVAL;
-> +               dev_err(&pdev->dev, "Cannot get drv_data\n");
-> +               goto err_put_ctrl;
-> +       }
-> +
-> +       arb->base =3D devm_platform_ioremap_resource_byname(pdev, "pmif");
-> +       if (IS_ERR(arb->base)) {
-> +               err =3D PTR_ERR(arb->base);
-> +               dev_err(&pdev->dev, "pmif failed to get the remappped mem=
-ory\n");
+-- 
+2.25.1
 
-Please drop print as the API already prints errors for every problem.
-
-> +               goto err_put_ctrl;
-> +       }
-> +
-> +       arb->spmimst_base =3D devm_platform_ioremap_resource_byname(pdev,=
- "spmimst");
-> +       if (IS_ERR(arb->spmimst_base)) {
-> +               err =3D PTR_ERR(arb->spmimst_base);
-> +               dev_err(&pdev->dev, "spmimst failed to get the remappped =
-memory\n");
-
-Please drop print as the API already prints errors for every problem.
-
-> +               goto err_put_ctrl;
-> +       }
-> +
-> +       arb->nclks =3D ARRAY_SIZE(pmif_clock_names);
-> +       if (arb->nclks > PMIF_MAX_CLKS) {
-> +               err =3D -EINVAL;
-> +               dev_err(&pdev->dev, "exceed the max clock numbers\n");
-
-Do we really care? The dt schema should be checking this instead of the
-driver.
-
-> +               goto err_put_ctrl;
-> +       }
-> +
-> +       for (i =3D 0; i < arb->nclks; i++)
-> +               arb->clks[i].id =3D pmif_clock_names[i];
-> +
