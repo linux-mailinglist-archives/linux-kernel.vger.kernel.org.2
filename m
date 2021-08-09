@@ -2,112 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F5B3E48E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBC23E48F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbhHIPd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235537AbhHIPbW (ORCPT
+        id S235959AbhHIPe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:34:57 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:47725 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234934AbhHIPeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:31:22 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA92C061798
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:30:13 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id l11so5110895plk.6
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0AECcEi2rpt5gm0PQCPyfbI2DBqYy38YFfxxfkJxtfU=;
-        b=nvgDcF9oG4oweN91pNjyW0PwF3Wwq1kdB8edecupp/0AAlGgeVxfi6VaUQYhaBKIEQ
-         KfxX7PsGRvTGaymoz7UKsMn7m6U3/pvHIAtH9dSiNosjr6WZeZAhce0vGW8uDjdRtKax
-         a6u7Ig4lBKVRJw5VhquaWiKNLQ3TVn7Q6byy7hy4H8juTQJEau+Z6YqtOXl1dN4R4Mij
-         bqpUPJNiavaIwG/MtPnpZ81XQ1+n8tDBylpVsX3eAbu8sPwPVk7UfHhNHRcSvnMto/9O
-         q9iNpgDuNR3OjvkApqeNWTi1MltBiczdHnuiMlcCoaP/YwLWHkMDcMXHnNt53lnK9vCY
-         cFaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0AECcEi2rpt5gm0PQCPyfbI2DBqYy38YFfxxfkJxtfU=;
-        b=Ov9Yt/XvaMkkrpS+pLReBd/K2Txoc9fjHKIo+yS+XSwqKfIOdelI/y48X+eUF1hjII
-         zkYqY3Bju4dvkxhfPgS+nUrIc8eEFzhtpdKEOXcWuv+QdAt/pyRE6dfn/FTyD19t1Eyu
-         vts9hnWRI32OzcYuvaOa86PvC2KF+ZiuQ7H+1duJfCMCqxlzA5eqU1twBNJ/lxvXDsrA
-         G7kbCZgC7z6R5JHZ8725PzJLHO4eGC8heQ8lsS+ghoVgvLmkdXeEHnLNYLlA7DuFxp+e
-         +vLEs4SYq38BhTE/Y1VPiH9APRAln10G8D+ADWaZdbnRR67eA1MNz8Bol3zEchQNJPDB
-         Q2Ng==
-X-Gm-Message-State: AOAM532CzUFIfe3XHYeepK62OhW3LiO5UvM8t5y10k+5XVI0/UyTGywo
-        EWdOBWjYiUkepw6WhKVKxvQwpw==
-X-Google-Smtp-Source: ABdhPJz3gQIyTN45i1aPVFveM3Bul2uCaHAGbhBoyHJdaWipsW4dCYaNLy3z+6I5IMCotxAlOsp8pQ==
-X-Received: by 2002:a17:90a:bb0b:: with SMTP id u11mr36773910pjr.18.1628523012466;
-        Mon, 09 Aug 2021 08:30:12 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y2sm19717321pjl.6.2021.08.09.08.30.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 08:30:11 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 15:30:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
- level
-Message-ID: <YRFKABg2MOJxcq+y@google.com>
-References: <20210808192658.2923641-1-wei.huang2@amd.com>
- <20210808192658.2923641-2-wei.huang2@amd.com>
- <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
- <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
- <20210809042703.25gfuuvujicc3vj7@linux.intel.com>
- <73bbaac0-701c-42dd-36da-aae1fed7f1a0@amd.com>
- <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
+        Mon, 9 Aug 2021 11:34:02 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 07AF45C017C;
+        Mon,  9 Aug 2021 11:33:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 09 Aug 2021 11:33:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=
+        from:to:cc:subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; s=fm3; bh=GuQ3t8asJUM3Hiy+Ty+shtYHpK
+        tsHUjYSTv9E22Sm5I=; b=u4jLJAnBvr3rnpqpbaA0DRUuM4L7CkEiGWmXpoHIaQ
+        rDYdj2g9MkTeWV91i/x9QF9gGJ/ht7a8FULqKPsQOUMtaeBMzbxhnvVxTd4O3eSW
+        4Io2+E3jo3xiRM0Yhd30uPS/5wwxSybvA1Gyc8oe6jE0BQfw5AGVZtyXRdt9vyyC
+        qzr8GcJlcqfgaldp+91SbkuuvAihQCQgHpkBnLVlgAMVufgBJDnG/eSv5eH/aWly
+        W7uErYtz0wZbvqZwHphOCyQn/kg/hkSahNG2gMn0B8h5TmjAc9VCDhN+ztUJ+X/y
+        zglLvIwSdDtDI/tObFuhRjNmWYRCRfsZrc8RtoWkaYCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GuQ3t8
+        asJUM3Hiy+Ty+shtYHpKtsHUjYSTv9E22Sm5I=; b=dBKbkEfFJSMrbqKQG0x1Mc
+        NZyMSUTGwdvXa2eb6P+TMQDpzjidi++mMUrNGOiPEJ+M6C+sy0wa2OG9pbwF4CWx
+        /0p2kKr7UZWtVqPUSlrmJBBCb1rjfM2egXBaMAUKBj+ApFQhBr7jOBlAhk3bpf04
+        B+M/WS/ttQkqMWEJ2jpcUI60dcjTh1g/0ugnNjjnklxpxRrBJyMfNbOpSpsLWPyU
+        KBzxgFyyow1SxfIF+NHpRBMiMFEgjZm+08+/n6txLPwiwG5clpTJyVCAEMO0FHsO
+        Gm2z40iOhTnDSnU7OeKtkOoBiVCvBiSr6E45I8kF8+KlnLbOYJaMHgKEbe+DNzNA
+        ==
+X-ME-Sender: <xms:0koRYeUIjXEOzXHfr5xfHX3NZIubGbVuWHQHykOZkVQCV3pcaLcFMg>
+    <xme:0koRYamjHCDHDZMZF98krujM4yrqqi-qmeJosuVs9LHPiennv3PV3P_lIQaO4hMKx
+    C_drpVJMCCYKzqlww>
+X-ME-Received: <xmr:0koRYSbdZ8zokm2BF0sKv5aT69YEg4krbjkXmAgshf9-ZwwiUN4_W7_COY9itk6IcJe5n6CwzgU6zLF5VWxsWQmJ1TTtjA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeejgdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofggtgfgsehtkeertdertdejnecuhfhrohhmpeetlhihshhsrgcu
+    tfhoshhsuceohhhisegrlhihshhsrgdrihhsqeenucggtffrrghtthgvrhhnpedtleegvd
+    etfeehuddthfeuheefvedvtedtgfevkeetgefftdetleevjefhleevgeenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehqhihlihhsshesvghvvg
+    drqhihlhhishhsrdhnvght
+X-ME-Proxy: <xmx:0koRYVW51HDgLFES2d4wfoLShb8SrirBvrpihP1Hvjo6KMBKSxd10Q>
+    <xmx:0koRYYkLtfXArof-yJNpRXd3bEKojMMS282qZJbX8srXr_aFgKcb1w>
+    <xmx:0koRYaebpTfO9we8X3oLfxRrIMc-5zIf-qaKCqPnyPWdbaW_XZCQ-g>
+    <xmx:00oRYSVqittr4krcEgd5udMfcxb_CmLwfDmoOa2kqBFnAWlPIW_kzQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 9 Aug 2021 11:33:38 -0400 (EDT)
+Received: by eve.qyliss.net (Postfix, from userid 1000)
+        id 937AD16D3; Mon,  9 Aug 2021 15:33:34 +0000 (UTC)
+From:   Alyssa Ross <hi@alyssa.is>
+To:     linux-perf-users@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Alyssa Ross <hi@alyssa.is>
+Subject: [PATCH] tools/perf/Documentation: fix accidental em-dashes
+Date:   Mon,  9 Aug 2021 15:32:26 +0000
+Message-Id: <20210809153226.332545-1-hi@alyssa.is>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021, Yu Zhang wrote:
-> On Sun, Aug 08, 2021 at 11:33:44PM -0500, Wei Huang wrote:
-> > 
-> > On 8/8/21 11:27 PM, Yu Zhang wrote:
-> > > On Sun, Aug 08, 2021 at 11:11:40PM -0500, Wei Huang wrote:
-> > > > 
-> > > > 
-> > > > On 8/8/21 10:58 PM, Yu Zhang wrote:
-> > > > > On Sun, Aug 08, 2021 at 02:26:56PM -0500, Wei Huang wrote:
-> > > > > > AMD future CPUs will require a 5-level NPT if host CR4.LA57 is set.
-> > > > > 
-> > > > > Sorry, but why? NPT is not indexed by HVA.
-> > > > 
-> > > > NPT is not indexed by HVA - it is always indexed by GPA. What I meant is NPT
-> > > > page table level has to be the same as the host OS page table: if 5-level
-> > > > page table is enabled in host OS (CR4.LA57=1), guest NPT has to 5-level too.
-> > > 
-> > > I know what you meant. But may I ask why?
-> > 
-> > I don't have a good answer for it. From what I know, VMCB doesn't have a
-> > field to indicate guest page table level. As a result, hardware relies on
-> > host CR4 to infer NPT level.
-> 
-> I guess you mean not even in the N_CR3 field of VMCB? 
+" -- " is an em dash (—) in asciidoc, so all these examples that were
+supposed to be producing a literal two dashes were being misrendered.
 
-Correct, nCR3 is a basically a pure representation of a regular CR3.
+Signed-off-by: Alyssa Ross <hi@alyssa.is>
+---
+ tools/perf/Documentation/intel-hybrid.txt |  2 +-
+ tools/perf/Documentation/perf-c2c.txt     |  2 +-
+ tools/perf/Documentation/perf-iostat.txt  |  4 ++--
+ tools/perf/Documentation/perf-record.txt  |  2 +-
+ tools/perf/Documentation/perf-stat.txt    | 14 +++++++-------
+ 5 files changed, 12 insertions(+), 12 deletions(-)
 
-> Then it's not a broken design - it's a limitation of SVM. :)
+diff --git a/tools/perf/Documentation/intel-hybrid.txt b/tools/perf/Documentation/intel-hybrid.txt
+index 07f0aa3bf682..c9302096dc46 100644
+--- a/tools/perf/Documentation/intel-hybrid.txt
++++ b/tools/perf/Documentation/intel-hybrid.txt
+@@ -140,7 +140,7 @@ displayed. The percentage is the event's running time/enabling time.
+ One example, 'triad_loop' runs on cpu16 (atom core), while we can see the
+ scaled value for core cycles is 160,444,092 and the percentage is 0.47%.
+ 
+-perf stat -e cycles -- taskset -c 16 ./triad_loop
++perf stat -e cycles \-- taskset -c 16 ./triad_loop
+ 
+ As previous, two events are created.
+ 
+diff --git a/tools/perf/Documentation/perf-c2c.txt b/tools/perf/Documentation/perf-c2c.txt
+index c81d72e3eecf..de6beedb7283 100644
+--- a/tools/perf/Documentation/perf-c2c.txt
++++ b/tools/perf/Documentation/perf-c2c.txt
+@@ -9,7 +9,7 @@ SYNOPSIS
+ --------
+ [verse]
+ 'perf c2c record' [<options>] <command>
+-'perf c2c record' [<options>] -- [<record command options>] <command>
++'perf c2c record' [<options>] \-- [<record command options>] <command>
+ 'perf c2c report' [<options>]
+ 
+ DESCRIPTION
+diff --git a/tools/perf/Documentation/perf-iostat.txt b/tools/perf/Documentation/perf-iostat.txt
+index 165176944031..04d510364384 100644
+--- a/tools/perf/Documentation/perf-iostat.txt
++++ b/tools/perf/Documentation/perf-iostat.txt
+@@ -9,7 +9,7 @@ SYNOPSIS
+ --------
+ [verse]
+ 'perf iostat' list
+-'perf iostat' <ports> -- <command> [<options>]
++'perf iostat' <ports> \-- <command> [<options>]
+ 
+ DESCRIPTION
+ -----------
+@@ -85,4 +85,4 @@ EXAMPLES
+ 
+ SEE ALSO
+ --------
+-linkperf:perf-stat[1]
+\ No newline at end of file
++linkperf:perf-stat[1]
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index d71bac847936..f1079ee7f2ec 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -9,7 +9,7 @@ SYNOPSIS
+ --------
+ [verse]
+ 'perf record' [-e <EVENT> | --event=EVENT] [-a] <command>
+-'perf record' [-e <EVENT> | --event=EVENT] [-a] -- <command> [<options>]
++'perf record' [-e <EVENT> | --event=EVENT] [-a] \-- <command> [<options>]
+ 
+ DESCRIPTION
+ -----------
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 45c2467e4eb2..4c9310be6acc 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -9,8 +9,8 @@ SYNOPSIS
+ --------
+ [verse]
+ 'perf stat' [-e <EVENT> | --event=EVENT] [-a] <command>
+-'perf stat' [-e <EVENT> | --event=EVENT] [-a] -- <command> [<options>]
+-'perf stat' [-e <EVENT> | --event=EVENT] [-a] record [-o file] -- <command> [<options>]
++'perf stat' [-e <EVENT> | --event=EVENT] [-a] \-- <command> [<options>]
++'perf stat' [-e <EVENT> | --event=EVENT] [-a] record [-o file] \-- <command> [<options>]
+ 'perf stat' report [-i file]
+ 
+ DESCRIPTION
+@@ -217,8 +217,8 @@ Append to the output file designated with the -o option. Ignored if -o is not sp
+ 
+ Log output to fd, instead of stderr.  Complementary to --output, and mutually exclusive
+ with it.  --append may be used here.  Examples:
+-     3>results  perf stat --log-fd 3          -- $cmd
+-     3>>results perf stat --log-fd 3 --append -- $cmd
++     3>results  perf stat --log-fd 3          \-- $cmd
++     3>>results perf stat --log-fd 3 --append \-- $cmd
+ 
+ --control=fifo:ctl-fifo[,ack-fifo]::
+ --control=fd:ctl-fd[,ack-fd]::
+@@ -245,7 +245,7 @@ disable events during measurements:
+ 
+  perf stat -D -1 -e cpu-cycles -a -I 1000       \
+            --control fd:${ctl_fd},${ctl_fd_ack} \
+-           -- sleep 30 &
++           \-- sleep 30 &
+  perf_pid=$!
+ 
+  sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
+@@ -265,7 +265,7 @@ disable events during measurements:
+ --post::
+ 	Pre and post measurement hooks, e.g.:
+ 
+-perf stat --repeat 10 --null --sync --pre 'make -s O=defconfig-build/clean' -- make -s -j64 O=defconfig-build/ bzImage
++perf stat --repeat 10 --null --sync --pre 'make -s O=defconfig-build/clean' \-- make -s -j64 O=defconfig-build/ bzImage
+ 
+ -I msecs::
+ --interval-print msecs::
+@@ -496,7 +496,7 @@ $ perf config stat.no-csv-summary=true
+ EXAMPLES
+ --------
+ 
+-$ perf stat -- make
++$ perf stat \-- make
+ 
+    Performance counter stats for 'make':
+ 
+-- 
+2.32.0
 
-That's just a polite way of saying it's a broken design ;-)
-
-Joking aside, NPT opted for a semblance of backwards compatibility at the cost of
-having to carry all the baggage that comes with a legacy design.  Keeping the core
-functionality from IA32 paging presumably miminizes design and hardware costs, and
-required minimal enabling in hypervisors.  The downside is that it's less flexible
-than EPT and has a few warts, e.g. shadowing NPT is gross because the host can't
-easily mirror L1's desired paging mode.
