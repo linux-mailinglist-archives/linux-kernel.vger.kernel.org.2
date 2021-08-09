@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9588F3E3D7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F893E3D7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhHIBVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        id S232632AbhHIBXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhHIBVx (ORCPT
+        with ESMTP id S229891AbhHIBXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:21:53 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EF1C061757;
-        Sun,  8 Aug 2021 18:21:33 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id f3so4023931plg.3;
-        Sun, 08 Aug 2021 18:21:33 -0700 (PDT)
+        Sun, 8 Aug 2021 21:23:00 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D35C061757
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 18:22:39 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id z6-20020a0568302906b02904f268d34f86so15908166otu.2
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 18:22:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qt3JSp3w7IVZ6nUcMxFL1E+Q1Rl42RnvY6bsLilfOP0=;
-        b=ZQwpyZ+oMI7Vub1eMk6YmC/nOH3cVNSQhFDU6QMHq2mNhNdg854h0Q+om7j8VhPexT
-         sZdWOKtYiKhizL+D5Gh0712PCjpAF7YHRitheIe+CBKI5eiZZ+IsQjtcAt47FJYleHP4
-         2lJiQ/JlTWaA1xWXZIkpNK8KXdTtvx0VE7Fd+p5dCdQAFLFUTuZbBdSE9zx+KRiVyIMF
-         Zx5kirwRyGp5E2qA42AK6jmJR0wDxzuYetI+y6v7f9lfiZnAnmCF7gDhnEEi/hyLwr8J
-         rT4c9UnOC5W1kpjcZkdqgW78pzIHHqSS0bzRmJcJwrWBMGznMrXmEbmKw6o6DXDlhAKc
-         vhhw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=90ci/n6jLsbwK/bkwHeIPPX127Rbh+qCSTmy7nz6yIs=;
+        b=hc31EG9utNmLKfIZemAhbVRGRk8plpcYNeZyq8PLJjqfXN66QpESniUSaC5hBgRihO
+         uUnlXMtVmbiVheMl7CHee2nk1wgJ7sxQiYQpTP/1FW9PZyAB3qVLzWIbR809kshLUuqT
+         +LYZ2rLWCmatuO9lIHXabv3T22cGXD+QBFarSrGGtlt04nYNCzIsQ41uUoc51yp+xRpk
+         HPtAHnDMVduLNCjRvHvDyf5b9j+GceT4C54htutvAEdsxzmB7iuB+xIs9BuVugH+DBPn
+         jYj+q9rNe9LTbdCe7VnenNgjjnsmJ+tyf3cjGbFB7oNNxbxKZuakVYH5bwcUXxpaEEPg
+         o4Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qt3JSp3w7IVZ6nUcMxFL1E+Q1Rl42RnvY6bsLilfOP0=;
-        b=b+ScfOpiHeh4BZUEWJgi1DIy8iEZM3nAnplASdgDCrFcxdiIi73I+v7W7ibgEG+MBk
-         R5f3W29mUDhDdL9gcVDbfjctRj5YvjDFKr0zpHT0qwvuuaHzsXKqqF+5N82op9awITMZ
-         U3hy9cC4Pp2ySm/Ij+R7Hpqzb8kKSiF+DIJzRTpyGv3YltjOxLlu3wYT5BKri7HTVvlo
-         q7qweHs/Ck1y2utItqOLsEwZlxjIkAEQRtl+DONojJw4HuVC2LvrpKdxevdr+exxva2U
-         Ynx/6kaGOwsHaVsRXhUyIYviS+snAkEIkiIYokyTPbpEr5HJdSkbWh+9MXiUGm76GtF6
-         IXfw==
-X-Gm-Message-State: AOAM530G1kJe/aldneEWNtTRnfuwY1HqKHHZoD5f0MKH1LHG+zLoLUJl
-        5HgZEehtoXA8bWR3Jjkw8jA=
-X-Google-Smtp-Source: ABdhPJwQOmRestr/bZCmmkkZiGbnzhAGivd+6MhiLaM4ZJQ5qEpW0lMFIFiFFr61Pl4kmlrcWYWwZQ==
-X-Received: by 2002:a17:90b:33c5:: with SMTP id lk5mr33779775pjb.129.1628472093067;
-        Sun, 08 Aug 2021 18:21:33 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id 11sm17482904pfl.41.2021.08.08.18.21.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Aug 2021 18:21:32 -0700 (PDT)
-Subject: [PATCH v4 5/9] docs: pdfdocs: Add conf.py local to translations for
- ascii-art alignment
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
-        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
-References: <39d0fb0f-b248-bca4-2dac-df69e8d697b1@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <79a876fc-a552-f972-4a1b-c6df4cbb36dd@gmail.com>
-Date:   Mon, 9 Aug 2021 10:21:29 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=90ci/n6jLsbwK/bkwHeIPPX127Rbh+qCSTmy7nz6yIs=;
+        b=WmOCDsFIQ5n+UmlklsGZEqV06ur1UxAeIv1vGAfx/WOtax1q4bWKHTQb6SxB8mOsXh
+         pvZ6BKDcQLUZhUq50c1Osq2+TUFwNiCRupiUiF6rvLepoqnE+xh4YwTcbvmZUUbft8iB
+         agESBieWmtqGANTeijYk24RzzpS2U5oMX4WtmLLxSe4uHogJGLrjWoIkToDPHtFFkEoc
+         7OEx+3b2A6XnjyFuY1DJpXv4Hi/78qxlH2/VVGnuqeYM2Vfku2QURNoWr+D1fviOffg9
+         lHkFMpgOAb4BvUEvfnjaRIVCh1HefFUS2N+gNHmLllxD71x2xWazXVIqs/q1xNOvn0zQ
+         pk/g==
+X-Gm-Message-State: AOAM533cKqfvCcKzBtD88Iad9Wv6PmI8AiOOjnUThF3l4rxjoEuVlLOf
+        yiQ1sRLr6peBYVAoECZuVN/i3YO03ws=
+X-Google-Smtp-Source: ABdhPJzW8kyCCB4IizJ0T8zvuOtr1T6TILFcX0hrK0AwWNoE2Jaw/l/gr+LCm5eu5aeL4Aj2DTjOqg==
+X-Received: by 2002:a05:6830:2a09:: with SMTP id y9mr15556562otu.217.1628472159257;
+        Sun, 08 Aug 2021 18:22:39 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e13sm1495572oiw.38.2021.08.08.18.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Aug 2021 18:22:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 8 Aug 2021 18:22:37 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.14-rc5
+Message-ID: <20210809012237.GA3681747@roeck-us.net>
+References: <CAHk-=wg8QmMMBCEYCV0gPM2GqRQObsQ__fK0r8C6SYAg3Upyjg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <39d0fb0f-b248-bca4-2dac-df69e8d697b1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg8QmMMBCEYCV0gPM2GqRQObsQ__fK0r8C6SYAg3Upyjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Globally choosing "Noto Sans Mono CJK SC" would result in sub-optimal look
-of literal blocks in Latin documents.
-Therefore, localize the font choice to translations by adding conf.py under
-Documentation/translations/.
+On Sun, Aug 08, 2021 at 02:00:36PM -0700, Linus Torvalds wrote:
+> Things are looking perfectly normal. Size is nominal, diffstat looks
+> pretty normal, and the changes are all in the usual places, with just
+> under 60% being drivers, and the rest the usual mix of architecture
+> updates, core kernel, networking, and some selftests.
+> 
+> The shortlog is appended for people who want to scan the details, but
+> I can't think of anything in here that looks odd or noteworthy.
+> 
+> Which is just how it should be by rc5.  Let's hope the trend continues,
+> 
 
-The local conf.py is enabled when the command:
+Nothing new on the testing side of things.
 
-    make SPHINXDIRS=translations pdfdocs
+Build results:
+	total: 154 pass: 154 fail: 0
+Qemu test results:
+	total: 481 pass: 480 fail: 1
+Failed tests:
+	arm:z2:pxa_defconfig:nodebug:nocd:nofs:nonvme:noscsi:notests:novirt:nofdt:flash8,384k,2:rootfs
 
-is used to build the PDF.
-Resulting translations.pdf (under Documentation/output/translations/pdf)
-will have properly aligned ascii-art figures.
+The fix for the failing test is queued in -next and in pending-fixes
+and has been there for a while. See commit 45bb1faa29ef ("mtd: core:
+handle flashes without OTP gracefully").
 
-NOTE: There remain mis-aligned ascii-art figures in Korean translations.
-This is due to the font designer's decision to assign slightly narrower
-widths (920) to Hangul characters in "Noto Sans Mono CJK KR" than those
-of Hanja (Hanzi/Kanji) characters (1000) [1].
-
-[1]: https://github.com/googlefonts/noto-cjk/issues/17
-
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
----
- Documentation/translations/conf.py | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
- create mode 100644 Documentation/translations/conf.py
-
-diff --git a/Documentation/translations/conf.py b/Documentation/translations/conf.py
-new file mode 100644
-index 000000000000..e859c2e19e8b
---- /dev/null
-+++ b/Documentation/translations/conf.py
-@@ -0,0 +1,12 @@
-+# -*- coding: utf-8 -*-
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# -- Additinal options for LaTeX output ----------------------------------
-+# font config for ascii-art alignment
-+
-+latex_elements['preamble']  += '''
-+    \\IfFontExistsTF{Noto Sans CJK SC}{
-+	% For CJK ascii-art alignment
-+	\\setmonofont{Noto Sans Mono CJK SC}
-+    }{}
-+'''
--- 
-2.17.1
-
-
+Guenter
