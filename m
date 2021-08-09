@@ -2,120 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E18B3E4DF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68A43E4DF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236259AbhHIUgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:36:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54887 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233281AbhHIUgc (ORCPT
+        id S234552AbhHIUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233894AbhHIUhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:36:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628541371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cXIr/OvsNk3nnyoDdR3LnMpkUZOM2oN0kZNFXKx0yAU=;
-        b=fVFZWDwx5EiNKSWG74Zsix39eKshb7k+4IJgpCG9NDGda7wXwITrQfa9aodqMz7h59jSA4
-        KUdBw/xukE7of29P3C42ro/aWG/uZqxp0/m6C0xMADQ0FeJkpjNWLbKume2ml9McL6ioyf
-        FCuGVhaO92SyVa13fitUPerHpyt1mLU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-78-YocsSu31PyCrS5JpVDdU0w-1; Mon, 09 Aug 2021 16:36:09 -0400
-X-MC-Unique: YocsSu31PyCrS5JpVDdU0w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3383801B3C;
-        Mon,  9 Aug 2021 20:36:08 +0000 (UTC)
-Received: from optiplex-lnx.redhat.com (unknown [10.3.128.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A27AC5B4BC;
-        Mon,  9 Aug 2021 20:36:07 +0000 (UTC)
-From:   Rafael Aquini <aquini@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Waiman Long <llong@redhat.com>
-Subject: [PATCH] ipc: replace costly bailout check in sysvipc_find_ipc()
-Date:   Mon,  9 Aug 2021 16:35:54 -0400
-Message-Id: <20210809203554.1562989-1-aquini@redhat.com>
+        Mon, 9 Aug 2021 16:37:33 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEC8C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 13:37:12 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id l4so10849792ljq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 13:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=vpR69HXsk/s5UOiJBvZ32SD+9AorlJL97AWRHAd5f4w=;
+        b=ptKlvk19cJfKgsrEJj3fDf/R0ciya8LQMyQTOjOMSvverprTI0RI8ADvXOJlTPjaxm
+         Bcw58KTG56ZlODpcVLnTKmrdIk7/delDWwvRMg44w6MT3NFmmsh157SOzyD63hTifses
+         PFckI20NtdfxyGtZ3WcjQ4/+PIwbxcRLIQIOBh7HwS5l8DCVBUJEnOrjX2chdMpBrWMH
+         U4wZJSqAtVFZl54fdk5BhO3DWDaraisZK6UNQ2nTv+1YYJxxIydiLZsiG6lTz2hUqnKA
+         IlKMyRE/zOZOdhnp2eN28JKe5e4yXQRSaoPjGFX2pcxwGlkTO9yS51kfZ5d+zfA+TXwi
+         vVNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vpR69HXsk/s5UOiJBvZ32SD+9AorlJL97AWRHAd5f4w=;
+        b=Gv1f3YoBM22nZ3Utc0fiu50YLsD72YGpQ/i0RJTpVnfzlcLOAAX026GMtunU5CSrau
+         rPPWRRXUhPsXgwDvWrpft0oH3Wy9yPkLiZ1t2uGi2UG0J9vKK6G5WWyzbmTstjFDcURl
+         Eg8CQHq45A/YT+2JW6T7GUSs6DR3MT52rHERrX0eyNr16Z5JFhPYhnHKtAlGfLQDUMyw
+         YTrjtDG52kDh+FzNBKsKPUEmEUDy0lTH/wEjnzpzbDulH+u7CJPHlIJRUBDqnxLKHthu
+         nK1fGOfp+kNPykXJe3SaPeRB8Hz59sQ2mSBfOcGCdG9tkmQTgvXY5zAV2wcxNiofwQRc
+         +Vaw==
+X-Gm-Message-State: AOAM530b6FCIJF7aR6ULeQRp21U3NWNP5Q/wC25rQ1mKYLUUZG1CQUJm
+        rgdqatfzlDSvGKnpchWQHmfCJIBQK0rgHg==
+X-Google-Smtp-Source: ABdhPJzL02bvJFAQtbVyNKa/WyBoknfJuGiU0wxQ00OlCpAbUQt+RefQqzDTGZYUlUZ80lSgOp+l1w==
+X-Received: by 2002:a2e:5005:: with SMTP id e5mr4003093ljb.253.1628541430190;
+        Mon, 09 Aug 2021 13:37:10 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id bp17sm745656lfb.176.2021.08.09.13.37.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 13:37:09 -0700 (PDT)
+Subject: Re: drivers/net/usb/pegasus.c:461:2: warning: Value stored to 'ret'
+ is never read [clang-analyzer-deadcode.DeadStores]
+To:     kernel test robot <rong.a.chen@intel.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <202108080902.ZhmxmJZr-lkp@intel.com>
+ <28df02cc-8b34-3d4e-2ed6-30af0ff44a42@intel.com>
+ <94550f41-1204-8996-ef32-c25429481ceb@gmail.com> <YRF1t5kx6hTrv5LC@carbon>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <538445a9-3f96-5099-fb83-517e756a93fa@gmail.com>
+Date:   Mon, 9 Aug 2021 23:37:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <YRF1t5kx6hTrv5LC@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sysvipc_find_ipc() was left with a costly way to check if the offset
-position fed to it is bigger than the total number of IPC IDs in use.
-So much so that the time it takes to iterate over /proc/sysvipc/* files
-grows exponentially for a custom benchmark that creates "N" SYSV shm
-segments and then times the read of /proc/sysvipc/shm (milliseconds):
+On 8/9/21 9:36 PM, Petko Manolov wrote:
+> On 21-08-09 14:06:11, Pavel Skripkin wrote:
+>> On 8/9/21 1:37 PM, kernel test robot wrote:
+>> > 
+>> > tree:
+>> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> > head:   85a90500f9a1717c4e142ce92e6c1cb1a339ec78
+>> > commit: 8a160e2e9aeb8318159b48701ad8a6e22274372d net: usb: pegasus:
+>> > Check the return value of get_geristers() and friends;
+>> > date:   4 days ago
+>> > :::::: branch date: 8 hours ago
+>> > :::::: commit date: 4 days ago
+>> > config: x86_64-randconfig-c001-20210808 (attached as .config)
+>> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project
+>> > 41a6b50c25961addc04438b567ee1f4ef9e40f98)
+>> > reproduce (this is a W=1 build):
+>> >           wget
+>> > https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+>> > -O ~/bin/make.cross
+>> >           chmod +x ~/bin/make.cross
+>> >           # install x86_64 cross compiling tool for clang build
+>> >           # apt-get install binutils-x86-64-linux-gnu
+>> >           #
+>> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8a160e2e9aeb8318159b48701ad8a6e22274372d
+>> >           git remote add linus
+>> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>> >           git fetch --no-tags linus master
+>> >           git checkout 8a160e2e9aeb8318159b48701ad8a6e22274372d
+>> >           # save the attached .config to linux build tree
+>> >           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross
+>> > ARCH=x86_64 clang-analyzer
+>> > If you fix the issue, kindly add following tag as appropriate
+>> > Reported-by: kernel test robot <lkp@intel.com>
+>> 
+>> Hi, @Petko!
+>> 
+>> For you not to scan all these warnings:
+>> 
+>> > > > drivers/net/usb/pegasus.c:461:2: warning: Value stored to 'ret' is never read [clang-analyzer-deadcode.DeadStores]
+>> >              ret = set_registers(pegasus, EthCtrl0, 3, data);
+>> >              ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> >      drivers/net/usb/pegasus.c:461:2: note: Value stored to 'ret' is
+>> > never read
+>> >              ret = set_registers(pegasus, EthCtrl0, 3, data);
+>> >              ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> 
+>> This is the real bug, I think. Can be fixed like this:
+>> 
+>> diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
+>> index 22353bab76c8..f2b8891c7b36 100644
+>> --- a/drivers/net/usb/pegasus.c
+>> +++ b/drivers/net/usb/pegasus.c
+>> @@ -459,6 +459,8 @@ static int enable_net_traffic(struct net_device *dev,
+>> struct usb_device *usb)
+>> 
+>>  	memcpy(pegasus->eth_regs, data, sizeof(data));
+>>  	ret = set_registers(pegasus, EthCtrl0, 3, data);
+>> +	if (ret < 0)
+>> +		goto fail;
+>> 
+>>  	if (usb_dev_id[pegasus->dev_index].vendor == VENDOR_LINKSYS ||
+>>  	    usb_dev_id[pegasus->dev_index].vendor == VENDOR_LINKSYS2 ||
+>> 
+>> 
+>> It was caused by our last refactoring: enable_net_traffic() now returns 0 on
+>> success and this ret is never checked.
+> 
+> I'd rather remove the 'ret = ' part and leave set_registers() alone.  If this
+> particular write operation fail, it doesn't mean the adapter won't work at all.
+> Perhaps it won't be the most optimal mode, but it will work.  There are some
+> legal checks after set_registers() that also make sense to pass.  So the patch i
+> suggest looks like:
+> 
+> 
+> diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
+> index 652e9fcf0b77..49cfc720d78f 100644
+> --- a/drivers/net/usb/pegasus.c
+> +++ b/drivers/net/usb/pegasus.c
+> @@ -433,7 +433,7 @@ static int enable_net_traffic(struct net_device *dev, struct usb_device *usb)
+>          data[2] = loopback ? 0x09 : 0x01;
+> 
+>          memcpy(pegasus->eth_regs, data, sizeof(data));
+> -       ret = set_registers(pegasus, EthCtrl0, 3, data);
+> +       set_registers(pegasus, EthCtrl0, 3, data);
+> 
+>          if (usb_dev_id[pegasus->dev_index].vendor == VENDOR_LINKSYS ||
+>              usb_dev_id[pegasus->dev_index].vendor == VENDOR_LINKSYS2 ||
+> 
 
-    12 msecs to read   1024 segs from /proc/sysvipc/shm
-    18 msecs to read   2048 segs from /proc/sysvipc/shm
-    65 msecs to read   4096 segs from /proc/sysvipc/shm
-   325 msecs to read   8192 segs from /proc/sysvipc/shm
-  1303 msecs to read  16384 segs from /proc/sysvipc/shm
-  5182 msecs to read  32768 segs from /proc/sysvipc/shm
+It works. I am not aware of device specifics, so I decided to handle the 
+error instead of ignoring.
 
-The root problem lies with the loop that computes the total amount of ids
-in use to check if the "pos" feeded to sysvipc_find_ipc() grew bigger than
-"ids->in_use". That is a quite inneficient way to get to the maximum index
-in the id lookup table, specially when that value is already provided by
-struct ipc_ids.max_idx.
+Will you take care of posting this patch, or I can do it with 
+Suggested-by tag?
 
-This patch follows up on the optimization introduced via commit 15df03c879836
-("sysvipc: make get_maxid O(1) again") and gets rid of the aforementioned
-costly loop replacing it by a simpler checkpoint based on ipc_get_maxidx()
-returned value, which allows for a smooth linear increase in time complexity
-for the same custom benchmark:
 
-     2 msecs to read   1024 segs from /proc/sysvipc/shm
-     2 msecs to read   2048 segs from /proc/sysvipc/shm
-     4 msecs to read   4096 segs from /proc/sysvipc/shm
-     9 msecs to read   8192 segs from /proc/sysvipc/shm
-    19 msecs to read  16384 segs from /proc/sysvipc/shm
-    39 msecs to read  32768 segs from /proc/sysvipc/shm
 
-Signed-off-by: Rafael Aquini <aquini@redhat.com>
----
- ipc/util.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
-
-diff --git a/ipc/util.c b/ipc/util.c
-index 0027e47626b7..d48d8cfa1f3f 100644
---- a/ipc/util.c
-+++ b/ipc/util.c
-@@ -788,21 +788,13 @@ struct pid_namespace *ipc_seq_pid_ns(struct seq_file *s)
- static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
- 					      loff_t *new_pos)
- {
--	struct kern_ipc_perm *ipc;
--	int total, id;
--
--	total = 0;
--	for (id = 0; id < pos && total < ids->in_use; id++) {
--		ipc = idr_find(&ids->ipcs_idr, id);
--		if (ipc != NULL)
--			total++;
--	}
-+	struct kern_ipc_perm *ipc = NULL;
-+	int max_idx = ipc_get_maxidx(ids);
- 
--	ipc = NULL;
--	if (total >= ids->in_use)
-+	if (max_idx == -1 || pos > max_idx)
- 		goto out;
- 
--	for (; pos < ipc_mni; pos++) {
-+	for (; pos <= max_idx; pos++) {
- 		ipc = idr_find(&ids->ipcs_idr, pos);
- 		if (ipc != NULL) {
- 			rcu_read_lock();
--- 
-2.26.3
-
+With regards,
+Pavel Skripkin
