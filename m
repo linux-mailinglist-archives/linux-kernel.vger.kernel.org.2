@@ -2,109 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6163C3E43C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B333E43B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234219AbhHIKVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232707AbhHIKVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:21:12 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E71C0613D3;
-        Mon,  9 Aug 2021 03:20:51 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GjsYD1g0Yz9sWl;
-        Mon,  9 Aug 2021 20:20:47 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628504448;
-        bh=7cEFw8ynauDK4goZ/MM69I2R5gnSYKAhB0jRrkT5IVk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QjRjzL8w73N/oz3+neFluG+OEeoGCR16LDwyW6pam3XPzyWKXV+lNzCvH+Phrk62p
-         jnc/Ki3zea+JFdB7uqKa2pVrqqF0YA6pFYrlmRPpAn+w9pOL7kE1mpwa4ukPXtdeFJ
-         wJxAan0jHxtyaVceAME7OGKwtts3hVaE91O0AT8Frkb5d1dt4J1jN/G3Cz4OYDXccQ
-         eBKttATVOaiAsTXbHeZi12xceQEffESuMaMVmbiqARSxmS+DWQQumlvVoKsZBGj1GM
-         MI2QAkgVO6/cllFqztWD4pWXOXTRIIN4An2rRSWq2DFEq8dUnSqjRyd5Zc4QZ+tUWq
-         faW5cmunQv2Eg==
-Date:   Mon, 9 Aug 2021 20:20:46 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210809202046.596dad87@canb.auug.org.au>
+        id S234900AbhHIKRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:17:41 -0400
+Received: from mga09.intel.com ([134.134.136.24]:15781 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234896AbhHIKRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 06:17:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214648734"
+X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
+   d="scan'208";a="214648734"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 03:17:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
+   d="scan'208";a="483284173"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Aug 2021 03:17:05 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id F14CD580910;
+        Mon,  9 Aug 2021 03:17:00 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Voon Weifeng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/2] Intel AlderLake-S 2.5Gbps link speed support 
+Date:   Mon,  9 Aug 2021 18:22:27 +0800
+Message-Id: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/C=Uh9Vo5jtX2PcJN0p3p_nA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/C=Uh9Vo5jtX2PcJN0p3p_nA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patch series add 2.5Gbps support for Intel AlderLake-S platform.
 
-Hi all,
+Beside register 2.5G callback function in the dwmac_intel driver, an
+additional step to not perform xPCS soft reset on driver init is also
+required.
 
-After merging the net-next tree, today's linux-next build (powerpc
-allyesconfig) failed like this:
+Michael Sit Wei Hong (2):
+  net: pcs: xpcs: enable skip xPCS soft reset
+  stmmac: intel: Enable 2.5Gbps on Intel AlderLake-S
 
-drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
-drivers/net/ethernet/cirrus/cs89x0.c:897:20: error: implicit declaration of=
- function 'isa_virt_to_bus' [-Werror=3Dimplicit-function-declaration]
-  897 |     (unsigned long)isa_virt_to_bus(lp->dma_buff));
-      |                    ^~~~~~~~~~~~~~~
-include/linux/dynamic_debug.h:134:15: note: in definition of macro '__dynam=
-ic_func_call'
-  134 |   func(&id, ##__VA_ARGS__);  \
-      |               ^~~~~~~~~~~
-include/linux/dynamic_debug.h:162:2: note: in expansion of macro '_dynamic_=
-func_call'
-  162 |  _dynamic_func_call(fmt, __dynamic_pr_debug,  \
-      |  ^~~~~~~~~~~~~~~~~~
-include/linux/printk.h:570:2: note: in expansion of macro 'dynamic_pr_debug'
-  570 |  dynamic_pr_debug(fmt, ##__VA_ARGS__)
-      |  ^~~~~~~~~~~~~~~~
-drivers/net/ethernet/cirrus/cs89x0.c:86:3: note: in expansion of macro 'pr_=
-debug'
-   86 |   pr_##level(fmt, ##__VA_ARGS__);   \
-      |   ^~~
-drivers/net/ethernet/cirrus/cs89x0.c:894:3: note: in expansion of macro 'cs=
-89_dbg'
-  894 |   cs89_dbg(1, debug, "%s: dma %lx %lx\n",
-      |   ^~~~~~~~
+ drivers/net/dsa/sja1105/sja1105_mdio.c           |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c    |  4 ++++
+ .../net/ethernet/stmicro/stmmac/stmmac_mdio.c    |  4 +++-
+ drivers/net/pcs/pcs-xpcs.c                       | 16 ++++++++++++----
+ include/linux/pcs/pcs-xpcs.h                     |  3 ++-
+ include/linux/stmmac.h                           |  1 +
+ 6 files changed, 23 insertions(+), 7 deletions(-)
 
-Caused by commit
+-- 
+2.25.1
 
-  47fd22f2b847 ("cs89x0: rework driver configuration")
-
-I have removed the COMPILE_TEST from NET_VENDOR_CIRRUS for now.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/C=Uh9Vo5jtX2PcJN0p3p_nA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmERAX4ACgkQAVBC80lX
-0GzNLAf+Jfaz8JLllwnRCtEDfnYzHLi2UdTZNANcsz921bap4ZN7J15QL34FgXK0
-iF42HeK6u8sT2kD/kxgxSlJtT/iTL9q6XqHpEfNAJUdBqLjc+xAZ7U62s7Z10rts
-vhfO7+eigVDMtll0+VY3BHoPv0/Ljw0gQYUFxiWZAmfqvWG3BjSB3oOdbqvnEOlG
-butqYjaxGv8hLKJYPhwn7QZU6OuRKltFyk57e0xtZ0vPCqdyQmeb+KbGWaSqV2Kj
-2UTh9kd9hLNdrUKLHhW3y0LtpSu8aJj8jHUXjidAjcq4uBuFPrGSNQT1onaHDJX6
-IJaJXHodmJtr7KPZhiG797OhbqD7sw==
-=JsQt
------END PGP SIGNATURE-----
-
---Sig_/C=Uh9Vo5jtX2PcJN0p3p_nA--
