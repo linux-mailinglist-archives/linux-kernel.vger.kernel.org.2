@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A633E4849
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941953E484B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbhHIPDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235097AbhHIPDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:03:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD66160EBB;
-        Mon,  9 Aug 2021 15:03:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628521393;
-        bh=OYFPvBpAz+gBYk1xqnpaZKlokxOeCKmDhJ5hGhXtecU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X1p5Bsf26lKmLIq26lrO/iZ9qZPIQzVB3m4Q/3F/kUUiKOQtV9YLB3uAU5unX8Lhk
-         KXDjd98y4rh4kp/9Q/rqyOztNIlIbCDKzisj6pnf0IW1SdgBh3sRjLMnsL3WQvqn0A
-         rv9Jq0j2IaChOT7f/FFrrc/oiSmUf41pC0H0EBqOzgCzMR8wCrKjimiUdhLEDycFdS
-         FNvVp/tdwZB0/i99UYV/XJGRsmxKNR2cc9ZtSCW2OKLtZkAPq0yxhvpw92wf9Hempe
-         bC+49TrLZwpSepdq+W0tMTxfijByb+nYbNuSw9e674K4JfmYI6SvHcpk+CozIhddPv
-         SqCGePLjy1VbQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Mason Zhang <Mason.Zhang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/1] spi: mediatek: fix build warnning in set cs timing
-Date:   Mon,  9 Aug 2021 16:02:54 +0100
-Message-Id: <162852121764.46095.11307268331804449714.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210809055911.17538-1-Mason.Zhang@mediatek.com>
-References: <20210809055911.17538-1-Mason.Zhang@mediatek.com>
+        id S235186AbhHIPE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:04:28 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:42690 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234721AbhHIPE1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:04:27 -0400
+Received: by mail-ua1-f51.google.com with SMTP id m39so1883060uad.9;
+        Mon, 09 Aug 2021 08:04:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2WVMYOqEa/bLtuXQ6WMOZh3F4v9HS1yFs7MrmGYYVUc=;
+        b=HmnC0WIVazwQ6nhvLaz9JWNnR3JKueiwHpbLS3p1AsIsmISF/mR9J+falMrlTdV0wd
+         irHa/+sveSz8A4chUUm7v3Id3ezK/LCOZ2gQGEVFwlBik5JZ3YVOpr70rszHKOAmhtSa
+         XOYqHppA57yWOQ/+Hc3rB4FGEzd6M2aksEjR3b0Eye7kqEJkQ2wLbGi5M8saoNbfNlo4
+         MbJgFZmo0MwrcaSfltF3mV3OeW2s4lsMDYCogRv5LEjZD6RVp3PJJ+2hkiQTPuBgWumn
+         itvSn2ds6/UziN4mvdP/hGGkqMQGbK7zFigwawgqcovbSJxYuuc3c3UkpWJHP+qtnIJG
+         Y0/g==
+X-Gm-Message-State: AOAM531h3XxDVEc8n6QA3rTXJaPD3rsjjiLUDfvdb+S7nyoppBavKbrO
+        d1H8kdcbBO1Ugs6dUQfzAdLauQsDaWAZDsYQaek=
+X-Google-Smtp-Source: ABdhPJxZA2LpZiU8DOllIwZGZvqRRctpyutcM8ui5lDbadGe9QWO10AogpNXRHIIp09OCdbbh1DuGYgr2ki/2pYlsTo=
+X-Received: by 2002:a9f:2341:: with SMTP id 59mr15759589uae.4.1628521446744;
+ Mon, 09 Aug 2021 08:04:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210808160823.3553954-1-surenb@google.com> <20210808160823.3553954-2-surenb@google.com>
+In-Reply-To: <20210808160823.3553954-2-surenb@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 9 Aug 2021 17:03:55 +0200
+Message-ID: <CAMuHMdX7YyBRmKNkQJ0k0chaHrziPa=OfKOXStEgXjZNfgg5Nw@mail.gmail.com>
+Subject: Re: [PATCH v8 2/2] mm: wire up syscall process_mrelease
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>, shakeelb@google.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>, jengelh@inai.de,
+        timmurray@google.com, Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 13:59:12 +0800, Mason Zhang wrote:
-> this patch fixed the build warnning in set cs timing.
-> 
-> 
-> 
-> 
+On Sun, Aug 8, 2021 at 6:23 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> Split off from prev patch in the series that implements the syscall.
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Applied to
+>  arch/m68k/kernel/syscalls/syscall.tbl       | 2 ++
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks!
+Gr{oetje,eeting}s,
 
-[1/1] spi: mediatek: fix build warnning in set cs timing
-      commit: 5c842e51ac63130a1344650b0a95bdc398666947
+                        Geert
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
