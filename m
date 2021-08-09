@@ -2,94 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B77F3E41FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8173E420E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhHIJDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:03:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29672 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234062AbhHIJDr (ORCPT
+        id S234159AbhHIJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:07:29 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41134 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234062AbhHIJH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:03:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628499806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Mon, 9 Aug 2021 05:07:28 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7C49B21F4E;
+        Mon,  9 Aug 2021 09:07:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628500027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YD6YtXFfV0ZdxzY2okiuEvUgqKdEvMrxSjlrPcu8jO8=;
-        b=TGE45nIfVc1g+um7sq5N50r/cK2TNC7qwop/SEytKaV0vV7dWqlnJ1BYczWE92V0tW40WA
-        3vDjhQxFr1QpikhE2VLcachu9BTsh0/uneRIX0l4ptgsyF00hIY3j3s6pACErozSmRtQnH
-        ZZY+7DVw8v5c6PVbjMBiJPJ50gw9L/U=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-Bhw3bwikOKGqE77DHT5h2Q-1; Mon, 09 Aug 2021 05:03:25 -0400
-X-MC-Unique: Bhw3bwikOKGqE77DHT5h2Q-1
-Received: by mail-ej1-f69.google.com with SMTP id ja25-20020a1709079899b02905b2a2bf1a62so275424ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 02:03:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YD6YtXFfV0ZdxzY2okiuEvUgqKdEvMrxSjlrPcu8jO8=;
-        b=hc7MdLZ3Rop3qmor7KmcYoTVZqPleg8mKfUP3ly/z57w/O+SRU6iul1er39TnuFE/0
-         /VSOCe5lW5jXQHMcN2k+46nIBjhuQS/GTPSCKXBYAYHIc02XBM66wdWT4ra07/ZHRjq2
-         NqYqN+uSuss80DvFYiPrqgUICLimxV3xU3YcfLGx6RKV7beaR4qbbIrTETG5Z3Hm0ApW
-         rbCZkpLmv3Yz1J+p8kHBJS9yos8UACoUJO0r/aTa4iUgr23Wx/0a5G4TVPtx+8IYG2EW
-         nKn8BmojDP3dba6qZq8E94In6a0AZ2SUscJOstkQjg6meAMK2fjxjYd6dpTGPo3cAB1E
-         8dQw==
-X-Gm-Message-State: AOAM530/A1L7QQxiITHpc5RBTbLZGRAfbpvtMfRsvr54beVAWRJJVpqc
-        trLMdS2DB3tWDfWVt3tCYJIU+fN8SBc6ciBc/4T8cjw0ksIKgjPb2/LvzmqAbEXECrs4Oa5Vc6W
-        rKxPlPp8njtHy7WS9T0ySjuu+
-X-Received: by 2002:a50:eb95:: with SMTP id y21mr1598513edr.5.1628499804169;
-        Mon, 09 Aug 2021 02:03:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzhaL+Jl3EZwRBsYOO8E4+FcpPlNxyP5w/mtjGoLfLcpqqoyNTzhHHD6cjGczoFBtkRapYOw==
-X-Received: by 2002:a50:eb95:: with SMTP id y21mr1598496edr.5.1628499804014;
-        Mon, 09 Aug 2021 02:03:24 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id b1sm5732062ejz.24.2021.08.09.02.03.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 02:03:23 -0700 (PDT)
-Subject: Re: [PATCH] selftests: KVM: avoid failures due to reserved
- HyperTransport region
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     stable@vger.kernel.org, David Matlack <dmatlack@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210805105423.412878-1-pbonzini@redhat.com>
- <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5f3c13be-f65d-1793-bd91-7491d3e149b0@redhat.com>
-Date:   Mon, 9 Aug 2021 11:03:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=k5Y8l9w4iV5g6s1wFPPe9+DoJPU9/n1zkxnjff8sD0o=;
+        b=BQmjr/B2oyVTVghvc5m6dVwkO+BrUfwt0cxBRJgtmey8Sgnq/GQJUs+Q5OrHBPEvBmCeCI
+        AwoTYEPdyrMTyiEoKQElxN92XreBQd0dt83EhIojbcH4qfHTZWd8F43D6wC0Unk7mMWK1c
+        QPDou1k2Zx0ABJ5JBhN2QKXgwJw1vOA=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 02AD0A3B89;
+        Mon,  9 Aug 2021 09:07:06 +0000 (UTC)
+Date:   Mon, 9 Aug 2021 11:07:06 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Luis Goncalves <lgoncalv@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
+Message-ID: <YRDwOhVglJmY7ES5@dhcp22.suse.cz>
+References: <20210803175519.22298-1-longman@redhat.com>
+ <87h7g62jxm.ffs@tglx>
+ <93dfe0d4-c687-93f8-da75-c5d3c9bd0ac7@suse.cz>
+ <YQpQ43VrlqsOhXKd@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQpQ43VrlqsOhXKd@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 12:57, Joao Martins wrote:
->   Base Address   Top Address   Use
+On Wed 04-08-21 10:33:41, Michal Hocko wrote:
+> On Wed 04-08-21 09:39:23, Vlastimil Babka wrote:
+> > On 8/4/21 1:21 AM, Thomas Gleixner wrote:
+> > > 	/*
+> > > 	 * The only protection from memory hotplug vs. drain_stock races is
+> > > 	 * that we always operate on local CPU stock here with IRQ disabled
+> > > 	 */
+> > > -	local_irq_save(flags);
+> > > +	local_lock_irqsave(memcg_stock_lock, flags);
+> > >         ...
+> > > 	if (use_task_obj_stock())
+> > >   		drain_obj_stock(&stock->task_obj);
+> > > 
+> > > which is incomprehensible garbage.
+> > > 
+> > > The comment above the existing local_irq_save() is garbage w/o any local
+> > > lock conversion already today (and even before the commit which
+> > > introduced stock::task_obj) simply because that comment does not explain
+> > > the why.
+> > 
+> > Michal, this seems to be your comment from commit 72f0184c8a00 ("mm, memcg:
+> > remove hotplug locking from try_charge"). Was "memory hotplug" a mistake,
+> > because the rest of the commit is about cpu hotplug, and I don't really see a
+> > memory hotplug connection there?
 > 
->    FD_0000_0000h FD_F7FF_FFFFh Reserved interrupt address space
->    FD_F800_0000h FD_F8FF_FFFFh Interrupt/EOI IntCtl
->    FD_F900_0000h FD_F90F_FFFFh Legacy PIC IACK
->    FD_F910_0000h FD_F91F_FFFFh System Management
->    FD_F920_0000h FD_FAFF_FFFFh Reserved Page Tables
->    FD_FB00_0000h FD_FBFF_FFFFh Address Translation
->    FD_FC00_0000h FD_FDFF_FFFFh I/O Space
->    FD_FE00_0000h FD_FFFF_FFFFh Configuration
->    FE_0000_0000h FE_1FFF_FFFFh Extended Configuration/Device Messages
->    FE_2000_0000h FF_FFFF_FFFFh Reserved
+> This part of the changelog tried to explain that part IIRC
+> "
+>     We can get rid of {get,put}_online_cpus, fortunately.  We do not have to
+>     be worried about races with memory hotplug because drain_local_stock,
+>     which is called from both the WQ draining and the memory hotplug
+>     contexts, is always operating on the local cpu stock with IRQs disabled.
+> "
+> 
+> Now I have to admit I do not remember all the details and from a quick
+> look the memory hotplug doesn't seem to be draining memcg pcp stock.
+> Maybe this has been removed since then. The only stock draining outside
+> of the memcg code seems to be memcg_hotplug_cpu_dead callback. That
+> would indicate that I really meant the cpu hotplug here indeed.
 
-The problems we're seeing are with FFFD_0000_0000h.  How does the IOMMU 
-interpret bits 40-47 of the address?
+Does this look better?
+---
 
-Paolo
+From 5aa1c8ce0d88b8c6d59ba95c7e36ca07dc2b2161 Mon Sep 17 00:00:00 2001
+From: Michal Hocko <mhocko@suse.com>
+Date: Mon, 9 Aug 2021 10:59:04 +0200
+Subject: [PATCH] memcg: fix up drain_local_stock comment
 
+Thomas and Vlastimil have noticed that the comment in drain_local_stock
+doesn't quite make sense. It talks about a synchronization with the
+memory hotplug but there is no actual memory hotplug involvement here.
+I meant to talk about cpu hotplug here. Fix that up and hopefuly make
+the comment more helpful by referencing the cpu hotplug callback as
+well.
+
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+---
+ mm/memcontrol.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index eb8e87c4833f..f7be7b01395e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2205,8 +2205,9 @@ static void drain_local_stock(struct work_struct *dummy)
+ 	unsigned long flags;
+ 
+ 	/*
+-	 * The only protection from memory hotplug vs. drain_stock races is
+-	 * that we always operate on local CPU stock here with IRQ disabled
++	 * The only protection from cpu hotplug (memcg_hotplug_cpu_dead) vs.
++	 * drain_stock races is that we always operate on local CPU stock
++	 * here with IRQ disabled
+ 	 */
+ 	local_irq_save(flags);
+ 
+-- 
+2.30.1
+
+-- 
+Michal Hocko
+SUSE Labs
