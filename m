@@ -2,96 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17323E4127
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682733E412A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhHIHx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:53:57 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49546 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbhHIHx4 (ORCPT
+        id S233663AbhHIHyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:54:45 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:38440 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233604AbhHIHyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:53:56 -0400
-Received: from [IPv6:2a02:810a:880:f54:bc37:c53f:a9f8:ed01] (unknown [IPv6:2a02:810a:880:f54:bc37:c53f:a9f8:ed01])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DC7831F4223F;
-        Mon,  9 Aug 2021 08:53:34 +0100 (BST)
-Subject: Re: [PATCH v6 2/9] mtk-mdp: add driver to probe mdp components
-To:     Eizan Miyamoto <eizan@google.com>
-Cc:     linux-kernel@vger.kernel.org, wenst@chromium.org,
-        houlong.wei@mediatek.com, yong.wu@mediatek.com,
-        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
-        chunkuang.hu@kernel.org,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20210802121215.703023-1-eizan@chromium.org>
- <20210802220943.v6.2.Ie6d1e6e39cf9b5d6b2108ae1096af34c3d55880b@changeid>
- <0aff1abb-734f-c714-6ecc-c906862255c3@collabora.com>
- <CAOak1e8n6JpNKODfM57OTtbCNz8UBbj+wefwipVWP_Ep6SHmHA@mail.gmail.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <014b8075-8588-d741-e6f2-edc0567e8c8f@collabora.com>
-Date:   Mon, 9 Aug 2021 09:53:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 9 Aug 2021 03:54:43 -0400
+Received: by mail-il1-f199.google.com with SMTP id h27-20020a056e021d9bb02902021736bb95so5307201ila.5
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:54:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=8QI5/Ow9wqoi4wS1cgAAg/FGKAVs9yNR1XeA3INMSiI=;
+        b=GNz+SJqBgUKBlAt+eaHDggRdZWFmJgRv3CqJygG4xv5BftkGxS867vzZwrwO9G2E6b
+         p3k4dST+3cCf7ZjSCwmaTB3jYncsNKF7H5UA9Rcgd1ytat7RR+ncEwadZb4xMobR9B6W
+         kUd9ZALzUYHf+O3wM0SM7GDWte4Bvr8FpdLDT5iCxpl+1OAdKz3m1taNS3ARKRJ/ptqA
+         eoiPTYqkJcG8+8cbFHn2MmHTorW9trtuvwE7RRxq7jKaj7JhknJ06vXz+vefB6ZQe2Ju
+         z7Uhf3Wt+aO9f8yeL5Y4miEewqiQHMXahVexplYdNntVK7uupMhPcsZ1YqnCuZfng06R
+         eovg==
+X-Gm-Message-State: AOAM531E68RBLOKsuQwzFLDcEjEJUa+Silx2c3fZbOI1Vm1KPRedyfmH
+        CQFwrajOAharBO+YBmOqDR/kbUrL93gz/XgEHCDlthHvow9c
+X-Google-Smtp-Source: ABdhPJzDTxXN99MnJc7AwyZ3LSbWPzB44Tpctll5ZoYah9KsWRfMfr1x8ws3pfWMST+ETOzo7j30x+Y7r2qnja6UlBgBeNp8RmeT
 MIME-Version: 1.0
-In-Reply-To: <CAOak1e8n6JpNKODfM57OTtbCNz8UBbj+wefwipVWP_Ep6SHmHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:da4a:: with SMTP id p10mr138371ilq.290.1628495662787;
+ Mon, 09 Aug 2021 00:54:22 -0700 (PDT)
+Date:   Mon, 09 Aug 2021 00:54:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007faf7505c91bb19d@google.com>
+Subject: [syzbot] general protection fault in hwsim_new_edge_nl
+From:   syzbot <syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb override
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1226099a300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aba0c23f8230e048
+dashboard link: https://syzkaller.appspot.com/bug?extid=fafb46da3f65fdbacd16
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 1403 Comm: syz-executor.2 Not tainted 5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
+RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
+RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
+Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d f2 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
+RSP: 0018:ffffc90009a47568 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000dd59000
+RDX: 0000000000000000 RSI: ffffffff8534ab43 RDI: ffff88801c2b44d0
+RBP: ffffc90009a47678 R08: 0000000000000001 R09: ffffc90009a476a8
+R10: fffff52001348ed6 R11: 0000000000000000 R12: ffffc90009a47698
+R13: ffff888025945c14 R14: ffff888071f0cdc0 R15: 0000000000000000
+FS:  00007f8448923700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000032f4708 CR3: 0000000033eed000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
+ genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8448923188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000000000000 RSI: 0000000020001ac0 RDI: 0000000000000004
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffd8ac8e60f R14: 00007f8448923300 R15: 0000000000022000
+Modules linked in:
+---[ end trace d1679fe789931133 ]---
+RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
+RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
+RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
+Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d f2 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
+RSP: 0018:ffffc90009a47568 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000dd59000
+RDX: 0000000000000000 RSI: ffffffff8534ab43 RDI: ffff88801c2b44d0
+RBP: ffffc90009a47678 R08: 0000000000000001 R09: ffffc90009a476a8
+R10: fffff52001348ed6 R11: 0000000000000000 R12: ffffc90009a47698
+R13: ffff888025945c14 R14: ffff888071f0cdc0 R15: 0000000000000000
+FS:  00007f8448923700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055bb2ea2f160 CR3: 0000000033eed000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-On 09.08.21 05:23, Eizan Miyamoto wrote:
-> Hi Dafna,
-> 
-> On Thu, Aug 5, 2021 at 4:40 PM Dafna Hirschfeld
-> <dafna.hirschfeld@collabora.com> wrote:
->>> +int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev)
->>
->> This function can be static
-> 
-> If it's all the same to you, are you okay for me to make this change either:
-> - If upstream requests changes be made to this series, I will include
-> this suggestion
-> - If the series is accepted as-is, I will make a follow-up patch
-> 
-> This is to reduce workload on reviewers having to re-ack changes for
-> (what I hope you agree is) a nit.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I think you can keep the review-by tag of the reviewers since this is just a nit.
-So sending a new version won't need a re-ack from the reviewers.
-
-You can send it also as a separate patch. I don't care too much.
-
-> 
-> If you don't agree, I will happily oblige and make the change and
-> upload a new version of the series.
-> 
->>>        for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
->>>                comp->clk[i] = of_clk_get(node, i);
->>
->> that iteration can be replaced with clk_bulk_get
-> 
-> As per Enric's suggestion in response to "propagate errors from
-> clock_on" in this series, are you okay for me to make the change in a
-> follow-up patch?
-
-yes,
-
-Thanks,
-Dafna
-
-> 
-> Thanks again for your review,
-> 
-> Eizan
-> 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
