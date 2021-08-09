@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BF83E449E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BFE3E4491
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhHILXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:23:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34390 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235007AbhHILXo (ORCPT
+        id S235059AbhHILWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234657AbhHILWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:23:44 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6D8F421ED4;
-        Mon,  9 Aug 2021 11:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628508202;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XEHaigBd+p4Kdq3FOyfyiQahnEWWgwrbyI9p3sYy9Jg=;
-        b=FUJg+QaU7zw3qTf6t8q9Qr96X0Utqfsl+nS4wyhc9/5vWZMS539Of9T5SM02pWzim1Cnda
-        RMrFBB4C9IiCbCzLy7hKe0Nw5kCTqLiYUG2RwoYyBydeMv59tIlgL5Vpa/xsWEDauKkWvj
-        09N1MMAWFSlJkFOi7ijKkWYVWovvXhs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628508202;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XEHaigBd+p4Kdq3FOyfyiQahnEWWgwrbyI9p3sYy9Jg=;
-        b=4VeRarVySJZv/AlngzeBW/O6mbVTRAHHGwmwBsPvaCbeLhv85RY/VfIGPtUkorqnnpUTKq
-        o+aHpptVRlTrrwAw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 53C44A3B8E;
-        Mon,  9 Aug 2021 11:23:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BAE5EDA880; Mon,  9 Aug 2021 13:20:30 +0200 (CEST)
-Date:   Mon, 9 Aug 2021 13:20:30 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
+        Mon, 9 Aug 2021 07:22:15 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C5FC061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 04:21:55 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id f3so5357984plg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 04:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=EYzmb24oO7kORuQLhjfqCmnqc8pvZHlXH9eI7yhHiBw=;
+        b=YHWTslJOxVAlF/QdmEawCacCLPEoNYsZAuaYSbBEimHNxWDvF9o+8CciewOoc/ZmZb
+         WPy6B/9gGw6j6K8TotQ/YCx9YniYNI7/mU26Mhr+5humcZTpCzcg5vhfBG7qDZbnc8oL
+         VlFDrdyHte0Xid5O+37KsAUrYEqXeqXFpjL/BveDXe2a8vS+aI6O8qq7PP+iWrCHKkRE
+         QD8JAbWZc5npRq8ngsXxupB7nQHxW7LdB1/sKX/jxN4Kf/phoZ+oQm9c/oY6KhzbEIMN
+         j9TuxysNhTf+57h47z7a6r0/lsL4S3eBw0+pt4Hm9xaNM9iSdUsyB8ndHB4YVs9t8Nys
+         P7Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=EYzmb24oO7kORuQLhjfqCmnqc8pvZHlXH9eI7yhHiBw=;
+        b=VcjH60lxP1FrcaK99db2B4NN9TqVz3Zc/ft3Ka2Vr13N+HDsG3B6WeoxX38NP6VkGG
+         LaU9Y9EkCvpGEYIWoUPp86LMu0ES63s8lNul7HFPQYvvZ94ElrWGLQPKnJpia0SYtI50
+         lyO8iZFwGtN9DzyAcEaxDKUts7yeXDABaFYsMtjsadNZmt9v46RsxHhWFVVQfEkcYrow
+         QKQK8IRdBxOEnxwM7HeTwvTZw3cRXO5+UXd5gTTxWS86i+wr2O9CS/DGravSP2BlOCr7
+         a9UdrtEVhAitSTMSdIyhFnRyeVrAfPCZ81b9y4WIvfydCf767CI7EYxE5+SV+mYcgLWs
+         x5Lg==
+X-Gm-Message-State: AOAM533O81rdo0CUzsD9etUqHd+5COxm5iyhgxA8ngVHGljLu/e3sbxA
+        FR+gvAcLoJNqJx3WL+rRxMU7+g==
+X-Google-Smtp-Source: ABdhPJxV096VLuX3ainMU9lCZ4pdriNo8Ca8f3hd1ru5/OHjGWWo70JyRvsMfAC5Cbqts6rPuAD87Q==
+X-Received: by 2002:a65:5603:: with SMTP id l3mr26367pgs.281.1628508114846;
+        Mon, 09 Aug 2021 04:21:54 -0700 (PDT)
+Received: from ubuntu ([106.245.77.4])
+        by smtp.gmail.com with ESMTPSA id y62sm19815607pfy.183.2021.08.09.04.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 04:21:54 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 20:20:48 +0900
+From:   Jeaho Hwang <jhhwang@rtst.co.kr>
+To:     Peter Chen <peter.chen@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 47/64] btrfs: Use memset_after() to clear end of struct
-Message-ID: <20210809112030.GM5047@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-48-keescook@chromium.org>
- <20210728094215.GX5047@twin.jikos.cz>
- <202107281455.2A0753F5@keescook>
- <20210729103337.GS5047@suse.cz>
- <202107310822.31BEB6E543@keescook>
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: chipidea: add loop timeout for hw_ep_set_halt()
+Message-ID: <20210809112048.GA3319230@ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202107310822.31BEB6E543@keescook>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 08:25:51AM -0700, Kees Cook wrote:
-> On Thu, Jul 29, 2021 at 12:33:37PM +0200, David Sterba wrote:
-> > On Wed, Jul 28, 2021 at 02:56:31PM -0700, Kees Cook wrote:
-> > > On Wed, Jul 28, 2021 at 11:42:15AM +0200, David Sterba wrote:
-> > > > On Tue, Jul 27, 2021 at 01:58:38PM -0700, Kees Cook wrote:
-> > > > >  	}
-> > > > >  	if (need_reset) {
-> > > > > -		memset(&item->generation_v2, 0,
-> > > > > -			sizeof(*item) - offsetof(struct btrfs_root_item,
-> > > > > -					generation_v2));
-> > > > > -
-> > > > 
-> > > > Please add
-> > > > 		/* Clear all members from generation_v2 onwards */
-> > > > 
-> > > > > +		memset_after(item, 0, level);
-> > > 
-> > > Perhaps there should be another helper memset_starting()? That would
-> > > make these cases a bit more self-documenting.
-> > 
-> > That would be better, yes.
-> > 
-> > > +		memset_starting(item, 0, generation_v2);
-> > 
-> > memset_from?
-> 
-> For v2, I bikeshed this to "memset_startat" since "from" is semantically
-> close to "source" which I thought might be confusing. (I, too, did not
-> like "starting".) :)
+If ctrl EP priming is failed (very rare case in standard linux),
+hw_ep_set_halt goes infinite loop. 50 was enough for zynq7000.
 
-memset_startat works for me, thanks.
+Signed-off-by: Jeaho Hwang <jhhwang@rtst.co.kr>
+---
+ drivers/usb/chipidea/udc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
+index d0cd1de1b6c7..92ca0b7e4310 100644
+--- a/drivers/usb/chipidea/udc.c
++++ b/drivers/usb/chipidea/udc.c
+@@ -210,6 +210,9 @@ static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
+ 	return 0;
+ }
+ 
++/*will it be enough?*/
++#define HW_EP_SET_HALT_COUNT_MAX 100
++
+ /**
+  * hw_ep_set_halt: configures ep halt & resets data toggle after clear (execute
+  *                 without interruption)
+@@ -222,6 +225,7 @@ static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
+  */
+ static int hw_ep_set_halt(struct ci_hdrc *ci, int num, int dir, int value)
+ {
++	int count = HW_EP_SET_HALT_COUNT_MAX;
+ 	if (value != 0 && value != 1)
+ 		return -EINVAL;
+ 
+@@ -233,9 +237,9 @@ static int hw_ep_set_halt(struct ci_hdrc *ci, int num, int dir, int value)
+ 		/* data toggle - reserved for EP0 but it's in ESS */
+ 		hw_write(ci, reg, mask_xs|mask_xr,
+ 			  value ? mask_xs : mask_xr);
+-	} while (value != hw_ep_get_halt(ci, num, dir));
++	} while (value != hw_ep_get_halt(ci, num, dir) && --count > 0);
+ 
+-	return 0;
++	return count ? 0 : -EAGAIN;
+ }
+ 
+ /**
+-- 
+2.25.1
+
