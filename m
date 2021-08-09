@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12AF3E4FB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EA53E4FC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhHIXCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 19:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhHIXCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 19:02:21 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC24C0613D3;
-        Mon,  9 Aug 2021 16:02:00 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so2379616pjl.4;
-        Mon, 09 Aug 2021 16:02:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FIJq4ZNboXbfq5kIKSzg2GS0ml9Miy3RL/9vBFSXcYI=;
-        b=BqY7udQeB6Iv9m++WzDq2lkKT1nZFRQJDUQxx+PSSO7nDEv8wlnFFTtm0sxwHaYsFO
-         znYWcD776guDJPii/afFvx/fvo81dqYw21icscwKZKnrEN5e76HdqjHTWMaipCXjvTgw
-         jYzPAnZij1Mp3ufJAwBoTU2jaJr3kcL9mqWltHWIiF0Ix7NJ6su97oINNZC+Clm1shHc
-         miSm9Rlzj0g8oUB1EA0wufvM4Tm5qIUHQK1YzLigveqBJcfSJmWNswkFn595xgCOfyXy
-         FGPxEUL15GUvozGfYLQtPhEmxgNAGyeZFkaOvmnSBVKMaf/niSWJGDeq1r0bctmS6JgS
-         Gl3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=FIJq4ZNboXbfq5kIKSzg2GS0ml9Miy3RL/9vBFSXcYI=;
-        b=S3VWiqwrsd3yIQSKT4pXysi/2c5m9M+Efo8GsuDUEvUuHnFb512MBvh3kOVXyDY2lt
-         d+UngFbWfza9FMd4GngErASKx0AcQfMJzg34wv4dX1ifmVpfrTz1TYg7w4AHwZvegJX5
-         ntiuA7oSjwWsANAAd6UvsEyG+UdhDWOZfZZ5LHdlUzKbLSyXyi3r0LZYPEyujpJtnLbm
-         KqdAtVTfJOrsXVzzIXC4vjxEOGZOQp7bJfys4mSXQn+DH4EqW/au/lLiLpgAOjt77rXV
-         NW6yfgXm/33GT6ob79dh9+y00XWZhLGqgcM7Ro40zcGkmBifk6wvnqY+Wqe/V3KR6lt+
-         5A2w==
-X-Gm-Message-State: AOAM531MviTkAQE4KMYQxxmZDX16Tan3+wxJ+dqaJPZ0MSvnVUcM3/u+
-        UsVP7dVxk1QGUvshJ2I5mF5vfn/sFlW3tw==
-X-Google-Smtp-Source: ABdhPJzOd0gJy9Fo/ZAHPENEsMue6HHO1OKM69bk2lCnAxRo0ItuJqWGKhsahrRQTdQFfk6XlWd46g==
-X-Received: by 2002:a05:6a00:a0e:b029:3c3:538:b4b8 with SMTP id p14-20020a056a000a0eb02903c30538b4b8mr20166465pfh.25.1628550120256;
-        Mon, 09 Aug 2021 16:02:00 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:df1c])
-        by smtp.gmail.com with ESMTPSA id pj11sm568869pjb.4.2021.08.09.16.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 16:01:59 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 9 Aug 2021 13:01:54 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup fixes for v5.14-rc6
-Message-ID: <YRGz4nmDZNhsKSr1@mtj.duckdns.org>
+        id S236997AbhHIXEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 19:04:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236956AbhHIXEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 19:04:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5E0460EE7;
+        Mon,  9 Aug 2021 23:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628550263;
+        bh=OIh9zq+IYhIhIiKupvVvEHfwMY95evZX39qJfIxbmIQ=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=X8QGkNyjeiBeJxlag/3SN2Xpw8+OC6Gj+cGkK/KDvR2kMaz8dO92SR2ah14t3AUn7
+         QEvsvIrJr17Mc59De5xJNqhaOuVxNocXjM3Yo3B2cZMswh85C10nzKhXAXBwA05ja3
+         8SOA/ErgtlUiuGMylliyQqHxqeeUEjhIRfxEZ3ZMuhVJOtFORoydv5utNDDo6Q23+U
+         afQKwHGApnvhQwEyf/iMawyeTk4ZokAahsi8gDVxwfvP6jYw82QHgZdSyXvabZhqSp
+         0BqWOwqMQcxjWSmwX1GaHhbeF4UGmmjF9tTGPHkzUsmeik75aOTd8fKRzJlbzOgiag
+         tzAt5zk5K1n8A==
+Subject: Re: [PATCH v28 04/10] x86/cet/ibt: Disable IBT for ia32
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210722205723.9476-1-yu-cheng.yu@intel.com>
+ <20210722205723.9476-5-yu-cheng.yu@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <3318ca57-7ac3-8296-f9ae-0ae83d5f95dd@kernel.org>
+Date:   Mon, 9 Aug 2021 16:04:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210722205723.9476-5-yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 7/22/21 1:57 PM, Yu-cheng Yu wrote:
+> In a signal, a task's IBT status needs to be saved to the signal frame, and
+> later restored in sigreturn.  For the purpose, previous versions of the
+> series add a new struct to the signal frame.  However, a new signal frame
+> format (or re-using a reserved space) introduces complex compatibility
+> issues.
+> 
+> In the discussion (see link below), Andy Lutomirski proposed using a
+> ucontext flag.  The approach is clean and eliminates most compatibility
+> issues.
+> 
+> However, a legacy IA32 signal frame does not have ucontext and cannot
+> support a uc flag.  Thus,
+> 
+> - Disable IBT for ia32.
+> - In ia32 sigreturn, verify ibt is disabled.
 
-One commit to fix a possible A-A deadlock around u64_stats_sync on
-32bit machines caused by updating it without disabling IRQ when it may
-be read from IRQ context.
-
-Thanks.
-
-The following changes since commit 1e7107c5ef44431bc1ebbd4c353f1d7c22e5f2ec:
-
-  cgroup1: fix leaked context root causing sporadic NULL deref in LTP (2021-07-21 06:39:20 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14-fixes
-
-for you to fetch changes up to c3df5fb57fe8756d67fd56ed29da65cdfde839f9:
-
-  cgroup: rstat: fix A-A deadlock on 32bit around u64_stats_sync (2021-07-27 13:12:20 -1000)
-
-----------------------------------------------------------------
-Tejun Heo (1):
-      cgroup: rstat: fix A-A deadlock on 32bit around u64_stats_sync
-
- block/blk-cgroup.c    | 14 ++++++++------
- kernel/cgroup/rstat.c | 19 +++++++++++--------
- 2 files changed, 19 insertions(+), 14 deletions(-)
-
--- 
-tejun
+Acked-by: Andy Lutomirski <luto@kernel.org>
