@@ -2,142 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84353E4009
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148033E4015
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233303AbhHIGcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 02:32:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233136AbhHIGb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 02:31:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34A1C60524;
-        Mon,  9 Aug 2021 06:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628490699;
-        bh=RFuTLcN6RAG64VbUutS6+DGm6EeYheZfYE827UL3zoY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=khWG5XWassUYLG0cqSnT1rtVxMVUk4I7frlOpBmA942U8a209whmkiIDvUVHkuqdY
-         xrd2w9u+o1OPB+gHyLHla6zl0qoAAWbpC3TB0iaUXEBcWKM/m/GaY1PIWE5XSdGAzu
-         EQMgGeLPqOioMlclVvDNBZiSCEG8SExwlq2QNTRfnJ94im+e8RPsA0yNOoGtrKq6Bw
-         t5Gi7P3qzqAlbd52MJwzpsqPAk0DLHbNTxqgdLXnQRz7b4tf7tiLjlWN7Y32nZubKx
-         RgdWF3mKlTRRWczXLfzbHuVSjcWnQSuc6HarJxE6kqit2vcEoAHUKMK2Q4hlnjCay2
-         CSkcTIu2TEL9g==
-Date:   Mon, 9 Aug 2021 14:31:35 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Jeaho Hwang <jhhwang@rtst.co.kr>
-Cc:     linux-usb@vger.kernel.org,
-        =?utf-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9t?=
-         =?utf-8?B?YXRpb24gUGxhdGZvcm3sl7DqtaztjIA=?= 
-        <mkbyeon@lselectric.co.kr>, Linux team <team-linux@rtst.co.kr>,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Chipidea USB device goes infinite loop due to interrupt while
- hw_ep_prime
-Message-ID: <20210809063135.GA7428@nchen>
-References: <CAJk_X9hBB_edByfEvueSyWgKjpYGZbS2rPLPCSpRrPr+icFz_Q@mail.gmail.com>
- <20210804013252.GA16420@nchen>
- <CAJk_X9gwa+4CZRemKqW7XZzxd438EQHA-Ngp4MdmPVgHM0Q5fg@mail.gmail.com>
- <20210809012747.GA6814@nchen>
- <CAJk_X9jT7bqLn-wb7AGF6onA2qE9_D_=f4pPpGDEoiCar2BWUw@mail.gmail.com>
+        id S233330AbhHIGdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 02:33:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8382 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233264AbhHIGdk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 02:33:40 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GjmQB4mv8z85TP;
+        Mon,  9 Aug 2021 14:29:22 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 14:33:17 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 9 Aug
+ 2021 14:33:17 +0800
+Subject: Re: [PATCH v2] arm64: kprobe: Enable OPTPROBE for arm64
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <linux-arm-kernel@lists.infradead.org>,
+        <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
+        <robin.murphy@arm.com>, <f.fangjian@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20210804060209.95817-1-liuqi115@huawei.com>
+ <20210805105401.4acd3217c566b4e3933f355c@kernel.org>
+ <d3e0c9ee-19b5-8042-d251-05348e8ac49e@huawei.com>
+ <20210806014435.a1b6d7900e0e72599a8e325f@kernel.org>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <7aead513-7ce5-7761-70d0-d83fe127c486@huawei.com>
+Date:   Mon, 9 Aug 2021 14:33:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJk_X9jT7bqLn-wb7AGF6onA2qE9_D_=f4pPpGDEoiCar2BWUw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210806014435.a1b6d7900e0e72599a8e325f@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-08-09 10:45:16, Jeaho Hwang wrote:
-> 2021년 8월 9일 (월) 오전 10:27, Peter Chen <peter.chen@kernel.org>님이 작성:
-> >
-> > On 21-08-04 11:03:44, Jeaho Hwang wrote:
-> > > Hi. linux-usb and linux-rt experts.
-> > > >
-> > > > On 21-08-02 17:35:01, Jeaho Hwang wrote:
-> > > > > Hi.
-> > > > >
-> > > > > We found an infinite loop inside the function hw_ep_set_halt
-> > > > > (drivers/usb/chipidea/udc.c) if a cablle is repeatedly
-> > > > > connnected/disconnected while ping through RNDIS with chipidea USB device.
-> > > > >
-> > > > > Using ftrace tracing, we found that hw_ep_set_halt is called due to error
-> > > > > return of hw_ep_prime(drivers/usb/chipidea/udc.c:202) which is called from
-> > > > > isr_tr_complete_handler -> isr_setup_status_phase -> _ep_queue.
-> > > > >
-> > > > > The comment of function hw_ep_prime says (execute without interruption) but
-> > > > > timer interrupt is occurred while hw_ep_prime is executing. We believe that
-> > > > > the interrupt causes an error return of hw_ep_prime. We tried to protect
-> > > > > hw_ep_prime from irqs and then no case of the infinite loop is occurred.
-> > > > >
-> > > > > I want ask if it is appropriate way that turning off irq inside (threaded)
-> > > > > irq handlers. And should we explicitly turn off irqs before calling
-> > > > > hw_ep_prime?
-> > > > >
-> > > >
-> > > > Jeaho, do you use RT-Linux or standard Linux? The function hw_ep_prime is
-> > > > only called at udc_irq which is registered as top-half irq handlers.
-> > > > Why the timer interrupt is occurred when hw_ep_prime is executing?
-> > >
-> > > We use preempt_RT so timer interrupt could be occurred. Now I found
-> > > out that forced threaded irq handler disables local irq on standard
-> > > linux so It is a linux-rt issue. Then should I make patch which
-> > > disables local irqs during hw_ep_prime for RT kernel and suggest it to
-> > > linux-rt maintainers?
-> > >
-> > > Thanks for a kind answer Peter.
-> > >
-> >
-> 
-> Thanks Peter.
-> 
-> > No, that will lead to deadlock since the normal request queue API function
-> > ep_queue disables irq which also calls into hw_ep_prime.
-> 
-> ep_queue disables irq by calling spin_lock_irqsave but it actually
-> does not disable irq for RT kernel.
-> Therefore local_irq_save at hw_ep_prime would not cause deadlock if
-> ep_queue calls it, i think.
-> 
-> Is it anything wrong?
 
-Oh, I was wrong that I thought you would use spin_lock_irqsave to
-disable interrupt. I am not familiar with spin_lock_irqsave behaviours
-at RT kernel.
 
-Yes, if you use local_irq_save at below sequence, that's ok.
-
-spin_lock_irqsave(lock, flag_1);
-...
-func hw_ep_prime
-{
-	local_irq_save(flag_2);
-	...
-	local_irq_restore(flag_2);
-}
-...
-spin_unlock_irqrestore(lock, flag_1);
-
-Peter
-
+On 2021/8/6 0:44, Masami Hiramatsu wrote:
+> On Thu, 5 Aug 2021 17:25:17 +0800
+> "liuqi (BA)" <liuqi115@huawei.com> wrote:
 > 
-> >
-> > For RT kernel, you may try to disable local irq at isr_setup_status_phase.
-> >
-> > --
-> >
-> > Thanks,
-> > Peter Chen
-> >
+>>
+>> Hi Masami,
+>>
+>> On 2021/8/5 9:54, Masami Hiramatsu wrote:
+>>> On Wed, 4 Aug 2021 14:02:09 +0800
+>>> Qi Liu <liuqi115@huawei.com> wrote:
+>>>
+>>>> This patch introduce optprobe for ARM64. In optprobe, probed
+>>>> instruction is replaced by a branch instruction to detour
+>>>> buffer. Detour buffer contains trampoline code and a call to
+>>>> optimized_callback(). optimized_callback() calls opt_pre_handler()
+>>>> to execute kprobe handler.
+>>>>
+>>>> Limitations:
+>>>> - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+>>>> guarantee the offset between probe point and kprobe pre_handler
+>>>> is not larger than 128MiB.
+>>>>
+>>>> Performance of optprobe on Hip08 platform is test using kprobe
+>>>> example module[1] to analyze the latency of a kernel function,
+>>>> and here is the result:
+>>>>
+>>>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
+>>>>
+>>>> kprobe before optimized:
+>>>> [280709.846380] do_empty returned 0 and took 1530 ns to execute
+>>>> [280709.852057] do_empty returned 0 and took 550 ns to execute
+>>>> [280709.857631] do_empty returned 0 and took 440 ns to execute
+>>>> [280709.863215] do_empty returned 0 and took 380 ns to execute
+>>>> [280709.868787] do_empty returned 0 and took 360 ns to execute
+>>>> [280709.874362] do_empty returned 0 and took 340 ns to execute
+>>>> [280709.879936] do_empty returned 0 and took 320 ns to execute
+>>>> [280709.885505] do_empty returned 0 and took 300 ns to execute
+>>>> [280709.891075] do_empty returned 0 and took 280 ns to execute
+>>>> [280709.896646] do_empty returned 0 and took 290 ns to execute
+>>>> [280709.902220] do_empty returned 0 and took 290 ns to execute
+>>>> [280709.907807] do_empty returned 0 and took 290 ns to execute
+>>>>
+>>>> optprobe:
+>>>> [ 2965.964572] do_empty returned 0 and took 90 ns to execute
+>>>> [ 2965.969952] do_empty returned 0 and took 80 ns to execute
+>>>> [ 2965.975332] do_empty returned 0 and took 70 ns to execute
+>>>> [ 2965.980714] do_empty returned 0 and took 60 ns to execute
+>>>> [ 2965.986128] do_empty returned 0 and took 80 ns to execute
+>>>> [ 2965.991507] do_empty returned 0 and took 70 ns to execute
+>>>> [ 2965.996884] do_empty returned 0 and took 70 ns to execute
+>>>> [ 2966.002262] do_empty returned 0 and took 80 ns to execute
+>>>> [ 2966.007642] do_empty returned 0 and took 70 ns to execute
+>>>> [ 2966.013020] do_empty returned 0 and took 70 ns to execute
+>>>> [ 2966.018400] do_empty returned 0 and took 70 ns to execute
+>>>> [ 2966.023779] do_empty returned 0 and took 70 ns to execute
+>>>> [ 2966.029158] do_empty returned 0 and took 70 ns to execute
+>>>>
+>>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>>>>
+>>>> ---
+>>>>
+>>>> Changes since V1:
+>>>> - Address the comments from Masami, checks for all branch instructions, and
+>>>> use aarch64_insn_patch_text_nosync() instead of aarch64_insn_patch_text()
+>>>> in each probe.
+>>>
+>>> Is it safe for the multicore system? If it is safe because it modifies
+>>> just one instruction (modifying 32bit in atomic), I understand it.
+>>
+>> Seems raw_spin_lock_irqsave is used in aarch64_insn_patch_text_nosync()
+>> and spinlock could support a protection in multicore system.
 > 
+> No, that is not what I meant. stop_machine() will ensure that the all other
+> cores parking in the safe area, so the target instruction will never be
+> executed while modifying the code.
+> Even if you use the spinlock, other cores don't stop unless it tries
+> to lock the same spinlock. And they are possible to execute the instruction
+> which you are modifying.
 > 
-> -- 
-> 황재호, Jay Hwang, linux team manager of RTst
-> 010-7242-1593
 
--- 
+got it, thanks, so I think aarch64_insn_patch_text_nosync() is not 
+suitable for arch_optimize_kprobes, as stop_machine is indispensables here.
+I also checked x86 opt.c, text_poke_bp() is used to modify the 
+instruction, seems it calls do_sync_core and make sure other core will 
+not execute the modifying instruction.
+
+>>> BTW, anyway, you should use _nosync() variant in arch_prepare_optimized_kprobe()
+>>> too, beacause the optprobe insn buffer is not touched until the probed instruction
+>>> is optimized by br.
+>>>
+>> Yes, sounds resonable.
+>>> [...]
+>>>> +int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
+>>>> +{
+>>>> +	kprobe_opcode_t *code;
+>>>> +	u32 insn;
+>>>> +	int ret, i;
+>>>> +	void *addrs[TMPL_END_IDX];
+>>>> +	void *addr;
+>>>> +
+>>>> +	code = get_optinsn_slot();
+>>>> +	if (!code)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	if (!is_offset_in_range((unsigned long)code,
+>>>> +				(unsigned long)orig->addr + 8))
+>>>> +		goto error;
+>>>> +
+>>>> +	if (!is_offset_in_range((unsigned long)code + TMPL_CALL_BACK,
+>>>> +				(unsigned long)optimized_callback))
+>>>> +		goto error;
+>>>> +
+>>>> +	if (!is_offset_in_range((unsigned long)&code[TMPL_RESTORE_END],
+>>>> +				(unsigned long)op->kp.addr + 4))
+>>>> +		goto error;
+>>>> +
+>>>> +	/* Setup template */
+>>>> +	for (i = 0; i < TMPL_END_IDX; i++)
+>>>> +		addrs[i] = code + i;
+>>>> +
+>>>> +	ret = aarch64_insn_patch_text(addrs, optprobe_template_entry,
+>>>> +				      TMPL_END_IDX);
+>>>
+>>> You should use aarch64_insn_patch_text_nosync() here (and all the
+>>> aarch64_insn_patch_text() in this function too), because the insn
+>>> buffer must not executed until the probe point is optimized.
+>>>
+>> aarch64_insn_patch_text() could patch multi instructions to code[] each
+>> time and aarch64_insn_patch_text_nosync() could only patch one
+>> instruction each time,
+> 
+> Ah, right.
+> 
+>> so maybe aarch64_insn_patch_text() is better here.
+>>
+>> I'll replace other aarch64_insn_patch_text() in this function.
+> 
+> Could you see x86 optprobe code what it does?
+> I prepare another writable buffer and build the trampoline code
+> on it. Finally patch the code on the insn buffer at once.
+> You can do the same thing here.
+> 
+> Thank you,
+> 
+
+Got it, I'll add this in next version.
 
 Thanks,
-Peter Chen
+Qi
+>>
+>> Thanks,
+>> Qi
+>>
+>>>> +	if (ret < 0)
+>>>> +		goto error;
+>>>> +
+>>>> +	/* Set probe information */
+>>>> +	addr = code + TMPL_VAL_IDX;
+>>>> +	insn =  (unsigned long long)op & 0xffffffff;
+>>>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>>>> +
+>>>> +	addr = addr + 4;
+>>>> +	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
+>>>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>>>> +
+>>>> +	addr = code + TMPL_CALL_BACK;
+>>>> +	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
+>>>> +				(unsigned long)optimized_callback,
+>>>> +				AARCH64_INSN_BRANCH_LINK);
+>>>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>>>> +
+>>>> +	/* The original probed instruction */
+>>>> +	addr = code + TMPL_RESTORE_ORIGN_INSN;
+>>>> +	insn =  orig->opcode;
+>>>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>>>> +
+>>>> +	/* Jump back to next instruction */
+>>>> +	addr = code + TMPL_RESTORE_END;
+>>>> +	insn = aarch64_insn_gen_branch_imm(
+>>>> +				(unsigned long)(&code[TMPL_RESTORE_END]),
+>>>> +				(unsigned long)(op->kp.addr) + 4,
+>>>> +				AARCH64_INSN_BRANCH_NOLINK);
+>>>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>>>> +
+>>>> +	flush_icache_range((unsigned long)code,
+>>>> +			   (unsigned long)(&code[TMPL_END_IDX]));
+>>>> +	/* Set op->optinsn.insn means prepared. */
+>>>> +	op->optinsn.insn = code;
+>>>> +
+>>>> +	return 0;
+>>>
+>>> Thank you,
+>>>
+>>>
+>>>
+>>
+> 
+> 
 
