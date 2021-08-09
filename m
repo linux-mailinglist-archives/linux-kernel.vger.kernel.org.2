@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E743E3EA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB93E3E3EAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhHIEIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 00:08:07 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55907 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230365AbhHIEIG (ORCPT
+        id S231644AbhHIELT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 00:11:19 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:50721 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230306AbhHIELR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 00:08:06 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UiM6Ee7_1628482064;
-Received: from B-25KNML85-0107.local(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0UiM6Ee7_1628482064)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 09 Aug 2021 12:07:45 +0800
-Subject: Re: [PATCH 1/2] io_uring: clear TIF_NOTIFY_SIGNAL when running task
- work
-To:     Nadav Amit <namit@vmware.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210808001342.964634-1-namit@vmware.com>
- <20210808001342.964634-2-namit@vmware.com>
- <488f005c-fd92-9881-2700-b2eb1adbb78e@gmail.com>
- <40885F33-F35D-49E9-A79F-DB3C35278F73@vmware.com>
-From:   Hao Xu <haoxu@linux.alibaba.com>
-Message-ID: <8825c48c-3574-c76f-4ff2-e68aaf657cda@linux.alibaba.com>
-Date:   Mon, 9 Aug 2021 12:07:44 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Mon, 9 Aug 2021 00:11:17 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A0F8B806B5;
+        Mon,  9 Aug 2021 16:10:51 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1628482251;
+        bh=KECYiZel3OyM1BQQYeI4/T9hq9JbO7y+xolfPmiqoKE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=0tZWmyjk4UJIzYfP2jRjimZu4HbRMG13Vbu9dAgN4W1a9UtetvpqcFkftLbadMKNp
+         iScsNY31sbBkSYw4MRrOaOSnuBh92S7LtycUAdXSteV9efSk0GP7BCtKxn53hhLefJ
+         fu79981jbNEjX9/RLE4vgds5wkqJrkz4EOWQXWOX8cjLri+Gj+x2rpM2iT+ybgumD6
+         yu0Mtsqb7hv8da1L/CFj1w4/jxsMCpnSVDdsSLvDDWWh4eM1HJzmPwM3ErvIvNYnpx
+         +SsVuCI8QroS6sLzjY8Ve8W4nmPgdceU1mlgJWpmMSNEXxPodO41nc5o+98VhwJJ8m
+         rHqjQ3UF8Np1A==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6110aacb0000>; Mon, 09 Aug 2021 16:10:51 +1200
+Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
+        by pat.atlnz.lc (Postfix) with ESMTP id 721A413EDC1;
+        Mon,  9 Aug 2021 16:10:51 +1200 (NZST)
+Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
+        id 6B19C2428A0; Mon,  9 Aug 2021 16:10:51 +1200 (NZST)
+From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+To:     pablo@netfilter.org
+Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        kuba@kernel.org, shuah@kernel.org,
+        Cole.Dishington@alliedtelesis.co.nz, linux-kernel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH net-next 0/3] Add RFC-7597 Section 5.1 PSID support
+Date:   Mon,  9 Aug 2021 16:10:34 +1200
+Message-Id: <20210809041037.29969-1-Cole.Dishington@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210726143729.GN9904@breakpoint.cc>
+References: <20210726143729.GN9904@breakpoint.cc>
 MIME-Version: 1.0
-In-Reply-To: <40885F33-F35D-49E9-A79F-DB3C35278F73@vmware.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=dvql9Go4 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=MhDmnRu9jo8A:10 a=-X3T4Ftr5sKAnL7oE1kA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/8/9 上午1:31, Nadav Amit 写道:
-> 
-> 
->> On Aug 8, 2021, at 5:55 AM, Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 8/8/21 1:13 AM, Nadav Amit wrote:
->>> From: Nadav Amit <namit@vmware.com>
->>>
->>> When using SQPOLL, the submission queue polling thread calls
->>> task_work_run() to run queued work. However, when work is added with
->>> TWA_SIGNAL - as done by io_uring itself - the TIF_NOTIFY_SIGNAL remains
->>
->> static int io_req_task_work_add(struct io_kiocb *req)
->> {
->> 	...
->> 	notify = (req->ctx->flags & IORING_SETUP_SQPOLL) ? TWA_NONE : TWA_SIGNAL;
->> 	if (!task_work_add(tsk, &tctx->task_work, notify))
->> 	...
->> }
->>
->> io_uring doesn't set TIF_NOTIFY_SIGNAL for SQPOLL. But if you see it, I'm
->> rather curious who does.
-> 
-> I was saying io-uring, but I meant io-uring in the wider sense:
-> io_queue_worker_create().
-> 
-> Here is a call trace for when TWA_SIGNAL is used. io_queue_worker_create()
-> uses TWA_SIGNAL. It is called by io_wqe_dec_running(), and not shown due
-> to inlining:
-Hi Nadav, Pavel,
-How about trying to make this kind of call to use TWA_NONE for sqthread,
-though I know for this case currently there is no info to get to know if
-task is sqthread. I think we shouldn't kick sqthread.
+Thanks for your time reviewing!
 
-regards,
-Hao
-> 
-> [   70.540761] Call Trace:
-> [   70.541352]  dump_stack+0x7d/0x9c
-> [   70.541930]  task_work_add.cold+0x9/0x12
-> [   70.542591]  io_wqe_dec_running+0xd6/0xf0
-> [   70.543259]  io_wq_worker_sleeping+0x3d/0x60
-> [   70.544106]  schedule+0xa0/0xc0
-> [   70.544673]  userfaultfd_read_iter+0x2c3/0x790
-> [   70.545374]  ? wake_up_q+0xa0/0xa0
-> [   70.545887]  io_iter_do_read+0x1e/0x40
-> [   70.546531]  io_read+0xdc/0x340
-> [   70.547148]  ? update_curr+0x72/0x1c0
-> [   70.547887]  ? update_load_avg+0x7c/0x600
-> [   70.548538]  ? __switch_to_xtra+0x10a/0x500
-> [   70.549264]  io_issue_sqe+0xd99/0x1840
-> [   70.549887]  ? lock_timer_base+0x72/0xa0
-> [   70.550516]  ? try_to_del_timer_sync+0x54/0x80
-> [   70.551224]  io_wq_submit_work+0x87/0xb0
-> [   70.552001]  io_worker_handle_work+0x2b5/0x4b0
-> [   70.552705]  io_wqe_worker+0xd6/0x2f0
-> [   70.553364]  ? recalc_sigpending+0x1c/0x50
-> [   70.554074]  ? io_worker_handle_work+0x4b0/0x4b0
-> [   70.554813]  ret_from_fork+0x22/0x30
-> 
-> Does it answer your question?
-> 
+Changes in v7:
+- Added net-next to subject.
+- Added Reviewed-by: Florian Westphal <fw@strlen.de> to patch 2/3.
+
+Cole Dishington (3):
+  net: netfilter: Add RFC-7597 Section 5.1 PSID support xtables API
+  net: netfilter: Add RFC-7597 Section 5.1 PSID support
+  selftests: netfilter: Add RFC-7597 Section 5.1 PSID selftests
+
+ include/uapi/linux/netfilter/nf_nat.h         |   3 +-
+ net/netfilter/nf_nat_core.c                   |  39 +++-
+ net/netfilter/nf_nat_masquerade.c             |  27 ++-
+ net/netfilter/xt_MASQUERADE.c                 |  44 ++++-
+ .../netfilter/nat_masquerade_psid.sh          | 182 ++++++++++++++++++
+ 5 files changed, 283 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/netfilter/nat_masquerade_psid=
+.sh
+
+--=20
+2.32.0
 
