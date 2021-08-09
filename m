@@ -2,592 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DAA3E4066
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F1E3E406D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhHIGp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 02:45:27 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13252 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233256AbhHIGpY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 02:45:24 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gjmm14XcWz1CTvw;
-        Mon,  9 Aug 2021 14:44:49 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 14:44:59 +0800
-Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
- (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 9 Aug
- 2021 14:44:59 +0800
-Subject: Re: [PATCH v2] arm64: kprobe: Enable OPTPROBE for arm64
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "Fangjian (Jay)" <f.fangjian@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210804060209.95817-1-liuqi115@huawei.com>
- <e59357e126e34a6d97a55113483746f8@hisilicon.com>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <925da4cb-f45f-fbaf-e0bd-4866690a2b26@huawei.com>
-Date:   Mon, 9 Aug 2021 14:44:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S233434AbhHIGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 02:46:38 -0400
+Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:44544
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233266AbhHIGqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 02:46:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iOFSSPW2T8uReHxft03i+FLtgcfHIbX+smiSZQvIqCdTYqL6dVR81W9MDaVkZNDUXT1SCuPNP9lQAk06xqoWsZCtiiT6Kqn46Q0EunYG2TZboim/KnplCs5k3R5I1lhZ5zu7Fq91+3mufR5lD5jDVeZDnjJYc6pGXagv8wAs/Q55hCzCdQuUroo0bV5J8Tg7DLes9K3dSQX4hwFw/d4zUbdM55Clhd5ZNT9aQfzMeeKl/7I1jgMtUDFKuEuEoWzj4o9ABMeQKGml09t3QzCjaKoNXvE5TGbcvhhnQHjo7tGZXjCb4H8B5wm5XmvdJAwljR+W7oeM1/MMGnHc4odVeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rx3tKlKqWswfrIZU+xPcvaIqyLthUji4ByCjuz1DjfA=;
+ b=ahgcgnQRx0/DN28MHuiYjMn9Q0sQEbf8vRg/bYdAY4gLeaFokkR1m9qXY/TQmUB+zKeAkUManVzug1Q7evDefVRz0HcASzZYKV7lnmqIgmg2sPVEZwyf7pIbk1tz4N0NHJOif1ZFrHZor8wJiE+PQeB6FowDyikWiqfbXgRtg+WNKSCd411BnVTb57lrUtUKB8ekVlCHGlXVohS2PApeyIyxeAPOOwZBJB/j+qLylgAbGZGuYMKH3oBoVpHR9ACFXleGg8Pa8fSuTII2ipQ5fTn3tM2NDqVid2/mb/31QrjEYzrEDoOUQ5HCoh8IkYj2kcst4NAa/SV2fSDwfEJ0yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=kvack.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rx3tKlKqWswfrIZU+xPcvaIqyLthUji4ByCjuz1DjfA=;
+ b=Pu29Oyzm5J95LWvx5uZEylF6FaPPN4QlnUApMO4VbuWZ4Ldmf5ZeKZGHmbV/LkolmErqSJEd+gdbKxpSdcrZ/u176g3JEqtdPlB2I6Vaz6SHvWQPlQstd4c8SReZN9gLC4Cd/ZzHaR6Uwg+ihkPy6Ij8MXPVKypnIvUHJFKHvn0JnHegA8jG0X430h50a8ECwdlxCtshprxHf4Lx8L5RslRSeN3EdvmbgFHBilMugl+5GgwlewxaL/UbDsza2b00utqtHtI1ipfg/zll9J/3+HYulO+1KhIXsUfvBB+utIJ3vEhM1vzuPC4PQoSkZeNXtVt/0OjE3B571Wq43bfiQQ==
+Received: from BN1PR12CA0012.namprd12.prod.outlook.com (2603:10b6:408:e1::17)
+ by CH2PR12MB4280.namprd12.prod.outlook.com (2603:10b6:610:ac::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Mon, 9 Aug
+ 2021 06:46:15 +0000
+Received: from BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e1:cafe::23) by BN1PR12CA0012.outlook.office365.com
+ (2603:10b6:408:e1::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend
+ Transport; Mon, 9 Aug 2021 06:46:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ BN8NAM11FT012.mail.protection.outlook.com (10.13.177.55) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4394.16 via Frontend Transport; Mon, 9 Aug 2021 06:46:15 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Aug
+ 2021 06:46:10 +0000
+Received: from [10.2.53.40] (172.20.187.5) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Aug
+ 2021 06:46:10 +0000
+Subject: Re: [PATCH 2/3] mm/gup: small refactoring: simplify try_grab_page()
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210808235018.1924918-1-jhubbard@nvidia.com>
+ <20210808235018.1924918-3-jhubbard@nvidia.com>
+ <YRDNeZZQxUzbFxrQ@infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <e46fbd0f-21f7-9cd5-d216-8ec0b9e2221d@nvidia.com>
+Date:   Sun, 8 Aug 2021 23:46:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <e59357e126e34a6d97a55113483746f8@hisilicon.com>
+In-Reply-To: <YRDNeZZQxUzbFxrQ@infradead.org>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.203]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL105.nvidia.com (172.20.187.12)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 12371092-fd63-43f7-34c4-08d95b01626f
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4280:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB4280472B970EA98FCB9B284DA8F69@CH2PR12MB4280.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /cck3VLkQtWsSRLWth5iDMDks87GpWtzIJ4HXEbpAym3s7cF2pvr95N5LSBQ/ATtXhcPNxyML10WWZf7Lgs9IdRexERrvW+kvY9XS55mSYn02bco49BBUwCCeChr+1m3ViJKDxtgKPnGJX9QedUAscFCMqsznyDjKFUiytTDYkjYBMYsRu5wpwLo1JyRkkw3AiGdjwln3l7Eo/eKD4bd/fpWdZavQGW1NM8Wx1gpSJ/u8E/SFVhg7cT1nbh01JFacveLtASt3iaQvmoJ/CVC5NCWLL8SV4sYRQrXyR5YIlTYU3XsxMPZM1iUPolSIFIPMm4Sxc6Qh2TF3lgZNQW9YST0GwSrJMDe9y0WdkfdrCpplmf2ZjrygVUHtGMCrjAdygZj3JZkOItQ3EjWiC3Khr+Cd7oZ8CyH4oC61l4yPaC3QOt8BhivQAksb5Czy+OhKJXH3PgLmwkwmn4S41xZlJUaazh2wFV9DIJDovCrSV/IM8KpcFh/d6VzrOn/acMo9ZLXMedm/rYJqZW2yNdDvJlTglfy90U3mEcFcE+gV/6Xl6IGk+HNH5pMy3pJW4Kf48neG2LBGE4i/CN5I7oOj0cMXnAFXnQEryD5Dbacrnpby1lxNMUF6V12AQSi75tuTkuQHxx50Po5BZH3Yf666K+2mkGe9GJaViCJXgytZIYcOUFUIaOj84sPJLCUmn0uxB2oCVlCDpnGC2Zevkky6oEi6QjoB4X6bkjXP20zP2Y=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(36840700001)(46966006)(8936002)(26005)(186003)(6916009)(4326008)(16526019)(426003)(36756003)(8676002)(83380400001)(478600001)(5660300002)(31696002)(86362001)(31686004)(53546011)(336012)(54906003)(70586007)(70206006)(36860700001)(2906002)(316002)(16576012)(36906005)(82310400003)(7636003)(2616005)(47076005)(82740400003)(356005)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 06:46:15.2536
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12371092-fd63-43f7-34c4-08d95b01626f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4280
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Barry,
-On 2021/8/5 16:55, Song Bao Hua (Barry Song) wrote:
-> 
-> 
->> -----Original Message-----
->> From: liuqi (BA)
->> Sent: Wednesday, August 4, 2021 6:02 PM
->> To: catalin.marinas@arm.com; will@kernel.org; naveen.n.rao@linux.ibm.com;
->> anil.s.keshavamurthy@intel.com; davem@davemloft.net; mhiramat@kernel.org;
->> linux-arm-kernel@lists.infradead.org
->> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>; Zengtao (B)
->> <prime.zeng@hisilicon.com>; robin.murphy@arm.com; Fangjian (Jay)
->> <f.fangjian@huawei.com>; liuqi (BA) <liuqi115@huawei.com>; Linuxarm
->> <linuxarm@huawei.com>; linux-kernel@vger.kernel.org
->> Subject: [PATCH v2] arm64: kprobe: Enable OPTPROBE for arm64
+On 8/8/21 11:38 PM, Christoph Hellwig wrote:
+> On Sun, Aug 08, 2021 at 04:50:17PM -0700, John Hubbard wrote:
+>> try_grab_page() does the same thing as try_grab_compound_head(...,
+>> refs=1, ...), just with a different API. So there is a lot of code
+>> duplication there.
 >>
->> This patch introduce optprobe for ARM64. In optprobe, probed
->> instruction is replaced by a branch instruction to detour
->> buffer. Detour buffer contains trampoline code and a call to
->> optimized_callback(). optimized_callback() calls opt_pre_handler()
->> to execute kprobe handler.
+>> Change try_grab_page() to call try_grab_compound_head(), while keeping
+>> the API contract identical for callers.
 >>
->> Limitations:
->> - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
->> guarantee the offset between probe point and kprobe pre_handler
->> is not larger than 128MiB.
+>> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+>> ---
+>>   mm/gup.c | 29 ++---------------------------
+>>   1 file changed, 2 insertions(+), 27 deletions(-)
 >>
->> Performance of optprobe on Hip08 platform is test using kprobe
->> example module[1] to analyze the latency of a kernel function,
->> and here is the result:
->>
->> [1]
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sa
->> mples/kprobes/kretprobe_example.c
->>
->> kprobe before optimized:
->> [280709.846380] do_empty returned 0 and took 1530 ns to execute
->> [280709.852057] do_empty returned 0 and took 550 ns to execute
->> [280709.857631] do_empty returned 0 and took 440 ns to execute
->> [280709.863215] do_empty returned 0 and took 380 ns to execute
->> [280709.868787] do_empty returned 0 and took 360 ns to execute
->> [280709.874362] do_empty returned 0 and took 340 ns to execute
->> [280709.879936] do_empty returned 0 and took 320 ns to execute
->> [280709.885505] do_empty returned 0 and took 300 ns to execute
->> [280709.891075] do_empty returned 0 and took 280 ns to execute
->> [280709.896646] do_empty returned 0 and took 290 ns to execute
->> [280709.902220] do_empty returned 0 and took 290 ns to execute
->> [280709.907807] do_empty returned 0 and took 290 ns to execute
->>
-
-[...]
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index b5b13a932561..3532f0237c71 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -200,6 +200,7 @@ config ARM64
->>   	select HAVE_STACKPROTECTOR
->>   	select HAVE_SYSCALL_TRACEPOINTS
->>   	select HAVE_KPROBES
->> +	select HAVE_OPTPROBES if !RANDOMIZE_MODULE_REGION_FULL
-> 
-> Any negative side effect if we optprobe doesn't apply and we fall
-> back to normal kprobe?
-> 
-> I mean, normal kprobe without this patch vs. fallback to kprobe
-> from optprobe with this patch, any penalty in latency from
-> optprobe?
-> 
-
-I test this situation on Hip08 platform, and here is the result:
-</sys/bus/platform/devices/hello_driver/kprobe_test
-[   29.713132] do_empty returned 0 and took 1800 ns to execute
-[   29.713726] do_empty returned 0 and took 410 ns to execute
-[   29.714296] do_empty returned 0 and took 320 ns to execute
-[   29.714846] do_empty returned 0 and took 290 ns to execute
-[   29.715388] do_empty returned 0 and took 280 ns to execute
-[   29.715932] do_empty returned 0 and took 290 ns to execute
-[   29.716472] do_empty returned 0 and took 280 ns to execute
-[   29.717028] do_empty returned 0 and took 270 ns to execute
-[   29.717578] do_empty returned 0 and took 270 ns to execute
-[   29.718142] do_empty returned 0 and took 290 ns to execute
-[   29.718700] do_empty returned 0 and took 250 ns to execute
-[   29.719246] do_empty returned 0 and took 260 ns to execute
-[   29.719797] do_empty returned 0 and took 250 ns to execute
-[   29.720355] do_empty returned 0 and took 290 ns to execute
-[   29.720915] do_empty returned 0 and took 270 ns to execute
-[   29.721484] do_empty returned 0 and took 270 ns to execute
-[   29.722032] do_empty returned 0 and took 270 ns to execute
-[   29.722612] do_empty returned 0 and took 280 ns to execute
-[   29.723161] do_empty returned 0 and took 260 ns to execute
-[   29.723712] do_empty returned 0 and took 260 ns to execute
-[   29.724266] do_empty returned 0 and took 260 ns to execute
-[   29.724823] do_empty returned 0 and took 270 ns to execute
-[   29.725423] do_empty returned 0 and took 340 ns to execute
-[   29.725968] do_empty returned 0 and took 280 ns to execute
-
-Seems no penalty here.
-
-> If no penalty, I'd rather we remove the dependency of
-> RANDOMIZE_MODULE_REGION_FULL since you mentioned
-> nokaslr will always make optprobe work. I assume
-> in those tests you enabled RANDOMIZE_MODULE_REGION_FULL?
-> 
-
-Yes, when I set nokaslr, I also set CONFIG_RANDOMIZE_MODULE_REGION_FULL=y.
-
-ok, I'll remove this depending next version and metion it in commit log.
-
-Thanks,
-Qi
-
-> We can mention those issues in commit log rather than statically
-> depending on a kconfig option.
-> 
->>   	select HAVE_KRETPROBES
->>   	select HAVE_GENERIC_VDSO
->>   	select IOMMU_DMA if IOMMU_SUPPORT
->> diff --git a/arch/arm64/include/asm/kprobes.h
->> b/arch/arm64/include/asm/kprobes.h
->> index 5d38ff4a4806..9e1c492a0c3d 100644
->> --- a/arch/arm64/include/asm/kprobes.h
->> +++ b/arch/arm64/include/asm/kprobes.h
->> @@ -39,6 +39,29 @@ void arch_remove_kprobe(struct kprobe *);
->>   int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
->>   int kprobe_exceptions_notify(struct notifier_block *self,
->>   			     unsigned long val, void *data);
->> +
->> +#define RELATIVEJUMP_SIZE (4)
->> +#define MAX_COPIED_INSN	DIV_ROUND_UP(RELATIVEJUMP_SIZE,
->> sizeof(kprobe_opcode_t))
->> +struct arch_optimized_insn {
->> +	kprobe_opcode_t copied_insn[MAX_COPIED_INSN];
->> +	/* detour code buffer */
->> +	kprobe_opcode_t *insn;
->> +};
->> +
->> +/* optinsn template addresses */
->> +extern __visible kprobe_opcode_t optprobe_template_entry[];
->> +extern __visible kprobe_opcode_t optprobe_template_val[];
->> +extern __visible kprobe_opcode_t optprobe_template_call[];
->> +extern __visible kprobe_opcode_t optprobe_template_end[];
->> +extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
->> +extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
->> +extern __visible kprobe_opcode_t optprobe_template_restore_end[];
->> +
->> +#define MAX_OPTIMIZED_LENGTH	4
->> +#define MAX_OPTINSN_SIZE				\
->> +	((unsigned long)optprobe_template_end -	\
->> +	 (unsigned long)optprobe_template_entry)
->> +
->>   void kretprobe_trampoline(void);
->>   void __kprobes *trampoline_probe_handler(struct pt_regs *regs);
->>
->> diff --git a/arch/arm64/kernel/probes/Makefile
->> b/arch/arm64/kernel/probes/Makefile
->> index 8e4be92e25b1..52cf5d4ffe8a 100644
->> --- a/arch/arm64/kernel/probes/Makefile
->> +++ b/arch/arm64/kernel/probes/Makefile
->> @@ -4,3 +4,5 @@ obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o	\
->>   				   simulate-insn.o
->>   obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o	\
->>   				   simulate-insn.o
->> +obj-$(CONFIG_OPTPROBES)		+= opt-arm64.o			\
->> +				   optprobe_trampoline.o
->> diff --git a/arch/arm64/kernel/probes/kprobes.c
->> b/arch/arm64/kernel/probes/kprobes.c
->> index 6dbcc89f6662..83755ad62abe 100644
->> --- a/arch/arm64/kernel/probes/kprobes.c
->> +++ b/arch/arm64/kernel/probes/kprobes.c
->> @@ -11,6 +11,7 @@
->>   #include <linux/kasan.h>
->>   #include <linux/kernel.h>
->>   #include <linux/kprobes.h>
->> +#include <linux/moduleloader.h>
->>   #include <linux/sched/debug.h>
->>   #include <linux/set_memory.h>
->>   #include <linux/slab.h>
->> @@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
->>
->>   void *alloc_insn_page(void)
+>> diff --git a/mm/gup.c b/mm/gup.c
+>> index 5cb18b62921c..4be6f060fa0b 100644
+>> --- a/mm/gup.c
+>> +++ b/mm/gup.c
+>> @@ -203,33 +203,8 @@ static void put_compound_head(struct page *page, int refs, unsigned int flags)
+>>    */
+>>   bool __must_check try_grab_page(struct page *page, unsigned int flags)
 >>   {
->> -	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
->> -			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
->> -			NUMA_NO_NODE, __builtin_return_address(0));
->> +	void *page;
->> +
->> +	page = module_alloc(PAGE_SIZE);
->> +	if (!page)
->> +		return NULL;
->> +
->> +	set_vm_flush_reset_perms(page);
->> +	/*
->> +	 * First make the page read-only, and only then make it executable to
->> +	 * prevent it from being W+X in between.
->> +	 */
->> +	set_memory_ro((unsigned long)page, 1);
->> +	set_memory_x((unsigned long)page, 1);
->> +
->> +	return page;
->>   }
->>
->>   /* arm kprobe: install breakpoint in text */
->> diff --git a/arch/arm64/kernel/probes/opt-arm64.c
->> b/arch/arm64/kernel/probes/opt-arm64.c
->> new file mode 100644
->> index 000000000000..a0302e3ad62d
->> --- /dev/null
->> +++ b/arch/arm64/kernel/probes/opt-arm64.c
->> @@ -0,0 +1,225 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Code for Kernel probes Jump optimization.
->> + *
->> + * Copyright (C) 2021 Hisilicon Limited
->> + */
->> +
->> +#include <linux/jump_label.h>
->> +#include <linux/kprobes.h>
->> +
->> +#include <asm/cacheflush.h>
->> +#include <asm/insn.h>
->> +#include <asm/kprobes.h>
->> +
->> +
->> +#define TMPL_VAL_IDX \
->> +	(optprobe_template_val - optprobe_template_entry)
->> +#define TMPL_CALL_BACK \
->> +	(optprobe_template_call - optprobe_template_entry)
->> +#define TMPL_END_IDX \
->> +	(optprobe_template_end - optprobe_template_entry)
->> +#define TMPL_RESTORE_ORIGN_INSN \
->> +	(optprobe_template_restore_orig_insn - optprobe_template_entry)
->> +#define TMPL_RESTORE_END \
->> +	(optprobe_template_restore_end - optprobe_template_entry)
->> +
->> +int arch_check_optimized_kprobe(struct optimized_kprobe *op)
->> +{
->> +	return 0;
->> +}
->> +
->> +int arch_prepared_optinsn(struct arch_optimized_insn *optinsn)
->> +{
->> +	return optinsn->insn != NULL;
->> +}
->> +
->> +int arch_within_optimized_kprobe(struct optimized_kprobe *op,
->> +				unsigned long addr)
->> +{
->> +	return ((unsigned long)op->kp.addr <= addr &&
->> +		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
->> +}
->> +
->> +static void
->> +optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
->> +{
->> +	/* This is possible if op is under delayed unoptimizing */
->> +	if (kprobe_disabled(&op->kp))
->> +		return;
->> +
->> +	preempt_disable();
->> +
->> +	if (kprobe_running()) {
->> +		kprobes_inc_nmissed_count(&op->kp);
->> +	} else {
->> +		__this_cpu_write(current_kprobe, &op->kp);
->> +		regs->pc = (unsigned long)op->kp.addr;
->> +		get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
->> +		opt_pre_handler(&op->kp, regs);
->> +		__this_cpu_write(current_kprobe, NULL);
->> +	}
->> +
->> +	preempt_enable_no_resched();
->> +}
->> +NOKPROBE_SYMBOL(optimized_callback)
->> +
->> +static bool is_offset_in_range(unsigned long start, unsigned long end)
->> +{
->> +	long offset = end - start;
->> +
->> +	/*
->> +	 * Verify if the address gap is in 128MiB range, because this uses
->> +	 * a relative jump.
->> +	 *
->> +	 * kprobe opt use a 'b' instruction to branch to optinsn.insn.
->> +	 * According to ARM manual, branch instruction is:
->> +	 *
->> +	 *   31  30                  25              0
->> +	 *  +----+---+---+---+---+---+---------------+
->> +	 *  |cond| 0 | 0 | 1 | 0 | 1 |     imm26     |
->> +	 *  +----+---+---+---+---+---+---------------+
->> +	 *
->> +	 * imm26 is a signed 26 bits integer. The real branch offset is computed
->> +	 * by: imm64 = SignExtend(imm26:'00', 64);
->> +	 *
->> +	 * So the maximum forward branch should be:
->> +	 *   (0x01ffffff << 2) = 1720x07fffffc =  0x07fffffc
->> +	 * The maximum backward branch should be:
->> +	 *   (0xfe000000 << 2) = 0xFFFFFFFFF8000000 = -0x08000000
->> +	 *
->> +	 * We can simply check (rel & 0xf8000003):
->> +	 *  if rel is positive, (rel & 0xf8000003) should be 0
->> +	 *  if rel is negitive, (rel & 0xf8000003) should be 0xf8000000
->> +	 *  the last '3' is used for alignment checking.
->> +	 */
->> +	return (offset >= -0x08000000 && offset <= 0x07fffffc && !(offset & 0x3));
->> +}
->> +
->> +int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe
->> *orig)
->> +{
->> +	kprobe_opcode_t *code;
->> +	u32 insn;
->> +	int ret, i;
->> +	void *addrs[TMPL_END_IDX];
->> +	void *addr;
->> +
->> +	code = get_optinsn_slot();
->> +	if (!code)
->> +		return -ENOMEM;
->> +
->> +	if (!is_offset_in_range((unsigned long)code,
->> +				(unsigned long)orig->addr + 8))
->> +		goto error;
->> +
->> +	if (!is_offset_in_range((unsigned long)code + TMPL_CALL_BACK,
->> +				(unsigned long)optimized_callback))
->> +		goto error;
->> +
->> +	if (!is_offset_in_range((unsigned long)&code[TMPL_RESTORE_END],
->> +				(unsigned long)op->kp.addr + 4))
->> +		goto error;
->> +
->> +	/* Setup template */
->> +	for (i = 0; i < TMPL_END_IDX; i++)
->> +		addrs[i] = code + i;
->> +
->> +	ret = aarch64_insn_patch_text(addrs, optprobe_template_entry,
->> +				      TMPL_END_IDX);
->> +	if (ret < 0)
->> +		goto error;
->> +
->> +	/* Set probe information */
->> +	addr = code + TMPL_VAL_IDX;
->> +	insn =  (unsigned long long)op & 0xffffffff;
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	addr = addr + 4;
->> +	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	addr = code + TMPL_CALL_BACK;
->> +	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
->> +				(unsigned long)optimized_callback,
->> +				AARCH64_INSN_BRANCH_LINK);
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	/* The original probed instruction */
->> +	addr = code + TMPL_RESTORE_ORIGN_INSN;
->> +	insn =  orig->opcode;
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	/* Jump back to next instruction */
->> +	addr = code + TMPL_RESTORE_END;
->> +	insn = aarch64_insn_gen_branch_imm(
->> +				(unsigned long)(&code[TMPL_RESTORE_END]),
->> +				(unsigned long)(op->kp.addr) + 4,
->> +				AARCH64_INSN_BRANCH_NOLINK);
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	flush_icache_range((unsigned long)code,
->> +			   (unsigned long)(&code[TMPL_END_IDX]));
->> +	/* Set op->optinsn.insn means prepared. */
->> +	op->optinsn.insn = code;
->> +
->> +	return 0;
->> +
->> +error:
->> +	free_optinsn_slot(code, 0);
->> +	return -ERANGE;
->> +}
->> +
->> +void arch_optimize_kprobes(struct list_head *oplist)
->> +{
->> +	struct optimized_kprobe *op, *tmp;
->> +
->> +	list_for_each_entry_safe(op, tmp, oplist, list) {
->> +		u32 insn;
->> +
->> +		WARN_ON(kprobe_disabled(&op->kp));
->> +
->> +		/*
->> +		 * Backup instructions which will be replaced
->> +		 * by jump address
->> +		 */
->> +		memcpy(op->optinsn.copied_insn, op->kp.addr,
->> +			RELATIVEJUMP_SIZE);
->> +		insn = aarch64_insn_gen_branch_imm((unsigned long)op->kp.addr,
->> +				(unsigned long)op->optinsn.insn,
->> +				AARCH64_INSN_BRANCH_NOLINK);
->> +
->> +		WARN_ON(insn == 0);
->> +
->> +		aarch64_insn_patch_text_nosync((void*)op->kp.addr, insn);
->> +
->> +		list_del_init(&op->list);
->> +	}
->> +}
->> +
->> +void arch_unoptimize_kprobe(struct optimized_kprobe *op)
->> +{
->> +	arch_arm_kprobe(&op->kp);
->> +}
->> +
->> +/*
->> + * Recover original instructions and breakpoints from relative jumps.
->> + * Caller must call with locking kprobe_mutex.
->> + */
->> +void arch_unoptimize_kprobes(struct list_head *oplist,
->> +			    struct list_head *done_list)
->> +{
->> +	struct optimized_kprobe *op, *tmp;
->> +
->> +	list_for_each_entry_safe(op, tmp, oplist, list) {
->> +		arch_unoptimize_kprobe(op);
->> +		list_move(&op->list, done_list);
->> +	}
->> +}
->> +
->> +void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
->> +{
->> +	if (op->optinsn.insn) {
->> +		free_optinsn_slot(op->optinsn.insn, 1);
->> +		op->optinsn.insn = NULL;
->> +	}
->> +}
->> diff --git a/arch/arm64/kernel/probes/optprobe_trampoline.S
->> b/arch/arm64/kernel/probes/optprobe_trampoline.S
->> new file mode 100644
->> index 000000000000..13729cb279b8
->> --- /dev/null
->> +++ b/arch/arm64/kernel/probes/optprobe_trampoline.S
->> @@ -0,0 +1,80 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * trampoline entry and return code for optprobes.
->> + */
->> +
->> +#include <linux/linkage.h>
->> +#include <asm/asm-offsets.h>
->> +#include <asm/assembler.h>
->> +
->> +	.global optprobe_template_entry
->> +optprobe_template_entry:
->> +	sub sp, sp, #PT_REGS_SIZE
->> +	stp x0, x1, [sp, #S_X0]
->> +	stp x2, x3, [sp, #S_X2]
->> +	stp x4, x5, [sp, #S_X4]
->> +	stp x6, x7, [sp, #S_X6]
->> +	stp x8, x9, [sp, #S_X8]
->> +	stp x10, x11, [sp, #S_X10]
->> +	stp x12, x13, [sp, #S_X12]
->> +	stp x14, x15, [sp, #S_X14]
->> +	stp x16, x17, [sp, #S_X16]
->> +	stp x18, x19, [sp, #S_X18]
->> +	stp x20, x21, [sp, #S_X20]
->> +	stp x22, x23, [sp, #S_X22]
->> +	stp x24, x25, [sp, #S_X24]
->> +	stp x26, x27, [sp, #S_X26]
->> +	stp x28, x29, [sp, #S_X28]
->> +	add x0, sp, #PT_REGS_SIZE
->> +	stp lr, x0, [sp, #S_LR]
->> +	/*
->> +	 * Construct a useful saved PSTATE
->> +	 */
->> +	mrs x0, nzcv
->> +	mrs x1, daif
->> +	orr x0, x0, x1
->> +	mrs x1, CurrentEL
->> +	orr x0, x0, x1
->> +	mrs x1, SPSel
->> +	orr x0, x0, x1
->> +	stp xzr, x0, [sp, #S_PC]
->> +	/* Get parameters to optimized_callback() */
->> +	ldr	x0, 1f
->> +	mov	x1, sp
->> +	/* Branch to optimized_callback() */
->> +	.global optprobe_template_call
->> +optprobe_template_call:
->> +	nop
->> +        /* Restore registers */
->> +	ldr x0, [sp, #S_PSTATE]
->> +	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
->> +	msr nzcv, x0
->> +	ldp x0, x1, [sp, #S_X0]
->> +	ldp x2, x3, [sp, #S_X2]
->> +	ldp x4, x5, [sp, #S_X4]
->> +	ldp x6, x7, [sp, #S_X6]
->> +	ldp x8, x9, [sp, #S_X8]
->> +	ldp x10, x11, [sp, #S_X10]
->> +	ldp x12, x13, [sp, #S_X12]
->> +	ldp x14, x15, [sp, #S_X14]
->> +	ldp x16, x17, [sp, #S_X16]
->> +	ldp x18, x19, [sp, #S_X18]
->> +	ldp x20, x21, [sp, #S_X20]
->> +	ldp x22, x23, [sp, #S_X22]
->> +	ldp x24, x25, [sp, #S_X24]
->> +	ldp x26, x27, [sp, #S_X26]
->> +	ldp x28, x29, [sp, #S_X28]
->> +	ldr lr, [sp, #S_LR]
->> +        add sp, sp, #PT_REGS_SIZE
->> +	.global optprobe_template_restore_orig_insn
->> +optprobe_template_restore_orig_insn:
->> +	nop
->> +	.global optprobe_template_restore_end
->> +optprobe_template_restore_end:
->> +	nop
->> +	.global optprobe_template_end
->> +optprobe_template_end:
->> +	.global optprobe_template_val
->> +optprobe_template_val:
->> +	1:	.long 0
->> +		.long 0
->> --
->> 2.17.1
+>> +	if (flags & (FOLL_GET | FOLL_PIN))
+>> +		return try_grab_compound_head(page, 1, flags) != NULL;
+>>   
+>>   	return true;
 > 
+> Nit: something like:
 > 
-> Thanks
-> Barry
+> 	if (!(flags & (FOLL_GET | FOLL_PIN)))
+> 		return true;
+> 	return try_grab_compound_head(page, 1, flags) != NULL;
 > 
-> .
+> would be a little easier to read.
 > 
 
+Really? Well I'll be darned, that's what I wrote in my first draft. And then
+I looked at the diffs and thought, "positive logic is clearer, and the diffs
+are smaller too", and went with the current version. Which now is apparently
+a little worse. oops.
+
+Well, "50-50/90", as we used to say in an earlier job: 50% chance of either
+outcome, and due to The Way Things Go, a 90% chance of picking the wrong one!
+
+I can no longer tell which one is easier to read now, so I'll be glad to change
+it. :)
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
