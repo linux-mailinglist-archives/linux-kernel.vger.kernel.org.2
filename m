@@ -2,58 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294203E400E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84353E4009
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhHIGcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 02:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233310AbhHIGcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 02:32:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82A8C061798
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 23:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OYrmxkbgyCtkM5MBp6xZVs6ZxMYa8f0w2YvZIHffc6k=; b=RI8fbF2ySxTiNEVkvCuWq95mcF
-        wVUGTUP7Te52y/0USuDmD51ryTx49KB8nCwFDgne1LaYSxpU+I7uw7vSNUViBS5CAdaP4Ur4kBVup
-        omn3WfzNdp+oigU+GFu1A7CaRCPcePCRPZuIQ7ibws0Qe+4JyWyTY28goY95u3/zfV9qTDVpfyI+b
-        wAVk0aQBCf9IaAw7t+c1AruEcle50va+8q0G338BmpdMm7NUFgZJqHjzTyS2GGzkvqHRHio7ibEps
-        u1ZMlbFL6xFwRbGPNq5jeO0ZKefl3PUjrOvDEuVcx5P4Qybnhre+jSmgPHKWUVwzkMvOmMOoUl3I7
-        CI+bT/KA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCynP-00AheP-VD; Mon, 09 Aug 2021 06:30:07 +0000
-Date:   Mon, 9 Aug 2021 07:29:59 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-Subject: Re: [PATCH 3/3] mm/gup: refactor and simplify try_get_page()
-Message-ID: <YRDLZ5SBm76FByy1@infradead.org>
-References: <20210808235018.1924918-1-jhubbard@nvidia.com>
- <20210808235018.1924918-4-jhubbard@nvidia.com>
+        id S233303AbhHIGcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 02:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233136AbhHIGb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 02:31:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34A1C60524;
+        Mon,  9 Aug 2021 06:31:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628490699;
+        bh=RFuTLcN6RAG64VbUutS6+DGm6EeYheZfYE827UL3zoY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=khWG5XWassUYLG0cqSnT1rtVxMVUk4I7frlOpBmA942U8a209whmkiIDvUVHkuqdY
+         xrd2w9u+o1OPB+gHyLHla6zl0qoAAWbpC3TB0iaUXEBcWKM/m/GaY1PIWE5XSdGAzu
+         EQMgGeLPqOioMlclVvDNBZiSCEG8SExwlq2QNTRfnJ94im+e8RPsA0yNOoGtrKq6Bw
+         t5Gi7P3qzqAlbd52MJwzpsqPAk0DLHbNTxqgdLXnQRz7b4tf7tiLjlWN7Y32nZubKx
+         RgdWF3mKlTRRWczXLfzbHuVSjcWnQSuc6HarJxE6kqit2vcEoAHUKMK2Q4hlnjCay2
+         CSkcTIu2TEL9g==
+Date:   Mon, 9 Aug 2021 14:31:35 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Jeaho Hwang <jhhwang@rtst.co.kr>
+Cc:     linux-usb@vger.kernel.org,
+        =?utf-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9t?=
+         =?utf-8?B?YXRpb24gUGxhdGZvcm3sl7DqtaztjIA=?= 
+        <mkbyeon@lselectric.co.kr>, Linux team <team-linux@rtst.co.kr>,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Chipidea USB device goes infinite loop due to interrupt while
+ hw_ep_prime
+Message-ID: <20210809063135.GA7428@nchen>
+References: <CAJk_X9hBB_edByfEvueSyWgKjpYGZbS2rPLPCSpRrPr+icFz_Q@mail.gmail.com>
+ <20210804013252.GA16420@nchen>
+ <CAJk_X9gwa+4CZRemKqW7XZzxd438EQHA-Ngp4MdmPVgHM0Q5fg@mail.gmail.com>
+ <20210809012747.GA6814@nchen>
+ <CAJk_X9jT7bqLn-wb7AGF6onA2qE9_D_=f4pPpGDEoiCar2BWUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210808235018.1924918-4-jhubbard@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJk_X9jT7bqLn-wb7AGF6onA2qE9_D_=f4pPpGDEoiCar2BWUw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 04:50:18PM -0700, John Hubbard wrote:
-> +/*
-> + * This has the same functionality as try_get_compound_head(), just with a
-> + * slightly different API.
-> + */
->  static inline __must_check bool try_get_page(struct page *page)
->  {
-> +	return try_get_compound_head(page, 1) != NULL;
+On 21-08-09 10:45:16, Jeaho Hwang wrote:
+> 2021년 8월 9일 (월) 오전 10:27, Peter Chen <peter.chen@kernel.org>님이 작성:
+> >
+> > On 21-08-04 11:03:44, Jeaho Hwang wrote:
+> > > Hi. linux-usb and linux-rt experts.
+> > > >
+> > > > On 21-08-02 17:35:01, Jeaho Hwang wrote:
+> > > > > Hi.
+> > > > >
+> > > > > We found an infinite loop inside the function hw_ep_set_halt
+> > > > > (drivers/usb/chipidea/udc.c) if a cablle is repeatedly
+> > > > > connnected/disconnected while ping through RNDIS with chipidea USB device.
+> > > > >
+> > > > > Using ftrace tracing, we found that hw_ep_set_halt is called due to error
+> > > > > return of hw_ep_prime(drivers/usb/chipidea/udc.c:202) which is called from
+> > > > > isr_tr_complete_handler -> isr_setup_status_phase -> _ep_queue.
+> > > > >
+> > > > > The comment of function hw_ep_prime says (execute without interruption) but
+> > > > > timer interrupt is occurred while hw_ep_prime is executing. We believe that
+> > > > > the interrupt causes an error return of hw_ep_prime. We tried to protect
+> > > > > hw_ep_prime from irqs and then no case of the infinite loop is occurred.
+> > > > >
+> > > > > I want ask if it is appropriate way that turning off irq inside (threaded)
+> > > > > irq handlers. And should we explicitly turn off irqs before calling
+> > > > > hw_ep_prime?
+> > > > >
+> > > >
+> > > > Jeaho, do you use RT-Linux or standard Linux? The function hw_ep_prime is
+> > > > only called at udc_irq which is registered as top-half irq handlers.
+> > > > Why the timer interrupt is occurred when hw_ep_prime is executing?
+> > >
+> > > We use preempt_RT so timer interrupt could be occurred. Now I found
+> > > out that forced threaded irq handler disables local irq on standard
+> > > linux so It is a linux-rt issue. Then should I make patch which
+> > > disables local irqs during hw_ep_prime for RT kernel and suggest it to
+> > > linux-rt maintainers?
+> > >
+> > > Thanks for a kind answer Peter.
+> > >
+> >
+> 
+> Thanks Peter.
+> 
+> > No, that will lead to deadlock since the normal request queue API function
+> > ep_queue disables irq which also calls into hw_ep_prime.
+> 
+> ep_queue disables irq by calling spin_lock_irqsave but it actually
+> does not disable irq for RT kernel.
+> Therefore local_irq_save at hw_ep_prime would not cause deadlock if
+> ep_queue calls it, i think.
+> 
+> Is it anything wrong?
 
-What about removing try_get_page entirely instead?
+Oh, I was wrong that I thought you would use spin_lock_irqsave to
+disable interrupt. I am not familiar with spin_lock_irqsave behaviours
+at RT kernel.
+
+Yes, if you use local_irq_save at below sequence, that's ok.
+
+spin_lock_irqsave(lock, flag_1);
+...
+func hw_ep_prime
+{
+	local_irq_save(flag_2);
+	...
+	local_irq_restore(flag_2);
+}
+...
+spin_unlock_irqrestore(lock, flag_1);
+
+Peter
+
+> 
+> >
+> > For RT kernel, you may try to disable local irq at isr_setup_status_phase.
+> >
+> > --
+> >
+> > Thanks,
+> > Peter Chen
+> >
+> 
+> 
+> -- 
+> 황재호, Jay Hwang, linux team manager of RTst
+> 010-7242-1593
+
+-- 
+
+Thanks,
+Peter Chen
 
