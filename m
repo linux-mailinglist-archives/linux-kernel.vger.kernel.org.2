@@ -2,134 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5421E3E4652
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5493E4656
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbhHINQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:16:09 -0400
-Received: from mail-co1nam11on2125.outbound.protection.outlook.com ([40.107.220.125]:17568
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234207AbhHINQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:16:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U4bm6R6jzrq5zC4a8LSOgu3On1p1Rd7yfssjp6b9cfAaVkiV1ioGdtqdkrXA02N4yLW3WoRLwf6b+VKVt5uMEUeJrMjio5uDKX5ko3GMNkrg13vy3wUOpYbjnmeQeLX4sXC/1aLSXOn8CSgkw/YljGR2aDy926JmrlIm5Pn3wLsmUrrNUHc46dJAJTxOXVrI62dGQ1qXNtUwC7X/5wWCL2txNZleRBjq/IUJMGHMwTP+DrKxRoyJDnDkis9WmBtocUFEP2hJGIsMuopGHczo7BQMYm4fyHwAWX7PtuQgEs4KnITe7GGXNdMq+Bu799YUw890sCjfKixFttH0GFe2UQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0kNumXxrlfhGP2B8u4An5fiimEtwhE6Y7rVPlU92yeA=;
- b=eFZ8ymkfBmVgt0NitfgWEsYuL/HLeCAeKFJLQoaBzgJXypnbEAWL0AqTc6/w2SSerb2o2b1ZJ43McZcIWSmoZUTZj9nCCHCIsUPTBgiqB/pAiDQ2QjJJia6aWuF7Do60Gpvv8cmPFjRBk1HwHqalvUmaug1DEALYLGMtm0lvfQlQ1pcdtHeo35ehYU5dDVm4adIuYeCPOUj6yxUpUZp4QS464ZFokzJjfLO0YEzwLoihMkdruh3pDKqzRLiP95EMegVpL8vtQ4E5udLcYZsxQfSS59z8ljgnF16KHYs5GSn1lOKDT4J27IgeZfhsRloReYuBy/peQe1NycOWnGJ57g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0kNumXxrlfhGP2B8u4An5fiimEtwhE6Y7rVPlU92yeA=;
- b=XxUPUdKGWwToKEyi66RTIf1X87B7ajA0AA1gtVaq8fipnX5VxcYSlMxnZ9qy4tIibkZYd+FCRh9GOW2XBLR3eXJbj46qfUNLSkdTrMsegBE00HtVXPpjmceZZUlhmPugSIGf4OU5/ZAtzaod9c1nM6Gl6ugsCFYG3x7f9GKflZwOJOv91FIrxaYniaOh6norQUmLnt9c/bTz04oOHGo21RXDQUqTD5O1tYf/Uw+5lKUy5yunj5QVT/VtDVts6VUEPV/ll+yzEVrvjkQmUDbtK5MwovDytmwJbYVlzWNwmBPemitZmICnZhBo4kNlKGWsm6AJwgDC8Kk1N/Z5VEq44g==
-Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH2PR01MB5879.prod.exchangelabs.com (2603:10b6:610:3c::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4394.15; Mon, 9 Aug 2021 13:15:43 +0000
-Received: from CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::d897:7ba8:32ef:e745]) by CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::d897:7ba8:32ef:e745%7]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
- 13:15:43 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Tuo Li <islituo@gmail.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: RE: [PATCH v3] IB/hfi1: Fix possible null-pointer dereference in
- _extend_sdma_tx_descs()
-Thread-Topic: [PATCH v3] IB/hfi1: Fix possible null-pointer dereference in
- _extend_sdma_tx_descs()
-Thread-Index: AQHXisdVCiYfRycHCkqSzyQ/bPA5dqtrKwdw
-Date:   Mon, 9 Aug 2021 13:15:43 +0000
-Message-ID: <CH0PR01MB71535B0EAF68AEDAA3D45D97F2F69@CH0PR01MB7153.prod.exchangelabs.com>
-References: <20210806133029.194964-1-islituo@gmail.com>
-In-Reply-To: <20210806133029.194964-1-islituo@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=cornelisnetworks.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2285d03c-3dd0-42b8-edcb-08d95b37cae7
-x-ms-traffictypediagnostic: CH2PR01MB5879:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR01MB5879725BFB4CA72FD6D88C5FF2F69@CH2PR01MB5879.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F1W0c/XeGi8vVicc9b4LoXIghG2KPDdmdIzNP6j64JoiRRaPiF+RKxZoA44rO1kL0lgazEIojT7vxvx3LoNn6ehVx+tkYwS+5biygnSUnoFYj/FJlvT3oqUPsJbTLaUUDBEQKd4j8raTg1yyjdfwVbqMFMPYyATvZosFUKiDvX44SD3DJWU7ZbcE6hxw5bRrSjd4+6svcrSaHMvrQpya5O22xjkr3yEb9QmVCRRo4xVvd37nYiyNDpqKruI7ySzLjC7UAD1VD8JDsiMi6NLDW1ySXYP5bwmPh0Vl0nJUnqUdYyk3LBm8DAALj0DPgtoDZgLH2z6i/UlKu0eKUT7JXJJsHrXkvTnE+APTxtNmh4iZmOypieSTZKQXhz9mdncb1GtwS9HKNqJA5saSUvJjzxFxLwFi+RvGhLBST6cjotorzHjNEKrhOaVwgArmAQVyN0RUQXdnQN1hakNGWeecUYnC5suwiRYILmh0siM7d0QJacA3eZ3jsTSrr8ZLMUOwEiINfO89KOddzRKDa02Da9V0tNH6S1vM+MBRggVf4iTE1kTOebz9cKBIcBvbAS6hRtB7hIOWhKjv+vyVp6fKTsb1mUoEgUqBy/xQu+Z4EU2Md4kjnPOU0kXX9Njqu5O3RFPtWfvCUq/K8zhKfRJ8jAVGz0yuENfvQf3RSMHhnhvBMbVQI6QOGAt7pdDkdasfLsV46gN2I3JXqJi6cpK7fw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39830400003)(366004)(396003)(376002)(346002)(26005)(66556008)(86362001)(186003)(4744005)(71200400001)(4326008)(83380400001)(64756008)(6506007)(66476007)(66446008)(52536014)(33656002)(8676002)(55016002)(9686003)(8936002)(5660300002)(2906002)(66946007)(478600001)(76116006)(110136005)(54906003)(316002)(38100700002)(7696005)(122000001)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?YISbllA74Fc0t8EqtmNBzbfn5veJi3JT0ee8Yg3K1f7rOuqX56FkTcS+Mi9w?=
- =?us-ascii?Q?KwfuCw6uVb2t1O5LDstOEqj9Suo0/AdRUZ6snUlD1H/ftq5C08NnoBstI/bT?=
- =?us-ascii?Q?NZNiq3wymWlhrS5blelcwaO/CZ0GBcqpWmws0owBRVbsnHsDgD7mtWhviN2H?=
- =?us-ascii?Q?Jqucheb1mp7VI10N/xvJXqN6QOKEh2QNRBmZI/T7E6QAJdGKlFv4e8gFhveI?=
- =?us-ascii?Q?9l1w7YgRcE+11VkiFV1+ci6QHHtWn/zEYTyYWWSzaeydku7tXEjnHGvoajro?=
- =?us-ascii?Q?TX+FL00hZbANdUvJWd91gc9zTTsPZvllfMa9kpRdwZTYuav+u6ktQEWasl4r?=
- =?us-ascii?Q?wdIotha7Ig+ppz0VMrarYacYi99afJG7qpsDpDYweVlIGD/CSQpBsS27CJ/y?=
- =?us-ascii?Q?9qyec9pJyskB4O/Su7Y67W2DRevyToTEJmBJLRSbSQ7RxKtjLqROxCLwVPCI?=
- =?us-ascii?Q?A13/stOFVbBfp7UM+XiBwzuAGqkrz2xV6bZp5kPZ9Rb7Q3WTyCq0wMFKQ++p?=
- =?us-ascii?Q?AS+9sHqPK+lnzCnvUU2vDVGaCSlk2QndZQWKHcuug30KT3vTvxleuQpB7ylb?=
- =?us-ascii?Q?gk7aNczhxJMI+1SYXEwh1NCnDNLCNoTSZyjY4VtBFPeyp2R3x9zi/fPfKeCU?=
- =?us-ascii?Q?/bpmvInE1I22FfLKHtlcZRekg77kYv7a04rUeehOZjgki6n2FvD2ZUzzrasa?=
- =?us-ascii?Q?ve4p2abCofVINp64n3EaSr0McSRMsYHR090iABmZXrVKLpxdXfVVMsiG0cpp?=
- =?us-ascii?Q?FEQo8eksI+yW1gyKYyc2MOyCO9BkwjpoXaX0swdioqpigkE/1KZpgpwNkbXe?=
- =?us-ascii?Q?O8gMEfHp79rxhXrang+sOrgGunJtvJV75YNF/sx829NTwsrk4bzgoE9v1ypA?=
- =?us-ascii?Q?92MiRFP2ajU+HHJRgkrC0uEWsEXyXKWUn3n5fFN0KeiXT+gEwRz+Vq9Wb8GW?=
- =?us-ascii?Q?RcxgyY5ShMvLOOvDBzFeRDuIenuO95Ioa4meSL9mcEmBwbNztwH/BSJAurVN?=
- =?us-ascii?Q?aCDLm89bFJJc9xGt1f3eAQTZOIQpEOccR4jiFZFgQPKUtBdSblimqN/iQxQo?=
- =?us-ascii?Q?3td/sSje6zUAk4gnf91PMGGw7fClPWXblCfrNzE/KHPVGG4bUqkn5bCbg8xh?=
- =?us-ascii?Q?IsmjULgxrxf7SOmgqrBe2coAtxycOpNmaTGBXMrY1Fvbh1R9/AiA17aEDtvE?=
- =?us-ascii?Q?IlOCwAMWRUaxhxHyLe6S+PSKrAoSAaNOYLdZCk05IS1HIlmnxiElvALk/A9Q?=
- =?us-ascii?Q?0fjEUAeYZU7AY3YzxyHtZrTAed2epJu6Wq+NrNu3ZNdqTIejXV7urZ21gDVV?=
- =?us-ascii?Q?ogI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S235370AbhHINRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235165AbhHINRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:17:16 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64189C0613D3;
+        Mon,  9 Aug 2021 06:16:56 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id oa17so3020684pjb.1;
+        Mon, 09 Aug 2021 06:16:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:organization:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1RRkVd602yGR6zdKpY6uMFnu2l223se8972sEu0gYHw=;
+        b=gBPNsDbNupuDjk4KCmAIjlbKIwtmdylvupz1Jc2TaHfKrO1554flIIzmoiw4VbMBlS
+         vwxNyQmhKFlPv4zHGDuGaGHr8wmiR+Yu3skq3idVAyUl0niMriE8I+xdg57/irdsit0H
+         pZ/ea+dfZXSqVhDFz3xrPtuv0tNj9Z6VOe6PJE0FcYnAHktXtczZuBANrqweP2PdET7B
+         PPvCudcju6tuInQBMtLJSf3MtX29bJVS5EuV5SsjzgpikTi40Piqg6cww4/QBkxXsV0g
+         VSYrGgaQ9S2Cn+DLhbjiNMUHbGHYRiQ14P0jT11aLr060d8OP+CfVJUPMtsdSW3mLplB
+         2IBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=1RRkVd602yGR6zdKpY6uMFnu2l223se8972sEu0gYHw=;
+        b=e1VMf8ELFgKZkX/6MeE7IBsRh/27N2T81m1TEIeC3VT0lbq4F2UWzpgldEQr8GK5tY
+         p6OX4GIZl0grkUkKTv/eknCTHX7jJLtclIucWehlG9WDuYtOK+rrEMEZqNdUHHRLzCs+
+         tVK85efw1ITg5tjgmD7hqTf5EInmgNRJZMrEqJadIznJcLsNlqqNuN6qD7Jzl+lcLSaD
+         uq1EhZwyvj3+4cm2omxcS371V+URj5S/Q1w0P27oPrgqoGf1K+u5GQUqd1AI6QoQGia6
+         wZZdRz0HQ4jqGPLVpPDT/fo9AL1eRQJvf6BZ3R5J7XmKwhCEi9R088CIWLZZ9DK+cfA0
+         vn5g==
+X-Gm-Message-State: AOAM532KrW6oxnvTgZ+mfUSAKEL0XqSP5HBKUsDM4bsT/cTwsbOMPntC
+        XIJwatUoLRfF7oUU5WaY//CEbFm3Q1il1Q==
+X-Google-Smtp-Source: ABdhPJw0t1HBMdL6R5jJ5efuwkP0GCZnTTKkRPdcDTbqxcPLPhKF6gmLxDlinBVlsEg+MkFPcm+H+A==
+X-Received: by 2002:a63:e807:: with SMTP id s7mr171625pgh.200.1628515015894;
+        Mon, 09 Aug 2021 06:16:55 -0700 (PDT)
+Received: from Likes-MacBook-Pro.local ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id b204sm20825481pfb.81.2021.08.09.06.16.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 06:16:55 -0700 (PDT)
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, jmattson@google.com, seanjc@google.com,
+        vkuznets@redhat.com, wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1628235745-26566-1-git-send-email-weijiang.yang@intel.com>
+ <1628235745-26566-5-git-send-email-weijiang.yang@intel.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Organization: Tencent
+Subject: Re: [PATCH v7 04/15] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_DEPTH for
+ guest Arch LBR
+Message-ID: <e739722a-b875-6e5b-3e77-38586d799485@gmail.com>
+Date:   Mon, 9 Aug 2021 21:16:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2285d03c-3dd0-42b8-edcb-08d95b37cae7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 13:15:43.4345
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kX55XJN9FaX+3x/7Fb7vPIHgQeDd0iikEtNgZIiZph+3k83gcPCMRp268+2PgNBCe2eE9+Xl8vek3mvlATajJ31yyeVRiRwSoasvh06nL1sujAA4kaLiy+itjeNwWtSQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB5879
+In-Reply-To: <1628235745-26566-5-git-send-email-weijiang.yang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Tuo Li <islituo@gmail.com>
+On 6/8/2021 3:42 pm, Yang Weijiang wrote:
+> From: Like Xu <like.xu@linux.intel.com>
+
+...
+
+> 
+> The number of Arch LBR entries available is determined by the value
+> in host MSR_ARCH_LBR_DEPTH.DEPTH. The supported LBR depth values are
+> enumerated in CPUID.(EAX=01CH, ECX=0):EAX[7:0]. For each bit "n" set
+> in this field, the MSR_ARCH_LBR_DEPTH.DEPTH value of "8*(n+1)" is
+> supported.
+> 
+> On a guest write to MSR_ARCH_LBR_DEPTH, all LBR entries are reset to 0.
+> KVM writes guest requested value to the native ARCH_LBR_DEPTH MSR
+> (this is safe because the two values will be the same) when the Arch LBR
+> records MSRs are pass-through to the guest.
+> 
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
 > ---
-> v3:
-> * Add fixes line.
->   Thank Jason Gunthorpe for helpful advice.
-> v2:
-> * Assign the return value of kmalloc_array() to a local variable and then=
- check
-> it instead of assigning 0 to tx->num_desc when memory allocation fails.
->   Thank Mike Marciniszyn for helpful advice.
+>   arch/x86/kvm/vmx/pmu_intel.c | 35 ++++++++++++++++++++++++++++++++++-
+>   1 file changed, 34 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index 9efc1a6b8693..a4ef5bbce186 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -211,7 +211,7 @@ static bool intel_pmu_is_valid_lbr_msr(struct kvm_vcpu *vcpu, u32 index)
+>   static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+>   {
+>   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> -	int ret;
+> +	int ret = 0;
+>   
+>   	switch (msr) {
+>   	case MSR_CORE_PERF_FIXED_CTR_CTRL:
+> @@ -220,6 +220,10 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+>   	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+>   		ret = pmu->version > 1;
+>   		break;
+> +	case MSR_ARCH_LBR_DEPTH:
+> +		if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+> +			ret = guest_cpuid_has(vcpu, X86_FEATURE_ARCH_LBR);
+> +		break;
+>   	default:
+>   		ret = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0) ||
+>   			get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0) ||
+> @@ -348,10 +352,28 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
+>   	return true;
+>   }
+>   
+> +/*
+> + * Check if the requested depth value the same as that of host.
+> + * When guest/host depth are different, the handling would be tricky,
+> + * so now only max depth is supported for both host and guest.
+> + */
+> +static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
+> +{
+> +	unsigned int eax, ebx, ecx, edx;
+> +
+> +	if (!kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+> +		return false;
+> +
+> +	cpuid_count(0x1c, 0, &eax, &ebx, &ecx, &edx);
 
-Thanks!
+I really don't understand why the sanity check of the
+guest lbr depth needs to read the host's cpuid entry and it's pretty slow.
 
-I'm curious, did you find this with some fault injection testing?
+KVM has reported the maximum host LBR depth as the only supported value.
 
-Tested-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> +
+> +	return (depth == fls(eax & 0xff) * 8);
+> +}
+> +
+>   static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   {
+>   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>   	struct kvm_pmc *pmc;
+> +	struct lbr_desc *lbr_desc = vcpu_to_lbr_desc(vcpu);
+>   	u32 msr = msr_info->index;
+>   
+>   	switch (msr) {
+> @@ -367,6 +389,9 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+>   		msr_info->data = pmu->global_ovf_ctrl;
+>   		return 0;
+> +	case MSR_ARCH_LBR_DEPTH:
+> +		msr_info->data = lbr_desc->records.nr;
+> +		return 0;
+>   	default:
+>   		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>   		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> @@ -393,6 +418,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   {
+>   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>   	struct kvm_pmc *pmc;
+> +	struct lbr_desc *lbr_desc = vcpu_to_lbr_desc(vcpu);
+>   	u32 msr = msr_info->index;
+>   	u64 data = msr_info->data;
+>   
+> @@ -427,6 +453,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   			return 0;
+>   		}
+>   		break;
+> +	case MSR_ARCH_LBR_DEPTH:
+> +		if (!arch_lbr_depth_is_valid(vcpu, data))
+> +			return 1;
+> +		lbr_desc->records.nr = data;
+> +		if (!msr_info->host_initiated)
+> +			wrmsrl(MSR_ARCH_LBR_DEPTH, lbr_desc->records.nr);
+
+Resetting the host msr here is dangerous,
+what if the guest LBR event doesn't exist or isn't scheduled on?
+
+> +		return 0;
+>   	default:
+>   		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>   		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> 
