@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BBB3E428E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835633E4290
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhHIJYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:24:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44350 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234285AbhHIJYp (ORCPT
+        id S234362AbhHIJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234338AbhHIJYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:24:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628501053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gf5zAZTKDCzUjBi4iBqzapJeQmqdwtpc/dVF+3UUB7I=;
-        b=SzmFvhCxtRzkcKEDzDslWos6ohQBjNKQV7k5Gh5L5nrOZT+Ddb82RaxicKIUlToYMGNabA
-        MBomgRIkKuJ3DbrwlaYqrl+pdEdHvULaFp/9+1mZ59z4G6Q9L0CWzH+rML2GqtTH4BY2dD
-        e/9EpnhB190tb1p3upcePx3iRE2q5U4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-RpDOaQtWMPqL42R9CO_2Bw-1; Mon, 09 Aug 2021 05:24:11 -0400
-X-MC-Unique: RpDOaQtWMPqL42R9CO_2Bw-1
-Received: by mail-wm1-f72.google.com with SMTP id j204-20020a1c23d50000b029024e75a15714so4427344wmj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 02:24:11 -0700 (PDT)
+        Mon, 9 Aug 2021 05:24:55 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8441C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 02:24:34 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id w197so16295856qkb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 02:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kv0qXianjgxGg39Jv0L+TDQ2QR47zY1TQNpfW3pv4mQ=;
+        b=kEmda94zCsiFJ4hkRfv8nmCHOJY9Xtz7Hi+q6mJteBnYsGeW4coQYAAlQiyIA6NuB5
+         rShW4nCj9a4qBHJV+fbizHmTnFouFGv8DavO0y0lckf2h752mr9WWwlZOgAoEb6pgpoE
+         rVycT8mhx8LzKyCoh6AHlarBbgO4GakbqBbHxMxtcRTK9OUUTWV0q0o1nLiR6Xyt+zPv
+         60hxNJZA1ymL4imjzkp7pajUJeay+ScZyzfismLq40KayFkIMrwxIO8CPQfXOADpVhOc
+         8hmqaQM14DsxHc1j6daZPMaJ51cDVc56raHCdnfgcfhtb0y+OIYvGD72mN7ie2pcpqtL
+         eN4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Gf5zAZTKDCzUjBi4iBqzapJeQmqdwtpc/dVF+3UUB7I=;
-        b=FbHGKbV5Uf8vmv8bowMXaEB4gB4F0KtiPKuHj2dGssswT7ANuScDTVWz/y9UmMUP9t
-         l4jltlVwvqgKUSlj8g2KUv/ZQV0M3X2c9sPZiuBJKDEgzNc0sGnn5uZj8nHZvfu6VQWk
-         yH7y+p5KPKif4vbtQlNCEc0TTDBUgUdql9du5btSVp2di1bA6cOjrdtAg6hRWXk08U0z
-         T+5jdrmVAqoRJUh6+tNgEfIkCst60EuG7ZfMbps6DswEUBldjfRJ816dj57wc7Wg/DBJ
-         ER3naCPgot8R+RTSOFKy9F0JwWrJwCBnaYMUawToVNvOnr9zPwuYPWyxziKIAIejpool
-         84Og==
-X-Gm-Message-State: AOAM5318w7NBbg1pdfsYET+4Bf7Y916qFIpN1scP9jv0idC7N7XDyNJ/
-        GVaA9oXEs71FGlGVBTBEOMu2TKmm8Zltl5/rrJ9VDdFVGkUGAuWnzaBKqtTDOaqpJsPvI2MeXA2
-        stLUvTLHjxXGywMOlKLgWZsK2sGRo9jxbDvnnP3OMPGR0+rLHpTYZ5WViiokNkZ+lMvnMhtHL
-X-Received: by 2002:a5d:5147:: with SMTP id u7mr24081662wrt.181.1628501050656;
-        Mon, 09 Aug 2021 02:24:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqwNs3WqX1YeqYoIBfWPgUNcNrKn1nNW77zqBb7B+1FZhHGFQWkvCq9jfruwzCWiCGkBOwxA==
-X-Received: by 2002:a5d:5147:: with SMTP id u7mr24081636wrt.181.1628501050466;
-        Mon, 09 Aug 2021 02:24:10 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id n3sm16747084wmi.0.2021.08.09.02.24.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 02:24:10 -0700 (PDT)
-Subject: Re: [PATCH 5/5] mm: gup: use helper PAGE_ALIGNED in
- populate_vma_page_range()
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     imbrenda@linux.ibm.com, kirill.shutemov@linux.intel.com,
-        jack@suse.cz, jhubbard@nvidia.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210807093620.21347-1-linmiaohe@huawei.com>
- <20210807093620.21347-6-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <60e83492-db02-4c73-1fd4-e1f2ba383cfe@redhat.com>
-Date:   Mon, 9 Aug 2021 11:24:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kv0qXianjgxGg39Jv0L+TDQ2QR47zY1TQNpfW3pv4mQ=;
+        b=B1jXgnpqZ6FcEcwD8TOrgQTewZyHJbxBI5INyS6JErSeHOwKNgDVXgYfsIKXP1Tgd2
+         9Di+/4gqgNnpK3VI8tH52wX5eslqt8zFjBal1P1pY6yvT/OMPUd/k1gGdSjXJLstolwU
+         tmDoUYuV3NQPmR27y5/aKt8tCFm3yMHM6B150k/o3IpM/gCjcjVhT0kGTp+aFgkNCLz0
+         YO4jAPHdclJrvOD9bH6qxFoMeltbKDzZap/bAaIBQB0b2/QNy7wXAC7pyeofp2mR/aQr
+         kYIvtfXbN4/Hss8FBpkC6g8LiBkHHNjUcCz8MDiUVilJOPbOCU+31/lmYuMy0KLFVzXQ
+         tabA==
+X-Gm-Message-State: AOAM533rhouz1ukfCsH97xFGDFgiGfEytTM1mmGI0nopJGPbd9GiF9UW
+        Ln1KQbb04rt4DYRT6Y/LF3BNXO+pr4KzljpywwJTHw==
+X-Google-Smtp-Source: ABdhPJxXl18cxzKnQBY3knr15inSdLY6oj4mR/HzXN5uBU1hQ8auewNUOtxu5SkVcmFzUkAhuStYr0/x4tDStsBgE2c=
+X-Received: by 2002:a05:620a:6c3:: with SMTP id 3mr21757425qky.501.1628501073849;
+ Mon, 09 Aug 2021 02:24:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210807093620.21347-6-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <0000000000007db08f05c79fc81f@google.com> <x498s1ee26t.fsf@segfault.boston.devel.redhat.com>
+In-Reply-To: <x498s1ee26t.fsf@segfault.boston.devel.redhat.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 9 Aug 2021 11:24:22 +0200
+Message-ID: <CACT4Y+Y=7aT65CA4n+sy5n75e53rWc+E3_K+-e6jxU=QQQOATg@mail.gmail.com>
+Subject: Re: [syzbot] INFO: task hung in sys_io_destroy
+To:     Jeff Moyer <jmoyer@redhat.com>
+Cc:     syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com>,
+        bcrl@kvack.org, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.08.21 11:36, Miaohe Lin wrote:
-> Use helper PAGE_ALIGNED to check if address is aligned to PAGE_SIZE.
-> Minor readability improvement.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/gup.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 8c89e614d4aa..802a3deb50cd 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1471,8 +1471,8 @@ long populate_vma_page_range(struct vm_area_struct *vma,
->   	unsigned long nr_pages = (end - start) / PAGE_SIZE;
->   	int gup_flags;
->   
-> -	VM_BUG_ON(start & ~PAGE_MASK);
-> -	VM_BUG_ON(end   & ~PAGE_MASK);
-> +	VM_BUG_ON(!PAGE_ALIGNED(start));
-> +	VM_BUG_ON(!PAGE_ALIGNED(end));
->   	VM_BUG_ON_VMA(start < vma->vm_start, vma);
->   	VM_BUG_ON_VMA(end   > vma->vm_end, vma);
->   	mmap_assert_locked(mm);
-> 
+On Fri, 6 Aug 2021 at 22:39, Jeff Moyer <jmoyer@redhat.com> wrote:
+>
+> syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com> writes:
+>
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    1d67c8d993ba Merge tag 'soc-fixes-5.14-1' of git://git.ker..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=11b40232300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b998c1afc13578
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=d40a01556c761b2cb385
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12453812300000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11225922300000
+> >
+> > Bisection is inconclusive: the issue happens on the oldest tested release.
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127cac6a300000
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=117cac6a300000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=167cac6a300000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com
+> >
+> > INFO: task syz-executor299:8807 blocked for more than 143 seconds.
+> >       Not tainted 5.14.0-rc1-syzkaller #0
+> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > task:syz-executor299 state:D stack:29400 pid: 8807 ppid:  8806 flags:0x00000000
+> > Call Trace:
+> >  context_switch kernel/sched/core.c:4683 [inline]
+> >  __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
+> >  schedule+0xd3/0x270 kernel/sched/core.c:6019
+> >  schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1854
+> >  do_wait_for_common kernel/sched/completion.c:85 [inline]
+> >  __wait_for_common kernel/sched/completion.c:106 [inline]
+> >  wait_for_common kernel/sched/completion.c:117 [inline]
+> >  wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
+> >  __do_sys_io_destroy fs/aio.c:1402 [inline]
+> >  __se_sys_io_destroy fs/aio.c:1380 [inline]
+> >  __x64_sys_io_destroy+0x17e/0x1e0 fs/aio.c:1380
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> The reproducer is creating a thread, issuing a IOCB_CMD_PREAD from a
+> pipe in that thread, and then calling io_destroy from another thread.
+> Because there is no writer on the other end of the pipe, the read will
+> block.  Note that it also is not submitted asynchronously, as that's not
+> supported.
+>
+> io_destroy is "hanging" because it's waiting for the read to finish.  If
+> the read thread is killed, cleanup happens as usual.  I'm not sure I
+> could classify this as a kernel bug.
 
-Making it look more like faultin_vma_page_range(), nice :)
+Hi Jeff,
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+Thanks for looking into this. I suspect the reproducer may create a
+fork bomb that DoSed the kernel so that it can't make progress for 140
+seconds. FTR, I've added it to
+https://github.com/google/syzkaller/issues/498#issuecomment-895071514
+to take a closer look.
