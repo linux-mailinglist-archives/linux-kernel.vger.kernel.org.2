@@ -2,253 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2D13E41D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E520E3E41E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbhHIIvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:51:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233977AbhHIIvV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:51:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628499061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXR+JIzWEYNeD1UnXjRtYb+ykUgRxVjnQJbgR8HpkXE=;
-        b=Uq5jtkqbNeTZUqLwcYVXbwK22o3IM5QSl616zVZ6BL0NnVsP4icrkNTx1QQXzDzs8UmMTu
-        OYxdgTYM7GRWUNBo+/dfglc7Wbrmn2Ol7NVFTy6NberfBo3VQZG3QMcnxP5ppD5qW9bjQ+
-        A2lKoxbXNWkvRCGuDZJfgFNAuLWknhw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-4GqFYvspPuyKd4eCQ0qUuw-1; Mon, 09 Aug 2021 04:50:59 -0400
-X-MC-Unique: 4GqFYvspPuyKd4eCQ0qUuw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so1498997wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 01:50:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=eXR+JIzWEYNeD1UnXjRtYb+ykUgRxVjnQJbgR8HpkXE=;
-        b=nqBaP/ULQ+5M8FsYQeEicr6U+7chmHX2MG5B/dgd7dZgmjHEBnhEtSE3005VHfIX6A
-         qU7e5a1OtPEtzHJ96nxv1XHK8R0dJFqCjDYpjWz5xiAdMxlC+veYl/PxWgDg0cqbt6nP
-         qI+3zZJBOGuIiZKErPuH2V6WIu/HBBMuPifrpCvHgzuBlfA50Drdwp7hodiNymwXimIf
-         Vij4hIfOoe5XL7EFF+5ERPxZ3bMRq7bCQimBHsosw+w7sxewkyQOWSXHUk5Oa/swKmQh
-         p1Z7XSZ5dduHW1HDfMi4IzVIlK0y4FksoC3rbJ8P1OU7Obm83VbYjTB5fcA9CqMI3ZUQ
-         Gdgw==
-X-Gm-Message-State: AOAM533rMsUPQ2X9G6GRWbiH1nhJ7XBCzG0dmcJ7JlAx7u6UD9Dkq+gI
-        RelXEBJPYv2wsUm0dPC7UEYRptlXR0bqG0jpm4+ABnNznnieTaVZibXMBKsZtdLjFG+0lB+NV2k
-        htxV+KE4JGALbEgF6unemgcAf
-X-Received: by 2002:a05:600c:1d12:: with SMTP id l18mr15423197wms.88.1628499058627;
-        Mon, 09 Aug 2021 01:50:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyn8BfKomzEPX0PtqpbGSxmBgVo/T64uydRSEX/+7aDK1leW+8vEKtx+wRwoAiMKr32K3b/YA==
-X-Received: by 2002:a05:600c:1d12:: with SMTP id l18mr15423168wms.88.1628499058304;
-        Mon, 09 Aug 2021 01:50:58 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id j4sm16841393wmi.4.2021.08.09.01.50.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 01:50:57 -0700 (PDT)
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ulrich.Weigand@de.ibm.com,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>
-References: <20210804154046.88552-1-imbrenda@linux.ibm.com>
- <86b114ef-41ea-04b6-327c-4a036f784fad@redhat.com>
- <20210806113005.0259d53c@p-imbrenda>
- <ada27c6d-4dc9-04c3-d5b9-566e65359701@redhat.com>
- <20210806154400.2ca55563@p-imbrenda>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v3 00/14] KVM: s390: pv: implement lazy destroy
-Message-ID: <8f1502a4-8ee3-f70f-ca04-4a13d44368fb@redhat.com>
-Date:   Mon, 9 Aug 2021 10:50:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234100AbhHIIxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:53:47 -0400
+Received: from m12-12.163.com ([220.181.12.12]:37976 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234003AbhHIIxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 04:53:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=cLjD1
+        QazKK6TLOJDaWUarO+saBlohSORuEDe9dMn5vE=; b=Vwz7LEDTbr6dcr/oifLzR
+        AURQHSDY8hmSTPs6Ggdq560j4nYqkcbEms84YdbnlHptMzYSqT+Qjk6pxFN7KRZi
+        Eks+gHQN2NNHmFNC78deV/PmFyeeEbXNmi2sLmGkTBg2+jqM+jt8242qzBe0OYq3
+        tRjXmZHNvbi3JxsLTAm8qI=
+Received: from asura.lan (unknown [182.149.135.186])
+        by smtp8 (Coremail) with SMTP id DMCowADnNDrt7BBhQuZhTA--.28173S2;
+        Mon, 09 Aug 2021 16:53:03 +0800 (CST)
+From:   chaochao2021666@163.com
+To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chao Zeng <chao.zeng@siemens.com>
+Subject: [PATCH 1/2] dt-bindings:dp83867:Add binding for the status led
+Date:   Mon,  9 Aug 2021 16:52:13 +0800
+Message-Id: <20210809085213.324129-1-chaochao2021666@163.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210806154400.2ca55563@p-imbrenda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowADnNDrt7BBhQuZhTA--.28173S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7CFy3Cry3ZF1rJr1xAFWrXwb_yoW8KFW5pF
+        sFvas7Gr12yF47JwsaqFn3Cr1fXw18Xr9FkFyq9w1qya98Aa1ftr4YgF4UXF48urZ5JFy7
+        JFZ8Wr4UKF9Iyw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jqT5dUUUUU=
+X-Originating-IP: [182.149.135.186]
+X-CM-SenderInfo: 5fkd0uhkdrjiasrwlli6rwjhhfrp/1tbi3w-pdWB0HGzM6wAAsP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.08.21 15:44, Claudio Imbrenda wrote:
-> On Fri, 6 Aug 2021 13:30:21 +0200
-> David Hildenbrand <david@redhat.com> wrote:
-> 
-> [...]
-> 
->>>>> When the system runs out of memory, if a guest has terminated and
->>>>> its memory is being cleaned asynchronously, the OOM killer will
->>>>> wait a little and then see if memory has been freed. This has the
->>>>> practical effect of slowing down memory allocations when the
->>>>> system is out of memory to give the cleanup thread time to
->>>>> cleanup and free memory, and avoid an actual OOM situation.
->>>>
->>>> ... and this sound like the kind of arch MM hacks that will bite us
->>>> in the long run. Of course, I might be wrong, but already doing
->>>> excessive GFP_ATOMIC allocations or messing with the OOM killer
->>>> that
->>>
->>> they are GFP_ATOMIC but they should not put too much weight on the
->>> memory and can also fail without consequences, I used:
->>>
->>> GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN
->>>
->>> also notice that after every page allocation a page gets freed, so
->>> this is only temporary.
->>
->> Correct me if I'm wrong: you're allocating unmovable pages for
->> tracking (e.g., ZONE_DMA, ZONE_NORMAL) from atomic reserves and will
->> free a movable process page, correct? Or which page will you be
->> freeing?
-> 
-> we are transforming ALL moveable pages belonging to userspace into
-> unmoveable pages. every ~500 pages one page gets actually
-> allocated (unmoveable), and another (moveable) one gets freed.
-> 
->>>
->>> I would not call it "messing with the OOM killer", I'm using the
->>> same interface used by virtio-baloon
->>
->> Right, and for virtio-balloon it's actually a workaround to restore
->> the original behavior of a rarely used feature: deflate-on-oom.
->> Commit da10329cb057 ("virtio-balloon: switch back to OOM handler for
->> VIRTIO_BALLOON_F_DEFLATE_ON_OOM") tried to document why we switched
->> back from a shrinker to VIRTIO_BALLOON_F_DEFLATE_ON_OOM:
->>
->> "The name "deflate on OOM" makes it pretty clear when deflation should
->>    happen - after other approaches to reclaim memory failed, not while
->>    reclaiming. This allows to minimize the footprint of a guest -
->> memory will only be taken out of the balloon when really needed."
->>
->> Note some subtle differences:
->>
->> a) IIRC, before running into the OOM killer, will try reclaiming
->>      anything  else. This is what we want for deflate-on-oom, it might
->> not be what you want for your feature (e.g., flushing other
->> processes/VMs to disk/swap instead of waiting for a single process to
->> stop).
-> 
-> we are already reclaiming the memory of the dead secure guest.
-> 
->> b) Migration of movable balloon inflated pages continues working
->> because we are dealing with non-lru page migration.
->>
->> Will page reclaim, page migration, compaction, ... of these movable
->> LRU pages still continue working while they are sitting around
->> waiting to be cleaned up? I can see that we're grabbing an extra
->> reference when we put them onto the list, that might be a problem:
->> for example, we can most certainly not swap out these pages or write
->> them back to disk on memory pressure.
-> 
-> this is true. on the other hand, swapping a moveable page would be even
-> slower, because those pages would need to be exported and not destroyed.
-> 
->>>    
->>>> way for a pure (shutdown) optimization is an alarm signal. Of
->>>> course, I might be wrong.
->>>>
->>>> You should at least CC linux-mm. I'll do that right now and also CC
->>>> Michal. He might have time to have a quick glimpse at patch #11 and
->>>> #13.
->>>>
->>>> https://lkml.kernel.org/r/20210804154046.88552-12-imbrenda@linux.ibm.com
->>>> https://lkml.kernel.org/r/20210804154046.88552-14-imbrenda@linux.ibm.com
->>>>
->>>> IMHO, we should proceed with patch 1-10, as they solve a really
->>>> important problem ("slow reboots") in a nice way, whereby patch 11
->>>> handles a case that can be worked around comparatively easily by
->>>> management tools -- my 2 cents.
->>>
->>> how would management tools work around the issue that a shutdown can
->>> take very long?
->>
->> The traditional approach is to wait starting a new VM on another
->> hypervisor instead until memory has been freed up, or start it on
->> another hypervisor. That raises the question about the target use
->> case.
->>
->> What I don't get is that we have to pay the price for freeing up that
->> memory. Why isn't it sufficient to keep the process running and let
->> ordinary MM do it's thing?
-> 
-> what price?
-> 
-> you mean let mm do the slowest possible thing when tearing down a dead
-> guest?
-> 
-> without this, the dying guest would still take up all the memory. and
-> swapping it would not be any faster (it would be slower, in fact). the
-> system would OOM anyway.
-> 
->> Maybe you should clearly spell out what the target use case for the
->> fast shutdown (fast quitting of the process?) is?. I assume it is,
->> starting a new VM / process / whatsoever on the same host
->> immediately, and then
->>
->> a) Eventually slowing down other processes due heavy reclaim.
-> 
-> for each dying guest, only one CPU is used by the reclaim; depending on
-> the total load of the system, this might not even be noticeable
-> 
->> b) Slowing down the new process because you have to pay the price of
->> cleaning up memory.
-> 
-> do you prefer to OOM because the dying guest will need ages to clean up
-> its memory?
-> 
->> I think I am missing why we need the lazy destroy at all when killing
->> a process. Couldn't you instead teach the OOM killer "hey, we're
->> currently quitting a heavy process that is just *very* slow to free
->> up memory, please wait for that before starting shooting around" ?
-> 
-> isn't this ^ exactly what the OOM notifier does?
-> 
-> 
-> another note here:
-> 
-> when the process quits, the mm starts the tear down. at this point, the
-> mm has no idea that this is a dying KVM guest, so the best it can do is
-> exporting (which is significantly slower than destroy page)
-> 
-> kvm comes into play long after the mm is gone, and at this point it
-> can't do anything anymore. the memory is already gone (very slowly).
-> 
-> if I kill -9 qemu (or if qemu segfaults), KVM will never notice until
-> the mm is gone.
-> 
+From: Chao Zeng <chao.zeng@siemens.com>
 
-Summarizing what we discussed offline:
+The phy status led of each of board maybe different.
+Provide a method to custom phy status led behavior.
 
-1. We should optimize for proper shutdowns first, this is the most 
-important use case. We should look into letting QEMU tear down the KVM 
-secure context such that we can just let MM teardown do its thing -> 
-destroy instead of export secure pages. If no kernel changes are 
-required to get that implemented, even better.
+Datasheet:
+http://www.ti.com/product/DP83867IR/datasheet
 
-2. If we want to optimize "there is a big process dying horribly slow, 
-please OOM killer please wait a bit instead of starting killing other 
-processes", we might want to do that in a more generic way (if not 
-already in place, no expert).
+Signed-off-by: Chao Zeng <chao.zeng@siemens.com>
+---
+ .../devicetree/bindings/net/ti,dp83867.yaml    |  6 ++++++
+ include/dt-bindings/net/ti-dp83867.h           | 18 ++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-3. If we really want to go down the path of optimizing "kill -9" and 
-friends to e.g., take 40min instead of 20min on a huge VM (who cares? 
-especially, the OOM handler will struggle already if memory is getting 
-freed that slowly, no matter if 40 or 20 minutes), we should look into 
-being able to release the relevant KVM secure context before tearing 
-down MM. We should avoid any arch specific hacks.
-
+diff --git a/Documentation/devicetree/bindings/net/ti,dp83867.yaml b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
+index 047d757e8d82..a46a437818f2 100644
+--- a/Documentation/devicetree/bindings/net/ti,dp83867.yaml
++++ b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
+@@ -106,6 +106,12 @@ properties:
+       Transmitt FIFO depth- see dt-bindings/net/ti-dp83867.h for applicable
+       values.
+ 
++  ti,led-sel:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      This configure the status led. See dt-bindings/net/ti-dp83867.h
++      for different status led settings,select different configures
++
+ required:
+   - reg
+ 
+diff --git a/include/dt-bindings/net/ti-dp83867.h b/include/dt-bindings/net/ti-dp83867.h
+index 6fc4b445d3a1..de59c3a42c1e 100644
+--- a/include/dt-bindings/net/ti-dp83867.h
++++ b/include/dt-bindings/net/ti-dp83867.h
+@@ -48,6 +48,24 @@
+ #define DP83867_CLK_O_SEL_CHN_C_TCLK		0xA
+ #define DP83867_CLK_O_SEL_CHN_D_TCLK		0xB
+ #define DP83867_CLK_O_SEL_REF_CLK		0xC
++
++/* Led configuration flag*/
++#define DP83867_LINK_ESTABLISHED				0x0
++#define DP83867_RECEIVE_TRANSMIT_ACTIVITY		0x1
++#define DP83867_TRANSMIT_ACTIVITY				0x2
++#define DP83867_RECEIVE_ACTIVITY				0x3
++#define DP83867_COLLISION_DETECTED				0x4
++#define DP83867_LINK_ESTABLISHED_1000BT			0x5
++#define DP83867_LINK_ESTABLISHED_100BTX			0x6
++#define DP83867_LINK_ESTABLISHED_10BT			0x7
++#define DP83867_LINK_ESTABLISHED_10_100_BT		0x8
++#define DP83867_LINK_ESTABLISHED_100_1000_BT	0x9
++#define DP83867_FULL_DUPLEX						0xA
++#define DP83867_LINK_ESTABLISHED_BLINK_TRANSMIT_RECEIVE 0xB
++#define DP83867_RESERVED						0xC
++#define DP83867_RECEIVE_TRANSMIT_ERROR			0xD
++#define DP83867_RECEIVE_ERROR					0xE
++
+ /* Special flag to indicate clock should be off */
+ #define DP83867_CLK_O_SEL_OFF			0xFFFFFFFF
+ #endif
 -- 
-Thanks,
+2.32.0
 
-David / dhildenb
 
