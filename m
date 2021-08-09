@@ -2,158 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B753E492E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7C63E4935
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbhHIPuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235730AbhHIPsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:48:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B783961019;
-        Mon,  9 Aug 2021 15:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628524101;
-        bh=3lhvweJaE3qqsUmByjN0/zVeHBth4A58rzdmdCXJMF0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iRYTxNOndo5z0TgqKbAMQ5Gmm0q70PURGLCJxxiRqmxGKE2RU9aq7JH1STJ9tL989
-         qHS6cYV5ule2X6P01+hmOCZu/ykamE0aq4WNVANs4opnOtnyByVE06xCJ48HjhNKF6
-         0/Fj/N1Qp2vVOctTWKabQWTDTGDTW6lN1ObVl+xn9Kk8BmWr4YwBo0+/EixVh/rH7o
-         iNyowY83x+ENm3k9LB1RagnWrxXiZscCusD0hLPoSphCaPsRG7iXom69zfBPxakxxW
-         bLsOnh5x6PuuoFRNCNJBVtAJXLPxWqfZiomJ/xSAKP/cS9AM5LCPAv1eqyZ7OGxR6u
-         IE9pdnkVBH+pQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v2 04/10] tracing/boot: Support multiple histograms for each event
-Date:   Tue, 10 Aug 2021 00:48:19 +0900
-Message-Id: <162852409938.143877.3989325402176051552.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162852406891.143877.12110677006587392853.stgit@devnote2>
-References: <162852406891.143877.12110677006587392853.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S235898AbhHIPu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235826AbhHIPtH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:49:07 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5B5C0613D3;
+        Mon,  9 Aug 2021 08:48:46 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id j77so30390773ybj.3;
+        Mon, 09 Aug 2021 08:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CttDxHiCnPodE+fRVXutDrc3UtK9OxegaBoQba6T7pg=;
+        b=HSNxa2u8osQbqxNs8P6Yow3+3cv6sFFXG7vuRpeSOrtXnoQ9NIs1NzgEQ3bPz9vrF8
+         CzUzTyZ/kpguld6CZ2y6TpVHCA0J/WQUjGCBnK6eT8r6wdyso6LNH6MlLwyEteO9Ki+M
+         XQIpH1yVy9eB/16PnXa40PlU+GDorTpOKWWXsJRo1Ev9hCfPDGIwWW+X/wB5btHSh78A
+         HRXaCwxwdvewUK/Qj8OUAGwzlIHGj+PJSfuaBu9d876+cZ9vZ6WyIj/RfgboWgvDKidT
+         4Yqsce1J40lFu73UHz+bVpWONsl0qiJz4trpIddBFEtaUsjyysL1XodCku/3ZVnRZYUb
+         UHEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CttDxHiCnPodE+fRVXutDrc3UtK9OxegaBoQba6T7pg=;
+        b=GOlq8tbrYSghkYNumIvCmcqzP9j6N5MTE3MSjE+BkTnPdEThs8tuJo4i3/uT2I9g87
+         FyGomH9ioeZa1kyXrA6Rqmg5rR1ow1KOhvfREqFpryV6QDaxiW8eKdk9lIbHnjChTlNL
+         ss0HBNUFgEtPRX2UokKuDDhhBzKupxnJkANZhhNuu2E7g+2uBSwjW70SA+Z+Rzuq7j9t
+         KzXkC1Hwq0zdPCow6/GZEmFL8xkNAhzJzdc6dHqbG+LMhDCB9mkCNFFxCW1+jAd3ztNC
+         0iCgOni9kt0fTYmyNXXysG5/lB0IQtut3OlhXdj2d+fVo/YcU/HW1WuuANQewQ2pNZms
+         NizQ==
+X-Gm-Message-State: AOAM532gXUtjcoRDdp7z6DAjzEKXQARzLKfMZqy11R4ElUy1GJ1WP1Np
+        j6pME4lJAIOJKfRQwvtvsYCsSrQZsBFCfYG0GQ4=
+X-Google-Smtp-Source: ABdhPJx2fmwsYZrAdA/dVqw0R46k9XdivjCwFnQGurTZ8bcpvGyuWuvhsRqVC4wmjDtleYKdnU8JdnU9oa37iK0Uajc=
+X-Received: by 2002:a5b:2cf:: with SMTP id h15mr25624687ybp.426.1628524126062;
+ Mon, 09 Aug 2021 08:48:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210727133022.634-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210809132605.m76mnxkp6bdcn77c@pengutronix.de>
+In-Reply-To: <20210809132605.m76mnxkp6bdcn77c@pengutronix.de>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 9 Aug 2021 16:48:20 +0100
+Message-ID: <CA+V-a8uDPn83W6wi2Jq8VFrBeGSVMPMiFmXGV2z=L8xxZteFNQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] dt-bindings: net: can: renesas,rcar-canfd:
+ Document RZ/G2L SoC
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add multiple histograms support for each event. This allows
-user to set multiple histograms to an event.
+Hi Marc,
 
-ftrace.[instance.INSTANCE.]event.GROUP.EVENT.hist[.N] {
-...
-}
+On Mon, Aug 9, 2021 at 2:26 PM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>
+> On 27.07.2021 14:30:20, Lad Prabhakar wrote:
+> > Add CANFD binding documentation for Renesas RZ/G2L SoC.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../bindings/net/can/renesas,rcar-canfd.yaml  | 69 +++++++++++++++++--
+> >  1 file changed, 63 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > index 0b33ba9ccb47..546c6e6d2fb0 100644
+> > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > @@ -30,13 +30,15 @@ properties:
+> >                - renesas,r8a77995-canfd     # R-Car D3
+> >            - const: renesas,rcar-gen3-canfd # R-Car Gen3 and RZ/G2
+> >
+> > +      - items:
+> > +          - enum:
+> > +              - renesas,r9a07g044-canfd    # RZ/G2{L,LC}
+> > +          - const: renesas,rzg2l-canfd     # RZ/G2L family
+> > +
+> >    reg:
+> >      maxItems: 1
+> >
+> > -  interrupts:
+> > -    items:
+> > -      - description: Channel interrupt
+> > -      - description: Global interrupt
+> > +  interrupts: true
+> >
+> >    clocks:
+> >      maxItems: 3
+> > @@ -50,8 +52,7 @@ properties:
+> >    power-domains:
+> >      maxItems: 1
+> >
+> > -  resets:
+> > -    maxItems: 1
+> > +  resets: true
+> >
+> >    renesas,no-can-fd:
+> >      $ref: /schemas/types.yaml#/definitions/flag
+> > @@ -91,6 +92,62 @@ required:
+> >    - channel0
+> >    - channel1
+> >
+> > +if:
+> > +  properties:
+> > +    compatible:
+> > +      contains:
+> > +        enum:
+> > +          - renesas,rzg2l-canfd
+> > +then:
+> > +  properties:
+> > +    interrupts:
+> > +      items:
+> > +        - description: CAN global error interrupt
+> > +        - description: CAN receive FIFO interrupt
+> > +        - description: CAN0 error interrupt
+> > +        - description: CAN0 transmit interrupt
+> > +        - description: CAN0 transmit/receive FIFO receive completion interrupt
+> > +        - description: CAN1 error interrupt
+> > +        - description: CAN1 transmit interrupt
+> > +        - description: CAN1 transmit/receive FIFO receive completion interrupt
+> > +
+> > +    interrupt-names:
+> > +      items:
+> > +        - const: g_err
+> > +        - const: g_recc
+> > +        - const: ch0_err
+> > +        - const: ch0_rec
+> > +        - const: ch0_trx
+> > +        - const: ch1_err
+> > +        - const: ch1_rec
+> > +        - const: ch1_trx
+> > +
+> > +    resets:
+> > +      maxItems: 2
+> > +
+> > +    reset-names:
+> > +      items:
+> > +        - const: rstp_n
+> > +        - const: rstc_n
+> > +
+> > +  required:
+> > +    - interrupt-names
+> > +    - reset-names
+> > +else:
+> > +  properties:
+> > +    interrupts:
+> > +      items:
+> > +        - description: Channel interrupt
+> > +        - description: Global interrupt
+> > +
+> > +    interrupt-names:
+> > +      items:
+> > +        - const: ch_int
+> > +        - const: g_int
+>
+> Are you adding the new interrupt-names to the existing DTs, too?
+> Otherwise this patch will generate more warnings in the existing DTs.
+>
+For non RZ/G2L family interrupt-names property is not marked as
+required property so dtbs_check won't complain. Once we have added
+interrupt names in all the SoC DTSI's we will mark it as required
+property for the rest of the SoC's.
 
-The 'N' is a digit started string and it can be omitted
-for the default histogram.
+Cheers,
+Prabhakar
 
-For example, multiple hist triggers example in the
-Documentation/trace/histogram.rst can be written as below;
-
-ftrace.event.net.netif_receive_skb.hist {
-	1 {
-		keys = skbaddr.hex
-		values = len
-		filter = len < 0
-	}
-	2 {
-		keys = skbaddr.hex
-		values = len
-		filter = len > 4096
-	}
-	3 {
-		keys = skbaddr.hex
-		values = len
-		filter = len == 256
-	}
-	4 {
-		keys = skbaddr.hex
-		values = len
-	}
-	5 {
-		keys = len
-		values = common_preempt_count
-	}
-}
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v3:
-  - Fixes a build error when CONFIG_HIST_TRIGGERS=n.
----
- kernel/trace/trace_boot.c |   41 ++++++++++++++++++++++++++++++++---------
- 1 file changed, 32 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 8ee04ceb12ac..69558f149620 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -324,7 +324,7 @@ trace_boot_hist_add_handlers(struct xbc_node *hnode, char **bufp,
- /*
-  * Histogram boottime tracing syntax.
-  *
-- * ftrace.[instance.INSTANCE.]event.GROUP.EVENT.hist {
-+ * ftrace.[instance.INSTANCE.]event.GROUP.EVENT.hist[.N] {
-  *	keys = <KEY>[,...]
-  *	values = <VAL>[,...]
-  *	sort = <SORT-KEY>[,...]
-@@ -415,11 +415,37 @@ trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
- 
- 	return 0;
- }
-+
-+static void __init
-+trace_boot_init_histograms(struct trace_event_file *file,
-+			   struct xbc_node *hnode, char *buf, size_t size)
-+{
-+	struct xbc_node *node;
-+	const char *p;
-+
-+	xbc_node_for_each_subkey(hnode, node) {
-+		p = xbc_node_get_data(node);
-+		if (!isdigit(p[0]))
-+			continue;
-+		/* All digit started node should be instances. */
-+		if (trace_boot_compose_hist_cmd(node, buf, size) == 0) {
-+			if (trigger_process_regex(file, buf) < 0)
-+				pr_err("Failed to apply hist trigger: %s\n", buf);
-+		}
-+	}
-+
-+	if (xbc_node_find_child(hnode, "keys")) {
-+		if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0)
-+			if (trigger_process_regex(file, buf) < 0)
-+				pr_err("Failed to apply hist trigger: %s\n", buf);
-+	}
-+}
- #else
--static int __init
--trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
-+static void __init
-+trace_boot_init_histograms(struct trace_event_file *file,
-+			   struct xbc_node *hnode, char *buf, size_t size)
- {
--	return -EOPNOTSUPP;
-+	/* do nothing */
- }
- #endif
- 
-@@ -465,11 +491,8 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
- 				pr_err("Failed to apply an action: %s\n", buf);
- 		}
- 		anode = xbc_node_find_child(enode, "hist");
--		if (anode &&
--		    trace_boot_compose_hist_cmd(anode, buf, ARRAY_SIZE(buf)) == 0) {
--			if (trigger_process_regex(file, buf) < 0)
--				pr_err("Failed to apply hist trigger: %s\n", buf);
--		}
-+		if (anode)
-+			trace_boot_init_histograms(file, anode, buf, ARRAY_SIZE(buf));
- 	} else if (xbc_node_find_value(enode, "actions", NULL))
- 		pr_err("Failed to apply event actions because CONFIG_HIST_TRIGGERS is not set.\n");
- 
-
+> regards,
+> Marc
+>
+> --
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
