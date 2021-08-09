@@ -2,125 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC43E3E3DC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059663E3DCA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhHIBnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:43:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42434 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232678AbhHIBnK (ORCPT
+        id S232663AbhHIBp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231324AbhHIBpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:43:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628473370;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9rTF4KN0UK9//z3ziSnguQwQKDmEwhKYc9DW20kNcmw=;
-        b=OHkDR2tzz7F0F+sx4abl4o/dnpCf0gC7ledLKd46AWoGfCnzcO/Ff/zXMUmTItxo7rakU3
-        d4g1lTSnd6bkDUBsy9Vbh++KXxQDZ9ua8CPqHBxJAf187EcuzFPGcr0mI3mm5NJZkKXS/t
-        Xfcei89VGYziu9bFaWK1sB/H/+A8AbM=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-QWHXAH6IN3KxeGBKG0Do1Q-1; Sun, 08 Aug 2021 21:42:49 -0400
-X-MC-Unique: QWHXAH6IN3KxeGBKG0Do1Q-1
-Received: by mail-qt1-f197.google.com with SMTP id k2-20020ac847820000b029024ea3acef5bso6934909qtq.12
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 18:42:49 -0700 (PDT)
+        Sun, 8 Aug 2021 21:45:49 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCD7C061760
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 18:45:28 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id k4so9517926wms.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 18:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rDSSFuRHAqlduTyD3s/sFnLYXwNiPitqreRt4wVmrLQ=;
+        b=PPNk3esc06rpcy60qU0BMnxbcfxelQ6BeRLzBHoTR7h75DojUInfos1jCEMiYeAcKk
+         1bQ3AwQnZP6JeyxoWKfCdJYF7QlVKmwYl2ORaTmj51HnDLmG3BHMtAqpNlJzmbiX6jMc
+         nzsGNvykOyNpZ5CnLwBdoxeb4S1vq3yAjV7At1H3hMrPJL1MGxCxUIANJRQDLn+0ppIY
+         DbG+IxI2I4dVg/JXgWRBfoxPaz+Cwe/38vehIBMVnvzzDjOUEToAnHoajSorP/WlCVQJ
+         CKrWwgp1m11FM5mV15oCpj7Rrv6HrtT4ABCVaF1qDIPSJXFk3tKfckPljrDmsZOi+GYN
+         SP0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9rTF4KN0UK9//z3ziSnguQwQKDmEwhKYc9DW20kNcmw=;
-        b=NZTD1zAsFhoIsA3Jaf9CutAxF7YYI6X5LriAVxElHH8TzVRL7DlP6e9oi2AmVFx+jm
-         MEitgRPm4XqdneCiapSe8gg3lj3TPedo8rETPhzlbfXyrecILpSiUD13iLyKwa8qEvhz
-         eoDCwAndiXmZyaNdfQBMuF0+oHRoFgcU28c79VMlkEzG+r9HSTIRzZ+oUwbHuGsx4XKb
-         E5aalqFM2rlrNyVQ2c1poFh2ZqrDOEzL39pGzk1snAgczm2lWKhcleX6MlaCvuTaFbd4
-         Q29ml68JAFl5uhZUaQnQonAxusZI3FmLcoObp2imONmnQNB+NzTyH6WkHN9r0BT519kp
-         jkuQ==
-X-Gm-Message-State: AOAM531It6aMYn3+fg9/ldEcjctzAUkJcJ2wHbAyeOMblTm/BcxQPtg+
-        563ZSvxhJJ/BmbXjcYTXz5auQWUpzHVnXocFUAAz/l8AbGJfPTBhH3VOnuuTXeP9DkB3d9x07uD
-        Nmn7d4/XrH3o6F8Cru4bE/PdzWvqo5nokukEB567FqMJQLc2GlHYDV39j3cf/cxkTPv4SyWc1ag
-        vv
-X-Received: by 2002:a05:6214:c23:: with SMTP id a3mr4360929qvd.46.1628473368325;
-        Sun, 08 Aug 2021 18:42:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNOCH1+/DEVeooTgguT1SmXYJYQW6XatXCh3aIwd0KlOIOQsDS7Y37EpaJV9y17WfaB9tOCQ==
-X-Received: by 2002:a05:6214:c23:: with SMTP id a3mr4360910qvd.46.1628473368162;
-        Sun, 08 Aug 2021 18:42:48 -0700 (PDT)
-Received: from jtoppins.rdu.csb ([107.15.110.69])
-        by smtp.gmail.com with ESMTPSA id r29sm8463927qkm.43.2021.08.08.18.42.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Aug 2021 18:42:47 -0700 (PDT)
-Subject: Re: [PATCH net-next 2/2] bonding: combine netlink and console error
- messages
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     netdev@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-References: <cover.1628306392.git.jtoppins@redhat.com>
- <a36c7639a13963883f49c272ed7993c9625a712a.1628306392.git.jtoppins@redhat.com>
- <YQ+vDtXPV5DHqruU@unreal>
-From:   Jonathan Toppins <jtoppins@redhat.com>
-Message-ID: <14b506c3-7e8d-f313-b585-4e7ff1a542cf@redhat.com>
-Date:   Sun, 8 Aug 2021 21:42:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rDSSFuRHAqlduTyD3s/sFnLYXwNiPitqreRt4wVmrLQ=;
+        b=CHYUyJKTFciERuFGnMWqxaVJ/4+4ysv6Wv8yYrV8yczOncZi0yh7ziKLEeW/+Hvr1r
+         XcxM3oVEPbfQUIGOtmMyT+72YWBLBav6B4owS07gmAK4rq6NwvutazQMFW1lZjvGeSNj
+         bI415IlH4IXKeWi2wIvSAUeP2yG6uaYxSkskROLChOCRg/mQOYXHuAxLCNWJde/y2XqO
+         X9f46xUJ6mEteWY7551YjTiDjCP+76SovxEJFgzRWBh3XAojTMKm4mMMXdR4lU5h9MUu
+         kVHOupQV6tjvmyvM8hEBX7NiguWq1OPFxW47VBw2FZpfcfNyqZxAX7SQieOSXqSNBTOr
+         SFgg==
+X-Gm-Message-State: AOAM530ST7K3o7APdmvMcNutx76oMo6xzFIubr2FDRfbi5vXAtz6GIsR
+        PdE15LKbOFWYjz9Xgc2x26sL98DFYhnq0PkYf9Jkpw==
+X-Google-Smtp-Source: ABdhPJzYahGrDWObkhBOzaVFdSHsevjGagoVWzVQuxcUBs0g1yqLlkDW99cpitAS8iS3a6uOoSTpLfDvryYV5oNM4SE=
+X-Received: by 2002:a7b:ce0f:: with SMTP id m15mr1026737wmc.105.1628473526970;
+ Sun, 08 Aug 2021 18:45:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YQ+vDtXPV5DHqruU@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAJk_X9hBB_edByfEvueSyWgKjpYGZbS2rPLPCSpRrPr+icFz_Q@mail.gmail.com>
+ <20210804013252.GA16420@nchen> <CAJk_X9gwa+4CZRemKqW7XZzxd438EQHA-Ngp4MdmPVgHM0Q5fg@mail.gmail.com>
+ <20210809012747.GA6814@nchen>
+In-Reply-To: <20210809012747.GA6814@nchen>
+From:   Jeaho Hwang <jhhwang@rtst.co.kr>
+Date:   Mon, 9 Aug 2021 10:45:16 +0900
+Message-ID: <CAJk_X9jT7bqLn-wb7AGF6onA2qE9_D_=f4pPpGDEoiCar2BWUw@mail.gmail.com>
+Subject: Re: Chipidea USB device goes infinite loop due to interrupt while hw_ep_prime
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     linux-usb@vger.kernel.org,
+        =?UTF-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm0=?=
+         =?UTF-8?B?7Jew6rWs7YyA?= <mkbyeon@lselectric.co.kr>,
+        Linux team <team-linux@rtst.co.kr>,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/21 6:16 AM, Leon Romanovsky wrote:
-> On Fri, Aug 06, 2021 at 11:30:55PM -0400, Jonathan Toppins wrote:
->> There seems to be no reason to have different error messages between
->> netlink and printk. It also cleans up the function slightly.
->>
->> Signed-off-by: Jonathan Toppins <jtoppins@redhat.com>
->> ---
->>   drivers/net/bonding/bond_main.c | 45 ++++++++++++++++++---------------
->>   1 file changed, 25 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
->> index 3ba5f4871162..46b95175690b 100644
->> --- a/drivers/net/bonding/bond_main.c
->> +++ b/drivers/net/bonding/bond_main.c
->> @@ -1712,6 +1712,16 @@ void bond_lower_state_changed(struct slave *slave)
->>   	netdev_lower_state_changed(slave->dev, &info);
->>   }
->>   
->> +#define BOND_NL_ERR(bond_dev, extack, errmsg) do {		\
->> +	NL_SET_ERR_MSG(extack, errmsg);				\
->> +	netdev_err(bond_dev, "Error: " errmsg "\n");		\
->> +} while (0)
->> +
->> +#define SLAVE_NL_ERR(bond_dev, slave_dev, extack, errmsg) do {	\
->> +	NL_SET_ERR_MSG(extack, errmsg);				\
->> +	slave_err(bond_dev, slave_dev, "Error: " errmsg "\n");	\
->> +} while (0)
-> 
-> I don't think that both extack messages and dmesg prints are needed.
-> 
-> They both will be caused by the same source, and both will be seen by
-> the caller, but duplicated.
-> 
-> IMHO, errors that came from the netlink, should be printed with NL_SET_ERR_MSG(),
-> other errors should use netdev_err/slave_err prints.
-> 
+2021=EB=85=84 8=EC=9B=94 9=EC=9D=BC (=EC=9B=94) =EC=98=A4=EC=A0=84 10:27, P=
+eter Chen <peter.chen@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On 21-08-04 11:03:44, Jeaho Hwang wrote:
+> > Hi. linux-usb and linux-rt experts.
+> > >
+> > > On 21-08-02 17:35:01, Jeaho Hwang wrote:
+> > > > Hi.
+> > > >
+> > > > We found an infinite loop inside the function hw_ep_set_halt
+> > > > (drivers/usb/chipidea/udc.c) if a cablle is repeatedly
+> > > > connnected/disconnected while ping through RNDIS with chipidea USB =
+device.
+> > > >
+> > > > Using ftrace tracing, we found that hw_ep_set_halt is called due to=
+ error
+> > > > return of hw_ep_prime(drivers/usb/chipidea/udc.c:202) which is call=
+ed from
+> > > > isr_tr_complete_handler -> isr_setup_status_phase -> _ep_queue.
+> > > >
+> > > > The comment of function hw_ep_prime says (execute without interrupt=
+ion) but
+> > > > timer interrupt is occurred while hw_ep_prime is executing. We beli=
+eve that
+> > > > the interrupt causes an error return of hw_ep_prime. We tried to pr=
+otect
+> > > > hw_ep_prime from irqs and then no case of the infinite loop is occu=
+rred.
+> > > >
+> > > > I want ask if it is appropriate way that turning off irq inside (th=
+readed)
+> > > > irq handlers. And should we explicitly turn off irqs before calling
+> > > > hw_ep_prime?
+> > > >
+> > >
+> > > Jeaho, do you use RT-Linux or standard Linux? The function hw_ep_prim=
+e is
+> > > only called at udc_irq which is registered as top-half irq handlers.
+> > > Why the timer interrupt is occurred when hw_ep_prime is executing?
+> >
+> > We use preempt_RT so timer interrupt could be occurred. Now I found
+> > out that forced threaded irq handler disables local irq on standard
+> > linux so It is a linux-rt issue. Then should I make patch which
+> > disables local irqs during hw_ep_prime for RT kernel and suggest it to
+> > linux-rt maintainers?
+> >
+> > Thanks for a kind answer Peter.
+> >
+>
 
-bond_enslave can be called from two places sysfs and netlink so 
-reporting both a console message and netlink message makes sense to me. 
-So I have to disagree in this case. I am simply making the two paths 
-report the same error in the function so that when using sysfs the same 
-information is reported. In the netlink case the information will be 
-reported twice, once an an error response over netlink and once via printk.
+Thanks Peter.
 
--Jon
+> No, that will lead to deadlock since the normal request queue API functio=
+n
+> ep_queue disables irq which also calls into hw_ep_prime.
 
+ep_queue disables irq by calling spin_lock_irqsave but it actually
+does not disable irq for RT kernel.
+Therefore local_irq_save at hw_ep_prime would not cause deadlock if
+ep_queue calls it, i think.
+
+Is it anything wrong?
+
+>
+> For RT kernel, you may try to disable local irq at isr_setup_status_phase=
+.
+>
+> --
+>
+> Thanks,
+> Peter Chen
+>
+
+
+--=20
+=ED=99=A9=EC=9E=AC=ED=98=B8, Jay Hwang, linux team manager of RTst
+010-7242-1593
