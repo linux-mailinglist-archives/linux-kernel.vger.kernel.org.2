@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B9C3E412F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5055F3E4136
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbhHIHzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233605AbhHIHzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:55:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FF056105A;
-        Mon,  9 Aug 2021 07:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628495724;
-        bh=ySbGgGfzqBAEJSratUSjhe+L3/0DiQlQC21ixFHniJs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bokvUlouuBYaecUg9mjkN7kVKqM4Ne+L4MB9WrBfcNkS52PGq4SeNeHgIybnElMPf
-         7f9mpfPSv0ccYy9EBCX0/P7zuxpueOVqplPQPhlsVlj3IN8cm5orUkrYUjGercUIA9
-         r0VP0Hz/xGMFP0fZgkmb17emo679NtTRo0MxZ0LLS6h6JtZ96BBnRb9hFbQ2wt3CPk
-         MVUwqlIJwT9vyNY7EafhEgq5kSen72z6UPZM1Iszg8DBhBL7ZGnRfDqKSpBDJZQkjk
-         6VYGrY+pnJ87byXORLkkwbSVks9RRg3Lyve3ZAdK9+oNjgXWLYPpnF6nEqYbyzgEH0
-         ZPLKtDmtcl55A==
-Received: by mail-wm1-f46.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso13818047wmg.4;
-        Mon, 09 Aug 2021 00:55:24 -0700 (PDT)
-X-Gm-Message-State: AOAM5314ihqiQdazj/ao4qWgIayW7liDHfdknJF6fxI4NodM5RICRGPa
-        g5AKlbgNxRU2CpoNVBhxm2ebD7+QpfAWwCx1MUc=
-X-Google-Smtp-Source: ABdhPJwsHCGJweUWTaO/pnRagqo6mk9Ys2poZ+HUYdQPTlaYEGh/x99mdZSs5F4drrQlZ4IykGD39tpMoLMC+pA/62s=
-X-Received: by 2002:a05:600c:3b08:: with SMTP id m8mr32513254wms.84.1628495723088;
- Mon, 09 Aug 2021 00:55:23 -0700 (PDT)
+        id S233664AbhHIH6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233476AbhHIH6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 03:58:44 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6D6C0613CF;
+        Mon,  9 Aug 2021 00:58:23 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ca5so26586779pjb.5;
+        Mon, 09 Aug 2021 00:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UbnfIseIdRUiYY5Rd1yC66CYf+wGkmSvk4ybj5gum1M=;
+        b=dArC/b5Dz20nE50yWMHVQwtXWp0FAIy5V/ptlB678aFeEitUFreshNQI4pzGB0OwNa
+         PaIXV2LNEmsrDUEKdr2zJdWs4SUChOueZiLXrw95n9RRzJk9abnTBIFdk42y2NWTw4O3
+         QTVrW4i9JGrJdMqoTNRRBaghdknw9e3VOxytl7JxDEXikaE9JqRPgHHYXR/s5pyB4OgN
+         ttGZbmRdes0UwBfLeQHFn/dxE7jAf/JlZd1l41MpZJlj7GKxuVmZX1W7wnlE5r8wdwLV
+         CvTK0jcYXcFvM/m6RbH7gW1UIEO+LjT7E1XzC8Mm7oo0U8AXgBqE6hK3whQbIhy39sI8
+         M0Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UbnfIseIdRUiYY5Rd1yC66CYf+wGkmSvk4ybj5gum1M=;
+        b=lQSparpM6OBXHDfEan9yy0FYFCwrwFdCGI0gOWDNAcZuDIItB0KGEynKrxNHyj97IO
+         ImL0H2FYdCbIvK1N2/JiyKfUDZIBBY3X5Z2vhNcYJtwVzqyBzMtHXqkO4Pl7Pf7BenBS
+         kSNTpFyHuLS/1kTgMIpPKH0UUmldfbBr1otGpC1JOWYeT/yl0oWdEldgM5ftQm4mwQnF
+         fKz4+pwArb4ChLm3qcSFwmSTeaSHkZxzGaNSAOe4s7DebBhVWT7KQJ+kmLUyIMr9Flr5
+         RICgP5jcwARX1ITnsYRE2rGuEiuHyBmwbW+qBH5KWy5tgGEcepcuHR96BDdfupkx4bIp
+         rAgQ==
+X-Gm-Message-State: AOAM532bA6g7xLovU8mNnHt8qo2mB6JzP6p5yeZb2jGyCK6d1bC1GVed
+        9JnU9yqnfCZ5hgPwVhZpBP8=
+X-Google-Smtp-Source: ABdhPJxhvdmOQOqlZ8ghgItK1lQs+IVwGjOSEULdwBrPhfmAJrHXUPSYmSyKmsNByAr40Yl9wpg3Pg==
+X-Received: by 2002:a17:90a:d910:: with SMTP id c16mr15400549pjv.154.1628495902622;
+        Mon, 09 Aug 2021 00:58:22 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:188:d7b2:ea47:4575:ff46:5465])
+        by smtp.googlemail.com with ESMTPSA id b17sm21425112pgl.61.2021.08.09.00.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 00:58:21 -0700 (PDT)
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+To:     Dragos.Bogdan@analog.com, Darius.Berghe@analog.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Subject: [PATCH v2 0/2] iio: potentiometer: Add driver support for AD5110
+Date:   Mon,  9 Aug 2021 13:27:18 +0530
+Message-Id: <20210809075745.160042-1-dmugil2000@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1627989586.git.viresh.kumar@linaro.org> <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
- <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
- <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
- <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
- <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7> <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
- <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
- <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com> <20210809073020.y6ruibdm37xnx7hg@vireshk-i7>
-In-Reply-To: <20210809073020.y6ruibdm37xnx7hg@vireshk-i7>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 9 Aug 2021 09:55:07 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3TabswETDAUec-2rbiNBk_K48-UdpTA5Ckvu5ogOyHjQ@mail.gmail.com>
-Message-ID: <CAK8P3a3TabswETDAUec-2rbiNBk_K48-UdpTA5Ckvu5ogOyHjQ@mail.gmail.com>
-Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 9:30 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 06-08-21, 10:00, Arnd Bergmann wrote:
-> > On Fri, Aug 6, 2021 at 9:44 AM Viresh Kumar via Stratos-dev
-> > <stratos-dev@op-lists.linaro.org> wrote:
-> > >
-> > > On 05-08-21, 15:10, Arnd Bergmann wrote:
-> > > > I hope this can still be simplified by working out better which state
-> > > > transitions are needed exactly. In particular, I would expect that we
-> > > > can get away with not sending a VIRTIO_GPIO_MSG_IRQ_TYPE
-> > > > for 'mask' state changes at all, but use that only for forcing 'enabled'
-> > > > state changes.
-> > >
-> > > Something like this ?
-> >
-> > > static void virtio_gpio_irq_mask(struct irq_data *d)
-> > > {
-> > >         /* Nothing to do here */
-> > > }
-> >
-> > You'd have to do /something/ here I think, if only setting the flag
-> > that we don't want to deliver the next interrupt.
-> >
-> > > static void virtio_gpio_irq_unmask(struct irq_data *d)
-> > > {
-> > >         struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> > >         struct virtio_gpio *vgpio = gpiochip_get_data(gc);
-> > >
-> > >         /* Queue the buffer unconditionally on unmask */
-> > >         virtio_gpio_irq_prepare(vgpio, d->hwirq);
-> > > }
-> >
-> > And check the flag here to not requeue it if it's masked.
->
-> I am not sure I understand why this would be required. If the
-> interrupt is getting disabled, then unmask will not get called here
-> and so we won't requeue anything. Same will happen with threaded
-> handlers where the interrupt gets unmasked at a later point of time.
+Add dt-bindings and driver support for AD5110, a Nonvolatile 
+Digital Potentiometer.
 
-Ah, right. There is already a flag that gets checked by the caller.
+Changes since v1:
+ - Drop 'shared_by_type' since it's a single channel
+ - Add error check for i2c read/write data bytes
+ - Simplified calculation for tolerance
+ - Add shift for eeprom wiper pos read
+ - Change new custom ABI to existing ABI
+ - Allow top-scale mode by writting max_pos to val
 
-It does feel odd to have an empty 'irq_mask' callback though, so
-maybe there is still something missing, just not what I thought.
+Mugilraj Dhavachelvan (2):
+  dt-bindings: iio: potentiometer: Add AD5110 in trivial-devices
+  iio: potentiometer: Add driver support for AD5110
 
-It's probably the result of calling handle_level_irq(), which as you
-said is closer to what we want, but is not exactly what we need for
-this protocol.
+ .../devicetree/bindings/trivial-devices.yaml  |   2 +
+ MAINTAINERS                                   |   6 +
+ drivers/iio/potentiometer/Kconfig             |  10 +
+ drivers/iio/potentiometer/Makefile            |   1 +
+ drivers/iio/potentiometer/ad5110.c            | 339 ++++++++++++++++++
+ 5 files changed, 358 insertions(+)
+ create mode 100644 drivers/iio/potentiometer/ad5110.c
 
-        Arnd
+-- 
+2.25.1
+
