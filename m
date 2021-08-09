@@ -2,525 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A873E4638
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045043E464A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235335AbhHINLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235311AbhHINLR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:11:17 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3011DC0613D3;
-        Mon,  9 Aug 2021 06:10:57 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id m36-20020a05600c3b24b02902e67543e17aso2977474wms.0;
-        Mon, 09 Aug 2021 06:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=CKcEzNFYuGEeaz7jwPbq616RUx2Sy10QLeq/JBh4TSE=;
-        b=D97Ypv0xGLj/Bip4b6nNWS14lWO35lvjm5mLG1kkDO2ak0E3Ip1mON5go9Bh9gUhLt
-         kvfEhMi14849nF3zfsbHHC1FRzlo02ovFEAtdOp8LeA81mAB+R1IZ3HkgYLgWm1XVJJY
-         336TJFNQa5NXy5KFMvFk3MSwAzi9plvwhn2WOb8emOnchHctwRBAg5ahE6qASEzqg7HL
-         Xr4I/29qBzxL8P7QTacsyA5wfMmW7n5A/AIOCpZfF8Snv2becFTjOF4lEpc+adpe8vaw
-         y3znl10ANzXD2iC40ufGS+HMZbGLaswl+aMkNeJycYWGIqyXWLrRVfnih8+Zt/OOYiua
-         JN1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=CKcEzNFYuGEeaz7jwPbq616RUx2Sy10QLeq/JBh4TSE=;
-        b=s4Fh8EDi8rAdiMYcP0yrZFaDXcA+FovRrRrYTC+9nMzR6+oIK069F/b7gr08gjUOQr
-         OKrfT+fS4Jx1z7qOaTDDQwm3j1NwwnQ931HSDJgfG0qD+bO0345fMb0AcQAjmJavgxK9
-         ZfNEL9aOMVBgs/SfHrmeE7HeO6P0tteHZ5sMdespzjapnYZ7HXRhRRsXO3g/HVj++c3t
-         KUtjVi66m+2GGgwsgEVaEYi533GFjCJ+gc28ctOCkwj4x5Y02yk8+9PCDYVFJ4P4vUug
-         GmI4puAf4wc3fWTDTv5bR5Zr5q+UWk7YgmAmYUhYYCV3VWvw7OLA6RdALgIUBw1arYrR
-         fDNQ==
-X-Gm-Message-State: AOAM533H8v37JzBaUtOTySv5EilYBvBmrw053FiSEKVRCYkwjo9BYH/G
-        GTg6Z3xHo+FrYALS0/jFFYI3d5lpxvOqnVDR1g8=
-X-Google-Smtp-Source: ABdhPJzf2AKNn1UlIpvSh4/ECgVSEIAJnIkg8qC3JqMmnclHQ6hwYs9eohMk51p+MZLaEyVYfBE6Vw==
-X-Received: by 2002:a7b:c041:: with SMTP id u1mr16351531wmc.95.1628514655775;
-        Mon, 09 Aug 2021 06:10:55 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id k12sm5276094wrd.75.2021.08.09.06.10.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 06:10:55 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH 2/2] arm64: dts: amlogic: add support for Radxa Zero
-Date:   Mon,  9 Aug 2021 13:10:47 +0000
-Message-Id: <20210809131047.28047-3-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210809131047.28047-1-christianshewitt@gmail.com>
-References: <20210809131047.28047-1-christianshewitt@gmail.com>
+        id S235388AbhHINMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:12:33 -0400
+Received: from mail-vi1eur05on2087.outbound.protection.outlook.com ([40.107.21.87]:38432
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234821AbhHINMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:12:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sk30NxUfr5h4ijNegkCSb+8x8nqZa3VRyvGKWm7eNG136uaqCbFRNgfsAiz1GVt0e4Epy/l6L0aJuOqgNvucb4DMdsFfhoiZeY5pIQ4cPu7JJ43kqSI9ls+5e/tqrLi/xPycKxy/GjaA7ZnLqr5FbwrRvPKrOJZHUnl682YzP8zAx3R0rMfzbkjVWC8HyeVKaWX3PO0PRAm2fNBNA/Y1wt4jOuLBSZlBRAMCE0fSDSC6+VbYjpDIpWcxapK/rFq7wMc05L/xb+qiR95sc1emm0G1oDVa3GuyoHXX4e63EYjO7EZUMYo+cso992eTCeEM143JGbQgZwiQpSxXwywxFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J1wUQVKQA0iJ/qS+DMuUeq93qWV8MhNGV5uHO4WmCKk=;
+ b=EiA6qqU2sLL9XhGcGz8U7MbH1Q48ZPE3eNxMSqLv1tgUPEEuHVhHOdLCJtd1Lv/1J5W1uNAPdyDtdANQ6+a/7CitFCfuE3Zx2zl2hagHNTvSqh21xXVOmqFAhtJna8c2zFV7BbfAAm0aTW8MOJ+kNDRI/SxolDyEzVG4jyIvziuMYE0g2DKEzXBgxxH3XyNs83mh2TYtFTy7SxeU5dr8kc2pZwSIrybRDwtnaJY5YX8AsKJSqlRXsiphwvjm9MZY20vEObAWJqd6RNfUMovI8DI31YmPcmZiBzZvU+mJMvnxn4OGvStWWH6IqjEHFdYzIG8rXzH8J0sS6JdgYIA+Wg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J1wUQVKQA0iJ/qS+DMuUeq93qWV8MhNGV5uHO4WmCKk=;
+ b=FVP6ECFmIwwrb2OOywTv0XzNKx45V3oGqk4yzZmOFHjXx1O4IjAVN1xNHk28i4LOQdUK5t0mp16LZi0AYMZzHlZ4KIELGoP2oDcP/juQuevUiV+/UeWeEp/8rBGIjm4wPWITf0F1XpRQHIliSxFFMJDH4G/NFyVBs1aWCa/JULA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VE1PR04MB7341.eurprd04.prod.outlook.com (2603:10a6:800:1a6::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Mon, 9 Aug
+ 2021 13:12:08 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 13:12:08 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jianbo Liu <jianbol@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-s390@vger.kernel.org, Ido Schimmel <idosch@idosch.org>
+Subject: [PATCH net] net: switchdev: zero-initialize struct switchdev_notifier_fdb_info emitted by drivers towards the bridge
+Date:   Mon,  9 Aug 2021 16:11:52 +0300
+Message-Id: <20210809131152.509092-1-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR08CA0196.eurprd08.prod.outlook.com
+ (2603:10a6:800:d2::26) To VI1PR04MB5136.eurprd04.prod.outlook.com
+ (2603:10a6:803:55::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (188.25.144.60) by VI1PR08CA0196.eurprd08.prod.outlook.com (2603:10a6:800:d2::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend Transport; Mon, 9 Aug 2021 13:12:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4f250481-fbe7-4ef5-109e-08d95b374a6c
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7341:
+X-Microsoft-Antispam-PRVS: <VE1PR04MB73418C2BB02523D96149B3B0E0F69@VE1PR04MB7341.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: APTbyeRE34Z386E99ZosFY7XFBxC/HKutZYl/nGSzZMH07t/fFSw3QaNaUifK4S6yhdCoX2FcJcF23UbwT89miaRmnZT7Vi75Z0LLXabjEu/a/zWjEZekl2x2Kbe/cc8Jsk/oMPl26nZxAFhKpDn4bsWQl/LYz4d9h4DF1VzhesR6EybZ+L3LYij8Arbo+biJ69vNpVqBTc2Wt5AQIptns8C3RLgz3R2/Rziuj/GtICRcMper/nmMknSKEZ8wLTLfzXdLyXN+3ADJhC3bsBLNn8TkZva7cHli9R6BE2ZjeOnsiP4VoasDpWKVVfCqNNOEsQkomwnZ0FAqRCM+FlHv+1KZ1kGuO8ZUjKi+lG2T4eCNMuYmrULTjnxQCXZY8Lo0Be/smswKPDyI4XRCQjhc9Rxe3mxRbRweb1UGjfQIfGuqcrwmlPZ33P+Hxvh0aGkpP3PJqkfqMuSgth4JIPLsoJvGCZE85xxMmVNqcolV23xxr9tp/Y8xWrLtMsIrEZciqKapQYIdX64H5r78cuuUWhUfi1R0cAE0j0brCx00n7Lm7KKzj9Nql1Fs56UkalNo4CTl6+R3w73VW44CUdsG11beX2NQW8ak4OyAkvi+CHKlS9xqkyaXDfTIulnOiCflUNgEdrM6YbqF80pfEC5fm4KqXRUdcXd+o9MwK7p6PGW46RXUP3j9fvA6FzyJSEPD8xKEeRRsCuh5F3QdC85fw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(6486002)(478600001)(8936002)(6666004)(86362001)(38350700002)(38100700002)(54906003)(956004)(110136005)(2616005)(7416002)(7406005)(316002)(186003)(44832011)(6506007)(4326008)(26005)(2906002)(5660300002)(83380400001)(52116002)(66476007)(66556008)(66946007)(8676002)(1076003)(36756003)(66574015)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JxrYF5HOUzZb6SrxzrL3lEi+wooNPBAiS7dF8uAn3pAEms+Te6+76DJSrOJk?=
+ =?us-ascii?Q?LPbPaxs6fiaZYiK1HTMFxPor1JWaMTgREeFVBEq4vAImT4xR4qEjp5OYi2gA?=
+ =?us-ascii?Q?4btdrwWuBi+7p1WUclhnVZ/TE3rh6do7dV2vOF7HCsNAbI19a9Wn98oabgsg?=
+ =?us-ascii?Q?89oSdcyFmHRP1pflHcS78zGquxAtwD7u3T8DdE+eN/OM4xj+e86dDlaEnLca?=
+ =?us-ascii?Q?awj09av5JrnLHZkz18zIF4Jnhl4ajlPDTwCNRbItHmaFPlX3idphcbhT23Rq?=
+ =?us-ascii?Q?/LF3flsyE2Ven1gcWd+iqoDgLm7a5tjur6C0r7kqRVnc3alERgSjwLTMY7C1?=
+ =?us-ascii?Q?LjdChgVfC7WLJRz0lHlpckxhbQ1f0AUvn/StXkiz+for3l9G0oqPzlFW2Tf8?=
+ =?us-ascii?Q?RfA6lWDZo4NW6we5N+qX5CF1q7YNOmYAWCe3Q6UNUiwNgRpk0CH6nHNAU+cl?=
+ =?us-ascii?Q?/w9GS0aAvh6NLwx14ehgiOH2YEeOSUA3/E1Tvg+Mg/ZehM7UyH5d34C+TdkF?=
+ =?us-ascii?Q?QX3PJ0BOOugal5DgB+iEdUKGEsYgb6Ioyja3idO/FUIIMiVj+fZsJb58/t7I?=
+ =?us-ascii?Q?wEuw3OIZKPHq9Hpt9DggXihlDnyRNqi95QNr/bui/2ogBE2eRpbf3yXu5yna?=
+ =?us-ascii?Q?aHV7n+3qz6Vj8UkPMuZ4Elpbco2wiKOrZpoG+IT1dxlIcbjJO/RnXjyinxRI?=
+ =?us-ascii?Q?5FZ3XpPDZvSqeVhU3PXuHZj27PVBCMI0oPSO8pHTJSnsUeyhOosLHvQnjNS/?=
+ =?us-ascii?Q?MKTelezyRlHowg+iTic6bpCdlvsBSnpWBg7KlaxwsRnaSzi6nWOW7pQHvbnk?=
+ =?us-ascii?Q?NKej3zcQIiGgB/b3wmpvYwe57e6qYC1HxVLkSSCZdApNBF9Twuc1BPvg7OU7?=
+ =?us-ascii?Q?L9h7/kBa5D08l+Qigiv/0R9kHr7i8ZAOgEBRnlaJ9ecSx2t/s5iB/0YYUiJt?=
+ =?us-ascii?Q?kMsv39KbUFxS6AdLaeSOIc1QTdPAJ1kAKmx/cTNuysGcQUwysdAFf9LzK/On?=
+ =?us-ascii?Q?46gRKIesASwbIEHFKMVKBcN8QzvAloxUM/+A4h9Ee2zuqIG1VhWsqGVTO5es?=
+ =?us-ascii?Q?wjqRn1k83vwIIVLE7VsjzYXPI97zIKy75BzWGVXIhZeIJRSQmJSr4QbJ9R5H?=
+ =?us-ascii?Q?q33W/HYhR3670ebwv2Acixx1p9P6syeVIeeiC4+XFBDr5Rgyl0QJodwVJZPi?=
+ =?us-ascii?Q?SO1LaIgk9MG+IUGf70pfhFH3+BUXCiwhlVGRkVUM308XdKbwcz2PJqR0DpiR?=
+ =?us-ascii?Q?m9lmFzL3C8l88NYErfQXztF3OKegqsgjcd06Xx6YNlQbzAc/6GrKPgsllvBb?=
+ =?us-ascii?Q?9otSRHpnnuZge7nPdoOPpPCI?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f250481-fbe7-4ef5-109e-08d95b374a6c
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 13:12:08.1899
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eMtDErpZSBrwA8UBHi4h8ulaiPFQvrLP5+0QhdsJNf6piQl0ieaLHPTC9i/OTHXmCUf3+cQuWWU2R1VsojkgSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7341
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Radxa Zero is a small form factor SBC based on the Amlogic S905Y2
-chipset that ships in a number of RAM/eMMC configurations:
+The blamed commit a new field to struct switchdev_notifier_fdb_info, but
+did not make sure that all call paths set it to something valid. For
+example, a switchdev driver may emit a SWITCHDEV_FDB_ADD_TO_BRIDGE
+notifier, and since the 'is_local' flag is not set, it contains junk
+from the stack, so the bridge might interpret those notifications as
+being for local FDB entries when that was not intended.
 
-Boards with 512MB/1GB LPDDR4 RAM have no eMMC storage and BCM43436
-wireless (2.4GHz b/g/n) while 2GB/4GB boards have 8/16/32/64/128GB
-eMMC storage and BCM4345 wireless (2.4/5GHz a/b/g/n/ac).
+To avoid that now and in the future, zero-initialize all
+switchdev_notifier_fdb_info structures created by drivers such that all
+newly added fields to not need to touch drivers again.
 
-- Amlogic S905Y2 quad-core Cortex-A53
-- Mali G31-MP2 GPU
-- HDMI 2.1 output (micro)
-- 1x USB 2.0 port - Type C (OTG)
-- 1x USB 3.0 port - Type C (Host)
-- 1x micro SD Card slot
-- 40 Pin GPIO header
-
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+Fixes: 2c4eca3ef716 ("net: bridge: switchdev: include local flag in FDB notifications")
+Reported-by: Ido Schimmel <idosch@idosch.org>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../dts/amlogic/meson-g12a-radxa-zero.dts     | 418 ++++++++++++++++++
- 2 files changed, 419 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts
+ drivers/net/ethernet/marvell/prestera/prestera_switchdev.c | 2 ++
+ drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c       | 1 +
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c      | 2 ++
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c   | 1 +
+ drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c    | 1 +
+ drivers/net/ethernet/rocker/rocker_main.c                  | 1 +
+ drivers/net/ethernet/rocker/rocker_ofdpa.c                 | 1 +
+ drivers/net/ethernet/ti/am65-cpsw-switchdev.c              | 1 +
+ drivers/net/ethernet/ti/cpsw_switchdev.c                   | 1 +
+ drivers/s390/net/qeth_l2_main.c                            | 2 ++
+ net/dsa/slave.c                                            | 1 +
+ 11 files changed, 14 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index faa0a79a34f5..be308361e2f1 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_MESON) += meson-axg-s400.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-g12a-radxa-zero.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-sei510.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-u200.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts
-new file mode 100644
-index 000000000000..d44d3881d9b9
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12a-radxa-zero.dts
-@@ -0,0 +1,418 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2018 BayLibre SAS. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-g12a.dtsi"
-+#include <dt-bindings/gpio/meson-g12a-gpio.h>
-+#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
-+
-+/ {
-+	compatible = "radxa,zero", "amlogic,g12a";
-+	model = "Radxa Zero";
-+
-+	aliases {
-+		serial0 = &uart_AO;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x40000000>;
-+	};
-+
-+	cvbs-connector {
-+		status = "disabled";
-+		compatible = "composite-video-connector";
-+
-+		port {
-+			cvbs_connector_in: endpoint {
-+				remote-endpoint = <&cvbs_vdac_out>;
-+			};
-+		};
-+	};
-+
-+	hdmi-connector {
-+		compatible = "hdmi-connector";
-+		type = "a";
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi_tx_tmds_out>;
-+			};
-+		};
-+	};
-+
-+	emmc_pwrseq: emmc-pwrseq {
-+		compatible = "mmc-pwrseq-emmc";
-+		reset-gpios = <&gpio BOOT_12 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	sdio_pwrseq: sdio-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
-+		clocks = <&wifi32k>;
-+		clock-names = "ext_clock";
-+	};
-+
-+	flash_1v8: regulator-flash_1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "FLASH_1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	dc_in: regulator-dc_in {
-+		compatible = "regulator-fixed";
-+		regulator-name = "DC_IN";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_1v8: regulator-vcc_1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_3v3: regulator-vcc_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_5v: regulator-vcc_5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&dc_in>;
-+
-+		gpio = <&gpio GPIOH_8 GPIO_OPEN_DRAIN>;
-+		enable-active-low;
-+	};
-+
-+	vddao_1v8: regulator-vddao_1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vddao_3v3: regulator-vddao_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&dc_in>;
-+		regulator-always-on;
-+	};
-+
-+	vddcpu: regulator-vddcpu {
-+		compatible = "pwm-regulator";
-+
-+		regulator-name = "VDDCPU";
-+		regulator-min-microvolt = <721000>;
-+		regulator-max-microvolt = <1022000>;
-+
-+		vin-supply = <&dc_in>;
-+
-+		pwms = <&pwm_AO_cd 1 1250 0>;
-+		pwm-dutycycle-range = <100 0>;
-+
-+		regulator-boot-on;
-+		regulator-always-on;
-+	};
-+
-+	sound {
-+		compatible = "amlogic,axg-sound-card";
-+		model = "RADXA-ZERO";
-+		audio-aux-devs = <&tdmout_b>;
-+		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT";
-+
-+		assigned-clocks = <&clkc CLKID_MPLL2>,
-+				  <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+		status = "okay";
-+
-+		dai-link-0 {
-+			sound-dai = <&frddr_a>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&frddr_b>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&frddr_c>;
-+		};
-+
-+		/* 8ch hdmi interface */
-+		dai-link-3 {
-+			sound-dai = <&tdmif_b>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-tx-mask-1 = <1 1>;
-+			dai-tdm-slot-tx-mask-2 = <1 1>;
-+			dai-tdm-slot-tx-mask-3 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
-+			};
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+			codec {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+
-+	wifi32k: wifi32k {
-+		compatible = "pwm-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		pwms = <&pwm_ef 0 30518 0>; /* PWM_E at 32.768KHz */
-+	};
-+};
-+
-+&arb {
-+	status = "okay";
-+};
-+
-+&cec_AO {
-+	pinctrl-0 = <&cec_ao_a_h_pins>;
-+	pinctrl-names = "default";
-+	status = "disabled";
-+	hdmi-phandle = <&hdmi_tx>;
-+};
-+
-+&cecb_AO {
-+	pinctrl-0 = <&cec_ao_b_h_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+	hdmi-phandle = <&hdmi_tx>;
-+};
-+
-+&clkc_audio {
-+	status = "okay";
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu1 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu2 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cpu3 {
-+	cpu-supply = <&vddcpu>;
-+	operating-points-v2 = <&cpu_opp_table>;
-+	clocks = <&clkc CLKID_CPU_CLK>;
-+	clock-latency = <50000>;
-+};
-+
-+&cvbs_vdac_port {
-+	cvbs_vdac_out: endpoint {
-+		remote-endpoint = <&cvbs_connector_in>;
-+	};
-+};
-+
-+&frddr_a {
-+	status = "okay";
-+};
-+
-+&frddr_b {
-+	status = "okay";
-+};
-+
-+&frddr_c {
-+	status = "okay";
-+};
-+
-+&hdmi_tx {
-+	status = "okay";
-+	pinctrl-0 = <&hdmitx_hpd_pins>, <&hdmitx_ddc_pins>;
-+	pinctrl-names = "default";
-+	hdmi-supply = <&vcc_5v>;
-+};
-+
-+&hdmi_tx_tmds_port {
-+	hdmi_tx_tmds_out: endpoint {
-+		remote-endpoint = <&hdmi_connector_in>;
-+	};
-+};
-+
-+&ir {
-+	status = "disabled";
-+	pinctrl-0 = <&remote_input_ao_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&pwm_AO_cd {
-+	pinctrl-0 = <&pwm_ao_d_e_pins>;
-+	pinctrl-names = "default";
-+	clocks = <&xtal>;
-+	clock-names = "clkin1";
-+	status = "okay";
-+};
-+
-+&pwm_ef {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_e_pins>;
-+	pinctrl-names = "default";
-+	clocks = <&xtal>;
-+	clock-names = "clkin0";
-+};
-+
-+&saradc {
-+	status = "okay";
-+	vref-supply = <&vddao_1v8>;
-+};
-+
-+/* SDIO */
-+&sd_emmc_a {
-+	status = "okay";
-+	pinctrl-0 = <&sdio_pins>;
-+	pinctrl-1 = <&sdio_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	sd-uhs-sdr50;
-+	max-frequency = <100000000>;
-+
-+	non-removable;
-+	disable-wp;
-+
-+	/* WiFi firmware requires power to be kept while in suspend */
-+	keep-power-in-suspend;
-+
-+	mmc-pwrseq = <&sdio_pwrseq>;
-+
-+	vmmc-supply = <&vddao_3v3>;
-+	vqmmc-supply = <&vddao_1v8>;
-+
-+	brcmf: wifi@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+		interrupts = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
-+		interrupt-names = "host-wake";
-+	};
-+};
-+
-+/* SD card */
-+&sd_emmc_b {
-+	status = "okay";
-+	pinctrl-0 = <&sdcard_c_pins>;
-+	pinctrl-1 = <&sdcard_clk_gate_c_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	max-frequency = <100000000>;
-+	disable-wp;
-+
-+	cd-gpios = <&gpio GPIOC_6 GPIO_ACTIVE_LOW>;
-+	vmmc-supply = <&vddao_3v3>;
-+	vqmmc-supply = <&vddao_3v3>;
-+};
-+
-+/* eMMC */
-+&sd_emmc_c {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds_pins>;
-+	pinctrl-1 = <&emmc_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <8>;
-+	cap-mmc-highspeed;
-+	mmc-ddr-1_8v;
-+	mmc-hs200-1_8v;
-+	max-frequency = <200000000>;
-+	disable-wp;
-+
-+	mmc-pwrseq = <&emmc_pwrseq>;
-+	vmmc-supply = <&vcc_3v3>;
-+	vqmmc-supply = <&flash_1v8>;
-+};
-+
-+&tdmif_b {
-+	status = "okay";
-+};
-+
-+&tdmout_b {
-+	status = "okay";
-+};
-+
-+&tohdmitx {
-+	status = "okay";
-+};
-+
-+&uart_A {
-+	status = "okay";
-+	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
-+	pinctrl-names = "default";
-+	uart-has-rtscts;
-+
-+	bluetooth {
-+		compatible = "brcm,bcm43438-bt";
-+		shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-+		max-speed = <2000000>;
-+		clocks = <&wifi32k>;
-+		clock-names = "lpo";
-+	};
-+};
-+
-+&uart_AO {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_a_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&usb {
-+	status = "okay";
-+	dr_mode = "host";
-+};
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+index 0b3e8f2db294..cf60e80dd3ba 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+@@ -750,6 +750,7 @@ prestera_fdb_offload_notify(struct prestera_port *port,
+ {
+ 	struct switchdev_notifier_fdb_info send_info;
+ 
++	memset(&send_info, 0, sizeof(send_info));
+ 	send_info.addr = info->addr;
+ 	send_info.vid = info->vid;
+ 	send_info.offloaded = true;
+@@ -1146,6 +1147,7 @@ static void prestera_fdb_event(struct prestera_switch *sw,
+ 	if (!dev)
+ 		return;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = evt->fdb_evt.data.mac;
+ 	info.vid = evt->fdb_evt.vid;
+ 	info.offloaded = true;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
+index a6e1d4f78268..77e09397a062 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
+@@ -71,6 +71,7 @@ mlx5_esw_bridge_fdb_offload_notify(struct net_device *dev, const unsigned char *
+ {
+ 	struct switchdev_notifier_fdb_info send_info;
+ 
++	memset(&send_info, 0, sizeof(send_info));
+ 	send_info.addr = addr;
+ 	send_info.vid = vid;
+ 	send_info.offloaded = true;
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+index 7e221ef01437..8a7660f2d048 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+@@ -9086,6 +9086,7 @@ static void mlxsw_sp_rif_fid_fdb_del(struct mlxsw_sp_rif *rif, const char *mac)
+ 	if (!dev)
+ 		return;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = mac;
+ 	info.vid = 0;
+ 	call_switchdev_notifiers(SWITCHDEV_FDB_DEL_TO_BRIDGE, dev, &info.info,
+@@ -9137,6 +9138,7 @@ static void mlxsw_sp_rif_vlan_fdb_del(struct mlxsw_sp_rif *rif, const char *mac)
+ 	if (!dev)
+ 		return;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = mac;
+ 	info.vid = vid;
+ 	call_switchdev_notifiers(SWITCHDEV_FDB_DEL_TO_BRIDGE, dev, &info.info,
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+index c5ef9aa64efe..f016d909bead 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+@@ -2510,6 +2510,7 @@ mlxsw_sp_fdb_call_notifiers(enum switchdev_notifier_type type,
+ {
+ 	struct switchdev_notifier_fdb_info info;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = mac;
+ 	info.vid = vid;
+ 	info.offloaded = offloaded;
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+index 0443f66b5550..fbc3f5e65882 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+@@ -279,6 +279,7 @@ static void sparx5_fdb_call_notifiers(enum switchdev_notifier_type type,
+ {
+ 	struct switchdev_notifier_fdb_info info;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = mac;
+ 	info.vid = vid;
+ 	info.offloaded = offloaded;
+diff --git a/drivers/net/ethernet/rocker/rocker_main.c b/drivers/net/ethernet/rocker/rocker_main.c
+index a46633606cae..49d548be9fe4 100644
+--- a/drivers/net/ethernet/rocker/rocker_main.c
++++ b/drivers/net/ethernet/rocker/rocker_main.c
+@@ -2717,6 +2717,7 @@ rocker_fdb_offload_notify(struct rocker_port *rocker_port,
+ {
+ 	struct switchdev_notifier_fdb_info info;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = recv_info->addr;
+ 	info.vid = recv_info->vid;
+ 	info.offloaded = true;
+diff --git a/drivers/net/ethernet/rocker/rocker_ofdpa.c b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+index 967a634ee9ac..7d954fd24134 100644
+--- a/drivers/net/ethernet/rocker/rocker_ofdpa.c
++++ b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+@@ -1824,6 +1824,7 @@ static void ofdpa_port_fdb_learn_work(struct work_struct *work)
+ 	bool learned = (lw->flags & OFDPA_OP_FLAG_LEARNED);
+ 	struct switchdev_notifier_fdb_info info;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = lw->addr;
+ 	info.vid = lw->vid;
+ 
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-switchdev.c b/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
+index 9c29b363e9ae..81d2b1765a66 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
+@@ -360,6 +360,7 @@ static void am65_cpsw_fdb_offload_notify(struct net_device *ndev,
+ {
+ 	struct switchdev_notifier_fdb_info info;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = rcv->addr;
+ 	info.vid = rcv->vid;
+ 	info.offloaded = true;
+diff --git a/drivers/net/ethernet/ti/cpsw_switchdev.c b/drivers/net/ethernet/ti/cpsw_switchdev.c
+index f7fb6e17dadd..446bdab06bdd 100644
+--- a/drivers/net/ethernet/ti/cpsw_switchdev.c
++++ b/drivers/net/ethernet/ti/cpsw_switchdev.c
+@@ -370,6 +370,7 @@ static void cpsw_fdb_offload_notify(struct net_device *ndev,
+ {
+ 	struct switchdev_notifier_fdb_info info;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = rcv->addr;
+ 	info.vid = rcv->vid;
+ 	info.offloaded = true;
+diff --git a/drivers/s390/net/qeth_l2_main.c b/drivers/s390/net/qeth_l2_main.c
+index 2abf86c104d5..843dd4f4d8d7 100644
+--- a/drivers/s390/net/qeth_l2_main.c
++++ b/drivers/s390/net/qeth_l2_main.c
+@@ -283,6 +283,7 @@ static void qeth_l2_dev2br_fdb_flush(struct qeth_card *card)
+ 
+ 	QETH_CARD_TEXT(card, 2, "fdbflush");
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = NULL;
+ 	/* flush all VLANs: */
+ 	info.vid = 0;
+@@ -693,6 +694,7 @@ static void qeth_l2_dev2br_fdb_notify(struct qeth_card *card, u8 code,
+ 	if (qeth_is_my_net_if_token(card, token))
+ 		return;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = ntfy_mac;
+ 	/* don't report VLAN IDs */
+ 	info.vid = 0;
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 532085da8d8f..1cb7f7e56784 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -2298,6 +2298,7 @@ dsa_fdb_offload_notify(struct dsa_switchdev_event_work *switchdev_work)
+ 	if (!dsa_is_user_port(ds, switchdev_work->port))
+ 		return;
+ 
++	memset(&info, 0, sizeof(info));
+ 	info.addr = switchdev_work->addr;
+ 	info.vid = switchdev_work->vid;
+ 	info.offloaded = true;
 -- 
-2.17.1
+2.25.1
 
