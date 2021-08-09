@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDF63E4752
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878673E4763
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234876AbhHIORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232717AbhHIORB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:17:01 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D958C0613D3;
-        Mon,  9 Aug 2021 07:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=D8/i3ET5VXTfKdXr5AovFWuXvAt8S5q6TsZVbHBUl2o=; b=FQPqCuusjbdarU0d1SoXdE+fa
-        m39+5zINzDSvd2bQ+DsNurZSMWxZjbl0/qqAqRoqCM7Hzu/A5cJUVK2DWuvUrKD2YXEX6Fw0ckKsz
-        8kC8/mRzPslpsRZY+bVNNiFkTJZrTwFFOLDfv6svyxHxJ+gQRUirgy5/AHvP6AXAU0LP8FzCfZ9OA
-        tkcXKfgzsRc5tsChWA03DgvAide/Y3sdERK/xJ/Am3UyTKsAi7MuRvwC6QjucrH6eJFKySy7Xfntg
-        FjPtcseuYs5zqIJKR+qfKLeacRKdAsZtSTiS103lRZ/AdM2cU1LWFP74XmMU6F5k8wnaqLNgBV9Lx
-        mRlYNPcYw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47114)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mD64x-0005ms-2v; Mon, 09 Aug 2021 15:16:35 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mD64v-0001FH-FO; Mon, 09 Aug 2021 15:16:33 +0100
-Date:   Mon, 9 Aug 2021 15:16:33 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     "Ivan T. Ivanov" <iivanov@suse.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: leds: Trigger leds only if PHY speed is known
-Message-ID: <20210809141633.GT22278@shell.armlinux.org.uk>
-References: <20210716141142.12710-1-iivanov@suse.de>
- <YPGjnvB92ajEBKGJ@lunn.ch>
- <162646032060.16633.4902744414139431224@localhost>
- <20210719152942.GQ22278@shell.armlinux.org.uk>
- <162737250593.8289.392757192031571742@localhost>
- <162806599009.5748.14837844278631256325@localhost>
+        id S234809AbhHIOVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234570AbhHIOU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 10:20:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F46B61052
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628518836;
+        bh=9LRxU88+82ajaf5N6re5+zCpHlo2zfOM8jRPwlMyA2s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ep1D8MWdd6qsC45+D94384qcGF3wKXMIn7Os6ajx0NHL0Ep01DPyMIFC71U5rYshE
+         u/j4I5uCgr+Sug9+s5OeI3hwcumOW4ixjMblUxLUleLh4udWT2k6nFj07zB0zVCAmE
+         NacXoSks7Xri5KXRtpHNxKGQ7cS8znosje7vuiBgEkk6sU7TolvfWlwM+D0vrkQyzu
+         gnkLB4muB40f3mngZtJtHPhjYRuS5uxbaFDJ9eSg/+a/2GzaXgap4J+yVS2CzL0Mx+
+         +Nk2lFIfI6PF1BCGDtAJBh8oH9RoejiTDR6gK0qmbMKUaBpAXrX4nrsntChRrqzS6K
+         vDRL9pAwqh5+g==
+Received: by mail-ej1-f54.google.com with SMTP id u3so29319270ejz.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 07:20:36 -0700 (PDT)
+X-Gm-Message-State: AOAM532L431QZbtkxI2JiMw1SKf/GA4yh/KfyxtGAmechubSKndfwvQZ
+        XC9OLxbefEClx8t7wW0mTo8fOnfiIlGoyePBzQ==
+X-Google-Smtp-Source: ABdhPJzx0TkKSySgoxITRUizZYSlaMcXitMA6PjSwWV3of8/FHgQGibBSMEC+8T7JOaUryygvDhhlA38CwdbCmy0Cis=
+X-Received: by 2002:a17:906:fcd7:: with SMTP id qx23mr9314897ejb.267.1628518834966;
+ Mon, 09 Aug 2021 07:20:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162806599009.5748.14837844278631256325@localhost>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210712181209.27023-1-dafna.hirschfeld@collabora.com>
+In-Reply-To: <20210712181209.27023-1-dafna.hirschfeld@collabora.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 9 Aug 2021 22:20:23 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__vy0n_Sw+8a_4h7Er_qdt72x964Dc_uunLg88qx8wPGg@mail.gmail.com>
+Message-ID: <CAAOTY__vy0n_Sw+8a_4h7Er_qdt72x964Dc_uunLg88qx8wPGg@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: Test component initialization earlier in
+ the function mtk_drm_crtc_create
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>, dafna3@gmail.com,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 11:33:10AM +0300, Ivan T. Ivanov wrote:
-> I have sent new patch[1] which I think is proper fix for this.
-> 
-> [1] https://lore.kernel.org/netdev/20210804081339.19909-1-iivanov@suse.de/T/#u
+Hi, Dafna:
 
-Thanks.
+Dafna Hirschfeld <dafna.hirschfeld@collabora.com> =E6=96=BC 2021=E5=B9=B47=
+=E6=9C=8813=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=882:12=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+>
+> The initialization is currently tested in a later stage in
+> the function for no reason.
+> In addition, the test '!comp' will never fail since comp is
+> set with the '&' operator. Instead, test if a comp was not
+> initialized by testing "!comp->dev".
 
-I haven't reviewed the driver, but the patch itself LGTM from the
-point of view that phy_read_status() should definitely only be
-called with phydev->lock held.
+Applied to mediatek-drm-next [1], thanks.
 
-I think we also need the "Doing it all yourself" section in
-Documentation/networking/phy.rst fixed to specify that if you
-call this function, you must be holding phydev->lock.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
-Lastly, I'm wondering how many other places call phy_read_status()
-without holding phydev->lock - sounds like something that needs a
-kernel-wide review, and then possibly we should introduce a lockdep
-check for this in phy_read_status() to catch any new introductions.
+Regards,
+Chun-Kuang.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index 474efb844249..06f40e589922 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -755,14 +755,22 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
+>         for (i =3D 0; i < path_len; i++) {
+>                 enum mtk_ddp_comp_id comp_id =3D path[i];
+>                 struct device_node *node;
+> +               struct mtk_ddp_comp *comp;
+>
+>                 node =3D priv->comp_node[comp_id];
+> +               comp =3D &priv->ddp_comp[comp_id];
+> +
+>                 if (!node) {
+>                         dev_info(dev,
+>                                  "Not creating crtc %d because component =
+%d is disabled or missing\n",
+>                                  pipe, comp_id);
+>                         return 0;
+>                 }
+> +
+> +               if (!comp->dev) {
+> +                       dev_err(dev, "Component %pOF not initialized\n", =
+node);
+> +                       return -ENODEV;
+> +               }
+>         }
+>
+>         mtk_crtc =3D devm_kzalloc(dev, sizeof(*mtk_crtc), GFP_KERNEL);
+> @@ -787,16 +795,8 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
+>         for (i =3D 0; i < mtk_crtc->ddp_comp_nr; i++) {
+>                 enum mtk_ddp_comp_id comp_id =3D path[i];
+>                 struct mtk_ddp_comp *comp;
+> -               struct device_node *node;
+>
+> -               node =3D priv->comp_node[comp_id];
+>                 comp =3D &priv->ddp_comp[comp_id];
+> -               if (!comp) {
+> -                       dev_err(dev, "Component %pOF not initialized\n", =
+node);
+> -                       ret =3D -ENODEV;
+> -                       return ret;
+> -               }
+> -
+>                 mtk_crtc->ddp_comp[i] =3D comp;
+>
+>                 if (comp->funcs) {
+> --
+> 2.17.1
+>
