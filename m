@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B613E3FFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294203E400E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhHIG3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 02:29:42 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:13135 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233263AbhHIG3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 02:29:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1628490560;
-  x=1660026560;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=J1LLnZoEZ4KpyReFWrEMVL4SnYNOOoX4DhDLRTmpSHM=;
-  b=GR9jhROT85GTUJpfQkbn8D3O0zJXNC4MnvzlmJ3leEuRd4zl2ei5HBX3
-   I8kgqoAwD9ucF1E4onHF+HyUyK0c7jW/Ax3cnDfNL+xg2wuciRYzLViIp
-   hcOx2RmEeyrUkrDXgcZYU0/IpA0b70Nqou7mNbvo8+qxeN4/K74QUe3Jd
-   BnnBTMb02AIuEPLVMdcJFPeadJB2xrUAVuPgDvR/EnqIAxkhqZARLYLsS
-   pgGnazz7xBB+LrURzyVCaXjgLIXFDgQHayfx+7Gbe74ein2wWpQwkvVtm
-   IXPu0J51M6ZEj2GGuqaqA4fRJPxLIAx2fdWp/9ans8tWWuJRWW3I/j/3c
-   w==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     Pavel Machek <pavel@ucw.cz>
-CC:     Dan Murphy <dmurphy@ti.com>, kernel <kernel@axis.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
-Subject: RE: [PATCH v3] leds: leds-multi-gpio: Add multiple GPIOs LED driver
-Thread-Topic: [PATCH v3] leds: leds-multi-gpio: Add multiple GPIOs LED driver
-Thread-Index: AQHXJGCsIcnYe8/O3Ei7dpx0xCno/6tkJyOAgAdfVPA=
-Date:   Mon, 9 Aug 2021 06:29:18 +0000
-Message-ID: <69ae0b3fd44c4a5796d125a5b97b9d78@XBOX01.axis.com>
-References: <20210329055847.13293-1-chenhui.zhang@axis.com>
- <20210804155221.GB25072@amd>
-In-Reply-To: <20210804155221.GB25072@amd>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S233322AbhHIGcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 02:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233310AbhHIGcK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 02:32:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82A8C061798
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 23:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OYrmxkbgyCtkM5MBp6xZVs6ZxMYa8f0w2YvZIHffc6k=; b=RI8fbF2ySxTiNEVkvCuWq95mcF
+        wVUGTUP7Te52y/0USuDmD51ryTx49KB8nCwFDgne1LaYSxpU+I7uw7vSNUViBS5CAdaP4Ur4kBVup
+        omn3WfzNdp+oigU+GFu1A7CaRCPcePCRPZuIQ7ibws0Qe+4JyWyTY28goY95u3/zfV9qTDVpfyI+b
+        wAVk0aQBCf9IaAw7t+c1AruEcle50va+8q0G338BmpdMm7NUFgZJqHjzTyS2GGzkvqHRHio7ibEps
+        u1ZMlbFL6xFwRbGPNq5jeO0ZKefl3PUjrOvDEuVcx5P4Qybnhre+jSmgPHKWUVwzkMvOmMOoUl3I7
+        CI+bT/KA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCynP-00AheP-VD; Mon, 09 Aug 2021 06:30:07 +0000
+Date:   Mon, 9 Aug 2021 07:29:59 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Subject: Re: [PATCH 3/3] mm/gup: refactor and simplify try_get_page()
+Message-ID: <YRDLZ5SBm76FByy1@infradead.org>
+References: <20210808235018.1924918-1-jhubbard@nvidia.com>
+ <20210808235018.1924918-4-jhubbard@nvidia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210808235018.1924918-4-jhubbard@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUGF2ZWwgTWFjaGVr
-IDxwYXZlbEB1Y3cuY3o+DQo+IFNlbnQ6IDIwMjHE6jjUwjTI1SAyMzo1Mg0KPiBUbzogSGVybWVz
-IFpoYW5nIDxIZXJtZXMuWmhhbmdAYXhpcy5jb20+DQo+IENjOiBEYW4gTXVycGh5IDxkbXVycGh5
-QHRpLmNvbT47IGtlcm5lbCA8a2VybmVsQGF4aXMuY29tPjsgSGVybWVzDQo+IFpoYW5nIDxIZXJt
-ZXMuWmhhbmdAYXhpcy5jb20+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC0N
-Cj4gbGVkc0B2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2M10gbGVkczog
-bGVkcy1tdWx0aS1ncGlvOiBBZGQgbXVsdGlwbGUgR1BJT3MgTEVEIGRyaXZlcg0KPiANCj4gSGkh
-DQo+IA0KPiA+IEZyb206IEhlcm1lcyBaaGFuZyA8Y2hlbmh1aXpAYXhpcy5jb20+DQo+ID4NCj4g
-PiBJbnRyb2R1Y2UgYSBuZXcgbXVsdGlwbGUgR1BJT3MgTEVEIGRyaXZlci4gVGhpcyBMRUQgd2ls
-bCBtYWRlIG9mDQo+ID4gbXVsdGlwbGUgR1BJT3MgKHVwIHRvIDgpIGFuZCB3aWxsIG1hcCBkaWZm
-ZXJlbnQgYnJpZ2h0bmVzcyB0bw0KPiA+IGRpZmZlcmVudCBHUElPcyBzdGF0ZXMgd2hpY2ggZGVm
-aW5lZCBpbiBkdHMgZmlsZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEhlcm1lcyBaaGFuZyA8
-Y2hlbmh1aXpAYXhpcy5jb20+DQo+IA0KPiBUaGFuayB5b3UsIGl0IGxvb2tzIHNpbXBsZSBhbmQg
-bW9zdGx5IG9rLg0KPiANCj4gQWNrZWQtYnk6IFBhdmVsIE1hY2hlayA8cGF2ZWxAdWN3LmN6Pg0K
-PiANCj4gQnV0IGl0IHJlYWxseSBuZWVkcyB0byBnbyBpbiB3aXRoIGRldmljZXRyZWUgZG9jdW1l
-bnRhdGlvbiBjaGFuZ2VzLCBhbmQgdGhleQ0KPiBuZWVkIHRvIGJlIGFja2VkIGJ5IGRldmljZXRy
-ZWUgbWFpbnRhaW5lcnMuIElmIHlvdSBoYXZlIHRoYXQsIHBsZWFzZSBzZW5kIGl0DQo+IGluIHNl
-cmllcy4NCj4gDQoNCkRvIHlvdSBtZWFuIHRoaXMgb25lOiBodHRwczovL2xvcmUua2VybmVsLm9y
-Zy9wYXRjaHdvcmsvcGF0Y2gvMTQwMjQ3MS8sIGl0J3MgYWxyZWFkeSBpbiBzZXJpZXMuIA0KDQpC
-ZXN0IFJlZ2FyZHMsDQpIZXJtZXMNCg==
+On Sun, Aug 08, 2021 at 04:50:18PM -0700, John Hubbard wrote:
+> +/*
+> + * This has the same functionality as try_get_compound_head(), just with a
+> + * slightly different API.
+> + */
+>  static inline __must_check bool try_get_page(struct page *page)
+>  {
+> +	return try_get_compound_head(page, 1) != NULL;
+
+What about removing try_get_page entirely instead?
+
