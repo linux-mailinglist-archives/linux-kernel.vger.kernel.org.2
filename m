@@ -2,160 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB403E4E13
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095773E4E19
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236300AbhHIUqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:46:35 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33029 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231439AbhHIUqe (ORCPT
+        id S236308AbhHIUts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231439AbhHIUtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:46:34 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id F09095C01A1;
-        Mon,  9 Aug 2021 16:46:12 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Mon, 09 Aug 2021 16:46:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=1/VjXgCRC6+q3zzEKgB7gy0Xhwek
-        RoHaQ8AappivcG4=; b=QQskr6fYCEOoTjwXgN37+CxOvYoF8XM6/8d/sb8TGcUt
-        o1edM2Ivgq/2F9Ct8Z8wkbRJOow1LNd6Sfa3TY/zSYjvWogEun/I/cs7GRdeP36+
-        zEGgmys0b6Oc+jo9teMcsrvh59zepNIMXcBfzSYIZJPmU6572In18orod3/wGbcm
-        rJiUe+5Rb/m2NNHCLWkh7ajIYC+Lxx/LmAemubZAbo+yTM8/qR4XLDKj2tbkzjYa
-        xaeHyIrBtnxQMeEfxfcOjtxkCjUtkQR+RUwHf321zV2lzBPwFkoDWikTAMNRgSDy
-        wtMsl1PPiA0PTQX1lY17SrNJ87OtFGXip4ngnmhW2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1/VjXg
-        CRC6+q3zzEKgB7gy0XhwekRoHaQ8AappivcG4=; b=f/NIoDm2ZE7VsPI8/RDth/
-        CbmKm8usFDpAPQrh9bkRKwOqKCCLmZ6nXjvB6e2RpTyvFZse2C5TYXl9PQOpbpZx
-        MA9gx8dZr5Xh9Xn3qEnyIuigOHEhJVKzCvxSt9op+/WH8JonZhTvhhI2IZxajPn2
-        IHvGbD4JmuhqJ+xolm20GFtarK4hgw6CgK3rWZSHEPvOU34FU+BLRMq3siIxjWYr
-        dfcyMinUeBR1dS826RcLi7dR2tn3XDkdjDtWMu8ZRanWP/zcX9XAEF1B/E2gDaoY
-        0C7U0Cqgj8JyUbzDd3uLEPBrjFucCx+J6vJpVYjtRwYyXW+gvSNcSAL0Ft0CW68g
-        ==
-X-ME-Sender: <xms:E5QRYaaEF3FujFElFNm848ASR1GBL9KuT8pyhgd_IdLhjd-i6fDMDQ>
-    <xme:E5QRYda6Ls1zr2gF224x53ZYPq1Z701rJ5JJNUtTN4rIqZiJzaKM0QH9wV7gtYu8_
-    FXAzIKJfgQAZxtZYrE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeejgdduhedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpeehjefgtddtfeelfeetjeeifeduueehleektdegtdejheeiteeuleehuefh
-    geehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:E5QRYU8paiGgfiMtZHbA8JuNCDNkHoQo06C209s53L7_RZ-WRxtXgw>
-    <xmx:E5QRYcr8B3cD0xjPB3fxGRq2vfXh9xNsvRFdiUmLEVmMEB2a_OjmAg>
-    <xmx:E5QRYVri_02IipEL2N8lgKXtIZEZeWVwe6eFpBuWukyaLgPBLtrI_Q>
-    <xmx:FJQRYeDzsruhv6QiOjibN9_Vhx9p9qPIXBQqnRDll-0m2T8bgrnSEg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D092151C0060; Mon,  9 Aug 2021 16:46:11 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-552-g2afffd2709-fm-20210805.001-g2afffd27
-Mime-Version: 1.0
-Message-Id: <cf78f795-1e75-45c9-a759-018f17cfaed9@www.fastmail.com>
-In-Reply-To: <5002ed91-416c-d7ee-b1ab-a50c590749c2@arm.com>
-References: <20210806155523.50429-1-sven@svenpeter.dev>
- <20210806155523.50429-3-sven@svenpeter.dev>
- <d289a555-9e3b-b948-1883-2ee4c915da4c@arm.com>
- <dadbd8b0-171a-4008-8a2e-f68abfed9285@www.fastmail.com>
- <5002ed91-416c-d7ee-b1ab-a50c590749c2@arm.com>
-Date:   Mon, 09 Aug 2021 22:45:15 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Robin Murphy" <robin.murphy@arm.com>,
-        "Sven Peter" <iommu@lists.linux-foundation.org>
-Cc:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        "Alexander Graf" <graf@amazon.com>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Will Deacon" <will@kernel.org>
-Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/3]_iommu/dma-iommu:_Support_iovad->granule_>_?=
- =?UTF-8?Q?PAGE=5FSIZE?=
-Content-Type: text/plain
+        Mon, 9 Aug 2021 16:49:46 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A1EC0613D3;
+        Mon,  9 Aug 2021 13:49:25 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id b6so20335883lff.10;
+        Mon, 09 Aug 2021 13:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=xkmU2JA6zfghnyY/Y5tK7LzUc0w134KqplhtslWkECA=;
+        b=mZ4Sa4Cy9nZtqeAfq7Jkmya1uATv8yy7EhGkJDk80lfWc+kfkFvZ+WSdNqlGqWU81q
+         zkpYWkyu5QIVhZd7MQA4fN7PEP9wrJtENPvxVQ4TL21YYUoQMD//o1aRzQ6Kw8Zrrlh7
+         YcCHQFvDgfJQcMl7AeVcYtcikwVth+OjoiE2l64jnhD6eAcnFIHyF/8cI5Spd9P4TtTZ
+         kfU2dysvfQmgG6RYX+Q6eaxVBMjYRqK1WQVEU6tUZ6OZeetbA0ATyJaw0uBHWPkjbBkg
+         /8e3eKj72qySizLS6C0zqsnXZR2aUdI+JSlw9gs2XExPzIZmPbXdTE3zslzjZ+vNTrZV
+         4r6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=xkmU2JA6zfghnyY/Y5tK7LzUc0w134KqplhtslWkECA=;
+        b=IXarqf1bUlsuNgI+TlzpZsJ/SCESKWp+KnAodhxR1KJIE/mFZKArJeVSU4RimRjHB4
+         cr/JNm4BuKBTUl7vefVVXAXaTQb36fVUIiDug7q1SfTTiGQfwStRJNsZoYijWGz/dZP8
+         sa9A7QoMZUs4fo/jhcK6b5uoFpYOUsXBen4AEEFCvcL+Wlu7q3hHAa8WuQGGoyHgB5BA
+         l4Wee35DO7x3plnW5t7c/qqXcw22cG5wilXBnXUT30V/C5HKisKOTwYw9Z3AMmPplngb
+         wQ+9XbnARRvAIkE+VAOW/tJxsf5wux4ILUi3C6aDyAAwn6gJUXsKCF8tGgvM9lWdUOba
+         MlEQ==
+X-Gm-Message-State: AOAM530igVoHSB1SL2HtF20c1+JJWxxfl/hTn8YHRm0Ydto9M4G6rci5
+        Ch2lNpFrUXaspak4/bs1ibw=
+X-Google-Smtp-Source: ABdhPJxDrhRAL27eit/VPKKI/hfTq1DZqCIZJjVrBY/8+bt4lqWFglWjlHsmgCisMCi3e3gqdpd18A==
+X-Received: by 2002:a19:6403:: with SMTP id y3mr4789111lfb.120.1628542164006;
+        Mon, 09 Aug 2021 13:49:24 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id h18sm297957lfu.180.2021.08.09.13.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 13:49:23 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 23:49:21 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 02/20] hfsplus: Add iocharset= mount option as alias
+ for nls=
+Message-ID: <20210809204921.3ovrnbtzywsui4pt@kari-VirtualBox>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-3-pali@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210808162453.1653-3-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 08, 2021 at 06:24:35PM +0200, Pali Rohár wrote:
+> Other fs drivers are using iocharset= mount option for specifying charset.
+> So add it also for hfsplus and mark old nls= mount option as deprecated.
 
-
-On Mon, Aug 9, 2021, at 19:41, Robin Murphy wrote:
-> On 2021-08-07 12:47, Sven Peter via iommu wrote:
-> > 
-> > 
-> > On Fri, Aug 6, 2021, at 20:04, Robin Murphy wrote:
-> >> On 2021-08-06 16:55, Sven Peter via iommu wrote:
-> >>> @@ -1006,6 +1019,31 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
-> >>>    	if (dev_is_untrusted(dev))
-> >>>    		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
-> >>>    
-> >>> +	/*
-> >>> +	 * If the IOMMU pagesize is larger than the CPU pagesize we will
-> >>> +	 * very likely run into sgs with a physical address that is not aligned
-> >>> +	 * to an IOMMU page boundary. Fall back to just mapping every entry
-> >>> +	 * independently with __iommu_dma_map then.
-> >>
-> >> Scatterlist segments often don't have nicely aligned ends, which is why
-> >> we already align things to IOVA granules in main loop here. I think in
-> >> principle we'd just need to move the non-IOVA-aligned part of the
-> >> address from sg->page to sg->offset in the temporary transformation for
-> >> the rest of the assumptions to hold. I don't blame you for being timid
-> >> about touching that, though - it took me 3 tries to get right when I
-> >> first wrote it...
-> >>
-> > 
-> > 
-> > I've spent some time with that code now and I think we cannot use it
-> > but have to fall back to iommu_dma_map_sg_swiotlb (even though that swiotlb
-> > part is a lie then):
-> > 
-> > When we have sg_phys(s) = 0x802e65000 with s->offset = 0 the paddr
-> > is aligned to PAGE_SIZE but has an offset of 0x1000 from something
-> > the IOMMU can map.
-> > Now this would result in s->offset = -0x1000 which is already weird
-> > enough.
-> > Offset is unsigned (and 32bit) so this will actually look like
-> > s->offset = 0xfffff000 then, which isn't much better.
-> > And then sg_phys(s) = 0x902e64000 (instead of 0x802e64000) and
-> > we'll map some random memory in iommu_map_sg_atomic and a little bit later
-> > everything explodes.
-> > 
-> > Now I could probably adjust the phys addr backwards and make sure offset is
-> > always positive (and possibly larger than PAGE_SIZE) and later restore it
-> > in __finalise_sg then but I feel like that's pushing this a little bit too far.
-> 
-> Yes, that's what I meant. At a quick guess, something like the
-> completely untested diff below.
-
-That unfortunately results in unaligned mappings
-
-[    9.630334] iommu: unaligned: iova 0xbff40000 pa 0x0000000801a3b000 size 0x4000 min_pagesz 0x4000
-
-I'll take a closer look later this week and see if I can fix it.
-
-> It really comes down to what we want to
-> achieve here - if it's just to make this thing work at all, then I'd
-> favour bolting on the absolute minimum changes, possibly even cheating
-> by tainting the kernel and saying all bets are off instead of trying to
-> handle the more involved corners really properly. However if you want to
-> work towards this being a properly-supported thing, then I think it's
-> worth generalising the existing assumptions of page alignment from the
-> beginning.
-
-I'd like to try and see if we can make this a properly-supported thing.
-
-That will likely take a few iterations but realistically the rest of the drivers
-required to make this platform actually useful (and especially the display controller
-and GPU drivers) won't be ready for a few more months anyway. And even on 4KB PAGE_SIZE
-kernels half the USB ports and NVMe will work fine, which should be enough to install
-a distro and some third-party package that just ships the distro kernel with 16KB
-pages.
-
-
-
-
-Sven
+It would be good to also update Documentation/filesystems/hfsplus.rst.
 
