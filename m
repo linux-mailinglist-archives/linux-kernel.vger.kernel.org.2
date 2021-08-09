@@ -2,144 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFED23E46F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C403E4703
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhHINzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:55:47 -0400
-Received: from mail-bn7nam10on2116.outbound.protection.outlook.com ([40.107.92.116]:51008
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S234486AbhHIN7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:59:50 -0400
+Received: from mail-bn1nam07on2053.outbound.protection.outlook.com ([40.107.212.53]:21943
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233420AbhHINzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:55:45 -0400
+        id S233420AbhHIN7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:59:49 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S8ODhhOZKq36c8koKYd+LF25xvddTOJAkb9b+fQ7JE2nWBWXXxXBy6D6zMatKa1WXt+RyOE1/6T0llDxq1qcCH7AB0DovuIAHq4VUbKN5+EyFhSeAigcLlXxkRhvjM2r4pOsg9/LEoocaE1JO1UuvsheYTmGHaOgnKpl0yowZsT0akQui8aM66Lp+0vsu8Nmwiyn47tahSxMaqRs4bP+WIUSboG1asD+XzEoFunJYPfg9JniUL67+OZMRQ4dLW7xYZCgwz0q2lyocf9W7H9VUGlwX7rNJy/tYMKGe0bEVT+xrPNWPeyrxcX1XaE/Q2uZ+XfMYKwGLdo2iuuSo53bmA==
+ b=cXoXuPSOi9fO+sRoivr4jY+UW0ogSlhEM2DRGyt2C+iq219SLRSEmBr5+fmi48cpKFMQWPn2lN7pNOheHXVGauBzCHnGiCTNcgtaq2fM9sB0qoJli1bUwqT4SWfTfzS0qqx32YHhsBEwvjzZTD1qLp1VKO5SGh2obqkG/M28ZvfVUgtIzN3rrRniOY43YAc8hAL5sHgb0X1kDfwOTJ2Cy8CfGL0IxQuM/5rnKhe2M4/eDTCi8Oj56xugc9KnLIHP6oIL82wdXj7201cAlbSkK3hPSI0jxRQQw2fFjvjc3msnaXzSRo/JH7AH9UJ9frlC5XbIHwgnp17NECc+phIdig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p2E3FlWOBeA+zG+URWCrSVtIAJWthWH72hDNipyfH9Y=;
- b=B+lA/paRfJsIoPUCWLY0dyo7qbtAqK/H96vNDIEMlVJnmM/vtodpHfWWOyiZFszged1GmlIz3YsI4xJTcSAdWWCaIcCCOR+KL9TBJIjdAyNdSvqzSYJ8qj3KZmZ18iWRctiCxgS1VCf8qkO5QjyPKx5YSCVnNN1PFvJ/+AvzodjOWQvwioBEXzEhohwn4IdIq4RovRIP+mTIORtVUNpTxA6K98iXVtTs4HyXCVHqozoWjbT+EyMnNikbzqeSMiJ3NIrmdf4Bem0M6VF3TbS6LQZIBt4pv+R8KsAcXPSiIEKAP1rNoprO4bBjMag2N2BZd7NYrehiomX23qBUEXZ5jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
+ bh=3eRbWHhZzn2awKNSPyPO8fgLWujwhN/CWNBwNS/d8I4=;
+ b=TvTOiruy1FdRkTkgJPfEajrX4/cOGcDu4E9g/ZNKK3hug9ZD+ZKFrhN8Ew7IXfXMKrhYvvaVaNgbe+0lfJu85+G//K1P9LBLCXBB7Kg3+Yi7g3UQWtDMAmNPoEaeen4SXhGRkFFSL0QGtF6E0CAGvMoRx7Srj/pVpScWfFApoELnDkGQjVuhl2+i1UFt9ilP113Au8nnwM8kn316BfGlsGgYpj39ZKVAs39E3u1jfEoeeZ+QSDprPOBlhMBFu1TsXILGEmWep8GI+ChGTq9dUnUIlZNKs2Rp0MZ4tsFSTdNdU1EUEiSUhLLYJ1driU6jb4BSF/CpawqzvF2nM+wyjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=kvack.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p2E3FlWOBeA+zG+URWCrSVtIAJWthWH72hDNipyfH9Y=;
- b=AJVpK41eLhD5IAavpmjbATAukGPL1Vvk45PwhmQJFj91pLxSYZ3x/sGSsj+PkK0zIwzQFT8AtvHkwtNzYAGDvGhZY3ElAqlUxpsOTbh2iAzJH8y8aMFTc7iZUi6R1AC3nVjwvB2NXsXstTIpBnIsubJWeFJCUljGaKG5gRnT9Iw=
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by MWHPR11MB1552.namprd11.prod.outlook.com (2603:10b6:301:e::18) with
+ bh=3eRbWHhZzn2awKNSPyPO8fgLWujwhN/CWNBwNS/d8I4=;
+ b=H0ast6D3L6M2wWCepqGqgq8Blet9raVlKFIJP3ktge4HUHz4rR+7ruBIjzrQC1nMOE6nx7sCuB32pFfCo/pfU4d1yLxSQn4vMC4Orgf7BFH13VLPip4Ky9TjaWEHtl+VGmHk4zJfAMv8dGeMRoM0Mv9rZhjGypPIN7+tl1atRbumURjazv2G8FBQSVO+heSzvAGN9lTepPtu6lPYtqLpmvv9xeRjRMFd9BWwKzdUbGt/FvYLCSh/9evVdVvzVqljbyZygqw8XNj3ytkdbE0qhUnSxCv3itHodWhS2SarLbWxmmD3bP6RcMMJYUrHSY5H50sDTxcnevLf5hrKTsuCAQ==
+Received: from BN6PR19CA0088.namprd19.prod.outlook.com (2603:10b6:404:133::26)
+ by DM6PR12MB3737.namprd12.prod.outlook.com (2603:10b6:5:1c5::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Mon, 9 Aug
- 2021 13:55:21 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::adef:da48:ea32:5960]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::adef:da48:ea32:5960%3]) with mapi id 15.20.4394.021; Mon, 9 Aug 2021
- 13:55:21 +0000
-From:   Steve Lee <SteveS.Lee@maximintegrated.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "rf@opensource.wolfsonmicro.com" <rf@opensource.wolfsonmicro.com>,
-        "shumingf@realtek.com" <shumingf@realtek.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "dmurphy@ti.com" <dmurphy@ti.com>,
-        "jack.yu@realtek.com" <jack.yu@realtek.com>,
-        "nuno.sa@analog.com" <nuno.sa@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
-        "steves.lee.maxim@gmail.com" <steves.lee.maxim@gmail.com>
-Subject: RE: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add support change dsm
- param name
-Thread-Topic: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add support change dsm
- param name
-Thread-Index: AQHXippclk84bnNRdUe7mfrYo+58kKtmUAmAgAQN46CAAL8DgIAAGj1g
-Date:   Mon, 9 Aug 2021 13:55:21 +0000
-Message-ID: <CO1PR11MB5089FBBFCD3D9046F9FF7BD592F69@CO1PR11MB5089.namprd11.prod.outlook.com>
-References: <20210806080834.16705-1-steves.lee@maximintegrated.com>
- <20210806110301.GW26252@sirena.org.uk>
- <CO1PR11MB5089212BFBF03F82AE41E34C92F69@CO1PR11MB5089.namprd11.prod.outlook.com>
- <20210809122125.GC4866@sirena.org.uk>
-In-Reply-To: <20210809122125.GC4866@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=maximintegrated.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ce9d3c06-ccb2-4f08-a5a0-08d95b3d5457
-x-ms-traffictypediagnostic: MWHPR11MB1552:
-x-microsoft-antispam-prvs: <MWHPR11MB1552B7341B7DDCCAACB5D73492F69@MWHPR11MB1552.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2449;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: O+t7b0zcop0fgyPLIZKB/DkgHK/hmYDaE1qQjhtqExz88X+Kdq1H2h/IsDjMC/VF0xiB6m37BnwfqB0w6ZMVvxto6cE7KD8377BKHmpuPISEH5imP8B4+QPP+Y9pxcNEXQata4fsJinVMhgYyQU24to3RDwaCOTtVOFNrThtAl8BfG6jCLarQIoX1r45Cde9cc5ekk28FQLFAEySmEnOvzs2eeArtU7jTFpyS5yk46Ox74eFG5gf0EkLM2OWlB42eDKSX/7p4ZX3OfBm6h4+kytQIE1exlJxJJ9/jI0T9ql5bobC2MZQcMUi/VxLQ9dRa2hj839fDQoY6o+LNsuY0e4RUby7WZDMJZEQ0iYhll+dk6O9gUs2m7bFCnO2/xEbJtdI8CtPY6yHcya9s4nb3+uTgpPgjwx1PAL2Zw0OMIqHv7rJwlVOyL8h3+fNW7/TDZEMSK83kKSBG8Xk7S1VMn02F2kf0LJKBP/N5B2be3DVbVYH+suOSw5+VHs9FLYYjeTLNI0E/QSl5LhdhCkxIvizxg7FVb+0Q1EdrSMpZbzUxrInRyOkceRXrx1OqS3EuYxfGbfryJNE+e/4aJIALPNWPz+Ys1pAHVTqmFMpVHcbf2zoeNQMvRtYQMEkW3STMq1yowUZm4ijCZKIOXlOPdiEB6KCnMZwQj+5DiP+ImTWlkC0hdhn05KcaMshHvl77lHXe5WwaNh1aNZN6OesYw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39860400002)(396003)(136003)(5660300002)(66946007)(66476007)(66556008)(7416002)(9686003)(4326008)(6506007)(64756008)(76116006)(54906003)(52536014)(66446008)(55016002)(4744005)(38100700002)(71200400001)(7696005)(38070700005)(122000001)(86362001)(8936002)(8676002)(33656002)(26005)(6916009)(186003)(478600001)(2906002)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Q/2IcC+O7H5bNYZQySmhfN5o6erKk4ncvjQiu2I6RMLtucnvOdyDN2exdu/0?=
- =?us-ascii?Q?njq3HGcQXojdg8dbY+QgWQ4e6gNKLMPZmEAGUd6CJIaJEz484pk0oJFKeV81?=
- =?us-ascii?Q?w5dZR1zpu9wUMRuWExtZL/7VQEefi9F96nH2/mXE7LwhM2u8G3lyH+MEfmA4?=
- =?us-ascii?Q?Qu/cSkjdiDIWZmRcj43toBMMw73uGxukUniMeLweW69/xzKtIA9fqugEBVnx?=
- =?us-ascii?Q?Hu7LF0ab9auq41oMlj0Tp//Rz07wL8LwwSnq5d/k4H5aTO5sVduIiXArUb0q?=
- =?us-ascii?Q?p9Uy0AaZjNNSjuxCr6RqjmKfDMpuoyeZtrR9Ccbclf6KDzhH3FDAikzfJxP9?=
- =?us-ascii?Q?e5mIQ0e9NMylEqgBMzoxjO8Vlo3TeBjgU41h01v5kX7UzTUsEhIO8TH6RpvB?=
- =?us-ascii?Q?XlgofOwg9PL1mJCvaUq8ysrYu5T9P0Ezeoas5TeYMlBqfh2LK7Y7pFcLJlca?=
- =?us-ascii?Q?VaX2u5C0ybDGy5wYQ3sicVzmHUMFrG48emW053Kj0nTHf0Dnc3rE7jzqQJDH?=
- =?us-ascii?Q?aMUe/5KdZwG9CpZdseuTgU7B4RHh7Bs22l0q15DdLI9nVxIEXAthI3EFG//6?=
- =?us-ascii?Q?oA1U8e4ZJKhbAGVA0Wr9jRmUL6EE6sBSplwLS3dZOl+/OfELGPBuOBeMfzym?=
- =?us-ascii?Q?v22H19UCBZu6wD79uLgEAH8Qh04GQoH1Yy/sua6HJH4TYGnsv7QLUGFhHykM?=
- =?us-ascii?Q?Ab66nvoYrLPgK5+DMWuvfxTOAZi2V0aRXc5c6yUW/MgFfSSZodL4e5IcZ/qn?=
- =?us-ascii?Q?1pT8p1YuGBX6hX46IhQl+wSbw7UeOmprNyAqhCr+5JYTie7tw5fAd0A+hfdc?=
- =?us-ascii?Q?lXBc+VCfwkv7JBoxeJt3IjGFtf36WGwCqBKuFmNlydKt/dl3LHGc5KUWGxtC?=
- =?us-ascii?Q?c+pEY6iQQWiLyxwuk3qmqLVxHbi8z7AeRyE17F40fShyauJVa3BYZKRJOq7d?=
- =?us-ascii?Q?AthzjW9tadLNktR+1X1efYhCrAOFu2G0BRSy178lib+669PykxSNJ5IUzm/4?=
- =?us-ascii?Q?LddnnSGuDvB//Wiflm8recgepokn8u/Felz0tpZ5JFXLt+aYg61OZDoHOpG6?=
- =?us-ascii?Q?vmLrzVwIbi7pz/hoqBVJnymPb3F0/27Ncak22IEigrw2FBFuD+WOUxvn4TeN?=
- =?us-ascii?Q?r7ByJKuDjymmWJIATAV60SJcFj0hugoFgx8xmoP04AdAKLnWZrcpFJ7hZRvV?=
- =?us-ascii?Q?G6Fvdy+54ufD7bsv3CQr5urCQZTT73paump3WKNoSL7nBJ3VD/kiYBXUA9Eu?=
- =?us-ascii?Q?xswt4+TKsOGsXBaAWTi8dk4GF7YydqK+Odl3Ogx/ncmTBKaHH/Qv7crTbqxX?=
- =?us-ascii?Q?dxw5nErx+FmeXo5JvVJGRA0w?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Mon, 9 Aug
+ 2021 13:59:21 +0000
+Received: from BN8NAM11FT062.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:133:cafe::56) by BN6PR19CA0088.outlook.office365.com
+ (2603:10b6:404:133::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend
+ Transport; Mon, 9 Aug 2021 13:59:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT062.mail.protection.outlook.com (10.13.177.34) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4394.16 via Frontend Transport; Mon, 9 Aug 2021 13:59:20 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Aug
+ 2021 13:59:19 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] mm: migrate: Fix the incorrect function name in comments
+Date:   Mon, 9 Aug 2021 23:59:17 +1000
+Message-ID: <3794249.AHpkRrbP1t@nvdebian>
+In-Reply-To: <433d0be927c0cae047a4ca04feff0a1dccefe324.1628174413.git.baolin.wang@linux.alibaba.com>
+References: <cover.1628174413.git.baolin.wang@linux.alibaba.com> <433d0be927c0cae047a4ca04feff0a1dccefe324.1628174413.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce9d3c06-ccb2-4f08-a5a0-08d95b3d5457
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 13:55:21.2762
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b327992f-629a-425d-7a18-08d95b3de324
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3737:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB37379E78496EA0505FE253EADFF69@DM6PR12MB3737.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:446;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RpPbRIZ55vGNCYfS+XGO9Gi40mjUNULDnE3OsZqIsT8dXtuE0SJheqO7uU73+B7vcWHoa/PiLqeeok9rPHKOI5STctYXnBh+HcxL4VyffFkuo/tHVgToKODtfUzzOyHRRlELcx6G7zxwv1RJKTsPaoQItiTZkfDb0JFS08qMhbIDhSY/pqfTvJkp8YuKfx10hnANQofEdpUEsFga8yN29TK8Iv5CJIJhfJ9azvR6RIr7iBmQVxjBMaLvUKMcjc8yqD2aHVZPaQm9pidzEu/ihZ+FlefopUBQ709wJ1fvrAazPWvma8e8jzLHX92QAmGWk3mbI9f+y/8/t7ziio155Hx+T+tawj3xNHl5RZsWWDz3//dndGHCxKy9EVY3DwX3dU17Sqxpf76KJ4q7DrNeWXwWS/XCmRb2zTtRdDAHqQVO3FPLEMLCb6xhDroH/T/S1acmCLD+Kc54p/mtlJP4yDUntNBTwI0NjMopPAWsBjKoTdvLN+zYFFwNqqvfEid4WTTqUu4Kc6XGjy0gOY9A28ftn8MoIhnSORQkJCc7kl/M1/2AbY09mN9YurIpviDHuQRro8N6RW6R1NxiRRfIjRAAR57ci9JmptjlZjZhUVqBjwBN5IKEA+Cpev1el5VjULsxI8YekX/nvI1D7YygAoAB3YWRGDskDyBFvolMSv2qdZCVpZWb9idMh2slQ0bP2og2P287UvjdjWXKFGCNXFiGrz6TNJ3yc+h2pGWN9Y8=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(36840700001)(46966006)(9576002)(8936002)(70586007)(36860700001)(8676002)(82310400003)(83380400001)(70206006)(47076005)(36906005)(2906002)(316002)(356005)(33716001)(6916009)(9686003)(7636003)(478600001)(186003)(54906003)(336012)(82740400003)(426003)(5660300002)(16526019)(26005)(86362001)(4326008)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 13:59:20.9038
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wQ5NMvM+TJqyjNhIAQjukoFIucHvIGlzVIDBNp8P0io5VUgXgFjIWbkQy6TjEdtKwWHpAtxc/Z1CmGbWsUR3deysa7xBHAryizYuN52Xsz4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1552
+X-MS-Exchange-CrossTenant-Network-Message-Id: b327992f-629a-425d-7a18-08d95b3de324
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT062.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3737
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> > > This will break anything using dsm_param.bin as the default - why
-> > > make the change?
->=20
-> >  I'd like to make that as same name with other using SoF project line.
-> > This originally production default is "dsm_param_%s_%s.bin with vendor =
-and
-> product name".
->=20
-> If you want to add a new filename then that's fine but we shouldn't be br=
-eaking
-> backwards compatibility for a minor reason like that.
+Thanks for catching that.
 
-  Thanks for reply. I will add new filename not to break backwards compatib=
-ility.
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
+
+On Friday, 6 August 2021 1:05:58 AM AEST Baolin Wang wrote:
+> since commit a98a2f0c8ce1 ("mm/rmap: split migration into its own function"),
+> the migration ptes establishment has been split into a separate
+> try_to_migrate() function, thus update the related comments.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  mm/migrate.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index eeba4c6..6f048a8 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1005,7 +1005,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>  	}
+>  
+>  	/*
+> -	 * By try_to_unmap(), page->mapcount goes down to 0 here. In this case,
+> +	 * By try_to_migrate(), page->mapcount goes down to 0 here. In this case,
+>  	 * we cannot notice that anon_vma is freed while we migrates a page.
+>  	 * This get_anon_vma() delays freeing anon_vma pointer until the end
+>  	 * of migration. File cache pages are no problem because of page_lock()
+> 
+
+
+
+
