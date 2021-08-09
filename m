@@ -2,200 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05C73E4A5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB423E4A63
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbhHIQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50324 "EHLO
+        id S233393AbhHIQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhHIQy3 (ORCPT
+        with ESMTP id S229877AbhHIQ62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:54:29 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674E8C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:54:09 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id e19so3544407pla.10
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vKoYQRDH+Wjsz6hbWc1vGfeTf051Y0mGdYB8Ul+Z0Ls=;
-        b=kqcMZwS917tKDqBTTwkutmGTpL9mLaRCuS1p3XZ0LpZ14LbgPe0zHQnSwCwja26grr
-         3xDMruZmDkriQT3wsNlOJL291BmmG4HIH1iDZ6+47eS6nZuBVUjwb+1T86gjlgytzred
-         sY66il0+Q2Ao2Oui/KMQ6z2OX3cDQRFSJ9Vx7q43Qdiud15Bk2Kb2F0UdNGVJBrwlTxd
-         0Nu6zOiG69QoPR3GEY8UHQKyom8Ez1qRje7BiIJ7HFlZg0n/BphVhMZiv38XkqsrdQpT
-         38+a/GOgdfaoJ4eT8xBCaSWF++wHrUZqXnCgPCuzIFsrrSKTRiHG/GQfVxZ/6Y1L9Ugf
-         RwHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vKoYQRDH+Wjsz6hbWc1vGfeTf051Y0mGdYB8Ul+Z0Ls=;
-        b=UVglH+A1jKBNchQHVcAfagveo/hqYfpRvLc3XHpC09MKn1VrSz3g4zzwfuC34TTcPE
-         u3y5nUkGU9C0h9hY371EzJq4IkrGU9HSTVq6bgTVZon40Ek7i47LqhhkL1m45mSIQ4Gw
-         h7cjQbX7h1gmBLgJ7bpLPdRBT2k+qU+and8b5Qw7CzX2APFDfxYrz5pdTzx6OSO3tlfA
-         2g1b3teMu8eisP8gbIjg7ZuAFTEZdaYMCYrHEBrlKaYuG9K7Nss7KASSv2soORDIokba
-         g8sH4K3XW6grQElCFdphUcJqVBEYIRQpIDTi7Yn4Pbz4Qr3WFjj+XRS4my1oTEc5gFOi
-         mOzQ==
-X-Gm-Message-State: AOAM531q7iZ0XHI/5m89KgjfiMQ+s/uCu4AzDyGnmAExI9X1aVjlY4Yy
-        u5qjc45aynbFYt7LXLzW4F96eA==
-X-Google-Smtp-Source: ABdhPJwXA7iilxoGJ2kF9DwWX3NmGW5lCdsCR3FRGZ5QpxqDBdhU07dKj6xtNENdSeRRBCd1JQWNzQ==
-X-Received: by 2002:a65:438c:: with SMTP id m12mr455399pgp.163.1628528048716;
-        Mon, 09 Aug 2021 09:54:08 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d20sm1034423pfu.36.2021.08.09.09.54.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 09:54:08 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 16:54:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: X86: Don't reset dr6 unconditionally when the vcpu
- being scheduled out
-Message-ID: <YRFdq8sNuXYpgemU@google.com>
-References: <20210808232919.862835-1-jiangshanlai@gmail.com>
+        Mon, 9 Aug 2021 12:58:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E965C0613D3;
+        Mon,  9 Aug 2021 09:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=XJTL30sAj9E9k7u4K2CujkBqTC4qltRCjV1W7d4ixI0=; b=VNa7eunhb8FFYA2M0yUs99Wmts
+        Jdzws2x/kGUFZW0jbjJGB7qUlfxVYWjh8INtddLdfl8vz2QcvaYmq2XTqogGBk7JCD/w3EfyYNNN6
+        uUjLi9YkKlD4SiPSAf7DsZmpGEfzJJ++oaxKQYRyGb1mvHgXDtrQBd1MejkXO0rjBjFLXeXJxq2Z9
+        u3zscfdQyuiQPv1TrM3XVJXcvdY55qXXaADELqmUPEI+mRv8qRsOHyV6SekSc81Taqy1I2c54meMM
+        pfiKrouH3NLFWTK5TacbWUoaxIr8CCIUSeUp3QsZdN6FXQV2nN1XQ7IKDZEpWxXmv+MaAjOMlSMhJ
+        1q1Q/Etg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mD8Xh-00BCbx-6t; Mon, 09 Aug 2021 16:54:55 +0000
+Subject: Re: [PATCH v27 10/10] fs/ntfs3: Add MAINTAINERS
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "anton@tuxera.com" <anton@tuxera.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "andy.lavr@gmail.com" <andy.lavr@gmail.com>,
+        "oleksandr@natalenko.name" <oleksandr@natalenko.name>
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210729134943.778917-11-almaz.alexandrovich@paragon-software.com>
+ <20210809105652.GK5047@twin.jikos.cz>
+ <918ff89414fa49f8bcb2dfd00a7b0f0b@paragon-software.com>
+ <20210809164425.rcxtftvb2dq644k5@kari-VirtualBox>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <305bdb56-d40f-2774-12fe-5113f15df5c6@infradead.org>
+Date:   Mon, 9 Aug 2021 09:54:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210808232919.862835-1-jiangshanlai@gmail.com>
+In-Reply-To: <20210809164425.rcxtftvb2dq644k5@kari-VirtualBox>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 8/9/21 9:44 AM, Kari Argillander wrote:
+> On Mon, Aug 09, 2021 at 04:16:32PM +0000, Konstantin Komarov wrote:
+>> From: David Sterba <dsterba@suse.cz>
+>> Sent: Monday, August 9, 2021 1:57 PM
+>>> On Thu, Jul 29, 2021 at 04:49:43PM +0300, Konstantin Komarov wrote:
+>>>> This adds MAINTAINERS
+>>>>
+>>>> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+>>>> ---
+>>>>   MAINTAINERS | 7 +++++++
+>>>>   1 file changed, 7 insertions(+)
+>>>>
+>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>> index 9c3428380..3b6b48537 100644
+>>>> --- a/MAINTAINERS
+>>>> +++ b/MAINTAINERS
+>>>> @@ -13279,6 +13279,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
+>>>>   F:	Documentation/filesystems/ntfs.rst
+>>>>   F:	fs/ntfs/
+>>>>
+>>>> +NTFS3 FILESYSTEM
+>>>> +M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+>>>> +S:	Supported
+>>>> +W:	http://www.paragon-software.com/
+>>>> +F:	Documentation/filesystems/ntfs3.rst
+>>>> +F:	fs/ntfs3/
+>>>
+>>> Can you please add a git tree and mailing list entries?
 > 
-> The commit efdab992813fb ("KVM: x86: fix escape of guest dr6 to the host")
-> fixed a bug.  It did a great job and reset dr6 unconditionally when the
-> vcpu being scheduled out since the linux kernel only activates breakpoints
-> in rescheduling (perf events).
+>> Hi David, I'll add the git tree link for the sources to MAINTAINERS in the next patch. As for the mailing list,
+>> apologies for the newbie question here, but will it possible to have the @vger.kernel.org list for the ntfs3,
+>> or it must be external for our case?
+>> Thanks!
 > 
-> But writing to debug registers is slow, and it can be shown in perf results
-> sometimes even neither the host nor the guest activate breakpoints.
+> Good question and I also do not have absolute truth about it but I try
+> to help. It should be possible. I think you can request new list from
+> postmaster@vger.kernel.org
 > 
-> It'd be better to reset it conditionally and this patch moves the code of
-> reseting dr6 to the path of VM-exit where we can check the related
-> conditions.  And the comment is also updated.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
-> And even in the future, the linux kernel might activate breakpoint
-> in interrupts (rather than in rescheduling only),  the host would
-> not be confused by the stale dr6 after this patch.  The possible future
-> author who would implement it wouldn't need to care about how the kvm
-> mananges debug registers since it sticks to the host's expectations.
+> If you need public git tree then kernel.org can maybe provide that. They
+> also host ntfs so I think no problem with ntfs3. This way you self
+> do not have to worry public list. But I'm not sure how strict is now
+> days get account. But if you say that it would be nice that you need
+> kernel git then maybe someone can help with that.
+> See more info https://www.kernel.org/faq.html
 
-Eh, I don't think this is a valid argument.  KGBD already manipulates breakpoints
-in NMI context, activating breakpoints from interrupt context would absolutely
-require a full audit of the kernel.
+If postmaster@vger.kernel.org isn't helpful or you just want to use
+kernel.org (note that vger.kernel.org isn't part of kernel.org),
+you can contact: helpdesk@kernel.org  for git tree or mailing list
+requests.  Wherever you have a mailing list, you probably should
+have it archived at lore.kernel.org (see next URL for that).
 
-> Another solution is changing breakpoint.c and make the linux kernel
-> always reset dr6 in activating breakpoints.  So that dr6 is allowed
-> to be stale when host breakpoints is not enabled and we don't need
-> to reset dr6 in this case. But it would be no harm to reset it even in
-> both places and killing stale states is good in programing.
+Also you may want to read  https://korg.wiki.kernel.org
 
-Hmm, other than further penalizing guests that enable debug breakpoints.
+-- 
+~Randy
 
-What about adding a arch.switch_db_regs flag to note that DR6 is loaded with a
-guest value and keeping the reset code in kvm_arch_vcpu_put()?
-
->  arch/x86/kvm/x86.c | 29 +++++++++++++++++++++--------
->  1 file changed, 21 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 4116567f3d44..39b5dad2dd19 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4310,12 +4310,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
->  
->  	static_call(kvm_x86_vcpu_put)(vcpu);
->  	vcpu->arch.last_host_tsc = rdtsc();
-> -	/*
-> -	 * If userspace has set any breakpoints or watchpoints, dr6 is restored
-> -	 * on every vmexit, but if not, we might have a stale dr6 from the
-> -	 * guest. do_debug expects dr6 to be cleared after it runs, do the same.
-> -	 */
-> -	set_debugreg(0, 6);
->  }
->  
->  static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
-> @@ -9375,6 +9369,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  	fastpath_t exit_fastpath;
->  
->  	bool req_immediate_exit = false;
-> +	bool reset_dr6 = false;
->  
->  	/* Forbid vmenter if vcpu dirty ring is soft-full */
->  	if (unlikely(vcpu->kvm->dirty_ring_size &&
-> @@ -9601,6 +9596,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  		set_debugreg(vcpu->arch.eff_db[3], 3);
->  		set_debugreg(vcpu->arch.dr6, 6);
-
-Not directly related to this patch, but why does KVM_DEBUGREG_RELOAD exist?
-Commit ae561edeb421 ("KVM: x86: DR0-DR3 are not clear on reset") added it to
-ensure DR0-3 are fresh when they're modified through non-standard paths, but I
-don't see any reason why the new values _must_ be loaded into hardware.  eff_db
-needs to be updated, but I don't see why hardware DRs need to be updated unless
-hardware breakpoints are active or DR exiting is disabled, and in those cases
-updating hardware is handled by KVM_DEBUGREG_WONT_EXIT and KVM_DEBUGREG_BP_ENABLED.
-
-Am I missing something?
-
->  		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
-> +		reset_dr6 = true;
->  	} else if (unlikely(hw_breakpoint_active())) {
->  		set_debugreg(0, 7);
->  	}
-> @@ -9631,17 +9627,34 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  		kvm_update_dr0123(vcpu);
->  		kvm_update_dr7(vcpu);
->  		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
-> +		reset_dr6 = true;
->  	}
->  
->  	/*
->  	 * If the guest has used debug registers, at least dr7
->  	 * will be disabled while returning to the host.
-> +	 *
-> +	 * If we have active breakpoints in the host, restore the old state.
-> +	 *
->  	 * If we don't have active breakpoints in the host, we don't
-> -	 * care about the messed up debug address registers. But if
-> -	 * we have some of them active, restore the old state.
-> +	 * care about the messed up debug address registers but dr6
-> +	 * which is expected to be cleared normally.  Otherwise we might
-> +	 * leak a stale dr6 from the guest and confuse the host since
-> +	 * neither the host reset dr6 on activating next breakpoints nor
-> +	 * the hardware clear it on dilivering #DB.  The Intel SDM says:
-> +	 *
-> +	 *   Certain debug exceptions may clear bits 0-3. The remaining
-> +	 *   contents of the DR6 register are never cleared by the
-> +	 *   processor. To avoid confusion in identifying debug
-> +	 *   exceptions, debug handlers should clear the register before
-> +	 *   returning to the interrupted task.
-> +	 *
-> +	 * Keep it simple and live up to expectations: clear DR6 immediately.
->  	 */
->  	if (hw_breakpoint_active())
->  		hw_breakpoint_restore();
-> +	else if (unlikely(reset_dr6))
-> +		set_debugreg(DR6_RESERVED, 6);
->  
->  	vcpu->arch.last_vmentry_cpu = vcpu->cpu;
->  	vcpu->arch.last_guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
-> -- 
-> 2.19.1.6.gb485710b
-> 
