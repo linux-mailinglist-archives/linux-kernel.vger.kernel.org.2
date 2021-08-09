@@ -2,204 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371AD3E4C35
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A483E4C37
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhHISfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
+        id S235249AbhHISgz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Aug 2021 14:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232640AbhHISfn (ORCPT
+        with ESMTP id S232130AbhHISgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:35:43 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F45DC0613D3;
-        Mon,  9 Aug 2021 11:35:23 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id l18so22706365wrv.5;
-        Mon, 09 Aug 2021 11:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2Ir2Ax+o/Wuz6SUvaDDaTxwddrsgDfZmzdHZ8wRYNcs=;
-        b=gyjVKJ8jwTsJBwIbyWfPfETilrGuLzDpow4iU7Iy71UDg7XoGMBVKHrTlMkwGXA+47
-         nim7s4LbAI554LSpauA3a4qwfPO+23IMK7Dm6jjPPNJz7yePtNmGpL6a2k13JDfx7Tdm
-         GYktxGHc0YF9+SDXFCzx8tHZ2R1KmcHOvp5s6w9g+3YjPSDH/Gdt1gLzlXIT7VdiFg2m
-         FQMNjzTMiXz1Vg5oT7pg61iTLNjJqqwyh3YjOMKE95YtzTOGujNOP+T40vIXUNSBGhGL
-         n+VrldQqbnNZ0d4ZtX1etxhbWMspaV+oCgjQFscoAywpBgJk7s9jNPnek9rOG/JEH5Af
-         hnlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2Ir2Ax+o/Wuz6SUvaDDaTxwddrsgDfZmzdHZ8wRYNcs=;
-        b=OOjay2pxqkizQ3wNPiwjO/WTyi8SHh+XFyP0nVPz4JBVHMbaj1w5nGgvQi/UFs6CQw
-         HkCZXMmMjtH3HEAfWlRiBrjcyXtvKhGBOX0KSjZR5AHfPS/wpyFWsVECWu0erOAUVcdG
-         KncyhbW3mVwC9ln26rTZhYM6/iNjJlKpLLfU8EzkNMY/fMl/OwbGLuNt0h1J9msDawH7
-         k++YIFiF/DAvAPSTUyJHwyl+jHMWq3Vg5u1Fwea8vFcm7OrIfOeYv7zMV1fL/a3nrsQn
-         7hhgAj8CCaUh//xfQd9EOS3iQf5SqSI1cMo6L0+8cQCBSex3OCPghqI3eJ3SOIctogEp
-         UGiw==
-X-Gm-Message-State: AOAM5321zZiM34eOWjo6rnemnN/FdztRIPHSIinNx80T0jNOd7wGXOD4
-        BxJyrsPGR/53bOxhAMpomvVL1D91CzPNwC83Rvo=
-X-Google-Smtp-Source: ABdhPJxdxWTQHWuRFfmKnD4JmmhFpc36EKHfBmtJwp9UKt+MZw54AXidelEj8qO48WrlqfO0SGTuzVDRw24Ry3xoN7w=
-X-Received: by 2002:adf:e806:: with SMTP id o6mr27225080wrm.307.1628534121630;
- Mon, 09 Aug 2021 11:35:21 -0700 (PDT)
+        Mon, 9 Aug 2021 14:36:55 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D34C0613D3;
+        Mon,  9 Aug 2021 11:36:34 -0700 (PDT)
+Received: from chickenburger.collabora.co.uk (chickenburger.collabora.co.uk [46.235.227.242])
+        by bhuna.collabora.co.uk (Postfix) with ESMTP id 139CC1F42E7E;
+        Mon,  9 Aug 2021 19:36:31 +0100 (BST)
+From:   "Ezequiel Garcia" <ezequiel.garcia@collabora.com>
+In-Reply-To: <5154683.x8GX3iSW2O@kista>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 181.95.8.213
+Date:   Mon, 09 Aug 2021 19:36:30 +0100
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        "Andrzej Pietrasiewicz" <andrzej.p@collabora.com>,
+        "Benjamin Gaignard" <benjamin.gaignard@collabora.com>,
+        "Boris Brezillon" <boris.brezillon@collabora.com>,
+        "Ezequiel Garcia" <elezegarcia@gmail.com>,
+        "Fabio Estevam" <festevam@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>,
+        "Heiko Stuebner" <heiko@sntech.de>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "Nicolas Dufresne" <nicolas.dufresne@collabora.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        "Shawn Guo" <shawnguo@kernel.org>, kernel@collabora.com,
+        "Adrian Ratiu" <adrian.ratiu@collabora.com>,
+        "Daniel Almeida" <daniel.almeida@collabora.com>
+To:     =?utf-8?q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>
 MIME-Version: 1.0
-References: <20210807062106.2563-1-l4stpr0gr4m@gmail.com>
-In-Reply-To: <20210807062106.2563-1-l4stpr0gr4m@gmail.com>
-From:   Kangmin Park <l4stpr0gr4m@gmail.com>
-Date:   Tue, 10 Aug 2021 03:35:10 +0900
-Message-ID: <CAKW4uUx=cOu46E0QCdmg1Jq3WJ3w6ROo6oKZaXA=g6gdhdiDdg@mail.gmail.com>
-Subject: Re: [PATCH] netfilter: remove duplicate code
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <3ce7-61117580-f1-4ae96900@79504131>
+Subject: =?utf-8?q?Re=3A?= [PATCH v3 05/10] =?utf-8?q?media=3A?==?utf-8?q?_uapi=3A?= 
+ Add VP9 stateless decoder controls
+User-Agent: SOGoMail 5.0.1
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I checked the Changes Requested state in patchwork.
-But I have not received any review mails.
-I wonder if there is any problem.
-I'm sorry if you just review a little late due to a busy schedule.
+Hi Jernej,
 
-Kangmin Park
+On Monday, August 09, 2021 15:04 -03, Jernej Škrabec <jernej.skrabec@gmail.com> wrote: 
+ 
+> Hi Andrzej!
+> 
+> Dne četrtek, 05. avgust 2021 ob 16:42:41 CEST je Andrzej Pietrasiewicz 
+> napisal(a):
+> > Add the VP9 stateless decoder controls plus the documentation that goes
+> > with it.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > Co-developed-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> > Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> > Co-developed-by: Daniel Almeida <daniel.almeida@collabora.com>
+> > Signed-off-by: Daniel Almeida <daniel.almeida@collabora.com>
+> > ---
+> >  .../userspace-api/media/v4l/biblio.rst        |  10 +
+> >  .../media/v4l/ext-ctrls-codec-stateless.rst   | 545 ++++++++++++++++++
+> >  .../media/v4l/pixfmt-compressed.rst           |  15 +
+> >  .../media/v4l/vidioc-g-ext-ctrls.rst          |   8 +
+> >  .../media/v4l/vidioc-queryctrl.rst            |  12 +
+> >  .../media/videodev2.h.rst.exceptions          |   2 +
+> >  drivers/media/v4l2-core/v4l2-ctrls-core.c     | 174 ++++++
+> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   8 +
+> >  drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+> >  include/media/v4l2-ctrls.h                    |   4 +
+> >  include/uapi/linux/v4l2-controls.h            | 433 ++++++++++++++
+> >  include/uapi/linux/videodev2.h                |   6 +
+> >  12 files changed, 1218 insertions(+)
+> > 
+> 
+> <snip>
+> 
+> > diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-
+> controls.h
+> > index 5532b5f68493..8f8c3c1ad885 100644
+> > --- a/include/uapi/linux/v4l2-controls.h
+> > +++ b/include/uapi/linux/v4l2-controls.h
+> > @@ -2010,6 +2010,439 @@ struct v4l2_ctrl_hdr10_mastering_display {
+> >  	__u32 min_display_mastering_luminance;
+> >  };
+> >  
+> > +/* Stateless VP9 controls */
+> > +
+> > +/**
+> > + * enum v4l2_vp9_loop_filter_flags - VP9 loop filter flags
+> > + *
+> > + * @V4L2_VP9_LOOP_FILTER_FLAG_DELTA_ENABLED: the filter level depends on
+> > + *	the mode and reference frame used to predict a block
+> > + * @V4L2_VP9_LOOP_FILTER_FLAG_DELTA_UPDATE: the bitstream contains 
+> additional
+> > + *	syntax elements that specify which mode and reference frame deltas 
+> are to be updated
+> > + *
+> > + * Those are the flags that may be passed to &v4l2_vp9_loop_filter.flags. See
+> > + * section '7.2.8 Loop filter semantics' of the VP9 specification for more
+> > + * details.
+> > + */
+> > +enum v4l2_vp9_loop_filter_flags {
+> > +	V4L2_VP9_LOOP_FILTER_FLAG_DELTA_ENABLED = 1 << 0,
+> > +	V4L2_VP9_LOOP_FILTER_FLAG_DELTA_UPDATE = 1 << 1,
+> > +};
+> > +
+> > +/**
+> > + * struct v4l2_vp9_loop_filter - VP9 loop filter parameters
+> > + *
+> > + * @ref_deltas: contains the adjustment needed for the filter level based on 
+> the chosen
+> > + *	reference frame. If this syntax element is not present in the 
+> bitstream, users
+> > + *	should pass its last value.
+> > + * @mode_deltas: contains the adjustment needed for the filter level based 
+> on the chosen mode.
+> > + *	If this syntax element is not present in the bitstream, users
+> > + *	should pass its last value.
+> > + * @level: indicates the loop filter strength
+> > + * @sharpness: indicates the sharpness level
+> > + * @flags: combination of V4L2_VP9_LOOP_FILTER_FLAG_* flags
+> > + * @reserved: padding field. Should be zeroed by applications.
+> > + *
+> > + * This structure contains all loop filter related parameters. See sections
+> > + * '7.2.8 Loop filter semantics' of the VP9 specification for more details.
+> > + */
+> > +struct v4l2_vp9_loop_filter {
+> > +	__s8 ref_deltas[4];
+> > +	__s8 mode_deltas[2];
+> > +	__u8 level;
+> > +	__u8 sharpness;
+> > +	__u8 flags;
+> > +	__u8 reserved[7];
+> > +};
+> > +
+> > +/**
+> > + * struct v4l2_vp9_quantization - VP9 quantization parameters
+> > + *
+> > + * @base_q_idx: indicates the base frame qindex
+> > + * @delta_q_y_dc: indicates the Y DC quantizer relative to base_q_idx
+> > + * @delta_q_uv_dc: indicates the UV DC quantizer relative to base_q_idx
+> > + * @delta_q_uv_ac: indicates the UV AC quantizer relative to base_q_idx
+> > + * @reserved: padding field. Should be zeroed by applications.
+> > + *
+> > + * Encodes the quantization parameters. See section '7.2.9 Quantization 
+> params
+> > + * syntax' of the VP9 specification for more details.
+> > + */
+> > +struct v4l2_vp9_quantization {
+> > +	__u8 base_q_idx;
+> > +	__s8 delta_q_y_dc;
+> > +	__s8 delta_q_uv_dc;
+> > +	__s8 delta_q_uv_ac;
+> > +	__u8 reserved[4];
+> > +};
+> > +
+> > +/**
+> > + * enum v4l2_vp9_segmentation_flags - VP9 segmentation flags
+> > + *
+> > + * @V4L2_VP9_SEGMENTATION_FLAG_ENABLED: indicates that this frame makes use 
+> of
+> > + *	the segmentation tool
+> > + * @V4L2_VP9_SEGMENTATION_FLAG_UPDATE_MAP: indicates that the segmentation 
+> map
+> > + *	should be updated during the decoding of this frame
+> > + * @V4L2_VP9_SEGMENTATION_FLAG_TEMPORAL_UPDATE: indicates that the updates 
+> to
+> > + *	the segmentation map are coded relative to the existing 
+> segmentation map
+> > + * @V4L2_VP9_SEGMENTATION_FLAG_UPDATE_DATA: indicates that new parameters 
+> are
+> > + *	about to be specified for each segment
+> > + * @V4L2_VP9_SEGMENTATION_FLAG_ABS_OR_DELTA_UPDATE: indicates that the
+> > + *	segmentation parameters represent the actual values to be used
+> > + *
+> > + * Those are the flags that may be passed to &v4l2_vp9_segmentation.flags. 
+> See
+> > + * section '7.2.10 Segmentation params syntax' of the VP9 specification for
+> > + * more details.
+> > + */
+> > +enum v4l2_vp9_segmentation_flags {
+> > +	V4L2_VP9_SEGMENTATION_FLAG_ENABLED = 1 << 0,
+> > +	V4L2_VP9_SEGMENTATION_FLAG_UPDATE_MAP = 1 << 1,
+> > +	V4L2_VP9_SEGMENTATION_FLAG_TEMPORAL_UPDATE = 1 << 2,
+> > +	V4L2_VP9_SEGMENTATION_FLAG_UPDATE_DATA = 1 << 3,
+> > +	V4L2_VP9_SEGMENTATION_FLAG_ABS_OR_DELTA_UPDATE = 1 << 4,
+> > +};
+> > +
+> > +#define V4L2_VP9_SEGMENT_FEATURE_ENABLED(id)	(1 << (id))
+> > +#define V4L2_VP9_SEGMENT_FEATURE_ENABLED_MASK	0xf
+> > +
+> > +/**
+> > + * enum v4l2_vp9_segment_feature - VP9 segment feature IDs
+> > + *
+> > + * @V4L2_VP9_SEG_LVL_ALT_Q: quantizer segment feature
+> > + * @V4L2_VP9_SEG_LVL_ALT_L: loop filter segment feature
+> > + * @V4L2_VP9_SEG_LVL_REF_FRAME reference frame segment feature
+> > + * @V4L2_VP9_SEG_LVL_SKIP: skip segment feature
+> > + * @V4L2_VP9_SEG_LVV_MAX: number of segment features
+> > + *
+> > + * Segment feature IDs. See section '7.2.10 Segmentation params syntax' of 
+> the
+> > + * VP9 specification for more details.
+> > + */
+> > +enum v4l2_vp9_segment_feature {
+> > +	V4L2_VP9_SEG_LVL_ALT_Q,
+> > +	V4L2_VP9_SEG_LVL_ALT_L,
+> > +	V4L2_VP9_SEG_LVL_REF_FRAME,
+> > +	V4L2_VP9_SEG_LVL_SKIP,
+> > +	V4L2_VP9_SEG_LVL_MAX,
+> > +};
+> 
+> What is the reason not to assign values like 1 << 0, 1 << 1, etc. and instead 
+> provide separate macro V4L2_VP9_SEGMENT_FEATURE_ENABLED()? This is a departure 
+> from current practice.
+> 
 
-2021=EB=85=84 8=EC=9B=94 7=EC=9D=BC (=ED=86=A0) =EC=98=A4=ED=9B=84 3:21, Ka=
-ngmin Park <l4stpr0gr4m@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> nf_nat_ipv4_fn() and nf_nat_ipv6_fn() call nf_nat_inet_fn().
-> Those two functions are already contains routine that gets nf_conn
-> object and checks the untrackable situation.
-> So, the following code is duplicated.
->
-> ```
-> ct =3D nf_ct_get(skb, &ctinfo);
-> if (!ct)
->         return NF_ACCEPT;
-> ```
->
-> Therefore, define a function __nf_nat_inet_fn() that has the same
-> contents as the nf_nat_inet_fn() except for routine gets and checks
-> the nf_conn object.
-> Then, separate the nf_nat_inet_fn() into a routine that gets a
-> nf_conn object and a routine that calls the __nf_nat_inet_fn().
->
-> Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
-> ---
->  include/net/netfilter/nf_nat.h |  5 +++++
->  net/netfilter/nf_nat_core.c    | 37 ++++++++++++++++++++++------------
->  net/netfilter/nf_nat_proto.c   |  4 ++--
->  3 files changed, 31 insertions(+), 15 deletions(-)
->
-> diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_na=
-t.h
-> index 987111ae5240..a66f617c5054 100644
-> --- a/include/net/netfilter/nf_nat.h
-> +++ b/include/net/netfilter/nf_nat.h
-> @@ -100,6 +100,11 @@ void nf_nat_ipv6_unregister_fn(struct net *net, cons=
-t struct nf_hook_ops *ops);
->  int nf_nat_inet_register_fn(struct net *net, const struct nf_hook_ops *o=
-ps);
->  void nf_nat_inet_unregister_fn(struct net *net, const struct nf_hook_ops=
- *ops);
->
-> +unsigned int
-> +__nf_nat_inet_fn(void *priv, struct sk_buff *skb,
-> +                const struct nf_hook_state *state, struct nf_conn *ct,
-> +                enum ip_conntrack_info ctinfo);
-> +
->  unsigned int
->  nf_nat_inet_fn(void *priv, struct sk_buff *skb,
->                const struct nf_hook_state *state);
-> diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-> index 7de595ead06a..98ebba2c0f6d 100644
-> --- a/net/netfilter/nf_nat_core.c
-> +++ b/net/netfilter/nf_nat_core.c
-> @@ -682,25 +682,15 @@ unsigned int nf_nat_packet(struct nf_conn *ct,
->  }
->  EXPORT_SYMBOL_GPL(nf_nat_packet);
->
->  unsigned int
-> -nf_nat_inet_fn(void *priv, struct sk_buff *skb,
-> -              const struct nf_hook_state *state)
-> +__nf_nat_inet_fn(void *priv, struct sk_buff *skb,
-> +                const struct nf_hook_state *state, struct nf_conn *ct,
-> +                enum ip_conntrack_info ctinfo)
->  {
-> -       struct nf_conn *ct;
-> -       enum ip_conntrack_info ctinfo;
->         struct nf_conn_nat *nat;
->         /* maniptype =3D=3D SRC for postrouting. */
->         enum nf_nat_manip_type maniptype =3D HOOK2MANIP(state->hook);
->
-> -       ct =3D nf_ct_get(skb, &ctinfo);
-> -       /* Can't track?  It's not due to stress, or conntrack would
-> -        * have dropped it.  Hence it's the user's responsibilty to
-> -        * packet filter it out, or implement conntrack/NAT for that
-> -        * protocol. 8) --RR
-> -        */
-> -       if (!ct)
-> -               return NF_ACCEPT;
-> -
->         nat =3D nfct_nat(ct);
->
->         switch (ctinfo) {
-> @@ -755,6 +745,26 @@ nf_nat_inet_fn(void *priv, struct sk_buff *skb,
->         nf_ct_kill_acct(ct, ctinfo, skb);
->         return NF_DROP;
->  }
-> +EXPORT_SYMBOL_GPL(__nf_nat_inet_fn);
-> +
-> +unsigned int
-> +nf_nat_inet_fn(void *priv, struct sk_buff *skb,
-> +              const struct nf_hook_state *state)
-> +{
-> +       struct nf_conn *ct;
-> +       enum ip_conntrack_info ctinfo;
-> +
-> +       ct =3D nf_ct_get(skb, &ctinfo);
-> +       /* Can't track?  It's not due to stress, or conntrack would
-> +        * have dropped it.  Hence it's the user's responsibilty to
-> +        * packet filter it out, or implement conntrack/NAT for that
-> +        * protocol. 8) --RR
-> +        */
-> +       if (!ct)
-> +               return NF_ACCEPT;
-> +
-> +       return __nf_nat_inet_fn(priv, skb, state, ct, ctinfo);
-> +}
->  EXPORT_SYMBOL_GPL(nf_nat_inet_fn);
->
->  struct nf_nat_proto_clean {
-> diff --git a/net/netfilter/nf_nat_proto.c b/net/netfilter/nf_nat_proto.c
-> index 48cc60084d28..897859730078 100644
-> --- a/net/netfilter/nf_nat_proto.c
-> +++ b/net/netfilter/nf_nat_proto.c
-> @@ -642,7 +642,7 @@ nf_nat_ipv4_fn(void *priv, struct sk_buff *skb,
->                 }
->         }
->
-> -       return nf_nat_inet_fn(priv, skb, state);
-> +       return __nf_nat_inet_fn(priv, skb, state, ct, ctinfo);
->  }
->
->  static unsigned int
-> @@ -934,7 +934,7 @@ nf_nat_ipv6_fn(void *priv, struct sk_buff *skb,
->                 }
->         }
->
-> -       return nf_nat_inet_fn(priv, skb, state);
-> +       return __nf_nat_inet_fn(priv, skb, state, ct, ctinfo);
->  }
->
->  static unsigned int
-> --
-> 2.26.2
->
+Fully agreed.
+
+Thanks,
+Ezequiel
+
