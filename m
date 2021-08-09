@@ -2,111 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB483E5012
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5923E5014
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhHIXmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 19:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232717AbhHIXmo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 19:42:44 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46939C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 16:42:23 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id yk17so31929635ejb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 16:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JC+TZFqQ27/4coXQmSt8pQVtEupvajbKIf+kglQsXqM=;
-        b=m44FSmUa+bL+jkDcHxpARHXlYT9Y/v2PG2SGZmggMEkSQttHflNZLexukzee8uNUG4
-         LK3leKqZDOR3xmXgYfV3Q7yyVdsHl5WXGnqMbHYeyerFvHp9gAe2kLDyB3Ul6MHD8W7Y
-         z238WHMm2r7TIJsGvNKhobYbpRW8SvoHFLA9mt7ffYJL1LHenceCHf8M770cwz4aW96V
-         7HlA9mzbkPKmk4MK5RJTFOMpuQJi631r7YG08bBBamCr4UiqU3TmD6qd0IVmyWhh80Q/
-         WCxTgzbuGUCE8LTQS8z94FjRs+sRvTU+tzmTF6q7MN80QM6zrKLRtOgTHP/gGOdhxZeS
-         GjPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JC+TZFqQ27/4coXQmSt8pQVtEupvajbKIf+kglQsXqM=;
-        b=ZX9UuwemBK58pafDLJ6b1qYWx417nT0b8aEORLbDBxVZZdLG1gEu3mZmLYl/XlRLSp
-         qvgBhEs7NDqvxrvoH01P1H2tonZ55QXW0PYVUxgvr/ttkkBcSugGlrY4HBQTloCIiQsb
-         OUIRMRIbEzw7ligzUohH3m/gMoUtoxop8lqiOLWpqXEjni4LwtceFs/5yhy9Mnvzsx51
-         hCQvOegxJm9ulQ1skm0TOvcSlyehTBpOyfkzmcbf9dYmReDkyYQyJrAlkAMQCWS+/5Et
-         o4re7mQmS07ajolfIgRPElRtaYApGcI90Ig313gXcCejS0FQlytb2ssOEYdBYRD1soMo
-         CAFw==
-X-Gm-Message-State: AOAM533Rn733aHxrtKWk9pZ7d3QjynPx64i9VLSKU+F3OQW+cTzok93z
-        Fgdb0zBu0PWDpwq8z2EAUUgbXpGMZbjU4KvzNSA=
-X-Google-Smtp-Source: ABdhPJzRow989v6YwuZGVFZjjqlQUCTOVGRcXox1Q3nePwmh0Vu0+WzuH0Z7tKWCbkFGGIv3sHnKR2jYNbKqil15FwA=
-X-Received: by 2002:a17:906:a3c3:: with SMTP id ca3mr24755070ejb.337.1628552541899;
- Mon, 09 Aug 2021 16:42:21 -0700 (PDT)
+        id S237061AbhHIXnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 19:43:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:14649 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232717AbhHIXnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 19:43:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="201975157"
+X-IronPort-AV: E=Sophos;i="5.84,308,1620716400"; 
+   d="scan'208";a="201975157"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 16:42:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,308,1620716400"; 
+   d="scan'208";a="468834025"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by orsmga008.jf.intel.com with ESMTP; 09 Aug 2021 16:42:37 -0700
+Received: from tjmaciei-mobl5.localnet (10.212.156.33) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 10 Aug 2021 00:42:34 +0100
+From:   Thiago Macieira <thiago.macieira@intel.com>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+CC:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 14/26] x86/arch_prctl: Create ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
+Date:   Mon, 9 Aug 2021 16:42:30 -0700
+Message-ID: <3144206.qcAzhSVzjS@tjmaciei-mobl5>
+Organization: Intel Corporation
+In-Reply-To: <E9C8AF5E-E229-4BA2-AEC8-4289EF7428CA@intel.com>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com> <3718618.i2J648eyUT@tjmaciei-mobl5> <E9C8AF5E-E229-4BA2-AEC8-4289EF7428CA@intel.com>
 MIME-Version: 1.0
-References: <20210809143049.3531188-1-mudongliangabcd@gmail.com>
- <YRFKlOvXKKQX9vr6@kroah.com> <CAD-N9QXFWr2APy294T6v+16d8SXtUuLEoPvZTw1ZDwfQ+D4kFg@mail.gmail.com>
-In-Reply-To: <CAD-N9QXFWr2APy294T6v+16d8SXtUuLEoPvZTw1ZDwfQ+D4kFg@mail.gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 10 Aug 2021 07:41:55 +0800
-Message-ID: <CAD-N9QVgnbwNScKD6anFLUELbJ5tAZ1hWbKhOStwZ+kPwgvVLw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ipack: tpci200: fix many double free issues in tpci200_pci_probe
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [10.212.156.33]
+X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
+ IRSMSX605.ger.corp.intel.com (163.33.146.138)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 7:08 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> On Mon, Aug 9, 2021 at 11:32 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Aug 09, 2021 at 10:30:26PM +0800, Dongliang Mu wrote:
-> > > The function tpci200_register called by tpci200_install and
-> > > tpci200_unregister called by tpci200_uninstall are in pair. However,
-> > > tpci200_unregister has some cleanup operations not in the
-> > > tpci200_register. So the error handling code of tpci200_pci_probe has
-> > > many different double free issues.
-> > >
-> > > Fix this problem by moving those cleanup operations out of
-> > > tpci200_unregister, into tpci200_pci_remove and reverting
-> > > the previous commit 9272e5d0028d ("ipack/carriers/tpci200:
-> > > Fix a double free in tpci200_pci_probe").
-> > >
-> > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
-> > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > ---
-> > > v1->v2: revise PATCH 2/3, 3/3, not depending on PATCH 1/3; move the
-> > > location change of tpci_unregister into one separate patch;
-> >
-> > Also needs to go to the stable trees, right?
->
-> Yes, this needs to go to the stable trees.
+On Monday, 9 August 2021 15:08:19 PDT Bae, Chang Seok wrote:
+> I suspect the EBUSY situation is somewhat imaginative. In theory, the
+> situation might be possible one thread calls this syscall at some point when
+> a new task is being created -- after task data duplication [1] and before
+> enlisted [2].
+> 
+> As stated in the changelog, the alternative is possible:
+> > An alternative implementation would not save the permission bitmap in
+> > every task. But instead would extend the per-process signal data, and
+> > that would not be subject to this race.
+> 
+> But it involves quite a bit of code complexity and this is pretty much
+> backend. I think it is possible to follow up and update when the case ever
+> turns out to be real. At least, I'm not aware of any report against the
+> PR_SET_FP_MODE prctl(2) [3] which took the same way -- walk and update the
+> task list.
+> 
+> Perhaps, the hunk above can be improved to be atomic.
+> 
+> <snip>
 
-Hi gregkh,
+Hello Chang
 
-Let me clarify more. In my series, PATCH 3/4 4/4 depends on PATCH 1/4
-and PATCH 2/4. And also PATCH 2/4 depends on PATCH 1/4 as they are
-closely related.
+Thanks for taking a look at this. I agree that this is a very, very tiny 
+corner case and the issue can be treated as a bugfix later. The API between 
+userspace and kernel is fine, which is the big issue right now.
 
-But from your reply, the last 2 patches should not depend on the first
-2 patches. I don't quite understand as I don't send some patch series
-before. For a patch series, the latter ones should depend on the
-former ones, right? If I have any misunderstanding, please let me
-know.
+But explaining what the issue I see is: a userspace library cannot enforce 
+that other threads in the same process aren't either making this same system 
+call or starting/exiting threads. So I see two scenarios where the corner case 
+can be reached:
 
-BTW, PATCH 3/4 has some compilation issues. I will fix it in the next version.
+1) two simultaneous ARCH_SET_STATE_ENABLE calls
+Imagine two threads, each setting a different bit (say bits 18 and 19). Since 
+they race with each other and this line:
+              t->thread.fpu.dynamic_state_perm |= req_dynstate_perm;
+is not using an atomic, the compiler won't emit LOCK OR, so it's possible the 
+two calls will step over each other and partially undo the other's work. The 
+result after the two calls is completely indeterminate, yet both functions 
+returned success.
+
+Since right now there's only one bit that can be set, we know that the two 
+calls are doing the same thing, so they're not effectively racing each other. 
+So this case is not an issue *right* *now*. There's only duplicate work.
+
+2) one thread calls ARCH_SET_STATE_ENABLE while another thread exits/starts
+In this case, the nr_threads != tsk->signal->nr_threads test will fail 
+resulting in the dynamic state to be rolled back and the EBUSY condition. I'd 
+like a recommendation from the kernel on how to deal with that signal: should 
+I retry? For now, I'm going to treat EBUSY like EINVAL and assume I cannot use 
+the feature.
+
+1+2) both situations at the same time
+This means the corruption can get worse since the rollback code can undo or 
+partially undo the progression of the other ARCH_SET_STATE_ENABLE.
+
+> > So I have to insist that the XGETBV instruction's result match exactly
+> > what is permitted to run. That means we either enable AMX unconditionally
+> > with no need for system calls (with or without XFD trapping to
+> > dynamically allocate more state), or that the XCR0 register be set
+> > without the AMX bits by default, until the system call is issued.
+> 
+> XCR0 provokes VMEXIT which will impact the performance hardly. At least the
+> opt-in model is a consensus out of the long debate [4]. Let alone the
+> question on how well advertise this new syscall though.
+
+I understand.
+
+I am pointing out that this will cause crashes because of improperly / 
+insufficiently-tested software. That is, software that violates the contract 
+of the new API because we inserted a new requirement that didn't exist for old 
+features. Yes, said software is buggy.
+
+The problem is that the crashes can be surprising and will only show up after 
+the software gets run on an AMX-capable machine. That may happen, for example, 
+if a cloud provider "upgrades" the instance of a VM from a previous generation 
+of processor to a new one, or if a batch job does include the new instance 
+type. That is, the crashes will not happen for the developer of the software 
+in question, but instead for the user.
+
+However, given the requirements that:
+ a) XCR0 not be context-switched
+ b) a new API call be required to allow the new instructions
+
+Then there's no alternative.
+
+-- 
+Thiago Macieira - thiago.macieira (AT) intel.com
+  Software Architect - Intel DPG Cloud Engineering
 
 
->
-> >
+
