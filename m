@@ -2,310 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88703E46C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97633E46C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhHINga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:36:30 -0400
-Received: from out28-149.mail.aliyun.com ([115.124.28.149]:33335 "EHLO
-        out28-149.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhHINg3 (ORCPT
+        id S232645AbhHINhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229474AbhHINhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:36:29 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04440762|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0255528-0.000321112-0.974126;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhangzhengjun@aicrobo.com;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.KxW4EHK_1628516166;
-Received: from localhost(mailfrom:zhangzhengjun@aicrobo.com fp:SMTPD_---.KxW4EHK_1628516166)
-          by smtp.aliyun-inc.com(10.147.40.200);
-          Mon, 09 Aug 2021 21:36:07 +0800
-From:   Zhengjun Zhang <zhangzhengjun@aicrobo.com>
-To:     larsm17@gmail.com, johan@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org,
-        Zhengjun Zhang <zhangzhengjun@aicrobo.com>
-Subject: [PATCH v2] USB: serial: option: add new VID/PID to support Fibocom FG150
-Date:   Mon,  9 Aug 2021 21:35:53 +0800
-Message-Id: <20210809133553.71158-1-zhangzhengjun@aicrobo.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <b3285ae0-8b1f-fc9c-3662-634264d704d5@gmail.com>
-References: <b3285ae0-8b1f-fc9c-3662-634264d704d5@gmail.com>
+        Mon, 9 Aug 2021 09:37:19 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B30C0613D3;
+        Mon,  9 Aug 2021 06:36:59 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id ca5so27982782pjb.5;
+        Mon, 09 Aug 2021 06:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:organization:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y323wp+0M1YiiG3beFUvJBDLsGDflaCzjS1HZtxOBm0=;
+        b=P1uoOrMsh/6E3EWQybshnDplcdVPZwvoIh2mtnvNERGS9qqPjeX09Pdl+uAf0gYdOC
+         tpn8KBMoq55MOoI1OphcAQISH3/ofdxQVGVK72Y4iQY8rEt+sxym70JrweMd0kGq+0bx
+         CPdf70vZO3/n4IBYbJ9f/ZcDoDw/lvY7cagzB3MoQOfpZwgIS26Jqd03d687FNdm+I5n
+         +uvjv/2yQxqF2uilUE39GaYzW41Lq02BaZeRBTZkADqIgD+LpYrzB53gM8e3evlK6QuG
+         8PSCc8e/5KG/4T1QS+haa4J6AXAGnJoxQluPEq1T8uNPgJDMfaQdjSsEDVxCzUCdvIbN
+         tmXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=y323wp+0M1YiiG3beFUvJBDLsGDflaCzjS1HZtxOBm0=;
+        b=tUk4TTXNBujaeCxEFXHSRp7B2cLO/kL1lHQ3uAG4Yf+zBNXYDsXcA8yOs2mcLkEuTB
+         A8jmYBxWFipUqSAao/wmdQaBQNHGa3E10CcenzU0C6Vv4sp2fpzLRXw7GbYjbM7mgP29
+         Gw/MlR3X/VwfQ1gxee5E/ug0f3xNYD5GRhV9K0voNBBC5/8XpRprhlI/WCg4rl+nf9Vy
+         YNtlnOyp9ubOWzD6VIceLaHikEDAib0PrSOwd3Xl4NiDGgvsTe53iG2ATD6Vi5h8wQnt
+         X2jfmy++ykgESXjl7/iXMkZgkys6RIC+GqKNwbZU95RFfAkJfFZdacJQhJcxyb2UpCJz
+         a7rw==
+X-Gm-Message-State: AOAM530pe6BeZcW0piFzHiUgIltNiHQPy+Vk2+ckQC9uu6d+Kyf5ET/m
+        3A333f9BVdzg12l9bKeeQnNJZwwdIGlRPw==
+X-Google-Smtp-Source: ABdhPJwOZaxwP/lYWy9bN2ysRkJ1GG8f/it/2BvjM1pP1uECJG8DbpTj27BeQXGk0psp++zPQCmqew==
+X-Received: by 2002:aa7:8148:0:b029:31b:10b4:f391 with SMTP id d8-20020aa781480000b029031b10b4f391mr18009178pfn.69.1628516218659;
+        Mon, 09 Aug 2021 06:36:58 -0700 (PDT)
+Received: from Likes-MacBook-Pro.local ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id 186sm21092486pfg.11.2021.08.09.06.36.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 06:36:58 -0700 (PDT)
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, jmattson@google.com, seanjc@google.com,
+        vkuznets@redhat.com, wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1628235745-26566-1-git-send-email-weijiang.yang@intel.com>
+ <1628235745-26566-6-git-send-email-weijiang.yang@intel.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Organization: Tencent
+Subject: Re: [PATCH v7 05/15] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_CTL for guest
+ Arch LBR
+Message-ID: <59ef2c3c-0997-d6a5-0d4a-4e777206a665@gmail.com>
+Date:   Mon, 9 Aug 2021 21:36:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <1628235745-26566-6-git-send-email-weijiang.yang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fibocom FG150 is a 5G module based on Qualcomm SDX55 platform,
-support Sub-6G band.
+On 6/8/2021 3:42 pm, Yang Weijiang wrote:
+> From: Like Xu <like.xu@linux.intel.com>
+> 
+> Arch LBRs are enabled by setting MSR_ARCH_LBR_CTL.LBREn to 1. A new guest
+> state field named "Guest IA32_LBR_CTL" is added to enhance guest LBR usage.
+> When guest Arch LBR is enabled, a guest LBR event will be created like the
+> model-specific LBR does. Clear guest LBR enable bit on host PMI handling so
+> guest can see expected config.
+> 
+> On processors that support Arch LBR, MSR_IA32_DEBUGCTLMSR[bit 0] has no
+> meaning. It can be written to 0 or 1, but reads will always return 0.
+> Like IA32_DEBUGCTL, IA32_ARCH_LBR_CTL msr is also preserved on INIT.
+> 
+> Regardless of the Arch LBR or legacy LBR, when the LBR_EN bit 0 of the
+> corresponding control MSR is set to 1, LBR recording will be enabled.
+> 
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>   arch/x86/events/intel/lbr.c      |  2 --
+>   arch/x86/include/asm/msr-index.h |  1 +
+>   arch/x86/include/asm/vmx.h       |  2 ++
+>   arch/x86/kvm/vmx/pmu_intel.c     | 48 ++++++++++++++++++++++++++++----
+>   arch/x86/kvm/vmx/vmx.c           |  9 ++++++
+>   5 files changed, 55 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+> index ceff16eb4bcb..d6773a200c70 100644
+> --- a/arch/x86/events/intel/lbr.c
+> +++ b/arch/x86/events/intel/lbr.c
+> @@ -168,8 +168,6 @@ enum {
+>   	 ARCH_LBR_RETURN		|\
+>   	 ARCH_LBR_OTHER_BRANCH)
+>   
+> -#define ARCH_LBR_CTL_MASK			0x7f000e
+> -
+>   static void intel_pmu_lbr_filter(struct cpu_hw_events *cpuc);
+>   
+>   static __always_inline bool is_lbr_call_stack_bit_set(u64 config)
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index a7c413432b33..04059e8ed115 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -169,6 +169,7 @@
+>   #define LBR_INFO_BR_TYPE		(0xfull << LBR_INFO_BR_TYPE_OFFSET)
+>   
+>   #define MSR_ARCH_LBR_CTL		0x000014ce
+> +#define ARCH_LBR_CTL_MASK		0x7f000e
+>   #define ARCH_LBR_CTL_LBREN		BIT(0)
+>   #define ARCH_LBR_CTL_CPL_OFFSET		1
+>   #define ARCH_LBR_CTL_CPL		(0x3ull << ARCH_LBR_CTL_CPL_OFFSET)
+> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> index 0ffaa3156a4e..ea3be961cc8e 100644
+> --- a/arch/x86/include/asm/vmx.h
+> +++ b/arch/x86/include/asm/vmx.h
+> @@ -245,6 +245,8 @@ enum vmcs_field {
+>   	GUEST_BNDCFGS_HIGH              = 0x00002813,
+>   	GUEST_IA32_RTIT_CTL		= 0x00002814,
+>   	GUEST_IA32_RTIT_CTL_HIGH	= 0x00002815,
+> +	GUEST_IA32_LBR_CTL		= 0x00002816,
+> +	GUEST_IA32_LBR_CTL_HIGH		= 0x00002817,
+>   	HOST_IA32_PAT			= 0x00002c00,
+>   	HOST_IA32_PAT_HIGH		= 0x00002c01,
+>   	HOST_IA32_EFER			= 0x00002c02,
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index a4ef5bbce186..b2631fea5e6c 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -19,6 +19,7 @@
+>   #include "pmu.h"
+>   
+>   #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
+> +#define KVM_ARCH_LBR_CTL_MASK  (ARCH_LBR_CTL_MASK | ARCH_LBR_CTL_LBREN)
+>   
+>   static struct kvm_event_hw_type_mapping intel_arch_events[] = {
+>   	/* Index must match CPUID 0x0A.EBX bit vector */
+> @@ -221,6 +222,7 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+>   		ret = pmu->version > 1;
+>   		break;
+>   	case MSR_ARCH_LBR_DEPTH:
+> +	case MSR_ARCH_LBR_CTL:
+>   		if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+>   			ret = guest_cpuid_has(vcpu, X86_FEATURE_ARCH_LBR);
+>   		break;
+> @@ -369,6 +371,26 @@ static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
+>   	return (depth == fls(eax & 0xff) * 8);
+>   }
+>   
+> +#define ARCH_LBR_CTL_BRN_MASK   GENMASK_ULL(22, 16)
+> +
+> +static bool arch_lbr_ctl_is_valid(struct kvm_vcpu *vcpu, u64 ctl)
+> +{
+> +	unsigned int eax, ebx, ecx, edx;
+> +
+> +	if (!kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+> +		return false;
+> +
+> +	cpuid_count(0x1c, 0, &eax, &ebx, &ecx, &edx);
+> +	if (!(ebx & BIT(0)) && (ctl & ARCH_LBR_CTL_CPL))
+> +		return false;
+> +	if (!(ebx & BIT(2)) && (ctl & ARCH_LBR_CTL_STACK))
+> +		return false;
+> +	if (!(ebx & BIT(1)) && (ctl & ARCH_LBR_CTL_BRN_MASK))
+> +		return false;
+> +
+> +	return !(ctl & ~KVM_ARCH_LBR_CTL_MASK);
+> +}
 
-Compared with the first patch, I removed the defines of Fibocom 
-VID and PID by following Lars' suggestion.
+Please check it with the *guest* cpuid entry.
 
-Here are the outputs of lsusb -v and usb-devices:
+And it should remove the bits that are not supported by x86_pmu.lbr_ctl_mask before
+vmcs_write64(...) if the guest value is a superset of the host value with 
+warning message.
 
-> T:  Bus=02 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
-> D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-> P:  Vendor=2cb7 ProdID=010b Rev=04.14
-> S:  Manufacturer=Fibocom
-> S:  Product=Fibocom Modem_SN:XXXXXXXX
-> S:  SerialNumber=XXXXXXXX
-> C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-> I:  If#=0x0 Alt= 0 #EPs= 1 Cls=ef(misc ) Sub=04 Prot=01 Driver=rndis_host
-> I:  If#=0x1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
-> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-> I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
-> I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
+> +
+>   static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   {
+>   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> @@ -392,6 +414,9 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   	case MSR_ARCH_LBR_DEPTH:
+>   		msr_info->data = lbr_desc->records.nr;
+>   		return 0;
+> +	case MSR_ARCH_LBR_CTL:
+> +		msr_info->data = vmcs_read64(GUEST_IA32_LBR_CTL);
+> +		return 0;
+>   	default:
+>   		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>   		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> @@ -460,6 +485,15 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   		if (!msr_info->host_initiated)
+>   			wrmsrl(MSR_ARCH_LBR_DEPTH, lbr_desc->records.nr);
+>   		return 0;
+> +	case MSR_ARCH_LBR_CTL:
+> +		if (!arch_lbr_ctl_is_valid(vcpu, data))
+> +			break;
+> +
+> +		vmcs_write64(GUEST_IA32_LBR_CTL, data);
+> +		if (intel_pmu_lbr_is_enabled(vcpu) && !lbr_desc->event &&
+> +		    (data & ARCH_LBR_CTL_LBREN))
+> +			intel_pmu_create_guest_lbr_event(vcpu);
+> +		return 0;
+>   	default:
+>   		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>   		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> @@ -637,12 +671,16 @@ static void intel_pmu_reset(struct kvm_vcpu *vcpu)
+>    */
+>   static void intel_pmu_legacy_freezing_lbrs_on_pmi(struct kvm_vcpu *vcpu)
+>   {
+> -	u64 data = vmcs_read64(GUEST_IA32_DEBUGCTL);
+> +	u32 lbr_ctl_field = GUEST_IA32_DEBUGCTL;
+>   
+> -	if (data & DEBUGCTLMSR_FREEZE_LBRS_ON_PMI) {
+> -		data &= ~DEBUGCTLMSR_LBR;
+> -		vmcs_write64(GUEST_IA32_DEBUGCTL, data);
+> -	}
+> +	if (!(vmcs_read64(GUEST_IA32_DEBUGCTL) & DEBUGCTLMSR_FREEZE_LBRS_ON_PMI))
+> +		return;
+> +
+> +	if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR) &&
+> +	    guest_cpuid_has(vcpu, X86_FEATURE_ARCH_LBR))
+> +		lbr_ctl_field = GUEST_IA32_LBR_CTL;
+> +
+> +	vmcs_write64(lbr_ctl_field, vmcs_read64(lbr_ctl_field) & ~0x1ULL);
+>   }
+>   
+>   static void intel_pmu_deliver_pmi(struct kvm_vcpu *vcpu)
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 927a552393b9..e8df44faf900 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2002,6 +2002,13 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   						VM_EXIT_SAVE_DEBUG_CONTROLS)
+>   			get_vmcs12(vcpu)->guest_ia32_debugctl = data;
+>   
+> +		/*
+> +		 * For Arch LBR, IA32_DEBUGCTL[bit 0] has no meaning.
+> +		 * It can be written to 0 or 1, but reads will always return 0.
+> +		 */
+> +		if (guest_cpuid_has(vcpu, X86_FEATURE_ARCH_LBR))
+> +			data &= ~DEBUGCTLMSR_LBR;
+> +
+>   		vmcs_write64(GUEST_IA32_DEBUGCTL, data);
+>   		if (intel_pmu_lbr_is_enabled(vcpu) && !to_vmx(vcpu)->lbr_desc.event &&
+>   		    (data & DEBUGCTLMSR_LBR))
+> @@ -4441,6 +4448,8 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>   		vmcs_writel(GUEST_SYSENTER_ESP, 0);
+>   		vmcs_writel(GUEST_SYSENTER_EIP, 0);
+>   		vmcs_write64(GUEST_IA32_DEBUGCTL, 0);
+> +		if (static_cpu_has(X86_FEATURE_ARCH_LBR))
+> +			vmcs_write64(GUEST_IA32_LBR_CTL, 0);
 
-> Bus 002 Device 002: ID 2cb7:010b Fibocom Fibocom Modem_SN:XXXXXXXX
-> Device Descriptor:
->   bLength                18
->   bDescriptorType         1
->   bcdUSB               3.20
->   bDeviceClass            0 
->   bDeviceSubClass         0 
->   bDeviceProtocol         0 
->   bMaxPacketSize0         9
->   idVendor           0x2cb7 Fibocom
->   idProduct          0x010b 
->   bcdDevice            4.14
->   iManufacturer           1 Fibocom
->   iProduct                2 Fibocom Modem_SN:XXXXXXXX
->   iSerial                 3 XXXXXXXX
->   bNumConfigurations      1
->   Configuration Descriptor:
->     bLength                 9
->     bDescriptorType         2
->     wTotalLength       0x00e6
->     bNumInterfaces          5
->     bConfigurationValue     1
->     iConfiguration          4 RNDIS_DUN_DIAG_ADB
->     bmAttributes         0xa0
->       (Bus Powered)
->       Remote Wakeup
->     MaxPower              896mA
->     Interface Association:
->       bLength                 8
->       bDescriptorType        11
->       bFirstInterface         0
->       bInterfaceCount         2
->       bFunctionClass        239 Miscellaneous Device
->       bFunctionSubClass       4
->       bFunctionProtocol       1
->       iFunction               7 RNDIS
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        0
->       bAlternateSetting       0
->       bNumEndpoints           1
->       bInterfaceClass       239 Miscellaneous Device
->       bInterfaceSubClass      4
->       bInterfaceProtocol      1
->       iInterface              0
->       ** UNRECOGNIZED:  05 24 00 10 01
->       ** UNRECOGNIZED:  05 24 01 00 01
->       ** UNRECOGNIZED:  04 24 02 00
->       ** UNRECOGNIZED:  05 24 06 00 01
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x81  EP 1 IN
->         bmAttributes            3
->           Transfer Type            Interrupt
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0008  1x 8 bytes
->         bInterval               9
->         bMaxBurst               0
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        1
->       bAlternateSetting       0
->       bNumEndpoints           2
->       bInterfaceClass        10 CDC Data
->       bInterfaceSubClass      0
->       bInterfaceProtocol      0
->       iInterface              0
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x8e  EP 14 IN
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               6
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x0f  EP 15 OUT
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               6
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        2
->       bAlternateSetting       0
->       bNumEndpoints           3
->       bInterfaceClass       255 Vendor Specific Class
->       bInterfaceSubClass      0
->       bInterfaceProtocol      0
->       iInterface              0
->       ** UNRECOGNIZED:  05 24 00 10 01
->       ** UNRECOGNIZED:  05 24 01 00 00
->       ** UNRECOGNIZED:  04 24 02 02
->       ** UNRECOGNIZED:  05 24 06 00 00
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x83  EP 3 IN
->         bmAttributes            3
->           Transfer Type            Interrupt
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x000a  1x 10 bytes
->         bInterval               9
->         bMaxBurst               0
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x82  EP 2 IN
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               0
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x01  EP 1 OUT
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               0
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        3
->       bAlternateSetting       0
->       bNumEndpoints           2
->       bInterfaceClass       255 Vendor Specific Class
->       bInterfaceSubClass    255 Vendor Specific Subclass
->       bInterfaceProtocol     48
->       iInterface              0
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x84  EP 4 IN
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               0
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x02  EP 2 OUT
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               0
->     Interface Descriptor:
->       bLength                 9
->       bDescriptorType         4
->       bInterfaceNumber        4
->       bAlternateSetting       0
->       bNumEndpoints           2
->       bInterfaceClass       255 Vendor Specific Class
->       bInterfaceSubClass     66
->       bInterfaceProtocol      1
->       iInterface              0
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x03  EP 3 OUT
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               0
->       Endpoint Descriptor:
->         bLength                 7
->         bDescriptorType         5
->         bEndpointAddress     0x85  EP 5 IN
->         bmAttributes            2
->           Transfer Type            Bulk
->           Synch Type               None
->           Usage Type               Data
->         wMaxPacketSize     0x0400  1x 1024 bytes
->         bInterval               0
->         bMaxBurst               0
-> Binary Object Store Descriptor:
->   bLength                 5
->   bDescriptorType        15
->   wTotalLength       0x0016
->   bNumDeviceCaps          2
->   USB 2.0 Extension Device Capability:
->     bLength                 7
->     bDescriptorType        16
->     bDevCapabilityType      2
->     bmAttributes   0x00000006
->       BESL Link Power Management (LPM) Supported
->   SuperSpeed USB Device Capability:
->     bLength                10
->     bDescriptorType        16
->     bDevCapabilityType      3
->     bmAttributes         0x00
->     wSpeedsSupported   0x000f
->       Device can operate at Low Speed (1Mbps)
->       Device can operate at Full Speed (12Mbps)
->       Device can operate at High Speed (480Mbps)
->       Device can operate at SuperSpeed (5Gbps)
->     bFunctionalitySupport   1
->       Lowest fully-functional device speed is Full Speed (12Mbps)
->     bU1DevExitLat           1 micro seconds
->     bU2DevExitLat         500 micro seconds
-> Device Status:     0x0000
->   (Bus Powered)
+Please update dump_vmcs() to dump GUEST_IA32_LBR_CTL as well.
 
-Signed-off-by: Zhengjun Zhang <zhangzhengjun@aicrobo.com>
----
-V1 -> V2: Remove the defines of Fibocom VID and PID
+How about update the load_vmcs12_host_state() for GUEST_IA32_LBR_CTL
+since you enabled the nested case in this patch set ?
 
- drivers/usb/serial/option.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 0fbe253dc..4fcf859e9 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -2073,6 +2073,8 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
- 	  .driver_info = RSVD(6) },
- 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a0, 0xff) },			/* Fibocom NL668-AM/NL652-EU (laptop MBIM) */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x010b, 0xff, 0xff, 0x30) },	/* Fibocom FG150 Diag */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x010b, 0xff, 0, 0) },	/* Fibocom FG150 AT */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff) },			/* LongSung M5710 */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
--- 
-2.32.0
-
+>   	}
+>   
+>   	kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+> 
