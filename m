@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB7A3E40AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1453E40B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbhHIHIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:08:55 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7810 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhHIHIv (ORCPT
+        id S233262AbhHIHJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232979AbhHIHJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:08:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GjnH41nFGzYmZN;
-        Mon,  9 Aug 2021 15:08:16 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 15:08:28 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 9 Aug 2021 15:08:27 +0800
-Subject: Re: [PATCH v2 2/2] nbd: convert to use blk_mq_get_rq_by_tag()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <bvanassche@acm.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@other.debian.org>, <yi.zhang@huawei.com>
-References: <20210809030927.1946162-1-yukuai3@huawei.com>
- <20210809030927.1946162-3-yukuai3@huawei.com> <YRDK9tBFscK5ScK8@T590>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
-Date:   Mon, 9 Aug 2021 15:08:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 9 Aug 2021 03:09:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4383FC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 00:09:08 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mCzPB-0007u0-22; Mon, 09 Aug 2021 09:09:01 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:565a:9e00:3ca4:4826])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DA85866308D;
+        Mon,  9 Aug 2021 07:08:55 +0000 (UTC)
+Date:   Mon, 9 Aug 2021 09:08:54 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] can: c_can: cache frames to operate as a true FIFO
+Message-ID: <20210809070854.wwqealdhd2sai5mo@pengutronix.de>
+References: <20210807130800.5246-1-dariobin@libero.it>
 MIME-Version: 1.0
-In-Reply-To: <YRDK9tBFscK5ScK8@T590>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ay6iz3pyqwovhyef"
+Content-Disposition: inline
+In-Reply-To: <20210807130800.5246-1-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/09 14:28, Ming Lei wrote:
-> On Mon, Aug 09, 2021 at 11:09:27AM +0800, Yu Kuai wrote:
->> blk_mq_tag_to_rq() might return freed request, use
->> blk_mq_get_rq_by_tag() instead.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/block/nbd.c | 11 ++++++-----
->>   1 file changed, 6 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
->> index c38317979f74..9e56975a8eee 100644
->> --- a/drivers/block/nbd.c
->> +++ b/drivers/block/nbd.c
->> @@ -713,11 +713,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->>   	tag = nbd_handle_to_tag(handle);
->>   	hwq = blk_mq_unique_tag_to_hwq(tag);
->>   	if (hwq < nbd->tag_set.nr_hw_queues)
->> -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
->> -				       blk_mq_unique_tag_to_tag(tag));
->> -	if (!req || !blk_mq_request_started(req)) {
->> -		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
->> -			tag, req);
->> +		req = blk_mq_get_rq_by_tag(nbd->tag_set.tags[hwq],
->> +					   blk_mq_unique_tag_to_tag(tag));
->> +	if (!req) {
->> +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d\n", tag);
->>   		return ERR_PTR(-ENOENT);
->>   	}
->>   	trace_nbd_header_received(req, handle);
->> @@ -779,6 +778,8 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->>   	}
->>   out:
->>   	trace_nbd_payload_received(req, handle);
->> +	if (req)
->> +		blk_mq_put_rq_ref(req);
->>   	mutex_unlock(&cmd->lock);
->>   	return ret ? ERR_PTR(ret) : cmd;
-> 
-> After blk_mq_put_rq_ref() returns, this request may have been freed,
-> so the returned 'cmd' may have been freed too.
-> 
-> As I replied in your another thread, it is driver's responsibility to
-> cover race between normal completion and timeout/error handling, that
-> means the caller of blk_mq_tag_to_rq need to make sure that the request
-> represented by the passed 'tag' can't be freed.
 
-Hi, Ming
+--ay6iz3pyqwovhyef
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There are two problems here in nbd, both reported by our syzkaller.
+On 07.08.2021 15:07:56, Dario Binacchi wrote:
+>=20
+> Performance tests of the c_can driver led to the patch that gives the
+> series its name. I also added two patches not really related to the topic
+> of the series.
+>=20
+> Run test succesfully on a custom board having two CAN ports.
+> I connected the CAN1 port to the CAN2 port with a cable. Then I
+> opened two terminals. On one I issued a dump command and on the
+> other the transmit command used in the tests described in
+> https://marc.info/?l=3Dlinux-can&m=3D139746476821294&w=3D2.
 
-The first is that blk_mq_tag_to_rq() returned a freed request, which is
-because tags->static_rq[] is freed without clearing tags->rq[].
-Syzkaller log shows that a reply package is sent to client without
-the client's request package. And this patch is trying to solve this
-problem.
+Thanks! Applied to linux-can-next/testing.
 
-The second is that flush_end_io() decrement it's refcount to -1. I guess
-this is because nbd_clear_que concurrent with normal completion /
-timeout / error handling, and somehow trigger the problem.
-However I'm still trying to understand the logic in nbd. I tried to
-add a check in flush_end_io() to fix this, as you replied, it's
-driver's responsibility to fix the problem.
+regards,
+Marc
 
-It seems that the two problems are not related. And this patch is ok
-to fix the first problem. Any suggestions?
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-Thanks
-Kuai
-> 
-> I'd suggest to understand why nbd_read_stat()/blk_mq_tag_to_rq() may return
-> one freed request first, who frees the request and how when calling
-> blk_mq_tag_to_rq() before figuring out solutions.
+--ay6iz3pyqwovhyef
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEQ1IMACgkQqclaivrt
+76mypggAlneAs4NSSW3S+G3/q1nOv7cdt5e//scBTcElGf6JbAL8kcJFZ5PcQFbR
+R3c/CAPgIk/NpU+6xBHBJfijxWOVYQhx2txEtcWPpClTRjwKM04/SYDU3ilVx3t9
+3xe3/943AhxOeZ+nOfWWAceyxuprlcJAigMLKcalqwTwQlQOr1BIz9PEALXJ2Wo0
+mCHhJpSVhQupUczLlOR3zTVTY6+WjSrfNLI630EZWX9pYb2J4gXhlqwZzpiqYr8h
+OoHnM14rOfbz5ND56+xS7dCGKNgsf8vwff8AskDcMbHQul7j+1bD4m/2l+EgTUGx
+uxGYNxMYF/Op+c6cCuBD721Q1Sw4Yg==
+=6OpO
+-----END PGP SIGNATURE-----
+
+--ay6iz3pyqwovhyef--
