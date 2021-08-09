@@ -2,102 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD403E4CB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D250F3E4CB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235947AbhHITHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 15:07:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235246AbhHITHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 15:07:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5EC361040;
-        Mon,  9 Aug 2021 19:07:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628536048;
-        bh=dQLZBpWmjY9hF80ib8i/Bo1GvGxr7yInqT/ZPREo94U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gJGBxEID1am/fcjOi5RGO5uFDE15kZBlWJ5shTR3yNpJIinQU/t7TshNpc/56g7q8
-         7AWpkG8R4MMyNz3PtrMfzlclrD0PHuOVv6pXdztpk33xYPBfCUDbV8MYNMxLfeU3ov
-         SOTq0is9yl9aAOb3+xq6m4lR4W1LVc9QDUPBmTJ6rT6GW+126+KDCuNvxnJlHK7g4c
-         rRJKN2WR8wb3xbOMMkGn3+NkWmWStHzigAriRJXTFq6YczUcOIGPMNWapF9ftRsR8+
-         Syvkzs98bFThjc7oqef5wpKh9pLLZLsAGexKHn6QG/QFgMy3cpehsU3yayKgUYX/TA
-         7THDrUkH7Zrtw==
-Received: by pali.im (Postfix)
-        id 5C6C8C7C; Mon,  9 Aug 2021 21:07:25 +0200 (CEST)
-Date:   Mon, 9 Aug 2021 21:07:25 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
-Cc:     Ian Pilcher <arequipeno@gmail.com>, linux-block@vger.kernel.org,
-        linux-leds@vger.kernel.org, axboe@kernel.dk, pavel@ucw.cz,
-        linux-kernel@vger.kernel.org, kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
-Message-ID: <20210809190725.6jq2npa5kmruf6n7@pali>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
- <20210809205633.4300bbea@thinkpad>
+        id S235889AbhHITJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 15:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235246AbhHITJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 15:09:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C83C0613D3;
+        Mon,  9 Aug 2021 12:08:59 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628536137;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T8lZvCBC4BJtqq7gmWPpIICgtsJkk/6DHIBoJxOGCLA=;
+        b=V6w49RF5XmlZuFvmbp8rjmO7kZiKyWJ4FIOSVhKfFM3L7t4SpNG3vboiWJLqvyFfJ2InLY
+        9c/JITzJ2C815fUKIZqMuwB7jVpMXdTKSf18I0K6VAKbKNWQRBcNZ+u3qLA46MM+F6zIy+
+        Rd4UXfpeeXCbm8oV02ubrMT3cQ8co7swWzFnPmPM/3bx6GB/RkhA5RvdRCSP4EqCIkp0YR
+        LOGE+bD5YNUrEkXckbJxHvhCddNaEziwF3AsK3u1XCyryD9UNGMKLsfxMSW/4phykPyH/L
+        zN8Z+1SQTTLoNaZyGre5jLZPexa7vWl/6Y96Mk9JQ0jN/VETe3XCQaeonEr75Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628536137;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T8lZvCBC4BJtqq7gmWPpIICgtsJkk/6DHIBoJxOGCLA=;
+        b=L/eKjXJjdZQIRZYYcT6i/YVwPum+UPbi93UJrmJAReG3o85rpXbc9XPEzSvmNZ8sVHiBCJ
+        GDGO1lYW+wzHvrBg==
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-s390@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [patch V3 18/19] PCI/MSI: Provide a new set of mask and unmask
+ functions
+In-Reply-To: <878s1atpjz.ffs@tglx>
+References: <20210729215139.889204656@linutronix.de>
+ <20210729222543.257079238@linutronix.de> <87r1f6bpt7.wl-maz@kernel.org>
+ <878s1atpjz.ffs@tglx>
+Date:   Mon, 09 Aug 2021 21:08:56 +0200
+Message-ID: <875ywetozb.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210809205633.4300bbea@thinkpad>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 09 August 2021 20:56:33 Marek Behún wrote:
-> Hello Ian,
-> 
-> thank you for your proposal. Some comments below:
-> 
-> On Sun,  8 Aug 2021 22:32:07 -0500
-> Ian Pilcher <arequipeno@gmail.com> wrote:
-> 
-> > One thing that has not changed is that associations between block
-> > devices and LEDs are still set via an attribute on the device, rather
-> > than the LED.  This is much simpler, as the device attribute only has
-> > to handle a single value (the name of the associated LED), rather than
-> > potentially handling multiple device names.
-> 
-> It may be simpler, but it is in contrast to how the netdev trigger
-> works, which already is in upstream for many years. I really think we
-> should try to have similar sysfs ABIs here. (I understand that the
-> netdev trigger is currently unable to handle multiple network
-> interfaces - but it is possible to extend it so.)
-> 
-> > I have modeled the interface for the /sys/block/<DEVICE>/led
-> > attribute on the sysfs interface used for selecting a trigger.  All
-> > available LEDs (all LEDs associated with the blkdev trigger) are
-> > shown when the attribute is read, with the currently selected LED
-> > enclosed in square brackets ([]).
-> 
-> I think it is reasonable to be able to set something like this:
->   led0 : blink on activity on any of [sda, sdb, sdc]
->   led1 : blink on activity on sda
->   led2 : blink on activity on sdb
->   led3 : blink on activity on sdc
-> 
-> If I am reading your code correctly, it looks that only one LED can be
-> configured for a block device. Is this true? If so, then the above
-> configuration cannot be set.
-> 
-> Also you are blinking the LED on any request to the block device. I
-> would rather expect to be able to set the LED to blink on read and on
-> write. (And possibly on other functions, like discard, or critical
-> temperature, or error, ...) I would like to know what other people
-> think about this.
+The existing mask/unmask functions are convoluted and generate suboptimal
+assembly code.
 
-Hello!
+Provide a new set of functions which will be used in later patches to
+replace the exisiting ones.
 
-HP EliteBook laptops had dedicated LED for some kind of error and
-encryption indication. And there is kernel acpi/wmi driver which can
-control this LED. I do not know if recent HP laptops still have these
-LEDs, but I would suggest to design API in a way that would allow to use
-these dedicated LEDs for their original "vendor" purpose.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210729222543.257079238@linutronix.de
 
-I'm mentioning it just because this functionality and design is already
-on existing production mainstream laptops, and not something imaginary.
+---
+V3: Check maskbit when masking (Marc)
+V2: New patch
+---
+ drivers/pci/msi.c |   72 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-If Linux distributions are still cooperating with laptop vendors and
-doing "official" Linux preloads then they may be interested in having
-"native" LED functionality support in kernel.
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -211,6 +211,78 @@ static inline __attribute_const__ u32 ms
+ 	return (1 << (1 << desc->msi_attrib.multi_cap)) - 1;
+ }
+ 
++static noinline void pci_msi_update_mask(struct msi_desc *desc, u32 clear, u32 set)
++{
++	raw_spinlock_t *lock = &desc->dev->msi_lock;
++	unsigned long flags;
++
++	raw_spin_lock_irqsave(lock, flags);
++	desc->msi_mask &= ~clear;
++	desc->msi_mask |= set;
++	pci_write_config_dword(msi_desc_to_pci_dev(desc), desc->mask_pos,
++			       desc->msi_mask);
++	raw_spin_unlock_irqrestore(lock, flags);
++}
++
++static inline void pci_msi_mask(struct msi_desc *desc, u32 mask)
++{
++	pci_msi_update_mask(desc, 0, mask);
++}
++
++static inline void pci_msi_unmask(struct msi_desc *desc, u32 mask)
++{
++	pci_msi_update_mask(desc, mask, 0);
++}
++
++/*
++ * This internal function does not flush PCI writes to the device.  All
++ * users must ensure that they read from the device before either assuming
++ * that the device state is up to date, or returning out of this file.
++ * It does not affect the msi_desc::msix_ctrl cache either. Use with care!
++ */
++static void pci_msix_write_vector_ctrl(struct msi_desc *desc, u32 ctrl)
++{
++	void __iomem *desc_addr = pci_msix_desc_addr(desc);
++
++	writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
++}
++
++static inline void pci_msix_mask(struct msi_desc *desc)
++{
++	desc->msix_ctrl |= PCI_MSIX_ENTRY_CTRL_MASKBIT;
++	pci_msix_write_vector_ctrl(desc, desc->msix_ctrl);
++	/* Flush write to device */
++	readl(desc->mask_base);
++}
++
++static inline void pci_msix_unmask(struct msi_desc *desc)
++{
++	desc->msix_ctrl &= ~PCI_MSIX_ENTRY_CTRL_MASKBIT;
++	pci_msix_write_vector_ctrl(desc, desc->msix_ctrl);
++}
++
++static void __pci_msi_mask_desc(struct msi_desc *desc, u32 mask)
++{
++	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
++		return;
++
++	if (desc->msi_attrib.is_msix)
++		pci_msix_mask(desc);
++	else if (desc->msi_attrib.maskbit)
++		pci_msi_mask(desc, mask);
++}
++
++static void __pci_msi_unmask_desc(struct msi_desc *desc, u32 mask)
++{
++	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
++		return;
++
++	if (desc->msi_attrib.is_msix)
++		pci_msix_unmask(desc);
++	else if (desc->msi_attrib.maskbit)
++		pci_msi_unmask(desc, mask);
++}
++
+ /**
+  * pci_msi_mask_irq - Generic IRQ chip callback to mask PCI/MSI interrupts
+  * @data:	pointer to irqdata associated to that interrupt
