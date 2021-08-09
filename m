@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEEB3E4314
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714D03E4319
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbhHIJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:47:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20705 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234365AbhHIJre (ORCPT
+        id S234724AbhHIJrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:47:55 -0400
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:45819 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234365AbhHIJrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:47:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628502433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YIzxW1n4ek2sfIW3v4j8n0cb8MmPxkckfn2o3SBMVJk=;
-        b=gX6z3SrFcr6OeD6qW2lQuLyqsYx4pZGlgErfWK/DlGDvig3vRUkKGGIG9l9kbirhTBu2JD
-        FVb/GJ2e52CY7SovJqX4QeHDBrT47tQJwD0udjBhy7OAKImpd8MiaNt9k9qTSGic0bSTvJ
-        9cczNwO9JLNFqp3q/nllsayWe53UjAU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-LewsWq59NQC-jFhdWak5mw-1; Mon, 09 Aug 2021 05:47:12 -0400
-X-MC-Unique: LewsWq59NQC-jFhdWak5mw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8BB61074661;
-        Mon,  9 Aug 2021 09:47:10 +0000 (UTC)
-Received: from T590 (ovpn-13-190.pek2.redhat.com [10.72.13.190])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F3EEC7A8D5;
-        Mon,  9 Aug 2021 09:47:03 +0000 (UTC)
-Date:   Mon, 9 Aug 2021 17:46:58 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, josef@toxicpanda.com, bvanassche@acm.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nbd@other.debian.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v2 2/2] nbd: convert to use blk_mq_get_rq_by_tag()
-Message-ID: <YRD5krmF/C7JxchE@T590>
-References: <20210809030927.1946162-1-yukuai3@huawei.com>
- <20210809030927.1946162-3-yukuai3@huawei.com>
- <YRDK9tBFscK5ScK8@T590>
- <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
+        Mon, 9 Aug 2021 05:47:55 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 2F86F2800B3D2;
+        Mon,  9 Aug 2021 11:47:31 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 1733A260B31; Mon,  9 Aug 2021 11:47:31 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 11:47:31 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     bhelgaas@google.com, Sean V Kelley <sean.v.kelley@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH] PCI/portdrv: Disallow runtime suspend when waekup is
+ required but PME service isn't supported
+Message-ID: <20210809094731.GA16595@wunner.de>
+References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
+ <20210809042414.107430-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210809042414.107430-1-kai.heng.feng@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 03:08:26PM +0800, yukuai (C) wrote:
-> On 2021/08/09 14:28, Ming Lei wrote:
-> > On Mon, Aug 09, 2021 at 11:09:27AM +0800, Yu Kuai wrote:
-> > > blk_mq_tag_to_rq() might return freed request, use
-> > > blk_mq_get_rq_by_tag() instead.
-> > > 
-> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > > ---
-> > >   drivers/block/nbd.c | 11 ++++++-----
-> > >   1 file changed, 6 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > > index c38317979f74..9e56975a8eee 100644
-> > > --- a/drivers/block/nbd.c
-> > > +++ b/drivers/block/nbd.c
-> > > @@ -713,11 +713,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
-> > >   	tag = nbd_handle_to_tag(handle);
-> > >   	hwq = blk_mq_unique_tag_to_hwq(tag);
-> > >   	if (hwq < nbd->tag_set.nr_hw_queues)
-> > > -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
-> > > -				       blk_mq_unique_tag_to_tag(tag));
-> > > -	if (!req || !blk_mq_request_started(req)) {
-> > > -		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
-> > > -			tag, req);
-> > > +		req = blk_mq_get_rq_by_tag(nbd->tag_set.tags[hwq],
-> > > +					   blk_mq_unique_tag_to_tag(tag));
-> > > +	if (!req) {
-> > > +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d\n", tag);
-> > >   		return ERR_PTR(-ENOENT);
-> > >   	}
-> > >   	trace_nbd_header_received(req, handle);
-> > > @@ -779,6 +778,8 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
-> > >   	}
-> > >   out:
-> > >   	trace_nbd_payload_received(req, handle);
-> > > +	if (req)
-> > > +		blk_mq_put_rq_ref(req);
-> > >   	mutex_unlock(&cmd->lock);
-> > >   	return ret ? ERR_PTR(ret) : cmd;
-> > 
-> > After blk_mq_put_rq_ref() returns, this request may have been freed,
-> > so the returned 'cmd' may have been freed too.
-> > 
-> > As I replied in your another thread, it is driver's responsibility to
-> > cover race between normal completion and timeout/error handling, that
-> > means the caller of blk_mq_tag_to_rq need to make sure that the request
-> > represented by the passed 'tag' can't be freed.
-> 
-> Hi, Ming
-> 
-> There are two problems here in nbd, both reported by our syzkaller.
-> 
-> The first is that blk_mq_tag_to_rq() returned a freed request, which is
-> because tags->static_rq[] is freed without clearing tags->rq[].
-> Syzkaller log shows that a reply package is sent to client without
-> the client's request package. And this patch is trying to solve this
-> problem.
+[cc += Mika]
 
-It is still driver's problem:
+On Mon, Aug 09, 2021 at 12:24:12PM +0800, Kai-Heng Feng wrote:
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213873
 
-->static_rq is freed in blk_mq_free_tag_set() which is called after
-blk_cleanup_disk() returns. Once blk_cleanup_disk() returns, there
-shouldn't be any driver activity, including calling blk_mq_tag_to_rq()
-by passing one invalid tag.
+The last comment on this bugzilla says "BIOS will fix this."
+and the status is RESOLVED WILL_NOT_FIX.
+
+Why is the patch still necessary?
 
 
-Thanks, 
-Ming
+> Some platforms cannot detect ethernet hotplug once its upstream port is
+> runtime suspended because PME isn't enabled in _OSC.
 
+If PME is not handled natively, why does the NIC runtime suspend?
+Shouldn't this be fixed in the NIC driver by keeping the device
+runtime active if PME cannot be used?
+
+
+> Disallow port runtime suspend when any child device requires wakeup, so
+> pci_pme_list_scan() can still read the PME status from the devices
+> behind the port.
+
+pci_pme_list_scan() is for broken devices which fail to signal PME.
+Is this NIC really among them or does PME fail merely because it's not
+granted to OSPM?
+
+
+> --- a/drivers/pci/pcie/portdrv_pci.c
+> +++ b/drivers/pci/pcie/portdrv_pci.c
+> @@ -59,14 +59,30 @@ static int pcie_port_runtime_suspend(struct device *dev)
+>  	return pcie_port_device_runtime_suspend(dev);
+>  }
+>  
+> +static int pcie_port_wakeup_check(struct device *dev, void *data)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	if (!pdev)
+> +		return 0;
+> +
+> +	return pdev->wakeup_prepared;
+> +}
+> +
+>  static int pcie_port_runtime_idle(struct device *dev)
+>  {
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	if (!pcie_port_find_device(pdev, PCIE_PORT_SERVICE_PME) &&
+> +	    device_for_each_child(dev, NULL, pcie_port_wakeup_check))
+> +		return -EBUSY;
+> +
+>  	/*
+>  	 * Assume the PCI core has set bridge_d3 whenever it thinks the port
+>  	 * should be good to go to D3.  Everything else, including moving
+>  	 * the port to D3, is handled by the PCI core.
+>  	 */
+> -	return to_pci_dev(dev)->bridge_d3 ? 0 : -EBUSY;
+> +	return pdev->bridge_d3 ? 0 : -EBUSY;
+
+If an additional check is necessary for this issue, it should be
+integrated into pci_dev_check_d3cold() instead of pcie_port_runtime_idle().
+
+Thanks,
+
+Lukas
