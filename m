@@ -2,220 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C4C3E4C6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B248F3E4C6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhHISwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        id S235761AbhHISx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235655AbhHISwW (ORCPT
+        with ESMTP id S235497AbhHISxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:52:22 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEA0C061798
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:52:01 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id q3so4173288vkd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 11:52:01 -0700 (PDT)
+        Mon, 9 Aug 2021 14:53:24 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E79C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:53:03 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id a2-20020a0562141302b02903303839b843so13303608qvv.13
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 11:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d/b2tS7YMRHPjI6VGiV4WlYzcCT+N2pnoJeTL1fGmn8=;
-        b=x+VgKgaGdpHjdkRUURCM+NYQxSTBy0MkPCmpbM3VIbSGIOsKT8McvVHvOqpCfPDp7H
-         M4W8cRoidhuJJ6xT+Q0fvemdLheGyBHuuf5PbDY/5f/gJVpiXvdbLy8wi5Fwg9b41XRO
-         y0nFK2KV9XPrj+MkW1Ph1EeavmWj8Yhtfftbfkr0al6WVOiySz908r+BA0cssptNHJQc
-         6Z4Rfg52GaKWJPr5qdvIIg51iZXrOjEC+yV4RslNN/Crz2zsd1wfyKnhglVo780qMky2
-         4hfrfphfWh78WUlxasiDzHL7OqWsWdhaRa6FjMADzGi5pnL3DD5vxXq06vA/PITiesQu
-         WXiQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ywM/Xx2WoSrklXYQ+qGHDsBP/6PxFFUaXmUO4ywj3C8=;
+        b=dC5FGoRYQBrQmEh1n/oqJCImjvo/gRH651cSk3+XrTSgapBJQsHnCZtGmhFmVEe+1c
+         AQ8zQeee2kw/+p8S76GvU6pnmbTQuRmI7s/ggpni0zUkYnW/7kkBgzsfSX/+MNavPTtW
+         msxW6Avn3jhgQ9c1pk7nfXJAOFsNoSKUT6BW4NEfkEfMLs4akACoMNlvdzAKDdIWakuP
+         WYQ0jKNciB1S/1yzDmoOkHPhd+UhLkHdzK2DMPlkzvcHRN8QNDZ6I+NlEar1yvUY74V7
+         IF5HtwGuE4s/f+i+fWh7KrOI+stz60yayESp4aV7mZVxT7Wgz2izBGst9l6nbLS+ozXv
+         AKbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d/b2tS7YMRHPjI6VGiV4WlYzcCT+N2pnoJeTL1fGmn8=;
-        b=TQvsR5sqK8g5b/o+A0fP+cS4hvj91tzwAfj1ypE/rqlTcmQSyXGjLpEKl3EGRCXRmg
-         wFSj0SYHpE7XIbtFATOeGxN0cGor1SusyHNhNHdtb9KaKwjxDqLOQBuILxIE2RGz2mZI
-         pr/99S6qkIJ9jTBY+8OTeHjLcmI52HwwBTSzOVbBT7I96ggHrX94WQ05mGgnIdI85A+G
-         R3cjjWUAuSSdkxyIBjar22dWoXwxBoZ6dknGMfClB14sZ1BHHeuUtypUT+RO9OX5j0bm
-         bz/3JYitYKW8Whu5v6jWBQQSd50hq9ko/4kGHZjR2cQ88GEBD6xLlY7P7rxXgud/hM3w
-         v4oA==
-X-Gm-Message-State: AOAM533gMdBcQiGwFWYqS/1sQ9yQ24QxyR+SdOgiqDqOgQc/OmsKNEY8
-        o8cIKOi/LLpvT87zXuDy9FZIkaXA5Dbd9qpwTI0UZA==
-X-Google-Smtp-Source: ABdhPJztTV7fFHE7DAa32TUbP4AmYOxZsrntgIge/gVbMCQBwXCNWE/Kq/pQ1JbUoXC+yXA/gvcXiKD7IlttIEP5jKE=
-X-Received: by 2002:a1f:6203:: with SMTP id w3mr15362595vkb.24.1628535120427;
- Mon, 09 Aug 2021 11:52:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210806152146.16107-1-semen.protsenko@linaro.org>
- <20210806152146.16107-8-semen.protsenko@linaro.org> <7110b1e2-1aee-6ddf-803f-ee392e494f2d@canonical.com>
-In-Reply-To: <7110b1e2-1aee-6ddf-803f-ee392e494f2d@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Mon, 9 Aug 2021 21:51:48 +0300
-Message-ID: <CAPLW+4=yK-dfWjKjLEOKL2o2sG1eyqSNqgVCnQNYvbUHo+Om4w@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] clk: samsung: Add Exynos850 clock driver stub
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ywM/Xx2WoSrklXYQ+qGHDsBP/6PxFFUaXmUO4ywj3C8=;
+        b=l/PYNV18/QZNScKDCqWz8YuS7HDFHgWJodtFWu2JNhKMVRGKCt9bXMX/xxhlD0xA6L
+         1Eot85UeXVdjnSi6oYrvdcqt1CUVLdLMrOM4xGDw4V3B2g21N5lg47NSrdBVviSWuROy
+         y+9FqcUtrVnHT4G2hjzoFvGaL8eFXhwgrNL3cXu6nrvgrGj8yQkYJTh08F1JF27zpbZY
+         gNfcUoUFBfL5vwEONF40LlDvY4VEBY+7pXt8FyLNdqtqStdSzHldfjQvV+KjGR/x4Tih
+         AKH0PrMJX0iYNLQWfGrxFUYCQP7kfTDe0aUP0tv+2e3zJLcHHpdZuTJI3QbE+H1vTbw9
+         Nz1w==
+X-Gm-Message-State: AOAM530Dv0yLUjUJO2rsHB7RHRsCCRDlCVwobMKdAWg79G2n9QT+sQOb
+        +qqVj7PUbD5RpJYvAXkmwYRsbxuyObE=
+X-Google-Smtp-Source: ABdhPJwiQF8NwHXdMwNZmBEQw5JxirhPVsoHFH9/CrfilF/vN/QZPl3B2BWzVjQMYdqDvH0pepiK1BXxuHc=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:cd66:472e:bb3:568])
+ (user=surenb job=sendgmr) by 2002:ad4:5de1:: with SMTP id jn1mr13910131qvb.62.1628535182750;
+ Mon, 09 Aug 2021 11:53:02 -0700 (PDT)
+Date:   Mon,  9 Aug 2021 11:52:58 -0700
+Message-Id: <20210809185259.405936-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH v9 1/2] mm: introduce process_mrelease system call
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, david@redhat.com,
+        jannh@google.com, shakeelb@google.com, geert@linux-m68k.org,
+        luto@kernel.org, christian.brauner@ubuntu.com, fweimer@redhat.com,
+        jengelh@inai.de, timmurray@google.com, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 at 13:55, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 06/08/2021 17:21, Sam Protsenko wrote:
-> > For now it's just a stub driver to make the serial driver work. Later it
-> > will be implemented properly. This driver doesn't really change clocks,
-> > only registers the UART clock as a fixed-rate clock. Without this clock
-> > driver the UART driver won't work, as it's trying to obtain "uart" clock
-> > and fails if it's not able to.
->
-> You know that as temporary solution you can add necessary clocks
-> directly in your DTS as fixed-rate-clocks? Effect would be quite similar
-> to the one here for UART driver but instead adding some temporary code
-> you would add temporary DTS nodes and references.
->
-> I am fine with this approach although the binding (if ever defined...)
-> would need to be marked as experimental.
->
+In modern systems it's not unusual to have a system component monitoring
+memory conditions of the system and tasked with keeping system memory
+pressure under control. One way to accomplish that is to kill
+non-essential processes to free up memory for more important ones.
+Examples of this are Facebook's OOM killer daemon called oomd and
+Android's low memory killer daemon called lmkd.
+For such system component it's important to be able to free memory
+quickly and efficiently. Unfortunately the time process takes to free
+up its memory after receiving a SIGKILL might vary based on the state
+of the process (uninterruptible sleep), size and OPP level of the core
+the process is running. A mechanism to free resources of the target
+process in a more predictable way would improve system's ability to
+control its memory pressure.
+Introduce process_mrelease system call that releases memory of a dying
+process from the context of the caller. This way the memory is freed in
+a more controllable way with CPU affinity and priority of the caller.
+The workload of freeing the memory will also be charged to the caller.
+The operation is allowed only on a dying process.
 
-Let's keep this driver then. My next step would be implementing the
-proper clk driver, so this review would be a good starting point for
-me. I will, of course, address your other comments.
+After previous discussions [1, 2, 3] the decision was made [4] to introduce
+a dedicated system call to cover this use case.
 
-> >
-> > In order to get a functional serial console we have to implement that
-> > minimal clock driver with "uart" clock. It's not necessary to actually
-> > configure clocks, as those are already configured in bootloader, so
-> > kernel can rely on that for now.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> > Changes in v2:
-> >   - Used hard coded clock indexes, as clock bindings were removed; will
-> >     add clock bindings back (reimplemented) once proper clock driver is
-> >     ready
-> >   - Removed .data = 0 for exynos850-oscclk, as it's in BSS section
-> >   - Removed comma for terminator {}
-> >   - Made exynos850_clk_init() static
-> >   - Removed checking np for NULL, as it's already done in of_iomap()
-> >
-> >  drivers/clk/samsung/Makefile        |  1 +
-> >  drivers/clk/samsung/clk-exynos850.c | 64 +++++++++++++++++++++++++++++
-> >  2 files changed, 65 insertions(+)
-> >  create mode 100644 drivers/clk/samsung/clk-exynos850.c
-> >
-> > diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-> > index 028b2e27a37e..c46cf11e4d0b 100644
-> > --- a/drivers/clk/samsung/Makefile
-> > +++ b/drivers/clk/samsung/Makefile
-> > @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)       += clk-exynos5433.o
-> >  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
-> >  obj-$(CONFIG_EXYNOS_CLKOUT)  += clk-exynos-clkout.o
-> >  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)        += clk-exynos7.o
-> > +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)        += clk-exynos850.o
-> >  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
-> >  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
-> >  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
-> > diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-> > new file mode 100644
-> > index 000000000000..36c7c7fe7cf0
-> > --- /dev/null
-> > +++ b/drivers/clk/samsung/clk-exynos850.c
-> > @@ -0,0 +1,64 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
-> > + * Copyright (C) 2021 Linaro Ltd.
-> > + *
-> > + * Common Clock Framework support for Exynos850 SoC.
-> > + */
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/clkdev.h>
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_address.h>
-> > +
-> > +#include "clk.h"
-> > +
-> > +/* Will be extracted to bindings header once proper clk driver is implemented */
-> > +#define OSCCLK               1
-> > +#define DOUT_UART    2
-> > +#define CLK_NR_CLKS  3
-> > +
-> > +/* Fixed rate clocks generated outside the SoC */
-> > +static struct samsung_fixed_rate_clock exynos850_fixed_rate_ext_clks[] __initdata = {
-> > +     FRATE(OSCCLK, "fin_pll", NULL, 0, 26000000),
-> > +};
-> > +
-> > +/*
-> > + * Model the UART clock as a fixed-rate clock for now, to make serial driver
-> > + * work. This clock is already configured in the bootloader.
-> > + */
-> > +static const struct samsung_fixed_rate_clock exynos850_peri_clks[] __initconst = {
-> > +     FRATE(DOUT_UART, "DOUT_UART", NULL, 0, 200000000),
-> > +};
-> > +
-> > +static const struct of_device_id ext_clk_match[] __initconst = {
-> > +     { .compatible = "samsung,exynos850-oscclk" },
-> > +     {}
-> > +};
-> > +
-> > +static void __init exynos850_clk_init(struct device_node *np)
-> > +{
-> > +     void __iomem *reg_base;
-> > +     struct samsung_clk_provider *ctx;
-> > +
-> > +     reg_base = of_iomap(np, 0);
-> > +     if (!reg_base)
-> > +             panic("%s: failed to map registers\n", __func__);
-> > +
-> > +     ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
-> > +     if (!ctx)
-> > +             panic("%s: unable to allocate ctx\n", __func__);
->
-> Not needed, the samsung_clk_init() panics or returns valid memory.
->
+The API is as follows,
 
-Done. Btw, I noticed that similar check is present in clk-exynos5433.c.
+          int process_mrelease(int pidfd, unsigned int flags);
 
-> > +
-> > +     samsung_clk_of_register_fixed_ext(ctx,
-> > +                     exynos850_fixed_rate_ext_clks,
-> > +                     ARRAY_SIZE(exynos850_fixed_rate_ext_clks),
-> > +                     ext_clk_match);
-> > +
-> > +     samsung_clk_register_fixed_rate(ctx, exynos850_peri_clks,
-> > +                     ARRAY_SIZE(exynos850_peri_clks));
-> > +
-> > +     samsung_clk_of_add_provider(np, ctx);
-> > +}
-> > +
-> > +CLK_OF_DECLARE(exynos850_clk, "samsung,exynos850-clock", exynos850_clk_init);
-> >
->
-> Best regards,
-> Krzysztof
+        DESCRIPTION
+          The process_mrelease() system call is used to free the memory of
+          an exiting process.
+
+          The pidfd selects the process referred to by the PID file
+          descriptor.
+          (See pidfd_open(2) for further information)
+
+          The flags argument is reserved for future use; currently, this
+          argument must be specified as 0.
+
+        RETURN VALUE
+          On success, process_mrelease() returns 0. On error, -1 is
+          returned and errno is set to indicate the error.
+
+        ERRORS
+          EBADF  pidfd is not a valid PID file descriptor.
+
+          EAGAIN Failed to release part of the address space.
+
+          EINTR  The call was interrupted by a signal; see signal(7).
+
+          EINVAL flags is not 0.
+
+          EINVAL The memory of the task cannot be released because the
+                 process is not exiting, the address space is shared
+                 with another live process or there is a core dump in
+                 progress.
+
+          ENOSYS This system call is not supported, for example, without
+                 MMU support built into Linux.
+
+          ESRCH  The target process does not exist (i.e., it has terminated
+                 and been waited on).
+
+[1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+[2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+[3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+[4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+changes in v9:
+- Replaced PIDTYPE_PID with PIDTYPE_TGID in get_pid_task(),
+per Christian Brauner
+
+ mm/oom_kill.c | 70 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index c729a4c4a1ac..831340e7ad8b 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -28,6 +28,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/sched/debug.h>
+ #include <linux/swap.h>
++#include <linux/syscalls.h>
+ #include <linux/timex.h>
+ #include <linux/jiffies.h>
+ #include <linux/cpuset.h>
+@@ -1141,3 +1142,72 @@ void pagefault_out_of_memory(void)
+ 	out_of_memory(&oc);
+ 	mutex_unlock(&oom_lock);
+ }
++
++SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
++{
++#ifdef CONFIG_MMU
++	struct mm_struct *mm = NULL;
++	struct task_struct *task;
++	struct task_struct *p;
++	unsigned int f_flags;
++	bool reap = true;
++	struct pid *pid;
++	long ret = 0;
++
++	if (flags)
++		return -EINVAL;
++
++	pid = pidfd_get_pid(pidfd, &f_flags);
++	if (IS_ERR(pid))
++		return PTR_ERR(pid);
++
++	task = get_pid_task(pid, PIDTYPE_TGID);
++	if (!task) {
++		ret = -ESRCH;
++		goto put_pid;
++	}
++
++	/*
++	 * Make sure to choose a thread which still has a reference to mm
++	 * during the group exit
++	 */
++	p = find_lock_task_mm(task);
++	if (!p) {
++		ret = -ESRCH;
++		goto put_task;
++	}
++
++	mm = p->mm;
++	mmgrab(mm);
++
++	/* If the work has been done already, just exit with success */
++	if (test_bit(MMF_OOM_SKIP, &mm->flags))
++		reap = false;
++	else if (!task_will_free_mem(p)) {
++		reap = false;
++		ret = -EINVAL;
++	}
++	task_unlock(p);
++
++	if (!reap)
++		goto drop_mm;
++
++	if (mmap_read_lock_killable(mm)) {
++		ret = -EINTR;
++		goto drop_mm;
++	}
++	if (!__oom_reap_task_mm(mm))
++		ret = -EAGAIN;
++	mmap_read_unlock(mm);
++
++drop_mm:
++	mmdrop(mm);
++put_task:
++	put_task_struct(task);
++put_pid:
++	put_pid(pid);
++	return ret;
++#else
++	return -ENOSYS;
++#endif /* CONFIG_MMU */
++}
+-- 
+2.32.0.605.g8dce9f2422-goog
+
