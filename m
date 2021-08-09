@@ -2,121 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095253E3DF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 04:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEAF3E3DFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 04:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbhHICf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 22:35:57 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8379 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232736AbhHICf4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 22:35:56 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gjg7w0FmFz85RR;
-        Mon,  9 Aug 2021 10:31:40 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 10:35:33 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.98) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 10:35:33 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <naveen.n.rao@linux.vnet.ibm.com>,
-        <mhiramat@kernel.org>, <peterz@infradead.org>,
-        <christophe.leroy@csgroup.eu>, <npiggin@gmail.com>,
-        <ruscur@russell.cc>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>, <pulehui@huawei.com>
-Subject: [PATCH v2] powerpc/kprobes: Fix kprobe Oops happens in booke
-Date:   Mon, 9 Aug 2021 10:36:58 +0800
-Message-ID: <20210809023658.218915-1-pulehui@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S232586AbhHICo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 22:44:56 -0400
+Received: from mga02.intel.com ([134.134.136.20]:40775 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229942AbhHICoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 22:44:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="201790018"
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="201790018"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 19:44:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="525015065"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Aug 2021 19:44:31 -0700
+Date:   Mon, 9 Aug 2021 10:44:30 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v7 3/5] mm/hugetlb: add support for mempolicy
+ MPOL_PREFERRED_MANY
+Message-ID: <20210809024430.GA46432@shbuild999.sh.intel.com>
+References: <1627970362-61305-1-git-send-email-feng.tang@intel.com>
+ <1627970362-61305-4-git-send-email-feng.tang@intel.com>
+ <YQ06tNiDEsvl8004@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.98]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQ06tNiDEsvl8004@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using kprobe on powerpc booke series processor, Oops happens
-as show bellow:
+Hi Michal,
 
-/ # echo "p:myprobe do_nanosleep" > /sys/kernel/debug/tracing/kprobe_events
-/ # echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
-/ # sleep 1
-[   50.076730] Oops: Exception in kernel mode, sig: 5 [#1]
-[   50.077017] BE PAGE_SIZE=4K SMP NR_CPUS=24 QEMU e500
-[   50.077221] Modules linked in:
-[   50.077462] CPU: 0 PID: 77 Comm: sleep Not tainted 5.14.0-rc4-00022-g251a1524293d #21
-[   50.077887] NIP:  c0b9c4e0 LR: c00ebecc CTR: 00000000
-[   50.078067] REGS: c3883de0 TRAP: 0700   Not tainted (5.14.0-rc4-00022-g251a1524293d)
-[   50.078349] MSR:  00029000 <CE,EE,ME>  CR: 24000228  XER: 20000000
-[   50.078675]
-[   50.078675] GPR00: c00ebdf0 c3883e90 c313e300 c3883ea0 00000001 00000000 c3883ecc 00000001
-[   50.078675] GPR08: c100598c c00ea250 00000004 00000000 24000222 102490c2 bff4180c 101e60d4
-[   50.078675] GPR16: 00000000 102454ac 00000040 10240000 10241100 102410f8 10240000 00500000
-[   50.078675] GPR24: 00000002 00000000 c3883ea0 00000001 00000000 0000c350 3b9b8d50 00000000
-[   50.080151] NIP [c0b9c4e0] do_nanosleep+0x0/0x190
-[   50.080352] LR [c00ebecc] hrtimer_nanosleep+0x14c/0x1e0
-[   50.080638] Call Trace:
-[   50.080801] [c3883e90] [c00ebdf0] hrtimer_nanosleep+0x70/0x1e0 (unreliable)
-[   50.081110] [c3883f00] [c00ec004] sys_nanosleep_time32+0xa4/0x110
-[   50.081336] [c3883f40] [c001509c] ret_from_syscall+0x0/0x28
-[   50.081541] --- interrupt: c00 at 0x100a4d08
-[   50.081749] NIP:  100a4d08 LR: 101b5234 CTR: 00000003
-[   50.081931] REGS: c3883f50 TRAP: 0c00   Not tainted (5.14.0-rc4-00022-g251a1524293d)
-[   50.082183] MSR:  0002f902 <CE,EE,PR,FP,ME>  CR: 24000222  XER: 00000000
-[   50.082457]
-[   50.082457] GPR00: 000000a2 bf980040 1024b4d0 bf980084 bf980084 64000000 00555345 fefefeff
-[   50.082457] GPR08: 7f7f7f7f 101e0000 00000069 00000003 28000422 102490c2 bff4180c 101e60d4
-[   50.082457] GPR16: 00000000 102454ac 00000040 10240000 10241100 102410f8 10240000 00500000
-[   50.082457] GPR24: 00000002 bf9803f4 10240000 00000000 00000000 100039e0 00000000 102444e8
-[   50.083789] NIP [100a4d08] 0x100a4d08
-[   50.083917] LR [101b5234] 0x101b5234
-[   50.084042] --- interrupt: c00
-[   50.084238] Instruction dump:
-[   50.084483] 4bfffc40 60000000 60000000 60000000 9421fff0 39400402 914200c0 38210010
-[   50.084841] 4bfffc20 00000000 00000000 00000000 <7fe00008> 7c0802a6 7c892378 93c10048
-[   50.085487] ---[ end trace f6fffe98e2fa8f3e ]---
-[   50.085678]
-Trace/breakpoint trap
+Thanks for the review and ACKs to 1/5 and 2/5 patches.
 
-There is no real mode for booke arch and the MMU translation is
-always on. The corresponding MSR_IS/MSR_DS bit in booke is used
-to switch the address space, but not for real mode judgment.
+On Fri, Aug 06, 2021 at 03:35:48PM +0200, Michal Hocko wrote:
+> On Tue 03-08-21 13:59:20, Feng Tang wrote:
+> > From: Ben Widawsky <ben.widawsky@intel.com>
+> > 
+> > Implement the missing huge page allocation functionality while obeying
+> > the preferred node semantics. This is similar to the implementation
+> > for general page allocation, as it uses a fallback mechanism to try
+> > multiple preferred nodes first, and then all other nodes.
+> > 
+> > [akpm: fix compling issue when merging with other hugetlb patch]
+> > [Thanks to 0day bot for catching the missing #ifdef CONFIG_NUMA issue]
+> > Link: https://lore.kernel.org/r/20200630212517.308045-12-ben.widawsky@intel.com
+> > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > Co-developed-by: Feng Tang <feng.tang@intel.com>
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> 
+> ifdefery is just ugly as hell. One way to get rid of that would be to
+> provide a mpol_is_preferred_many() wrapper and hide the CONFIG_NUMA in
+> mempolicy.h. I haven't checked but this might help to remove some other
+> ifdefery as well.
+> 
+> I especially dislike the label hidden in the ifdef. You can get rid of
+> that by checking the page for NULL.
 
-Fixes: 21f8b2fa3ca5 ("powerpc/kprobes: Ignore traps that happened in real mode")
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
-v1->v2:
-- use IS_ENABLED(CONFIG_BOOKE) as suggested by Michael Ellerman and
-  Christophe Leroy
-- update Oops log to make problem clear
+Yes, the 'ifdef's were annoying to me too, and thanks for the suggestions.
+Following is the revised patch upon the suggestion.
 
- arch/powerpc/kernel/kprobes.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks,
+Feng
 
-diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-index cbc28d1a2e1b..7a7cd6bda53e 100644
---- a/arch/powerpc/kernel/kprobes.c
-+++ b/arch/powerpc/kernel/kprobes.c
-@@ -292,7 +292,8 @@ int kprobe_handler(struct pt_regs *regs)
- 	if (user_mode(regs))
- 		return 0;
+-------8<---------------------
+
+From fc30718c40f02ba5ea73456af49173e66b5032c1 Mon Sep 17 00:00:00 2001
+From: Ben Widawsky <ben.widawsky@intel.com>
+Date: Thu, 5 Aug 2021 23:01:11 -0400
+Subject: [PATCH] mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY
+
+Implement the missing huge page allocation functionality while obeying the
+preferred node semantics.  This is similar to the implementation for
+general page allocation, as it uses a fallback mechanism to try multiple
+preferred nodes first, and then all other nodes. 
+
+To avoid adding too many "#ifdef CONFIG_NUMA" check, add a helper function
+in mempolicy.h to check whether a mempolicy is MPOL_PREFERRED_MANY.
+
+[akpm: fix compling issue when merging with other hugetlb patch]
+[Thanks to 0day bot for catching the !CONFIG_NUMA compiling issue]
+[Michal Hocko: suggest to remove the #ifdef CONFIG_NUMA check]
+Link: https://lore.kernel.org/r/20200630212517.308045-12-ben.widawsky@intel.com
+Link: https://lkml.kernel.org/r/1627970362-61305-4-git-send-email-feng.tang@intel.com
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+Co-developed-by: Feng Tang <feng.tang@intel.com>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+--
+ include/linux/mempolicy.h | 12 ++++++++++++
+ mm/hugetlb.c              | 28 ++++++++++++++++++++++++----
+ 2 files changed, 36 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index 0117e1e..60d5e6c 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -187,6 +187,12 @@ extern void mpol_put_task_policy(struct task_struct *);
  
--	if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
-+	if (!IS_ENABLED(CONFIG_BOOKE) &&
-+	    (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR)))
- 		return 0;
+ extern bool numa_demotion_enabled;
  
- 	/*
++static inline bool mpol_is_preferred_many(struct mempolicy *pol)
++{
++	return  (pol->mode == MPOL_PREFERRED_MANY);
++}
++
++
+ #else
+ 
+ struct mempolicy {};
+@@ -297,5 +303,11 @@ static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
+ }
+ 
+ #define numa_demotion_enabled	false
++
++static inline bool mpol_is_preferred_many(struct mempolicy *pol)
++{
++	return  false;
++}
++
+ #endif /* CONFIG_NUMA */
+ #endif
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 95714fb..75ea8bc 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1145,7 +1145,7 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
+ 				unsigned long address, int avoid_reserve,
+ 				long chg)
+ {
+-	struct page *page;
++	struct page *page = NULL;
+ 	struct mempolicy *mpol;
+ 	gfp_t gfp_mask;
+ 	nodemask_t *nodemask;
+@@ -1166,7 +1166,17 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
+ 
+ 	gfp_mask = htlb_alloc_mask(h);
+ 	nid = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
+-	page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
++
++	if (mpol_is_preferred_many(mpol)) {
++		page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
++
++		/* Fallback to all nodes if page==NULL */
++		nodemask = NULL;
++	}
++
++	if (!page)
++		page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
++
+ 	if (page && !avoid_reserve && vma_has_reserves(vma, chg)) {
+ 		SetHPageRestoreReserve(page);
+ 		h->resv_huge_pages--;
+@@ -2147,9 +2157,19 @@ struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
+ 	nodemask_t *nodemask;
+ 
+ 	nid = huge_node(vma, addr, gfp_mask, &mpol, &nodemask);
+-	page = alloc_surplus_huge_page(h, gfp_mask, nid, nodemask, false);
+-	mpol_cond_put(mpol);
++	if (mpol_is_preferred_many(mpol)) {
++		gfp_t gfp = gfp_mask | __GFP_NOWARN;
+ 
++		gfp &=  ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
++		page = alloc_surplus_huge_page(h, gfp, nid, nodemask, false);
++
++		/* Fallback to all nodes if page==NULL */
++		nodemask = NULL;
++	}
++
++	if (!page)
++		page = alloc_surplus_huge_page(h, gfp_mask, nid, nodemask, false);
++	mpol_cond_put(mpol);
+ 	return page;
+ }
+ 
 -- 
-2.17.1
+2.7.4
+
 
