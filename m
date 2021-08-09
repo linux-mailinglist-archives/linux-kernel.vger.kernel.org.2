@@ -2,163 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9835C3E4E76
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB6D3E4EBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236415AbhHIV12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235661AbhHIV12 (ORCPT
+        id S236072AbhHIVwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:52:17 -0400
+Received: from gateway36.websitewelcome.com ([192.185.187.5]:38750 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232193AbhHIVwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:27:28 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A3CC0613D3;
-        Mon,  9 Aug 2021 14:27:07 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id f11so29332374ioj.3;
-        Mon, 09 Aug 2021 14:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bSVTGD0E1Co6L1LpjT4iW2VzE8/m5TIYK/SbNEx/88I=;
-        b=hezSmvao6xgZ7pFyqkWA3CozDN7J4A7J56ZakXThQxlsI7y0q6TkrGo7p5+oKfrltg
-         ZsYVMqPuUtcqiHrsp0E0pxYtd13CLZxwx7nBkx3QhokofSPWjxYXOPS+7cBUUMmGz1sm
-         U8u9jkQuatzvCycUN9KIG4lxlH6vh48Mpl9HT4tMmv2K+Sfec+OJHkEprOIf24vRx877
-         M3qWhi/pZc6qX0nwOiWqZO6DUHk/fhJ4wYTK23QiwGicG7c9bfvdfuCE+Iwzp2LsLq0J
-         wcI8r71iJX+4iGOju4wvexxaffpPCXelSwsKYt2X3UtTvLBDh5+svHvxfvuT4xEkbgDT
-         yVFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bSVTGD0E1Co6L1LpjT4iW2VzE8/m5TIYK/SbNEx/88I=;
-        b=rqJneG0VboLlXgCS4wYVGeFgPE/F/lcXWjXjVHIgZGVWdcfX4H/81v/ILrXX0TX0c1
-         +SIl5hylihXxPdS3brfoB8hYjaaS7SpcX4mwMP2WwmeEvAEbyHRwxJgX0s169vVefyVc
-         NP/bNWj3N/s9pcAMiIyhk2PkLr9Kl81Miqnc0GugH5Ybxfv5pX2w88pdCPhIwczc0lts
-         gZUltP/tNws+mS3QrgLU37Jsp3RLs1BZDX+BFt9xjjCeeSMCWis379D8auyFwQfuLae0
-         uD0rAg/zy7tQcMwGvH2g55fXrd5ZEya4kTv/XDqUcrb5aAfHu/yutvBRJk5C80KBBJkB
-         t07g==
-X-Gm-Message-State: AOAM531jOa5geUbKyZnbVSqMpx73Ugu/0IyvP9mKZjpSpD9FpYgJvvxl
-        7OmhCwe/B6V+8S60nuLCchZsfb4zzB5q/zPPPWQ=
-X-Google-Smtp-Source: ABdhPJwvzwkvGJ4iB8/yRiztHd5W8q/0TVae/w5CY/tDZ6cJ1Zgbyg1iAKUYQOISlSJKATmFCdrfD0SJBmC6RpSlDmI=
-X-Received: by 2002:a6b:ea19:: with SMTP id m25mr24107ioc.182.1628544426511;
- Mon, 09 Aug 2021 14:27:06 -0700 (PDT)
+        Mon, 9 Aug 2021 17:52:15 -0400
+X-Greylist: delayed 1330 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Aug 2021 17:52:15 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id C748440122811
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 16:29:42 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id DCq6mbS707sOiDCq6m80hH; Mon, 09 Aug 2021 16:29:42 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=QgyrrxOHvP7M6fplZ52oJH8CjSBf+T8N9dmFTacakl0=; b=RJ5HVUfwJimK7r90lDMzMJc0bK
+        kSZulCYMs8kEDYXa7fYxujML3b7F4zI94vIbs1yMfALNkuQpPtZ+y4Z7L7KkyZapPQq8str0VuE1d
+        +k13Y54uSLP/mt2btGWXP/lX9b/sPI9IxSNOm5m7SQDUHhyy4vQqu7QHJh8IohRTBTlvNHkhNN3di
+        9D/KDAvDLagoWUYImeYbxAvFmMcich7didzy0Sp8PEwQL0Hrg8xYkeycHQ8v/i1qyEG+UT9/u7yS5
+        WBVSJ4c1OC+Jhbg0+e3jXKXSsu4cz+QB3VEHdDbtKXl/IRRZMGtotuI8tKb0prXVe9bRWIBkQjjEA
+        /ELAzuUw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:36120 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mDCq5-000CXb-UH; Mon, 09 Aug 2021 16:29:41 -0500
+Subject: Re: [PATCH][next] mwifiex: usb: Replace one-element array with
+ flexible-array member
+To:     Brian Norris <briannorris@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+References: <20210809211134.GA22488@embeddedor>
+ <CA+ASDXO+GbP_WWVdO0=Uavh036ZhZiziE8DwGRKP-ooofd2QVw@mail.gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <533036d7-1a0e-21e8-5e40-2e807b32a215@embeddedor.com>
+Date:   Mon, 9 Aug 2021 16:32:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1627543994-20327-1-git-send-email-wcheng@codeaurora.org>
-In-Reply-To: <1627543994-20327-1-git-send-email-wcheng@codeaurora.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 9 Aug 2021 14:26:55 -0700
-Message-ID: <CANcMJZCAVBnOv5bR_n4edZphrZQL76HtQBNXn_AvDSouk68Yww@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: gadget: Use list_replace_init() before
- traversing lists
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     balbi@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jackp@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+ASDXO+GbP_WWVdO0=Uavh036ZhZiziE8DwGRKP-ooofd2QVw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mDCq5-000CXb-UH
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:36120
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 12
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:34 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
->
-> The list_for_each_entry_safe() macro saves the current item (n) and
-> the item after (n+1), so that n can be safely removed without
-> corrupting the list.  However, when traversing the list and removing
-> items using gadget giveback, the DWC3 lock is briefly released,
-> allowing other routines to execute.  There is a situation where, while
-> items are being removed from the cancelled_list using
-> dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
-> routine is running in parallel (due to UDC unbind).  As the cleanup
-> routine removes n, and the pullup disable removes n+1, once the
-> cleanup retakes the DWC3 lock, it references a request who was already
-> removed/handled.  With list debug enabled, this leads to a panic.
-> Ensure all instances of the macro are replaced where gadget giveback
-> is used.
->
-> Example call stack:
->
-> Thread#1:
-> __dwc3_gadget_ep_set_halt() - CLEAR HALT
->   -> dwc3_gadget_ep_cleanup_cancelled_requests()
->     ->list_for_each_entry_safe()
->     ->dwc3_gadget_giveback(n)
->       ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
->       ->spin_unlock
->       ->Thread#2 executes
->       ...
->     ->dwc3_gadget_giveback(n+1)
->       ->Already removed!
->
-> Thread#2:
-> dwc3_gadget_pullup()
->   ->waiting for dwc3 spin_lock
->   ...
->   ->Thread#1 released lock
->   ->dwc3_stop_active_transfers()
->     ->dwc3_remove_requests()
->       ->fetches n+1 item from cancelled_list (n removed by Thread#1)
->       ->dwc3_gadget_giveback()
->         ->dwc3_gadget_del_and_unmap_request()- n+1
-> deleted[cancelled_list]
->         ->spin_unlock
->
-> Fix this condition by utilizing list_replace_init(), and traversing
-> through a local copy of the current elements in the endpoint lists.
-> This will also set the parent list as empty, so if another thread is
-> also looping through the list, it will be empty on the next iteration.
->
-> Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->
-> ---
-> Previous patchset:
-> https://lore.kernel.org/linux-usb/1620716636-12422-1-git-send-email-wcheng@codeaurora.org/
-> ---
->  drivers/usb/dwc3/gadget.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index a29a4ca..3ce6ed9 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -1926,9 +1926,13 @@ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
->  {
->         struct dwc3_request             *req;
->         struct dwc3_request             *tmp;
-> +       struct list_head                local;
->         struct dwc3                     *dwc = dep->dwc;
->
-> -       list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
-> +restart:
-> +       list_replace_init(&dep->cancelled_list, &local);
-> +
-> +       list_for_each_entry_safe(req, tmp, &local, list) {
->                 dwc3_gadget_ep_skip_trbs(dep, req);
->                 switch (req->status) {
->                 case DWC3_REQUEST_STATUS_DISCONNECTED:
-> @@ -1946,6 +1950,9 @@ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
->                         break;
->                 }
->         }
-> +
-> +       if (!list_empty(&dep->cancelled_list))
-> +               goto restart;
->  }
 
-So, I'm not sure yet, but the "break" cases in the
-list_for_each_entry_safe seem suspicious to me.
 
-It seems we've move the list to the local listhead, then as we process
-the local listhead, we may hit the "break" case, which will stop
-processing the list, and then we end up returning, losing the
-unprocessed items on the local listhead.
+On 8/9/21 16:24, Brian Norris wrote:
+> On Mon, Aug 9, 2021 at 2:08 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+>>
+>> There is a regular need in the kernel to provide a way to declare having
+>> a dynamically sized set of trailing elements in a structure. Kernel code
+>> should always use “flexible array members”[1] for these cases. The older
+>> style of one-element or zero-length arrays should no longer be used[2].
+>>
+>> This helps with the ongoing efforts to globally enable -Warray-bounds
+>> and get us closer to being able to tighten the FORTIFY_SOURCE routines
+>> on memcpy().
+>>
+>> This issue was found with the help of Coccinelle and audited and fixed,
+>> manually.
+>>
+>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+>> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+>>
+>> Link: https://github.com/KSPP/linux/issues/79
+>> Link: https://github.com/KSPP/linux/issues/109
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> An important part of your patch rationale should include determining
+> that the 1-length wasn't actually important anywhere. I double checked
+> for you, and nobody seemed to be relying on 'sizeof struct fw_data' at
+> all, so this should be OK:
 
-I suspect we need to move them back to the started/cancelled_list, or
-rework things so we don't hit the "break" cases and fully process the
-local list before returning.
+I always do that. That's the reason why I included this line in the
+changelog text:
 
-thanks
--john
+"This issue was found with the help of Coccinelle and audited and fixed,
+manually."
+
+Thanks for double-checking, though. :)
+
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+
+Thanks
+--
+Gustavo
+
