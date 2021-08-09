@@ -2,175 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EE83E452F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0687E3E4556
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbhHIMFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 08:05:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23071 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234617AbhHIMFY (ORCPT
+        id S234806AbhHIMH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 08:07:56 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:45226
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234321AbhHIMHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 08:05:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628510703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+z9CSxqzwcgihY+rR169k8okLByYqfQprIHpqjQt5hA=;
-        b=Rw36Sb8MfdS2CJ9pmBoBM1jO9DpK/4Hf9yYj6WxsPoycZLebUTUV3Omz5FOhMR3f2YMgAE
-        k8XG27KTZ0gmFCTdy7EpvxQEOdO8Z0q7brn6dzUBFX28d4ErBl90Z9BXq9DuxGguFP+ro5
-        obMlkUTAmn7WnYif6pg6HoTrV5BUzcc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551--UoDoX3VMY6eI3vAG19IJQ-1; Mon, 09 Aug 2021 08:05:02 -0400
-X-MC-Unique: -UoDoX3VMY6eI3vAG19IJQ-1
-Received: by mail-ed1-f71.google.com with SMTP id k14-20020a05640212ceb02903bc50d32c17so8842479edx.12
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 05:05:02 -0700 (PDT)
+        Mon, 9 Aug 2021 08:07:54 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id CFF0A3F351
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 12:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628510853;
+        bh=2daM3RukL8uFtRevasOftGMEg/bNtv3suJb8BFZCflI=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=HrJXgGxQbNRB/JIy3TLD9IYpDCAdMOkQC+uEfu87uJaeWcrn04AgoTPn7s6U1CSF/
+         5Ddc96djkSQupaf4no/BNja2RdIkWkUSxh8yypCnuVCqc85x2wdDsVHyzCItYUNuFN
+         tOfcjCwuruhydHqVTnKaohK5EdVH/sF6v0S0iQuiCQ9iq6z60u6jpYjfvXl9oifRKY
+         iz03B4aaBVbY6/q2xwDcOQGvcjNVoHEiXyffQEXNGHFW3WwFuOBlWjN4AAHuklMOct
+         yIvtOftxY13LDZeGpWiN5lbXINWzBaOdgCL+w4bROBVdd51uSofaHdRRquBqoBU02m
+         9Rthojrkn0eCg==
+Received: by mail-ed1-f69.google.com with SMTP id dh21-20020a0564021d35b02903be0aa37025so6524081edb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 05:07:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+z9CSxqzwcgihY+rR169k8okLByYqfQprIHpqjQt5hA=;
-        b=Q3k29RJhpru+MRKcVW7n7XapDdmUQ3LbXVgKX7Io1Lv5kfgb+stUp1/cq5/+YcSzXY
-         UOg67LpcvgXhrn4wcese5/AewEu4XqjxqnSAw8ZxefFn1Tl1Jc7dTS4sbjljrZjNWARp
-         w7Ue2DenBUtuj18e9kNLh1GqmD7MjxKn7MxyDnCdt7W2HCkqIkA/7BMpqmu+e52vnrRi
-         bJmgumxv+2Mf3QAPc5U/vx8ctypI4eLKwpucBy1LEfiiW11KkAlld7og8GQr0iS+jl26
-         mgLBk8O7gu+8ZosZHnbHRPWht96muyWauy1jzbn0YF6h4JxRclXMhFOcoQIz0SJ96sTq
-         cMmA==
-X-Gm-Message-State: AOAM532vmPZp10iCOP99D01JXV4yeZDGbhSG7lwSY+VpHgKfoA74eWVm
-        Mczr+cy3/uAN389Uxc+5Ovpx9o1d2s/9C+ki+P+h8o7aecSbD724TLE8Hh8bACPWG6axr7xac8K
-        ikKYFArKLdGzNtYCIWjrS6g5E
-X-Received: by 2002:a17:907:2b09:: with SMTP id gc9mr8203848ejc.49.1628510701332;
-        Mon, 09 Aug 2021 05:05:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnR/WopfgC7031GUaVJc9iF0eg3jJjWLQrhMBUBYQNg2Q8EedFbZgObWIB3eAqyltqsFMA4Q==
-X-Received: by 2002:a17:907:2b09:: with SMTP id gc9mr8203827ejc.49.1628510701150;
-        Mon, 09 Aug 2021 05:05:01 -0700 (PDT)
-Received: from krava ([83.240.61.5])
-        by smtp.gmail.com with ESMTPSA id r27sm8039187edb.66.2021.08.09.05.05.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2daM3RukL8uFtRevasOftGMEg/bNtv3suJb8BFZCflI=;
+        b=PVWRSSzJlPntje3atfWIO3bBmFQUXVS5ZvHrDd6eZUw2Eeg2J+OwdEz3bm2XuMJXGn
+         FcbMVAQVyd5P7qG3ERwLl5giXXyv/nHP0VrUA2/GKc0A2mnzZoV9d10mSUNjT2/phPlD
+         Y43FXyyDY2IzQA0Xysd72KR4OjSaMUWQ8ZY/HJpkbxy4cnx2pw6kjbKFyH4Jl7sflp3R
+         74BIjUrqnNhphMZ4W1Epafk8F2WZZNLsLlwbveARHgcbjYgMJjvvMJuVxlQzuuKTPhrQ
+         TMxWu6OK7EQ4KTQc8mzDiXGxpG3J8jJOkRlf3+4MmayPm10DlPRsH/XqYWzZS2AdSgMZ
+         l6zg==
+X-Gm-Message-State: AOAM532uXsklGc8dCCh6RcDmzpjgISzpCP4GIMmiwojGNib+eLdXy9Vj
+        HhFRD5ja3JefTh+zYTvZmOiI3Jgt3TzAXg3Knz62ZksaB8kfwPEAI0p1KuPUB/AUprWOIdAuwBC
+        Vr33xjdf0Zuwdy5Mdi2heQGzb8ZJ6cVbRDfkXU/LUIw==
+X-Received: by 2002:a17:906:d52:: with SMTP id r18mr21995427ejh.47.1628510853395;
+        Mon, 09 Aug 2021 05:07:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOfuGtnOAZvjuBVRJBY5cSEj1w1cOneBCKbYYYklM3mbay8F5lsgcyWvB6Nbuj78CYpk7/Ag==
+X-Received: by 2002:a17:906:d52:: with SMTP id r18mr21995394ejh.47.1628510853144;
+        Mon, 09 Aug 2021 05:07:33 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id i6sm8084863edt.28.2021.08.09.05.07.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 05:05:00 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 14:04:59 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Subject: Re: [RFC PATCH v2 06/10] perf workqueue: introduce workqueue struct
-Message-ID: <YREZ65Jw9J5bB68u@krava>
-References: <cover.1627657061.git.rickyman7@gmail.com>
- <c946622ece7d1d1b99912563f6a7c56402955156.1627657061.git.rickyman7@gmail.com>
+        Mon, 09 Aug 2021 05:07:32 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sam Protsenko <semen.protsenko@linaro.org>
+Subject: [PATCH 1/3] dt-bindings: clock: samsung: convert Exynos5250 to dtschema
+Date:   Mon,  9 Aug 2021 14:05:42 +0200
+Message-Id: <20210809120544.56596-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c946622ece7d1d1b99912563f6a7c56402955156.1627657061.git.rickyman7@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 05:34:13PM +0200, Riccardo Mancini wrote:
+Convert Samsung Exynos5250 clock controller bindings to DT schema format
+using json-schema.
 
-SNIP
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ .../bindings/clock/exynos5250-clock.txt       | 41 ----------------
+ .../bindings/clock/samsung,exynos-clock.yaml  | 48 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 3 files changed, 49 insertions(+), 41 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
 
-> +static void worker_thread(int tidx, struct task_struct *task)
-> +{
-> +
-> +	pr_info("Hi from worker %d, executing task %p\n", tidx, task);
-> +}
-> +
-> +/**
-> + * attach_threadpool_to_workqueue - start @wq workers on @pool
-> + */
-> +static int attach_threadpool_to_workqueue(struct workqueue_struct *wq,
-> +					struct threadpool *pool)
-> +{
-> +	if (!threadpool__is_ready(pool)) {
-> +		pr_debug2("workqueue: cannot attach to pool: pool is not ready\n");
-> +		return -WORKQUEUE_ERROR__NOTALLOWED;
-> +	}
-> +
-> +	wq->pool = pool;
-> +
-> +	wq->pool_errno = threadpool__execute(pool, &wq->task);
-> +	if (wq->pool_errno)
-> +		return -WORKQUEUE_ERROR__POOLEXE;
-
-SNIP
-
-> +
-> +/**
-> + * create_workqueue - create a workqueue associated to @pool
-> + *
-> + * Only one workqueue can execute on a pool at a time.
-> + */
-> +struct workqueue_struct *create_workqueue(struct threadpool *pool)
-> +{
-> +	int ret, err = 0;
-> +	struct workqueue_struct *wq = malloc(sizeof(struct workqueue_struct));
-> +
-> +	if (!wq) {
-> +		err = -ENOMEM;
-> +		goto out_return;
-> +	}
-> +
-> +	ret = pthread_mutex_init(&wq->lock, NULL);
-> +	if (ret) {
-> +		err = -ret;
-> +		goto out_free_wq;
-> +	}
-> +
-> +	ret = pthread_cond_init(&wq->idle_cond, NULL);
-> +	if (ret) {
-> +		err = -ret;
-> +		goto out_destroy_mutex;
-> +	}
-> +
-> +	wq->pool = NULL;
-> +	INIT_LIST_HEAD(&wq->busy_list);
-> +	INIT_LIST_HEAD(&wq->idle_list);
-> +
-> +	INIT_LIST_HEAD(&wq->pending);
-> +
-> +	ret = pipe(wq->msg_pipe);
-> +	if (ret) {
-> +		err = -ENOMEM;
-> +		goto out_destroy_cond;
-> +	}
-> +
-> +	wq->task.fn = worker_thread;
-> +
-> +	ret = attach_threadpool_to_workqueue(wq, pool);
-> +	if (ret) {
-> +		err = ret;
-> +		goto out_destroy_cond;
-> +	}
-> +
-> +	wq->status = WORKQUEUE_STATUS__READY;
-> +
-> +	return wq;
-> +
-> +out_destroy_cond:
-> +	pthread_cond_destroy(&wq->idle_cond);
-
-leaking wq->msg_pipe?
-
-thanks,
-jirka
-
-> +out_destroy_mutex:
-> +	pthread_mutex_destroy(&wq->lock);
-> +out_free_wq:
-> +	free(wq);
-> +out_return:
-> +	return ERR_PTR(err);
-> +}
-> +
-
-
-SNIP
+diff --git a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt b/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+deleted file mode 100644
+index aff266a12eeb..000000000000
+--- a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-* Samsung Exynos5250 Clock Controller
+-
+-The Exynos5250 clock controller generates and supplies clock to various
+-controllers within the Exynos5250 SoC.
+-
+-Required Properties:
+-
+-- compatible: should be one of the following.
+-  - "samsung,exynos5250-clock" - controller compatible with Exynos5250 SoC.
+-
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-
+-- #clock-cells: should be 1.
+-
+-Each clock is assigned an identifier and client nodes can use this identifier
+-to specify the clock which they consume.
+-
+-All available clocks are defined as preprocessor macros in
+-dt-bindings/clock/exynos5250.h header and can be used in device
+-tree sources.
+-
+-Example 1: An example of a clock controller node is listed below.
+-
+-	clock: clock-controller@10010000 {
+-		compatible = "samsung,exynos5250-clock";
+-		reg = <0x10010000 0x30000>;
+-		#clock-cells = <1>;
+-	};
+-
+-Example 2: UART controller node that consumes the clock generated by the clock
+-	   controller. Refer to the standard clock bindings for information
+-	   about 'clocks' and 'clock-names' property.
+-
+-	serial@13820000 {
+-		compatible = "samsung,exynos4210-uart";
+-		reg = <0x13820000 0x100>;
+-		interrupts = <0 54 0>;
+-		clocks = <&clock CLK_UART2>, <&clock CLK_SCLK_UART2>;
+-		clock-names = "uart", "clk_uart_baud0";
+-	};
+diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+new file mode 100644
+index 000000000000..cd6567bd8cc7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/samsung,exynos-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Samsung Exynos SoC clock controller
++
++maintainers:
++  - Chanwoo Choi <cw00.choi@samsung.com>
++  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
++  - Sylwester Nawrocki <s.nawrocki@samsung.com>
++  - Tomasz Figa <tomasz.figa@gmail.com>
++
++description: |
++  All available clocks are defined as preprocessor macros in
++  dt-bindings/clock/ headers.
++
++properties:
++  compatible:
++    const: samsung,exynos5250-clock
++
++  assigned-clocks: true
++  assigned-clock-parents: true
++  assigned-clock-rates: true
++  clocks: true
++
++  "#clock-cells":
++    const: 1
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - "#clock-cells"
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/exynos5250.h>
++    clock: clock-controller@10010000 {
++        compatible = "samsung,exynos5250-clock";
++        reg = <0x10010000 0x30000>;
++        #clock-cells = <1>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 36aee8517ab0..2dbacacac3f5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16491,6 +16491,7 @@ L:	linux-samsung-soc@vger.kernel.org
+ S:	Supported
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/snawrocki/clk.git
+ F:	Documentation/devicetree/bindings/clock/exynos*.txt
++F:	Documentation/devicetree/bindings/clock/samsung,*.yaml
+ F:	Documentation/devicetree/bindings/clock/samsung,s3c*
+ F:	Documentation/devicetree/bindings/clock/samsung,s5p*
+ F:	drivers/clk/samsung/
+-- 
+2.30.2
 
