@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEFB3E491F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664173E4920
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhHIPs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:48:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50778 "EHLO mail.kernel.org"
+        id S235732AbhHIPsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230095AbhHIPs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:48:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE0A36101D;
-        Mon,  9 Aug 2021 15:48:05 +0000 (UTC)
+        id S235725AbhHIPse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:48:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57FEC61051;
+        Mon,  9 Aug 2021 15:48:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628524086;
-        bh=iZlZltQn2HDOU8vQ6PmYWGQplXHTVVSuBXIDo9QUOVU=;
+        s=k20201202; t=1628524094;
+        bh=urT/AxPWPZT6NT913mCxIj4nGvv9rOCxnPaj3eBFd3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bwnYOlc2BXNKCxWAP8g4GBlVSR3CqtozkFhk41LUNZS4o833s2RtBV/gR77j3PXOB
-         Ewsb1VR3lbV0bpF22YVFCDarOy1pHF1WIAr08M4/nRAe6wed4PbjPDDtpTqpy/zMoT
-         86DyNY4ABcYcoKBWwzqWZ+GwgbKGKZyuLOYKScL38ovHtWIzuzphjqgl04swNLziK7
-         3FUw9bdD9+wRChz8JuF/U8x4MG3gImu4PC391Zep2S58lQ2q0SxRmVcgxNXxqkPxRs
-         Q6gcXcHIVU2RXw9ESWizlnQggGw0TJOEuwDB0RqCons44wT63U3XXSaeZhbNJs6XaP
-         2i9mbrqmLbpkA==
+        b=uXK+EOV+vEIzCiKx35nnnWk4PHpIr7R7pX4egRYnihAFl0KbTnPv1JxcPfXrVlTIs
+         k+5XME7FCEoxvKiJjyZJwXzW3SPnH+tihW2dvvVtMAFmydvJsR2vVjlOmZd1rElBum
+         Zo01hoqMB8H00Kp0/RnG6RjusmpVa7AwrhrcdCvmGef0wYNuhJ6n4MYXC0b4uj4RVO
+         qoM8139fRA5rX8dAGBA5AnaLv6Bp9OYLdJQV2toFacLPt122ZZ5FcClwFJDaPkEq5T
+         zjcgNTwKvaCLwaSYYUXV7WLjcQvBWwjvFSG4tVntAfurG6aOw5g1WCboXAUPy6L+Dy
+         AdoJmKsCwVf0Q==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v2 02/10] tracing/boot: Add per-event histogram action options
-Date:   Tue, 10 Aug 2021 00:48:04 +0900
-Message-Id: <162852408422.143877.5430352080751791322.stgit@devnote2>
+Subject: [PATCH v2 03/10] tracing/boot: Support multiple handlers for per-event histogram
+Date:   Tue, 10 Aug 2021 00:48:11 +0900
+Message-Id: <162852409160.143877.6715371189594328110.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162852406891.143877.12110677006587392853.stgit@devnote2>
 References: <162852406891.143877.12110677006587392853.stgit@devnote2>
@@ -41,297 +41,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a hist-trigger action syntax support to boot-time tracing.
-Currently, boot-time tracing supports per-event actions as option
-strings. However, for the histogram action, it has a special syntax
-and usually needs a long action definition.
-To make it readable and fit to the bootconfig syntax, this introduces
-a new options for histogram.
+Support multiple handlers for per-event histogram in boot-time tracing.
+Since the histogram can register multiple same handler-actions with
+different parameters, this expands the syntax to support such cases.
 
-Here are the histogram action options for boot-time tracing.
+With this update, the 'onmax', 'onchange' and 'onmatch' handler subkeys
+under per-event histogram option will take a number subkeys optionally
+as below. (see [.N])
 
 ftrace.[instance.INSTANCE.]event.GROUP.EVENT.hist {
-     keys = <KEY>[,...]
-     values = <VAL>[,...]
-     sort = <SORT-KEY>[,...]
-     size = <ENTRIES>
-     name = <HISTNAME>
-     var { <VAR> = <EXPR> ... }
-     pause|continue|clear
-     onmax|onchange { var = <VAR>; <ACTION> [= <PARAM>] }
-     onmatch { event = <EVENT>; <ACTION> [= <PARAM>] }
-     filter = <FILTER>
+     onmax|onchange[.N] { var = <VAR>; <ACTION> [= <PARAM>] }
+     onmatch[.N] { event = <EVENT>; <ACTION> [= <PARAM>] }
 }
 
-Where <ACTION> is one of below;
+The 'N' must be a digit (or digit started word).
 
-     trace = <EVENT>, <ARG1>[, ...]
-     save = <ARG1>[, ...]
-     snapshot
+Thus user can add several handler-actions to the histogram,
+for example,
+
+ftrace.event.SOMEGROUP.SOMEEVENT.hist {
+   keys = SOME_ID; lat = common_timestamp.usecs-$ts0
+   onmatch.1 {
+	event = GROUP1.STARTEVENT1
+	trace = latency_event, SOME_ID, $lat
+   }
+   onmatch.2 {
+	event = GROUP2.STARTEVENT2
+	trace = latency_event, SOME_ID, $lat
+   }
+}
+
+Then, it can trace the elapsed time from GROUP1.STARTEVENT1 to
+SOMEGROUP.SOMEEVENT, and from GROUP2.STARTEVENT2 to
+SOMEGROUP.SOMEEVENT with SOME_ID key.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- Changes in v3:
-   - Allow var expression includes spaces, since it is natural that
-     user write an expression with space in bootconfig.
-     (e.g. "var.lat = common_timestamp.usecs - $ts0")
- Changes in v2:
-   - Cleanup code to add ':' as a prefix for each element
-     instead of fixup the last ':'.
-   - Fix syntax typo for handler actions.
-   - Make pause|continue|clear mutual exclusive.
-   - Add __printf() attribute to the append_printf().
----
- kernel/trace/trace_boot.c |  231 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 231 insertions(+)
+ kernel/trace/trace_boot.c |   43 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 35 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index d713714cba67..763f8a7b7e1b 100644
+index 763f8a7b7e1b..8ee04ceb12ac 100644
 --- a/kernel/trace/trace_boot.c
 +++ b/kernel/trace/trace_boot.c
-@@ -171,6 +171,231 @@ trace_boot_add_synth_event(struct xbc_node *node, const char *event)
+@@ -245,8 +245,9 @@ trace_boot_hist_add_array(struct xbc_node *hnode, char **bufp,
  }
- #endif
  
-+#ifdef CONFIG_HIST_TRIGGERS
-+static int __init __printf(3, 4)
-+append_printf(char **bufp, char *end, const char *fmt, ...)
+ static int __init
+-trace_boot_hist_add_handler(struct xbc_node *hnode, char **bufp,
+-			    char *end, const char *param)
++trace_boot_hist_add_one_handler(struct xbc_node *hnode, char **bufp,
++				char *end, const char *handler,
++				const char *param)
+ {
+ 	struct xbc_node *knode, *anode;
+ 	const char *p;
+@@ -259,7 +260,7 @@ trace_boot_hist_add_handler(struct xbc_node *hnode, char **bufp,
+ 		       xbc_node_get_data(hnode), param);
+ 		return -EINVAL;
+ 	}
+-	append_printf(bufp, end, ":%s(%s)", xbc_node_get_data(hnode), p);
++	append_printf(bufp, end, ":%s(%s)", handler, p);
+ 
+ 	/* Compose 'action' parameter */
+ 	knode = xbc_node_find_child(hnode, "trace");
+@@ -294,6 +295,32 @@ trace_boot_hist_add_handler(struct xbc_node *hnode, char **bufp,
+ 	return 0;
+ }
+ 
++static int __init
++trace_boot_hist_add_handlers(struct xbc_node *hnode, char **bufp,
++			     char *end, const char *param)
 +{
-+	va_list args;
++	struct xbc_node *node;
++	const char *p, *handler;
 +	int ret;
 +
-+	if (*bufp == end)
-+		return -ENOSPC;
++	handler = xbc_node_get_data(hnode);
 +
-+	va_start(args, fmt);
-+	ret = vsnprintf(*bufp, end - *bufp, fmt, args);
-+	if (ret < end - *bufp) {
-+		*bufp += ret;
-+	} else {
-+		*bufp = end;
-+		ret = -ERANGE;
++	xbc_node_for_each_subkey(hnode, node) {
++		p = xbc_node_get_data(node);
++		if (!isdigit(p[0]))
++			continue;
++		/* All digit started node should be instances. */
++		ret = trace_boot_hist_add_one_handler(node, bufp, end, handler, param);
++		if (ret < 0)
++			break;
 +	}
-+	va_end(args);
++
++	if (xbc_node_find_child(hnode, param))
++		ret = trace_boot_hist_add_one_handler(hnode, bufp, end, handler, param);
 +
 +	return ret;
 +}
 +
-+static int __init
-+append_str_nospace(char **bufp, char *end, char *str)
-+{
-+	char *p = *bufp;
-+	int len;
-+
-+	while (p < end - 1 && *str != '\0') {
-+		if (!isspace(*str))
-+			*(p++) = *str;
-+		str++;
-+	}
-+	*p = '\0';
-+	if (p == end - 1) {
-+		*bufp = end;
-+		return -ENOSPC;
-+	}
-+	len = p - *bufp;
-+	*bufp = p;
-+	return (int)len;
-+}
-+
-+static int __init
-+trace_boot_hist_add_array(struct xbc_node *hnode, char **bufp,
-+			  char *end, const char *key)
-+{
-+	struct xbc_node *knode, *anode;
-+	const char *p;
-+	char sep;
-+
-+	knode = xbc_node_find_child(hnode, key);
-+	if (knode) {
-+		anode = xbc_node_get_child(knode);
-+		if (!anode) {
-+			pr_err("hist.%s requires value(s).\n", key);
-+			return -EINVAL;
-+		}
-+
-+		append_printf(bufp, end, ":%s", key);
-+		sep = '=';
-+		xbc_array_for_each_value(anode, p) {
-+			append_printf(bufp, end, "%c%s", sep, p);
-+			if (sep == '=')
-+				sep = ',';
-+		}
-+	} else
-+		return -ENOENT;
-+
-+	return 0;
-+}
-+
-+static int __init
-+trace_boot_hist_add_handler(struct xbc_node *hnode, char **bufp,
-+			    char *end, const char *param)
-+{
-+	struct xbc_node *knode, *anode;
-+	const char *p;
-+	char sep;
-+
-+	/* Compose 'handler' parameter */
-+	p = xbc_node_find_value(hnode, param, NULL);
-+	if (!p) {
-+		pr_err("hist.%s requires '%s' option.\n",
-+		       xbc_node_get_data(hnode), param);
-+		return -EINVAL;
-+	}
-+	append_printf(bufp, end, ":%s(%s)", xbc_node_get_data(hnode), p);
-+
-+	/* Compose 'action' parameter */
-+	knode = xbc_node_find_child(hnode, "trace");
-+	if (!knode)
-+		knode = xbc_node_find_child(hnode, "save");
-+
-+	if (knode) {
-+		anode = xbc_node_get_child(knode);
-+		if (!anode || !xbc_node_is_value(anode)) {
-+			pr_err("hist.%s.%s requires value(s).\n",
-+			       xbc_node_get_data(hnode),
-+			       xbc_node_get_data(knode));
-+			return -EINVAL;
-+		}
-+
-+		append_printf(bufp, end, ".%s", xbc_node_get_data(knode));
-+		sep = '(';
-+		xbc_array_for_each_value(anode, p) {
-+			append_printf(bufp, end, "%c%s", sep, p);
-+			if (sep == '(')
-+				sep = ',';
-+		}
-+		append_printf(bufp, end, ")");
-+	} else if (xbc_node_find_child(hnode, "snapshot")) {
-+		append_printf(bufp, end, ".snapshot()");
-+	} else {
-+		pr_err("hist.%s requires an action.\n",
-+		       xbc_node_get_data(hnode));
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Histogram boottime tracing syntax.
-+ *
-+ * ftrace.[instance.INSTANCE.]event.GROUP.EVENT.hist {
-+ *	keys = <KEY>[,...]
-+ *	values = <VAL>[,...]
-+ *	sort = <SORT-KEY>[,...]
-+ *	size = <ENTRIES>
-+ *	name = <HISTNAME>
-+ *	var { <VAR> = <EXPR> ... }
-+ *	pause|continue|clear
-+ *	onmax|onchange { var = <VAR>; <ACTION> [= <PARAM>] }
-+ *	onmatch { event = <EVENT>; <ACTION> [= <PARAM>] }
-+ *	filter = <FILTER>
-+ * }
-+ *
-+ * Where <ACTION> are;
-+ *
-+ *	trace = <EVENT>, <ARG1>[, ...]
-+ *	save = <ARG1>[, ...]
-+ *	snapshot
-+ */
-+static int __init
-+trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
-+{
-+	struct xbc_node *node, *knode;
-+	char *end = buf + size;
-+	const char *p;
-+	int ret = 0;
-+
-+	append_printf(&buf, end, "hist");
-+
-+	ret = trace_boot_hist_add_array(hnode, &buf, end, "keys");
-+	if (ret < 0) {
-+		if (ret == -ENOENT)
-+			pr_err("hist requires keys.\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = trace_boot_hist_add_array(hnode, &buf, end, "values");
-+	if (ret == -EINVAL)
-+		return ret;
-+	ret = trace_boot_hist_add_array(hnode, &buf, end, "sort");
-+	if (ret == -EINVAL)
-+		return ret;
-+
-+	p = xbc_node_find_value(hnode, "size", NULL);
-+	if (p)
-+		append_printf(&buf, end, ":size=%s", p);
-+
-+	p = xbc_node_find_value(hnode, "name", NULL);
-+	if (p)
-+		append_printf(&buf, end, ":name=%s", p);
-+
-+	node = xbc_node_find_child(hnode, "var");
-+	if (node) {
-+		xbc_node_for_each_key_value(node, knode, p) {
-+			/* Expression must not include spaces. */
-+			append_printf(&buf, end, ":%s=",
-+				      xbc_node_get_data(knode));
-+			append_str_nospace(&buf, end, p);
-+		}
-+	}
-+
-+	/* Histogram control attributes (mutual exclusive) */
-+	if (xbc_node_find_child(hnode, "pause"))
-+		append_printf(&buf, end, ":pause");
-+	else if (xbc_node_find_child(hnode, "continue"))
-+		append_printf(&buf, end, ":continue");
-+	else if (xbc_node_find_child(hnode, "clear"))
-+		append_printf(&buf, end, ":clear");
-+
-+	/* Histogram handler and actions */
-+	node = xbc_node_find_child(hnode, "onmax");
-+	if (node && trace_boot_hist_add_handler(node, &buf, end, "var") < 0)
-+		return -EINVAL;
-+	node = xbc_node_find_child(hnode, "onchange");
-+	if (node && trace_boot_hist_add_handler(node, &buf, end, "var") < 0)
-+		return -EINVAL;
-+	node = xbc_node_find_child(hnode, "onmatch");
-+	if (node && trace_boot_hist_add_handler(node, &buf, end, "event") < 0)
-+		return -EINVAL;
-+
-+	p = xbc_node_find_value(hnode, "filter", NULL);
-+	if (p)
-+		append_printf(&buf, end, " if %s", p);
-+
-+	if (buf == end) {
-+		pr_err("hist exceeds the max command length.\n");
-+		return -E2BIG;
-+	}
-+
-+	return 0;
-+}
-+#else
-+static int __init
-+trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif
-+
- static void __init
- trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
- 			  struct xbc_node *enode)
-@@ -212,6 +437,12 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
- 			else if (trigger_process_regex(file, buf) < 0)
- 				pr_err("Failed to apply an action: %s\n", buf);
- 		}
-+		anode = xbc_node_find_child(enode, "hist");
-+		if (anode &&
-+		    trace_boot_compose_hist_cmd(anode, buf, ARRAY_SIZE(buf)) == 0) {
-+			if (trigger_process_regex(file, buf) < 0)
-+				pr_err("Failed to apply hist trigger: %s\n", buf);
-+		}
- 	} else if (xbc_node_find_value(enode, "actions", NULL))
- 		pr_err("Failed to apply event actions because CONFIG_HIST_TRIGGERS is not set.\n");
+ /*
+  * Histogram boottime tracing syntax.
+  *
+@@ -305,8 +332,8 @@ trace_boot_hist_add_handler(struct xbc_node *hnode, char **bufp,
+  *	name = <HISTNAME>
+  *	var { <VAR> = <EXPR> ... }
+  *	pause|continue|clear
+- *	onmax|onchange { var = <VAR>; <ACTION> [= <PARAM>] }
+- *	onmatch { event = <EVENT>; <ACTION> [= <PARAM>] }
++ *	onmax|onchange[.N] { var = <VAR>; <ACTION> [= <PARAM>] }
++ *	onmatch[.N] { event = <EVENT>; <ACTION> [= <PARAM>] }
+  *	filter = <FILTER>
+  * }
+  *
+@@ -368,13 +395,13 @@ trace_boot_compose_hist_cmd(struct xbc_node *hnode, char *buf, size_t size)
  
+ 	/* Histogram handler and actions */
+ 	node = xbc_node_find_child(hnode, "onmax");
+-	if (node && trace_boot_hist_add_handler(node, &buf, end, "var") < 0)
++	if (node && trace_boot_hist_add_handlers(node, &buf, end, "var") < 0)
+ 		return -EINVAL;
+ 	node = xbc_node_find_child(hnode, "onchange");
+-	if (node && trace_boot_hist_add_handler(node, &buf, end, "var") < 0)
++	if (node && trace_boot_hist_add_handlers(node, &buf, end, "var") < 0)
+ 		return -EINVAL;
+ 	node = xbc_node_find_child(hnode, "onmatch");
+-	if (node && trace_boot_hist_add_handler(node, &buf, end, "event") < 0)
++	if (node && trace_boot_hist_add_handlers(node, &buf, end, "event") < 0)
+ 		return -EINVAL;
+ 
+ 	p = xbc_node_find_value(hnode, "filter", NULL);
 
