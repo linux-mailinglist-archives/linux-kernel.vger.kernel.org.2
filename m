@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E520E3E41E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A90E3E41DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhHIIxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:53:47 -0400
-Received: from m12-12.163.com ([220.181.12.12]:37976 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234003AbhHIIxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:53:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=cLjD1
-        QazKK6TLOJDaWUarO+saBlohSORuEDe9dMn5vE=; b=Vwz7LEDTbr6dcr/oifLzR
-        AURQHSDY8hmSTPs6Ggdq560j4nYqkcbEms84YdbnlHptMzYSqT+Qjk6pxFN7KRZi
-        Eks+gHQN2NNHmFNC78deV/PmFyeeEbXNmi2sLmGkTBg2+jqM+jt8242qzBe0OYq3
-        tRjXmZHNvbi3JxsLTAm8qI=
-Received: from asura.lan (unknown [182.149.135.186])
-        by smtp8 (Coremail) with SMTP id DMCowADnNDrt7BBhQuZhTA--.28173S2;
-        Mon, 09 Aug 2021 16:53:03 +0800 (CST)
-From:   chaochao2021666@163.com
-To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chao Zeng <chao.zeng@siemens.com>
-Subject: [PATCH 1/2] dt-bindings:dp83867:Add binding for the status led
-Date:   Mon,  9 Aug 2021 16:52:13 +0800
-Message-Id: <20210809085213.324129-1-chaochao2021666@163.com>
-X-Mailer: git-send-email 2.32.0
+        id S234074AbhHIIxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:53:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38330 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234003AbhHIIxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 04:53:11 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EE09E21F38;
+        Mon,  9 Aug 2021 08:52:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628499170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bepQzvatgJLao+zb9C6j+oevlY4gKiK09Ngv42kE38g=;
+        b=kl3QYAu24ESZk9XuMhHwyyKyrTXhxm8d0J0sTv1O9QwbpBj8HvMUuDZxbbwJ1M73InnMDP
+        RLlFN9ZDGq9tSKeE5BYnLUSOZh6HOwEaaw4F5uqfGDiaOFoIYKra4nOVs2pLS1XcjvDXem
+        x+DZPpgPZJKRMjCFq7UbW3wHc+KL/aU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628499170;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bepQzvatgJLao+zb9C6j+oevlY4gKiK09Ngv42kE38g=;
+        b=R/7gyERwwF+oUn9XMq+YISSU0gyMc3Q8Y/uui8tCDQ/t7fzbAFA5xUMh7ItG4RUzm14vBz
+        +lb5sbg8zLTp9BAw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D3C23132AB;
+        Mon,  9 Aug 2021 08:52:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id C/auM+LsEGFqKgAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Mon, 09 Aug 2021 08:52:50 +0000
+Date:   Mon, 9 Aug 2021 10:52:50 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>
+Subject: Re: [PATCH v4 2/8] nvme-tcp: Update number of hardware queues before
+ using them
+Message-ID: <20210809085250.xguvx5qiv2gxcoqk@carbon>
+References: <20210802112658.75875-1-dwagner@suse.de>
+ <20210802112658.75875-3-dwagner@suse.de>
+ <8373c07f-f5df-1ec6-9fda-d0262fc1b377@grimberg.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowADnNDrt7BBhQuZhTA--.28173S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CFy3Cry3ZF1rJr1xAFWrXwb_yoW8KFW5pF
-        sFvas7Gr12yF47JwsaqFn3Cr1fXw18Xr9FkFyq9w1qya98Aa1ftr4YgF4UXF48urZ5JFy7
-        JFZ8Wr4UKF9Iyw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jqT5dUUUUU=
-X-Originating-IP: [182.149.135.186]
-X-CM-SenderInfo: 5fkd0uhkdrjiasrwlli6rwjhhfrp/1tbi3w-pdWB0HGzM6wAAsP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8373c07f-f5df-1ec6-9fda-d0262fc1b377@grimberg.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Zeng <chao.zeng@siemens.com>
+Hi Sagi,
 
-The phy status led of each of board maybe different.
-Provide a method to custom phy status led behavior.
+On Fri, Aug 06, 2021 at 12:57:17PM -0700, Sagi Grimberg wrote:
+> > -	ret = nvme_tcp_start_io_queues(ctrl);
+> > -	if (ret)
+> > -		goto out_cleanup_connect_q;
+> > -
+> > -	if (!new) {
+> > -		nvme_start_queues(ctrl);
+> > +	} else if (prior_q_cnt != ctrl->queue_count) {
+> 
+> So if the queue count did not change we don't wait to make sure
+> the queue g_usage_counter ref made it to zero? What guarantees that it
+> did?
 
-Datasheet:
-http://www.ti.com/product/DP83867IR/datasheet
-
-Signed-off-by: Chao Zeng <chao.zeng@siemens.com>
----
- .../devicetree/bindings/net/ti,dp83867.yaml    |  6 ++++++
- include/dt-bindings/net/ti-dp83867.h           | 18 ++++++++++++++++++
- 2 files changed, 24 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/net/ti,dp83867.yaml b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
-index 047d757e8d82..a46a437818f2 100644
---- a/Documentation/devicetree/bindings/net/ti,dp83867.yaml
-+++ b/Documentation/devicetree/bindings/net/ti,dp83867.yaml
-@@ -106,6 +106,12 @@ properties:
-       Transmitt FIFO depth- see dt-bindings/net/ti-dp83867.h for applicable
-       values.
- 
-+  ti,led-sel:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      This configure the status led. See dt-bindings/net/ti-dp83867.h
-+      for different status led settings,select different configures
-+
- required:
-   - reg
- 
-diff --git a/include/dt-bindings/net/ti-dp83867.h b/include/dt-bindings/net/ti-dp83867.h
-index 6fc4b445d3a1..de59c3a42c1e 100644
---- a/include/dt-bindings/net/ti-dp83867.h
-+++ b/include/dt-bindings/net/ti-dp83867.h
-@@ -48,6 +48,24 @@
- #define DP83867_CLK_O_SEL_CHN_C_TCLK		0xA
- #define DP83867_CLK_O_SEL_CHN_D_TCLK		0xB
- #define DP83867_CLK_O_SEL_REF_CLK		0xC
-+
-+/* Led configuration flag*/
-+#define DP83867_LINK_ESTABLISHED				0x0
-+#define DP83867_RECEIVE_TRANSMIT_ACTIVITY		0x1
-+#define DP83867_TRANSMIT_ACTIVITY				0x2
-+#define DP83867_RECEIVE_ACTIVITY				0x3
-+#define DP83867_COLLISION_DETECTED				0x4
-+#define DP83867_LINK_ESTABLISHED_1000BT			0x5
-+#define DP83867_LINK_ESTABLISHED_100BTX			0x6
-+#define DP83867_LINK_ESTABLISHED_10BT			0x7
-+#define DP83867_LINK_ESTABLISHED_10_100_BT		0x8
-+#define DP83867_LINK_ESTABLISHED_100_1000_BT	0x9
-+#define DP83867_FULL_DUPLEX						0xA
-+#define DP83867_LINK_ESTABLISHED_BLINK_TRANSMIT_RECEIVE 0xB
-+#define DP83867_RESERVED						0xC
-+#define DP83867_RECEIVE_TRANSMIT_ERROR			0xD
-+#define DP83867_RECEIVE_ERROR					0xE
-+
- /* Special flag to indicate clock should be off */
- #define DP83867_CLK_O_SEL_OFF			0xFFFFFFFF
- #endif
--- 
-2.32.0
+Hmm, good point. we should always call nvme_wait_freeze_timeout()
+for !new queues. Is this what you are implying?
 
 
+> >   		if (!nvme_wait_freeze_timeout(ctrl, NVME_IO_TIMEOUT)) {
+> >   			/*
+> >   			 * If we timed out waiting for freeze we are likely to
+> > @@ -1828,6 +1822,10 @@ static int nvme_tcp_configure_io_queues(struct nvme_ctrl *ctrl, bool new)
+> >   		nvme_unfreeze(ctrl);
+> >   	}
+> > +	ret = nvme_tcp_start_io_queues(ctrl);
+> > +	if (ret)
+> > +		goto out_cleanup_connect_q;
+> > +
+> 
+> Did you test this with both heavy I/O, reset loop and ifdown/ifup
+> loop?
+
+Not sure if this classifies as heavy I/O (on 80 CPU machine)
+
+fio --rw=readwrite --name=test --filename=/dev/nvme16n1 --size=50M \
+    --direct=1 --bs=4k --numjobs=40 --group_reporting --runtime=4h \
+    --time_based
+
+and then I installed iptables rules to block the traffic on the
+controller side. With this test it is pretty easily to get
+the host hanging. Let me know what test you would like to see
+from me. I am glad to try to get them running.
+
+> If we unquiesce and unfreeze before we start the queues the pending I/Os
+> may resume before the connect and not allow the connect to make forward
+> progress.
+
+So the unfreeze should happen after the connect call? What about the
+newly created queues? Do they not suffer from the same problem? Isn't
+the NVME_TCP_Q_LIVE flag not enough?
+
+Daniel
