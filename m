@@ -2,131 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF23F3E40D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57FE3E40D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbhHIHav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233335AbhHIHar (ORCPT
+        id S233470AbhHIHcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:32:32 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:41418 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233161AbhHIHcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:30:47 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA4CC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 00:30:23 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so315753pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6AaH/QvzJmMTb/tLFdsE2g2dSuN00KFriVjp+nrWMKo=;
-        b=n3JUpjnMCUehTXcRC2vvYvjrX4sIYgtTBEdqO95/Jt9Hn9OnclNx9GduauyhRey287
-         8nLtSx5vopa18swm/eS0hMKso9qA3Fhd83TVyljzMEEPfFFGRM/VvDb3XNmXiPrTvfKd
-         lVlxk2E8NZOZXs4nO1t/xEGMRdcfrsC/n2KdKJwKvcsMlinlYgPB4iSY3rK5an8sEFH9
-         bmTsjn94+sKBDYBbjRA3tJQCluMZeCV5VDnIXdMBDYMAxKSoCXIukdBvFwuF7xPlC4f+
-         VRH6yUcShJeOGMF6Q1fDQffqMLo0AenRzsdrZqQqUA+vZAQQhjmb0MFQIgOFjajTZLsc
-         x/VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6AaH/QvzJmMTb/tLFdsE2g2dSuN00KFriVjp+nrWMKo=;
-        b=czFylhUpk8xh0LYNKIU18mvxVFSbC4R7RpHXcT72TaeQ4QDoZxxEmh0XHDfU2p8WIm
-         5Uxpg+fHFAPIV7XMHENNsPlfPS7GksUDny49YjfCPr40k51K5C9pOLJL3YSIBKwbtkHj
-         v0g2EwHVFQEWUkxUdJrfcZnREpEG9KNKI2JnQm7CnNwP8x4olVwM/aLVRACz62dE04J3
-         63CUrC+o6KD67YcUvdtM1XjP+kJ0J9X8q2ueXyFTZjC9V2JBEtsG+6z0S/SWpib0W6As
-         9/df8p3k+xF8HBBi+jc+CNvOT4EDZrrfklVZSIZDyZQUfOeKaRr2OgCu0uHDXoaxN99r
-         TzZQ==
-X-Gm-Message-State: AOAM530S5XrGP6IZv5ZLNmpxSAbXz4Fp94Lufpw40/7fdZBnGAr4gHO3
-        D3as06MRBlI3ixSovjaZ5OMOnQ==
-X-Google-Smtp-Source: ABdhPJxeoZhdVD34qHvFm3x0OrPEUWTYjI47uQbkZF5kBJ2jSlkeRPl7vBozGIeSrM03ZFEKr0P5+A==
-X-Received: by 2002:a17:90a:17a3:: with SMTP id q32mr3416980pja.195.1628494223102;
-        Mon, 09 Aug 2021 00:30:23 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id r17sm23592320pgu.8.2021.08.09.00.30.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 00:30:22 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 13:00:20 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>
-Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
-Message-ID: <20210809073020.y6ruibdm37xnx7hg@vireshk-i7>
-References: <cover.1627989586.git.viresh.kumar@linaro.org>
- <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
- <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
- <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
- <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
- <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7>
- <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
- <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
- <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
+        Mon, 9 Aug 2021 03:32:17 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210809073155epoutp045dfe19c789b3bf3b142f657e6d448b08~ZkvPDMYJ60801308013epoutp04g
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:31:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210809073155epoutp045dfe19c789b3bf3b142f657e6d448b08~ZkvPDMYJ60801308013epoutp04g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628494315;
+        bh=Ni+vbYmYtsLjALT/dARSA0tEqs6RJHXkVr/cpyYw+uI=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=KQ/6zwWjICD/GJYewewjEdF6jpcOyhJnzcDKg4P/EOu664fBeilZ72srcpKpuViGx
+         tZesAE4yWrlZarqvDsKM48retQG1xXQSIuSWqc+YbGSlx0YHPFtmaS14hGwsZzOg+X
+         lUcc7Zy+fa1Coh8GSewgyqExd4HUfjbST6zZkI3A=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210809073155epcas2p4f63c2921fee1b062da0d82f473c6f919~ZkvOOJvLi2661526615epcas2p4z;
+        Mon,  9 Aug 2021 07:31:55 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.189]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4GjnpJ1VXYz4x9Q3; Mon,  9 Aug
+        2021 07:31:52 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        87.09.09571.8E9D0116; Mon,  9 Aug 2021 16:31:52 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210809073151epcas2p350bf7f9495d0eda078d8c10d4325f974~ZkvK8RvXx2005620056epcas2p3l;
+        Mon,  9 Aug 2021 07:31:51 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210809073151epsmtrp183744a39c26d9e8acb931a6724f72bd7~ZkvK7bh4l3083630836epsmtrp1Z;
+        Mon,  9 Aug 2021 07:31:51 +0000 (GMT)
+X-AuditID: b6c32a48-1f5ff70000002563-e4-6110d9e862b9
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7B.7E.32548.7E9D0116; Mon,  9 Aug 2021 16:31:51 +0900 (KST)
+Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210809073151epsmtip291014da2bb6b9675097758ecc12dc846~ZkvKt2m1P2001120011epsmtip2M;
+        Mon,  9 Aug 2021 07:31:51 +0000 (GMT)
+From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
+To:     "'Bart Van Assche'" <bvanassche@acm.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
+        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
+        <bhoon95.kim@samsung.com>
+In-Reply-To: <597a96f4-9cd4-c1bb-5c8d-dd5d00f0948d@acm.org>
+Subject: RE: [RFC PATCH v1 2/2] scsi: ufs: ufs-exynos: implement exynos isr
+Date:   Mon, 9 Aug 2021 16:31:50 +0900
+Message-ID: <000001d78cf0$9eb0de30$dc129a90$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQK++sB58EgqqX1myvhKfEGyIJx4UQGqY/R1AYfJCd0DJFp0aalpLYyQ
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHJsWRmVeSWpSXmKPExsWy7bCmqe6LmwKJBq13WSxOPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxdekzVotpH34yW3xav4zVYvXiBywWi25sY7K4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LA58HpeveHtc7utl8li85yWTx4RFBxg9vq/vYPP4+PQWi0ffllWMHp83yXm0
+        H+hmCuCMyrHJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvM
+        ATpeSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgaFigV5yYW1yal66XnJ9rZWhg
+        YGQKVJmQk3Fr3SeWgn6JilV/57I1MB4Q6mLk5JAQMJFY9PQKSxcjF4eQwA5GiYcbPzFCOJ8Y
+        JSb+3cgE4XxmlHg/ZwZbFyMHWMvDS7kQ8V2MEhe3nIZqf8EosffnGRaQuWwC2hLTHu5mBUmI
+        CLQwS1zZ+4kJJMEpYC3R+WwmK4gtLOAt8fnXdzCbRUBFom3VUkYQm1fAUuL67LOsELagxMmZ
+        T8CGMgMNXbbwNTPE4QoSP58uA6sREXCT2LBnPhNEjYjE7M42ZpDFEgJXOCSm9Exjg2hwkXjd
+        vJIVwhaWeHV8CzuELSXxsr8Nyq6X2De1gRWiuYdR4um+f4wQCWOJWc/aGUH+ZxbQlFi/Sx8S
+        FMoSR25B3cYn0XH4LztEmFeiow0avsoSvyZNhhoiKTHz5h2oEg+JY7e9JjAqzkLy5CwkT85C
+        8swshLULGFlWMYqlFhTnpqcWGxWYIEf2JkZwwtby2ME4++0HvUOMTByMhxglOJiVRHjXz+BL
+        FOJNSaysSi3Kjy8qzUktPsRoCgz2icxSosn5wJyRVxJvaGpkZmZgaWphamZkoSTOqxH3NUFI
+        ID2xJDU7NbUgtQimj4mDU6qBaZ/ouRMPtjW5dUb67PFeo6EhWb9s8avPpnJvnnf7CX66I9Zi
+        e/Dp6jM1AZoJTpdcGaylX4iczntgk2S8eJffsXyWC7ubf+yYK8OrrvRp4nLj4oLErIMTvrnk
+        ek3JEnjHqXBqU9SZaNGJL8Ui5y/lLs+VMrvsp7X07uwDlybmLz2lvEl9wf7b6hvsD85K7jdK
+        zL7ROI/zs1tu85+2J4+eTTTnssg+F8Zrs22a9AyxRb/+HXPhrNL1vmH8bOvUBzdZgn6ahs+X
+        mn3g4dy1C0z9P6/7PXn55jUfFEL9f73O2yVapxT3M/S7rWCA3iWRawb91/XmCforSx0z4gt+
+        VxUWuzKu7lGa+1bWg2zVD5cFZyuxFGckGmoxFxUnAgC9NzjeYQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsWy7bCSvO7zmwKJBh3LxC1OPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxdekzVotpH34yW3xav4zVYvXiBywWi25sY7K4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LA58HpeveHtc7utl8li85yWTx4RFBxg9vq/vYPP4+PQWi0ffllWMHp83yXm0
+        H+hmCuCM4rJJSc3JLEst0rdL4Mp4NruNreCPeMWb53vYGhgXC3UxcnBICJhIPLyU28XIxSEk
+        sINR4uDuz2xdjJxAcUmJEzufM0LYwhL3W46wQhQ9Y5RY9/8+WIJNQFti2sPdYAkRgSnMEneu
+        HWWDqOpkktg1ezdYFaeAtUTns5msILawgLfE51/fwWwWARWJtlVLwWp4BSwlrs8+ywphC0qc
+        nPmEBcRmBtrw9OZTOHvZwtfMECcpSPx8ugysXkTATWLDnvlMEDUiErM725gnMArNQjJqFpJR
+        s5CMmoWkZQEjyypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjOAo1dLawbhn1Qe9Q4xM
+        HIyHGCU4mJVEeNfP4EsU4k1JrKxKLcqPLyrNSS0+xCjNwaIkznuh62S8kEB6YklqdmpqQWoR
+        TJaJg1OqgenCREW3/dutnFsq3i5i5d7oOMM1YN355VZ84d+dsvo5QuXcFd+sUmrhT40TXXSr
+        zk02zNV2mesHK6E/da8F1muuX/c01UHP9F7Vnbt26wouM7fvYo58NLXBifsm/4VzJ0MFFrvW
+        zT5XmNVS8rxXcc737FSH9LaAEy49L0091yR0Ht8sOlf5Q3TTlbVxtXc/qd+cKNOptefmz52C
+        55Otpt+OshHhz7fcu3HXJuWDMim5bkt9UxaZvJu8ZKtP1BkVwytplzizy2I8brQXMrXs012q
+        dnAhz8RHEXdWenvUM8Uw3/ua/qnt8Q8vti9zHHkZWdXtZ4RtfbOj4caVElaf7S9ne8oFckau
+        3vO8ZeKZR0osxRmJhlrMRcWJAPOfkQlBAwAA
+X-CMS-MailID: 20210809073151epcas2p350bf7f9495d0eda078d8c10d4325f974
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210806064925epcas2p2ba7e711758614384c17648d4924d025c
+References: <cover.1628231581.git.kwmad.kim@samsung.com>
+        <CGME20210806064925epcas2p2ba7e711758614384c17648d4924d025c@epcas2p2.samsung.com>
+        <7d2030d91425a01f964f7a9309c1aa3a0ce6a2d6.1628231581.git.kwmad.kim@samsung.com>
+        <597a96f4-9cd4-c1bb-5c8d-dd5d00f0948d@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-08-21, 10:00, Arnd Bergmann wrote:
-> On Fri, Aug 6, 2021 at 9:44 AM Viresh Kumar via Stratos-dev
-> <stratos-dev@op-lists.linaro.org> wrote:
-> >
-> > On 05-08-21, 15:10, Arnd Bergmann wrote:
-> > > I hope this can still be simplified by working out better which state
-> > > transitions are needed exactly. In particular, I would expect that we
-> > > can get away with not sending a VIRTIO_GPIO_MSG_IRQ_TYPE
-> > > for 'mask' state changes at all, but use that only for forcing 'enabled'
-> > > state changes.
-> >
-> > Something like this ?
-> 
-> > static void virtio_gpio_irq_mask(struct irq_data *d)
-> > {
-> >         /* Nothing to do here */
-> > }
-> 
-> You'd have to do /something/ here I think, if only setting the flag
-> that we don't want to deliver the next interrupt.
-> 
-> > static void virtio_gpio_irq_unmask(struct irq_data *d)
-> > {
-> >         struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> >         struct virtio_gpio *vgpio = gpiochip_get_data(gc);
-> >
-> >         /* Queue the buffer unconditionally on unmask */
-> >         virtio_gpio_irq_prepare(vgpio, d->hwirq);
-> > }
-> 
-> And check the flag here to not requeue it if it's masked.
+> On 8/5/21 11:34 PM, Kiwoong Kim wrote:
+> > Based on some events in the real world
+>=20
+> Which events? Please clarify.
+>=20
+> > I implement
+> > this to block the host's working in some abnormal conditions using an
+> > vendor specific interrupt for cases that some contexts of a pending
+> > request in the host isn't the same with those of its corresponding
+> > UPIUs if they should have been the same exactly.
+>=20
+> The entire patch description sounds very vague to me. Please make the
+> description more clear.
 
-I am not sure I understand why this would be required. If the
-interrupt is getting disabled, then unmask will not get called here
-and so we won't requeue anything. Same will happen with threaded
-handlers where the interrupt gets unmasked at a later point of time.
+I'll describe a bit clearer in the next version.
 
-> Now, there is already a flag in the irq descriptor, so rather than
-> having double accounting, the easy way may be to
-> just use irqd_irq_masked()/irq_state_set_masked(), or
-> have the irq core take care of this.
+>=20
+> > +enum exynos_ufs_vs_interrupt =7B
+> > +	/*
+> > +	 * This occurs when information of a pending request isn't
+> > +	 * the same with incoming UPIU for the request. For example,
+> > +	 * if UFS driver rings with task tag =231, subsequential UPIUs
+> > +	 * for this must have one as the value of task tag. But if
+> > +	 * it's corrutped until the host receives it or incoming UPIUs
+> > +	 * has an unexpected value for task tag, this raises.
+> > +	 */
+> > +	RX_UPIU_HIT_ERROR	=3D 1 << 19,
+> > +=7D;
+>=20
+> The above description needs to be improved. If a request is submitted wit=
+h
+> task tag one, only one UPIU can have that task tag instead of all
+> subsequent UPIUs.
 
--- 
-viresh
+Thank you for your opinion. In an ideal situation where there is no negativ=
+e impact
+from outside the host, yes, you're right, but in the real world, it could b=
+e not.
+Let me give you one representative example.
+There has been some events that a host has one as tag number of a pending r=
+equest
+that should have been originally two, or a device sends a UPIU with two of =
+tag number even
+when a host has one as tag number of its corresponding request.
+I remember that the first case occurred because of integrity problems
+from such as lack of voltage margin of a specific power domain or whatever
+and the second case did because of malfunctions of the device.
+If those events are temporary, it might not raise some errors.
+That means delivering wrong data to file system could be also possible
+even if they're rare, and its consequences would be unpredictable, I think.
+
+Speaking the point of view of UFS specifications, yes, those events should
+not happen. Now I'm just trying to make the driver fit with the real situat=
+ions,
+especially for cases with abnormal conditions.
+In this case, my choice is to block the host's operations and
+these situations could be architecture-specific.
+
+>=20
+> >   	hci_writel(ufs, UFS_SW_RST_MASK, HCI_SW_RST);
+> > -
+> >   	do =7B
+> >   		if (=21(hci_readl(ufs, HCI_SW_RST) & UFS_SW_RST_MASK))
+> > -			goto out;
+> > +			return 0;
+> >   	=7D while (time_before(jiffies, timeout));
+>=20
+> Since the above loop is a busy-waiting loop, please insert an msleep() or
+> cpu_relax() call.
+>=20
+> > +	 * some unexpected events could happen, such as tranferring
+>                                                          =5E=5E=5E=5E=5E=
+=5E=5E=5E=5E=5E=5E Please fix the
+> spelling of this word.
+
+Got it.
+>=20
+> Thanks,
+>=20
+> Bart.
+
