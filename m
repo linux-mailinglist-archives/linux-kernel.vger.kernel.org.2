@@ -2,218 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA3F3E4E10
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB403E4E13
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236296AbhHIUof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:44:35 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:39308 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233348AbhHIUoe (ORCPT
+        id S236300AbhHIUqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 16:46:35 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33029 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231439AbhHIUqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:44:34 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:42266)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mDC84-006eur-13; Mon, 09 Aug 2021 14:44:12 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:51854 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mDC82-003SLf-2z; Mon, 09 Aug 2021 14:44:11 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>, linux-fsdevel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-In-Reply-To: <CA+G9fYv+Azmu+_YUv6+C6RRM990k0FhUc0hgSJKssubmsWfvhA@mail.gmail.com>
-        (Naresh Kamboju's message of "Fri, 6 Aug 2021 16:06:51 +0530")
-References: <20210730062854.3601635-1-svens@linux.ibm.com>
-        <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain> <875ywlat5e.fsf@disp2133>
-        <94478003-8259-4b57-6d93-5a07e0750946@kernel.org>
-        <87v94jalck.fsf@disp2133>
-        <56b7c0fe-f2e1-7c4f-eb1b-1d9793dea5a8@kernel.org>
-        <CA+G9fYv+Azmu+_YUv6+C6RRM990k0FhUc0hgSJKssubmsWfvhA@mail.gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Mon, 09 Aug 2021 15:43:56 -0500
-Message-ID: <8735rijqlv.fsf_-_@disp2133>
-MIME-Version: 1.0
+        Mon, 9 Aug 2021 16:46:34 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id F09095C01A1;
+        Mon,  9 Aug 2021 16:46:12 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Mon, 09 Aug 2021 16:46:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=1/VjXgCRC6+q3zzEKgB7gy0Xhwek
+        RoHaQ8AappivcG4=; b=QQskr6fYCEOoTjwXgN37+CxOvYoF8XM6/8d/sb8TGcUt
+        o1edM2Ivgq/2F9Ct8Z8wkbRJOow1LNd6Sfa3TY/zSYjvWogEun/I/cs7GRdeP36+
+        zEGgmys0b6Oc+jo9teMcsrvh59zepNIMXcBfzSYIZJPmU6572In18orod3/wGbcm
+        rJiUe+5Rb/m2NNHCLWkh7ajIYC+Lxx/LmAemubZAbo+yTM8/qR4XLDKj2tbkzjYa
+        xaeHyIrBtnxQMeEfxfcOjtxkCjUtkQR+RUwHf321zV2lzBPwFkoDWikTAMNRgSDy
+        wtMsl1PPiA0PTQX1lY17SrNJ87OtFGXip4ngnmhW2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1/VjXg
+        CRC6+q3zzEKgB7gy0XhwekRoHaQ8AappivcG4=; b=f/NIoDm2ZE7VsPI8/RDth/
+        CbmKm8usFDpAPQrh9bkRKwOqKCCLmZ6nXjvB6e2RpTyvFZse2C5TYXl9PQOpbpZx
+        MA9gx8dZr5Xh9Xn3qEnyIuigOHEhJVKzCvxSt9op+/WH8JonZhTvhhI2IZxajPn2
+        IHvGbD4JmuhqJ+xolm20GFtarK4hgw6CgK3rWZSHEPvOU34FU+BLRMq3siIxjWYr
+        dfcyMinUeBR1dS826RcLi7dR2tn3XDkdjDtWMu8ZRanWP/zcX9XAEF1B/E2gDaoY
+        0C7U0Cqgj8JyUbzDd3uLEPBrjFucCx+J6vJpVYjtRwYyXW+gvSNcSAL0Ft0CW68g
+        ==
+X-ME-Sender: <xms:E5QRYaaEF3FujFElFNm848ASR1GBL9KuT8pyhgd_IdLhjd-i6fDMDQ>
+    <xme:E5QRYda6Ls1zr2gF224x53ZYPq1Z701rJ5JJNUtTN4rIqZiJzaKM0QH9wV7gtYu8_
+    FXAzIKJfgQAZxtZYrE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeejgdduhedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpeehjefgtddtfeelfeetjeeifeduueehleektdegtdejheeiteeuleehuefh
+    geehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:E5QRYU8paiGgfiMtZHbA8JuNCDNkHoQo06C209s53L7_RZ-WRxtXgw>
+    <xmx:E5QRYcr8B3cD0xjPB3fxGRq2vfXh9xNsvRFdiUmLEVmMEB2a_OjmAg>
+    <xmx:E5QRYVri_02IipEL2N8lgKXtIZEZeWVwe6eFpBuWukyaLgPBLtrI_Q>
+    <xmx:FJQRYeDzsruhv6QiOjibN9_Vhx9p9qPIXBQqnRDll-0m2T8bgrnSEg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D092151C0060; Mon,  9 Aug 2021 16:46:11 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-552-g2afffd2709-fm-20210805.001-g2afffd27
+Mime-Version: 1.0
+Message-Id: <cf78f795-1e75-45c9-a759-018f17cfaed9@www.fastmail.com>
+In-Reply-To: <5002ed91-416c-d7ee-b1ab-a50c590749c2@arm.com>
+References: <20210806155523.50429-1-sven@svenpeter.dev>
+ <20210806155523.50429-3-sven@svenpeter.dev>
+ <d289a555-9e3b-b948-1883-2ee4c915da4c@arm.com>
+ <dadbd8b0-171a-4008-8a2e-f68abfed9285@www.fastmail.com>
+ <5002ed91-416c-d7ee-b1ab-a50c590749c2@arm.com>
+Date:   Mon, 09 Aug 2021 22:45:15 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Robin Murphy" <robin.murphy@arm.com>,
+        "Sven Peter" <iommu@lists.linux-foundation.org>
+Cc:     "Arnd Bergmann" <arnd@kernel.org>,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        "Alexander Graf" <graf@amazon.com>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Will Deacon" <will@kernel.org>
+Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/3]_iommu/dma-iommu:_Support_iovad->granule_>_?=
+ =?UTF-8?Q?PAGE=5FSIZE?=
 Content-Type: text/plain
-X-XM-SPF: eid=1mDC82-003SLf-2z;;;mid=<8735rijqlv.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+R3wCFlQLiMNmQm42YcNlMYC9wsvdUJNU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Naresh Kamboju <naresh.kamboju@linaro.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 558 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 10 (1.7%), b_tie_ro: 8 (1.5%), parse: 1.07 (0.2%),
-         extract_message_metadata: 17 (3.0%), get_uri_detail_list: 3.2 (0.6%),
-        tests_pri_-1000: 28 (5.0%), tests_pri_-950: 1.31 (0.2%),
-        tests_pri_-900: 1.09 (0.2%), tests_pri_-90: 90 (16.2%), check_bayes:
-        88 (15.8%), b_tokenize: 11 (1.9%), b_tok_get_all: 8 (1.5%),
-        b_comp_prob: 2.4 (0.4%), b_tok_touch_all: 62 (11.1%), b_finish: 0.96
-        (0.2%), tests_pri_0: 398 (71.3%), check_dkim_signature: 0.71 (0.1%),
-        check_dkim_adsp: 2.7 (0.5%), poll_dns_idle: 0.81 (0.1%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v4] ucounts: add missing data type changes
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
-changed the data type of ucounts/ucounts_max to long, but missed to
-adjust a few other places. This is noticeable on big endian platforms
-from user space because the /proc/sys/user/max_*_names files all
-contain 0.
 
-v4 - Made the min and max constants long so the sysctl values
-     are actually settable on little endian machines.
-     -- EWB
+On Mon, Aug 9, 2021, at 19:41, Robin Murphy wrote:
+> On 2021-08-07 12:47, Sven Peter via iommu wrote:
+> > 
+> > 
+> > On Fri, Aug 6, 2021, at 20:04, Robin Murphy wrote:
+> >> On 2021-08-06 16:55, Sven Peter via iommu wrote:
+> >>> @@ -1006,6 +1019,31 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+> >>>    	if (dev_is_untrusted(dev))
+> >>>    		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
+> >>>    
+> >>> +	/*
+> >>> +	 * If the IOMMU pagesize is larger than the CPU pagesize we will
+> >>> +	 * very likely run into sgs with a physical address that is not aligned
+> >>> +	 * to an IOMMU page boundary. Fall back to just mapping every entry
+> >>> +	 * independently with __iommu_dma_map then.
+> >>
+> >> Scatterlist segments often don't have nicely aligned ends, which is why
+> >> we already align things to IOVA granules in main loop here. I think in
+> >> principle we'd just need to move the non-IOVA-aligned part of the
+> >> address from sg->page to sg->offset in the temporary transformation for
+> >> the rest of the assumptions to hold. I don't blame you for being timid
+> >> about touching that, though - it took me 3 tries to get right when I
+> >> first wrote it...
+> >>
+> > 
+> > 
+> > I've spent some time with that code now and I think we cannot use it
+> > but have to fall back to iommu_dma_map_sg_swiotlb (even though that swiotlb
+> > part is a lie then):
+> > 
+> > When we have sg_phys(s) = 0x802e65000 with s->offset = 0 the paddr
+> > is aligned to PAGE_SIZE but has an offset of 0x1000 from something
+> > the IOMMU can map.
+> > Now this would result in s->offset = -0x1000 which is already weird
+> > enough.
+> > Offset is unsigned (and 32bit) so this will actually look like
+> > s->offset = 0xfffff000 then, which isn't much better.
+> > And then sg_phys(s) = 0x902e64000 (instead of 0x802e64000) and
+> > we'll map some random memory in iommu_map_sg_atomic and a little bit later
+> > everything explodes.
+> > 
+> > Now I could probably adjust the phys addr backwards and make sure offset is
+> > always positive (and possibly larger than PAGE_SIZE) and later restore it
+> > in __finalise_sg then but I feel like that's pushing this a little bit too far.
+> 
+> Yes, that's what I meant. At a quick guess, something like the
+> completely untested diff below.
 
-Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Acked-by: Alexey Gladkov <legion@kernel.org>
-v1: https://lkml.kernel.org/r/20210721115800.910778-1-svens@linux.ibm.com
-v2: https://lkml.kernel.org/r/20210721125233.1041429-1-svens@linux.ibm.com
-v3: https://lkml.kernel.org/r/20210730062854.3601635-1-svens@linux.ibm.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
----
+That unfortunately results in unaligned mappings
 
-Thanks everyone for testing and helping find the cause of this bug.  I
-will push this out to linux-next shortly.
+[    9.630334] iommu: unaligned: iova 0xbff40000 pa 0x0000000801a3b000 size 0x4000 min_pagesz 0x4000
 
- fs/notify/fanotify/fanotify_user.c | 17 +++++++++++------
- fs/notify/inotify/inotify_user.c   | 17 +++++++++++------
- kernel/ucount.c                    | 19 +++++++++++--------
- 3 files changed, 33 insertions(+), 20 deletions(-)
+I'll take a closer look later this week and see if I can fix it.
 
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 64864fb40b40..28b67cb9458d 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -54,22 +54,27 @@ static int fanotify_max_queued_events __read_mostly;
- 
- #include <linux/sysctl.h>
- 
-+static long ft_zero = 0;
-+static long ft_int_max = INT_MAX;
-+
- struct ctl_table fanotify_table[] = {
- 	{
- 		.procname	= "max_user_groups",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &ft_zero,
-+		.extra2		= &ft_int_max,
- 	},
- 	{
- 		.procname	= "max_user_marks",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &ft_zero,
-+		.extra2		= &ft_int_max,
- 	},
- 	{
- 		.procname	= "max_queued_events",
-diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-index 98f61b31745a..62051247f6d2 100644
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -55,22 +55,27 @@ struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
- 
- #include <linux/sysctl.h>
- 
-+static long it_zero = 0;
-+static long it_int_max = INT_MAX;
-+
- struct ctl_table inotify_table[] = {
- 	{
- 		.procname	= "max_user_instances",
- 		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &it_zero,
-+		.extra2		= &it_int_max,
- 	},
- 	{
- 		.procname	= "max_user_watches",
- 		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES],
--		.maxlen		= sizeof(int),
-+		.maxlen		= sizeof(long),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.proc_handler	= proc_doulongvec_minmax,
-+		.extra1		= &it_zero,
-+		.extra2		= &it_int_max,
- 	},
- 	{
- 		.procname	= "max_queued_events",
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index 77be3bbe3cc4..bb51849e6375 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -58,14 +58,17 @@ static struct ctl_table_root set_root = {
- 	.permissions = set_permissions,
- };
- 
--#define UCOUNT_ENTRY(name)				\
--	{						\
--		.procname	= name,			\
--		.maxlen		= sizeof(int),		\
--		.mode		= 0644,			\
--		.proc_handler	= proc_dointvec_minmax,	\
--		.extra1		= SYSCTL_ZERO,		\
--		.extra2		= SYSCTL_INT_MAX,	\
-+static long ue_zero = 0;
-+static long ue_int_max = INT_MAX;
-+
-+#define UCOUNT_ENTRY(name)					\
-+	{							\
-+		.procname	= name,				\
-+		.maxlen		= sizeof(long),			\
-+		.mode		= 0644,				\
-+		.proc_handler	= proc_doulongvec_minmax,	\
-+		.extra1		= &ue_zero,			\
-+		.extra2		= &ue_int_max,			\
- 	}
- static struct ctl_table user_table[] = {
- 	UCOUNT_ENTRY("max_user_namespaces"),
--- 
-2.20.1
+> It really comes down to what we want to
+> achieve here - if it's just to make this thing work at all, then I'd
+> favour bolting on the absolute minimum changes, possibly even cheating
+> by tainting the kernel and saying all bets are off instead of trying to
+> handle the more involved corners really properly. However if you want to
+> work towards this being a properly-supported thing, then I think it's
+> worth generalising the existing assumptions of page alignment from the
+> beginning.
+
+I'd like to try and see if we can make this a properly-supported thing.
+
+That will likely take a few iterations but realistically the rest of the drivers
+required to make this platform actually useful (and especially the display controller
+and GPU drivers) won't be ready for a few more months anyway. And even on 4KB PAGE_SIZE
+kernels half the USB ports and NVMe will work fine, which should be enough to install
+a distro and some third-party package that just ships the distro kernel with 16KB
+pages.
+
+
+
+
+Sven
 
