@@ -2,132 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3823E4A50
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6A23E4A52
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhHIQwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
+        id S233614AbhHIQwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233749AbhHIQvg (ORCPT
+        with ESMTP id S233128AbhHIQwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:51:36 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124A9C06179E
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:51:16 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id n12so1728734edx.8
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:51:15 -0700 (PDT)
+        Mon, 9 Aug 2021 12:52:34 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354EBC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:52:13 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id h17so13243814ljh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:52:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RxmdItFZkEi/9iGP3rK4lcNwD3SStqnhhfXgrwX8fQo=;
-        b=fkfImuK2CwAkrjwvRu6A970SoVBxWoYKVn6s5C7o6zFPf1aZTEfddk/uRJQvnc6PLF
-         6b9LgJgcCaiRLCY7hryTS4/uY4OkJcNXdIsdfFtl7/KXQPOpFT4yUYcXiJI675gVd0Ds
-         0jHJg4Zn8gtADMtBwRtFoOnkG09qeVTc5J4+dAtsbgEAbNoQoJPsPWcsebscGpVG+zCM
-         pc1iql2Ptxf9gbpLAtpp9fLJ1XryRf9WilD2zxJ0qGCtp5rhC+DTBGqaEMxS3NHHaU/l
-         el+zq9pTeGVnuRL9B8+dUUzyJVPqkft2FRIsrRmUoDyTQ5A0Vy1xkP8M+EzONyV4M1Na
-         kGwQ==
+         :cc;
+        bh=Nkkh1U3atW0wFVblUAUwz3U6Ysfi6ZmHN/6NdKcARm4=;
+        b=pHWG3hQ+DEQyjCLGz2fOy2JMERLzEblQQqDyvFDangUkSAxp3k9kcdK3iusdgP6nBt
+         Sn8LoukVuT52IPewW/qKmMcsFoIGl2N3tg073MuOXFsnupnRm/s4nYVPCjs7qOP1fd15
+         TcKEuoSokdoSzIakTYwHc9A1BZCSkS/A/ry5jQ/YVy9gVmDGfjTEFFWu1CvlovaVVEm0
+         8uvIRskkYFcsIUlAEULIH6htlvBifD26BHIo9wTyCvCcdcTPWYQ1Yjsmz7KTCr20q4T/
+         LrkhLN0B+UqM+BfIJ6WAbWZsIrsVQMydlQAjcZD+M8bq7dNMwf+4Ih7zHvtxk+n1kUv9
+         pE9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RxmdItFZkEi/9iGP3rK4lcNwD3SStqnhhfXgrwX8fQo=;
-        b=j2+58BQif+KVHpDZ6cjDYtgJbA9jX594hIR4bqAyBQ4rtwodVVrhH5V4xfrQQfjKbn
-         RZU72tdJ3F5TlrWvypO4G5bihsfaqJm2uPpnMci8EC/Nc0teOPccCj3gTK9RlLp139Rm
-         rxRDRuYBKzLDBKs/mcLJSY8S9U0/wZwBKNmUhw0LCTHHBYqnPWwgpRNnT4Gql+KMnasJ
-         1eVNy6Z74dHXVc3w3jyjdOaX8McYf1jEUhZluTw/5U8CChT+iqXMSa8WeghrPIsqApm2
-         6b4d/b1DVeKSLiV7klZ2GEeGZWEURJrNYTfzP8g4QJoC+7eZb/qqfeIxwPsuDeBAxyLR
-         GD9w==
-X-Gm-Message-State: AOAM530EjciUnN7P/l2WUEWG342yq65Qo6rcC9Om6ZGpXOkqwxXN/A/r
-        e/lmuFOpen8/Vu38owDGWZTtBZHWtbQP25Ttjk0=
-X-Google-Smtp-Source: ABdhPJzKBvR7Xh7W1WPD+fdEdxDiLbn9Xad+iIj5BsEr34bkeBfaQU6933hThF8to/pk17mhhXTWvmmXUqxfmwxXibA=
-X-Received: by 2002:a50:d651:: with SMTP id c17mr31525573edj.69.1628527874597;
- Mon, 09 Aug 2021 09:51:14 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Nkkh1U3atW0wFVblUAUwz3U6Ysfi6ZmHN/6NdKcARm4=;
+        b=OYGpThaUQpg639Y7Exzj0UZfxyiI/uB5J7a2swLaFjVfRELMwO7ntioiiEGFsQ/stC
+         eoZfaubg7gZBa6nrcysMEzgXcla96yUF7yiMArjBVSmkm4UFtfhDaRWmgEw+Mdq4OtSx
+         Qmhxo9dSL/PXPVQDj+O7llSD9S1gJWHm4Kd2k404Zi6v2TNzRVQI1CXphYu7e0aB5RaR
+         5kmpTX1+hPhxhlhjY95epGJZD21RieDbuwBf8LHWE+9u1snbvA+vFCDPzgKDlNcYcAeL
+         mFGSMcfsL+isRMdSQ5lbDlXDHdINua0r6bTAiiDfXEDaWX2RqTXCzoFy2bsrUwVXkpLt
+         QzOw==
+X-Gm-Message-State: AOAM533d2YWXxWxniwEN9LJyFKacs15ax9D6Xf3jf48Uvil3vVognvy/
+        HlCaV6onWHuj48SaPuETve3oRlasMykTawhoAYkJGg==
+X-Google-Smtp-Source: ABdhPJzH7lNLYUcTONIii6FuBGA164RglZr+32bu0cdXLF3d7jJH0tiV28ElCACZthwIOBX5Wqk/km0Eg40BQqAKVw8=
+X-Received: by 2002:a2e:b8d3:: with SMTP id s19mr13863999ljp.388.1628527931302;
+ Mon, 09 Aug 2021 09:52:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210805190253.2795604-1-zi.yan@sent.com> <20210805190253.2795604-12-zi.yan@sent.com>
- <c2fa6c99-ac48-bf0b-a8ca-d1c0ffb633b6@redhat.com> <CAKgT0UdCVTYiiGHuhBv7VnyJeD3ZAijBcZPLEPc=r7QD=9veNA@mail.gmail.com>
- <42FD7031-5C3D-4EED-BD54-2F5839823E22@nvidia.com>
-In-Reply-To: <42FD7031-5C3D-4EED-BD54-2F5839823E22@nvidia.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 9 Aug 2021 09:51:03 -0700
-Message-ID: <CAKgT0UdLnS3CV47kOY4O5cvgUFFCLo=L5C_shga=cU6UEBZv6w@mail.gmail.com>
-Subject: Re: [RFC PATCH 11/15] mm/page_reporting: report pages at section size
- instead of MAX_ORDER.
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210809152651.2297337-1-maz@kernel.org> <20210809152651.2297337-6-maz@kernel.org>
+In-Reply-To: <20210809152651.2297337-6-maz@kernel.org>
+From:   Oliver Upton <oupton@google.com>
+Date:   Mon, 9 Aug 2021 09:52:00 -0700
+Message-ID: <CAOQ_QsjATdRRFdiG5kR+Ni7X-_kMaF+V_XQx3uuxivk0t4xt_w@mail.gmail.com>
+Subject: Re: [PATCH 05/13] clocksource/arm_arch_timer: Fix MMIO base address
+ vs callback ordering issue
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 8:08 AM Zi Yan <ziy@nvidia.com> wrote:
+On Mon, Aug 9, 2021 at 8:27 AM Marc Zyngier <maz@kernel.org> wrote:
 >
-> On 9 Aug 2021, at 10:12, Alexander Duyck wrote:
+> The MMIO timer base address gets published after we have registered
+> the callbacks and the interrupt handler, which is... a bit dangerous.
 >
-> > On Mon, Aug 9, 2021 at 12:25 AM David Hildenbrand <david@redhat.com> wr=
-ote:
-> >>
-> >> On 05.08.21 21:02, Zi Yan wrote:
-> >>> From: Zi Yan <ziy@nvidia.com>
-> >>>
-> >>> page_reporting_order was set to MAX_ORDER, which is always smaller th=
-an
-> >>> a memory section size. An upcoming change will make MAX_ORDER larger
-> >>> than a memory section size. Set page_reporting_order to
-> >>> PFN_SECTION_SHIFT to match existing size assumption.
-> >>>
-> >>> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> >>> Cc: David Hildenbrand <david@redhat.com>
-> >>> Cc: linux-mm@kvack.org
-> >>> Cc: linux-kernel@vger.kernel.org
-> >>> ---
-> >>>   mm/page_reporting.c | 3 ++-
-> >>>   1 file changed, 2 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-> >>> index 382958eef8a9..dc4a2d699862 100644
-> >>> --- a/mm/page_reporting.c
-> >>> +++ b/mm/page_reporting.c
-> >>> @@ -11,7 +11,8 @@
-> >>>   #include "page_reporting.h"
-> >>>   #include "internal.h"
-> >>>
-> >>> -unsigned int page_reporting_order =3D MAX_ORDER;
-> >>> +/* Set page_reporting_order at section size */
-> >>> +unsigned int page_reporting_order =3D PFN_SECTION_SHIFT;
-> >>>   module_param(page_reporting_order, uint, 0644);
-> >>>   MODULE_PARM_DESC(page_reporting_order, "Set page reporting order");
-> >>>
-> >>>
-> >>
-> >> If you look closely, this is only a placeholder and will get overwritt=
-en
-> >> in page_reporting_register(). I don't recall why we have the module
-> >> parameter at all. Most probably, to adjust the reporting order after w=
-e
-> >> already registered a user. Can't we just initialize that to 0 ?
-> >
-> > Yeah, it is pretty much there for debugging in the event that we are
-> > on an architecture that is misconfigured.
+> Fix this by moving the base address publication to the point where
+> we register the timer, and expose a pointer to the timer structure
+> itself rather than a naked value.
 >
-> MAX_ORDER is changed to a boot time variable in Patch 15, thus cannot be =
-used
-> for page_reporting_order initialization after that.
->
-> Thanks for David=E2=80=99s explanation. I will initialize page_reporting_=
-order to 0
-> and fix the commit message.
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-Rather than 0 it might be better to use (unsigned)-1 as that would
-prevent page reporting from being able to run until the value is
-overwritten.
+Is this patch stable-worthy? I take it there haven't been any reports
+of issues, though this seems rather perilous.
+
+Reviewed-by: Oliver Upton <oupton@google.com>
+
+> ---
+>  drivers/clocksource/arm_arch_timer.c | 27 +++++++++++++--------------
+>  1 file changed, 13 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> index 160464f75017..ca7761d8459a 100644
+> --- a/drivers/clocksource/arm_arch_timer.c
+> +++ b/drivers/clocksource/arm_arch_timer.c
+> @@ -54,13 +54,13 @@
+>
+>  static unsigned arch_timers_present __initdata;
+>
+> -static void __iomem *arch_counter_base __ro_after_init;
+> -
+>  struct arch_timer {
+>         void __iomem *base;
+>         struct clock_event_device evt;
+>  };
+>
+> +static struct arch_timer *arch_timer_mem __ro_after_init;
+> +
+>  #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
+>
+>  static u32 arch_timer_rate __ro_after_init;
+> @@ -975,9 +975,9 @@ static u64 arch_counter_get_cntvct_mem(void)
+>         u32 vct_lo, vct_hi, tmp_hi;
+>
+>         do {
+> -               vct_hi = readl_relaxed(arch_counter_base + CNTVCT_HI);
+> -               vct_lo = readl_relaxed(arch_counter_base + CNTVCT_LO);
+> -               tmp_hi = readl_relaxed(arch_counter_base + CNTVCT_HI);
+> +               vct_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
+> +               vct_lo = readl_relaxed(arch_timer_mem->base + CNTVCT_LO);
+> +               tmp_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
+>         } while (vct_hi != tmp_hi);
+>
+>         return ((u64) vct_hi << 32) | vct_lo;
+> @@ -1168,25 +1168,25 @@ static int __init arch_timer_mem_register(void __iomem *base, unsigned int irq)
+>  {
+>         int ret;
+>         irq_handler_t func;
+> -       struct arch_timer *t;
+>
+> -       t = kzalloc(sizeof(*t), GFP_KERNEL);
+> -       if (!t)
+> +       arch_timer_mem = kzalloc(sizeof(*arch_timer_mem), GFP_KERNEL);
+> +       if (!arch_timer_mem)
+>                 return -ENOMEM;
+>
+> -       t->base = base;
+> -       t->evt.irq = irq;
+> -       __arch_timer_setup(ARCH_TIMER_TYPE_MEM, &t->evt);
+> +       arch_timer_mem->base = base;
+> +       arch_timer_mem->evt.irq = irq;
+> +       __arch_timer_setup(ARCH_TIMER_TYPE_MEM, &arch_timer_mem->evt);
+>
+>         if (arch_timer_mem_use_virtual)
+>                 func = arch_timer_handler_virt_mem;
+>         else
+>                 func = arch_timer_handler_phys_mem;
+>
+> -       ret = request_irq(irq, func, IRQF_TIMER, "arch_mem_timer", &t->evt);
+> +       ret = request_irq(irq, func, IRQF_TIMER, "arch_mem_timer", &arch_timer_mem->evt);
+>         if (ret) {
+>                 pr_err("Failed to request mem timer irq\n");
+> -               kfree(t);
+> +               kfree(arch_timer_mem);
+> +               arch_timer_mem = NULL;
+>         }
+>
+>         return ret;
+> @@ -1444,7 +1444,6 @@ arch_timer_mem_frame_register(struct arch_timer_mem_frame *frame)
+>                 return ret;
+>         }
+>
+> -       arch_counter_base = base;
+>         arch_timers_present |= ARCH_TIMER_TYPE_MEM;
+>
+>         return 0;
+> --
+> 2.30.2
+>
