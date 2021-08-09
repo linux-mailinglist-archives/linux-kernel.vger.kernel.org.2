@@ -2,123 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA4E3E40CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF23F3E40D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhHIH0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:26:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59214 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233122AbhHIHZu (ORCPT
+        id S233413AbhHIHav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233335AbhHIHar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:25:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628493929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JNaWugcsqwEhxVIGKp2CI/wz2iOjAFTuqVT1m8pDKbo=;
-        b=dMMfCPMcOJ92dqFSBnJMaFS4Pd0PlB8TM+Abjt43v3i+FJMfLQ6SSshNC/ySnnETG6zflK
-        SA2nidEtMD1obvNR0nEM+XnEP9BGsTf3n9mBPZH0v16fJB1rgLmRV8nY34MkytaOJdm9Uu
-        y1806E+8/aNgXF1gIqOJSncCTJ2SD6A=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-qqEpUQM9NhKMArZBYgdahg-1; Mon, 09 Aug 2021 03:25:28 -0400
-X-MC-Unique: qqEpUQM9NhKMArZBYgdahg-1
-Received: by mail-wm1-f69.google.com with SMTP id g70-20020a1c20490000b02902e6753bf473so2280963wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:25:28 -0700 (PDT)
+        Mon, 9 Aug 2021 03:30:47 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA4CC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 00:30:23 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so315753pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6AaH/QvzJmMTb/tLFdsE2g2dSuN00KFriVjp+nrWMKo=;
+        b=n3JUpjnMCUehTXcRC2vvYvjrX4sIYgtTBEdqO95/Jt9Hn9OnclNx9GduauyhRey287
+         8nLtSx5vopa18swm/eS0hMKso9qA3Fhd83TVyljzMEEPfFFGRM/VvDb3XNmXiPrTvfKd
+         lVlxk2E8NZOZXs4nO1t/xEGMRdcfrsC/n2KdKJwKvcsMlinlYgPB4iSY3rK5an8sEFH9
+         bmTsjn94+sKBDYBbjRA3tJQCluMZeCV5VDnIXdMBDYMAxKSoCXIukdBvFwuF7xPlC4f+
+         VRH6yUcShJeOGMF6Q1fDQffqMLo0AenRzsdrZqQqUA+vZAQQhjmb0MFQIgOFjajTZLsc
+         x/VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=JNaWugcsqwEhxVIGKp2CI/wz2iOjAFTuqVT1m8pDKbo=;
-        b=DX+5xBAWM1jqEM7uqVd+NKpK6J1WR8cZNL1MuSJysYHBQZ7v97VH07Cy1fiu9el54Q
-         3W/7YwmiVD6FKsg+aUlT9y4GRPmNnQFIrsub3sW72mN0OePmJjGMWWHWQWXduM0KCqJs
-         LYWyswQOsEy0+P6tYtGIHpylhu01jm2h/eoqo2tKePEgpEnYt3OV5tej+dF49MnixhSi
-         58QIYaA9YREj0VsZYH6pR9ejRNtMI+b/wSWgUD8f88e3VEwW3oj4KOEDV2lA3j9owitG
-         FTb7PwpTqG2e1ddEBxzifhVc5KeqsTHM48RLzcL6BDgeNqBsAbcRjg3P8jC2in58Dxd2
-         NNUA==
-X-Gm-Message-State: AOAM532zWXxZ5Vg9I/fkFcKfD3B/vMQXbBu4ES+TLiuurqgk4ZEzNBob
-        Ty0ftvbwxcJfnIfOCX0pRj0ZlhgDa0igPRN76p2fAG3CRXdHKn9yli2npkw7a3AsjFod2xREHeD
-        yNn270I+qp8zhJKitrJcXJdZnNqxQfz8MvcC/KJU5igFinBU2/vSbhlbIK4T31VkMBR1nmDPh
-X-Received: by 2002:a1c:2547:: with SMTP id l68mr5833033wml.23.1628493927580;
-        Mon, 09 Aug 2021 00:25:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsNDeS2Y+pJvAumXMRLknJnzonRHwbbWrYqQynr09Sy5T089ASO/i2XYYeqmf3R64rIt02mQ==
-X-Received: by 2002:a1c:2547:: with SMTP id l68mr5832998wml.23.1628493927224;
-        Mon, 09 Aug 2021 00:25:27 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id 9sm16720849wmf.34.2021.08.09.00.25.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 00:25:26 -0700 (PDT)
-Subject: Re: [RFC PATCH 11/15] mm/page_reporting: report pages at section size
- instead of MAX_ORDER.
-To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org
-References: <20210805190253.2795604-1-zi.yan@sent.com>
- <20210805190253.2795604-12-zi.yan@sent.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <c2fa6c99-ac48-bf0b-a8ca-d1c0ffb633b6@redhat.com>
-Date:   Mon, 9 Aug 2021 09:25:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6AaH/QvzJmMTb/tLFdsE2g2dSuN00KFriVjp+nrWMKo=;
+        b=czFylhUpk8xh0LYNKIU18mvxVFSbC4R7RpHXcT72TaeQ4QDoZxxEmh0XHDfU2p8WIm
+         5Uxpg+fHFAPIV7XMHENNsPlfPS7GksUDny49YjfCPr40k51K5C9pOLJL3YSIBKwbtkHj
+         v0g2EwHVFQEWUkxUdJrfcZnREpEG9KNKI2JnQm7CnNwP8x4olVwM/aLVRACz62dE04J3
+         63CUrC+o6KD67YcUvdtM1XjP+kJ0J9X8q2ueXyFTZjC9V2JBEtsG+6z0S/SWpib0W6As
+         9/df8p3k+xF8HBBi+jc+CNvOT4EDZrrfklVZSIZDyZQUfOeKaRr2OgCu0uHDXoaxN99r
+         TzZQ==
+X-Gm-Message-State: AOAM530S5XrGP6IZv5ZLNmpxSAbXz4Fp94Lufpw40/7fdZBnGAr4gHO3
+        D3as06MRBlI3ixSovjaZ5OMOnQ==
+X-Google-Smtp-Source: ABdhPJxeoZhdVD34qHvFm3x0OrPEUWTYjI47uQbkZF5kBJ2jSlkeRPl7vBozGIeSrM03ZFEKr0P5+A==
+X-Received: by 2002:a17:90a:17a3:: with SMTP id q32mr3416980pja.195.1628494223102;
+        Mon, 09 Aug 2021 00:30:23 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id r17sm23592320pgu.8.2021.08.09.00.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 00:30:22 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 13:00:20 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>
+Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
+Message-ID: <20210809073020.y6ruibdm37xnx7hg@vireshk-i7>
+References: <cover.1627989586.git.viresh.kumar@linaro.org>
+ <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
+ <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
+ <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
+ <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
+ <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7>
+ <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
+ <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
+ <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210805190253.2795604-12-zi.yan@sent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.08.21 21:02, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
+On 06-08-21, 10:00, Arnd Bergmann wrote:
+> On Fri, Aug 6, 2021 at 9:44 AM Viresh Kumar via Stratos-dev
+> <stratos-dev@op-lists.linaro.org> wrote:
+> >
+> > On 05-08-21, 15:10, Arnd Bergmann wrote:
+> > > I hope this can still be simplified by working out better which state
+> > > transitions are needed exactly. In particular, I would expect that we
+> > > can get away with not sending a VIRTIO_GPIO_MSG_IRQ_TYPE
+> > > for 'mask' state changes at all, but use that only for forcing 'enabled'
+> > > state changes.
+> >
+> > Something like this ?
 > 
-> page_reporting_order was set to MAX_ORDER, which is always smaller than
-> a memory section size. An upcoming change will make MAX_ORDER larger
-> than a memory section size. Set page_reporting_order to
-> PFN_SECTION_SHIFT to match existing size assumption.
+> > static void virtio_gpio_irq_mask(struct irq_data *d)
+> > {
+> >         /* Nothing to do here */
+> > }
 > 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->   mm/page_reporting.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> You'd have to do /something/ here I think, if only setting the flag
+> that we don't want to deliver the next interrupt.
 > 
-> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-> index 382958eef8a9..dc4a2d699862 100644
-> --- a/mm/page_reporting.c
-> +++ b/mm/page_reporting.c
-> @@ -11,7 +11,8 @@
->   #include "page_reporting.h"
->   #include "internal.h"
->   
-> -unsigned int page_reporting_order = MAX_ORDER;
-> +/* Set page_reporting_order at section size */
-> +unsigned int page_reporting_order = PFN_SECTION_SHIFT;
->   module_param(page_reporting_order, uint, 0644);
->   MODULE_PARM_DESC(page_reporting_order, "Set page reporting order");
->   
+> > static void virtio_gpio_irq_unmask(struct irq_data *d)
+> > {
+> >         struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+> >         struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+> >
+> >         /* Queue the buffer unconditionally on unmask */
+> >         virtio_gpio_irq_prepare(vgpio, d->hwirq);
+> > }
 > 
+> And check the flag here to not requeue it if it's masked.
 
-If you look closely, this is only a placeholder and will get overwritten 
-in page_reporting_register(). I don't recall why we have the module 
-parameter at all. Most probably, to adjust the reporting order after we 
-already registered a user. Can't we just initialize that to 0 ?
+I am not sure I understand why this would be required. If the
+interrupt is getting disabled, then unmask will not get called here
+and so we won't requeue anything. Same will happen with threaded
+handlers where the interrupt gets unmasked at a later point of time.
+
+> Now, there is already a flag in the irq descriptor, so rather than
+> having double accounting, the easy way may be to
+> just use irqd_irq_masked()/irq_state_set_masked(), or
+> have the irq core take care of this.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+viresh
