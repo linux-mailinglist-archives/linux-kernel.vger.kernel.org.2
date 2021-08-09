@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904F63E3F60
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D753E3F55
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhHIFUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 01:20:44 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57882 "EHLO
+        id S233118AbhHIFUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 01:20:31 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:57912 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233051AbhHIFUa (ORCPT
+        with ESMTP id S232963AbhHIFU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 01:20:30 -0400
-X-UUID: b7e620d6d1e6472abf46aeb8ab6dba5a-20210809
-X-UUID: b7e620d6d1e6472abf46aeb8ab6dba5a-20210809
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        Mon, 9 Aug 2021 01:20:26 -0400
+X-UUID: c4c93be5ad5645c4a7706a245a391817-20210809
+X-UUID: c4c93be5ad5645c4a7706a245a391817-20210809
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <tinghan.shen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1938375716; Mon, 09 Aug 2021 13:20:03 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1162338201; Mon, 09 Aug 2021 13:20:03 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Mon, 9 Aug 2021 13:20:02 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -37,9 +37,9 @@ CC:     <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Tinghan Shen <tinghan.shen@mediatek.com>
-Subject: [PATCH v6 3/6] dt-bindings: remoteproc: mediatek: Convert mtk,scp to json-schema
-Date:   Mon, 9 Aug 2021 13:19:56 +0800
-Message-ID: <20210809051959.31136-4-tinghan.shen@mediatek.com>
+Subject: [PATCH v6 4/6] remoteproc: mediatek: Support mt8195 scp
+Date:   Mon, 9 Aug 2021 13:19:57 +0800
+Message-ID: <20210809051959.31136-5-tinghan.shen@mediatek.com>
 X-Mailer: git-send-email 2.15.GIT
 In-Reply-To: <20210809051959.31136-1-tinghan.shen@mediatek.com>
 References: <20210809051959.31136-1-tinghan.shen@mediatek.com>
@@ -50,161 +50,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the mtk,scp binding to DT schema format using json-schema.
+The SCP clock design is changed on mt8195 that doesn't need to control
+SCP clock on kernel side.
 
 Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- .../bindings/remoteproc/mtk,scp.txt           | 41 ---------
- .../bindings/remoteproc/mtk,scp.yaml          | 92 +++++++++++++++++++
- 2 files changed, 92 insertions(+), 41 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
- create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
+ drivers/remoteproc/mtk_common.h |  1 +
+ drivers/remoteproc/mtk_scp.c    | 48 +++++++++++++++++++++++++++++----
+ 2 files changed, 44 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/mtk,scp.txt b/Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
-deleted file mode 100644
-index 88f37dee7bca..000000000000
---- a/Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--Mediatek SCP Bindings
------------------------------------------
--
--This binding provides support for ARM Cortex M4 Co-processor found on some
--Mediatek SoCs.
--
--Required properties:
--- compatible		Should be one of:
--				"mediatek,mt8183-scp"
--				"mediatek,mt8192-scp"
--				"mediatek,mt8195-scp"
--- reg			Should contain the address ranges for memory regions:
--			SRAM, CFG, and L1TCM.
--- reg-names		Contains the corresponding names for the memory regions:
--			"sram", "cfg", and "l1tcm".
--- clocks		Required by mt8183 and mt8192. Clock for co-processor
--			(See: ../clock/clock-bindings.txt)
--- clock-names		Required by mt8183 and mt8192. Contains the
--			corresponding name for the clock. This should be
--			named "main".
--
--Subnodes
----------
--
--Subnodes of the SCP represent rpmsg devices. The names of the devices are not
--important. The properties of these nodes are defined by the individual bindings
--for the rpmsg devices - but must contain the following property:
--
--- mtk,rpmsg-name	Contains the name for the rpmsg device. Used to match
--			the subnode to rpmsg device announced by SCP.
--
--Example:
--
--	scp: scp@10500000 {
--		compatible = "mediatek,mt8183-scp";
--		reg = <0 0x10500000 0 0x80000>,
--		      <0 0x105c0000 0 0x5000>;
--		reg-names = "sram", "cfg";
--		clocks = <&infracfg CLK_INFRA_SCPSYS>;
--		clock-names = "main";
--	};
-diff --git a/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml b/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
-new file mode 100644
-index 000000000000..d21a25ee96e6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
-@@ -0,0 +1,92 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/remoteproc/mtk,scp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/remoteproc/mtk_common.h b/drivers/remoteproc/mtk_common.h
+index 61901f5efa05..5ff3867c72f3 100644
+--- a/drivers/remoteproc/mtk_common.h
++++ b/drivers/remoteproc/mtk_common.h
+@@ -72,6 +72,7 @@ struct scp_ipi_desc {
+ struct mtk_scp;
+ 
+ struct mtk_scp_of_data {
++	int (*scp_clk_get)(struct mtk_scp *scp);
+ 	int (*scp_before_load)(struct mtk_scp *scp);
+ 	void (*scp_irq_handler)(struct mtk_scp *scp);
+ 	void (*scp_reset_assert)(struct mtk_scp *scp);
+diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+index 9679cc26895e..36e48cf58ed6 100644
+--- a/drivers/remoteproc/mtk_scp.c
++++ b/drivers/remoteproc/mtk_scp.c
+@@ -312,6 +312,32 @@ static int scp_elf_read_ipi_buf_addr(struct mtk_scp *scp,
+ 	return -ENOENT;
+ }
+ 
++static int mt8183_scp_clk_get(struct mtk_scp *scp)
++{
++	struct device *dev = scp->dev;
++	int ret = 0;
 +
-+title: Mediatek SCP Bindings
++	scp->clk = devm_clk_get(dev, "main");
++	if (IS_ERR(scp->clk)) {
++		dev_err(dev, "Failed to get clock\n");
++		ret = PTR_ERR(scp->clk);
++	}
 +
-+maintainers:
-+  - Tinghan Shen <tinghan.shen@mediatek.com>
++	return ret;
++}
 +
-+description:
-+  This binding provides support for ARM Cortex M4 Co-processor found on some
-+  Mediatek SoCs.
++static int mt8192_scp_clk_get(struct mtk_scp *scp)
++{
++	return mt8183_scp_clk_get(scp);
++}
 +
-+properties:
-+  compatible:
-+    enum:
-+      - mediatek,mt8183-scp
-+      - mediatek,mt8192-scp
-+      - mediatek,mt8195-scp
++static int mt8195_scp_clk_get(struct mtk_scp *scp)
++{
++	scp->clk = NULL;
 +
-+  reg:
-+    description:
-+      Should contain the address ranges for memory regions SRAM, CFG, and
-+      L1TCM.
-+    maxItems: 3
++	return 0;
++}
 +
-+  reg-names:
-+    items:
-+      - const: sram
-+      - const: cfg
-+      - const: l1tcm
+ static int mt8183_scp_before_load(struct mtk_scp *scp)
+ {
+ 	/* Clear SCP to host interrupt */
+@@ -785,12 +811,9 @@ static int scp_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto destroy_mutex;
+ 
+-	scp->clk = devm_clk_get(dev, "main");
+-	if (IS_ERR(scp->clk)) {
+-		dev_err(dev, "Failed to get clock\n");
+-		ret = PTR_ERR(scp->clk);
++	ret = scp->data->scp_clk_get(scp);
++	if (ret)
+ 		goto release_dev_mem;
+-	}
+ 
+ 	/* register SCP initialization IPI */
+ 	ret = scp_ipi_register(scp, SCP_IPI_INIT, scp_init_ipi_handler, scp);
+@@ -852,6 +875,7 @@ static int scp_remove(struct platform_device *pdev)
+ }
+ 
+ static const struct mtk_scp_of_data mt8183_of_data = {
++	.scp_clk_get = mt8183_scp_clk_get,
+ 	.scp_before_load = mt8183_scp_before_load,
+ 	.scp_irq_handler = mt8183_scp_irq_handler,
+ 	.scp_reset_assert = mt8183_scp_reset_assert,
+@@ -864,6 +888,19 @@ static const struct mtk_scp_of_data mt8183_of_data = {
+ };
+ 
+ static const struct mtk_scp_of_data mt8192_of_data = {
++	.scp_clk_get = mt8192_scp_clk_get,
++	.scp_before_load = mt8192_scp_before_load,
++	.scp_irq_handler = mt8192_scp_irq_handler,
++	.scp_reset_assert = mt8192_scp_reset_assert,
++	.scp_reset_deassert = mt8192_scp_reset_deassert,
++	.scp_stop = mt8192_scp_stop,
++	.scp_da_to_va = mt8192_scp_da_to_va,
++	.host_to_scp_reg = MT8192_GIPC_IN_SET,
++	.host_to_scp_int_bit = MT8192_HOST_IPC_INT_BIT,
++};
 +
-+  clocks:
-+    description:
-+      Clock for co-processor (see ../clock/clock-bindings.txt).
-+      Required by mt8183 and mt8192.
-+    maxItems: 1
-+
-+  clock-names:
-+    const: main
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+
-+if:
-+  properties:
-+    compatible:
-+      enum:
-+        - mediatek,mt8183-scp
-+        - mediatek,mt8192-scp
-+then:
-+  required:
-+    - clocks
-+    - clock-names
-+
-+additionalProperties:
-+  type: object
-+  description:
-+    Subnodes of the SCP represent rpmsg devices. The names of the devices
-+    are not important. The properties of these nodes are defined by the
-+    individual bindings for the rpmsg devices.
-+  properties:
-+    mediatek,rpmsg-name:
-+      $ref: /schemas/types.yaml#/definitions/string-array
-+      description:
-+        Contains the name for the rpmsg device. Used to match
-+        the subnode to rpmsg device announced by SCP.
-+
-+  required:
-+    - mediatek,rpmsg-name
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/mt8183-clk.h>
-+
-+    scp@10500000 {
-+        compatible = "mediatek,mt8183-scp";
-+        reg = <0x10500000 0x80000>,
-+              <0x10700000 0x8000>,
-+              <0x10720000 0xe0000>;
-+        reg-names = "sram", "cfg", "l1tcm";
-+        clocks = <&infracfg CLK_INFRA_SCPSYS>;
-+        clock-names = "main";
-+
-+        cros_ec {
-+            mediatek,rpmsg-name = "cros-ec-rpmsg";
-+        };
-+    };
++static const struct mtk_scp_of_data mt8195_of_data = {
++	.scp_clk_get = mt8195_scp_clk_get,
+ 	.scp_before_load = mt8192_scp_before_load,
+ 	.scp_irq_handler = mt8192_scp_irq_handler,
+ 	.scp_reset_assert = mt8192_scp_reset_assert,
+@@ -877,6 +914,7 @@ static const struct mtk_scp_of_data mt8192_of_data = {
+ static const struct of_device_id mtk_scp_of_match[] = {
+ 	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
+ 	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
++	{ .compatible = "mediatek,mt8195-scp", .data = &mt8195_of_data },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
 -- 
 2.18.0
 
