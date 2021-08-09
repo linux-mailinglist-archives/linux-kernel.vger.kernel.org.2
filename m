@@ -2,129 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4D03E3D8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008953E3DBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 03:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbhHIBcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 21:32:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232634AbhHIBcD (ORCPT
+        id S232671AbhHIBmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 21:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231324AbhHIBmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 21:32:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628472703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6AtH3MREBeTH78AEq1clPuVC+0bJN9ncER27UcApork=;
-        b=W3gapVLSBcx2yl+zS6Lfxv7CxjT03RiaECN9r560CyJv87tKs944U0o3mFtS4pQB2Gxvwm
-        g9uEy+rTc0FYBe8/xMCNv1Ff01TxvzcmTOgqKRY9LrckU9+WXJTPhhCkw6HZmFWhWFAQRz
-        QRlASRdFiMCBzL0k+PDweT9vMuTv8p0=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-zdX9WxoMPueP2tZAYk50Lw-1; Sun, 08 Aug 2021 21:31:42 -0400
-X-MC-Unique: zdX9WxoMPueP2tZAYk50Lw-1
-Received: by mail-qk1-f200.google.com with SMTP id a72-20020ae9e84b0000b02903d1f6aa7886so3480958qkg.21
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 18:31:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6AtH3MREBeTH78AEq1clPuVC+0bJN9ncER27UcApork=;
-        b=CPjagToJia+QV4QFwkNV5URM1o1z38nXCeqCdpa49i4NOYjetM7yUP1zdFNuL6jpby
-         VrSfnA/UpR9qe3QFWW/dC7s4uwWBtVuIhREaxT6Uunt7QuycCHuxajs9+tHr4fcbd7nH
-         mMo88IFtMckNFJR2MzLYwzY/d12D0jncFTXezPg44cXHw443umPvATR6fN3yAIgxnOEl
-         AcfQxPv9YVXY2BPfIiwEZ3p2Wm3hitdKO/3sayT2GaZ7GM19JbSTVmKdNzyqPjbIegIf
-         eUvzySrw4kAwwaBDikJWxUBW2CY3/T5kBSpcEaIGDkSJYyynBU0w9Os0PSX8VXCnD242
-         7hdA==
-X-Gm-Message-State: AOAM5316zaJ6uoPkJDdqvZO6R78+px3YhX+aycGm2EqKRx1DZhjiDXbN
-        C9qCP97w7HWah5HtxDXW2WYQ62IrXGLlGe1o1Rr8tX20Y5+TiHrwZ3HdZZxCTuIWhrdAnY93aso
-        dbgkQwOtaXZ/HbsCmZd8dyIBq/FkHNm5iOVH3mLfxlo6w5K0OPF2UdNtYlBT37U9Za3eIqeiaWy
-        c5
-X-Received: by 2002:a0c:8525:: with SMTP id n34mr10231138qva.19.1628472701785;
-        Sun, 08 Aug 2021 18:31:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwIgCfPcKGMpHmQj25TTlQWsuOBm7l+AJ4fYG5P+sKutKG0eNQ0jB01NZo4YhWBaN4jVjul/g==
-X-Received: by 2002:a0c:8525:: with SMTP id n34mr10231126qva.19.1628472701572;
-        Sun, 08 Aug 2021 18:31:41 -0700 (PDT)
-Received: from jtoppins.rdu.csb ([107.15.110.69])
-        by smtp.gmail.com with ESMTPSA id h2sm8768555qkf.106.2021.08.08.18.31.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Aug 2021 18:31:41 -0700 (PDT)
-Subject: Re: bonding: link state question
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Jay Vosburgh <jay.vosburgh@canonical.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <020577f3-763d-48fd-73ce-db38c3c7fdf9@redhat.com>
- <22626.1628376134@famine> <d2dfeba3-6cd6-1760-0abb-6005659ac125@redhat.com>
- <20210808044912.GA10092@1wt.eu>
-From:   Jonathan Toppins <jtoppins@redhat.com>
-Message-ID: <79019b7e-1c2e-7186-4908-cf085b33fb59@redhat.com>
-Date:   Sun, 8 Aug 2021 21:31:39 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 8 Aug 2021 21:42:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD952C061757
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 18:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1D7dya4yNEJGvVPgKcmZOdRIp21tqqrRzKcYvvkpGJg=; b=M/HyrZHVc9XfP9qdeuLvEqoq5w
+        APIm4ybWwEqN1SoqlL5aOCqnbyBsBFSIQeAquWa/0ExCObM50+5u6/ZBxT7dMKRyowmvcSd83L8v0
+        CgtJcFk3a0CpY3ca8fOAkAqnbAmB/yPJ2YcR7f4G45GvMVBMg2GhD7wAfWo2dcksnkL4isP9en4ZD
+        zANHuy/KNXBAi/8KWzXuxo7UAAhk3B5VHW1mjjxCc3GcT5ePwKETo4zO/vjN4K3fcXyeIpxlhGlOY
+        DdXmXGJUOLqwIyrbsN+cpprQ06EwFqEGfMAWTc0gs1ysIwnWGfa09fdjZPs/g925m+MfuJPnZsFS6
+        OUM+vhLA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCuGa-00ATUq-38; Mon, 09 Aug 2021 01:40:00 +0000
+Date:   Mon, 9 Aug 2021 02:39:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Subject: Re: [PATCH 1/3] mm/gup: documentation corrections for gup/pup
+Message-ID: <YRCHZObkj/BJgCmR@casper.infradead.org>
+References: <20210808235018.1924918-1-jhubbard@nvidia.com>
+ <20210808235018.1924918-2-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210808044912.GA10092@1wt.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210808235018.1924918-2-jhubbard@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/21 12:49 AM, Willy Tarreau wrote:
-> On Sat, Aug 07, 2021 at 08:09:31PM -0400, Jonathan Toppins wrote:
->> setting miimon = 100 does appear to fix it.
->>
->> It is interesting that there is no link monitor on by default. For example
->> when I enslave enp0s31f6 to a new bond with miimon == 0, enp0s31f6 starts
->> admin down and will never de-assert NO-CARRIER the bond always results in an
->> operstate of up. It seems like miimon = 100 should be the default since some
->> modes cannot use arpmon.
-> 
-> Historically when miimon was implemented, not all NICs nor drivers had
-> support for link state checking at all! In addition, there are certain
-> deployments where you could rely on many devices by having a bond device
-> on top of a vlan or similar device, and where monitoring could cost a
-> lot of resources and you'd prefer to rely on external monitoring to set
-> all of them up or down at once.
-> 
-> I do think however that there remains a case with a missing state
-> transition in the driver: on my laptop I have a bond interface attached
-> to eth0, and I noticed that if I suspend the laptop with the link up,
-> when I wake it up with no interface connected, the bond will not turn
-> down, regardless of miimon. I have not looked closer yet, but I
-> suspect that we're relying too much on a state change between previous
-> and current and that one historically impossible transition does not
-> exist there and/or used to work because it was handled as part of
-> another change. I'll eventually have a look.
-> 
-> Willy
-> 
+On Sun, Aug 08, 2021 at 04:50:16PM -0700, John Hubbard wrote:
+> @@ -103,8 +103,14 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+>   * same time. (That's true throughout the get_user_pages*() and
+>   * pin_user_pages*() APIs.) Cases:
+>   *
+> - *    FOLL_GET: page's refcount will be incremented by 1.
+> - *    FOLL_PIN: page's refcount will be incremented by GUP_PIN_COUNTING_BIAS.
+> + *    FOLL_GET: page's refcount will be incremented by refs.
 
-I am likely very wrong but the lack of a recalculation of the bond 
-carrier state after a lower notifies of an up/down event seemed 
-incorrect. Maybe a place to start?
+I think this would read more clearly if it said @refs (throughout).
 
-diff --git i/drivers/net/bonding/bond_main.c 
-w/drivers/net/bonding/bond_main.c
-index 9018fcc59f78..2b2c4b937142 100644
---- i/drivers/net/bonding/bond_main.c
-+++ w/drivers/net/bonding/bond_main.c
-@@ -3308,6 +3308,7 @@ static int bond_slave_netdev_event(unsigned long 
-event,
-                  */
-                 if (bond_mode_can_use_xmit_hash(bond))
-                         bond_update_slave_arr(bond, NULL);
-+               bond_set_carrier(bond);
-                 break;
-         case NETDEV_CHANGEMTU:
-                 /* TODO: Should slaves be allowed to
+> + *
+> + *    FOLL_PIN on compound pages that are > two pages long: page's refcount will
+> + *        be incremented by refs, and page[2].hpage_pinned_refcount will be
+> + *        incremented by refs * GUP_PIN_COUNTING_BIAS.
+> + *
+> + *    FOLL_PIN on normal pages, or compound pages that are two pages long:
+> + *        page's refcount will be incremented by refs * GUP_PIN_COUNTING_BIAS.
+>   *
+>   * Return: head page (with refcount appropriately incremented) for success, or
+>   * NULL upon failure. If neither FOLL_GET nor FOLL_PIN was set, that's
+
+Did you run 'make htmldocs' and see how it renders?  I haven't looked,
+but this might work better as an rst list?
 
