@@ -2,178 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A263E4C27
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CA53E4C12
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbhHISbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
+        id S234491AbhHIS0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbhHISbT (ORCPT
+        with ESMTP id S230039AbhHIS0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:31:19 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B37AC0613D3;
-        Mon,  9 Aug 2021 11:30:58 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id c25so16743613ejb.3;
-        Mon, 09 Aug 2021 11:30:58 -0700 (PDT)
+        Mon, 9 Aug 2021 14:26:52 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8965FC0613D3;
+        Mon,  9 Aug 2021 11:26:31 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso70063wms.1;
+        Mon, 09 Aug 2021 11:26:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y6mW7b3jlZZ1bwl9ECgbw+U1s4aev/lYWXygt+p65GQ=;
-        b=fi/0VEG0RbAL57owiPQMUMOEzWJLzESizaZ+ot53JGtYl2x6ZfpBdkVlJqul3YCBC0
-         oaZf8vpELNcZ3q33S3+nxkNTKvQPbXOhIJVm/i/odkRzMbpRFBNEjk6Cy3MijVir79j2
-         Xv6D2r10iZjiKvfQio/2n1qGEm5AzVqvTLE7946vvrHD3tuXwnI4/ZyyZP4C3uulHksS
-         BmqVzRqH8eF6MXV3t52mN5XXmCfgr7wPX0FsQmaKVCBZ8uKB/jGAk0B4yqSVFNThEQz3
-         7efhFJJSFubgGxqo3GFPn6DSvzanuUJmhuHbq+Y5xCWd3Ha/d90ziAwlvwqqPJFMDVd+
-         ak2g==
+        bh=I6cFLsVYbYRFP0hZKX95CD3+fYy/muCKans4k1cHBIU=;
+        b=OgtCpEGxPyPutM9eJ0tbgC7trfe/M5qWa+iBNNwGaevKXJQ8jK5XUWAdZwcOrqei+u
+         0optc10CksMLo2bI2MEgkwVJinsfYZuGi4iWHYqy3MV7pOKRxznVwY5wvIDCnK24g7S8
+         gWIpI1ANvks9UW73/GMMoy7HtDbdlDz2LXH7cJNum+sfgHtCPavmAIDzUwPPjgh9YCmy
+         0Y7S38dALrm4olvcdNC+41LPV3Fc881BbPdVGcAJAyzVg94z1qUPvdVfmyhxxIdw7ZYj
+         7JLURiKwX9lsJDoLK5k4PdgIz1ZsSA/7BnrQELq+3C9SCEjxzpNorGgYYDA2ECDBkzH5
+         IIAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Y6mW7b3jlZZ1bwl9ECgbw+U1s4aev/lYWXygt+p65GQ=;
-        b=lmuezCi6MgS+1vhlAaUB/Jr4luNAZzz+CZzhjCwp3srYA2MfWureUs6VhsmyJUQQ3F
-         IBjvsynesZXQf5qsl90z3mys5LUcDUuW6oyBhm0MHpIzw2WdKk98uD2rUuS7CVsHz6a1
-         dm92rQbw2hZFnYcLWGvc4y/ksxKum87+q/zznRNWbJUDLmth4STAXwMZET1hZaRah7L3
-         iT8Iagvh6UJpnQ2ttZp3IZp0AHPEZTXFSc31oZBqgh8T9kdpv8v5qy/TvC2HnyjJzTTQ
-         2xRCaQrT+NUFgB6c8LQkwlxlKUWdD8zQtHYIkOrLWQA9McKGVblVBMOE5dhdXbcf2R9Y
-         7TeQ==
-X-Gm-Message-State: AOAM532s2BYofR0niQt2FmFdM0hwiHovKta92oIJc43Yu4V3FFB17jMP
-        idxMD1AykCUtRsvsDm5KyYH0zwXsjWkKp8q5+8o=
-X-Google-Smtp-Source: ABdhPJwmBh2xqsB1E41vMQ3zfnA6NpFwAJDgxCyMAv4ncFwSxxN65ruIX5DjcTkSGe8WxQxP9oaMQwBndxiqZZyz/ME=
-X-Received: by 2002:a17:906:408d:: with SMTP id u13mr6110485ejj.344.1628533856564;
- Mon, 09 Aug 2021 11:30:56 -0700 (PDT)
+        bh=I6cFLsVYbYRFP0hZKX95CD3+fYy/muCKans4k1cHBIU=;
+        b=PskFmr01CxDxF4/B7jOOpuxZUVn68Xy0JrUpvjd1ao2EOTazVvXG3Ids+RrZAXq/9/
+         bGOTmQ/O9ySNze0m3OTaCpjpfFtEPst/NhFFVroPkj5+mhnayV4fW4zNbUqokVHMJhSj
+         r7MmrAM9De3TRv+JUZOAsA0KopD7S0t3e9ryN5cyxckAkQnw/HqSgX0fMdC70WEsklhV
+         KUG5klkO8i47LWp2exfpgrf1jSVCG7jaeG4GTHBWejqkj95cJeA8mDUpSCex73kBKp5W
+         za1BZo3JLjwNnxgvre0L+tt86k22FNbAmHUIqgfNl+k5lgDHPVhRr+294g80WyPpPzLC
+         KfIw==
+X-Gm-Message-State: AOAM531E1pRkIfgx32BLbcyyG3B1iOXC3oWulmNWh119AXBWk4PNtTIW
+        ixCoU6E0qmKWBJKSWkpDOjOcRgQ33pSivMoa04M=
+X-Google-Smtp-Source: ABdhPJw8k0aEA2I3kN3tSzsJKuxDirrp9hNCwknuRjL90531XdGq0q8xs8RB7PNwPWHxmgV6Rf4hXsiDsG/v0+Ni9vM=
+X-Received: by 2002:a1c:f414:: with SMTP id z20mr504283wma.94.1628533590124;
+ Mon, 09 Aug 2021 11:26:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210703220202.5637-1-maxtram95@gmail.com> <20210703220202.5637-2-maxtram95@gmail.com>
- <CAO-hwJJxJqgW6CGPmvL41teh6vgWfSg55qoXWL3TjQx+mvsbHg@mail.gmail.com>
- <nycvar.YFH.7.76.2107152057230.8253@cbobk.fhfr.pm> <YPCc/k89XNTmeKVo@google.com>
- <20210715224905.GA18180@duo.ucw.cz> <CAKErNvrc0NjVwpXiGVED0c2PatVh9ObUBjqem9mi8hq_TZcyWw@mail.gmail.com>
-In-Reply-To: <CAKErNvrc0NjVwpXiGVED0c2PatVh9ObUBjqem9mi8hq_TZcyWw@mail.gmail.com>
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-Date:   Mon, 9 Aug 2021 21:30:30 +0300
-Message-ID: <CAKErNvokonsQr=j8cSXGRkVUTopBqq3k5NeiqTUWPKmefmOaJw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] HID: hid-input: Add offhook and ring LEDs for headsets
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-leds@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>,
-        Oliver Neukum <oneukum@suse.de>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210728140052.GB22887@mms-0441> <8b2742c8891abe4fec3664730717a089@codeaurora.org>
+ <20210802105544.GA27657@willie-the-truck> <CAF6AEGvtpFu8st=ZFNoKjP9YsAenciLxL1zMFi_iqMCvdby73w@mail.gmail.com>
+ <20210802151409.GE28735@willie-the-truck> <CAF6AEGtzvyEUm0Fc8QT5t9KNK7i0FbFyi7zDM2_PMCzZBp7qbw@mail.gmail.com>
+ <20210809145651.GC1458@willie-the-truck> <CAF6AEGsSUojA=V0n2iRWTCn++buqN=Eoxo0r3=+=PBu1O=H-AQ@mail.gmail.com>
+ <20210809170508.GB1589@willie-the-truck> <CAF6AEGtmZ3LzAJdtnKDQDbEN-a6_JgdN-fZ96pkU3dZqkiW91g@mail.gmail.com>
+ <20210809174022.GA1840@willie-the-truck> <76bfd0b4248148dfbf9d174ddcb4c2a2@codeaurora.org>
+ <CAF6AEGtiVgHc7rcfzOpBmtVGQBvGPCBmtKJ3AJx887NSMj0EzQ@mail.gmail.com> <8e5edd6886a0c3a5f6c8cb4dff517224@codeaurora.org>
+In-Reply-To: <8e5edd6886a0c3a5f6c8cb4dff517224@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 9 Aug 2021 11:30:45 -0700
+Message-ID: <CAF6AEGut0LFFLmR7WV66HkDee4dg5xusTmFC23zsUGqjZuoNpw@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters
+ to use system cache
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Will Deacon <will@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        David Airlie <airlied@linux.ie>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry, what's your opinion on the points that I raised? I would like
-to progress with this patch set, let's discuss the direction and sum
-up the requirements.
+On Mon, Aug 9, 2021 at 11:11 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> On 2021-08-09 23:37, Rob Clark wrote:
+> > On Mon, Aug 9, 2021 at 10:47 AM Sai Prakash Ranjan
+> > <saiprakash.ranjan@codeaurora.org> wrote:
+> >>
+> >> On 2021-08-09 23:10, Will Deacon wrote:
+> >> > On Mon, Aug 09, 2021 at 10:18:21AM -0700, Rob Clark wrote:
+> >> >> On Mon, Aug 9, 2021 at 10:05 AM Will Deacon <will@kernel.org> wrote:
+> >> >> >
+> >> >> > On Mon, Aug 09, 2021 at 09:57:08AM -0700, Rob Clark wrote:
+> >> >> > > On Mon, Aug 9, 2021 at 7:56 AM Will Deacon <will@kernel.org> wrote:
+> >> >> > > > On Mon, Aug 02, 2021 at 06:36:04PM -0700, Rob Clark wrote:
+> >> >> > > > > On Mon, Aug 2, 2021 at 8:14 AM Will Deacon <will@kernel.org> wrote:
+> >> >> > > > > > On Mon, Aug 02, 2021 at 08:08:07AM -0700, Rob Clark wrote:
+> >> >> > > > > > > On Mon, Aug 2, 2021 at 3:55 AM Will Deacon <will@kernel.org> wrote:
+> >> >> > > > > > > > On Thu, Jul 29, 2021 at 10:08:22AM +0530, Sai Prakash Ranjan wrote:
+> >> >> > > > > > > > > On 2021-07-28 19:30, Georgi Djakov wrote:
+> >> >> > > > > > > > > > On Mon, Jan 11, 2021 at 07:45:02PM +0530, Sai Prakash Ranjan wrote:
+> >> >> > > > > > > > > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
+> >> >> > > > > > > > > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
+> >> >> > > > > > > > > > > the memory type setting required for the non-coherent masters to use
+> >> >> > > > > > > > > > > system cache. Now that system cache support for GPU is added, we will
+> >> >> > > > > > > > > > > need to set the right PTE attribute for GPU buffers to be sys cached.
+> >> >> > > > > > > > > > > Without this, the system cache lines are not allocated for GPU.
+> >> >> > > > > > > > > > >
+> >> >> > > > > > > > > > > So the patches in this series introduces a new prot flag IOMMU_LLC,
+> >> >> > > > > > > > > > > renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
+> >> >> > > > > > > > > > > and makes GPU the user of this protection flag.
+> >> >> > > > > > > > > >
+> >> >> > > > > > > > > > Thank you for the patchset! Are you planning to refresh it, as it does
+> >> >> > > > > > > > > > not apply anymore?
+> >> >> > > > > > > > > >
+> >> >> > > > > > > > >
+> >> >> > > > > > > > > I was waiting on Will's reply [1]. If there are no changes needed, then
+> >> >> > > > > > > > > I can repost the patch.
+> >> >> > > > > > > >
+> >> >> > > > > > > > I still think you need to handle the mismatched alias, no? You're adding
+> >> >> > > > > > > > a new memory type to the SMMU which doesn't exist on the CPU side. That
+> >> >> > > > > > > > can't be right.
+> >> >> > > > > > > >
+> >> >> > > > > > >
+> >> >> > > > > > > Just curious, and maybe this is a dumb question, but what is your
+> >> >> > > > > > > concern about mismatched aliases?  I mean the cache hierarchy on the
+> >> >> > > > > > > GPU device side (anything beyond the LLC) is pretty different and
+> >> >> > > > > > > doesn't really care about the smmu pgtable attributes..
+> >> >> > > > > >
+> >> >> > > > > > If the CPU accesses a shared buffer with different attributes to those which
+> >> >> > > > > > the device is using then you fall into the "mismatched memory attributes"
+> >> >> > > > > > part of the Arm architecture. It's reasonably unforgiving (you should go and
+> >> >> > > > > > read it) and in some cases can apply to speculative accesses as well, but
+> >> >> > > > > > the end result is typically loss of coherency.
+> >> >> > > > >
+> >> >> > > > > Ok, I might have a few other sections to read first to decipher the
+> >> >> > > > > terminology..
+> >> >> > > > >
+> >> >> > > > > But my understanding of LLC is that it looks just like system memory
+> >> >> > > > > to the CPU and GPU (I think that would make it "the point of
+> >> >> > > > > coherence" between the GPU and CPU?)  If that is true, shouldn't it be
+> >> >> > > > > invisible from the point of view of different CPU mapping options?
+> >> >> > > >
+> >> >> > > > You could certainly build a system where mismatched attributes don't cause
+> >> >> > > > loss of coherence, but as it's not guaranteed by the architecture and the
+> >> >> > > > changes proposed here affect APIs which are exposed across SoCs, then I
+> >> >> > > > don't think it helps much.
+> >> >> > > >
+> >> >> > >
+> >> >> > > Hmm, the description of the new mapping flag is that it applies only
+> >> >> > > to transparent outer level cache:
+> >> >> > >
+> >> >> > > +/*
+> >> >> > > + * Non-coherent masters can use this page protection flag to set cacheable
+> >> >> > > + * memory attributes for only a transparent outer level of cache, also known as
+> >> >> > > + * the last-level or system cache.
+> >> >> > > + */
+> >> >> > > +#define IOMMU_LLC      (1 << 6)
+> >> >> > >
+> >> >> > > But I suppose we could call it instead IOMMU_QCOM_LLC or something
+> >> >> > > like that to make it more clear that it is not necessarily something
+> >> >> > > that would work with a different outer level cache implementation?
+> >> >> >
+> >> >> > ... or we could just deal with the problem so that other people can reuse
+> >> >> > the code. I haven't really understood the reluctance to solve this properly.
+> >> >> >
+> >> >> > Am I missing some reason this isn't solvable?
+> >> >>
+> >> >> Oh, was there another way to solve it (other than foregoing setting
+> >> >> INC_OCACHE in the pgtables)?  Maybe I misunderstood, is there a
+> >> >> corresponding setting on the MMU pgtables side of things?
+> >> >
+> >> > Right -- we just need to program the CPU's MMU with the matching memory
+> >> > attributes! It's a bit more fiddly if you're just using ioremap_wc()
+> >> > though, as it's usually the DMA API which handles the attributes under
+> >> > the
+> >> > hood.
+> >> >
+> >> > Anyway, sorry, I should've said that explicitly earlier on. We've done
+> >> > this
+> >> > sort of thing in the Android tree so I assumed Sai knew what needed to
+> >> > be
+> >> > done and then I didn't think to explain to you :(
+> >> >
+> >>
+> >> Right I was aware of that but even in the android tree there is no
+> >> user
+> >> :)
+> >> I think we can't have a new memory type without any user right in
+> >> upstream
+> >> like android tree?
+> >>
+> >> @Rob, I think you  already tried adding a new MT and used
+> >> pgprot_syscached()
+> >> in GPU driver but it was crashing?
+> >
+> > Correct, but IIRC there were some differences in the code for memory
+> > types compared to the android tree.. I couldn't figure out the
+> > necessary patches to cherry-pick to get the android patch to apply
+> > cleanly, so I tried re-implementing it without having much of a clue
+> > about how that code works (which was probably the issue) ;-)
+> >
+>
+> Hehe no, even I get the same crash after porting/modifying the required
+> patches from android ;) and I think crashes would be seen in android as
+> well, its just that they don't have any user exercising that code.
+>
+> Thing is I can't make head and tail of the GPU crash logs, maybe you
+> know
+> how to decode those errors, if not I can start a thread with QC GPU team
+> and ask them to decode?
+>
 
-On Fri, Jul 16, 2021 at 8:23 PM Maxim Mikityanskiy <maxtram95@gmail.com> wrote:
->
-> On Fri, Jul 16, 2021 at 1:49 AM Pavel Machek <pavel@ucw.cz> wrote:
-> >
-> > On Thu 2021-07-15 13:39:26, Dmitry Torokhov wrote:
-> > > On Thu, Jul 15, 2021 at 08:57:44PM +0200, Jiri Kosina wrote:
-> > > > On Tue, 6 Jul 2021, Benjamin Tissoires wrote:
-> > > >
-> > > > > > A lot of USBHID headsets available on the market have LEDs that indicate
-> > > > > > ringing and off-hook states when used with VoIP applications. This
-> > > > > > commit exposes these LEDs via the standard sysfs interface.
-> >
-> > > > > > diff --git a/drivers/input/input-leds.c b/drivers/input/input-leds.c
-> > > > > > index 0b11990ade46..bc6e25b9af25 100644
-> > > > > > --- a/drivers/input/input-leds.c
-> > > > > > +++ b/drivers/input/input-leds.c
-> > > > > > @@ -33,6 +33,8 @@ static const struct {
-> > > > > >         [LED_MISC]      = { "misc" },
-> > > > > >         [LED_MAIL]      = { "mail" },
-> > > > > >         [LED_CHARGING]  = { "charging" },
-> > > > > > +       [LED_OFFHOOK]   = { "offhook" },
-> > > > >
-> > > > > I am pretty sure this also needs to be reviewed by the led folks.
-> > > > > Adding them in Cc.
-> > > >
-> > > > Can we please get Ack from the LED maintainers? Thanks.
-> > >
-> > > I do not think we should be adding more LED bits to the input
-> > > subsystem/events; this functionality should be routed purely though LED
-> > > subsystem. input-leds is a bridge for legacy input functionality
-> > > reflecting it onto the newer LED subsystem.
->
-> I'm a bit confused by this answer. I wasn't aware that input-leds was
-> some legacy stuff. Moreover, hid-input only handles LEDs through
-> input-leds, it doesn't use any modern replacement. So, does your
-> answer mean I need to implement this replacement? If so, I anticipate
-> some issues with this approach:
->
-> 1. hid-input will handle different LEDs in different ways, which will
-> make code complicated and error-prone. There will be two parallel
-> implementations for LEDs.
->
-> 2. A lot of code will be similar with input-leds, but not shared/reused.
->
-> 3. New driver callbacks may be needed if drivers want to override the
-> default behavior, like they do with input_mapping/input_mapped.
->
-> 4. If some hypothetical input device is a headset, but not HID, it
-> won't be able to reuse the LED handling code. With input-leds it
-> wouldn't be a problem.
->
-> 5. (Minor) LED_MUTE is already there. If we handle LED_OFFHOOK and
-> LED_RING in a different way, it would be confusing.
->
-> Let's discuss the architecture before I write any new code, if we are
-> going to take this way. However, to me, input-leds looks like a better
-> fit: the implementation is much simpler and follows existing patterns,
-> and it integrates well with drivers and hid-input. If we throw away
-> input-leds, we'll have to do its job ourselves, and if we throw it
-> away only for part of LEDs, the code will likely be ugly.
->
-> > If we do it purely through the LED subsystem, will it get trickier to
-> > associate the devices?
->
-> I agree with this point. With the current approach, it's easy to look
-> up all LEDs of an input device. If the suggested approach makes it
-> hard, it's a serious drawback.
->
-> > Anyway, it is a headset. What does headset have to do with input
-> > subsystem? Sounds like sound device to me...
->
-> That's right, the main function of a headset is of course sound, but
-> such headsets also have buttons (vol up/down, mic mute, answer the
-> call) and LEDs (mic muted, ringing, offhook). The sound "subdevice"
-> (sorry, I'm not really familiar with USB terminology) is handled by
-> snd-usb-audio, and the buttons/LEDs are handled by usbhid.
->
-> Two examples of such headsets are mentioned in commit messages in this
-> patch series. Such headsets are usually "certified for skype for
-> business", but of course can be used with a variety of other VoIP
-> applications. The goal of this series is to provide a standard
-> interface between headsets and userspace applications, so that VoIP
-> applications could react to buttons and set LED state, making Linux
-> more ready for desktop.
->
-> > And we already have a
-> > "micmute" LED which sounds quite similar to the "offhook" LED... no?
->
-> These two are different. A typical headset has three LEDs: micmute,
-> ring and offhook (ring and offhook are often one physical LED, which
-> blinks in the ring state and glows constantly in the offhook state).
->
-> Offhook indicates that a call is in progress, while micmute shows that
-> the microphone is muted. These two states are orthogonal and may
-> happen in any combination. On the tested devices, offhook state didn't
-> affect sound, it was just a logical indication of an active call.
->
-> If you are interested in more details, I can describe the behavior of
-> the headsets that I tested (some info is actually in the commit
-> messages), but the short answer is that micmute and offhook are two
-> different physical LEDs with completely different functions.
->
-> >
-> > Best regards,
-> >                                                                 Pavel
-> > --
-> > http://www.livejournal.com/~pavelmachek
+If you have a gpu devcore dump, I can take a look at it with
+crashdec.. otherwise I can try to find the branch where I had that
+patch backported.
+
+I'm more familiar with using crashdec to figure out mesa bugs, but
+maybe I could spot something where what the GPU is seeing disagrees
+with what the CPU expects it to be seeing.
+
+BR,
+-R
