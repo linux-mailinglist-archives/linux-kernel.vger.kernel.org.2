@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F31D3E4A4B
+	by mail.lfdr.de (Postfix) with ESMTP id 548213E4A4A
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234072AbhHIQvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        id S233995AbhHIQvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbhHIQvS (ORCPT
+        with ESMTP id S233603AbhHIQvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Aug 2021 12:51:18 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE2BC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:50:57 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id l11-20020a7bcf0b0000b0290253545c2997so467567wmg.4
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098D1C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:50:58 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so476836wmi.1
         for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:50:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uswxeYf6f1/DwUZZCO5hllYNFSqX0bnCw6vEoqvvI1o=;
-        b=FDT5ZFhLNcGRTVnV05gh0+omGitXfllXXfYcuz0QNpMCowMEMY+WiwYVNxuNNuQBPg
-         OkwPUs5pvUErpii23pdY3L0r+jLWm0OxReVxoKJ+cApiZpA7cmW5MNCjcTGG8ovGG1Sz
-         kyRXXzvjV3KFB8kspC2S+ajnHCRmwGtpIut0X8AIuKPPSfHghBrSfgSyvlzJIJIhV2N4
-         BaVEUdk9abrn7FhnCA8JWYSiVjHbg5xS7hUtXCOefxGr84ImkC1g1xlP0rV6Jfa80iQu
-         iZLwVHsTCUUOGuMEwfW1OgdOTTVVeDck7xo6R7wXzn8DGheyqWUAh2a8DLCRhn4vKiuJ
-         h1Pw==
+        bh=Tvbz591DMvF33ax+eSb+xGGBL3Gl9La/xcKDxZqOIrc=;
+        b=FJZnIR7p1spTk2er8QaEkPFPa0f2ZPJ9EG0leRmg1hfhP6eAUXcRXnlm7N/45mRY8Z
+         gziwuylrpA6e0ounj2YjwW01wQbgpME8wwqThPtTF/qsTOmnrrk2iO3aNFIpxyDGNXxN
+         Asv3pk4fWERGhxPycqAOoS4w8rJ7VMQwxlurJ0SxyWmkT/UO7Xx23vzEIth4A/3gyO5w
+         8s5RvjGlbugBjo4XLPgrh3XmBJKsaLvqBHr6gVQZ2f/jVUZ58oztkK3NMlXRtgTil35j
+         JcwbjK6R2Dw2KZxYs39+wFFN6d3T1itb1hNWvHi4YQBI+YDChqB4UlHsvsoociGIw/10
+         p+xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uswxeYf6f1/DwUZZCO5hllYNFSqX0bnCw6vEoqvvI1o=;
-        b=OCbwXyDaFeW6JMlEpTgMQb0FPFjNTyT7aDw/iEM+EwWg0TQiNXHNFkp4QKAu3KZaR9
-         0/CTCjI9p1WQLV5XYD+K/i0SUss4iZltZATQSkTEaeAp2eDZPrpSFuoyXLu8GqNA99u/
-         FZQUsBEM5LBlfwlrjgD8Sg6h/J4EechpRqxQ8Vbh2ytkF1msIqxH6p+K8YrNtPxheA5p
-         jpDW1NgweM2L3CqEQhL6dQm0rnx23Tt2FaDqOEPoxS1cU/OGM20zUUYgiwkT3LynQA3n
-         aa9ChJLU4CxnABTpVEozxoJ65CLSj6V89MEU6VDI1nJTnaP3B4Vw9a3defUjQRVmdOpT
-         8MUA==
-X-Gm-Message-State: AOAM531FxkFEYkooKMdE0lFaQ5JjptZ/Wzl5PWBzZjUduVJ+vXDGZrDC
-        JuwJDw62UdKmR5Y/hFWuWvg=
-X-Google-Smtp-Source: ABdhPJxXMGxoEHpn+5h+aitTIMoBPUkK2e6X+T4unaVpaW5DWO4w2ZrKzYGlRKXlbbqm92yuinvrdQ==
-X-Received: by 2002:a05:600c:896:: with SMTP id l22mr83868wmp.68.1628527855964;
-        Mon, 09 Aug 2021 09:50:55 -0700 (PDT)
+        bh=Tvbz591DMvF33ax+eSb+xGGBL3Gl9La/xcKDxZqOIrc=;
+        b=dqpzRe2LPHqm0yuisQPJAHYdldUDvFuITQfQLvYsWuFzv9hPilhSB30amy3Q9n/l0Z
+         FBxVoEiimtMlOuy8j6lnxMaeTR7IM3yW+lvKDH0T9/FJkW3dKm7smcUldwUjSaFfcD15
+         jcbmdpgLZkfNZu/Y4+Jq4B67UsWQdrWK9sIFgeBa+S0nmXNqkGQQD7aRU1AeNb5ZBR3V
+         1a6JbTMNFuJ48LyPSJXytQSoqDU1Ah89uECraX+iHdOe6wSvn3oG8Wbm5MF0JgCgRWv+
+         KsWTnRlqwAh0Yr9bNCSdTJIkouG1gMKnoAhGDN8M8HTvyalXJVEA73p7qJz8z/DjjDYn
+         eTpw==
+X-Gm-Message-State: AOAM530dh+hW6vPg0rtoeUUwN38NXW/ndrt9wWziUWCh/1S/U/LQSIl1
+        SDUJEavWF5XIGxrsHTvXwwU=
+X-Google-Smtp-Source: ABdhPJyQv0Vj42OeGfAeLCK15Y7q50KvN6EzhbR7Bvgi3piO+K/2h18AYzbnChs+lYO15CH9vG3XrA==
+X-Received: by 2002:a05:600c:acd:: with SMTP id c13mr18165226wmr.189.1628527856653;
+        Mon, 09 Aug 2021 09:50:56 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::996b])
-        by smtp.gmail.com with ESMTPSA id q5sm20484469wrx.33.2021.08.09.09.50.55
+        by smtp.gmail.com with ESMTPSA id q5sm20484469wrx.33.2021.08.09.09.50.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 09:50:55 -0700 (PDT)
+        Mon, 09 Aug 2021 09:50:56 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 12/17] staging: r8188eu: remove unnecessary parentheses in core/rtw_recv.c
-Date:   Mon,  9 Aug 2021 18:50:02 +0200
-Message-Id: <20210809165007.23204-13-straube.linux@gmail.com>
+Subject: [PATCH v2 13/17] staging: r8188eu: remove unnecessary parentheses in core/rtw_pwrctrl.c
+Date:   Mon,  9 Aug 2021 18:50:03 +0200
+Message-Id: <20210809165007.23204-14-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210809165007.23204-1-straube.linux@gmail.com>
 References: <20210809165007.23204-1-straube.linux@gmail.com>
@@ -65,112 +65,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary parentheses in core/rtw_recv.c reported by
+Remove unnecessary parentheses in core/rtw_pwrctrl.c reported by
 checkpatch.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_recv.c | 26 ++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
-index 3f5a7282c857..08aea680312c 100644
---- a/drivers/staging/r8188eu/core/rtw_recv.c
-+++ b/drivers/staging/r8188eu/core/rtw_recv.c
-@@ -70,9 +70,9 @@ int _rtw_init_recv_priv(struct recv_priv *precvpriv, struct adapter *padapter)
- 	precvframe = (struct recv_frame *)precvpriv->precv_frame_buf;
+diff --git a/drivers/staging/r8188eu/core/rtw_pwrctrl.c b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+index 57cd10205d6c..9a00a316674b 100644
+--- a/drivers/staging/r8188eu/core/rtw_pwrctrl.c
++++ b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+@@ -51,8 +51,8 @@ void ips_enter(struct adapter *padapter)
+ int ips_leave(struct adapter *padapter)
+ {
+ 	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+-	struct security_priv *psecuritypriv = &(padapter->securitypriv);
+-	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
++	struct security_priv *psecuritypriv = &padapter->securitypriv;
++	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	int result = _SUCCESS;
+ 	int keyid;
  
- 	for (i = 0; i < NR_RECVFRAME; i++) {
--		INIT_LIST_HEAD(&(precvframe->list));
-+		INIT_LIST_HEAD(&precvframe->list);
+@@ -98,9 +98,9 @@ int ips_leave(struct adapter *padapter)
+ static bool rtw_pwr_unassociated_idle(struct adapter *adapter)
+ {
+ 	struct adapter *buddy = adapter->pbuddy_adapter;
+-	struct mlme_priv *pmlmepriv = &(adapter->mlmepriv);
++	struct mlme_priv *pmlmepriv = &adapter->mlmepriv;
+ #ifdef CONFIG_88EU_P2P
+-	struct wifidirect_info	*pwdinfo = &(adapter->wdinfo);
++	struct wifidirect_info	*pwdinfo = &adapter->wdinfo;
+ #endif
  
--		list_add_tail(&(precvframe->list), &(precvpriv->free_recv_queue.queue));
-+		list_add_tail(&precvframe->list, &precvpriv->free_recv_queue.queue);
+ 	bool ret = false;
+@@ -122,9 +122,9 @@ static bool rtw_pwr_unassociated_idle(struct adapter *adapter)
  
- 		res = rtw_os_recv_resource_alloc(padapter, precvframe);
+ 	/* consider buddy, if exist */
+ 	if (buddy) {
+-		struct mlme_priv *b_pmlmepriv = &(buddy->mlmepriv);
++		struct mlme_priv *b_pmlmepriv = &buddy->mlmepriv;
+ 		#ifdef CONFIG_88EU_P2P
+-		struct wifidirect_info *b_pwdinfo = &(buddy->wdinfo);
++		struct wifidirect_info *b_pwdinfo = &buddy->wdinfo;
+ 		#endif
  
-@@ -174,11 +174,11 @@ int rtw_free_recvframe(struct recv_frame *precvframe, struct __queue *pfree_recv
+ 		if (check_fwstate(b_pmlmepriv, WIFI_ASOC_STATE|WIFI_SITE_MONITOR) ||
+@@ -147,7 +147,7 @@ static bool rtw_pwr_unassociated_idle(struct adapter *adapter)
+ void rtw_ps_processor(struct adapter *padapter)
+ {
+ 	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+-	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
++	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	enum rt_rf_power_state rfpwrstate;
  
- 	spin_lock_bh(&pfree_recv_queue->lock);
+ 	pwrpriv->ps_processing = true;
+@@ -248,7 +248,7 @@ static u8 PS_RDY_CHECK(struct adapter *padapter)
+ {
+ 	u32 curr_time, delta_time;
+ 	struct pwrctrl_priv	*pwrpriv = &padapter->pwrctrlpriv;
+-	struct mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
++	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
  
--	list_del_init(&(precvframe->list));
-+	list_del_init(&precvframe->list);
+ 	curr_time = jiffies;
+ 	delta_time = curr_time - pwrpriv->DelayLPSLastTimeStamp;
+@@ -275,7 +275,7 @@ void rtw_set_ps_mode(struct adapter *padapter, u8 ps_mode, u8 smart_ps, u8 bcn_a
+ {
+ 	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+ #ifdef CONFIG_88EU_P2P
+-	struct wifidirect_info	*pwdinfo = &(padapter->wdinfo);
++	struct wifidirect_info	*pwdinfo = &padapter->wdinfo;
+ #endif /* CONFIG_88EU_P2P */
  
- 	precvframe->len = 0;
+ 	if (ps_mode > PM_Card_Disable)
+@@ -412,7 +412,7 @@ void LPS_Leave(struct adapter *padapter)
+ /*  */
+ void LeaveAllPowerSaveMode(struct adapter *Adapter)
+ {
+-	struct mlme_priv	*pmlmepriv = &(Adapter->mlmepriv);
++	struct mlme_priv	*pmlmepriv = &Adapter->mlmepriv;
+ 	u8	enqueue = 0;
  
--	list_add_tail(&(precvframe->list), get_list_head(pfree_recv_queue));
-+	list_add_tail(&precvframe->list, get_list_head(pfree_recv_queue));
- 
- 	if (padapter) {
- 		if (pfree_recv_queue == &precvpriv->free_recv_queue)
-@@ -195,8 +195,8 @@ int _rtw_enqueue_recvframe(struct recv_frame *precvframe, struct __queue *queue)
- 	struct adapter *padapter = precvframe->adapter;
- 	struct recv_priv *precvpriv = &padapter->recvpriv;
- 
--	list_del_init(&(precvframe->list));
--	list_add_tail(&(precvframe->list), get_list_head(queue));
-+	list_del_init(&precvframe->list);
-+	list_add_tail(&precvframe->list, get_list_head(queue));
- 
- 	if (padapter) {
- 		if (queue == &precvpriv->free_recv_queue)
-@@ -323,7 +323,7 @@ static int recvframe_chkmic(struct adapter *adapter,  struct recv_frame *precvfr
- 	struct	security_priv	*psecuritypriv = &adapter->securitypriv;
- 
- 	struct mlme_ext_priv	*pmlmeext = &adapter->mlmeextpriv;
--	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
-+	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
- 
- 	stainfo = rtw_get_stainfo(&adapter->stapriv, &prxattrib->ta[0]);
- 
-@@ -1338,7 +1338,7 @@ static struct recv_frame *recvframe_defrag(struct adapter *adapter, struct __que
- 	plist = phead->next;
- 	pfhdr = container_of(plist, struct recv_frame, list);
- 	prframe = (struct recv_frame *)pfhdr;
--	list_del_init(&(prframe->list));
-+	list_del_init(&prframe->list);
- 
- 	if (curfragnum != pfhdr->attrib.frag_num) {
- 		/* the first fragment number must be 0 */
-@@ -1355,7 +1355,7 @@ static struct recv_frame *recvframe_defrag(struct adapter *adapter, struct __que
- 	plist = phead->next;
- 	pfhdr = container_of(plist, struct recv_frame, list);
- 	prframe = (struct recv_frame *)pfhdr;
--	list_del_init(&(prframe->list));
-+	list_del_init(&prframe->list);
- 
- 	plist = plist->next;
- 
-@@ -1506,7 +1506,7 @@ static int amsdu_to_msdu(struct adapter *padapter, struct recv_frame *prframe)
- 	unsigned char *data_ptr;
- 	struct sk_buff *sub_skb, *subframes[MAX_SUBFRAME_COUNT];
- 	struct recv_priv *precvpriv = &padapter->recvpriv;
--	struct __queue *pfree_recv_queue = &(precvpriv->free_recv_queue);
-+	struct __queue *pfree_recv_queue = &precvpriv->free_recv_queue;
- 	int	ret = _SUCCESS;
- 	nr_subframes = 0;
- 
-@@ -1668,9 +1668,9 @@ int enqueue_reorder_recvframe(struct recv_reorder_ctrl *preorder_ctrl, struct re
- 			break;
- 	}
- 
--	list_del_init(&(prframe->list));
-+	list_del_init(&prframe->list);
- 
--	list_add_tail(&(prframe->list), plist);
-+	list_add_tail(&prframe->list, plist);
- 	return true;
- }
- 
-@@ -1704,7 +1704,7 @@ static int recv_indicatepkts_in_order(struct adapter *padapter, struct recv_reor
- 
- 		if (!SN_LESS(preorder_ctrl->indicate_seq, pattrib->seq_num)) {
- 			plist = plist->next;
--			list_del_init(&(prframe->list));
-+			list_del_init(&prframe->list);
- 
- 			if (SN_EQUAL(preorder_ctrl->indicate_seq, pattrib->seq_num))
- 				preorder_ctrl->indicate_seq = (preorder_ctrl->indicate_seq + 1) & 0xFFF;
+ 	if (check_fwstate(pmlmepriv, _FW_LINKED)) { /* connect */
 -- 
 2.32.0
 
