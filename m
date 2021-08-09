@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6C13E4F8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A8E3E4F91
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236913AbhHIWzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:55:03 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44663 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232158AbhHIWzB (ORCPT
+        id S236921AbhHIWz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233239AbhHIWzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:55:01 -0400
-Received: by mail-io1-f72.google.com with SMTP id e26-20020a6b691a0000b029058223232729so12775126ioc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 15:54:41 -0700 (PDT)
+        Mon, 9 Aug 2021 18:55:24 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E27C0613D3;
+        Mon,  9 Aug 2021 15:55:03 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id nt11so7119611pjb.2;
+        Mon, 09 Aug 2021 15:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lI4ZDMPYg0X6WKHX4ovZRXWmFdkn+y2fs9XUhX1B/eg=;
+        b=rNm4Duq6RdYXLDIg4EhsGSQX5fuH3YTUUnIfHEhq8jkJqp4M4xyoTFYeaHavvzb8Xq
+         LLStm0doo+vWHEWyKKOJMAcXeeJIjiN2LKjK/3wwMdNG0Eg5c/B7uzyvAmcV0+t7pQ8L
+         3P7lRtNJeqkD9QpwgKweyFo133yTQJxv1jc8IegutqAdzdpHjrGfLZJX1johlj5sgJl3
+         3ra+3624KydT3CTvXcO4K8+/opzPVrRjfQ1rxaONaHKshqYAJMPoFMybZqTMM30vOiA9
+         Xjo4CaZVPe+AcGR65crA24PC/EYLCfSWtW9/8CF59HRG4XSr9sjdrWMAEp1f69wHSdrw
+         x96g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=0GEr0YUZkyRAP1wDiFKJUOaJlg7EZ2L8Am1PwhFfBiI=;
-        b=qvEewe6f8gOdC6IKcvpCDbeWrZrkm6EJ4dEmV+x4KeC/ugr8qtEME53/hG79dtqygP
-         4PXI/9MzJc2NgZH0RZnRn0nXS1JGHctbck2EnQCubhVlxbMoHjTnNiSi69tZnY9KQZaT
-         YEJqbOUYA2BIxbUkDMSexaug0HWd1a6MQ90YEznpVpQbNv7aqZu2+1ti+DWRfxz3Hds9
-         IN6aro0dne1ZkztYu0K1pzW6jJSpCWIJz5OY9sShSWj+bpMKGPgMXj6N3MRf9cXtITV6
-         Hz5oSEPnMM/PRDYqiZ0djnAaayHCAYbG4kdRrL/Q6vjqVuuFHFIVfaUF8wSREVAkdjUB
-         ImTg==
-X-Gm-Message-State: AOAM533GRP7zYepdHVwhdLLIki3p2v9AWHGrq0dFnqZkWvI5rm9zkrNC
-        qnuSzIyE8XLM1RYOKFmKkYrJ4J81+cIPqsziGIab0s69oqIS
-X-Google-Smtp-Source: ABdhPJwk0q1pYnZGZs4kh572MkPxHqbPaEAtwhr92LekdjMLybPHJTxNw3B6UeE7+39DTbR9YWviD15VoC2pUv0OCqZf7aJiMbhY
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=lI4ZDMPYg0X6WKHX4ovZRXWmFdkn+y2fs9XUhX1B/eg=;
+        b=dy5lzYMlwW5S17tgpF7fQPGpd5Zq9gxjyfW0d5QcN5V+KKXoVW1bCQUnZggIGrw1g9
+         11N1ujA12nRf9msgf+SsG0oEqAgiAXlBJEF5z4ZC8DxHSKzu2uo4Q/iSrognavIVlnm2
+         J0nqyq0kiJzquqSlAGF4JaE/PG5faOv/L1r1de5ieUhKUoojKT/W/M2gsBVIc8VIA5kA
+         aaWiPx7sly5e+iG6uZS7CMRJcDQ0F4FAz8QeHSzYh2LkgVUYCUM3eo6nUM9DsvZ37Xma
+         5BZMtsohpoAs/U0/LmBWVjrsrKGP0XjX8gk59ssnfcSIbQCdOxwf7pJceAcHWEoMN4d+
+         /oZQ==
+X-Gm-Message-State: AOAM532mr7J5VLRfB4OwLHw7PAMTeOeo4nqBlFH+euW23w+1Kz6ZEWq7
+        TlNOB2Mw1ioCfysOJIO08KPsSrpNJ1+F2g==
+X-Google-Smtp-Source: ABdhPJx5RrrmuypZfJJv4Jg/PsRdOEuQZqf/ca71PRKQwCXdmzGzmCFqMY4ylx23xQrqbXWtsHByKw==
+X-Received: by 2002:a17:902:da8d:b029:12c:5241:c24e with SMTP id j13-20020a170902da8db029012c5241c24emr22100530plx.35.1628549703073;
+        Mon, 09 Aug 2021 15:55:03 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:df1c])
+        by smtp.gmail.com with ESMTPSA id g3sm20337844pfi.197.2021.08.09.15.55.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 15:55:02 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 9 Aug 2021 12:54:58 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Waiman Long <longman@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the cgroup tree
+Message-ID: <YRGyQuvE5FClG3s0@mtj.duckdns.org>
+References: <20210810085146.0b9ec2b5@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:618:: with SMTP id g24mr24712725jar.94.1628549680460;
- Mon, 09 Aug 2021 15:54:40 -0700 (PDT)
-Date:   Mon, 09 Aug 2021 15:54:40 -0700
-In-Reply-To: <YRGxNaVc1cGsyd0Y@casper.infradead.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000033f7f705c9284592@google.com>
-Subject: Re: [syzbot] kernel BUG in find_lock_entries
-From:   syzbot <syzbot+c87be4f669d920c76330@syzkaller.appspotmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, bp@alien8.de, frederic@kernel.org,
-        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, masahiroy@kernel.org,
-        mingo@redhat.com, npiggin@gmail.com, pbonzini@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rostedt@goodmis.org, seanjc@google.com, sedat.dilek@gmail.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        will@kernel.org, willy@infradead.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810085146.0b9ec2b5@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Aug 09, 2021 at 02:02:22PM -0700, syzbot wrote:
->> The issue was bisected to:
->> 
->> commit 997acaf6b4b59c6a9c259740312a69ea549cc684
->> Author: Mark Rutland <mark.rutland@arm.com>
->> Date:   Mon Jan 11 15:37:07 2021 +0000
->> 
->>     lockdep: report broken irq restoration
->
-> That's just a bogus bisection.  The correct bad commit is 5c211ba29deb.
->
->> kernel BUG at mm/filemap.c:2041!
->> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
->> CPU: 1 PID: 24786 Comm: syz-executor626 Not tainted 5.14.0-rc4-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> RIP: 0010:find_lock_entries+0x10d5/0x1110 mm/filemap.c:2041
->
-> This patch should fix it.  It's not just removing the warning; this
-> warning duplicates the warning a few lines down (after taking the
-> lock).  It's not safe to make this assertion without holding the page
-> lock as the page can move between the page cache and the swap cache.
->
-> #syz test
+On Tue, Aug 10, 2021 at 08:51:46AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>   f944e005aa9b ("cgroup/cpuset: Fix violation of cpuset locking rule")
+> 
+> Fixes tag
+> 
+>   Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition)
+> 
+> has these problem(s):
+> 
+>   - Subject has leading but no trailing quotes
 
-want 2 args (repo, branch), got 4
+Fixed. Thanks.
 
->
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index d1458ecf2f51..34de0b14aaa9 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2038,7 +2038,6 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
->  		if (!xa_is_value(page)) {
->  			if (page->index < start)
->  				goto put;
-> -			VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
->  			if (page->index + thp_nr_pages(page) - 1 > end)
->  				goto put;
->  			if (!trylock_page(page))
->
-> -- 
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/YRGxNaVc1cGsyd0Y%40casper.infradead.org.
+-- 
+tejun
