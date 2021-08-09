@@ -2,179 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA4A3E40E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED78A3E40E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhHIHfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:35:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41984 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233498AbhHIHfh (ORCPT
+        id S233490AbhHIHh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232094AbhHIHhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:35:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628494516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rl8X9okvlYfR8iDE1jtv9Hzx9xj5s4hp+iTOYsKFl2Y=;
-        b=NUakwVHoYBkJrBgHPtMf80tJ0vhA5RFYBYY3KIeGlIfwTZFGjjfskCSvwTMJSnOkG4+E7g
-        Tb73P1KS0GELEKX4uOjwG6kFDnXYoeyE1YnLF2pAXNyaw7nMCnQGQmauODVSgyqPZsGlLn
-        zOAItQmRSPBBy8Te/2cX5j40CoVIXAM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-8lX7f6EUOyW6UCZDUYUe-w-1; Mon, 09 Aug 2021 03:35:15 -0400
-X-MC-Unique: 8lX7f6EUOyW6UCZDUYUe-w-1
-Received: by mail-wm1-f71.google.com with SMTP id 11-20020a05600c024bb02902e679d663d1so1261723wmj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 00:35:14 -0700 (PDT)
+        Mon, 9 Aug 2021 03:37:53 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E476EC0613CF;
+        Mon,  9 Aug 2021 00:37:31 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id y7so11348205ljp.3;
+        Mon, 09 Aug 2021 00:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tOfwbYzSxTz3/qcaHpP5xq44HlT8+4ETE/kx1iWOW9k=;
+        b=Hd8h+zSTKqqrKx2DoCL857vPml6dHMgVL3E5Uhyq7UVegef+fv2BUbz5fcNkmw8J3Y
+         1bMtRV+3ezRgV/cpVgVVNz0w2KGXor/42dxrqAVmNddMUCAbxL6hT95LyMFAy5ydccQJ
+         O3bGeier+ZUnYLraMSCieUx8d1Pk9sUBMBm2flgkz1sq8Qz3JLwVfCFNZYi164a1pVdc
+         BXTAsluL2A1VGSOIleP3zWLUOHZvYPiHYLr5Q0JXgTznIK0IOHoSi/N769oQN6uZio4u
+         fwNpUItdL4RxwIwDfbxttvFs9yieG6lFlIWGjzTfihbixwIu7p8o1nUtTcuKzRIJwP0k
+         RiZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rl8X9okvlYfR8iDE1jtv9Hzx9xj5s4hp+iTOYsKFl2Y=;
-        b=fhfNJrRpamt5dqe1Qs/LKzX/ydXXPlh7SxRmRrVcQOmvAB40237J0mP9GBUSIOfZIn
-         PVGTT2VBT5qCRmx7ktK0V1JmXSMU1Q2pVWUHBf+6edgfYdNnAzHw1VI/2qNXo0DA9nRv
-         f2PGyCXfMN8rljXDl2Zyq0SpQ7PslYlR73UQkwz1zPcG4/xcJrAbjqNNNGfdV/F0VnLW
-         jgu79Q79FBb+bqf9IYzuJknBfOzIcrmVoiSkCgC0CJUzRQOEDeuh97OfESfAFkQ5LnUG
-         gYVIBoXKVuo4qMGNHwhRPIDZD0N19Ccv4vpJkNN6r/bczodgwjH9I0EIIxO0NM8EnWQt
-         KFRw==
-X-Gm-Message-State: AOAM531tZzZ5krujw56mnVYfxzfAItv9gMpA7h9/gqQV0qMQAWZjQ8H3
-        U7oF/1vktEWmkkHKpOqiQEjCBQJ9piIS2WFVVgejnTuldemZgGiliAUpXP/P+ZiE8GulOEfOG5X
-        vqGrV7rhRhpIPTHGhOrmQmnFd
-X-Received: by 2002:a5d:55cb:: with SMTP id i11mr23249397wrw.158.1628494513878;
-        Mon, 09 Aug 2021 00:35:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwET0FjNJfOicoIvhPZYDAmrbe03wsX0H3c356yu3WbSOtd2PSqPGq14qTm/tUGbraB0CrFDg==
-X-Received: by 2002:a5d:55cb:: with SMTP id i11mr23249373wrw.158.1628494513694;
-        Mon, 09 Aug 2021 00:35:13 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id p14sm155887wmi.42.2021.08.09.00.35.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 00:35:13 -0700 (PDT)
-To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org
-References: <20210805190253.2795604-1-zi.yan@sent.com>
- <20210805190253.2795604-10-zi.yan@sent.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [RFC PATCH 09/15] virtio: virtio_mem: use PAGES_PER_SECTION
- instead of MAX_ORDER_NR_PAGES
-Message-ID: <3e2f1910-e7d9-ddf9-063b-d702793f1525@redhat.com>
-Date:   Mon, 9 Aug 2021 09:35:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tOfwbYzSxTz3/qcaHpP5xq44HlT8+4ETE/kx1iWOW9k=;
+        b=tGC4L8sLqpG24z/jJHMYpqSSjYArtF6z/X6xoHf+oQOxQY6Sc4KCDjsPBD9yHnTSuq
+         RA9hhFGKYAmVvvjOgpArxmqVESKvfM/7LgyPd0Crbm8ZW4SA3qnkvtFtVl8lXBAiGTnu
+         70kuNRTaTLLfZcy+DdEwwJQUs5PqUp1MRM5pPBX2RH7J24xfQNNqxy+rzeqbmt7cftVC
+         VnO9XjRP3xWZSzlcv7HDBtraepAZOk9uOFw+MbgPAoDB6ObxwQYIT8WSewlN2uUJR6Yd
+         ZrNZuxh6aeIX8PTkrX8/8AqvM2ghDuYgHm7PM3dZJlv++2YQ7V7ki2UEAmmFKXd+tJT0
+         GKcg==
+X-Gm-Message-State: AOAM531uWstpLpnyIvSP5sRN1LnwxdRRq9/oKu+NJ0nUWBWhE3xo3Uv4
+        SPwDn+Fw1AQfjtER/m0mmNfetafYp00HVmbXmNE=
+X-Google-Smtp-Source: ABdhPJxCTMdNR4nhdx+ITQyYxOPPVNGZiM7D3EUtxmzvbpMraOfsVBSAOpA86otXJM39RLOEZ1uhZ1qXuutIAvJb1j8=
+X-Received: by 2002:a2e:944a:: with SMTP id o10mr14770206ljh.119.1628494650167;
+ Mon, 09 Aug 2021 00:37:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210805190253.2795604-10-zi.yan@sent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210804140309.31468-1-puranjay12@gmail.com> <20210804140309.31468-2-puranjay12@gmail.com>
+ <20210808160628.7b031948@jic23-huawei> <20210808164345.799b8568@jic23-huawei>
+In-Reply-To: <20210808164345.799b8568@jic23-huawei>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Mon, 9 Aug 2021 13:07:18 +0530
+Message-ID: <CANk7y0idV-EtDG0BuVjF7L4NU_8sgGv3wNZWLoHWksRbcLEgZQ@mail.gmail.com>
+Subject: Re: [PATCH v8 1/3] dt-bindings: iio: accel: Add DT binding doc for ADXL355
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>, robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.08.21 21:02, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> It keeps the existing behavior when MAX_ORDER grows beyond a section
-> size.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->   drivers/virtio/virtio_mem.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> index 19036922f7ef..bab5a81fa796 100644
-> --- a/drivers/virtio/virtio_mem.c
-> +++ b/drivers/virtio/virtio_mem.c
-> @@ -1105,11 +1105,11 @@ static void virtio_mem_clear_fake_offline(unsigned long pfn,
->    */
->   static void virtio_mem_fake_online(unsigned long pfn, unsigned long nr_pages)
->   {
-> -	const unsigned long max_nr_pages = MAX_ORDER_NR_PAGES;
-> +	const unsigned long max_nr_pages = PAGES_PER_SECTION;
->   	unsigned long i;
->   
->   	/*
-> -	 * We are always called at least with MAX_ORDER_NR_PAGES
-> +	 * We are always called at least with PAGES_PER_SECTION
->   	 * granularity/alignment (e.g., the way subblocks work). All pages
->   	 * inside such a block are alike.
->   	 */
-> @@ -1125,7 +1125,7 @@ static void virtio_mem_fake_online(unsigned long pfn, unsigned long nr_pages)
->   		if (PageDirty(page)) {
->   			virtio_mem_clear_fake_offline(pfn + i, max_nr_pages,
->   						      false);
-> -			generic_online_page(page, MAX_ORDER - 1);
-> +			generic_online_page(page, PAGES_PER_SECTION - 1);
->   		} else {
->   			virtio_mem_clear_fake_offline(pfn + i, max_nr_pages,
->   						      true);
-> @@ -1228,7 +1228,7 @@ static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
->   		if (vm->in_sbm) {
->   			/*
->   			 * We exploit here that subblocks have at least
-> -			 * MAX_ORDER_NR_PAGES size/alignment - so we cannot
-> +			 * PAGES_PER_SECTION size/alignment - so we cannot
->   			 * cross subblocks within one call.
->   			 */
->   			id = virtio_mem_phys_to_mb_id(addr);
-> @@ -2438,14 +2438,14 @@ static int virtio_mem_init(struct virtio_mem *vm)
->   				      VIRTIO_MEM_DEFAULT_OFFLINE_THRESHOLD);
->   
->   	/*
-> -	 * We want subblocks to span at least MAX_ORDER_NR_PAGES and
-> +	 * We want subblocks to span at least PAGES_PER_SECTION and
->   	 * pageblock_nr_pages pages. This:
->   	 * - Simplifies our page onlining code (virtio_mem_online_page_cb)
->   	 *   and fake page onlining code (virtio_mem_fake_online).
->   	 * - Is required for now for alloc_contig_range() to work reliably -
->   	 *   it doesn't properly handle smaller granularity on ZONE_NORMAL.
->   	 */
-> -	sb_size = max_t(uint64_t, MAX_ORDER_NR_PAGES,
-> +	sb_size = max_t(uint64_t, PAGES_PER_SECTION,
->   			pageblock_nr_pages) * PAGE_SIZE;
->   	sb_size = max_t(uint64_t, vm->device_block_size, sb_size);
->   
-> 
+On Sun, Aug 8, 2021 at 9:10 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 8 Aug 2021 16:06:28 +0100
+> Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> > On Wed,  4 Aug 2021 19:33:07 +0530
+> > Puranjay Mohan <puranjay12@gmail.com> wrote:
+> >
+> > > Add devicetree binding document for ADXL355, a 3-Axis MEMS Accelerometer.
+> > >
+> > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> >
+> > Looks good to me. I'll pick this up once Rob and anyone else interested
+> > has had time to take a look assuming they don't ask for any changes.
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >
+> >
+> > > ---
+> > >  .../bindings/iio/accel/adi,adxl355.yaml       | 88 +++++++++++++++++++
+> > >  1 file changed, 88 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> > > new file mode 100644
+> > > index 000000000..5da3fd5ad
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> > > @@ -0,0 +1,88 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/iio/accel/adi,adxl355.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer
+> > > +
+> > > +maintainers:
+> > > +  - Puranjay Mohan <puranjay12@gmail.com>
+> > > +
+> > > +description: |
+> > > +  Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer that supports
+> > > +  both I2C & SPI interfaces
+> > > +    https://www.analog.com/en/products/adxl355.html
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - adi,adxl355
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  interrupts:
+> > > +    minItems: 1
+> > > +    maxItems: 3
+> > > +    description: |
+> > > +      Type should be IRQ_TYPE_LEVEL_HIGH.
+> > > +      Three configurable interrupt lines exist.
+>
+> I just noticed from the datasheet, that INT1 and INT2 have controllable
+> polarity on the device.  We should look to support that rather than
+> stating all 3 interrupts are LEVEL_HIGH.  For now, I'd just not
+> state the type here, or make that statement only for the dataready pin.
+>
 
-This is very much completely broken and destroys most of the purpose of 
-virtio-mem. It even is broken once MAX_ORDER would exceed a single 
-memory section I think.
+Hi Jonathan,
+I will be sending v9 of this series where I will state this only for
+the DRDY pin. I will also make the scale defines inline for the other
+patch.
+Also, I will not send the third patch: trigger support in v9 because
+it needs a lot of work.
+It would be great if the base driver gets accepted and I will keep
+working on the trigger support separately and not as a part of this
+patch series.
+I am also interested in looking into fwnode_get_irq_byname() for the
+trigger patch.
 
-Whatever you do, keep virtio-mem working *as is* unless someone 
-explicitly sets MAX_ORDER on the command line to something bigger.
+> Once you enable these interrupts, you will want to handle the polarity setting
+> in a similar fashion to the bmi160.
+>
+> It is a bit messy to combine the interrupt polarity at the interrupt controller
+> with that at the device, but that is how we've handled these in the past.
+>
+> Jonathan
+>
+> > > +
+> > > +  interrupt-names:
+> > > +    description: Specify which interrupt line is in use.
+> > > +    items:
+> > > +      enum:
+> > > +        - INT1
+> > > +        - INT2
+> > > +        - DRDY
+> > > +    minItems: 1
+> > > +    maxItems: 3
+> > > +
+> > > +  vdd-supply:
+> > > +    description: Regulator that provides power to the sensor
+> > > +
+> > > +  vddio-supply:
+> > > +    description: Regulator that provides power to the bus
+> > > +
+> > > +  spi-max-frequency: true
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +        #include <dt-bindings/gpio/gpio.h>
+> > > +        #include <dt-bindings/interrupt-controller/irq.h>
+> > > +        i2c {
+> > > +                #address-cells = <1>;
+> > > +                #size-cells = <0>;
+> > > +
+> > > +                /* Example for a I2C device node */
+> > > +                accelerometer@1d {
+> > > +                        compatible = "adi,adxl355";
+> > > +                        reg = <0x1d>;
+> > > +                        interrupt-parent = <&gpio>;
+> > > +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
+> > > +                        interrupt-names = "DRDY";
+> > > +                };
+> > > +        };
+> > > +  - |
+> > > +        #include <dt-bindings/gpio/gpio.h>
+> > > +        #include <dt-bindings/interrupt-controller/irq.h>
+> > > +        spi {
+> > > +                #address-cells = <1>;
+> > > +                #size-cells = <0>;
+> > > +
+> > > +                accelerometer@0 {
+> > > +                        compatible = "adi,adxl355";
+> > > +                        reg = <0>;
+> > > +                        spi-max-frequency = <1000000>;
+> > > +                        interrupt-parent = <&gpio>;
+> > > +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
+> > > +                        interrupt-names = "DRDY";
+> > > +                };
+> > > +        };
+> >
+>
 
-
-virtio-mem will require some minor adjustments once MAX_ORDER_NR_PAGES 
-would exceed the memory section size -- the functionality will, however, 
-be heavily degraded once you increase MAX_ORDER_NR_PAGES in any way 
-(again, which is fine if it's explicitly done by an admin on the command 
-line).
-
-As mentioned somewhere else already, we'll have to tackle 
-alloc_contig_range() to properly deal with pageblock_order granularity, 
-then we can rework virtio-mem code to be based on that instead of 
-MAX_ORDER - 1.
 
 -- 
-Thanks,
+Thanks and Regards
 
-David / dhildenb
+Yours Truly,
 
+Puranjay Mohan
