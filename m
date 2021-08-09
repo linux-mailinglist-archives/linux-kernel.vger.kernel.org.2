@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60293E44DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959563E44DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbhHIL3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235181AbhHIL3c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:29:32 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642BAC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 04:29:11 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:85c3:1250:92e5:c526])
-        by baptiste.telenet-ops.be with bizsmtp
-        id fPV52500N4aJ70U01PV5bB; Mon, 09 Aug 2021 13:29:09 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mD3Sr-000xEo-EE; Mon, 09 Aug 2021 13:29:05 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mD3Sq-00GMEO-LG; Mon, 09 Aug 2021 13:29:04 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Greg Ungerer <gerg@uclinux.org>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     Brendan Jackman <jackmanb@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] m68k: Fix asm register constraints for atomic ops
-Date:   Mon,  9 Aug 2021 13:29:03 +0200
-Message-Id: <20210809112903.3898660-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S235259AbhHILaK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Aug 2021 07:30:10 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48696 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234982AbhHILaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 07:30:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214401531"
+X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
+   d="scan'208";a="214401531"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 04:29:44 -0700
+X-IronPort-AV: E=Sophos;i="5.84,307,1620716400"; 
+   d="scan'208";a="514915165"
+Received: from scotter-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.9.32])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 04:29:42 -0700
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210721155355.173183-5-hch@lst.de>
+References: <20210721155355.173183-1-hch@lst.de> <20210721155355.173183-5-hch@lst.de>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To:     Christoph Hellwig <hch@lst.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Subject: Re: [PATCH 04/21] drm/i915/gvt: move the gvt code into kvmgt.ko
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <162850857939.5634.17747219922172884449@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Mon, 09 Aug 2021 14:29:39 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on register assignment by the compiler:
+Quoting Christoph Hellwig (2021-07-21 18:53:38)
+> Instead of having an option to build the gvt code into the main i915
+> module, just move it into the kvmgt.ko module.  This only requires
+> a new struct with three entries that the main i915 module needs to
+> request before enabling VGPU passthrough operations.
+> 
+> This also conveniently streamlines the GVT initialization and avoids
+> the need for the global device pointer.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-    {standard input}:3084: Error: operands mismatch -- statement `andl %a1,%d1' ignored
-    {standard input}:3145: Error: operands mismatch -- statement `orl %a1,%d1' ignored
-    {standard input}:3195: Error: operands mismatch -- statement `eorl %a1,%d1' ignored
+Hi,
 
-Indeed, the first operand must not be an address register.  However, it
-can be an immediate value.  Fix this by adjusting the register
-constraint from "g" (general purpose register) to "di" (data register or
-immediate).
+Thanks for putting the work into this. This conversion has been
+requested for a long time. For clarity, should we call the module
+i915_kvmgt?
 
-Fixes: e39d88ea3ce4a471 ("locking/atomic, arch/m68k: Implement atomic_fetch_{add,sub,and,or,xor}()")
-Fixes: d839bae4269aea46 ("locking,arch,m68k: Fold atomic_ops")
-Fixes: 1da177e4c3f41524 ("Linux-2.6.12-rc2")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Reported-by: Alexander Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Arnd Bergmann <arnd@arndb.de>
----
-v2:
-  - Add Tested-by,
-  - Use "di" instead of "d".
+How far would we be from dynamically modprobing/rmmoding the kvmgt
+module in order to eliminate the enable_gvt parameter?
 
-Personally, I have never seen this failure in an 68020+ build, but I can
-reproduce it on Coldfire with the config provided by lkp (with bogus
-CONFIG_RMW_INSNS=y).
----
- arch/m68k/include/asm/atomic.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+<SNIP>
 
-diff --git a/arch/m68k/include/asm/atomic.h b/arch/m68k/include/asm/atomic.h
-index 8637bf8a2f652009..cfba83d230fdec37 100644
---- a/arch/m68k/include/asm/atomic.h
-+++ b/arch/m68k/include/asm/atomic.h
-@@ -48,7 +48,7 @@ static inline int arch_atomic_##op##_return(int i, atomic_t *v)		\
- 			"	casl %2,%1,%0\n"			\
- 			"	jne 1b"					\
- 			: "+m" (*v), "=&d" (t), "=&d" (tmp)		\
--			: "g" (i), "2" (arch_atomic_read(v)));		\
-+			: "di" (i), "2" (arch_atomic_read(v)));		\
- 	return t;							\
- }
- 
-@@ -63,7 +63,7 @@ static inline int arch_atomic_fetch_##op(int i, atomic_t *v)		\
- 			"	casl %2,%1,%0\n"			\
- 			"	jne 1b"					\
- 			: "+m" (*v), "=&d" (t), "=&d" (tmp)		\
--			: "g" (i), "2" (arch_atomic_read(v)));		\
-+			: "di" (i), "2" (arch_atomic_read(v)));		\
- 	return tmp;							\
- }
- 
--- 
-2.25.1
+> +
+> +/*
+> + * Exported here so that the exports only get created when GVT support is
+> + * actually enabled.
+> + */
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_alloc, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_create_shmem, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_init, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_ggtt_pin_ww, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_pin_map, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_object_set_to_cpu_domain, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(__i915_gem_object_flush_map, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(__i915_gem_object_set_pages, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_gtt_insert, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_prime_export, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_ww_ctx_init, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_ww_ctx_backoff, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_gem_ww_ctx_fini, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_ppgtt_create, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_request_add, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_request_create, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_request_wait, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_reserve_fence, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_unreserve_fence, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_vm_release, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(i915_vma_move_to_active, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_context_create, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_context_unpin, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(__intel_context_do_pin, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_ring_begin, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_runtime_pm_get, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_runtime_pm_put_unchecked, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_uncore_forcewake_for_reg, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_uncore_forcewake_get, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(intel_uncore_forcewake_put, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(shmem_pin_map, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(shmem_unpin_map, I915_GVT);
+> +EXPORT_SYMBOL_NS_GPL(__px_dma, I915_GVT);
 
+This list is also a concern. At the least the double underscore
+functions should be eliminated from being exported.
+
+Zhi and Zhenyu, can we have some further patches to clean that up?
+
+Regards, Joonas
