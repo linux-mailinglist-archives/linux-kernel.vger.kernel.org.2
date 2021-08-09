@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4DD3E450A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804083E450B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbhHILpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:45:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:58992 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233512AbhHILpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:45:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 756896D;
-        Mon,  9 Aug 2021 04:44:41 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03CB93F40C;
-        Mon,  9 Aug 2021 04:44:37 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: imx8qm: add smmu node
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
-        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, aisheng.dong@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-References: <20210807104517.24066-1-peng.fan@oss.nxp.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <57fc0247-808d-1c83-2ec9-840a48af025a@arm.com>
-Date:   Mon, 9 Aug 2021 12:44:32 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234446AbhHILtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:49:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38948 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233512AbhHILtl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 07:49:41 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id EE3361FDCB;
+        Mon,  9 Aug 2021 11:49:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628509759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PTbs/oAWdsEgUa8fNGlTSzW9u7qIXvDedRy0yP7NhHs=;
+        b=iKDi+/fu4Gd8GxCi3jrRjW3J0vrQwJwVllhFySyBgCyikeLsyuwZuzHer6hzEfVM3ERyRy
+        h8GScA/lbnan9QBPXttTNxHehkaMYkYlE4QwL+LwebbBM33kTIHSZBBb6Gow8B6s0Hthsz
+        8mgsqHHmk/q5Eg6ksB8Y+o9+5q4tXqo=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BEC5FA3B89;
+        Mon,  9 Aug 2021 11:49:19 +0000 (UTC)
+Date:   Mon, 9 Aug 2021 13:49:19 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Nico Pache <npache@redhat.com>, Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] vm_swappiness=0 should still try to avoid swapping anon
+ memory
+Message-ID: <YREWP2nw/QIDq8zO@dhcp22.suse.cz>
+References: <20210806231701.106980-1-npache@redhat.com>
+ <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
+ <91605888-e343-2712-c097-bcade4cb389d@redhat.com>
+ <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210807104517.24066-1-peng.fan@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-07 11:45, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Fri 06-08-21 22:23:48, Shakeel Butt wrote:
+> On Fri, Aug 6, 2021 at 6:37 PM Nico Pache <npache@redhat.com> wrote:
+> >
+> >
+> > On 8/6/21 9:00 PM, Shakeel Butt wrote:
+> [...]
+> > > If you are really seeing the said behavior then why will this fix it.
+> > > This is just about deactivating active anon LRU. I would rather look
+> > > at get_scan_count() to check why swappiness = 0 is still letting the
+> > > kernel to scan anon LRU. BTW in cgroup v1, the memcg can overwrite
+> > > their swappiness which will be preferred over system vm_swappiness.
+> > > Did you set system level swappiness or memcg one?
+> >
+> > This fixes the issue because shrink_list() uses the may_deactivate field
+> > to determine if it should shrink the active list.
 > 
-> i.MX8QM has an iommu unit: SMMU-V2(mmu-500), add it.
-
-Given CONFIG_ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT, you may want to add 
-this in a disabled state until you've filled in all the "iommus" 
-properties for the client devices. Otherwise, be prepared to hear from 
-people reporting issues bisected to this patch ;)
-
-Robin.
-
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->   arch/arm64/boot/dts/freescale/imx8qm.dtsi | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
+> First, the shrink_list() will not be called for anon LRU if get_scan_count()
+> has decided to not scan the anon LRU.
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qm.dtsi b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> index aebbe2b84aa1..b8ffd5be6a3e 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
-> @@ -165,6 +165,22 @@ iomuxc: pinctrl {
->   
->   	};
->   
-> +	smmu: iommu@51400000 {
-> +		compatible = "arm,mmu-500";
-> +		reg = <0 0x51400000 0 0x40000>;
-> +		#iommu-cells = <2>;
-> +		#global-interrupts = <1>;
-> +		interrupts = <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>, <0 32 4>, <0 32 4>, <0 32 4>,
-> +			     <0 32 4>;
-> +	};
-> +
->   	/* sorted in register address */
->   	#include "imx8-ss-img.dtsi"
->   	#include "imx8-ss-dma.dtsi"
+> Second, I would like to get your attention to the following comment in
+> get_scan_count():
 > 
+> "Global reclaim will swap to prevent OOM even with no swappiness"
+> 
+> It seems like the behavior you are seeing is actually working as intended.
+> You may decide to change that behavior but you will need to motivate the
+> change.
+
+Yes this is true. Only the memcg has a strict no swapping behavior
+historically. I do agree that the patch should go into much more details
+about the existing problem though. In this context it would be really
+good to explain why trashing over page cache is a better outcome than
+swapping out some pages.
+
+-- 
+Michal Hocko
+SUSE Labs
