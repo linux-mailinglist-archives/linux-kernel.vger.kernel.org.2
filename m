@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955563E48D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E713E48CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235875AbhHIP2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:28:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234275AbhHIP1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:27:17 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235640AbhHIP1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:27:15 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38330
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233102AbhHIP1O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:27:14 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7815F60EBB;
-        Mon,  9 Aug 2021 15:26:57 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mD7B1-003qjI-FU; Mon, 09 Aug 2021 16:26:55 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: [PATCH 00/13] clocksource/arm_arch_timer: Add basic ARMv8.6 support
-Date:   Mon,  9 Aug 2021 16:26:38 +0100
-Message-Id: <20210809152651.2297337-1-maz@kernel.org>
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id C63D93F356
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 15:26:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628522811;
+        bh=bKc2q2GsSAUcXGWOiwttCYEPNo65JA70tLWaCsvxMvg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=VeRlSovdf6IGA5+6lM9BMIf6qV0TP24VsWpUTbm81qbeYPD+XwGcWMKPmepnJEljE
+         7rOygxMybq+8ZPfJvYk5RaT2yIvhY1ud1aOsHV2kQyca0QzhjL5/BKymgls9i7tbeZ
+         jb8Y2e5LZG68upJH+SEcG2BXH0hXovRerdw+9olA4fzp7iNcHlCW4r2Q6aCMTdm7gR
+         TxmQDpkB/Jm8ba39Hd4pDgDWB60ReqCKec5fKnPw+V2lRoruoLrx4E8/txeIurn96y
+         dRy5RaDNMC5Ig+e+1rUS6nHi8qYbbk+gQGVAjCSvhJlG5P2ImSw/3jD3VJHIWbdmrU
+         4og+8yu6c1yng==
+Received: by mail-ed1-f69.google.com with SMTP id ec47-20020a0564020d6fb02903be5e0a8cd2so2736125edb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:26:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bKc2q2GsSAUcXGWOiwttCYEPNo65JA70tLWaCsvxMvg=;
+        b=tMAs1kH3adXi+7w2D1aviUM5442VTGibGZxywd3gLK8eDTjuVi7JECREfShSfc+jh2
+         0ir9VcceW3qicGj3vY13e2lKi0XH5QsyaJde+zkcIrYipfKFsOwrlDdwETurMGyJtqMW
+         2bC/WYISGo5raRBhmHuAFmRp3qHWkpmhl6okrGu/dcBp0zvL0Ydkg3kcDEm6iYQA8nXf
+         5+mY812UdPToDmObrqHT4lE2nHUpFkLM4Z0UJnClwAyjVbl32BRTv035fniPBGxJw0JV
+         ZenY8MR/EhlXSVe403WzH8jqDuxjLV/0XjLG+abevMjdy26x7GEyQoiO1qKTlZxelHJ4
+         /IYg==
+X-Gm-Message-State: AOAM533wvmVlQhPMOOAn8a2+1dqcMO8zrP2VvLMRyri3V77gCrNW3EFc
+        hsyz3xb5t4UP2nLi1c861EcTfH9Ex3xMLm1vFztg1kLYuiCJtUn9VTQrj2Uh9oRswpW2rUSzkxh
+        IBACQQ6P1FRXcxH+MAoncew2mPcRRQ85CgUA9rFms8w==
+X-Received: by 2002:a17:906:d147:: with SMTP id br7mr23527594ejb.126.1628522810897;
+        Mon, 09 Aug 2021 08:26:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9H/dobnWwRqC8K7RHya8QBOc6Stqn0f87KhEofscI7OHEFlLrwSuPyBlXqQQYdXGLWouyyQ==
+X-Received: by 2002:a17:906:d147:: with SMTP id br7mr23527569ejb.126.1628522810704;
+        Mon, 09 Aug 2021 08:26:50 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id fp5sm2604577ejc.6.2021.08.09.08.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 08:26:50 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL] memory: changes for v5.14
+Date:   Mon,  9 Aug 2021 17:26:39 +0200
+Message-Id: <20210809152639.110576-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, oupton@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This small series has been prompted by a discussion with Oliver around
-the fact that an ARMv8.6 implementation must have a 1GHz counter,
-which leads to a number of things to break in the timer code:
+Hi,
 
-- the counter rollover can come pretty quickly as we only advertise a
-  56bit counter,
-- the maximum timer delta can be remarkably small, as we use the
-  countdown interface which is limited to 32bit...
+I organized changes on separate topic branches just in case I need to share
+them with SoC maintainers.  They are all merged back to main branch.
 
-Thankfully, there is a way out: we can compute the minimal width of
-the counter based on the guarantees that the architecture gives us,
-and we can use the 64bit comparator interface instead of the countdown
-to program the timer.
+Best regards,
+Krzysztof
 
-Finally, we start making use of the ARMv8.6 ECV features by switching
-accesses to the counters to a self-synchronising register, removing
-the need for an ISB. Hopefully, implementations will *not* just stick
-an invisible ISB there...
 
-A side effect of the switch to CVAL is that XGene-1 breaks. I have
-added a workaround to keep it alive.
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-I have added Oliver's original patch[0] to the series and tweaked a
-couple of things. Blame me if I broke anything.
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-The whole things has been tested on Juno (sysreg + MMIO timers),
-XGene-1 (broken sysreg timers), FVP (FEAT_ECV, CNT*CTSS_EL0).
+are available in the Git repository at:
 
-[0] https://lore.kernel.org/r/20210807191428.3488948-1-oupton@google.com
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-5.15
 
-Marc Zyngier (12):
-  clocksource/arm_arch_timer: Drop CNT*_TVAL read accessors
-  clocksource/arm_arch_timer: Extend write side of timer register
-    accessors to u64
-  clocksource/arm_arch_timer: Move system register timer programming
-    over to CVAL
-  clocksource/arm_arch_timer: Move drop _tval from erratum function
-    names
-  clocksource/arm_arch_timer: Fix MMIO base address vs callback ordering
-    issue
-  clocksource/arm_arch_timer: Move MMIO timer programming over to CVAL
-  clocksource/arm_arch_timer: Advertise 56bit timer to the core code
-  clocksource/arm_arch_timer: Work around broken CVAL implementations
-  clocksource/arm_arch_timer: Remove any trace of the TVAL programming
-    interface
-  clocksource/arm_arch_timer: Drop unnecessary ISB on CVAL programming
-  arm64: Add a capability for FEAT_EVC
-  arm64: Add CNT{P,V}CTSS_EL0 alternatives to cnt{p,v}ct_el0
+for you to fetch changes up to c28b584deb1bc81f8a2454b43c82cdda17ed29f6:
 
-Oliver Upton (1):
-  clocksource/arm_arch_timer: Fix masking for high freq counters
+  Merge branch 'for-v5.15/omap-gpmc' into for-next (2021-07-29 09:03:32 +0200)
 
- arch/arm/include/asm/arch_timer.h    |  29 ++--
- arch/arm64/include/asm/arch_timer.h  |  65 +++----
- arch/arm64/include/asm/esr.h         |   6 +
- arch/arm64/include/asm/sysreg.h      |   3 +
- arch/arm64/kernel/cpufeature.c       |  10 ++
- arch/arm64/kernel/traps.c            |  11 ++
- arch/arm64/tools/cpucaps             |   1 +
- drivers/clocksource/arm_arch_timer.c | 249 ++++++++++++++++-----------
- include/clocksource/arm_arch_timer.h |   2 +-
- 9 files changed, 234 insertions(+), 142 deletions(-)
+----------------------------------------------------------------
+Memory controller drivers for v5.15
 
--- 
-2.30.2
+Few minor fixes: maintainer pattern, unused-function warning in
+Tegra186 and suspend/resume in OMAP GPMC.
 
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      memory: tegra: fix unused-function warning
+
+Krzysztof Kozlowski (2):
+      Merge branch 'for-v5.15/tegra-mc' into for-next
+      Merge branch 'for-v5.15/omap-gpmc' into for-next
+
+Mauro Carvalho Chehab (1):
+      MAINTAINERS: update arm,pl353-smc.yaml reference
+
+Tony Lindgren (2):
+      memory: omap-gpmc: Clear GPMC_CS_CONFIG7 register on restore if unused
+      memory: omap-gpmc: Drop custom PM calls with cpu_pm notifier
+
+ MAINTAINERS                     |   2 +-
+ arch/arm/mach-omap2/pm34xx.c    |   5 --
+ drivers/memory/omap-gpmc.c      | 191 +++++++++++++++++++++++++---------------
+ drivers/memory/tegra/tegra186.c |   2 +
+ include/linux/omap-gpmc.h       |   3 -
+ 5 files changed, 121 insertions(+), 82 deletions(-)
