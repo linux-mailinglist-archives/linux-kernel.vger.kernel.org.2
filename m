@@ -2,220 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0A83E4444
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998173E4450
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhHIK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:56:05 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41324
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234112AbhHIK4C (ORCPT
+        id S234831AbhHILAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:00:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59142 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233254AbhHILAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:56:02 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 000B74064A
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 10:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628506542;
-        bh=0/QQ7GCmzFb/lwnEgdDUeVfna7ZuR+UkebHo1Vz0Gqw=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=JNv5OZ52eBn7Z9PLrUTmfvh1mpKL3kb8KV5BiSg4gAcPl6W72WfoHe4GC+i0z5bH0
-         bB6s2PlSQ7NkLyfMzv5BBVe+Hjx2bqmJ0+pSG3CC79Hwj71TdVQqOT6F7bqiQoTAZj
-         yo1NFQ8eej/pmu4Ogi9rGi9F424+sbtZQjWNm+p3EIe0ZQKjXQJQvhZHKHSuOxbvWV
-         ILUQj2EPjSNbmPq6IbmazBNYmrqHOqa3a6IdaylTlOVC7EWMNQGFn50pIY+2xdvfId
-         mpNUcWwpyuh0LBMIaEK0MXA58g52hTVZYvdsYeIpUqmsTGKnkigoQRx8hamQ6/+H24
-         DQLOLzDJXvGvw==
-Received: by mail-ed1-f71.google.com with SMTP id cm18-20020a0564020c92b02903bc7f21d540so8686852edb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 03:55:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0/QQ7GCmzFb/lwnEgdDUeVfna7ZuR+UkebHo1Vz0Gqw=;
-        b=kjua8BR8z0Au1tIg3Mt4MhKRP65GRohc7jhqln65Vb0Mag2XvBjGSaxJWAIxb6psOG
-         /7Vs7r5L03vxILYKoQxVxEZqs8HhZqWmqanuc0DnmrGAZ5PZ7A0LA8yio7NetM7h9wS8
-         sHAPqHQNrd/kv9n65HFGRKQWOLHJtzhooughV9i3zFyspI5Ul45RamMNT/hJnjLHEeSy
-         hAx+XvG/L0kcunbom6u7AqsneEQNgGtcNXCD09/s9dpFwNZim00LwEq69nlr/3Em/5tT
-         bEmxZHAyJ/cdreXPdxSBN77wLA1aGdeVuzsVyDiL/7JdJzAYWb8ulpItinYik+F02lLR
-         gUgw==
-X-Gm-Message-State: AOAM531CYyRXMP6P0il3V9lgJkaEagu8TIaYYcVsY0istOj8gPtTSc6Q
-        DuHQE/V0nH6RTHefeGFlFPDsYjpxAeC6rC9a2k/nTYMjeBdDyeJl/AUyxP8u7QGSz0GVqpIq4XO
-        Bc6dgvbIqwrCPq2tnCgA03trUsqHspvUnEtRyrsavsw==
-X-Received: by 2002:a17:906:1b54:: with SMTP id p20mr404470ejg.395.1628506530735;
-        Mon, 09 Aug 2021 03:55:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUplgKeUyXmIIles2EuYZDpGS9skc6nxGXUAbVQyS+5moWpAWS0mJjpD2RuM252XF4XwBPcA==
-X-Received: by 2002:a17:906:1b54:: with SMTP id p20mr404451ejg.395.1628506530585;
-        Mon, 09 Aug 2021 03:55:30 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id b5sm5798891ejq.56.2021.08.09.03.55.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 03:55:29 -0700 (PDT)
-Subject: Re: [PATCH v2 7/8] clk: samsung: Add Exynos850 clock driver stub
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210806152146.16107-1-semen.protsenko@linaro.org>
- <20210806152146.16107-8-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <7110b1e2-1aee-6ddf-803f-ee392e494f2d@canonical.com>
-Date:   Mon, 9 Aug 2021 12:55:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 9 Aug 2021 07:00:06 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E505B21E7F;
+        Mon,  9 Aug 2021 10:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628506784;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i+819Y6QMhTvZXoFwSHV0pNp7MewP22hxJjnmmnW1lo=;
+        b=L7iNq+QO8kIx+jtgLE41cT9LClu7YvI3duAku3cSfi2XbLnSP9Mq6IN0gMHqcDHJFUKt4z
+        NdpUZLJrbhDPbMvYUziR6TGqxej/USUzLzRRjpbXnAI1LefQ3GQz7WjAWeeUl6cEeCv3BV
+        qHQkiKxJCi2OAlHQ0xWizHz9kCzQPUc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628506784;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i+819Y6QMhTvZXoFwSHV0pNp7MewP22hxJjnmmnW1lo=;
+        b=be7gYdlgEviTolWcfsfJdFKIzb9Tns6XSfUJrxWftZ5oEHJ33Gvm4ikYyglqluZyBuObX4
+        PzZmXavwV+bJcjAg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 3355BA3B89;
+        Mon,  9 Aug 2021 10:59:44 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7F240DA880; Mon,  9 Aug 2021 12:56:52 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 12:56:52 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kari.argillander@gmail.com,
+        oleksandr@natalenko.name
+Subject: Re: [PATCH v27 10/10] fs/ntfs3: Add MAINTAINERS
+Message-ID: <20210809105652.GK5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
+        mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kari.argillander@gmail.com,
+        oleksandr@natalenko.name
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210729134943.778917-11-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-In-Reply-To: <20210806152146.16107-8-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729134943.778917-11-almaz.alexandrovich@paragon-software.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/2021 17:21, Sam Protsenko wrote:
-> For now it's just a stub driver to make the serial driver work. Later it
-> will be implemented properly. This driver doesn't really change clocks,
-> only registers the UART clock as a fixed-rate clock. Without this clock
-> driver the UART driver won't work, as it's trying to obtain "uart" clock
-> and fails if it's not able to.
-
-You know that as temporary solution you can add necessary clocks
-directly in your DTS as fixed-rate-clocks? Effect would be quite similar
-to the one here for UART driver but instead adding some temporary code
-you would add temporary DTS nodes and references.
-
-I am fine with this approach although the binding (if ever defined...)
-would need to be marked as experimental.
-
+On Thu, Jul 29, 2021 at 04:49:43PM +0300, Konstantin Komarov wrote:
+> This adds MAINTAINERS
 > 
-> In order to get a functional serial console we have to implement that
-> minimal clock driver with "uart" clock. It's not necessary to actually
-> configure clocks, as those are already configured in bootloader, so
-> kernel can rely on that for now.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 > ---
-> Changes in v2:
->   - Used hard coded clock indexes, as clock bindings were removed; will
->     add clock bindings back (reimplemented) once proper clock driver is
->     ready
->   - Removed .data = 0 for exynos850-oscclk, as it's in BSS section
->   - Removed comma for terminator {}
->   - Made exynos850_clk_init() static
->   - Removed checking np for NULL, as it's already done in of_iomap()
+>  MAINTAINERS | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
->  drivers/clk/samsung/Makefile        |  1 +
->  drivers/clk/samsung/clk-exynos850.c | 64 +++++++++++++++++++++++++++++
->  2 files changed, 65 insertions(+)
->  create mode 100644 drivers/clk/samsung/clk-exynos850.c
-> 
-> diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-> index 028b2e27a37e..c46cf11e4d0b 100644
-> --- a/drivers/clk/samsung/Makefile
-> +++ b/drivers/clk/samsung/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos5433.o
->  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
->  obj-$(CONFIG_EXYNOS_CLKOUT)	+= clk-exynos-clkout.o
->  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos7.o
-> +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos850.o
->  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
->  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
->  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
-> diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-> new file mode 100644
-> index 000000000000..36c7c7fe7cf0
-> --- /dev/null
-> +++ b/drivers/clk/samsung/clk-exynos850.c
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
-> + * Copyright (C) 2021 Linaro Ltd.
-> + *
-> + * Common Clock Framework support for Exynos850 SoC.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +
-> +#include "clk.h"
-> +
-> +/* Will be extracted to bindings header once proper clk driver is implemented */
-> +#define OSCCLK		1
-> +#define DOUT_UART	2
-> +#define CLK_NR_CLKS	3
-> +
-> +/* Fixed rate clocks generated outside the SoC */
-> +static struct samsung_fixed_rate_clock exynos850_fixed_rate_ext_clks[] __initdata = {
-> +	FRATE(OSCCLK, "fin_pll", NULL, 0, 26000000),
-> +};
-> +
-> +/*
-> + * Model the UART clock as a fixed-rate clock for now, to make serial driver
-> + * work. This clock is already configured in the bootloader.
-> + */
-> +static const struct samsung_fixed_rate_clock exynos850_peri_clks[] __initconst = {
-> +	FRATE(DOUT_UART, "DOUT_UART", NULL, 0, 200000000),
-> +};
-> +
-> +static const struct of_device_id ext_clk_match[] __initconst = {
-> +	{ .compatible = "samsung,exynos850-oscclk" },
-> +	{}
-> +};
-> +
-> +static void __init exynos850_clk_init(struct device_node *np)
-> +{
-> +	void __iomem *reg_base;
-> +	struct samsung_clk_provider *ctx;
-> +
-> +	reg_base = of_iomap(np, 0);
-> +	if (!reg_base)
-> +		panic("%s: failed to map registers\n", __func__);
-> +
-> +	ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
-> +	if (!ctx)
-> +		panic("%s: unable to allocate ctx\n", __func__);
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 9c3428380..3b6b48537 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13279,6 +13279,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
+>  F:	Documentation/filesystems/ntfs.rst
+>  F:	fs/ntfs/
+>  
+> +NTFS3 FILESYSTEM
+> +M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> +S:	Supported
+> +W:	http://www.paragon-software.com/
+> +F:	Documentation/filesystems/ntfs3.rst
+> +F:	fs/ntfs3/
 
-Not needed, the samsung_clk_init() panics or returns valid memory.
-
-> +
-> +	samsung_clk_of_register_fixed_ext(ctx,
-> +			exynos850_fixed_rate_ext_clks,
-> +			ARRAY_SIZE(exynos850_fixed_rate_ext_clks),
-> +			ext_clk_match);
-> +
-> +	samsung_clk_register_fixed_rate(ctx, exynos850_peri_clks,
-> +			ARRAY_SIZE(exynos850_peri_clks));
-> +
-> +	samsung_clk_of_add_provider(np, ctx);
-> +}
-> +
-> +CLK_OF_DECLARE(exynos850_clk, "samsung,exynos850-clock", exynos850_clk_init);
-> 
-
-Best regards,
-Krzysztof
+Can you please add a git tree and mailing list entries?
