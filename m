@@ -2,268 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D83E3E9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CDD3E3EA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 06:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhHIEAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 00:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S230358AbhHIEE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 00:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhHIEAT (ORCPT
+        with ESMTP id S229456AbhHIEE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 00:00:19 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79A0C06175F;
-        Sun,  8 Aug 2021 20:59:58 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id q2so14932463plr.11;
-        Sun, 08 Aug 2021 20:59:58 -0700 (PDT)
+        Mon, 9 Aug 2021 00:04:56 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84122C06175F;
+        Sun,  8 Aug 2021 21:04:35 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so32492472pjr.1;
+        Sun, 08 Aug 2021 21:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=huBmT+vdBjrwVWilCqXL6rx7BEc09+TQvNlDSLTvyYc=;
-        b=o6+gPEDyHCHlsv0UWmII2zuXCO2LW5HGKNXARkp8ylVEyBip1wD+RFJIBaK5Ibq3E6
-         cPYKgloC6oBDsotA9rbrUWaX+9Rc+IZI8Kvs0xtx/LoxaZA1vG1MBBn8crsZSefm3OMH
-         p7NekJ5negQrpgKjweAolkTnLXH2vn/LJcK4R29JmnZfWBbmFzX5qSxH1mO3IwXNJAM6
-         9bjUA3bZWQQX/tsyI5wcftqTWBF1lB6jI/F9+7mD3xhkZz5yRV3E93AK2PGLp4f6ezGp
-         AIefgb+pnmGn0nSCfDLghi2vdfgr1zWwI4mJUeb8lkLxj68BRd0aWCAHVlxpFThoKR8g
-         kxhQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eNi4we5Lj3P0boB7zoQskLvhgnVQduuUdy+Ns6p58HE=;
+        b=YDt9z6rLaccx1u0yUAfrM7DK/uxTQ6Nlp13+xA0vzNa1rTc7G1oj4vSqsx1ldYcHgB
+         pabCS1FQy5SJkUUKH9mcG6cGpKFo7no5KxcT27/7sfjvL1mNhDsKssSWySolFmtgqah5
+         PhCwOvLrUau44MOEhdILNGo8i2Jgr23ctRqplqYl3khcnea/T73tBYE6bMKtNgKJL2Rj
+         z+ttB/IG8YD2GSVNEYh8stXB45APkW1F58VOT3DaSMg8l9tkjUrzvrM6ZHjD7cSxQAnh
+         6cuzURAT/TvQxHn4+P9/h37xiV46u4V+xyo5DFwkX27xYiA/08/PZCPFfsMcu9uEFx+p
+         z1ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=huBmT+vdBjrwVWilCqXL6rx7BEc09+TQvNlDSLTvyYc=;
-        b=r60OClsYJ38Q5ihL9DnzQkmbl+bdJM7DFrIYBWM8osAed044kNgun/jgcO+YkztxVL
-         p0xQ796Tg+0uZY0Rjo+PPUy8PG8Qvo7PBw0joMiM7uyWSwnb6Ou3KYztU2V3ibGwgQcX
-         wf6h5hErSjFQmJhdiX9f70obfWXOtFjIPlUq905Dx2pF/vSSGULHKcOP1HINjAr/c7Jd
-         TuOIiKbYY+Y+jvacDw7EzmMDWs2fDlHGiX62h9TkIe+mI6kHS15LuOzP6+FZOeoWhyVp
-         0Jjr17I3zv94m/ujAhj88X8oA0Sc/kztT0eLMuL/SsymDl8L14N3bu/pfK49TJ2JT++Q
-         Jtxg==
-X-Gm-Message-State: AOAM5308p7W7+0S66y5rs6kZdnu6hMDxk39X+01I8fJHfGQrN2yyCfZV
-        wZKqCJsWkVahhk6lJt+R1Mw=
-X-Google-Smtp-Source: ABdhPJxUtculMvo1JuMsCJMNSb91gtHhTpWLPUuzRf3axe2sIXlYQQn1YEgipZJKnwPln7oSQWNvAg==
-X-Received: by 2002:aa7:93b1:0:b029:3c0:a7b7:3db0 with SMTP id x17-20020aa793b10000b02903c0a7b73db0mr16353553pff.40.1628481598479;
-        Sun, 08 Aug 2021 20:59:58 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id n17sm20868257pgj.93.2021.08.08.20.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 20:59:57 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 12:59:51 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v14 06/17] counter: Internalize sysfs interface code
-Message-ID: <YRCoN5YZhytejzFh@shinobu>
-References: <cover.1627990337.git.vilhelm.gray@gmail.com>
- <2df092636a9eea5a3ddae1e9a6429e32b51284f7.1627990337.git.vilhelm.gray@gmail.com>
- <20210808182325.2620de00@jic23-huawei>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eNi4we5Lj3P0boB7zoQskLvhgnVQduuUdy+Ns6p58HE=;
+        b=S+8VLTh/FBUPWCzWayLpBJ6ahAW4S02LqwXum7rTqmObgkNJXqaTHhlOXW9YWnUBgJ
+         D0J4KUL5SmrzluxZn5cjqhmnyno4KoQjIjzUIIvAeEp87SATVe4xHNTdctNOyLvtpZuQ
+         XXBDXKkGl25RXPUeGgHPkx1GVJtYIOtZMAnTZZ/HbyADqyJ6+rVPd/w1k0/ezokvWGCz
+         GH5NrCpVIbZZMAhO7qpZvkggJzaxcpaICVc1UnahfI3IBOKnJusFlCu4PPzKQSwBjQ8F
+         ivWdne4ziY6S17OWPpd3BqEyHUE9qJl0KIyOHB0jvPh1uZd3qSLpRR0YqHR02mEMVmSv
+         2GrA==
+X-Gm-Message-State: AOAM532tGRISLMKn4O0bWlhDN0Hrmo5pZsVOCSIoiGaQKOXzgkFs2nXA
+        7JP7KyNUlEKoJjgS1MvHeVI=
+X-Google-Smtp-Source: ABdhPJzKsNieWaXKHjzR8XFdQkm3Z+XdF11LKiu478zAdzcIqvEfqrbUOjN22K2e8i3fhC5rJi0Hnw==
+X-Received: by 2002:a17:90a:70c5:: with SMTP id a5mr17338389pjm.23.1628481874879;
+        Sun, 08 Aug 2021 21:04:34 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id p17sm20181911pjg.54.2021.08.08.21.04.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Aug 2021 21:04:34 -0700 (PDT)
+Subject: Re: [RESEND PATCH v5 1/6] Bluetooth: schedule SCO timeouts with
+ delayed_work
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, sudipm.mukherjee@gmail.com,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        skhan@linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+References: <20210804154712.929986-1-desmondcheongzx@gmail.com>
+ <20210804154712.929986-2-desmondcheongzx@gmail.com>
+ <CABBYNZ+5-wEyLJDUU0fC3fogAkJiXD+8np_8c_M0yfYZVUYbww@mail.gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <0fc64ddd-45f0-667f-b8cb-bd958280586f@gmail.com>
+Date:   Mon, 9 Aug 2021 12:04:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="A01f2o0U0ch3O7vQ"
-Content-Disposition: inline
-In-Reply-To: <20210808182325.2620de00@jic23-huawei>
+In-Reply-To: <CABBYNZ+5-wEyLJDUU0fC3fogAkJiXD+8np_8c_M0yfYZVUYbww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 6/8/21 3:06 am, Luiz Augusto von Dentz wrote:
+> Hi Desmond,
+> 
+> On Wed, Aug 4, 2021 at 8:48 AM Desmond Cheong Zhi Xi
+> <desmondcheongzx@gmail.com> wrote:
+>>
+>> struct sock.sk_timer should be used as a sock cleanup timer. However,
+>> SCO uses it to implement sock timeouts.
+>>
+>> This causes issues because struct sock.sk_timer's callback is run in
+>> an IRQ context, and the timer callback function sco_sock_timeout takes
+>> a spin lock on the socket. However, other functions such as
+>> sco_conn_del and sco_conn_ready take the spin lock with interrupts
+>> enabled.
+>>
+>> This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
+>> lead to deadlocks as reported by Syzbot [1]:
+>>         CPU0
+>>         ----
+>>    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>>    <Interrupt>
+>>      lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>>
+>> To fix this, we use delayed work to implement SCO sock timouts
+>> instead. This allows us to avoid taking the spin lock on the socket in
+>> an IRQ context, and corrects the misuse of struct sock.sk_timer.
+>>
+>> As a note, cancel_delayed_work is used instead of
+>> cancel_delayed_work_sync in sco_sock_set_timer and
+>> sco_sock_clear_timer to avoid a deadlock. In the future, the call to
+>> bh_lock_sock inside sco_sock_timeout should be changed to lock_sock to
+>> synchronize with other functions using lock_sock. However, since
+>> sco_sock_set_timer and sco_sock_clear_timer are sometimes called under
+>> the locked socket (in sco_connect and __sco_sock_close),
+>> cancel_delayed_work_sync might cause them to sleep until an
+>> sco_sock_timeout that has started finishes running. But
+>> sco_sock_timeout would also sleep until it can grab the lock_sock.
+>>
+>> Using cancel_delayed_work is fine because sco_sock_timeout does not
+>> change from run to run, hence there is no functional difference
+>> between:
+>> 1. waiting for a timeout to finish running before scheduling another
+>> timeout
+>> 2. scheduling another timeout while a timeout is running.
+>>
+>> Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
+>> Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+>> Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>> ---
+>>   net/bluetooth/sco.c | 41 +++++++++++++++++++++++++++++++++++------
+>>   1 file changed, 35 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+>> index ffa2a77a3e4c..89cb987ca9eb 100644
+>> --- a/net/bluetooth/sco.c
+>> +++ b/net/bluetooth/sco.c
+>> @@ -48,6 +48,8 @@ struct sco_conn {
+>>          spinlock_t      lock;
+>>          struct sock     *sk;
+>>
+>> +       struct delayed_work     timeout_work;
+>> +
+>>          unsigned int    mtu;
+>>   };
+>>
+>> @@ -74,9 +76,20 @@ struct sco_pinfo {
+>>   #define SCO_CONN_TIMEOUT       (HZ * 40)
+>>   #define SCO_DISCONN_TIMEOUT    (HZ * 2)
+>>
+>> -static void sco_sock_timeout(struct timer_list *t)
+>> +static void sco_sock_timeout(struct work_struct *work)
+>>   {
+>> -       struct sock *sk = from_timer(sk, t, sk_timer);
+>> +       struct sco_conn *conn = container_of(work, struct sco_conn,
+>> +                                            timeout_work.work);
+>> +       struct sock *sk;
+>> +
+>> +       sco_conn_lock(conn);
+>> +       sk = conn->sk;
+>> +       if (sk)
+>> +               sock_hold(sk);
+>> +       sco_conn_unlock(conn);
+>> +
+>> +       if (!sk)
+>> +               return;
+>>
+>>          BT_DBG("sock %p state %d", sk, sk->sk_state);
+>>
+>> @@ -91,14 +104,27 @@ static void sco_sock_timeout(struct timer_list *t)
+>>
+>>   static void sco_sock_set_timer(struct sock *sk, long timeout)
+>>   {
+>> +       struct delayed_work *work;
+> 
+> Minor nitpick but I don't think using a dedicated variable here makes
+> much sense.
+> 
 
---A01f2o0U0ch3O7vQ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the feedback, Luiz. Agreed, I can make the change in the next 
+version of the series after the other patches are reviewed.
 
-On Sun, Aug 08, 2021 at 06:23:25PM +0100, Jonathan Cameron wrote:
-> On Tue,  3 Aug 2021 21:06:16 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
->=20
-> > This is a reimplementation of the Generic Counter driver interface.
-> > There are no modifications to the Counter subsystem userspace interface,
-> > so existing userspace applications should continue to run seamlessly.
-> >=20
-> > The purpose of this patch is to internalize the sysfs interface code
-> > among the various counter drivers into a shared module. Counter drivers
-> > pass and take data natively (i.e. u8, u64, etc.) and the shared counter
-> > module handles the translation between the sysfs interface and the
-> > device drivers. This guarantees a standard userspace interface for all
-> > counter drivers, and helps generalize the Generic Counter driver ABI in
-> > order to support the Generic Counter chrdev interface (introduced in a
-> > subsequent patch) without significant changes to the existing counter
-> > drivers.
-> >=20
-> > Note, Counter device registration is the same as before: drivers
-> > populate a struct counter_device with components and callbacks, then
-> > pass the structure to the devm_counter_register function. However,
-> > what's different now is how the Counter subsystem code handles this
-> > registration internally.
-> >=20
-> > Whereas before callbacks would interact directly with sysfs data, this
-> > interaction is now abstracted and instead callbacks interact with native
-> > C data types. The counter_comp structure forms the basis for Counter
-> > extensions.
-> >=20
-> > The counter-sysfs.c file contains the code to parse through the
-> > counter_device structure and register the requested components and
-> > extensions. Attributes are created and populated based on type, with
-> > respective translation functions to handle the mapping between sysfs and
-> > the counter driver callbacks.
-> >=20
-> > The translation performed for each attribute is straightforward: the
-> > attribute type and data is parsed from the counter_attribute structure,
-> > the respective counter driver read/write callback is called, and sysfs
-> > I/O is handled before or after the driver read/write function is called.
->=20
-> Hi William,
->=20
-> There are some issues with this even after I've fixed the merge conflict
-> because of the earlier change..
->=20
->  DESCEND objtool
->   CALL    scripts/atomic/check-atomics.sh
->   CALL    scripts/checksyscalls.sh
->   CHK     include/generated/compile.h
->   CC [M]  drivers/counter/counter-core.o
->   CC [M]  drivers/counter/counter-sysfs.o
->   CC [M]  drivers/counter/104-quad-8.o
->   CC [M]  drivers/counter/interrupt-cnt.o
->   CC [M]  drivers/counter/stm32-timer-cnt.o
->   CC [M]  drivers/counter/stm32-lptimer-cnt.o
-> drivers/counter/counter-core.c: In function =E2=80=98counter_device_relea=
-se=E2=80=99:
-> drivers/counter/counter-core.c:23:9: error: implicit declaration of funct=
-ion =E2=80=98counter_chrdev_remove=E2=80=99 [-Werror=3Dimplicit-function-de=
-claration]
->    23 |         counter_chrdev_remove(counter);
->       |         ^~~~~~~~~~~~~~~~~~~~~
-> cc1: some warnings being treated as errors
-> make[2]: *** [scripts/Makefile.build:271: drivers/counter/counter-core.o]=
- Error 1
-> make[2]: *** Waiting for unfinished jobs....
->   CHECK   drivers/counter/interrupt-cnt.c
->   CHECK   drivers/counter/104-quad-8.c
->   CHECK   drivers/counter/counter-sysfs.c
-> drivers/counter/stm32-timer-cnt.c:55:9: warning: implicit conversion from=
- =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_funct=
-ion=E2=80=99 [-Wenum-conversion]
->    55 |         STM32_COUNT_SLAVE_MODE_DISABLED,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/counter/stm32-timer-cnt.c:56:9: warning: implicit conversion from=
- =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_funct=
-ion=E2=80=99 [-Wenum-conversion]
->    56 |         STM32_COUNT_ENCODER_MODE_1,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/counter/stm32-timer-cnt.c:57:9: warning: implicit conversion from=
- =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_funct=
-ion=E2=80=99 [-Wenum-conversion]
->    57 |         STM32_COUNT_ENCODER_MODE_2,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/counter/stm32-timer-cnt.c:58:9: warning: implicit conversion from=
- =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_funct=
-ion=E2=80=99 [-Wenum-conversion]
->    58 |         STM32_COUNT_ENCODER_MODE_3,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/counter/stm32-timer-cnt.c: In function =E2=80=98stm32_count_funct=
-ion_read=E2=80=99:
-> drivers/counter/stm32-timer-cnt.c:97:27: warning: implicit conversion fro=
-m =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_func=
-tion=E2=80=99 [-Wenum-conversion]
->    97 |                 *function =3D STM32_COUNT_SLAVE_MODE_DISABLED;
->       |                           ^
-> drivers/counter/stm32-timer-cnt.c:100:27: warning: implicit conversion fr=
-om =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_fun=
-ction=E2=80=99 [-Wenum-conversion]
->   100 |                 *function =3D STM32_COUNT_ENCODER_MODE_1;
->       |                           ^
-> drivers/counter/stm32-timer-cnt.c:103:27: warning: implicit conversion fr=
-om =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_fun=
-ction=E2=80=99 [-Wenum-conversion]
->   103 |                 *function =3D STM32_COUNT_ENCODER_MODE_2;
->       |                           ^
-> drivers/counter/stm32-timer-cnt.c:106:27: warning: implicit conversion fr=
-om =E2=80=98enum stm32_count_function=E2=80=99 to =E2=80=98enum counter_fun=
-ction=E2=80=99 [-Wenum-conversion]
->   106 |                 *function =3D STM32_COUNT_ENCODER_MODE_3;
->       |                           ^
-> drivers/counter/stm32-lptimer-cnt.c:139:9: warning: implicit conversion f=
-rom =E2=80=98enum stm32_lptim_cnt_function=E2=80=99 to =E2=80=98enum counte=
-r_function=E2=80=99 [-Wenum-conversion]
->   139 |         STM32_LPTIM_COUNTER_INCREASE,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/counter/stm32-lptimer-cnt.c:140:9: warning: implicit conversion f=
-rom =E2=80=98enum stm32_lptim_cnt_function=E2=80=99 to =E2=80=98enum counte=
-r_function=E2=80=99 [-Wenum-conversion]
->   140 |         STM32_LPTIM_ENCODER_BOTH_EDGE,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/counter/stm32-lptimer-cnt.c: In function =E2=80=98stm32_lptim_cnt=
-_function_read=E2=80=99:
-> drivers/counter/stm32-lptimer-cnt.c:195:27: warning: implicit conversion =
-=66rom =E2=80=98enum stm32_lptim_cnt_function=E2=80=99 to =E2=80=98enum cou=
-nter_function=E2=80=99 [-Wenum-conversion]
->   195 |                 *function =3D STM32_LPTIM_COUNTER_INCREASE;
->       |                           ^
-> drivers/counter/stm32-lptimer-cnt.c:200:27: warning: implicit conversion =
-=66rom =E2=80=98enum stm32_lptim_cnt_function=E2=80=99 to =E2=80=98enum cou=
-nter_function=E2=80=99 [-Wenum-conversion]
->   200 |                 *function =3D STM32_LPTIM_ENCODER_BOTH_EDGE;
->       |                           ^
-> drivers/counter/104-quad-8.c:58: warning: Function parameter or member 'l=
-ock' not described in 'quad8'
->   CHECK   drivers/counter/stm32-timer-cnt.c
->   CHECK   drivers/counter/stm32-lptimer-cnt.c
-> make[1]: *** [scripts/Makefile.build:514: drivers/counter] Error 2
-> make: *** [Makefile:1841: drivers] Error 2
->=20
-> I could wait through these but it feels a little to likely I'll mess some=
-thing up fixing things
-> so please fix the errors and warnings this patch introduces
-> with a W=3D1 C=3D1 build.
->=20
-> Also, do a patch by patch build of the rest of the set in case there are =
-any other cases
-> like this hiding.  It's very easy for these to build up when you have a l=
-ot of
-> versions of a patch series.  I've been caught out a few times myself!
->=20
-> In the meantime, I'll keep the first 5 patches on my tree unless you shou=
-t otherwise.
->=20
-> Thanks,
->=20
-> Jonathan
+Best wishes,
+Desmond
 
-Thanks,
+>> +       if (!sco_pi(sk)->conn)
+>> +               return;
+>> +       work = &sco_pi(sk)->conn->timeout_work;
+>> +
+>>          BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
+>> -       sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
+>> +       cancel_delayed_work(work);
+>> +       schedule_delayed_work(work, timeout);
+>>   }
+>>
+>>   static void sco_sock_clear_timer(struct sock *sk)
+>>   {
+>> +       struct delayed_work *work;
+> 
+> Ditto.
+> 
+>> +       if (!sco_pi(sk)->conn)
+>> +               return;
+>> +       work = &sco_pi(sk)->conn->timeout_work;
+>> +
+>>          BT_DBG("sock %p state %d", sk, sk->sk_state);
+>> -       sk_stop_timer(sk, &sk->sk_timer);
+>> +       cancel_delayed_work(work);
+>>   }
+>>
+>>   /* ---- SCO connections ---- */
+>> @@ -179,6 +205,9 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+>>                  bh_unlock_sock(sk);
+>>                  sco_sock_kill(sk);
+>>                  sock_put(sk);
+>> +
+>> +               /* Ensure no more work items will run before freeing conn. */
+>> +               cancel_delayed_work_sync(&conn->timeout_work);
+>>          }
+>>
+>>          hcon->sco_data = NULL;
+>> @@ -193,6 +222,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
+>>          sco_pi(sk)->conn = conn;
+>>          conn->sk = sk;
+>>
+>> +       INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
+>> +
+>>          if (parent)
+>>                  bt_accept_enqueue(parent, sk, true);
+>>   }
+>> @@ -500,8 +531,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
+>>
+>>          sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
+>>
+>> -       timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
+>> -
+>>          bt_sock_link(&sco_sk_list, sk);
+>>          return sk;
+>>   }
+>> --
+>> 2.25.1
+>>
+> 
+> 
 
-I'll fix this up and submit a v15 to make sure these patches merge in
-smoothly.
-
-William Breathitt Gray
-
---A01f2o0U0ch3O7vQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmEQqC0ACgkQhvpINdm7
-VJJKJBAAo3tu1brn+JfHvWL6H/3fa81diaOZ68AbGEP6Khs2Tv+DimgXDZjfkcwC
-piMWD2t4wI6Px6ny6fIR83VQLRWAyT01yOjt4NZAJEP+1eJYsIifBASDS2C7pRbw
-ewqC7YPqJGdRleJanoHtotD9N5QmpJsB38ieNYZbueRTe6A5CrkFd7j0A0ss5ZbM
-vJEc8XtLfT2srddRjCfRawIA/2nMS4Wy1NwmJpBC84QYDYpIbTecVXREa9+N21iS
-xVCdaBcW/wPIJVryQ0PEHYsJRhehZhVTWkDRUJu7lkpVKtYxGw9dR5tN8ZpYk7ih
-Sxznei2mOEs3R3PxlidV/kgWma7ePSd9XTqeKXuMxkHyESR/+rRu7eoS++ElrBOW
-NXDUkQiWC8VlNS5FJ6BWwwG2XXGIZJMhPfBCQdFwGsA2gMlVIuWa/GE1JHtxQS9A
-xVxh0+uFUx6IyxXu5Wm6TGkONa3OLXDiTOLZGFmuNrkQ0OFqvSbf3WZXD4wDYn4K
-X1o1MXTvvGC+1RWuL82FcaES5KwqRuFN5gSDjLwl7LFoyAkM8CDDV7Teac3bGwQm
-do7IrRThaLnCe2rkuibqtyD0mv8eYsJG/+V2efQ25N8cI4CHIP3U2J/XlGsEhoii
-aJ69LM9ysoeuVeEgdG/7MZ9TghxE8frfsmnzE3zEVUkPE8Kb6Hk=
-=2iHg
------END PGP SIGNATURE-----
-
---A01f2o0U0ch3O7vQ--
