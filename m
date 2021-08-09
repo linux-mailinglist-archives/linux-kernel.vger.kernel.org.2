@@ -2,64 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2613E3E01
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 04:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3353E3E03
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 04:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhHICty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 22:49:54 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8380 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbhHICtx (ORCPT
+        id S232208AbhHICwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 22:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229891AbhHICwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 22:49:53 -0400
-Received: from dggeml759-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GjgS06nT7z85Qx;
-        Mon,  9 Aug 2021 10:45:36 +0800 (CST)
-Received: from [10.174.178.165] (10.174.178.165) by
- dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 9 Aug 2021 10:49:31 +0800
-Subject: Re: [PATCH -next] erofs: make symbol 'erofs_iomap_ops' static
-To:     Chao Yu <chao@kernel.org>, Gao Xiang <hsiangkao@linux.alibaba.com>
-CC:     Huang Jianan <huangjianan@oppo.com>, Gao Xiang <xiang@kernel.org>,
-        <linux-erofs@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-References: <20210808063343.255817-1-weiyongjun1@huawei.com>
- <YQ/ZxZkNCtWGO6X4@B-P7TQMD6M-0146.local>
- <4ddfb962-97fc-28b0-0006-197574a1ec00@kernel.org>
-From:   "weiyongjun (A)" <weiyongjun1@huawei.com>
-Message-ID: <82bae76e-8811-22d4-0b75-f58df1153def@huawei.com>
-Date:   Mon, 9 Aug 2021 10:49:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Sun, 8 Aug 2021 22:52:31 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831F4C061757
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 19:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=VeEVmBRhzJwW70EXgz8gikTw4yYG1nvlogdYjeiVpsY=; b=YnLj9xWw2JGrkNfvnL7ajlkaWO
+        OHfCYu/H3paOjWTTm3R9Q0TCUKc4/sJW1WLNiJsJU2Yjmqd99cewf3FtAWx9HaYethq0DtxYoImb/
+        MH9PcVwK9EWewy+TqcYJjsicQzTDdswWnvcR2fXKUzKNd3Y58skkHlMi7eu+R332A+7Qy7oQ1dOiB
+        Mztv7CK9aqmBuhrUoxVMMJ3Rq06r89SM8rRiI9TTF2a8lVflfX7Us0tz1O3klXf2P0eDTXSbMMtG8
+        Q4Uc7Q5AgJRlJOHanwYxwAgZfPt5jfbzh+qtXC3WwRHRf9T0+A3aYGNAeoWCFrke4Ej9mIlAmDKgG
+        u/vM7qSg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCvOb-00GxMm-Mr; Mon, 09 Aug 2021 02:52:09 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Wyatt Wood <wyatt.wood@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH] drm/amd/display: use do-while-0 for DC_TRACE_LEVEL_MESSAGE()
+Date:   Sun,  8 Aug 2021 19:52:08 -0700
+Message-Id: <20210809025208.10182-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <4ddfb962-97fc-28b0-0006-197574a1ec00@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.165]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeml759-chm.china.huawei.com (10.1.199.138)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Building with W=1 complains about an empty 'else' statement, so use the
+usual do-nothing-while-0 loop to quieten this warning.
 
-在 2021/8/9 7:56, Chao Yu 写道:
-> On 2021/8/8 21:19, Gao Xiang wrote:
->> On Sun, Aug 08, 2021 at 06:33:43AM +0000, Wei Yongjun wrote:
->>> The sparse tool complains as follows:
->>>
->>> fs/erofs/data.c:150:24: warning:
->>>   symbol 'erofs_iomap_ops' was not declared. Should it be static?
->>>
->>> This symbol is not used outside of data.c, so marks it static.
->
-> Thanks for the patch, I guess it will be better to fix in original patch
-> if you don't mind.
+../drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_psr.c:113:53: warning: suggest braces around empty body in an 'else' statement [-Wempty-body]
+  113 |                                 *state, retry_count);
 
+Fixes: b30eda8d416c ("drm/amd/display: Add ETW log to dmub_psr_get_state")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Wyatt Wood <wyatt.wood@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Leo Li <sunpeng.li@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+---
+ drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, better to fix in original patch.
-
-Regards.
-
+--- linux-next-20210806.orig/drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c
++++ linux-next-20210806/drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c
+@@ -29,7 +29,7 @@
+ #include "dmub/dmub_srv.h"
+ #include "core_types.h"
+ 
+-#define DC_TRACE_LEVEL_MESSAGE(...) /* do nothing */
++#define DC_TRACE_LEVEL_MESSAGE(...)	do {} while (0) /* do nothing */
+ 
+ #define MAX_PIPES 6
+ 
