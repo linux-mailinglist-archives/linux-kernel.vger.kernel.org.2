@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B853E4301
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4992D3E4304
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhHIJkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:40:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58610 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234365AbhHIJkR (ORCPT
+        id S234685AbhHIJlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 05:41:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28479 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234498AbhHIJk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:40:17 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1799Yibd128990;
-        Mon, 9 Aug 2021 05:39:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=YlxCbW/CqcLdARJnlAirPQnky4qavkVOaD/Fdc4p0TY=;
- b=EKnNwZ8Ynw/Wt1pm0WhC/+lAbmzp1q09dlhdx12oaTmCpKrZzd0SuCq/FgwJxjXjp+0M
- bBnLaaKeirZxKrRX2D/mBEJMktLVJGm0inv9dE2fTjOp459vALetV8tlO7X4CeER8wNf
- cHaUC1tHeuU7DZXYIafxYZ1zncLp5u+l/g6cy0/t+paFfCuA0mJW/GPzC1JRndlM31JU
- L3Lbijb8x8sF/5QJi1e1joKn161Writ2+m/gZ2zAtejxpq4Bh7OIjmR81RsBfWXUH8HK
- Fj00JbUdZBEb64W2i0GHpmKrcDWzuqLC4Jr4hjyxi8GmoXdC3SVSo7TLlyTB+1FfhdN8 GA== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aaa1qr6nw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 05:39:46 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1799ckKQ020162;
-        Mon, 9 Aug 2021 09:39:45 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 3a9ht8bbsq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 09:39:44 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1799dgg756492520
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 9 Aug 2021 09:39:42 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 03F3111C058;
-        Mon,  9 Aug 2021 09:39:42 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A07711C06F;
-        Mon,  9 Aug 2021 09:39:41 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.6.223])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  9 Aug 2021 09:39:41 +0000 (GMT)
-Date:   Mon, 9 Aug 2021 11:39:38 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <kirill.shutemov@linux.intel.com>,
-        <jack@suse.cz>, <jhubbard@nvidia.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/5] Cleanups and fixup for gup
-Message-ID: <20210809113938.3c116c78@p-imbrenda>
-In-Reply-To: <20210807093620.21347-1-linmiaohe@huawei.com>
-References: <20210807093620.21347-1-linmiaohe@huawei.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 9 Aug 2021 05:40:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628502038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CtWshAOO+UWfSciG+cfJh+KGwRIb+TkaEybWSY8y0ZY=;
+        b=ObxSSFlOUo8TGVTGNoTRIb/FvgA6rVJqm0o2ZgGPdV9y1usNqpAdzThhbhJQTbYifaU9xU
+        M/TICdvpylBbI1N+iDRRPr3w+fBjanM6lwN2J89cnphoW07wCHsK7fbQj7fURZhIQQ5Toa
+        pLLZrX7hR20kean1Zvu/WSCVPK/xYcQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-ZRl7GWxIPMaQPSrG5KvEEw-1; Mon, 09 Aug 2021 05:40:37 -0400
+X-MC-Unique: ZRl7GWxIPMaQPSrG5KvEEw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8860ADF8A5;
+        Mon,  9 Aug 2021 09:40:35 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2135781F75;
+        Mon,  9 Aug 2021 09:40:29 +0000 (UTC)
+Message-ID: <5f991ac11006ae890961a76d35a63b7c9c56b47c.camel@redhat.com>
+Subject: Re: KVM's support for non default APIC base
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Date:   Mon, 09 Aug 2021 12:40:29 +0300
+In-Reply-To: <YQ2vv7EXGN2jgQBb@google.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+         <20210713142023.106183-9-mlevitsk@redhat.com>
+         <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
+         <YPXJQxLaJuoF6aXl@google.com>
+         <564fd4461c73a4ec08d68e2364401db981ecba3a.camel@redhat.com>
+         <YQ2vv7EXGN2jgQBb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KUGqpINfKHIjWaAaVhyoh71Q2QkTZ_AV
-X-Proofpoint-ORIG-GUID: KUGqpINfKHIjWaAaVhyoh71Q2QkTZ_AV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-09_01:2021-08-06,2021-08-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=924 mlxscore=0 clxscore=1011 spamscore=0 priorityscore=1501
- suspectscore=0 malwarescore=0 bulkscore=0 adultscore=0 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108090075
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Aug 2021 17:36:15 +0800
-Miaohe Lin <linmiaohe@huawei.com> wrote:
-
-> Hi all,
-> This series contains cleanups to remove unneeded variable, useless
-> BUG_ON and use helper to improve readability. Also we fix a potential
-> pgmap refcnt leak. More details can be found in the respective
-> changelogs. Thanks!
+On Fri, 2021-08-06 at 21:55 +0000, Sean Christopherson wrote:
+> On Thu, Jul 22, 2021, Maxim Levitsky wrote:
+> > On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
+> > > On Sun, Jul 18, 2021, Maxim Levitsky wrote:
+> > -> APIC MMIO area has to be MMIO for 'apic_mmio_write' to be called,
+> >    thus must contain no guest memslots.
+> >    If the guest relocates the APIC base somewhere where we have a memslot, 
+> >    memslot will take priority, while on real hardware, LAPIC is likely to
+> >    take priority.
 > 
-> Miaohe Lin (5):
->   mm: gup: remove set but unused local variable major
->   mm: gup: remove unneed local variable orig_refs
->   mm: gup: remove useless BUG_ON in __get_user_pages()
->   mm: gup: fix potential pgmap refcnt leak in __gup_device_huge()
->   mm: gup: use helper PAGE_ALIGNED in populate_vma_page_range()
+> Yep.  The thing that really bites us is that other vCPUs should still be able to
+> access the memory defined by the memslot, e.g. to make it work we'd have to run
+> the vCPU with a completely different MMU root.
+That is something I haven't took in the account. 
+Complexity of supporting this indeed isn't worth it.
+
 > 
->  mm/gup.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
+> > As far as I know the only good reason to relocate APIC base is to access it
+> > from the real mode which is not something that is done these days by modern
+> > BIOSes.
+> > 
+> > I vote to make it read only (#GP on MSR_IA32_APICBASE write when non default
+> > base is set and apic enabled) and remove all remains of the support for
+> > variable APIC base.
+> 
+> Making up our own behavior is almost never the right approach.  E.g. _best_ case
+> scenario for an unexpected #GP is the guest immediately terminates.  Worst case
+> scenario is the guest eats the #GP and continues on, which is basically the status
+> quo, except it's guaranteed to now work, whereas todays behavior can at least let
+> the guest function, for some definitions of "function".
+
+Well, at least the Intel's PRM does state that APIC base relocation is not guaranteed
+to work on all CPUs, so giving the guest a #GP is like telling it that current CPU doesn't
+support it. In theory, a very well behaving guest can catch the exception and
+fail back to the default base.
+
+I don't understand what do you mean by 'guaranteed to now work'. If the guest
+ignores this #GP and still thinks that APIC base relocation worked, it is its fault.
+A well behaving guest should never assume that a msr write that failed with #GP
+worked.
+
+
+> 
+> I think the only viable "solution" is to exit to userspace on the guilty WRMSR.
+> Whether or not we can do that without breaking userspace is probably the big
+> question.  Fully emulating APIC base relocation would be a tremendous amount of
+> effort and complexity for practically zero benefit.
+
+I have nothing against this as well although I kind of like the #GP approach a bit more, 
+and knowing that there are barely any reasons
+to relocate the APIC base, and that it doesn't work well, there is a good chance
+that no one does it anyway (except our kvm unit tests, but that isn't an issue).
+
+> 
+> > (we already have a warning when APIC base is set to non default value)
+> 
+> FWIW, that warning is worthless because it's _once(), i.e. won't help detect a
+> misbehaving guest unless it's the first guest to misbehave on a particular
+> instantiation of KVM.   _ratelimited() would improve the situation, but not
+> completely eliminate the possibility of a misbehaving guest going unnoticed.
+> Anything else isn't an option becuase it's obviously guest triggerable.
+
+100% agree.
+
+I'll say I would first make it _ratelimited() for few KVM versions, and then
+if nobody complains, make it a KVM internal error / #GP, and remove all the leftovers
+from the code that pretend that it can work.
+
+And add a comment explaining *why* as you explained, supporting APIC base relocation
+isn't worth it.
+
+Best regards,
+	Maxim Levitsky
+
 > 
 
-Whole series (including the fixup for the return value):
-
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
