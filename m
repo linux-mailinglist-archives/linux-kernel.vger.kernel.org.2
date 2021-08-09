@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DE23E46CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125C03E46D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 15:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233640AbhHINke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 09:40:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:32974 "EHLO foss.arm.com"
+        id S233983AbhHINlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 09:41:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhHINke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 09:40:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 751486D;
-        Mon,  9 Aug 2021 06:40:13 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D5783F718;
-        Mon,  9 Aug 2021 06:40:12 -0700 (PDT)
-Subject: Re: [PATCH v3 25/25] iommu: Allow enabling non-strict mode
- dynamically
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
-        iommu@lists.linux-foundation.org, rajatja@google.com,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1628094600.git.robin.murphy@arm.com>
- <22b044263f69e2bfe404c4379a435005ea58b3e2.1628094601.git.robin.murphy@arm.com>
- <20210809124931.GA1097@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <283ba58e-0257-8785-d0e6-eb96ab169e35@arm.com>
-Date:   Mon, 9 Aug 2021 14:40:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233726AbhHINlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 09:41:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44C6661019;
+        Mon,  9 Aug 2021 13:40:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628516453;
+        bh=hT7LUl3BDmjtvsjoYEQ5DHDr/BtZa9AQp0ujIPii340=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cQsOmkydIdMNDmfU+DkCy5nVJ1jbouiKpyDAKSxVnrgVi6JSNN+CFjgcc0sc65V/2
+         Tqit//6GaJbd0ZPlX20Ylck6+41Rt2I8Dcl/qwVhakVWJRizzmoDJJ5T0cDL/AIcTM
+         Fjne9nL4yvUeLrncuSI5LN7OlXkcQ2Z+im6C2vrkQLDuclxsC0HOJfHSRcituoVn6s
+         XF5iKdvbh43BeI/ddHWdBh+cnVrlfaufVSKogeuBpEKTsP+QPq3yYjYvS/UTcx5FFn
+         XBdOolAJGggBZ8ZRcPt/5bDQ6re2nrVrVXLmXYnpNJMs2uiaCLWQZEcburCNyiDWHf
+         bCUXyZ32sVWmQ==
+Date:   Mon, 9 Aug 2021 14:40:48 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, longman@redhat.com,
+        boqun.feng@gmail.com, wanghaibin.wang@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/qspinlock: Fix typo of lock word transition in
+ the uncontended case
+Message-ID: <20210809134047.GB1207@willie-the-truck>
+References: <20210715030847.2038-1-yuzenghui@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210809124931.GA1097@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715030847.2038-1-yuzenghui@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-09 13:49, Will Deacon wrote:
-> On Wed, Aug 04, 2021 at 06:15:53PM +0100, Robin Murphy wrote:
->> Allocating and enabling a flush queue is in fact something we can
->> reasonably do while a DMA domain is active, without having to rebuild it
->> from scratch. Thus we can allow a strict -> non-strict transition from
->> sysfs without requiring to unbind the device's driver, which is of
->> particular interest to users who want to make selective relaxations to
->> critical devices like the one serving their root filesystem.
->>
->> Disabling and draining a queue also seems technically possible to
->> achieve without rebuilding the whole domain, but would certainly be more
->> involved. Furthermore there's not such a clear use-case for tightening
->> up security *after* the device may already have done whatever it is that
->> you don't trust it not to do, so we only consider the relaxation case.
->>
->> CC: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->>
->> ---
->>
->> v3: Actually think about concurrency, rework most of the fq data
->>      accesses to be (hopefully) safe and comment it all
->> ---
->>   drivers/iommu/dma-iommu.c | 25 ++++++++++++++++++-------
->>   drivers/iommu/iommu.c     | 16 ++++++++++++----
->>   drivers/iommu/iova.c      |  9 ++++++---
->>   3 files changed, 36 insertions(+), 14 deletions(-)
+On Thu, Jul 15, 2021 at 11:08:47AM +0800, Zenghui Yu wrote:
+> If the queue head is the only one in the queue and nobody is concurrently
+> setting PENDING bit, the uncontended transition should be n,0,0 -> 0,0,1.
 > 
-> I failed to break this, so hopefully you've caught everything now.
+> Fix the typo.
 > 
-> Only thing I wasn't sure of is why we still need the smp_wmb() in
-> init_iova_flush_queue(). Can we remove it now that we have one before
-> assigning into the cookie?
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> ---
+>  kernel/locking/qspinlock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
+> index cbff6ba53d56..591835415698 100644
+> --- a/kernel/locking/qspinlock.c
+> +++ b/kernel/locking/qspinlock.c
+> @@ -355,7 +355,7 @@ void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
+>  	 * If we observe contention, there is a concurrent locker.
+>  	 *
+>  	 * Undo and queue; our setting of PENDING might have made the
+> -	 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
+> +	 * n,0,0 -> 0,0,1 transition fail and it will now be waiting
+>  	 * on @next to become !NULL.
+>  	 */
 
-Mostly because I failed to spot it, I think :)
+I think this is an important typo fix as you're right that we don't
+transition directly from having a waitqueue installed in the tail straight
+to an unlocked state.
 
-Indeed now that we don't have any callers other than iommu_dma_init_fq() 
-to worry about, I don't think that one matters any more. It would if 
-were testing cookie->iovad->fq directly as our indicator instead of 
-cookie->fq_domain, but then we'd still need the new barrier to ensure 
-iommu_dma_flush_iotlb_all() properly observes the latter, so we may as 
-well rely on that everywhere and let it fully replace the old one.
+Acked-by: Will Deacon <will@kernel.org>
 
-Thanks,
-Robin.
+Then again, I acked the patch introducing this comment so what do I know?
+
+Will
