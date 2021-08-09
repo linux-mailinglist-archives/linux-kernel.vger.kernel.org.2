@@ -2,101 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A493E4C86
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1D63E4C7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235873AbhHIS5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        id S235839AbhHIS5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235656AbhHIS5N (ORCPT
+        with ESMTP id S235760AbhHIS5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:57:13 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8112BC0613D3;
-        Mon,  9 Aug 2021 11:56:52 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id m12so22728431wru.12;
-        Mon, 09 Aug 2021 11:56:52 -0700 (PDT)
+        Mon, 9 Aug 2021 14:57:00 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B63C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:56:39 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso1444926pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 11:56:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jsAE4Gv7bcFVFL/kndy9dN7NqtFtPpLY5RgCYDsjOwA=;
-        b=hNc3joHegyU3MtdqFSJY7zG87gPJbVs4FxIVqOb84CCMI43vkbX6D2dljGCpWJwEqv
-         Sp+nwVp+ZRLp5/1QxRRKNEFbi2wL8/5/D3cVhArRvs7AMvJi/T0AJc/czhqmd7+Vyimb
-         QYMI10tvHMZm2OG/qtz4DS79iF389Fro4ya55IpxEGtU+/5Bx7vKBgRUIxzEqrkjO/G+
-         9tjsj0r0A0E6MY/M41lz4lvj8cnlB0odtUbLdL944qlxmJZMhdidWKs8xp+TAoV4rfis
-         TlDLrCDxukwMJI2xOm9hyxNeGEUjszoCIg49bGDZ5XrJzlLKzpIiDBSW01T7w4vC/SpN
-         bkvw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rZnS5Yg8Ungl0NoSfe0iR6+HFsdNXlz+2LHGqQJxvwo=;
+        b=bwoE5zejhZCxyq+WyMKCe4nXWa5tO89iRvDhnlFHiCRzHi8k4EyOEpcvSOKWw8ui9t
+         IOHeyYKndJnQwJhk7IkL6+dil9dvBZ9jKtZyMkUuKUjgVpkbJOFjWytz+vBp5EeOp0FA
+         vzHcolzrdP/9CjzGPAY0oGu72yGbpfm5Gn6h55tOlldPTsuV6BMlA/irMvUnQ+aqQoZW
+         0p72/A/xm7ZYKBiyli/ctS30ECBO4FD/LfeDjwoC7UiBeiQa750HX3UeQkFPAN0FN5ZF
+         9rys4gNBkRwSxpR/fOIawV5651K6f7jV/G+lZfpaVJxlSTDfyFbSV0i5Yq1DqG5PgxOe
+         JL0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jsAE4Gv7bcFVFL/kndy9dN7NqtFtPpLY5RgCYDsjOwA=;
-        b=NBKGpV4ZX0AgC/U0pLrYXjcQpI147d27jZDVO1SgoEZL41S4+yBj/BPNr/5UpQK6hS
-         5+PJ7xRBy9RgubgzpTry/LGnc1CZDh2lgOTOUpe4u0zQ59jq2YA/C4/1Zs7IfWQ/x04t
-         +diLq6DLz9Dp/Gw0v3bKowKif2TE+/Ln3JQyEKInC+KzbjXaXGg9bapIxKB7Sp+V+wUv
-         qOmpWZ20jnYkFI4zfoDYVXJnJVlihzLqU7LFI3Rg8utvgaEc6IdJx423+x4a4h8dHbaI
-         55OuZI0AVvsPP9+7dNFslTVCEEPEmTbyzKUiXPNsMlg6ufq9bjxtwGNQ/yAbtCPUZfmp
-         e4Tw==
-X-Gm-Message-State: AOAM532J/7FunHYJH1WenRVwrFruN0nU0zLuTKs/3uQDdAEV9z8IQZWZ
-        X7gW4zoj7WDlrZaFipmxY3v4TcPWBjc=
-X-Google-Smtp-Source: ABdhPJzZJHBtpnUuAwZiDckkC63OiiC6dRcu7Zdp9+yK8fU+DOwmNrxSv0JSCRiaHBuA+zlq+FiYjQ==
-X-Received: by 2002:adf:9063:: with SMTP id h90mr27339045wrh.121.1628535410961;
-        Mon, 09 Aug 2021 11:56:50 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.119])
-        by smtp.gmail.com with ESMTPSA id x18sm20000910wrw.19.2021.08.09.11.56.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 11:56:50 -0700 (PDT)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1628509745.git.asml.silence@gmail.com>
- <YRFPR25scNRYaRzW@zeniv-ca.linux.org.uk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH 0/2] iter revert problems
-Message-ID: <a03abd9e-82c1-7a63-a0dc-c7319f0c0751@gmail.com>
-Date:   Mon, 9 Aug 2021 19:56:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rZnS5Yg8Ungl0NoSfe0iR6+HFsdNXlz+2LHGqQJxvwo=;
+        b=a7U66hrYEjxps5i9Ef/mQLRwc8SO3jBgrX2fdk2f2QEPyQo/a4OJOYfC3GxEPF0FJl
+         5ocbl1fJgPBSNxgYqMuX/PSlVHuIZ2FnMtTm5rdtPENJIU0Awl9Vwt9+LKB0CENEl1lu
+         UkUCY6h08ZJ++HhBDDKyYzhd+Rl5XHdbFt9oWricqnG8UeCP/0O0dPkGWor2nqw0Iegi
+         pJTJVN4bjvRoF6AacpCIlAVBShUVuHAMekDQfppa6ILJ7Z8B5pq83L/r9Z+ZgckeLDDK
+         nCZn47Cgh0IqMnDDdUgjgxsNRIfhTlYkVMag3EW3YhKu1pnHUrNGQbnpJpR3q2KJdned
+         huNA==
+X-Gm-Message-State: AOAM530AyiozRhUTjBva5Cgm01G7InvDwQHcxwg8SvQTypQg2RdxqSh9
+        Xnhgh8BtXnprLLiazCpX1n+HKvsRARl6TZPTj3I1yA==
+X-Google-Smtp-Source: ABdhPJxjaqkLW6MmJ+c8T9DwC9JWTtlsFJVi3w9OFPIZvA0UgCpNZOngvNOAK/gUwWSpb8bAkZyYtzuh0uESzMCUs3g=
+X-Received: by 2002:a63:f342:: with SMTP id t2mr465315pgj.45.1628535398993;
+ Mon, 09 Aug 2021 11:56:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YRFPR25scNRYaRzW@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210808160823.3553954-1-surenb@google.com> <CALvZod7cgW_-4GUi6__SoaQaha=DvNRbu-n-CGMvc4hFHvv_cA@mail.gmail.com>
+ <CAJuCfpG+4QAaxiqeXZ7xwrgTM-tuOhs+or2pPmKOsfKZFESh2A@mail.gmail.com>
+In-Reply-To: <CAJuCfpG+4QAaxiqeXZ7xwrgTM-tuOhs+or2pPmKOsfKZFESh2A@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 9 Aug 2021 11:56:28 -0700
+Message-ID: <CAJuCfpFMDZRB71Vv+QcicVomHs2tkzLECWP_gGM4815wxPqt_A@mail.gmail.com>
+Subject: Re: [PATCH v8 1/2] mm: introduce process_mrelease system call
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 4:52 PM, Al Viro wrote:
-> On Mon, Aug 09, 2021 at 12:52:35PM +0100, Pavel Begunkov wrote:
->> For the bug description see 2/2. As mentioned there the current problems
->> is because of generic_write_checks(), but there was also a similar case
->> fixed in 5.12, which should have been triggerable by normal
->> write(2)/read(2) and others.
->>
->> It may be better to enforce reexpands as a long term solution, but for
->> now this patchset is quickier and easier to backport.
-> 
-> 	Umm...  Won't that screw the cases where we *are* doing proper
-> reexpands?  AFAICS, with your patches that flag doesn't go away once
-> it had been set...
+On Mon, Aug 9, 2021 at 9:23 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Mon, Aug 9, 2021 at 8:23 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Sun, Aug 8, 2021 at 9:08 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > In modern systems it's not unusual to have a system component monitoring
+> > > memory conditions of the system and tasked with keeping system memory
+> > > pressure under control. One way to accomplish that is to kill
+> > > non-essential processes to free up memory for more important ones.
+> > > Examples of this are Facebook's OOM killer daemon called oomd and
+> > > Android's low memory killer daemon called lmkd.
+> > > For such system component it's important to be able to free memory
+> > > quickly and efficiently. Unfortunately the time process takes to free
+> > > up its memory after receiving a SIGKILL might vary based on the state
+> > > of the process (uninterruptible sleep), size and OPP level of the core
+> > > the process is running. A mechanism to free resources of the target
+> > > process in a more predictable way would improve system's ability to
+> > > control its memory pressure.
+> > > Introduce process_mrelease system call that releases memory of a dying
+> > > process from the context of the caller. This way the memory is freed in
+> > > a more controllable way with CPU affinity and priority of the caller.
+> > > The workload of freeing the memory will also be charged to the caller.
+> > > The operation is allowed only on a dying process.
+> > >
+> > > After previous discussions [1, 2, 3] the decision was made [4] to introduce
+> > > a dedicated system call to cover this use case.
+> > >
+> > > The API is as follows,
+> > >
+> > >           int process_mrelease(int pidfd, unsigned int flags);
+> > >
+> > >         DESCRIPTION
+> > >           The process_mrelease() system call is used to free the memory of
+> > >           an exiting process.
+> > >
+> > >           The pidfd selects the process referred to by the PID file
+> > >           descriptor.
+> > >           (See pidfd_open(2) for further information)
+> > >
+> > >           The flags argument is reserved for future use; currently, this
+> > >           argument must be specified as 0.
+> > >
+> > >         RETURN VALUE
+> > >           On success, process_mrelease() returns 0. On error, -1 is
+> > >           returned and errno is set to indicate the error.
+> > >
+> > >         ERRORS
+> > >           EBADF  pidfd is not a valid PID file descriptor.
+> > >
+> > >           EAGAIN Failed to release part of the address space.
+> > >
+> > >           EINTR  The call was interrupted by a signal; see signal(7).
+> > >
+> > >           EINVAL flags is not 0.
+> > >
+> > >           EINVAL The memory of the task cannot be released because the
+> > >                  process is not exiting, the address space is shared
+> > >                  with another live process or there is a core dump in
+> > >                  progress.
+> > >
+> > >           ENOSYS This system call is not supported, for example, without
+> > >                  MMU support built into Linux.
+> > >
+> > >           ESRCH  The target process does not exist (i.e., it has terminated
+> > >                  and been waited on).
+> > >
+> > > [1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+> > > [2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+> > > [3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+> > > [4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+> > >
+> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> >
+> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>
+> Thanks folks! I'll make the change Christian suggested and will push
+> the next version carrying Acks along, including the one from David
+> which I forgot to carry in this one.
 
-In general, the userspace should already expecting and retrying on
-EAGAIN, and it seems to me, truncates should be rare enough to not
-care much about performance. However, it'd better to be more careful
-with nowait attempts.
-
-For instance, we can avoid failing reexpanded and reverted iters.
-
-if (i->truncated && iov_iter_count(i) != orig_size)
-	// fail;
-
-Or even re-import iov+iter, if still in the right context.
-
-
-Al, is that viable to you on the iov side?
-
--- 
-Pavel Begunkov
+v9 posted at: https://lore.kernel.org/linux-mm/20210809185259.405936-1-surenb@google.com
