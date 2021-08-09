@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005BF3E41C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29A43E41D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 10:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhHIIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 04:45:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233940AbhHIIpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:45:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F0AD61004;
-        Mon,  9 Aug 2021 08:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628498718;
-        bh=EcmaJregycm6/qVSvcmyKPkSmG1lwe85pKw2N0uoBEQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N/vkNIaN7ow+se6o1ZwW9aNp1vHhLfosQvhscN6Gnnxl0IpE776+D7SXlSIb+W88Q
-         zRC+ouAabJK3pMAGDZz2BryN8krKyzawtY6o/f6zWQVQOEy8XI3eWpiI2hnO+ZKTKE
-         UEgQZdBAM/L/QTp0JiuyfY8+ku0IBuWgUDF+HrbA=
-Date:   Mon, 9 Aug 2021 10:45:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] ipack: tpci200: fix many double free issues in
- tpci200_pci_probe
-Message-ID: <YRDrHPcC8Nb3g0sg@kroah.com>
-References: <20210721111137.1523229-1-mudongliangabcd@gmail.com>
- <20210721111137.1523229-2-mudongliangabcd@gmail.com>
- <YQvXfQ4A04cy5MEA@kroah.com>
- <CAD-N9QX7A=Z4=bpjw63zCZ=KTTJTYP=n9g29Kp1d39DxgK2_Eg@mail.gmail.com>
+        id S234081AbhHIIuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 04:50:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234008AbhHIIuX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 04:50:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628499002;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=igdJGS9Q0HZjFSDZhJ/yUBrXs2QalJMPtlJmQqZe3xk=;
+        b=bFXjmPugLl2PSg1zVNOJGzIF/Da/Bo2VAVaIphHdrFTRoXeLTwgp/eOEkG/x3BqqGDPYi9
+        7qo1Q+83WSeQt6AHPSfSi34hfWZP91ZqnrrxwK75qv/LNhOf38Y0kb2AdKMEuDxUN0asMc
+        5IMzUxRUUWcLilyB5WikXWwUXCFB6UE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-kEsk062ZPhaprm013Y8gFA-1; Mon, 09 Aug 2021 04:50:01 -0400
+X-MC-Unique: kEsk062ZPhaprm013Y8gFA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A195100CEC9;
+        Mon,  9 Aug 2021 08:49:59 +0000 (UTC)
+Received: from [10.64.54.155] (vpn2-54-155.bne.redhat.com [10.64.54.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A8A6269FAD;
+        Mon,  9 Aug 2021 08:49:48 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [mm/debug_vm_pgtable] 08cb589cb3:
+ BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Qian Cai <cai@lca.pw>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Chunyu Hu <chuhu@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com
+References: <20210808142553.GD27482@xsang-OptiPlex-9020>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <7a891ba4-dc7d-8fa3-5f0e-da99d34702d6@redhat.com>
+Date:   Mon, 9 Aug 2021 18:49:53 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD-N9QX7A=Z4=bpjw63zCZ=KTTJTYP=n9g29Kp1d39DxgK2_Eg@mail.gmail.com>
+In-Reply-To: <20210808142553.GD27482@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 11:40:13AM +0800, Dongliang Mu wrote:
-> On Thu, Aug 5, 2021 at 8:20 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Jul 21, 2021 at 07:11:31PM +0800, Dongliang Mu wrote:
-> > > The function tpci200_register called by tpci200_install and
-> > > tpci200_unregister called by tpci200_uninstall are in pair. However,
-> > > tpci200_unregister has some cleanup operations not in the
-> > > tpci200_register. So the error handling code of tpci200_pci_probe has
-> > > many different double free issues.
-> > >
-> > > Fix this problem by moving those cleanup operations out of
-> > > tpci200_unregister, into tpci200_pci_remove and reverting
-> > > the previous commit 9272e5d0028d
-> > >
-> > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
-> > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > ---
-> > >  drivers/ipack/carriers/tpci200.c | 35 ++++++++++++++++----------------
-> > >  1 file changed, 17 insertions(+), 18 deletions(-)
-> >
-> > This needs to be applied to the tree now, and should not depend on your
-> > patch 1/3 here as it is a bugfix.  Please redo this series and send 2,
-> > one to be merged for 5.14-final and to go to the stable kernels, and a
-> > separate "clean up things" series that can wait until 5.15-rc1.
-> 
-> No problem. I will send a separate fix.
-> 
-> BTW, how about the PATCH 3/3 in this series [1]? It does not depend on
-> PATCH 1/3, however, it does not include the fix to memleak, but also
-> moves the unregister function. Shall I send it separately?
-> 
-> [1] https://lkml.org/lkml/2021/7/21/370
+On 8/9/21 12:25 AM, kernel test robot wrote:
+>
 
-Please resend everything, as none of these were applied and are all gone
-from my queue.
+[...]
 
-thanks,
+> 
+> [    9.433105][    T1] BUG: sleeping function called from invalid context at mm/page_alloc.c:5170
+> [    9.434513][    T1] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
+> [    9.436116][    T1] no locks held by swapper/0/1.
+> [    9.436923][    T1] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc4-00161-g08cb589cb3d2 #1
+> [    9.438398][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> [    9.439880][    T1] Call Trace:
+> [ 9.440404][ T1] ? dump_stack_lvl (lib/dump_stack.c:106)
+> [ 9.441154][ T1] ? dump_stack (lib/dump_stack.c:113)
+> [ 9.441827][ T1] ? ___might_sleep.cold (kernel/sched/core.c:9155)
+> [ 9.442645][ T1] ? __might_sleep (kernel/sched/core.c:9109 (discriminator 14))
+> [ 9.444795][ T1] ? __alloc_pages (include/linux/kernel.h:104 mm/page_alloc.c:5170 mm/page_alloc.c:5380)
+> [ 9.445583][ T1] ? mem_encrypt_init+0x1/0x1
+> [ 9.446389][ T1] ? destroy_args (mm/debug_vm_pgtable.c:1219)
+> [ 9.447193][ T1] ? debug_vm_pgtable (mm/debug_vm_pgtable.c:1208 mm/debug_vm_pgtable.c:1237)
+> [ 9.448076][ T1] ? destroy_args (mm/debug_vm_pgtable.c:1219)
+> [ 9.448863][ T1] ? do_one_initcall (init/main.c:1282)
+> [ 9.449676][ T1] ? parse_args (kernel/params.c:190)
+> [ 9.450470][ T1] ? kernel_init_freeable (init/main.c:1354 init/main.c:1371 init/main.c:1390 init/main.c:1592)
+> [ 9.451358][ T1] ? rest_init (init/main.c:1476)
+> [ 9.452063][ T1] ? kernel_init (init/main.c:1486)
+> [ 9.452759][ T1] ? ret_from_fork (arch/x86/entry/entry_32.S:775)
+> [    9.453815][    T1] ------------[ cut here ]------------
 
-greg k-h
+[...]
+
+Thanks for reporting the issue. The same issue was reported against v4 series before,
+but this time, it's raised on v5 series. Fortunately, this report provides more useful
+information so that I can reproduce the issue locally and I'm going to fix the issue
+in v6 since I need to address Anshuman's last comment on v5.
+
+As to the root cause, pte_alloc_map() is used in init_args(). The PTE entry is mapped
+in atomic mode when CONFIG_HIGHPTE is enabled on i386. It means GFP_KERNEL isn't right
+option to be used by alloc_pages() in init_args(). The fix is use pte_alloc() to replace
+pte_alloc_map() and args->pte will be mapped when it's used in debug_vm_pgtable() for
+PTE modifying tests. We need avoid atomic context lasting for too long.
+
+Thanks,
+Gavin
+
