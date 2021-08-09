@@ -2,418 +2,3063 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5003E4E3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41ACC3E4E48
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236372AbhHIVEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
+        id S236409AbhHIVJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhHIVEt (ORCPT
+        with ESMTP id S229516AbhHIVJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:04:49 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D49C0613D3;
-        Mon,  9 Aug 2021 14:04:28 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id u1so1481906wmm.0;
-        Mon, 09 Aug 2021 14:04:28 -0700 (PDT)
+        Mon, 9 Aug 2021 17:09:46 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B753FC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:09:25 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id o185so25526586oih.13
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:09:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yMxT0uvgD2aUIEwbe5mo6YkR7gd5DznbXHMmSr6Ytlg=;
-        b=oD8EdJzLnZTvXNBs8WpuddvcWy4/QKVi/nIuDv4QH2tHogldFOXfRW2qVMztrtZ29t
-         ZEbV8BKzIYAf/W7tt9BUJTHhBlfFlnLlq9jnDUZ2Boi5lp5h5dnf7h15pc+Eyo7IjTjm
-         6KgjwI6Rk/2EBUdiQQ6H0d+wD56fD24ZZGSdsRQgDH2FR7lHdvGGVVF4F+C8ju95YULZ
-         2kv9Iwplstx4C6vupUALnU2EW0M/1WU6IXKMDqiJcb+JzcR8c+aFh6I3xRXa1ioiO8wF
-         9wzrQ7WTMGweV6aW8noe9cK6Pfr1ig3wyzzIVp1eljNXJ0G46BdD+J3re7+zMl6xNCdu
-         vFRw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B3X8VCyI3vveE7lBKAo0EtCr5B4aPmEH1qxgpnb7QxY=;
+        b=WNgNyZhv0uNf1UJdnngBn4FSLLTUKvP+C9mgMoScn0dQzIu4cQalQ0W0AaLSNlG9PT
+         GA0gSl+5xVlcMb56wZIhkQIYqEZMq4TkYQw23QeJGcjIuvcxCjf4DaTma+0Dsw1VNH0+
+         ILkxlHHxZLQx6z8Y/Q99wbv1XPkGFQGBAFFhGvcr4+RGiCTvp/XGfMObaamE9DPB8HTy
+         4+JbzdOBR20PEdyWwWOogQU6J/KZWtHI8g4nJLLl4+AwchSfHks+Npqrf4gUAkFQzZO6
+         7wLA3pIHOq6Dxwpxc//WjZRmFoYACYDZrRkkwnOvuUYswsWK3p/jx5vD0W+gAMSMZN+A
+         jn8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yMxT0uvgD2aUIEwbe5mo6YkR7gd5DznbXHMmSr6Ytlg=;
-        b=jUyZXzmisOyuA95uzCYNkKutaSWbIkNN2waa6xKa67FmnoVuBjonaNtDc4kglalWu/
-         Vze66Zyi2G8C9wOaw33xkzfE4NeB/9V1DXJtrZiDCCVL6+tjAenxhmsOaPfRUyvwnmtl
-         tg0YdnVUnaWLGCEsRTDB1220OcbXGnGRVabSiqPy3OeB9ml4JN810j6ske8nzNeB/iUB
-         hoF8zRIFLsim3Cqm3EZ3O02YifZkp5+KGW/whrys4erYlj+xn2xl43/9Ui6gJQTHiEWr
-         Y45lJgHLJwLSKX6wgc8nhjAHeukQbskPdAwADW9I68p+KmInIjXEbPuN42D9BPB6hd/S
-         1mKQ==
-X-Gm-Message-State: AOAM530pvhH1xy3iGAkEd9viR2rEdyx6XCz9uajqQJ92jgStl2dJ0bFJ
-        O1KQOfmImTf0cUh03sCf2eHkSl/30GUnfHMiMEk=
-X-Google-Smtp-Source: ABdhPJxomHOLhjLpwAzPb8XcjVxOfTAiGypEEBhpChhtyEOpB1znTPfyWmTWbgY6N/fTzNyvwB+Uq1ggHqVUHIysgzw=
-X-Received: by 2002:a1c:4b18:: with SMTP id y24mr1026100wma.49.1628543066439;
- Mon, 09 Aug 2021 14:04:26 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=B3X8VCyI3vveE7lBKAo0EtCr5B4aPmEH1qxgpnb7QxY=;
+        b=RS2uGrDMLoplMessZZN3903x56BNR2rjD2WjgdqnOQjTgscrBgyXwL91b5K6M/1v1a
+         oLnqc7StXmlksCjP8NuJbusP+0JicZjekfzvNfogwqNeUEvSoM9md+rvXR2/lCXVRVTL
+         hCRwYc9UuE65CCfnXiGdJjykreic5aUoY975KIsZ/4vN6gUPah9sSqgZXOWautUtQNNT
+         QAvTUj3zk34YYrsemxlMvZmd1qv02BtHVTj9UyDDlA5BLQt2Ndl2wZdf/A+EixBqwbi4
+         X01gIOh2TSnE1ilgY8sE76XPapMhbK4YtszIwBNU1pf04O9ry3cxYkvgOhNOl/l4s3ve
+         izSQ==
+X-Gm-Message-State: AOAM532J+seEpOB6Ahyzz038Jj7NI0qMcUUWcjF4ZSvoR2wzzhaybIET
+        jQdSOj+LooF56L3sUVgDHjw=
+X-Google-Smtp-Source: ABdhPJyPwtmURib9TZcBRk46O8gagJHOsB7/H9kAxj1avY+6pdmwqi3ErdrngBRmx7jYqwJNpe27NQ==
+X-Received: by 2002:a54:4392:: with SMTP id u18mr821449oiv.149.1628543364280;
+        Mon, 09 Aug 2021 14:09:24 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-1019.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-1019.res6.spectrum.com. [2603:8090:2005:39b3::1019])
+        by smtp.gmail.com with ESMTPSA id u18sm706055ooi.40.2021.08.09.14.09.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 14:09:23 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+To:     gregkh@linuxfoundation.org
+Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Subject: [PATCH] staging: r8188eu: Remove some dead files
+Date:   Mon,  9 Aug 2021 16:09:12 -0500
+Message-Id: <20210809210912.1022-1-Larry.Finger@lwfinger.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
- <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
- <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org> <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
- <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org> <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
- <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org> <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
- <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org> <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
- <CAJs_Fx4brw8j8Wk5ethSrhTHC+Kj0=cWga4q69Cv6JA6L8cDxA@mail.gmail.com> <7c354c1a-d528-ed77-586b-881cc3df4563@linaro.org>
-In-Reply-To: <7c354c1a-d528-ed77-586b-881cc3df4563@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 9 Aug 2021 14:08:41 -0700
-Message-ID: <CAF6AEGtRHa4udfZMmdozTcXU-SkF8Cr_ASbgWbVDESKQVr=spQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Caleb Connolly <caleb.connolly@linaro.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 1:35 PM Caleb Connolly <caleb.connolly@linaro.org> wrote:
->
->
->
-> On 09/08/2021 18:58, Rob Clark wrote:
-> > On Mon, Aug 9, 2021 at 10:28 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
-> >>
-> >> On 8/9/2021 9:48 PM, Caleb Connolly wrote:
-> >>>
-> >>>
-> >>> On 09/08/2021 17:12, Rob Clark wrote:
-> >>>> On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen <akhilpo@codeaurora.org>
-> >>>> wrote:
-> >>>>>
-> >>>>> On 8/8/2021 10:22 PM, Rob Clark wrote:
-> >>>>>> On Sun, Aug 8, 2021 at 7:33 AM Caleb Connolly
-> >>>>>> <caleb.connolly@linaro.org> wrote:
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> On 07/08/2021 21:04, Rob Clark wrote:
-> >>>>>>>> On Sat, Aug 7, 2021 at 12:21 PM Caleb Connolly
-> >>>>>>>> <caleb.connolly@linaro.org> wrote:
-> >>>>>>>>>
-> >>>>>>>>> Hi Rob, Akhil,
-> >>>>>>>>>
-> >>>>>>>>> On 29/07/2021 21:53, Rob Clark wrote:
-> >>>>>>>>>> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
-> >>>>>>>>>> <caleb.connolly@linaro.org> wrote:
-> >>>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>> On 29/07/2021 21:24, Rob Clark wrote:
-> >>>>>>>>>>>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
-> >>>>>>>>>>>> <caleb.connolly@linaro.org> wrote:
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Hi Rob,
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> I've done some more testing! It looks like before that patch
-> >>>>>>>>>>>>> ("drm/msm: Devfreq tuning") the GPU would never get above
-> >>>>>>>>>>>>> the second frequency in the OPP table (342MHz) (at least, not
-> >>>>>>>>>>>>> in glxgears). With the patch applied it would more
-> >>>>>>>>>>>>> aggressively jump up to the max frequency which seems to be
-> >>>>>>>>>>>>> unstable at the default regulator voltages.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> *ohh*, yeah, ok, that would explain it
-> >>>>>>>>>>>>
-> >>>>>>>>>>>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up
-> >>>>>>>>>>>>> to 0.988v (instead of the stock 0.516v) makes the GPU stable
-> >>>>>>>>>>>>> at the higher frequencies.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Applying this patch reverts the behaviour, and the GPU never
-> >>>>>>>>>>>>> goes above 342MHz in glxgears, losing ~30% performance in
-> >>>>>>>>>>>>> glxgear.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> I think (?) that enabling CPR support would be the proper
-> >>>>>>>>>>>>> solution to this - that would ensure that the regulators run
-> >>>>>>>>>>>>> at the voltage the hardware needs to be stable.
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Is hacking the voltage higher (although ideally not quite
-> >>>>>>>>>>>>> that high) an acceptable short term solution until we have
-> >>>>>>>>>>>>> CPR? Or would it be safer to just not make use of the higher
-> >>>>>>>>>>>>> frequencies on a630 for now?
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is
-> >>>>>>>>>>>> already
-> >>>>>>>>>>>> on CC and I added sboyd, maybe one of them knows better.
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> In the short term, removing the higher problematic OPPs from
-> >>>>>>>>>>>> dts might
-> >>>>>>>>>>>> be a better option than this patch (which I'm dropping), since
-> >>>>>>>>>>>> there
-> >>>>>>>>>>>> is nothing stopping other workloads from hitting higher OPPs.
-> >>>>>>>>>>> Oh yeah that sounds like a more sensible workaround than mine .
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> I'm slightly curious why I didn't have problems at higher OPPs
-> >>>>>>>>>>>> on my
-> >>>>>>>>>>>> c630 laptop (sdm850)
-> >>>>>>>>>>> Perhaps you won the sillicon lottery - iirc sdm850 is binned
-> >>>>>>>>>>> for higher clocks as is out of the factory.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Would it be best to drop the OPPs for all devices? Or just
-> >>>>>>>>>>> those affected? I guess it's possible another c630 might
-> >>>>>>>>>>> crash where yours doesn't?
-> >>>>>>>>>>
-> >>>>>>>>>> I've not heard any reports of similar issues from the handful of
-> >>>>>>>>>> other
-> >>>>>>>>>> folks with c630's on #aarch64-laptops.. but I can't really say
-> >>>>>>>>>> if that
-> >>>>>>>>>> is luck or not.
-> >>>>>>>>> It looks like this affects at least the OnePlus 6 and PocoPhone
-> >>>>>>>>> F1, I've done some more poking and the following diff
-> >>>>>>>>> seems to fix the stability issues completely, it seems the delay
-> >>>>>>>>> is required to let the update propagate.
-> >>>>>>>>>
-> >>>>>>>>> This doesn't feel like the right fix, but hopefully it's enough
-> >>>>>>>>> to come up with a better solution than disabling the new
-> >>>>>>>>> devfreq behaviour on a630.
-> >>>>>>>>>
-> >>>>>>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>>>>>>>> b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>>>>>>>> index d7cec7f0dde0..69e2a5e84dae 100644
-> >>>>>>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>>>>>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>>>>>>>> @@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu,
-> >>>>>>>>> struct dev_pm_opp *opp)
-> >>>>>>>>>                      return;
-> >>>>>>>>>              }
-> >>>>>>>>>
-> >>>>>>>>> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
-> >>>>>>>>> +
-> >>>>>>>>> +       usleep_range(300, 500);
-> >>>>>>>>> +
-> >>>>>>>>
-> >>>>>
-> >>>>> I am a bit confused. We don't define a power domain for gpu in dt,
-> >>>>> correct? Then what exactly set_opp do here? Do you think this usleep is
-> >>>>> what is helping here somehow to mask the issue?
-> >>> The power domains (for cx and gx) are defined in the GMU DT, the OPPs in
-> >>> the GPU DT. For the sake of simplicity I'll refer to the lowest
-> >>> frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
-> >>> the "min" state, and the highest frequency (710000000) and OPP level
-> >>> (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are defined in
-> >>> sdm845.dtsi under the gpu node.
-> >>>
-> >>> The new devfreq behaviour unmasks what I think is a driver bug, it
-> >>> inadvertently puts much more strain on the GPU regulators than they
-> >>> usually get. With the new behaviour the GPU jumps from it's min state to
-> >>> the max state and back again extremely rapidly under workloads as small
-> >>> as refreshing UI. Where previously the GPU would rarely if ever go above
-> >>> 342MHz when interacting with the device, it now jumps between min and
-> >>> max many times per second.
-> >>>
-> >>> If my understanding is correct, the current implementation of the GMU
-> >>> set freq is the following:
-> >>>    - Get OPP for frequency to set
-> >>>    - Push the frequency to the GMU - immediately updating the core clock
-> >>>    - Call dev_pm_opp_set_opp() which triggers a notify chain, this winds
-> >>> up somewhere in power management code and causes the gx regulator level
-> >>> to be updated
-> >>
-> >> Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing else.
-> >> We were using a different api earlier which got deprecated -
-> >> dev_pm_opp_set_bw().
-> Huh ok, thanks for the correction. So it's the GMU writes in this function which cause the regulator to be adjusted?
-> >
-> > Hmm, ok, if this is just setting icc vote, the order shouldn't be too important.
-> >
-> > I guess GMU then is the one that is controlling the regulator(s) to
-> > ensure adequate voltage for the requested freq?
-> >
-> > But the GMU fw should be the same for a618 and a630, md5sum of what
-> > I'm using (from linux-firmware):
-> >
-> >    ab20135f7adf48e0f344282a37da80e4  a630_gmu.bin
-> Same here.
-> >
-> >>>
-> >>> The regulator will then take some time to reach it's new voltage level
-> >>> and stabilise. I believe that rapid transitions between min and max
-> >>> state - in combination with the increased current load from the GPU core
-> >>> - lead to the regulator becoming unstable (e.g. when it's requested to
-> >>> transition from it's lowest to highest levels immediately after
-> >>> transitioning down), the unstable voltage causes the GPU to crash.
-> >>>
-> >>> Sillicon lottery will of course play a role here - this is very much an
-> >>> edge case and would definitely be different on a per-device and even
-> >>> per-unit basis.
-> >>>>
-> >>>> Hmm, I thought "opp-level = RPMH_REGULATOR_LEVEL_*" did *something*,
-> >>>> but tbh I'm not sure exactly what..
-> >>>>
-> >>>>> I feel we should just leave the new dcvs feature (shall we call it NAP?)
-> >>>>> disabled for a630 (and 10ms devfreq interval), until this is root
-> >>>>> caused.
-> >>> I believe this hacky workaround expresses the root cause of the issue
-> >>> quite clearly, by setting the OPP first and allowing the gx regulator to
-> >>> become stable before telling the GPU to change clock speeds, we avoid
-> >>> the edge case and prevent the crashes.
-> >>>
-> >>> I took some rough measurements by adding logging to msm_devfreq_idle and
-> >>> causing UI updates for ~20 seconds and that function is being called
-> >>> about 30 times per second, this means the GPU is transitioning between
-> >>> min (idle) state and max (active / boost) state at that frequency and
-> >>> causing the issue I described above. It's likely that the usleep is
-> >>> helping to mask this behaviour.
-> >>>
-> >>> I hope this serves as a slightly better explanation of what I perceive
-> >>> to be the issue, I realise my previous explanations were not very
-> >>> adequate, I apologise for all the noise.
-> >>>>
-> >>>> I suppose "NAP" is a reasonable name.
-> >>>>
-> >>>> But I think that reverting to previous behavior would not be enough,
-> >>>> there is nothing stopping devfreq from jumping from min to max freq,
-> >>>> which AFAIU should be enough to trigger this.  I guess that there just
-> >>>> hasn't been enough testing with different game workloads on those
-> >>>> phones to trigger this.
-> >>> Ack
-> >>>>
-> >>>> That said, I haven't seen similar issues on my sdm850 laptop, where I
-> >>>> defn have triggered mix->max freq transitions.. I guess it would be
-> >>>> interesting to know if this issue could be reproduced on db845c, or if
-> >>>> it really is board specific?
-> >>> My db845c arrives this week, I'll definitely try and reproduce this.
-> >>>>
-> >>>> To workaround, I think we'd need to implement some way to limit that
-> >>>> maximum frequency jump (and then use delayed work to continue ramping
-> >>>> up the freq over time until we hit the target).. which seems like a
-> >>>> lot of work if this is just a board(s) specific workaround and isn't
-> >>>> needed once CPR is supported
-> >>> Based on my reasoning above, I came up with the following: reducing
-> >>> thrashing by preventing rapid idle/active transitions. The minimum
-> >>> active time of 30ms was just used for testing, I think some number
-> >>> between 2 and 4 frames would be a sensible choice - the higher the safer.
-> >>>
-> >>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>> b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>> index d7cec7f0dde0..87f2d1085c3e 100644
-> >>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> >>> @@ -139,6 +139,8 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct
-> >>> dev_pm_opp *opp)
-> >>>                   return;
-> >>>           }
-> >>>
-> >>> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
-> >>> +
-> >>>           gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
-> >>>
-> >>>           gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
-> >>> @@ -158,7 +160,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct
-> >>> dev_pm_opp *opp)
-> >>>           if (ret)
-> >>>                   dev_err(gmu->dev, "GMU set GPU frequency error: %d\n",
-> >>> ret);
-> >>>
-> >>> -       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
-> >>>           pm_runtime_put(gmu->dev);
-> >>>    }
-> >>>
-> >>> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> >>> index 0e4b45bff2e6..0e2293bcb46d 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> >>> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> >>> @@ -99,8 +99,8 @@ struct msm_gpu_devfreq {
-> >>>           /** time: Time of last sampling period. */
-> >>>           ktime_t time;
-> >>>
-> >>> -       /** idle_time: Time of last transition to idle: */
-> >>> -       ktime_t idle_time;
-> >>> +       /** transition_time: Time of last transition between
-> >>> idle/active: */
-> >>> +       ktime_t transition_time;
-> >>>
-> >>>           /**
-> >>>            * idle_freq:
-> >>> diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> >>> b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> >>> index 0a1ee20296a2..774a7be33e7a 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> >>> +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> >>> @@ -157,7 +157,7 @@ void msm_devfreq_active(struct msm_gpu *gpu)
-> >>>            */
-> >>>           mutex_lock(&df->devfreq->lock);
-> >>>
-> >>> -       idle_time = ktime_to_ms(ktime_sub(ktime_get(), df->idle_time));
-> >>> +       idle_time = ktime_to_ms(ktime_sub(ktime_get(),
-> >>> df->transition_time));
-> >>>
-> >>>           /*
-> >>>            * If we've been idle for a significant fraction of a polling
-> >>> @@ -168,7 +168,7 @@ void msm_devfreq_active(struct msm_gpu *gpu)
-> >>>                   target_freq *= 2;
-> >>>           }
-> >>>
-> >>> -       df->idle_freq = 0;
-> >>> +       df->transition_time = ktime_get();;
-> >>>
-> >>>           msm_devfreq_target(&gpu->pdev->dev, &target_freq, 0);
-> >>>
-> >>> @@ -185,6 +185,16 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
-> >>>    {
-> >>>           struct msm_gpu_devfreq *df = &gpu->devfreq;
-> >>>           unsigned long idle_freq, target_freq = 0;
-> >>> +       unsigned int active_time;
-> >>> +
-> >>> +       active_time = ktime_to_ms(ktime_sub(ktime_get(),
-> >>> df->transition_time));
-> >>> +       /*
-> >>> +        * Don't go back to idle unless we've been active for at least 30ms
-> >>> +        * to avoid thrashing.
-> >>
-> >> This basically defeats the purpose of this feature! At least, we should
-> >> keep this '30' gpu specific. Does a Kconfig makes sense here?? BTW, if
-> >> 300us was helping you earlier why do you want it to be 30ms now?
-> Previously I thought that the issue was related to specifically the transition from idle/active, hence sleeping to let
-> the regulator catch up, whilst that masked the issue it didn't *fix* it, I now think it's actually due to the repeated
-> transition between idle and active states.
->
-> Enforcing that the GPU stay active for at least two frames should still give the intended goal of reducing latency and
-> more reliably fixes the issue.
->
-> AFAIU from reading the commit description, the goal of the devfreq tuning is to reduce latency by quickly bursting up
-> when there's user activity, by telling the GPU to stay active for longer we shouldn't impede this behaviour at all.
+The porting of the new version included 3 source files that are
+only used for testing of the device. They are not needed here.
 
-Well, there are a couple parts to it.. one thing it was intended to
-fix was a bad devfreq behavior I was seeing with, for example, games
-that throttle themselves to 30fps, so rendering one 16ms frame every
-other vblank cycle.. previously devfreq would ramp up to max just as
-it was at the end of rendering a frame, and then sit there at fmax
-while GPU was doing nothing for the next 16ms, and then ramp back down
-to fmin just as the GPU got some more work to do.  So it was nearly
-180deg out of phase with where you'd want it to be
-increasing/decreasing GPU freq.
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+---
+ drivers/staging/r8188eu/Makefile            |    3 -
+ drivers/staging/r8188eu/core/rtw_mp.c       |  974 ---------------
+ drivers/staging/r8188eu/core/rtw_mp_ioctl.c | 1170 -------------------
+ drivers/staging/r8188eu/hal/rtl8188e_mp.c   |  798 -------------
+ 4 files changed, 2945 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/core/rtw_mp.c
+ delete mode 100644 drivers/staging/r8188eu/core/rtw_mp_ioctl.c
+ delete mode 100644 drivers/staging/r8188eu/hal/rtl8188e_mp.c
 
-The longer polling interval is meant to smooth that out, with clamping
-to fmin while GPU is idle to offset the fact that it would take the
-GPU longer to ramp down (and it otherwise being pointless to keep the
-GPU at a high freq when it isn't doing anything), and boosting above
-what freq devfreq would have picked if the gpu had been idle for a
-while (to offset the longer ramp up on user input).
+diff --git a/drivers/staging/r8188eu/Makefile b/drivers/staging/r8188eu/Makefile
+index 152d6325b4d9..1ed7d5fb6f1a 100644
+--- a/drivers/staging/r8188eu/Makefile
++++ b/drivers/staging/r8188eu/Makefile
+@@ -39,7 +39,6 @@ OUTSRC_FILES :=				\
+ 		hal/rtl8188e_cmd.o	\
+ 		hal/rtl8188e_dm.o	\
+ 		hal/rtl8188e_hal_init.o	\
+-		hal/rtl8188e_mp.o	\
+ 		hal/rtl8188e_phycfg.o	\
+ 		hal/rtl8188e_rf6052.o	\
+ 		hal/rtl8188e_rxdesc.o	\
+@@ -98,8 +97,6 @@ rtk_core :=				\
+ 		core/rtw_led.o		\
+ 		core/rtw_mlme.o		\
+ 		core/rtw_mlme_ext.o	\
+-		core/rtw_mp.o		\
+-		core/rtw_mp_ioctl.o	\
+ 		core/rtw_pwrctrl.o	\
+ 		core/rtw_p2p.o		\
+ 		core/rtw_recv.o		\
+diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
+deleted file mode 100644
+index 7f7a7eddda4a..000000000000
+--- a/drivers/staging/r8188eu/core/rtw_mp.c
++++ /dev/null
+@@ -1,974 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+-
+-#define _RTW_MP_C_
+-
+-#include "../include/drv_types.h"
+-#include "../include/odm_precomp.h"
+-#include "../include/rtl8188e_hal.h"
+-
+-u32 read_macreg(struct adapter *padapter, u32 addr, u32 sz)
+-{
+-	u32 val = 0;
+-
+-	switch (sz) {
+-	case 1:
+-		val = rtw_read8(padapter, addr);
+-		break;
+-	case 2:
+-		val = rtw_read16(padapter, addr);
+-		break;
+-	case 4:
+-		val = rtw_read32(padapter, addr);
+-		break;
+-	default:
+-		val = 0xffffffff;
+-		break;
+-	}
+-
+-	return val;
+-}
+-
+-void write_macreg(struct adapter *padapter, u32 addr, u32 val, u32 sz)
+-{
+-	switch (sz) {
+-	case 1:
+-		rtw_write8(padapter, addr, (u8)val);
+-		break;
+-	case 2:
+-		rtw_write16(padapter, addr, (u16)val);
+-		break;
+-	case 4:
+-		rtw_write32(padapter, addr, val);
+-		break;
+-	default:
+-		break;
+-	}
+-}
+-
+-u32 read_bbreg(struct adapter *padapter, u32 addr, u32 bitmask)
+-{
+-	return rtw_hal_read_bbreg(padapter, addr, bitmask);
+-}
+-
+-void write_bbreg(struct adapter *padapter, u32 addr, u32 bitmask, u32 val)
+-{
+-	rtw_hal_write_bbreg(padapter, addr, bitmask, val);
+-}
+-
+-u32 _read_rfreg(struct adapter *padapter, u8 rfpath, u32 addr, u32 bitmask)
+-{
+-	return rtw_hal_read_rfreg(padapter, (enum rf_radio_path)rfpath, addr, bitmask);
+-}
+-
+-void _write_rfreg(struct adapter *padapter, u8 rfpath, u32 addr, u32 bitmask, u32 val)
+-{
+-	rtw_hal_write_rfreg(padapter, (enum rf_radio_path)rfpath, addr, bitmask, val);
+-}
+-
+-u32 read_rfreg(struct adapter *padapter, u8 rfpath, u32 addr)
+-{
+-	return _read_rfreg(padapter, (enum rf_radio_path)rfpath, addr, bRFRegOffsetMask);
+-}
+-
+-void write_rfreg(struct adapter *padapter, u8 rfpath, u32 addr, u32 val)
+-{
+-	_write_rfreg(padapter, (enum rf_radio_path)rfpath, addr, bRFRegOffsetMask, val);
+-}
+-
+-static void _init_mp_priv_(struct mp_priv *pmp_priv)
+-{
+-	struct wlan_bssid_ex *pnetwork;
+-
+-	memset(pmp_priv, 0, sizeof(struct mp_priv));
+-
+-	pmp_priv->mode = MP_OFF;
+-
+-	pmp_priv->channel = 1;
+-	pmp_priv->bandwidth = HT_CHANNEL_WIDTH_20;
+-	pmp_priv->prime_channel_offset = HAL_PRIME_CHNL_OFFSET_DONT_CARE;
+-	pmp_priv->rateidx = MPT_RATE_1M;
+-	pmp_priv->txpoweridx = 0x2A;
+-
+-	pmp_priv->antenna_tx = ANTENNA_A;
+-	pmp_priv->antenna_rx = ANTENNA_AB;
+-
+-	pmp_priv->check_mp_pkt = 0;
+-
+-	pmp_priv->tx_pktcount = 0;
+-
+-	pmp_priv->rx_pktcount = 0;
+-	pmp_priv->rx_crcerrpktcount = 0;
+-
+-	pmp_priv->network_macaddr[0] = 0x00;
+-	pmp_priv->network_macaddr[1] = 0xE0;
+-	pmp_priv->network_macaddr[2] = 0x4C;
+-	pmp_priv->network_macaddr[3] = 0x87;
+-	pmp_priv->network_macaddr[4] = 0x66;
+-	pmp_priv->network_macaddr[5] = 0x55;
+-
+-	pnetwork = &pmp_priv->mp_network.network;
+-	memcpy(pnetwork->MacAddress, pmp_priv->network_macaddr, ETH_ALEN);
+-
+-	pnetwork->Ssid.SsidLength = 8;
+-	memcpy(pnetwork->Ssid.Ssid, "mp_871x", pnetwork->Ssid.SsidLength);
+-}
+-
+-static void mp_init_xmit_attrib(struct mp_tx *pmptx, struct adapter *padapter)
+-{
+-	struct pkt_attrib *pattrib;
+-	struct tx_desc *desc;
+-
+-	/*  init xmitframe attribute */
+-	pattrib = &pmptx->attrib;
+-	memset(pattrib, 0, sizeof(struct pkt_attrib));
+-	desc = &pmptx->desc;
+-	memset(desc, 0, TXDESC_SIZE);
+-
+-	pattrib->ether_type = 0x8712;
+-	memset(pattrib->dst, 0xFF, ETH_ALEN);
+-	pattrib->ack_policy = 0;
+-	pattrib->hdrlen = WLAN_HDR_A3_LEN;
+-	pattrib->subtype = WIFI_DATA;
+-	pattrib->priority = 0;
+-	pattrib->qsel = pattrib->priority;
+-	pattrib->nr_frags = 1;
+-	pattrib->encrypt = 0;
+-	pattrib->bswenc = false;
+-	pattrib->qos_en = false;
+-}
+-
+-s32 init_mp_priv(struct adapter *padapter)
+-{
+-	struct mp_priv *pmppriv = &padapter->mppriv;
+-
+-	_init_mp_priv_(pmppriv);
+-	pmppriv->papdater = padapter;
+-
+-	pmppriv->tx.stop = 1;
+-	mp_init_xmit_attrib(&pmppriv->tx, padapter);
+-
+-	switch (padapter->registrypriv.rf_config) {
+-	case RF_1T1R:
+-		pmppriv->antenna_tx = ANTENNA_A;
+-		pmppriv->antenna_rx = ANTENNA_A;
+-		break;
+-	case RF_1T2R:
+-	default:
+-		pmppriv->antenna_tx = ANTENNA_A;
+-		pmppriv->antenna_rx = ANTENNA_AB;
+-		break;
+-	case RF_2T2R:
+-	case RF_2T2R_GREEN:
+-		pmppriv->antenna_tx = ANTENNA_AB;
+-		pmppriv->antenna_rx = ANTENNA_AB;
+-		break;
+-	case RF_2T4R:
+-		pmppriv->antenna_tx = ANTENNA_AB;
+-		pmppriv->antenna_rx = ANTENNA_ABCD;
+-		break;
+-	}
+-
+-	return _SUCCESS;
+-}
+-
+-void free_mp_priv(struct mp_priv *pmp_priv)
+-{
+-	kfree(pmp_priv->pallocated_mp_xmitframe_buf);
+-	pmp_priv->pallocated_mp_xmitframe_buf = NULL;
+-	pmp_priv->pmp_xmtframe_buf = NULL;
+-}
+-
+-#define PHY_IQCalibrate(a, b)	PHY_IQCalibrate_8188E(a, b)
+-#define PHY_LCCalibrate(a)	PHY_LCCalibrate_8188E(a)
+-#define PHY_SetRFPathSwitch(a, b) PHY_SetRFPathSwitch_8188E(a, b)
+-
+-s32 MPT_InitializeAdapter(struct adapter *pAdapter, u8 Channel)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+-	s32		rtStatus = _SUCCESS;
+-	struct mpt_context *pMptCtx = &pAdapter->mppriv.MptCtx;
+-	struct mlme_priv *pmlmepriv = &pAdapter->mlmepriv;
+-
+-	/*  HW Initialization for 8190 MPT. */
+-	/*  SW Initialization for 8190 MP. */
+-	pMptCtx->bMptDrvUnload = false;
+-	pMptCtx->bMassProdTest = false;
+-	pMptCtx->bMptIndexEven = true;	/* default gain index is -6.0db */
+-	pMptCtx->h2cReqNum = 0x0;
+-	/* Init mpt event. */
+-	/* init for BT MP */
+-
+-	pMptCtx->bMptWorkItemInProgress = false;
+-	pMptCtx->CurrMptAct = NULL;
+-	/*  */
+-
+-	/*  Don't accept any packets */
+-	rtw_write32(pAdapter, REG_RCR, 0);
+-
+-	PHY_IQCalibrate(pAdapter, false);
+-	dm_CheckTXPowerTracking(&pHalData->odmpriv);	/* trigger thermal meter */
+-	PHY_LCCalibrate(pAdapter);
+-
+-	pMptCtx->backup0xc50 = (u8)PHY_QueryBBReg(pAdapter, rOFDM0_XAAGCCore1, bMaskByte0);
+-	pMptCtx->backup0xc58 = (u8)PHY_QueryBBReg(pAdapter, rOFDM0_XBAGCCore1, bMaskByte0);
+-	pMptCtx->backup0xc30 = (u8)PHY_QueryBBReg(pAdapter, rOFDM0_RxDetector1, bMaskByte0);
+-	pMptCtx->backup0x52_RF_A = (u8)PHY_QueryRFReg(pAdapter, RF_PATH_A, RF_0x52, 0x000F0);
+-	pMptCtx->backup0x52_RF_B = (u8)PHY_QueryRFReg(pAdapter, RF_PATH_A, RF_0x52, 0x000F0);
+-
+-	/* set ant to wifi side in mp mode */
+-	rtw_write16(pAdapter, 0x870, 0x300);
+-	rtw_write16(pAdapter, 0x860, 0x110);
+-
+-	if (pAdapter->registrypriv.mp_mode == 1)
+-		pmlmepriv->fw_state = WIFI_MP_STATE;
+-
+-	return	rtStatus;
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	MPT_DeInitAdapter()
+- *
+- * Overview:	Extra DeInitialization for Mass Production Test.
+- *
+- * Input:		struct adapter *	pAdapter
+- *
+- * Output:		NONE
+- *
+- * Return:		NONE
+- *
+- * Revised History:
+- *	When		Who		Remark
+- *	05/08/2007	MHC		Create Version 0.
+- *	05/18/2007	MHC		Add normal driver MPHalt code.
+- *
+- *---------------------------------------------------------------------------*/
+-void MPT_DeInitAdapter(struct adapter *pAdapter)
+-{
+-	struct mpt_context *pMptCtx = &pAdapter->mppriv.MptCtx;
+-
+-	pMptCtx->bMptDrvUnload = true;
+-}
+-
+-static u8 mpt_ProStartTest(struct adapter *padapter)
+-{
+-	struct mpt_context *pMptCtx = &padapter->mppriv.MptCtx;
+-
+-	pMptCtx->bMassProdTest = true;
+-	pMptCtx->bStartContTx = false;
+-	pMptCtx->bCckContTx = false;
+-	pMptCtx->bOfdmContTx = false;
+-	pMptCtx->bSingleCarrier = false;
+-	pMptCtx->bCarrierSuppression = false;
+-	pMptCtx->bSingleTone = false;
+-
+-	return _SUCCESS;
+-}
+-
+-/*
+- * General use
+- */
+-s32 SetPowerTracking(struct adapter *padapter, u8 enable)
+-{
+-	Hal_SetPowerTracking(padapter, enable);
+-	return 0;
+-}
+-
+-void GetPowerTracking(struct adapter *padapter, u8 *enable)
+-{
+-	Hal_GetPowerTracking(padapter, enable);
+-}
+-
+-static void disable_dm(struct adapter *padapter)
+-{
+-	u8 v8;
+-
+-	/* 3 1. disable firmware dynamic mechanism */
+-	/*  disable Power Training, Rate Adaptive */
+-	v8 = rtw_read8(padapter, REG_BCN_CTRL);
+-	v8 &= ~EN_BCN_FUNCTION;
+-	rtw_write8(padapter, REG_BCN_CTRL, v8);
+-
+-	/* 3 2. disable driver dynamic mechanism */
+-	/*  disable Dynamic Initial Gain */
+-	/*  disable High Power */
+-	/*  disable Power Tracking */
+-	Switch_DM_Func(padapter, DYNAMIC_FUNC_DISABLE, false);
+-
+-	/*  enable APK, LCK and IQK but disable power tracking */
+-	Switch_DM_Func(padapter, DYNAMIC_RF_CALIBRATION, true);
+-}
+-
+-/* This function initializes the DUT to the MP test mode */
+-s32 mp_start_test(struct adapter *padapter)
+-{
+-	struct wlan_bssid_ex bssid;
+-	struct sta_info *psta;
+-	u32 length;
+-	u8 val8;
+-	s32 res = _SUCCESS;
+-	struct mp_priv *pmppriv = &padapter->mppriv;
+-	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+-	struct wlan_network *tgt_network = &pmlmepriv->cur_network;
+-
+-	padapter->registrypriv.mp_mode = 1;
+-	pmppriv->bSetTxPower = 0;		/* for  manually set tx power */
+-
+-	/* 3 disable dynamic mechanism */
+-	disable_dm(padapter);
+-
+-	/* 3 0. update mp_priv */
+-
+-	if (padapter->registrypriv.rf_config == RF_819X_MAX_TYPE) {
+-		switch (GET_RF_TYPE(padapter)) {
+-		case RF_1T1R:
+-			pmppriv->antenna_tx = ANTENNA_A;
+-			pmppriv->antenna_rx = ANTENNA_A;
+-			break;
+-		case RF_1T2R:
+-		default:
+-			pmppriv->antenna_tx = ANTENNA_A;
+-			pmppriv->antenna_rx = ANTENNA_AB;
+-			break;
+-		case RF_2T2R:
+-		case RF_2T2R_GREEN:
+-			pmppriv->antenna_tx = ANTENNA_AB;
+-			pmppriv->antenna_rx = ANTENNA_AB;
+-			break;
+-		case RF_2T4R:
+-			pmppriv->antenna_tx = ANTENNA_AB;
+-			pmppriv->antenna_rx = ANTENNA_ABCD;
+-			break;
+-		}
+-	}
+-
+-	mpt_ProStartTest(padapter);
+-
+-	/* 3 1. initialize a new struct wlan_bssid_ex */
+-/*	memset(&bssid, 0, sizeof(struct wlan_bssid_ex)); */
+-	memcpy(bssid.MacAddress, pmppriv->network_macaddr, ETH_ALEN);
+-	bssid.Ssid.SsidLength = strlen("mp_pseudo_adhoc");
+-	memcpy(bssid.Ssid.Ssid, (u8 *)"mp_pseudo_adhoc", bssid.Ssid.SsidLength);
+-	bssid.InfrastructureMode = Ndis802_11IBSS;
+-	bssid.NetworkTypeInUse = Ndis802_11DS;
+-	bssid.IELength = 0;
+-
+-	length = get_wlan_bssid_ex_sz(&bssid);
+-	if (length % 4)
+-		bssid.Length = ((length >> 2) + 1) << 2; /* round up to multiple of 4 bytes. */
+-	else
+-		bssid.Length = length;
+-
+-	spin_lock_bh(&pmlmepriv->lock);
+-
+-	if (check_fwstate(pmlmepriv, WIFI_MP_STATE) == true)
+-		goto end_of_mp_start_test;
+-
+-	/* init mp_start_test status */
+-	if (check_fwstate(pmlmepriv, _FW_LINKED) == true) {
+-		rtw_disassoc_cmd(padapter, 500, true);
+-		rtw_indicate_disconnect(padapter);
+-		rtw_free_assoc_resources(padapter, 1);
+-	}
+-	pmppriv->prev_fw_state = get_fwstate(pmlmepriv);
+-	if (padapter->registrypriv.mp_mode == 1)
+-		pmlmepriv->fw_state = WIFI_MP_STATE;
+-	set_fwstate(pmlmepriv, _FW_UNDER_LINKING);
+-
+-	/* 3 2. create a new psta for mp driver */
+-	/* clear psta in the cur_network, if any */
+-	psta = rtw_get_stainfo(&padapter->stapriv, tgt_network->network.MacAddress);
+-	if (psta)
+-		rtw_free_stainfo(padapter, psta);
+-
+-	psta = rtw_alloc_stainfo(&padapter->stapriv, bssid.MacAddress);
+-	if (!psta) {
+-		pmlmepriv->fw_state = pmppriv->prev_fw_state;
+-		res = _FAIL;
+-		goto end_of_mp_start_test;
+-	}
+-
+-	/* 3 3. join psudo AdHoc */
+-	tgt_network->join_res = 1;
+-	tgt_network->aid = 1;
+-	psta->aid = 1;
+-	memcpy(&tgt_network->network, &bssid, length);
+-
+-	rtw_indicate_connect(padapter);
+-	_clr_fwstate_(pmlmepriv, _FW_UNDER_LINKING);
+-
+-end_of_mp_start_test:
+-
+-	spin_unlock_bh(&pmlmepriv->lock);
+-
+-	if (res == _SUCCESS) {
+-		/*  set MSR to WIFI_FW_ADHOC_STATE */
+-		val8 = rtw_read8(padapter, MSR) & 0xFC; /*  0x0102 */
+-		val8 |= WIFI_FW_ADHOC_STATE;
+-		rtw_write8(padapter, MSR, val8); /*  Link in ad hoc network */
+-	}
+-	return res;
+-}
+-/*  */
+-/* This function change the DUT from the MP test mode into normal mode */
+-void mp_stop_test(struct adapter *padapter)
+-{
+-	struct mp_priv *pmppriv = &padapter->mppriv;
+-	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+-	struct wlan_network *tgt_network = &pmlmepriv->cur_network;
+-	struct sta_info *psta;
+-
+-	if (pmppriv->mode == MP_ON) {
+-		pmppriv->bSetTxPower = 0;
+-		spin_lock_bh(&pmlmepriv->lock);
+-		if (check_fwstate(pmlmepriv, WIFI_MP_STATE) == false)
+-			goto end_of_mp_stop_test;
+-
+-		/* 3 1. disconnect psudo AdHoc */
+-		rtw_indicate_disconnect(padapter);
+-
+-		/* 3 2. clear psta used in mp test mode. */
+-		psta = rtw_get_stainfo(&padapter->stapriv, tgt_network->network.MacAddress);
+-		if (psta)
+-			rtw_free_stainfo(padapter, psta);
+-
+-		/* 3 3. return to normal state (default:station mode) */
+-		pmlmepriv->fw_state = pmppriv->prev_fw_state; /*  WIFI_STATION_STATE; */
+-
+-		/* flush the cur_network */
+-		memset(tgt_network, 0, sizeof(struct wlan_network));
+-
+-		_clr_fwstate_(pmlmepriv, WIFI_MP_STATE);
+-
+-end_of_mp_stop_test:
+-
+-		spin_unlock_bh(&pmlmepriv->lock);
+-	}
+-}
+-
+-/*---------------------------hal\rtl8192c\MPT_HelperFunc.c---------------------------*/
+-/*
+- * SetChannel
+- * Description
+- *	Use H2C command to change channel,
+- *	not only modify rf register, but also other setting need to be done.
+- */
+-void SetChannel(struct adapter *pAdapter)
+-{
+-	Hal_SetChannel(pAdapter);
+-}
+-
+-/*
+- * Notice
+- *	Switch bandwitdth may change center frequency(channel)
+- */
+-void SetBandwidth(struct adapter *pAdapter)
+-{
+-	Hal_SetBandwidth(pAdapter);
+-}
+-
+-void SetAntenna(struct adapter *pAdapter)
+-{
+-	Hal_SetAntenna(pAdapter);
+-}
+-
+-void	SetAntennaPathPower(struct adapter *pAdapter)
+-{
+-	Hal_SetAntennaPathPower(pAdapter);
+-}
+-
+-void SetTxPower(struct adapter *pAdapter)
+-{
+-	Hal_SetTxPower(pAdapter);
+-	}
+-
+-void SetDataRate(struct adapter *pAdapter)
+-{
+-	Hal_SetDataRate(pAdapter);
+-}
+-
+-void MP_PHY_SetRFPathSwitch(struct adapter *pAdapter, bool bMain)
+-{
+-	PHY_SetRFPathSwitch(pAdapter, bMain);
+-}
+-
+-s32 SetThermalMeter(struct adapter *pAdapter, u8 target_ther)
+-{
+-	return Hal_SetThermalMeter(pAdapter, target_ther);
+-}
+-
+-void GetThermalMeter(struct adapter *pAdapter, u8 *value)
+-{
+-	Hal_GetThermalMeter(pAdapter, value);
+-}
+-
+-void SetSingleCarrierTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	PhySetTxPowerLevel(pAdapter);
+-	Hal_SetSingleCarrierTx(pAdapter, bStart);
+-}
+-
+-void SetSingleToneTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	PhySetTxPowerLevel(pAdapter);
+-	Hal_SetSingleToneTx(pAdapter, bStart);
+-}
+-
+-void SetCarrierSuppressionTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	PhySetTxPowerLevel(pAdapter);
+-	Hal_SetCarrierSuppressionTx(pAdapter, bStart);
+-}
+-
+-void SetContinuousTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	PhySetTxPowerLevel(pAdapter);
+-	Hal_SetContinuousTx(pAdapter, bStart);
+-}
+-
+-void PhySetTxPowerLevel(struct adapter *pAdapter)
+-{
+-	struct mp_priv *pmp_priv = &pAdapter->mppriv;
+-
+-	if (pmp_priv->bSetTxPower == 0) /*  for NO manually set power index */
+-		PHY_SetTxPowerLevel8188E(pAdapter, pmp_priv->channel);
+-}
+-
+-/*  */
+-static void dump_mpframe(struct adapter *padapter, struct xmit_frame *pmpframe)
+-{
+-	rtw_hal_mgnt_xmit(padapter, pmpframe);
+-}
+-
+-static struct xmit_frame *alloc_mp_xmitframe(struct xmit_priv *pxmitpriv)
+-{
+-	struct xmit_frame	*pmpframe;
+-	struct xmit_buf	*pxmitbuf;
+-
+-	pmpframe = rtw_alloc_xmitframe(pxmitpriv);
+-	if (!pmpframe)
+-		return NULL;
+-
+-	pxmitbuf = rtw_alloc_xmitbuf(pxmitpriv);
+-	if (!pxmitbuf) {
+-		rtw_free_xmitframe(pxmitpriv, pmpframe);
+-		return NULL;
+-	}
+-
+-	pmpframe->frame_tag = MP_FRAMETAG;
+-
+-	pmpframe->pxmitbuf = pxmitbuf;
+-
+-	pmpframe->buf_addr = pxmitbuf->pbuf;
+-
+-	pxmitbuf->priv_data = pmpframe;
+-
+-	return pmpframe;
+-}
+-
+-static int mp_xmit_packet_thread(void *context)
+-{
+-	struct xmit_frame	*pxmitframe;
+-	struct mp_tx		*pmptx;
+-	struct mp_priv	*pmp_priv;
+-	struct xmit_priv	*pxmitpriv;
+-	struct adapter *padapter;
+-
+-	pmp_priv = (struct mp_priv *)context;
+-	pmptx = &pmp_priv->tx;
+-	padapter = pmp_priv->papdater;
+-	pxmitpriv = &padapter->xmitpriv;
+-
+-	thread_enter("RTW_MP_THREAD");
+-
+-	/* DBG_88E("%s:pkTx Start\n", __func__); */
+-	while (1) {
+-		pxmitframe = alloc_mp_xmitframe(pxmitpriv);
+-		if (!pxmitframe) {
+-			if (pmptx->stop ||
+-			    padapter->bSurpriseRemoved ||
+-			    padapter->bDriverStopped) {
+-				goto exit;
+-			} else {
+-				msleep(1);
+-				continue;
+-			}
+-		}
+-
+-		memcpy((u8 *)(pxmitframe->buf_addr+TXDESC_OFFSET), pmptx->buf, pmptx->write_size);
+-		memcpy(&pxmitframe->attrib, &pmptx->attrib, sizeof(struct pkt_attrib));
+-
+-		dump_mpframe(padapter, pxmitframe);
+-
+-		pmptx->sended++;
+-		pmp_priv->tx_pktcount++;
+-
+-		if (pmptx->stop ||
+-		    padapter->bSurpriseRemoved ||
+-		    padapter->bDriverStopped)
+-			goto exit;
+-		if ((pmptx->count != 0) &&
+-		    (pmptx->count == pmptx->sended))
+-			goto exit;
+-
+-		flush_signals_thread();
+-	}
+-
+-exit:
+-	kfree(pmptx->pallocated_buf);
+-	pmptx->pallocated_buf = NULL;
+-	pmptx->stop = 1;
+-
+-	thread_exit();
+-}
+-
+-void fill_txdesc_for_mp(struct adapter *padapter, struct tx_desc *ptxdesc)
+-{
+-	struct mp_priv *pmp_priv = &padapter->mppriv;
+-	memcpy(ptxdesc, &pmp_priv->tx.desc, TXDESC_SIZE);
+-}
+-
+-void SetPacketTx(struct adapter *padapter)
+-{
+-	u8 *ptr, *pkt_start, *pkt_end;
+-	u32 pkt_size;
+-	struct tx_desc *desc;
+-	struct rtw_ieee80211_hdr *hdr;
+-	u8 payload;
+-	s32 bmcast;
+-	struct pkt_attrib *pattrib;
+-	struct mp_priv *pmp_priv;
+-
+-	pmp_priv = &padapter->mppriv;
+-	if (pmp_priv->tx.stop)
+-		return;
+-	pmp_priv->tx.sended = 0;
+-	pmp_priv->tx.stop = 0;
+-	pmp_priv->tx_pktcount = 0;
+-
+-	/* 3 1. update_attrib() */
+-	pattrib = &pmp_priv->tx.attrib;
+-	memcpy(pattrib->src, padapter->eeprompriv.mac_addr, ETH_ALEN);
+-	memcpy(pattrib->ta, pattrib->src, ETH_ALEN);
+-	memcpy(pattrib->ra, pattrib->dst, ETH_ALEN);
+-	bmcast = IS_MCAST(pattrib->ra);
+-	if (bmcast) {
+-		pattrib->mac_id = 1;
+-		pattrib->psta = rtw_get_bcmc_stainfo(padapter);
+-	} else {
+-		pattrib->mac_id = 0;
+-		pattrib->psta = rtw_get_stainfo(&padapter->stapriv, get_bssid(&padapter->mlmepriv));
+-	}
+-
+-	pattrib->last_txcmdsz = pattrib->hdrlen + pattrib->pktlen;
+-
+-	/* 3 2. allocate xmit buffer */
+-	pkt_size = pattrib->last_txcmdsz;
+-
+-	kfree(pmp_priv->tx.pallocated_buf);
+-	pmp_priv->tx.write_size = pkt_size;
+-	pmp_priv->tx.buf_size = pkt_size + XMITBUF_ALIGN_SZ;
+-	pmp_priv->tx.pallocated_buf = kzalloc(pmp_priv->tx.buf_size, GFP_KERNEL);
+-	if (!pmp_priv->tx.pallocated_buf) {
+-		DBG_88E("%s: malloc(%d) fail!!\n", __func__, pmp_priv->tx.buf_size);
+-		return;
+-	}
+-	pmp_priv->tx.buf = (u8 *)N_BYTE_ALIGMENT((size_t)(pmp_priv->tx.pallocated_buf), XMITBUF_ALIGN_SZ);
+-	ptr = pmp_priv->tx.buf;
+-
+-	desc = &pmp_priv->tx.desc;
+-	memset(desc, 0, TXDESC_SIZE);
+-	pkt_start = ptr;
+-	pkt_end = pkt_start + pkt_size;
+-
+-	/* 3 3. init TX descriptor */
+-	/*  offset 0 */
+-	desc->txdw0 |= cpu_to_le32(OWN | FSG | LSG);
+-	desc->txdw0 |= cpu_to_le32(pkt_size & 0x0000FFFF); /*  packet size */
+-	desc->txdw0 |= cpu_to_le32(((TXDESC_SIZE + OFFSET_SZ) << OFFSET_SHT) & 0x00FF0000); /* 32 bytes for TX Desc */
+-	if (bmcast)
+-		desc->txdw0 |= cpu_to_le32(BMC); /*  broadcast packet */
+-
+-	desc->txdw1 |= cpu_to_le32((0x01 << 26) & 0xff000000);
+-	/*  offset 4 */
+-		desc->txdw1 |= cpu_to_le32((pattrib->mac_id) & 0x3F); /* CAM_ID(MAC_ID) */
+-	desc->txdw1 |= cpu_to_le32((pattrib->qsel << QSEL_SHT) & 0x00001F00); /*  Queue Select, TID */
+-
+-	desc->txdw1 |= cpu_to_le32((pattrib->raid << RATE_ID_SHT) & 0x000F0000); /*  Rate Adaptive ID */
+-	/*  offset 8 */
+-	/*  offset 12 */
+-
+-	desc->txdw3 |= cpu_to_le32((pattrib->seqnum<<16)&0x0fff0000);
+-
+-	/*  offset 16 */
+-	desc->txdw4 |= cpu_to_le32(HW_SSN);
+-	desc->txdw4 |= cpu_to_le32(USERATE);
+-	desc->txdw4 |= cpu_to_le32(DISDATAFB);
+-
+-	if (pmp_priv->preamble) {
+-		if (pmp_priv->rateidx <=  MPT_RATE_54M)
+-			desc->txdw4 |= cpu_to_le32(DATA_SHORT); /*  CCK Short Preamble */
+-	}
+-	if (pmp_priv->bandwidth == HT_CHANNEL_WIDTH_40)
+-		desc->txdw4 |= cpu_to_le32(DATA_BW);
+-
+-	/*  offset 20 */
+-	desc->txdw5 |= cpu_to_le32(pmp_priv->rateidx & 0x0000001F);
+-
+-	if (pmp_priv->preamble) {
+-		if (pmp_priv->rateidx > MPT_RATE_54M)
+-			desc->txdw5 |= cpu_to_le32(SGI); /*  MCS Short Guard Interval */
+-	}
+-	desc->txdw5 |= cpu_to_le32(RTY_LMT_EN); /*  retry limit enable */
+-	desc->txdw5 |= cpu_to_le32(0x00180000); /*  DATA/RTS Rate Fallback Limit */
+-
+-	/* 3 4. make wlan header, make_wlanhdr() */
+-	hdr = (struct rtw_ieee80211_hdr *)pkt_start;
+-	SetFrameSubType(&hdr->frame_ctl, pattrib->subtype);
+-	memcpy(hdr->addr1, pattrib->dst, ETH_ALEN); /*  DA */
+-	memcpy(hdr->addr2, pattrib->src, ETH_ALEN); /*  SA */
+-	memcpy(hdr->addr3, get_bssid(&padapter->mlmepriv), ETH_ALEN); /*  RA, BSSID */
+-
+-	/* 3 5. make payload */
+-	ptr = pkt_start + pattrib->hdrlen;
+-
+-	switch (pmp_priv->tx.payload) {
+-	case 0:
+-		payload = 0x00;
+-		break;
+-	case 1:
+-		payload = 0x5a;
+-		break;
+-	case 2:
+-		payload = 0xa5;
+-		break;
+-	case 3:
+-		payload = 0xff;
+-		break;
+-	default:
+-		payload = 0x00;
+-		break;
+-	}
+-
+-	memset(ptr, payload, pkt_end - ptr);
+-
+-	/* 3 6. start thread */
+-	pmp_priv->tx.PktTxThread = kthread_run(mp_xmit_packet_thread, pmp_priv, "RTW_MP_THREAD");
+-	if (IS_ERR(pmp_priv->tx.PktTxThread))
+-		DBG_88E("Create PktTx Thread Fail !!!!!\n");
+-}
+-
+-void SetPacketRx(struct adapter *pAdapter, u8 bStartRx)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+-
+-	if (bStartRx) {
+-		/*  Accept CRC error and destination address */
+-		pHalData->ReceiveConfig = AAP | APM | AM | AB | APP_ICV |
+-					  AMF | ADF | APP_FCS | HTC_LOC_CTRL |
+-					  APP_MIC | APP_PHYSTS;
+-
+-		pHalData->ReceiveConfig |= (RCR_ACRC32 | RCR_AAP);
+-
+-		rtw_write32(pAdapter, REG_RCR, pHalData->ReceiveConfig);
+-
+-		/*  Accept all data frames */
+-		rtw_write16(pAdapter, REG_RXFLTMAP2, 0xFFFF);
+-	} else {
+-		rtw_write32(pAdapter, REG_RCR, 0);
+-	}
+-}
+-
+-void ResetPhyRxPktCount(struct adapter *pAdapter)
+-{
+-	u32 i, phyrx_set = 0;
+-
+-	for (i = 0; i <= 0xF; i++) {
+-		phyrx_set = 0;
+-		phyrx_set |= _RXERR_RPT_SEL(i);	/* select */
+-		phyrx_set |= RXERR_RPT_RST;	/*  set counter to zero */
+-		rtw_write32(pAdapter, REG_RXERR_RPT, phyrx_set);
+-	}
+-}
+-
+-static u32 GetPhyRxPktCounts(struct adapter *pAdapter, u32 selbit)
+-{
+-	/* selection */
+-	u32 phyrx_set = 0, count = 0;
+-
+-	phyrx_set = _RXERR_RPT_SEL(selbit & 0xF);
+-	rtw_write32(pAdapter, REG_RXERR_RPT, phyrx_set);
+-
+-	/* Read packet count */
+-	count = rtw_read32(pAdapter, REG_RXERR_RPT) & RXERR_COUNTER_MASK;
+-
+-	return count;
+-}
+-
+-u32 GetPhyRxPktReceived(struct adapter *pAdapter)
+-{
+-	u32 OFDM_cnt = 0, CCK_cnt = 0, HT_cnt = 0;
+-
+-	OFDM_cnt = GetPhyRxPktCounts(pAdapter, RXERR_TYPE_OFDM_MPDU_OK);
+-	CCK_cnt = GetPhyRxPktCounts(pAdapter, RXERR_TYPE_CCK_MPDU_OK);
+-	HT_cnt = GetPhyRxPktCounts(pAdapter, RXERR_TYPE_HT_MPDU_OK);
+-
+-	return OFDM_cnt + CCK_cnt + HT_cnt;
+-}
+-
+-u32 GetPhyRxPktCRC32Error(struct adapter *pAdapter)
+-{
+-	u32 OFDM_cnt = 0, CCK_cnt = 0, HT_cnt = 0;
+-
+-	OFDM_cnt = GetPhyRxPktCounts(pAdapter, RXERR_TYPE_OFDM_MPDU_FAIL);
+-	CCK_cnt = GetPhyRxPktCounts(pAdapter, RXERR_TYPE_CCK_MPDU_FAIL);
+-	HT_cnt = GetPhyRxPktCounts(pAdapter, RXERR_TYPE_HT_MPDU_FAIL);
+-
+-	return OFDM_cnt + CCK_cnt + HT_cnt;
+-}
+-
+-/* reg 0x808[9:0]: FFT data x */
+-/* reg 0x808[22]:  0  -->  1  to get 1 FFT data y */
+-/* reg 0x8B4[15:0]: FFT data y report */
+-static u32 rtw_GetPSDData(struct adapter *pAdapter, u32 point)
+-{
+-	int psd_val;
+-
+-	psd_val = rtw_read32(pAdapter, 0x808);
+-	psd_val &= 0xFFBFFC00;
+-	psd_val |= point;
+-
+-	rtw_write32(pAdapter, 0x808, psd_val);
+-	mdelay(1);
+-	psd_val |= 0x00400000;
+-
+-	rtw_write32(pAdapter, 0x808, psd_val);
+-	mdelay(1);
+-	psd_val = rtw_read32(pAdapter, 0x8B4);
+-
+-	psd_val &= 0x0000FFFF;
+-
+-	return psd_val;
+-}
+-
+-/*
+- *pts	start_point_min		stop_point_max
+- * 128	64			64 + 128 = 192
+- * 256	128			128 + 256 = 384
+- * 512	256			256 + 512 = 768
+- * 1024	512			512 + 1024 = 1536
+- */
+-u32 mp_query_psd(struct adapter *pAdapter, u8 *data)
+-{
+-	u32 i, psd_pts = 0, psd_start = 0, psd_stop = 0;
+-	u32 psd_data = 0;
+-
+-	if (!netif_running(pAdapter->pnetdev))
+-		return 0;
+-
+-	if (check_fwstate(&pAdapter->mlmepriv, WIFI_MP_STATE) == false)
+-		return 0;
+-
+-	if (strlen(data) == 0) { /* default value */
+-		psd_pts = 128;
+-		psd_start = 64;
+-		psd_stop = 128;
+-	} else {
+-		sscanf(data, "pts =%d, start =%d, stop =%d", &psd_pts, &psd_start, &psd_stop);
+-	}
+-
+-	memset(data, '\0', sizeof(*data));
+-
+-	i = psd_start;
+-	while (i < psd_stop) {
+-		if (i >= psd_pts) {
+-			psd_data = rtw_GetPSDData(pAdapter, i-psd_pts);
+-		} else {
+-			psd_data = rtw_GetPSDData(pAdapter, i);
+-		}
+-		sprintf(data + strlen(data), "%x ", psd_data);
+-		i++;
+-	}
+-
+-	msleep(100);
+-	return strlen(data)+1;
+-}
+-
+-void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv)
+-{
+-	int i, res;
+-	 struct adapter *padapter = pxmitpriv->adapter;
+-	struct xmit_buf *pxmitbuf = (struct xmit_buf *)pxmitpriv->pxmitbuf;
+-
+-	u32 max_xmit_extbuf_size = MAX_XMIT_EXTBUF_SZ;
+-	u32 num_xmit_extbuf = NR_XMIT_EXTBUFF;
+-	if (padapter->registrypriv.mp_mode == 0) {
+-		max_xmit_extbuf_size = MAX_XMIT_EXTBUF_SZ;
+-		num_xmit_extbuf = NR_XMIT_EXTBUFF;
+-	} else {
+-		max_xmit_extbuf_size = 6000;
+-		num_xmit_extbuf = 8;
+-	}
+-
+-	pxmitbuf = (struct xmit_buf *)pxmitpriv->pxmit_extbuf;
+-	for (i = 0; i < num_xmit_extbuf; i++) {
+-		rtw_os_xmit_resource_free(padapter, pxmitbuf, (max_xmit_extbuf_size + XMITBUF_ALIGN_SZ));
+-
+-		pxmitbuf++;
+-	}
+-
+-	vfree(pxmitpriv->pallocated_xmit_extbuf);
+-
+-	if (padapter->registrypriv.mp_mode == 0) {
+-		max_xmit_extbuf_size = 6000;
+-		num_xmit_extbuf = 8;
+-	} else {
+-		max_xmit_extbuf_size = MAX_XMIT_EXTBUF_SZ;
+-		num_xmit_extbuf = NR_XMIT_EXTBUFF;
+-	}
+-
+-	/*  Init xmit extension buff */
+-	_rtw_init_queue(&pxmitpriv->free_xmit_extbuf_queue);
+-
+-	pxmitpriv->pallocated_xmit_extbuf = rtw_zvmalloc(num_xmit_extbuf * sizeof(struct xmit_buf) + 4);
+-
+-	if (!pxmitpriv->pallocated_xmit_extbuf) {
+-		res = _FAIL;
+-		goto exit;
+-	}
+-
+-	pxmitpriv->pxmit_extbuf = (u8 *)N_BYTE_ALIGMENT((size_t)(pxmitpriv->pallocated_xmit_extbuf), 4);
+-
+-	pxmitbuf = (struct xmit_buf *)pxmitpriv->pxmit_extbuf;
+-
+-	for (i = 0; i < num_xmit_extbuf; i++) {
+-		INIT_LIST_HEAD(&pxmitbuf->list);
+-
+-		pxmitbuf->priv_data = NULL;
+-		pxmitbuf->padapter = padapter;
+-		pxmitbuf->ext_tag = true;
+-
+-		res = rtw_os_xmit_resource_alloc(padapter, pxmitbuf, max_xmit_extbuf_size + XMITBUF_ALIGN_SZ);
+-		if (res == _FAIL) {
+-			res = _FAIL;
+-			goto exit;
+-		}
+-
+-		list_add_tail(&pxmitbuf->list, &pxmitpriv->free_xmit_extbuf_queue.queue);
+-		pxmitbuf++;
+-	}
+-
+-	pxmitpriv->free_xmit_extbuf_cnt = num_xmit_extbuf;
+-
+-exit:
+-	;
+-}
+-
+-void Hal_ProSetCrystalCap (struct adapter *pAdapter, u32 CrystalCapVal)
+-{
+-	CrystalCapVal = CrystalCapVal & 0x3F;
+-
+-	// write 0x24[16:11] = 0x24[22:17] = CrystalCap
+-	PHY_SetBBReg(pAdapter, REG_AFE_XTAL_CTRL, 0x7FF800,
+-		     (CrystalCapVal | (CrystalCapVal << 6)));
+-}
+diff --git a/drivers/staging/r8188eu/core/rtw_mp_ioctl.c b/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
+deleted file mode 100644
+index fed94d66aee0..000000000000
+--- a/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
++++ /dev/null
+@@ -1,1170 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+-
+-#define _RTW_MP_IOCTL_C_
+-
+-#include "../include/osdep_service.h"
+-#include "../include/drv_types.h"
+-#include "../include/mlme_osdep.h"
+-#include "../include/rtw_mp_ioctl.h"
+-
+-/*   rtl8188eu_oid_rtl_seg_81_85   section start **************** */
+-int rtl8188eu_oid_rt_wireless_mode_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->information_buf_len < sizeof(u8))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	if (poid_par_priv->type_of_oid == SET_OID) {
+-		Adapter->registrypriv.wireless_mode = *(u8 *)poid_par_priv->information_buf;
+-	} else if (poid_par_priv->type_of_oid == QUERY_OID) {
+-		*(u8 *)poid_par_priv->information_buf = Adapter->registrypriv.wireless_mode;
+-		*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-	} else {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-	}
+-
+-	return status;
+-}
+-/*   rtl8188eu_oid_rtl_seg_81_87_80   section start **************** */
+-int rtl8188eu_oid_rt_pro_write_bb_reg_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct bb_reg_param *pbbreg;
+-	u16 offset;
+-	u32 value;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(struct bb_reg_param))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	pbbreg = (struct bb_reg_param *)(poid_par_priv->information_buf);
+-
+-	offset = (u16)(pbbreg->offset) & 0xFFF; /* 0ffset :0x800~0xfff */
+-	if (offset < BB_REG_BASE_ADDR)
+-		offset |= BB_REG_BASE_ADDR;
+-
+-	value = pbbreg->value;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	write_bbreg(Adapter, offset, 0xFFFFFFFF, value);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_read_bb_reg_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct bb_reg_param *pbbreg;
+-	u16 offset;
+-	u32 value;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(struct bb_reg_param))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	pbbreg = (struct bb_reg_param *)(poid_par_priv->information_buf);
+-
+-	offset = (u16)(pbbreg->offset) & 0xFFF; /* 0ffset :0x800~0xfff */
+-	if (offset < BB_REG_BASE_ADDR)
+-		offset |= BB_REG_BASE_ADDR;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	value = read_bbreg(Adapter, offset, 0xFFFFFFFF);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	pbbreg->value = value;
+-	*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_write_rf_reg_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct rf_reg_param *pbbreg;
+-	u8 path;
+-	u8 offset;
+-	u32 value;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(struct rf_reg_param))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	pbbreg = (struct rf_reg_param *)(poid_par_priv->information_buf);
+-
+-	if (pbbreg->path >= RF_PATH_MAX)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-	if (pbbreg->offset > 0xFF)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-	if (pbbreg->value > 0xFFFFF)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	path = (u8)pbbreg->path;
+-	offset = (u8)pbbreg->offset;
+-	value = pbbreg->value;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	write_rfreg(Adapter, path, offset, value);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_read_rf_reg_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct rf_reg_param *pbbreg;
+-	u8 path;
+-	u8 offset;
+-	u32 value;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-	int status = NDIS_STATUS_SUCCESS;
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(struct rf_reg_param))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	pbbreg = (struct rf_reg_param *)(poid_par_priv->information_buf);
+-
+-	if (pbbreg->path >= RF_PATH_MAX)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-	if (pbbreg->offset > 0xFF)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	path = (u8)pbbreg->path;
+-	offset = (u8)pbbreg->offset;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	value = read_rfreg(Adapter, path, offset);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	pbbreg->value = value;
+-
+-	*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-
+-	return status;
+-}
+-/*   rtl8188eu_oid_rtl_seg_81_87_00   section end**************** */
+-/*  */
+-
+-/*   rtl8188eu_oid_rtl_seg_81_80_00   section start **************** */
+-/*  */
+-int rtl8188eu_oid_rt_pro_set_data_rate_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		ratevalue;/* 4 */
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len != sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	ratevalue = *((u32 *)poid_par_priv->information_buf);/* 4 */
+-	if (ratevalue >= MPT_RATE_LAST)
+-		return NDIS_STATUS_INVALID_DATA;
+-
+-	Adapter->mppriv.rateidx = ratevalue;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetDataRate(Adapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_start_test_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		mode;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (Adapter->registrypriv.mp_mode == 0)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-
+-	/* IQCalibrateBcut(Adapter); */
+-
+-	mode = *((u32 *)poid_par_priv->information_buf);
+-	Adapter->mppriv.mode = mode;/*  1 for loopback */
+-
+-	if (mp_start_test(Adapter) == _FAIL) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		goto exit;
+-	}
+-
+-exit:
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_stop_test_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	mp_stop_test(Adapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_set_channel_direct_call_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		Channel;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->information_buf_len != sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	if (poid_par_priv->type_of_oid == QUERY_OID) {
+-		*((u32 *)poid_par_priv->information_buf) = Adapter->mppriv.channel;
+-		return NDIS_STATUS_SUCCESS;
+-	}
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	Channel = *((u32 *)poid_par_priv->information_buf);
+-	if (Channel > 14)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-	Adapter->mppriv.channel = Channel;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetChannel(Adapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_set_bandwidth_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u16		bandwidth;
+-	u16		channel_offset;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *padapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	bandwidth = *((u32 *)poid_par_priv->information_buf);/* 4 */
+-	channel_offset = HAL_PRIME_CHNL_OFFSET_DONT_CARE;
+-
+-	if (bandwidth != HT_CHANNEL_WIDTH_40)
+-		bandwidth = HT_CHANNEL_WIDTH_20;
+-	padapter->mppriv.bandwidth = (u8)bandwidth;
+-	padapter->mppriv.prime_channel_offset = (u8)channel_offset;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetBandwidth(padapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_set_antenna_bb_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		antenna;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->information_buf_len != sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	if (poid_par_priv->type_of_oid == SET_OID) {
+-		antenna = *(u32 *)poid_par_priv->information_buf;
+-
+-		Adapter->mppriv.antenna_tx = (u16)((antenna & 0xFFFF0000) >> 16);
+-		Adapter->mppriv.antenna_rx = (u16)(antenna & 0x0000FFFF);
+-
+-		_irqlevel_changed_(&oldirql, LOWER);
+-		SetAntenna(Adapter);
+-		_irqlevel_changed_(&oldirql, RAISE);
+-	} else {
+-		antenna = (Adapter->mppriv.antenna_tx << 16)|Adapter->mppriv.antenna_rx;
+-		*(u32 *)poid_par_priv->information_buf = antenna;
+-	}
+-
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_pro_set_tx_power_control_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		tx_pwr_idx;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len != sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	tx_pwr_idx = *((u32 *)poid_par_priv->information_buf);
+-	if (tx_pwr_idx > MAX_TX_PWR_INDEX_N_MODE)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	Adapter->mppriv.txpoweridx = (u8)tx_pwr_idx;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetTxPower(Adapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-
+-/*  */
+-/*   rtl8188eu_oid_rtl_seg_81_80_20   section start **************** */
+-/*  */
+-int rtl8188eu_oid_rt_pro_query_tx_packet_sent_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		return status;
+-	}
+-
+-	if (poid_par_priv->information_buf_len == sizeof(u32)) {
+-		*(u32 *)poid_par_priv->information_buf =  Adapter->mppriv.tx_pktcount;
+-		*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-	} else {
+-		status = NDIS_STATUS_INVALID_LENGTH;
+-	}
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_query_rx_packet_received_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		return status;
+-	}
+-	if (poid_par_priv->information_buf_len == sizeof(u32)) {
+-		*(u32 *)poid_par_priv->information_buf =  Adapter->mppriv.rx_pktcount;
+-		*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-	} else {
+-		status = NDIS_STATUS_INVALID_LENGTH;
+-	}
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_query_rx_packet_crc32_error_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		return status;
+-	}
+-	if (poid_par_priv->information_buf_len == sizeof(u32)) {
+-		*(u32 *)poid_par_priv->information_buf =  Adapter->mppriv.rx_crcerrpktcount;
+-		*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-	} else {
+-		status = NDIS_STATUS_INVALID_LENGTH;
+-	}
+-
+-	return status;
+-}
+-/*  */
+-
+-int rtl8188eu_oid_rt_pro_reset_tx_packet_sent_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		return status;
+-	}
+-
+-	Adapter->mppriv.tx_pktcount = 0;
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_reset_rx_packet_received_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		return status;
+-	}
+-
+-	if (poid_par_priv->information_buf_len == sizeof(u32)) {
+-		Adapter->mppriv.rx_pktcount = 0;
+-		Adapter->mppriv.rx_crcerrpktcount = 0;
+-	} else {
+-		status = NDIS_STATUS_INVALID_LENGTH;
+-	}
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_reset_phy_rx_packet_count_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		return status;
+-	}
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	ResetPhyRxPktCount(Adapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_get_phy_rx_packet_received_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len != sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	*(u32 *)poid_par_priv->information_buf = GetPhyRxPktReceived(Adapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_get_phy_rx_packet_crc32_error_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len != sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	*(u32 *)poid_par_priv->information_buf = GetPhyRxPktCRC32Error(Adapter);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-
+-	return status;
+-}
+-/*   rtl8188eu_oid_rtl_seg_81_80_20   section end **************** */
+-int rtl8188eu_oid_rt_pro_set_continuous_tx_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		bStartTest;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	bStartTest = *((u32 *)poid_par_priv->information_buf);
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetContinuousTx(Adapter, (u8)bStartTest);
+-	if (bStartTest) {
+-		struct mp_priv *pmp_priv = &Adapter->mppriv;
+-		if (pmp_priv->tx.stop == 0) {
+-			pmp_priv->tx.stop = 1;
+-			DBG_88E("%s: pkt tx is running...\n", __func__);
+-			msleep(5);
+-		}
+-		pmp_priv->tx.stop = 0;
+-		pmp_priv->tx.count = 1;
+-		SetPacketTx(Adapter);
+-	}
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_pro_set_single_carrier_tx_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		bStartTest;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	bStartTest = *((u32 *)poid_par_priv->information_buf);
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetSingleCarrierTx(Adapter, (u8)bStartTest);
+-	if (bStartTest) {
+-		struct mp_priv *pmp_priv = &Adapter->mppriv;
+-		if (pmp_priv->tx.stop == 0) {
+-			pmp_priv->tx.stop = 1;
+-			DBG_88E("%s: pkt tx is running...\n", __func__);
+-			msleep(5);
+-		}
+-		pmp_priv->tx.stop = 0;
+-		pmp_priv->tx.count = 1;
+-		SetPacketTx(Adapter);
+-	}
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_pro_set_carrier_suppression_tx_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		bStartTest;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	bStartTest = *((u32 *)poid_par_priv->information_buf);
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetCarrierSuppressionTx(Adapter, (u8)bStartTest);
+-	if (bStartTest) {
+-		struct mp_priv *pmp_priv = &Adapter->mppriv;
+-		if (pmp_priv->tx.stop == 0) {
+-			pmp_priv->tx.stop = 1;
+-			DBG_88E("%s: pkt tx is running...\n", __func__);
+-			msleep(5);
+-		}
+-		pmp_priv->tx.stop = 0;
+-		pmp_priv->tx.count = 1;
+-		SetPacketTx(Adapter);
+-	}
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_pro_set_single_tone_tx_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u32		bStartTest;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	bStartTest = *((u32 *)poid_par_priv->information_buf);
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	SetSingleToneTx(Adapter, (u8)bStartTest);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_pro_set_modulation_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-int rtl8188eu_oid_rt_pro_trigger_gpio_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-	int status = NDIS_STATUS_SUCCESS;
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	rtw_hal_set_hwreg(Adapter, HW_VAR_TRIGGER_GPIO_0, NULL);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*   rtl8188eu_oid_rtl_seg_81_80_00   section end **************** */
+-/*  */
+-int rtl8188eu_oid_rt_pro8711_join_bss_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_read_register_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct mp_rw_reg *RegRWStruct;
+-	u32		offset, width;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	RegRWStruct = (struct mp_rw_reg *)poid_par_priv->information_buf;
+-	offset = RegRWStruct->offset;
+-	width = RegRWStruct->width;
+-
+-	if (offset > 0xFFF)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-
+-	switch (width) {
+-	case 1:
+-		RegRWStruct->value = rtw_read8(Adapter, offset);
+-		break;
+-	case 2:
+-		RegRWStruct->value = rtw_read16(Adapter, offset);
+-		break;
+-	default:
+-		width = 4;
+-		RegRWStruct->value = rtw_read32(Adapter, offset);
+-		break;
+-	}
+-
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	*poid_par_priv->bytes_rw = width;
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_write_register_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct mp_rw_reg *RegRWStruct;
+-	u32 offset, value;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *padapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	RegRWStruct = (struct mp_rw_reg *)poid_par_priv->information_buf;
+-	offset = RegRWStruct->offset;
+-	value = RegRWStruct->value;
+-
+-	if (offset > 0xFFF)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-
+-	switch (RegRWStruct->width) {
+-	case 1:
+-		if (value > 0xFF) {
+-			status = NDIS_STATUS_NOT_ACCEPTED;
+-			break;
+-		}
+-		rtw_write8(padapter, offset, (u8)value);
+-		break;
+-	case 2:
+-		if (value > 0xFFFF) {
+-			status = NDIS_STATUS_NOT_ACCEPTED;
+-			break;
+-		}
+-		rtw_write16(padapter, offset, (u16)value);
+-		break;
+-	case 4:
+-		rtw_write32(padapter, offset, value);
+-		break;
+-	default:
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		break;
+-	}
+-
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_burst_read_register_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_burst_write_register_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_write_txcmd_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-/*  */
+-int rtl8188eu_oid_rt_pro_read16_eeprom_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-/*  */
+-int rtl8188eu_oid_rt_pro_write16_eeprom_hdl (struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro8711_wi_poll_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro8711_pkt_loss_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_rd_attrib_mem_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_wr_attrib_mem_hdl (struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int  rtl8188eu_oid_rt_pro_set_rf_intfs_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_poll_rx_status_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_cfg_debug_message_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_set_data_rate_ex_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	int status = NDIS_STATUS_SUCCESS;
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-
+-	if (rtw_setdatarate_cmd(Adapter, poid_par_priv->information_buf) != _SUCCESS)
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_get_thermal_meter_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	u8 thermal = 0;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	GetThermalMeter(Adapter, &thermal);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	*(u32 *)poid_par_priv->information_buf = (u32)thermal;
+-	*poid_par_priv->bytes_rw = sizeof(u32);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_read_tssi_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_set_power_tracking_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->information_buf_len < sizeof(u8))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	if (poid_par_priv->type_of_oid == SET_OID) {
+-		u8 enable;
+-
+-		enable = *(u8 *)poid_par_priv->information_buf;
+-
+-		SetPowerTracking(Adapter, enable);
+-	} else {
+-		GetPowerTracking(Adapter, (u8 *)poid_par_priv->information_buf);
+-	}
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_set_basic_rate_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_qry_pwrstate_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_set_pwrstate_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_h2c_set_rate_table_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_h2c_get_rate_table_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-/*   rtl8188eu_oid_rtl_seg_87_12_00   section start **************** */
+-int rtl8188eu_oid_rt_pro_encryption_ctrl_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-int rtl8188eu_oid_rt_pro_add_sta_info_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-int rtl8188eu_oid_rt_pro_dele_sta_info_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-int rtl8188eu_oid_rt_pro_query_dr_variable_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-int rtl8188eu_oid_rt_pro_rx_packet_type_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return NDIS_STATUS_SUCCESS;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_read_efuse_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct efuse_access_struct *pefuse;
+-	u8 *data;
+-	u16 addr = 0, cnts = 0, max_available_size = 0;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(struct efuse_access_struct))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	pefuse = (struct efuse_access_struct *)poid_par_priv->information_buf;
+-	addr = pefuse->start_addr;
+-	cnts = pefuse->cnts;
+-	data = pefuse->data;
+-
+-	EFUSE_GetEfuseDefinition(Adapter, EFUSE_WIFI, TYPE_AVAILABLE_EFUSE_BYTES_TOTAL, (void *)&max_available_size, false);
+-
+-	if ((addr + cnts) > max_available_size)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	if (rtw_efuse_access(Adapter, false, addr, cnts, data) == _FAIL)
+-		status = NDIS_STATUS_FAILURE;
+-	else
+-		*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_write_efuse_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct efuse_access_struct *pefuse;
+-	u8 *data;
+-	u16 addr = 0, cnts = 0, max_available_size = 0;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	pefuse = (struct efuse_access_struct *)poid_par_priv->information_buf;
+-	addr = pefuse->start_addr;
+-	cnts = pefuse->cnts;
+-	data = pefuse->data;
+-
+-	EFUSE_GetEfuseDefinition(Adapter, EFUSE_WIFI, TYPE_AVAILABLE_EFUSE_BYTES_TOTAL, (void *)&max_available_size, false);
+-
+-	if ((addr + cnts) > max_available_size)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	if (rtw_efuse_access(Adapter, true, addr, cnts, data) == _FAIL)
+-		status = NDIS_STATUS_FAILURE;
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_rw_efuse_pgpkt_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct pgpkt *ppgpkt;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	*poid_par_priv->bytes_rw = 0;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(struct pgpkt *))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	ppgpkt = (struct pgpkt *)poid_par_priv->information_buf;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-
+-	if (poid_par_priv->type_of_oid == QUERY_OID) {
+-		Efuse_PowerSwitch(Adapter, false, true);
+-		if (Efuse_PgPacketRead(Adapter, ppgpkt->offset, ppgpkt->data, false) == true)
+-			*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-		else
+-			status = NDIS_STATUS_FAILURE;
+-		Efuse_PowerSwitch(Adapter, false, false);
+-	} else {
+-		Efuse_PowerSwitch(Adapter, true, true);
+-		if (Efuse_PgPacketWrite(Adapter, ppgpkt->offset, ppgpkt->word_en, ppgpkt->data, false) == true)
+-			*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-		else
+-			status = NDIS_STATUS_FAILURE;
+-		Efuse_PowerSwitch(Adapter, true, false);
+-	}
+-
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_get_efuse_current_size_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u16 size;
+-	u8 ret;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-	ret = efuse_GetCurrentSize(Adapter, &size);
+-	_irqlevel_changed_(&oldirql, RAISE);
+-	if (ret == _SUCCESS) {
+-		*(u32 *)poid_par_priv->information_buf = size;
+-		*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-	} else {
+-		status = NDIS_STATUS_FAILURE;
+-	}
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_get_efuse_max_size_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-
+-	if (poid_par_priv->type_of_oid != QUERY_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(u32))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	*(u32 *)poid_par_priv->information_buf = efuse_GetMaxSize(Adapter);
+-	*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_efuse_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status;
+-
+-	if (poid_par_priv->type_of_oid == QUERY_OID)
+-		status = rtl8188eu_oid_rt_pro_read_efuse_hdl(poid_par_priv);
+-	else
+-		status = rtl8188eu_oid_rt_pro_write_efuse_hdl(poid_par_priv);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_pro_efuse_map_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	u8		*data;
+-	int status = NDIS_STATUS_SUCCESS;
+-	struct adapter *Adapter = (struct adapter *)(poid_par_priv->adapter_context);
+-	u16	maplen = 0;
+-
+-	EFUSE_GetEfuseDefinition(Adapter, EFUSE_WIFI, TYPE_EFUSE_MAP_LEN, (void *)&maplen, false);
+-
+-	*poid_par_priv->bytes_rw = 0;
+-
+-	if (poid_par_priv->information_buf_len < maplen)
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	data = (u8 *)poid_par_priv->information_buf;
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-
+-	if (poid_par_priv->type_of_oid == QUERY_OID) {
+-		if (rtw_efuse_map_read(Adapter, 0, maplen, data) == _SUCCESS)
+-			*poid_par_priv->bytes_rw = maplen;
+-		else
+-			status = NDIS_STATUS_FAILURE;
+-	} else {
+-		/*  SET_OID */
+-		if (rtw_efuse_map_write(Adapter, 0, maplen, data) == _SUCCESS)
+-			*poid_par_priv->bytes_rw = maplen;
+-		else
+-			status = NDIS_STATUS_FAILURE;
+-	}
+-
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_set_crystal_cap_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_set_rx_packet_type_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-
+-	if (poid_par_priv->type_of_oid != SET_OID)
+-		return NDIS_STATUS_NOT_ACCEPTED;
+-
+-	if (poid_par_priv->information_buf_len < sizeof(u8))
+-		return NDIS_STATUS_INVALID_LENGTH;
+-
+-	return status;
+-}
+-
+-int rtl8188eu_oid_rt_pro_set_tx_agc_offset_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-int rtl8188eu_oid_rt_pro_set_pkt_test_mode_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+-
+-int rtl8188eu_mp_ioctl_xmit_packet_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	struct mp_xmit_parm *pparm;
+-	struct adapter *padapter;
+-	struct mp_priv *pmp_priv;
+-	struct pkt_attrib *pattrib;
+-
+-	pparm = (struct mp_xmit_parm *)poid_par_priv->information_buf;
+-	padapter = (struct adapter *)poid_par_priv->adapter_context;
+-	pmp_priv = &padapter->mppriv;
+-
+-	if (poid_par_priv->type_of_oid == QUERY_OID) {
+-		pparm->enable = !pmp_priv->tx.stop;
+-		pparm->count = pmp_priv->tx.sended;
+-	} else {
+-		if (pparm->enable == 0) {
+-			pmp_priv->tx.stop = 1;
+-		} else if (pmp_priv->tx.stop == 1) {
+-			pmp_priv->tx.stop = 0;
+-			pmp_priv->tx.count = pparm->count;
+-			pmp_priv->tx.payload = pparm->payload_type;
+-			pattrib = &pmp_priv->tx.attrib;
+-			pattrib->pktlen = pparm->length;
+-			memcpy(pattrib->dst, pparm->da, ETH_ALEN);
+-			SetPacketTx(padapter);
+-		} else {
+-			return NDIS_STATUS_FAILURE;
+-		}
+-	}
+-
+-	return NDIS_STATUS_SUCCESS;
+-}
+-
+-/*  */
+-int rtl8188eu_oid_rt_set_power_down_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	int status = NDIS_STATUS_SUCCESS;
+-
+-	if (poid_par_priv->type_of_oid != SET_OID) {
+-		status = NDIS_STATUS_NOT_ACCEPTED;
+-		return status;
+-	}
+-
+-	_irqlevel_changed_(&oldirql, LOWER);
+-
+-	/* CALL  the power_down function */
+-	_irqlevel_changed_(&oldirql, RAISE);
+-
+-	return status;
+-}
+-/*  */
+-int rtl8188eu_oid_rt_get_power_mode_hdl(struct oid_par_priv *poid_par_priv)
+-{
+-	return 0;
+-}
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_mp.c b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
+deleted file mode 100644
+index b5fb3aedc000..000000000000
+--- a/drivers/staging/r8188eu/hal/rtl8188e_mp.c
++++ /dev/null
+@@ -1,798 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+-
+-#define _RTL8188E_MP_C_
+-
+-#include "../include/drv_types.h"
+-#include "../include/rtw_mp.h"
+-#include "../include/rtl8188e_hal.h"
+-#include "../include/rtl8188e_dm.h"
+-
+-s32 Hal_SetPowerTracking(struct adapter *padapter, u8 enable)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(padapter);
+-	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+-
+-	if (!netif_running(padapter->pnetdev))
+-		return _FAIL;
+-
+-	if (!check_fwstate(&padapter->mlmepriv, WIFI_MP_STATE))
+-		return _FAIL;
+-
+-	if (enable)
+-		pDM_Odm->RFCalibrateInfo.bTXPowerTracking = true;
+-	else
+-		pDM_Odm->RFCalibrateInfo.bTXPowerTrackingInit = false;
+-
+-	return _SUCCESS;
+-}
+-
+-void Hal_GetPowerTracking(struct adapter *padapter, u8 *enable)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(padapter);
+-	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+-
+-	*enable = pDM_Odm->RFCalibrateInfo.TxPowerTrackControl;
+-}
+-
+-/*-----------------------------------------------------------------------------
+- * Function:	mpt_SwitchRfSetting
+- *
+- * Overview:	Change RF Setting when we siwthc channel/rate/BW for MP.
+- *
+- * Input:	struct adapter *				pAdapter
+- *
+- * Output:      NONE
+- *
+- * Return:      NONE
+- *
+- * Revised History:
+- * When			Who		Remark
+- * 01/08/2009	MHC		Suggestion from SD3 Willis for 92S series.
+- * 01/09/2009	MHC		Add CCK modification for 40MHZ. Suggestion from SD3.
+- *
+- *---------------------------------------------------------------------------*/
+-void Hal_mpt_SwitchRfSetting(struct adapter *pAdapter)
+-{
+-	struct mp_priv	*pmp = &pAdapter->mppriv;
+-
+-	/*  <20120525, Kordan> Dynamic mechanism for APK, asked by Dennis. */
+-		pmp->MptCtx.backup0x52_RF_A = (u8)PHY_QueryRFReg(pAdapter, RF_PATH_A, RF_0x52, 0x000F0);
+-		pmp->MptCtx.backup0x52_RF_B = (u8)PHY_QueryRFReg(pAdapter, RF_PATH_B, RF_0x52, 0x000F0);
+-		PHY_SetRFReg(pAdapter, RF_PATH_A, RF_0x52, 0x000F0, 0xD);
+-		PHY_SetRFReg(pAdapter, RF_PATH_B, RF_0x52, 0x000F0, 0xD);
+-}
+-/*---------------------------hal\rtl8192c\MPT_Phy.c---------------------------*/
+-
+-/*---------------------------hal\rtl8192c\MPT_HelperFunc.c---------------------------*/
+-void Hal_MPT_CCKTxPowerAdjust(struct adapter *Adapter, bool bInCH14)
+-{
+-	u32		TempVal = 0, TempVal2 = 0, TempVal3 = 0;
+-	u32		CurrCCKSwingVal = 0, CCKSwingIndex = 12;
+-	u8		i;
+-
+-	/*  get current cck swing value and check 0xa22 & 0xa23 later to match the table. */
+-	CurrCCKSwingVal = read_bbreg(Adapter, rCCK0_TxFilter1, bMaskHWord);
+-
+-	if (!bInCH14) {
+-		/*  Readback the current bb cck swing value and compare with the table to */
+-		/*  get the current swing index */
+-		for (i = 0; i < CCK_TABLE_SIZE; i++) {
+-			if (((CurrCCKSwingVal&0xff) == (u32)CCKSwingTable_Ch1_Ch13[i][0]) &&
+-			    (((CurrCCKSwingVal&0xff00)>>8) == (u32)CCKSwingTable_Ch1_Ch13[i][1])) {
+-				CCKSwingIndex = i;
+-				break;
+-			}
+-		}
+-
+-		/* Write 0xa22 0xa23 */
+-		TempVal = CCKSwingTable_Ch1_Ch13[CCKSwingIndex][0] +
+-				(CCKSwingTable_Ch1_Ch13[CCKSwingIndex][1]<<8);
+-
+-		/* Write 0xa24 ~ 0xa27 */
+-		TempVal2 = 0;
+-		TempVal2 = CCKSwingTable_Ch1_Ch13[CCKSwingIndex][2] +
+-				(CCKSwingTable_Ch1_Ch13[CCKSwingIndex][3]<<8) +
+-				(CCKSwingTable_Ch1_Ch13[CCKSwingIndex][4]<<16)+
+-				(CCKSwingTable_Ch1_Ch13[CCKSwingIndex][5]<<24);
+-
+-		/* Write 0xa28  0xa29 */
+-		TempVal3 = 0;
+-		TempVal3 = CCKSwingTable_Ch1_Ch13[CCKSwingIndex][6] +
+-				(CCKSwingTable_Ch1_Ch13[CCKSwingIndex][7]<<8);
+-	} else {
+-		for (i = 0; i < CCK_TABLE_SIZE; i++) {
+-			if (((CurrCCKSwingVal&0xff) == (u32)CCKSwingTable_Ch14[i][0]) &&
+-			    (((CurrCCKSwingVal&0xff00)>>8) == (u32)CCKSwingTable_Ch14[i][1])) {
+-				CCKSwingIndex = i;
+-				break;
+-			}
+-		}
+-
+-		/* Write 0xa22 0xa23 */
+-		TempVal = CCKSwingTable_Ch14[CCKSwingIndex][0] +
+-				(CCKSwingTable_Ch14[CCKSwingIndex][1]<<8);
+-
+-		/* Write 0xa24 ~ 0xa27 */
+-		TempVal2 = 0;
+-		TempVal2 = CCKSwingTable_Ch14[CCKSwingIndex][2] +
+-				(CCKSwingTable_Ch14[CCKSwingIndex][3]<<8) +
+-				(CCKSwingTable_Ch14[CCKSwingIndex][4]<<16)+
+-				(CCKSwingTable_Ch14[CCKSwingIndex][5]<<24);
+-
+-		/* Write 0xa28  0xa29 */
+-		TempVal3 = 0;
+-		TempVal3 = CCKSwingTable_Ch14[CCKSwingIndex][6] +
+-				(CCKSwingTable_Ch14[CCKSwingIndex][7]<<8);
+-	}
+-
+-	write_bbreg(Adapter, rCCK0_TxFilter1, bMaskHWord, TempVal);
+-	write_bbreg(Adapter, rCCK0_TxFilter2, bMaskDWord, TempVal2);
+-	write_bbreg(Adapter, rCCK0_DebugPort, bMaskLWord, TempVal3);
+-}
+-
+-void Hal_MPT_CCKTxPowerAdjustbyIndex(struct adapter *pAdapter, bool beven)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+-	struct mpt_context *pMptCtx = &pAdapter->mppriv.MptCtx;
+-	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+-	s32		TempCCk;
+-	u8		CCK_index, CCK_index_old = 0;
+-	u8		Action = 0;	/* 0: no action, 1: even->odd, 2:odd->even */
+-	s32		i = 0;
+-
+-	if (!IS_92C_SERIAL(pHalData->VersionID))
+-		return;
+-	if (beven && !pMptCtx->bMptIndexEven) {
+-		/* odd->even */
+-		Action = 2;
+-		pMptCtx->bMptIndexEven = true;
+-	} else if (!beven && pMptCtx->bMptIndexEven) {
+-		/* even->odd */
+-		Action = 1;
+-		pMptCtx->bMptIndexEven = false;
+-	}
+-
+-	if (Action != 0) {
+-		/* Query CCK default setting From 0xa24 */
+-		TempCCk = read_bbreg(pAdapter, rCCK0_TxFilter2, bMaskDWord) & bMaskCCK;
+-		for (i = 0; i < CCK_TABLE_SIZE; i++) {
+-			if (pDM_Odm->RFCalibrateInfo.bCCKinCH14) {
+-				if (!memcmp((void *)&TempCCk, (void *)&CCKSwingTable_Ch14[i][2], 4)) {
+-					CCK_index_old = (u8)i;
+-					break;
+-				}
+-			} else {
+-				if (!memcmp((void *)&TempCCk, (void *)&CCKSwingTable_Ch1_Ch13[i][2], 4)) {
+-					CCK_index_old = (u8)i;
+-					break;
+-				}
+-			}
+-		}
+-
+-		if (Action == 1)
+-			CCK_index = CCK_index_old - 1;
+-		else
+-			CCK_index = CCK_index_old + 1;
+-
+-		/* Adjust CCK according to gain index */
+-		if (!pDM_Odm->RFCalibrateInfo.bCCKinCH14) {
+-			rtw_write8(pAdapter, 0xa22, CCKSwingTable_Ch1_Ch13[CCK_index][0]);
+-			rtw_write8(pAdapter, 0xa23, CCKSwingTable_Ch1_Ch13[CCK_index][1]);
+-			rtw_write8(pAdapter, 0xa24, CCKSwingTable_Ch1_Ch13[CCK_index][2]);
+-			rtw_write8(pAdapter, 0xa25, CCKSwingTable_Ch1_Ch13[CCK_index][3]);
+-			rtw_write8(pAdapter, 0xa26, CCKSwingTable_Ch1_Ch13[CCK_index][4]);
+-			rtw_write8(pAdapter, 0xa27, CCKSwingTable_Ch1_Ch13[CCK_index][5]);
+-			rtw_write8(pAdapter, 0xa28, CCKSwingTable_Ch1_Ch13[CCK_index][6]);
+-			rtw_write8(pAdapter, 0xa29, CCKSwingTable_Ch1_Ch13[CCK_index][7]);
+-		} else {
+-			rtw_write8(pAdapter, 0xa22, CCKSwingTable_Ch14[CCK_index][0]);
+-			rtw_write8(pAdapter, 0xa23, CCKSwingTable_Ch14[CCK_index][1]);
+-			rtw_write8(pAdapter, 0xa24, CCKSwingTable_Ch14[CCK_index][2]);
+-			rtw_write8(pAdapter, 0xa25, CCKSwingTable_Ch14[CCK_index][3]);
+-			rtw_write8(pAdapter, 0xa26, CCKSwingTable_Ch14[CCK_index][4]);
+-			rtw_write8(pAdapter, 0xa27, CCKSwingTable_Ch14[CCK_index][5]);
+-			rtw_write8(pAdapter, 0xa28, CCKSwingTable_Ch14[CCK_index][6]);
+-			rtw_write8(pAdapter, 0xa29, CCKSwingTable_Ch14[CCK_index][7]);
+-		}
+-	}
+-}
+-/*---------------------------hal\rtl8192c\MPT_HelperFunc.c---------------------------*/
+-
+-/*
+- * SetChannel
+- * Description
+- *	Use H2C command to change channel,
+- *	not only modify rf register, but also other setting need to be done.
+- */
+-void Hal_SetChannel(struct adapter *pAdapter)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+-	struct mp_priv	*pmp = &pAdapter->mppriv;
+-	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+-	u8		eRFPath;
+-	u8		channel = pmp->channel;
+-
+-	/*  set RF channel register */
+-	for (eRFPath = 0; eRFPath < pHalData->NumTotalRFPath; eRFPath++)
+-		_write_rfreg(pAdapter, eRFPath, ODM_CHANNEL, 0x3FF, channel);
+-	Hal_mpt_SwitchRfSetting(pAdapter);
+-
+-	SelectChannel(pAdapter, channel);
+-
+-	if (pHalData->CurrentChannel == 14 && !pDM_Odm->RFCalibrateInfo.bCCKinCH14) {
+-		pDM_Odm->RFCalibrateInfo.bCCKinCH14 = true;
+-		Hal_MPT_CCKTxPowerAdjust(pAdapter, pDM_Odm->RFCalibrateInfo.bCCKinCH14);
+-	} else if (pHalData->CurrentChannel != 14 && pDM_Odm->RFCalibrateInfo.bCCKinCH14) {
+-		pDM_Odm->RFCalibrateInfo.bCCKinCH14 = false;
+-		Hal_MPT_CCKTxPowerAdjust(pAdapter, pDM_Odm->RFCalibrateInfo.bCCKinCH14);
+-	}
+-}
+-
+-/*
+- * Notice
+- *	Switch bandwitdth may change center frequency(channel)
+- */
+-void Hal_SetBandwidth(struct adapter *pAdapter)
+-{
+-	struct mp_priv *pmp = &pAdapter->mppriv;
+-
+-	SetBWMode(pAdapter, pmp->bandwidth, pmp->prime_channel_offset);
+-	Hal_mpt_SwitchRfSetting(pAdapter);
+-}
+-
+-void Hal_SetCCKTxPower(struct adapter *pAdapter, u8 *TxPower)
+-{
+-	u32 tmpval = 0;
+-
+-	/*  rf-A cck tx power */
+-	write_bbreg(pAdapter, rTxAGC_A_CCK1_Mcs32, bMaskByte1, TxPower[RF_PATH_A]);
+-	tmpval = (TxPower[RF_PATH_A]<<16) | (TxPower[RF_PATH_A]<<8) | TxPower[RF_PATH_A];
+-	write_bbreg(pAdapter, rTxAGC_B_CCK11_A_CCK2_11, 0xffffff00, tmpval);
+-
+-	/*  rf-B cck tx power */
+-	write_bbreg(pAdapter, rTxAGC_B_CCK11_A_CCK2_11, bMaskByte0, TxPower[RF_PATH_B]);
+-	tmpval = (TxPower[RF_PATH_B]<<16) | (TxPower[RF_PATH_B]<<8) | TxPower[RF_PATH_B];
+-	write_bbreg(pAdapter, rTxAGC_B_CCK1_55_Mcs32, 0xffffff00, tmpval);
+-}
+-
+-void Hal_SetOFDMTxPower(struct adapter *pAdapter, u8 *TxPower)
+-{
+-	u32 TxAGC = 0;
+-	u8 tmpval = 0;
+-
+-	/*  HT Tx-rf(A) */
+-	tmpval = TxPower[RF_PATH_A];
+-	TxAGC = (tmpval<<24) | (tmpval<<16) | (tmpval<<8) | tmpval;
+-
+-	write_bbreg(pAdapter, rTxAGC_A_Rate18_06, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_A_Rate54_24, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_A_Mcs03_Mcs00, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_A_Mcs07_Mcs04, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_A_Mcs11_Mcs08, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_A_Mcs15_Mcs12, bMaskDWord, TxAGC);
+-
+-	/*  HT Tx-rf(B) */
+-	tmpval = TxPower[RF_PATH_B];
+-	TxAGC = (tmpval<<24) | (tmpval<<16) | (tmpval<<8) | tmpval;
+-
+-	write_bbreg(pAdapter, rTxAGC_B_Rate18_06, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_B_Rate54_24, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_B_Mcs03_Mcs00, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_B_Mcs07_Mcs04, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_B_Mcs11_Mcs08, bMaskDWord, TxAGC);
+-	write_bbreg(pAdapter, rTxAGC_B_Mcs15_Mcs12, bMaskDWord, TxAGC);
+-}
+-
+-void Hal_SetAntennaPathPower(struct adapter *pAdapter)
+-{
+-	struct hal_data_8188e *pHalData = GET_HAL_DATA(pAdapter);
+-	u8 TxPowerLevel[RF_PATH_MAX];
+-	u8 rfPath;
+-
+-	TxPowerLevel[RF_PATH_A] = pAdapter->mppriv.txpoweridx;
+-	TxPowerLevel[RF_PATH_B] = pAdapter->mppriv.txpoweridx_b;
+-
+-	switch (pAdapter->mppriv.antenna_tx) {
+-	case ANTENNA_A:
+-	default:
+-		rfPath = RF_PATH_A;
+-		break;
+-	case ANTENNA_B:
+-		rfPath = RF_PATH_B;
+-		break;
+-	case ANTENNA_C:
+-		rfPath = RF_PATH_C;
+-		break;
+-	}
+-
+-	switch (pHalData->rf_chip) {
+-	case RF_8225:
+-	case RF_8256:
+-	case RF_6052:
+-		Hal_SetCCKTxPower(pAdapter, TxPowerLevel);
+-		if (pAdapter->mppriv.rateidx < MPT_RATE_6M)	/*  CCK rate */
+-			Hal_MPT_CCKTxPowerAdjustbyIndex(pAdapter, TxPowerLevel[rfPath]%2 == 0);
+-		Hal_SetOFDMTxPower(pAdapter, TxPowerLevel);
+-		break;
+-	default:
+-		break;
+-	}
+-}
+-
+-void Hal_SetTxPower(struct adapter *pAdapter)
+-{
+-	struct hal_data_8188e *pHalData = GET_HAL_DATA(pAdapter);
+-	u8 TxPower = pAdapter->mppriv.txpoweridx;
+-	u8 TxPowerLevel[RF_PATH_MAX];
+-	u8 rf, rfPath;
+-
+-	for (rf = 0; rf < RF_PATH_MAX; rf++)
+-		TxPowerLevel[rf] = TxPower;
+-
+-	switch (pAdapter->mppriv.antenna_tx) {
+-	case ANTENNA_A:
+-	default:
+-		rfPath = RF_PATH_A;
+-		break;
+-	case ANTENNA_B:
+-		rfPath = RF_PATH_B;
+-		break;
+-	case ANTENNA_C:
+-		rfPath = RF_PATH_C;
+-		break;
+-	}
+-
+-	switch (pHalData->rf_chip) {
+-	/*  2008/09/12 MH Test only !! We enable the TX power tracking for MP!!!!! */
+-	/*  We should call normal driver API later!! */
+-	case RF_8225:
+-	case RF_8256:
+-	case RF_6052:
+-		Hal_SetCCKTxPower(pAdapter, TxPowerLevel);
+-		if (pAdapter->mppriv.rateidx < MPT_RATE_6M)	/*  CCK rate */
+-			Hal_MPT_CCKTxPowerAdjustbyIndex(pAdapter, TxPowerLevel[rfPath]%2 == 0);
+-		Hal_SetOFDMTxPower(pAdapter, TxPowerLevel);
+-		break;
+-	default:
+-		break;
+-	}
+-}
+-
+-void Hal_SetDataRate(struct adapter *pAdapter)
+-{
+-	Hal_mpt_SwitchRfSetting(pAdapter);
+-}
+-
+-void Hal_SetAntenna(struct adapter *pAdapter)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+-
+-	struct ant_sel_ofdm *p_ofdm_tx;	/* OFDM Tx register */
+-	struct ant_sel_cck *p_cck_txrx;
+-	u8	r_rx_antenna_ofdm = 0, r_ant_select_cck_val = 0;
+-	u8	chgTx = 0, chgRx = 0;
+-	u32	r_ant_select_ofdm_val = 0, r_ofdm_tx_en_val = 0;
+-
+-	p_ofdm_tx = (struct ant_sel_ofdm *)&r_ant_select_ofdm_val;
+-	p_cck_txrx = (struct ant_sel_cck *)&r_ant_select_cck_val;
+-
+-	p_ofdm_tx->r_ant_ht1	= 0x1;
+-	p_ofdm_tx->r_ant_ht2	= 0x2;	/*  Second TX RF path is A */
+-	p_ofdm_tx->r_ant_non_ht = 0x3;	/*  0x1+0x2=0x3 */
+-
+-	switch (pAdapter->mppriv.antenna_tx) {
+-	case ANTENNA_A:
+-		p_ofdm_tx->r_tx_antenna		= 0x1;
+-		r_ofdm_tx_en_val		= 0x1;
+-		p_ofdm_tx->r_ant_l		= 0x1;
+-		p_ofdm_tx->r_ant_ht_s1		= 0x1;
+-		p_ofdm_tx->r_ant_non_ht_s1	= 0x1;
+-		p_cck_txrx->r_ccktx_enable	= 0x8;
+-		chgTx = 1;
+-
+-		/*  From SD3 Willis suggestion !!! Set RF A=TX and B as standby */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter2, 0xe, 2);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter2, 0xe, 1);
+-		r_ofdm_tx_en_val		= 0x3;
+-
+-		/*  Power save */
+-
+-		/*  We need to close RFB by SW control */
+-		if (pHalData->rf_type == RF_2T2R) {
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFInterfaceSW, BIT(10), 0);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFInterfaceSW, BIT(26), 1);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XB_RFInterfaceOE, BIT(10), 0);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFParameter, BIT(1), 1);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFParameter, BIT(17), 0);
+-		}
+-		break;
+-	case ANTENNA_B:
+-		p_ofdm_tx->r_tx_antenna		= 0x2;
+-		r_ofdm_tx_en_val		= 0x2;
+-		p_ofdm_tx->r_ant_l		= 0x2;
+-		p_ofdm_tx->r_ant_ht_s1		= 0x2;
+-		p_ofdm_tx->r_ant_non_ht_s1	= 0x2;
+-		p_cck_txrx->r_ccktx_enable	= 0x4;
+-		chgTx = 1;
+-		/*  From SD3 Willis suggestion !!! Set RF A as standby */
+-		PHY_SetBBReg(pAdapter, rFPGA0_XA_HSSIParameter2, 0xe, 1);
+-		PHY_SetBBReg(pAdapter, rFPGA0_XB_HSSIParameter2, 0xe, 2);
+-
+-		/*  Power save */
+-		/* cosa r_ant_select_ofdm_val = 0x22222222; */
+-
+-		/*  2008/10/31 MH From SD3 Willi's suggestion. We must read RF 1T table. */
+-		/*  2009/01/08 MH From Sd3 Willis. We need to close RFA by SW control */
+-		if (pHalData->rf_type == RF_2T2R || pHalData->rf_type == RF_1T2R) {
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFInterfaceSW, BIT(10), 1);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XA_RFInterfaceOE, BIT(10), 0);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFInterfaceSW, BIT(26), 0);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFParameter, BIT(1), 0);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFParameter, BIT(17), 1);
+-		}
+-		break;
+-	case ANTENNA_AB:	/*  For 8192S */
+-		p_ofdm_tx->r_tx_antenna		= 0x3;
+-		r_ofdm_tx_en_val		= 0x3;
+-		p_ofdm_tx->r_ant_l		= 0x3;
+-		p_ofdm_tx->r_ant_ht_s1		= 0x3;
+-		p_ofdm_tx->r_ant_non_ht_s1	= 0x3;
+-		p_cck_txrx->r_ccktx_enable	= 0xC;
+-		chgTx = 1;
+-
+-		/*  From SD3 Willis suggestion !!! Set RF B as standby */
+-		PHY_SetBBReg(pAdapter, rFPGA0_XA_HSSIParameter2, 0xe, 2);
+-		PHY_SetBBReg(pAdapter, rFPGA0_XB_HSSIParameter2, 0xe, 2);
+-
+-		/*  Disable Power save */
+-		/* cosa r_ant_select_ofdm_val = 0x3321333; */
+-		/*  2009/01/08 MH From Sd3 Willis. We need to enable RFA/B by SW control */
+-		if (pHalData->rf_type == RF_2T2R) {
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFInterfaceSW, BIT(10), 0);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFInterfaceSW, BIT(26), 0);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFParameter, BIT(1), 1);
+-			PHY_SetBBReg(pAdapter, rFPGA0_XAB_RFParameter, BIT(17), 1);
+-		}
+-		break;
+-	default:
+-		break;
+-	}
+-
+-	/*  r_rx_antenna_ofdm, bit0=A, bit1=B, bit2=C, bit3=D */
+-	/*  r_cckrx_enable : CCK default, 0=A, 1=B, 2=C, 3=D */
+-	/*  r_cckrx_enable_2 : CCK option, 0=A, 1=B, 2=C, 3=D */
+-	switch (pAdapter->mppriv.antenna_rx) {
+-	case ANTENNA_A:
+-		r_rx_antenna_ofdm		= 0x1;	/*  A */
+-		p_cck_txrx->r_cckrx_enable	= 0x0;	/*  default: A */
+-		p_cck_txrx->r_cckrx_enable_2	= 0x0;	/*  option: A */
+-		chgRx = 1;
+-		break;
+-	case ANTENNA_B:
+-		r_rx_antenna_ofdm		= 0x2;	/*  B */
+-		p_cck_txrx->r_cckrx_enable	= 0x1;	/*  default: B */
+-		p_cck_txrx->r_cckrx_enable_2	= 0x1;	/*  option: B */
+-		chgRx = 1;
+-		break;
+-	case ANTENNA_AB:
+-		r_rx_antenna_ofdm		= 0x3;	/*  AB */
+-		p_cck_txrx->r_cckrx_enable	= 0x0;	/*  default:A */
+-		p_cck_txrx->r_cckrx_enable_2	= 0x1;	/*  option:B */
+-		chgRx = 1;
+-		break;
+-	default:
+-		break;
+-	}
+-
+-	if (chgTx && chgRx) {
+-		switch (pHalData->rf_chip) {
+-		case RF_8225:
+-		case RF_8256:
+-		case RF_6052:
+-			/* r_ant_sel_cck_val = r_ant_select_cck_val; */
+-			PHY_SetBBReg(pAdapter, rFPGA1_TxInfo, 0x7fffffff, r_ant_select_ofdm_val);	/* OFDM Tx */
+-			PHY_SetBBReg(pAdapter, rFPGA0_TxInfo, 0x0000000f, r_ofdm_tx_en_val);		/* OFDM Tx */
+-			PHY_SetBBReg(pAdapter, rOFDM0_TRxPathEnable, 0x0000000f, r_rx_antenna_ofdm);	/* OFDM Rx */
+-			PHY_SetBBReg(pAdapter, rOFDM1_TRxPathEnable, 0x0000000f, r_rx_antenna_ofdm);	/* OFDM Rx */
+-			PHY_SetBBReg(pAdapter, rCCK0_AFESetting, bMaskByte3, r_ant_select_cck_val);	/* CCK TxRx */
+-
+-			break;
+-		default:
+-			break;
+-		}
+-	}
+-}
+-
+-s32 Hal_SetThermalMeter(struct adapter *pAdapter, u8 target_ther)
+-{
+-	struct hal_data_8188e *pHalData = GET_HAL_DATA(pAdapter);
+-
+-	if (!netif_running(pAdapter->pnetdev))
+-		return _FAIL;
+-
+-	if (check_fwstate(&pAdapter->mlmepriv, WIFI_MP_STATE) == false)
+-		return _FAIL;
+-
+-	target_ther &= 0xff;
+-	if (target_ther < 0x07)
+-		target_ther = 0x07;
+-	else if (target_ther > 0x1d)
+-		target_ther = 0x1d;
+-
+-	pHalData->EEPROMThermalMeter = target_ther;
+-
+-	return _SUCCESS;
+-}
+-
+-void Hal_TriggerRFThermalMeter(struct adapter *pAdapter)
+-{
+-	_write_rfreg(pAdapter, RF_PATH_A, RF_T_METER_88E, BIT(17) | BIT(16), 0x03);
+-}
+-
+-u8 Hal_ReadRFThermalMeter(struct adapter *pAdapter)
+-{
+-	u32 ThermalValue = 0;
+-
+-	ThermalValue = _read_rfreg(pAdapter, RF_PATH_A, RF_T_METER_88E, 0xfc00);
+-	return (u8)ThermalValue;
+-}
+-
+-void Hal_GetThermalMeter(struct adapter *pAdapter, u8 *value)
+-{
+-	Hal_TriggerRFThermalMeter(pAdapter);
+-	msleep(1000);
+-	*value = Hal_ReadRFThermalMeter(pAdapter);
+-}
+-
+-void Hal_SetSingleCarrierTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	pAdapter->mppriv.MptCtx.bSingleCarrier = bStart;
+-	if (bStart) {
+-		/*  Start Single Carrier. */
+-		/*  1. if OFDM block on? */
+-		if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn))
+-			write_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn, bEnable);/* set OFDM block on */
+-
+-		/*  2. set CCK test mode off, set to CCK normal mode */
+-		write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, bDisable);
+-		/*  3. turn on scramble setting */
+-		write_bbreg(pAdapter, rCCK0_System, bCCKScramble, bEnable);
+-		/*  4. Turn On Single Carrier Tx and turn off the other test modes. */
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bEnable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+-		/* for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000500);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+-	} else {
+-		/*  Stop Single Carrier. */
+-		/*  Turn off all test modes. */
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+-		msleep(10);
+-
+-		/* BB Reset */
+-		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x0);
+-		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x1);
+-
+-		/* Stop for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000100);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000100);
+-	}
+-}
+-
+-void Hal_SetSingleToneTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+-	bool		is92C = IS_92C_SERIAL(pHalData->VersionID);
+-
+-	u8 rfPath;
+-	u32              reg58 = 0x0;
+-	switch (pAdapter->mppriv.antenna_tx) {
+-	case ANTENNA_A:
+-	default:
+-		rfPath = RF_PATH_A;
+-		break;
+-	case ANTENNA_B:
+-		rfPath = RF_PATH_B;
+-		break;
+-	case ANTENNA_C:
+-		rfPath = RF_PATH_C;
+-		break;
+-	}
+-
+-	pAdapter->mppriv.MptCtx.bSingleTone = bStart;
+-	if (bStart) {
+-		/*  Start Single Tone. */
+-		/*  <20120326, Kordan> To amplify the power of tone for Xtal calibration. (asked by Edlu) */
+-		if (IS_HARDWARE_TYPE_8188E(pAdapter)) {
+-			reg58 = PHY_QueryRFReg(pAdapter, RF_PATH_A, LNA_Low_Gain_3, bRFRegOffsetMask);
+-			reg58 &= 0xFFFFFFF0;
+-			reg58 += 2;
+-			PHY_SetRFReg(pAdapter, RF_PATH_A, LNA_Low_Gain_3, bRFRegOffsetMask, reg58);
+-		}
+-		PHY_SetBBReg(pAdapter, rFPGA0_RFMOD, bCCKEn, 0x0);
+-		PHY_SetBBReg(pAdapter, rFPGA0_RFMOD, bOFDMEn, 0x0);
+-
+-		if (is92C) {
+-			_write_rfreg(pAdapter, RF_PATH_A, 0x21, BIT(19), 0x01);
+-			rtw_usleep_os(100);
+-			if (rfPath == RF_PATH_A)
+-				write_rfreg(pAdapter, RF_PATH_B, 0x00, 0x10000); /*  PAD all on. */
+-			else if (rfPath == RF_PATH_B)
+-				write_rfreg(pAdapter, RF_PATH_A, 0x00, 0x10000); /*  PAD all on. */
+-			write_rfreg(pAdapter, rfPath, 0x00, 0x2001f); /*  PAD all on. */
+-			rtw_usleep_os(100);
+-		} else {
+-			write_rfreg(pAdapter, rfPath, 0x21, 0xd4000);
+-			rtw_usleep_os(100);
+-			write_rfreg(pAdapter, rfPath, 0x00, 0x2001f); /*  PAD all on. */
+-			rtw_usleep_os(100);
+-		}
+-
+-		/* for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000500);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+-
+-	} else {
+-		/*  Stop Single Tone. */
+-		/*  <20120326, Kordan> To amplify the power of tone for Xtal calibration. (asked by Edlu) */
+-		/*  <20120326, Kordan> Only in single tone mode. (asked by Edlu) */
+-		if (IS_HARDWARE_TYPE_8188E(pAdapter)) {
+-			reg58 = PHY_QueryRFReg(pAdapter, RF_PATH_A, LNA_Low_Gain_3, bRFRegOffsetMask);
+-			reg58 &= 0xFFFFFFF0;
+-			PHY_SetRFReg(pAdapter, RF_PATH_A, LNA_Low_Gain_3, bRFRegOffsetMask, reg58);
+-		}
+-		write_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn, 0x1);
+-		write_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn, 0x1);
+-		if (is92C) {
+-			_write_rfreg(pAdapter, RF_PATH_A, 0x21, BIT(19), 0x00);
+-			rtw_usleep_os(100);
+-			write_rfreg(pAdapter, RF_PATH_A, 0x00, 0x32d75); /*  PAD all on. */
+-			write_rfreg(pAdapter, RF_PATH_B, 0x00, 0x32d75); /*  PAD all on. */
+-			rtw_usleep_os(100);
+-		} else {
+-			write_rfreg(pAdapter, rfPath, 0x21, 0x54000);
+-			rtw_usleep_os(100);
+-			write_rfreg(pAdapter, rfPath, 0x00, 0x30000); /*  PAD all on. */
+-			rtw_usleep_os(100);
+-		}
+-
+-		/* Stop for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000100);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000100);
+-	}
+-}
+-
+-void Hal_SetCarrierSuppressionTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	pAdapter->mppriv.MptCtx.bCarrierSuppression = bStart;
+-	if (bStart) {
+-		/*  Start Carrier Suppression. */
+-		if (pAdapter->mppriv.rateidx <= MPT_RATE_11M) {
+-			/*  1. if CCK block on? */
+-			if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn))
+-				write_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn, bEnable);/* set CCK block on */
+-
+-			/* Turn Off All Test Mode */
+-			write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+-			write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+-			write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+-
+-			write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, 0x2);    /* transmit mode */
+-			write_bbreg(pAdapter, rCCK0_System, bCCKScramble, 0x0);  /* turn off scramble setting */
+-
+-			/* Set CCK Tx Test Rate */
+-			write_bbreg(pAdapter, rCCK0_System, bCCKTxRate, 0x0);    /* Set FTxRate to 1Mbps */
+-		}
+-
+-		/* for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000500);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+-	} else {
+-		/*  Stop Carrier Suppression. */
+-		if (pAdapter->mppriv.rateidx <= MPT_RATE_11M) {
+-			write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, 0x0);    /* normal mode */
+-			write_bbreg(pAdapter, rCCK0_System, bCCKScramble, 0x1);  /* turn on scramble setting */
+-
+-			/* BB Reset */
+-			write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x0);
+-			write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x1);
+-		}
+-
+-		/* Stop for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000100);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000100);
+-	}
+-}
+-
+-void Hal_SetCCKContinuousTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	u32 cckrate;
+-
+-	if (bStart) {
+-		/*  1. if CCK block on? */
+-		if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn))
+-			write_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn, bEnable);/* set CCK block on */
+-
+-		/* Turn Off All Test Mode */
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+-		/* Set CCK Tx Test Rate */
+-		cckrate  = pAdapter->mppriv.rateidx;
+-		write_bbreg(pAdapter, rCCK0_System, bCCKTxRate, cckrate);
+-		write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, 0x2);	/* transmit mode */
+-		write_bbreg(pAdapter, rCCK0_System, bCCKScramble, bEnable);	/* turn on scramble setting */
+-
+-		/* for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000500);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+-	} else {
+-		write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, 0x0);	/* normal mode */
+-		write_bbreg(pAdapter, rCCK0_System, bCCKScramble, bEnable);	/* turn on scramble setting */
+-
+-		/* BB Reset */
+-		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x0);
+-		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x1);
+-
+-		/* Stop for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000100);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000100);
+-	}
+-
+-	pAdapter->mppriv.MptCtx.bCckContTx = bStart;
+-	pAdapter->mppriv.MptCtx.bOfdmContTx = false;
+-} /* mpt_StartCckContTx */
+-
+-void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	if (bStart) {
+-		/*  1. if OFDM block on? */
+-		if (!read_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn))
+-			write_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn, bEnable);/* set OFDM block on */
+-
+-		/*  2. set CCK test mode off, set to CCK normal mode */
+-		write_bbreg(pAdapter, rCCK0_System, bCCKBBMode, bDisable);
+-
+-		/*  3. turn on scramble setting */
+-		write_bbreg(pAdapter, rCCK0_System, bCCKScramble, bEnable);
+-		/*  4. Turn On Continue Tx and turn off the other test modes. */
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bEnable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+-
+-		/* for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000500);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000500);
+-
+-	} else {
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+-		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+-		/* Delay 10 ms */
+-		msleep(10);
+-		/* BB Reset */
+-		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x0);
+-		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x1);
+-
+-		/* Stop for dynamic set Power index. */
+-		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000100);
+-		write_bbreg(pAdapter, rFPGA0_XB_HSSIParameter1, bMaskDWord, 0x01000100);
+-	}
+-
+-	pAdapter->mppriv.MptCtx.bCckContTx = false;
+-	pAdapter->mppriv.MptCtx.bOfdmContTx = bStart;
+-} /* mpt_StartOfdmContTx */
+-
+-void Hal_SetContinuousTx(struct adapter *pAdapter, u8 bStart)
+-{
+-	pAdapter->mppriv.MptCtx.bStartContTx = bStart;
+-	if (pAdapter->mppriv.rateidx <= MPT_RATE_11M)
+-		Hal_SetCCKContinuousTx(pAdapter, bStart);
+-	else if ((pAdapter->mppriv.rateidx >= MPT_RATE_6M) &&
+-		 (pAdapter->mppriv.rateidx <= MPT_RATE_MCS15))
+-		Hal_SetOFDMContinuousTx(pAdapter, bStart);
+-}
+-- 
+2.32.0
 
-So the 30ms delay for clamping to fmin would defeat one part of that.
-
-We could perhaps somehow disable the clamping to fmin for certain
-boards and/or gpus, which would possibly lose a bit of power savings
-but otherwise be ok.  But I'm not clear whether this is a board
-specific issue (ie. are these phones using different PMICs compared to
-sdm850 laptops and db845c?  Or is there some difference in what power
-rail is powering the GPU?)
-
-I think it was mentioned earlier that CPR should help (AFAIU that is
-some sort of hw closed loop voltage regulation?) so maybe this is just
-a short term workaround?
-
-BR,
--R
