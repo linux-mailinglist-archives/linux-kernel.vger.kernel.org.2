@@ -2,156 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AD93E3F7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099C33E3F7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 08:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbhHIF5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 01:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbhHIF5D (ORCPT
+        id S233178AbhHIGB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 02:01:59 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:51390 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229483AbhHIGB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 01:57:03 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECD0C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 22:56:43 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id d11so2538376eja.8
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 22:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1QKCwJXH7b2bV95pG+j9QIMKAhZHvf1ykyTmniZz1n8=;
-        b=Tz23BY9lPnQ3vIL8d7cY3bYV2IhYyaRUOu6xQBORJN4cz8W0au9Gfbaf8lAUsNVPjB
-         tAe8PYHGpUriBFSopttHCQqPoMMqR1rexL5EnAAhvV7l1kBuiWYPDjMEaayMcy4xi6aA
-         5uuCDZ/qs9RJhz3WH8weHBsQyMPk7q4EdO+FETqAWaWTUAwpTlufojrgm+S4Uy1A1zXZ
-         ZIxfVRVGOJA3AjSm25fOEwYePUK2HcOeOIwdB6uMCtposnKf/XtfViVOX2BxRLFe5OIJ
-         L4Gu9IBkOOJTcyhBSto5DUifQ4gSNns3GbgdZ0iDqXV+q6HNfQZu9lYsJfT7RE/U4CCP
-         sTvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1QKCwJXH7b2bV95pG+j9QIMKAhZHvf1ykyTmniZz1n8=;
-        b=WuKFd2QH1LJsm/ByipdmYT+JEbXMQpXv+YkaE5CXnMAtUcAQPS+fNuqcwJho4nO1lX
-         OsM0MWB/Vm9Sb2PhCTWgljbZ3LArHG65ANt/vSTMUr+/ly1oVJJ6e0/tJxlAA4Tpf7Gg
-         ojNyMEYe2HDObYzO2iWfZkIgmaJCaMtC5xmUJkgJfDm5wtwcLJxW+IW9ng0o4lSJGN2n
-         OwUWqJdWGPbaD0cKzLDxiDgCcYZicl/6VWDSALNU2bQsLh3kcP0C6OBCMV5Ll2Q9qyVx
-         GOlF2sBXNqcr75pb//Lxu8plMVjjHE5WzTdifJ8f3zLuph2Yz69pcK6ZH//ldODmckkr
-         0v6Q==
-X-Gm-Message-State: AOAM5312K6qFaO22eD/nLN9Qr/+kz0wtr2KaKuo8x+JWdTuE29GPe+wv
-        YW5HVrSwQv1kUbYiZj7pkvHKUBhVG1GUsR6gTsFG
-X-Google-Smtp-Source: ABdhPJytSHJOcxF9+rpBixPa7fMmae2NjP3sPUJopLOrs0pFpyMSkYVK2NfzI4kxhNLm4dqCFsDdPFoJRqjc++Vk9j4=
-X-Received: by 2002:a17:907:3e0d:: with SMTP id hp13mr20504923ejc.372.1628488602064;
- Sun, 08 Aug 2021 22:56:42 -0700 (PDT)
+        Mon, 9 Aug 2021 02:01:58 -0400
+X-UUID: 9113354633154d349f0240378f5a3eba-20210809
+X-UUID: 9113354633154d349f0240378f5a3eba-20210809
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 625483577; Mon, 09 Aug 2021 14:01:32 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 9 Aug 2021 14:01:32 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 9 Aug 2021 14:01:31 +0800
+From:   Mason Zhang <Mason.Zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Mason Zhang <Mason.Zhang@mediatek.com>
+Subject: [PATCH 1/1] spi: mediatek: fix build warnning in set cs timing
+Date:   Mon, 9 Aug 2021 13:59:12 +0800
+Message-ID: <20210809055911.17538-1-Mason.Zhang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-2-xieyongji@bytedance.com>
- <43d88942-1cd3-c840-6fec-4155fd544d80@redhat.com> <CACycT3vcpwyA3xjD29f1hGnYALyAd=-XcWp8+wJiwSqpqUu00w@mail.gmail.com>
- <6e05e25e-e569-402e-d81b-8ac2cff1c0e8@arm.com> <CACycT3sm2r8NMMUPy1k1PuSZZ3nM9aic-O4AhdmRRCwgmwGj4Q@mail.gmail.com>
- <417ce5af-4deb-5319-78ce-b74fb4dd0582@arm.com> <CACycT3vARzvd4-dkZhDHqUkeYoSxTa2ty0z0ivE1znGti+n1-g@mail.gmail.com>
- <8c381d3d-9bbd-73d6-9733-0f0b15c40820@redhat.com>
-In-Reply-To: <8c381d3d-9bbd-73d6-9733-0f0b15c40820@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Mon, 9 Aug 2021 13:56:31 +0800
-Message-ID: <CACycT3steXFeg7NRbWpo2J59dpYcumzcvM2zcPJAVe40-EvvEg@mail.gmail.com>
-Subject: Re: [PATCH v10 01/17] iova: Export alloc_iova_fast() and free_iova_fast()
-To:     Jason Wang <jasowang@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     kvm <kvm@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        songmuchun@bytedance.com, Jens Axboe <axboe@kernel.dk>,
-        He Zhe <zhe.he@windriver.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, bcrl@kvack.org,
-        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 9:31 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/8/5 =E4=B8=8B=E5=8D=888:34, Yongji Xie =E5=86=99=E9=81=93:
-> >> My main point, though, is that if you've already got something else
-> >> keeping track of the actual addresses, then the way you're using an
-> >> iova_domain appears to be something you could do with a trivial bitmap
-> >> allocator. That's why I don't buy the efficiency argument. The main
-> >> design points of the IOVA allocator are to manage large address spaces
-> >> while trying to maximise spatial locality to minimise the underlying
-> >> pagetable usage, and allocating with a flexible limit to support
-> >> multiple devices with different addressing capabilities in the same
-> >> address space. If none of those aspects are relevant to the use-case -
-> >> which AFAICS appears to be true here - then as a general-purpose
-> >> resource allocator it's rubbish and has an unreasonably massive memory
-> >> overhead and there are many, many better choices.
-> >>
-> > OK, I get your point. Actually we used the genpool allocator in the
-> > early version. Maybe we can fall back to using it.
->
->
-> I think maybe you can share some perf numbers to see how much
-> alloc_iova_fast() can help.
->
+this patch fixed the build warnning in set cs timing.
 
-I did some fio tests[1] with a ram-backend vduse block device[2].
+Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
+---
+ drivers/spi/spi-mt65xx.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Following are some performance data:
+diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
+index bb09592bc009..2f83599642fd 100644
+--- a/drivers/spi/spi-mt65xx.c
++++ b/drivers/spi/spi-mt65xx.c
+@@ -214,7 +214,7 @@ static int mtk_spi_set_hw_cs_timing(struct spi_device *spi)
+ 	struct spi_delay *cs_setup = &spi->cs_setup;
+ 	struct spi_delay *cs_hold = &spi->cs_hold;
+ 	struct spi_delay *cs_inactive = &spi->cs_inactive;
+-	u16 setup, hold, inactive;
++	u32 setup, hold, inactive;
+ 	u32 reg_val;
+ 	int delay;
+ 
+@@ -239,8 +239,8 @@ static int mtk_spi_set_hw_cs_timing(struct spi_device *spi)
+ 
+ 	reg_val = readl(mdata->base + SPI_CFG0_REG);
+ 	if (mdata->dev_comp->enhance_timing) {
+-		hold = min(hold, 0xffff);
+-		setup = min(setup, 0xffff);
++		hold = min_t(u32, hold, 0x10000);
++		setup = min_t(u32, setup, 0x10000);
+ 		reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
+ 		reg_val |= (((hold - 1) & 0xffff)
+ 			   << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
+@@ -248,8 +248,8 @@ static int mtk_spi_set_hw_cs_timing(struct spi_device *spi)
+ 		reg_val |= (((setup - 1) & 0xffff)
+ 			   << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
+ 	} else {
+-		hold = min(hold, 0xff);
+-		setup = min(setup, 0xff);
++		hold = min_t(u32, hold, 0x100);
++		setup = min_t(u32, setup, 0x100);
+ 		reg_val &= ~(0xff << SPI_CFG0_CS_HOLD_OFFSET);
+ 		reg_val |= (((hold - 1) & 0xff) << SPI_CFG0_CS_HOLD_OFFSET);
+ 		reg_val &= ~(0xff << SPI_CFG0_CS_SETUP_OFFSET);
+@@ -258,7 +258,7 @@ static int mtk_spi_set_hw_cs_timing(struct spi_device *spi)
+ 	}
+ 	writel(reg_val, mdata->base + SPI_CFG0_REG);
+ 
+-	inactive = min(inactive, 0xff);
++	inactive = min_t(u32, inactive, 0x100);
+ 	reg_val = readl(mdata->base + SPI_CFG1_REG);
+ 	reg_val &= ~SPI_CFG1_CS_IDLE_MASK;
+ 	reg_val |= (((inactive - 1) & 0xff) << SPI_CFG1_CS_IDLE_OFFSET);
+-- 
+2.18.0
 
-                            numjobs=3D1   numjobs=3D2    numjobs=3D4   numj=
-obs=3D8
-iova_alloc_fast    145k iops      265k iops      514k iops      758k iops
-
-iova_alloc            137k iops     170k iops      128k iops      113k iops
-
-gen_pool_alloc   143k iops      270k iops      458k iops      521k iops
-
-The iova_alloc_fast() has the best performance since we always hit the
-per-cpu cache. Regardless of the per-cpu cache, the genpool allocator
-should be better than the iova allocator.
-
-[1] fio jobfile:
-
-[global]
-rw=3Drandread
-direct=3D1
-ioengine=3Dlibaio
-iodepth=3D16
-time_based=3D1
-runtime=3D60s
-group_reporting
-bs=3D4k
-filename=3D/dev/vda
-[job]
-numjobs=3D..
-
-[2]  $ qemu-storage-daemon \
-      --chardev socket,id=3Dcharmonitor,path=3D/tmp/qmp.sock,server,nowait =
-\
-      --monitor chardev=3Dcharmonitor \
-      --blockdev
-driver=3Dhost_device,cache.direct=3Don,aio=3Dnative,filename=3D/dev/nullb0,=
-node-name=3Ddisk0
-\
-      --export type=3Dvduse-blk,id=3Dtest,node-name=3Ddisk0,writable=3Don,n=
-ame=3Dvduse-null,num-queues=3D16,queue-size=3D128
-
-The qemu-storage-daemon can be builded based on the repo:
-https://github.com/bytedance/qemu/tree/vduse-test.
-
-Thanks,
-Yongji
