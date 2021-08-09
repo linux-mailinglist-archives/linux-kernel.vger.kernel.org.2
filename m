@@ -2,118 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD553E4B17
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFD23E4B15
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbhHIRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:47:36 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:49196
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234821AbhHIRot (ORCPT
+        id S234626AbhHIRpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 13:45:05 -0400
+Received: from smtprelay0089.hostedemail.com ([216.40.44.89]:53090 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234804AbhHIRor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:44:49 -0400
-Received: from localhost.localdomain (1-171-221-113.dynamic-ip.hinet.net [1.171.221.113])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E04A83F108;
-        Mon,  9 Aug 2021 17:44:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628531052;
-        bh=iEu8pX3ziO36ryx3wRkOZPEyw/YMnEi7g0A9wLQ7fqg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=uFqOjEyOSzWGs9RABUyWVaLle2NxDyK0Y/3sDI7zraOizwLyHI/+VdKvjK1pYw3ib
-         zoQgeCJ1QbEaW9Rwfg2iJ+X+d5sCK2ISC4Z3ZLuu6omo+DCsJczQjhUJbZvwU3q7PB
-         WVZPYukTzf73a+gQwTpV4VLcw/QnJ3f8dCz++4mKB1zOEZ+t2mbjWga+1B1WKJLIPi
-         ju4HB3FVh0xmredvVnO9hV/hdUQExnuAKhv+YmrItROVQNfVwFPwKduMLZ9eGCo05/
-         zwFEIZmd6bpbsSyc5FetxiCNPYUqGlggPdJii2T2YtfD9hSB5CjBhfsb1zVc0TJDaD
-         lVwzh8iRUPW/w==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth@vger.kernel.org (open list:BLUETOOTH SUBSYSTEM),
-        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] Bluetooth: Move shutdown callback before flushing tx and rx queue
-Date:   Tue, 10 Aug 2021 01:43:58 +0800
-Message-Id: <20210809174358.163525-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 9 Aug 2021 13:44:47 -0400
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 72074837F24F;
+        Mon,  9 Aug 2021 17:44:04 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id 8E23D18A60E;
+        Mon,  9 Aug 2021 17:44:03 +0000 (UTC)
+Message-ID: <6b7de60b83cc5ce930736c6158a648b91f647c0b.camel@perches.com>
+Subject: Re: [PATCH] mailmap: update email address of Matthias Fuchs
+From:   Joe Perches <joe@perches.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     socketcan@esd.eu,
+        Stefan =?ISO-8859-1?Q?M=E4tje?= <Stefan.Maetje@esd.eu>
+Date:   Mon, 09 Aug 2021 10:44:02 -0700
+In-Reply-To: <20210806104833.102081-1-mkl@pengutronix.de>
+References: <20210806104833.102081-1-mkl@pengutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 8E23D18A60E
+X-Spam-Status: No, score=1.35
+X-Stat-Signature: iyq45x6aym35xrjhhkxaxtqbjsfp4pk5
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+QLdTo4QbQjpDboPsq75yaswuJwa1HyOk=
+X-HE-Tag: 1628531043-583688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
-are flushed or cancelled") introduced a regression that makes mtkbtsdio
-driver stops working:
-[   36.593956] Bluetooth: hci0: Firmware already downloaded
-[   46.814613] Bluetooth: hci0: Execution of wmt command timed out
-[   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
+On Fri, 2021-08-06 at 12:48 +0200, Marc Kleine-Budde wrote:
+> Matthias Fuchs's email isn't valid anymore. Use the newly created role
+> account instead.
+> 
+> Cc: socketcan@esd.eu
+> Cc: Stefan Mätje <Stefan.Maetje@esd.eu>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  .mailmap | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/.mailmap b/.mailmap
+> index a35ae244dfda..86a630d26cfb 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -330,6 +330,7 @@ Shuah Khan <shuah@kernel.org> <shuahkh@osg.samsung.com>
+>  Shuah Khan <shuah@kernel.org> <shuah.kh@samsung.com>
+>  Simon Arlott <simon@octiron.net> <simon@fire.lp0.eu>
+>  Simon Kelley <simon@thekelleys.org.uk>
+> +<socketcan@esd.eu> <matthias.fuchs@esd.eu>
 
-The shutdown callback depends on the result of hdev->rx_work, so we
-should call it before flushing rx_work:
--> btmtksdio_shutdown()
- -> mtk_hci_wmt_sync()
-  -> __hci_cmd_send()
-   -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
+Please add a name not only the email address and place the entry
+in alphabetical order by name.
 
--> btmtksdio_recv_event()
- -> hci_recv_frame()
-  -> queue_work(hdev->workqueue, &hdev->rx_work)
-   -> clears BTMTKSDIO_TX_WAIT_VND_EVT
+>  Stéphane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
+>  Stephen Hemminger <shemminger@osdl.org>
+>  Steve Wise <larrystevenwise@gmail.com> <swise@chelsio.com>
 
-So move the shutdown callback before flushing TX/RX queue to resolve the
-issue.
-
-Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- net/bluetooth/hci_core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index cb2e9e513907..8da04c899197 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1735,6 +1735,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 
- 	hci_leds_update_powered(hdev, false);
- 
-+	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-+	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-+	    test_bit(HCI_UP, &hdev->flags)) {
-+		/* Execute vendor specific shutdown routine */
-+		if (hdev->shutdown)
-+			hdev->shutdown(hdev);
-+	}
-+
- 	/* Flush RX and TX works */
- 	flush_work(&hdev->tx_work);
- 	flush_work(&hdev->rx_work);
-@@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 		clear_bit(HCI_INIT, &hdev->flags);
- 	}
- 
--	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
--	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
--	    test_bit(HCI_UP, &hdev->flags)) {
--		/* Execute vendor specific shutdown routine */
--		if (hdev->shutdown)
--			hdev->shutdown(hdev);
--	}
--
- 	/* flush cmd  work */
- 	flush_work(&hdev->cmd_work);
- 
--- 
-2.31.1
 
