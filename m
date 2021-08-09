@@ -2,76 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EE33E4B11
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 19:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2533E517E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234521AbhHIRnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 13:43:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234154AbhHIRnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 13:43:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C3660F25;
-        Mon,  9 Aug 2021 17:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628530966;
-        bh=FSFPv4kDztNyzO9/5NElHuOFEoE9ULfv2/yH+18aDsg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VNrWPeDdTAiBVFGd4tE8zpWxdKdmy4uZNfT1xG9Ey8dAH7dGzy2c31IkFE9wqhszF
-         sPg1ZS08jMOcY++hBBMKJl46omOGv26RAgaUHhwtqzouT8be3ihPXpXc2BVOWceOzr
-         VzLE4PwGgZYl82onsupTZbAB6RyTgcbYud/IfXyqJflAMDkDS4adDqd3HYEu+Rv/q7
-         eQ3acQ0wCZNInKHLW3sdL7fjtvpyFj8hL8jtrfliA/lKHv6Dp11tnIevVKPooqs2zB
-         DHZKTfDCPZXc1Gn8wvspTzXBrEGJKKFGvCBL1CQQPy9mEV2B7pfeKfJjHPa9dQnSsO
-         S/yuhaEMlYO+g==
-Date:   Mon, 9 Aug 2021 12:42:44 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] PCI: brcmstb: Add ACPI config space quirk
-Message-ID: <20210809174244.GA2167737@bjorn-Precision-5520>
+        id S236697AbhHJD2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 23:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236656AbhHJD23 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 23:28:29 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A6AC0613D3;
+        Mon,  9 Aug 2021 20:28:08 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d1so19114680pll.1;
+        Mon, 09 Aug 2021 20:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=M/ed0gDaKV+4auNbc7EJdhjHTQcL9A5qPBDfLfsEH1s=;
+        b=BjdVyzF3VGwrkJN4df7DhbgvySjlcyUylGVAZWO7PqsKNCneDbmpU0vhMhWyMbPOBZ
+         MdgWVtV+PQPQEx07Yw4flE3hKSro1Ap7wzsKKjHeliXKH9n32VTvJeyZBTt3tvi7k9hs
+         sdKHMJGQ255ldC+fUSSoigXuVY1FNGM0EWgv4MGMHMzfX/kXf2nZtjX+Kjpp191wwshp
+         5m8+tA4u35SuXwBqlWaG5c9d38N+OXUr+6bj5DTLqO24f6mwaajSAV+gzF/cC8WxUKHi
+         evsyNVpZFxKB1/Xx6P7ALfDVHbNQC+AY4PvHS8uy2H9+xNEBZc/UQjUbD6seHvcwhzg4
+         XsHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=M/ed0gDaKV+4auNbc7EJdhjHTQcL9A5qPBDfLfsEH1s=;
+        b=nCop1JxwB0gp/WV6JRNSdXH2s3MNFHeY0u0+dUTmxV6MfpL6KD+DO/6l63LLMZWgE3
+         lor4SnYcGHIeu4h4F9+b/dJDjBt29/W+UZ3+vrl7eZOy3xAabIxBghh/vgxV9GoSlyX8
+         QnFZPxvHdiJhCf/wKGwAKRrDcpbYIGIzFhV5F1P3tr6/Mw+9Xb2XklohiC+YaKLg4P3r
+         rJMGtIq5MUEK/arjj0MKtBR/d/oGT32Cx/CS4LaeGBn+zkHwYplV71rPI1aFGQtOEBo2
+         0V6GhW5lyVWRROdOD6YdVsF96J2HabheJeVBLNhuswUtHM89jWGRCzAF04YgCKZbx7NH
+         2Nnw==
+X-Gm-Message-State: AOAM531dt27JRWe5eApycLWofeITPgLaHjXlzb7h6cGscFgTGqGJzisA
+        pIavyhHd4imeICKkyPruKeiPHKDlpjU=
+X-Google-Smtp-Source: ABdhPJzv6VJrv87qOl6QBbPi+/OtpoeMh8LN/1Mh6Vu107huljtA0JToLg2ZJWOzax2i5DM9J4DfXQ==
+X-Received: by 2002:a62:cdc8:0:b029:3c4:e67e:2c0b with SMTP id o191-20020a62cdc80000b02903c4e67e2c0bmr21214340pfg.65.1628566087521;
+        Mon, 09 Aug 2021 20:28:07 -0700 (PDT)
+Received: from localhost ([47.251.4.198])
+        by smtp.gmail.com with ESMTPSA id j6sm24587192pgq.0.2021.08.09.20.28.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Aug 2021 20:28:07 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: [PATCH V2 1/3] KVM: X86: Remove unneeded KVM_DEBUGREG_RELOAD
+Date:   Tue, 10 Aug 2021 01:43:05 +0800
+Message-Id: <20210809174307.145263-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <YRFdq8sNuXYpgemU@google.com>
+References: <YRFdq8sNuXYpgemU@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51a11c89-d49b-7367-a75c-13016a2ea5d9@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 09:55:27PM -0500, Jeremy Linton wrote:
-> Hi,
-> 
-> On 8/6/21 5:21 PM, Bjorn Helgaas wrote:
-> > On Thu, Aug 05, 2021 at 04:11:59PM -0500, Jeremy Linton wrote:
-> > > The PFTF CM4 is an ACPI platform that is following the PCIe SMCCC
-> > > standard because its PCIe config space isn't ECAM compliant and is
-> > > split into two parts. One part for the root port registers and a
-> > > moveable window which points at a given device's 4K config space.
-> > > Thus it doesn't have a MCFG (and really any MCFG provided would be
-> > > nonsense anyway). As Linux doesn't support the PCIe SMCCC standard
-> > > we key off a Linux specific host bridge _DSD to add custom ECAM
-> > > ops and cfgres. The cfg op selects between those two regions, as
-> > > well as disallowing problematic accesses, particularly if the link
-> > > is down because there isn't an attached device.
-> > 
-> > I'm not sure SMCCC is *really* relevant here.  If it is, an expansion
-> > of the acronym and a link to a spec would be helpful.
-> > 
-> > But AFAICT the only important thing here is that it doesn't have
-> > standard ECAM, and we're going to work around that.
-> 
-> I will reword it a bit.
-> 
-> > I don't see anything about _DSD in this series.
-> 
-> That is the "linux,pci-quirk" in the next patch.
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The next patch doesn't mention _DSD either.  Is it obfuscated by
-being inside fwnode_property_read_string()?  If so, it's well and
-truly hidden; I gave up trying to connect that with ACPI.
+Commit ae561edeb421 ("KVM: x86: DR0-DR3 are not clear on reset") added code to
+ensure eff_db are updated when they're modified through non-standard paths.
 
-Bjorn
+But there is no reason to also update hardware DRs unless hardware breakpoints
+are active or DR exiting is disabled, and in those cases updating hardware is
+handled by KVM_DEBUGREG_WONT_EXIT and KVM_DEBUGREG_BP_ENABLED.
+
+KVM_DEBUGREG_RELOAD just causes unnecesarry load of hardware DRs and is better
+to be removed.
+
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/include/asm/kvm_host.h | 1 -
+ arch/x86/kvm/x86.c              | 3 ---
+ 2 files changed, 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 974cbfb1eefe..9623855a5838 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -522,7 +522,6 @@ struct kvm_pmu_ops;
+ enum {
+ 	KVM_DEBUGREG_BP_ENABLED = 1,
+ 	KVM_DEBUGREG_WONT_EXIT = 2,
+-	KVM_DEBUGREG_RELOAD = 4,
+ };
+ 
+ struct kvm_mtrr_range {
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4116567f3d44..ad47a09ce307 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1180,7 +1180,6 @@ static void kvm_update_dr0123(struct kvm_vcpu *vcpu)
+ 	if (!(vcpu->guest_debug & KVM_GUESTDBG_USE_HW_BP)) {
+ 		for (i = 0; i < KVM_NR_DB_REGS; i++)
+ 			vcpu->arch.eff_db[i] = vcpu->arch.db[i];
+-		vcpu->arch.switch_db_regs |= KVM_DEBUGREG_RELOAD;
+ 	}
+ }
+ 
+@@ -9600,7 +9599,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 		set_debugreg(vcpu->arch.eff_db[2], 2);
+ 		set_debugreg(vcpu->arch.eff_db[3], 3);
+ 		set_debugreg(vcpu->arch.dr6, 6);
+-		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
+ 	} else if (unlikely(hw_breakpoint_active())) {
+ 		set_debugreg(0, 7);
+ 	}
+@@ -9630,7 +9628,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 		static_call(kvm_x86_sync_dirty_debug_regs)(vcpu);
+ 		kvm_update_dr0123(vcpu);
+ 		kvm_update_dr7(vcpu);
+-		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
+ 	}
+ 
+ 	/*
+-- 
+2.19.1.6.gb485710b
+
