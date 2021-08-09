@@ -2,157 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA693E48F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E303E4869
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235603AbhHIPfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:35:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61320 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234708AbhHIPfm (ORCPT
+        id S235326AbhHIPPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:15:50 -0400
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:43785 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234075AbhHIPPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:35:42 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179FY4Rc075279;
-        Mon, 9 Aug 2021 11:35:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=hwpA24QRrQlzhRUNEXBLbQJ7FfPUZL9C1vCAfLp04pE=;
- b=YZqSovz5HZpMPAWThi+VH5jqcT24Z1N2g9Zy41tXxVPLLFC3FuapZHFTw9uFQZztfAHV
- TWhSTmZK6miZiVPmafpmmTOXVhTyY+9cWrXTNZJE4fP04VMsaM7+H1poF2qQES4vdyDs
- fkF8MTM28l0QREEDJ4stVRNSizSqKgaA8uw2sSOtxdhs5h1gtPVVVgIjFg2k/UEC+A6s
- ERcmR28aem9wfVa/IxPa3BcFW6qntLcCFM4AwHZEqJSmrpDdOMEm3dBU8w+J9Zbi4y3s
- rZUsXqGoSPy6ImuFHPxDs6YnC7B5dVN7SXUHmcUg+1VKGAacs+qZwAkDDUvrQ/1mQNFI EA== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab1j8ae59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 11:35:14 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 179FXfR7021136;
-        Mon, 9 Aug 2021 15:35:13 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma02dal.us.ibm.com with ESMTP id 3a9htbuvn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 15:35:13 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 179FZC3l38338886
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 9 Aug 2021 15:35:12 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA53C7E6B0;
-        Mon,  9 Aug 2021 15:12:54 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1DB8A7E6AD;
-        Mon,  9 Aug 2021 15:12:54 +0000 (GMT)
-Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.182.229])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  9 Aug 2021 15:12:53 +0000 (GMT)
-Subject: Re: [PATCH] s390/crypto: fix all kernel-doc warnings in vfio_ap_ops.c
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-References: <20210806050149.9614-1-rdunlap@infradead.org>
- <d8f1b065-f7b2-a0f3-f87a-ffdd2f7f2781@linux.ibm.com>
- <1ad57c8d-c0d1-88d9-bcce-3d3501455d8e@infradead.org>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <fd938029-7d87-4e65-bb2c-b78e9b0175e3@linux.ibm.com>
-Date:   Mon, 9 Aug 2021 11:12:53 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <1ad57c8d-c0d1-88d9-bcce-3d3501455d8e@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: J_k2VTnUT-tNXFNifIgL6PE91Otx9YWF
-X-Proofpoint-ORIG-GUID: J_k2VTnUT-tNXFNifIgL6PE91Otx9YWF
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 9 Aug 2021 11:15:49 -0400
+Received: by mail-ua1-f52.google.com with SMTP id 91so7168477uas.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:15:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ehvDAZzdXJSc27GvA0fWut4GARnIXIBF9w/5HJVeQDw=;
+        b=OPGiktWWhZK3HBFovlxH5mOCPdWuDe2UhtoBm4OMBAbs0bBcW8m5ldCbPpg+qqT3+6
+         J1GcAuywUush/ohjOHXWRuWgJ2PwcA1BA3KjXxWTO8biBlCvZne2Fr1jehlTPKF/OgPp
+         uAaEnuGgWiob/Lor/Jd/Cm/feDg+HAaIrJk6iAQxorp1uyDi5ixbA6Vs2sGe4zbu8S83
+         4dQu++vpa+8cMu602TYfoYgp8dfJ7LFos823UoIrwM+/O+m4A7I2vUTRdc7xXbLCUMhr
+         ikeuaM1yogcuN5oikw6LeWyB8hazlmTIYfr81hm97wDw4DGXWxU3Ya44IvIbI+NvDcoE
+         BLKA==
+X-Gm-Message-State: AOAM533M2AryM5csrl/v1FMQn+SX4wT+OV9v36R+juEr87IaE/Feys+o
+        Tf6haV7lm+Bu1F/GQKSgyThSD8LceixTKdFZFrc=
+X-Google-Smtp-Source: ABdhPJx13QvlWE82lmqYd1A4xsQv/vLk/nFwWnXoXrYRwmZu/glnNQK2zXj/Aai5Ut2bimNcDxzESJb0alo4cTnqPzg=
+X-Received: by 2002:ab0:1d05:: with SMTP id j5mr1649669uak.2.1628522129038;
+ Mon, 09 Aug 2021 08:15:29 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-09_05:2021-08-06,2021-08-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1011 impostorscore=0 suspectscore=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxscore=0
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108090113
+References: <20210803155452.435812-1-lee.jones@linaro.org> <20210803155452.435812-2-lee.jones@linaro.org>
+In-Reply-To: <20210803155452.435812-2-lee.jones@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 9 Aug 2021 17:15:17 +0200
+Message-ID: <CAMuHMdXpYV+pbiOwiCjZ+aZYR-xPDGkeANfLt0fwhg4zevAKgg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
+ be called from modules
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Randy.
+On Tue, Aug 3, 2021 at 5:56 PM Lee Jones <lee.jones@linaro.org> wrote:
+> A recent attempt to convert the Power Reset Restart driver to tristate
+> failed because of the following compile error (reported once merged by
+> Stephen Rothwell via Linux Next):
+>
+>   ERROR: "machine_restart" [drivers/power/reset/restart-poweroff.ko] undefined!
+>
+> This error occurs since some of the machine_restart() instances are
+> not currently exported for use in modules.  This patch aims to rectify
+> that.
+>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-On 8/6/21 9:38 PM, Randy Dunlap wrote:
-> On 8/6/21 6:26 AM, Tony Krowiak wrote:
->> Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
->>
->> Pardon my ignorance, but this is the first I've seen of kernel-doc 
->> warnings.
->> Is there a flag I can set when I build to get kernel-doc warnings? Is 
->> there a tool I can run?
->> Where is the kernel-doc format documented? I'd like to avoid this in 
->> the future.
->
-> Hi,
->
-> Here is the 0day bot report:
-> https://lore.kernel.org/lkml/202108010650.DLRzJOtm-lkp@intel.com/
-> (not sent to any of your group, sadly).
->
-> kernel-doc format is documented in 
-> Documentation/doc-guide/kernel-doc.rst.
->
-> The 0day bot lists the reproduction steps. It used clang but I used
-> gcc. Shouldn't matter in this case. The main point from the 0day bot
-> is that "this is a W=1 build".  Using W=1 causes checks for extra
-> C compiler warnings and also it causes checks for documentation build
-> errors/warnings.
->
-> In your build environment, using "make W=1 ARCH=s390 allmodconfig all"
-> will produce lots of output (both compiler and kernel-doc output).
-> I suppose that is the expected way to do it.
->
-> AFAIK there is no support for something like "make W=1 htmldocs"
-> to just check for kernel-doc errors/warnings in source files, so what
-> I do when I am targeting only one source file is something like what
-> is documented in the file referenced above:
->
-> "Running the ``kernel-doc`` tool with increased verbosity and without 
-> actual
-> output generation may be used to verify proper formatting of the
-> documentation comments. For example::
->
->     scripts/kernel-doc -v -none drivers/foo/bar.c
-> "
-> and then I script that for ease of use.
-> Using the latter command reports lots more kernel-doc warnings than
-> the 0day bot reported, so I fixed all of them that it found.
->
->
-> HTH.
->
->
->> On 8/6/21 1:01 AM, Randy Dunlap wrote:
->>> The 0day bot reported some kernel-doc warnings in this file so clean up
->>> all of the kernel-doc and use proper kernel-doc formatting.
->>> There are no more kernel-doc errors or warnings reported in this file.
->>>
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> Cc: Jason Gunthorpe <jgg@nvidia.com>
->>> Cc: Tony Krowiak <akrowiak@linux.ibm.com>
->>> Cc: Halil Pasic <pasic@linux.ibm.com>
->>> Cc: Jason Herne <jjherne@linux.ibm.com>
->>> Cc: Harald Freudenberger <freude@linux.ibm.com>
->>> Cc: linux-s390@vger.kernel.org
->>> ---
->>>   drivers/s390/crypto/vfio_ap_ops.c |  116 ++++++++++++----------------
->>>   1 file changed, 52 insertions(+), 64 deletions(-)
->
->
+> NB: If it's safe to omit some of these, let me know and I'll revise the patch.
 
+How do you plan to handle that? Isn't this an all-or-nothing export?
+
+>  arch/m68k/kernel/process.c         | 1 +
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
