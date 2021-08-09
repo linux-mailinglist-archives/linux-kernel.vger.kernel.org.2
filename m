@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9943C3E48CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003FE3E48C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbhHIP0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235747AbhHIP0F (ORCPT
+        id S235669AbhHIP0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:26:18 -0400
+Received: from pb-smtp2.pobox.com ([64.147.108.71]:59714 "EHLO
+        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235677AbhHIPZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:26:05 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB9CC061386
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:25:38 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id w10-20020a0cfc4a0000b0290335dd22451dso12599880qvp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:25:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=sdImyBobVK9C7JHfpgjE6AhabFh6YsuoqYzTsW8O26w=;
-        b=kqZ+48HlyWqF47Nk0k2ceqQM9Fre+x1T8hoYnPiuq5PTJ4KtKnXsvPfN8z0efxyo2K
-         1Cv/Y6nA1ri8uEP9fKKSe8ggvj8zxMwVMtyqCvsN0tbgapBu1uX/FRexEORPLaD7xkmC
-         +iI0zK4K0HntIu3IDkwo8zkeuMEYV0LRMLftETQ0wMYxrrYH6anUuwIVrnBfhc6O89s9
-         xaIOQKixOTX5PUFhjVwPfO+yshqSpKx+8GMXNTlSVVnsyFkqHsNp1k7CmVAv6G0yrlA6
-         56I8EZTN3dqzfYafoy6B+aA2TdNoUdpIuu9GGm/oIh8KBQuT/PdupYj05j1672MfhIaQ
-         EJ9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sdImyBobVK9C7JHfpgjE6AhabFh6YsuoqYzTsW8O26w=;
-        b=bOC/8lFdtflOzONWE7i7svnT8phh2omzggGy5ol7qNypb9Acz5YEph/m6kFxTabjry
-         3FF24TP0vuBPw/E8IJ3yhM5Ui/Uvh41/JzZLlhL1lfshL4/FG1jLDyKtnVZa2RzyLXPG
-         wLXjmmfttiOKTcMMP/RqUqpAtZvsWiWLbBa64PaKYfmqeVUoYcxYmHBQZOVrrn3uTaEA
-         0YxZ+62wJrfuSD8KartU0+PvWAb1pU5WSSxgs5M5YohPd5mFFL8BaEmUIlsXg3U2NglQ
-         XMh9tutfqSqyOvnuaE0Rs7G48nvwwXbKfaV9s4Xnz0g1RxhJjYsw6GYd79nk++6h7ms7
-         hEfg==
-X-Gm-Message-State: AOAM530CAo8rSfhNFIiRobQWzbOXCTNgJaz/Coy98oCmZEaRw/RmIziq
-        ylsFF7bbvEBSMj3x3JaVdvxcLbTdFV5M
-X-Google-Smtp-Source: ABdhPJzOPEvCyZwawEXBs8XVbjr2ljQD5haVjnGzWMLXjl905o6lFfqoGXZgRYKpOaaVjXYS/gQ/pMM6dBBo
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:b0e8:d460:758b:a0ae])
- (user=qperret job=sendgmr) by 2002:a05:6214:6af:: with SMTP id
- s15mr6751903qvz.52.1628522737726; Mon, 09 Aug 2021 08:25:37 -0700 (PDT)
-Date:   Mon,  9 Aug 2021 16:24:48 +0100
-In-Reply-To: <20210809152448.1810400-1-qperret@google.com>
-Message-Id: <20210809152448.1810400-22-qperret@google.com>
-Mime-Version: 1.0
-References: <20210809152448.1810400-1-qperret@google.com>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH v4 21/21] KVM: arm64: Make __pkvm_create_mappings static
-From:   Quentin Perret <qperret@google.com>
-To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        tabba@google.com, dbrazdil@google.com, kernel-team@android.com,
-        qperret@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 9 Aug 2021 11:25:47 -0400
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 934B7EA99E;
+        Mon,  9 Aug 2021 11:25:25 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+        :to:cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=An3Ysq0BWcQIGV5ILuMU43T335Y2wnTACUY2jQ
+        9zklw=; b=sW8LjIVWOZNO0FC/Dc8G4gEsSAzkFeUhZmEUOVysufPfgdWksqWOFm
+        UYYFBcI8LxRXZtP7gHdai6CKQ2/LDlY8AmWKEwuI4OK7J/sTxK0WPlxGJPvC8Zem
+        3KXOyWgY3E34qmje+igCzKLfGz+d4o309O4osAn+zMQKPGrSOhb2I=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 8A98FEA99D;
+        Mon,  9 Aug 2021 11:25:25 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=An3Ysq0BWcQIGV5ILuMU43T335Y2wnTACUY2jQ9zklw=; b=pY8OdQ6ZAEnGtsf/WYvRaxUXTMdNBDkOVgahHv1In8oXBU83Ov+OLjcvD63xDIpnzzlXA3XqhEUjMM6SOi70l7/a6DW7vsc9I05KwUASrRrmNpRm4+zW3Q/4q+Pdz1JVCOl2+t7nG88NrEPOZTOYKVUB08iNzoLGvuxUh+sYU10=
+Received: from yoda.home (unknown [96.21.170.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 0A180EA99C;
+        Mon,  9 Aug 2021 11:25:25 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id 1E0272DA0B8A;
+        Mon,  9 Aug 2021 11:25:24 -0400 (EDT)
+Date:   Mon, 9 Aug 2021 11:25:24 -0400 (EDT)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     David Heidelberg <david@ixit.cz>
+cc:     Arnd Bergmann <arnd@arndb.de>, Jon Medhurst <tixy@linaro.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: atags_to_fdt: don't warn about stack size
+In-Reply-To: <20210809151021.5137-1-david@ixit.cz>
+Message-ID: <5qs88614-n75s-1rn5-353r-o1p96s5qp59n@syhkavp.arg>
+References: <20210809151021.5137-1-david@ixit.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 04DD028C-F926-11EB-90B2-FD8818BA3BAF-78420484!pb-smtp2.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __pkvm_create_mappings() function is no longer used outside of
-nvhe/mm.c, make it static.
+On Mon, 9 Aug 2021, David Heidelberg wrote:
 
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/hyp/include/nvhe/mm.h | 2 --
- arch/arm64/kvm/hyp/nvhe/mm.c         | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+> The merge_fdt_bootargs() function by definition consumes more than 1024
+> bytes of stack because it has a 1024 byte command line on the stack,
+> meaning that we always get a warning when building this file:
+> 
+> arch/arm/boot/compressed/atags_to_fdt.c: In function 'merge_fdt_bootargs':
+> arch/arm/boot/compressed/atags_to_fdt.c:98:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> 
+> However, as this is the decompressor and we know that it has a very shallow
+> call chain, and we do not actually risk overflowing the kernel stack
+> at runtime here.
+> 
+> This just shuts up the warning by disabling the warning flag for this
+> file.
+> 
+> Tested on Nexus 7 2012 builds.
+> 
+> Original Author: Arnd Bergmann <arnd@arndb.de>
+> Reference: https://lore.kernel.org/lkml/8232115.18ykgQ6J5T@wuerfel/
+> 
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Nicolas Pitre <nico@linaro.org>
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Cc: Marc Zyngier <marc.zyngier@arm.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 
-diff --git a/arch/arm64/kvm/hyp/include/nvhe/mm.h b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-index c76d7136ed9b..c9a8f535212e 100644
---- a/arch/arm64/kvm/hyp/include/nvhe/mm.h
-+++ b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-@@ -24,8 +24,6 @@ int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
- int pkvm_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
- int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
- int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot);
--int __pkvm_create_mappings(unsigned long start, unsigned long size,
--			   unsigned long phys, enum kvm_pgtable_prot prot);
- unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
- 					    enum kvm_pgtable_prot prot);
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/mm.c b/arch/arm64/kvm/hyp/nvhe/mm.c
-index 6fbe8e8030f6..2fabeceb889a 100644
---- a/arch/arm64/kvm/hyp/nvhe/mm.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mm.c
-@@ -23,8 +23,8 @@ u64 __io_map_base;
- struct memblock_region hyp_memory[HYP_MEMBLOCK_REGIONS];
- unsigned int hyp_memblock_nr;
- 
--int __pkvm_create_mappings(unsigned long start, unsigned long size,
--			  unsigned long phys, enum kvm_pgtable_prot prot)
-+static int __pkvm_create_mappings(unsigned long start, unsigned long size,
-+				  unsigned long phys, enum kvm_pgtable_prot prot)
- {
- 	int err;
- 
--- 
-2.32.0.605.g8dce9f2422-goog
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
 
+> ---
+>  arch/arm/boot/compressed/Makefile | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
+> index 9d91ae1091b0..91265e7ff672 100644
+> --- a/arch/arm/boot/compressed/Makefile
+> +++ b/arch/arm/boot/compressed/Makefile
+> @@ -85,6 +85,8 @@ compress-$(CONFIG_KERNEL_LZ4)  = lz4
+>  libfdt_objs := fdt_rw.o fdt_ro.o fdt_wip.o fdt.o
+>  
+>  ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
+> +CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
+> +CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
+>  OBJS	+= $(libfdt_objs) atags_to_fdt.o
+>  endif
+>  ifeq ($(CONFIG_USE_OF),y)
+> -- 
+> 2.30.2
+> 
+> 
