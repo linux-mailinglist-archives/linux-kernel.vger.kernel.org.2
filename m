@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0073E4A49
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F31D3E4A4B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234187AbhHIQvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
+        id S234072AbhHIQvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbhHIQvR (ORCPT
+        with ESMTP id S233384AbhHIQvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:51:17 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953FFC0617A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:50:56 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id r6so62026wrt.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:50:56 -0700 (PDT)
+        Mon, 9 Aug 2021 12:51:18 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE2BC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:50:57 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id l11-20020a7bcf0b0000b0290253545c2997so467567wmg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:50:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vbN/79mS5cORZWWvLgOUVIMx3cPKWDGgv+719frs6/c=;
-        b=JKLTwxX2dVYwBZtll5OeyhMtIGgpmTN1Y/qXLPJi8bBVo/OOAl5cuiZsTDN5+Q98TI
-         qGq7z3F89P3qoJiuL7y5JigS/GDEpWBVv362B1wv2ielG/5lnK0ikJFQvlFeOgoe1pms
-         X7OOk6NUhpqcplJ9Rfev78s6L5O+PzkJNZMsxSNtPwPcIxoctvXhxs33+4z04LFlVYvq
-         6UVgJjlC8KWZ6LSuJ0cZAsH+7YQr2HaMlVm8BLsJi4pd1dWNSV16+4O1jTH/24t50ngj
-         MgKyS2vWffSKfMXZarhH4Zn2OHLW8Sfe3v17ESuOallKH40RhDOcUEbk09OdZw+SxRap
-         t7VQ==
+        bh=uswxeYf6f1/DwUZZCO5hllYNFSqX0bnCw6vEoqvvI1o=;
+        b=FDT5ZFhLNcGRTVnV05gh0+omGitXfllXXfYcuz0QNpMCowMEMY+WiwYVNxuNNuQBPg
+         OkwPUs5pvUErpii23pdY3L0r+jLWm0OxReVxoKJ+cApiZpA7cmW5MNCjcTGG8ovGG1Sz
+         kyRXXzvjV3KFB8kspC2S+ajnHCRmwGtpIut0X8AIuKPPSfHghBrSfgSyvlzJIJIhV2N4
+         BaVEUdk9abrn7FhnCA8JWYSiVjHbg5xS7hUtXCOefxGr84ImkC1g1xlP0rV6Jfa80iQu
+         iZLwVHsTCUUOGuMEwfW1OgdOTTVVeDck7xo6R7wXzn8DGheyqWUAh2a8DLCRhn4vKiuJ
+         h1Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vbN/79mS5cORZWWvLgOUVIMx3cPKWDGgv+719frs6/c=;
-        b=i9KFjwieV41HUaNfGO75vF1KzuUxPaNsCjYifVussa5lV6j1sV+IHMZbtYwvkTqeYZ
-         0HLYXHNLN2/PW91nlUkSfBNm8p1Lk+mdxdLH0hfTXxTaAp5dRxzyoQYFInghs0HDi30m
-         BNeQZI+WEAxWw0b0kZ8dPVpvPdqEG8NC1gA1ECPyEaoO2t7KdEyyPxBmpzagttXdrcAe
-         9LY5oJGpWCdfI7rYNi8xP5TJly/tThFSFO89B76sRnbJImBtV7cm7lWLmj97DTDBEDZh
-         WYbdg/gPPeAYI8AM8sUcGqqOkYC+r5UpnAD7GVKZulE5oCkZwQHdBhTas+VqX+0cyUo1
-         wG7A==
-X-Gm-Message-State: AOAM531b0jwrWV+O7DwpbuhIHKvfOk7aTwZ4nyEGQRF0X449kEgxHnwM
-        NfsyRok9tC3wZrzYcmxEu8Q=
-X-Google-Smtp-Source: ABdhPJxwLRcGO6wJu2V3tbs5R4JGbrC8qVIW25xIta/ZT64j9uhZTDvO1gM9Pz8l69wTynOHZ0Ve7w==
-X-Received: by 2002:a5d:4846:: with SMTP id n6mr9314816wrs.91.1628527855251;
+        bh=uswxeYf6f1/DwUZZCO5hllYNFSqX0bnCw6vEoqvvI1o=;
+        b=OCbwXyDaFeW6JMlEpTgMQb0FPFjNTyT7aDw/iEM+EwWg0TQiNXHNFkp4QKAu3KZaR9
+         0/CTCjI9p1WQLV5XYD+K/i0SUss4iZltZATQSkTEaeAp2eDZPrpSFuoyXLu8GqNA99u/
+         FZQUsBEM5LBlfwlrjgD8Sg6h/J4EechpRqxQ8Vbh2ytkF1msIqxH6p+K8YrNtPxheA5p
+         jpDW1NgweM2L3CqEQhL6dQm0rnx23Tt2FaDqOEPoxS1cU/OGM20zUUYgiwkT3LynQA3n
+         aa9ChJLU4CxnABTpVEozxoJ65CLSj6V89MEU6VDI1nJTnaP3B4Vw9a3defUjQRVmdOpT
+         8MUA==
+X-Gm-Message-State: AOAM531FxkFEYkooKMdE0lFaQ5JjptZ/Wzl5PWBzZjUduVJ+vXDGZrDC
+        JuwJDw62UdKmR5Y/hFWuWvg=
+X-Google-Smtp-Source: ABdhPJxXMGxoEHpn+5h+aitTIMoBPUkK2e6X+T4unaVpaW5DWO4w2ZrKzYGlRKXlbbqm92yuinvrdQ==
+X-Received: by 2002:a05:600c:896:: with SMTP id l22mr83868wmp.68.1628527855964;
         Mon, 09 Aug 2021 09:50:55 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::996b])
-        by smtp.gmail.com with ESMTPSA id q5sm20484469wrx.33.2021.08.09.09.50.54
+        by smtp.gmail.com with ESMTPSA id q5sm20484469wrx.33.2021.08.09.09.50.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 09 Aug 2021 09:50:55 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
@@ -53,9 +53,9 @@ To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 11/17] staging: r8188eu: remove unnecessary parentheses in core/rtw_sta_mgt.c
-Date:   Mon,  9 Aug 2021 18:50:01 +0200
-Message-Id: <20210809165007.23204-12-straube.linux@gmail.com>
+Subject: [PATCH v2 12/17] staging: r8188eu: remove unnecessary parentheses in core/rtw_recv.c
+Date:   Mon,  9 Aug 2021 18:50:02 +0200
+Message-Id: <20210809165007.23204-13-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210809165007.23204-1-straube.linux@gmail.com>
 References: <20210809165007.23204-1-straube.linux@gmail.com>
@@ -65,105 +65,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary parentheses in core/rtw_sta_mgt.c reported by
+Remove unnecessary parentheses in core/rtw_recv.c reported by
 checkpatch.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_sta_mgt.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/staging/r8188eu/core/rtw_recv.c | 26 ++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-index 3e8e85756f25..c9644a3ecc4e 100644
---- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-+++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-@@ -81,7 +81,7 @@ u32	_rtw_init_sta_priv(struct	sta_priv *pstapriv)
- 	for (i = 0; i < NUM_STA; i++) {
- 		_rtw_init_stainfo(psta);
+diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
+index 3f5a7282c857..08aea680312c 100644
+--- a/drivers/staging/r8188eu/core/rtw_recv.c
++++ b/drivers/staging/r8188eu/core/rtw_recv.c
+@@ -70,9 +70,9 @@ int _rtw_init_recv_priv(struct recv_priv *precvpriv, struct adapter *padapter)
+ 	precvframe = (struct recv_frame *)precvpriv->precv_frame_buf;
  
--		INIT_LIST_HEAD(&(pstapriv->sta_hash[i]));
-+		INIT_LIST_HEAD(&pstapriv->sta_hash[i]);
+ 	for (i = 0; i < NR_RECVFRAME; i++) {
+-		INIT_LIST_HEAD(&(precvframe->list));
++		INIT_LIST_HEAD(&precvframe->list);
  
- 		list_add_tail(&psta->list, get_list_head(&pstapriv->free_sta_queue));
+-		list_add_tail(&(precvframe->list), &(precvpriv->free_recv_queue.queue));
++		list_add_tail(&precvframe->list, &precvpriv->free_recv_queue.queue);
  
-@@ -145,7 +145,7 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
- 		/*	delete all reordering_ctrl_timer		*/
- 		spin_lock_bh(&pstapriv->sta_hash_lock);
- 		for (index = 0; index < NUM_STA; index++) {
--			phead = &(pstapriv->sta_hash[index]);
-+			phead = &pstapriv->sta_hash[index];
- 			plist = phead->next;
+ 		res = rtw_os_recv_resource_alloc(padapter, precvframe);
  
- 			while (phead != plist) {
-@@ -190,7 +190,7 @@ struct	sta_info *rtw_alloc_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
- 		psta = NULL;
- 	} else {
- 		psta = container_of((&pfree_sta_queue->queue)->next, struct sta_info, list);
--		list_del_init(&(psta->list));
-+		list_del_init(&psta->list);
- 		spin_unlock_bh(&pfree_sta_queue->lock);
- 		_rtw_init_stainfo(psta);
- 		memcpy(psta->hwaddr, hwaddr, ETH_ALEN);
-@@ -199,7 +199,7 @@ struct	sta_info *rtw_alloc_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
- 			psta = NULL;
- 			goto exit;
- 		}
--		phash_list = &(pstapriv->sta_hash[index]);
-+		phash_list = &pstapriv->sta_hash[index];
+@@ -174,11 +174,11 @@ int rtw_free_recvframe(struct recv_frame *precvframe, struct __queue *pfree_recv
  
- 		spin_lock_bh(&pstapriv->sta_hash_lock);
+ 	spin_lock_bh(&pfree_recv_queue->lock);
  
-@@ -273,19 +273,19 @@ u32	rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
+-	list_del_init(&(precvframe->list));
++	list_del_init(&precvframe->list);
  
- 	rtw_free_xmitframe_queue(pxmitpriv, &pstaxmitpriv->vo_q.sta_pending);
+ 	precvframe->len = 0;
  
--	list_del_init(&(pstaxmitpriv->vo_q.tx_pending));
-+	list_del_init(&pstaxmitpriv->vo_q.tx_pending);
+-	list_add_tail(&(precvframe->list), get_list_head(pfree_recv_queue));
++	list_add_tail(&precvframe->list, get_list_head(pfree_recv_queue));
  
- 	rtw_free_xmitframe_queue(pxmitpriv, &pstaxmitpriv->vi_q.sta_pending);
+ 	if (padapter) {
+ 		if (pfree_recv_queue == &precvpriv->free_recv_queue)
+@@ -195,8 +195,8 @@ int _rtw_enqueue_recvframe(struct recv_frame *precvframe, struct __queue *queue)
+ 	struct adapter *padapter = precvframe->adapter;
+ 	struct recv_priv *precvpriv = &padapter->recvpriv;
  
--	list_del_init(&(pstaxmitpriv->vi_q.tx_pending));
-+	list_del_init(&pstaxmitpriv->vi_q.tx_pending);
+-	list_del_init(&(precvframe->list));
+-	list_add_tail(&(precvframe->list), get_list_head(queue));
++	list_del_init(&precvframe->list);
++	list_add_tail(&precvframe->list, get_list_head(queue));
  
- 	rtw_free_xmitframe_queue(pxmitpriv, &pstaxmitpriv->bk_q.sta_pending);
+ 	if (padapter) {
+ 		if (queue == &precvpriv->free_recv_queue)
+@@ -323,7 +323,7 @@ static int recvframe_chkmic(struct adapter *adapter,  struct recv_frame *precvfr
+ 	struct	security_priv	*psecuritypriv = &adapter->securitypriv;
  
--	list_del_init(&(pstaxmitpriv->bk_q.tx_pending));
-+	list_del_init(&pstaxmitpriv->bk_q.tx_pending);
+ 	struct mlme_ext_priv	*pmlmeext = &adapter->mlmeextpriv;
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
  
- 	rtw_free_xmitframe_queue(pxmitpriv, &pstaxmitpriv->be_q.sta_pending);
+ 	stainfo = rtw_get_stainfo(&adapter->stapriv, &prxattrib->ta[0]);
  
--	list_del_init(&(pstaxmitpriv->be_q.tx_pending));
-+	list_del_init(&pstaxmitpriv->be_q.tx_pending);
+@@ -1338,7 +1338,7 @@ static struct recv_frame *recvframe_defrag(struct adapter *adapter, struct __que
+ 	plist = phead->next;
+ 	pfhdr = container_of(plist, struct recv_frame, list);
+ 	prframe = (struct recv_frame *)pfhdr;
+-	list_del_init(&(prframe->list));
++	list_del_init(&prframe->list);
  
- 	spin_unlock_bh(&pxmitpriv->lock);
+ 	if (curfragnum != pfhdr->attrib.frag_num) {
+ 		/* the first fragment number must be 0 */
+@@ -1355,7 +1355,7 @@ static struct recv_frame *recvframe_defrag(struct adapter *adapter, struct __que
+ 	plist = phead->next;
+ 	pfhdr = container_of(plist, struct recv_frame, list);
+ 	prframe = (struct recv_frame *)pfhdr;
+-	list_del_init(&(prframe->list));
++	list_del_init(&prframe->list);
  
-@@ -321,7 +321,7 @@ u32	rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
+ 	plist = plist->next;
  
+@@ -1506,7 +1506,7 @@ static int amsdu_to_msdu(struct adapter *padapter, struct recv_frame *prframe)
+ 	unsigned char *data_ptr;
+ 	struct sk_buff *sub_skb, *subframes[MAX_SUBFRAME_COUNT];
+ 	struct recv_priv *precvpriv = &padapter->recvpriv;
+-	struct __queue *pfree_recv_queue = &(precvpriv->free_recv_queue);
++	struct __queue *pfree_recv_queue = &precvpriv->free_recv_queue;
+ 	int	ret = _SUCCESS;
+ 	nr_subframes = 0;
+ 
+@@ -1668,9 +1668,9 @@ int enqueue_reorder_recvframe(struct recv_reorder_ctrl *preorder_ctrl, struct re
+ 			break;
+ 	}
+ 
+-	list_del_init(&(prframe->list));
++	list_del_init(&prframe->list);
+ 
+-	list_add_tail(&(prframe->list), plist);
++	list_add_tail(&prframe->list, plist);
+ 	return true;
+ }
+ 
+@@ -1704,7 +1704,7 @@ static int recv_indicatepkts_in_order(struct adapter *padapter, struct recv_reor
+ 
+ 		if (!SN_LESS(preorder_ctrl->indicate_seq, pattrib->seq_num)) {
  			plist = plist->next;
- 
 -			list_del_init(&(prframe->list));
 +			list_del_init(&prframe->list);
  
- 			rtw_free_recvframe(prframe, pfree_recv_queue);
- 		}
-@@ -389,7 +389,7 @@ void rtw_free_all_stainfo(struct adapter *padapter)
- 	spin_lock_bh(&pstapriv->sta_hash_lock);
- 
- 	for (index = 0; index < NUM_STA; index++) {
--		phead = &(pstapriv->sta_hash[index]);
-+		phead = &pstapriv->sta_hash[index];
- 		plist = phead->next;
- 
- 		while (phead != plist) {
-@@ -425,7 +425,7 @@ struct sta_info *rtw_get_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
- 
- 	spin_lock_bh(&pstapriv->sta_hash_lock);
- 
--	phead = &(pstapriv->sta_hash[index]);
-+	phead = &pstapriv->sta_hash[index];
- 	plist = phead->next;
- 
- 	while (phead != plist) {
+ 			if (SN_EQUAL(preorder_ctrl->indicate_seq, pattrib->seq_num))
+ 				preorder_ctrl->indicate_seq = (preorder_ctrl->indicate_seq + 1) & 0xFFF;
 -- 
 2.32.0
 
