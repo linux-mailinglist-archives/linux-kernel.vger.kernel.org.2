@@ -2,166 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425E83E3F6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143EA3E3F71
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 07:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbhHIFal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 01:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbhHIFah (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 01:30:37 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C85C061764;
-        Sun,  8 Aug 2021 22:30:14 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gjl5v3v9rz9sWS;
-        Mon,  9 Aug 2021 15:30:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628487012;
-        bh=G7vQIX2Vriu1vMiP8cDeEMneDRjmmhd5qzkamZGtuXM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=G7/B9DRXCwGpQYjEWd6Ex1qmfF/1yWXbbvh7Xov0cTdb6n5j/abEgvmmF9tdogWGP
-         xGq6Hbuu3Pk54L6bduEgFC1ht19yCPBBYBlb7p1rSW7b1kM/bfkJLeKa2AITzTVf/S
-         2XDrFTmkfL35HGq2RkBiNa97LuvS8Q2wMSysB1ePHUN4u5TSBur2pi3rVNIA5jzJ9n
-         3iLtVd/dD3hJpRpPF6UgDLvrXzMfgxXdqE5gim+6OyrrNdWtkWL/LNNoxId7nH3Wri
-         PvezLZhvUclGHNHh0OasiTz0XRzAMSxsXEWhUV9K6Ui83Q1eAVbqIS0Vm8voAGJ/mN
-         MtbYTgwKjNDEg==
-Date:   Mon, 9 Aug 2021 15:30:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Mason Zhang <Mason.Zhang@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the spi tree
-Message-ID: <20210809153010.29bd5910@canb.auug.org.au>
+        id S233119AbhHIFwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 01:52:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232786AbhHIFwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 01:52:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E783261019;
+        Mon,  9 Aug 2021 05:51:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628488308;
+        bh=N6D6KBErRK5MuvWTGfm6sCYWXXDU8X7+uJ9vxdxmzlA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=avWaDshwyaOqt22JisRFBjWdAdBsscGbrulGrJF3zwZm0dWppood/jud0l6Aopw0l
+         /YN9tNC901f0mg4xL+584bElPwDDw4J0GDF3AAIJL6JraF//RUf5b9O6sBFvxCgz6e
+         5XNhGXo6qc6l+kyjSMVy/FquS5lkbp8F8q26TbCVn4vor02hgVXIYDS0jRGKtTNS51
+         M8zhNp5djTeeY/WyOX5T9stWtY/8oKPFm3LCeqHjA33xxDExIN7IFprUSxy3TGrTKN
+         3s3J6+e/rXVUjdIXiun3zHyAIFWCgR4JGqFwIXsf6RILThjPPKZ5NBytP1x0686AOZ
+         1FfGSgu8s7IBQ==
+Date:   Mon, 9 Aug 2021 08:51:44 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Antoine Tenart <atenart@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND][PATCH] net: called rtnl_unlock() before runpm resumes
+ devices
+Message-ID: <YRDCcDZGVkCdNF34@unreal>
+References: <20210809032809.1224002-1-acelan.kao@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vL2oBHUfqzSgftsqYK8HAF/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809032809.1224002-1-acelan.kao@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vL2oBHUfqzSgftsqYK8HAF/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 09, 2021 at 11:28:09AM +0800, AceLan Kao wrote:
+> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+> 
+> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
+> __dev_open() it calls pm_runtime_resume() to resume devices, and in
+> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
+> again. That leads to a recursive lock.
+> 
+> It should leave the devices' resume function to decide if they need to
+> call rtnl_lock()/rtnl_unlock(), 
 
-Hi all,
+Why? It doesn't sound right that drivers internally decide if to take or
+release some external to them lock without seeing full picture.
 
-After merging the spi tree, today's linux-next build (x86_64 allmodconfig)
-produced this warning:
+Most of the time, device driver authors do it wrong. I afraid that igs
+is one of such drivers that did it wrong.
 
-In file included from include/linux/kernel.h:16,
-                 from include/linux/clk.h:13,
-                 from drivers/spi/spi-mt65xx.c:7:
-drivers/spi/spi-mt65xx.c: In function 'mtk_spi_set_hw_cs_timing':
-include/linux/minmax.h:20:28: warning: comparison of distinct pointer types=
- lacks a cast
-   20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:26:4: note: in expansion of macro '__typecheck'
-   26 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:36:24: note: in expansion of macro '__safe_cmp'
-   36 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:45:19: note: in expansion of macro '__careful_cmp'
-   45 | #define min(x, y) __careful_cmp(x, y, <)
-      |                   ^~~~~~~~~~~~~
-drivers/spi/spi-mt65xx.c:242:10: note: in expansion of macro 'min'
-  242 |   hold =3D min(hold, 0xffff);
-      |          ^~~
-include/linux/minmax.h:20:28: warning: comparison of distinct pointer types=
- lacks a cast
-   20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:26:4: note: in expansion of macro '__typecheck'
-   26 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:36:24: note: in expansion of macro '__safe_cmp'
-   36 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:45:19: note: in expansion of macro '__careful_cmp'
-   45 | #define min(x, y) __careful_cmp(x, y, <)
-      |                   ^~~~~~~~~~~~~
-drivers/spi/spi-mt65xx.c:243:11: note: in expansion of macro 'min'
-  243 |   setup =3D min(setup, 0xffff);
-      |           ^~~
-include/linux/minmax.h:20:28: warning: comparison of distinct pointer types=
- lacks a cast
-   20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:26:4: note: in expansion of macro '__typecheck'
-   26 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:36:24: note: in expansion of macro '__safe_cmp'
-   36 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:45:19: note: in expansion of macro '__careful_cmp'
-   45 | #define min(x, y) __careful_cmp(x, y, <)
-      |                   ^~~~~~~~~~~~~
-drivers/spi/spi-mt65xx.c:251:10: note: in expansion of macro 'min'
-  251 |   hold =3D min(hold, 0xff);
-      |          ^~~
-include/linux/minmax.h:20:28: warning: comparison of distinct pointer types=
- lacks a cast
-   20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:26:4: note: in expansion of macro '__typecheck'
-   26 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:36:24: note: in expansion of macro '__safe_cmp'
-   36 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:45:19: note: in expansion of macro '__careful_cmp'
-   45 | #define min(x, y) __careful_cmp(x, y, <)
-      |                   ^~~~~~~~~~~~~
-drivers/spi/spi-mt65xx.c:252:11: note: in expansion of macro 'min'
-  252 |   setup =3D min(setup, 0xff);
-      |           ^~~
-include/linux/minmax.h:20:28: warning: comparison of distinct pointer types=
- lacks a cast
-   20 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:26:4: note: in expansion of macro '__typecheck'
-   26 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:36:24: note: in expansion of macro '__safe_cmp'
-   36 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:45:19: note: in expansion of macro '__careful_cmp'
-   45 | #define min(x, y) __careful_cmp(x, y, <)
-      |                   ^~~~~~~~~~~~~
-drivers/spi/spi-mt65xx.c:261:13: note: in expansion of macro 'min'
-  261 |  inactive =3D min(inactive, 0xff);
-      |             ^~~
+Thanks
 
-Introduced by commit
-
-  04e6bb0d6bb1 ("spi: modify set_cs_timing parameter")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vL2oBHUfqzSgftsqYK8HAF/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEQvWIACgkQAVBC80lX
-0GxbHwf3VkB/Mzj0pDNRG7pK/GMJ7qvJhTKzMy5GOUOITLNv96eIZGdPYKWSV9s8
-vhZP4fsAYSn/1AcsTX8ezukb/XeWkv8g/RUiwKQb3/0pH39CnN8+Fy8bY0HY15L8
-7g4j3i7PRJkJIlLK6LjLNO8LlMuYSL4AAlVoC2tEpl1J43ltieCSeFE5YkibD7uT
-UtgtpdXMdLbvSVE2VYYma7RUHrO8WCm4wuTQL2Zq9kaLnEgdWJz4xcHbiZIgJ4yz
-t66SXEpTBOIgkqsbjCr8UJ2vCpevSdnJfnTFynp+JQtayvvDfFClDyx1ud4BJHFF
-nM+0d2bI0Tgr9ggX2Qy8UfizpjMb
-=WgSy
------END PGP SIGNATURE-----
-
---Sig_/vL2oBHUfqzSgftsqYK8HAF/--
+> so call rtnl_unlock() before calling pm_runtime_resume() and then call
+> rtnl_lock() after it in __dev_open().
+> 
+> [  967.723577] INFO: task ip:6024 blocked for more than 120 seconds.
+> [  967.723588]       Not tainted 5.12.0-rc3+ #1
+> [  967.723592] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  967.723594] task:ip              state:D stack:    0 pid: 6024 ppid:  5957 flags:0x00004000
+> [  967.723603] Call Trace:
+> [  967.723610]  __schedule+0x2de/0x890
+> [  967.723623]  schedule+0x4f/0xc0
+> [  967.723629]  schedule_preempt_disabled+0xe/0x10
+> [  967.723636]  __mutex_lock.isra.0+0x190/0x510
+> [  967.723644]  __mutex_lock_slowpath+0x13/0x20
+> [  967.723651]  mutex_lock+0x32/0x40
+> [  967.723657]  rtnl_lock+0x15/0x20
+> [  967.723665]  igb_resume+0xee/0x1d0 [igb]
+> [  967.723687]  ? pci_pm_default_resume+0x30/0x30
+> [  967.723696]  igb_runtime_resume+0xe/0x10 [igb]
+> [  967.723713]  pci_pm_runtime_resume+0x74/0x90
+> [  967.723718]  __rpm_callback+0x53/0x1c0
+> [  967.723725]  rpm_callback+0x57/0x80
+> [  967.723730]  ? pci_pm_default_resume+0x30/0x30
+> [  967.723735]  rpm_resume+0x547/0x760
+> [  967.723740]  __pm_runtime_resume+0x52/0x80
+> [  967.723745]  __dev_open+0x56/0x160
+> [  967.723753]  ? _raw_spin_unlock_bh+0x1e/0x20
+> [  967.723758]  __dev_change_flags+0x188/0x1e0
+> [  967.723766]  dev_change_flags+0x26/0x60
+> [  967.723773]  do_setlink+0x723/0x10b0
+> [  967.723782]  ? __nla_validate_parse+0x5b/0xb80
+> [  967.723792]  __rtnl_newlink+0x594/0xa00
+> [  967.723800]  ? nla_put_ifalias+0x38/0xa0
+> [  967.723807]  ? __nla_reserve+0x41/0x50
+> [  967.723813]  ? __nla_reserve+0x41/0x50
+> [  967.723818]  ? __kmalloc_node_track_caller+0x49b/0x4d0
+> [  967.723824]  ? pskb_expand_head+0x75/0x310
+> [  967.723830]  ? nla_reserve+0x28/0x30
+> [  967.723835]  ? skb_free_head+0x25/0x30
+> [  967.723843]  ? security_sock_rcv_skb+0x2f/0x50
+> [  967.723850]  ? netlink_deliver_tap+0x3d/0x210
+> [  967.723859]  ? sk_filter_trim_cap+0xc1/0x230
+> [  967.723863]  ? skb_queue_tail+0x43/0x50
+> [  967.723870]  ? sock_def_readable+0x4b/0x80
+> [  967.723876]  ? __netlink_sendskb+0x42/0x50
+> [  967.723888]  ? security_capable+0x3d/0x60
+> [  967.723894]  ? __cond_resched+0x19/0x30
+> [  967.723900]  ? kmem_cache_alloc_trace+0x390/0x440
+> [  967.723906]  rtnl_newlink+0x49/0x70
+> [  967.723913]  rtnetlink_rcv_msg+0x13c/0x370
+> [  967.723920]  ? _copy_to_iter+0xa0/0x460
+> [  967.723927]  ? rtnl_calcit.isra.0+0x130/0x130
+> [  967.723934]  netlink_rcv_skb+0x55/0x100
+> [  967.723939]  rtnetlink_rcv+0x15/0x20
+> [  967.723944]  netlink_unicast+0x1a8/0x250
+> [  967.723949]  netlink_sendmsg+0x233/0x460
+> [  967.723954]  sock_sendmsg+0x65/0x70
+> [  967.723958]  ____sys_sendmsg+0x218/0x290
+> [  967.723961]  ? copy_msghdr_from_user+0x5c/0x90
+> [  967.723966]  ? lru_cache_add_inactive_or_unevictable+0x27/0xb0
+> [  967.723974]  ___sys_sendmsg+0x81/0xc0
+> [  967.723980]  ? __mod_memcg_lruvec_state+0x22/0xe0
+> [  967.723987]  ? kmem_cache_free+0x244/0x420
+> [  967.723991]  ? dentry_free+0x37/0x70
+> [  967.723996]  ? mntput_no_expire+0x4c/0x260
+> [  967.724001]  ? __cond_resched+0x19/0x30
+> [  967.724007]  ? security_file_free+0x54/0x60
+> [  967.724013]  ? call_rcu+0xa4/0x250
+> [  967.724021]  __sys_sendmsg+0x62/0xb0
+> [  967.724026]  ? exit_to_user_mode_prepare+0x3d/0x1a0
+> [  967.724032]  __x64_sys_sendmsg+0x1f/0x30
+> [  967.724037]  do_syscall_64+0x38/0x90
+> [  967.724044]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Fixes: bd869245a3dc ("net: core: try to runtime-resume detached device in __dev_open")
+> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> ---
+>  net/core/dev.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 8f1a47ad6781..dd43a29419fd 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -1585,8 +1585,11 @@ static int __dev_open(struct net_device *dev, struct netlink_ext_ack *extack)
+>  
+>  	if (!netif_device_present(dev)) {
+>  		/* may be detached because parent is runtime-suspended */
+> -		if (dev->dev.parent)
+> +		if (dev->dev.parent) {
+> +			rtnl_unlock();
+>  			pm_runtime_resume(dev->dev.parent);
+> +			rtnl_lock();
+> +		}
+>  		if (!netif_device_present(dev))
+>  			return -ENODEV;
+>  	}
+> -- 
+> 2.25.1
+> 
