@@ -2,147 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A07A3E4A12
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762033E4A1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhHIQfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        id S232993AbhHIQiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhHIQfA (ORCPT
+        with ESMTP id S230394AbhHIQiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:35:00 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A78EC061796
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:34:40 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u13so24478772lje.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:34:40 -0700 (PDT)
+        Mon, 9 Aug 2021 12:38:51 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51A9C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:38:30 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id s11so9283190qvz.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K7YOdACwjhSqCE+6pPfew3F4ACBqKW2uMGtfkgFzo0w=;
-        b=fhZqxhwCVCkjULz1lBuhBxpPbR8EAqjfx0TyzDlH3BpKKaFSyYEgo9vzzEDQkl/Qsp
-         WvOusRc7qX1J33vjnBsDxwqwTxlE6eny/2dogsC83S6MQWOTmQTQCTsl9zs/HrY3pWyu
-         SARFdJgtliK5rDQir1KgsJkcNZmBB99hIO8o5mQdBRJQRZMq3OAcJYDoUS9aeplesrAS
-         Deerdv8TG6GSCJgdC5Z/2WD8rmZ/9RszUhpVyYpuTWOCBFWc3zOmL3Kz1N3V8IczoAGy
-         PIzM7hQajz1CPPCMFK8MO+J+OEA+9tShJH3DjlxNnMNPRNe/nX/86CBRgvVWjzG+haJH
-         mPIQ==
+        bh=vGmxXoRJqoVtQvEJ99Oxq7I03PHdPXOjSEHoTmy10SI=;
+        b=oglR60NiKs/uJBRwcCaM4iZiITuPNEo5Afi6vNiWsjJndtPIvI1HpRmyjLyKkiA8do
+         LIgWIudfgHX7khFlhhvEiGLznMdfurJD+HEJS4zky91sqKzxAE3G75mNZ6bd7dcHmPbY
+         Ak4BmJTOD2ODHkafjHWNcouFCrLtBh5j9dYOJShZyald6bKQSKVx5wQkIldIryvZ45f5
+         gVbEBiicoAe1dw4uBb4i8kdnJecWQbix6FFoNWt+3lbDYSyAs4641QNu219dtLW2OToR
+         BX6LnQbBPj8le8H8y9AsWDHU3AI82HT7zRKoG1en6BR3+ztjX7FxaiJnVhAV+rNf7GeV
+         GXjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K7YOdACwjhSqCE+6pPfew3F4ACBqKW2uMGtfkgFzo0w=;
-        b=Z/iAftEmuIcOcRH5LZqrLzMXVHqTcaJAQfGb1almKRxGp2heBOqc8XeIopymAI1gC2
-         RdZb3V5SbbsRzTeeBtXxKT8Cmu/IjTVJYoapyiXMdKmWErQKGIpXrReldIsDkoJh33dQ
-         gAPC6jkLXwW8a5s/pNzO0ZKnS4qNYqqbtXjlaESp0I+4MYKyykJ7JDQKQs7cNty/bH3Y
-         lNkpMrIYp/8Sm5MZyT5lTB+hKarPHb/IstN2eWoJWQkmkm8AN/R2DEOY/uCD/GknqMow
-         +t43pJiMcPR7vN7/nkPreNqRD2Z7p8peuWUZLFDSD3ogJWncNsCmX+vSSY/Azfoz0kkY
-         JDRQ==
-X-Gm-Message-State: AOAM533Kps76zK8ZKPc8xAjKgwWLnJtAm9sAUHHLu2P9lwgj7Tl/HqlY
-        WrHIGte/nWuvdWAg9+ZwR0GvkI3Wmx55toBXU1uBww==
-X-Google-Smtp-Source: ABdhPJw4FURviq1RV5ndLqnqrm/+yRNAahPebIx2LrJKDzUd4iEkMfw+M2QqhDob2oylU0aZprvmijb9d/EoMTRj4ac=
-X-Received: by 2002:a2e:b8d3:: with SMTP id s19mr13820923ljp.388.1628526878265;
- Mon, 09 Aug 2021 09:34:38 -0700 (PDT)
+        bh=vGmxXoRJqoVtQvEJ99Oxq7I03PHdPXOjSEHoTmy10SI=;
+        b=GNNrFV5/+HEBJK7IkTyxMYMhW+7w9CRIf/hyIRkclyqQ3O8gRSane+dOChSpp0WWeH
+         qns0cWQ8VgVH2Zt1v5qY8h+ZB9fQByNsn2sEy9b0X/ynx8tHrOAySKje3yVyAn4HLBtU
+         OcpsZBHzWwQeWfoSjpynGqaLxUaWVqrnHp+B1RN6dORlnWx9r3Ax19kO7q1AP3H4oBdL
+         CPI5AaHRKptF6hLBSF1WcF6IxOTl6vCO7vyKn+Re+13m17qPwprX7MecTB3bv8pO81+R
+         yFIZ4CkiXyMSQ3uk+CimPelwprxi0zWrlPsSmd6kt644agIFEUmdDvwl/6Y4p0sf9OKJ
+         9dJQ==
+X-Gm-Message-State: AOAM531dNn9djZgZ2fKi/yGP5mmmzosMrQUpNZ+MVT207S42mJFQ9BTS
+        l8mnx8a6oLcYYF5ZRk7WlalWwqyoBFWZF4rQIMjwcg==
+X-Google-Smtp-Source: ABdhPJyNf8jA43u8FQx2VD8OpqyYmnYqBBe08qiwIXNfNu8mFzTWax/XBENY/O3HFRnpI6PhekNmBmslfYy5EeovOZ8=
+X-Received: by 2002:a0c:aa42:: with SMTP id e2mr13509058qvb.23.1628527109795;
+ Mon, 09 Aug 2021 09:38:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210809152651.2297337-1-maz@kernel.org> <20210809152651.2297337-13-maz@kernel.org>
- <CAOQ_QsjT8DUoXQsxWGgGiZkwNe2itRswGomtq6-p+7_oU01orQ@mail.gmail.com>
-In-Reply-To: <CAOQ_QsjT8DUoXQsxWGgGiZkwNe2itRswGomtq6-p+7_oU01orQ@mail.gmail.com>
-From:   Oliver Upton <oupton@google.com>
-Date:   Mon, 9 Aug 2021 09:34:26 -0700
-Message-ID: <CAOQ_QshvUVB-Ey3P0MJbj9OxU46kis6=Lo4soz_g_WebgRuvyg@mail.gmail.com>
-Subject: Re: [PATCH 12/13] arm64: Add a capability for FEAT_EVC
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
+References: <0000000000007db08f05c79fc81f@google.com> <x498s1ee26t.fsf@segfault.boston.devel.redhat.com>
+ <CACT4Y+Y=7aT65CA4n+sy5n75e53rWc+E3_K+-e6jxU=QQQOATg@mail.gmail.com> <x498s1aenle.fsf@segfault.boston.devel.redhat.com>
+In-Reply-To: <x498s1aenle.fsf@segfault.boston.devel.redhat.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 9 Aug 2021 18:38:18 +0200
+Message-ID: <CACT4Y+bkGk5pC2Bud1nrp6vibmFgOY6hDSSFrKL-bmHVZTvNTA@mail.gmail.com>
+Subject: Re: [syzbot] INFO: task hung in sys_io_destroy
+To:     Jeff Moyer <jmoyer@redhat.com>
+Cc:     syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com>,
+        bcrl@kvack.org, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 9:30 AM Oliver Upton <oupton@google.com> wrote:
->
-> Hi Marc,
->
-> On Mon, Aug 9, 2021 at 8:48 AM Marc Zyngier <maz@kernel.org> wrote:
+On Mon, 9 Aug 2021 at 15:46, Jeff Moyer <jmoyer@redhat.com> wrote:
+> >> syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com> writes:
+> >>
+> >> > Hello,
+> >> >
+> >> > syzbot found the following issue on:
+> >> >
+> >> > HEAD commit:    1d67c8d993ba Merge tag 'soc-fixes-5.14-1' of git://git.ker..
+> >> > git tree:       upstream
+> >> > console output: https://syzkaller.appspot.com/x/log.txt?x=11b40232300000
+> >> > kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b998c1afc13578
+> >> > dashboard link: https://syzkaller.appspot.com/bug?extid=d40a01556c761b2cb385
+> >> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12453812300000
+> >> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11225922300000
+> >> >
+> >> > Bisection is inconclusive: the issue happens on the oldest tested release.
+> >> >
+> >> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127cac6a300000
+> >> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=117cac6a300000
+> >> > console output: https://syzkaller.appspot.com/x/log.txt?x=167cac6a300000
+> >> >
+> >> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >> > Reported-by: syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com
+> >> >
+> >> > INFO: task syz-executor299:8807 blocked for more than 143 seconds.
+> >> >       Not tainted 5.14.0-rc1-syzkaller #0
+> >> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> >> > task:syz-executor299 state:D stack:29400 pid: 8807 ppid:  8806 flags:0x00000000
+> >> > Call Trace:
+> >> >  context_switch kernel/sched/core.c:4683 [inline]
+> >> >  __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
+> >> >  schedule+0xd3/0x270 kernel/sched/core.c:6019
+> >> >  schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1854
+> >> >  do_wait_for_common kernel/sched/completion.c:85 [inline]
+> >> >  __wait_for_common kernel/sched/completion.c:106 [inline]
+> >> >  wait_for_common kernel/sched/completion.c:117 [inline]
+> >> >  wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
+> >> >  __do_sys_io_destroy fs/aio.c:1402 [inline]
+> >> >  __se_sys_io_destroy fs/aio.c:1380 [inline]
+> >> >  __x64_sys_io_destroy+0x17e/0x1e0 fs/aio.c:1380
+> >> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> >> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>
+> >> The reproducer is creating a thread, issuing a IOCB_CMD_PREAD from a
+> >> pipe in that thread, and then calling io_destroy from another thread.
+> >> Because there is no writer on the other end of the pipe, the read will
+> >> block.  Note that it also is not submitted asynchronously, as that's not
+> >> supported.
+> >>
+> >> io_destroy is "hanging" because it's waiting for the read to finish.  If
+> >> the read thread is killed, cleanup happens as usual.  I'm not sure I
+> >> could classify this as a kernel bug.
 > >
-> > Add a new capability to detect the Enhanced Counter Virtualization
-> > feature (FEAT_EVC).
+> > Hi Jeff,
 > >
+> > Thanks for looking into this. I suspect the reproducer may create a
+> > fork bomb that DoSed the kernel so that it can't make progress for 140
+> > seconds. FTR, I've added it to
+> > https://github.com/google/syzkaller/issues/498#issuecomment-895071514
+> > to take a closer look.
 >
-> s/FEAT_EVC/FEAT_ECV/g
->
-> > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > ---
-> >  arch/arm64/kernel/cpufeature.c | 10 ++++++++++
-> >  arch/arm64/tools/cpucaps       |  1 +
-> >  2 files changed, 11 insertions(+)
-> >
-> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > index 0ead8bfedf20..9c2ce5408811 100644
-> > --- a/arch/arm64/kernel/cpufeature.c
-> > +++ b/arch/arm64/kernel/cpufeature.c
-> > @@ -1899,6 +1899,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
-> >                 .sign = FTR_UNSIGNED,
-> >                 .min_field_value = 1,
-> >         },
-> > +       {
-> > +               .desc = "Enhanced counter virtualization",
-> > +               .capability = ARM64_HAS_ECV,
-> > +               .type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> > +               .matches = has_cpuid_feature,
-> > +               .sys_reg = SYS_ID_AA64MMFR0_EL1,
-> > +               .field_pos = ID_AA64MMFR0_ECV_SHIFT,
-> > +               .sign = FTR_UNSIGNED,
-> > +               .min_field_value = 1,
-> > +       },
->
-> Per one of your other patches in the series, it sounds like userspace
-> access to the self-synchronized registers hasn't been settled yet.
-> However, if/when available to userspace, should this cpufeature map to
-> an ELF HWCAP?
->
-> Also, w.r.t. my series I have out for ECV in KVM. All the controls
-> used in EL2 depend on ECV=0x2. I agree that ECV=0x1 needs a cpufeature
-> bit, but what about EL2's use case?
+> No, I described exactly what happens.  You can reproduce the hung task
+> timeout with a much simpler program, attached below.
 
-Forgot to link the series:
+Ah, I see.
+But then shouldn't any userspace program be able to trigger kernel bug
+detection splats? If userspace programs can trigger bug detection
+warnings "legitimately", it makes it impossible to use these bug
+detection facilities in kernel testing.
+Also the reproducer should have killed the child process much sooner
+than 140 second, why did it still produce the warning?
+Also I wonder if it's possible to deadlock the system by creating 2
+tasks each waiting on the other, and both becoming non-killable as the
+result (maybe playing with CLONE_THREAD/VM)?
 
-http://lore.kernel.org/r/20210804085819.846610-1-oupton@google.com
 
+> #define _GNU_SOURCE
+> #include <stdio.h>
+> #include <stdlib.h>
+> #include <string.h>
+> #include <fcntl.h>
+> #include <errno.h>
+> #include <unistd.h>
+> #include <libaio.h>
+> #include <pthread.h>
 >
-> Besides the typo:
+> #define BUFSZ 512
 >
-> Reviewed-by: Oliver Upton <oupton@google.com>
+> void *
+> submit_thread(void *arg)
+> {
+>         io_context_t *ctx = arg;
+>         int ret;
+>         int fds[2];
+>         char buf[BUFSZ];
+>         struct iocb iocb, *iocbp = &iocb;
 >
-> --
-> Thanks,
-> Oliver
+>         ret = pipe(fds);
+>         if (ret) {
+>                 perror("pipe");
+>                 exit(1);
+>         }
 >
-> >  #ifdef CONFIG_ARM64_PAN
-> >         {
-> >                 .desc = "Privileged Access Never",
-> > diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-> > index 49305c2e6dfd..7a7c58acd8f0 100644
-> > --- a/arch/arm64/tools/cpucaps
-> > +++ b/arch/arm64/tools/cpucaps
-> > @@ -18,6 +18,7 @@ HAS_CRC32
-> >  HAS_DCPODP
-> >  HAS_DCPOP
-> >  HAS_E0PD
-> > +HAS_ECV
-> >  HAS_EPAN
-> >  HAS_GENERIC_AUTH
-> >  HAS_GENERIC_AUTH_ARCH
-> > --
-> > 2.30.2
-> >
+>         io_prep_pread(iocbp, fds[0], buf, BUFSZ, 0);
+>
+>         ret = io_submit(*ctx, 1, &iocbp);
+>         if (ret != 1) {
+>                 printf("io_submit failed with %d\n", ret);
+>                 exit(1);
+>         }
+>
+>         /* NOTREACHED */
+>         printf("Read submitted.\n");
+>         return 0;
+> }
+>
+> int
+> main(void)
+> {
+>         int ret;
+>         io_context_t ctx;
+>         pthread_t pth;
+>
+>         memset(&ctx, 0, sizeof(ctx));
+>         ret = io_setup(1, &ctx);
+>         if (ret) {
+>                 printf("io_setup failed with %d\n", ret);
+>                 exit(1);
+>         }
+>
+>         ret = pthread_create(&pth, NULL, submit_thread, &ctx);
+>         if (ret) {
+>                 perror("pthread_create");
+>                 exit(1);
+>         }
+>
+>         usleep(1000); /* give the thread time to run */
+>
+>         ret = io_destroy(ctx);
+>         if (ret) {
+>                 printf("io_destroy failed with %d\n", ret);
+>                 exit(1);
+>         }
+>
+>         exit(0);
+> }
+>
