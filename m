@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E2B3E4D68
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43403E4C70
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbhHITuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 15:50:54 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:4674 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229516AbhHITux (ORCPT
+        id S235425AbhHISxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:53:45 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:26214 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235833AbhHISxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 15:50:53 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179JgVkh031855;
-        Mon, 9 Aug 2021 19:50:20 GMT
+        Mon, 9 Aug 2021 14:53:35 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179IqYGC031886;
+        Mon, 9 Aug 2021 18:52:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=ZPiS8JzcrxC7gZnaG520COCdmmNQNlMz/ZtXyDJMtIw=;
- b=pH19/O8dJDI0IxZTYENqDErXWwUNsB/15lsZbDRljyYTxylfUXA1zZSFTwa1Hup0UD6B
- v/hCaJNIfu4oT5NNMYIA8csFEPjzCjv0EPvlE+w9jk2wOXtCn4BvY7UqqJB/mzo62DYu
- qOO2JjuUPEaMfyTpGXiTY2XSS1MBFUyJA1u+yaCjhjX5zy1Nj06MkxDNeY6iyI2QA6xS
- 9n9yvfaicUdhxpcKwSSk21u5S97PlJTbXGN9M6MpT7l+kBuh0OROJr6l0mIHsC8I+QUT
- wJJn/pXQtD0bLwPtA87s1ep6w4blAn+DZpJ0KBJWKJfYPe7ICISzfq5Pz299an2Ggcp9 BQ== 
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2021-07-09; bh=UG/aAiHICWCxjsvFC7O7lICWLzo8EYGo1APQM/mI0yc=;
+ b=HBAdwgcj1IGuLQ9yqo+WxT7qMzUBJKfFtoM5gTSXK66epbmE19hktu+GULaBbfI+OjlU
+ Spg8GrHAe9tblerkCg1yjDE/xtBYYyS9jHPU1FQpSjX1lPzpce5h38AiFEveWKiKUYYa
+ IYdEHqUYbR6jGJG24zveAKa1Mb2zWzNF89YLo0CmvNfDx0Vz34FgHqUm1eDLRoKtvdzK
+ dYsvSmmE/1etpbKbVsbtTQ9NH7dk1L8VPl7shX5bU8QThGBOEPkYsmZKts6S6GmPt9qx
+ 9Yc3t8P9Tc7GgTyZhrV/RMi808EabU5MOg6gcVWsu8t+r2d2LYPklrfQRVSyxK+7PKF1 vw== 
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=ZPiS8JzcrxC7gZnaG520COCdmmNQNlMz/ZtXyDJMtIw=;
- b=j7RIQTHEmWs6FArycMkZpyp/k4MnXpCDobE4ruQKCM3inHQXvBgg9vaJz062zd5alvyX
- aIzkMx/bRoJcHRN5VIenzxfyjfsd2dYvDUvtOCkV0/yaeMSmEQbsv01VXgpPzcavVNVV
- EiRZaM2AJ4uif2GDbCX7EsF9083/sZC72eR/KPD/ifSGs25cd9RM99JBMrq1QPtctrNA
- MmiSWvsgRRUqdatAhT1W8o+fj5QcGsb30bUPtyA2+4H8SIwWYdfl8P8if1Lz568kKzq9
- vHI1ltqD/AbYLvOPn8Bh2ZknTwiaGl3hHqTQp7UdHkgZZJEchoFMJ+42Xl4mwF5/j6FB Rw== 
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=UG/aAiHICWCxjsvFC7O7lICWLzo8EYGo1APQM/mI0yc=;
+ b=r78fHa1hzLFIoAm7erYB2E7w/gZ7hRAmNYZLvPylH3JJOBA8HTSkIrzTbh62QiVkH/jq
+ jHK1bIAQo1+LfrrTQHusiWA7TutwZ/NMXPEZ/nP3AEr6UTNrAUG5gpN17UAlcvTPDLtO
+ BQ7DG8gnNeMCcCEwg8FqfIPHpBvjnJGuMYCW7kltkCp0S7AjhjVPmLkswhEDNendDBLa
+ rbIG2rpv/baPCSjxd9SvuwRX9sAfrfRc1NM+ZGEf2MqrHD4FdBKkj/ubxhm/gMvNMTVq
+ C0Lu53pGD/AgWenf96vulV+TBI24gJydu5Z++bh2LZEGi2Ji7S9Z9Fh+1hJphEbzndU1 OQ== 
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ab17dshfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Aug 2021 19:50:19 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 179IqFxR152908;
-        Mon, 9 Aug 2021 18:52:50 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by userp3020.oracle.com with ESMTP id 3aa3xrrm96-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ab01r9kx1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Mon, 09 Aug 2021 18:52:50 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 179IqBUC152733;
+        Mon, 9 Aug 2021 18:52:46 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by userp3020.oracle.com with ESMTP id 3aa3xrrm9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Aug 2021 18:52:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gm8BnsuP5mV50JO64rk6IZaxUMAIiAvtZi66+BFtifegg/yGRyfFnaGpzW2/uhbpBXtWYstEdXfzz+aq2QVPQ8z0+HTBuWkl7vavksiCOcviEE1U6FF345W5iOM1897gjY7TXEiMVX6LpMXGdfldA7L99B7Q3mHv+U4qToXfNQwdlHf+4twzi2KMBIUsbfXhHbiyZ4S+Du5ni+U+cUFOmNAKfKpxUJL7g5UtP+DZUDw+m2o1mtLOoGRFhoyHqSm40BMa/qP2qGR1u2FGgsUjCSRJzb075gZ+Fa/N+tygLd5Xcvy73GTnyzbmKjD58k1GGqamP7nzipRpESk2VCBWUQ==
+ b=KgxW5+ycBOSlNxuaFpxJUD7vKMmSVxcVO24ojjlxkLcIlJLi93t2/ee8nkHBw0d7LCDiYw9EufoAWUtSfj8gkDXVmMMtIrCS3qCtI89YqllfgMHiQjrydgyNEMHJWHiwInwM0Ldn1ANlk9So9NtAXC0eunpQ+2SDLlycfYKY4UjRnSuD46RKYlQx9yNHPpcq/1P3nnD7lVNFa9vL6oXm5kC0ZcUt7Gtzm+LtKInV2ZMxTaNYm3fF381s8+Tn4YWNHorxp2R0L5CsoTb8yKol1JpJRt83jxW/rpJtkSFwjFdLmfIcJZ9jFFSQpxbL9tX1enDP+KAZzcpuv0o1ZNlbWQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZPiS8JzcrxC7gZnaG520COCdmmNQNlMz/ZtXyDJMtIw=;
- b=Y/WRzwNMQvkFpZWlQXkvIyIvV9S/SBMOQRHvNScZZaM9Chm8nFgDbYd6PMwX9PP9EkV+f0IS6FcNQxYL2bJyi1WYJL1Bu3cKpZpqQL+jUY8ojxEPcKZvtuAHE+sGRi/8suUsJLLLuEHKv5e99VDek92hoy6qIjHbCNFr4GIF1vtuG57YzkSFHmkfCTfXpATsSQYh829iV9O/RfZk0qS57hJMMj0dniZoWKI/nyP/UGf6R/xnfBjDJjAI0utNbIlS3Db3QQHRn27xvIbbCxI2jw4XEW1r9dxYHbaWIVt2Oa+QAmoiC9hhLV8BHrCTbNI87PRMjz3foVDpltyZ2zKrnw==
+ bh=UG/aAiHICWCxjsvFC7O7lICWLzo8EYGo1APQM/mI0yc=;
+ b=kKVYLjj8oIyUbQVFPlIs6j/0Nm8gPiHSzPpsErkRPAAXDAYE+xS/+lMkJ+06iLZsBodOaK6FJv2mVRo1zj5EE86/f2X7Qg+UthEKE2j/qmML/ISEKUFOTT01CISUngSD5h3R/iuL3bkxe8iqxw5hxti/cY/Ey+28Yd/Er7tdR2DCpPI0gnNJEcnF8EKY6qw8eYvj8rRktDnmxM21OJXX8URRRU1qnyekT7HrB4wYvGBONXGMd1muV07XBYbQOtBK9KB7jWNMZLpZVYiLZAqF6olH7m/6ifndMVJeSfzhoLGZ+qa2eG5BJNCnY3ynI2/UZUZ0k6rUYifkAt72bw7s7A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZPiS8JzcrxC7gZnaG520COCdmmNQNlMz/ZtXyDJMtIw=;
- b=cxcdBfBZoEEmDrAdz/Brx5qZb3KTZDU7yaHQNJ/miF1UzejbVQFKwYDKnWytcDD8uhPhaXpByPJRKiR75ACp9ACS8MmNFLiekR6/ECRsAPJNkYXKKjoJ1yB/Axo8SnadzWjpfS1JUZN69XMaE3hKFy4bxD5u9NeLs+nfslGCJo4=
+ bh=UG/aAiHICWCxjsvFC7O7lICWLzo8EYGo1APQM/mI0yc=;
+ b=jc5gxLnrqTTNPiVg2qSeqvqYgV28ptRw/fJHMvaoWZQerpxRWdMF62T9qspjrPTLwo/ayTAv+9ZlHDVYzdbbCaCnRYVsdOFN8DMuZG29NPdNmNr/zofcDkhUE8egArH05iunI7vGnzmGGpsQC8eJ6hxkDpoB4g+zxzcVM2KswSM=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by SJ0PR10MB5455.namprd10.prod.outlook.com (2603:10b6:a03:3b9::21) with
+ by BYAPR10MB2952.namprd10.prod.outlook.com (2603:10b6:a03:89::28) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Mon, 9 Aug
- 2021 18:48:45 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Mon, 9 Aug
+ 2021 18:48:49 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::8d2a:558d:ab4a:9c2a%6]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
- 18:48:44 +0000
+ 18:48:49 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Muchun Song <songmuchun@bytedance.com>,
@@ -81,10 +81,12 @@ Cc:     Muchun Song <songmuchun@bytedance.com>,
         Mina Almasry <almasrymina@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v2 0/3] hugetlb: fix potential ref counting races
-Date:   Mon,  9 Aug 2021 11:48:29 -0700
-Message-Id: <20210809184832.18342-1-mike.kravetz@oracle.com>
+Subject: [PATCH v2 1/3] hugetlb: simplify prep_compound_gigantic_page ref count racing code
+Date:   Mon,  9 Aug 2021 11:48:30 -0700
+Message-Id: <20210809184832.18342-2-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210809184832.18342-1-mike.kravetz@oracle.com>
+References: <20210809184832.18342-1-mike.kravetz@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: MW4PR04CA0341.namprd04.prod.outlook.com
@@ -92,97 +94,124 @@ X-ClientProxiedBy: MW4PR04CA0341.namprd04.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by MW4PR04CA0341.namprd04.prod.outlook.com (2603:10b6:303:8a::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Mon, 9 Aug 2021 18:48:43 +0000
+Received: from monkey.oracle.com (50.38.35.18) by MW4PR04CA0341.namprd04.prod.outlook.com (2603:10b6:303:8a::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Mon, 9 Aug 2021 18:48:48 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8c9c02f4-16ba-4e4d-677e-08d95b665071
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB5455:
+X-MS-Office365-Filtering-Correlation-Id: f7d36706-a30d-4694-404a-08d95b665319
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2952:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB54550FA0AD66CF3FDB3A35D0E2F69@SJ0PR10MB5455.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Microsoft-Antispam-PRVS: <BYAPR10MB29528A1F0CDCD7BB2C0E6305E2F69@BYAPR10MB2952.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 66MY+KL/xTkAIfjubyetKAWPQbLIyFfoF0HEaaBmhrzBvSc49mmQW3RQv8Leb5RzrFZ7lMgP08z/BobsWcZgMVn3ua3IcrjP2SyDdQ40PjN03M+z/DRh4rtIMakVIR4uq/nIClnJUqJ6TqSg5CQDiomsn5s4MG22Ar/Iz2s6n+rt5u0lTR5V8dyEJtFb5rhhO04zbpjycRVOcNe4RQ5A0zvT59jUGmYwOE1avaQ7ASopuu3gKt0RqXu6v2mvMtS54UfrgB2AhmhKNkmvuUoM4LA5mGM1RpHsKqMv71bfZefkcxYl8iyQD9bQjUofVUbW/A43U+a1tEZ9xi/TvOlWU/40DetOb0N0g1JWTbq3yhBZtHnjNFj5oc41LhHYQZnhxkPiCbJs2dweIeHP2mtNJp/TjWKnHUGRUcdG8eix7PzX43LHdfTJ92WrUze/zDJmJASWw2McZKwE+MP/gEuX+SY1P11CfqF6Vb/oSi/Hu+55VeaT7jst2qkkZxeDJEZCpW5Prxh8cfClwuPnes31aXF87G+6RjlQecPECfgD7EzNN6N/reu/SkCS95HVWml4Pcppivz0qPM5AJHB7uezL+MJ46n+fCIxBjP8f+X1rmdWnolaBTZne3Jw2//Gs2g0hreSgS+BgT8hkiI3KaTVz6i/Re5smjuVFStobSfxBo/QwVEsMhG/cjrhz3tAZ7kDLZr2L7XOZVrC4H8apv7SqYvGFZl9qfX5Q5wHsuNC3bO67b4JFqTTCH8A5F85CkYrszDCvxYw4t6lpx+UJwZPxRWtx6ADdxT/DE+zvM9nRfg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(376002)(396003)(136003)(346002)(7416002)(83380400001)(86362001)(316002)(956004)(2616005)(5660300002)(8936002)(1076003)(38350700002)(6666004)(38100700002)(8676002)(186003)(6486002)(966005)(66476007)(66556008)(107886003)(66946007)(36756003)(4326008)(478600001)(7696005)(52116002)(2906002)(44832011)(26005)(54906003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: ge0ZBJ7nbs8EPZRTAXL0mo2jYvobD5rIegF3Ajs+i76YSANngh7AMiCGHP4KT4ZWqsMhu+DBHxDYsWtiTGF63podv0gUJWpvY7a3TpeDNKYjso0hZgA46QOZuJxPl55agpZh0CdDScV6LifSTq7wkCbksUaBGmrmNycyUvK48D1ZgYUsFyHMzM9f2J4Enn6DC7J5sf0Km4/ShQaH6lizGePGWmirbGDBe5Tw7Ugn/QGiLBhcJaJhIc7nRDPLFC1qWAwtcwmyV8JKvI5vfOO7pBDCsn4/RRyQ4GnYV0hl4wspCCJ1+THIydVkNiaT9yJejNVbhTES2yZf0scE5z4SxN+QuecdKBq/zXEuAoDxJ3df1k00d/mwtOrDH6vw6VGD7+jK8XYKVU/6Ry6E0BCOiA0myb+S4BUZ1tDLzVGxIVEiU76iStlwhriDiEWDVgygAQII5PG7HS+bThEvYN4mgjCD9EkFJMtx8WU/xEVAaHCBys8mC1RyR3Wp9fJN7VkzkoBJ5p7cnnYeqMXVUR7CfD0y3ExwmvSUal+jqs3mwqzKSl715XRqTLvCq28NeuEdF6zo257cqXfKC0J7kbwyLOF3/zl6OiY96KTHC6GVlBUnxSp0Kk2IhVTq+VekJVboF7sBKHXTIDBxu3JGUdJOJYQZEFex7pkZPFCArk5SCa6Vk7IkrBwHTBe0251+y/r8EAySteZKZlNPv/8l+W64lA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(346002)(366004)(39860400002)(4326008)(6666004)(54906003)(7696005)(52116002)(8936002)(5660300002)(66556008)(66476007)(478600001)(83380400001)(107886003)(956004)(38350700002)(36756003)(26005)(316002)(7416002)(186003)(8676002)(86362001)(38100700002)(66946007)(1076003)(44832011)(6486002)(2906002)(2616005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KfluoCJ6Nh1jaXtbHP6ICx04U1x6S4JgY0ZsrkYmq74zU/OKI2A38lnKtYMM?=
- =?us-ascii?Q?xsInZEKgvtwieu+tNuxFQpLYevMXMZDNG2X6dZw2Q2Gb3pDYPoE9o0om+Z5o?=
- =?us-ascii?Q?i7gAEM4yTF05NsJMuXkMyPcigqDZyBe0eRW6xdtBPiMV5BEsewkrX5wmv9d0?=
- =?us-ascii?Q?psehBxffHGbEW7hd2CFfZftYiwnBUbSLCGZNotumqGxCRc8udfdC/Gtty3c1?=
- =?us-ascii?Q?uuH/C62syiRB2u7K6ZfzEhwhqd3NGHXvNNL6Zj3vPzKTIjsyG3/V3kJWrU17?=
- =?us-ascii?Q?/ybiewq5OIRUTtOImwv0OCJ1KSzBBiqEBQ578rkxFp/tIG0CA6cs+xt8lpjP?=
- =?us-ascii?Q?zN8re+JvFsuzT80XKajb3JPGbCmqKAJlxez04p0mOqSZzvfjD8G/ATkFtJ/v?=
- =?us-ascii?Q?OtoWLSG1XaOUzKX/2OLvvnD0v3Xf+Fkvm1S135M4T0ghFIMKQSwA4b6SUeJN?=
- =?us-ascii?Q?fwaux+uoYrio7jTnHxJqZyBWjCjZyRJwxrvgq5jm1qkFsoPGYbgTvVhh5hKU?=
- =?us-ascii?Q?k7ijC0KJEnAf1AqYACB2n0H9Yx/BhucMkwwSKfpvTX6P1859ZQ6fn0bcrzQd?=
- =?us-ascii?Q?ZvhJolnQyy28eHW0YqKyyhe9qABVF34dZqBbTP7RyxDBrlZiqJ+6MeevJ2Ag?=
- =?us-ascii?Q?uB1hlNKpG+scv9mq1IhrYSg2vvTzyKXMNVRQrW7YIXaRGJm94CTBNbOrex7u?=
- =?us-ascii?Q?io74S0dBZz3EoVWGvInh8zZlBP3SEIHivydRTM9tecBqKCeaeKEww/nv8lTF?=
- =?us-ascii?Q?EHDZLTnHKFtsicqjFK/W3cxJUlF8baFotUJoHvKtqYfHSqpRg3PecaBAcAnK?=
- =?us-ascii?Q?Lukp8SOXdPPfgyg9Yf7ZmjYJHQlFtXHjxXOctkJ9QQQhzvIsZ3LXZrSDfDvV?=
- =?us-ascii?Q?d7is47PAB7l/z86VnyoGTUiLCkbWwb1sqJ4h7IXtF85XvL6iJSrOJUQ6Vo1Y?=
- =?us-ascii?Q?LSvGDq4j0pho/ULl6AWr4ldVQniEl/kHlqHJUiDmFhm/Vz8wNAMhftQEWNpl?=
- =?us-ascii?Q?musbi/xGkto7Ps4+HJ8Vj8EsKU5KB9Kwlkb5vdMXMIc7Q/7QpoPfG+zwMxL1?=
- =?us-ascii?Q?o2pja0sWmo2n6CjUCDeywfvP6+7Vb4zLGfpj6NDNKusycuTUymr7hyOukLFG?=
- =?us-ascii?Q?p3CpWsgzdUWGgQnuR8jr4t0fZYNB1Kejys5/tWYoyvUL86aZp3TXoE/aioPb?=
- =?us-ascii?Q?VUQwADJV5q3olbnFMTE9ZndEBpaWBYesOTO1gwuZjWKAM/PQdWp4vhagVcB4?=
- =?us-ascii?Q?fg59QviXbKEEh0tr3FqkumIavTR2Jkg8Aft3t/1jxb5WTs0awpW7QR8jJI+l?=
- =?us-ascii?Q?Um7BlKN8p3nVDMO8zcnyiABI?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o2V9JutTlBEWKN36zhySBtEzbyBPGja4rfJrg2PHZRRxLvoz/KGU68DFCpWQ?=
+ =?us-ascii?Q?BUqeZYLKwbaFTEMZhtSzKMjGOI6Rf9SYFv8yBTsDvRT+EciHFBRXdEr+0J9v?=
+ =?us-ascii?Q?Ggoot/LFHqLRZTkNObJqHXWrvnXw1mQcXYxZHnbiKFU8flPy49vM8vcB9iI3?=
+ =?us-ascii?Q?ILpXGselZgsbC4n0mqdWpkojQyMtfKe9pmILGShIt694iH3HUlBrRcO+vMwj?=
+ =?us-ascii?Q?eKwgLY/VNtJFXgTxemb/aRtZLBYYqk9jU/a3ilIL6q2LvaF4fSwtITq9eJQu?=
+ =?us-ascii?Q?lgwtoVUYxJUo5TBUYNpyt3guxRQJ5vUgQV3NIDsnUgy2lUkHg9F7kWZnZepH?=
+ =?us-ascii?Q?XJnS02DYk8pH5cUpieRuZGN4GRLlcC6QQOBpFxLNPI1AjZh9AdEFC2hTvLGs?=
+ =?us-ascii?Q?YL2qcWPDlYWKc8Ao29jzg6Edb9nBS10GmVzBA4n+dLmtWOk8kEfRl7EkGbyb?=
+ =?us-ascii?Q?zYv4z1c0/JC3jjyq0u90k11a5DNNDrF+GwyGbUUtRq6cf7ajFrQHi0QZXR8K?=
+ =?us-ascii?Q?9VckTOcbxwHL7gunqA061RE+j1F0v+iXtnNh2F2rxfdbP+t7Ec8WO2r8OiGW?=
+ =?us-ascii?Q?l1uSmCwmkHXbL4FB0azwpvw2Fk6y1lmvSRbVxjoJoxTWcCyqtOJY8b5Zbpo7?=
+ =?us-ascii?Q?Cj6/Ez2l0+bXa1NC4WrcNunZFKt4TNVFFx23cJvuJ2XBNs2KNHv38tjDzL6H?=
+ =?us-ascii?Q?y8UfpxKvfyUWqCCYUcHeNAZQPLcG4TeYNtDT/DxvLPmiZDmXOQEuqUmTD800?=
+ =?us-ascii?Q?08VHF1Sp5hs/orun4N8eCJPv+W7DL0DcrpTIedzrjFnpwIlLmhMLjRXoPtKl?=
+ =?us-ascii?Q?2Qr+kyb20lqeqP/6OMSY6KEmIkMKL/lHHWHKOy5RXnfrcNNdVXMloNjAmSMY?=
+ =?us-ascii?Q?NnGH0LhafjPMzRkE6WJ1XL6ISycbd0wv/tKw7dw3/NNZIYCl4s1D6nyHxKRr?=
+ =?us-ascii?Q?IS3yiiDCUzHQCH6Het8jKJ1OuXX+IzFOBkz1A9DPGRhW1xSayeizoWan4SbO?=
+ =?us-ascii?Q?JLk2Gx7YQj3zh+s2Cf8iabPpkPtLvX1iRmVHE7Y8vgZ3hesQTiWfVPWKiirZ?=
+ =?us-ascii?Q?5TKU41KZt5Izv8jV2BE645KJOoFfUleTBSsiGIu8R5rWUYwtytaXEo982GAQ?=
+ =?us-ascii?Q?y1I1ozyKRx1rYmS/ZLTvj8gXKhucxsSbg1Q8e9C+wFrOg0B+ueX/TcNCAxoA?=
+ =?us-ascii?Q?z47KD+q1mi/gEDtkBPsxcBWTsbnA0p3cNUZJdV8edTnQmYncoi4bqMLEalgB?=
+ =?us-ascii?Q?3y3vKSTouhZ2mFKw9rUaqWr4C9XhdtJ+RKao2Tj3q5F8TVGZ943jZjQTZSVx?=
+ =?us-ascii?Q?ZCNJWBcNSPYcfJ1KA6ZAnYcL?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c9c02f4-16ba-4e4d-677e-08d95b665071
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7d36706-a30d-4694-404a-08d95b665319
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 18:48:44.6018
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 18:48:48.9397
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: me1IpgGNNEDS05E8MuPI6sXsWeYNzn2RpVHy+IVwuM4ouWQb4whmxY6wrtMNcD6WFl8h9iip40ZmUDwe+5mlpA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5455
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9iMSjMKRXuJiVvZqPAlH3RAwdVkvgsXPu1e0Y9X8f7GJDDwqRQ9h5o8RuEq9G8o4LzQ4X0HfcRPxlbWB7LsFhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2952
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10071 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=958 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
  suspectscore=0 malwarescore=0 phishscore=0 adultscore=0 spamscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2107140000 definitions=main-2108090133
-X-Proofpoint-GUID: 63vAd4vy9Ge23elati-AN2MyzboVAInx
-X-Proofpoint-ORIG-GUID: 63vAd4vy9Ge23elati-AN2MyzboVAInx
+X-Proofpoint-ORIG-GUID: 5tsxqjfx-WbWefhT2ly-6g4KQ-5uFSPe
+X-Proofpoint-GUID: 5tsxqjfx-WbWefhT2ly-6g4KQ-5uFSPe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When Muchun Song brought up a potential issue with hugetlb ref counting[1],
-I started looking closer at the code.  hugetlbfs is the only code with it's
-own specialized compound page destructor and taking special action when ref
-counts drop to zero.  Potential races happen in this unique handling of ref
-counts.  The following patches address these races when creating and
-destroying hugetlb pages.
+Code in prep_compound_gigantic_page waits for a rcu grace period if it
+notices a temporarily inflated ref count on a tail page.  This was due
+to the identified potential race with speculative page cache references
+which could only last for a rcu grace period.  This is overly complicated
+as this situation is VERY unlikely to ever happen.  Instead, just quickly
+return an error.
 
-These potential races have likely existed since the creation of
-hugetlbfs.  They certainly have been around for more than 10 years.
-However, I am unaware of anyone actually hitting these races.  It is
-VERY unlikely than anyone will actually hit these races, but they do
-exist.
+Also, only print a warning in prep_compound_gigantic_page instead of
+multiple callers.
 
-I could not think of an easy (or difficult) way to force these races.
-Therefore, testing consisted of adding code to randomly increase ref
-counts in strategic places.  In this way, I was able to exercise all the
-race handling code paths.
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ mm/hugetlb.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-[1] https://lore.kernel.org/linux-mm/CAMZfGtVMn3daKrJwZMaVOGOaJU+B4dS--x_oPmGQMD=c=QNGEg@mail.gmail.com/
-
-v1 -> v2
-- Update comment in prep_compound_gigantic_page as suggested by Muchun
-- Add Muchun Reviewed-by: on patch 3.  Still an open question on whether
-  the free_contig_range should be removed.
-
-Mike Kravetz (3):
-  hugetlb: simplify prep_compound_gigantic_page ref count racing code
-  hugetlb: drop ref count earlier after page allocation
-  hugetlb: before freeing hugetlb page set dtor to appropriate value
-
- mm/hugetlb.c | 139 +++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 106 insertions(+), 33 deletions(-)
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index dfc940d5221d..791ee699d635 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1657,16 +1657,14 @@ static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
+ 		 * cache adding could take a ref on a 'to be' tail page.
+ 		 * We need to respect any increased ref count, and only set
+ 		 * the ref count to zero if count is currently 1.  If count
+-		 * is not 1, we call synchronize_rcu in the hope that a rcu
+-		 * grace period will cause ref count to drop and then retry.
+-		 * If count is still inflated on retry we return an error and
+-		 * must discard the pages.
++		 * is not 1, we return an error.  An error return indicates
++		 * the set of pages can not be converted to a gigantic page.
++		 * The caller who allocated the pages should then discard the
++		 * pages using the appropriate free interface.
+ 		 */
+ 		if (!page_ref_freeze(p, 1)) {
+-			pr_info("HugeTLB unexpected inflated ref count on freshly allocated page\n");
+-			synchronize_rcu();
+-			if (!page_ref_freeze(p, 1))
+-				goto out_error;
++			pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
++			goto out_error;
+ 		}
+ 		set_page_count(p, 0);
+ 		set_compound_head(p, page);
+@@ -1830,7 +1828,6 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
+ 				retry = true;
+ 				goto retry;
+ 			}
+-			pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
+ 			return NULL;
+ 		}
+ 	}
+@@ -2828,8 +2825,8 @@ static void __init gather_bootmem_prealloc(void)
+ 			prep_new_huge_page(h, page, page_to_nid(page));
+ 			put_page(page); /* add to the hugepage allocator */
+ 		} else {
++			/* VERY unlikely inflated ref count on a tail page */
+ 			free_gigantic_page(page, huge_page_order(h));
+-			pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
+ 		}
+ 
+ 		/*
 -- 
 2.31.1
 
