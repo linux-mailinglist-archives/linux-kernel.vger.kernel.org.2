@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1B73E48A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13E33E48A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235498AbhHIPZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
+        id S235577AbhHIPZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235525AbhHIPZT (ORCPT
+        with ESMTP id S235545AbhHIPZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:25:19 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DBEC061796
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:24:58 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id o4-20020a5d47c40000b0290154ad228388so5424801wrc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:24:58 -0700 (PDT)
+        Mon, 9 Aug 2021 11:25:22 -0400
+Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62681C06179A
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 08:25:01 -0700 (PDT)
+Received: by mail-ed1-x54a.google.com with SMTP id v11-20020a056402348bb02903be68e116adso1181746edc.14
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 08:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=g0Tec8zCIIV6B7UFt/na0xdI02dI+qYcG36GmUIxQNs=;
-        b=u/8T1pZALwA4/sFdX62scy5dCtljsLkrBi8I1Wo5YlC53+ou/YjrvDL8JNsEIB71bE
-         LRivkMFVgCH0BtjYzhigCs/bBsZnzm1aZdrrbJrAhXN2dDwjESl94VxP5qszcWj4CCEd
-         kb6ZNqQAPWs3owfE5gBV3uIxdOads4TKkeSBC+CEa86jU1FkSsXByuLM+TGmtl+JwI1s
-         V5+s+6x3trNBHDLQF9LXi2sMfrQr2qHgz74SlBLo1h0tqRcsn8LkQJbmZFl6TVJkfNSa
-         l+1c8KgXcM3JN+xcOybD93Qo/Y8JcdC1KdNJjrp98+bqF+lnmdb8LFXpm1F/xsbnlAZG
-         wATw==
+        bh=GMZNfzuPpqQplgJREqrbVT8SGjVRH/ICHDZ3APociKw=;
+        b=UHGjFJ88t++uDbi+ho+q/XdFtIa+W/7vj7rOtKa5ztsftv96V3hJF8oNqfWIZeOQaL
+         aUP+VWMsxv/Ww6yCE/11VKrtsrFRo4r1jE9zZCcHCxeW4QTXs3Hf0eg59+DEpi0AsG9+
+         pQpwB2Zfd62iUZFWqRr7WkBLq6/W/YQO57q79BUO2PTtMUj5uiQIu4UTW0GFsdzup9UE
+         9v9sMuWxhogJDOCknqN7ch+GClEeK3D78t6XMjW2bjoowOIRZuE8PbSwxbSu3F3AkfXj
+         J5a/V4E7m6hSw9dq9XYFJeT/AzeYnLZo6tEmPEs60tS9JdK639KAKwpr/ZkQ/mj98px6
+         3hRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=g0Tec8zCIIV6B7UFt/na0xdI02dI+qYcG36GmUIxQNs=;
-        b=PRfJiKWn3YQ1SqAJeMxjghiLPx1Fma+vL6n98Brkh9XgwmkshMUtoJtP3t6vDRSoZY
-         OZmlVrGy9wMcEPH8L11PHp3tQ7/pZUen6ww2rVVlUl+D3vtqiqv3B8pLpZCKdnKu8OKx
-         RXNw2Yfuq/JEldKYLgEs4v1Eeh0vJmFlGit0iU8z5thCqSdxrt3M5vU7oUxE/PosFLIg
-         NFf7vCMGMeopALXqPCrfuxHLca3BWKa1KRSJ5hGNK1cBGcbmU1BKVma5CZ/sjO4eha4j
-         xnhUiGJOL9NpxLAYjrdDA+hA3rlJNuWtk0XClNtApL4q7PGPv/2sZBfGjF026pcEIf46
-         LGWw==
-X-Gm-Message-State: AOAM533WymISQHTtM1sIE3VGrxI5lM55E9tjS/d4QU/s66cOG+DisHuD
-        ybsp16sr2cPPfl/wRobjRmscHZ0zjUcT
-X-Google-Smtp-Source: ABdhPJwdhbneOWgiW5/bK5oKtxthf7W2lS34xOPxnKsvszEVciXZLPa8/F4hD9ZjXEHPO3uTXXdiY7U47vX5
+        bh=GMZNfzuPpqQplgJREqrbVT8SGjVRH/ICHDZ3APociKw=;
+        b=mNhd46Qs5vGvpAv9zAZrIDOxMZ1GqJ0lhsVbLMJBkGmmiHCDyTk6l45Sr0ggwHRbu/
+         tx1qZv6g2heyQZwdaHSOrrQpCsAoUpAYhW70h7Fj3A+bkVgmECo0obuj6hhraf4fhB9d
+         dxT+9bKVQ2dwoNmmedoj5QNsEvaLBkv24ioXKeZvchUr8A1CcBHVl/SoeACpkf7jS5zd
+         S9pmmxMf+cGKwIzZirOFlEdnxLkL9mMsmNM+vrjlcmlp4ps8aJvvYgOXcJhg8Vc5bQh5
+         T5WlYxexri4o0zIOd6akJDwDFZX06jzZNDDaGmz0xJ5KJDcM4aQg1TEzI9P7baQJSX74
+         eTOg==
+X-Gm-Message-State: AOAM533impNoMjaZQNUGTkMeUqta3LWXRchUiq5//gRlAuwIHT9+FG63
+        Bl1Aii0iqt4HtqEQqiPKSvJ8LxoUobCy
+X-Google-Smtp-Source: ABdhPJyqzY0L1dCaL3AwOH4Fm7LMkYjK+OM+7knyOMrkv2ibGaXiqJGzChD13pqf4rXPj/gIvGULi/3nex3K
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:b0e8:d460:758b:a0ae])
- (user=qperret job=sendgmr) by 2002:a05:6000:232:: with SMTP id
- l18mr25664566wrz.24.1628522697474; Mon, 09 Aug 2021 08:24:57 -0700 (PDT)
-Date:   Mon,  9 Aug 2021 16:24:30 +0100
+ (user=qperret job=sendgmr) by 2002:aa7:d899:: with SMTP id
+ u25mr30548023edq.151.1628522699812; Mon, 09 Aug 2021 08:24:59 -0700 (PDT)
+Date:   Mon,  9 Aug 2021 16:24:31 +0100
 In-Reply-To: <20210809152448.1810400-1-qperret@google.com>
-Message-Id: <20210809152448.1810400-4-qperret@google.com>
+Message-Id: <20210809152448.1810400-5-qperret@google.com>
 Mime-Version: 1.0
 References: <20210809152448.1810400-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH v4 03/21] KVM: arm64: Provide the host_stage2_try() helper macro
+Subject: [PATCH v4 04/21] KVM: arm64: Introduce helper to retrieve a PTE and
+ its level
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
         suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
@@ -64,85 +65,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We currently unmap all MMIO mappings from the host stage-2 to recycle
-the pages whenever we run out. In order to make this pattern easy to
-re-use from other places, factor the logic out into a dedicated macro.
-While at it, apply the macro for the kvm_pgtable_stage2_set_owner()
-calls. They're currently only called early on and are guaranteed to
-succeed, but making them robust to the -ENOMEM case doesn't hurt and
-will avoid painful debugging sessions later on.
+From: Marc Zyngier <maz@kernel.org>
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
+It is becoming a common need to fetch the PTE for a given address
+together with its level. Add such a helper.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/nvhe/mem_protect.c | 40 +++++++++++++++------------
- 1 file changed, 22 insertions(+), 18 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h | 19 ++++++++++++++
+ arch/arm64/kvm/hyp/pgtable.c         | 39 ++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index d938ce95d3bd..74280a753efb 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -208,6 +208,25 @@ static inline int __host_stage2_idmap(u64 start, u64 end,
- 				      prot, &host_s2_pool);
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index f004c0115d89..082b9d65f40b 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -432,6 +432,25 @@ int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size);
+ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+ 		     struct kvm_pgtable_walker *walker);
+ 
++/**
++ * kvm_pgtable_get_leaf() - Walk a page-table and retrieve the leaf entry
++ *			    with its level.
++ * @pgt:	Page-table structure initialised by kvm_pgtable_*_init().
++ * @addr:	Input address for the start of the walk.
++ * @ptep:	Pointer to storage for the retrieved PTE.
++ * @level:	Pointer to storage for the level of the retrieved PTE.
++ *
++ * The offset of @addr within a page is ignored.
++ *
++ * The walker will walk the page-table entries corresponding to the input
++ * address specified, retrieving the leaf corresponding to this address.
++ * Invalid entries are treated as leaf entries.
++ *
++ * Return: 0 on success, negative error code on failure.
++ */
++int kvm_pgtable_get_leaf(struct kvm_pgtable *pgt, u64 addr,
++			 kvm_pte_t *ptep, u32 *level);
++
+ /**
+  * kvm_pgtable_stage2_find_range() - Find a range of Intermediate Physical
+  *				     Addresses with compatible permission
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 05321f4165e3..78f36bd5df6c 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -326,6 +326,45 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+ 	return _kvm_pgtable_walk(&walk_data);
  }
  
-+/*
-+ * The pool has been provided with enough pages to cover all of memory with
-+ * page granularity, but it is difficult to know how much of the MMIO range
-+ * we will need to cover upfront, so we may need to 'recycle' the pages if we
-+ * run out.
-+ */
-+#define host_stage2_try(fn, ...)					\
-+	({								\
-+		int __ret;						\
-+		hyp_assert_lock_held(&host_kvm.lock);			\
-+		__ret = fn(__VA_ARGS__);				\
-+		if (__ret == -ENOMEM) {					\
-+			__ret = host_stage2_unmap_dev_all();		\
-+			if (!__ret)					\
-+				__ret = fn(__VA_ARGS__);		\
-+		}							\
-+		__ret;							\
-+	 })
++struct leaf_walk_data {
++	kvm_pte_t	pte;
++	u32		level;
++};
 +
- static int host_stage2_idmap(u64 addr)
- {
- 	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
-@@ -223,22 +242,7 @@ static int host_stage2_idmap(u64 addr)
- 	if (ret)
- 		goto unlock;
- 
--	ret = __host_stage2_idmap(range.start, range.end, prot);
--	if (ret != -ENOMEM)
--		goto unlock;
--
--	/*
--	 * The pool has been provided with enough pages to cover all of memory
--	 * with page granularity, but it is difficult to know how much of the
--	 * MMIO range we will need to cover upfront, so we may need to 'recycle'
--	 * the pages if we run out.
--	 */
--	ret = host_stage2_unmap_dev_all();
--	if (ret)
--		goto unlock;
--
--	ret = __host_stage2_idmap(range.start, range.end, prot);
--
-+	ret = host_stage2_try(__host_stage2_idmap, range.start, range.end, prot);
- unlock:
- 	hyp_spin_unlock(&host_kvm.lock);
- 
-@@ -257,8 +261,8 @@ int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end)
- 		return -EINVAL;
- 
- 	hyp_spin_lock(&host_kvm.lock);
--	ret = kvm_pgtable_stage2_set_owner(&host_kvm.pgt, start, end - start,
--					   &host_s2_pool, pkvm_hyp_id);
-+	ret = host_stage2_try(kvm_pgtable_stage2_set_owner, &host_kvm.pgt,
-+			      start, end - start, &host_s2_pool, pkvm_hyp_id);
- 	hyp_spin_unlock(&host_kvm.lock);
- 
- 	return ret != -EAGAIN ? ret : 0;
++static int leaf_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
++		       enum kvm_pgtable_walk_flags flag, void * const arg)
++{
++	struct leaf_walk_data *data = arg;
++
++	data->pte   = *ptep;
++	data->level = level;
++
++	return 0;
++}
++
++int kvm_pgtable_get_leaf(struct kvm_pgtable *pgt, u64 addr,
++			 kvm_pte_t *ptep, u32 *level)
++{
++	struct leaf_walk_data data;
++	struct kvm_pgtable_walker walker = {
++		.cb	= leaf_walker,
++		.flags	= KVM_PGTABLE_WALK_LEAF,
++		.arg	= &data,
++	};
++	int ret;
++
++	ret = kvm_pgtable_walk(pgt, ALIGN_DOWN(addr, PAGE_SIZE),
++			       PAGE_SIZE, &walker);
++	if (!ret) {
++		if (ptep)
++			*ptep  = data.pte;
++		if (level)
++			*level = data.level;
++	}
++
++	return ret;
++}
++
+ struct hyp_map_data {
+ 	u64				phys;
+ 	kvm_pte_t			attr;
 -- 
 2.32.0.605.g8dce9f2422-goog
 
