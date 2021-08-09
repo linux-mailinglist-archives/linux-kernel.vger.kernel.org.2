@@ -2,90 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804083E450B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075663E450E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbhHILtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:49:41 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38948 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbhHILtl (ORCPT
+        id S234546AbhHILvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234295AbhHILvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:49:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EE3361FDCB;
-        Mon,  9 Aug 2021 11:49:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628509759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PTbs/oAWdsEgUa8fNGlTSzW9u7qIXvDedRy0yP7NhHs=;
-        b=iKDi+/fu4Gd8GxCi3jrRjW3J0vrQwJwVllhFySyBgCyikeLsyuwZuzHer6hzEfVM3ERyRy
-        h8GScA/lbnan9QBPXttTNxHehkaMYkYlE4QwL+LwebbBM33kTIHSZBBb6Gow8B6s0Hthsz
-        8mgsqHHmk/q5Eg6ksB8Y+o9+5q4tXqo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BEC5FA3B89;
-        Mon,  9 Aug 2021 11:49:19 +0000 (UTC)
-Date:   Mon, 9 Aug 2021 13:49:19 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Nico Pache <npache@redhat.com>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] vm_swappiness=0 should still try to avoid swapping anon
- memory
-Message-ID: <YREWP2nw/QIDq8zO@dhcp22.suse.cz>
-References: <20210806231701.106980-1-npache@redhat.com>
- <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
- <91605888-e343-2712-c097-bcade4cb389d@redhat.com>
- <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
+        Mon, 9 Aug 2021 07:51:02 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC24C0613D3;
+        Mon,  9 Aug 2021 04:50:41 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so34110367pjs.0;
+        Mon, 09 Aug 2021 04:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=lEzRqawbCO3Oz7zqhJzZDzxmM9xxyvbKbGJKK51n77s=;
+        b=CGGbHiQxQHOtVwEfubzZ9ceQPWqmETo95FQMcSqJ0TCV2NzJ9F0fuC3wm/RCnSVZRG
+         Z5wfMX20T4zAnugcvmObELxDMvAfiA9i05R3D86KdMluIyMeW7LNQ7qDLkiZGME09a+n
+         /qspJvkO+BTbNWqmzQqscmIVX799p/dhOPaHU9sg4Ev+7YK54vf4byFGi7Idl0ioojXN
+         +c3GokUwZvjCMXT4CFAFbtPnB6Hak/lmGqHob1fNDdTCHPN1n6Y9rAcDfX4xy3k+eV1J
+         tkXE1oibwbxSXIyroWAAjsNdKB0kvGXA4l2ghjQisC/7svtWGQSnq7O97HsqM+P3aNba
+         ovxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=lEzRqawbCO3Oz7zqhJzZDzxmM9xxyvbKbGJKK51n77s=;
+        b=A97jSCOkVTzJB3GNNsADe4xz+yuX/nmKbigmMzHf909KxQdnuJus0AHSzM3/61bWmv
+         O5Aa0wxCQuOF7r2m1gVMWs4xDIHtP3jTOLfepLZs+NG4N+ssB5f7Gi1iy1r/vVqAXc69
+         uKn+/hSHni0nqKaI5QjE1VPa9OdPujhmyHdnrYeumO8D5K8pVIwdusbjglapT2VDBDvq
+         K/2cQSqPabn/gOrX8/2Wg80YJHuO8Ilw4jYuOVTz/BcckCXT0Eh+jglPfWHZhPtI1gYX
+         ZSJaRDy4Q9zvE0X9qw779Cqzi6EjVjnv3xi0N6sV9Kt7zXhk+jdKVVYmm6Av95QoIf7H
+         iMMQ==
+X-Gm-Message-State: AOAM533/mHWAHH0uRzB90rbjosJ8cDt51kYcTbGBv+7yzAgISvvn0qbh
+        Alyr0G1zB8AWkamDI17hMiY=
+X-Google-Smtp-Source: ABdhPJxJrRwYquMEhsP80YPY2COvRlMDmLJN3BmTl+5y3TJFofzDG7vEJ3GquXp8SItJi85ZD/nmGw==
+X-Received: by 2002:a17:902:c641:b029:12c:ef04:fa86 with SMTP id s1-20020a170902c641b029012cef04fa86mr9762891pls.40.1628509841418;
+        Mon, 09 Aug 2021 04:50:41 -0700 (PDT)
+Received: from [10.177.0.134] ([85.203.23.214])
+        by smtp.gmail.com with ESMTPSA id z16sm22469492pgu.21.2021.08.09.04.50.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 04:50:41 -0700 (PDT)
+Subject: Re: [PATCH] scsi: target: pscsi: Fix possible null-pointer
+ dereference in pscsi_complete_cmd()
+To:     Bodo Stroesser <bostroesser@gmail.com>
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>, martin.petersen@oracle.com
+References: <20210807134651.245436-1-islituo@gmail.com>
+ <dea07ecc-7700-5ee7-aa40-2d4455dc6c3f@gmail.com>
+From:   Tuo Li <islituo@gmail.com>
+Message-ID: <7c6622d0-2f28-27a7-250e-9a8fd79691a8@gmail.com>
+Date:   Mon, 9 Aug 2021 19:50:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
+In-Reply-To: <dea07ecc-7700-5ee7-aa40-2d4455dc6c3f@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 06-08-21 22:23:48, Shakeel Butt wrote:
-> On Fri, Aug 6, 2021 at 6:37 PM Nico Pache <npache@redhat.com> wrote:
-> >
-> >
-> > On 8/6/21 9:00 PM, Shakeel Butt wrote:
-> [...]
-> > > If you are really seeing the said behavior then why will this fix it.
-> > > This is just about deactivating active anon LRU. I would rather look
-> > > at get_scan_count() to check why swappiness = 0 is still letting the
-> > > kernel to scan anon LRU. BTW in cgroup v1, the memcg can overwrite
-> > > their swappiness which will be preferred over system vm_swappiness.
-> > > Did you set system level swappiness or memcg one?
-> >
-> > This fixes the issue because shrink_list() uses the may_deactivate field
-> > to determine if it should shrink the active list.
-> 
-> First, the shrink_list() will not be called for anon LRU if get_scan_count()
-> has decided to not scan the anon LRU.
-> 
-> Second, I would like to get your attention to the following comment in
-> get_scan_count():
-> 
-> "Global reclaim will swap to prevent OOM even with no swappiness"
-> 
-> It seems like the behavior you are seeing is actually working as intended.
-> You may decide to change that behavior but you will need to motivate the
-> change.
+Thanks for your feedback. We will prepare a V2 patch and put the 
+transport_kunmap_data_sg()
+into the else-branch of the if (!buf).
 
-Yes this is true. Only the memcg has a strict no swapping behavior
-historically. I do agree that the patch should go into much more details
-about the existing problem though. In this context it would be really
-good to explain why trashing over page cache is a better outcome than
-swapping out some pages.
+Best wishes,
+Tuo Li
 
--- 
-Michal Hocko
-SUSE Labs
+On 2021/8/9 18:36, Bodo Stroesser wrote:
+> On 07.08.21 15:46, Tuo Li wrote:
+>> The return value of transport_kmap_data_sg() is assigned to the variable
+>> buf:
+>>    buf = transport_kmap_data_sg(cmd);
+>>
+>> And then it is checked:
+>>    if (!buf) {
+>>
+>> This indicates that buf can be NULL. However, it is dereferenced in the
+>> following statements:
+>>    if (!(buf[3] & 0x80))
+>>      buf[3] |= 0x80;
+>>    if (!(buf[2] & 0x80))
+>>     buf[2] |= 0x80;
+>>
+>> To fix these possible null-pointer dereferences, dereference buf only 
+>> when
+>> it is not NULL.
+>>
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Tuo Li <islituo@gmail.com>
+>> ---
+>>   drivers/target/target_core_pscsi.c | 14 +++++++-------
+>>   1 file changed, 7 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/target/target_core_pscsi.c 
+>> b/drivers/target/target_core_pscsi.c
+>> index 2629d2ef3970..560815729182 100644
+>> --- a/drivers/target/target_core_pscsi.c
+>> +++ b/drivers/target/target_core_pscsi.c
+>> @@ -620,14 +620,14 @@ static void pscsi_complete_cmd(struct se_cmd 
+>> *cmd, u8 scsi_status,
+>>               buf = transport_kmap_data_sg(cmd);
+>>               if (!buf) {
+>>                   ; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
+>> -            }
+>> -
+>> -            if (cdb[0] == MODE_SENSE_10) {
+>> -                if (!(buf[3] & 0x80))
+>> -                    buf[3] |= 0x80;
+>>               } else {
+>> -                if (!(buf[2] & 0x80))
+>> -                    buf[2] |= 0x80;
+>> +                if (cdb[0] == MODE_SENSE_10) {
+>> +                    if (!(buf[3] & 0x80))
+>> +                        buf[3] |= 0x80;
+>> +                } else {
+>> +                    if (!(buf[2] & 0x80))
+>> +                        buf[2] |= 0x80;
+>> +                }
+>>               }
+>>                 transport_kunmap_data_sg(cmd);
+>>
+>
+> I'm wondering whether we should better put the
+> transport_kunmap_data_sg into the else-branch of the if (!buf)?
+> AFAICS, calling it after transport_kmap_data_sg failed does not
+> cause problems, but I feel it would be cleaner.
+>
+> Otherwise it looks good to me.
+
