@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A5F3E4C7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB7B3E4C82
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 20:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235728AbhHIS44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 14:56:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38174 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235246AbhHIS4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:56:55 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628535393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bO/dGC7/2zBF3jWQgAUjk/PLJ6l0svSy3Oj/4sUOHKw=;
-        b=KCs3NOHY2utTiNmW6FlJhb38NQ6WjvmYVpRSDVwlTUNdUAKSE6rnflHY2RxJk8bIvfJMNM
-        lCYb+OxqGPAy76Z21ivQLDkWcL61MUSwgsuKvhKc8OnRqZNFIaOoreZkLk8pWSu53e+d6a
-        nrHAyf7t/Jvd7ObmhDU9ddgg/L0dCTB2ezAvowYQidbUivLPXcLz/REkWT+UQlXjRWgGQv
-        ti6lWLuQEUdGvVt1irgaPytMqXjYIjaMNOKB4RWX8PVoqd9Q21/wB27G/wpxpip74V1MqE
-        0MzLVWwL5EUGuQ80HUSID0P4vIRx6W8PhinU+qOfegQmW1mEHI0SyfrS2IFYVA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628535393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bO/dGC7/2zBF3jWQgAUjk/PLJ6l0svSy3Oj/4sUOHKw=;
-        b=XqYpRWEwtWuPJr+5rOAj4VvKqQlEeEEqVOntY/PzebTwSeT/9hSM1EMc1XWcVtUKW48i13
-        11gt33xe7t/8JrAw==
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-s390@vger.kernel.org,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [patch V2 18/19] PCI/MSI: Provide a new set of mask and unmask
- functions
-In-Reply-To: <87r1f6bpt7.wl-maz@kernel.org>
-References: <20210729215139.889204656@linutronix.de>
- <20210729222543.257079238@linutronix.de> <87r1f6bpt7.wl-maz@kernel.org>
-Date:   Mon, 09 Aug 2021 20:56:32 +0200
-Message-ID: <878s1atpjz.ffs@tglx>
+        id S235924AbhHIS5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 14:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235656AbhHIS5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 14:57:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 862FB60F11;
+        Mon,  9 Aug 2021 18:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628535408;
+        bh=Club1rpvylBf8gX0nH4hqgxX2CQBVQEJTP5FNvLKgAk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ANWNU9Tm1mKTkj9B/l+QFWhzd7r/JBDVhmaDmwjWAHIfKqdJAN/jzm1orZCfZP5Wl
+         t0OdJAU3y+ZCBGkiYl5lnLnC160AZGO+lWsZEhHjg2B0M+tZNQG9YPH1oKLA+dfqq7
+         y9Fu45aXst02HJVczZl2JshcolbV1AIGDoEtKLlcRD4YVj7Y8P/GVO9gKhxJXWJbTM
+         NAKlzpgG3xxZsv6Qxk+bpusM+j8o1L2+y0b/UvNmGsr57+dnKodlo1/ztipg7iZ6EL
+         peGna2Dl7YW2cdd+fSqDh+d5Xn9pc8kPYRrGtAikq4nbS2m78IihhCF770eCs72jgI
+         SKq3tFfNBmhdA==
+Date:   Mon, 9 Aug 2021 20:56:33 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ian Pilcher <arequipeno@gmail.com>, pali@kernel.org
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
+Message-ID: <20210809205633.4300bbea@thinkpad>
+In-Reply-To: <20210809033217.1113444-1-arequipeno@gmail.com>
+References: <20210809033217.1113444-1-arequipeno@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06 2021 at 15:39, Marc Zyngier wrote:
-> On Thu, 29 Jul 2021 22:51:57 +0100,
-> Thomas Gleixner <tglx@linutronix.de> wrote:
->> +static void __pci_msi_mask_desc(struct msi_desc *desc, u32 mask)
->> +{
->> +	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
->> +		return;
->> +
->> +	if (desc->msi_attrib.is_msix)
->> +		pci_msix_mask(desc);
->> +	else if (!desc->msi_attrib.maskbit)
->
-> This negation is preventing one of my boxes from working correctly (no
-> idea why the i350 driver refuses to use MSI-X and sticks to a single
-> MSI, but hey, that's another story), as the device supports MSI
-> masking, and we definitely don't try to mask/unmask in this case...
->
-> Dropping the '!' here and on the unmask path fixes it for me.
+Hello Ian,
 
-Duh. I'm a moron. Of course this needs to check maskbit if it wants to
-mask. Sigh.
+thank you for your proposal. Some comments below:
 
+On Sun,  8 Aug 2021 22:32:07 -0500
+Ian Pilcher <arequipeno@gmail.com> wrote:
 
+> One thing that has not changed is that associations between block
+> devices and LEDs are still set via an attribute on the device, rather
+> than the LED.  This is much simpler, as the device attribute only has
+> to handle a single value (the name of the associated LED), rather than
+> potentially handling multiple device names.
+
+It may be simpler, but it is in contrast to how the netdev trigger
+works, which already is in upstream for many years. I really think we
+should try to have similar sysfs ABIs here. (I understand that the
+netdev trigger is currently unable to handle multiple network
+interfaces - but it is possible to extend it so.)
+
+> I have modeled the interface for the /sys/block/<DEVICE>/led
+> attribute on the sysfs interface used for selecting a trigger.  All
+> available LEDs (all LEDs associated with the blkdev trigger) are
+> shown when the attribute is read, with the currently selected LED
+> enclosed in square brackets ([]).
+
+I think it is reasonable to be able to set something like this:
+  led0 : blink on activity on any of [sda, sdb, sdc]
+  led1 : blink on activity on sda
+  led2 : blink on activity on sdb
+  led3 : blink on activity on sdc
+
+If I am reading your code correctly, it looks that only one LED can be
+configured for a block device. Is this true? If so, then the above
+configuration cannot be set.
+
+Also you are blinking the LED on any request to the block device. I
+would rather expect to be able to set the LED to blink on read and on
+write. (And possibly on other functions, like discard, or critical
+temperature, or error, ...) I would like to know what other people
+think about this.
+
+Marek
