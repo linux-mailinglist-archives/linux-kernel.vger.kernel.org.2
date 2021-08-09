@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2393E4D8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 22:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BA33E4D78
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbhHIUCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 16:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57900 "EHLO mail.kernel.org"
+        id S233866AbhHIT7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 15:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229483AbhHIUCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:02:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62DB86056B;
-        Mon,  9 Aug 2021 20:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628539299;
-        bh=Eq+URu3bwlUYfVc+gzjSPPb11z8iUaCCLWyPR6rHUw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V2CWCLM0pG0fEHxdiahKtWoTLBCYjtXbyQVNvkojMfrejIIiBM0hy2taxgWXVfAJ1
-         UDLe85d2QiLvGW1A3/KIv3Gj7W82735StTJEI960IJLqsiQLlCXw07izjs7QAp7MLO
-         cfvo0Xs+VEwnOoWdVkDy8m+LgVXCZYokrtYf9VfFLs2UOHJAWJKgXe+wa5HgE6nKr+
-         aECu/itp1i4uPX1+/3+aQIAhELfnz5R0a03itDFEBn0AVKdcJlQtpNVVuGv2VNuaHc
-         0mxa2ujcm36Q/zEnYhp8VxweG0hAcNiVYxkzVKhRdvtUQQcAgrXm1uKicEeJ82esT0
-         PE19IPUi8o76A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7D123403F2; Mon,  9 Aug 2021 17:01:36 -0300 (-03)
-Date:   Mon, 9 Aug 2021 17:01:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Michael Petlan <mpetlan@redhat.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>, x86@kernel.org,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org
-Subject: Re: [PATCH v5 7/9] perf auxtrace: Remove
- auxtrace_mmap__read_snapshot_head()
-Message-ID: <YRGJoNdr253SHqlh@kernel.org>
-References: <20210809111407.596077-1-leo.yan@linaro.org>
- <20210809111407.596077-8-leo.yan@linaro.org>
+        id S233546AbhHIT7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 15:59:39 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6096D60230;
+        Mon,  9 Aug 2021 19:59:16 +0000 (UTC)
+Date:   Mon, 9 Aug 2021 21:02:07 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Michael.Hennerich@analog.com, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
+Subject: Re: [RESEND PATCH v9 0/2] iio: accel: add support for ADXL355
+Message-ID: <20210809210207.2140c31a@jic23-huawei>
+In-Reply-To: <20210809080729.57029-1-puranjay12@gmail.com>
+References: <20210809080729.57029-1-puranjay12@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809111407.596077-8-leo.yan@linaro.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 09, 2021 at 07:14:05PM +0800, Leo Yan escreveu:
-> Since the function auxtrace_mmap__read_snapshot_head() is exactly same
-> with auxtrace_mmap__read_head(), whether the session is in snapshot mode
-> or not, it's unified to use function auxtrace_mmap__read_head() for
-> reading AUX buffer head.
+On Mon,  9 Aug 2021 13:37:27 +0530
+Puranjay Mohan <puranjay12@gmail.com> wrote:
+
+> Add the dt-bindings and the driver for ADXL355 3-axis MEMS Accelerometer.
+
+Hi Puranjay,
+
+So these both look fine to me (subject to that tiny cleanup in patch 2
+that I'll do whilst applying).  Now we need to give time for a device
+tree review. It's in their patchwork instance and passing the tests
+so Rob will get to it fairly soon.
+
+https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210809080729.57029-2-puranjay12@gmail.com/
+
+Jonathan
+
 > 
-> And the function auxtrace_mmap__read_snapshot_head() is unused so this
-> patch removes it.
-
-Thanks, applied to perf/core.
-
-- Arnaldo
-
- 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/auxtrace.c | 13 +++++--------
->  tools/perf/util/auxtrace.h | 10 ----------
->  2 files changed, 5 insertions(+), 18 deletions(-)
+> Changes since v8:
+> 1. Make scale and offset defines inline and remove them.
+> 2. Change dt-binding doc to state interrupt polarity only for DRDY pin.
+> 3. Remove triggered buffer support from this patch series.
 > 
-> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> index cb19669d2a5b..2dcf3d12ba32 100644
-> --- a/tools/perf/util/auxtrace.c
-> +++ b/tools/perf/util/auxtrace.c
-> @@ -1686,14 +1686,11 @@ static int __auxtrace_mmap__read(struct mmap *map,
->  	union perf_event ev;
->  	void *data1, *data2;
->  
-> -	if (snapshot) {
-> -		head = auxtrace_mmap__read_snapshot_head(mm);
-> -		if (auxtrace_record__find_snapshot(itr, mm->idx, mm, data,
-> -						   &head, &old))
-> -			return -1;
-> -	} else {
-> -		head = auxtrace_mmap__read_head(mm);
-> -	}
-> +	head = auxtrace_mmap__read_head(mm);
-> +
-> +	if (snapshot &&
-> +	    auxtrace_record__find_snapshot(itr, mm->idx, mm, data, &head, &old))
-> +		return -1;
->  
->  	if (old == head)
->  		return 0;
-> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> index 4f9176368134..d68a5e80b217 100644
-> --- a/tools/perf/util/auxtrace.h
-> +++ b/tools/perf/util/auxtrace.h
-> @@ -440,16 +440,6 @@ struct auxtrace_cache;
->  
->  #ifdef HAVE_AUXTRACE_SUPPORT
->  
-> -static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
-> -{
-> -	struct perf_event_mmap_page *pc = mm->userpg;
-> -	u64 head = READ_ONCE(pc->aux_head);
-> -
-> -	/* Ensure all reads are done after we read the head */
-> -	smp_rmb();
-> -	return head;
-> -}
-> -
->  static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->  {
->  	struct perf_event_mmap_page *pc = mm->userpg;
-> -- 
-> 2.25.1
+> Changes since v7:
+> 1. Update MAINTAINERS to show all driver files.
+> 2. Set CONFIGS for buffered support in Kconfig.
+> 
+> Changes since v6:
+> 1. Use interrupt-names property in device tree document.
+> 2. Add triggered buffer support.
+> 3. Use a static table for offset and data registers.
+> 4. Fix coding style issues.
+> 5. move defines from header to c file.
+> 
+> Changes since v5:
+> 1. Used get_unaligned_be24() and  get_unaligned_be16() to parse
+> acceleration and temperature data. This solves sparse errors and also
+> make the code more understandable.
+> 
+> Changes since v4:
+> 1. Fix errors reported by sparse.
+> 
+> Changes since v3:
+> 1. Fix errors in yaml DT doc.
+> 2. Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause
+> 
+> Changes since v2:
+> 1. Add separate DT binding doc in yaml.
+> 2. Use ____cacheline_aligned buffer for regmap_bulk_read/write calls.
+> 3. Make code consistent by using same style in switch case.
+> 4. Use FIELD_PREP in place of custom macros.
+> 5. Make Kconfig description more informative.
+> 
+> Changes since v1:
+> 1. Remove the declarations for static regmap structures from adxl355.h.
+> This was missed in the v1 and caused errors.
+> 2. Make switch case statements consistent by directly returning from
+> each case rather than saving the return in a variable.
+> 3. Some coding style changes.
+> 
+> Changes since v0:
+> 1. Move adxl355_hpf_3db_table to adxl355_data structure. This is done to make
+> sure that each device gets its own table.
+> 2. Make local regmap definitions private to adxl355_core.c.
+> 3. Other minor coding style changes.
+> 
+> Puranjay Mohan (2):
+>   dt-bindings: iio: accel: Add DT binding doc for ADXL355
+>   iio: accel: Add driver support for ADXL355
+> 
+>  .../bindings/iio/accel/adi,adxl355.yaml       |  88 +++
+>  MAINTAINERS                                   |  10 +
+>  drivers/iio/accel/Kconfig                     |  29 +
+>  drivers/iio/accel/Makefile                    |   3 +
+>  drivers/iio/accel/adxl355.h                   |  19 +
+>  drivers/iio/accel/adxl355_core.c              | 578 ++++++++++++++++++
+>  drivers/iio/accel/adxl355_i2c.c               |  64 ++
+>  drivers/iio/accel/adxl355_spi.c               |  67 ++
+>  8 files changed, 858 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+>  create mode 100644 drivers/iio/accel/adxl355.h
+>  create mode 100644 drivers/iio/accel/adxl355_core.c
+>  create mode 100644 drivers/iio/accel/adxl355_i2c.c
+>  create mode 100644 drivers/iio/accel/adxl355_spi.c
 > 
 
--- 
-
-- Arnaldo
