@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781DD3E3D43
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 01:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3F23E3D46
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 02:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhHHX5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 19:57:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
+        id S232029AbhHIAAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 20:00:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229662AbhHHX5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 19:57:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4068C60F42;
-        Sun,  8 Aug 2021 23:56:44 +0000 (UTC)
+        id S229662AbhHIAAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 20:00:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79C2E60F42;
+        Mon,  9 Aug 2021 00:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628467005;
-        bh=BTc4DtYp5H2rXf9tQCGYzW//v9wT9ZrLk0Jk8h7+Sdo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=owPGImm1CC+yBVqAIvTZ58u5gOOBQH9bFiLIpZSOAH87GDkCFyvgz0J3RVrAiDbFS
-         V67MgaFc91xx2e+AMcQ/yoUFAU4vPBlyaYIkweD/GF5ZaAFgW72V5sfJM4ac/DsNxP
-         48q9jHUlseAVnVwrOJABhIMH3nCAtMsNurljUe2y9LI3/H1cW43Mb4rR0DKVlendl6
-         WzxHB1G7ZA4KhnPavn50efw5vGhlj2NNTILIqbbXOFx04YJo/yFHYxKwqDSNFh/ZYF
-         B0QEyszhp2JoZg9hjW7Z57fQ51uwL8D3/qYYpxwN/JcvgMyYCb/yfT4DnGFdDvVd6R
-         4ysXgLg7ZmUpA==
-Subject: Re: [PATCH -next] erofs: make symbol 'erofs_iomap_ops' static
-To:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     Huang Jianan <huangjianan@oppo.com>, Gao Xiang <xiang@kernel.org>,
-        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-References: <20210808063343.255817-1-weiyongjun1@huawei.com>
- <YQ/ZxZkNCtWGO6X4@B-P7TQMD6M-0146.local>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <4ddfb962-97fc-28b0-0006-197574a1ec00@kernel.org>
-Date:   Mon, 9 Aug 2021 07:56:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        s=k20201202; t=1628467229;
+        bh=qEHa2hDDngTAlBTuJT4LlegTNZ05RrFHw4VWLdRzQRU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i0SK2sk5DEpxN2Ph+N9gBJuAOdOT244GMQJGFnzKZBtfr9H0n6kBtsngkQiw165tu
+         BzpHphiusTY45d6N2RzJlXCb+oZ5x7ah0whip/2Ht2HYqO2tBcjwVxbmWIev+5Ou+I
+         CKzkTj5k1mZR67BKqKDIfUNC5GUfLsVXew2HXPdGmZMn7h0lhHnLvaynjD8TG4WZ7l
+         fVbVk+8BTU5LmVwWU+DIIL7kgPfDpHFUaw4SgDQfV2EJeTUab48PRGcgXrU/Dwlyap
+         9KRv2h2bKN+Fk8B8AYYNJt2tPvrFCFtuT8LyH/xvp6NOcxivEUnNVWArwP+YhbEbkO
+         IUrLmeEGf+gWg==
+From:   vgupta@kernel.org
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [RFC 1/2] ARC: retire ARC750 support
+Date:   Sun,  8 Aug 2021 17:00:24 -0700
+Message-Id: <20210809000025.2348004-1-vgupta@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YQ/ZxZkNCtWGO6X4@B-P7TQMD6M-0146.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/8 21:19, Gao Xiang wrote:
-> On Sun, Aug 08, 2021 at 06:33:43AM +0000, Wei Yongjun wrote:
->> The sparse tool complains as follows:
->>
->> fs/erofs/data.c:150:24: warning:
->>   symbol 'erofs_iomap_ops' was not declared. Should it be static?
->>
->> This symbol is not used outside of data.c, so marks it static.
+From: Vineet Gupta <vgupta@synopsys.com>
 
-Thanks for the patch, I guess it will be better to fix in original patch
-if you don't mind.
+There's no known/active customer using them with latest kernels anyways.
 
-Thanks,
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ arch/arc/Kconfig | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
->>
->> Fixes: 3e9ce908c114 ("erofs: iomap support for non-tailpacking DIO")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> Thanks,
-> Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> 
-> Thanks,
-> Gao Xiang
-> 
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index d8f51eb8963b..3015788a7094 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -116,16 +116,9 @@ choice
+ 	default ARC_CPU_770 if ISA_ARCOMPACT
+ 	default ARC_CPU_HS if ISA_ARCV2
+ 
+-if ISA_ARCOMPACT
+-
+-config ARC_CPU_750D
+-	bool "ARC750D"
+-	select ARC_CANT_LLSC
+-	help
+-	  Support for ARC750 core
+-
+ config ARC_CPU_770
+ 	bool "ARC770"
++	depends on ISA_ARCOMPACT
+ 	select ARC_HAS_SWAPE
+ 	help
+ 	  Support for ARC770 core introduced with Rel 4.10 (Summer 2011)
+@@ -135,8 +128,6 @@ config ARC_CPU_770
+ 	  -Caches: New Prog Model, Region Flush
+ 	  -Insns: endian swap, load-locked/store-conditional, time-stamp-ctr
+ 
+-endif #ISA_ARCOMPACT
+-
+ config ARC_CPU_HS
+ 	bool "ARC-HS"
+ 	depends on ISA_ARCV2
+@@ -275,7 +266,6 @@ config ARC_DCCM_BASE
+ choice
+ 	prompt "MMU Version"
+ 	default ARC_MMU_V3 if ARC_CPU_770
+-	default ARC_MMU_V2 if ARC_CPU_750D
+ 	default ARC_MMU_V4 if ARC_CPU_HS
+ 
+ if ISA_ARCOMPACT
+-- 
+2.25.1
+
