@@ -2,190 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFE03E4498
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BD83E44A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 13:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235077AbhHILXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 07:23:33 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:43118
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235007AbhHILXb (ORCPT
+        id S235130AbhHILYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 07:24:23 -0400
+Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:58162 "EHLO
+        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235152AbhHILYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 07:23:31 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 979E53F0A2
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 11:23:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628508190;
-        bh=vRoT5BSxcI/qFuszLL/O88HOU90cRS5N0ZHejOSe9B0=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=hFMY9oQ7c01pr7d0dnaLHwuOYPIN/dP7XtUDHAbGAU9yZUdsziovni5IpjKeAfLo5
-         DLPyotD3yGHqpjD1joQUCjKr78K6lhvMJDHvqmv19aZAsU7fqoGaZvVCREtmfsKlNl
-         tso8u2FpyfqSSk71mTMVGU2a/FKgrbSK95T9468OENT1RhUAQCjYrKRhkdUQJPNd/V
-         3zV6LdYnsAl5Z49UdeLAznuzBRC7TQgi29ZwR9Fi/o5sGtV2ZlLUlITcRpit/FFWZA
-         HAFWhhSKM0kEPG2r6pj0HDOE98rdqIKkswOKSG1cIWkeIn7oHnP+8H83ARGB1EoHE1
-         5kZOB10GzUvbA==
-Received: by mail-lf1-f69.google.com with SMTP id c24-20020a0565123258b02903c025690adcso4029203lfr.22
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 04:23:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vRoT5BSxcI/qFuszLL/O88HOU90cRS5N0ZHejOSe9B0=;
-        b=aTs3fz7F5Y73wCMVbAp8Nt++MXsQN+bPwY9bkAgaoY5H13N88yxQv3THwZDh/sBV2i
-         iZszL/TapB+cB7toYXwk2+L9GfUVy96EYUxsXJ5McPJvMPOTkQzWTLryyGclWivoTDkC
-         EIRrremqh70VQ6ciio6Av9qgvcw0/73KPzIrUJsq1afJqGxPdTnc1TjzSO5h66SEjdbl
-         54E9CIa0lmBmTJ8bYdKDRfiHqOB4qc3eR0yNres8rXc3odYU7pYsMw9KRYIHNtAFdO4p
-         P67WdRCiMUEeHkj8wiZG2M3xJNweyVYsFmQcwrcJUtFSqK2r9j9fOp2CEBKmvt/rKO0K
-         XArQ==
-X-Gm-Message-State: AOAM533PU5W5nmnPBJWIxBc0xh4LGy7MY4kq2SrbEaoSwURGHqWaQQLW
-        ba85RmQqHMoon0G8goapWmGIU/Ljdm2kwZuQ2RSfTR/y60tgSPcbL04ECxCi5xBnuHXojniGty2
-        s9+3r1WUtwJ2DPLLlGuTL4mLCPq0XHG2UhS64C37Rxw==
-X-Received: by 2002:a50:cc06:: with SMTP id m6mr8360383edi.97.1628508179570;
-        Mon, 09 Aug 2021 04:22:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy6XjMI02FzZDa29mvOYI4lhR2QTlk6CwiRU3KFxBkR1w1Iwv1+C2mD+X6K5L1Go6NB91ffkw==
-X-Received: by 2002:a50:cc06:: with SMTP id m6mr8360357edi.97.1628508179449;
-        Mon, 09 Aug 2021 04:22:59 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id l20sm5813866ejb.23.2021.08.09.04.22.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 04:22:59 -0700 (PDT)
-Subject: Re: [PATCH v2 7/8] clk: samsung: Add Exynos850 clock driver stub
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210806152146.16107-1-semen.protsenko@linaro.org>
- <20210806152146.16107-8-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <3add6f87-7293-e1ae-8f9e-c69e9de18cf5@canonical.com>
-Date:   Mon, 9 Aug 2021 13:22:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210806152146.16107-8-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
+        Mon, 9 Aug 2021 07:24:13 -0400
+Received: from pps.filterd (m0127838.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179BHauf031225;
+        Mon, 9 Aug 2021 04:23:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version;
+ s=proofpoint20171006; bh=XahGUUgZOHeGUUZfEJRqpK2InKAU4huPvp+6gQ7bRfA=;
+ b=j3HQBcZdiZtaWGM99tMFHkak8QXekQXi4lbuGvAsFZwXbFqOfPeVPDnxOOKDiEZpvtCm
+ y780Tkr/AXFZcP96JTAJxa265clb34hTYiirNRj3REs5zOJxj6m5LpYwjQNM7BFMlKH5
+ IPjml+27+Qb9WxX0zFbmFcZ/zvy4F8aucHFAXgf3r9uYU7vfd8z6Kxe9RjVZJ+hYsQSW
+ fR6xKJM5rElqzbLOsy1u6MhxBeOwDn0MqAr1UxNTQT+baNUY1aCDlcn0lbi9jLtfIbgl
+ xiV9j6cEQHlPwgW7fFF6o7ZLY8wsx4ejPNScw3mnYOAbVfxTk5MOZp05nNBy5cUB7F2E 8w== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2044.outbound.protection.outlook.com [104.47.66.44])
+        by mx0a-002c1b01.pphosted.com with ESMTP id 3aawfq0mm6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Aug 2021 04:23:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mMtFBR2lVYpx1VPAXztIEgtLyDgl5TGt0HEzp7HxiFyb5kQXZPtFfpYTOS8iKQPTynG0l3m4pahquYUb8Fuv1eu2sX31rHly8QfAfnvzYRe8MRgZBlNjzLX+I+vFYpcSKf1trCtkP77NBkYwC6M9NdokdmNvMrB2mawwJOnnN3DDWg/sqqX0zeN0G+XlBCNGldYeOZRfPPmngHBSgNmHWH+NS4HlD8m337E8GOZh4qSo63797mlaZ9DIcqf29Neym1b8pU8RnM6za5yTc4zZfJXIOGiwyV2kqLwVVwh22p0CPJ1Mj16e2JOB0CXrlFMUawKx0krePlaL4jyNWyBsMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XahGUUgZOHeGUUZfEJRqpK2InKAU4huPvp+6gQ7bRfA=;
+ b=NEjPGdg4wCZWHWRnBlqKokT1JSSA8PfzjmdCRiAXinKgl/px0pIIzD3Lu+zh8WsfGvYj2DaB6a7VENPzACP7OdNIl3VGdHzhep3VtoDljPVcK6XwTPJ/h2iFxnQS5pFsPawb7fvVYFdrPMqXBbbsndrlWcuf5rGay+V/pKVtoeWwqJhq/Qei5OuTRCA1cnHwg+f2Mw7E2F1tlV+ai0aNC+ketQxl/3hiuCqh6z/LOdIFfyibE6U7z5DsNRQ2YqAt9gbfnuTRfUAsAGDC6KSu3u0j4dJn0ErpZbmX6MOSsFP7SzXjKxlPAg0HC9YpfCASyEaSGEGP3brgxayOWlXAHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com (2603:10b6:805:b1::24)
+ by SN6PR02MB5165.namprd02.prod.outlook.com (2603:10b6:805:68::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Mon, 9 Aug
+ 2021 11:23:38 +0000
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::182b:62b8:51c1:ba59]) by SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::182b:62b8:51c1:ba59%5]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 11:23:38 +0000
+From:   Raphael Norwitz <raphael.norwitz@nutanix.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kw@linux.com" <kw@linux.com>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v15 5/9] PCI: Allow userspace to query and set device
+ reset mechanism
+Thread-Topic: [PATCH v15 5/9] PCI: Allow userspace to query and set device
+ reset mechanism
+Thread-Index: AQHXihci2YAVgm4jNkqhvqARRnIzaqtrDc+A
+Date:   Mon, 9 Aug 2021 11:23:38 +0000
+Message-ID: <20210809112337.GD867@raphael-debian-dev>
+References: <20210805162917.3989-1-ameynarkhede03@gmail.com>
+ <20210805162917.3989-6-ameynarkhede03@gmail.com>
+In-Reply-To: <20210805162917.3989-6-ameynarkhede03@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mutt/1.10.1 (2018-07-13)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nutanix.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 60986c8f-d960-4ea4-120f-08d95b282295
+x-ms-traffictypediagnostic: SN6PR02MB5165:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR02MB51651B9A7AE5F6297A4DD0F7EAF69@SN6PR02MB5165.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:1388;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UkF3Kvl/zD4WKNjYzFVIPGhaFLBxaMYacuTQZ+KGEmOv4PALZ/hIZ7JOxU9fYqd+teL0TqpSflzdfgJfFIcqbXr6DjjP6BIm5ypGP3NUHiD+X7Jweik2jrhy80fP4OEjJQ/EebcQ61NZ4kWh4Q97ioWKJg9WgALIV68/IBAwqjpk11xNBFLWFvN/PL6M8iRkwWTCvzccPmArzK8WGuFoPBAjIIie9uPWTjjiN10PRgzWvwfvTkMdcBXFbODqnVoLp6pX8VXwcC/wakZUsVFRBW1aqigaqbb4oV69OBPD8XS86XHHvxv1LdwCew/JZOiSN4Rqu6B5w9PfFwIDljczId9rYa/xgSYIIkF0ZGS4AoMkTz/TYRxQjHtRV8HZ4FlFtEv6j479gZlLNu2cavSJtj6a/8jQMHBofvk7TJ2NOS0mNxPaseIIZQa7ifcQI24IhJ59wyU8K2RWZdPdV435ZirTzEzYhC0pKJnp+8MR+sBgpFjSerXbkAxEJHr1VF+I8YQHCHqkHcijfsS+CVGk5sFJSaUB3PWIspvNQHsBhyevkCetNgCTgfyJtPjWVekE5O3WQNIalFdLnRdBJ7Q6utuKYN8/4YrwVKsgqakBgJ4MPHUPzvj7/nari/n08RqTicAxayIF3K+cEWa9Y36w63hlokjD2wIrHIZFIAuba0Vze38IxAcC5LhKDUXqh3rUILY/Qg4gmy9vAEwSiKvYJA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4543.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(54906003)(33716001)(6916009)(122000001)(1076003)(186003)(4326008)(6486002)(66946007)(71200400001)(508600001)(66476007)(66446008)(38070700005)(38100700002)(8676002)(5660300002)(7416002)(8936002)(44832011)(64756008)(76116006)(6512007)(66556008)(9686003)(91956017)(33656002)(316002)(6506007)(26005)(86362001)(83380400001)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KBUBZ7hvyxTTGwr28JZnC6yWMxNrofVqyCikhe2cwN9SEnb3yPnArHWyDhYA?=
+ =?us-ascii?Q?cFS8mjmLM3RgpX8tQQ9XvDOsttGzrnSj+tjImtPE3wC5xqfHyt8vxPx5RCoA?=
+ =?us-ascii?Q?novmH0uNk3K64oA1/DiGQZ2dfpD95H7Nu+dG67bs2XERBCHyyWJix5XuOZEx?=
+ =?us-ascii?Q?yAlUMY8H/1DetB1w2rsFg0zM3cB5kOfyowllbHrg1ag/2PeA1/Qff2v/WiV2?=
+ =?us-ascii?Q?+2Bcd7f9ejcpD2wr/Eqt5LND454Em1vAJFMdC3Lb7DIotjd2V/6bvo+fXaFi?=
+ =?us-ascii?Q?8oVU2zEReWDbmZKwhHTtfkIXU2Z+YUrUQ17ffqEAdhFJs7oLl+ZjZzS8wPBX?=
+ =?us-ascii?Q?Cz0S4rZpGp130PRYrwu/Ta4/BrX2PAjK9b/PHOhD8uCGuoLhuuvuijAUvNGq?=
+ =?us-ascii?Q?rklAqO6mJKqOsU4NH+aEK2bm7FIgK76/PabY6SXHeTqvcD25kB1NBVgnmacF?=
+ =?us-ascii?Q?CX4Qzd6ARWEqxdtlqE7uX/g8L2vsdyQ0ITWGZkrbS1i+I8cnbNP8Z7jeo8mh?=
+ =?us-ascii?Q?9XHSljvO5PJZOFrp9Y6ez43HFst0CvsqqDzIMpIqXmsHUxPoAzzpjNuO/p7A?=
+ =?us-ascii?Q?kYeCM6t4XbJClA4JmIpGQzG/GDC9ht8qTiBTYDCBKX6vXx3KS1/h0KQ+nm23?=
+ =?us-ascii?Q?1GR7hr13kDmpklEO2+pw+iqmBbg9ybTkBw8VoIglvtbIdu5HttnQoxxXGePB?=
+ =?us-ascii?Q?O/oFC69c7yWg/JG1+rQG13+6gCsaAE1CMkDs2R3mPbMmwlorf5Ta2hJg4tP9?=
+ =?us-ascii?Q?CVO6V1ER449alr7T9aJ+vmcuI3DAjEBXtLDvrYGh0ZdZFCLjmh6AN1X8oRwS?=
+ =?us-ascii?Q?3oKWP0H+4wZNzuySXyVVobJxLxfd6rF9YJHglQQUg1pHzhrdUMhtbCGqtXDK?=
+ =?us-ascii?Q?ZEFd24fcJRtB9ELRNkI3OSF76mrWwADAkmnavsN7MO53k/HVyzQgasleFKbt?=
+ =?us-ascii?Q?3RxsAi2Fay4SnVBWiB7cQuTE2jq7zj4B3xldmVV6kU1MAkFnxxMl6CvosiVG?=
+ =?us-ascii?Q?T8YoKLKERFC4/T8aQ6fz2J5wmNNKLR06MPpk/7jOETFUm+ks8EDt8NiN45JZ?=
+ =?us-ascii?Q?zwr4LI4qYzltsWgfak8SBXTH23FItLZQjc4kpbrI2wVVUMicKhIEV8jcUMl0?=
+ =?us-ascii?Q?FEVetaTuN2T7K2nEvPYlfS8FhrV9Mew/SdJ6Fd1ugMD0Iboargp0i16IvaII?=
+ =?us-ascii?Q?SJGjIwkKgG7gf9czxwR6D76A7U+b4WtcT2XGn+/oU5o+iKRvyqK5uat5lnBP?=
+ =?us-ascii?Q?GdmCk7Rw/cG2x0tb9q5DD5EkO5tHcDb0DAZI/hJwCQLmanSl/xRrT1Lu8U3c?=
+ =?us-ascii?Q?/o0e3Y8zXHQSi7OOropz4O8k?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <485E4A14AB98474A87AF97371EF03091@namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4543.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60986c8f-d960-4ea4-120f-08d95b282295
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 11:23:38.4951
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: f0g1iHhJ1Gw4Ne1xn4xxNbyWUGudUAJJmqhg/eoDpeDnRDxLpOeZ1QQzFPwodBJoDu0Z68mQcWwJlJknsYaOobECJOXywesLyOhnu6y3Ulo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5165
+X-Proofpoint-GUID: qEvf4E87mDTD2GfrgXNIpXmTnEUWI-l9
+X-Proofpoint-ORIG-GUID: qEvf4E87mDTD2GfrgXNIpXmTnEUWI-l9
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-09_03:2021-08-06,2021-08-09 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/2021 17:21, Sam Protsenko wrote:
-> For now it's just a stub driver to make the serial driver work. Later it
-> will be implemented properly. This driver doesn't really change clocks,
-> only registers the UART clock as a fixed-rate clock. Without this clock
-> driver the UART driver won't work, as it's trying to obtain "uart" clock
-> and fails if it's not able to.
-> 
-> In order to get a functional serial console we have to implement that
-> minimal clock driver with "uart" clock. It's not necessary to actually
-> configure clocks, as those are already configured in bootloader, so
-> kernel can rely on that for now.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+On Thu, Aug 05, 2021 at 09:59:13PM +0530, Amey Narkhede wrote:
+> Add reset_method sysfs attribute to enable user to query and set user
+> preferred device reset methods and their ordering.
+>=20
+> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+
+Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+
 > ---
-> Changes in v2:
->   - Used hard coded clock indexes, as clock bindings were removed; will
->     add clock bindings back (reimplemented) once proper clock driver is
->     ready
->   - Removed .data = 0 for exynos850-oscclk, as it's in BSS section
->   - Removed comma for terminator {}
->   - Made exynos850_clk_init() static
->   - Removed checking np for NULL, as it's already done in of_iomap()
-> 
->  drivers/clk/samsung/Makefile        |  1 +
->  drivers/clk/samsung/clk-exynos850.c | 64 +++++++++++++++++++++++++++++
->  2 files changed, 65 insertions(+)
->  create mode 100644 drivers/clk/samsung/clk-exynos850.c
-> 
-> diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-> index 028b2e27a37e..c46cf11e4d0b 100644
-> --- a/drivers/clk/samsung/Makefile
-> +++ b/drivers/clk/samsung/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos5433.o
->  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
->  obj-$(CONFIG_EXYNOS_CLKOUT)	+= clk-exynos-clkout.o
->  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos7.o
-> +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos850.o
->  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
->  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
->  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
-> diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-> new file mode 100644
-> index 000000000000..36c7c7fe7cf0
-> --- /dev/null
-> +++ b/drivers/clk/samsung/clk-exynos850.c
-> @@ -0,0 +1,64 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
-> + * Copyright (C) 2021 Linaro Ltd.
-> + *
-> + * Common Clock Framework support for Exynos850 SoC.
-> + */
+>  Documentation/ABI/testing/sysfs-bus-pci |  19 ++++
+>  drivers/pci/pci-sysfs.c                 |   1 +
+>  drivers/pci/pci.c                       | 117 ++++++++++++++++++++++++
+>  drivers/pci/pci.h                       |   2 +
+>  4 files changed, 139 insertions(+)
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/=
+testing/sysfs-bus-pci
+> index ef00fada2efb..ef66b62bf025 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -121,6 +121,25 @@ Description:
+>  		child buses, and re-discover devices removed earlier
+>  		from this part of the device tree.
+>=20
+> +What:		/sys/bus/pci/devices/.../reset_method
+> +Date:		March 2021
+> +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
+> +Description:
+> +		Some devices allow an individual function to be reset
+> +		without affecting other functions in the same slot.
 > +
-> +#include <linux/clk.h>
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
+> +		For devices that have this support, a file named
+> +		reset_method will be present in sysfs. Initially reading
+> +		this file will give names of the device supported reset
+> +		methods and their ordering. After write, this file will
+> +		give names and ordering of currently enabled reset methods.
+> +		Writing the name or space separated list of names of any of
+> +		the device supported reset methods to this file will set
+> +		the reset methods and their ordering to be used when
+> +		resetting the device. Writing empty string to this file
+> +		will disable ability to reset the device and writing
+> +		"default" will return to the original value.
 > +
-> +#include "clk.h"
+>  What:		/sys/bus/pci/devices/.../reset
+>  Date:		July 2009
+>  Contact:	Michael S. Tsirkin <mst@redhat.com>
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 316f70c3e3b4..54ee7193b463 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1491,6 +1491,7 @@ const struct attribute_group *pci_dev_groups[] =3D =
+{
+>  	&pci_dev_config_attr_group,
+>  	&pci_dev_rom_attr_group,
+>  	&pci_dev_reset_attr_group,
+> +	&pci_dev_reset_method_attr_group,
+>  	&pci_dev_vpd_attr_group,
+>  #ifdef CONFIG_DMI
+>  	&pci_dev_smbios_attr_group,
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 8a516e9ca316..53d73770881f 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -5132,6 +5132,123 @@ static const struct pci_reset_fn_method pci_reset=
+_fn_methods[] =3D {
+>  	{ pci_reset_bus_function, .name =3D "bus" },
+>  };
+>=20
+> +static ssize_t reset_method_show(struct device *dev,
+> +				 struct device_attribute *attr, char *buf)
+> +{
+> +	struct pci_dev *pdev =3D to_pci_dev(dev);
+> +	ssize_t len =3D 0;
+> +	int i, m;
 > +
-> +/* Will be extracted to bindings header once proper clk driver is implemented */
-> +#define OSCCLK		1
-> +#define DOUT_UART	2
-> +#define CLK_NR_CLKS	3
+> +	for (i =3D 0; i < PCI_NUM_RESET_METHODS; i++) {
+> +		m =3D pdev->reset_methods[i];
+> +		if (!m)
+> +			break;
 > +
-> +/* Fixed rate clocks generated outside the SoC */
-> +static struct samsung_fixed_rate_clock exynos850_fixed_rate_ext_clks[] __initdata = {
-> +	FRATE(OSCCLK, "fin_pll", NULL, 0, 26000000),
+> +		len +=3D sysfs_emit_at(buf, len, "%s%s", len ? " " : "",
+> +				     pci_reset_fn_methods[m].name);
+> +	}
+> +
+> +	if (len)
+> +		len +=3D sysfs_emit_at(buf, len, "\n");
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t reset_method_store(struct device *dev,
+> +				  struct device_attribute *attr,
+> +				  const char *buf, size_t count)
+> +{
+> +	struct pci_dev *pdev =3D to_pci_dev(dev);
+> +	int i, m =3D 0, n =3D 0;
+> +	char *name, *options;
+> +
+> +	if (count >=3D (PAGE_SIZE - 1))
+> +		return -EINVAL;
+> +
+> +	if (sysfs_streq(buf, "")) {
+> +		goto exit;
+> +	}
+> +
+> +	if (sysfs_streq(buf, "default")) {
+> +		pci_init_reset_methods(pdev);
+> +		return count;
+> +	}
+> +
+> +	options =3D kstrndup(buf, count, GFP_KERNEL);
+> +	if (!options)
+> +		return -ENOMEM;
+> +
+> +	while ((name =3D strsep(&options, " ")) !=3D NULL) {
+> +		if (sysfs_streq(name, ""))
+> +			continue;
+> +
+> +		name =3D strim(name);
+> +
+> +		for (m =3D 1; m < PCI_NUM_RESET_METHODS; m++) {
+> +			if (sysfs_streq(name, pci_reset_fn_methods[m].name))
+> +				break;
+> +		}
+> +
+> +		if (m =3D=3D PCI_NUM_RESET_METHODS) {
+> +			pci_warn(pdev, "Skip invalid reset method '%s'", name);
+> +			continue;
+> +		}
+> +
+> +		for (i =3D 0; i < n; i++) {
+> +			if (pdev->reset_methods[i] =3D=3D m)
+> +				break;
+> +		}
+> +
+> +		if (i < n)
+> +			continue;
+> +
+> +		if (pci_reset_fn_methods[m].reset_fn(pdev, 1)) {
+> +			pci_warn(pdev, "Unsupported reset method '%s'", name);
+> +			continue;
+> +		}
+> +
+> +		pdev->reset_methods[n++] =3D m;
+> +		BUG_ON(n =3D=3D PCI_NUM_RESET_METHODS);
+> +	}
+> +
+> +	kfree(options);
+> +
+> +exit:
+> +	/* All the reset methods are invalid */
+> +	if (n =3D=3D 0 && m =3D=3D PCI_NUM_RESET_METHODS)
+> +		return -EINVAL;
+> +	pdev->reset_methods[n] =3D 0;
+> +	if (pdev->reset_methods[0] =3D=3D 0) {
+> +		pci_warn(pdev, "All device reset methods disabled by user");
+> +	} else if ((pdev->reset_methods[0] !=3D 1) &&
+> +		   !pci_reset_fn_methods[1].reset_fn(pdev, 1)) {
+> +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user"=
+);
+> +	}
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(reset_method);
+> +
+> +static struct attribute *pci_dev_reset_method_attrs[] =3D {
+> +	&dev_attr_reset_method.attr,
+> +	NULL,
 > +};
 > +
-> +/*
-> + * Model the UART clock as a fixed-rate clock for now, to make serial driver
-> + * work. This clock is already configured in the bootloader.
-> + */
-> +static const struct samsung_fixed_rate_clock exynos850_peri_clks[] __initconst = {
-> +	FRATE(DOUT_UART, "DOUT_UART", NULL, 0, 200000000),
+> +static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj=
+,
+> +						    struct attribute *a, int n)
+> +{
+> +	struct pci_dev *pdev =3D to_pci_dev(kobj_to_dev(kobj));
+> +
+> +	if (!pci_reset_supported(pdev))
+> +		return 0;
+> +
+> +	return a->mode;
+> +}
+> +
+> +const struct attribute_group pci_dev_reset_method_attr_group =3D {
+> +	.attrs =3D pci_dev_reset_method_attrs,
+> +	.is_visible =3D pci_dev_reset_method_attr_is_visible,
 > +};
 > +
-> +static const struct of_device_id ext_clk_match[] __initconst = {
-> +	{ .compatible = "samsung,exynos850-oscclk" },
-
-One more thing - I am not sure anymore if this is correct. AFAIR, we
-wanted to drop compatibles for external clocks.
-
-Chanwoo, Sylwester, Tomasz,
-Do you remember the recommended approach? Shall it be like Exynos542x
-(samsung,exynos5420-oscclk) or Exynos5433?
-
-
-BTW, I am now converting some of existing clock controller bindings to
-dtschema.
-
-Best regards,
-Krzysztof
+>  /**
+>   * __pci_reset_function_locked - reset a PCI device function while holdi=
+ng
+>   * the @dev mutex lock.
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 7438953745e0..31458d48eda7 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -714,4 +714,6 @@ static inline int pci_acpi_program_hp_params(struct p=
+ci_dev *dev)
+>  extern const struct attribute_group aspm_ctrl_attr_group;
+>  #endif
+>=20
+> +extern const struct attribute_group pci_dev_reset_method_attr_group;
+> +
+>  #endif /* DRIVERS_PCI_H */
+> --
+> 2.32.0
+> =
