@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD5F3E4582
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F773E4589
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 14:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbhHIMWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 08:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233161AbhHIMWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 08:22:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF5A160C3F;
-        Mon,  9 Aug 2021 12:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628511702;
-        bh=3kFnfS+Dy7NmGU+ijvdxfcEyE+vtAAyO0mFOkgwcuAA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=slYnTMLrUeFRH40v30luW0Xn3tP+312crZgqGDDJJkKtEKuYugRnRDJ5V7FPBJH5Q
-         3mGJ6fHdx5RcRcEJme/bcsnoQU0EbUoP6dZt1i6iii4qADSTezskMwDsngRzKysrG0
-         jE3fgZGg3lY7+vzZhKVd3IIpCRJ4nnVVkkraNBC2HtOpJcL+7kSvH3TE/1slRif837
-         YeRr8h0GkOudZ1frXTmhHf9SnVAJ6VCWODGrdcbd3RRWQhRhU8VOUPI3bHg5scT9X2
-         NNBXLFG73AMqeE7FR7mywn25t9kmyaqtf4RYla/CZ7Yo6bZmHzuJpUkHJS0F7iiuwS
-         YLNkbvjLs2TOg==
-Date:   Mon, 9 Aug 2021 13:21:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Steve Lee <SteveS.Lee@maximintegrated.com>
-Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "rf@opensource.wolfsonmicro.com" <rf@opensource.wolfsonmicro.com>,
-        "shumingf@realtek.com" <shumingf@realtek.com>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "dmurphy@ti.com" <dmurphy@ti.com>,
-        "jack.yu@realtek.com" <jack.yu@realtek.com>,
-        "nuno.sa@analog.com" <nuno.sa@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>,
-        "steves.lee.maxim@gmail.com" <steves.lee.maxim@gmail.com>
-Subject: Re: [EXTERNAL] Re: [PATCH] ASoC: max98390: Add support change dsm
- param name
-Message-ID: <20210809122125.GC4866@sirena.org.uk>
-References: <20210806080834.16705-1-steves.lee@maximintegrated.com>
- <20210806110301.GW26252@sirena.org.uk>
- <CO1PR11MB5089212BFBF03F82AE41E34C92F69@CO1PR11MB5089.namprd11.prod.outlook.com>
+        id S235098AbhHIMX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 08:23:27 -0400
+Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:11666 "EHLO
+        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234619AbhHIMX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 08:23:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1628511787; x=1660047787;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cOMO+TjtDSXLd6IwINl4YBGHY7nTYJ6NSi74jdZdrH4=;
+  b=WGxJ6nqqXNVK1Xv4gMKf03VeZd1MVLjGDDyofa4dUg+zEP+zdiQPE2CO
+   ssywZ1u4glhs/NjpHwPxKwGlnnly07axRS1YC0XXalGpt7VLPGM+9eY0I
+   PV68c5JuiEeBFTeCvJEVAbBUomEMJ+v4yt2lMSVhCGYKlEjeO5G+WRwW7
+   w=;
+X-IronPort-AV: E=Sophos;i="5.84,307,1620691200"; 
+   d="scan'208";a="17955198"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 09 Aug 2021 12:23:00 +0000
+Received: from EX13D19EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id A7345A2128;
+        Mon,  9 Aug 2021 12:22:58 +0000 (UTC)
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D19EUB004.ant.amazon.com (10.43.166.61) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Mon, 9 Aug 2021 12:22:56 +0000
+Received: from 8c85908914bf.ant.amazon.com.com (10.218.69.139) by
+ mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Mon, 9 Aug 2021 12:22:55 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>, <christian.koenig@amd.com>
+CC:     <linux-kernel@vger.kernel.org>, <linaro-mm-sig@lists.linaro.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH] dma-buf: Fix a few typos in dma-buf documentation
+Date:   Mon, 9 Aug 2021 15:22:46 +0300
+Message-ID: <20210809122247.15869-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oOB74oR0WcNeq9Zb"
-Content-Disposition: inline
-In-Reply-To: <CO1PR11MB5089212BFBF03F82AE41E34C92F69@CO1PR11MB5089.namprd11.prod.outlook.com>
-X-Cookie: Flattery will get you everywhere.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix a few typos in the documentation:
+- Remove an extraneous 'or'
+- 'unpins' -> 'unpin'
+- 'braket' -> 'bracket'
+- 'mappinsg' -> 'mappings'
+- 'fullfills' -> 'fulfills'
 
---oOB74oR0WcNeq9Zb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Gal Pressman <galpress@amazon.com>
+---
+ include/linux/dma-buf.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-On Mon, Aug 09, 2021 at 12:57:48AM +0000, Steve Lee wrote:
-> On Fri, Aug 06, 2021 at 05:08:34PM +0900, Steve Lee wrote:
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index efdc56b9d95f..772403352767 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -54,7 +54,7 @@ struct dma_buf_ops {
+ 	 * device), and otherwise need to fail the attach operation.
+ 	 *
+ 	 * The exporter should also in general check whether the current
+-	 * allocation fullfills the DMA constraints of the new device. If this
++	 * allocation fulfills the DMA constraints of the new device. If this
+ 	 * is not the case, and the allocation cannot be moved, it should also
+ 	 * fail the attach operation.
+ 	 *
+@@ -146,7 +146,7 @@ struct dma_buf_ops {
+ 	 *
+ 	 * Returns:
+ 	 *
+-	 * A &sg_table scatter list of or the backing storage of the DMA buffer,
++	 * A &sg_table scatter list of the backing storage of the DMA buffer,
+ 	 * already mapped into the device address space of the &device attached
+ 	 * with the provided &dma_buf_attachment. The addresses and lengths in
+ 	 * the scatter list are PAGE_SIZE aligned.
+@@ -168,7 +168,7 @@ struct dma_buf_ops {
+ 	 *
+ 	 * This is called by dma_buf_unmap_attachment() and should unmap and
+ 	 * release the &sg_table allocated in @map_dma_buf, and it is mandatory.
+-	 * For static dma_buf handling this might also unpins the backing
++	 * For static dma_buf handling this might also unpin the backing
+ 	 * storage if this is the last mapping of the DMA buffer.
+ 	 */
+ 	void (*unmap_dma_buf)(struct dma_buf_attachment *,
+@@ -237,7 +237,7 @@ struct dma_buf_ops {
+ 	 * This callback is used by the dma_buf_mmap() function
+ 	 *
+ 	 * Note that the mapping needs to be incoherent, userspace is expected
+-	 * to braket CPU access using the DMA_BUF_IOCTL_SYNC interface.
++	 * to bracket CPU access using the DMA_BUF_IOCTL_SYNC interface.
+ 	 *
+ 	 * Because dma-buf buffers have invariant size over their lifetime, the
+ 	 * dma-buf core checks whether a vma is too large and rejects such
+@@ -464,7 +464,7 @@ static inline bool dma_buf_is_dynamic(struct dma_buf *dmabuf)
+ 
+ /**
+  * dma_buf_attachment_is_dynamic - check if a DMA-buf attachment uses dynamic
+- * mappinsg
++ * mappings
+  * @attach: the DMA-buf attachment to check
+  *
+  * Returns true if a DMA-buf importer wants to call the map/unmap functions with
+-- 
+2.32.0
 
-> > This will break anything using dsm_param.bin as the default - why make the
-> > change?
-
->  I'd like to make that as same name with other using SoF project line.
-> This originally production default is "dsm_param_%s_%s.bin with vendor and product name".
-
-If you want to add a new filename then that's fine but we shouldn't be
-breaking backwards compatibility for a minor reason like that.
-
---oOB74oR0WcNeq9Zb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmERHcQACgkQJNaLcl1U
-h9BUhwf7BAZCA8ned1qlMpa1UllxHgfo0Ik5FEbiaGulDN7WWUvgdF0pKHYVFxAc
-300Ly9VLhZvNbpGb42okPXkHPSgglxswYHRtLUArSvz0Tr5OjRgz1o+/geuBHrfy
-z2FTjbgsDsqnCgrex86I+K1L4Srt2+0b9ycbkkSVtsJFj1mYbwfFUC7esb5Yei7c
-KHnJ1XStCH4C52J0Wp2dLf7SjT4WIsHo46ZvlGYApxIzzCo3gbIf7Kd30rgNh+T0
-4lhkcxuT1ypD5dxgPETQmXeug2UOdnw3E8VWA5AY2weWoD0i9xf3aEHdFETiRdX/
-O0Pe8CClycH/bK3Wt/ChAQZEZA393g==
-=r8T7
------END PGP SIGNATURE-----
-
---oOB74oR0WcNeq9Zb--
