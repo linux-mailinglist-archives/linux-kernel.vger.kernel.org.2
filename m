@@ -2,253 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59DC3E4A4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3823E4A50
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233684AbhHIQwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
+        id S234071AbhHIQwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbhHIQvV (ORCPT
+        with ESMTP id S233749AbhHIQvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:51:21 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3103C0617BA
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:51:00 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id k29so9524531wrd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:51:00 -0700 (PDT)
+        Mon, 9 Aug 2021 12:51:36 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124A9C06179E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:51:16 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id n12so1728734edx.8
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:51:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L+x0I7hPWkCmEDLJ+zw5aCUBeHw5a2dhPwAN7ub/WpE=;
-        b=I/365I06/iHbh9jbGRpXK81W24CGy8MX0s5hY3UHkEfpqnY/zaMGY8u7sLh17OEOWs
-         ZHRGzx7MdhpsqAzpuKg+W5+ZumNJFHoCjAv0LPijf0U1zLRVElips+Y6kynUxFRrH2KM
-         r1GrKXiFGb4Zf9z78UcaHD/xeMLgeqEmQpgYxWRA8K03+/HJ/8a9ti3q1oZ2poi1ojpl
-         0zQ4H55DQjyKbw6cB7I0MuVdZa0JTkWaHCWs/8sD49AZxHuu/zLd2LjfRe5VNv8+XRiQ
-         R9NvDIin2VbaBLvQAAYND7NyerKyY9ybNYVO/CwAkqYzn3LfERLKtNoptjaY+XwQb92B
-         MXOQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RxmdItFZkEi/9iGP3rK4lcNwD3SStqnhhfXgrwX8fQo=;
+        b=fkfImuK2CwAkrjwvRu6A970SoVBxWoYKVn6s5C7o6zFPf1aZTEfddk/uRJQvnc6PLF
+         6b9LgJgcCaiRLCY7hryTS4/uY4OkJcNXdIsdfFtl7/KXQPOpFT4yUYcXiJI675gVd0Ds
+         0jHJg4Zn8gtADMtBwRtFoOnkG09qeVTc5J4+dAtsbgEAbNoQoJPsPWcsebscGpVG+zCM
+         pc1iql2Ptxf9gbpLAtpp9fLJ1XryRf9WilD2zxJ0qGCtp5rhC+DTBGqaEMxS3NHHaU/l
+         el+zq9pTeGVnuRL9B8+dUUzyJVPqkft2FRIsrRmUoDyTQ5A0Vy1xkP8M+EzONyV4M1Na
+         kGwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L+x0I7hPWkCmEDLJ+zw5aCUBeHw5a2dhPwAN7ub/WpE=;
-        b=AOm54T9egEo6rvt2G3FmPy9KbdC/DxGi9RknLKtxLjLgRUI6ZqP1VCysxOTTosr802
-         4oQKaSd5O8Ygy7YImC9/mxeJVCw+bW0K/czfdZKZIWYI3RlHUb2UZbOuYnnSr91kh8/o
-         zeovid/dwKHi5oJ7IPFYWljpAeUM/sbY1TzWG2HFqplkVBpv/Nsq9LLFqnX3YLIS3Re3
-         sO1EQ8A3MhvPeoGppqnJpHAMZsr0AIvGren0eOpMn3PoYZsqRYir5Kh6zUpgyFczN6jF
-         WeCnCo+jAHvKz3NSpxEeCTw+Ob+rrW02OCYpQqsQSsh6Dvl7AVNenXgs5pkjJh+VyS8P
-         MaUg==
-X-Gm-Message-State: AOAM532jw/q+lA5UmTSkSm1CBzltG5Ssji6dSntURni2ypR8q/RBgy7T
-        vb1EuLqach4+JKhxZr/kc0I=
-X-Google-Smtp-Source: ABdhPJwcwXd+aQv0mObcBHJCbH67ip0hKcrzqR15xaZ9rab1hBpi3YNB2QLhCVt0vS6yaRgN0q/gFw==
-X-Received: by 2002:a5d:638b:: with SMTP id p11mr11012532wru.257.1628527859277;
-        Mon, 09 Aug 2021 09:50:59 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::996b])
-        by smtp.gmail.com with ESMTPSA id q5sm20484469wrx.33.2021.08.09.09.50.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 09:50:59 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 17/17] staging: r8188eu: remove remaining unnecessary parentheses in core dir
-Date:   Mon,  9 Aug 2021 18:50:07 +0200
-Message-Id: <20210809165007.23204-18-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210809165007.23204-1-straube.linux@gmail.com>
-References: <20210809165007.23204-1-straube.linux@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RxmdItFZkEi/9iGP3rK4lcNwD3SStqnhhfXgrwX8fQo=;
+        b=j2+58BQif+KVHpDZ6cjDYtgJbA9jX594hIR4bqAyBQ4rtwodVVrhH5V4xfrQQfjKbn
+         RZU72tdJ3F5TlrWvypO4G5bihsfaqJm2uPpnMci8EC/Nc0teOPccCj3gTK9RlLp139Rm
+         rxRDRuYBKzLDBKs/mcLJSY8S9U0/wZwBKNmUhw0LCTHHBYqnPWwgpRNnT4Gql+KMnasJ
+         1eVNy6Z74dHXVc3w3jyjdOaX8McYf1jEUhZluTw/5U8CChT+iqXMSa8WeghrPIsqApm2
+         6b4d/b1DVeKSLiV7klZ2GEeGZWEURJrNYTfzP8g4QJoC+7eZb/qqfeIxwPsuDeBAxyLR
+         GD9w==
+X-Gm-Message-State: AOAM530EjciUnN7P/l2WUEWG342yq65Qo6rcC9Om6ZGpXOkqwxXN/A/r
+        e/lmuFOpen8/Vu38owDGWZTtBZHWtbQP25Ttjk0=
+X-Google-Smtp-Source: ABdhPJzKBvR7Xh7W1WPD+fdEdxDiLbn9Xad+iIj5BsEr34bkeBfaQU6933hThF8to/pk17mhhXTWvmmXUqxfmwxXibA=
+X-Received: by 2002:a50:d651:: with SMTP id c17mr31525573edj.69.1628527874597;
+ Mon, 09 Aug 2021 09:51:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210805190253.2795604-1-zi.yan@sent.com> <20210805190253.2795604-12-zi.yan@sent.com>
+ <c2fa6c99-ac48-bf0b-a8ca-d1c0ffb633b6@redhat.com> <CAKgT0UdCVTYiiGHuhBv7VnyJeD3ZAijBcZPLEPc=r7QD=9veNA@mail.gmail.com>
+ <42FD7031-5C3D-4EED-BD54-2F5839823E22@nvidia.com>
+In-Reply-To: <42FD7031-5C3D-4EED-BD54-2F5839823E22@nvidia.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 9 Aug 2021 09:51:03 -0700
+Message-ID: <CAKgT0UdLnS3CV47kOY4O5cvgUFFCLo=L5C_shga=cU6UEBZv6w@mail.gmail.com>
+Subject: Re: [RFC PATCH 11/15] mm/page_reporting: report pages at section size
+ instead of MAX_ORDER.
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove remaining unnecessary parentheses in core dir reported by
-checkpatch.
+On Mon, Aug 9, 2021 at 8:08 AM Zi Yan <ziy@nvidia.com> wrote:
+>
+> On 9 Aug 2021, at 10:12, Alexander Duyck wrote:
+>
+> > On Mon, Aug 9, 2021 at 12:25 AM David Hildenbrand <david@redhat.com> wr=
+ote:
+> >>
+> >> On 05.08.21 21:02, Zi Yan wrote:
+> >>> From: Zi Yan <ziy@nvidia.com>
+> >>>
+> >>> page_reporting_order was set to MAX_ORDER, which is always smaller th=
+an
+> >>> a memory section size. An upcoming change will make MAX_ORDER larger
+> >>> than a memory section size. Set page_reporting_order to
+> >>> PFN_SECTION_SHIFT to match existing size assumption.
+> >>>
+> >>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >>> Cc: David Hildenbrand <david@redhat.com>
+> >>> Cc: linux-mm@kvack.org
+> >>> Cc: linux-kernel@vger.kernel.org
+> >>> ---
+> >>>   mm/page_reporting.c | 3 ++-
+> >>>   1 file changed, 2 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+> >>> index 382958eef8a9..dc4a2d699862 100644
+> >>> --- a/mm/page_reporting.c
+> >>> +++ b/mm/page_reporting.c
+> >>> @@ -11,7 +11,8 @@
+> >>>   #include "page_reporting.h"
+> >>>   #include "internal.h"
+> >>>
+> >>> -unsigned int page_reporting_order =3D MAX_ORDER;
+> >>> +/* Set page_reporting_order at section size */
+> >>> +unsigned int page_reporting_order =3D PFN_SECTION_SHIFT;
+> >>>   module_param(page_reporting_order, uint, 0644);
+> >>>   MODULE_PARM_DESC(page_reporting_order, "Set page reporting order");
+> >>>
+> >>>
+> >>
+> >> If you look closely, this is only a placeholder and will get overwritt=
+en
+> >> in page_reporting_register(). I don't recall why we have the module
+> >> parameter at all. Most probably, to adjust the reporting order after w=
+e
+> >> already registered a user. Can't we just initialize that to 0 ?
+> >
+> > Yeah, it is pretty much there for debugging in the event that we are
+> > on an architecture that is misconfigured.
+>
+> MAX_ORDER is changed to a boot time variable in Patch 15, thus cannot be =
+used
+> for page_reporting_order initialization after that.
+>
+> Thanks for David=E2=80=99s explanation. I will initialize page_reporting_=
+order to 0
+> and fix the commit message.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_br_ext.c    |  6 +++---
- drivers/staging/r8188eu/core/rtw_debug.c     | 14 +++++++-------
- drivers/staging/r8188eu/core/rtw_ieee80211.c |  4 ++--
- drivers/staging/r8188eu/core/rtw_iol.c       |  2 +-
- drivers/staging/r8188eu/core/rtw_mp.c        | 10 +++++-----
- 5 files changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-index 28f0452d6ccb..e13f134a497b 100644
---- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-@@ -319,7 +319,7 @@ static inline void __network_hash_link(struct adapter *priv,
- static inline void __network_hash_unlink(struct nat25_network_db_entry *ent)
- {
- 	/*  Caller must spin_lock already! */
--	*(ent->pprev_hash) = ent->next_hash;
-+	*ent->pprev_hash = ent->next_hash;
- 	if (ent->next_hash)
- 		ent->next_hash->pprev_hash = ent->pprev_hash;
- 	ent->next_hash = NULL;
-@@ -853,7 +853,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			} else {	/*  session phase */
- 				DEBUG_INFO("NAT25: Insert PPPoE, insert session packet to %s\n", skb->dev->name);
- 
--				__nat25_generate_pppoe_network_addr(networkAddr, skb->data, &(ph->sid));
-+				__nat25_generate_pppoe_network_addr(networkAddr, skb->data, &ph->sid);
- 
- 				__nat25_db_network_insert(priv, skb->data+ETH_ALEN, networkAddr);
- 
-@@ -921,7 +921,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 			} else {
- 				if (ph->sid != 0) {
- 					DEBUG_INFO("NAT25: Lookup PPPoE, lookup session packet from %s\n", skb->dev->name);
--					__nat25_generate_pppoe_network_addr(networkAddr, skb->data+ETH_ALEN, &(ph->sid));
-+					__nat25_generate_pppoe_network_addr(networkAddr, skb->data+ETH_ALEN, &ph->sid);
- 					__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
- 					__nat25_db_print(priv);
- 				} else {
-diff --git a/drivers/staging/r8188eu/core/rtw_debug.c b/drivers/staging/r8188eu/core/rtw_debug.c
-index 30ef77842787..e7b088563738 100644
---- a/drivers/staging/r8188eu/core/rtw_debug.c
-+++ b/drivers/staging/r8188eu/core/rtw_debug.c
-@@ -133,7 +133,7 @@ int proc_get_fwstate(char *page, char **start,
- {
- 	struct net_device *dev = data;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
- 	int len = 0;
- 
-@@ -168,7 +168,7 @@ int proc_get_mlmext_state(char *page, char **start,
- 	struct net_device *dev = data;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
- 	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
--	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
-+	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
- 
- 	int len = 0;
- 
-@@ -184,7 +184,7 @@ int proc_get_qos_option(char *page, char **start,
- {
- 	struct net_device *dev = data;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
- 	int len = 0;
- 
-@@ -200,7 +200,7 @@ int proc_get_ht_option(char *page, char **start,
- {
- 	struct net_device *dev = data;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
- 	int len = 0;
- 	len += snprintf(page + len, count - len, "ht_option=%d\n", pmlmepriv->htpriv.ht_option);
-@@ -230,9 +230,9 @@ int proc_get_ap_info(char *page, char **start,
- 	struct sta_info *psta;
- 	struct net_device *dev = data;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
--	struct wlan_network *cur_network = &(pmlmepriv->cur_network);
-+	struct wlan_network *cur_network = &pmlmepriv->cur_network;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 	int len = 0;
- 
-@@ -830,7 +830,7 @@ int proc_get_all_sta_info(char *page, char **start,
- 	spin_lock_bh(&pstapriv->sta_hash_lock);
- 
- 	for (i = 0; i < NUM_STA; i++) {
--		phead = &(pstapriv->sta_hash[i]);
-+		phead = &pstapriv->sta_hash[i];
- 		plist = phead->next;
- 
- 		while (phead != plist) {
-diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
-index ff77e686721c..55d2b8f90d91 100644
---- a/drivers/staging/r8188eu/core/rtw_ieee80211.c
-+++ b/drivers/staging/r8188eu/core/rtw_ieee80211.c
-@@ -414,11 +414,11 @@ int rtw_generate_ie(struct registry_priv *pregistrypriv)
- 	}
- 
- 	/* DS parameter set */
--	ie = rtw_set_ie(ie, _DSSET_IE_, 1, (u8 *)&(pdev_network->Configuration.DSConfig), &sz);
-+	ie = rtw_set_ie(ie, _DSSET_IE_, 1, (u8 *)&pdev_network->Configuration.DSConfig, &sz);
- 
- 	/* IBSS Parameter Set */
- 
--	ie = rtw_set_ie(ie, _IBSS_PARA_IE_, 2, (u8 *)&(pdev_network->Configuration.ATIMWindow), &sz);
-+	ie = rtw_set_ie(ie, _IBSS_PARA_IE_, 2, (u8 *)&pdev_network->Configuration.ATIMWindow, &sz);
- 
- 	if (rateLen > 8)
- 		ie = rtw_set_ie(ie, _EXT_SUPPORTEDRATES_IE_, (rateLen - 8), (pdev_network->SupportedRates + 8), &sz);
-diff --git a/drivers/staging/r8188eu/core/rtw_iol.c b/drivers/staging/r8188eu/core/rtw_iol.c
-index 0e5ce12d4b57..927b8c919fa7 100644
---- a/drivers/staging/r8188eu/core/rtw_iol.c
-+++ b/drivers/staging/r8188eu/core/rtw_iol.c
-@@ -8,7 +8,7 @@ struct xmit_frame	*rtw_IOL_accquire_xmit_frame(struct adapter  *adapter)
- 	struct xmit_frame	*xmit_frame;
- 	struct xmit_buf	*xmitbuf;
- 	struct pkt_attrib	*pattrib;
--	struct xmit_priv	*pxmitpriv = &(adapter->xmitpriv);
-+	struct xmit_priv	*pxmitpriv = &adapter->xmitpriv;
- 
- 	xmit_frame = rtw_alloc_xmitframe(pxmitpriv);
- 	if (!xmit_frame) {
-diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
-index def0c250a4ac..7f7a7eddda4a 100644
---- a/drivers/staging/r8188eu/core/rtw_mp.c
-+++ b/drivers/staging/r8188eu/core/rtw_mp.c
-@@ -577,7 +577,7 @@ static int mp_xmit_packet_thread(void *context)
- 	pmp_priv = (struct mp_priv *)context;
- 	pmptx = &pmp_priv->tx;
- 	padapter = pmp_priv->papdater;
--	pxmitpriv = &(padapter->xmitpriv);
-+	pxmitpriv = &padapter->xmitpriv;
- 
- 	thread_enter("RTW_MP_THREAD");
- 
-@@ -596,7 +596,7 @@ static int mp_xmit_packet_thread(void *context)
- 		}
- 
- 		memcpy((u8 *)(pxmitframe->buf_addr+TXDESC_OFFSET), pmptx->buf, pmptx->write_size);
--		memcpy(&(pxmitframe->attrib), &(pmptx->attrib), sizeof(struct pkt_attrib));
-+		memcpy(&pxmitframe->attrib, &pmptx->attrib, sizeof(struct pkt_attrib));
- 
- 		dump_mpframe(padapter, pxmitframe);
- 
-@@ -625,7 +625,7 @@ static int mp_xmit_packet_thread(void *context)
- void fill_txdesc_for_mp(struct adapter *padapter, struct tx_desc *ptxdesc)
- {
- 	struct mp_priv *pmp_priv = &padapter->mppriv;
--	memcpy(ptxdesc, &(pmp_priv->tx.desc), TXDESC_SIZE);
-+	memcpy(ptxdesc, &pmp_priv->tx.desc, TXDESC_SIZE);
- }
- 
- void SetPacketTx(struct adapter *padapter)
-@@ -676,7 +676,7 @@ void SetPacketTx(struct adapter *padapter)
- 	pmp_priv->tx.buf = (u8 *)N_BYTE_ALIGMENT((size_t)(pmp_priv->tx.pallocated_buf), XMITBUF_ALIGN_SZ);
- 	ptr = pmp_priv->tx.buf;
- 
--	desc = &(pmp_priv->tx.desc);
-+	desc = &pmp_priv->tx.desc;
- 	memset(desc, 0, TXDESC_SIZE);
- 	pkt_start = ptr;
- 	pkt_end = pkt_start + pkt_size;
-@@ -954,7 +954,7 @@ void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv)
- 			goto exit;
- 		}
- 
--		list_add_tail(&pxmitbuf->list, &(pxmitpriv->free_xmit_extbuf_queue.queue));
-+		list_add_tail(&pxmitbuf->list, &pxmitpriv->free_xmit_extbuf_queue.queue);
- 		pxmitbuf++;
- 	}
- 
--- 
-2.32.0
-
+Rather than 0 it might be better to use (unsigned)-1 as that would
+prevent page reporting from being able to run until the value is
+overwritten.
