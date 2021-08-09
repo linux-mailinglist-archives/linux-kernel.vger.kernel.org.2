@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7213E4434
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4D33E4438
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhHIKwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233882AbhHIKw2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:52:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6411C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 03:52:07 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628506326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R3rD6zt7Yj71sWI/j1ern85v6Heo4nPPYxYtS0PtPYY=;
-        b=QeA8NcWK+lz7vH/xsiORpAF8cwyGRm2YhnNUWocFTC0rPesnIVmW39DBcBm0VyTmdumTul
-        /BFBrK4ISc/SEso1RYupJvc/Gf8kudf+mEey6qB8hsmE4pWlApJYK7tXF7fr1UVNs1TLvL
-        /6ZdjMjwbUtbZ1sJkjqJclQLVAXb2rO/HssFS5BQjWKwt4IYAl/DOHUVF5f2TKyRa3IiUq
-        UsPvFknzTtY5wbvM1QRKlx4znf40cdwoQkmYnmmNpDkjuZdiY1rsAHGyuTmmjT9leA5FK/
-        42Lpej6KJvs9MyaH8j3V8gftGKtgEyR1bSNUGjVuyvc5jSG50IhC6Eh5N4Zpug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628506326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R3rD6zt7Yj71sWI/j1ern85v6Heo4nPPYxYtS0PtPYY=;
-        b=L1PC3jl/SG0i5n6rEmleNkloDT0yV/wkxnAFiBrJr740+4CC/mywQWtPihE7BfU4pZM9ZD
-        OsDJLp8EcnpBsYBQ==
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [patch V3 56/64] futex: Correct the number of requeued waiters
- for PI
-In-Reply-To: <87o8a7t4j5.ffs@tglx>
-References: <20210805151300.330412127@linutronix.de>
- <20210805153956.051961951@linutronix.de>
- <20210808170535.kotqd5t677tijh4o@offworld> <87o8a7t4j5.ffs@tglx>
-Date:   Mon, 09 Aug 2021 12:52:06 +0200
-Message-ID: <87bl66ubzd.ffs@tglx>
+        id S234276AbhHIKxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233254AbhHIKxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 06:53:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC1716023D;
+        Mon,  9 Aug 2021 10:52:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628506363;
+        bh=eC5/ptDREwdD+Mi5IQ60r27+kT5wy5bRZnE+psxz7s0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VBkRRgmLfRcjEB2tTXpETlkjSBkuUoq2zHM7UIdOyaRqtqwwPGzQfEwK0LktKgT1L
+         GadNmtMDJ/YSSalSVnfX9n/F4ZUBDctKpAdg6W4hMwpn8LFcxvZnVxYqPaScFxdyMB
+         57wFPZXwQhRvgg33G0lCN6ztK02ryRPOPchikZn4TIXuVpNH8SquSVfmqfr028gQUy
+         4Sqy9MCam8FLRxlz5rbzXORFscm8HQ9gklK1jw1PxLFOwR1OzpP5J4hCMGjqZgvvkQ
+         rP7k2REVJ33TIZa3HVkb7wdxdRo1aamgLKSe0NVrUWR+3Splygt16YYElZB6ndkU2S
+         2hSxXCn4TYsvw==
+Date:   Mon, 9 Aug 2021 11:52:38 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        mark.rutland@arm.com
+Subject: Re: [GIT PULL] arm64 fixes for -rc5
+Message-ID: <20210809105238.GA5693@willie-the-truck>
+References: <20210806135331.GA2951@willie-the-truck>
+ <CAHk-=whNiAtCUqeCAcq+GKjmOXFfLCYA84TpeeL2085c+BdmQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whNiAtCUqeCAcq+GKjmOXFfLCYA84TpeeL2085c+BdmQQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09 2021 at 10:18, Thomas Gleixner wrote:
-> On Sun, Aug 08 2021 at 10:05, Davidlohr Bueso wrote:
->> On Thu, 05 Aug 2021, Thomas Gleixner wrote:
->>
->>>From: Thomas Gleixner <tglx@linutronix.de>
->>>
->>>The accounting is wrong when either the PI sanity check or the
->>>requeue PI operation fails. Adjust it in the failure path.
->>
->> Ok fortunately these accounting errors are benign considering they
->> are in error paths. This also made me wonder about the requeue PI
->> top-waiter wakeup from futex_proxy_trylock_atomic(), which is always
->> required with nr_wakers == 1. We account for it on the successful
->> case we acquired the lock on it's behalf (and thus requeue_pi_wake_futex
->> was called), but if the corresponding lookup_pi_state fails, we'll retry.
->> So, shouldn't the task_count++ only be considered when we know the
->> requeueing is next (a successful top_waiter acquiring the lock+pi state)?
->>
->> @@ -2260,7 +2260,6 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
->> 		 */
->> 		if (ret > 0) {
->> 			WARN_ON(pi_state);
->> -                       task_count++;
->> 			/*
->> 			 * If we acquired the lock, then the user space value
->> 			 * of uaddr2 should be vpid. It cannot be changed by
->> @@ -2275,6 +2274,8 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
->> 			 */
->> 			ret = lookup_pi_state(uaddr2, ret, hb2, &key2,
->> 					      &pi_state, &exiting);
->> +                       if (!ret)
->> +                               task_count++;
->> 		}
->
-> Yes, but if futex_proxy_trylock_atomic() succeeds and lookup_pi_state()
-> fails then the user space futex value is already the VPID of the top
-> waiter and a retry will then fail the futex_proxy_trylock_atomic().
+Hi Linus,
 
-Actually lookup_pi_state() cannot fail here.
+[+Mark]
 
-If futex_proxy_trylock_atomic() takes the user space futex then there
-are no waiters on futex2 and the task for which the proxy trylock
-acquired futex2 in the user space storage cannot be exiting because it's
-still enqueued on futex1.
+On Fri, Aug 06, 2021 at 11:40:33AM -0700, Linus Torvalds wrote:
+> On Fri, Aug 6, 2021 at 6:53 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > Please pull these arm64 fixes for -rc5. It's all pretty minor but the
+> > main fix is sorting out how we deal with return values from 32-bit system
+> > calls as audit expects error codes to be sign-extended to 64 bits
+> 
+> I've pulled this, but that change looks _really_ odd.
 
-That means lookup_pi_state() will take the attach_to_pi_owner() path and
-that will succeed because VPID belongs to an alive task.
+Cheers, and yes it does. We're stuck in the middle of the architecture,
+the compat ABI and internal kernel expectations. More below.
 
-What's wrong in that code though is the condition further up:
+> First you seem to intentionally *zero-extend* the error value when you
+> actually set it in pt_regs, and then you sign-extend them when reading
+> them.
+> 
+> So the rules seem entirely arbitrary: oen place says "upper 32 bits
+> need to be clear" and another place says "upper 32 bits need to be
+> sign-extended".
+> 
+> Why this insanity? Why not make the rule be that the upper 32 bits are
+> always just sign-extended?
 
-	if (requeue_pi && (task_count - nr_wake < nr_requeue)) {
+There are a few things which collide here:
 
-nr_wake has to be 1 for requeue PI. For the first round task_count is 0
-which means the condition is true for any value of nr_requeue >= 0.
+The architecture doesn't guarantee that the upper 32-bits of a 64-bit
+general purpose register are preserved across an exception return to a
+32-bit task. They _might_ be left intact, but it's up to the CPU whether
+you get the value you wrote or all zeroes if you read those bits after
+taking an exception back to 64-bit state. Consequently, we can't
+expose 64-bit registers for 32-bit tasks via ptrace() as the
+resulting behaviour is going to vary based on how the hardware feels.
+Maybe we could sign-extend everything on exception entry, but that would
+necessitate many more syscall wrappers for compat tasks than we currently
+have so we could truncate pointer arguments back down to 32 bits.
 
-It does not really matter because none of the code below that runs the
-retry path, but it's at least confusing as hell.
+Instead, we currently handle this by (a) treating the registers of a 32-bit
+task as 32 bits (hence the zero extension when writing the value in
+syscall_set_return_value()) and (b) explicitly clearing the upper bits of
+x0 on exception entry from a 32-bit task in case we previously leaked a
+negative syscall return value in there.
 
-Let me fix all of that muck.
+The problem then is that some in-kernel users (e.g. audit and some parts of
+ptrace which abstract the syscall return value away from the register state)
+_do_ want to see sign-extended syscall return arguments in order to match
+against error codes (see is_syscall_success()). So we end up in a situation
+where we need to sign-extend the return value for those, whilst leaving the
+zero-extended version in the actual pt_regs structure.
 
-Thanks,
+It's ugly and subtle because the sky doesn't tend to fall in if you get
+it wrong. As you can see, we're still fixing it.
 
-        tglx
-
+Will
