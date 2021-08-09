@@ -2,136 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BE03E4F5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050883E4F59
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 00:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhHIWi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 18:38:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54322 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236769AbhHIWi1 (ORCPT
+        id S236750AbhHIWiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 18:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230085AbhHIWiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 18:38:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628548686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3phZ5xNWaqsuNurqRPYHiavKgHhNvHzLSi+t2Ovfg4k=;
-        b=Aq7zhhuj313tmH09xWoHEDbtS7uQuE/olvGuQSQK64/Jgwt1BkVDZruVwM0VpziTb/pFnM
-        N0fULw3I53+HOdFFScwedm/lrVpSamZ3hA/ZGntThV7+HR5FPOb9JCa98F77/GItzK80qh
-        3HpgufyVxYcLVThAfX5amb+aEXWv1EI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-33a9sAwKPkKr6nNp4yEzkQ-1; Mon, 09 Aug 2021 18:38:04 -0400
-X-MC-Unique: 33a9sAwKPkKr6nNp4yEzkQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 639A1760C9;
-        Mon,  9 Aug 2021 22:38:02 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.9.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1142660BF1;
-        Mon,  9 Aug 2021 22:37:56 +0000 (UTC)
-From:   Nico Pache <npache@redhat.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     hannes@cmpxchg.org, npache@redhat.com, aquini@redhat.com,
-        shakeelb@google.com, llong@redhat.com, mhocko@suse.com,
-        hakavlad@inbox.lv
-Subject: [PATCH v3] vm_swappiness=0 should still try to avoid swapping anon memory
-Date:   Mon,  9 Aug 2021 18:37:40 -0400
-Message-Id: <20210809223740.59009-1-npache@redhat.com>
+        Mon, 9 Aug 2021 18:38:19 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292EBC0613D3;
+        Mon,  9 Aug 2021 15:37:58 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id a8so30238976pjk.4;
+        Mon, 09 Aug 2021 15:37:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3y0PR9hqaxZCbgji9aEKkljrODgvwX/4vrec8nondds=;
+        b=hV/65XscHrUVTSXlPXqgMC6M187FxVGO48d2RrLSEcEd1ZVh9XRuET4/wAi9Ht8NvK
+         vy3lAN2dWaHEvnIv53DwRAN5+8aFe5LTGgby7GCF2RVjWmzesyFRQgQ+VBWctei6hpUp
+         Zdw8b4GCtfJSUDaJDgoczIVrW+gYQnkNOhs7eb6CrzUEcID/MuPhxLZregZkEjQTHNSP
+         ZSih/+6fleuLQBQ+BJNq3v40NN4c7e+6eS6QNUBYzicNufv5Kq5XLnq5T7bz3VLO3bW9
+         2unQEtTeLqQ/yx9D9a1d9VPUVwwMIg2t0oV5SgrSPzuO6khuzu53BzLKl3E+z9danjj/
+         1FIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=3y0PR9hqaxZCbgji9aEKkljrODgvwX/4vrec8nondds=;
+        b=AiaooMb1dP/lkXmGqzsi98PDNC2KBQkQ043bTSeyyKcKpxcl9ztec7HkrcIkFs29cN
+         pHpJ0bDiLGuIkyOazE/CJiUtiKN8but0affBB39ruutY5UkG0FC+BJGIeSriQy4zHAx5
+         9spGb46z4u8x7kYmQ3mIXLVfDB+ANy1tRoTh0NQe5PyNxzZGqAIN/nG9nWMw9Vhy6PHA
+         CztEUjkadBPDqrV+9Z9UcBM1s7GQ7ytbjpDY/7hn2nXPb2KtfKu9aPegnL5e5nU6F9sK
+         9NPHeZcatNTMIl2WxwYr69HJs7/zBqtWSX2xWHcEtCe6WDlF3RDhNesHQWZJo5FWiP59
+         cazw==
+X-Gm-Message-State: AOAM5323E2x+OQooPxGROyN3+qgybmvI3LnHZlTWosTd8Fsu+F7Zn0iG
+        aoJclKD/85eqQeZR/1Nh5tk=
+X-Google-Smtp-Source: ABdhPJzFRwGeL391h12HMsmaXlUUl5tadO9B+m7SNIAyReZYwf426ugeZCgM8qW4q+QUE+dzeIr59g==
+X-Received: by 2002:a17:902:a40c:b029:12c:17cf:ab6f with SMTP id p12-20020a170902a40cb029012c17cfab6fmr2878556plq.71.1628548677565;
+        Mon, 09 Aug 2021 15:37:57 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:df1c])
+        by smtp.gmail.com with ESMTPSA id r18sm26832734pgk.54.2021.08.09.15.37.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 15:37:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 9 Aug 2021 12:37:54 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Peter Zijlstra <peterz@infradead.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: Re: [PATCH 24/38] cgroup: Replace deprecated CPU-hotplug functions.
+Message-ID: <YRGuQpOaoikOGcyl@mtj.duckdns.org>
+References: <20210803141621.780504-1-bigeasy@linutronix.de>
+ <20210803141621.780504-25-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803141621.780504-25-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 170b04b7ae49 ("mm/workingset: prepare the workingset detection
-infrastructure for anon LRU") and commit b91ac374346b ("mm: vmscan: enforce
-inactive:active ratio at the reclaim root") swappiness can start prematurely
-swapping anon memory. This is due to the assumption that refaulting anon should
-always allow the shrinker to target anon memory. Add a check for swappiness
-being >0 before indiscriminately targeting Anon. Before these commits
-when a user had swappiness=0 anon memory would rarely get swapped; this
-behavior has remained constant sense RHEL5. This commit keeps that behavior
-intact and prevents the new workingset refaulting from challenging the anon
-memory when swappiness=0.
+On Tue, Aug 03, 2021 at 04:16:07PM +0200, Sebastian Andrzej Siewior wrote:
+> The functions get_online_cpus() and put_online_cpus() have been
+> deprecated during the CPU hotplug rework. They map directly to
+> cpus_read_lock() and cpus_read_unlock().
+> 
+> Replace deprecated CPU-hotplug functions with the official version.
+> The behavior remains unchanged.
+> 
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: cgroups@vger.kernel.org
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Anon can still be swapped to prevent OOM. This does not completely disable
-swapping, but rather tames the refaulting aspect of the code that allows for
-the deactivating of anon memory.
+Applied to cgroup/for-5.15.
 
-We have two customer workloads that discovered this issue:
-1) A VM claiming 95% of the hosts memory followed by file reads (never dirty)
-   which begins to challenge the anon. Refaulting the anon working set will then
-   cause the indiscriminant swapping of the anon.
+Thanks.
 
-2) A VM running a in-memory DB is being populated from file reads.
-   Swappiness is set to 0 or 1 to defer write I/O as much as possible. Once
-   the customer experienced low memory, swapping anon starts, with
-   little-to-no PageCache being swapped.
-
-Previously the file cache would account for almost all of the memory
-reclaimed and reads would throttle. Although the two LRU changes mentioned
-allow for less thrashing of file cache, customers would like to be able to keep
-the swappiness=0 behavior that has been present in the kernel for a long
-time.
-
-A similar solution may be possible in get_scan_count(), which determines the
-reclaim pressure for each LRU; however I believe that kind of solution may be
-too aggressive, and will not allow other parts of the code (like direct reclaim)
-from targeting the active_anon list. This way we stop the problem at the heart
-of what is causing the issue, with the least amount of interference in other
-code paths. Furthermore, shrink_lruvec can modify the reclaim pressure of each
-LRU, which may make the get_scan_count solution even trickier.
-
-Changelog:
- -V3:
-    * Blame the right commit and be more descriptive in my log message.
-    * inactive_is_low should remain independent from the new swappiness check.
-    * Change how we get the swappiness value. Shrink_node can be called with a
-      null target_mem_cgroup so we should depend on the target_lruvec to do the
-      null check on memcg.
-
- -V2:
-     * made this mem_cgroup specific so now it will work with v1, v2, and
-       no cgroups.
-     * I've also touched up my commit log.
-
-Signed-off-by: Nico Pache <npache@redhat.com>
----
- mm/vmscan.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 4620df62f0ff..9f2420da4037 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2883,8 +2883,12 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
- 	struct lruvec *target_lruvec;
- 	bool reclaimable = false;
- 	unsigned long file;
-+	struct mem_cgroup *memcg;
-+	int swappiness;
- 
- 	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
-+	memcg = lruvec_memcg(target_lruvec);
-+	swappiness = mem_cgroup_swappiness(memcg);
- 
- again:
- 	memset(&sc->nr, 0, sizeof(sc->nr));
-@@ -2909,7 +2913,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
- 
- 		refaults = lruvec_page_state(target_lruvec,
- 				WORKINGSET_ACTIVATE_ANON);
--		if (refaults != target_lruvec->refaults[0] ||
-+		if ((swappiness && refaults != target_lruvec->refaults[0]) ||
- 			inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
- 			sc->may_deactivate |= DEACTIVATE_ANON;
- 		else
 -- 
-2.31.1
-
+tejun
