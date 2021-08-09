@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF403E4A4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59DC3E4A4F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhHIQwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S233684AbhHIQwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233615AbhHIQvV (ORCPT
+        with ESMTP id S233700AbhHIQvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Aug 2021 12:51:21 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFA5C0617B0
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:50:59 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id k29so9524502wrd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:50:59 -0700 (PDT)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3103C0617BA
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 09:51:00 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id k29so9524531wrd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 09:51:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ExSrr5SI9KDAzqSJNaQAZGsel1NgSurddXZixkgQ1QU=;
-        b=RaxXj4RCIAJ/INFTu4NDfHJhO77scKZPecy7uDrBSK9N37c8ylFku7FO8U6L30ulZk
-         thlvFKAUmDGQuRNTKFgePJgOJw20v8v4G1KepkPoyelE6jZYx8ACGZ62P8bcJoBkK2xT
-         d9SDWAM2MEKUM46wHlKKpeG7sYulBM58hYVt+a/LX5AXzmqatW9xXeovs5K2aEnXCicF
-         Tj4IM0NCSVXxrRB6VHrPLrAb+JT+AjocoSi5UezVqHLUsBGFVSWf6uGr6GfN92n1oebM
-         IXsRgDR0psSP3zjP/Dp/JcyKOgl3L1JTFyiATqTceE2KOvYep1ycJT8ITXxkrV/u3qUo
-         YzzA==
+        bh=L+x0I7hPWkCmEDLJ+zw5aCUBeHw5a2dhPwAN7ub/WpE=;
+        b=I/365I06/iHbh9jbGRpXK81W24CGy8MX0s5hY3UHkEfpqnY/zaMGY8u7sLh17OEOWs
+         ZHRGzx7MdhpsqAzpuKg+W5+ZumNJFHoCjAv0LPijf0U1zLRVElips+Y6kynUxFRrH2KM
+         r1GrKXiFGb4Zf9z78UcaHD/xeMLgeqEmQpgYxWRA8K03+/HJ/8a9ti3q1oZ2poi1ojpl
+         0zQ4H55DQjyKbw6cB7I0MuVdZa0JTkWaHCWs/8sD49AZxHuu/zLd2LjfRe5VNv8+XRiQ
+         R9NvDIin2VbaBLvQAAYND7NyerKyY9ybNYVO/CwAkqYzn3LfERLKtNoptjaY+XwQb92B
+         MXOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ExSrr5SI9KDAzqSJNaQAZGsel1NgSurddXZixkgQ1QU=;
-        b=iiARHgGn83CEQqtEz6kZbuSq2YJD32SzSC/5shAyJQEvXbiLPNeFclWDs6Wd0nnMVN
-         jPBGM8fszRzaiLFk1gPXokcCQ3HcMhLdKyGe76kn8F/B++IwHbuAcPNl1cHtJYUd7dfv
-         73j0yN8mqYmn1/lXfh2EqyBvGjl61c8O3O52tijLrlHCTwc73u8hXUerbYIKCVNKYX8V
-         9zIH63TgrdNHC4tGIbglv1ETHMsaKr3M8OStejwEF78tIiDR8f5MFbLDlSOnentyq+ck
-         1xa6MpPULHz6a0mxdB/4cdjoXooxJfEKAmxnqYm2SkDU8lKJuxsNaeMgyL6KFV8kuz1Z
-         /Rfg==
-X-Gm-Message-State: AOAM5325qggRSmDmXJyUs38HOmDqRbIrcqT1Z+kf9fQyf56dWFPFKNBw
-        QT1pvzLlLI/PHVSiRjEESLg=
-X-Google-Smtp-Source: ABdhPJx3dfDFEhGUFuxzEpDqGBN4pfV4ux1KwSPHL0O4JDrC002Nw7o8Y0oSvpWKfLDqW5ErkJ08vA==
-X-Received: by 2002:a5d:4983:: with SMTP id r3mr8508991wrq.232.1628527858630;
-        Mon, 09 Aug 2021 09:50:58 -0700 (PDT)
+        bh=L+x0I7hPWkCmEDLJ+zw5aCUBeHw5a2dhPwAN7ub/WpE=;
+        b=AOm54T9egEo6rvt2G3FmPy9KbdC/DxGi9RknLKtxLjLgRUI6ZqP1VCysxOTTosr802
+         4oQKaSd5O8Ygy7YImC9/mxeJVCw+bW0K/czfdZKZIWYI3RlHUb2UZbOuYnnSr91kh8/o
+         zeovid/dwKHi5oJ7IPFYWljpAeUM/sbY1TzWG2HFqplkVBpv/Nsq9LLFqnX3YLIS3Re3
+         sO1EQ8A3MhvPeoGppqnJpHAMZsr0AIvGren0eOpMn3PoYZsqRYir5Kh6zUpgyFczN6jF
+         WeCnCo+jAHvKz3NSpxEeCTw+Ob+rrW02OCYpQqsQSsh6Dvl7AVNenXgs5pkjJh+VyS8P
+         MaUg==
+X-Gm-Message-State: AOAM532jw/q+lA5UmTSkSm1CBzltG5Ssji6dSntURni2ypR8q/RBgy7T
+        vb1EuLqach4+JKhxZr/kc0I=
+X-Google-Smtp-Source: ABdhPJwcwXd+aQv0mObcBHJCbH67ip0hKcrzqR15xaZ9rab1hBpi3YNB2QLhCVt0vS6yaRgN0q/gFw==
+X-Received: by 2002:a5d:638b:: with SMTP id p11mr11012532wru.257.1628527859277;
+        Mon, 09 Aug 2021 09:50:59 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::996b])
         by smtp.gmail.com with ESMTPSA id q5sm20484469wrx.33.2021.08.09.09.50.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 09:50:58 -0700 (PDT)
+        Mon, 09 Aug 2021 09:50:59 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 16/17] staging: r8188eu: remove unnecessary parentheses in core/rtw_cmd.c
-Date:   Mon,  9 Aug 2021 18:50:06 +0200
-Message-Id: <20210809165007.23204-17-straube.linux@gmail.com>
+Subject: [PATCH v2 17/17] staging: r8188eu: remove remaining unnecessary parentheses in core dir
+Date:   Mon,  9 Aug 2021 18:50:07 +0200
+Message-Id: <20210809165007.23204-18-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210809165007.23204-1-straube.linux@gmail.com>
 References: <20210809165007.23204-1-straube.linux@gmail.com>
@@ -65,142 +65,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary parentheses in core/rtw_cmd.c reported by
+Remove remaining unnecessary parentheses in core dir reported by
 checkpatch.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_cmd.c | 36 +++++++++++++-------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ drivers/staging/r8188eu/core/rtw_br_ext.c    |  6 +++---
+ drivers/staging/r8188eu/core/rtw_debug.c     | 14 +++++++-------
+ drivers/staging/r8188eu/core/rtw_ieee80211.c |  4 ++--
+ drivers/staging/r8188eu/core/rtw_iol.c       |  2 +-
+ drivers/staging/r8188eu/core/rtw_mp.c        | 10 +++++-----
+ 5 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index c3a9051ca10c..a0cae2bad9af 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -20,11 +20,11 @@ int	_rtw_init_cmd_priv (struct	cmd_priv *pcmdpriv)
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index 28f0452d6ccb..e13f134a497b 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -319,7 +319,7 @@ static inline void __network_hash_link(struct adapter *priv,
+ static inline void __network_hash_unlink(struct nat25_network_db_entry *ent)
  {
- 	int res = _SUCCESS;
+ 	/*  Caller must spin_lock already! */
+-	*(ent->pprev_hash) = ent->next_hash;
++	*ent->pprev_hash = ent->next_hash;
+ 	if (ent->next_hash)
+ 		ent->next_hash->pprev_hash = ent->pprev_hash;
+ 	ent->next_hash = NULL;
+@@ -853,7 +853,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 			} else {	/*  session phase */
+ 				DEBUG_INFO("NAT25: Insert PPPoE, insert session packet to %s\n", skb->dev->name);
  
--	sema_init(&(pcmdpriv->cmd_queue_sema), 0);
-+	sema_init(&pcmdpriv->cmd_queue_sema, 0);
- 	/* sema_init(&(pcmdpriv->cmd_done_sema), 0); */
--	sema_init(&(pcmdpriv->terminate_cmdthread_sema), 0);
-+	sema_init(&pcmdpriv->terminate_cmdthread_sema, 0);
+-				__nat25_generate_pppoe_network_addr(networkAddr, skb->data, &(ph->sid));
++				__nat25_generate_pppoe_network_addr(networkAddr, skb->data, &ph->sid);
  
--	_rtw_init_queue(&(pcmdpriv->cmd_queue));
-+	_rtw_init_queue(&pcmdpriv->cmd_queue);
+ 				__nat25_db_network_insert(priv, skb->data+ETH_ALEN, networkAddr);
  
- 	/* allocate DMA-able/Non-Page memory for cmd_buf and rsp_buf */
+@@ -921,7 +921,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+ 			} else {
+ 				if (ph->sid != 0) {
+ 					DEBUG_INFO("NAT25: Lookup PPPoE, lookup session packet from %s\n", skb->dev->name);
+-					__nat25_generate_pppoe_network_addr(networkAddr, skb->data+ETH_ALEN, &(ph->sid));
++					__nat25_generate_pppoe_network_addr(networkAddr, skb->data+ETH_ALEN, &ph->sid);
+ 					__nat25_db_network_lookup_and_replace(priv, skb, networkAddr);
+ 					__nat25_db_print(priv);
+ 				} else {
+diff --git a/drivers/staging/r8188eu/core/rtw_debug.c b/drivers/staging/r8188eu/core/rtw_debug.c
+index 30ef77842787..e7b088563738 100644
+--- a/drivers/staging/r8188eu/core/rtw_debug.c
++++ b/drivers/staging/r8188eu/core/rtw_debug.c
+@@ -133,7 +133,7 @@ int proc_get_fwstate(char *page, char **start,
+ {
+ 	struct net_device *dev = data;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
+-	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
++	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
  
-@@ -133,10 +133,10 @@ struct	cmd_obj	*_rtw_dequeue_cmd(struct __queue *queue)
- 	unsigned long flags;
+ 	int len = 0;
  
- 	spin_lock_irqsave(&queue->lock, flags);
--	if (list_empty(&(queue->queue))) {
-+	if (list_empty(&queue->queue)) {
- 		obj = NULL;
- 	} else {
--		obj = container_of((&(queue->queue))->next, struct cmd_obj, list);
-+		obj = container_of((&queue->queue)->next, struct cmd_obj, list);
- 		rtw_list_delete(&obj->list);
- 	}
- 
-@@ -262,7 +262,7 @@ int rtw_cmd_thread(void *context)
- 	u8 (*cmd_hdl)(struct adapter *padapter, u8 *pbuf);
- 	void (*pcmd_callback)(struct adapter *dev, struct cmd_obj *pcmd);
- 	struct adapter *padapter = (struct adapter *)context;
--	struct cmd_priv *pcmdpriv = &(padapter->cmdpriv);
-+	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
- 
- 	thread_enter("RTW_CMD_THREAD");
- 
-@@ -794,7 +794,7 @@ u8 rtw_joinbss_cmd(struct adapter  *padapter, struct wlan_network *pnetwork)
- 	struct ht_priv		*phtpriv = &pmlmepriv->htpriv;
- 	enum ndis_802_11_network_infra ndis_network_mode = pnetwork->network.InfrastructureMode;
+@@ -168,7 +168,7 @@ int proc_get_mlmext_state(char *page, char **start,
+ 	struct net_device *dev = data;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
  	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
 -	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 +	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
  
- 	rtw_led_control(padapter, LED_CTL_START_TO_LINK);
+ 	int len = 0;
  
-@@ -1439,7 +1439,7 @@ static void traffic_status_watchdog(struct adapter *padapter)
- 	u8	bEnterPS;
- 	u8	bBusyTraffic = false, bTxBusyTraffic = false, bRxBusyTraffic = false;
- 	u8	bHigherBusyTraffic = false, bHigherBusyRxTraffic = false, bHigherBusyTxTraffic = false;
--	struct mlme_priv		*pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 
- 	/*  */
- 	/*  Determine if our traffic is busy now */
-@@ -1498,7 +1498,7 @@ static void dynamic_chk_wk_hdl(struct adapter *padapter, u8 *pbuf, int sz)
- 	struct mlme_priv *pmlmepriv;
- 
- 	padapter = (struct adapter *)pbuf;
--	pmlmepriv = &(padapter->mlmepriv);
-+	pmlmepriv = &padapter->mlmepriv;
- 
- #ifdef CONFIG_88EU_AP_MODE
- 	if (check_fwstate(pmlmepriv, WIFI_AP_STATE) == true)
-@@ -1516,7 +1516,7 @@ static void dynamic_chk_wk_hdl(struct adapter *padapter, u8 *pbuf, int sz)
- static void lps_ctrl_wk_hdl(struct adapter *padapter, u8 lps_ctrl_type)
+@@ -184,7 +184,7 @@ int proc_get_qos_option(char *page, char **start,
  {
- 	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+ 	struct net_device *dev = data;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
 -	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
 +	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	u8	mstatus;
  
- 	if ((check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE) == true) ||
-@@ -1693,7 +1693,7 @@ u8 p2p_protocol_wk_cmd(struct adapter *padapter, int intCmdType)
+ 	int len = 0;
+ 
+@@ -200,7 +200,7 @@ int proc_get_ht_option(char *page, char **start,
  {
- 	struct cmd_obj	*ph2c;
- 	struct drvextra_cmd_parm	*pdrvextra_cmd_parm;
--	struct wifidirect_info	*pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info	*pwdinfo = &padapter->wdinfo;
- 	struct cmd_priv	*pcmdpriv = &padapter->cmdpriv;
- 	u8	res = _SUCCESS;
+ 	struct net_device *dev = data;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
+-	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
++	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
  
-@@ -2045,9 +2045,9 @@ void rtw_createbss_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
- 	struct wlan_network *pwlan = NULL;
- 	struct	mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct wlan_bssid_ex *pnetwork = (struct wlan_bssid_ex *)pcmd->parmbuf;
--	struct wlan_network *tgt_network = &(pmlmepriv->cur_network);
-+	struct wlan_network *tgt_network = &pmlmepriv->cur_network;
+ 	int len = 0;
+ 	len += snprintf(page + len, count - len, "ht_option=%d\n", pmlmepriv->htpriv.ht_option);
+@@ -230,9 +230,9 @@ int proc_get_ap_info(char *page, char **start,
+ 	struct sta_info *psta;
+ 	struct net_device *dev = data;
+ 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
+-	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
++	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
+-	struct wlan_network *cur_network = &(pmlmepriv->cur_network);
++	struct wlan_network *cur_network = &pmlmepriv->cur_network;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+ 	int len = 0;
  
--	if ((pcmd->res != H2C_SUCCESS))
-+	if (pcmd->res != H2C_SUCCESS)
- 		_set_timer(&pmlmepriv->assoc_timer, 1);
+@@ -830,7 +830,7 @@ int proc_get_all_sta_info(char *page, char **start,
+ 	spin_lock_bh(&pstapriv->sta_hash_lock);
  
- 	_cancel_timer(&pmlmepriv->assoc_timer, &timer_cancelled);
-@@ -2066,26 +2066,26 @@ void rtw_createbss_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
- 	} else {
+ 	for (i = 0; i < NUM_STA; i++) {
+-		phead = &(pstapriv->sta_hash[i]);
++		phead = &pstapriv->sta_hash[i];
+ 		plist = phead->next;
  
- 		pwlan = _rtw_alloc_network(pmlmepriv);
--		spin_lock_bh(&(pmlmepriv->scanned_queue.lock));
-+		spin_lock_bh(&pmlmepriv->scanned_queue.lock);
- 		if (!pwlan) {
- 			pwlan = rtw_get_oldest_wlan_network(&pmlmepriv->scanned_queue);
- 			if (!pwlan) {
--				spin_unlock_bh(&(pmlmepriv->scanned_queue.lock));
-+				spin_unlock_bh(&pmlmepriv->scanned_queue.lock);
- 				goto createbss_cmd_fail;
- 			}
- 			pwlan->last_scanned = jiffies;
- 		} else {
--			list_add_tail(&(pwlan->list), &pmlmepriv->scanned_queue.queue);
-+			list_add_tail(&pwlan->list, &pmlmepriv->scanned_queue.queue);
+ 		while (phead != plist) {
+diff --git a/drivers/staging/r8188eu/core/rtw_ieee80211.c b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+index ff77e686721c..55d2b8f90d91 100644
+--- a/drivers/staging/r8188eu/core/rtw_ieee80211.c
++++ b/drivers/staging/r8188eu/core/rtw_ieee80211.c
+@@ -414,11 +414,11 @@ int rtw_generate_ie(struct registry_priv *pregistrypriv)
+ 	}
+ 
+ 	/* DS parameter set */
+-	ie = rtw_set_ie(ie, _DSSET_IE_, 1, (u8 *)&(pdev_network->Configuration.DSConfig), &sz);
++	ie = rtw_set_ie(ie, _DSSET_IE_, 1, (u8 *)&pdev_network->Configuration.DSConfig, &sz);
+ 
+ 	/* IBSS Parameter Set */
+ 
+-	ie = rtw_set_ie(ie, _IBSS_PARA_IE_, 2, (u8 *)&(pdev_network->Configuration.ATIMWindow), &sz);
++	ie = rtw_set_ie(ie, _IBSS_PARA_IE_, 2, (u8 *)&pdev_network->Configuration.ATIMWindow, &sz);
+ 
+ 	if (rateLen > 8)
+ 		ie = rtw_set_ie(ie, _EXT_SUPPORTEDRATES_IE_, (rateLen - 8), (pdev_network->SupportedRates + 8), &sz);
+diff --git a/drivers/staging/r8188eu/core/rtw_iol.c b/drivers/staging/r8188eu/core/rtw_iol.c
+index 0e5ce12d4b57..927b8c919fa7 100644
+--- a/drivers/staging/r8188eu/core/rtw_iol.c
++++ b/drivers/staging/r8188eu/core/rtw_iol.c
+@@ -8,7 +8,7 @@ struct xmit_frame	*rtw_IOL_accquire_xmit_frame(struct adapter  *adapter)
+ 	struct xmit_frame	*xmit_frame;
+ 	struct xmit_buf	*xmitbuf;
+ 	struct pkt_attrib	*pattrib;
+-	struct xmit_priv	*pxmitpriv = &(adapter->xmitpriv);
++	struct xmit_priv	*pxmitpriv = &adapter->xmitpriv;
+ 
+ 	xmit_frame = rtw_alloc_xmitframe(pxmitpriv);
+ 	if (!xmit_frame) {
+diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
+index def0c250a4ac..7f7a7eddda4a 100644
+--- a/drivers/staging/r8188eu/core/rtw_mp.c
++++ b/drivers/staging/r8188eu/core/rtw_mp.c
+@@ -577,7 +577,7 @@ static int mp_xmit_packet_thread(void *context)
+ 	pmp_priv = (struct mp_priv *)context;
+ 	pmptx = &pmp_priv->tx;
+ 	padapter = pmp_priv->papdater;
+-	pxmitpriv = &(padapter->xmitpriv);
++	pxmitpriv = &padapter->xmitpriv;
+ 
+ 	thread_enter("RTW_MP_THREAD");
+ 
+@@ -596,7 +596,7 @@ static int mp_xmit_packet_thread(void *context)
  		}
  
- 		pnetwork->Length = get_wlan_bssid_ex_sz(pnetwork);
--		memcpy(&(pwlan->network), pnetwork, pnetwork->Length);
-+		memcpy(&pwlan->network, pnetwork, pnetwork->Length);
+ 		memcpy((u8 *)(pxmitframe->buf_addr+TXDESC_OFFSET), pmptx->buf, pmptx->write_size);
+-		memcpy(&(pxmitframe->attrib), &(pmptx->attrib), sizeof(struct pkt_attrib));
++		memcpy(&pxmitframe->attrib, &pmptx->attrib, sizeof(struct pkt_attrib));
  
- 		memcpy(&tgt_network->network, pnetwork, (get_wlan_bssid_ex_sz(pnetwork)));
+ 		dump_mpframe(padapter, pxmitframe);
  
- 		_clr_fwstate_(pmlmepriv, _FW_UNDER_LINKING);
+@@ -625,7 +625,7 @@ static int mp_xmit_packet_thread(void *context)
+ void fill_txdesc_for_mp(struct adapter *padapter, struct tx_desc *ptxdesc)
+ {
+ 	struct mp_priv *pmp_priv = &padapter->mppriv;
+-	memcpy(ptxdesc, &(pmp_priv->tx.desc), TXDESC_SIZE);
++	memcpy(ptxdesc, &pmp_priv->tx.desc, TXDESC_SIZE);
+ }
  
--		spin_unlock_bh(&(pmlmepriv->scanned_queue.lock));
-+		spin_unlock_bh(&pmlmepriv->scanned_queue.lock);
- 		/*  we will set _FW_LINKED when there is one more sat to join us (rtw_stassoc_event_callback) */
+ void SetPacketTx(struct adapter *padapter)
+@@ -676,7 +676,7 @@ void SetPacketTx(struct adapter *padapter)
+ 	pmp_priv->tx.buf = (u8 *)N_BYTE_ALIGMENT((size_t)(pmp_priv->tx.pallocated_buf), XMITBUF_ALIGN_SZ);
+ 	ptr = pmp_priv->tx.buf;
+ 
+-	desc = &(pmp_priv->tx.desc);
++	desc = &pmp_priv->tx.desc;
+ 	memset(desc, 0, TXDESC_SIZE);
+ 	pkt_start = ptr;
+ 	pkt_end = pkt_start + pkt_size;
+@@ -954,7 +954,7 @@ void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv)
+ 			goto exit;
+ 		}
+ 
+-		list_add_tail(&pxmitbuf->list, &(pxmitpriv->free_xmit_extbuf_queue.queue));
++		list_add_tail(&pxmitbuf->list, &pxmitpriv->free_xmit_extbuf_queue.queue);
+ 		pxmitbuf++;
  	}
  
 -- 
