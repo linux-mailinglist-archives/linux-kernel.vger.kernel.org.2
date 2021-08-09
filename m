@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1EC3E3E69
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 05:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EF73E3E70
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 05:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhHIDlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 23:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbhHIDlB (ORCPT
+        id S232792AbhHIDub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 23:50:31 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16997 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231459AbhHIDua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 23:41:01 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80375C061760
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 20:40:41 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id oz16so10362581ejc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 20:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4cLY9sgUFeqLVG8RY76RwvNnVEYKobl7puuBKIKFwgw=;
-        b=gM0E3hXuGckUHWxXj0uv4NdJxUHs6kvfmlWLO0jkmq2JJVdzob2k8qNuiXLKJoUTn9
-         X5/IGAKRLGZt3/NXNGg0MbMH+tSuiFVvK6wj8ZNnKyZCjJIDkX2PnvLBCoHejGhzzp2Y
-         uibRcJz//L4hH9I6j+Px7DxETExDxEUA9dAvuyzY6cRAMXHKnCJPrFGw2q1t2YQgqHwW
-         duoJO8Xbf+wKat5lMKbv7gbbWr0Jw80K3PGNdBR6/vhjoxfdR56W2rUQKbhTlG9AxxF6
-         tKFYWCCHlZ2Clhcex4I8zDwzqNUBhbBU0zvfs2mpH5LkYGb7ULu1utQ/Qg/Gkax0Skqo
-         mVxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4cLY9sgUFeqLVG8RY76RwvNnVEYKobl7puuBKIKFwgw=;
-        b=dYOfCaV0faCyIujd3t23gaHUn+TquYyGIqRvOTH76o8VbVDZiPEgLe1XOQozV9QyQ2
-         JIy6vJaEFAkPiFQys8TZrahEU97hbp7STquZziuhTbaSNCwvJV2sb0I1z+eyDpwhzbYC
-         HZ9Zrseunk5x9V0o6VVPrTvsnU8q9ZMQKEyVNXb/Ev6SDMXcMVdPImUVLorudYRa5bre
-         650uo3ElXvumJ2QII609HDh00nnodLj83x9dlB3SzrRBL1Wi5Pke5S0B4beYL9ml48rR
-         GrtKDWCf9JMqRkepQ610VWDXH33vkF+wQxAxMDIrLx316zEVK5uUy+8g7+UbjHsle9ap
-         Xfkg==
-X-Gm-Message-State: AOAM531viSJgDDZKxUSi/tyc1oiMnSlb6iHrHpcIC6Z2oeaEzicpzxX6
-        Tr09mF4diF3avtzL6HR6tdl9IAWpfFxt96/zquQ=
-X-Google-Smtp-Source: ABdhPJzKuSfup2sRDZ7kB9/1qqRB425HNqbVtcHB1daSWJ09aNadRvOCLRdh1Ocv6p+y9lqa8GbDcp3xUbPvL5MNU7w=
-X-Received: by 2002:a17:906:a890:: with SMTP id ha16mr21342380ejb.73.1628480440037;
- Sun, 08 Aug 2021 20:40:40 -0700 (PDT)
+        Sun, 8 Aug 2021 23:50:30 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GjhpH5GTSzZywR;
+        Mon,  9 Aug 2021 11:46:31 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 11:50:09 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 9 Aug 2021 11:50:08 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH] perf/core: Add missing device_remove_file() in pmu_dev_alloc()
+Date:   Mon, 9 Aug 2021 11:49:41 +0800
+Message-ID: <20210809034941.2264-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-References: <20210721111137.1523229-1-mudongliangabcd@gmail.com>
- <20210721111137.1523229-2-mudongliangabcd@gmail.com> <YQvXfQ4A04cy5MEA@kroah.com>
-In-Reply-To: <YQvXfQ4A04cy5MEA@kroah.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 9 Aug 2021 11:40:13 +0800
-Message-ID: <CAD-N9QX7A=Z4=bpjw63zCZ=KTTJTYP=n9g29Kp1d39DxgK2_Eg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] ipack: tpci200: fix many double free issues in tpci200_pci_probe
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 8:20 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jul 21, 2021 at 07:11:31PM +0800, Dongliang Mu wrote:
-> > The function tpci200_register called by tpci200_install and
-> > tpci200_unregister called by tpci200_uninstall are in pair. However,
-> > tpci200_unregister has some cleanup operations not in the
-> > tpci200_register. So the error handling code of tpci200_pci_probe has
-> > many different double free issues.
-> >
-> > Fix this problem by moving those cleanup operations out of
-> > tpci200_unregister, into tpci200_pci_remove and reverting
-> > the previous commit 9272e5d0028d
-> >
-> > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  drivers/ipack/carriers/tpci200.c | 35 ++++++++++++++++----------------
-> >  1 file changed, 17 insertions(+), 18 deletions(-)
->
-> This needs to be applied to the tree now, and should not depend on your
-> patch 1/3 here as it is a bugfix.  Please redo this series and send 2,
-> one to be merged for 5.14-final and to go to the stable kernels, and a
-> separate "clean up things" series that can wait until 5.15-rc1.
+The device attribute file 'nr_addr_filters' should be removed when
+sysfs_update_groups() fails.
 
-No problem. I will send a separate fix.
+Fixes: f3a3a8257e5a ("perf/core: Add attr_groups_update into struct pmu")
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/events/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-BTW, how about the PATCH 3/3 in this series [1]? It does not depend on
-PATCH 1/3, however, it does not include the fix to memleak, but also
-moves the unregister function. Shall I send it separately?
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 464917096e73..7d465584445b 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -10980,11 +10980,15 @@ static int pmu_dev_alloc(struct pmu *pmu)
+ 		ret = sysfs_update_groups(&pmu->dev->kobj, pmu->attr_update);
+ 
+ 	if (ret)
+-		goto del_dev;
++		goto remove_file;
+ 
+ out:
+ 	return ret;
+ 
++remove_file:
++	if (pmu->nr_addr_filters)
++		device_remove_file(pmu->dev, &dev_attr_nr_addr_filters);
++
+ del_dev:
+ 	device_del(pmu->dev);
+ 
+-- 
+2.25.1
 
-[1] https://lkml.org/lkml/2021/7/21/370
-
->
-> thanks,
->
-> greg k-h
