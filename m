@@ -2,219 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0453E43EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2573E43EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 12:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbhHIK2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 06:28:07 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:55987 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233500AbhHIK2D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:28:03 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 179ARFs54006813, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 179ARFs54006813
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 9 Aug 2021 18:27:15 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 9 Aug 2021 18:27:14 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 9 Aug 2021 18:27:14 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::50bb:7602:98b5:697f]) by
- RTEXMBS01.realtek.com.tw ([fe80::50bb:7602:98b5:697f%5]) with mapi id
- 15.01.2106.013; Mon, 9 Aug 2021 18:27:14 +0800
-Content-Type: multipart/mixed;
-        boundary="_000_ce9e2f298f0c4fc59f756c39736a297arealtekcom_"
-From:   Jack Yu <jack.yu@realtek.com>
-To:     "broonie@kernel.org" <broonie@kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh@kernel.org" <robh@kernel.org>
-CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Flove(HsinFu)" <flove@realtek.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        =?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>,
-        =?big5?B?RGVyZWsgW6TovHe4cV0=?= <derek.fang@realtek.com>,
-        =?big5?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFuzr6vYp7td?= 
-        <kent_chen@realtek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: dt-bindings: rt1015p: add new compatible id
-Thread-Topic: [PATCH 2/2] ASoC: dt-bindings: rt1015p: add new compatible id
-Thread-Index: AdeNCR5XEhUWt6TcSgGLE9pKpAztpw==
-Date:   Mon, 9 Aug 2021 10:27:14 +0000
-Message-ID: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: <ce9e2f298f0c4fc59f756c39736a297a@realtek.com>
-x-originating-ip: [172.22.102.167]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzgvOSCkV6TIIDA3OjA0OjAw?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
+        id S233810AbhHIK22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 06:28:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233720AbhHIK21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 06:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21AE76108C;
+        Mon,  9 Aug 2021 10:28:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628504886;
+        bh=1Rr9G2WTvyN2154ArfnkrxNB++dNyHRWTlM42K7U3LA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c5csrOUUWBbIRXzbnhuusFcKO2ZeeMaQD8XIm2H8GWZBQ7BSxySLPLGqYwCZA024M
+         apCWfvT5lSqwva4SO63w3ic1sydrdWQvtLxpHaZcWhYso2Wu/+XypiVbNth9xyieXg
+         VdKbIwBeYelyv9/VMO0E0544HrzE7W/M80n4CqhHisqxMME40Io/EioTBiydXFdQxk
+         J9zk2taAZoFk6xJivLRSzdFHYLafqRUg+X7VWiRO8ZgeYaUD30DAQiJngpsVvd8xsj
+         JgAjZ95phOJE0B9Gbtim7NqfFU2Q+W1o8qcSJ6VhggVLY+IYwhUAXEx1br8UBeLD6c
+         75ci93sNK/ybA==
+Date:   Mon, 9 Aug 2021 13:28:02 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     yajun.deng@linux.dev, Jakub Kicinski <kuba@kernel.org>,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: sock: add the case if sk is NULL
+Message-ID: <YREDMtIJ2Mz/ELy7@unreal>
+References: <20210806061136.54e6926e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210806063815.21541-1-yajun.deng@linux.dev>
+ <489e6f1ce9f8de6fd8765d82e1e47827@linux.dev>
+ <79e7c9a8-526c-ae9c-8273-d1d4d6170b69@gmail.com>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/09/2021 10:15:06
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165459 [Aug 09 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: jack.yu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
-X-KSE-AntiSpam-Info: {tnef_exp}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/09/2021 10:18:00
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79e7c9a8-526c-ae9c-8273-d1d4d6170b69@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---_000_ce9e2f298f0c4fc59f756c39736a297arealtekcom_
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+On Mon, Aug 09, 2021 at 11:34:31AM +0200, Eric Dumazet wrote:
+> 
+> 
+> On 8/9/21 8:12 AM, yajun.deng@linux.dev wrote:
+> > August 6, 2021 9:11 PM, "Jakub Kicinski" <kuba@kernel.org> wrote:
+> > 
+> >> On Fri, 6 Aug 2021 14:38:15 +0800 Yajun Deng wrote:
+> >>
+> >>> Add the case if sk is NULL in sock_{put, hold},
+> >>> The caller is free to use it.
+> >>>
+> >>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> >>
+> >> The obvious complaint about this patch (and your previous netdev patch)
+> >> is that you're spraying branches everywhere in the code. Sure, it may
+> > 
+> > Sorry for that, I'll be more normative in later submission.
+> >> be okay for free(), given how expensive of an operation that is but
+> >> is having refcounting functions accept NULL really the best practice?
+> >>
+> >> Can you give us examples in the kernel where that's the case?
+> > 
+> > 0   include/net/neighbour.h         neigh_clone()
+> > 1   include/linux/cgroup.h          get_cgroup_ns() and put_cgroup_ns()  (This is very similar to my submission)
+> > 2   include/linux/ipc_namespace.h   get_ipc_ns()
+> > 3   include/linux/posix_acl.h       posix_acl_dup()
+> > 4   include/linux/pid.h             get_pid()
+> > 5   include/linux/user_namespace.h  get_user_ns()
+> > 
+> 
+> These helpers might be called with NULL pointers by design.
+> 
+> sock_put() and sock_hold() are never called with NULL.
+> 
+> Same for put_page() and hundreds of other functions.
+> 
+> By factorizing a conditional in the function, hoping to remove one in few callers,
+> we add more conditional branches (and increase code size)
 
-QWRkIG5ldyBjb21wYXRpYmxlIElEIGZvciBydDEwMTVwIGluIGR0LWJpbmRpbmdzIGRvY3VtZW50
-Lg0KDQpTaWduZWQtb2ZmLWJ5OiBKYWNrIFl1IDxqYWNrLnl1QHJlYWx0ZWsuY29tPg0KLS0tDQog
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3JlYWx0ZWsscnQxMDE1cC55
-YW1sIHwgNCArKystDQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlv
-bigtKQ0KDQpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Nv
-dW5kL3JlYWx0ZWsscnQxMDE1cC55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3NvdW5kL3JlYWx0ZWsscnQxMDE1cC55YW1sDQppbmRleCA2NDRiNjhlZGYzZTEuLjhmY2I1
-Zjc5YTFiNSAxMDA2NDQNCi0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
-b3VuZC9yZWFsdGVrLHJ0MTAxNXAueWFtbA0KKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL3NvdW5kL3JlYWx0ZWsscnQxMDE1cC55YW1sDQpAQCAtMTUsNyArMTUsOSBAQCBk
-ZXNjcmlwdGlvbjogfA0KIA0KIHByb3BlcnRpZXM6DQogICBjb21wYXRpYmxlOg0KLSAgICBjb25z
-dDogcmVhbHRlayxydDEwMTVwDQorICAgICAgb25lT2Y6DQorICAgICAgICBjb25zdDogcmVhbHRl
-ayxydDEwMTVwDQorICAgICAgICBjb25zdDogcmVhbHRlayxydDEwMTlwDQogDQogICBzZGItZ3Bp
-b3M6DQogICAgIGRlc2NyaXB0aW9uOg0KLS0gDQoyLjMxLjENCg0K
+You can add into your list that such "if NULL" checks add false
+impression that NULL can be there and it is valid.
 
---_000_ce9e2f298f0c4fc59f756c39736a297arealtekcom_
-Content-Disposition: attachment; filename="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Type: application/ms-tnef; name="winmail.dat"
+Thanks
 
-eJ8+InlVAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAAtgMAAAAAAAC5AAEJgAEAIQAAADcyMDVDQUM0
-QTMxOUI1NEM5Rjk0OTY1RjQyRDhBN0VBAEsHAQ2ABAACAAAAAgACAAEFgAMADgAAAOUHCAAJAAoA
-GwAOAAEAMQEBIIADAA4AAADlBwgACQAKABsADgABADEBAQiABwAYAAAASVBNLk1pY3Jvc29mdCBN
-YWlsLk5vdGUAMQgBBIABAD4AAABbUEFUQ0ggMi8yXSBBU29DOiBkdC1iaW5kaW5nczogcnQxMDE1
-cDogYWRkIG5ldyBjb21wYXRpYmxlIGlkAH8TAQuAAQAhAAAANzIwNUNBQzRBMzE5QjU0QzlGOTQ5
-NjVGNDJEOEE3RUEASwcBA5AGACQVAABJAAAAAgF/AAEAAAAvAAAAPGNlOWUyZjI5OGYwYzRmYzU5
-Zjc1NmMzOTczNmEyOTdhQHJlYWx0ZWsuY29tPgAACwAfDgAAAAACAQkQAQAAAKACAACcAgAA2AQA
-AExaRnWVJ8G5YQAKZmJpZAQAAGNjwHBnMTI1MgD+A0PwdGV4dAH3AqQD4wIABGNoCsBzZXQwIO8H
-bQKDAFARTTIKgAa0AoCWfQqACMg7CWIxOQ7AvwnDFnIKMhZxAoAVYioJsHMJ8ASQYXQFsg5QA2Bz
-om8BgCBFeBHBbhgwXQZSdgSQF7YCEHIAwHR9CFBuGjEQIAXABaAbZGSaIANSIBAiF7JcdgiQ5Hdr
-C4BkNR1TBPAHQA0XcDAKcRfyYmttawZzAZAAICBCTV9C4EVHSU59CvwB8QvxeCBBZBxgGFAH4AWg
-bZkKsHRpAmAZ4ElEHHCHBbEAIB6QMTVwIAuAcCBkdC0NwB3AC4BnYQQgZG9jdQeAAjAuNFxsC4Bl
-CoElVFNpUmcYUGQtGTBmJBB5CDogSgDQayBZdQggPGonIS55dUBfCXAHQBAgJ9AiIT4lRS1zKVAl
-RSBEJMUiYQIgL1sBAB1gYxIQCdEvJCYv1RkgdR3ALyglLCNFJ+AEYW0DIHwgNCArey4QKXcxHHAD
-EBngGZRkeCwgMyOxEgAAICqhc/goKykvsC7QAQAecCqSuCgtKSVMDeABICApUORnaQVAYS8qDysf
-LC/9LThiM180bzV/LSglRR2xARAwIDY0NGI2OIkJgGYzF3AuLjgRsIBiNWY3OWExPPD/LsAeoDvh
-KOgzPzg/OU86X38KgC4RNy8/r0C/Qc8KgEBmQDLQI4AsNy4AR8E5viBHgQEABPRD8SbwfCmGtSmG
-cANgcDAiB5A6KYa/S6AiKEsmPoBLowCAdCbwH0XdQoZNAkugAiBlT2a/SyZPFU0vTj9QjzYnOU6W
-o0n3S6BzZGIy8HBD8B9LGkugSKoo50n2Mi4zHzyQAFAlWxVCWnAfAEIAAQAAABAAAABKAGEAYwBr
-ACAAWQB1AAAAHwBlAAEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABlAGsALgBjAG8A
-bQAAAB8AZAABAAAACgAAAFMATQBUAFAAAAAAAAIBQQABAAAAWgAAAAAAAACBKx+kvqMQGZ1uAN0B
-D1QCAAAAgEoAYQBjAGsAIABZAHUAAABTAE0AVABQAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwA
-dABlAGsALgBjAG8AbQAAAAAAHwACXQEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABl
-AGsALgBjAG8AbQAAAB8A5V8BAAAAMAAAAHMAaQBwADoAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwA
-dABlAGsALgBjAG8AbQAAAB8AGgwBAAAAEAAAAEoAYQBjAGsAIABZAHUAAAAfAB8MAQAAACgAAABq
-AGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAAHwAeDAEAAAAKAAAAUwBNAFQA
-UAAAAAAAAgEZDAEAAABaAAAAAAAAAIErH6S+oxAZnW4A3QEPVAIAAACASgBhAGMAawAgAFkAdQAA
-AFMATQBUAFAAAABqAGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAAAAAfAAFd
-AQAAACgAAABqAGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAACwBAOgEAAAAf
-ABoAAQAAABIAAABJAFAATQAuAE4AbwB0AGUAAAAAAAMA8T8EBAAACwBAOgEAAAADAP0/tgMAAAIB
-CzABAAAAEAAAAHIFysSjGbVMn5SWX0LYp+oDABcAAQAAAEAAOQAALbMeCY3XAUAACDB5lLgeCY3X
-AQsAKQAAAAAAHwDZPwEAAAAAAgAAQQBkAGQAIABuAGUAdwAgAGMAbwBtAHAAYQB0AGkAYgBsAGUA
-IABJAEQAIABmAG8AcgAgAHIAdAAxADAAMQA1AHAAIABpAG4AIABkAHQALQBiAGkAbgBkAGkAbgBn
-AHMAIABkAG8AYwB1AG0AZQBuAHQALgANAAoADQAKAFMAaQBnAG4AZQBkAC0AbwBmAGYALQBiAHkA
-OgAgAEoAYQBjAGsAIABZAHUAIAA8AGoAYQBjAGsALgB5AHUAQAByAGUAYQBsAHQAZQBrAC4AYwBv
-AG0APgANAAoALQAtAC0ADQAKACAARABvAGMAdQBtAGUAbgB0AGEAdABpAG8AbgAvAGQAZQB2AGkA
-YwBlAHQAcgBlAGUALwBiAGkAbgBkAGkAbgBnAHMALwBzAG8AdQBuAGQALwByAGUAYQBsAHQAZQBr
-ACwAcgB0ADEAMAAxADUAcAAuAHkAYQBtAGwAIAB8ACAANAAgACsAKwArAC0ADQAKACAAMQAgAGYA
-aQBsAGUAIABjAGgAYQBuAGcAZQBkACwAIAAzACAAaQBuAHMAZQByAHQAaQBvAG4AcwAoACsAKQAs
-ACAAMQAgAGQAZQBsAGUAdABpAG8AbgAoAC0AKQANAAoADQAKAGQAaQBmAGYAIAAtAC0AZwBpAHQA
-IABhAC8ARABvAGMAdQBtAGUAAAALAACACCAGAAAAAADAAAAAAAAARgAAAAAUhQAAAQAAAB8AAICG
-AwIAAAAAAMAAAAAAAABGAQAAAB4AAABhAGMAYwBlAHAAdABsAGEAbgBnAHUAYQBnAGUAAAAAAAEA
-AAAaAAAAegBoAC0AVABXACwAIABlAG4ALQBVAFMAAAAAAAMAAIAIIAYAAAAAAMAAAAAAAABGAQAA
-ADIAAABFAHgAYwBoAGEAbgBnAGUAQQBwAHAAbABpAGMAYQB0AGkAbwBuAEYAbABhAGcAcwAAAAAA
-IAAAAEgAAIAIIAYAAAAAAMAAAAAAAABGAQAAACIAAABOAGUAdAB3AG8AcgBrAE0AZQBzAHMAYQBn
-AGUASQBkAAAAAAD4KI0/K6tpQqyfCNlbIEFJHwAAgBOP8kH0gxRBpYTu21prC/8BAAAAFgAAAEMA
-bABpAGUAbgB0AEkAbgBmAG8AAAAAAAEAAAAqAAAAQwBsAGkAZQBuAHQAPQBNAFMARQB4AGMAaABh
-AG4AZwBlAFIAUABDAAAAAAAfAPo/AQAAABAAAABKAGEAYwBrACAAWQB1AAAAHwA3AAEAAAB8AAAA
-WwBQAEEAVABDAEgAIAAyAC8AMgBdACAAQQBTAG8AQwA6ACAAZAB0AC0AYgBpAG4AZABpAG4AZwBz
-ADoAIAByAHQAMQAwADEANQBwADoAIABhAGQAZAAgAG4AZQB3ACAAYwBvAG0AcABhAHQAaQBiAGwA
-ZQAgAGkAZAAAAB8APQABAAAAAgAAAAAAAAADADYAAAAAAAIBcQABAAAAFgAAAAHXjQkeVxIVFrek
-3EoBixPaSqQM7acAAB8AcAABAAAAfAAAAFsAUABBAFQAQwBIACAAMgAvADIAXQAgAEEAUwBvAEMA
-OgAgAGQAdAAtAGIAaQBuAGQAaQBuAGcAcwA6ACAAcgB0ADEAMAAxADUAcAA6ACAAYQBkAGQAIABu
-AGUAdwAgAGMAbwBtAHAAYQB0AGkAYgBsAGUAIABpAGQAAAAfADUQAQAAAF4AAAA8AGMAZQA5AGUA
-MgBmADIAOQA4AGYAMABjADQAZgBjADUAOQBmADcANQA2AGMAMwA5ADcAMwA2AGEAMgA5ADcAYQBA
-AHIAZQBhAGwAdABlAGsALgBjAG8AbQA+AAAAAAADAN4/tgMAAAMAExIAAAAAAgEAgBOP8kH0gxRB
-pYTu21prC/8BAAAALgAAAEgAZQBhAGQAZQByAEIAbwBkAHkARgByAGEAZwBtAGUAbgB0AEwAaQBz
-AHQAAAAAAAEAAAAiAAAAAQAKAAAABAAAAAAAAAAUAAAAAAAAAAAAAAD/////AAAAAAAACwAAgBOP
-8kH0gxRBpYTu21prC/8BAAAAHAAAAEgAYQBzAFEAdQBvAHQAZQBkAFQAZQB4AHQAAAAAAAAACwAA
-gBOP8kH0gxRBpYTu21prC/8BAAAAKAAAAEkAcwBRAHUAbwB0AGUAZABUAGUAeAB0AEMAaABhAG4A
-ZwBlAGQAAAAAAAAAQAAHMF0xsB4JjdcBAgELAAEAAAAQAAAAcgXKxKMZtUyflJZfQtin6gMAJgAA
-AAAACwAGDAAAAAACARAwAQAAAEYAAAAAAAAA2+nESiSg50GTGyq7K7NtTAcATLd9DVWheUS+c4U5
-YtAApQAAAGlg9wAAMq84BUqwTkaAx8c4IroPWgAAAdeoiQAAAAACARMwAQAAABAAAAASFRa3pNxK
-AYsT2kqkDO2nAgEUMAEAAAAMAAAAMAAAAEsiBS5BAAAAHwD4PwEAAAAQAAAASgBhAGMAawAgAFkA
-dQAAAB8AIkABAAAABgAAAEUAWAAAAAAAHwAjQAEAAAC2AAAALwBPAD0AUgBUAEUAWABDAEgALwBP
-AFUAPQBFAFgAQwBIAEEATgBHAEUAIABBAEQATQBJAE4ASQBTAFQAUgBBAFQASQBWAEUAIABHAFIA
-TwBVAFAAIAAoAEYAWQBEAEkAQgBPAEgARgAyADMAUwBQAEQATABUACkALwBDAE4APQBSAEUAQwBJ
-AFAASQBFAE4AVABTAC8AQwBOAD0AVQBTAEUAUgA1ADkAOAA2ADUAMQAwADkAAAAAAB8AJEABAAAA
-BgAAAEUAWAAAAAAAHwAlQAEAAAC2AAAALwBPAD0AUgBUAEUAWABDAEgALwBPAFUAPQBFAFgAQwBI
-AEEATgBHAEUAIABBAEQATQBJAE4ASQBTAFQAUgBBAFQASQBWAEUAIABHAFIATwBVAFAAIAAoAEYA
-WQBEAEkAQgBPAEgARgAyADMAUwBQAEQATABUACkALwBDAE4APQBSAEUAQwBJAFAASQBFAE4AVABT
-AC8AQwBOAD0AVQBTAEUAUgA1ADkAOAA2ADUAMQAwADkAAAAAAB8AMEABAAAAEAAAAEoAYQBjAGsA
-IABZAHUAAAAfADFAAQAAABAAAABKAGEAYwBrACAAWQB1AAAAHwA4QAEAAAAQAAAASgBhAGMAawAg
-AFkAdQAAAB8AOUABAAAAEAAAAEoAYQBjAGsAIABZAHUAAAADAFlAAAAAAAMAWkAAAAAAAwAJWQEA
-AAAfAApdAQAAACgAAABqAGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAAHwAL
-XQEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABlAGsALgBjAG8AbQAAAB8AAIAfpOsz
-qHouQr57eeGpjlSzAQAAADgAAABDAG8AbgB2AGUAcgBzAGEAdABpAG8AbgBJAG4AZABlAHgAVABy
-AGEAYwBrAGkAbgBnAEUAeAAAAAEAAAAkAQAASQBJAD0AWwBDAEkARAA9AGIANwAxADYAMQA1ADEA
-MgAtAGQAYwBhADQALQAwADEANABhAC0AOABiADEAMwAtAGQAYQA0AGEAYQA0ADAAYwBlAGQAYQA3
-ADsASQBEAFgASABFAEEARAA9AEQANwA4AEQAMAA5ADEARQA1ADcAOwBJAEQAWABDAE8AVQBOAFQA
-PQAxAF0AOwBQAFMAPQBVAG4AawBuAG8AdwBuADsAVgBlAHIAcwBpAG8AbgA9AFYAZQByAHMAaQBv
-AG4AIAAxADUALgAxACAAKABCAHUAaQBsAGQAIAAyADEAMAA2AC4AMAApACwAIABTAHQAYQBnAGUA
-PQBIADQAOwBVAFAAPQAxADAAOwBEAFAAPQAxAEMANQAAAAsAAIAIIAYAAAAAAMAAAAAAAABGAAAA
-AIKFAAAAAAAAAwANNP0/AAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAgAAAAeAAtAG0AcwAtAGgA
-YQBzAC0AYQB0AHQAYQBjAGgAAAABAAAAAgAAAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAi
-AAAAeAAtAG8AcgBpAGcAaQBuAGEAdABpAG4AZwAtAGkAcAAAAAAAAQAAACIAAABbADEANwAyAC4A
-MgAyAC4AMQAwADIALgAxADYANwBdAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAiAAAAeAAt
-AGsAcwBlAC0AcwBlAHIAdgBlAHIAaQBuAGYAbwAAAAAAAQAAADgAAABSAFQARQBYAE0AQgBTADAA
-NAAuAHIAZQBhAGwAdABlAGsALgBjAG8AbQAuAHQAdwAsACAAOQAAAB8AAICGAwIAAAAAAMAAAAAA
-AABGAQAAAFYAAAB4AC0AawBzAGUALQBhAHQAdABhAGMAaABtAGUAbgB0AGYAaQBsAHQAZQByAGkA
-bgBnAC0AaQBuAHQAZQByAGMAZQBwAHQAbwByAC0AaQBuAGYAbwAAAAAAAQAAAF4AAABuAG8AIABh
-AHAAcABsAGkAYwBhAGIAbABlACAAYQB0AHQAYQBjAGgAbQBlAG4AdAAgAGYAaQBsAHQAZQByAGkA
-bgBnACAAcgB1AGwAZQBzACAAZgBvAHUAbgBkAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAABC
-AAAAeAAtAGsAcwBlAC0AYQBuAHQAaQB2AGkAcgB1AHMALQBpAG4AdABlAHIAYwBlAHAAdABvAHIA
-LQBpAG4AZgBvAAAAAAABAAAAIAAAAHMAYwBhAG4AIABzAHUAYwBjAGUAcwBzAGYAdQBsAAAAHwAA
-gIYDAgAAAAAAwAAAAAAAAEYBAAAAKgAAAHgALQBrAHMAZQAtAGEAbgB0AGkAdgBpAHIAdQBzAC0A
-aQBuAGYAbwAAAAAAAQAAAEYAAABDAGwAZQBhAG4ALAAgAGIAYQBzAGUAcwA6ACAAMgAwADIAMQAv
-ADgALwA5ACAACk5IUyAAMAA3ADoAMAA0ADoAMAAwAAAAAAAfAACAhgMCAAAAAADAAAAAAAAARgEA
-AABQAAAAeAAtAGsAcwBlAC0AYgB1AGwAawBtAGUAcwBzAGEAZwBlAHMAZgBpAGwAdABlAHIAaQBu
-AGcALQBzAGMAYQBuAC0AcgBlAHMAdQBsAHQAAAABAAAAKAAAAHAAcgBvAHQAZQBjAHQAaQBvAG4A
-IABkAGkAcwBhAGIAbABlAGQAAABorg==
-
---_000_ce9e2f298f0c4fc59f756c39736a297arealtekcom_--
+> 
