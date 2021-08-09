@@ -2,97 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992873E4EB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBE73E4EB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 23:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235904AbhHIVqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 17:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhHIVq1 (ORCPT
+        id S235989AbhHIVtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 17:49:02 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:45308 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233294AbhHIVtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:46:27 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C22DC061796
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 14:46:06 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id bo18so8053214pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 14:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zGW8AK3cSSlo8RoEaUz/Ru79mfjJirEiShCzSUYbZDc=;
-        b=IYn4wY/cc10AdW5DkSXpKUyci6JFskg0/plcbC6LMEC23bfo03QYBYZkcW3heSRYnT
-         sbMu87nJhtTXIwXVLVQCbNB/2Kj5sTxIriSZpcJhwHB/pqX9QZLsyaw/cPlH2UyaU121
-         2I7Fe+u6U6o3xdQtZvPzProj6C6RX/mYYlKrU1nRmETiIr5nYM6+eNQpKDFfJM7LL3nE
-         RfsdHVj6H7HYd2xxPZeUF5RdogHURz0XGCyrXFfVfIIqik3AO8qWf20x5EtMK8F58JBc
-         RiI5Z8SCJfQ+ACHEvvuJj1DE/FQRkvJDBqYjLD0Njdw10rltJXyzxwkinG7zyx5RCpsr
-         z7cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zGW8AK3cSSlo8RoEaUz/Ru79mfjJirEiShCzSUYbZDc=;
-        b=O8oPT+b7541ivQOBDm0QZ3amJcMhlAkOo2xTUDgDG0zZ7tUqrh3xoGsLeUn/xpgBVS
-         oRT8mGHparV+6VonRPSjFbldQlXrS9bLrMyzl7+tvrjU1jF2CBEASGYLUXochzfO8BOz
-         CS6RoRh8I7U11CD2fVM/WGU7rvdA387/kqVEo4wyUzIYB9i1M1S127X+hBIG676Ig+B5
-         yp+yR7r9aMf8NVZBjjLK3ZnlbiSRoNIj5LecfeDmNt64XRf6MznnyuONSoeDVRh7zJJF
-         xInNJ6s+BcAgKyi9ueMrwEhGQsGrqVxKB2zrxv5nt1iLPmEMJwusAW0A6vMlQo3n5vND
-         aLRQ==
-X-Gm-Message-State: AOAM5328aCqrqF9+RLTC5j6/peNYO4VCPpZ/c3m/oMVnqKLp3wtlRxxl
-        A/YBD0KJDiCgeGF/CS+9qzdxyPh/FtWcaXg762DYxg==
-X-Google-Smtp-Source: ABdhPJwA1iCEPVv6xMPuIgTpyMXDCiaEK1oOBUUdRZ0jC5qaLQMdY99BUh7Lz/ffhkeFBkT99YrevNK4NyvINN6wtxI=
-X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr3935613pjq.217.1628545566041;
- Mon, 09 Aug 2021 14:46:06 -0700 (PDT)
+        Mon, 9 Aug 2021 17:49:01 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:54436 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1mDD8R-0005EU-6B; Mon, 09 Aug 2021 17:48:39 -0400
+Message-ID: <fdd54421f4d4e825152192e327c838d035352945.camel@trillion01.com>
+Subject: Re: [PATCH 1/2] io_uring: clear TIF_NOTIFY_SIGNAL when running task
+ work
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Date:   Mon, 09 Aug 2021 17:48:38 -0400
+In-Reply-To: <20210808001342.964634-2-namit@vmware.com>
+References: <20210808001342.964634-1-namit@vmware.com>
+         <20210808001342.964634-2-namit@vmware.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-References: <20210802233339.25285-1-broonie@kernel.org> <CAA=Fs0k95E3FN-9rwzSQcK4JmejHDKBbvk-yhRynJBTbqBNVxQ@mail.gmail.com>
- <CAK8P3a0HWO1tPwCkhasRE1iXt+-rC72nAzsUuO6jb4XasGAAPg@mail.gmail.com>
- <20210809175502.226ce4cd@elm.ozlabs.ibm.com> <CAA=Fs0nF31NdEoPLM-a2RCupQPtHgHMzxejK67UuLh0wu32EVA@mail.gmail.com>
- <CAK8P3a0WRMNmBmBDerZ0nWPdFZKALnxrj-uUFBkTP-MOtv48vg@mail.gmail.com>
-In-Reply-To: <CAK8P3a0WRMNmBmBDerZ0nWPdFZKALnxrj-uUFBkTP-MOtv48vg@mail.gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Mon, 9 Aug 2021 22:45:55 +0100
-Message-ID: <CAA=Fs0nJDKheZA99+c-BWjpZCFrC=U4_-O2Hgxv2cg9hRGgDxA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the staging tree with the net-next tree
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Stephen Rothwell <sfr@rothwell.id.au>,
-        Mark Brown <broonie@kernel.org>, Greg KH <greg@kroah.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 at 21:00, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Mon, Aug 9, 2021 at 2:48 PM Phillip Potter <phil@philpotter.co.uk> wrote:
-> > On Mon, 9 Aug 2021 at 08:55, Stephen Rothwell <sfr@rothwell.id.au> wrote:
-> > > On Tue, 3 Aug 2021 11:23:29 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
-> > >
-> > > So, can that be done in the staging tree as it is, or does Greg need to
-> > > merge (part of) the net-next tree?  Or will someone just supply me with
-> > > a reasonable merge resolution patch?  Or does Greg reset the staging
-> > > tree to 5c872e1d2595 and try again next time?  Or similar for Dave
-> > > (revert Arnd's work)?
-> > >
-> > > Currently it is a mess in linux-next and probably will not work even
-> > > though it does build.
-> > >
-> >
-> > Happy to try and provide a merge resolution patch if that is easier?
-> > Will be this evening UK time though.
->
-> Most likely there is no user space that actually wants this function at all,
-> so I think the easiest way would be to remove all of rtw_ioctl in the
-> staging tree version of this driver.
->
->         Arnd
+On Sat, 2021-08-07 at 17:13 -0700, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
+> 
+> When using SQPOLL, the submission queue polling thread calls
+> task_work_run() to run queued work. However, when work is added with
+> TWA_SIGNAL - as done by io_uring itself - the TIF_NOTIFY_SIGNAL remains
+> set afterwards and is never cleared.
+> 
+> Consequently, when the submission queue polling thread checks whether
+> signal_pending(), it may always find a pending signal, if
+> task_work_add() was ever called before.
+> 
+> The impact of this bug might be different on different kernel versions.
+> It appears that on 5.14 it would only cause unnecessary calculation and
+> prevent the polling thread from sleeping. On 5.13, where the bug was
+> found, it stops the polling thread from finding newly submitted work.
+> 
+> Instead of task_work_run(), use tracehook_notify_signal() that clears
+> TIF_NOTIFY_SIGNAL. Test for TIF_NOTIFY_SIGNAL in addition to
+> current->task_works to avoid a race in which task_works is cleared but
+> the TIF_NOTIFY_SIGNAL is set.
+> 
+> Fixes: 685fe7feedb96 ("io-wq: eliminate the need for a manager thread")
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> ---
+>  fs/io_uring.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 5a0fd6bcd318..f39244d35f90 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -78,6 +78,7 @@
+>  #include <linux/task_work.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/io_uring.h>
+> +#include <linux/tracehook.h>
+>  
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/io_uring.h>
+> @@ -2203,9 +2204,9 @@ static inline unsigned int io_put_rw_kbuf(struct
+> io_kiocb *req)
+>  
+>  static inline bool io_run_task_work(void)
+>  {
+> -       if (current->task_works) {
+> +       if (test_thread_flag(TIF_NOTIFY_SIGNAL) || current->task_works)
+> {
+>                 __set_current_state(TASK_RUNNING);
+> -               task_work_run();
+> +               tracehook_notify_signal();
+>                 return true;
+>         }
+>  
 
-Sounds good. I will put something together to take out rtw_ioctl in
-that case, and submit through Greg/linux-staging. Many thanks.
+thx a lot for this patch!
 
-Regards,
-Phil
+This explains what I am seeing here:
+https://lore.kernel.org/io-uring/4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com/
+
+I was under the impression that task_work_run() was clearing
+TIF_NOTIFY_SIGNAL.
+
+your patch made me realize that it does not...
+
+
