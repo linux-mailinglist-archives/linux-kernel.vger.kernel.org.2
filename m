@@ -2,63 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48723E49CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06EC3E4A10
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 18:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhHIQb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 12:31:28 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60688 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbhHIQbY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 12:31:24 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S233166AbhHIQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 12:33:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:63797 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233638AbhHIQcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 12:32:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628526734; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ScGC4Wqnf3TqhG3D0GIJYJnUSJr2rvY61q05HrRAX9w=;
+ b=e61lY8QlSg1Y7N/nJxw69qU0HWVfLpqjXpk5AoBOlV6zNA1tprjkQhs/Dw3oSIhDq/7jKcFy
+ 7Slj4W0NIwwWX8PBRLH4G9sVy/bU8l6sXX/9zVyzxe0pJRsPjZvOBC1bRh2F6X3vukFPSTpZ
+ HOS+s25L4W0LLo2zqbt5EA8M8K4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 61115873f746c298d974aec4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Aug 2021 16:31:47
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 80F2BC43144; Mon,  9 Aug 2021 16:31:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 54B8521EB5;
-        Mon,  9 Aug 2021 16:31:03 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7199C13AC8;
-        Mon,  9 Aug 2021 16:31:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +4SvC0VYEWEbTwAAMHmgww
-        (envelope-from <dave@stgolabs.net>); Mon, 09 Aug 2021 16:31:01 +0000
-Date:   Mon, 9 Aug 2021 09:30:57 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 3/7] perf/bench-futex: Factor out futex_flag
-Message-ID: <20210809163057.no4icet42g6vu6uo@offworld>
-References: <20210809043301.66002-1-dave@stgolabs.net>
- <20210809043301.66002-4-dave@stgolabs.net>
- <YRFBj3jGABt1zkQX@kernel.org>
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D1736C43460;
+        Mon,  9 Aug 2021 16:31:46 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YRFBj3jGABt1zkQX@kernel.org>
-User-Agent: NeoMutt/20201120
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 09 Aug 2021 22:01:46 +0530
+From:   okukatla@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, evgreen@google.com,
+        georgi.djakov@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [V4 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on
+ SC7280
+In-Reply-To: <CAE-0n51btkt9ehEFrm+WucP90ZufKw1PEQqzNGVDRy51jByXkw@mail.gmail.com>
+References: <1624015734-16778-1-git-send-email-okukatla@codeaurora.org>
+ <1624015734-16778-2-git-send-email-okukatla@codeaurora.org>
+ <CAE-0n51btkt9ehEFrm+WucP90ZufKw1PEQqzNGVDRy51jByXkw@mail.gmail.com>
+Message-ID: <618b3a664b3556718a867e815e94578f@codeaurora.org>
+X-Sender: okukatla@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Aug 2021, Arnaldo Carvalho de Melo wrote:
->Wouldn't be better to have it defined in one place and then in futex.h
->just have a 'extern int futex_flag;' declaration?
+Thanks Stephen for the reviews!
 
-Sure.
-
->
->I applied the first two patches already.
-
-Ok so I'm clear, this one just won't get picked up right now then.
-(you don't want me to respin this patch then in a form v3, right?)
-
-Thanks,
-Davidlohr
+On 2021-07-09 04:52, Stephen Boyd wrote:
+> Quoting Odelu Kukatla (2021-06-18 04:28:52)
+>> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+>> SoCs.
+>> 
+>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  9 
+>> ++++++++-
+>>  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 
+>> +++++++++-
+>>  2 files changed, 17 insertions(+), 2 deletions(-)
+>> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml 
+>> b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+>> index d6a95c3..9f67c8e 100644
+>> --- a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+>> +++ b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+>> @@ -18,12 +18,19 @@ properties:
+>>    compatible:
+>>      enum:
+>>        - qcom,sc7180-osm-l3
+>> +      - qcom,sc7280-epss-l3
+>>        - qcom,sdm845-osm-l3
+>>        - qcom,sm8150-osm-l3
+>>        - qcom,sm8250-epss-l3
+>> 
+>>    reg:
+>> -    maxItems: 1
+>> +    minItems: 1
+>> +    maxItems: 4
+> 
+> Can we base this on the compatible string so that only sc7280-epss-l3
+> requires 4 items? and then the others require 1 reg property?
+> 
+Done, Addressing this in new revision.
+>> +    items:
+>> +      - description: OSM clock domain-0 base address and size
+>> +      - description: OSM clock domain-1 base address and size
+>> +      - description: OSM clock domain-2 base address and size
+>> +      - description: OSM clock domain-3 base address and size
+>> 
+>>    clocks:
+>>      items:
