@@ -2,311 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E443E4CFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A4B3E4CF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 21:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236013AbhHITWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 15:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235868AbhHITW3 (ORCPT
+        id S235971AbhHITWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 15:22:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21486 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231302AbhHITW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Aug 2021 15:22:29 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103C1C061798
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 12:22:09 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id c130so11322887qkg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 12:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=C8SAQNxBSJ7h+JJ2+3jC6E0qK1LNwDyR7yX5THBQn28=;
-        b=ulwQto5XlLOfLT5jHR/AppflzVcl4my0r1atXsSimzIr62uFQe0ZSLQ6S+E4EOdvpq
-         AdKAtrwh5NOuXJWQpv9qAzX9wig8Bllx+DV11AEDE5MEMYNd6O+HZB/A4Sr8XTzA5OE1
-         xIZPPkIwt2iav2B/44jYGcfSTFXez9hrzuQZ1Eipfu1d7HpXPjHCiKT3ZEZ/LtEVIehD
-         rZhxFKfVStLucbWASgEkyXJuFqXXRU8JWAdKdwgQOb6F9NgB7P3WafukQpvBq3y6fiAG
-         aAZ8RW77mBHUFOB7H/duGpNDr8EeWgN3L6kQr876tn8fWpPtp0e5ylXN4mbGkXQNXQEx
-         g+Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=C8SAQNxBSJ7h+JJ2+3jC6E0qK1LNwDyR7yX5THBQn28=;
-        b=c1WVqvNl6iZnzi7SrYBR64ABdfTu2VMH52NF1yvvyn+QL39TonFaa146aajbWTh6bU
-         Gan1XTwBXmaKE8BLE3JhW5YpvOcfVkI1xNfsa9xYu/Rixhs+mifpF93iaIIsqqJ4iA+l
-         6MSpobzl29yAm7oMmXMp7LUUW3xSqPxpvTk2Ns2K0j3NzBRk0j/uCPBTdqfEIicci334
-         TuV/40GxdURABfAegmUOUsKDcmbzV7EMi4JV+USQ4OzOfeenbfZ2Cb6cV4LpmAhB+B9I
-         qMcaGXbzqFZV8xsAMeuPqguXkEoJEtuDXwlC4WsXQ3h0swzpDKRFUsQ/9QWsNg7HFTum
-         kljQ==
-X-Gm-Message-State: AOAM533uFQ0oaM2uQQinFzlgsdu8PK0AqIyBvFH6UhMNa+Q22Hbh0qRz
-        pwOngePMUGvSIe+HWSf/UEag41f6nEgsfyePmx9FGg==
-X-Google-Smtp-Source: ABdhPJxxmaul+jamEF/omyvUGbP8ZyPFGD5pOnEizG8WANZWiPlCGtvl7PjJROm9NGP3QUqzEhVC63zu2encu9w4gyU=
-X-Received: by 2002:a05:620a:811:: with SMTP id s17mr7626516qks.350.1628536927754;
- Mon, 09 Aug 2021 12:22:07 -0700 (PDT)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179JLbLH178999;
+        Mon, 9 Aug 2021 15:22:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Op+VvbVQlcmo8g+h/17oYfjT+xbWUGgdgkGfd8/ZmkQ=;
+ b=O6jTU1+tN7Lqk/7FMrOF8s+tum0/MiG6Drwae0V20MjlmJVFZVViLV4mrVQfEGr6xIWD
+ QZKx5o7Vz2h7g5kCyOdfSeqSY2RUe8i8V/LN3r4rHhKeXxZJqAT8uEUy6fBmfDtPz+oT
+ o5mvb4g71Tq0OtkoZgxAbCRA2hnqSeydkvfoyBZG+rCX0EODxufGW/FpUEJP8F2pKjYO
+ lOJDB9/tk65acSoCvruyVq0tDNSlkA5CL6PQT7bv3G+g95VLQNQuyHv8kUJ6Tq2yPsDq
+ DcoPW8FTzunlXzb6onynq9XLPNMNZzJN/FxyBDtLtrw2IsNzF/ziS/+ZzsPp0eMdWkMX +w== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab9x9gref-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Aug 2021 15:22:07 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 179JCie9032482;
+        Mon, 9 Aug 2021 19:22:06 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma02dal.us.ibm.com with ESMTP id 3a9htc4w1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Aug 2021 19:22:06 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 179JM5RF34603438
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 9 Aug 2021 19:22:05 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0A7BF136065;
+        Mon,  9 Aug 2021 19:22:05 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AB3F136063;
+        Mon,  9 Aug 2021 19:22:04 +0000 (GMT)
+Received: from sbct-2.. (unknown [9.47.158.152])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon,  9 Aug 2021 19:22:04 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     jarkko@kernel.org
+Cc:     nasastry@in.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v4 0/2] ibmvtpm: Avoid error message when process gets signal while waiting
+Date:   Mon,  9 Aug 2021 15:21:57 -0400
+Message-Id: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <0000000000006bd0b305c914c3dc@google.com> <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
- <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com> <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
-In-Reply-To: <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 9 Aug 2021 21:21:56 +0200
-Message-ID: <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in _copy_to_iter
-To:     Shoaib Rao <rao.shoaib@oracle.com>
-Cc:     syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TyQzl6YUCvsx2i6jjYNiJNW3ulnEqV9Z
+X-Proofpoint-GUID: TyQzl6YUCvsx2i6jjYNiJNW3ulnEqV9Z
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-09_07:2021-08-06,2021-08-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
+ mlxlogscore=859 spamscore=0 adultscore=0 phishscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108090135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 at 21:16, Shoaib Rao <rao.shoaib@oracle.com> wrote:
-> On 8/9/21 11:06 AM, Dmitry Vyukov wrote:
-> > On Mon, 9 Aug 2021 at 19:33, Shoaib Rao <rao.shoaib@oracle.com> wrote:
-> >> This seems like a false positive. 1) The function will not sleep becau=
-se
-> >> it only calls copy routine if the byte is present. 2). There is no
-> >> difference between this new call and the older calls in
-> >> unix_stream_read_generic().
-> > Hi Shoaib,
-> >
-> > Thanks for looking into this.
-> > Do you have any ideas on how to fix this tool's false positive? Tools
-> > with false positives are order of magnitude less useful than tools w/o
-> > false positives. E.g. do we turn it off on syzbot? But I don't
-> > remember any other false positives from "sleeping function called from
-> > invalid context" checker...
->
-> Before we take any action I would like to understand why the tool does
-> not single out other calls to recv_actor in unix_stream_read_generic().
-> The context in all cases is the same. I also do not understand why the
-> code would sleep, Let's assume the user provided address is bad, the
-> code will return EFAULT, it will never sleep,
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-I always assumed that it's because if user pages are swapped out, it
-may need to read them back from disk.
+This series of patches fixes an issue related to the ibmvtpm driver causing
+unnecessary kernel log messages when a process is interrupted while waiting
+for the TPM to respond. The aborted wait causes the core TPM driver to emit
+the log message. The solution is to convert the driver to use the normal
+polling loop to wait for TPM responses.
 
-> if the kernel provided
-> address is bad the system will panic. The only difference I see is that
-> the new code holds 2 locks while the previous code held one lock, but
-> the locks are acquired before the call to copy.
->
-> So please help me understand how the tool works. Even though I have
-> evaluated the code carefully, there is always a possibility that the
-> tool is correct.
->
-> Shoaib
->
-> >
-> >
-> >
-> >> On 8/8/21 4:38 PM, syzbot wrote:
-> >>> Hello,
-> >>>
-> >>> syzbot found the following issue on:
-> >>>
-> >>> HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb overr=
-ide
-> >>> git tree:       net-next
-> >>> console output: https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/x/log.txt?x=3D12e3a69e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iU=
-LDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPHEdQcWD$
-> >>> kernel config:  https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/x/.config?x=3Daba0c23f8230e048__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93=
-iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPLGp1-Za$
-> >>> dashboard link: https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/bug?extid=3D8760ca6c1ee783ac4abd__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU=
-93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPCORTNOH$
-> >>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Bi=
-nutils for Debian) 2.35.1
-> >>> syz repro:      https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/x/repro.syz?x=3D15c5b104300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93=
-iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPAjhi2yc$
-> >>> C reproducer:   https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/x/repro.c?x=3D10062aaa300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iU=
-LDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPNzAjzQJ$
-> >>>
-> >>> The issue was bisected to:
-> >>>
-> >>> commit 314001f0bf927015e459c9d387d62a231fe93af3
-> >>> Author: Rao Shoaib <rao.shoaib@oracle.com>
-> >>> Date:   Sun Aug 1 07:57:07 2021 +0000
-> >>>
-> >>>       af_unix: Add OOB support
-> >>>
-> >>> bisection log:  https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/x/bisect.txt?x=3D10765f8e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU9=
-3iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPK2iWt2r$
-> >>> final oops:     https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/x/report.txt?x=3D12765f8e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU9=
-3iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPKAb0dft$
-> >>> console output: https://urldefense.com/v3/__https://syzkaller.appspot=
-.com/x/log.txt?x=3D14765f8e300000__;!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iU=
-LDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPNlW_w-u$
-> >>>
-> >>> IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> >>> Reported-by: syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com
-> >>> Fixes: 314001f0bf92 ("af_unix: Add OOB support")
-> >>>
-> >>> BUG: sleeping function called from invalid context at lib/iov_iter.c:=
-619
-> >>> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8443, name: sy=
-z-executor700
-> >>> 2 locks held by syz-executor700/8443:
-> >>>    #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_rea=
-d_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
-> >>>    #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include=
-/linux/spinlock.h:354 [inline]
-> >>>    #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_=
-generic+0x16d0/0x2190 net/unix/af_unix.c:2502
-> >>> Preemption disabled at:
-> >>> [<0000000000000000>] 0x0
-> >>> CPU: 1 PID: 8443 Comm: syz-executor700 Not tainted 5.14.0-rc3-syzkall=
-er #0
-> >>> Hardware name: Google Google Compute Engine/Google Compute Engine, BI=
-OS Google 01/01/2011
-> >>> Call Trace:
-> >>>    __dump_stack lib/dump_stack.c:88 [inline]
-> >>>    dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
-> >>>    ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
-> >>>    __might_fault+0x6e/0x180 mm/memory.c:5258
-> >>>    _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
-> >>>    copy_to_iter include/linux/uio.h:139 [inline]
-> >>>    simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
-> >>>    __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
-> >>>    skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
-> >>>    skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
-> >>>    unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
-> >>>    unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
-> >>>    unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
-> >>>    unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
-> >>>    sock_recvmsg_nosec net/socket.c:944 [inline]
-> >>>    sock_recvmsg net/socket.c:962 [inline]
-> >>>    sock_recvmsg net/socket.c:958 [inline]
-> >>>    ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
-> >>>    ___sys_recvmsg+0x127/0x200 net/socket.c:2664
-> >>>    do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
-> >>>    __sys_recvmmsg net/socket.c:2837 [inline]
-> >>>    __do_sys_recvmmsg net/socket.c:2860 [inline]
-> >>>    __se_sys_recvmmsg net/socket.c:2853 [inline]
-> >>>    __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
-> >>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >>>    do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> >>>    entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >>> RIP: 0033:0x43ef39
-> >>> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 =
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f=
-0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> >>> RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012=
-b
-> >>> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
-> >>> RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
-> >>> RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
-> >>> R10: 0000000000000007 R11: 0000000000000246 R12: 0000000000402fb0
-> >>> R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-> >>>
-> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> >>> [ BUG: Invalid wait context ]
-> >>> 5.14.0-rc3-syzkaller #0 Tainted: G        W
-> >>> -----------------------------
-> >>> syz-executor700/8443 is trying to lock:
-> >>> ffff8880212b6a28 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0x=
-a3/0x180 mm/memory.c:5260
-> >>> other info that might help us debug this:
-> >>> context-{4:4}
-> >>> 2 locks held by syz-executor700/8443:
-> >>>    #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_rea=
-d_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
-> >>>    #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include=
-/linux/spinlock.h:354 [inline]
-> >>>    #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_=
-generic+0x16d0/0x2190 net/unix/af_unix.c:2502
-> >>> stack backtrace:
-> >>> CPU: 1 PID: 8443 Comm: syz-executor700 Tainted: G        W         5.=
-14.0-rc3-syzkaller #0
-> >>> Hardware name: Google Google Compute Engine/Google Compute Engine, BI=
-OS Google 01/01/2011
-> >>> Call Trace:
-> >>>    __dump_stack lib/dump_stack.c:88 [inline]
-> >>>    dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
-> >>>    print_lock_invalid_wait_context kernel/locking/lockdep.c:4666 [inl=
-ine]
-> >>>    check_wait_context kernel/locking/lockdep.c:4727 [inline]
-> >>>    __lock_acquire.cold+0x213/0x3ab kernel/locking/lockdep.c:4965
-> >>>    lock_acquire kernel/locking/lockdep.c:5625 [inline]
-> >>>    lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-> >>>    __might_fault mm/memory.c:5261 [inline]
-> >>>    __might_fault+0x106/0x180 mm/memory.c:5246
-> >>>    _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
-> >>>    copy_to_iter include/linux/uio.h:139 [inline]
-> >>>    simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
-> >>>    __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
-> >>>    skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
-> >>>    skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
-> >>>    unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
-> >>>    unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
-> >>>    unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
-> >>>    unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
-> >>>    sock_recvmsg_nosec net/socket.c:944 [inline]
-> >>>    sock_recvmsg net/socket.c:962 [inline]
-> >>>    sock_recvmsg net/socket.c:958 [inline]
-> >>>    ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
-> >>>    ___sys_recvmsg+0x127/0x200 net/socket.c:2664
-> >>>    do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
-> >>>    __sys_recvmmsg net/socket.c:2837 [inline]
-> >>>    __do_sys_recvmmsg net/socket.c:2860 [inline]
-> >>>    __se_sys_recvmmsg net/socket.c:2853 [inline]
-> >>>    __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
-> >>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >>>    do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> >>>    entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >>> RIP: 0033:0x43ef39
-> >>> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 =
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f=
-0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> >>> RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012=
-b
-> >>> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
-> >>> RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
-> >>> RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
-> >>> R10: 0000000000000007 R11: 0000000000000246 R12: 0000
-> >>>
-> >>>
-> >>> ---
-> >>> This report is generated by a bot. It may contain errors.
-> >>> See https://urldefense.com/v3/__https://goo.gl/tpsmEJ__;!!ACWV5N9M2RV=
-99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPG1UhbpZ$  for=
- more information about syzbot.
-> >>> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >>>
-> >>> syzbot will keep track of this issue. See:
-> >>> https://urldefense.com/v3/__https://goo.gl/tpsmEJ*status__;Iw!!ACWV5N=
-9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPKlEx5v1$=
-  for how to communicate with syzbot.
-> >>> For information about bisection process see: https://urldefense.com/v=
-3/__https://goo.gl/tpsmEJ*bisection__;Iw!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU=
-93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKlPJk7KaIr$
-> >>> syzbot can test patches for this issue, for details see:
-> >>> https://urldefense.com/v3/__https://goo.gl/tpsmEJ*testing-patches__;I=
-w!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa_DPjyVIgQuZWyQbCo5IRkAzvYs6JKl=
-PMhq2hD3$
-> >> --
-> >> You received this message because you are subscribed to the Google Gro=
-ups "syzkaller-bugs" group.
-> >> To unsubscribe from this group and stop receiving emails from it, send=
- an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> >> To view this discussion on the web visit https://urldefense.com/v3/__h=
-ttps://groups.google.com/d/msgid/syzkaller-bugs/0c106e6c-672f-474e-5815-97b=
-65596139d*40oracle.com__;JQ!!ACWV5N9M2RV99hQ!fbn9ny5Bw51Jl6yrU93iULDBXa_DPj=
-yVIgQuZWyQbCo5IRkAzvYs6JKlPHjmYAGZ$ .
+   Stefan
+
+v4:
+ - Reverted order of patches
+
+v3:
+ - Split into two patches
+
+Stefan Berger (2):
+  tpm: ibmvtpm: Avoid error message when process gets signal while
+    waiting
+  tpm: ibmvtpm: Rename tpm_process_cmd to tpm_status and define flag
+
+ drivers/char/tpm/tpm_ibmvtpm.c | 31 ++++++++++++++++++-------------
+ drivers/char/tpm/tpm_ibmvtpm.h |  3 ++-
+ 2 files changed, 20 insertions(+), 14 deletions(-)
+
+-- 
+2.31.1
+
