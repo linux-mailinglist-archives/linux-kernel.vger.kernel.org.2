@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941443E4936
+	by mail.lfdr.de (Postfix) with ESMTP id DCBED3E4937
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235915AbhHIPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:50:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51460 "EHLO mail.kernel.org"
+        id S235933AbhHIPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:50:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235846AbhHIPtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:49:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 195B261019;
-        Mon,  9 Aug 2021 15:48:58 +0000 (UTC)
+        id S235853AbhHIPt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:49:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B36766101D;
+        Mon,  9 Aug 2021 15:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628524138;
-        bh=cK2uJqFI5AdXUBCrjz4aXtOXtAxYE1DIL/pMeuROH0A=;
+        s=k20201202; t=1628524146;
+        bh=pOYHWN+WeevHracHh/+8MHauEqLmuIrCZfnbgTIkeGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nP/LoI03Ip0jHr3Dm0EYdeuHOnQOYonCVXlr32FzBekKsb364lKKaFCw5xcriKN9C
-         Ch6QB+CUIJe05//grj3OmHHVEMy/QEgIInlxmfu7/yqzSjX5lx8PHl1yO1XF7HQv/x
-         JO2qk8GjfBz2NY9PDMYh+qd6POn6c/49tXLm3UgWuHUHdgjlqJDJDBIoQKrOEM/Xrm
-         vlqUz2u7zgTbMI0eAdz4O8TANh2YgVjof+rRDMoYfmCUmsEKUWEbPnuoAYR8GgzIPq
-         zOMR6SqQ7zRFvoOZ6TYCK3xxkuuUMAksGqmXSPK1gX6D4q+7danF1o7QMW4wxVVIrs
-         JySrkvwC5Wjrg==
+        b=TnJSJLm0/d8ZPAq7H1LrvxSpEYcg0RvG/u6YndZhLqv9Vxk6PsZ3am/GT2u/j21LL
+         Zata7rVUxZxC9apO/YS/pbb1/9bFheQCgM5fO1R5/CV0r0LsSOowgcLQlkLUkLdWUc
+         xI3jbIFyUoYCRpq72m8HeHxUI/QYOlrqWt0I6ByFP3TBWnj/WAkYSVeMbjTXOX1xFZ
+         C/zAQTrHKU9VSdXOBlUrZ/3thH6bGSQWeN3VwB1Zrqarxc8isom3a/ToKNYAinPr4Z
+         J6PK62McSsvgDw9dYVidgnjm+7xAtZQUDVM78EsyHV1GNh3hiE9YIklFZ5vKNsYGSl
+         Zf8LSrw3wthEA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v2 09/10] tools/bootconfig: Use per-group/all enable option in ftrace2bconf script
-Date:   Tue, 10 Aug 2021 00:48:56 +0900
-Message-Id: <162852413662.143877.12860946285326517376.stgit@devnote2>
+Subject: [PATCH v2 10/10] bootconfig/tracing/ktest: Update ktest example for boot-time tracing
+Date:   Tue, 10 Aug 2021 00:49:04 +0900
+Message-Id: <162852414399.143877.715796910618446725.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162852406891.143877.12110677006587392853.stgit@devnote2>
 References: <162852406891.143877.12110677006587392853.stgit@devnote2>
@@ -41,70 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use per-group/all enable option instead of ftrace.events option.
-This will make the bootconfig file more readable.
+Update ktest example for the boot-time tracing with histogram
+options. Note that since the histogram option uses "trace()" action
+instead of "EVENT()", this updates the matching pattern too.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- tools/bootconfig/scripts/ftrace2bconf.sh |   24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ .../ktest/examples/bootconfigs/boottrace.bconf     |   20 +++++++++++++++-----
+ .../ktest/examples/bootconfigs/verify-boottrace.sh |    2 +-
+ 2 files changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/tools/bootconfig/scripts/ftrace2bconf.sh b/tools/bootconfig/scripts/ftrace2bconf.sh
-index a0c3bcc6da4f..fbaf07dc91bf 100755
---- a/tools/bootconfig/scripts/ftrace2bconf.sh
-+++ b/tools/bootconfig/scripts/ftrace2bconf.sh
-@@ -92,6 +92,10 @@ referred_vars() {
- 	grep "^hist" $1/trigger | grep -o '$[a-zA-Z0-9]*'
+diff --git a/tools/testing/ktest/examples/bootconfigs/boottrace.bconf b/tools/testing/ktest/examples/bootconfigs/boottrace.bconf
+index 9db64ec589d5..7aa706cccb3b 100644
+--- a/tools/testing/ktest/examples/bootconfigs/boottrace.bconf
++++ b/tools/testing/ktest/examples/bootconfigs/boottrace.bconf
+@@ -10,13 +10,23 @@ ftrace.event {
+ 	}
+ 	synthetic.initcall_latency {
+ 		fields = "unsigned long func", "u64 lat"
+-		actions = "hist:keys=func.sym,lat:vals=lat:sort=lat"
++		hist {
++			keys = func.sym,lat
++			values = lat
++			sort = lat
++		}
+ 	}
+-	initcall.initcall_start {
+-		actions = "hist:keys=func:ts0=common_timestamp.usecs"
++	initcall.initcall_start.hist {
++		keys = func;
++		var.ts0 = common_timestamp.usecs
+ 	}
+-	initcall.initcall_finish {
+-		actions = "hist:keys=func:lat=common_timestamp.usecs-$ts0:onmatch(initcall.initcall_start).initcall_latency(func,$lat)"
++	initcall.initcall_finish.hist {
++		keys = func
++		var.lat = common_timestamp.usecs - $ts0
++		onmatch {
++			event = initcall.initcall_start
++			trace = initcall_latency, func, $lat
++		}
+ 	}
  }
  
-+event_is_enabled() { # enable-file
-+	test -f $1 & grep -q "1" $1
-+}
-+
- per_event_options() { # event-dir
- 	evdir=$1
- 	# Check the special event which has no filter and no trigger
-@@ -113,7 +117,9 @@ per_event_options() { # event-dir
- 		emit_kv $PREFIX.event.$group.$event.actions += \'$action\'
- 	done
+diff --git a/tools/testing/ktest/examples/bootconfigs/verify-boottrace.sh b/tools/testing/ktest/examples/bootconfigs/verify-boottrace.sh
+index f271940ce7fb..233e95cfcf20 100755
+--- a/tools/testing/ktest/examples/bootconfigs/verify-boottrace.sh
++++ b/tools/testing/ktest/examples/bootconfigs/verify-boottrace.sh
+@@ -58,7 +58,7 @@ compare_file_partial "events/synthetic/initcall_latency/enable" "0"
+ compare_file_partial "events/initcall/initcall_start/trigger" "hist:keys=func:vals=hitcount:ts0=common_timestamp.usecs"
+ compare_file_partial "events/initcall/initcall_start/enable" "1"
  
--	# enable is not checked; this is done by set_event in the instance.
-+	if [ $GROUP_ENABLED -eq 0 ] && event_is_enabled $evdir/enable; then
-+		emit_kv $PREFIX.event.$group.$event.enable
-+	fi
- 	val=`cat $evdir/filter`
- 	if [ "$val" != "none" ]; then
- 		emit_kv $PREFIX.event.$group.$event.filter = "$val"
-@@ -137,8 +143,19 @@ event_options() {
- 		kprobe_event_options
- 		synth_event_options
- 	fi
-+	ALL_ENABLED=0
-+	if event_is_enabled $INSTANCE/events/enable; then
-+		emit_kv $PREFIX.event.enable
-+		ALL_ENABLED=1
-+	fi
- 	for group in `ls $INSTANCE/events/` ; do
- 		[ ! -d $INSTANCE/events/$group ] && continue
-+		GROUP_ENABLED=$ALL_ENABLED
-+		if [ $ALL_ENABLED -eq 0 ] && \
-+		   event_is_enabled $INSTANCE/events/$group/enable ;then
-+			emit_kv $PREFIX.event.$group.enable
-+			GROUP_ENABLED=1
-+		fi
- 		for event in `ls $INSTANCE/events/$group/` ;do
- 			[ ! -d $INSTANCE/events/$group/$event ] && continue
- 			per_event_options $INSTANCE/events/$group/$event
-@@ -226,11 +243,6 @@ instance_options() { # [instance-name]
- 		emit_kv $PREFIX.tracing_on = $val
- 	fi
+-compare_file_partial "events/initcall/initcall_finish/trigger" 'hist:keys=func:vals=hitcount:lat=common_timestamp.usecs-\$ts0:sort=hitcount:size=2048:clock=global:onmatch(initcall.initcall_start).initcall_latency(func,\$lat)'
++compare_file_partial "events/initcall/initcall_finish/trigger" 'hist:keys=func:vals=hitcount:lat=common_timestamp.usecs-\$ts0:sort=hitcount:size=2048:clock=global:onmatch(initcall.initcall_start).trace(initcall_latency,func,\$lat)'
+ compare_file_partial "events/initcall/initcall_finish/enable" "1"
  
--	val=
--	for i in `cat $INSTANCE/set_event`; do
--		val="$val, $i"
--	done
--	[ "$val" ] && emit_kv $PREFIX.events = "${val#,}"
- 	val=`cat $INSTANCE/current_tracer`
- 	[ $val != nop ] && emit_kv $PREFIX.tracer = $val
- 	if grep -qv "^#" $INSTANCE/set_ftrace_filter $INSTANCE/set_ftrace_notrace; then
+ compare_file "instances/foo/current_tracer" "function"
 
