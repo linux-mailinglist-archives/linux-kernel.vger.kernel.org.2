@@ -2,94 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381083E4865
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA693E48F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 17:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235371AbhHIPL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 11:11:58 -0400
-Received: from ixit.cz ([94.230.151.217]:45698 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235200AbhHIPL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:11:57 -0400
-Received: from newone.lan (ixit.cz [94.230.151.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 6D7E42029F;
-        Mon,  9 Aug 2021 17:11:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1628521893;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=CE/q2k0CXcFqki/0w/v8nTUHmyve9NcEEIsPdG27/08=;
-        b=Dv28xUMtH040WCqUk51/cLGYzuBhwxh6JmipTtrrh22I/rJLJDvqu5ckX6Rhu2ecjyoQpL
-        AqvfD94oirI0pliblFdjLyNwooMZPasaR9F1D1mIIXOTcNlxHMq++DUKY9kgA2VRujp3Yw
-        qr8RoUFoyeAEJMjIliWPUA49lObeTfk=
-From:   David Heidelberg <david@ixit.cz>
-To:     Arnd Bergmann <arnd@arndb.de>, Jon Medhurst <tixy@linaro.org>,
-        Russell King <linux@arm.linux.org.uk>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Nicolas Pitre <nico@linaro.org>
-Cc:     David Heidelberg <david@ixit.cz>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ARM: atags_to_fdt: don't warn about stack size
-Date:   Mon,  9 Aug 2021 17:10:21 +0200
-Message-Id: <20210809151021.5137-1-david@ixit.cz>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
+        id S235603AbhHIPfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 11:35:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61320 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234708AbhHIPfm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:35:42 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179FY4Rc075279;
+        Mon, 9 Aug 2021 11:35:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=hwpA24QRrQlzhRUNEXBLbQJ7FfPUZL9C1vCAfLp04pE=;
+ b=YZqSovz5HZpMPAWThi+VH5jqcT24Z1N2g9Zy41tXxVPLLFC3FuapZHFTw9uFQZztfAHV
+ TWhSTmZK6miZiVPmafpmmTOXVhTyY+9cWrXTNZJE4fP04VMsaM7+H1poF2qQES4vdyDs
+ fkF8MTM28l0QREEDJ4stVRNSizSqKgaA8uw2sSOtxdhs5h1gtPVVVgIjFg2k/UEC+A6s
+ ERcmR28aem9wfVa/IxPa3BcFW6qntLcCFM4AwHZEqJSmrpDdOMEm3dBU8w+J9Zbi4y3s
+ rZUsXqGoSPy6ImuFHPxDs6YnC7B5dVN7SXUHmcUg+1VKGAacs+qZwAkDDUvrQ/1mQNFI EA== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab1j8ae59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Aug 2021 11:35:14 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 179FXfR7021136;
+        Mon, 9 Aug 2021 15:35:13 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02dal.us.ibm.com with ESMTP id 3a9htbuvn8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Aug 2021 15:35:13 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 179FZC3l38338886
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 9 Aug 2021 15:35:12 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA53C7E6B0;
+        Mon,  9 Aug 2021 15:12:54 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1DB8A7E6AD;
+        Mon,  9 Aug 2021 15:12:54 +0000 (GMT)
+Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.182.229])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  9 Aug 2021 15:12:53 +0000 (GMT)
+Subject: Re: [PATCH] s390/crypto: fix all kernel-doc warnings in vfio_ap_ops.c
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        linux-s390@vger.kernel.org
+References: <20210806050149.9614-1-rdunlap@infradead.org>
+ <d8f1b065-f7b2-a0f3-f87a-ffdd2f7f2781@linux.ibm.com>
+ <1ad57c8d-c0d1-88d9-bcce-3d3501455d8e@infradead.org>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <fd938029-7d87-4e65-bb2c-b78e9b0175e3@linux.ibm.com>
+Date:   Mon, 9 Aug 2021 11:12:53 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <1ad57c8d-c0d1-88d9-bcce-3d3501455d8e@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: J_k2VTnUT-tNXFNifIgL6PE91Otx9YWF
+X-Proofpoint-ORIG-GUID: J_k2VTnUT-tNXFNifIgL6PE91Otx9YWF
 Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-09_05:2021-08-06,2021-08-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1011 impostorscore=0 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108090113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The merge_fdt_bootargs() function by definition consumes more than 1024
-bytes of stack because it has a 1024 byte command line on the stack,
-meaning that we always get a warning when building this file:
+Thanks Randy.
 
-arch/arm/boot/compressed/atags_to_fdt.c: In function 'merge_fdt_bootargs':
-arch/arm/boot/compressed/atags_to_fdt.c:98:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-
-However, as this is the decompressor and we know that it has a very shallow
-call chain, and we do not actually risk overflowing the kernel stack
-at runtime here.
-
-This just shuts up the warning by disabling the warning flag for this
-file.
-
-Tested on Nexus 7 2012 builds.
-
-Original Author: Arnd Bergmann <arnd@arndb.de>
-Reference: https://lore.kernel.org/lkml/8232115.18ykgQ6J5T@wuerfel/
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Nicolas Pitre <nico@linaro.org>
-Cc: Russell King <linux@arm.linux.org.uk>
-Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm/boot/compressed/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index 9d91ae1091b0..91265e7ff672 100644
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -85,6 +85,8 @@ compress-$(CONFIG_KERNEL_LZ4)  = lz4
- libfdt_objs := fdt_rw.o fdt_ro.o fdt_wip.o fdt.o
- 
- ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
-+CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
-+CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
- OBJS	+= $(libfdt_objs) atags_to_fdt.o
- endif
- ifeq ($(CONFIG_USE_OF),y)
--- 
-2.30.2
+On 8/6/21 9:38 PM, Randy Dunlap wrote:
+> On 8/6/21 6:26 AM, Tony Krowiak wrote:
+>> Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>>
+>> Pardon my ignorance, but this is the first I've seen of kernel-doc 
+>> warnings.
+>> Is there a flag I can set when I build to get kernel-doc warnings? Is 
+>> there a tool I can run?
+>> Where is the kernel-doc format documented? I'd like to avoid this in 
+>> the future.
+>
+> Hi,
+>
+> Here is the 0day bot report:
+> https://lore.kernel.org/lkml/202108010650.DLRzJOtm-lkp@intel.com/
+> (not sent to any of your group, sadly).
+>
+> kernel-doc format is documented in 
+> Documentation/doc-guide/kernel-doc.rst.
+>
+> The 0day bot lists the reproduction steps. It used clang but I used
+> gcc. Shouldn't matter in this case. The main point from the 0day bot
+> is that "this is a W=1 build".  Using W=1 causes checks for extra
+> C compiler warnings and also it causes checks for documentation build
+> errors/warnings.
+>
+> In your build environment, using "make W=1 ARCH=s390 allmodconfig all"
+> will produce lots of output (both compiler and kernel-doc output).
+> I suppose that is the expected way to do it.
+>
+> AFAIK there is no support for something like "make W=1 htmldocs"
+> to just check for kernel-doc errors/warnings in source files, so what
+> I do when I am targeting only one source file is something like what
+> is documented in the file referenced above:
+>
+> "Running the ``kernel-doc`` tool with increased verbosity and without 
+> actual
+> output generation may be used to verify proper formatting of the
+> documentation comments. For example::
+>
+>     scripts/kernel-doc -v -none drivers/foo/bar.c
+> "
+> and then I script that for ease of use.
+> Using the latter command reports lots more kernel-doc warnings than
+> the 0day bot reported, so I fixed all of them that it found.
+>
+>
+> HTH.
+>
+>
+>> On 8/6/21 1:01 AM, Randy Dunlap wrote:
+>>> The 0day bot reported some kernel-doc warnings in this file so clean up
+>>> all of the kernel-doc and use proper kernel-doc formatting.
+>>> There are no more kernel-doc errors or warnings reported in this file.
+>>>
+>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Cc: Jason Gunthorpe <jgg@nvidia.com>
+>>> Cc: Tony Krowiak <akrowiak@linux.ibm.com>
+>>> Cc: Halil Pasic <pasic@linux.ibm.com>
+>>> Cc: Jason Herne <jjherne@linux.ibm.com>
+>>> Cc: Harald Freudenberger <freude@linux.ibm.com>
+>>> Cc: linux-s390@vger.kernel.org
+>>> ---
+>>>   drivers/s390/crypto/vfio_ap_ops.c |  116 ++++++++++++----------------
+>>>   1 file changed, 52 insertions(+), 64 deletions(-)
+>
+>
 
