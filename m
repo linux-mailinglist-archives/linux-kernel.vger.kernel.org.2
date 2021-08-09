@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84AA3E47F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B023E481F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 16:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhHIOwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 10:52:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46682 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbhHIOwd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:52:33 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5930F21E6F;
-        Mon,  9 Aug 2021 14:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628520732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZXgNCxd+SgCE6NDh3ACmakqiEC7xEF9v8cmNkXeJUIE=;
-        b=X0Oidp/S5+jDO7n1DPIspWjc6BTt1aMmhTMSP8APb4I53V+f6rT4nLB2HAopFbM7IzEFeV
-        eRuT/tqZXvN6iVrl0Zl/NfBxvIgy2mbFTxidkqKqb3azI+SqhA+by91kCl01QFGlx3eUfa
-        JROa1viu6jvhC4EC3WeFIWuYiVFNVXo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628520732;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZXgNCxd+SgCE6NDh3ACmakqiEC7xEF9v8cmNkXeJUIE=;
-        b=xVX39Xvg39qjvpnY+gAct0TQaIe0pNbw5tvxcKgZNQuFShfmvugNKd9iQHHXSTvaWZTnBD
-        CauzAw33LbSK4OCg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 4244BA3B81;
-        Mon,  9 Aug 2021 14:52:12 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1D0C01E3BFC; Mon,  9 Aug 2021 16:52:09 +0200 (CEST)
-Date:   Mon, 9 Aug 2021 16:52:09 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>
-Cc:     dvyukov@google.com, jack@suse.com, jack@suse.cz,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzkaller@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] possible deadlock in dquot_commit
-Message-ID: <20210809145209.GD30319@quack2.suse.cz>
-References: <000000000000a05b3b05baf9a856@google.com>
- <000000000000aa4cd605c91fe2b3@google.com>
+        id S234885AbhHIOzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 10:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234787AbhHIOzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 10:55:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3646960C41;
+        Mon,  9 Aug 2021 14:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628520895;
+        bh=Bju+leec27BJ4QYvQY3PA8U9CmRnt/W8mNw7VpNHRP4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f4BdBuCnR4jKeXbFWTt0b3h27ezCQSF4GiwDiSASn8dkWMHFf6dv7xETJOGUa3pxp
+         BviDC48Ua/ElZsPcZZXYYQV8i+QrU5KMrobngDKwzPuyUaBh/yxPlmPcjZsC6TM+GC
+         SbpfKSnIVzMPOvmvsVyfvdhloa+m9CXPL4SqPI3ctagtL23QwpL2B7J06PAarElrs9
+         K2sxQbkbvwuo2VMJO9Zvi61b350z/fnkGw2Wki0djWhtqLMKTPlnP1l+iWbp8EcFPG
+         YvkqzgSOBW1+51wpakMqbyXPm3m5RehzWn/90utfv8VI7hMv3ti/tJVdIDtJ6ZjYp3
+         gkUbIGwpOf8cA==
+Received: by pali.im (Postfix)
+        id 77F17C7C; Mon,  9 Aug 2021 16:54:52 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 0/6] serial: mvebu-uart: Support for higher baudrates
+Date:   Mon,  9 Aug 2021 16:53:23 +0200
+Message-Id: <20210809145329.24177-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210624224909.6350-1-pali@kernel.org>
+References: <20210624224909.6350-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="Nq2Wo0NMKNjxTN9z"
-Content-Disposition: inline
-In-Reply-To: <000000000000aa4cd605c91fe2b3@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series add support for baudrates higher than 230400 on
+Marvell Armada 37xx boards.
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Please review these patches as they touch both Device Tree bindings and
+mvebu-uart.c driver.
 
-On Mon 09-08-21 05:54:27, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    66745863ecde Merge tag 'char-misc-5.14-rc5' of git://git.k..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13edca6e300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=702bfdfbf389c324
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3b6f9218b1301ddda3e2
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15aeba6e300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a609e6300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
-> 
-> loop0: detected capacity change from 0 to 4096
-> EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue. Quota mode: writeback.
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.14.0-rc4-syzkaller #0 Not tainted
-> ------------------------------------------------------
-> syz-executor211/9242 is trying to acquire lock:
-> ffff88803a37ece8 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x57/0x360 fs/quota/dquot.c:474
-> 
-> but task is already holding lock:
-> ffff88803a303e48 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x9e5/0x1cb0 fs/ext4/inode.c:631
-> 
-> which lock already depends on the new lock.
+Changes in v5:
+* fixed yaml binding file
 
-Hmm, looks like hidden quota file got linked from directory hierarchy.
-Attached patch should fix this.
+Changes in v4:
+* converted armada3700-uart-clock documentation to YAML
+* split documentation changes into two commits:
+  - first which adds clock documentation
+  - second which updates UART documentation
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 902e7f373fff2476b53824264c12e4e76c7ec02a
+Changes in v3:
+v3 is rebased on top of Linus master branch and all already applied patches
+were dropped. There are no changes in patches itself since v2.
 
-								Honza
+Pali Rohár (6):
+  math64: New DIV_U64_ROUND_CLOSEST helper
+  serial: mvebu-uart: implement UART clock driver for configuring UART
+    base clock
+  dt-bindings: mvebu-uart: document DT bindings for
+    marvell,armada-3700-uart-clock
+  dt-bindings: mvebu-uart: update information about UART clock
+  arm64: dts: marvell: armada-37xx: add device node for UART clock and
+    use it
+  serial: mvebu-uart: implement support for baudrates higher than 230400
+
+ .../bindings/clock/armada3700-uart-clock.yaml |  57 ++
+ .../devicetree/bindings/serial/mvebu-uart.txt |   9 +-
+ .../arm64/boot/dts/marvell/armada-3720-db.dts |   4 +
+ .../dts/marvell/armada-3720-espressobin.dtsi  |   4 +
+ .../dts/marvell/armada-3720-turris-mox.dts    |   4 +
+ .../boot/dts/marvell/armada-3720-uDPU.dts     |   4 +
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  15 +-
+ drivers/tty/serial/Kconfig                    |   1 +
+ drivers/tty/serial/mvebu-uart.c               | 592 +++++++++++++++++-
+ include/linux/math64.h                        |  13 +
+ 10 files changed, 682 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.20.1
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-ext4-Make-sure-quota-files-are-not-grabbed-accidenta.patch"
-
-From 6efc0878a8c8f498eb138bdb57fad8a6c85d115c Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 9 Aug 2021 16:09:27 +0200
-Subject: [PATCH] ext4: Make sure quota files are not grabbed accidentally
-
-If ext4 filesystem is corrupted so that quota files are linked from
-directory hirerarchy, bad things can happen. E.g. quota files can get
-corrupted or deleted. Make sure we are not grabbing quota file inodes
-when we expect normal inodes.
-
-Reported-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index d8de607849df..2c33c795c4a7 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4603,6 +4603,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	struct ext4_iloc iloc;
- 	struct ext4_inode *raw_inode;
- 	struct ext4_inode_info *ei;
-+	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
- 	struct inode *inode;
- 	journal_t *journal = EXT4_SB(sb)->s_journal;
- 	long ret;
-@@ -4613,9 +4614,12 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	projid_t i_projid;
- 
- 	if ((!(flags & EXT4_IGET_SPECIAL) &&
--	     (ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO)) ||
-+	     ((ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO) ||
-+	      ino == le32_to_cpu(es->s_usr_quota_inum) ||
-+	      ino == le32_to_cpu(es->s_grp_quota_inum) ||
-+	      ino == le32_to_cpu(es->s_prj_quota_inum))) ||
- 	    (ino < EXT4_ROOT_INO) ||
--	    (ino > le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count))) {
-+	    (ino > le32_to_cpu(es->s_inodes_count))) {
- 		if (flags & EXT4_IGET_HANDLE)
- 			return ERR_PTR(-ESTALE);
- 		__ext4_error(sb, function, line, false, EFSCORRUPTED, 0,
--- 
-2.26.2
-
-
---Nq2Wo0NMKNjxTN9z--
