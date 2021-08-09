@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378DC3E4138
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07303E4140
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 09:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233688AbhHIH67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 03:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
+        id S233719AbhHIH73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 03:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233476AbhHIH65 (ORCPT
+        with ESMTP id S233550AbhHIH72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:58:57 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DF2C0613D3;
-        Mon,  9 Aug 2021 00:58:36 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id g13so32062032lfj.12;
-        Mon, 09 Aug 2021 00:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=FDmayj9MsQZysMROrMQgY1uIkaotHyG2RR1Xax2u5P0=;
-        b=dGECYCAe60SEi43dc3/+8Pah+Y0sJJYss3VH16DeLui2aKuQxIDDZ49Im6HIW0EGR7
-         +y3wjbT9FjgLcHL7UbcQV7bvY2nqyab+Dqhk6hdsVQY5UN2xz+BECZbKp5WNQVNQnlon
-         dE2lWodKV5DxOjjzQ78Yl8B3yuX+ziR5H/+ACLQHEV8sJOtlBV3mVfulRD1L+KJd8dY+
-         OtVMfVR0aBtgJCtwNXcYDB5NryzBsq1mfzN3aSX2T9OEAkjDmwfuzjJ/F2ApRkkI1bLM
-         3FMQzTrgiXpCafSdDInl7EJqo9T8KD6c0GeutpuSwrtU7wKsSX5xB9VPg5zfV/IA7zNl
-         qcmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=FDmayj9MsQZysMROrMQgY1uIkaotHyG2RR1Xax2u5P0=;
-        b=GMQvjWd9PVg9kpq9Bl0KqHp5bTFSb/LkVH9NCTTA6+W3wwvzsdNs5Ll8gnorUT1OSc
-         Uvd6N4fT8YLJSZmIArX2UHzpeF0C+lQcDuR8dapuH7vVQWAaCb5m1/ZekLiZetdMDknm
-         3WHxvoJ93o8D/2WU1SngYygglEGByeTZGRamQuFoNsqiBYjTPEGhO19YiFkEuZCbtIUb
-         2ayKdQ8Ujq3SCFCOUwquc7yDzBwmGNVMWspaE9iy12rwrsdo5HxySoa+/JOyPX2RPlkS
-         BpOv8untaTIpVI2O+1AVB7RviSuglZNg4GuMM8TUWdMYVJYBMnHyB7RxzKFPnM1pDocV
-         G4/g==
-X-Gm-Message-State: AOAM530Ak8iL1F5yy2sruQPEkr/XXBKZdpslNwBmqQIyVz/78Qk2GoM2
-        4Xd4cunscp6ayD1IAdOuA/PQh+jBCW5noWWI31To2m7R9aw=
-X-Google-Smtp-Source: ABdhPJx7z6skN2zesJRMCNIIL+4iSrI6C5cDeRkQLPFhD0h4ZUEbMA+k0JyUYNNkuzES5dYkC2jocb7Zn4KXyeVVMmE=
-X-Received: by 2002:a05:6512:39c6:: with SMTP id k6mr16557377lfu.549.1628495914651;
- Mon, 09 Aug 2021 00:58:34 -0700 (PDT)
+        Mon, 9 Aug 2021 03:59:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5AEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 00:59:08 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mD0Be-00057Y-Vc
+        for linux-kernel@vger.kernel.org; Mon, 09 Aug 2021 09:59:07 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id D5A816630EA
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 07:59:05 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2EDA76630E5;
+        Mon,  9 Aug 2021 07:59:05 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8b53018e;
+        Mon, 9 Aug 2021 07:59:04 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, socketcan@esd.eu,
+        =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>
+Subject: [PATCH v2] =?UTF-8?q?mailmap:=20update=20email=20address=20of=20M?= =?UTF-8?q?atthias=20Fuchs=20and=20Thomas=20K=C3=B6rper?=
+Date:   Mon,  9 Aug 2021 09:59:02 +0200
+Message-Id: <20210809075902.170694-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Mon, 9 Aug 2021 13:28:23 +0530
-Message-ID: <CAHhAz+jKREfXERKj7XB7U3Wh1g4STO2Dt0qnMkcPV5nXB3_bwg@mail.gmail.com>
-Subject: read() via USB bus
-To:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Matthias Fuchs's and Thomas Körper's email addresses aren't valid
+anymore. Use the newly created role account instead.
 
-PCIe memory mapped registers can be read via readb(), readw(), readl()
-kernel API's. Similarly what are the kernel API to read the device
-registers via USB bus
+Cc: socketcan@esd.eu
+Cc: Stefan Mätje <Stefan.Maetje@esd.eu>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Changes since v1:
+- also replace Thomas Körper's email
 
+ .mailmap | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/.mailmap b/.mailmap
+index a35ae244dfda..eb3f7da2959a 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -330,6 +330,8 @@ Shuah Khan <shuah@kernel.org> <shuahkh@osg.samsung.com>
+ Shuah Khan <shuah@kernel.org> <shuah.kh@samsung.com>
+ Simon Arlott <simon@octiron.net> <simon@fire.lp0.eu>
+ Simon Kelley <simon@thekelleys.org.uk>
++<socketcan@esd.eu> <matthias.fuchs@esd.eu>
++<socketcan@esd.eu> <thomas.koerper@esd.eu>
+ Stéphane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
+ Stephen Hemminger <shemminger@osdl.org>
+ Steve Wise <larrystevenwise@gmail.com> <swise@chelsio.com>
 -- 
-Thanks,
-Sekhar
+2.30.2
+
+
