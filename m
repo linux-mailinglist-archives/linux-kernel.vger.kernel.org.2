@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AEF3E55DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696383E56C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237905AbhHJItj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:49:39 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39720
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236991AbhHJItg (ORCPT
+        id S238957AbhHJJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:25:35 -0400
+Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:53438 "EHLO
+        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236758AbhHJJZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:49:36 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 2FF6A3F367
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:49:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628585353;
-        bh=CAgpG6WrguxqP2IRH8Bsd0WkckHriXozJ08neyhr3cI=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=JWFi+ZDbq6bwz22bOA5b8cCyluHW+ZCYfAO7G58QBs8Td2VTaJBP9toRBhgY5lCt5
-         o/vxQrYu1Q4MPKoA4xOVpyGrX57l+JbsMX0Yl/tOedtoLBwr/kzCu1G6twLohsFVtw
-         XOHICZRCvtBOZ6KW3ouHSBVMoxkbE0NupFlmxZQijff2wUvwEiimmvUTZw80BWcBCq
-         ZzuUXnR7ZkFO4c0AbCwbDjzta+aDkYKoYZBVTOVPdaQFrO6pw6wV/ObL7JW3mqnopu
-         lF0C6mzv8spP0uq15DUooi8WWsb+9fG7zzE91hbwwJGWuQcVFf6+HMh2/RdknMUtZh
-         RL5kMFIQgveaw==
-Received: by mail-ed1-f72.google.com with SMTP id dh21-20020a0564021d35b02903be0aa37025so8188631edb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:49:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CAgpG6WrguxqP2IRH8Bsd0WkckHriXozJ08neyhr3cI=;
-        b=iDhGr191iaP/RRm7cnDA+LM7uw51dbtHdOmgpg8i4fYIYhhCIPt6gYsOwSf3cZBjpG
-         t5i55E2flOiWysHUOkH1ZzIz7TgcydgiKUKaI63Tw13VzoBuJvnxVAh8EAlaF9SvKYFi
-         MWMjLzF73cXxbKS1I1RmoVwkW0+FRP3lkDoy/yRrv2Lcw2b3PfFCJ1Z0rXBi8tGJo3cx
-         CVpJeHJPGeDrYRkSkCPSf+D1y8/wad9Gwbgl0dusyLIic8sn3OEbo02AU5NMgHorGs+o
-         dAmwxtA7E5K63Lc12Yb3k4tXYIZD6MGrZ+8HD7onhebdM6CXGz2m/VKfqDav2OMKwNwn
-         oQ/w==
-X-Gm-Message-State: AOAM531eQKLJpFiC2Z0tUTbYX50NXFp5grt1M90qLH/mgHILmIwL5Dag
-        rSwlh8jxcSPXHM5y2AhbiI5ZqfjS6zPv8d6JA1RyQgTDB/iAkMGCji6X/2XUjoGf4YaE++xGNmH
-        E/NET+2EH6/yTw5sL0xCWz21ACOePtQuZ5oTCx/iqBQ==
-X-Received: by 2002:aa7:d815:: with SMTP id v21mr3613324edq.262.1628585352915;
-        Tue, 10 Aug 2021 01:49:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz77fy9fLXSFWJs9Es0lAOffB7mrFKyLwbEVB/OFWy0HcQWY8xncNUb2Z+7ZIpeUXJe0xIKOA==
-X-Received: by 2002:aa7:d815:: with SMTP id v21mr3613305edq.262.1628585352799;
-        Tue, 10 Aug 2021 01:49:12 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id ee11sm6556872edb.26.2021.08.10.01.49.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 01:49:12 -0700 (PDT)
-Subject: Re: [PATCH] thermal: exynos: Fix an error code in exynos_tmu_probe()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Abhilash Kesavan <a.kesavan@samsung.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Lukasz Majewski <l.majewski@samsung.com>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20210810084413.GA23810@kili>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <dfa9cdf6-5dc6-586f-9db3-300d4232acf0@canonical.com>
-Date:   Tue, 10 Aug 2021 10:49:10 +0200
+        Tue, 10 Aug 2021 05:25:32 -0400
+X-Greylist: delayed 2148 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Aug 2021 05:25:32 EDT
+Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.18])
+        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1mDNRj-0003Og-AP; Tue, 10 Aug 2021 09:49:15 +0100
+Subject: Re: [PATCH] [PATCH v2] riscv: add as-options for modules with
+ assembly compontents
+To:     linux-kernel@lists.codethink.co.uk, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, Bin Meng <bmeng.cn@gmail.com>
+References: <20210720144458.367954-1-ben.dooks@codethink.co.uk>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <8b110ad1-b5de-40ba-4131-faee1f9bde26@codethink.co.uk>
+Date:   Tue, 10 Aug 2021 09:49:14 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210810084413.GA23810@kili>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210720144458.367954-1-ben.dooks@codethink.co.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2021 10:44, Dan Carpenter wrote:
-> This error path return success but it should propagate the negative
-> error code from devm_clk_get().
+On 20/07/2021 15:44, Ben Dooks wrote:
+> When trying to load modules built for RISC-V which include assembly files
+> the kernel loader errors with "unexpected relocation type 'R_RISCV_ALIGN'"
+> due to R_RISCV_ALIGN relocations being generated by the assembler.
 > 
-> Fixes: 6c247393cfdd ("thermal: exynos: Add TMU support for Exynos7 SoC")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/thermal/samsung/exynos_tmu.c | 1 +
->  1 file changed, 1 insertion(+)
+> The R_RISCV_ALIGN relocations can be removed at the expense of code space
+> by adding -mno-relax to gcc and as.  In commit 7a8e7da42250138
+> ("RISC-V: Fixes to module loading") -mno-relax is added to the build
+> variable KBUILD_CFLAGS_MODULE. See [1] for more info.
 > 
+> The issue is that when kbuild builds a .S file, it invokes gcc with
+> the -mno-relax flag, but this is not being passed through to the
+> assembler. Adding -Wa,-mno-relax to KBUILD_AFLAGS_MODULE ensures that
+> the assembler is invoked correctly. This may have now been fixed in
+> gcc[2] and this addition should not stop newer gcc and as from working.
+> 
+> [1] https://github.com/riscv/riscv-elf-psabi-doc/issues/183
+> [2] https://github.com/gcc-mirror/gcc/commit/3b0a7d624e64eeb81e4d5e8c62c46d86ef521857
 
-Thanks, good catch!
+Just wanted to check v2 is fine for merging, and if so when is that
+likely to be?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
 
-
-Best regards,
-Krzysztof
+https://www.codethink.co.uk/privacy.html
