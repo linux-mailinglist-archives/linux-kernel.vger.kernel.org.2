@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BFC3E7F1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08F43E8021
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbhHJRhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:37:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42350 "EHLO mail.kernel.org"
+        id S235948AbhHJRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:16 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57937 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhHJRfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:35:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1A4961078;
-        Tue, 10 Aug 2021 17:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628616909;
-        bh=5jlE0TUgE5RDQgFQx7JWN1AdC5wesc5yenYunntH3Fw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YRdxnJTNVftw5bm8DFvo6/PznraYXGeBvH/hzNu9t1A2rusybiaYw+mMZm+6uRnHM
-         pMIiohzkdSReZeaZDecc9mniTbQYkHqHHjwpGjHqfIwp17ds6ipiwse0bm69WpplQK
-         m40rZYzMxyCI45dC4IZleqOCiyTfOHthE7tCe1vlEVof3p+KuCRys2MwSQc627gE1V
-         RmnwVPTc7wNYT+9bxBqpxc+QGTJh0/czsDNgH7ukXk3zA+4tLqdiUSp+ugQbHIF8qf
-         L2Tgl9KaCT9JGNNimYqFgfZAJ5aOjylSjLI/wVTc1w8KMeI/ySNRjB6TsLdZjaR6H7
-         xgEa9jdajLGYQ==
-Date:   Tue, 10 Aug 2021 10:35:07 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        id S235664AbhHJRmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:42:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214681150"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="214681150"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 10:36:24 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="503210365"
+Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 10:36:23 -0700
+Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <YRK4y9XkDPbvWzgb@gmail.com>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <YRGdBiJQ3xqZAT4w@gmail.com>
- <2bc19003-82a1-0d2d-4548-3315686d77b4@pengutronix.de>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <4b80289a-07a4-bf92-9946-b0a8afb27326@intel.com>
+ <20210810151548.4exag5uj73bummsr@black.fi.intel.com>
+ <82b8836f-a467-e5ff-08f3-704a85b9faa0@intel.com>
+ <20210810173124.vzxpluaepdfe5aum@black.fi.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <51d9168c-ac14-0907-79b3-5d4dd46f92d6@intel.com>
+Date:   Tue, 10 Aug 2021 10:36:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2bc19003-82a1-0d2d-4548-3315686d77b4@pengutronix.de>
+In-Reply-To: <20210810173124.vzxpluaepdfe5aum@black.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 09:41:20AM +0200, Ahmad Fatoum wrote:
-> Hello Eric,
+On 8/10/21 10:31 AM, Kirill A. Shutemov wrote:
+> On Tue, Aug 10, 2021 at 08:51:01AM -0700, Dave Hansen wrote:
+>> Let's say we have a 128GB VM.  How much does faster does this approach
+>> reach userspace than if all memory was accepted up front?  How much
+>> memory _could_ have been accepted at the point userspace starts running?
 > 
-> On 09.08.21 23:24, Eric Biggers wrote:
-> > Hi Ahmad,
-> > 
-> > This generally looks okay, but I have some comments below.
-> > 
-> > On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
-> >> Kernel trusted keys don't require userspace knowledge of the raw key
-> >> material and instead export a sealed blob, which can be persisted to
-> >> unencrypted storage. Userspace can then load this blob into the kernel,
-> >> where it's unsealed and from there on usable for kernel crypto.
-> > 
-> > Please be explicit about where and how the keys get generated in this case.
+> Acceptance code is not optimized yet: we accept memory in 4k chunk which
+> is very slow because hypercall overhead dominates the picture.
 > 
-> I intentionally avoided talking about this. You see, the trusted key documentation[1]
-> phrases it as "all keys are created in the kernel", but you consider
-> "'The key material is generated
->  within the kernel' [a] misleading claim'. [2]
-> 
-> Also, I hope patches to force kernel RNG and CAAM support (using kernel RNG as
-> default) will soon be accepted, which would invalidate any further claims in the
-> commit message without a means to correct them.
-> 
-> I thus restricted my commit message to the necessary bit that are needed to
-> understand the patch, which is: userspace knowledge of the key material is
-> not required. If you disagree, could you provide me the text you'd prefer?
+> As of now, kernel boot time of 1 VCPU and 64TiB VM with upfront memory
+> accept is >20 times slower than with this lazy memory accept approach.
 
-Just write that the trusted key subsystem is responsible for generating the
-keys.  And please fix the trusted keys documentation to properly document key
-generation, or better yet just fix the trusted keys subsystem to generate the
-keys properly.
+That's a pretty big deal.
 
-> >> This is incompatible with fscrypt, where userspace is supposed to supply
-> >> the raw key material. For TPMs, a work around is to do key unsealing in
-> >> userspace, but this may not be feasible for other trusted key backends.
-> > 
-> > As far as I can see, "Key unsealing in userspace" actually is the preferred way
-> > to implement TPM-bound encryption.  So it doesn't seem fair to call it a "work
-> > around".
-> 
-> In the context of *kernel trusted keys*, direct interaction with the TPM
-> outside the kernel to decrypt a kernel-encrypted blob is surely not the
-> preferred way.
-> 
-> For TPM-bound encryption completely in userspace? Maybe. But that's not
-> what this patch is about. It's about kernel trusted keys and offloading
-> part of its functionality to userspace to _work around_ lack of kernel-side
-> integration is exactly that: a _work around_.
+> The difference is going to be substantially lower once we get it optimized
+> properly.
 
-As I said before, there's no need for kernel trusted keys at all in cases where
-the TPM userspace tools can be used.  This is existing, well-documented process,
-e.g. see: https://wiki.archlinux.org/title/Trusted_Platform_Module.  You are
-starting with a solution ("I'm going to use kernel trusted keys") and not a
-problem ("I want my fscrypt key(s) to be TPM-bound").  So please fix this patch
-to explain the situation(s) in which it actually solves a problem that isn't
-already solved.
+What does this mean?  Is this future work in the kernel or somewhere in
+the TDX hardware/firmware which will speed things up?
 
-- Eric
