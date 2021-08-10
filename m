@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2D93E7EF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B817A3E8183
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbhHJRgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:36:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42464 "EHLO mail.kernel.org"
+        id S236773AbhHJSAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:00:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233137AbhHJReu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:34:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4BE76109F;
-        Tue, 10 Aug 2021 17:34:27 +0000 (UTC)
+        id S236202AbhHJR4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:56:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D5016137C;
+        Tue, 10 Aug 2021 17:45:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616868;
-        bh=DSyiZh3eH9KuUQbPDRuhIrdqGMTCBIAl4rChqICO6yc=;
+        s=korg; t=1628617519;
+        bh=XI4yZmb/YbLobD+9gCBu7ovxoYNC8S5xDSrcjK9bZJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lor7ljvJwaV5fEPrNvdiH7dGRCIQRPTozITm+/Ck+TypoKH5JZmfSxdUpa0LULizv
-         lpOZv7VUBMmrbWG9n1864AiFlOhmzUqUMwwvbzDEuTjNLSiV0AFzjBbFzDkdacb9Tt
-         CHE8j0L0Yf1Uw850e4Hjv+qUtlEbJgFN10KEVXTk=
+        b=DO32IDNVb9vdbjxhjOvnJGkyk3qnQdkrHD9DBLPwSt8yJhe3a2cmKoHGSdM2Oq38W
+         lTktqABqpC2zi8OGaqAPy4GHiBb9QH4h4HYezybZtgw3pnUvJcGGs8jjKUNdpxi2xm
+         5PaVUW6ptPT7kZ3tVxM3ti1ZRD5Mrr8nhTswNqN0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Fedorenko <vfedorenko@novek.ru>,
-        Antoine Tenart <atenart@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 28/85] net: ipv6: fix returned variable type in ip6_skb_dst_mtu
+        stable@vger.kernel.org, Pawel Laszczak <pawell@cadence.com>,
+        Peter Chen <peter.chen@kernel.org>
+Subject: [PATCH 5.13 093/175] usb: cdnsp: Fixed issue with ZLP
 Date:   Tue, 10 Aug 2021 19:30:01 +0200
-Message-Id: <20210810172949.151436253@linuxfoundation.org>
+Message-Id: <20210810173004.019786072@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
+References: <20210810173000.928681411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Pawel Laszczak <pawell@cadence.com>
 
-[ Upstream commit 4039146777a91e1576da2bf38e0d8a1061a1ae47 ]
+commit e913aada06830338633fb8524733b0ad3d38a7c1 upstream.
 
-The patch fixing the returned value of ip6_skb_dst_mtu (int -> unsigned
-int) was rebased between its initial review and the version applied. In
-the meantime fade56410c22 was applied, which added a new variable (int)
-used as the returned value. This lead to a mismatch between the function
-prototype and the variable used as the return value.
+The condition "if (need_zero_pkt && zero_len_trb)" was always false
+and it caused that TRB for ZLP was not prepared.
 
-Fixes: 40fc3054b458 ("net: ipv6: fix return value of ip6_skb_dst_mtu")
-Cc: Vadim Fedorenko <vfedorenko@novek.ru>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix causes that after preparing last TRB in TD, the driver prepares
+additional TD with ZLP when a ZLP is required.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+Link: https://lore.kernel.org/r/20210623072728.41275-1-pawell@gli-login.cadence.com
+Signed-off-by: Peter Chen <peter.chen@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/ip6_route.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/cdns3/cdnsp-ring.c |   18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/include/net/ip6_route.h b/include/net/ip6_route.h
-index feeecbc80e72..2c739fc752e1 100644
---- a/include/net/ip6_route.h
-+++ b/include/net/ip6_route.h
-@@ -263,7 +263,7 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+--- a/drivers/usb/cdns3/cdnsp-ring.c
++++ b/drivers/usb/cdns3/cdnsp-ring.c
+@@ -1932,15 +1932,13 @@ int cdnsp_queue_bulk_tx(struct cdnsp_dev
+ 		}
  
- static inline unsigned int ip6_skb_dst_mtu(struct sk_buff *skb)
- {
--	int mtu;
-+	unsigned int mtu;
+ 		if (enqd_len + trb_buff_len >= full_len) {
+-			if (need_zero_pkt && zero_len_trb) {
+-				zero_len_trb = true;
+-			} else {
+-				field &= ~TRB_CHAIN;
+-				field |= TRB_IOC;
+-				more_trbs_coming = false;
+-				need_zero_pkt = false;
+-				preq->td.last_trb = ring->enqueue;
+-			}
++			if (need_zero_pkt)
++				zero_len_trb = !zero_len_trb;
++
++			field &= ~TRB_CHAIN;
++			field |= TRB_IOC;
++			more_trbs_coming = false;
++			preq->td.last_trb = ring->enqueue;
+ 		}
  
- 	struct ipv6_pinfo *np = skb->sk && !dev_recursion_level() ?
- 				inet6_sk(skb->sk) : NULL;
--- 
-2.30.2
-
+ 		/* Only set interrupt on short packet for OUT endpoints. */
+@@ -1955,7 +1953,7 @@ int cdnsp_queue_bulk_tx(struct cdnsp_dev
+ 		length_field = TRB_LEN(trb_buff_len) | TRB_TD_SIZE(remainder) |
+ 			TRB_INTR_TARGET(0);
+ 
+-		cdnsp_queue_trb(pdev, ring, more_trbs_coming | need_zero_pkt,
++		cdnsp_queue_trb(pdev, ring, more_trbs_coming | zero_len_trb,
+ 				lower_32_bits(send_addr),
+ 				upper_32_bits(send_addr),
+ 				length_field,
 
 
