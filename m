@@ -2,171 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DD93E57F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8D03E57ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239657AbhHJKGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239680AbhHJKEQ (ORCPT
+        id S239610AbhHJKEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:04:47 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:39661 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232974AbhHJKEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:04:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D474CC0617A1;
-        Tue, 10 Aug 2021 03:03:49 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id a20so20345100plm.0;
-        Tue, 10 Aug 2021 03:03:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FZv8WUWA7XMtGcmHm3fe2kXxpsT1wGOMqKzhZnOXInc=;
-        b=n7riOfASCNRbDihiPbdaEZnz50Wl3IaUDhYTad8G/AQE8zyH1KA/OtdmD8JY6C4SR4
-         LU7eUzBaWI1HxZNMiqi98wM2P102T+3tJKdEZrDUVWgySL4URjuKQDeYXtP/Y+Pepo9Q
-         eJgtet9sjnlZtgaGMKzGksX0M6FKp3YbojSdJUxiBz+QEzDzk/G8U8fy/QzQEkX/mb34
-         CFKoiQKXqlRxYR8apIFoD4SlQiROYb3TH04zMUpwpYlW8JaWPjEp+tY7o5xBYvvdWaH9
-         q4Yfy/OSw3j6fQQvaap/HBH5F7S4W0q5WxGatKXU2Ok5zjWIKtMLZ1lpu89AcC4EOjRL
-         GnsQ==
+        Tue, 10 Aug 2021 06:04:45 -0400
+Received: by mail-wm1-f44.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso1517680wmg.4;
+        Tue, 10 Aug 2021 03:04:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FZv8WUWA7XMtGcmHm3fe2kXxpsT1wGOMqKzhZnOXInc=;
-        b=pgEG3Bqc0jWVoakaAVJDoZHr3K/xergJXhhu37OAyNMA5zm4w7apec7EVAJzN8jwi4
-         2eYUotOdhdbv6tsvb0BK2xmUjmKatwDprYb0goXI5hEJFf18imHe8LHgrE2+mkQHeGRE
-         oKip2X52USYTs7Hp3gKXUnX0qjiNY0nmcDi/u2pr0hPQwZzzA2r77CVN7DpJsZxp1UDu
-         VBaEUEhqzOcSOWNQbGUq5qNLanoYR96cb1AEz4JXoUvGktHFIf/TWQp3RAV9ZjaiCtQ1
-         MY5WyfZiTyosdz0zNRNhZYh3hUmrC+CEcqYIpd060SIhPUl3Zl31Q/l8W12P/dbqckNH
-         2I3g==
-X-Gm-Message-State: AOAM532XvV5pNYY4WzFIcfxU4DZ+JQh6oGH+ziZBwjG7ypugv7yCRp6W
-        fbsP0G2GJjDZUCK+ObgVJQo=
-X-Google-Smtp-Source: ABdhPJyjHnHQXvLxKdgfLBPWa/XZ3kWSmXNDvd0PaIDD2qxKYcCnx5it80eGot5J+T7kt2ff2O6qEw==
-X-Received: by 2002:a17:90a:5888:: with SMTP id j8mr4148681pji.17.1628589829361;
-        Tue, 10 Aug 2021 03:03:49 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.217])
-        by smtp.gmail.com with ESMTPSA id e13sm22943413pfi.210.2021.08.10.03.03.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nNPyEQUv6Ji6aWmVMQgSNl5jQ96sNm9i4LSvAWR0eaA=;
+        b=ikOb2NFm7xfUtkZSBxmo10hZiy9Wk4/phB8ClonedO1JzB+UuQFu3Rx04OPVA+pK27
+         GQLI6v9+1aawo09WWzk+Q6Rpz1/fSii3CjlRlXXzfr/hFbf3esthezsThHN2zjTrUm/S
+         R5ffvCUfteKyDuM254msd8SGiVxTSPOEQm2eK16qkrBpzZJtI4T7bRxHU7rgEgcArlpG
+         M30gLQBAn8zLmhlb62OfoKgGA5Q/cxn0QcPEEUKwZHH6S9vU7qGpmhB21T2cJOM8I2P9
+         N58ETkp9yBGCr0mYYYOIps8HhDqammGzjwunk494kWxAGou1Pp5TWIL6if/tf+Pa48qX
+         CKiQ==
+X-Gm-Message-State: AOAM5312a9JvG5HV7FAcciUZEMPmntTyRGcOm1fgUDQfkg1vKLZCCRbq
+        110mf1rb2H/tGWE17eDNUaM=
+X-Google-Smtp-Source: ABdhPJxqwuyMnHbZRg1qBZctOdB5h6Kf4V8NZCJ8ord6bBrxy7xEi7XisJdq+Xmsrl1aGAMEv6+vWg==
+X-Received: by 2002:a05:600c:1c11:: with SMTP id j17mr21277438wms.35.1628589862198;
+        Tue, 10 Aug 2021 03:04:22 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id e3sm9074443wro.15.2021.08.10.03.04.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 03:03:48 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Zhouyang Jia <jiazhouyang09@gmail.com>
-Cc:     stable@vger.kernel.org, industrypack-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] ipack: tpci200: fix memory leak in the tpci200_register
-Date:   Tue, 10 Aug 2021 18:03:19 +0800
-Message-Id: <20210810100323.3938492-2-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210810100323.3938492-1-mudongliangabcd@gmail.com>
-References: <20210810100323.3938492-1-mudongliangabcd@gmail.com>
+        Tue, 10 Aug 2021 03:04:21 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 10:04:19 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        pasha.tatashin@soleen.com, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Subject: Re: [RFC v1 6/8] mshv: command line option to skip devices in
+ PV-IOMMU
+Message-ID: <20210810100419.g3rjj3xegydalyz3@liuwe-devbox-debian-v2>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-7-wei.liu@kernel.org>
+ <4a6918ea-e3e5-55c9-a12d-bee7261301fd@linux.microsoft.com>
+ <20210803215617.fzx2vrzhsabrrolc@liuwe-devbox-debian-v2>
+ <8d9b6b9a-62b1-95ea-1bb6-258e72c1800d@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d9b6b9a-62b1-95ea-1bb6-258e72c1800d@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error handling code in tpci200_register does not free interface_regs
-allocated by ioremap and the current version of error handling code is
-problematic.
+On Wed, Aug 04, 2021 at 12:33:54PM +0530, Praveen Kumar wrote:
+> On 04-08-2021 03:26, Wei Liu wrote:
+> >>>  	struct iommu_domain domain;
+> >>> @@ -774,6 +784,41 @@ static struct iommu_device *hv_iommu_probe_device(struct device *dev)
+> >>>  	if (!dev_is_pci(dev))
+> >>>  		return ERR_PTR(-ENODEV);
+> >>>  
+> >>> +	/*
+> >>> +	 * Skip the PCI device specified in `pci_devs_to_skip`. This is a
+> >>> +	 * temporary solution until we figure out a way to extract information
+> >>> +	 * from the hypervisor what devices it is already using.
+> >>> +	 */
+> >>> +	if (pci_devs_to_skip && *pci_devs_to_skip) {
+> >>> +		int pos = 0;
+> >>> +		int parsed;
+> >>> +		int segment, bus, slot, func;
+> >>> +		struct pci_dev *pdev = to_pci_dev(dev);
+> >>> +
+> >>> +		do {
+> >>> +			parsed = 0;
+> >>> +
+> >>> +			sscanf(pci_devs_to_skip + pos,
+> >>> +				" (%x:%x:%x.%x) %n",
+> >>> +				&segment, &bus, &slot, &func, &parsed);
+> >>> +
+> >>> +			if (parsed <= 0)
+> >>> +				break;
+> >>> +
+> >>> +			if (pci_domain_nr(pdev->bus) == segment &&
+> >>> +				pdev->bus->number == bus &&
+> >>> +				PCI_SLOT(pdev->devfn) == slot &&
+> >>> +				PCI_FUNC(pdev->devfn) == func)
+> >>> +			{
+> >>> +				dev_info(dev, "skipped by MSHV IOMMU\n");
+> >>> +				return ERR_PTR(-ENODEV);
+> >>> +			}
+> >>> +
+> >>> +			pos += parsed;
+> >>> +
+> >>> +		} while (pci_devs_to_skip[pos]);
+> >>
+> >> Is there a possibility of pci_devs_to_skip + pos > sizeof(pci_devs_to_skip)
+> >> and also a valid memory ?
+> > 
+> > pos should point to the last parsed position. If parsing fails pos does
+> > not get updated and the code breaks out of the loop. If parsing is
+> > success pos should point to either the start of next element of '\0'
+> > (end of string). To me this is good enough.
+> 
+> The point is, hypothetically the address to pci_devs_to_skip + pos can
+> be valid address (later to '\0'), and thus there is a possibility,
+> that parsing may not fail.
 
-Fix this by refactoring the error handling code and free interface_regs
-when necessary.
+Have you found an example how at any given point in time
+pci_devs_to_skip + pos can point outside of user provided string?
 
-Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Fixes: 43986798fd50 ("ipack: add error handling for ioremap_nocache")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
-v1->v2: revise PATCH 2/3, 3/3, not depending on PATCH 1/3; move the
-location change of tpci_unregister into one separate patch;
-v2->v3: double check all pci_iounmap api invocations
-v3->v4: add a tag - Cc: stable@vger.kernel.org
- drivers/ipack/carriers/tpci200.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+> Another, there is also a possibility of sscanf faulting accessing the
+> illegal address, if pci_devs_to_skip[pos] turns out to be not NULL or
+> valid address.
 
-diff --git a/drivers/ipack/carriers/tpci200.c b/drivers/ipack/carriers/tpci200.c
-index 92795a0230ca..cbfdadecb23b 100644
---- a/drivers/ipack/carriers/tpci200.c
-+++ b/drivers/ipack/carriers/tpci200.c
-@@ -254,7 +254,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 2 !",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_disable_pci;
-+		goto err_disable_device;
- 	}
- 
- 	/* Request IO ID INT space (Bar 3) */
-@@ -266,7 +266,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 3 !",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_ip_space;
-+		goto err_ip_interface_bar;
- 	}
- 
- 	/* Request MEM8 space (Bar 5) */
-@@ -277,7 +277,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 5!",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_ioid_int_space;
-+		goto err_io_id_int_spaces_bar;
- 	}
- 
- 	/* Request MEM16 space (Bar 4) */
-@@ -288,7 +288,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) failed to allocate PCI resource for BAR 4!",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_mem8_space;
-+		goto err_mem8_space_bar;
- 	}
- 
- 	/* Map internal tpci200 driver user space */
-@@ -302,7 +302,7 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
- 		res = -ENOMEM;
--		goto out_release_mem8_space;
-+		goto err_mem16_space_bar;
- 	}
- 
- 	/* Initialize lock that protects interface_regs */
-@@ -341,18 +341,22 @@ static int tpci200_register(struct tpci200_board *tpci200)
- 			"(bn 0x%X, sn 0x%X) unable to register IRQ !",
- 			tpci200->info->pdev->bus->number,
- 			tpci200->info->pdev->devfn);
--		goto out_release_ioid_int_space;
-+		goto err_interface_regs;
- 	}
- 
- 	return 0;
- 
--out_release_mem8_space:
-+err_interface_regs:
-+	pci_iounmap(tpci200->info->pdev, tpci200->info->interface_regs);
-+err_mem16_space_bar:
-+	pci_release_region(tpci200->info->pdev, TPCI200_MEM16_SPACE_BAR);
-+err_mem8_space_bar:
- 	pci_release_region(tpci200->info->pdev, TPCI200_MEM8_SPACE_BAR);
--out_release_ioid_int_space:
-+err_io_id_int_spaces_bar:
- 	pci_release_region(tpci200->info->pdev, TPCI200_IO_ID_INT_SPACES_BAR);
--out_release_ip_space:
-+err_ip_interface_bar:
- 	pci_release_region(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR);
--out_disable_pci:
-+err_disable_device:
- 	pci_disable_device(tpci200->info->pdev);
- 	return res;
- }
--- 
-2.25.1
+That depends on pci_devs_to_skip + pos can point to an invalid address
+in the first place, so that goes back to the question above.
 
+> 
+> > 
+> >> I would recommend to have a check of size as well before accessing the
+> >> array content, just to be safer accessing any memory.
+> >>
+> > 
+> > What check do you have in mind?
+> 
+> Something like,
+> size_t len = strlen(pci_devs_to_skip);
+> do {
+> 
+> 	len -= parsed;
+> } while (len);
+> 
+> OR
+> 
+> do {
+> ...
+> 	pos += parsed;
+> } while (pos < len);
+> 
+> Further, I'm also fine with the existing code, if you think this won't
+> break and already been taken care. Thanks.
+
+But in the loop somewhere you will still need to parse pci_devs_to_skip
++ some_offset. The new code structure does not remove that, right?
+
+Given this is for debugging and is supposed to be temporary, I think the
+code is good enough. But I want to make sure if there is anything I
+missed.
+
+Wei.
+
+> 
+> Regards,
+> 
+> ~Praveen.
