@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C3E3E8171
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC0C3E7EC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238236AbhHJR7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47786 "EHLO mail.kernel.org"
+        id S233273AbhHJRfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237800AbhHJRy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:54:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4A2B61051;
-        Tue, 10 Aug 2021 17:44:37 +0000 (UTC)
+        id S232628AbhHJReO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:34:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 195C060E09;
+        Tue, 10 Aug 2021 17:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617478;
-        bh=QZCKsrutDYD/xHxMxm/pYSbdmmE2ELG/mHw1a7U2EO4=;
+        s=korg; t=1628616832;
+        bh=QKRjStoIKL4RoqgWyVEI9Ygpvtxi08YtDeGdgzdTtGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZSgVEohqHseCqLAA2dGKG4nFsz8Ab8SqVwZnTnesAjsSU76zx1K80W6aR/L54+/pw
-         OIuC6lpHCv6064gHfV6EzpMgmIwJj1u/vgkby7aihgjRic4V61R79avkb2nxlYLS9t
-         //BK5TV6P+rmmr/Oo3j4gyPqt9ZAUdMRVKMrwRpY=
+        b=jH69V0Ov1Ji1CCvfTU/AeaijRL6gDfZKyNDTZa/yTbncN8uV3W0bxj6t2mI/SX20q
+         7wvKkCxA4wLqSi6DLHMU7VHsMyzNfuRzm2AlIH5YDhHQC/NMiSLLM61lyCJLFm+yVD
+         7ED90ws13aTDwL8fF17ZAWEokhFADH0Tk8dbtWgg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris <chris@cyber-anlage.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.13 077/175] USB: serial: pl2303: fix HX type detection
+        stable@vger.kernel.org, Dario Binacchi <dariobin@libero.it>,
+        Gabriel Fernandez <gabriel.fernandez@st.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 12/85] clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
 Date:   Tue, 10 Aug 2021 19:29:45 +0200
-Message-Id: <20210810173003.476450744@linuxfoundation.org>
+Message-Id: <20210810172948.623932925@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
-References: <20210810173000.928681411@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,79 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Dario Binacchi <dariobin@libero.it>
 
-commit 1e9faef4d26de33bd6b5018695996e7394119e5b upstream.
+[ Upstream commit 24b5b1978cd5a80db58e2a19db2f9c36fe8d4f7a ]
 
-The device release number for HX-type devices is configurable in
-EEPROM/OTPROM and cannot be used reliably for type detection.
+Enabling the framebuffer leads to a system hang. Running, as a debug
+hack, the store_pan() function in drivers/video/fbdev/core/fbsysfs.c
+without taking the console_lock, allows to see the crash backtrace on
+the serial line.
 
-Assume all (non-H) devices with bcdUSB 1.1 and unknown bcdDevice to be
-of HX type while adding a bcdDevice check for HXD and TB (1.1 and 2.0,
-respectively).
+~ # echo 0 0 > /sys/class/graphics/fb0/pan
 
-Reported-by: Chris <chris@cyber-anlage.de>
-Fixes: 8a7bf7510d1f ("USB: serial: pl2303: amend and tighten type detection")
-Cc: stable@vger.kernel.org	# 5.13
-Link: https://lore.kernel.org/r/20210730122156.718-1-johan@kernel.org
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[    9.719414] Unhandled exception: IPSR = 00000005 LR = fffffff1
+[    9.726937] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+[    9.733008] Hardware name: STM32 (Device Tree Support)
+[    9.738296] PC is at clk_gate_is_enabled+0x0/0x28
+[    9.743426] LR is at stm32f4_pll_div_set_rate+0xf/0x38
+[    9.748857] pc : [<0011e4be>]    lr : [<0011f9e3>]    psr: 0100000b
+[    9.755373] sp : 00bc7be0  ip : 00000000  fp : 001f3ac4
+[    9.760812] r10: 002610d0  r9 : 01efe920  r8 : 00540560
+[    9.766269] r7 : 02e7ddb0  r6 : 0173eed8  r5 : 00000000  r4 : 004027c0
+[    9.773081] r3 : 0011e4bf  r2 : 02e7ddb0  r1 : 0173eed8  r0 : 1d3267b8
+[    9.779911] xPSR: 0100000b
+[    9.782719] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+[    9.788791] Hardware name: STM32 (Device Tree Support)
+[    9.794120] [<0000afa1>] (unwind_backtrace) from [<0000a33f>] (show_stack+0xb/0xc)
+[    9.802421] [<0000a33f>] (show_stack) from [<0000a8df>] (__invalid_entry+0x4b/0x4c)
+
+The `pll_num' field in the post_div_data configuration contained a wrong
+value which also referenced an uninitialized hardware clock when
+clk_register_pll_div() was called.
+
+Fixes: 517633ef630e ("clk: stm32f4: Add post divisor for I2S & SAI PLLs")
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Reviewed-by: Gabriel Fernandez <gabriel.fernandez@st.com>
+Link: https://lore.kernel.org/r/20210725160725.10788-1-dariobin@libero.it
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/pl2303.c |   41 +++++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+ drivers/clk/clk-stm32f4.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -418,24 +418,33 @@ static int pl2303_detect_type(struct usb
- 	bcdDevice = le16_to_cpu(desc->bcdDevice);
- 	bcdUSB = le16_to_cpu(desc->bcdUSB);
+diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+index 18117ce5ff85..5c75e3d906c2 100644
+--- a/drivers/clk/clk-stm32f4.c
++++ b/drivers/clk/clk-stm32f4.c
+@@ -526,7 +526,7 @@ struct stm32f4_pll {
  
--	switch (bcdDevice) {
--	case 0x100:
--		/*
--		 * Assume it's an HXN-type if the device doesn't support the old read
--		 * request value.
--		 */
--		if (bcdUSB == 0x200 && !pl2303_supports_hx_status(serial))
--			return TYPE_HXN;
-+	switch (bcdUSB) {
-+	case 0x110:
-+		switch (bcdDevice) {
-+		case 0x300:
-+			return TYPE_HX;
-+		case 0x400:
-+			return TYPE_HXD;
-+		default:
-+			return TYPE_HX;
-+		}
- 		break;
--	case 0x300:
--		if (bcdUSB == 0x200)
-+	case 0x200:
-+		switch (bcdDevice) {
-+		case 0x100:
-+			/*
-+			 * Assume it's an HXN-type if the device doesn't
-+			 * support the old read request value.
-+			 */
-+			if (!pl2303_supports_hx_status(serial))
-+				return TYPE_HXN;
-+			break;
-+		case 0x300:
- 			return TYPE_TA;
--
--		return TYPE_HX;
--	case 0x400:
--		return TYPE_HXD;
--	case 0x500:
--		return TYPE_TB;
-+		case 0x500:
-+			return TYPE_TB;
-+		}
-+		break;
- 	}
+ struct stm32f4_pll_post_div_data {
+ 	int idx;
+-	u8 pll_num;
++	int pll_idx;
+ 	const char *name;
+ 	const char *parent;
+ 	u8 flag;
+@@ -557,13 +557,13 @@ static const struct clk_div_table post_divr_table[] = {
  
- 	dev_err(&serial->interface->dev,
+ #define MAX_POST_DIV 3
+ static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
+-	{ CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
++	{ CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
+ 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
+ 
+-	{ CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
++	{ CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
+ 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
+ 
+-	{ NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
++	{ NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
+ 		STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
+ };
+ 
+@@ -1774,7 +1774,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
+ 				post_div->width,
+ 				post_div->flag_div,
+ 				post_div->div_table,
+-				clks[post_div->pll_num],
++				clks[post_div->pll_idx],
+ 				&stm32f4_clk_lock);
+ 
+ 		if (post_div->idx != NO_IDX)
+-- 
+2.30.2
+
 
 
