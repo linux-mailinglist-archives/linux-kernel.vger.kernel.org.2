@@ -2,149 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA4B3E828A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735413E824D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhHJSKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239351AbhHJSFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:05:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3DE560E09;
-        Tue, 10 Aug 2021 17:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628618337;
-        bh=Cr9R1HwNiLcb2/9udQyjfu9g8wdlTQKPfK0qsaBcKmQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VvkLCcXCLH/BXu25BLnQ6wa/OBSgEqmCMlUp2N0oJ/TmSTAgKOPpTcMTxce/dFrp1
-         0kbzwY3aP7UPfy87J6oljCCt/AiScETUutlYm1w95QrKQSf8is8GX3Y7jN0Byx59t5
-         yPouQsUk6AtSB9dn/GEbeJo3dFPQKTORq8dLXEQw/H9F1aE1vUqWm0EJnuY5BPHpEW
-         nn7ZrjGm6ofKlXRG9VyDaiJEzE0i+3Saien1c1Tbncjpg0VVYWTI0NHLMpQ/OnviHV
-         wHEJsFsroZ1tbbHrtpNbJLsQxSzEgFAUH+vCZclor6jmP8Xt6aap+fqlkGBHZgpdsE
-         IMnB3Hdjk+l1g==
-Date:   Tue, 10 Aug 2021 20:58:55 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     nasastry@in.ibm.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to
- tpm_status and define flag
-Message-ID: <20210810175855.fixtw5jks4gbmkua@kernel.org>
-References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
- <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
+        id S238148AbhHJSGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:06:31 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22470 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237329AbhHJSCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:02:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628618523; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=6LqeOhC2tBVmEZwGqBVwobwzTE1b5LMGyk+EKIZrqd0=; b=SDAwGwxmbiv2bonstF0KfcFIlBlYR3a4kDbdWe6L+14ndrS/PlEJuElvN8Jxt8CPMjNz85AI
+ wcSIqesr/d6T5Av/FThsID/DrTUkxU3jby47BImSz5BDMFWYHOwiJ+A4HDq9EwwlpeFUJyK4
+ oVI32Yc+X/E/Qbwie3VJbd+Ntqc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6112bf07b14e7e2ecb9b85db (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 18:01:43
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AD8D4C41633; Tue, 10 Aug 2021 18:01:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53B77C2E867;
+        Tue, 10 Aug 2021 18:01:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53B77C2E867
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        sboyd@kernel.org, mpubbise@codeaurora.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH v2 0/3] Add support for sc7280 WPSS PIL loading
+Date:   Tue, 10 Aug 2021 23:31:20 +0530
+Message-Id: <1628618483-664-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
-> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
-> 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Cc: Nayna Jain <nayna@linux.ibm.com>
-> Cc: George Wilson <gcwilson@linux.ibm.com>
-> ---
->  drivers/char/tpm/tpm_ibmvtpm.c | 15 ++++++++-------
->  drivers/char/tpm/tpm_ibmvtpm.h |  3 ++-
->  2 files changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-> index 7a9eca5768f8..5d795866b483 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.c
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
-> @@ -215,11 +215,12 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
->  		return -EIO;
->  	}
->  
-> -	if (ibmvtpm->tpm_processing_cmd) {
-> +	if ((ibmvtpm->tpm_status & TPM_STATUS_BUSY)) {
->  		dev_info(ibmvtpm->dev,
->  		         "Need to wait for TPM to finish\n");
->  		/* wait for previous command to finish */
-> -		sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
-> +		sig = wait_event_interruptible(ibmvtpm->wq,
-> +				(ibmvtpm->tpm_status & TPM_STATUS_BUSY) == 0);
->  		if (sig)
->  			return -EINTR;
->  	}
-> @@ -232,7 +233,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
->  	 * set the processing flag before the Hcall, since we may get the
->  	 * result (interrupt) before even being able to check rc.
->  	 */
-> -	ibmvtpm->tpm_processing_cmd = true;
-> +	ibmvtpm->tpm_status |= TPM_STATUS_BUSY;
->  
->  again:
->  	rc = ibmvtpm_send_crq(ibmvtpm->vdev,
-> @@ -250,7 +251,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
->  			goto again;
->  		}
->  		dev_err(ibmvtpm->dev, "tpm_ibmvtpm_send failed rc=%d\n", rc);
-> -		ibmvtpm->tpm_processing_cmd = false;
-> +		ibmvtpm->tpm_status &= ~TPM_STATUS_BUSY;
->  	}
->  
->  	spin_unlock(&ibmvtpm->rtce_lock);
-> @@ -266,7 +267,7 @@ static u8 tpm_ibmvtpm_status(struct tpm_chip *chip)
->  {
->  	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
->  
-> -	return ibmvtpm->tpm_processing_cmd;
-> +	return ibmvtpm->tpm_status;
->  }
->  
->  /**
-> @@ -454,7 +455,7 @@ static const struct tpm_class_ops tpm_ibmvtpm = {
->  	.send = tpm_ibmvtpm_send,
->  	.cancel = tpm_ibmvtpm_cancel,
->  	.status = tpm_ibmvtpm_status,
-> -	.req_complete_mask = true,
-> +	.req_complete_mask = TPM_STATUS_BUSY,
->  	.req_complete_val = 0,
->  	.req_canceled = tpm_ibmvtpm_req_canceled,
->  };
-> @@ -547,7 +548,7 @@ static void ibmvtpm_crq_process(struct ibmvtpm_crq *crq,
->  		case VTPM_TPM_COMMAND_RES:
->  			/* len of the data in rtce buffer */
->  			ibmvtpm->res_len = be16_to_cpu(crq->len);
-> -			ibmvtpm->tpm_processing_cmd = false;
-> +			ibmvtpm->tpm_status &= ~TPM_STATUS_BUSY;
->  			wake_up_interruptible(&ibmvtpm->wq);
->  			return;
->  		default:
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
-> index 51198b137461..252f1cccdfc5 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.h
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
-> @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
->  	wait_queue_head_t wq;
->  	u16 res_len;
->  	u32 vtpm_version;
-> -	u8 tpm_processing_cmd;
-> +	u8 tpm_status;
-> +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
+Add support for PIL loading of WPSS co-processor for SC7280 SOCs.
 
-Declare this already in the fix, and just leave the rename here.
+Rakesh Pillai (3):
+  dt-bindings: remoteproc: qcom: adsp: Convert binding to YAML
+  dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+  remoteproc: qcom: q6v5_wpss: Add support for sc7280 WPSS
 
->  };
->  
->  #define CRQ_RES_BUF_SIZE	PAGE_SIZE
-> -- 
-> 2.31.1
-> 
-> 
+ .../bindings/remoteproc/qcom,hexagon-v56.txt       | 140 --------
+ .../bindings/remoteproc/qcom,hexagon-v56.yaml      | 361 +++++++++++++++++++++
+ drivers/remoteproc/qcom_q6v5_adsp.c                |  70 +++-
+ 3 files changed, 430 insertions(+), 141 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.txt
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
 
-Otherwise, these look fine.
+-- 
+2.7.4
 
-/Jarkko
