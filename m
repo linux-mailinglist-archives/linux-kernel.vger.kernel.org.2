@@ -2,158 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135863E7CF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2A43E7CF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243433AbhHJQBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:01:04 -0400
-Received: from mout.gmx.net ([212.227.15.18]:41865 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239131AbhHJQBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:01:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628611197;
-        bh=G3sM2QcP/MH50Zmwdjb3PS8F5QBGj5Y8VFa/7F2tPSc=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=RLpZ0hqW/lrGAmurvpvHUFQYaAYshU/EL8HTj09Xa1VJXzVbI1pET09X0faIk0+qF
-         TZkmhHf9CmViqUxAAUCF+NxxGBpaiXeCn21JdMnfMEJPC5rbvtkbFoNvkRdRzCd495
-         83pnkOLc/giyhG64K1K/d/2czIyz0vQGQlpCbT94=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MAOJV-1mOBOw2Arz-00Bp83; Tue, 10
- Aug 2021 17:59:57 +0200
-Date:   Tue, 10 Aug 2021 17:59:53 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Len Baker <len.baker@gmx.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/3] drivers/soc/renesas: Prefer memcpy over strcpy
-Message-ID: <20210810155953.GB2508@titan>
-References: <20210808125012.4715-1-len.baker@gmx.com>
- <20210808125012.4715-3-len.baker@gmx.com>
- <39485c0e-511c-50a0-83be-f9ce6fc47e67@petrovitsch.priv.at>
- <c33adb9e-9604-3d89-5a5b-152eb03e5b54@wanadoo.fr>
+        id S238982AbhHJQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233605AbhHJQAk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:00:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED04C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:00:18 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628611216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XsXuHsnr+eKuIQBNM9hBeaZT5+Zuk2ta+rwPuC01OAw=;
+        b=QitrkNrHsFesKFAGk+c8G+Nn4ysnLt6/EkysLk6zf9VKSdbIGDTEUzSES9RNjogWX45QTb
+        cwtFDHhdGORiOMJe2RJlpPl2w/855hjiDqEvYqigsDFAl/zrDvEm5KECkksk2mI9oq2UCR
+        9J8/4pmnjsftq7tyOyvsOp5B3n4Vs/wf4hTtLR19u2g88QHz5UanyMTlScu5deeK0GsSOm
+        LDeIbJzOj1oKMPq3HSqlo11bG+PXEUhXP1dNLljs3b1tDwLfGoe25c+1j7VZHiwOFcSCE8
+        kUq3QeYodjuccM61Rv4Vg7rN+MNR685CXDDa1nr2cbEi8BMG2qg7GOt+POijLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628611216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XsXuHsnr+eKuIQBNM9hBeaZT5+Zuk2ta+rwPuC01OAw=;
+        b=k3Nx2Ili89/kmI64z20XoAF1FLI0M2glZzEB2faUSueYxYyw6i+g2YTEvPcd84KGnJLhtV
+        tWwIWNlPbq8dGzCg==
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] timer: Use static_branch_likely() for
+ timers_nohz_active
+In-Reply-To: <20210624163218.39ae3ec6@xhacker.debian>
+References: <20210624163218.39ae3ec6@xhacker.debian>
+Date:   Tue, 10 Aug 2021 18:00:16 +0200
+Message-ID: <87im0dqohb.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <c33adb9e-9604-3d89-5a5b-152eb03e5b54@wanadoo.fr>
-X-Provags-ID: V03:K1:FPnUfg9bHq3mnp/YBiXnJfdCYth5+kd8VoT92LWLiyrQC/T7qWV
- XqEMPQaChEtvXvpYQ0FF7Z/k5XfSetPCvutFfenyLdouGF3+8FbQSDYSzaKDcHfI9Dhk9pT
- nqMVMtEa8s6Uo4e8R+j6kuHpbSoJjrUwp2ujWigdUNW475H61eXq4DWibqEpwgxIo8irZ9S
- IzLJgN8K5DUg2AmYmO3Sw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xVByGEykzDo=:h92VZnFlg+VkvKpiRFRLaQ
- xPYCBWL7ImYXcrI8PHzLKgnvx0U0nAtR8VXIPzxaGS2RH0f/a614v6z4l9jMI4XuUhRBM0SNc
- RuACv5zcKcI6FLS9IDVu9IUViF/ptqpi0Aqs5HiXD0QXfLE+FSZHZezBncVgpaBNKN2Q9i9Bk
- feL7SK5a6hi14JIlmQUwYFqIsltXxuJw9HRh2QIQD1Xg765Kj9vMVFB16B+udtvO1OFoIHaz8
- 1wYWiODPzdSr/W6iLzLVQsP2xXPk8fZK35qAAMoH7/StbKKXMBwM/LYg5X5DPtGu9X3gznpGm
- JeAY0UZIAdYpRDmEck7ZCoCp94aHNDAZlWPiJrRRb8XcNzmPoj2EsdGdvW0I1DZk8P9TuVmI0
- RxcEs0TnCOOYmHKUo+Ryt4Le5QGsqbK4Ai7/cUCXGpIgAyqUnIYml4CuTj1xo9D3ekA0kzVZa
- pTuhuID0mA6mXzjJ+CET5Re8VGiODsRFBidz9sYs52BdOywTUQPl/RtaMJiuTc/rKoE/pMfY6
- FuWrq+2/cHU/F81lxmccNBCnkIq6lyIAZh2g3k67QqaYYLfg0JCLE4l07Qv/5QCKJTDM/ErHF
- J4kKjwxvybFLkYGtQI0x9Zwu+W++8SuHokR6PzwSJewR2zUtE6MxRgdeCVKiZNkX78ywQu5fc
- R7fq/cl3ZxhUWU4xBVY8FjoglKJkk4IeYaHrXRWB5JaYQY9bceFzcP4vqIkSLdIBMKOqWmVMw
- HaDIyZYNKaVxwrelDBPKQQic2rIJOD4MmoaehCgoZm4fzhqYHTrqgJSXSRaDgYE9+2xrPbfV6
- /ymc1tDje2S0RCukp5/WGd7pyM02KN0T90vEOdW7N3jZJgEoJ3TjEAOtpuPHZ/vt11jsOi3Aa
- /RinBa12sewbhNvzgkynJtSYppciAYDzrWoefKvl0s/UWr/czYfX+jxhLbOUyrP+ujaE//g/s
- Abm1m2QG0QgguPkPwb/TNHJJxMcMpk8lRU8elMr0+SXj/9HMPg+3KlW+31nWHNdu48xI91lK7
- Uto3xv0v7UtLZdO/NNKyXcbdhNYwgT6KHHSNVRPUGG4QxQgzgGES+DV70EO3koX3cakEsBsV6
- CP/4wY6tXJQB6khciYOs09qXEJsZgqDA44XBavobn8ilwZL/8/FvePXAg==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Jisheng,
 
-On Sun, Aug 08, 2021 at 07:06:30PM +0200, Christophe JAILLET wrote:
-> Hi,
->
-> Le 08/08/2021 =E0 17:35, Bernd Petrovitsch a =E9crit=A0:
-> > Hi all!
-> >
-> > On 08/08/2021 14:50, Len Baker wrote:
-> > > strcpy() performs no bounds checking on the destination buffer. This
-> > > could result in linear overflows beyond the end of the buffer, leadi=
-ng
-> > > to all kinds of misbehaviors. So, use memcpy() as a safe replacement=
-.
-> > >
-> > > This is a previous step in the path to remove the strcpy() function
-> > > entirely from the kernel.
-> > >
-> > > Signed-off-by: Len Baker <len.baker@gmx.com>
-> > > ---
-> > >   drivers/soc/renesas/r8a779a0-sysc.c | 6 ++++--
-> > >   drivers/soc/renesas/rcar-sysc.c     | 6 ++++--
-> > >   2 files changed, 8 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/soc/renesas/r8a779a0-sysc.c b/drivers/soc/renes=
-as/r8a779a0-sysc.c
-> > > index d464ffa1be33..7410b9fa9846 100644
-> > > --- a/drivers/soc/renesas/r8a779a0-sysc.c
-> > > +++ b/drivers/soc/renesas/r8a779a0-sysc.c
-> > > @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
-> > >   	for (i =3D 0; i < info->num_areas; i++) {
-> > >   		const struct r8a779a0_sysc_area *area =3D &info->areas[i];
-> > >   		struct r8a779a0_sysc_pd *pd;
-> > > +		size_t n;
-> > >
-> > >   		if (!area->name) {
-> > >   			/* Skip NULLified area */
-> > >   			continue;
-> > >   		}
-> > >
-> > > -		pd =3D kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
-> > > +		n =3D strlen(area->name) + 1;
-> > > +		pd =3D kzalloc(sizeof(*pd) + n, GFP_KERNEL);
-> > Zeroing the allocated bytes is not needed since it's completly
-> > overwritten with the strcpy()/memcpy().
->
-> The strcpy()/memcpy() only overwrites the pd->name field, not the whole =
-pd
-> structure.
+On Thu, Jun 24 2021 at 16:32, Jisheng Zhang wrote:
 
-You are right.
+> The static key timers_nohz_active is likely to be true, so use
+> static_branch_likely() to reflect this fact.
 
-> I think that it is needed to keep the kzalloc.
+you still lack any justification for your statement that NOHZ active is
+likely.
 
-Yes, I think so. The kzalloc is needed to guarantee that the whole struct =
-is
-initialize (all the members are initialized with zeros).
+It might be likely for your system, but is this true in general?
 
-Regards,
-Len
+Thanks,
 
->
-> Just my 2c,
-> CJ
->
-> > >   		if (!pd) {
-> > >   			error =3D -ENOMEM;
-> > >   			goto out_put;
-> > >   		}
-> > >
-> > > -		strcpy(pd->name, area->name);
-> > > +		memcpy(pd->name, area->name, n);
-> > >   		pd->genpd.name =3D pd->name;
-> > >   		pd->pdr =3D area->pdr;
-> > >   		pd->flags =3D area->flags;
-> >
-> > And similar for the second hunk.
-> >
-> > MfG,
-> > 	Bernd
-> >
->
+        tglx
