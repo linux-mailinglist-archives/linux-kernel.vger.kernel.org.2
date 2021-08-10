@@ -2,93 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DF63E511F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5621D3E5120
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbhHJCnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 22:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhHJCne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 22:43:34 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E5CC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 19:43:13 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so2149762pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 19:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mEtO03OIc860qDPInvLz3qFGfUeCouJ7pFCU8dty4U0=;
-        b=eNbU18LmLOH3wLADwMkysokDiIfwMd9Pc2dqHuLtIEFJf75LTAJKNVd2ve1+YdL64C
-         +6BCavcHfWuIgrH+fbd/kD5XTBlN0BU9XAa60Xhb1HpO6+YG8HMQxkC+G6yW0/UD4FTh
-         3ErovM0ZfBqzEM1Uo0VzmVOgQWDgN/C++aNs0jRsyznmSGQcG3k8AzE2QBg4404aychg
-         e3C6dMdT7hVb0v9zYTwHzBiEyuMs7K7f7pVDk3GIYehZzIkOKLjt/93SAAH6YV2TPGMF
-         yRWA+3q9wdfsvTb5IHmhoHuxre8zSMGdrTDgPYwRfl5MrIEwqtfN3ghHEcwua98yW/JI
-         AjRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mEtO03OIc860qDPInvLz3qFGfUeCouJ7pFCU8dty4U0=;
-        b=qst28ls7a+kScm7v71ZO95yu9V4JfsTD6uK2spi1q3F8rYNXAGVSRQzsYfhkKsDylf
-         0j6zxGyO98VBfjB2k1JwIobqxEL9YIJkRwXef0m3K0A9FAQjjw4J7DWqwn4YxEVAH+uz
-         bBqtAotWLZCc5RfHRP9bSH3t79iU990NFb51tGSH+PhW+GIewvckg1Bogz+zmnE32kWn
-         cTo+f90SCq4gmmW7lLDJTVbd+X6CeSLnf8dcOXbUMZVh80QhNMeaAxlf9F10xRRFpPy4
-         huu66hbcJFrwR9eSV4SCXh7SgXYiKBwpW5tSlie0AyxMD1TR2rZGMSemnHN7EbsUvGGy
-         0G8w==
-X-Gm-Message-State: AOAM533E6+DiN3bZEL8RyCRnQjLcpXjCq5+0g316nqRuF5ZY04hIZFV7
-        mrwYO37TQ9UHLf5JVgylMrVmfA==
-X-Google-Smtp-Source: ABdhPJzvKKIhjbuNi3WfN/Mlyc/ZFUy4MKEae9P0opKTsgMcUjH38p9Kxd6cmuaYHjdfKvKNlowjDg==
-X-Received: by 2002:a17:90a:bb0b:: with SMTP id u11mr2412472pjr.18.1628563393258;
-        Mon, 09 Aug 2021 19:43:13 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id v63sm23343203pgv.59.2021.08.09.19.43.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 19:43:12 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 08:13:08 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-Message-ID: <20210810024308.gurvzpbe2bc2bhky@vireshk-i7>
-References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
- <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
- <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
- <2afd0fac-ed28-c090-a345-3fd4284b4125@codeaurora.org>
+        id S235570AbhHJCoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 22:44:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229688AbhHJCoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 22:44:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD6C261058
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628563422;
+        bh=+u2V2+K0bj2ltsUVUXzuEDQxgXWWe8UW8DnbggYPlPE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vF5uPtgSmpsYEI3O9OJ2rNH9LIdrj+/sd/4qcFw7fJPalwrGQf06UBT53RHhl5HWV
+         wAod5Tlo7oTM6dZLXlXsqUEG51I44HrSunmUeGeJTjZdc/VY5ZPrGPfVJgeGQcwvbz
+         Rd3oJViiQYtLj6OJqkOAuoUGVm0bzMERfXZwqrIi2SG8JCPWufts2LtOVB2WCIr/Xs
+         SXCWIjgXTymDOiRzwkac5SwVMAtAWX5htlgiDzuEb5ZDZwow6ZHsnFhMUqkH9AIQto
+         azNoaqKEWJg3Rq/RrXYdj2b3cNaAwRsHu4vQL8P2i3cMf44IOcCS5iFSBAFjW5oAj2
+         iXLhmbIj2MAqg==
+Received: by mail-lf1-f50.google.com with SMTP id g30so6076696lfv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 19:43:42 -0700 (PDT)
+X-Gm-Message-State: AOAM532mIfKuRTRaLOFEwgsO5/t5fA4VkjiV0JTmjaL2Wjt4hfynyVFB
+        PkxlQmyWQ1KN4smSD2llCduc1IYPkL2moHTfiiI=
+X-Google-Smtp-Source: ABdhPJxWNX4izk44i96wfeOUmqKIwvnCOhHcFfuVsvlvzwGSKgTdi7tE3j/qd91bNPQQpXh+dl1J2EyCxPDUvzAkqU0=
+X-Received: by 2002:a05:6512:ba9:: with SMTP id b41mr20914908lfv.231.1628563421204;
+ Mon, 09 Aug 2021 19:43:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2afd0fac-ed28-c090-a345-3fd4284b4125@codeaurora.org>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <1627953123-24248-1-git-send-email-guoren@kernel.org> <CAAhSdy3ExFE_bTjxiGPh157ev89GEFypMcJ0OU63TQA5CRUONw@mail.gmail.com>
+In-Reply-To: <CAAhSdy3ExFE_bTjxiGPh157ev89GEFypMcJ0OU63TQA5CRUONw@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 10 Aug 2021 10:43:30 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQSha1vg4ta4fdbwdWhU8OJkKx+Qf__8vcmjGLQXSpx4g@mail.gmail.com>
+Message-ID: <CAJF2gTQSha1vg4ta4fdbwdWhU8OJkKx+Qf__8vcmjGLQXSpx4g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] irqchip/sifive-plic: Fix PLIC crash on touching
+ offline CPU context
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Greentime Hu <greentime.hu@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-08-21, 16:38, Rajendra Nayak wrote:
-> Sure, I can do that, apart from the error print, the function currently also
-> returns a -EINVAL in case of the missing 'required-opps', are we suggesting
-> we change that to not return an error also?
+ Hi Anup,
 
-No.
+Sorry for the late reply.
 
-> Since this is completely optional in the device node, we would want the function to
-> ideally not return error and only do so in case 'required-opps' exists and the
-> translation to performance state fails.
+On Tue, Aug 3, 2021 at 1:13 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Tue, Aug 3, 2021 at 6:42 AM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The current plic driver would touch offline CPU context and cause
+> > bus error in some chip when in CPU hotplug scenario.
+> >
+> > This patch fixes up the problem and prevents plic access offline
+> > CPU context in plic_init() & plic_set_affinity().
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Atish Patra <atish.patra@wdc.com>
+> > Cc: Greentime Hu <greentime.hu@sifive.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/irqchip/irq-sifive-plic.c | 26 +++++++++++++++++---------
+> >  1 file changed, 17 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> > index cf74cfa..9c9bb20 100644
+> > --- a/drivers/irqchip/irq-sifive-plic.c
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -64,6 +64,7 @@ struct plic_priv {
+> >         struct cpumask lmask;
+> >         struct irq_domain *irqdomain;
+> >         void __iomem *regs;
+> > +       unsigned int nr_irqs;
+> >  };
+> >
+> >  struct plic_handler {
+> > @@ -150,7 +151,7 @@ static int plic_set_affinity(struct irq_data *d,
+> >         if (cpu >= nr_cpu_ids)
+> >                 return -EINVAL;
+> >
+> > -       plic_irq_toggle(&priv->lmask, d, 0);
+> > +       plic_irq_toggle(cpu_online_mask, d, 0);
+>
+> This breaks RISC-V multi-socket platforms with multiple PLIC instances.
+Yes, I haven't considered the multi-sockets scenario.
 
-Not really. The function should return failure if the property isn't
-there, but it shouldn't be EINVAL but ENODEV.
+>
+> When we have multiple PLIC instances in a RISC-V platform, each PLIC
+> instance will target a different set of HARTs. The "priv->lmask" represents
+> the CPUs/HARTs targeted by a given PLIC instance.
+Okay, I would correct it with:
+ -       plic_irq_toggle(&priv->lmask, d, 0);
++       cpumask_and(&amask, &priv->lmask, cpu_online_mask);
++       plic_irq_toggle(&amask, d, 0);
+
+>
+> I am not sure how you are testing your patches but you certainly need to
+> test more on QEMU. The QEMU virt machine support multi-socket so make
+> sure any patch which can potentially affect multi-socket support is at least
+> tested on QEMU virt machine multi-socket configuration.
+The patch has been tested with our hardware platforms and qemu 4.1.
+But in that version of qemu, riscv didn't support multi-socket.
+
+I would update my qemu environment to follow your steps :)
+
+>
+> >         plic_irq_toggle(cpumask_of(cpu), d, !irqd_irq_masked(d));
+> >
+> >         irq_data_update_effective_affinity(d, cpumask_of(cpu));
+> > @@ -251,15 +252,25 @@ static void plic_set_threshold(struct plic_handler *handler, u32 threshold)
+> >
+> >  static int plic_dying_cpu(unsigned int cpu)
+> >  {
+> > +       struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+> > +
+> >         if (plic_parent_irq)
+> >                 disable_percpu_irq(plic_parent_irq);
+> >
+> > +       handler->present = false;
+> > +
+>
+> Drop these changes in plic_dying_cpu(), see comments below.
+>
+> >         return 0;
+> >  }
+> >
+> >  static int plic_starting_cpu(unsigned int cpu)
+> >  {
+> >         struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+> > +       irq_hw_number_t hwirq;
+> > +
+> > +       handler->present = true;
+>
+> The "handler->present" flag indicates that we have PLIC context
+> associated with the given handler. It has nothing to do with CPU
+> hot-plug.
+>
+> > +
+> > +       for (hwirq = 1; hwirq <= handler->priv->nr_irqs; hwirq++)
+> > +               plic_toggle(handler, hwirq, 0);
+> >
+> >         if (plic_parent_irq)
+> >                 enable_percpu_irq(plic_parent_irq,
+> > @@ -275,7 +286,6 @@ static int __init plic_init(struct device_node *node,
+> >                 struct device_node *parent)
+> >  {
+> >         int error = 0, nr_contexts, nr_handlers = 0, i;
+> > -       u32 nr_irqs;
+> >         struct plic_priv *priv;
+> >         struct plic_handler *handler;
+> >
+> > @@ -290,8 +300,8 @@ static int __init plic_init(struct device_node *node,
+> >         }
+> >
+> >         error = -EINVAL;
+> > -       of_property_read_u32(node, "riscv,ndev", &nr_irqs);
+> > -       if (WARN_ON(!nr_irqs))
+> > +       of_property_read_u32(node, "riscv,ndev", &priv->nr_irqs);
+> > +       if (WARN_ON(!priv->nr_irqs))
+> >                 goto out_iounmap;
+> >
+> >         nr_contexts = of_irq_count(node);
+> > @@ -299,14 +309,13 @@ static int __init plic_init(struct device_node *node,
+> >                 goto out_iounmap;
+> >
+> >         error = -ENOMEM;
+> > -       priv->irqdomain = irq_domain_add_linear(node, nr_irqs + 1,
+> > +       priv->irqdomain = irq_domain_add_linear(node, priv->nr_irqs + 1,
+> >                         &plic_irqdomain_ops, priv);
+> >         if (WARN_ON(!priv->irqdomain))
+> >                 goto out_iounmap;
+> >
+> >         for (i = 0; i < nr_contexts; i++) {
+> >                 struct of_phandle_args parent;
+> > -               irq_hw_number_t hwirq;
+> >                 int cpu, hartid;
+> >
+> >                 if (of_irq_parse_one(node, i, &parent)) {
+> > @@ -354,7 +363,8 @@ static int __init plic_init(struct device_node *node,
+> >                 }
+> >
+> >                 cpumask_set_cpu(cpu, &priv->lmask);
+> > -               handler->present = true;
+> > +               if (cpu == smp_processor_id())
+> > +                       handler->present = true;
+>
+> Drop this change.
+>
+> >                 handler->hart_base =
+> >                         priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
+> >                 raw_spin_lock_init(&handler->enable_lock);
+> > @@ -362,8 +372,6 @@ static int __init plic_init(struct device_node *node,
+> >                         priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
+> >                 handler->priv = priv;
+> >  done:
+> > -               for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
+> > -                       plic_toggle(handler, hwirq, 0);
+>
+> In plic_init(), we are bringing all interrupts of PLIC context to a known
+> state which is being disabled by default. We don't need to do this every
+> time a HART/CPU is brought-up but I am okay to move this to
+> plic_starting_cpu() if it helps fix issues on any RISC-V platform.
+>
+> >                 nr_handlers++;
+> >         }
+> >
+> > --
+> > 2.7.4
+> >
+>
+> Regards,
+> Anup
+
+
 
 -- 
-viresh
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
