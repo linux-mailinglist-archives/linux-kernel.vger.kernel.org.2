@@ -2,384 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383DB3E5571
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3403E54FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238513AbhHJIcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:32:51 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:46110 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238288AbhHJIb5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:31:57 -0400
-X-UUID: ddcf9cf38e31446f8ece563e67a46b33-20210810
-X-UUID: ddcf9cf38e31446f8ece563e67a46b33-20210810
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 587115545; Tue, 10 Aug 2021 16:31:31 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Aug 2021 16:31:28 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 10 Aug 2021 16:31:28 +0800
-From:   Yunfei Dong <yunfei.dong@mediatek.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        George Sun <george.sun@mediatek.com>
-Subject: [PATCH v4, 07/15] media: mtk-vcodec: Add irq interface for multi hardware
-Date:   Tue, 10 Aug 2021 16:30:39 +0800
-Message-ID: <20210810083047.16693-8-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210810083047.16693-1-yunfei.dong@mediatek.com>
-References: <20210810083047.16693-1-yunfei.dong@mediatek.com>
+        id S234780AbhHJISB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:18:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:60946 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235441AbhHJIRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 04:17:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="202029242"
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="202029242"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 01:17:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="515678692"
+Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Aug 2021 01:17:29 -0700
+Date:   Tue, 10 Aug 2021 16:30:40 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        jmattson@google.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 05/15] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_CTL for
+ guest Arch LBR
+Message-ID: <20210810083040.GB2970@intel.com>
+References: <1628235745-26566-1-git-send-email-weijiang.yang@intel.com>
+ <1628235745-26566-6-git-send-email-weijiang.yang@intel.com>
+ <59ef2c3c-0997-d6a5-0d4a-4e777206a665@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59ef2c3c-0997-d6a5-0d4a-4e777206a665@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds irq interface for multi hardware.
+On Mon, Aug 09, 2021 at 09:36:49PM +0800, Like Xu wrote:
+> On 6/8/2021 3:42 pm, Yang Weijiang wrote:
+> >From: Like Xu <like.xu@linux.intel.com>
+> >
+> >Arch LBRs are enabled by setting MSR_ARCH_LBR_CTL.LBREn to 1. A new guest
+> >state field named "Guest IA32_LBR_CTL" is added to enhance guest LBR usage.
+> >When guest Arch LBR is enabled, a guest LBR event will be created like the
+> >model-specific LBR does. Clear guest LBR enable bit on host PMI handling so
+> >guest can see expected config.
+> >
+> >On processors that support Arch LBR, MSR_IA32_DEBUGCTLMSR[bit 0] has no
+> >meaning. It can be written to 0 or 1, but reads will always return 0.
+> >Like IA32_DEBUGCTL, IA32_ARCH_LBR_CTL msr is also preserved on INIT.
+> >
+> >Regardless of the Arch LBR or legacy LBR, when the LBR_EN bit 0 of the
+> >corresponding control MSR is set to 1, LBR recording will be enabled.
+> >
+> >Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> >Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> >---
+> >  arch/x86/events/intel/lbr.c      |  2 --
+> >  arch/x86/include/asm/msr-index.h |  1 +
+> >  arch/x86/include/asm/vmx.h       |  2 ++
+> >  arch/x86/kvm/vmx/pmu_intel.c     | 48 ++++++++++++++++++++++++++++----
+> >  arch/x86/kvm/vmx/vmx.c           |  9 ++++++
+> >  5 files changed, 55 insertions(+), 7 deletions(-)
+> >
 
-Change-Id: I9ed8f9538c83d9376a70bc125f77686ac85cedb9
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
----
-v4: no change
----
- .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 33 +++++++++++++++++--
- .../platform/mtk-vcodec/mtk_vcodec_dec_hw.c   |  2 +-
- .../platform/mtk-vcodec/mtk_vcodec_drv.h      | 25 ++++++++++----
- .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |  4 +--
- .../platform/mtk-vcodec/mtk_vcodec_intr.c     | 27 +++++++--------
- .../platform/mtk-vcodec/mtk_vcodec_intr.h     |  4 +--
- .../platform/mtk-vcodec/vdec/vdec_h264_if.c   |  2 +-
- .../mtk-vcodec/vdec/vdec_h264_req_if.c        |  2 +-
- .../platform/mtk-vcodec/vdec/vdec_vp8_if.c    |  2 +-
- .../platform/mtk-vcodec/vdec/vdec_vp9_if.c    |  2 +-
- .../platform/mtk-vcodec/venc/venc_h264_if.c   |  2 +-
- .../platform/mtk-vcodec/venc/venc_vp8_if.c    |  2 +-
- 12 files changed, 71 insertions(+), 36 deletions(-)
+[...]
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-index d93ea5c63e1e..d52e975292dc 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-@@ -68,6 +68,20 @@ static const struct component_master_ops mtk_vdec_ops = {
-    .unbind = mtk_vdec_unbind,
- };
- 
-+static int mtk_vcodec_get_hw_count(struct mtk_vcodec_dev *dev)
-+{
-+	switch (dev->vdec_pdata->hw_arch) {
-+	case MTK_VDEC_PURE_SINGLE_CORE:
-+		return MTK_VDEC_ONE_CORE;
-+	case MTK_VDEC_LAT_SINGLE_CORE:
-+		return MTK_VDEC_ONE_LAT_ONE_CORE;
-+	default:
-+		mtk_v4l2_err("not support hw arch:%d",
-+			dev->vdec_pdata->hw_arch);
-+		return MTK_VDEC_NO_HW;
-+	}
-+}
-+
- static struct component_match *mtk_vcodec_match_add(
- 	struct mtk_vcodec_dev *vdec_dev)
-  {
-@@ -134,7 +148,7 @@ static irqreturn_t mtk_vcodec_dec_irq_handler(int irq, void *priv)
- 	writel((readl(vdec_misc_addr) & ~VDEC_IRQ_CLR),
- 		dev->reg_base[VDEC_MISC] + VDEC_IRQ_CFG_REG);
- 
--	wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED);
-+	wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED, 0);
- 
- 	mtk_v4l2_debug(3,
- 			"mtk_vcodec_dec_irq_handler :wake up ctx %d, dec_done_status=%x",
-@@ -224,7 +238,7 @@ static int fops_vcodec_open(struct file *file)
- {
- 	struct mtk_vcodec_dev *dev = video_drvdata(file);
- 	struct mtk_vcodec_ctx *ctx = NULL;
--	int ret = 0;
-+	int ret = 0, i, hw_count;
- 	struct vb2_queue *src_vq;
- 
- 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-@@ -238,7 +252,19 @@ static int fops_vcodec_open(struct file *file)
- 	v4l2_fh_add(&ctx->fh);
- 	INIT_LIST_HEAD(&ctx->list);
- 	ctx->dev = dev;
--	init_waitqueue_head(&ctx->queue);
-+
-+	if (ctx->dev->vdec_pdata->is_comp_supported) {
-+		hw_count = mtk_vcodec_get_hw_count(dev);
-+		if (!hw_count) {
-+			ret = -EINVAL;
-+			goto err_init_queue;
-+		}
-+		for (i = 0; i < hw_count; i++)
-+			init_waitqueue_head(&ctx->queue[i]);
-+	} else {
-+		init_waitqueue_head(&ctx->queue[0]);
-+	}
-+
- 	mutex_init(&ctx->lock);
- 
- 	ctx->type = MTK_INST_DECODER;
-@@ -295,6 +321,7 @@ static int fops_vcodec_open(struct file *file)
- err_m2m_ctx_init:
- 	v4l2_ctrl_handler_free(&ctx->ctrl_hdl);
- err_ctrls_setup:
-+err_init_queue:
- 	v4l2_fh_del(&ctx->fh);
- 	v4l2_fh_exit(&ctx->fh);
- 	kfree(ctx);
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
-index 5e1b7670ba5b..7a31afd294ba 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
-@@ -87,7 +87,7 @@ static irqreturn_t mtk_vdec_comp_irq_handler(int irq, void *priv)
- 	writel(dec_done_status | VDEC_IRQ_CFG, vdec_misc_addr);
- 	writel(dec_done_status & ~VDEC_IRQ_CLR, vdec_misc_addr);
- 
--	wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED);
-+	wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED, dev->comp_idx);
- 
- 	mtk_v4l2_debug(3, "wake up ctx %d, dec_done_status=%x",
- 		ctx->id, dec_done_status);
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-index 1d0798fd9adf..08fd43106fc7 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-@@ -104,6 +104,16 @@ enum mtk_vdec_hw_id {
- 	MTK_VDEC_HW_MAX,
- };
- 
-+/**
-+ * struct mtk_vdec_hw_count - Supported hardware count
-+ */
-+enum mtk_vdec_hw_count {
-+	MTK_VDEC_NO_HW = 0,
-+	MTK_VDEC_ONE_CORE,
-+	MTK_VDEC_ONE_LAT_ONE_CORE,
-+	MTK_VDEC_MAX_HW_COUNT,
-+};
-+
- /*
-  * struct mtk_video_fmt - Structure used to store information about pixelformats
-  */
-@@ -293,9 +303,9 @@ struct mtk_vcodec_ctx {
- 	struct vdec_pic_info picinfo;
- 	int dpb_size;
- 
--	int int_cond;
--	int int_type;
--	wait_queue_head_t queue;
-+	int int_cond[MTK_VDEC_HW_MAX];
-+	int int_type[MTK_VDEC_HW_MAX];
-+	wait_queue_head_t queue[MTK_VDEC_HW_MAX];
- 	unsigned int irq_status;
- 
- 	struct v4l2_ctrl_handler ctrl_hdl;
-@@ -501,11 +511,12 @@ static inline struct mtk_vcodec_ctx *ctrl_to_ctx(struct v4l2_ctrl *ctrl)
- }
- 
- /* Wake up context wait_queue */
--static inline void wake_up_ctx(struct mtk_vcodec_ctx *ctx, unsigned int reason)
-+static inline void wake_up_ctx(struct mtk_vcodec_ctx *ctx, unsigned int reason,
-+	unsigned int hw_id)
- {
--	ctx->int_cond = 1;
--	ctx->int_type = reason;
--	wake_up_interruptible(&ctx->queue);
-+	ctx->int_cond[hw_id] = 1;
-+	ctx->int_type[hw_id] = reason;
-+	wake_up_interruptible(&ctx->queue[hw_id]);
- }
- 
- #endif /* _MTK_VCODEC_DRV_H_ */
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-index 2828df77020c..c7540c0cdcea 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-@@ -114,7 +114,7 @@ static irqreturn_t mtk_vcodec_enc_irq_handler(int irq, void *priv)
- 
- 	clean_irq_status(ctx->irq_status, addr);
- 
--	wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED);
-+	wake_up_ctx(ctx, MTK_INST_IRQ_RECEIVED, 0);
- 	return IRQ_HANDLED;
- }
- 
-@@ -140,7 +140,7 @@ static int fops_vcodec_open(struct file *file)
- 	v4l2_fh_add(&ctx->fh);
- 	INIT_LIST_HEAD(&ctx->list);
- 	ctx->dev = dev;
--	init_waitqueue_head(&ctx->queue);
-+	init_waitqueue_head(&ctx->queue[0]);
- 
- 	ctx->type = MTK_INST_ENCODER;
- 	ret = mtk_vcodec_enc_ctrls_setup(ctx);
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-index 70580c2525ba..8147533da98b 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.c
-@@ -11,34 +11,31 @@
- #include "mtk_vcodec_intr.h"
- #include "mtk_vcodec_util.h"
- 
--int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx  *ctx, int command,
--				 unsigned int timeout_ms)
-+int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx *ctx,
-+	int command, unsigned int timeout_ms, unsigned hw_id)
- {
--	wait_queue_head_t *waitqueue;
- 	long timeout_jiff, ret;
- 	int status = 0;
- 
--	waitqueue = (wait_queue_head_t *)&ctx->queue;
- 	timeout_jiff = msecs_to_jiffies(timeout_ms);
--
--	ret = wait_event_interruptible_timeout(*waitqueue,
--				ctx->int_cond,
-+	ret = wait_event_interruptible_timeout(ctx->queue[hw_id],
-+				ctx->int_cond[hw_id],
- 				timeout_jiff);
- 
- 	if (!ret) {
- 		status = -1;	/* timeout */
--		mtk_v4l2_err("[%d] ctx->type=%d, cmd=%d, wait_event_interruptible_timeout time=%ums out %d %d!",
--			     ctx->id, ctx->type, command, timeout_ms,
--			     ctx->int_cond, ctx->int_type);
-+		mtk_v4l2_err("[%d] cmd=%d, type=%d, dec timeout=%ums (%d %d)",
-+				ctx->id, command, ctx->type, timeout_ms,
-+				ctx->int_cond[hw_id], ctx->int_type[hw_id]);
- 	} else if (-ERESTARTSYS == ret) {
--		mtk_v4l2_err("[%d] ctx->type=%d, cmd=%d, wait_event_interruptible_timeout interrupted by a signal %d %d",
--			     ctx->id, ctx->type, command, ctx->int_cond,
--			     ctx->int_type);
- 		status = -1;
-+		mtk_v4l2_err("[%d] cmd=%d, type=%d, dec inter fail (%d %d)",
-+				ctx->id, command, ctx->type,
-+				ctx->int_cond[hw_id], ctx->int_type[hw_id]);
- 	}
- 
--	ctx->int_cond = 0;
--	ctx->int_type = 0;
-+	ctx->int_cond[hw_id] = 0;
-+	ctx->int_type[hw_id] = 0;
- 
- 	return status;
- }
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h
-index 638cd1f3526a..2bf4cabfaa43 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_intr.h
-@@ -12,7 +12,7 @@
- struct mtk_vcodec_ctx;
- 
- /* timeout is ms */
--int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx *data, int command,
--				unsigned int timeout_ms);
-+int mtk_vcodec_wait_for_done_ctx(struct mtk_vcodec_ctx *ctx,
-+				int command, unsigned int timeout_ms, unsigned int hw_id);
- 
- #endif /* _MTK_VCODEC_INTR_H_ */
-diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_if.c
-index 40d6e6c5ac7a..481655bb6016 100644
---- a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_if.c
-+++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_if.c
-@@ -413,7 +413,7 @@ static int vdec_h264_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
- 		/* wait decoder done interrupt */
- 		err = mtk_vcodec_wait_for_done_ctx(inst->ctx,
- 						   MTK_INST_IRQ_RECEIVED,
--						   WAIT_INTR_TIMEOUT_MS);
-+						   WAIT_INTR_TIMEOUT_MS, 0);
- 		if (err)
- 			goto err_free_fb_out;
- 
-diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-index 4dde9ee786b4..d23baa364246 100644
---- a/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-+++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
-@@ -724,7 +724,7 @@ static int vdec_h264_slice_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
- 	/* wait decoder done interrupt */
- 	err = mtk_vcodec_wait_for_done_ctx(inst->ctx,
- 					   MTK_INST_IRQ_RECEIVED,
--					   WAIT_INTR_TIMEOUT_MS);
-+					   WAIT_INTR_TIMEOUT_MS, 0);
- 	if (err)
- 		goto err_free_fb_out;
- 	vpu_dec_end(vpu);
-diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp8_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp8_if.c
-index e5393f841080..88c046731754 100644
---- a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp8_if.c
-+++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp8_if.c
-@@ -488,7 +488,7 @@ static int vdec_vp8_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
- 
- 	/* wait decoder done interrupt */
- 	mtk_vcodec_wait_for_done_ctx(inst->ctx, MTK_INST_IRQ_RECEIVED,
--				     WAIT_INTR_TIMEOUT_MS);
-+				     WAIT_INTR_TIMEOUT_MS, 0);
- 
- 	if (inst->vsi->load_data)
- 		load_dec_table(inst);
-diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
-index 71cdc3ddafcb..70b8383f7c8e 100644
---- a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
-+++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
-@@ -539,7 +539,7 @@ static bool vp9_wait_dec_end(struct vdec_vp9_inst *inst)
- 
- 	mtk_vcodec_wait_for_done_ctx(inst->ctx,
- 			MTK_INST_IRQ_RECEIVED,
--			WAIT_INTR_TIMEOUT_MS);
-+			WAIT_INTR_TIMEOUT_MS, 0);
- 
- 	if (ctx->irq_status & MTK_VDEC_IRQ_STATUS_DEC_SUCCESS)
- 		return true;
-diff --git a/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c b/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
-index b6a4f2074fa5..9ae1bd8dbc32 100644
---- a/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
-+++ b/drivers/media/platform/mtk-vcodec/venc/venc_h264_if.c
-@@ -335,7 +335,7 @@ static unsigned int h264_enc_wait_venc_done(struct venc_h264_inst *inst)
- 	struct mtk_vcodec_ctx *ctx = (struct mtk_vcodec_ctx *)inst->ctx;
- 
- 	if (!mtk_vcodec_wait_for_done_ctx(ctx, MTK_INST_IRQ_RECEIVED,
--					  WAIT_INTR_TIMEOUT_MS)) {
-+					  WAIT_INTR_TIMEOUT_MS, 0)) {
- 		irq_status = ctx->irq_status;
- 		mtk_vcodec_debug(inst, "irq_status %x <-", irq_status);
- 	}
-diff --git a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-index 8267a9c4fd25..f96564277577 100644
---- a/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-+++ b/drivers/media/platform/mtk-vcodec/venc/venc_vp8_if.c
-@@ -222,7 +222,7 @@ static unsigned int vp8_enc_wait_venc_done(struct venc_vp8_inst *inst)
- 	struct mtk_vcodec_ctx *ctx = (struct mtk_vcodec_ctx *)inst->ctx;
- 
- 	if (!mtk_vcodec_wait_for_done_ctx(ctx, MTK_INST_IRQ_RECEIVED,
--					  WAIT_INTR_TIMEOUT_MS)) {
-+					  WAIT_INTR_TIMEOUT_MS, 0)) {
- 		irq_status = ctx->irq_status;
- 		mtk_vcodec_debug(inst, "isr return %x", irq_status);
- 	}
--- 
-2.25.1
+> >+static bool arch_lbr_ctl_is_valid(struct kvm_vcpu *vcpu, u64 ctl)
+> >+{
+> >+	unsigned int eax, ebx, ecx, edx;
+> >+
+> >+	if (!kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+> >+		return false;
+> >+
+> >+	cpuid_count(0x1c, 0, &eax, &ebx, &ecx, &edx);
+> >+	if (!(ebx & BIT(0)) && (ctl & ARCH_LBR_CTL_CPL))
+> >+		return false;
+> >+	if (!(ebx & BIT(2)) && (ctl & ARCH_LBR_CTL_STACK))
+> >+		return false;
+> >+	if (!(ebx & BIT(1)) && (ctl & ARCH_LBR_CTL_BRN_MASK))
+> >+		return false;
+> >+
+> >+	return !(ctl & ~KVM_ARCH_LBR_CTL_MASK);
+> >+}
+> 
+> Please check it with the *guest* cpuid entry.
+If KVM "trusts" user-space, then check with guest cpuid is OK.
+But if user-space enable excessive controls, then check against guest
+cpuid could make things mess.
 
+> 
+> And it should remove the bits that are not supported by x86_pmu.lbr_ctl_mask before
+> vmcs_write64(...) if the guest value is a superset of the host value with
+> warning message.
+Then I think it makes more sense to check against x86_pmu.lbr_xxx masks in above function
+for compatibility. What do you think of it?
+> 
+> >+
+> >  static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >  {
+> >  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> >@@ -392,6 +414,9 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >  	case MSR_ARCH_LBR_DEPTH:
+> >  		msr_info->data = lbr_desc->records.nr;
+> >  		return 0;
+> >+	case MSR_ARCH_LBR_CTL:
+> >+		msr_info->data = vmcs_read64(GUEST_IA32_LBR_CTL);
+> >+		return 0;
+> >  	default:
+> >  		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+> >  		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> >  		vmcs_write64(GUEST_IA32_DEBUGCTL, data);
+
+[...]
+
+> >  		if (intel_pmu_lbr_is_enabled(vcpu) && !to_vmx(vcpu)->lbr_desc.event &&
+> >  		    (data & DEBUGCTLMSR_LBR))
+> >@@ -4441,6 +4448,8 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+> >  		vmcs_writel(GUEST_SYSENTER_ESP, 0);
+> >  		vmcs_writel(GUEST_SYSENTER_EIP, 0);
+> >  		vmcs_write64(GUEST_IA32_DEBUGCTL, 0);
+> >+		if (static_cpu_has(X86_FEATURE_ARCH_LBR))
+> >+			vmcs_write64(GUEST_IA32_LBR_CTL, 0);
+> 
+> Please update dump_vmcs() to dump GUEST_IA32_LBR_CTL as well.
+OK, will add it.
+> 
+> How about update the load_vmcs12_host_state() for GUEST_IA32_LBR_CTL
+> since you enabled the nested case in this patch set ?
+No, I didn't enable nested Arch LBR but unblocked some issues for nested case.
+> 
+> >  	}
+> >  	kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+> >
