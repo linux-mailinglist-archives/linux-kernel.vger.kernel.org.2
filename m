@@ -2,122 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692243E82CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C2C3E81AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237044AbhHJSSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240411AbhHJSPz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:15:55 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A33C04E093;
-        Tue, 10 Aug 2021 10:53:28 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id b7so31495027edu.3;
-        Tue, 10 Aug 2021 10:53:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QM3H90oSp2wbFz4Ss9RbrFJEXcRByIUH4Fe/bMzcbEo=;
-        b=e32YB+FaC/fXHtxLd1eNUxJjJoNjb9C1/YiTwNqROQinvJ5rS9lTSl/+XQBe1A6aVc
-         Kb/kjt4JvmpHNxJht9Ryk6VjP+CXBrBB6hJ0PV+fDL/PQh3OLg+3G5QWdBqf10mhsvRh
-         V6TPxLoSi35sUuT5+KuDFDow62iqXGA8skm7R8NfOCG049S06UkWo9n4w+uA3n0P+vb5
-         HvgOiGRzGi/pZA+U7X2azFxArlYIvbB6AhjbPO6ED5bhr8PxnbG6DHwOdMsSlPPBqXCv
-         6K34V67xddauYia8uA4cbFU1RD315q+BHqzn4oLGrrxz3rd+t8tjZbmXF8HLEmNPTaGH
-         Ma6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QM3H90oSp2wbFz4Ss9RbrFJEXcRByIUH4Fe/bMzcbEo=;
-        b=UVFRb3PACIt0c2dz0ybQmLTlu52oKWd9PAAUnvBMUFqwCApDTl4f+TEBquzg/Bxh3F
-         2VidK8QAuWodW0x8YqdEp7SNgpVpcwFxePaRMFrADKYziZEnpM/a+LnPxP5ak6+v4Owa
-         PbM02JipG1mYn/NxoEeZIhixbmhhkdCZYTEXIT5zsDAbxmtnDv9BV3tfxVPBONGMxDZO
-         W1rjWkuuA9b7ZUxs6m1ATAljGgZJF/ETfIHnolTB4O4t8mNgMDG4o+NMW3BatFyUVvOA
-         slAOOT5Y9rFsgs0oX9qgdLzOsXEwhzJJzJox4p3x9k9PCfFpYz8Z/irATWECgoqNuTEa
-         ix1Q==
-X-Gm-Message-State: AOAM530gzEAeoYVSOanAzE2amZxHDVbzqknJR1rWS7z9JTWa7o85AFlQ
-        Y/21VotY+ZZmh/sHCSg6qIM=
-X-Google-Smtp-Source: ABdhPJxOTqCMoM0wWJ0eO0tUOMox8i4MBJbE5kqat3SnZ1/q69HKWPJeRayBdf48ZJkNl3Dg5YBxBA==
-X-Received: by 2002:a50:8fe1:: with SMTP id y88mr6326667edy.101.1628618007322;
-        Tue, 10 Aug 2021 10:53:27 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id nb39sm7106805ejc.95.2021.08.10.10.53.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 10:53:26 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 20:53:24 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Andre Valentin <avalentin@marcant.net>
-Cc:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Jonathan McDowell <noodles@earth.li>,
-        Michal =?utf-8?B?Vm9rw6HEjQ==?= <vokac.m@gmail.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
-        Hannu Nyman <hannu.nyman@iki.fi>,
-        Imran Khan <gururug@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Nick Lowe <nick.lowe@gmail.com>
-Subject: Re: [RFC net-next 2/3] net: dsa: qca8k: enable assisted learning on
- CPU port
-Message-ID: <20210810175324.ijodmycvxfnwu4yf@skbuf>
-References: <20210807120726.1063225-1-dqfext@gmail.com>
- <20210807120726.1063225-3-dqfext@gmail.com>
- <20210807222555.y6r7qxhdyy6d3esx@skbuf>
- <20210808160503.227880-1-dqfext@gmail.com>
- <0072b721-7520-365d-26ef-a2ad70117ac2@marcant.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0072b721-7520-365d-26ef-a2ad70117ac2@marcant.net>
+        id S237635AbhHJSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:01:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24401 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234787AbhHJR4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:56:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628618145; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ThLxtpQqhdsL+CLD5jVyeXmDYchU5hAG9rZ/ctQ0Kx8=; b=ZhRHgPP+bRW6MvBmPFeaHn4EFqLNLYERuOu14YCcMg2UUBw2XCTHUSGsTyxcjUOdVrRCen1Q
+ xQLNBUczxlTdMpumjqgOB6yRqWaxdx3xjp5IfLLnLsvj4A3lFISlfbjJdSYVxyQ815v/uB7Q
+ SevmpwHl3DhzhkU1cr2lJgdrpsM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6112bd91b14e7e2ecb93a770 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 17:55:29
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D889CC2E869; Tue, 10 Aug 2021 17:55:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A122C2E869;
+        Tue, 10 Aug 2021 17:55:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5A122C2E869
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
+From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+Subject: [PATCH V6 0/7] Add driver support for Data Capture and Compare Engine(DCC) for SM8150,SC7280,SC7180,SDM845
+Date:   Tue, 10 Aug 2021 23:24:36 +0530
+Message-Id: <cover.1628617260.git.schowdhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 07:27:05PM +0200, Andre Valentin wrote:
-> On Sun, Aug 08, 2021 at 1805, DENG Qingfang wrote:
-> > On Sun, Aug 08, 2021 at 01:25:55AM +0300, Vladimir Oltean wrote:
-> >> On Sat, Aug 07, 2021 at 08:07:25PM +0800, DENG Qingfang wrote:
-> >>> Enable assisted learning on CPU port to fix roaming issues.
-> >>
-> >> 'roaming issues' implies to me it suffered from blindness to MAC
-> >> addresses learned on foreign interfaces, which appears to not be true
-> >> since your previous patch removes hardware learning on the CPU port
-> >> (=> hardware learning on the CPU port was supported, so there were no
-> >> roaming issues)
->
-> The issue is with a wifi AP bridged into dsa and previously learned
-> addresses.
->
-> Test setup:
-> We have to wifi APs a and b(with qca8k). Client is on AP a.
->
-> The qca8k switch in AP b sees also the broadcast traffic from the client
-> and takes the address into its fdb.
->
-> Now the client roams to AP b.
-> The client starts DHCP but does not get an IP. With tcpdump, I see the
-> packets going through the switch (ap->cpu port->ethernet port) and they
-> arrive at the DHCP server. It responds, the response packet reaches the
-> ethernet port of the qca8k, and is not forwarded.
->
-> After about 3 minutes the fdb entry in the qca8k on AP b is
-> "cleaned up" and the client can immediately get its IP from the DHCP server.
->
-> I hope this helps understanding the background.
+DCC(Data Capture and Compare) is a DMA engine designed for debugging purposes.In case of a system
+crash or manual software triggers by the user the DCC hardware stores the value at the register
+addresses which can be used for debugging purposes.The DCC driver provides the user with sysfs
+interface to configure the register addresses.The options that the DCC hardware provides include
+reading from registers,writing to registers,first reading and then writing to registers and looping
+through the values of the same register.
 
-How does this differ from what is described in commit d5f19486cee7
-("net: dsa: listen for SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign
-bridge neighbors")?
+In certain cases a register write needs to be executed for accessing the rest of the registers,
+also the user might want to record the changing values of a register with time for which he has the
+option to use the loop feature.
+
+The options mentioned above are exposed to the user by sysfs files once the driver is probed.The
+details and usage of this sysfs files are documented in Documentation/ABI/testing/sysfs-driver-dcc.
+
+As an example let us consider a couple of debug scenarios where DCC has been proved to be effective
+for debugging purposes:-
+
+i)TimeStamp Related Issue
+
+On SC7180, there was a coresight timestamp issue where it would occasionally be all 0 instead of proper
+timestamp values.
+
+Proper timestamp:
+Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x13004d8f5b7aa; CC=0x9e
+
+Zero timestamp:
+Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
+
+Now this is a non-fatal issue and doesn't need a system reset, but still needs
+to be rootcaused and fixed for those who do care about coresight etm traces.
+Since this is a timestamp issue, we would be looking for any timestamp related
+clocks and such.
+
+o we get all the clk register details from IP documentation and configure it
+via DCC config syfs node. Before that we set the current linked list.
+
+/* Set the current linked list */
+echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
+
+/* Program the linked list with the addresses */
+echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
+..... and so on for other timestamp related clk registers
+
+/* Other way of specifying is in "addr len" pair, in below case it
+specifies to capture 4 words starting 0x10C004 */
+
+echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
+
+/* Enable DCC */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
+
+/* Run the timestamp test for working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram1.bin
+
+/* Run the timestamp test for non-working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram2.bin
+
+Get the parser from [1] and checkout the latest branch.
+
+/* Parse the SRAM bin */
+python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
+python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
+
+Sample parsed output of dcc_sram1.bin:
+
+<hwioDump version="1">
+        <timestamp>03/14/21</timestamp>
+            <generator>Linux DCC Parser</generator>
+                <chip name="None" version="None">
+                <register address="0x0010c004" value="0x80000000" />
+                <register address="0x0010c008" value="0x00000008" />
+                <register address="0x0010c00c" value="0x80004220" />
+                <register address="0x0010c010" value="0x80000000" />
+            </chip>
+    <next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
+</hwioDump>
+
+ii)NOC register errors
+
+A particular class of registers called NOC which are functional registers was reporting
+errors while logging the values.To trace these errors the DCC has been used effectively.
+The steps followed were similar to the ones mentioned above.
+In addition to NOC registers a few other dependent registers were configured in DCC to
+monitor it's values during a crash. A look at the dependent register values revealed that
+the crash was happening due to a secured access to one of these dependent registers.
+All these debugging activity and finding the root cause was achieved using DCC.
+
+DCC parser is available at the following open source location
+
+https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
+
+Changes in v6:
+
+*Added support in the dcc driver to handle multiple Qualcomm SoCs including SC7180,SC7280,SDM845 
+ along with existing SM8150.
+ 
+*Added the support node in the respective device tree files for SC7180,SC7280,SDM845.
+
+Souradeep Chowdhury (7):
+  dt-bindings: Added the yaml bindings for DCC
+  soc: qcom: dcc:Add driver support for Data Capture and Compare
+    unit(DCC)
+  MAINTAINERS: Add the entry for DCC(Data Capture and Compare) driver
+    support
+  arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support
+    node
+  arm64: dts: qcom: sc7280: Add Data Capture and Compare(DCC) support
+    node
+  arm64: dts: qcom: sc7180: Add Data Capture and Compare(DCC) support
+    node
+  arm64: dts: qcom: sdm845: Add Data Capture and Compare(DCC) support
+    node
+
+ Documentation/ABI/testing/sysfs-driver-dcc         |  114 ++
+ .../devicetree/bindings/arm/msm/qcom,dcc.yaml      |   43 +
+ MAINTAINERS                                        |    8 +
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |    6 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |    6 +
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |    6 +
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |    6 +
+ drivers/soc/qcom/Kconfig                           |    8 +
+ drivers/soc/qcom/Makefile                          |    1 +
+ drivers/soc/qcom/dcc.c                             | 1549 ++++++++++++++++++++
+ 10 files changed, 1747 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+ create mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+ create mode 100644 drivers/soc/qcom/dcc.c
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
