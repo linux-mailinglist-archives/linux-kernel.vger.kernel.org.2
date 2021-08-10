@@ -2,89 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFD53E59D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCAC3E59E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238473AbhHJMZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:25:02 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:28510 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229764AbhHJMZA (ORCPT
+        id S240564AbhHJM0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240271AbhHJMZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:25:00 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17AC6Z9N023924;
-        Tue, 10 Aug 2021 05:24:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=2OwKwlT4M0KGaXC2/f5VCihT6aa2tg7mp2yF9377/4U=;
- b=NVrYoOCtHTR4LwVahcXcR1duLrO4TJjWZnTUE6BhmhXAmA1w8TGtqKpd43pqmUbxdKoR
- N+B3OEoz5LKyrmH4oaPtCgIC6xzOr5SaUAVUNLNF91YCKQMy89LTlu6EE57Vji9nn/Qc
- c0vcH8ZYOrj7AE7WczQYaUWpAXgGe74pKrkdmraEJyDfkoIYdEpOxnRojCQn+bd1cJBd
- 1dXKSyFNa16LKt0/UnHfXT9u3ZDcK/Q30E9DuETNNiUWv5SaR/ITgpw3OCUPeZER6SeE
- rwJnBAkeT0qR6CDEyzHTOlk1FhxT5+2iaO2IguPqUy3uHUDv4V7Vxzsh3SEc178/WSHv XQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3abfu2hwhn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 05:24:37 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 10 Aug
- 2021 05:24:35 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 10 Aug 2021 05:24:35 -0700
-Received: from hyd1584.marvell.com (unknown [10.29.37.82])
-        by maili.marvell.com (Postfix) with ESMTP id 6976E5E687E;
-        Tue, 10 Aug 2021 05:24:34 -0700 (PDT)
-From:   George Cherian <george.cherian@marvell.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
-CC:     <bhelgaas@google.com>, George Cherian <george.cherian@marvell.com>
-Subject: [PATCH] PCI: Add ACS quirk for Cavium multi-function devices
-Date:   Tue, 10 Aug 2021 17:54:25 +0530
-Message-ID: <20210810122425.1115156-1-george.cherian@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 10 Aug 2021 08:25:58 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA82C0613D3;
+        Tue, 10 Aug 2021 05:25:37 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so4045256pjb.3;
+        Tue, 10 Aug 2021 05:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KL/EO4tx0TgX51zBlp9/CRNMvpFlpR97J3ss4EOthZ4=;
+        b=Ku17ZPCf0pl6UbjbC+OHRNn+ACNBAQsVDchdBbllR6na7JEZVKeCa/0V92DnHTF4iu
+         ltIgOtvQG3ChEWFKQGS+ZCmo2X5SwNpdvKDzPZ6w0gyO5dvGz4wCAvWk5byjwwrwUcRC
+         5GXqtBHSfAX3q8Kpy97hYWlFUn1WyjEzTjjzbz4eIMRpPJ/3pBUQT0IeP+6w+Os/n12x
+         G3057aJUPMJ9DEYkyOBYuaABfzqFcCP+cS+hRvjLg1IN1XmahkLLELPX+1i2xq4zJ7oh
+         O3GJi71MYUghn8gllMllI0c3neKMWm0JGzHgfC7goYCwLqZcdx+lapv2oLk7A8os2kge
+         ueiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KL/EO4tx0TgX51zBlp9/CRNMvpFlpR97J3ss4EOthZ4=;
+        b=E0JZUG4q36mSikq5Ex9Cbju8Wb0OSef/1tbuDcBfHD4016KgnE1Elpgbx2k2kuAJok
+         nZ45W5Dn4EfSwngwo/aEx8WXEgJ0LSvf1wYuoNlzlc2dCrSTJ5jx8vt02t6GWFfg6LyT
+         +T4ww2nSo23VXQ05QrG5F2P0+LQ3xF2jMh8sjpaEDixld5RKYfCI1Zn6/spMvSkDujsr
+         ysr8RkpZ3iXAD25zEXvXZgPNzEYHVa1EFpUWZhSomQcgURvnXteqs3nxFxqwWP/aIi+y
+         Da2dyHx76YGd0Z93SW1q9LXduuL9he6Hxs5q213ZCccrSNJblWbTl8eM0ozBTOFuRMpU
+         Ztww==
+X-Gm-Message-State: AOAM5317Ehxq4bjpl4shswiO7XMrA51+ebpja3YVwFQRd+26RO0aPYW/
+        pnW+2OQvrIPGNIpS2keZqxw=
+X-Google-Smtp-Source: ABdhPJxebFlgnG0NPPgyE6OjM0zu1XGnchtqFN1rLMZ/uNLQlKSp1bY7DCu3pvqaqyd/DJ1LphsUcQ==
+X-Received: by 2002:a63:e116:: with SMTP id z22mr254278pgh.361.1628598336671;
+        Tue, 10 Aug 2021 05:25:36 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id c14sm27323452pgv.86.2021.08.10.05.25.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 05:25:35 -0700 (PDT)
+Subject: Re: [PATCH V3 03/13] x86/HV: Add new hvcall guest address host
+ visibility support
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-4-ltykernel@gmail.com>
+ <20210810110359.i4qodw7h36zrsicp@liuwe-devbox-debian-v2>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <3a888810-69cf-fa4d-b374-2053432e1e56@gmail.com>
+Date:   Tue, 10 Aug 2021 20:25:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: HIYwT2w7tNtda6uSNIWHB5eO3zC1CKQF
-X-Proofpoint-GUID: HIYwT2w7tNtda6uSNIWHB5eO3zC1CKQF
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-10_05:2021-08-10,2021-08-10 signatures=0
+In-Reply-To: <20210810110359.i4qodw7h36zrsicp@liuwe-devbox-debian-v2>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Cavium endpoints are implemented as multi-function devices
-without ACS capability, but they actually don't support peer-to-peer
-transactions.
+On 8/10/2021 7:03 PM, Wei Liu wrote:
+>> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+>> index 0bb4d9ca7a55..b3683083208a 100644
+>> --- a/arch/x86/hyperv/hv_init.c
+>> +++ b/arch/x86/hyperv/hv_init.c
+>> @@ -607,6 +607,12 @@ EXPORT_SYMBOL_GPL(hv_get_isolation_type);
+>>   
+>>   bool hv_is_isolation_supported(void)
+>>   {
+>> +	if (!cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
+>> +		return 0;
+> Nit: false instead of 0.
+> 
 
-Add ACS quirks to declare DMA isolation.
+OK. Will fix in the next version.
 
-Apply te quirk for following devices
-1. BGX device found on Octeon-TX (8xxx)
-2. CGX device found on Octeon-TX2 (9xxx)
-3. RPM device found on Octeon-TX3 (10xxx)
+>> +int hv_mark_gpa_visibility(u16 count, const u64 pfn[],
+>> +			   enum hv_mem_host_visibility visibility)
+>> +{
+>> +	struct hv_gpa_range_for_visibility **input_pcpu, *input;
+>> +	u16 pages_processed;
+>> +	u64 hv_status;
+>> +	unsigned long flags;
+>> +
+>> +	/* no-op if partition isolation is not enabled */
+>> +	if (!hv_is_isolation_supported())
+>> +		return 0;
+>> +
+>> +	if (count > HV_MAX_MODIFY_GPA_REP_COUNT) {
+>> +		pr_err("Hyper-V: GPA count:%d exceeds supported:%lu\n", count,
+>> +			HV_MAX_MODIFY_GPA_REP_COUNT);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	local_irq_save(flags);
+>> +	input_pcpu = (struct hv_gpa_range_for_visibility **)
+>> +			this_cpu_ptr(hyperv_pcpu_input_arg);
+>> +	input = *input_pcpu;
+>> +	if (unlikely(!input)) {
+>> +		local_irq_restore(flags);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	input->partition_id = HV_PARTITION_ID_SELF;
+>> +	input->host_visibility = visibility;
+>> +	input->reserved0 = 0;
+>> +	input->reserved1 = 0;
+>> +	memcpy((void *)input->gpa_page_list, pfn, count * sizeof(*pfn));
+>> +	hv_status = hv_do_rep_hypercall(
+>> +			HVCALL_MODIFY_SPARSE_GPA_PAGE_HOST_VISIBILITY, count,
+>> +			0, input, &pages_processed);
+>> +	local_irq_restore(flags);
+>> +
+>> +	if (!(hv_status & HV_HYPERCALL_RESULT_MASK))
+>> +		return 0;
+>> +
+>> +	return hv_status & HV_HYPERCALL_RESULT_MASK;
+> Joseph introduced a few helper functions in 753ed9c95c37d. They will
+> make the code simpler.
 
-Signed-off-by: George Cherian <george.cherian@marvell.com>
----
- drivers/pci/quirks.c | 4 ++++
- 1 file changed, 4 insertions(+)
+OK. Will update in the next version.
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 6d74386eadc2..076932018494 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4840,6 +4840,10 @@ static const struct pci_dev_acs_enabled {
- 	{ 0x10df, 0x720, pci_quirk_mf_endpoint_acs }, /* Emulex Skyhawk-R */
- 	/* Cavium ThunderX */
- 	{ PCI_VENDOR_ID_CAVIUM, PCI_ANY_ID, pci_quirk_cavium_acs },
-+	/* Cavium multi-function devices */
-+	{ PCI_VENDOR_ID_CAVIUM, 0xA026, pci_quirk_mf_endpoint_acs },
-+	{ PCI_VENDOR_ID_CAVIUM, 0xA059, pci_quirk_mf_endpoint_acs },
-+	{ PCI_VENDOR_ID_CAVIUM, 0xA060, pci_quirk_mf_endpoint_acs },
- 	/* APM X-Gene */
- 	{ PCI_VENDOR_ID_AMCC, 0xE004, pci_quirk_xgene_acs },
- 	/* Ampere Computing */
--- 
-2.25.1
-
+Thanks.
