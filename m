@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAC13E56DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADE63E56E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239043AbhHJJ3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:29:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46662 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239040AbhHJJ3e (ORCPT
+        id S235043AbhHJJaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232955AbhHJJaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:29:34 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        Tue, 10 Aug 2021 05:30:24 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADADFC0613D3;
+        Tue, 10 Aug 2021 02:30:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 818EF2200C;
-        Tue, 10 Aug 2021 09:29:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628587751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DwWkqfGxBvOom/EUoDetOXPBY1+wkqS9nBtbruSLbt4=;
-        b=TYkFJqHBrOfHe53WnsCxFqbJQE6pyPpwQsQSI1LmBjRLos7jjopwmlffYUCZmzfasFj2Z2
-        125iAHWwdKXsRc098b/Vz1dyuusO9MWyqHPsZ/A8mZl7vEdAPaR7Lr/ucfGa+N/n5v25w3
-        NYpg9OL8fowQCe1EG1OOV8zK/bXNSk8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628587751;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DwWkqfGxBvOom/EUoDetOXPBY1+wkqS9nBtbruSLbt4=;
-        b=YgPssJJiJoy/SuvrGM9aQ8IpGhhd7He5kyZX1zF6ZkYDFGYHUuX25pVRTrHZ5DUr04WDqJ
-        ZRRBQPUsgeqterAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7072D13651;
-        Tue, 10 Aug 2021 09:29:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id eUcyG+dGEmEAaAAAGKfGzw
-        (envelope-from <osalvador@suse.de>); Tue, 10 Aug 2021 09:29:11 +0000
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkSN82zl9z9sX5;
+        Tue, 10 Aug 2021 19:30:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628587800;
+        bh=7tvEHHo6wFA/9wFCZ+yXT1VQN4HCIabjZwE1lmKuMNo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EJpWISnjQkw6oYcqkslG7K9+vUmAfYzdnNsujLGlx8jPiqmXeIITgkZXXZi/o1xTt
+         vt+CL0k9pMt1gT5bUGyyqg38Z1t8fM3ZqUK+Dyh1y+ixMLUqsKAnn/u2LVgtJG4UKO
+         MtbQwb6XFOzM4f807BD7IQp61k8LPBAyMTPa3dmHbhsV0F7X7q4hjBIIDanvFEdbBf
+         Zoi76BVBgFKE23iC59/w6om4HAwOVluSBGuBXUn3Xf2JJgdPkg/MdmLIcDRBZoM5+F
+         kb69VxwraHjv0Wsz9asdrQ/kFrLdbydeLHSWKPAyk5g7HbmrIlTq8A67g0oGN4rjAL
+         n+px7at3NNusQ==
+Date:   Tue, 10 Aug 2021 19:29:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        "William A. Kennington III" <wak@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning from Linus' tree
+Message-ID: <20210810192959.05d6e588@canb.auug.org.au>
+In-Reply-To: <20210720173142.00a375c5@canb.auug.org.au>
+References: <20210601172026.6bc0a96f@canb.auug.org.au>
+        <20210708122544.011171b3@canb.auug.org.au>
+        <20210720173142.00a375c5@canb.auug.org.au>
 MIME-Version: 1.0
-Date:   Tue, 10 Aug 2021 11:29:11 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 1/3] hugetlb: simplify prep_compound_gigantic_page ref
- count racing code
-In-Reply-To: <20210809184832.18342-2-mike.kravetz@oracle.com>
-References: <20210809184832.18342-1-mike.kravetz@oracle.com>
- <20210809184832.18342-2-mike.kravetz@oracle.com>
-User-Agent: Roundcube Webmail
-Message-ID: <19f47b787269b95bb76d81bb1e6bfcc3@suse.de>
-X-Sender: osalvador@suse.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/triqxUS9/e=uPv==hqm8FPJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-09 20:48, Mike Kravetz wrote:
-> Code in prep_compound_gigantic_page waits for a rcu grace period if it
-> notices a temporarily inflated ref count on a tail page.  This was due
-> to the identified potential race with speculative page cache references
-> which could only last for a rcu grace period.  This is overly 
-> complicated
-> as this situation is VERY unlikely to ever happen.  Instead, just 
-> quickly
-> return an error.
-> Also, only print a warning in prep_compound_gigantic_page instead of
-> multiple callers.
+--Sig_/triqxUS9/e=uPv==hqm8FPJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The above makes sense to me.
-My only question would be: gather_bootmem_prealloc() is an __init 
-function.
-Can we have speculative refcounts due to e.g: pagecache at that early 
-stage?
-I think we cannot, but I am not really sure.
+Hi all,
 
-We might be able to remove that else() in case we cannot have such 
-scenarios.
+On Tue, 20 Jul 2021 17:31:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Thu, 8 Jul 2021 12:25:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+> >
+> > On Tue, 1 Jun 2021 17:20:26 +1000 Stephen Rothwell <sfr@canb.auug.org.a=
+u> wrote: =20
+> > >
+> > > When building Linus' tree, today's linux-next build (htmldocs) produc=
+ed
+> > > this warning:
+> > >=20
+> > > include/linux/spi/spi.h:671: warning: Function parameter or member 'd=
+evm_allocated' not described in 'spi_controller'
+> > >=20
+> > > Introduced by commit
+> > >=20
+> > >   794aaf01444d ("spi: Fix use-after-free with devm_spi_alloc_*")
+> > >=20
+> > > This has been around for a while (at least v5.13-rc1 and next-2021040=
+9).
+> > > Sorry I did not report it earlier.   =20
+> >=20
+> > I am still getting this warning. =20
+>=20
+> I am still getting this warning.  It is now on line 675.
 
+Now line 672 ...
 
--- 
-Oscar Salvador
-SUSE L3
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/triqxUS9/e=uPv==hqm8FPJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESRxcACgkQAVBC80lX
+0GzEwwgAmvRIHoSdTDPqYSNeMHAeBkhJKY8cKL/Qzq28SsW1wzwd8xGeSXAj2JOi
+dEfN214p4101LO9n52s17j59mS4HF0+ecyDJdRWhv7Tkob2ACXCmGrPAVPNClXbM
+5BZoWYgVS4twZAYSbzWgZB+LVXF1xnrQMOJUepLBMkVdXwEbX/QaSlz3kybEU6Kl
+TTLEt3v53AhX3AE+4zhRjK285xuVvUmxLsj9Les4nRSbMrikSRRhN3pbticIVLBw
+IcAvTomQlkigd9nDAYf2oi3yAm45cYGqcf0/chmU/hyVkVroQVhVUYW9gYAa87je
+iyuAuTgffcCdi3o5De8CtDb1HqLY8Q==
+=v52h
+-----END PGP SIGNATURE-----
+
+--Sig_/triqxUS9/e=uPv==hqm8FPJ--
