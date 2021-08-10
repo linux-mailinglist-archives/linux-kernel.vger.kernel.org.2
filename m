@@ -2,113 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D495A3E5719
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B99E3E571C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239150AbhHJJfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:35:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:52084 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234188AbhHJJft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:35:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF9611063;
-        Tue, 10 Aug 2021 02:35:26 -0700 (PDT)
-Received: from [10.57.9.181] (unknown [10.57.9.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F9EB3F718;
-        Tue, 10 Aug 2021 02:35:22 -0700 (PDT)
-Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <6449a61f-a5fc-0b81-65b2-7bf77b8a71aa@arm.com>
- <20210810092705.ctf43hwhzdepmcrv@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <765a5fd5-1109-1af1-b339-624561070890@arm.com>
-Date:   Tue, 10 Aug 2021 10:35:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S239146AbhHJJgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234188AbhHJJgJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:36:09 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D38C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:35:47 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso1499584wmj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=SnObdE2PiNGsfRPS46ERfps2QDWQ5wa/Co24Nmz1JjU=;
+        b=cp/oeAnU7T0jp0ojUWOu943VdAyYxVRio84CZBhy//vwBoDNwzoSMaYu9qpvOzPrRN
+         W768lgBCaFweAhqZFtdUxwD2igKIKKOTiqmJNS4HOIu4zx1QixY1mtSBuIuEiEIc47Vp
+         gMIUJVsmbIWOwYhvFtUy79MDszZQbwHQYkABY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=SnObdE2PiNGsfRPS46ERfps2QDWQ5wa/Co24Nmz1JjU=;
+        b=rkJ0+B7GFOT7HIWVB+o21+q5GgFfKKQeaLaiG5QdpobfnXPejK6TVD77SS7I0tVuio
+         izQqJJY61iUjBoE4FTbVlN1o2njDhhLj+forvJl46zZ+GwBeiTzOrvTEeH9l9N3+Axnl
+         0Mkti9LdzoIAPTdGbQ2ugrwUA8TEl2mwuajUDq1mBDF25zyBx5f/wAkhuoG3hMrlqLJL
+         TJiE5yho8Vnh5zx5kLRdg4khiOAbN5coJjOWMBerori+RznjcnE/dwjmyiz46ZAEan1A
+         aYlSjAvJsass2A7IPPo0Lc/BXoSJqq9bA8LQzhaSpzg0obrvGeWkDp+TYQmDOnRn1EPL
+         otxw==
+X-Gm-Message-State: AOAM531VRd/pWD8DE7ThgRM0Djod932brp0Srxa8mYojo+lJo69n22DT
+        46473lOeGluOYvi89OONTfRBOA==
+X-Google-Smtp-Source: ABdhPJyvRhUq0NEH1QoEWA28YXT5OY37p60cM+3r20SU+7tVWsNXreGNSoTdzpkn9DfRdlOiMDeq/w==
+X-Received: by 2002:a1c:95:: with SMTP id 143mr21623788wma.29.1628588146347;
+        Tue, 10 Aug 2021 02:35:46 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t8sm23805252wmj.5.2021.08.10.02.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 02:35:45 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 11:35:43 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
+Message-ID: <YRJIb8ofHe8r5g1z@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        list@opendingux.net, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210805192110.90302-1-paul@crapouillou.net>
+ <20210805192110.90302-3-paul@crapouillou.net>
+ <YQw9hjZll4QmYVLX@kroah.com>
+ <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
+ <YQ0MU/GcLkPLiy5C@kroah.com>
+ <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <20210810092705.ctf43hwhzdepmcrv@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/10/21 10:27 AM, Viresh Kumar wrote:
-> On 10-08-21, 10:17, Lukasz Luba wrote:
->> Hi Viresh,
->>
->> I like the idea, only small comments here in the cover letter.
->>
->> On 8/10/21 8:36 AM, Viresh Kumar wrote:
->>> Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
->>> with the EM core on their behalf. This allows us to get rid of duplicated code
->>> in the drivers and fix the unregistration part as well, which none of the
->>> drivers have done until now.
->>
->> The EM is never freed for CPUs by design. The unregister function was
->> introduced for devfreq devices.
+On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
+> Hi Greg,
 > 
-> I see. So if a cpufreq driver unregisters and registers again, it will
-> be required to use the entries created by the registration itself,
-> right ? Technically speaking, it is better to unregister and free any
-> related resources and parse everything again.
+> Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> a écrit :
+> > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
+> > >  Hi Greg,
+> > > 
+> > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
+> > >  <gregkh@linuxfoundation.org> a écrit :
+> > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil wrote:
+> > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
+> > > disabled in
+> > >  > > the
+> > >  > >  config, we want the ingenic-drm driver to be able to probe
+> > >  > > nonetheless
+> > >  > >  with the other devices (e.g. internal LCD panel) that are
+> > > enabled.
+> > >  > >
+> > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  > >  ---
+> > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 ++++++++++++
+> > >  > >   1 file changed, 12 insertions(+)
+> > >  > >
+> > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
+> > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
+> > > device
+> > >  > > *dev, bool has_components)
+> > >  > >   	for (i = 0; ; i++) {
+> > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
+> > > &panel,
+> > >  > > &bridge);
+> > >  > >   		if (ret) {
+> > >  > >  +			/*
+> > >  > >  +			 * Workaround for the case where the drivers for the
+> > >  > >  +			 * remote devices are not enabled. When that happens,
+> > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
+> > >  > >  +			 * endlessly, which prevents the ingenic-drm driver from
+> > >  > >  +			 * working at all.
+> > >  > >  +			 */
+> > >  > >  +			if (ret == -EPROBE_DEFER) {
+> > >  > >  +				ret = driver_deferred_probe_check_state(dev);
+> > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
+> > >  > >  +					continue;
+> > >  > >  +			}
+> > >  >
+> > >  > So you are mucking around with devices on other busses within this
+> > >  > driver?  What could go wrong?  :(
+> > > 
+> > >  I'm doing the same thing as everybody else. This is the DRM driver,
+> > > and
+> > >  there is a driver for the external HDMI chip which gives us a DRM
+> > > bridge
+> > >  that we can obtain from the device tree.
+> > 
+> > But then why do you need to call this function that is there for a bus,
+> > not for a driver.
 > 
-> Lets say, just for fun, I want to test two copies of a cpufreq driver
-
-It's good that it's just for fun ;)
-
-> (providing different set of freq-tables). I build both of them as
-> modules, insert the first version, remove it, insert the second one.
-> Ideally, this should just work as expected. But I don't think it will
-> in this case as you never parse the EM stuff again.
-
-The EM is directly used by scheduler in the hot-path, there are no
-checks even if the EM if for CPUs. We are sure it's is for CPUs and
-is always there for all CPUs.
-
-I'm currently working on a EM v2 which would have stronger mechanisms
-and do better job in this field. The patches are under internal review
-and hopefully ready to post by the end of month.
-
+> The documentation disagrees with you :)
 > 
-> Again, since the routine is there already, I think it is better/fine
-> to just use it.
+> And, if that has any weight, this solution was proposed by Rob.
+> 
+> > >  > Please use the existing driver core functionality for this type of
+> > >  > thing, it is not unique, no need for this function to be called.
+> > > 
+> > >  I'm not sure you understand what I'm doing here. This driver calls
+> > >  drm_of_find_panel_or_bridge(), without guarantee that the driver
+> > > for the
+> > >  remote device (connected via DT graph) has been enabled in the
+> > > kernel
+> > >  config. In that case it will always return -EPROBE_DEFER and the
+> > > ingenic-drm
+> > >  driver will never probe.
+> > > 
+> > >  This patch makes sure that the driver can probe if the HDMI driver
+> > > has been
+> > >  disabled in the kernel config, nothing more.
+> > 
+> > That should not be an issue as you do not care if the config is enabled,
+> > you just want to do something in the future if the driver shows up,
+> > right?
+> 
+> Well, the DRM subsystem doesn't really seem to handle hotplug of hardware.
+> Right now all the drivers for the connected hardware need to probe before
+> the main DRM driver. So I need to know that a remote device (connected via
+> DT graph) will never probe.
+> 
+> Give me a of_graph_remote_device_driver_will_never_probe() and I'll use
+> that.
+> 
+> > Much like the device link code, have you looked at that?
+> 
+> I don't see how that would help in any way. The device link code would allow
+> me to set a dependency between the remote hardware (HDMI chip, provider) and
+> the LCD controller (consumer), but I already have that dependency though the
+> DT graph. What I need is a way for the consumer to continue probing if the
+> provider is not going to probe.
 
-True, it doesn't harm, so I commented it in the patch 1/8 that it
-could stay.
+Is this actually a legit use-case?
 
-> 
->>> This would also make the registration with EM core to happen only after policy
->>> is fully initialized, and the EM core can do other stuff from in there, like
->>> marking frequencies as inefficient (WIP). Though this patchset is useful without
->>> that work being done and should be merged nevertheless.
->>>
->>> This doesn't update scmi cpufreq driver for now as it is a special case and need
->>> to be handled differently. Though we can make it work with this if required.
->>
->> The scmi cpufreq driver uses direct EM API, which provides flexibility
->> and should stay as is.
-> 
-> Right, so I left it as is for now.
-> 
+Like you have hw with a bunch of sub-devices linked, and you decided to
+disable some of them, which makes the driver not load.
+
+Why should we care? Is that hdmi driver really that big that we have to
+support this use-case?
+
+I know it's possible to do this, that doesn't mean it's a good idea.
+There's inifinitely more randconfigs that don't boot on my machine here
+for various reasons than the ones that do boot. We don't have "fixes" for
+all of these to make things still work, despite user misconfiguring their
+kernel.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
