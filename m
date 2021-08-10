@@ -2,230 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2DE3E7DDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2452B3E7DE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhHJQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:56:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5575 "EHLO mga11.intel.com"
+        id S229977AbhHJRAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:00:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:59590 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232046AbhHJQza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:55:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="211836517"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="211836517"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 09:55:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="675072191"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Aug 2021 09:55:02 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
-        by linux.intel.com (Postfix) with ESMTP id 2ADBB580922;
-        Tue, 10 Aug 2021 09:55:02 -0700 (PDT)
-Message-ID: <eb2f2024e0f58cffab76d6551eec499420196617.camel@linux.intel.com>
-Subject: Re: [PATCH 08/20] Move Intel P-Unit of pdx86 to intel/ directory to
- improve readability.
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Kate Hsuan <hpa@redhat.com>, Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
-Cc:     platform-driver-x86@vger.kernel.org
-Date:   Tue, 10 Aug 2021 09:55:02 -0700
-In-Reply-To: <20210810095832.4234-9-hpa@redhat.com>
-References: <20210810095832.4234-1-hpa@redhat.com>
-         <20210810095832.4234-9-hpa@redhat.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229778AbhHJRAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:00:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F99E6D;
+        Tue, 10 Aug 2021 09:59:50 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 892B03F718;
+        Tue, 10 Aug 2021 09:59:49 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 17:59:43 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v1 1/2] PCI: dwc: Clean up Kconfig dependencies
+ (PCIE_DW_HOST)
+Message-ID: <20210810165943.GA18920@lpieralisi>
+References: <20210623140103.47818-1-andriy.shevchenko@linux.intel.com>
+ <20210805135234.GA22410@lpieralisi>
+ <YQwTWoLys3wX75gY@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQwTWoLys3wX75gY@smile.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, 2021-08-10 at 17:58 +0800, Kate Hsuan wrote:
-> Signed-off-by: Kate Hsuan <hpa@redhat.com>
-> ---
->  drivers/platform/x86/Kconfig                  | 43 -----------------
-> --
->  drivers/platform/x86/Makefile                 |  2 +-
->  drivers/platform/x86/intel/Kconfig            |  1 +
->  drivers/platform/x86/intel/Makefile           |  1 +
->  drivers/platform/x86/intel/punit/Kconfig      | 10 +++++
->  drivers/platform/x86/intel/punit/Makefile     |  6 +++
->  .../x86/{ => intel/punit}/intel_punit_ipc.c   |  0
->  7 files changed, 19 insertions(+), 44 deletions(-)
->  create mode 100644 drivers/platform/x86/intel/punit/Kconfig
->  create mode 100644 drivers/platform/x86/intel/punit/Makefile
->  rename drivers/platform/x86/{ => intel/punit}/intel_punit_ipc.c
-> (100%)
+On Thu, Aug 05, 2021 at 07:35:38PM +0300, Andy Shevchenko wrote:
+> On Thu, Aug 05, 2021 at 02:52:34PM +0100, Lorenzo Pieralisi wrote:
+> > On Wed, Jun 23, 2021 at 05:01:02PM +0300, Andy Shevchenko wrote:
+> > > First of all, the "depends on" is no-op in the selectable options.
+> > > Second, no need to repeat menu dependencies (PCI).
 > 
-> diff --git a/drivers/platform/x86/Kconfig
-> b/drivers/platform/x86/Kconfig
-> index b9a324ba17e3..00fa213e9adb 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1086,49 +1086,6 @@ config INTEL_UNCORE_FREQ_CONTROL
->           will be called intel-uncore-frequency.
->  
->  
-> -
-> -config INTEL_PMT_CLASS
-> -       tristate
-> -       help
-> -         The Intel Platform Monitoring Technology (PMT) class driver
-> provides
-> -         the basic sysfs interface and file hierarchy used by PMT
-> devices.
-> -
-> -         For more information, see:
-> -         <file:Documentation/ABI/testing/sysfs-class-intel_pmt>
-> -
-> -         To compile this driver as a module, choose M here: the
-> module
-> -         will be called intel_pmt_class.
-> -
-> -config INTEL_PMT_TELEMETRY
-> -       tristate "Intel Platform Monitoring Technology (PMT)
-> Telemetry driver"
-> -       depends on MFD_INTEL_PMT
-> -       select INTEL_PMT_CLASS
-> -       help
-> -         The Intel Platform Monitory Technology (PMT) Telemetry
-> driver provides
-> -         access to hardware telemetry metrics on devices that
-> support the
-> -         feature.
-> -
-> -         To compile this driver as a module, choose M here: the
-> module
-> -         will be called intel_pmt_telemetry.
-> -
-> -config INTEL_PMT_CRASHLOG
-> -       tristate "Intel Platform Monitoring Technology (PMT) Crashlog
-> driver"
-> -       depends on MFD_INTEL_PMT
-> -       select INTEL_PMT_CLASS
-> -       help
-> -         The Intel Platform Monitoring Technology (PMT) crashlog
-> driver provides
-> -         access to hardware crashlog capabilities on devices that
-> support the
-> -         feature.
-> -
-> -         To compile this driver as a module, choose M here: the
-> module
-> -         will be called intel_pmt_crashlog.
-> -
+> > Define which specific "depends on" you are referring to.
+> 
+> I didn't get this because it stands right. It's in general.
 
-Accidentally caught the above configs not part of P-Unit IPC driver.
+Ok, understood what you meant now - I read it as if you were referring
+to a specific Kconfig entry that this patch is fixing.
 
-> -config INTEL_PUNIT_IPC
-> -       tristate "Intel P-Unit IPC Driver"
-> -       help
-> -         This driver provides support for Intel P-Unit Mailbox IPC
-> mechanism,
-> -         which is used to bridge the communications between kernel
-> and P-Unit.
-> -
->  config INTEL_SCU_IPC
->         bool
->  
-> diff --git a/drivers/platform/x86/Makefile
-> b/drivers/platform/x86/Makefile
-> index 1310b1ebc3f0..dbb62085e7f9 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -124,7 +124,7 @@ obj-
-> $(CONFIG_INTEL_UNCORE_FREQ_CONTROL)             += intel-uncore-
-> frequency.o
->  
->  
->  
-> -obj-$(CONFIG_INTEL_PUNIT_IPC)          += intel_punit_ipc.o
-> +
->  obj-$(CONFIG_INTEL_SCU_IPC)            += intel_scu_ipc.o
->  obj-$(CONFIG_INTEL_SCU_PCI)            += intel_scu_pcidrv.o
->  obj-$(CONFIG_INTEL_SCU_PLATFORM)       += intel_scu_pltdrv.o
-> diff --git a/drivers/platform/x86/intel/Kconfig
-> b/drivers/platform/x86/intel/Kconfig
-> index 38bfca25940d..189a34226fe0 100644
-> --- a/drivers/platform/x86/intel/Kconfig
-> +++ b/drivers/platform/x86/intel/Kconfig
-> @@ -26,6 +26,7 @@ source
-> "drivers/platform/x86/intel/chtdc_ti/Kconfig"
->  source "drivers/platform/x86/intel/mrfld/Kconfig"
->  source "drivers/platform/x86/intel/pmc_core/Kconfig"
->  source "drivers/platform/x86/intel/pmt/Kconfig"
-> +source "drivers/platform/x86/intel/punit/Kconfig"
->  
->  
->  endif # X86_PLATFORM_DRIVERS_INTEL
-> diff --git a/drivers/platform/x86/intel/Makefile
-> b/drivers/platform/x86/intel/Makefile
-> index 746bee1db055..9bd49a920900 100644
-> --- a/drivers/platform/x86/intel/Makefile
-> +++ b/drivers/platform/x86/intel/Makefile
-> @@ -21,3 +21,4 @@ obj-$(CONFIG_INTEL_PMC_CORE)          += pmc_core/
->  obj-$(CONFIG_INTEL_PMT_CLASS)          += pmt/
->  obj-$(CONFIG_INTEL_PMT_TELEMETRY)      += pmt/
->  obj-$(CONFIG_INTEL_PMT_CRASHLOG)       += pmt/
-> +obj-$(CONFIG_INTEL_PUNIT_IPC)          += punit/
-> diff --git a/drivers/platform/x86/intel/punit/Kconfig
-> b/drivers/platform/x86/intel/punit/Kconfig
-> new file mode 100644
-> index 000000000000..db56ef3bb086
-> --- /dev/null
-> +++ b/drivers/platform/x86/intel/punit/Kconfig
-> @@ -0,0 +1,10 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# X86 Platform Specific Drivers
-> +#
-> +
-> +config INTEL_PUNIT_IPC
-> +       tristate "Intel P-Unit IPC Driver"
-> +       help
-> +         This driver provides support for Intel P-Unit Mailbox IPC
-> mechanism,
-> +         which is used to bridge the communications between kernel
-> and P-Unit.
-> diff --git a/drivers/platform/x86/intel/punit/Makefile
-> b/drivers/platform/x86/intel/punit/Makefile
-> new file mode 100644
-> index 000000000000..f25284806f63
-> --- /dev/null
-> +++ b/drivers/platform/x86/intel/punit/Makefile
-> @@ -0,0 +1,6 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# X86 Platform Specific Drivers
-> +#
-> +
-> +obj-$(CONFIG_INTEL_PUNIT_IPC)          += intel_punit_ipc.o
-> \ No newline at end of file
-> diff --git a/drivers/platform/x86/intel_punit_ipc.c
-> b/drivers/platform/x86/intel/punit/intel_punit_ipc.c
-> similarity index 100%
-> rename from drivers/platform/x86/intel_punit_ipc.c
-> rename to drivers/platform/x86/intel/punit/intel_punit_ipc.c
+Maybe:
+
+"The "depends on" Kconfig construct is a no-op in options that
+are selected and therefore has no effect. Remove it.".
 
 
+> I can be more specific since it's in align with the code,
+> though.
+> 
+> All the rest I agree with.
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
