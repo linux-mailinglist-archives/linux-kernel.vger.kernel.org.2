@@ -2,113 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277903E5C8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E213E5C90
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241813AbhHJOJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238554AbhHJOJ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:09:26 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33950C0613D3;
-        Tue, 10 Aug 2021 07:09:04 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id t66so22479926qkb.0;
-        Tue, 10 Aug 2021 07:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=N+Mqo44friizGPZUJX1Ewr3TjH86QyYiAYe5f7DbBYA=;
-        b=OYurtlbEe4ErTd65/L3fC+rqU6BiBOgPghCMJqZKL3PtLC9v97HJDdlhXWmIrJ+ZSY
-         at4xkApKIZMwRbLlM791u3ckYEzSnguZ8OUEnRdJVkmbU2XnWY+vJuupPUGOLbr0FUTH
-         /IG0uXFSvztgZQZg07NSJ+SZkS+7dZfnZjg9hhq+e2kY/ON9+qd0K7Ca/aOu8dIhgHOg
-         ziR37EaThLBLZXZalzWlpS/srlfJxHxqqEBdykLNJghedp+hcyhkXezPyNtvrkQzscCe
-         LMzFWCpcgbDxybPrVT1mLNwgVNTU9EM6u0YaQN+MI7mrIr6155XkzayFPINki+fi21YC
-         TpYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=N+Mqo44friizGPZUJX1Ewr3TjH86QyYiAYe5f7DbBYA=;
-        b=X0NgvOV07Ug6yJMVLYpmUITdaffR5m2+ggkyVH/8k6JhGY2w6+OozVxPXHUnvhU7ds
-         xwCCJIsOzt9p8imq/mnjPkaTnp6alagZRqzQPoz4uMIeGigWqf821Qz8iVflLqV5PNqh
-         PouJnFrZLjVQeKEA2eL0+jfedxdR+wlHkxqEhI1gGOr1S/aodVewTxil8KQCGlAi9kOc
-         MJGF41c8mbwX0QEJ3tNqF0indZZAp2OSqN4Y07Z9gOBY2hzoxiQNK2uI07AHUf5TDajz
-         AhRjL5tqHULKBzFl0NEGsbzdCzRgABQWDtbHYSxGa4gcch3EHLr126iw/kSTLN4nmrkz
-         2JoA==
-X-Gm-Message-State: AOAM531PMp+AgWkduxpYt8MIdnl3iDRsFm26vSF/okh97gVIV9QincBO
-        XrbMG1nB8XA+YB38dMqI9+U=
-X-Google-Smtp-Source: ABdhPJwOt2Dt7W2XQ8abETFNU3b+kRYO8Ccx+wjswwLY8WD3pp+TNQrBooGa5qSHPeUDGV1LZmCM4Q==
-X-Received: by 2002:ae9:c10a:: with SMTP id z10mr27838964qki.71.1628604543451;
-        Tue, 10 Aug 2021 07:09:03 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id f24sm2318309qtp.1.2021.08.10.07.09.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 07:09:02 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     SeongJae Park <sj38.park@gmail.com>, akpm@linux-foundation.org,
-        shuah@kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mm-commits@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH] selftests/damon/debugfs_attrs: Add missing execute permission
-Date:   Tue, 10 Aug 2021 14:08:58 +0000
-Message-Id: <20210810140858.24122-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YRJisBs9AunccCD4@kroah.com>
+        id S242123AbhHJOJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:09:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:39619 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240286AbhHJOJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:09:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="195175412"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="195175412"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 07:09:02 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="503142093"
+Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 07:09:01 -0700
+Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <4b80289a-07a4-bf92-9946-b0a8afb27326@intel.com>
+Date:   Tue, 10 Aug 2021 07:08:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-On Tue, 10 Aug 2021 13:27:44 +0200 Greg KH <gregkh@linuxfoundation.org> wrote:
-
-> On Tue, Aug 10, 2021 at 11:20:50AM +0000, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Commit 04edafbc0c07 ("mm/damon: add user space selftests") of
-> > linux-mm[1] gives no execute permission to 'debugfs_attrs.sh' file.
-> > This results in a DAMON selftest failure as below:
-> > 
-> >     $ make -C tools/testing/selftests/damon run_tests
-> >     make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
-> >     TAP version 13
-> >     1..1
-> >     # selftests: damon: debugfs_attrs.sh
-> >     # Warning: file debugfs_attrs.sh is not executable, correct this.
-> >     not ok 1 selftests: damon: debugfs_attrs.sh
-> >     make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
-> > 
-> > To solve the problem, this commit adds the execute permission for
-> > 'debugfs_attrs.sh' file.
-> > 
-> > [1] https://github.com/hnaz/linux-mm/commit/04edafbc0c07
-> > 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >  tools/testing/selftests/damon/debugfs_attrs.sh | 0
-> >  1 file changed, 0 insertions(+), 0 deletions(-)
-> >  mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_attrs.sh
-> > 
-> > diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
-> > old mode 100644
-> > new mode 100755
-> > -- 
-> > 2.17.1
-> > 
+On 8/9/21 11:26 PM, Kirill A. Shutemov wrote:
+> UEFI Specification version 2.9 introduces concept of memory acceptance:
+> Some Virtual Machine platforms, such as Intel TDX or AMD SEV-SNP,
+> requiring memory to be accepted before it can be used by the guest.
+> Accepting happens via a protocol specific for the Virtrual Machine
+> platform.
 > 
-> Why not fix the tools to execute the file properly as changing the mode
-> of a file does not work well with all tools that we use (i.e. patch
-> files.)
+> Accepting memory is costly and it makes VMM allocate memory for the
+> accepted guest physical address range. We don't want to accept all memory
+> upfront.
 
-Ok, It sounds make some sense.  Hence, I posted this patch:
-https://lore.kernel.org/linux-kselftest/20210810140459.23990-1-sj38.park@gmail.com/
+This could use a bit more explanation.  Any VM is likely to *eventually*
+touch all its memory, so it's not like a VMM has a long-term advantage
+by delaying this.
 
+So, it must have to do with resource use at boot.  Is this to help boot
+times?
 
-Thanks,
-SeongJae Park
+I had expected this series, but I also expected it to be connected to
+CONFIG_DEFERRED_STRUCT_PAGE_INIT somehow.  Could you explain a bit how
+this problem is different and demands a totally orthogonal solution?
 
-[...]
+For instance, what prevents us from declaring: "Memory is accepted at
+the time that its 'struct page' is initialized" ?  Then, we use all the
+infrastructure we already have for DEFERRED_STRUCT_PAGE_INIT.
+
+This series isn't too onerous, but I do want to make sure that we're not
+reinventing the wheel.
