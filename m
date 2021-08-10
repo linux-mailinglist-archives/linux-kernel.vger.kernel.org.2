@@ -2,381 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA4A3E5103
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAC63E5107
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbhHJCT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 22:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230048AbhHJCT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 22:19:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98FEE60EDF;
-        Tue, 10 Aug 2021 02:19:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1628561974;
-        bh=ACR0Klxlv39cpsRa5Xg1geKJgbR9GkRyybZtTH2JijE=;
-        h=Date:From:To:Subject:From;
-        b=EAcxqJOlEY0Q6a93+oog3TRzG4FrsEAFClinm66PSOwn5xmx5CHzl/sfkh0Fd1EEd
-         40Z0DC9pXmP2GpW3CQfJuqK/Q7GrsmRAZyqCrhIZi6AzglDhd1LiIkT3bIBBvVCV7h
-         xrfMnKtcJP9qPNcz8P7CI95qFDPXfNftXNWGsRO8=
-Date:   Mon, 09 Aug 2021 19:19:34 -0700
-From:   akpm@linux-foundation.org
-To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-Subject:  mmotm 2021-08-09-19-18 uploaded
-Message-ID: <20210810021934.XcpwGUEMn%akpm@linux-foundation.org>
-User-Agent: s-nail v14.8.16
+        id S234340AbhHJCWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 22:22:21 -0400
+Received: from mail-eopbgr30072.outbound.protection.outlook.com ([40.107.3.72]:10242
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230048AbhHJCWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 22:22:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fU9ceS3thQQLjfqRRQmJuKj3xGR3KqUvIWFcndsfGax2FltRNYG94oekbf32bm5Mi5XZs8WTXpMD4pd/0Gpla0O0wVU0Ioh4Q4e6sn/CyDQSnSCH7S21DZMeFe3c9JctJ/j0TTwjWisahL444Pi9wQYdYLi1niOvAczojGLOJdMO4FWPYL7p8b4NL3iadPvFaCb53hGXgtMZMYkS9I2ULnaLPL8Pqv48g6+jI+8eJ+OPHaNRxVELONmXN2EzaJFDiYihFjISUR1R3m5TfZVUZ4hdV6WWgIe4cVEQD4YqrQFoj9qS6f8J70q0T0tf9s+iAgIDmVZY95DAhfhKS4BykQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KiDOoA3pwzW5qDDuNZrkHH2Ag+wI7NfitWY01sACai4=;
+ b=CRBgIwtUQbK+1Zxd1hqBoM3N6mCeulpBTO8YPTMyOjL7NEaZPgI/cXlSYFsAbUS3WUBBlK2Lk9VbKju8VZmJhpc0DDEDRLBOhb6/XFpkIC3JqkMwOlwMZUikCYQpH8bZRzJU16qfntSu8zswA5IFIL0hLhkg1Z4kny3qixsdQ7u74gIqQ9KAYkAeWQkYluFK6Oek59dD9tiC3SbMwl2UlUcLGBoXiKxcO7WGSjKcjAoVRuDoCqYrQT/e/Xfq+MuR1f2d/NfxeFtthEr0VM93q9TIzSCPw7BKhmA599p6bVhYEeucAg/HT/uFZFoGoM03eRK9LPPrjiYYkbfCbDExWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KiDOoA3pwzW5qDDuNZrkHH2Ag+wI7NfitWY01sACai4=;
+ b=aKyYkkjAEXZfvSeqq5YukW6/U8Q1r8412JK9+7Vk18TMxK0Ijwe1BiUNiO95FEpxZ6b2YjBy80vTOM88hDY2bBEwE5Y02jQO/7zY0oUPAz0sBnWbPnOo+K3fMTAeJSlQHcfhh0NVYqVyNpT4q9Se75NK9KzkWR6+U+oVlOjGtCQ=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB6PR04MB3207.eurprd04.prod.outlook.com (2603:10a6:6:6::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4394.21; Tue, 10 Aug 2021 02:21:55 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::6969:eadc:6001:c0d]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::6969:eadc:6001:c0d%6]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
+ 02:21:55 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH net-next 1/3] dt-bindings: net: fsl, fec: add "fsl,
+ wakeup-irq" property
+Thread-Topic: [PATCH net-next 1/3] dt-bindings: net: fsl, fec: add "fsl,
+ wakeup-irq" property
+Thread-Index: AQHXidrZaeAm3FGM8UWFBIfAWGHBc6tqnwvwgADpEgCAAHa+4A==
+Date:   Tue, 10 Aug 2021 02:21:55 +0000
+Message-ID: <DB8PR04MB6795DC35D0387637052E64A1E6F79@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210805074615.29096-1-qiangqing.zhang@nxp.com>
+ <20210805074615.29096-2-qiangqing.zhang@nxp.com>
+ <2e1a14bf-2fa8-ed39-d133-807c4e14859c@gmail.com>
+ <DB8PR04MB67950F6863A8FEE6745CBC68E6F69@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <498f3cee-8f37-2ab1-93c4-5472572ecc37@gmail.com>
+In-Reply-To: <498f3cee-8f37-2ab1-93c4-5472572ecc37@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1e12717b-6188-4362-91a4-08d95ba59f84
+x-ms-traffictypediagnostic: DB6PR04MB3207:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR04MB3207607CA3AB961795E8B866E6F79@DB6PR04MB3207.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +SCydYDZgifP4SUiovTAd4Z0cLOPGl6VKwFNPJvaz8/AaM6HZMdnIpkXUg3Cyb4ptkVxCJ4Z5+FH3jsQgcq+tSyW5WopOdW5HoMxSLHn5k5DLiz8xJk6Dtipg0cJO5Ox8B5bCB+lTmCnLVrHhdq29ZP52nMoFLlI1qswBufg977o5bW+0wjwyymNRFFoXSThy1G1i4WDnqKAcJUBCyh/S2w8czmmNbN03K11Zss336IocRhLIE6ft0C1oZx8ZIE7wAV6HdathdOgUc2awcKigMo8kmeyvk4JzEQ4eQmK55qBewBtoZd7G5dWXAgA95DT7aS5AZQ6e65hKRSBp9ZxhKqtZbwzOziuchC66BFgLWRbUCmX++d8CblUeM/hA8XLGs7kGFIZHMg5VPOZWD05mhPScN4eSfkmhrb9y1hpA0X4sEFU8uHwS5e8RUGv98zT98sRPKyHL5BxWB5KEVd7UlxTtqzh3rG+psVTsPLbVzsabNC3hskIPaLZQQrNxwbaEEiG033mSaBMCVNgIYAueiRTx9yFrgCBBUKUvVVxSy92P5tLP+O4J1s5+03eDX/i9jnivEs8pKwOxdtjW0yASWpEaw8qm8bbEh6fn7xUpgkq3JM02CTMVwKDMgA0zObDXB4gkLppNg7jsbZfe98nkdcJzafy729R0QOQ+yDmHPtNHqRKmE7QsvbAcmG+7cduv4gbzWUumUA3aMkhbOwZ/A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(54906003)(26005)(186003)(86362001)(4326008)(83380400001)(71200400001)(6506007)(316002)(33656002)(53546011)(55016002)(7416002)(7696005)(8936002)(9686003)(76116006)(8676002)(52536014)(66946007)(64756008)(66446008)(66476007)(66556008)(38070700005)(508600001)(5660300002)(38100700002)(2906002)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cWUzYytmMkpxNVl6YkZpbTVCMTVUT1M4WHBpTmN2L3FDOHluMTExR1NjTjJ5?=
+ =?utf-8?B?SFVHVE1MRndUTjNZTUcvWENIVWlQKzlaM0xLZ1ZSS0MyeDhEcUNHUlJTOTdJ?=
+ =?utf-8?B?enJqV1pVMWNOc2tWWk10WjUyWWt0bXhJQ0JrQXBYOHoxT0krSFdiY0hXSkNM?=
+ =?utf-8?B?aUxBcVhKZ2wraXdnNmpueW5FQ2VaK1NIREYxVUJqZnRFYjk2UGtVeHl0Mmp3?=
+ =?utf-8?B?RW5JUVdybExxSVN2azdueWh1bU5NNGlRMDVMQzBlc1lCSlpuaU0xQU9vczlZ?=
+ =?utf-8?B?ci9FM1pKYUVVR2VSZjJNYWZiQ1lOMzdWVEc2NDg3Si9YL0ZROU0vcm5YNlFx?=
+ =?utf-8?B?Szl2RXNTTlBrbjB1c2V2RGM1Mm5reFJKaUQxaWlVbUo0L3lHVjRWWDZnU0oz?=
+ =?utf-8?B?eEpKUXVIdmpmSXAxSmtEMEd6eGhWaWkrOWw5Sy93b3VQZW4yQ2VFQmZCU3FS?=
+ =?utf-8?B?MHBLK2F1NiswREZwRlp2VHdYQWxDdVFiNDZJRmtuakZQbHdaVStXYzZwdld6?=
+ =?utf-8?B?N2IwS3ZQSE5TbjJPbzZnNnVGcTZza0tiT0lYVFpNb0FzczVVRjQ4MDRjcnVm?=
+ =?utf-8?B?WFBSMWJxQjVzMWlvT3hNalAyRStSSHY2c3ZnL0plZDEyZ1Y3bjc4SUpMcTEw?=
+ =?utf-8?B?aDJWMlZudWNoemRNSmp2TGlnU3BsdzNnYTVQVDNwWEQrcmpEckg0d2ZqWk11?=
+ =?utf-8?B?MWdNZEtWVGNUS2Q3Snp0aGV3a1dIMVZncHROVGVrUjJBTE1HZm4wQ2gzdnov?=
+ =?utf-8?B?Q1FHbGdZVEZ0Z1F2cUk3bWlOM09maDB1cDNOd2huUFNNd2lwcmdKdUZXbjNa?=
+ =?utf-8?B?U1FHTjJKNmZjTmR4dWRCNlRxY0kzcWNCcFFuSGw5M1FSNzhqcjMwVmlmUUNp?=
+ =?utf-8?B?b05yOTBlU2h4eTV4SFpvNW4rbGZ3L3QzSGZITjRaMDlLOHpZaWlZbG5nOVRx?=
+ =?utf-8?B?ZkRUVEtjSGJhS3pLK01QTXlJVnZjVFE1NkYrN3RQenFTTU9ldVN6QURTL1Vx?=
+ =?utf-8?B?TmxJaG5QQnRYUDU5ZFJNc0FtK25GRmpPV3VONm53L0FTS3RHVU0remxQVnIx?=
+ =?utf-8?B?c1pVREJKcW1TZDJYYm9FMXppWE1jbFVoeU9BZzR1R1lSN1RoUnE4WG51TUZS?=
+ =?utf-8?B?L1h5MTFPa0lXRUpRVTNWRzVucHdvaHpuU3NUR1lhRnFpNXhrclp3WFcycDhv?=
+ =?utf-8?B?QmNWWjR6b1o2N2x3dVZOWklGNGdDbnZQd2wyZnE4OXhaQXpKeTAvMkRQMUNa?=
+ =?utf-8?B?eWpaMUdTaGZycGhNdnZYN3VrdkQwSkFoSksxTk0reXhzMHJFT1EySFhmYzJ5?=
+ =?utf-8?B?aXpQbVhHeGJsSStKbWVyc1ExeVd0Q3l1L1hQSmNVNUhMUHVMRnFheTljdEJn?=
+ =?utf-8?B?N1ZrcXd4QlluUFNWY09CUTlIelBSRm5vTFZ1cVpDS2liMXhmVW5aS0hlMjQ1?=
+ =?utf-8?B?SHNJcTRCVko3SHJDM0lteFJhYTkvSnZxK0NJQjN4SFFXaFZ6UkR4cllibVYx?=
+ =?utf-8?B?dUNXRmtFbU01em1zWjhkb1NObkp1RHhJVDdiZS9INVhnN3QrRnlLOHkzaUZY?=
+ =?utf-8?B?dTdCbmc0Y0ZLMmk4cTcyRk1IbXVjdllKbDlSYUNWV1pzRmRydnBWK1lUdTc1?=
+ =?utf-8?B?RFdHWnZ6RHpkSVVGOXQxZWNyTndYSjJ2Y2dBUlJFa2tKNlkwRHhNUG8vcW1X?=
+ =?utf-8?B?bDlobE5wYUdXWmRoT2dtU094OGNHRXJsTHg2U3lXVjFMZHVDY0R0VmNhSjdr?=
+ =?utf-8?Q?rjYGZRQwdpvWXY3N7E=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e12717b-6188-4362-91a4-08d95ba59f84
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2021 02:21:55.2905
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X9VXbgduT1Rg8iaevUH/GkhPhyyB2WhMKx8gWdqQiRRRDUBdIBkxh95EAFSizIjNMyZkBGIesnc57b4AaRfBPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3207
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm-of-the-moment snapshot 2021-08-09-19-18 has been uploaded to
-
-   https://www.ozlabs.org/~akpm/mmotm/
-
-mmotm-readme.txt says
-
-README for mm-of-the-moment:
-
-https://www.ozlabs.org/~akpm/mmotm/
-
-This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-more than once a week.
-
-You will need quilt to apply these patches to the latest Linus release (5.x
-or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-https://ozlabs.org/~akpm/mmotm/series
-
-The file broken-out.tar.gz contains two datestamp files: .DATE and
-.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-followed by the base kernel version against which this patch series is to
-be applied.
-
-This tree is partially included in linux-next.  To see which patches are
-included in linux-next, consult the `series' file.  Only the patches
-within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-linux-next.
-
-
-A full copy of the full kernel tree with the linux-next and mmotm patches
-already applied is available through git within an hour of the mmotm
-release.  Individual mmotm releases are tagged.  The master branch always
-points to the latest release, so it's constantly rebasing.
-
-	https://github.com/hnaz/linux-mm
-
-The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-contains daily snapshots of the -mm tree.  It is updated more frequently
-than mmotm, and is untested.
-
-A git copy of this tree is also available at
-
-	https://github.com/hnaz/linux-mm
-
-
-
-This mmotm tree contains the following patches against 5.14-rc5:
-(patches marked "*" will be included in linux-next)
-
-* procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
-* slub-fix-kmalloc_pagealloc_invalid_free-unit-test.patch
-* mm-slub-fix-slub_debug-disablement-for-list-of-slabs.patch
-* mm-madvise-report-sigbus-as-efault-for-madv_populate_readwrite.patch
-* mm-memcg-fix-incorrect-flushing-of-lruvec-data-in-obj_stock.patch
-* lib-use-pfn_phys-in-devmem_is_allowed.patch
-* shmem_swapin_page-fix-error-processing-for-get_swap_device.patch
-* kasan-kmemleak-reset-tags-when-scanning-block.patch
-* kasan-slub-reset-tag-when-printing-address.patch
-* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-* init-move-usermodehelper_enable-to-populate_rootfs.patch
-* ocfs2-remove-an-unnecessary-condition.patch
-* ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch
-* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
-* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
-* lib-fix-bugoncocci-warnings.patch
-  mm.patch
-* mm-move-kvmalloc-related-functions-to-slabh.patch
-* mm-slub-dont-call-flush_all-from-slab_debug_trace_open.patch
-* mm-slub-allocate-private-object-map-for-debugfs-listings.patch
-* mm-slub-allocate-private-object-map-for-validate_slab_cache.patch
-* mm-slub-dont-disable-irq-for-debug_check_no_locks_freed.patch
-* mm-slub-remove-redundant-unfreeze_partials-from-put_cpu_partial.patch
-* mm-slub-unify-cmpxchg_double_slab-and-__cmpxchg_double_slab.patch
-* mm-slub-extract-get_partial-from-new_slab_objects.patch
-* mm-slub-dissolve-new_slab_objects-into-___slab_alloc.patch
-* mm-slub-return-slab-page-from-get_partial-and-set-c-page-afterwards.patch
-* mm-slub-restructure-new-page-checks-in-___slab_alloc.patch
-* mm-slub-simplify-kmem_cache_cpu-and-tid-setup.patch
-* mm-slub-move-disabling-enabling-irqs-to-___slab_alloc.patch
-* mm-slub-do-initial-checks-in-___slab_alloc-with-irqs-enabled.patch
-* mm-slub-move-disabling-irqs-closer-to-get_partial-in-___slab_alloc.patch
-* mm-slub-restore-irqs-around-calling-new_slab.patch
-* mm-slub-validate-slab-from-partial-list-or-page-allocator-before-making-it-cpu-slab.patch
-* mm-slub-check-new-pages-with-restored-irqs.patch
-* mm-slub-stop-disabling-irqs-around-get_partial.patch
-* mm-slub-move-reset-of-c-page-and-freelist-out-of-deactivate_slab.patch
-* mm-slub-make-locking-in-deactivate_slab-irq-safe.patch
-* mm-slub-call-deactivate_slab-without-disabling-irqs.patch
-* mm-slub-move-irq-control-into-unfreeze_partials.patch
-* mm-slub-discard-slabs-in-unfreeze_partials-without-irqs-disabled.patch
-* mm-slub-detach-whole-partial-list-at-once-in-unfreeze_partials.patch
-* mm-slub-separate-detaching-of-partial-list-in-unfreeze_partials-from-unfreezing.patch
-* mm-slub-only-disable-irq-with-spin_lock-in-__unfreeze_partials.patch
-* mm-slub-dont-disable-irqs-in-slub_cpu_dead.patch
-* mm-slab-make-flush_slab-possible-to-call-with-irqs-enabled.patch
-* mm-slub-move-flush_cpu_slab-invocations-__free_slab-invocations-out-of-irq-context.patch
-* mm-slub-make-object_map_lock-a-raw_spinlock_t.patch
-* mm-slub-optionally-save-restore-irqs-in-slab_lock.patch
-* mm-slub-make-slab_lock-disable-irqs-with-preempt_rt.patch
-* mm-slub-protect-put_cpu_partial-with-disabled-irqs-instead-of-cmpxchg.patch
-* mm-slub-use-migrate_disable-on-preempt_rt.patch
-* mm-slub-convert-kmem_cpu_slab-protection-to-local_lock.patch
-* mm-debug_vm_pgtable-introduce-struct-pgtable_debug_args.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-basic-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-leaf-and-savewrite-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-protnone-and-devmap-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-soft_dirty-and-swap-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-migration-and-thp-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pte-modifying-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pmd-modifying-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pud-modifying-tests.patch
-* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pgd-and-p4d-modifying-tests.patch
-* mm-debug_vm_pgtable-remove-unused-code.patch
-* mm-debug_vm_pgtable-fix-corrupted-page-flag.patch
-* mm-report-a-more-useful-address-for-reclaim-acquisition.patch
-* mm-mark-idle-page-tracking-as-broken.patch
-* writeback-track-number-of-inodes-under-writeback.patch
-* writeback-reliably-update-bandwidth-estimation.patch
-* writeback-fix-bandwidth-estimate-for-spiky-workload.patch
-* writeback-fix-bandwidth-estimate-for-spiky-workload-fix.patch
-* writeback-rename-domain_update_bandwidth.patch
-* writeback-use-read_once-for-unlocked-reads-of-writeback-stats.patch
-* mm-remove-irqsave-restore-locking-from-contexts-with-irqs-enabled.patch
-* fs-drop_caches-fix-skipping-over-shadow-cache-inodes.patch
-* fs-inode-count-invalidated-shadow-pages-in-pginodesteal.patch
-* vfs-keep-inodes-with-page-cache-off-the-inode-shrinker-lru.patch
-* writeback-memcg-simplify-cgroup_writeback_by_id.patch
-* mm-gup-remove-set-but-unused-local-variable-major.patch
-* mm-gup-remove-unneed-local-variable-orig_refs.patch
-* mm-gup-remove-useless-bug_on-in-__get_user_pages.patch
-* mm-gup-fix-potential-pgmap-refcnt-leak-in-__gup_device_huge.patch
-* mm-gup-fix-potential-pgmap-refcnt-leak-in-__gup_device_huge-fix.patch
-* mm-gup-fix-potential-pgmap-refcnt-leak-in-__gup_device_huge-fix-fix.patch
-* mm-gup-use-helper-page_aligned-in-populate_vma_page_range.patch
-* fs-mm-fix-race-in-unlinking-swapfile.patch
-* mm-delete-unused-get_kernel_page.patch
-* shmem-use-raw_spinlock_t-for-stat_lock.patch
-* mm-memcg-add-mem_cgroup_disabled-checks-in-vmpressure-and-swap-related-functions.patch
-* mm-memcg-inline-mem_cgroup_charge-uncharge-to-improve-disabled-memcg-config.patch
-* mm-memcg-inline-swap-related-functions-to-improve-disabled-memcg-config.patch
-* memcg-enable-accounting-for-pids-in-nested-pid-namespaces.patch
-* memcg-switch-lruvec-stats-to-rstat.patch
-* memcg-infrastructure-to-flush-memcg-stats.patch
-* memcg-infrastructure-to-flush-memcg-stats-v5.patch
-* memcg-charge-fs_context-and-legacy_fs_context.patch
-* memcg-enable-accounting-for-mnt_cache-entries.patch
-* memcg-enable-accounting-for-pollfd-and-select-bits-arrays.patch
-* memcg-enable-accounting-for-file-lock-caches.patch
-* memcg-enable-accounting-for-fasync_cache.patch
-* memcg-enable-accounting-for-new-namesapces-and-struct-nsproxy.patch
-* memcg-enable-accounting-of-ipc-resources.patch
-* memcg-enable-accounting-for-signals.patch
-* memcg-enable-accounting-for-posix_timers_cache-slab.patch
-* memcg-enable-accounting-for-ldt_struct-objects.patch
-* memcg-cleanup-racy-sum-avoidance-code.patch
-* memcg-replace-in_interrupt-by-in_task-in-active_memcg.patch
-* mm-memcontrol-set-the-correct-memcg-swappiness-restriction.patch
-* mm-memcg-remove-unused-functions.patch
-* mm-memcg-save-some-atomic-ops-when-flush-is-already-true.patch
-* memcg-fix-up-drain_local_stock-comment.patch
-* lazy-tlb-introduce-lazy-mm-refcount-helper-functions.patch
-* lazy-tlb-introduce-lazy-mm-refcount-helper-functions-fix.patch
-* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable.patch
-* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable-fix.patch
-* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable-fix-2.patch
-* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option.patch
-* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option-fix.patch
-* powerpc-64s-enable-mmu_lazy_tlb_shootdown.patch
-* mmc-jz4740-remove-the-flush_kernel_dcache_page-call-in-jz4740_mmc_read_data.patch
-* mmc-mmc_spi-replace-flush_kernel_dcache_page-with-flush_dcache_page.patch
-* scatterlist-replace-flush_kernel_dcache_page-with-flush_dcache_page.patch
-* mm-remove-flush_kernel_dcache_page.patch
-* mmdo_huge_pmd_numa_page-remove-unnecessary-tlb-flushing-code.patch
-* mm-change-fault_in_pages_-to-have-an-unsigned-size-parameter.patch
-* add-mmap_assert_locked-annotations-to-find_vma.patch
-* add-mmap_assert_locked-annotations-to-find_vma-fix.patch
-* mm-mremap-fix-memory-account-on-do_munmap-failure.patch
-* mm-mremap-dont-account-pages-in-vma_to_resize.patch
-* mm-sparse-pass-section_nr-to-section_mark_present.patch
-* mm-sparse-pass-section_nr-to-find_memory_block.patch
-* mm-sparse-remove-__section_nr-function.patch
-* mm-sparse-set-section_nid_shift-to-6.patch
-* avoid-a-warning-in-sparse-memory-support.patch
-* mm-sparse-clarify-pgdat_to_phys.patch
-* mm-vmalloc-use-batched-page-requests-in-bulk-allocator.patch
-* mm-vmalloc-remove-gfpflags_allow_blocking-check.patch
-* lib-test_vmallocc-add-a-new-nr_pages-parameter.patch
-* mm-vmalloc-fix-wrong-behavior-in-vread.patch
-* mm-kasan-move-kasanfault-to-mm-kasan-reportc.patch
-* mm-page_alloc-always-initialize-memory-map-for-the-holes.patch
-* mm-page_alloc-always-initialize-memory-map-for-the-holes-fix.patch
-* microblaze-simplify-pte_alloc_one_kernel.patch
-* mm-introduce-memmap_alloc-to-unify-memory-map-allocation.patch
-* memblock-stop-poisoning-raw-allocations.patch
-* fix-zone_id-may-be-used-uninitialized-in-this-function-warning.patch
-* mm-page_alloc-make-alloc_node_mem_map-__init-rather-than-__ref.patch
-* mm-use-in_task-in-mm-page_allocc.patch
-* hugetlb-simplify-prep_compound_gigantic_page-ref-count-racing-code.patch
-* hugetlb-drop-ref-count-earlier-after-page-allocation.patch
-* hugetlb-before-freeing-hugetlb-page-set-dtor-to-appropriate-value.patch
-* userfaultfd-change-mmap_changing-to-atomic.patch
-* userfaultfd-prevent-concurrent-api-initialization.patch
-* selftests-vm-userfaultfd-wake-after-copy-failure.patch
-* mm-numa-automatically-generate-node-migration-order.patch
-* mm-migrate-update-node-demotion-order-on-hotplug-events.patch
-* mm-migrate-enable-returning-precise-migrate_pages-success-count.patch
-* mm-migrate-demote-pages-during-reclaim.patch
-* mm-migrate-demote-pages-during-reclaim-v11.patch
-* mm-vmscan-add-page-demotion-counter.patch
-* mm-vmscan-add-helper-for-querying-ability-to-age-anonymous-pages.patch
-* mm-vmscan-add-helper-for-querying-ability-to-age-anonymous-pages-v11.patch
-* mm-vmscan-consider-anonymous-pages-without-swap.patch
-* mm-vmscan-consider-anonymous-pages-without-swap-v11.patch
-* mm-vmscan-never-demote-for-memcg-reclaim.patch
-* mm-migrate-add-sysfs-interface-to-enable-reclaim-migration.patch
-* mm-vmpressure-replace-vmpressure_to_css-with-vmpressure_to_memcg.patch
-* mm-vmscan-remove-the-pagedirty-check-after-madv_free-pages-are-page_ref_freezed.patch
-* mm-vmscan-remove-misleading-setting-to-sc-priority.patch
-* mm-vmscan-remove-unneeded-return-value-of-kswapd_run.patch
-* mm-vmscan-add-else-to-remove-check_pending-label.patch
-* mm-compaction-optimize-proactive-compaction-deferrals.patch
-* mm-compaction-optimize-proactive-compaction-deferrals-fix.patch
-* mm-compaction-support-triggering-of-proactive-compaction-by-user.patch
-* mm-compaction-support-triggering-of-proactive-compaction-by-user-fix.patch
-* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
-* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
-* mm-mempolicy-use-readable-numa_no_node-macro-instead-of-magic-numer.patch
-* mm-mempolicy-add-mpol_preferred_many-for-multiple-preferred-nodes.patch
-* mm-memplicy-add-page-allocation-function-for-mpol_preferred_many-policy.patch
-* mm-hugetlb-add-support-for-mempolicy-mpol_preferred_many.patch
-* mm-hugetlb-add-support-for-mempolicy-mpol_preferred_many-fix.patch
-* mm-mempolicy-advertise-new-mpol_preferred_many.patch
-* mm-mempolicy-unify-the-create-func-for-bind-interleave-prefer-many-policies.patch
-* mm-use-in_task-in-mempolicy_slab_node.patch
-* mm-introduce-process_mrelease-system-call.patch
-* mm-wire-up-syscall-process_mrelease.patch
-* oom_kill-oom_score_adj-broken-for-processes-with-small-memory-usage.patch
-* mm-migrate-correct-kernel-doc-notation.patch
-* mm-thp-make-alloc_split_ptlocks-dependent-on-use_split_pte_ptlocks.patch
-* selftests-vm-add-ksm-merge-test.patch
-* selftests-vm-add-ksm-unmerge-test.patch
-* selftests-vm-add-ksm-zero-page-merging-test.patch
-* selftests-vm-add-ksm-merging-across-nodes-test.patch
-* mm-ksm-fix-data-type.patch
-* selftests-vm-add-ksm-merging-time-test.patch
-* selftests-vm-add-cow-time-test-for-ksm-pages.patch
-* mm-vmstat-correct-some-wrong-comments.patch
-* mm-vmstat-simplify-the-array-size-calculation.patch
-* mm-vmstat-remove-unneeded-return-value.patch
-* mm-vmstat-protect-per-cpu-variables-with-preempt-disable-on-rt.patch
-* mm-madvise-add-madv_willneed-to-process_madvise.patch
-* memory-hotplugrst-remove-locking-details-from-admin-guide.patch
-* memory-hotplugrst-complete-admin-guide-overhaul.patch
-* mm-remove-pfn_valid_within-and-config_holes_in_zone.patch
-* mm-memory_hotplug-cleanup-after-removal-of-pfn_valid_within.patch
-* mm-memory_hotplug-use-unsigned-long-for-pfn-in-zone_for_pfn_range.patch
-* mm-memory_hotplug-remove-nid-parameter-from-arch_remove_memory.patch
-* mm-memory_hotplug-remove-nid-parameter-from-remove_memory-and-friends.patch
-* acpi-memhotplug-memory-resources-cannot-be-enabled-yet.patch
-* mm-track-present-early-pages-per-zone.patch
-* mm-memory_hotplug-introduce-auto-movable-online-policy.patch
-* drivers-base-memory-introduce-memory-groups-to-logically-group-memory-blocks.patch
-* mm-memory_hotplug-track-present-pages-in-memory-groups.patch
-* acpi-memhotplug-use-a-single-static-memory-group-for-a-single-memory-device.patch
-* dax-kmem-use-a-single-static-memory-group-for-a-single-probed-unit.patch
-* virtio-mem-use-a-single-dynamic-memory-group-for-a-single-virtio-mem-device.patch
-* mm-memory_hotplug-memory-group-aware-auto-movable-online-policy.patch
-* mm-memory_hotplug-improved-dynamic-memory-group-aware-auto-movable-online-policy.patch
-* mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
-* mm-zsmallocc-close-race-window-between-zs_pool_dec_isolated-and-zs_unregister_migration.patch
-* mm-zsmallocc-combine-two-atomic-ops-in-zs_pool_dec_isolated.patch
-* mm-highmem-remove-deprecated-kmap_atomic.patch
-* kfence-show-cpu-and-timestamp-in-alloc-free-info.patch
-* mm-introduce-data-access-monitor-damon.patch
-* mm-damon-core-implement-region-based-sampling.patch
-* mm-damon-adaptively-adjust-regions.patch
-* mm-idle_page_tracking-make-pg_idle-reusable.patch
-* mm-idle_page_tracking-make-pg_idle-reusable-fix.patch
-* mm-damon-implement-primitives-for-the-virtual-memory-address-spaces.patch
-* mm-damon-implement-primitives-for-the-virtual-memory-address-spaces-fix.patch
-* mm-damon-implement-primitives-for-the-virtual-memory-address-spaces-fix-2.patch
-* mm-damon-add-a-tracepoint.patch
-* mm-damon-implement-a-debugfs-based-user-space-interface.patch
-* mm-damon-implement-a-debugfs-based-user-space-interface-fix.patch
-* mm-damon-implement-a-debugfs-based-user-space-interface-fix-fix.patch
-* mm-damon-dbgfs-export-kdamond-pid-to-the-user-space.patch
-* mm-damon-dbgfs-support-multiple-contexts.patch
-* documentation-add-documents-for-damon.patch
-* mm-damon-add-kunit-tests.patch
-* mm-damon-add-user-space-selftests.patch
-* maintainers-update-for-damon.patch
-* info-task-hung-in-generic_file_write_iter.patch
-* info-task-hung-in-generic_file_write-fix.patch
-* kernel-hung_taskc-monitor-killed-tasks.patch
-* alpha-agp-make-empty-macros-use-do-while-0-style.patch
-* alpha-pci-sysfs-fix-all-kernel-doc-warnings.patch
-* percpu-remove-export-of-pcpu_base_addr.patch
-* fs-proc-kcorec-add-mmap-interface.patch
-* connector-send-event-on-write-to-proc-comm.patch
-* proc-sysctl-make-protected_-world-readable.patch
-* arch-kconfig-fix-spelling-mistake-seperate-separate.patch
-* once-fix-trivia-typo-not-note.patch
-* acct-use-dedicated-helper-to-access-rlimit-values.patch
-* math-make-rational-tristate.patch
-* math-rational_kunit_test-should-depend-on-rational-instead-of-selecting-it.patch
-* lib-string-optimized-memcpy.patch
-* lib-string-optimized-memmove.patch
-* lib-string-optimized-memset.patch
-* lib-test-convert-test_sortc-to-use-kunit.patch
-* lib-dump_stack-correct-kernel-doc-notation.patch
-* lib-iov_iterc-fix-kernel-doc-warnings.patch
-* checkpatch-support-wide-strings.patch
-* fs-epoll-use-a-per-cpu-counter-for-users-watches-count.patch
-* fs-epoll-use-a-per-cpu-counter-for-users-watches-count-fix.patch
-* fs-epoll-use-a-per-cpu-counter-for-users-watches-count-fix-fix.patch
-* init-mainc-silence-some-wunused-parameter-warnings.patch
-* nilfs2-fix-memory-leak-in-nilfs_sysfs_create_device_group.patch
-* nilfs2-fix-null-pointer-in-nilfs_name_attr_release.patch
-* nilfs2-fix-memory-leak-in-nilfs_sysfs_create_name_group.patch
-* nilfs2-fix-memory-leak-in-nilfs_sysfs_delete_name_group.patch
-* nilfs2-fix-memory-leak-in-nilfs_sysfs_create_snapshot_group.patch
-* nilfs2-fix-memory-leak-in-nilfs_sysfs_delete_snapshot_group.patch
-* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
-* log-if-a-core-dump-is-aborted-due-to-changed-file-permissions.patch
-* log-if-a-core-dump-is-aborted-due-to-changed-file-permissions-fix.patch
-* pid-cleanup-the-stale-comment-mentioning-pidmap_init.patch
-* prctl-allow-to-setup-brk-for-et_dyn-executables.patch
-* configs-remove-the-obsolete-config_input_polldev.patch
-* kconfigdebug-drop-selecting-non-existing-hardlockup_detector_arch.patch
-* selftests-memfd-remove-unused-variable.patch
-  linux-next.patch
-  linux-next-rejects.patch
-  linux-next-rejects-fix.patch
-* mm-workingset-correct-kernel-doc-notations.patch
-* scripts-check_extable-fix-typo-in-user-error-message.patch
-* kexec-move-locking-into-do_kexec_load.patch
-* kexec-avoid-compat_alloc_user_space.patch
-* mm-simplify-compat_sys_move_pages.patch
-* mm-simplify-compat-numa-syscalls.patch
-* mm-simplify-compat-numa-syscalls-fix.patch
-* compat-remove-some-compat-entry-points.patch
-* arch-remove-compat_alloc_user_space.patch
-  make-sure-nobodys-leaking-resources.patch
-  releasing-resources-with-children.patch
-  mutex-subsystem-synchro-test-module.patch
-  kernel-forkc-export-kernel_thread-to-modules.patch
-  workaround-for-a-pci-restoring-bug.patch
+DQpIaSBGbG9yaWFuLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEZs
+b3JpYW4gRmFpbmVsbGkgPGYuZmFpbmVsbGlAZ21haWwuY29tPg0KPiBTZW50OiAyMDIx5bm0OOac
+iDEw5pelIDI6NDANCj4gVG86IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+
+OyBkYXZlbUBkYXZlbWxvZnQubmV0Ow0KPiBrdWJhQGtlcm5lbC5vcmc7IHJvYmgrZHRAa2VybmVs
+Lm9yZzsgc2hhd25ndW9Aa2VybmVsLm9yZzsNCj4gcy5oYXVlckBwZW5ndXRyb25peC5kZTsgZmVz
+dGV2YW1AZ21haWwuY29tOyBhbmRyZXdAbHVubi5jaA0KPiBDYzoga2VybmVsQHBlbmd1dHJvbml4
+LmRlOyBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsNCj4gbmV0ZGV2QHZnZXIua2Vy
+bmVsLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmc7IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJq
+ZWN0OiBSZTogW1BBVENIIG5ldC1uZXh0IDEvM10gZHQtYmluZGluZ3M6IG5ldDogZnNsLCBmZWM6
+IGFkZCAiZnNsLA0KPiB3YWtldXAtaXJxIiBwcm9wZXJ0eQ0KPiANCj4gDQo+IA0KPiBPbiA4Lzgv
+MjAyMSAxMDowOCBQTSwgSm9ha2ltIFpoYW5nIHdyb3RlOg0KPiA+DQo+ID4gSGkgRmxvcmlhbiwN
+Cj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBGbG9yaWFu
+IEZhaW5lbGxpIDxmLmZhaW5lbGxpQGdtYWlsLmNvbT4NCj4gPj4gU2VudDogMjAyMeW5tDjmnIg1
+5pelIDE3OjE4DQo+ID4+IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29t
+PjsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsNCj4gPj4ga3ViYUBrZXJuZWwub3JnOyByb2JoK2R0QGtl
+cm5lbC5vcmc7IHNoYXduZ3VvQGtlcm5lbC5vcmc7DQo+ID4+IHMuaGF1ZXJAcGVuZ3V0cm9uaXgu
+ZGU7IGZlc3RldmFtQGdtYWlsLmNvbTsgYW5kcmV3QGx1bm4uY2gNCj4gPj4gQ2M6IGtlcm5lbEBw
+ZW5ndXRyb25peC5kZTsgZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47DQo+ID4+IG5l
+dGRldkB2Z2VyLmtlcm5lbC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOw0KPiA+PiBs
+aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJh
+ZGVhZC5vcmcNCj4gPj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dCAxLzNdIGR0LWJpbmRp
+bmdzOiBuZXQ6IGZzbCwgZmVjOiBhZGQNCj4gPj4gImZzbCwgd2FrZXVwLWlycSIgcHJvcGVydHkN
+Cj4gPj4NCj4gPj4NCj4gPj4NCj4gPj4gT24gOC81LzIwMjEgMTI6NDYgQU0sIEpvYWtpbSBaaGFu
+ZyB3cm90ZToNCj4gPj4+IEFkZCAiZnNsLHdha2V1cC1pcnEiIHByb3BlcnR5IGZvciBGRUMgY29u
+dHJvbGxlciB0byBzZWxlY3Qgd2FrZXVwDQo+ID4+PiBpcnEgc291cmNlLg0KPiA+Pj4NCj4gPj4+
+IFNpZ25lZC1vZmYtYnk6IEZ1Z2FuZyBEdWFuIDxmdWdhbmcuZHVhbkBueHAuY29tPg0KPiA+Pj4g
+U2lnbmVkLW9mZi1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4g
+Pj4NCj4gPj4gV2h5IGFyZSBub3QgeW91IG1ha2luZyB1c2Ugb2YgdGhlIHN0YW5kYXJkIGludGVy
+cnVwdHMtZXh0ZW5kZWQNCj4gPj4gcHJvcGVydHkgd2hpY2ggYWxsb3dzIGRpZmZlcmVudCBpbnRl
+cnJ1cHQgbGluZXMgdG8gYmUgb3JpZ2luYXRpbmcNCj4gPj4gZnJvbSBkaWZmZXJlbnQgaW50ZXJy
+dXB0IGNvbnRyb2xsZXJzLCBlLmcuOg0KPiA+Pg0KPiA+PiBpbnRlcnJ1cHRzLWV4dGVuZGVkID0g
+PCZnaWMgR0lDX1NQSSAxMTIgND4sIDwmd2FrZXVwX2ludGMgMD47DQo+ID4NCj4gPiBUaGFua3Mu
+DQo+ID4NCj4gPiBBRkFJSywgaW50ZXJydXB0cy1leHRlbmRlZCBzaG91bGQgYmUgdXNlZCBpbnN0
+ZWFkIG9mIGludGVycnVwdHMgd2hlbiBhDQo+ID4gZGV2aWNlIGlzIGNvbm5lY3RlZCB0byBtdWx0
+aXBsZSBpbnRlcnJ1cHQgY29udHJvbGxlcnMgYXMgaXQgZW5jb2RlcyBhDQo+ID4gcGFyZW50IHBo
+YW5kbGUgd2l0aCBlYWNoIGludGVycnVwdCBzcGVjaWZpZXIuIEhvd2V2ZXIsIGZvciBGRUMgY29u
+dHJvbGxlciwgYWxsDQo+IGludGVycnVwdCBsaW5lcyBhcmUgb3JpZ2luYXRpbmcgZnJvbSB0aGUg
+c2FtZSBpbnRlcnJ1cHQgY29udHJvbGxlcnMuDQo+IA0KPiBPSywgc28gd2h5IHRoaXMgY3VzdG9t
+IHByb3BlcnR5IHRoZW4/DQo+IA0KPiA+DQo+ID4gMSkgRkVDIGNvbnRyb2xsZXIgaGFzIHVwIHRv
+IDQgaW50ZXJydXB0IGxpbmVzIGFuZCBhbGwgb2YgdGhlc2UgYXJlIHJvdXRlZCB0byBHSUMNCj4g
+aW50ZXJydXB0IGNvbnRyb2xsZXIuDQo+ID4gMikgRkVDIGhhcyBhIHdha2V1cCBpbnRlcnJ1cHQg
+c2lnbmFsIGFuZCBhbHdheXMgYXJlIG1peGVkIHdpdGggb3RoZXINCj4gaW50ZXJydXB0IHNpZ25h
+bHMsIGFuZCB0aGVuIG91dHB1dCB0byBvbmUgaW50ZXJydXB0IGxpbmUuDQo+ID4gMykgRm9yIGxl
+Z2FjeSBTb0NzLCB3YWtldXAgaW50ZXJydXB0IGFyZSBtaXhlZCB0byBpbnQwIGxpbmUsIGJ1dCBm
+b3IgaS5NWDhNDQo+IHNlcmlhbHMsIGFyZSBtaXhlZCB0byBpbnQyIGxpbmUuDQo+ID4gNCkgTm93
+IGRyaXZlciB0cmVhdCBpbnQwIGFzIHRoZSB3YWtldXAgc291cmNlIGJ5IGRlZmF1bHQsIGl0IGlz
+IGJyb2tlbiBmb3INCj4gaS5NWDhNLg0KPiANCj4gSSBkb24ndCByZWFsbHkga25vdyB3aGF0IHRv
+IG1ha2Ugb2YgeW91ciByZXNwb25zZSwgaXQgc2VlbXMgdG8gbWUgdGhhdCB5b3UgYXJlDQo+IGNh
+cnJ5aW5nIHNvbWUgbGVnYWN5IERldmljZSBUcmVlIHByb3BlcnRpZXMgdGhhdCB3ZXJlIGludmVu
+dGVkIHdoZW4NCj4gaW50ZXJydXB0cy1leHRlbmRlZCBkaWQgbm90IGV4aXN0IGFuZCB3ZSBkaWQg
+bm90IGtub3cgYW55IGJldHRlci4NCg0KQXMgSSBkZXNjcmliZWQgaW4gZm9ybWVyIG1haWwsIGl0
+IGlzIG5vdCByZWxhdGVkIHRvIGludGVycnVwdHMtZXh0ZW5kZWQgcHJvcGVydHkuDQoNCkxldCdz
+IHRha2UgYSBsb29rLCBlLmcuDQoNCjEpIGFyY2gvYXJtL2Jvb3QvZHRzL2lteDdkLmR0c2kNCmlu
+dGVycnVwdHMgPSA8R0lDX1NQSSAxMDIgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQoJCTxHSUNfU1BJ
+IDEwMCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCgkJPEdJQ19TUEkgMTAxIElSUV9UWVBFX0xFVkVM
+X0hJR0g+LA0KCQk8R0lDX1NQSSAxMDMgSVJRX1RZUEVfTEVWRUxfSElHSD47DQppbnRlcnJ1cHQt
+bmFtZXMgPSAiaW50MCIsICJpbnQxIiwgImludDIiLCAicHBzIjsNCg0KRm9yIHRoZXNlIDQgaW50
+ZXJydXB0cyBhcmUgb3JpZ2luYXRpbmcgZnJvbSBHSUMgaW50ZXJydXB0IGNvbnRyb2xsZXIsICJp
+bnQwIiBmb3IgcXVldWUgMCBhbmQgb3RoZXIgaW50ZXJydXB0IHNpZ25hbHMsIGNvbnRhaW5pbmcg
+d2FrZXVwOw0KImludDEiIGZvciBxdWV1ZSAxOyAiaW50MiIgZm9yIHF1ZXVlIDIuDQoNCjIpIGFy
+Y2gvYXJtNjQvYm9vdC9kdHMvZnJlZXNjYWxlL2lteDhtcS5kdHNpDQppbnRlcnJ1cHRzID0gPEdJ
+Q19TUEkgMTE4IElSUV9UWVBFX0xFVkVMX0hJR0g+LA0KCTxHSUNfU1BJIDExOSBJUlFfVFlQRV9M
+RVZFTF9ISUdIPiwNCgk8R0lDX1NQSSAxMjAgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQoJPEdJQ19T
+UEkgMTIxIElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KaW50ZXJydXB0LW5hbWVzID0gImludDAiLCAi
+aW50MSIsICJpbnQyIiwgInBwcyI7DQoNCkZvciB0aGVzZSA0IGludGVycnVwdHMgYXJlIGFsc28g
+b3JpZ2luYXRpbmcgZnJvbSBHSUMgaW50ZXJydXB0IGNvbnRyb2xsZXIsICJpbnQwIiBmb3IgcXVl
+dWUgMDsgImludDEiIGZvciBxdWV1ZSAxOyAiaW50MiIgZm9yIHF1ZXVlIDIgYW5kIG90aGVyDQpp
+bnRlcnJ1cHQgc2lnbmFscywgY29udGFpbmluZyB3YWtldXAuDQoNCklmIHdlIHdhbnQgdG8gdXNl
+IFdvTCBmZWF0dXJlLCB3ZSBuZWVkIGludm9rZSBlbmFibGVfaXJxX3dha2UoKSB0byBsZXQgdGhp
+cyBzcGVjaWZpYyBpbnRlcnJ1cHQgbGluZSBiZSBhIHdha2V1cCBzb3VyY2UuIEZvciBGRUMgZHJp
+dmVyIG5vdywNCml0IHRyZWF0cyAiaW50MCIgYXMgd2FrZXVwIGludGVycnVwdCBieSBkZWZhdWx0
+LiBPYnZpb3VzbHkgaXQncyBub3QgZmluZSBmb3IgaS5NWDhNIHNlcmlhbHMsIHNpbmNlIFNvQyBt
+aXggd2FrZXVwIGludGVycnVwdCBzaWduYWwgaW50byAiaW50MiIsDQpzbyBJIGFkZCB0aGlzICJm
+c2wsd2FrZXVwLWlycSIgY3VzdG9tIHByb3BlcnR5IHRvIGluZGljYXRlIHdoaWNoIGludGVycnVw
+dCBsaW5lIGNvbnRhaW5zIHdha2V1cCBzaWduYWwuDQoNCk5vdCBzdXJlIGlmIEkgaGF2ZSBleHBs
+YWluZWQgaXQgY2xlYXJseSBlbm91Z2gsIGZyb20gbXkgcG9pbnQgb2YgdmlldywgSSB0aGluayBp
+bnRlcnJ1cHRzLWV4dGVuZGVkIHByb3BlcnR5IGNhbid0IGZpeCB0aGlzIGlzc3VlLCByaWdodD8N
+Cg0KSWYgdGhlcmUgaXMgYW55IGNvbW1vbiBwcm9wZXJ0aWVzIGNhbiBiZSB1c2VkIGZvciBpdCwg
+cGxlYXNlIGxldCBtZSBrbm93LiBPciBhbnkgb3RoZXIgYmV0dGVyIHNvbHV0aW9ucyBhbHNvIGJl
+IGFwcHJlY2lhdGVkLiBUaGFua3MuDQogDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4g
+LS0NCj4gRmxvcmlhbg0K
