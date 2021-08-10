@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9907A3E7F19
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24B13E7E5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhHJRhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:37:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
+        id S231586AbhHJRcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233632AbhHJRfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:35:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC3F2610CC;
-        Tue, 10 Aug 2021 17:35:05 +0000 (UTC)
+        id S231522AbhHJRcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:32:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 917B560F56;
+        Tue, 10 Aug 2021 17:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616906;
-        bh=A2bczzZKTvesHcKN+5UKs+PdkRxIxJHu4Mn6KoXB/OA=;
+        s=korg; t=1628616730;
+        bh=woKJPOPt/rh8d06DzkxMJZvZhND9Md2VJmpbfosLjbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VWkLs4RaKJDM9d0TYG4eMAJYCC/O+Eki+VA1VIms2U1TC7lfo9l2Mm830I6SapSmd
-         lkc7t4pEHFRmvYFGjKf5kfaUbubi3Br45PCvu5R1z0FFNv0nMiAWNJ5iKusgrDhi67
-         5OmfHyVnDhvQS4NthDAPmzxqur8JlWTp1qK7Z+Lo=
+        b=iX7nkVu70SlR3oARbiBWOCWGR2wrI9k1quEUpg5wcs0Ah9bjDVc7JN8ae14Nw0bML
+         F+sTmLkwAWg6N2AKxo2OvCfZG+WiieDosZtz9+WNq7+s7TpTX6sFdBl3WfyCwK6gTr
+         UfnunLJ8XMKHsUL8PdPZR1v3mcCx/x6d3WBGWqhk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 43/85] ALSA: usb-audio: Add registration quirk for JBL Quantum 600
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 22/54] USB: serial: option: add Telit FD980 composition 0x1056
 Date:   Tue, 10 Aug 2021 19:30:16 +0200
-Message-Id: <20210810172949.690954562@linuxfoundation.org>
+Message-Id: <20210810172944.904309734@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Tsoy <alexander@tsoy.me>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit 4b0556b96e1fe7723629bd40e3813a30cd632faf upstream.
+commit 5648c073c33d33a0a19d0cb1194a4eb88efe2b71 upstream.
 
-Apparently JBL Quantum 600 has multiple hardware revisions. Apply
-registration quirk to another device id as well.
+Add the following Telit FD980 composition 0x1056:
 
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210727093326.1153366-1-alexander@tsoy.me
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cfg #1: mass storage
+Cfg #2: rndis, tty, adb, tty, tty, tty, tty
+
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20210803194711.3036-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1842,6 +1842,7 @@ static const struct registration_quirk r
- 	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
-+	REG_QUIRK_ENTRY(0x0ecb, 0x203c, 2),	/* JBL Quantum 600 */
- 	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
- 	{ 0 }					/* terminator */
- };
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1203,6 +1203,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1055, 0xff),	/* Telit FN980 (PCIe) */
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1056, 0xff),	/* Telit FD980 */
++	  .driver_info = NCTRL(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
 
 
