@@ -2,40 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371193E86B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07623E86B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235555AbhHJXtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
+        id S235374AbhHJXvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235374AbhHJXtA (ORCPT
+        with ESMTP id S235517AbhHJXvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:49:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B69C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=tf6Vy/2ctRWWNIcs0s3Qu8P2Khg+cNlJrd0A29o67Xo=; b=N/9hcG+OsWYokGvRRz4SJ8jYJx
-        63pHq293m9JWxXX9tLeH3ZIiSctQcFqJCSJbp3c1Wgso731WXi4XH6G48FJ3TgpkR9DnMztOOH0Eu
-        ZnToEvvMkr8S87YrRPbYzTbQ+Mgy5tfkPHIB/3GbDx6tR1Vst5nvu/TyFrBKP7eoVLPVlTp+7Z76a
-        c7oExzIRVQnOKpKkV95wA9x4nNDYX7zVkTaHkdZEJFfnUifqLPiaKx/DQpvbUPSTx24JfyFEG5vyj
-        FFwhp+Y6hyhiSh4ZQn3QO0yeGWek1QU1XqEXRt0PB2ig4yaPqYSkBAYmk2Y3tOGgeelZRLdtBmitD
-        hyo7HRwg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDbU4-00533T-Kj; Tue, 10 Aug 2021 23:48:36 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH] kernel/irq: fix kernel-doc warnings in pm.c, msi.c, and ipi.c
-Date:   Tue, 10 Aug 2021 16:48:35 -0700
-Message-Id: <20210810234835.12547-1-rdunlap@infradead.org>
+        Tue, 10 Aug 2021 19:51:14 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E7BC061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:50:50 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id r7so442900wrs.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:50:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dgCC0YOf7alekbi8MdvlXK56+sDB+GJd5c/lxkOlPuY=;
+        b=Q2xnzjETCg53ufHwPhf5vy+CyZD0S2aQ0xhvEwatgEly2lXL5vzSv4obL/OVqKYZYO
+         TkUDycDsHa81Ml2Tz10JMvaDp0P83I6G0eVpOBGCScRPxJL+KNogw/pMddk5Hnj2lqIz
+         jpTALSvIm0lPjicGyOiWs9t5F+5y7KF3tH6OylscdI94IHCm1pBrRJULqCagyhdDqezN
+         A/E7uJBejjKADUA0YihLAal/tAwQ7mLi6eJH66O1ZA9n8jz6YKs5WHbFgkpwUA7rC341
+         PW10LcOH3YHI474zs1RVwdhuUelI+CFPlYuUulpRt5lBAAQHmE4Ouzlru3II8bU5QYmA
+         hdsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dgCC0YOf7alekbi8MdvlXK56+sDB+GJd5c/lxkOlPuY=;
+        b=qVe6MjSxOLowyOT3pWU9owAMEu1E1pyKlVNIfxAbIsifhTYFt72Liu05C5ijE8TXmQ
+         +PGjMybMy8ov2cbR5hOR6pkK8uzgZ25w4Z3DoHzS+hdQ2/WFbRkQW5K8+e0VEkCxugLw
+         fm7bOTF9qEf1bqMCeZy6cVPmfubxq8dSC4jGM62VDFq21LkUb4AOjya5Nvdcea3AjZ/b
+         +BnpooSOA0xojdfNYhW1qlUz4oTPkDFG46x1+YD8wQyAMQ/Gazf7qBiEQvCwf/Eitgf4
+         5IybGj+WjoTjiPmzniZc+HdktzFPw5JjO/42VU6+X/62mfEFG0MdRWwdOfkIthDlMgKK
+         CeuQ==
+X-Gm-Message-State: AOAM533eM/6exTk+XGbZUUV95rplL2se23ru/Fajs9rqB2j1q0xjNHm0
+        ZsSM+9VRLjC3sWjfX6qDg37AQcYFBYW8pTwkNU4=
+X-Google-Smtp-Source: ABdhPJzeoZqIhDhczyejSeuRem2SFcX2ZP3zOnekVu2KDDeUdi+VgMktKpXbigx4ZxIQguPP30a45w==
+X-Received: by 2002:a5d:5302:: with SMTP id e2mr20151107wrv.47.1628639449094;
+        Tue, 10 Aug 2021 16:50:49 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id p14sm13881220wro.3.2021.08.10.16.50.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 16:50:48 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] staging: r8188eu: cleanup several warnings
+Date:   Wed, 11 Aug 2021 00:50:39 +0100
+Message-Id: <20210810235047.177883-1-phil@philpotter.co.uk>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,218 +62,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix all kernel-doc warnings in these 3 files and do some simple editing
-(capitalize acronyms, capitalize Linux).
+This series does a lot of cleanup, and came about due to me noticing
+that the Makefile contains several lines that silence build warnings
+about unused variables, functions and so on.
 
-kernel/irq/pm.c:235: warning: expecting prototype for irq_pm_syscore_ops(). Prototype was for irq_pm_syscore_resume() instead
-kernel/irq/msi.c:530: warning: expecting prototype for __msi_domain_free_irqs(). Prototype was for msi_domain_free_irqs() instead
-kernel/irq/msi.c:31: warning: No description found for return value of 'alloc_msi_entry'
-kernel/irq/msi.c:103: warning: No description found for return value of 'msi_domain_set_affinity'
-kernel/irq/msi.c:288: warning: No description found for return value of 'msi_create_irq_domain'
-kernel/irq/msi.c:499: warning: No description found for return value of 'msi_domain_alloc_irqs'
-kernel/irq/msi.c:545: warning: No description found for return value of 'msi_get_domain_info'
-kernel/irq/ipi.c:264: warning: expecting prototype for ipi_send_mask(). Prototype was for __ipi_send_mask() instead
-kernel/irq/ipi.c:25: warning: No description found for return value of 'irq_reserve_ipi'
-kernel/irq/ipi.c:116: warning: No description found for return value of 'irq_destroy_ipi'
-kernel/irq/ipi.c:163: warning: No description found for return value of 'ipi_get_hwirq'
-kernel/irq/ipi.c:222: warning: No description found for return value of '__ipi_send_single'
-kernel/irq/ipi.c:308: warning: No description found for return value of 'ipi_send_single'
-kernel/irq/ipi.c:329: warning: No description found for return value of 'ipi_send_mask'
+It accomplishes does three things therefore:
+(1) Removes the unused functions no longer called by rtw_ioctl, which
+    was deleted in a previous patch (with the exception of the android
+    code, which I will add back in once ndo_siocdevprivate is merged in).
+(2) Cleanup all build warnings resulting from removing the offending
+    Makefile lines.
+(3) Remove the offending Makefile lines so that future build warnings
+    can be caught locally before submission as well.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>
----
- kernel/irq/ipi.c |   32 ++++++++++++++++----------------
- kernel/irq/msi.c |   18 ++++++++++++------
- kernel/irq/pm.c  |    2 +-
- 3 files changed, 29 insertions(+), 23 deletions(-)
+Phillip Potter (8):
+  staging: r8188eu: remove unused functions from os_dep/ioctl_linux.c
+  staging: r8188eu: remove unused oid_null_function function
+  staging: r8188eu: remove unused label from recv_indicatepkt_reorder
+  staging: r8188eu: remove rtw_mfree_sta_priv_lock function
+  staging: r8188eu: remove unused variable from rtl8188e_init_dm_priv
+  staging: r8188eu: remove unused variable from rtw_init_drv_sw
+  staging: r8188eu: remove unused variable from rtw_init_recv_timer
+  staging: r8188eu: remove lines from Makefile that silence build
+    warnings
 
---- linux-next-20210809.orig/kernel/irq/pm.c
-+++ linux-next-20210809/kernel/irq/pm.c
-@@ -227,7 +227,7 @@ unlock:
- }
- 
- /**
-- * irq_pm_syscore_ops - enable interrupt lines early
-+ * irq_pm_syscore_resume - enable interrupt lines early
-  *
-  * Enable all interrupt lines with %IRQF_EARLY_RESUME set.
-  */
---- linux-next-20210809.orig/kernel/irq/msi.c
-+++ linux-next-20210809/kernel/irq/msi.c
-@@ -18,13 +18,15 @@
- #include "internals.h"
- 
- /**
-- * alloc_msi_entry - Allocate an initialize msi_entry
-+ * alloc_msi_entry - Allocate an initialized msi_desc
-  * @dev:	Pointer to the device for which this is allocated
-  * @nvec:	The number of vectors used in this entry
-  * @affinity:	Optional pointer to an affinity mask array size of @nvec
-  *
-- * If @affinity is not NULL then an affinity array[@nvec] is allocated
-+ * If @affinity is not %NULL then an affinity array[@nvec] is allocated
-  * and the affinity masks and flags from @affinity are copied.
-+ *
-+ * Return: pointer to allocated &msi_desc on success or %NULL on failure
-  */
- struct msi_desc *alloc_msi_entry(struct device *dev, int nvec,
- 				 const struct irq_affinity_desc *affinity)
-@@ -97,6 +99,8 @@ static void msi_check_level(struct irq_d
-  *
-  * Intended to be used by MSI interrupt controllers which are
-  * implemented with hierarchical domains.
-+ *
-+ * Return: IRQ_SET_MASK_* result code
-  */
- int msi_domain_set_affinity(struct irq_data *irq_data,
- 			    const struct cpumask *mask, bool force)
-@@ -277,10 +281,12 @@ static void msi_domain_update_chip_ops(s
- }
- 
- /**
-- * msi_create_irq_domain - Create a MSI interrupt domain
-+ * msi_create_irq_domain - Create an MSI interrupt domain
-  * @fwnode:	Optional fwnode of the interrupt controller
-  * @info:	MSI domain info
-  * @parent:	Parent irq domain
-+ *
-+ * Return: pointer to the created &struct irq_domain or %NULL on failure
-  */
- struct irq_domain *msi_create_irq_domain(struct fwnode_handle *fwnode,
- 					 struct msi_domain_info *info,
-@@ -492,7 +498,7 @@ cleanup:
-  *		are allocated
-  * @nvec:	The number of interrupts to allocate
-  *
-- * Returns 0 on success or an error code.
-+ * Return: %0 on success or an error code.
-  */
- int msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
- 			  int nvec)
-@@ -521,7 +527,7 @@ void __msi_domain_free_irqs(struct irq_d
- }
- 
- /**
-- * __msi_domain_free_irqs - Free interrupts from a MSI interrupt @domain associated tp @dev
-+ * msi_domain_free_irqs - Free interrupts from a MSI interrupt @domain associated to @dev
-  * @domain:	The domain to managing the interrupts
-  * @dev:	Pointer to device struct of the device for which the interrupts
-  *		are free
-@@ -538,7 +544,7 @@ void msi_domain_free_irqs(struct irq_dom
-  * msi_get_domain_info - Get the MSI interrupt domain info for @domain
-  * @domain:	The interrupt domain to retrieve data from
-  *
-- * Returns the pointer to the msi_domain_info stored in
-+ * Return: the pointer to the msi_domain_info stored in
-  * @domain->host_data.
-  */
- struct msi_domain_info *msi_get_domain_info(struct irq_domain *domain)
---- linux-next-20210809.orig/kernel/irq/ipi.c
-+++ linux-next-20210809/kernel/irq/ipi.c
-@@ -14,11 +14,11 @@
- /**
-  * irq_reserve_ipi() - Setup an IPI to destination cpumask
-  * @domain:	IPI domain
-- * @dest:	cpumask of cpus which can receive the IPI
-+ * @dest:	cpumask of CPUs which can receive the IPI
-  *
-  * Allocate a virq that can be used to send IPI to any CPU in dest mask.
-  *
-- * On success it'll return linux irq number and error code on failure
-+ * Return: Linux IRQ number on success or error code on failure
-  */
- int irq_reserve_ipi(struct irq_domain *domain,
- 			     const struct cpumask *dest)
-@@ -104,13 +104,13 @@ free_descs:
- 
- /**
-  * irq_destroy_ipi() - unreserve an IPI that was previously allocated
-- * @irq:	linux irq number to be destroyed
-- * @dest:	cpumask of cpus which should have the IPI removed
-+ * @irq:	Linux IRQ number to be destroyed
-+ * @dest:	cpumask of CPUs which should have the IPI removed
-  *
-  * The IPIs allocated with irq_reserve_ipi() are returned to the system
-  * destroying all virqs associated with them.
-  *
-- * Return 0 on success or error code on failure.
-+ * Return: %0 on success or error code on failure.
-  */
- int irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
- {
-@@ -150,14 +150,14 @@ int irq_destroy_ipi(unsigned int irq, co
- }
- 
- /**
-- * ipi_get_hwirq - Get the hwirq associated with an IPI to a cpu
-- * @irq:	linux irq number
-- * @cpu:	the target cpu
-+ * ipi_get_hwirq - Get the hwirq associated with an IPI to a CPU
-+ * @irq:	Linux IRQ number
-+ * @cpu:	the target CPU
-  *
-  * When dealing with coprocessors IPI, we need to inform the coprocessor of
-  * the hwirq it needs to use to receive and send IPIs.
-  *
-- * Returns hwirq value on success and INVALID_HWIRQ on failure.
-+ * Return: hwirq value on success or INVALID_HWIRQ on failure.
-  */
- irq_hw_number_t ipi_get_hwirq(unsigned int irq, unsigned int cpu)
- {
-@@ -216,7 +216,7 @@ static int ipi_send_verify(struct irq_ch
-  * This function is for architecture or core code to speed up IPI sending. Not
-  * usable from driver code.
-  *
-- * Returns zero on success and negative error number on failure.
-+ * Return: %0 on success or negative error number on failure.
-  */
- int __ipi_send_single(struct irq_desc *desc, unsigned int cpu)
- {
-@@ -250,7 +250,7 @@ int __ipi_send_single(struct irq_desc *d
- }
- 
- /**
-- * ipi_send_mask - send an IPI to target Linux SMP CPU(s)
-+ * __ipi_send_mask - send an IPI to target Linux SMP CPU(s)
-  * @desc:	pointer to irq_desc of the IRQ
-  * @dest:	dest CPU(s), must be a subset of the mask passed to
-  *		irq_reserve_ipi()
-@@ -258,7 +258,7 @@ int __ipi_send_single(struct irq_desc *d
-  * This function is for architecture or core code to speed up IPI sending. Not
-  * usable from driver code.
-  *
-- * Returns zero on success and negative error number on failure.
-+ * Return: %0 on success or negative error number on failure.
-  */
- int __ipi_send_mask(struct irq_desc *desc, const struct cpumask *dest)
- {
-@@ -298,11 +298,11 @@ int __ipi_send_mask(struct irq_desc *des
- 
- /**
-  * ipi_send_single - Send an IPI to a single CPU
-- * @virq:	linux irq number from irq_reserve_ipi()
-+ * @virq:	Linux IRQ number from irq_reserve_ipi()
-  * @cpu:	destination CPU, must in the destination mask passed to
-  *		irq_reserve_ipi()
-  *
-- * Returns zero on success and negative error number on failure.
-+ * Return: %0 on success or negative error number on failure.
-  */
- int ipi_send_single(unsigned int virq, unsigned int cpu)
- {
-@@ -319,11 +319,11 @@ EXPORT_SYMBOL_GPL(ipi_send_single);
- 
- /**
-  * ipi_send_mask - Send an IPI to target CPU(s)
-- * @virq:	linux irq number from irq_reserve_ipi()
-+ * @virq:	Linux IRQ number from irq_reserve_ipi()
-  * @dest:	dest CPU(s), must be a subset of the mask passed to
-  *		irq_reserve_ipi()
-  *
-- * Returns zero on success and negative error number on failure.
-+ * Return: %0 on success or negative error number on failure.
-  */
- int ipi_send_mask(unsigned int virq, const struct cpumask *dest)
- {
+ drivers/staging/r8188eu/Makefile             |    9 -
+ drivers/staging/r8188eu/core/rtw_recv.c      |    2 -
+ drivers/staging/r8188eu/core/rtw_sta_mgt.c   |    9 -
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c    |    1 -
+ drivers/staging/r8188eu/include/rtw_ioctl.h  |    6 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 1538 ++----------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c    |    1 -
+ drivers/staging/r8188eu/os_dep/recv_linux.c  |    2 -
+ 8 files changed, 127 insertions(+), 1441 deletions(-)
+
+-- 
+2.31.1
+
