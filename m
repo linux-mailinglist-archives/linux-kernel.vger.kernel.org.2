@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3163E837F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C62E3E8385
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhHJTR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhHJTR5 (ORCPT
+        id S232466AbhHJTSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:18:47 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61236 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231366AbhHJTSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:17:57 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BFAC0613C1;
-        Tue, 10 Aug 2021 12:17:34 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id m12so27699697wru.12;
-        Tue, 10 Aug 2021 12:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=W9H2cZXxDiW6HgzrDrn9Lm7UX5p8AAFrlCEFoY1RN+s=;
-        b=J7KMJtXp50Twwb7G7HzMTu1AxCkNzwCLxVIxAeygHBvEupGapnuqDmtLBppxSIORz+
-         d7Oy00bpsCzSNHIfLUXaOoFfWwlVEuH/gF6iDsIfvcJRHSA7aDK1PInaKZSP3jKIX867
-         1Mow1mdAHJKitolNjHZ2FW6UFdO4Scjxu4izNSxHLwHztyBUIREdM1gqpMFEc0I1w10R
-         7h0uFeQPXF3/GmLPj5GI8pTGWeSqvuTy0Hmd2BGfBM0caP0Akg4GeCKtUUAqIEHCSaXx
-         nY+0Ks/gjQA9VuX4NofAMMnaLzU/ZTtU6P5m+F8Hl93ZjgcG9L+bu1rjy5rE24eKJTWQ
-         fwng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=W9H2cZXxDiW6HgzrDrn9Lm7UX5p8AAFrlCEFoY1RN+s=;
-        b=hHYtxuxiASV8Owf0LNujkbJ85dxtnMu+1LnzOXZJbLQ0kO6gK+4eUrDB10w6nf+K+7
-         9aJD4/BzFSd7YlUq3a4mfmZBJoZUWR9ilrSDD0suSujmnEWh1yaOmp8Ix7h8OygxTMoF
-         s4KtyFqpydLVQg+luFkxR8gpEEW+qUWOx58ok1oAU2TUzJk1fd0fThbD0NtJ1/AiAzoO
-         4NzedmGrn1TS/2sQ1Cz+mvbOiZBFD99Vu+7f/6R00oiEyEjAroomb2Wbg1hGeQm+pRoN
-         nUDQRiccEtPqylLJk1wzaeVRpSJuecjZzgu/evT2W1PV1LXjurOpPd+pWeEyvlr8Qh6v
-         7dwQ==
-X-Gm-Message-State: AOAM533PycXbjPaLyE2Ylmt09bOeFOMz+JtHJXaSfDYkrIFhHxl5+yRc
-        nLIwZ2w9Iaoo4RmoMDV84tM=
-X-Google-Smtp-Source: ABdhPJzbFAc8q2itt2CGkOsjisesuOhaW8EnnW2mh/2CPVtTWKWZOpgYHYvdKCRnCuB48lRplw6tFA==
-X-Received: by 2002:a5d:688e:: with SMTP id h14mr32474652wru.117.1628623053045;
-        Tue, 10 Aug 2021 12:17:33 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2dbc:4b00:1831:60bd:976c:2b5a])
-        by smtp.gmail.com with ESMTPSA id w4sm24600695wrm.24.2021.08.10.12.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 12:17:32 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust ARM/NOMADIK/Ux500 ARCHITECTURES to file renaming
-Date:   Tue, 10 Aug 2021 21:17:24 +0200
-Message-Id: <20210810191724.24452-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 10 Aug 2021 15:18:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628623099; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=VePqsGao1NYt2UQA4Rp7SOWGsUOpS/mcxe5gSE4XsEg=;
+ b=Qec3n2i+SvOMcIXvv/oGPdfqt9ngYohSNJJzhm7ACBsFXyeoA8+082G5At4Z/6jO3J4BeQdx
+ /Vm2maYRMcb4j8XOFCjfU5f81tGb9OlMzUuc2x8WO9I2NwRGDY4YmEM/yxNyfjRRfUsJfEtN
+ Z6q2Ibw8ybq4uV8H16BzpIXTf8Q=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6112d0edf746c298d9558c69 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 19:18:05
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 99631C43144; Tue, 10 Aug 2021 19:18:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACC12C433D3;
+        Tue, 10 Aug 2021 19:18:02 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Aug 2021 12:18:02 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm/msm/dp: add drm debug logs to dp_pm_resume/suspend
+In-Reply-To: <CAE-0n52a8i-2oNxtqKaS+XGBE0+wcp0Jx05VgL2KnHoQLW-vDQ@mail.gmail.com>
+References: <1628609362-2109-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n52a8i-2oNxtqKaS+XGBE0+wcp0Jx05VgL2KnHoQLW-vDQ@mail.gmail.com>
+Message-ID: <abd00c9d395473875c31379ca0288116@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8f00b3c41ae7 ("mfd: db8500-prcmu: Rename register header") renames
-dbx500-prcmu-regs.h to db8500-prcmu-regs.h in ./drivers/mfd/, but misses
-to adjust the ARM/NOMADIK/Ux500 ARCHITECTURES section in MAINTAINERS.
+On 2021-08-10 11:33, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-08-10 08:29:22)
+>> Changes in V2:
+>> -- correct Fixes text
+>> -- drop commit text
+>> 
+>> Fixes: 601f0479c583 ("drm/msm/dp: add logs across DP driver for ease 
+>> of debugging")
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_display.c | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+> 
+> BTW, this conflicts with commit 
+> e8a767e04dbc7b201cb17ab99dca723a3488b6d4
+> in msm-next. The resolution is trivial but just wanted to mention it.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-
-  warning: no file matches    F:    drivers/mfd/dbx500*
-
-Remove the obsolete file entry after this file renaming.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210810
-
-Linus, Lee, please pick this patch on your -next tree on top of the patch
-mentioned above.
-
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index efac6221afe1..706e9a556747 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2258,7 +2258,6 @@ F:	drivers/iio/adc/ab8500-gpadc.c
- F:	drivers/mfd/ab8500*
- F:	drivers/mfd/abx500*
- F:	drivers/mfd/db8500*
--F:	drivers/mfd/dbx500*
- F:	drivers/pinctrl/nomadik/
- F:	drivers/rtc/rtc-ab8500.c
- F:	drivers/rtc/rtc-pl031.c
--- 
-2.17.1
+I Just fetched msm-next and cherry-pick this patch over, no conflict 
+seen.
+Is this conflict need to be fixed?
 
