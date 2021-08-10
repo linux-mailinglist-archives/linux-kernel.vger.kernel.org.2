@@ -2,175 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F8A3E5C9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A6D3E5CA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242134AbhHJOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:12:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43654 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240580AbhHJOM3 (ORCPT
+        id S242170AbhHJONU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240580AbhHJONS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:12:29 -0400
-Date:   Tue, 10 Aug 2021 14:12:04 -0000
+        Tue, 10 Aug 2021 10:13:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEBFC0613C1;
+        Tue, 10 Aug 2021 07:12:55 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628604725;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020; t=1628604774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9znJhSebKL+O+kQ08F7coI8c5qH+PXl+LIk3PxlRzU4=;
-        b=Cmit3Uc6dXZYPAwH6RiHwU4HuKHSzSyrjkrSOj4i9vTJqAbT/qP0/hDXWwtzkTP3ASPoG3
-        NQ0BpoiLd0xd7ssSHUHV3KswrNIMbh0WrWzVGW1x6b/4/d/vuUKA1yavTXOxv6d4Ckyyyr
-        DGXKGlz35pD0IG8JiCeOCw600ETlhCr7LT5I5eJTxqz9xzpQBEgIDNIzANImXR25hZzrh4
-        r8S+eY9QQN8yERZ9a0+5QnqjO934FshShm5Rom3UhfuD24Vpwm++xx/pCj9q30oDx/YAJo
-        Kqq6MPpKerqzqGhQlLp/L7e6ycgLooeZdeFEC8ve+BzuE91Qm/tNBi3MEIwiXQ==
+        bh=TiJmA3POi9FctASNMfUPbhLh0CEUmHRjBKpCXOyY61A=;
+        b=xw6VoRMG1YZcz3aozL3rahY9dAgQCn2l2vSKWQ7AJbhWgF1WEQElAieDb5A4aNl7402Qsz
+        18wBjGzofgKkIqVGF+Am6JDlxKcY14fJ3VnQ7kCgJ/LW5gmusLivzK/5hG4ULV1FCkbt32
+        ASnzYiElDNcoKLgD5q2H3d3Ikg1jC2+5R0TKlTcc1vHHCD1QCr/MduHydq3d01zGmQP+ml
+        UprbxgVqN/3BuDNKcJNe3ICWt4W27vwS1AJ7rptufqF+2dXIm5bfE0QsnPIXt/os19v67K
+        FSFbIsYZDqDc6z8mH42Q/O0UpznkQmgwfK66EF8aptdUuausjNFyFXHySKiPXg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628604725;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020e; t=1628604774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9znJhSebKL+O+kQ08F7coI8c5qH+PXl+LIk3PxlRzU4=;
-        b=id/z09jZm30IiTrbi756FJ7yOnnB70tFvzbLssnEjvx/du3RbZw7KtL0py/JzgJ4vlY3Kb
-        otKT0d74MdR9GeDg==
-From:   "tip-bot2 for Tanner Love" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Change force_irqthreads to a static key
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Tanner Love <tannerlove@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210602180338.3324213-1-tannerlove.kernel@gmail.com>
-References: <20210602180338.3324213-1-tannerlove.kernel@gmail.com>
+        bh=TiJmA3POi9FctASNMfUPbhLh0CEUmHRjBKpCXOyY61A=;
+        b=GQvIEL30+f0CmUBjLBwLCPb4AcR0xsmoX9poarHYh0pPPFV7tZGOlFa5JPgHk3z0qSKufX
+        HAUHoYCIkXRo0NDA==
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Nitesh Lal <nilal@redhat.com>
+Subject: Re: [RFC] genirq: Add effective CPU index retrieving interface
+In-Reply-To: <YL3LrgAzMNI2hp5i@syu-laptop>
+References: <YL3LrgAzMNI2hp5i@syu-laptop>
+Date:   Tue, 10 Aug 2021 16:12:53 +0200
+Message-ID: <874kbxs80q.ffs@tglx>
 MIME-Version: 1.0
-Message-ID: <162860472466.395.18404030703403232612.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Mon, Jun 07 2021 at 15:33, Shung-Hsi Yu wrote:
+> Most driver's IRQ spreading scheme is naive compared to the IRQ spreading
+> scheme introduced since IRQ subsystem rework, so it better to rely
+> request_irq() to spread IRQ out.
+>
+> However, drivers that care about performance enough also tends to try
+> allocating memory on the same NUMA node on which the IRQ handler will run.
+> For such driver to rely on request_irq() for IRQ spreading, we also need to
+> provide an interface to retrieve the CPU index after calling
+> request_irq().
 
-Commit-ID:     af5b7fe6bb77ac775d446e2f25f013d5df551e9a
-Gitweb:        https://git.kernel.org/tip/af5b7fe6bb77ac775d446e2f25f013d5df551e9a
-Author:        Tanner Love <tannerlove@google.com>
-AuthorDate:    Wed, 02 Jun 2021 14:03:38 -04:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 16:06:55 +02:00
+So if you are interested in the resulting NUMA node, then why exposing a
+random CPU out of the affinity mask instead of exposing a function to
+retrieve the NUMA node?
+  
+> +/**
+> + * irq_get_effective_cpu - Retrieve the effective CPU index
+> + * @irq:	Target interrupt to retrieve effective CPU index
+> + *
+> + * When the effective affinity cpumask has multiple CPU toggled, it just
+> + * returns the first CPU in the cpumask.
+> + */
+> +int irq_get_effective_cpu(unsigned int irq)
+> +{
+> +	struct irq_data *data = irq_get_irq_data(irq);
 
-genirq: Change force_irqthreads to a static key
+This can be NULL.
 
-With CONFIG_IRQ_FORCED_THREADING=y, testing the boolean force_irqthreads
-could incur a cache line miss in invoke_softirq() and other places.
+> +	struct cpumask *m;
+> +
+> +	m = irq_data_get_effective_affinity_mask(data);
+> +	return cpumask_first(m);
+> +}
 
-Replace the test with a static key to avoid the potential cache miss.
+Thanks,
 
-[ tglx: Dropped the IDE part, removed the export and updated blk-mq ]
-
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210602180338.3324213-1-tannerlove.kernel@gmail.com
----
- block/blk-mq.c            |  2 +-
- include/linux/interrupt.h |  8 +++++---
- kernel/irq/manage.c       |  9 ++++-----
- kernel/softirq.c          |  2 +-
- 4 files changed, 11 insertions(+), 10 deletions(-)
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 2c4ac51..572d8ab 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -606,7 +606,7 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
- 	 * This is probably worse than completing the request on a different
- 	 * cache domain.
- 	 */
--	if (force_irqthreads)
-+	if (force_irqthreads())
- 		return false;
- 
- 	/* same CPU or cache domain?  Complete locally */
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 2ed65b0..1f22a30 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -13,6 +13,7 @@
- #include <linux/hrtimer.h>
- #include <linux/kref.h>
- #include <linux/workqueue.h>
-+#include <linux/jump_label.h>
- 
- #include <linux/atomic.h>
- #include <asm/ptrace.h>
-@@ -474,12 +475,13 @@ extern int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
- 
- #ifdef CONFIG_IRQ_FORCED_THREADING
- # ifdef CONFIG_PREEMPT_RT
--#  define force_irqthreads	(true)
-+#  define force_irqthreads()	(true)
- # else
--extern bool force_irqthreads;
-+DECLARE_STATIC_KEY_FALSE(force_irqthreads_key);
-+#  define force_irqthreads()	(static_branch_unlikely(&force_irqthreads_key))
- # endif
- #else
--#define force_irqthreads	(0)
-+#define force_irqthreads()	(false)
- #endif
- 
- #ifndef local_softirq_pending
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 766468a..bb3c51d 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -25,12 +25,11 @@
- #include "internals.h"
- 
- #if defined(CONFIG_IRQ_FORCED_THREADING) && !defined(CONFIG_PREEMPT_RT)
--__read_mostly bool force_irqthreads;
--EXPORT_SYMBOL_GPL(force_irqthreads);
-+DEFINE_STATIC_KEY_FALSE(force_irqthreads_key);
- 
- static int __init setup_forced_irqthreads(char *arg)
- {
--	force_irqthreads = true;
-+	static_branch_enable(&force_irqthreads_key);
- 	return 0;
- }
- early_param("threadirqs", setup_forced_irqthreads);
-@@ -1260,8 +1259,8 @@ static int irq_thread(void *data)
- 	irqreturn_t (*handler_fn)(struct irq_desc *desc,
- 			struct irqaction *action);
- 
--	if (force_irqthreads && test_bit(IRQTF_FORCED_THREAD,
--					&action->thread_flags))
-+	if (force_irqthreads() && test_bit(IRQTF_FORCED_THREAD,
-+					   &action->thread_flags))
- 		handler_fn = irq_forced_thread_fn;
- 	else
- 		handler_fn = irq_thread_fn;
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index f3a0121..322b65d 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -422,7 +422,7 @@ static inline void invoke_softirq(void)
- 	if (ksoftirqd_running(local_softirq_pending()))
- 		return;
- 
--	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
-+	if (!force_irqthreads() || !__this_cpu_read(ksoftirqd)) {
- #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
- 		/*
- 		 * We can safely execute softirq on the current stack if
+        tglx
