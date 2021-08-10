@@ -2,146 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2843E5870
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7637A3E5871
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239850AbhHJKgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:36:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50132 "EHLO
+        id S239859AbhHJKgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:36:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59687 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238566AbhHJKgJ (ORCPT
+        by vger.kernel.org with ESMTP id S239853AbhHJKgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:36:09 -0400
+        Tue, 10 Aug 2021 06:36:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628591746;
+        s=mimecast20190719; t=1628591761;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dSRHzUxeiOWloToTL5jVawnUzFMQbB9b5yC/gXW30eI=;
-        b=FgL67QOJzLpKrClIOsNg504U+G2W6qE96ZlkoEsM5aDEMZi8WUhbvYc2IjKklYOy5YMeN6
-        UQmRmARZXGRAaWfS71wXvwJkYc3PcBA4Y/B6nXSsyFwqpXvgX75NPiHcMoMwo0bCcTzqaa
-        8sGiA7rimjzJOj567lA6hAMB71jyOlE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-nKt5HiJINUO6z8vNEZhXwg-1; Tue, 10 Aug 2021 06:35:45 -0400
-X-MC-Unique: nKt5HiJINUO6z8vNEZhXwg-1
-Received: by mail-ej1-f70.google.com with SMTP id qf6-20020a1709077f06b029057e66b6665aso5452894ejc.18
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:35:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dSRHzUxeiOWloToTL5jVawnUzFMQbB9b5yC/gXW30eI=;
-        b=YvcG/QMHXSWRjrdY6thrwdIbmkkDuGOiHwYVtC45nXsErcNfIFVZQPNI/79XdGWGCo
-         8k6E4mKHfKf7m6QE92jMS/lhcetLpCCnFXXWGwWJpSetLPYeaOVF6AK2LZk/39cp0kJM
-         eFFRQw1Bj1oaAdAg/qSWBJKfbIi/yMxbcXs7znQjkVzKJ2QcF3KV4Ym4EonHqi/9bRSJ
-         jdn6Efv6oTX6xN+43LvLglYkHPpYqXqIR+3zS0S8OdSGt+Gab+4QlsIK86qi/EbsTVGb
-         hA2yiJhG3PmHJdwxxvCNz7nwT0QjIHohu4V/JdbAEGsjHTCST8edjn0P8RqaTekTh9GH
-         tehA==
-X-Gm-Message-State: AOAM533GpY0NIrPKOrQIBQ1Ovzs6kU0Mhh5oXyZa3kkFdP5gSTfFnJKg
-        GqGhd0OjIMCNQcNgG3I9sGX7gj+2cDjyNSAx0xnoGZXSsRVeqsScCb5E/6t90uHCZBIJzTDkWWC
-        l4qpFqkpMJNyOUwYltXXfygBI
-X-Received: by 2002:a05:6402:d5c:: with SMTP id ec28mr4202759edb.3.1628591744348;
-        Tue, 10 Aug 2021 03:35:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzKDKCZofFWud8zXiwgF6GPyAkOYeVeyPqDN8hJUOh/WyaQSKUTMTGHRr7mr7n+keuKU2nRHw==
-X-Received: by 2002:a05:6402:d5c:: with SMTP id ec28mr4202742edb.3.1628591744153;
-        Tue, 10 Aug 2021 03:35:44 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id q11sm6710763ejb.10.2021.08.10.03.35.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 03:35:43 -0700 (PDT)
-Subject: Re: [PATCH V2 2/3] KVM: X86: Set the hardware DR6 only when
- KVM_DEBUGREG_WONT_EXIT
-To:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <YRFdq8sNuXYpgemU@google.com>
- <20210809174307.145263-1-jiangshanlai@gmail.com>
- <20210809174307.145263-2-jiangshanlai@gmail.com>
- <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
- <45fef019-8bd9-2acb-bd53-1243a8a07c4e@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f5967e16-3910-5604-7890-9a1741045ce8@redhat.com>
-Date:   Tue, 10 Aug 2021 12:35:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=8MKdVxhmWHkSF7Qc4zBZXEqJWUbfI37hUIq+4sHXK5w=;
+        b=e8zqrthseXpaRUVLS4s2wHOlkI0YdLsuDLzzZdnTeumgjvt1wYkrfaROcfsW4KCtC6v56Y
+        XvSZhMT2rjG6ncxWTY2/oBcWAqTb3SBPBh/eeb8gU49qrJ8Wh6Ip/SN1HtUA+mJtq+MfMH
+        JRUT6qhIT6kpJ2LUMh6AiF3g3F/B+ek=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-SLez8Vj3PA270oq6Eepj1A-1; Tue, 10 Aug 2021 06:35:58 -0400
+X-MC-Unique: SLez8Vj3PA270oq6Eepj1A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4B591008060;
+        Tue, 10 Aug 2021 10:35:56 +0000 (UTC)
+Received: from T590 (ovpn-13-190.pek2.redhat.com [10.72.13.190])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CC8415C232;
+        Tue, 10 Aug 2021 10:35:50 +0000 (UTC)
+Date:   Tue, 10 Aug 2021 18:35:45 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+Message-ID: <YRJWgU5VhzBe1JP4@T590>
+References: <YPlGOOMSdm6Bcyy/@T590>
+ <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com>
+ <YPmUoBk9u+tU2rbS@T590>
+ <0adbe03b-ce26-e4d3-3425-d967bc436ef5@arm.com>
+ <YPqYDY9/VAhfHNfU@T590>
+ <6ceab844-465f-3bf3-1809-5df1f1dbbc5c@huawei.com>
+ <CAFj5m9J+9vO=CK3uPP+va5EoWffZj9ruSRe2fDDLXn+AE971CQ@mail.gmail.com>
+ <ead87bf2-ddfa-eb67-db44-9619c6cdb714@huawei.com>
+ <YQF1AKS6Y14dLU/A@T590>
+ <dfdd16e8-278f-3bc9-da97-a91264aec909@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <45fef019-8bd9-2acb-bd53-1243a8a07c4e@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dfdd16e8-278f-3bc9-da97-a91264aec909@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/21 12:30, Lai Jiangshan wrote:
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index ae8e62df16dd..21a3ef3012cf 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -6625,6 +6625,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu 
->> *vcpu)
->>           vmx->loaded_vmcs->host_state.cr4 = cr4;
->>       }
->>
->> +    /* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
->> +    if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
->> +        set_debugreg(vcpu->arch.dr6, 6);
+On Tue, Aug 10, 2021 at 10:36:47AM +0100, John Garry wrote:
+> On 28/07/2021 16:17, Ming Lei wrote:
+> > > > > Have you tried turning off the IOMMU to ensure that this is really just
+> > > > > an IOMMU problem?
+> > > > > 
+> > > > > You can try setting CONFIG_ARM_SMMU_V3=n in the defconfig or passing
+> > > > > cmdline param iommu.passthrough=1 to bypass the the SMMU (equivalent to
+> > > > > disabling for kernel drivers).
+> > > > Bypassing SMMU via iommu.passthrough=1 basically doesn't make a difference
+> > > > on this issue.
+> > > A ~90% throughput drop still seems to me to be too high to be a software
+> > > issue. More so since I don't see similar on my system. And that throughput
+> > > drop does not lead to a total CPU usage drop, from the fio log.
+> > > 
+> > > Do you know if anyone has run memory benchmark tests on this board to find
+> > > out NUMA effect? I think lmbench or stream could be used for this.
+> > https://lore.kernel.org/lkml/YOhbc5C47IzC893B@T590/
 > 
+> Hi Ming,
 > 
-> I also noticed the related code in svm.c, but I refrained myself
-> to add a new branch in vmx_vcpu_run().  But after I see you put
-> the code of resetting dr6 in vmx_sync_dirty_debug_regs(), the whole
-> solution is much clean and better.
-> 
-> And if any chance you are also concern about the additional branch,
-> could you add a new callback to set dr6 and call the callback from
-> x86.c when KVM_DEBUGREG_WONT_EXIT.
+> Out of curiosity, did you investigate this topic any further?
 
-The extra branch should be well predicted, and the idea you sketched 
-below would cause DR6 to be marked uselessly as dirty in SVM, so I think 
-this is cleaner.  Let's add an "unlikely" around it too.
+IMO, the issue is probably in device/system side, since completion latency is
+increased a lot, meantime submission latency isn't changed.
 
-Paolo
+Either the submission isn't committed to hardware in time, or the
+completion status isn't updated to HW in time from viewpoint of CPU.
 
-> The possible implementation of the callback:
-> for vmx: set_debugreg(vcpu->arch.dr6, 6);
-> for svm: svm_set_dr6(svm, vcpu->arch.dr6);
->           and always do svm_set_dr6(svm, DR6_ACTIVE_LOW); at the end of the
->           svm_handle_exit().
+We have tried to update to new FW, but not see difference made.
+
 > 
-> Thanks
-> Lai
+> And you also asked about my results earlier:
 > 
->> +
->>       /* When single-stepping over STI and MOV SS, we must clear the
->>        * corresponding interruptibility bits in the guest state. 
->> Otherwise
->>        * vmentry fails as it then expects bit 14 (BS) in pending debug
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index a111899ab2b4..fbc536b21585 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -9597,7 +9597,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->>           set_debugreg(vcpu->arch.eff_db[1], 1);
->>           set_debugreg(vcpu->arch.eff_db[2], 2);
->>           set_debugreg(vcpu->arch.eff_db[3], 3);
->> -        set_debugreg(vcpu->arch.dr6, 6);
->>       } else if (unlikely(hw_breakpoint_active())) {
->>           set_debugreg(0, 7);
->>       }
->>
->> Paolo
+> On 22/07/2021 16:54, Ming Lei wrote:
+> >> [   52.035895] nvme 0000:81:00.0: Adding to iommu group 5
+> >> [   52.047732] nvme nvme0: pci function 0000:81:00.0
+> >> [   52.067216] nvme nvme0: 22/0/2 default/read/poll queues
+> >> [   52.087318]  nvme0n1: p1
+> >>
+> >> So I get these results:
+> >> cpu0 335K
+> >> cpu32 346K
+> >> cpu64 300K
+> >> cpu96 300K
+> >>
+> >> So still not massive changes.
+> > In your last email, the results are the following with irq mode io_uring:
+> >
+> >   cpu0  497K
+> >   cpu4  307K
+> >   cpu32 566K
+> >   cpu64 488K
+> >   cpu96 508K
+> >
+> > So looks you get much worse result with real io_polling?
+> >
 > 
+> Would the expectation be that at least I get the same performance with
+> io_polling here?
+
+io_polling is supposed to improve IO latency a lot compared with irq
+mode, and the perf data shows that clearly on x86_64.
+
+> Anything else to try which you can suggest to investigate
+> this lower performance?
+
+You may try to compare irq mode and polling and narrow down the possible
+reasons, no exact suggestion on how to investigate it, :-(
+
+
+Thanks,
+Ming
 
