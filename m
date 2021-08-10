@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E05C3E81A3
+	by mail.lfdr.de (Postfix) with ESMTP id C6C443E81A5
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235083AbhHJSAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:00:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
+        id S235515AbhHJSA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:00:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233512AbhHJR5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:57:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE52060E09;
-        Tue, 10 Aug 2021 17:45:25 +0000 (UTC)
+        id S236726AbhHJR5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:57:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E4A06139D;
+        Tue, 10 Aug 2021 17:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617526;
-        bh=D3vvCFp/rZwWniXsWQktlYgr/FRH5Z/L3Rmkokq0q7Q=;
+        s=korg; t=1628617528;
+        bh=W9XTF6OkJnuGwFbAjAdi2UgWQggT2Vvl8WCSX8YxYWY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=edVKTz4cXx5EFNt2eYBYv1JVhvBaDK5U0MbzYXD2RDeaOeDKl0tn8UXNQfSVkMtg2
-         tyaxrOVlpsnpaXL5+rysthptGC3oDWtSV/2dCn/3dvqhWYL9NjSnOCdrmFIfWLMatM
-         7Xk41FmkG6Z8PW0dRFbFqqyMra2r8JhYJCNibPlQ=
+        b=uVrwRtPfBCbVq/Nr/uSu1xfVEQDSJds/iwM53Lu4LyfjTS1ob6NpHi85P5zwwq7mb
+         ljD34ENR7E9fpCibYPbKWkG4QmVaCe+k7iI8S0076u3bgAshR5VeyQmqEqUWCYGJhC
+         pzOJS5SSdoS99wParRl4GfEPsjUUAqx2wUwE50fg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 064/175] bnx2x: fix an error code in bnx2x_nic_load()
-Date:   Tue, 10 Aug 2021 19:29:32 +0200
-Message-Id: <20210810173003.051113940@linuxfoundation.org>
+Subject: [PATCH 5.13 065/175] net: ethernet: ti: am65-cpsw: fix crash in am65_cpsw_port_offload_fwd_mark_update()
+Date:   Tue, 10 Aug 2021 19:29:33 +0200
+Message-Id: <20210810173003.081740849@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -40,35 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[ Upstream commit fb653827c758725b149b5c924a5eb50ab4812750 ]
+[ Upstream commit ae03d189bae306e1e00aa631feee090ebda6cf63 ]
 
-Set the error code if bnx2x_alloc_fw_stats_mem() fails.  The current
-code returns success.
+The am65_cpsw_port_offload_fwd_mark_update() causes NULL exception crash
+when there is at least one disabled port and any other port added to the
+bridge first time.
 
-Fixes: ad5afc89365e ("bnx2x: Separate VF and PF logic")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000858
+pc : am65_cpsw_port_offload_fwd_mark_update+0x54/0x68
+lr : am65_cpsw_netdevice_event+0x8c/0xf0
+Call trace:
+am65_cpsw_port_offload_fwd_mark_update+0x54/0x68
+notifier_call_chain+0x54/0x98
+raw_notifier_call_chain+0x14/0x20
+call_netdevice_notifiers_info+0x34/0x78
+__netdev_upper_dev_link+0x1c8/0x290
+netdev_master_upper_dev_link+0x1c/0x28
+br_add_if+0x3f0/0x6d0 [bridge]
+
+Fix it by adding proper check for port->ndev != NULL.
+
+Fixes: 2934db9bcb30 ("net: ti: am65-cpsw-nuss: Add netdevice notifiers")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-index 1a6ec1a12d53..b5d954cb409a 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-@@ -2669,7 +2669,8 @@ int bnx2x_nic_load(struct bnx2x *bp, int load_mode)
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index 718539cdd2f2..67a08cbba859 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -2060,8 +2060,12 @@ static void am65_cpsw_port_offload_fwd_mark_update(struct am65_cpsw_common *comm
+ 
+ 	for (i = 1; i <= common->port_num; i++) {
+ 		struct am65_cpsw_port *port = am65_common_get_port(common, i);
+-		struct am65_cpsw_ndev_priv *priv = am65_ndev_to_priv(port->ndev);
++		struct am65_cpsw_ndev_priv *priv;
+ 
++		if (!port->ndev)
++			continue;
++
++		priv = am65_ndev_to_priv(port->ndev);
+ 		priv->offload_fwd_mark = set_val;
  	}
- 
- 	/* Allocated memory for FW statistics  */
--	if (bnx2x_alloc_fw_stats_mem(bp))
-+	rc = bnx2x_alloc_fw_stats_mem(bp);
-+	if (rc)
- 		LOAD_ERROR_EXIT(bp, load_error0);
- 
- 	/* request pf to initialize status blocks */
+ }
 -- 
 2.30.2
 
