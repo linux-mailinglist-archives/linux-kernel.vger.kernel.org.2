@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7183E7DDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CA13E7DDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhHJQ4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:56:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
+        id S230282AbhHJQ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:56:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230455AbhHJQzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229564AbhHJQzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 12:55:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 971EC60462;
-        Tue, 10 Aug 2021 16:54:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id B88CA60D07;
+        Tue, 10 Aug 2021 16:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628614446;
-        bh=yDyCnF9kOpqMQUvBKRiGkqMShf1t7P8gpGlvnG14Dss=;
+        s=k20201202; t=1628614448;
+        bh=LRfdcIQtSwp5Sx42fJjK3f5sRuxS3yzO4dIm1j4u4GE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=jrXqDDDXJjVoYx/Z1bT1JEevH6bg/txHWDVMiEi+Qc+/7XNURyHUNeP1XQSJtGESC
-         SI26Xfwax8Y5CX4PyOpcsXdTIlCVRfecTHGFrmZhJEqwGU+8QZKNVp62UvUz+QNOLm
-         nxIX4lFQj1siP5IBXnEXwtZS9iPr6+fsZMvMYnTrYVZV4U3hrNFbJtdV341+LT0j51
-         1lLlkovHUCLiMPWg3CpSVsTi3OPZEyvAbDjpS2Lv5guwTqdUzDhLDCSm5ozj6LIOkv
-         k2GW65twSH16KEeqCWhR+tNw1ZFtE6cKi+mW0RB9V9hrIZ7x3j3ZbS1bxKC8e53QOg
-         kwN8ERgH9MipA==
+        b=N9kiXG4+4vcy65Gvo1Yw5WOdXq+Jd2HPPcKl5E/Y/zxKM9lzer63Osufsq13SJ5wz
+         yaX6GG35yq7JZA29J7lhENMyvT0BzXBUvNQJWTSbelcB9vTtpM4UYqT9HP+gF9QDbe
+         jP8rzXi1ZVA7TZqdgl2EVD23nYs9oxA1LCKtnGY5ucdA0cboWMmcgdXtxAC6ZyHX/6
+         IZz1SFZVYQi+u6TsSe6oM/VjeL6G3X2lBpL6WIqHz+ZosSsuAHfPyNued8117W+c7S
+         tKQMHP/qoJz3sKFGd1KaLosnnt2PlDmsMjeDdj5e2/h4YCkN1C0GY7oc90csbMKfPT
+         gI0pL9zBz6W+A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8193960986;
-        Tue, 10 Aug 2021 16:54:06 +0000 (UTC)
-Subject: Re: [GIT PULL v2] overlayfs fixes for 5.14-rc6
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B2820609AD;
+        Tue, 10 Aug 2021 16:54:08 +0000 (UTC)
+Subject: Re: [GIT PULL] platform-drivers-x86 for 5.14-3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YRKVYyeAUqJSJ5rk@miu.piliscsaba.redhat.com>
-References: <YRKVYyeAUqJSJ5rk@miu.piliscsaba.redhat.com>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YRKVYyeAUqJSJ5rk@miu.piliscsaba.redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-fixes-5.14-rc6-v2
-X-PR-Tracked-Commit-Id: 427215d85e8d1476da1a86b8d67aceb485eb3631
+In-Reply-To: <22dd7348-7f62-a99c-9f3b-3fdd00bb3772@redhat.com>
+References: <22dd7348-7f62-a99c-9f3b-3fdd00bb3772@redhat.com>
+X-PR-Tracked-List-Id: <platform-driver-x86.vger.kernel.org>
+X-PR-Tracked-Message-Id: <22dd7348-7f62-a99c-9f3b-3fdd00bb3772@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.14-3
+X-PR-Tracked-Commit-Id: 9d7b132e62e41b7d49bf157aeaf9147c27492e0f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b3f0ccc59cfeb508a3774e8653069d76ffadc37e
-Message-Id: <162861444647.12822.547943425823515144.pr-tracker-bot@kernel.org>
-Date:   Tue, 10 Aug 2021 16:54:06 +0000
-To:     Miklos Szeredi <miklos@szeredi.hu>
+X-PR-Merge-Commit-Id: 9e723c5380c6e14fb91a8b6950563d040674afdb
+Message-Id: <162861444872.12822.6958452574285755967.pr-tracker-bot@kernel.org>
+Date:   Tue, 10 Aug 2021 16:54:08 +0000
+To:     Hans de Goede <hdegoede@redhat.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
+        Mark Gross <mgross@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 10 Aug 2021 17:04:03 +0200:
+The pull request you sent on Tue, 10 Aug 2021 17:52:00 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-fixes-5.14-rc6-v2
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.14-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b3f0ccc59cfeb508a3774e8653069d76ffadc37e
+https://git.kernel.org/torvalds/c/9e723c5380c6e14fb91a8b6950563d040674afdb
 
 Thank you!
 
