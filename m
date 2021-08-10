@@ -2,140 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4313E566C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F323E566F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234719AbhHJJLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
+        id S237234AbhHJJNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhHJJLm (ORCPT
+        with ESMTP id S230039AbhHJJM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:11:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9780CC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:11:20 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 11:11:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628586677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=NFXJfNn781XNNVDcY5kUpqlmjTmkBhNdsu8RS8eZUYc=;
-        b=1guZWw5kFpOzLe9CgCu9Zwsqj8kUc41QwCHJy7YPmgJkMTTQFUXVf3IasaC4Se5BbCYzGX
-        D3OwY8QES86guIIomKZTddoSUwy7kdfMY51JMbsLABiarGLNj7tE4K7/fsqHP+jeSOBCwf
-        5hENPIU3kd4mgMRMI1b/ShTipJd1A2i9rGs6TOKmpnXa8aRN8DATvIg1IUpGekx9uNlFkH
-        6qeh66Ufs4f9H81W0cw7BRtXSsbh6myBDpDphR579FJS/jgaEzjEdsHw+E7wLT+0J6K+kP
-        Kj2ChoE5NPePQCFrwmmylAaPUpn2n1bvCr7rxT4Ty6Kxy3ZLaFtUYSlUH9Jiag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628586677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=NFXJfNn781XNNVDcY5kUpqlmjTmkBhNdsu8RS8eZUYc=;
-        b=SjgUvQGS5tPmr58XE+uym3eTZ1mRLA3KOSAEVet0dgwGUrkcbqHcfwf5AuGgRDJwBd6bhq
-        /x1RrHLi6CdAGzCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] highmem: Don't disable preemption on RT in kmap_atomic()
-Message-ID: <20210810091116.pocdmaatdcogvdso@linutronix.de>
+        Tue, 10 Aug 2021 05:12:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8452FC0613D3;
+        Tue, 10 Aug 2021 02:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H3zzJaXcELoe7fwHmHVQFbyT9HpObLcWomqOooPjNsk=; b=NtrCnvhh9LR4naycFbzgkj3XFS
+        jV56VjiVsPy2S3YV/1LdXXzZRKKXfQZfTPMBzilWd2hL43c/3wfSKWdj8sP3C195sneeIM6tG8ODl
+        ibuNY8VntRlgm5qa5oCSHftrOtstNRzOpM47ACyBLWyXwHuo6AXye856kzngkRo82YtelqfPnDKGy
+        xJlvLeKMJruRSsFhqPmQzRQL2jP5QDgViRwfEga6/fdRW1V7Sy3jLLGMVXiLk5p4ZzzbbYBLvAdGP
+        pXVomXDLVzXbt1GUe3YKjDOdNebtqOTHAd4m6LmbQuS9eHVZTDu/1dmFTFFDuqhW2gZO9py/sIt1Q
+        gx+LxoQg==;
+Received: from [2001:4bb8:184:6215:a004:cea2:5ea9:6eca] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDNna-00BvyP-8T; Tue, 10 Aug 2021 09:11:58 +0000
+Date:   Tue, 10 Aug 2021 11:11:49 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, peterx@redhat.com
+Subject: Re: [PATCH 7/7] vfio/pci: Remove map-on-fault behavior
+Message-ID: <YRJC1buKp67kGemh@infradead.org>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+ <162818330190.1511194.10498114924408843888.stgit@omen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <162818330190.1511194.10498114924408843888.stgit@omen>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmap_atomic() disables preemption and pagefaults for historical
-reasons. The conversion to kmap_local(), which only disables
-migration, cannot be done wholesale because quite some call sites need
-to be updated to accommodate with the changed semantics.
+On Thu, Aug 05, 2021 at 11:08:21AM -0600, Alex Williamson wrote:
+> +void vfio_pci_test_and_up_write_memory_lock(struct vfio_pci_device *vdev)
+> +{
+> +	if (vdev->zapped_bars && __vfio_pci_memory_enabled(vdev)) {
+> +		WARN_ON(vfio_device_io_remap_mapping_range(&vdev->vdev,
+> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
+> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
+> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX)));
+> +		vdev->zapped_bars = false;
 
-On PREEMPT_RT enabled kernels the kmap_atomic() semantics are
-problematic due to the implicit disabling of preemption which makes it
-impossible to acquire 'sleeping' spinlocks within the kmap atomic
-sections.
+Doing actual work inside a WARN_ON is pretty nasty.  Also the non-ONCE
+version here will lead to massive log splatter if it actually hits.
 
-PREEMPT_RT replaces the preempt_disable() with a migrate_disable() for
-more than a decade. It could be argued that this is a justification to
-do this unconditionally, but PREEMPT_RT covers only a limited number of
-architectures and it disables some functionality which limits the
-coverage further.
+I'd prefer something like:
 
-Limit the replacement to PREEMPT_RT for now.
+	loff_t start = VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX);
+	loff_t end = VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX);
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/highmem-internal.h | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+	if (vdev->zapped_bars && __vfio_pci_memory_enabled(vdev)) {
+		if (!vfio_device_io_remap_mapping_range(&vdev->vdev, start,
+				end - start))
+			vdev->zapped_bars = false;
+		WARN_ON_ONCE(vdev->zapped_bars);
 
-diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
-index 7902c7d8b55f9..4aa1031d3e4c3 100644
---- a/include/linux/highmem-internal.h
-+++ b/include/linux/highmem-internal.h
-@@ -90,7 +90,11 @@ static inline void __kunmap_local(void *vaddr)
- 
- static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
- {
--	preempt_disable();
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		migrate_disable();
-+	else
-+		preempt_disable();
-+
- 	pagefault_disable();
- 	return __kmap_local_page_prot(page, prot);
- }
-@@ -102,7 +106,11 @@ static inline void *kmap_atomic(struct page *page)
- 
- static inline void *kmap_atomic_pfn(unsigned long pfn)
- {
--	preempt_disable();
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		migrate_disable();
-+	else
-+		preempt_disable();
-+
- 	pagefault_disable();
- 	return __kmap_local_pfn_prot(pfn, kmap_prot);
- }
-@@ -111,7 +119,10 @@ static inline void __kunmap_atomic(void *addr)
- {
- 	kunmap_local_indexed(addr);
- 	pagefault_enable();
--	preempt_enable();
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		migrate_enable();
-+	else
-+		preempt_enable();
- }
- 
- unsigned int __nr_free_highpages(void);
-@@ -179,7 +190,10 @@ static inline void __kunmap_local(void *addr)
- 
- static inline void *kmap_atomic(struct page *page)
- {
--	preempt_disable();
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		migrate_disable();
-+	else
-+		preempt_disable();
- 	pagefault_disable();
- 	return page_address(page);
- }
-@@ -200,7 +214,10 @@ static inline void __kunmap_atomic(void *addr)
- 	kunmap_flush_on_unmap(addr);
- #endif
- 	pagefault_enable();
--	preempt_enable();
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		migrate_enable();
-+	else
-+		preempt_enable();
- }
- 
- static inline unsigned int nr_free_highpages(void) { return 0; }
--- 
-2.32.0
+>  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> -	vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
 
+What is the story with this appearing earlier and disappearing here
+again?
+
+> +extern void vfio_pci_test_and_up_write_memory_lock(struct vfio_pci_device
+> +						   *vdev);
+
+No need for the extern.
