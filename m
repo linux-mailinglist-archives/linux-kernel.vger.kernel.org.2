@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC14A3E5C26
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC133E5C2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241920AbhHJNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:49:35 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:59218 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240232AbhHJNtb (ORCPT
+        id S241962AbhHJNux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233318AbhHJNuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:49:31 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D67F31C0B77; Tue, 10 Aug 2021 15:49:04 +0200 (CEST)
-Date:   Tue, 10 Aug 2021 15:49:04 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH v2 01/10] docs: Add block device LED trigger
- documentation
-Message-ID: <20210810134904.GA28089@amd>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
- <20210809033217.1113444-2-arequipeno@gmail.com>
+        Tue, 10 Aug 2021 09:50:52 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E24C0613D3;
+        Tue, 10 Aug 2021 06:50:30 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so4422166pji.5;
+        Tue, 10 Aug 2021 06:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=Na5r6WxMbNS8Nyf4HKx/vDqX/nZNyBc04/DnaxOLZ2Y=;
+        b=Ahbyu2SQmqnDXV3uBXJSN8rqkMvO/ZJlqir0IXF1zyK/AGu22zKxz2xhsCDJEXR+uA
+         3alD+uwbGXY2v84PLfKm1FBFnWPEJ5FlkFfiBLCsEGZoQa/rEuo6P4+xcZG2ez3xqKAV
+         Smkq4m+LX89dPNk9wuhGd+UukuQSh1Jf6P0zH18Rei2FgLiqIHeKpZIjNvcJp68xV4O3
+         fhYSl0CaINn65Ft6SpvsEyqUC37C31UkXoied8mffJyG865V09HIdKxCE1+6xH416elk
+         QPi07rf45Yquu5bsMnJfsHxezsbCQ1AE4tFMeIcNY+AV7G6xg3WXhxVdjA2lGBoWz1mU
+         3itw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=Na5r6WxMbNS8Nyf4HKx/vDqX/nZNyBc04/DnaxOLZ2Y=;
+        b=leNr+6PHM+R2HoRrICc8Q0pqCnwIuKZpavzZ4uSo8MkRJEadqHshx5HLlgHTlhVE/N
+         wc82QYRh0lj0Ce4oGFLohKskRoib41W1Xz+eZLnMJkyVWI53foEWAFvpgz3rxprhoh05
+         M2JT91LwqtVHIaXVCyC9fLPU+PPs77LV0FfeHdYtHmD2q330BoLbwq/RE3y1eByg+TMj
+         8fjL+gvAnysNdc+CGyoJz0yGsZmESPE4sBwLifc//HHhNxc6QoHY8hI+BOVXpjKWJZzZ
+         R1XzzQ0wI2Gz5XZXSp+sQahjAJKNGYZHwgyb135FEyc2HqGf+6X+s/2amb/Cgpo0e0Bm
+         /gQA==
+X-Gm-Message-State: AOAM530VkHEWy86wPTLIFNh+QEw95l/V0T/nmD3CQLZhUZAsjbLAYpiB
+        AYx9W/8yqmx2j86nqVimNijgLaPZs3Jov9hE
+X-Google-Smtp-Source: ABdhPJwV3jkigz40brQy9FHVLtrTjI+Mefvt3ubGb4yUvVNbzWqZ6cgeEI5Ca4ZSqeMlG7am0ui1UQ==
+X-Received: by 2002:a05:6a00:808:b029:3c1:15ba:ade2 with SMTP id m8-20020a056a000808b02903c115baade2mr23517872pfk.74.1628603430204;
+        Tue, 10 Aug 2021 06:50:30 -0700 (PDT)
+Received: from [10.178.0.62] ([85.203.23.37])
+        by smtp.gmail.com with ESMTPSA id d2sm28417068pgv.87.2021.08.10.06.50.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 06:50:29 -0700 (PDT)
+To:     stas.yakovlev@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Tuo Li <islituo@gmail.com>
+Subject: [BUG] ipw2x00: possible null-pointer dereference in
+ libipw_wx_set_encode()
+Message-ID: <b9e3b7c9-59e4-7b3d-45d0-89ca006d45fc@gmail.com>
+Date:   Tue, 10 Aug 2021 21:50:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-In-Reply-To: <20210809033217.1113444-2-arequipeno@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Our static analysis tool finds a possible null-pointer dereference in 
+the ipw2x00 driver in Linux 5.14.0-rc3:
 
-Hi!
+The variable (*crypt)->ops is checked in:
+360:    if (*crypt != NULL && (*crypt)->ops != NULL && 
+strcmp((*crypt)->ops->name, "WEP") != 0)
 
-> +++ b/Documentation/ABI/testing/sysfs-block
-> @@ -316,3 +316,19 @@ Description:
->  		does not complete in this time then the block driver timeout
->  		handler is invoked. That timeout handler can decide to retry
->  		the request, to fail it or to start a device recovery strategy.
-> +
-> +What:		/sys/block/<disk>/led
-> +Date:		August 2021
-> +Contact:	Ian Pilcher <arequipeno@gmail.com>
-> +Description:
-> +		Set the LED associated with this block device (or show available
-> +		LEDs and the currently selected LED, if any).
-> +
-> +		Reading the attribute will display the available LEDs (LEDs that
-> +		are associated with the blkdev LED trigger).  The currently
-> +		selected LED is enclosed in square brackets.  To clear the
-> +		device's LED association write 'none' (without the quotes) or
-> +		an empty string/line to the attribute.
-> +
-> +		See Documentation/ABI/testing/sysfs-class-led-trigger-blkdev and
-> +		Documentation/block/blk-ledtrig.rst.)
+This indicates that (*crypt)->ops can be NULL. If so, some possible 
+null-pointer dereferences will occur:
+407:    (*crypt)->ops->set_key(sec.keys[key], len, NULL, (*crypt)->priv);
+417:    len = (*crypt)->ops->get_key(sec.keys[key], WEP_KEY_LEN, ...)
 
-I have to agree with Marek / Pali -- this is very strange interface.
+I am not quite sure whether these possible null-pointer dereferences are 
+real and how to fix them if they are real.
+Any feedback would be appreciated, thanks!
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
 
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmESg88ACgkQMOfwapXb+vJV0gCdGqeHkXkz9qAl+6lcbIQnxYAJ
-liUAoIIpKKVWZ9SEjYxGWwA0VjQRZqWk
-=I/wx
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
+Best wishes,
+Tuo Li
