@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAD23E7FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6233E8144
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbhHJRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:44:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34382 "EHLO mail.kernel.org"
+        id S238022AbhHJR6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:58:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234253AbhHJRkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 372476109F;
-        Tue, 10 Aug 2021 17:37:56 +0000 (UTC)
+        id S237001AbhHJRyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:54:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B047A61215;
+        Tue, 10 Aug 2021 17:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617076;
-        bh=R//KGMnHgn3imwAr23wCSUTcCP7r7swND//LrSgLaF8=;
+        s=korg; t=1628617451;
+        bh=QNZuYBvVKHO3xsp7X8LPBqZy3Us8Fa3xz4GQl9AYTJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FFN9qYgIdnIxIlEi/SAoSi9Zwbqu0Ep1w8jG6aCJTAO9k7X0vSC1fbx4C1rLkZ4Sj
-         CSpCnzZPVSKaNJKy7vyOkLW0wP+HLIpz3orYAHS3eRsHYF1j+akmPL5iLXdkAgOuWj
-         AVVYcchmKlVoynt6l5bSO/g2ZMpecgG7p41Fb0zE=
+        b=hIOksXkXFaIrB0S5sng3I0bVpdw+fDXsCTrS5+f3zHSr68R88IsS1xftEv8OEZtoy
+         Dk9wIhV5DDLysy6SU3YFpcSWCERPn/bihxcir2k8DdKbhyCKSs+VY22Sl/G/Rm77hE
+         sz7uqf4k0eRaHt4BBLCv3exCTlhbsmwbXRClJfTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+fb347cf82c73a90efcca@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 004/135] net: xfrm: fix memory leak in xfrm_user_rcv_msg
-Date:   Tue, 10 Aug 2021 19:28:58 +0200
-Message-Id: <20210810172955.821047403@linuxfoundation.org>
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 031/175] spi: imx: mx51-ecspi: Reinstate low-speed CONFIGREG delay
+Date:   Tue, 10 Aug 2021 19:28:59 +0200
+Message-Id: <20210810173001.988258289@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
+References: <20210810173000.928681411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 7c1a80e80cde008f271bae630d28cf684351e807 ]
+[ Upstream commit 135cbd378eab336da15de9c84bbb22bf743b38a5 ]
 
-Syzbot reported memory leak in xfrm_user_rcv_msg(). The
-problem was is non-freed skb's frag_list.
+Since 00b80ac935539 ("spi: imx: mx51-ecspi: Move some initialisation to
+prepare_message hook."), the MX51_ECSPI_CONFIG write no longer happens
+in prepare_transfer hook, but rather in prepare_message hook, however
+the MX51_ECSPI_CONFIG delay is still left in prepare_transfer hook and
+thus has no effect. This leads to low bus frequency operation problems
+described in 6fd8b8503a0dc ("spi: spi-imx: Fix out-of-order CS/SCLK
+operation at low speeds") again.
 
-In skb_release_all() skb_release_data() will be called only
-in case of skb->head != NULL, but netlink_skb_destructor()
-sets head to NULL. So, allocated frag_list skb should be
-freed manualy, since consume_skb() won't take care of it
+Move the MX51_ECSPI_CONFIG write delay into the prepare_message hook
+as well, thus reinstating the low bus frequency fix.
 
-Fixes: 5106f4a8acff ("xfrm/compat: Add 32=>64-bit messages translator")
-Reported-and-tested-by: syzbot+fb347cf82c73a90efcca@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 00b80ac935539 ("spi: imx: mx51-ecspi: Move some initialisation to prepare_message hook.")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210703022300.296114-1-marex@denx.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_user.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/spi/spi-imx.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index 45f86a97eaf2..6f97665b632e 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -2751,6 +2751,16 @@ static int xfrm_user_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 39dc02e366f4..4aee3db6d6df 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -506,7 +506,7 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
+ {
+ 	struct spi_device *spi = msg->spi;
+ 	u32 ctrl = MX51_ECSPI_CTRL_ENABLE;
+-	u32 testreg;
++	u32 testreg, delay;
+ 	u32 cfg = readl(spi_imx->base + MX51_ECSPI_CONFIG);
  
- 	err = link->doit(skb, nlh, attrs);
+ 	/* set Master or Slave mode */
+@@ -567,6 +567,23 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
  
-+	/* We need to free skb allocated in xfrm_alloc_compat() before
-+	 * returning from this function, because consume_skb() won't take
-+	 * care of frag_list since netlink destructor sets
-+	 * sbk->head to NULL. (see netlink_skb_destructor())
+ 	writel(cfg, spi_imx->base + MX51_ECSPI_CONFIG);
+ 
++	/*
++	 * Wait until the changes in the configuration register CONFIGREG
++	 * propagate into the hardware. It takes exactly one tick of the
++	 * SCLK clock, but we will wait two SCLK clock just to be sure. The
++	 * effect of the delay it takes for the hardware to apply changes
++	 * is noticable if the SCLK clock run very slow. In such a case, if
++	 * the polarity of SCLK should be inverted, the GPIO ChipSelect might
++	 * be asserted before the SCLK polarity changes, which would disrupt
++	 * the SPI communication as the device on the other end would consider
++	 * the change of SCLK polarity as a clock tick already.
 +	 */
-+	if (skb_has_frag_list(skb)) {
-+		kfree_skb(skb_shinfo(skb)->frag_list);
-+		skb_shinfo(skb)->frag_list = NULL;
-+	}
++	delay = (2 * 1000000) / spi_imx->spi_bus_clk;
++	if (likely(delay < 10))	/* SCLK is faster than 100 kHz */
++		udelay(delay);
++	else			/* SCLK is _very_ slow */
++		usleep_range(delay, delay + 10);
 +
- err:
- 	kvfree(nlh64);
- 	return err;
+ 	return 0;
+ }
+ 
+@@ -574,7 +591,7 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
+ 				       struct spi_device *spi)
+ {
+ 	u32 ctrl = readl(spi_imx->base + MX51_ECSPI_CTRL);
+-	u32 clk, delay;
++	u32 clk;
+ 
+ 	/* Clear BL field and set the right value */
+ 	ctrl &= ~MX51_ECSPI_CTRL_BL_MASK;
+@@ -596,23 +613,6 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
+ 
+ 	writel(ctrl, spi_imx->base + MX51_ECSPI_CTRL);
+ 
+-	/*
+-	 * Wait until the changes in the configuration register CONFIGREG
+-	 * propagate into the hardware. It takes exactly one tick of the
+-	 * SCLK clock, but we will wait two SCLK clock just to be sure. The
+-	 * effect of the delay it takes for the hardware to apply changes
+-	 * is noticable if the SCLK clock run very slow. In such a case, if
+-	 * the polarity of SCLK should be inverted, the GPIO ChipSelect might
+-	 * be asserted before the SCLK polarity changes, which would disrupt
+-	 * the SPI communication as the device on the other end would consider
+-	 * the change of SCLK polarity as a clock tick already.
+-	 */
+-	delay = (2 * 1000000) / clk;
+-	if (likely(delay < 10))	/* SCLK is faster than 100 kHz */
+-		udelay(delay);
+-	else			/* SCLK is _very_ slow */
+-		usleep_range(delay, delay + 10);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
