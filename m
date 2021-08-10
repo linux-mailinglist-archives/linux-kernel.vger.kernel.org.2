@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DCB3E5A5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F2D3E5A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240913AbhHJMtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:49:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8391 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240877AbhHJMtX (ORCPT
+        id S241010AbhHJM5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237734AbhHJM5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:49:23 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GkXjC0Ckjz828j;
-        Tue, 10 Aug 2021 20:45:03 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 20:48:59 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
- 2021 20:48:58 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <richardcochran@gmail.com>, <davem@davemloft.net>
-Subject: [PATCH -next] ptp: ocp: Fix missing pci_disable_device() on error in ptp_ocp_probe()
-Date:   Tue, 10 Aug 2021 20:54:53 +0800
-Message-ID: <20210810125453.2182835-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 10 Aug 2021 08:57:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA32C0613D3;
+        Tue, 10 Aug 2021 05:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5xXVhemuKO9PB7xet9GYCusT0JhdoHtmk7yZ9MlgjsA=; b=T9Pq6HiHO2eGXiXU/rruKoAgnH
+        ZccJwXam6hSvP5msWz1/meKVk9Qqqo21zp/o3ZINkWutqGZ3e/Ar6X4U+BVQybv6XisgC3ow6m2VC
+        W21FvSRO8lbSuEAV/Vs5YLuu6XUTndV/oQZDJYlpaPVMzqB7FoRiuMVpDslbDhGL6wL4xU6das6yb
+        rJn+F8gWfAz/icar+buwTckcidNFScAQDRr7Zv7xgLf52Y/AEa0UnwmLj3zpJgo+GYtZrxI1DVF/K
+        qEyJXr5uFQZzgr1ivii4bwu/eeC5SybzFV1307mhSe1hjGSyFVfI5DQH7FitTyEAtoHkx98tiJJZS
+        aKVL3ojw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDRHY-00C7oL-Jm; Tue, 10 Aug 2021 12:55:14 +0000
+Date:   Tue, 10 Aug 2021 13:55:00 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        peterx@redhat.com
+Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
+Message-ID: <YRJ3JD7gyi11x5Hw@infradead.org>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+ <162818325518.1511194.1243290800645603609.stgit@omen>
+ <20210806010418.GF1672295@nvidia.com>
+ <20210806141745.1d8c3e0a.alex.williamson@redhat.com>
+ <YRI9+7CCSq++pYfM@infradead.org>
+ <20210810115722.GA5158@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810115722.GA5158@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If ptp_ocp_device_init() fails, pci_disable_device() need be
-called, fix this by using pcim_enable_device().
+On Tue, Aug 10, 2021 at 08:57:22AM -0300, Jason Gunthorpe wrote:
+> I'm not sure there is a real performance win to chase here? Doesn't
+> this only protect mmap against reset? The mmap isn't performance
+> sensitive, right?
+> 
+> If this really needs extra optimization adding a rwsem to the devset
+> and using that across the whole set would surely be sufficient.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/ptp/ptp_ocp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/ptp/ptp_ocp.c b/drivers/ptp/ptp_ocp.c
-index 92edf772feed..04cce8d3b1f6 100644
---- a/drivers/ptp/ptp_ocp.c
-+++ b/drivers/ptp/ptp_ocp.c
-@@ -1429,7 +1429,7 @@ ptp_ocp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (err)
- 		goto out_free;
- 
--	err = pci_enable_device(pdev);
-+	err = pcim_enable_device(pdev);
- 	if (err) {
- 		dev_err(&pdev->dev, "pci_enable_device\n");
- 		goto out_unregister;
-@@ -1476,7 +1476,6 @@ ptp_ocp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- out:
- 	ptp_ocp_detach(bp);
--	pci_disable_device(pdev);
- 	pci_set_drvdata(pdev, NULL);
- out_unregister:
- 	devlink_unregister(devlink);
-@@ -1493,7 +1492,6 @@ ptp_ocp_remove(struct pci_dev *pdev)
- 	struct devlink *devlink = priv_to_devlink(bp);
- 
- 	ptp_ocp_detach(bp);
--	pci_disable_device(pdev);
- 	pci_set_drvdata(pdev, NULL);
- 
- 	devlink_unregister(devlink);
--- 
-2.25.1
-
+Every mmio read or write takes memory_lock.
