@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A05C3E8396
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AFF3E838B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhHJTWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbhHJTW1 (ORCPT
+        id S232134AbhHJTVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:21:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41588 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231152AbhHJTVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:22:27 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8A6C06179C;
-        Tue, 10 Aug 2021 12:22:04 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id k38-20020a05600c1ca6b029025af5e0f38bso2686157wms.5;
-        Tue, 10 Aug 2021 12:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D45mXNvkWA7/WYlp8AvRpQ5b9X4R62efHU/Fd8vCZP8=;
-        b=Y8AwmA+2a2rRKypmCHevqvPsVlHD8NE4NJWmZeABaKDdDSugGDSphp/6vnH9pKwsRw
-         pmFktyszj+SZZCjj3lCDo0nfx2n9VkWIbOO9//6zEDR70/orB4fFPEU+NjiVrh3AtJeP
-         zKavK+4zLaNtLscmE+Tj+nUR5LiwR4EFzHjLBlnSfkIOv4RNmsBe/4BXBxzsI1edDine
-         3C+gvFsKcrq33vWVdiB2ykz4hyIb47IHzUVpxS6ldDI8dOI2uSMZbhfN+YCJkwskzOsI
-         0lOv8RKQZ9Fcr92E5wr1t45fxnrBl4F/x8fPRuAyEZDdvkfFk5APkiBNGXmrgNEUeXPR
-         v/4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D45mXNvkWA7/WYlp8AvRpQ5b9X4R62efHU/Fd8vCZP8=;
-        b=EPISCmn2X3EDs8cTG3NmFE9wOS/fq6aVFx1QjPzpqyfstCXb4+/iSOa2FnpqgzaDpG
-         44ufdCGKP+EMtHnmyh4wG+riFK5wgi2DbRNptelmzKDW0UmRh3PK2jfRJv6jI9NmDMnX
-         v1nnC5aF8yaeRq0pjUW8zff5lHPz/UwQSINQN1fO/bhJ4YLJUA3lafrI5v0cWb2L4cLV
-         PoJo3YJd7+BSUGqUYVAjrZYpdRl3hxLh4VFQ8OMtvku9NDqnSu3QuP515NgNqsJWqSJR
-         /w/8phC9mN3voKlywYqcQY7UEDUFfnFd1Va17kEa/WSbnYkBOSdw3pxcJbj34NWfSnRC
-         9eWw==
-X-Gm-Message-State: AOAM533FBNfYbZFoSKASF252tj0fNNq/hxMFdngKN57ZTu7IqSbHZ/su
-        5MYyB4amP/VaCxZYa53KVTF/HQ3RGYVmmqpivnA=
-X-Google-Smtp-Source: ABdhPJykvn4AJeGs5caXBxsJtiV0pPBKkQfmiOwi/TrMj4Ct4nrAhb3d7UuHPWJy7V7cL7lL6nKWsKP9Mp0hcMfkA1w=
-X-Received: by 2002:a05:600c:293:: with SMTP id 19mr23476439wmk.179.1628623323146;
- Tue, 10 Aug 2021 12:22:03 -0700 (PDT)
+        Tue, 10 Aug 2021 15:21:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628623259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UKz5RODz5prskKuvBZqrHvPYmgz3FaALdg2u0GEXeAk=;
+        b=JCicweRCzxha6Q7q8a7rp0c29YjhSFVTzc7ezJ4NP5QRKRnOwavf9hQm3t7mPWp252LTur
+        ymdIIwtp9mVsbzTqrfjoPfcnQR5k1mYq/lFZ7K0248ky4RiUuyDWam0f7vIJVHQpPNcSHl
+        ntCQUsPMTDtVztqBiRo4PJvOIPuPa0o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-604-zMfGCzHEMwWOtYJbUDazOA-1; Tue, 10 Aug 2021 15:20:58 -0400
+X-MC-Unique: zMfGCzHEMwWOtYJbUDazOA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34E05190B2A0;
+        Tue, 10 Aug 2021 19:20:56 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B4905C1A1;
+        Tue, 10 Aug 2021 19:20:54 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     dan.j.williams@intel.com, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>, linux-edac@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [patch] x86/pat: pass correct address to sanitize_phys
+References: <x49tuknmosl.fsf@segfault.boston.devel.redhat.com>
+        <87wnotst1l.ffs@tglx>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Tue, 10 Aug 2021 15:22:19 -0400
+In-Reply-To: <87wnotst1l.ffs@tglx> (Thomas Gleixner's message of "Tue, 10 Aug
+        2021 08:38:46 +0200")
+Message-ID: <x49k0ktm7f8.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210810102148.9764-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210810102148.9764-1-lukas.bulwahn@gmail.com>
-From:   Kim Kuparinen <kimi.h.kuparinen@gmail.com>
-Date:   Tue, 10 Aug 2021 22:21:52 +0300
-Message-ID: <CABD-7My1Nc=TEY=qwQo=G-XA718zRDetYF7KchQRVeTwPg60uA@mail.gmail.com>
-Subject: Re: [PATCH] HID: thrustmaster: clean up Makefile and adapt quirks
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Dario Pagani <dario.pagani.146@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Works on my VM.
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-Kim
+> Jeff,
+>
+> On Wed, Jul 21 2021 at 15:48, Jeff Moyer wrote:
+>
+> Please write function names with brackets, i.e. sanitize_phys().
 
-ti 10. elok. 2021 klo 13.21 Lukas Bulwahn (lukas.bulwahn@gmail.com) kirjoitti:
+OK, will do.
+
+>> memtype_reserve takes an address range of the form [start, end).  It
 >
-> Commit c49c33637802 ("HID: support for initialization of some Thrustmaster
-> wheels") messed up the Makefile and quirks during the refactoring of this
-> commit.
+> [start, end]
+
+Start is inclusive, end is exclusive, so start <= x < end.  I used the
+notation found here:
+
+  https://en.wikipedia.org/wiki/Interval_(mathematics)
+
+If that's too confusing, I can stick to inclusive vs exclusive verbiage.
+
+>> then passes the start and end addresses to sanitize_phys, which is meant
+>> to operate on the inclusive addresses.  If end falls at the end of the
+>> physical address space, sanitize_phys will return 0.  This can result in
+>> drivers failing to load:
+>>
+>> [   10.000087] mpt3sas_cm0: unable to map adapter memory! or resource not found
+>> [   10.000334] mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10597/_scsih_probe()!
 >
-> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+> Doesn't this trigger the WARN() right below that offending line?
+
+It does.  I'll include the warning message in the v2 posting.
+
+>> Fix this by passing the inclusive end address to sanitize_phys.
+>>
+>> Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "decoy" addresses")
+>> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+>> --
+>> It might be worth adding a comment, here.  If there are any suggestions
+>> on what a sane wording would be, I'm all ears.
 >
-> HID_TMINIT
-> Referencing files: drivers/hid/Makefile, drivers/hid/hid-quirks.c
+> See below.
 >
-> Following the discussion (see Link), CONFIG_HID_THRUSTMASTER is the
-> intended config for CONFIG_HID_TMINIT and the file hid-tminit.c was
-> actually added as hid-thrustmaster.c.
+>> diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+>> index 3112ca7786ed..482557905294 100644
+>> --- a/arch/x86/mm/pat/memtype.c
+>> +++ b/arch/x86/mm/pat/memtype.c
+>> @@ -583,7 +583,7 @@ int memtype_reserve(u64 start, u64 end, enum page_cache_mode req_type,
+>>  	int err = 0;
+>>  
+>>  	start = sanitize_phys(start);
+>> -	end = sanitize_phys(end);
 >
-> So, clean up Makefile and adapt quirks to that refactoring.
->
-> Fixes: c49c33637802 ("HID: support for initialization of some Thrustmaster wheels")
-> Link: https://lore.kernel.org/linux-input/CAKXUXMx6dByO03f3dX0X5zjvQp0j2AhJBg0vQFDmhZUhtKxRxw@mail.gmail.com/
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Dario, Kim, please review, test and ack.
-> Jiri, Benjamin, please pick this quick fix-up patch.
->
->  drivers/hid/Makefile     | 1 -
->  drivers/hid/hid-quirks.c | 2 --
->  2 files changed, 3 deletions(-)
->
-> diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
-> index 1ea1a7c0b20f..e29efcb1c040 100644
-> --- a/drivers/hid/Makefile
-> +++ b/drivers/hid/Makefile
-> @@ -115,7 +115,6 @@ obj-$(CONFIG_HID_STEELSERIES)       += hid-steelseries.o
->  obj-$(CONFIG_HID_SUNPLUS)      += hid-sunplus.o
->  obj-$(CONFIG_HID_GREENASIA)    += hid-gaff.o
->  obj-$(CONFIG_HID_THRUSTMASTER) += hid-tmff.o hid-thrustmaster.o
-> -obj-$(CONFIG_HID_TMINIT)       += hid-tminit.o
->  obj-$(CONFIG_HID_TIVO)         += hid-tivo.o
->  obj-$(CONFIG_HID_TOPSEED)      += hid-topseed.o
->  obj-$(CONFIG_HID_TWINHAN)      += hid-twinhan.o
-> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-> index 51b39bda9a9d..2e104682c22b 100644
-> --- a/drivers/hid/hid-quirks.c
-> +++ b/drivers/hid/hid-quirks.c
-> @@ -662,8 +662,6 @@ static const struct hid_device_id hid_have_special_driver[] = {
->         { HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb653) },
->         { HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb654) },
->         { HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65a) },
-> -#endif
-> -#if IS_ENABLED(CONFIG_HID_TMINIT)
->         { HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65d) },
->  #endif
->  #if IS_ENABLED(CONFIG_HID_TIVO)
-> --
-> 2.17.1
->
+>         /*
+>          * [start, end] is an exclusive address range, but
+>          * sanitize_phys() expects an inclusive end address
+>          */
+
+That works for me (modulo the interval notation), thanks for the
+suggestion.
+
+Thanks!
+Jeff
+
