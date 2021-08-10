@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D011B3E7BA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629613E7BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242542AbhHJPE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:04:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39958 "EHLO mail.kernel.org"
+        id S242650AbhHJPIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:08:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46236 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241246AbhHJPE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:04:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76E4E60F02;
-        Tue, 10 Aug 2021 15:04:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628607845;
-        bh=sNykzSjaSqUPIEKONEYDwBt3Ifzsb7c+/IK7dJ46EfI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c347+/hpS6EKF7miPoO5MxBTjFj5/YQ1T080OIvM/23lsQLp13GSFp5R6zRWzEDII
-         NlHHAk7fpTDFj5QM7DdtX8/rCn+edFrAbAMtv5VDfCDqP4OCVETpPDOES+WSdRNVMj
-         4tlT2rdOVbWJ+Ch7qw3mHQXH/iFJWsHBEaw7hfl6QjfGHIaM3wZawp4HQIhg1Cur2o
-         cMOioAgdO5l18kt6qIGNXLbFpHkjfTWBrOl+2va9MF10mRy20nnemd6xODaZ/zSC1G
-         /Oj4Bnpox6X8JJuT/Ty/qLCYap/83YSwc70t2HeyuwvW017WJdyDlK+7c8iUv18cag
-         2e7jeA953zqyw==
-Date:   Tue, 10 Aug 2021 08:04:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tuo Li <islituo@gmail.com>
-Cc:     sridhar.samudrala@intel.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: Re: [PATCH] net: core: Fix possible null-pointer dereference in
- failover_slave_register()
-Message-ID: <20210810080404.1d1ae0b6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210810091800.291272-1-islituo@gmail.com>
-References: <20210810091800.291272-1-islituo@gmail.com>
+        id S239566AbhHJPID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:08:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="275956713"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="275956713"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:04:16 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="526178724"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:04:13 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 9D9C820345;
+        Tue, 10 Aug 2021 18:04:11 +0300 (EEST)
+Date:   Tue, 10 Aug 2021 18:04:11 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Evgeny Novikov <novikov@ispras.ru>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: Re: [PATCH] media: atomisp: Fix error handling in probe
+Message-ID: <20210810150411.GG3@paasikivi.fi.intel.com>
+References: <20210810115303.9089-1-novikov@ispras.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810115303.9089-1-novikov@ispras.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 02:18:00 -0700 Tuo Li wrote:
-> The variable fops is checked in:
->   if (fops && fops->slave_pre_register &&
->     fops->slave_pre_register(slave_dev, failover_dev))
+On Tue, Aug 10, 2021 at 02:53:03PM +0300, Evgeny Novikov wrote:
+> There were several issues with handling errors in lm3554_probe():
+> - Probe did not set the error code when v4l2_ctrl_handler_init() failed.
+> - It intermixed gotos for handling errors of v4l2_ctrl_handler_init()
+>   and media_entity_pads_init().
+> - Probe did not free resources in case of failures of
+>   atomisp_register_i2c_module().
 > 
-> This indicates that it can be NULL.
-> However, it is dereferenced when calling netdev_rx_handler_register():
->   err = netdev_rx_handler_register(slave_dev, fops->slave_handle_frame,
->                     failover_dev);
+> The patch fixes all these issues.
 > 
-> To fix this possible null-pointer dereference, check fops first, and if 
-> it is NULL, assign -EINVAL to err.
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 
-The other fops checks look like defensive programming. I don't see
-anywhere where fops would be cleared, and all callers pass it to
-register().
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+-- 
+Sakari Ailus
