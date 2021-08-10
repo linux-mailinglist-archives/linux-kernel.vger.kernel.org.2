@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624A93E86BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D9C3E86CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235834AbhHJXvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235638AbhHJXvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:51:19 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD54C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:50:56 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id r6so384692wrt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fpBdLM1jjgCWmFdFG4PeoevZT0phpfn4uYGIZYMaDtU=;
-        b=dPId21aa+NzITqtT02ztCNHXgTunSTuesgek5y7mZ+4QohkF0XVlrJhj2R7jU6GXUu
-         7CrMI181xRQCtVr62rTkM/HIOxPR3Qas80FUYhxKP/8ulnOXYN1rr61qp5uJoiy6LLDb
-         THUGOhRBPKafrNDJV1Zmz7Le3RaBSOhuvWxwmEnzdQ47LZ/jFlfenW/z5FrH5oRpj3mN
-         eCdxX4aBLj5H1GXYgRKTXhUYdOZbhjy/dL//DY9zrufxRmOqBayjNu5ZFwSL+QH9PkhZ
-         ZE1tqEYJS6CbG+pXhqw9FVw8beMuU1amW5GbYFI+3Z7Nw/EeWVCIGXC40uoaEODeoQrz
-         38fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fpBdLM1jjgCWmFdFG4PeoevZT0phpfn4uYGIZYMaDtU=;
-        b=WteMsv0jwWMm7PlOVhPXtQ+V7nNfsvhH9zEUYp63APPhh3b9T4nZz7RPNqz8EaHGVr
-         SFKurwHeY50K4+xHBxRafa5hMO1QOCyq3F2v3p8mg24EQcaZnfhg9zkqGRYGKoHKAOzH
-         36degFccQmwfCmrpuPh93rwgcAUSmuPAXYrG7uJAdcMLmODbFM0XDC1BGd+KjJv7SNdc
-         6Mf4DEXkZJRM/MUaSWtebGvFzEjdd6Nc+VkocHLL7D2YNZO9KriadIWdD776dVYkiD/i
-         scyezn5QtSGt3Ib4hxNBWtsmu7gY8bDtzyECCXkIss5phjyTN+VzwIaQrxiglfKG85sn
-         2rmQ==
-X-Gm-Message-State: AOAM530PcYng7fSkqMZyC3S2P4H3o7QTT/CO8gKCnD09DBRfBxMCPpAb
-        HZMlcoeQTVyKKOVu3GUSkssN6A==
-X-Google-Smtp-Source: ABdhPJywP3kWWA2u+Px59SXSCD+LDZZ3cpzqiUoMoRG8kBZNiQXcJezLI2mVkzTsmGKTrVqd8N30Hg==
-X-Received: by 2002:adf:f4cf:: with SMTP id h15mr15572164wrp.67.1628639455231;
-        Tue, 10 Aug 2021 16:50:55 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id p14sm13881220wro.3.2021.08.10.16.50.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 16:50:54 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] staging: r8188eu: remove lines from Makefile that silence build warnings
-Date:   Wed, 11 Aug 2021 00:50:47 +0100
-Message-Id: <20210810235047.177883-9-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210810235047.177883-1-phil@philpotter.co.uk>
-References: <20210810235047.177883-1-phil@philpotter.co.uk>
+        id S235638AbhHJXxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235242AbhHJXxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 19:53:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9387560F38;
+        Tue, 10 Aug 2021 23:53:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628639600;
+        bh=Q5guoRN1yQDj+60Z+Dgg/ukOwCqoMx/EGLhf5mLyiGs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r1pWaQNTblIxJYz59sv6mCoqpj+uajcaFH5TKH32XgAd8KDvpvgUZdx4kToW8uroj
+         ywsUT3wxedtfOx4efWyXiv/omDBgEpgf4PNqC/ktljjFjrjVIXuRH1NvgsXd1k40pU
+         +cNdmXyDdFgMPTlFrf5DUxi8kgA8LMa2Bm8cFUkcsjG7iDWmgsFlDEtRZzhloSEpII
+         WVuRRRSD5cApHLCsG6xdbhAESlz27Eup8JuDBiqffR06e5IIYA1p70dy4nAR5VSMHC
+         zVgg7Ao2dCw+PLxuuhfGvlVSqkCHq/Le9lzVYSY6QdP1WL5hOKlT7E7/B18t+aeU5P
+         akNaONJtmCX6A==
+Date:   Tue, 10 Aug 2021 16:53:18 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Yufeng Mo <moyufeng@huawei.com>
+Subject: Re: [PATCH net-next 0/5] Move devlink_register to be near
+ devlink_reload_enable
+Message-ID: <20210810165318.323eae24@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <cover.1628599239.git.leonro@nvidia.com>
+References: <cover.1628599239.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the several lines from the Makefile that append EXTRA_CFLAGS options
-to silence build warnings about unused variables, unused functions and such
-like. This will enable cleanup of missed warnings, and easier spotting
-of future such problems.
+On Tue, 10 Aug 2021 16:37:30 +0300 Leon Romanovsky wrote:
+> This series prepares code to remove devlink_reload_enable/_disable API
+> and in order to do, we move all devlink_register() calls to be right
+> before devlink_reload_enable().
+> 
+> The best place for such a call should be right before exiting from
+> the probe().
+> 
+> This is done because devlink_register() opens devlink netlink to the
+> users and gives them a venue to issue commands before initialization
+> is finished.
+> 
+> 1. Some drivers were aware of such "functionality" and tried to protect
+> themselves with extra locks, state machines and devlink_reload_enable().
+> Let's assume that it worked for them, but I'm personally skeptical about
+> it.
+> 
+> 2. Some drivers copied that pattern, but without locks and state
+> machines. That protected them from reload flows, but not from any _set_
+> routines.
+> 
+> 3. And all other drivers simply didn't understand the implications of early
+> devlink_register() and can be seen as "broken".
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/r8188eu/Makefile | 9 ---------
- 1 file changed, 9 deletions(-)
+What are those implications for drivers which don't implement reload?
+Depending on which parts of devlink the drivers implement there may well
+be nothing to worry about.
 
-diff --git a/drivers/staging/r8188eu/Makefile b/drivers/staging/r8188eu/Makefile
-index 152d6325b4d9..7f6658f931d1 100644
---- a/drivers/staging/r8188eu/Makefile
-+++ b/drivers/staging/r8188eu/Makefile
-@@ -2,15 +2,6 @@ SHELL := /bin/bash
- EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
- EXTRA_CFLAGS += -O1
- 
--EXTRA_CFLAGS += -Wno-unused-variable
--EXTRA_CFLAGS += -Wno-unused-value
--EXTRA_CFLAGS += -Wno-unused-label
--EXTRA_CFLAGS += -Wno-unused-parameter
--EXTRA_CFLAGS += -Wno-unused-function
--EXTRA_CFLAGS += -Wno-unused
--
--EXTRA_CFLAGS += -Wno-uninitialized
--
- ccflags-y += -D__CHECK_ENDIAN__
- 
- CONFIG_R8188EU = m
--- 
-2.31.1
+Plus devlink instances start out with reload disabled. Could you please
+take a step back and explain why these changes are needed.
 
+> In this series, we focus on items #1 and #2.
+> 
+> Please share your opinion if I should change ALL other drivers to make
+> sure that devlink_register() is the last command or leave them in an
+> as-is state.
+
+Can you please share the output of devlink monitor and ip monitor link
+before and after?  The modified drivers will not register ports before
+they register the devlink instance itself.
