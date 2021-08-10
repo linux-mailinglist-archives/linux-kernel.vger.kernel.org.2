@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C703E82CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4363E828C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237123AbhHJSSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240518AbhHJSQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:16:01 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92281C08EB49
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:55:14 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id a19so23357652qkg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ujERZL3nczYhkTqAmsJonW07k6KdMHOPpQXfTZtFsvw=;
-        b=QzeIfjUyRpajSLoesvR8eLo4zvaNPi4Y8lwRQfUZTu5P6P501RUXq/C+0qWvATVhw+
-         BAxuUo8M9o15KnIPC3Bpm9T1vU0IgqtcWYAm/wp7RKanSDwNPiHvDaBZGK7Yp2dinVn9
-         ZwEx6xOWTSMVHLSyDQQTEEDY1lYZfIUM23uGNezyySszAHuKOp2B3r7c5xLuvYpAOmIr
-         8kKVMbbSX5zQVLg4vl83iy3+ln7vzkTRkUnJimIaGxptAE5ayFKW3Qz95sDW5cpNEcgH
-         H8rHmnzqm21X6aoVA1oHiPcRIv+SrWPyv2miin2Wt3pyuaTf70mZuRPhRH6sKvgNnGbe
-         7ZBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ujERZL3nczYhkTqAmsJonW07k6KdMHOPpQXfTZtFsvw=;
-        b=pZEcTwZDSddgN/SNSPzfVvFhPUTQTVfoUfRJc5DUFI5iaOwiY2kWE5s+eLrLUlU9b/
-         78T8ehjLLbxu4FYHHMGwr+MJHio6pEC+INcHr7FVBG1bykj2CQOC0uVte2KaIjiTK46j
-         LwzcKJJ7mQ3mAbSIzMFkyoHDoKgX320nPPdJy44u23isdVqgqXGZ6ZpRMXXHF7jb95ve
-         165ePCr4PrvG+kX5J74sCImzXvXlYF2D4wbzsnFZAVYI1mXgNQ/QT66DlHOaeToPBxnN
-         yaUbbVNC8n3ZaYOWLfXEZURRaAB+EQwNtvb81rKAhUVnh1HTyTGwfSfibaKDLdkVBwkK
-         1MlA==
-X-Gm-Message-State: AOAM530QdsbVmSsFwD6dCfxxLKDwGtvV44rR97cWiyS6nlm6n6+KHEFi
-        5TvbVDdlvijsl0UozN3AIm4=
-X-Google-Smtp-Source: ABdhPJxz+eB/6swjK2RVRU03W+MdIGDt8D1N2HTQrjPh2y+/5zKr3NQ05cIBhCGQ+/zAcjZvT/IN/A==
-X-Received: by 2002:a37:a303:: with SMTP id m3mr28919010qke.299.1628618113603;
-        Tue, 10 Aug 2021 10:55:13 -0700 (PDT)
-Received: from localhost.localdomain ([130.44.160.152])
-        by smtp.gmail.com with ESMTPSA id bi3sm9873244qkb.133.2021.08.10.10.55.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 10:55:13 -0700 (PDT)
-Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
-Date:   Tue, 10 Aug 2021 13:55:11 -0400
-From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Maurizio Lombardi <mlombard@redhat.com>, rppt@kernel.org,
-        bp@alien8.de, tglx@linutronix.de, x86@kernel.org,
-        pjones@redhat.com, konrad@kernel.org, george.kennedy@oracle.com,
-        rafael@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory
- remapping
-Message-ID: <YRK9fxhyPgEzWKce@localhost.localdomain>
-References: <20210729135250.32212-1-mlombard@redhat.com>
- <YRKwqAlgWVGVpEJv@infradead.org>
+        id S237420AbhHJSKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:10:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239359AbhHJSFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:05:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE67603E7;
+        Tue, 10 Aug 2021 17:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628618337;
+        bh=e8AfQnkbBJUTBN66fx3ZNZlZaWyTkgvckUWpfKYlrgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=edymIbhwlGNVazPpMSqv5zJ5TjFUn0QqAddAKi+3BVwOp7gtn1uNGdciLnW1EieM6
+         czjev0CYwKBrEKg35h5gTF+2EvtVOyDljxQ2pGYRnYfQ9tx3v5jiUP1IFsKMxaV0xz
+         BNqMaf6wBOS4ScVvQnaJZLV4RN//o/dZ2bFx0k7eDcwvD/goqsf6L20TCvsxsafnpA
+         dmbFnE6yuZg8M5syNnAtTO0U2/j1naK2h4jisns2PsP+wfH7cuPD9de63uJ6e8qggy
+         aQ40Mlx8Ire9riQK3ZG6YD8bF7uoc+AmfxH7rDIwiChd0fK9UpdHglkb7RdnZKp1xD
+         /3Wj/B3ntqn3A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 12093403F2; Tue, 10 Aug 2021 14:58:55 -0300 (-03)
+Date:   Tue, 10 Aug 2021 14:58:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, yao.jin@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        irogers@google.com, linuxarm@huawei.com
+Subject: Re: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
+Message-ID: <YRK+X/f44UK+btRx@kernel.org>
+References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
+ <1627566986-30605-3-git-send-email-john.garry@huawei.com>
+ <YQgHMt4BsDeJnE09@kernel.org>
+ <90094733-741c-50e5-ac7d-f5640b5f0bdd@huawei.com>
+ <88294bb8-6fb1-b485-446c-4ec15ff28d4a@huawei.com>
+ <YRKGo1AtfBn85sZ7@kernel.org>
+ <40e85ad2-3db4-aecf-d972-7d4aa5c2278c@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRKwqAlgWVGVpEJv@infradead.org>
+In-Reply-To: <40e85ad2-3db4-aecf-d972-7d4aa5c2278c@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 06:00:24PM +0100, Christoph Hellwig wrote:
-> > Fix this bug by saving the address of the physical location
-> > of the ibft; later the driver will use isa_bus_to_virt() to get
-> > the correct virtual address.
+Em Tue, Aug 10, 2021 at 03:23:07PM +0100, John Garry escreveu:
+> On 10/08/2021 15:01, Arnaldo Carvalho de Melo wrote:
+> > > Shall I send this as a formal patch?
+> > The question is when should I apply this patch? After this series? After
+> > the patch I commented about, before?
+> > 
 > 
-> That sound rather broken.  Why not save the physical address in
-> find_ibft_region and then later ioremap that when a virtual address is
-> needed like all other code accessing magic I/O memory?
+> Hi Arnaldo,
+> 
+> I think that you can apply it before the series. This is a pre-existing
+> issue that there was no dependency checking on the test events folder for
+> rebuilding pmu-event.c .
 
-That is kind of what he does. The physical address is saved as a global
-static variable and also the physical address is memreserved. Then
-later on the physical address is used to create the virtual address.
+Its all now in tmp.perf/core, will move to perf/core as soon as my test
+suite finishes.
 
-Or are you thinking of making the find_ibft_region reserve the physical
-address, and _cache_ the physical address so there is no global
-variable ?
+- Arnaldo
