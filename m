@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE253E802F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554BC3E7EF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236540AbhHJRqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:46:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
+        id S229502AbhHJRgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:36:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235858AbhHJRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:43:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75FB46101E;
-        Tue, 10 Aug 2021 17:39:17 +0000 (UTC)
+        id S232353AbhHJRe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:34:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52D7060EBD;
+        Tue, 10 Aug 2021 17:34:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617157;
-        bh=7JPd5TI+quikPazaZthqblTvGHnfh1lhRrFWrqZR3Sg=;
+        s=korg; t=1628616874;
+        bh=I9zqjcxS9m1SZQVSvLkeeHFiVFy1LxGeBuuKK8mmjm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h3AipaDcicyn24KJkw8IrI5CtlD5uVHIPbQcH9QfoQNlk0hO/Q+l50o1PGeAN4UrW
-         YiK83XykBVP4SCrVKoYzm+tWQ8282sncb6u1S7tmWCCu06gUnoZ/XAAOC4WNgWtl4y
-         6r4j/AyTco5pERTFsStDB+wDlleK4eY1vR/ap95A=
+        b=2gbPS+EZ9fGw/miWmLylnkJInsxAOPgj+Q1qRjlm7zCoDXD9avbOrifZ1e6fSJKS2
+         VSvFY5lCr0bl86tvSFqwnBHO7bYmkME8SSHuXSXc+lgPata5isESFAWDLrSrjTuvJy
+         hWuU6tFeUhR858EcYcAdpQ/FdXx7eyo11Vawx9Uw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Devaev <mdevaev@gmail.com>
-Subject: [PATCH 5.10 069/135] usb: gadget: f_hid: idle uses the highest byte for duration
-Date:   Tue, 10 Aug 2021 19:30:03 +0200
-Message-Id: <20210810172958.061635813@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 31/85] net: pegasus: fix uninit-value in get_interrupt_interval
+Date:   Tue, 10 Aug 2021 19:30:04 +0200
+Message-Id: <20210810172949.255440820@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,32 +41,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Devaev <mdevaev@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit fa20bada3f934e3b3e4af4c77e5b518cd5a282e5 upstream.
+[ Upstream commit af35fc37354cda3c9c8cc4961b1d24bdc9d27903 ]
 
-SET_IDLE value must be shifted 8 bits to the right to get duration.
-This confirmed by USBCV test.
+Syzbot reported uninit value pegasus_probe(). The problem was in missing
+error handling.
 
-Fixes: afcff6dc690e ("usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-Link: https://lore.kernel.org/r/20210727185800.43796-1-mdevaev@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+get_interrupt_interval() internally calls read_eprom_word() which can
+fail in some cases. For example: failed to receive usb control message.
+These cases should be handled to prevent uninit value bug, since
+read_eprom_word() will not initialize passed stack variable in case of
+internal failure.
+
+Fail log:
+
+BUG: KMSAN: uninit-value in get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+BUG: KMSAN: uninit-value in pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+CPU: 1 PID: 825 Comm: kworker/1:1 Not tainted 5.12.0-rc6-syzkaller #0
+...
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+ pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+....
+
+Local variable ----data.i@pegasus_probe created at:
+ get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+ pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+ get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+ pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+
+Reported-and-tested-by: syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://lore.kernel.org/r/20210804143005.439-1-paskripkin@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_hid.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/pegasus.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -573,7 +573,7 @@ static int hidg_setup(struct usb_functio
- 		  | HID_REQ_SET_IDLE):
- 		VDBG(cdev, "set_idle\n");
- 		length = 0;
--		hidg->idle = value;
-+		hidg->idle = value >> 8;
- 		goto respond;
- 		break;
+diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
+index f7d117d80cfb..b744c09346a7 100644
+--- a/drivers/net/usb/pegasus.c
++++ b/drivers/net/usb/pegasus.c
+@@ -747,12 +747,16 @@ static inline void disable_net_traffic(pegasus_t *pegasus)
+ 	set_registers(pegasus, EthCtrl0, sizeof(tmp), &tmp);
+ }
  
+-static inline void get_interrupt_interval(pegasus_t *pegasus)
++static inline int get_interrupt_interval(pegasus_t *pegasus)
+ {
+ 	u16 data;
+ 	u8 interval;
++	int ret;
++
++	ret = read_eprom_word(pegasus, 4, &data);
++	if (ret < 0)
++		return ret;
+ 
+-	read_eprom_word(pegasus, 4, &data);
+ 	interval = data >> 8;
+ 	if (pegasus->usb->speed != USB_SPEED_HIGH) {
+ 		if (interval < 0x80) {
+@@ -767,6 +771,8 @@ static inline void get_interrupt_interval(pegasus_t *pegasus)
+ 		}
+ 	}
+ 	pegasus->intr_interval = interval;
++
++	return 0;
+ }
+ 
+ static void set_carrier(struct net_device *net)
+@@ -1186,7 +1192,9 @@ static int pegasus_probe(struct usb_interface *intf,
+ 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
+ 
+ 	pegasus->features = usb_dev_id[dev_index].private;
+-	get_interrupt_interval(pegasus);
++	res = get_interrupt_interval(pegasus);
++	if (res)
++		goto out2;
+ 	if (reset_mac(pegasus)) {
+ 		dev_err(&intf->dev, "can't reset MAC\n");
+ 		res = -EIO;
+-- 
+2.30.2
+
 
 
