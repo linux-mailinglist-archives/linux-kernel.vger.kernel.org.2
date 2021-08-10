@@ -2,275 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76363E8484
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2F93E848D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbhHJUnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhHJUnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:43:11 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFAFC061799
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:42:49 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id s206-20020a3745d70000b02903b9207abc7bso17835294qka.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=EW6Q5CaUpfH7HbowLAZVGbAcLqxCVj49fYmRM95UtZI=;
-        b=FIdq2p/hy2fZuCOhTU40LIdw6+V8C4Zn7LphQwtkMraZ+YREgFjsQNhhKeXc2aZ1ph
-         sEC9DYlBvyLFigsF/XLYbbfM/aTzogCGKKhs8Qh91gpxIBtPBj2pRQHSJG9wAyuEbQUh
-         6VfYAdCUIf7FCf70fApYLCEgRb0QsyHX+od0pqrPJHWG95AfC7uiKEhI3ixHGoJUgQwO
-         H2Z1lsAQfaQ5HabioMDiYLdOJh9ard8+j0XlNQD+J7RFKA7EcVbgPX7BJqG7OgtLg0jw
-         d3n4uuGA68RhU1SIUarrWQ4l8y1GyJ56/GK5A45AD1djXOWrCpvou0uOzoowguQprFBY
-         gQjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=EW6Q5CaUpfH7HbowLAZVGbAcLqxCVj49fYmRM95UtZI=;
-        b=LLlifZSVFJbICKvek/cq7pU7fU+eiGw5EzknV+XVuW8o3wW7VxtwO3RrnwnPXXX3Hh
-         yFmPpjx8R26WEHXQMll4PksM6/gI43UXBmTjH25rXdQ3v3DY9Oj/+hcNpOZGzE+8MgId
-         6JQHMggy2MA6I0uKeJ+gCfdEcs07edFl2j1CXpvd7ycfBLsGhpqQc4S1BdtZRkbo8KvD
-         5QTAfiP2nR6u8bzfedctfxKi56r9h4no6DPUWy9ljkmymxX/+5pFISi1AJG7vTkGgvj4
-         iVQwqBLgpWIfZViDE27WBESnpsX1yDkPD06mHO4614APyhpwZaM6RM1MgYrhx1Rurlqc
-         3afA==
-X-Gm-Message-State: AOAM533K9jGTL6a9lEEJngBkxt5nDdq43QZuQ8Eg0g4A4BL2ksYkoKTI
-        7O7L0lxMAN+ZDFuGwx/t6l8qxHLymfMVjktAoiE=
-X-Google-Smtp-Source: ABdhPJx7MPrepqoYZzWR+7g0XcmonZnK3MONe2hH+CaLcRGvYSa9JQTBH1JuyJJSB/WuJYI4EFWeTy+IFBnppDUPlQE=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f3a2:624c:cdb9:1ee9])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:ff48:: with SMTP id
- y8mr19877957qvt.29.1628628168407; Tue, 10 Aug 2021 13:42:48 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 13:42:37 -0700
-Message-Id: <20210810204240.4008685-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH] Makefile: remove stale cc-option checks
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S233420AbhHJUsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:48:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230295AbhHJUsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:48:47 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A7FE61076;
+        Tue, 10 Aug 2021 20:48:25 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@rostedt.homelinux.com>)
+        id 1mDYfg-003hA3-1Q; Tue, 10 Aug 2021 16:48:24 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-trace-devel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 0/9] libtracefs: APIs to read a trace event hist file
+Date:   Tue, 10 Aug 2021 16:48:09 -0400
+Message-Id: <20210810204818.880714-1-rostedt@goodmis.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cc-option, cc-option-yn, and cc-disable-warning all invoke the compiler
-during build time, and can slow down the build when these checks become
-stale for our supported compilers, whose minimally supported versions
-increases over time. See Documentation/process/changes.rst for the
-current supported minimal versions (GCC 4.9+, clang 10.0.1+). Compiler
-version support for these flags may be verified on godbolt.org.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-The following flags are GCC only and supported since at least GCC 4.9.
-Remove cc-option and cc-disable-warning tests.
-* -fno-tree-loop-im
-* -Wno-maybe-uninitialized
-* -fno-reorder-blocks
-* -fno-ipa-cp-clone
-* -fno-partial-inlining
-* -femit-struct-debug-baseonly
-* -fno-inline-functions-called-once
-* -fconserve-stack
+The hist trigger for trace events will create a histogram that can be read
+in the trace event's hist file. The file is human readable ASCII format, but
+that makes it difficult to process in programs. The tracefs_hist_data*()
+functions convert the histogram ASCII format into structures that can be
+processed and converted into tables.
 
-The following flags are supported by all supported versions of GCC and
-Clang. Remove their cc-option, cc-option-yn, and cc-disable-warning tests.
-* -fno-delete-null-pointer-checks
-* -fno-var-tracking
-* -mfentry
-* -Wno-array-bounds
+This patch series creates an API to read and parse this data into machine
+code readable structures that can then be processed. There's a working
+program in the man page.
 
-The following configs are made dependent on GCC, since they use GCC
-specific flags.
-* READABLE_ASM
-* DEBUG_SECTION_MISMATCH
+I found the parsing of the hist file to be somewhat trivial where I only
+needed to implement flex to do most of the work and was able to avoid using
+bison. That said, there are still some histograms that can fail to parse.
+Namely, if any key has a comma (,) or a colon (:) in it. This includes exec
+names if there's a program name with a comma or colon. This can be fixed with
+a bit more clever tricks with the lexer, but I'll add those if this becomes
+an issue.
 
---param=allow-store-data-races=0 was renamed to --allow-store-data-races
-in the GCC 10 release.
+This series is also in my personal github account here:
 
-Also, base RETPOLINE_CFLAGS and RETPOLINE_VDSO_CFLAGS on CONFIC_CC_IS_*
-then remove cc-option tests for Clang.
+  https://github.com/rostedt/libtracefs/tree/read-hist
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1436
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Note: It may be preferred to move the test for
--fno-inline-functions-called-once for DEBUG_SECTION_MISMATCH into
-Kconfig. That one does seem relatively more reasonable to implement in
-Clang.
+Steven Rostedt (VMware) (9):
+  tracefs: Add API tracefs_hist_data_parse()
+  libtracefs: Parse comment for hist data information
+  libtracefs: Change hist_data_key type to flags
+  libtracefs: Add API tracefs_hist_data_read()
+  libtracefs: Add API tracefs_list_dup()
+  libtracefs: Add APIs tracefs_hist_data_keys/value_names()
+  libtracefs: Add API tracefs_hist_data_keys/values() and next_bucket()
+  libtracefs: Have tracefs_hist_bucket_key flags save the type
+  libtracefs: Add man pages for tracefs_hist_data functions
 
- Makefile          | 55 ++++++++++++++++++++++++++---------------------
- lib/Kconfig.debug |  2 ++
- 2 files changed, 33 insertions(+), 24 deletions(-)
+ Documentation/libtracefs-hist-data-2.txt |  346 +++++++
+ Documentation/libtracefs-hist-data.txt   |  294 ++++++
+ include/tracefs.h                        |   54 +
+ src/Makefile                             |    7 +
+ src/tracefs-hist-data.c                  | 1175 ++++++++++++++++++++++
+ src/tracefs-utils.c                      |   26 +
+ 6 files changed, 1902 insertions(+)
+ create mode 100644 Documentation/libtracefs-hist-data-2.txt
+ create mode 100644 Documentation/libtracefs-hist-data.txt
+ create mode 100644 src/tracefs-hist-data.c
 
-diff --git a/Makefile b/Makefile
-index 027fdf2a14fe..3e3fb4affba1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -730,9 +730,10 @@ endif # KBUILD_EXTMOD
- # Defaults to vmlinux, but the arch makefile usually adds further targets
- all: vmlinux
- 
--CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage \
--	$(call cc-option,-fno-tree-loop-im) \
--	$(call cc-disable-warning,maybe-uninitialized,)
-+CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage
-+ifdef CONFIG_CC_IS_GCC
-+CFLAGS_GCOV	+= -fno-tree-loop-im
-+endif
- export CFLAGS_GCOV
- 
- # The arch Makefiles can override CC_FLAGS_FTRACE. We may also append it later.
-@@ -740,12 +741,14 @@ ifdef CONFIG_FUNCTION_TRACER
-   CC_FLAGS_FTRACE := -pg
- endif
- 
--RETPOLINE_CFLAGS_GCC := -mindirect-branch=thunk-extern -mindirect-branch-register
--RETPOLINE_VDSO_CFLAGS_GCC := -mindirect-branch=thunk-inline -mindirect-branch-register
--RETPOLINE_CFLAGS_CLANG := -mretpoline-external-thunk
--RETPOLINE_VDSO_CFLAGS_CLANG := -mretpoline
--RETPOLINE_CFLAGS := $(call cc-option,$(RETPOLINE_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_CFLAGS_CLANG)))
--RETPOLINE_VDSO_CFLAGS := $(call cc-option,$(RETPOLINE_VDSO_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_VDSO_CFLAGS_CLANG)))
-+ifdef CONFIG_CC_IS_GCC
-+RETPOLINE_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-extern -mindirect-branch-register)
-+RETPOLINE_VDSO_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-inline -mindirect-branch-register)
-+endif
-+ifdef CONFIG_CC_IS_CLANG
-+RETPOLINE_CFLAGS	:= -mretpoline-external-thunk
-+RETPOLINE_VDSO_CFLAGS	:= -mretpoline
-+endif
- export RETPOLINE_CFLAGS
- export RETPOLINE_VDSO_CFLAGS
- 
-@@ -798,7 +801,7 @@ include/config/auto.conf:
- endif # may-sync-config
- endif # need-config
- 
--KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
-+KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
- KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
- KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
- KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
-@@ -844,17 +847,17 @@ KBUILD_RUSTFLAGS += -Copt-level=z
- endif
- 
- # Tell gcc to never replace conditional load with a non-conditional one
--KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
-+ifdef CONFIG_CC_IS_GCC
-+KBUILD_CFLAGS	+= $(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
- KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
-+endif
- 
- ifdef CONFIG_READABLE_ASM
- # Disable optimizations that make assembler listings hard to read.
- # reorder blocks reorders the control in the function
- # ipa clone creates specialized cloned functions
- # partial inlining inlines only parts of functions
--KBUILD_CFLAGS += $(call cc-option,-fno-reorder-blocks,) \
--                 $(call cc-option,-fno-ipa-cp-clone,) \
--                 $(call cc-option,-fno-partial-inlining)
-+KBUILD_CFLAGS += -fno-reorder-blocks -fno-ipa-cp-clone -fno-partial-inlining
- endif
- 
- ifneq ($(CONFIG_FRAME_WARN),0)
-@@ -959,8 +962,10 @@ DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
- endif
- 
- ifdef CONFIG_DEBUG_INFO_REDUCED
--DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
--		   $(call cc-option,-fno-var-tracking)
-+DEBUG_CFLAGS	+= -fno-var-tracking
-+ifdef CONFIG_CC_IS_GCC
-+DEBUG_CFLAGS	+= -femit-struct-debug-baseonly
-+endif
- endif
- 
- ifdef CONFIG_DEBUG_INFO_COMPRESSED
-@@ -997,10 +1002,8 @@ ifdef CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
-   endif
- endif
- ifdef CONFIG_HAVE_FENTRY
--  ifeq ($(call cc-option-yn, -mfentry),y)
--    CC_FLAGS_FTRACE	+= -mfentry
--    CC_FLAGS_USING	+= -DCC_USING_FENTRY
--  endif
-+  CC_FLAGS_FTRACE	+= -mfentry
-+  CC_FLAGS_USING	+= -DCC_USING_FENTRY
- endif
- export CC_FLAGS_FTRACE
- KBUILD_CFLAGS	+= $(CC_FLAGS_FTRACE) $(CC_FLAGS_USING)
-@@ -1009,7 +1012,7 @@ endif
- 
- # We trigger additional mismatches with less inlining
- ifdef CONFIG_DEBUG_SECTION_MISMATCH
--KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-once)
-+KBUILD_CFLAGS += -fno-inline-functions-called-once
- endif
- 
- ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-@@ -1088,14 +1091,16 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
- 
- # We'll want to enable this eventually, but it's not going away for 5.7 at least
- KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
--KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
-+KBUILD_CFLAGS += -Wno-array-bounds
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
- 
- # Another good warning that we'll want to enable eventually
- KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
- 
- # Enabled with W=2, disabled by default as noisy
--KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
-+ifdef CONFIG_CC_IS_GCC
-+KBUILD_CFLAGS += -Wno-maybe-uninitialized
-+endif
- 
- # disable invalid "can't wrap" optimizations for signed / pointers
- KBUILD_CFLAGS	+= -fno-strict-overflow
-@@ -1104,7 +1109,9 @@ KBUILD_CFLAGS	+= -fno-strict-overflow
- KBUILD_CFLAGS  += -fno-stack-check
- 
- # conserve stack if available
--KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
-+ifdef CONFIG_CC_IS_GCC
-+KBUILD_CFLAGS   += -fconserve-stack
-+endif
- 
- # Prohibit date/time macros, which would make the build non-deterministic
- KBUILD_CFLAGS   += -Werror=date-time
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index b6b951b0ed46..a4a431606be2 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -364,6 +364,7 @@ config STRIP_ASM_SYMS
- config READABLE_ASM
- 	bool "Generate readable assembler code"
- 	depends on DEBUG_KERNEL
-+	depends on CC_IS_GCC
- 	help
- 	  Disable some compiler optimizations that tend to generate human unreadable
- 	  assembler output. This may make the kernel slightly slower, but it helps
-@@ -382,6 +383,7 @@ config HEADERS_INSTALL
- 
- config DEBUG_SECTION_MISMATCH
- 	bool "Enable full Section mismatch analysis"
-+	depends on CC_IS_GCC
- 	help
- 	  The section mismatch analysis checks if there are illegal
- 	  references from one section to another section.
 -- 
-2.32.0.605.g8dce9f2422-goog
+2.30.2
 
