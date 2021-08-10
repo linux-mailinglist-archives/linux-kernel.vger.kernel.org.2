@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4293E828E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588D73E828F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235497AbhHJSKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:10:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40096 "EHLO mail.kernel.org"
+        id S237911AbhHJSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:10:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237130AbhHJSHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:07:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C75F604D7;
-        Tue, 10 Aug 2021 18:06:38 +0000 (UTC)
+        id S237594AbhHJSHw (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:07:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979BB60232;
+        Tue, 10 Aug 2021 18:07:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628618799;
-        bh=kEmljyW+BkGvemsIRyB4yzEDHSoBRNgJjHMOZEgNhDc=;
+        s=k20201202; t=1628618845;
+        bh=/g6ozYTrIQ3TnzVClN0eljl5LiwiAdtEdh9sszUkg7U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tYlVsM4LEIve11JtBlC8hJSOXygxAr7SQKglPLL3rKUpPdQ7I7phVzvs6AKcgEpYa
-         Y4F7f8EKKLwNFUqDXtCehzLm9XV8zTEYHyjFGfwb0BXhza8VW6PzxcbcyvdlwbbT5r
-         S6/VtXqnF4ND27jVmC9+VHArKdHvMH5ZmWaeWepWopdNRfYM5sqHcdOBIjt/o/TBMS
-         QX/+6nVyao88yWvVVT3YJNHX51euHA+w8ZdwwqoJQbSRwjfH9pqGYMeHM6Wtmweqo5
-         gD6R9+6LSGn+uFKnpGkcfCAmBHxovcVVslzctkrbfeenRbxoOH6NtNRXjKTI3OEUJ0
-         3PiztapJkj/4w==
-Date:   Tue, 10 Aug 2021 21:06:36 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <20210810180636.vqwaeftv7alsodgn@kernel.org>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <20210809094408.4iqwsx77u64usfx6@kernel.org>
- <YRGVcaquAJiuc8bp@gmail.com>
+        b=ROgvkOI7XfKbj8MfRi3cd6SLMnbp5afjAJz9YMNAIO0t7jWw4l9TF4EY+HOfdHbXD
+         s78Wq+SVzA3XJ8cZAIoJ/XGNdiUzQyPyjds6HDOJxCOcp/51D9+ZkxWtMg+8jiQD9l
+         WXWKiIvDG1w8ZEA+pbhfFzJLv09xerhTtcTG/2GhcSojqBSLaTQke/FCLWB+kqR7KP
+         IWR41zSZz0P9Svn4bNMwTY0fyVrkqj5gdc8Po7S8KRdYwOrE+GSCgF4VonXDOfUIS8
+         9h5rhfchLqd2DkxgwR6630A/Coq0zpGIDx6otTdOfl8yYKh+tlgWuNWBvGm4wZas7u
+         wYr/eyIT2zcoQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1DF90403F2; Tue, 10 Aug 2021 15:07:22 -0300 (-03)
+Date:   Tue, 10 Aug 2021 15:07:22 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com
+Subject: Re: [PATCH 0/6] perf events update for CascadeLake server and
+ SkyLake server
+Message-ID: <YRLAWhHWX3oa0iyt@kernel.org>
+References: <20210810020508.31261-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YRGVcaquAJiuc8bp@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210810020508.31261-1-yao.jin@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 01:52:01PM -0700, Eric Biggers wrote:
-> On Mon, Aug 09, 2021 at 12:44:08PM +0300, Jarkko Sakkinen wrote:
-> > > @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
-> > >  	key_ref_t ref;
-> > >  	struct key *key;
-> > >  	const struct fscrypt_provisioning_key_payload *payload;
-> > > -	int err;
-> > > +	int err = 0;
-> > >  
-> > >  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
-> > >  	if (IS_ERR(ref))
-> > >  		return PTR_ERR(ref);
-> > >  	key = key_ref_to_ptr(ref);
-> > >  
-> > > -	if (key->type != &key_type_fscrypt_provisioning)
-> > > -		goto bad_key;
-> > > -	payload = key->payload.data[0];
-> > > +	if (key->type == &key_type_fscrypt_provisioning) {
-> > 
-> > Why does fscrypt have own key type, and does not extend 'encrypted' with a
-> > new format [*]?
+Em Tue, Aug 10, 2021 at 10:05:02AM +0800, Jin Yao escreveu:
+> - Update JSON core/uncore events and metrics for CascadeLake Server.
+> - Update JSON core/uncore events and metrics for SkyLake Server.
 > 
-> Are you referring to the "fscrypt-provisioning" key type?  That is an existing
-> feature (which in most cases isn't used, but there is a use case that requires
-> it), not something being added by this patch.  We just needed a key type where
-> userspace can add a raw key to the kernel and not be able to read it back (so
-> like the "logon" key type), but also have the kernel enforce that that key is
-> only used for fscrypt with a particular KDF version, and not with other random
-> kernel features.  The "encrypted" key type wouldn't have worked for this at all;
-> it's a totally different thing.
+> The patch series can be found at (in case broken by mailing system potentially):
+> https://github.com/yaoj/perf-clx-events.git
+> branch: perf/core
+
+Hey, can you keep just one repository and then create branches?
+
+$ git remote -v
+
+yaoj	https://github.com/yaoj/icx-events.git (fetch)
+yaoj	https://github.com/yaoj/icx-events.git (push)
+yaoj-perf	https://github.com/yaoj/perf-intel-events.git (fetch)
+yaoj-perf	https://github.com/yaoj/perf-intel-events.git (push)
+
+And now:
+
+⬢[acme@toolbox perf]$ https://github.com/yaoj/perf-clx-events.git
+
+:-)
+
+Applying from the git tree now.
+
+- Arnaldo
+
+ 
+> Jin Yao (6):
+>   perf vendor events intel: Update core event list for CascadeLake
+>     Server
+>   perf vendor events intel: Update uncore event list for CascadeLake
+>     Server
+>   perf vendor events: Update metrics for CascadeLake Server
+>   perf vendor events intel: Update core event list for SkyLake Server
+>   perf vendor events intel: Update uncore event list for SkyLake Server
+>   perf vendor events: Update metrics for SkyLake Server
 > 
-> > > +	} else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) && key->type == &key_type_trusted) {
-> > > +		struct trusted_key_payload *tkp;
-> > > +
-> > > +		/* avoid reseal changing payload while we memcpy key */
-> > > +		down_read(&key->sem);
-> > > +		tkp = key->payload.data[0];
-> > > +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
-> > > +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
-> > > +			up_read(&key->sem);
-> > > +			err = -EINVAL;
-> > > +			goto out_put;
-> > > +		}
-> > > +
-> > > +		secret->size = tkp->key_len;
-> > > +		memcpy(secret->raw, tkp->key, secret->size);
-> > > +		up_read(&key->sem);
-> > > +	} else {
-> > 
-> > 
-> > I don't think this is right, or at least it does not follow the pattern
-> > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
+>  .../arch/x86/cascadelakex/cache.json          | 5468 ++++++++---------
+>  .../arch/x86/cascadelakex/clx-metrics.json    |  253 +-
+>  .../arch/x86/cascadelakex/floating-point.json |   48 +-
+>  .../arch/x86/cascadelakex/frontend.json       |  550 +-
+>  .../arch/x86/cascadelakex/memory.json         | 5444 ++++++++--------
+>  .../arch/x86/cascadelakex/other.json          | 4146 ++++++-------
+>  .../arch/x86/cascadelakex/pipeline.json       | 1046 ++--
+>  .../arch/x86/cascadelakex/uncore-memory.json  |   21 +-
+>  .../arch/x86/cascadelakex/uncore-other.json   |  161 +-
+>  .../arch/x86/cascadelakex/virtual-memory.json |  256 +-
+>  .../pmu-events/arch/x86/skylakex/cache.json   | 1724 +++---
+>  .../arch/x86/skylakex/floating-point.json     |   56 +-
+>  .../arch/x86/skylakex/frontend.json           |  580 +-
+>  .../pmu-events/arch/x86/skylakex/memory.json  | 1300 ++--
+>  .../pmu-events/arch/x86/skylakex/other.json   |  104 +-
+>  .../arch/x86/skylakex/pipeline.json           | 1068 ++--
+>  .../arch/x86/skylakex/skx-metrics.json        |  247 +-
+>  .../arch/x86/skylakex/uncore-memory.json      |    9 -
+>  .../arch/x86/skylakex/uncore-other.json       |  171 +-
+>  .../arch/x86/skylakex/virtual-memory.json     |  288 +-
+>  20 files changed, 11531 insertions(+), 11409 deletions(-)
 > 
-> What's the benefit of the extra layer of indirection over just using a "trusted"
-> key directly?  The use case for "encrypted" keys is not at all clear to me.
+> -- 
+> 2.17.1
+> 
 
-Because it is more robust to be able to use small amount of trusted keys,
-which are not entirely software based.
+-- 
 
-And since it's also a pattern on existing kernel features utilizing trusted
-keys, the pressure here to explain why break the pattern, should be on the
-side of the one who breaks it.
-
-/Jarkko
+- Arnaldo
