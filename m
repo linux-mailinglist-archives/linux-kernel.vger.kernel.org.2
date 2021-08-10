@@ -2,197 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326FE3E7D0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C700F3E7D16
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhHJQDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:03:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44420 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235961AbhHJQCl (ORCPT
+        id S235353AbhHJQDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233476AbhHJQDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:02:41 -0400
-Date:   Tue, 10 Aug 2021 16:02:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628611339;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hD70kUOOwUKFS0CQcQn+oO9HeHzcsKrNCkLHKc4xjAQ=;
-        b=TF7ddWQToU3Lgud/yPPNc8Fxyh+YczzOqB5Jd1tcH7b5fKfyOFxYoiuprh/I1D0XzzbGC7
-        a8T/q4cKrp5SBWUW2Zwh/Vox4rr3e1lOZFe+rnYech1EsiStgTewV5BOlDymODRpAeJHK8
-        LSFaJ/I4Tx3bNXunYjTaBIrh3+tkofyy26iyL7clCuiQhR1Aa/4sPUxelDTOx+mQVrhd0q
-        GXp4dx6WX8+U827ukbsDctT2iLwUMVQvy9YraSo4kt6moqt0PGL4SwavMRQWR2rKyZNlII
-        QBDXj7DSVauKXAFlTiCQMPH53UiWBDyBT9CYb9GYTxZBnK4YamvHy4oPEEO0hw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628611339;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hD70kUOOwUKFS0CQcQn+oO9HeHzcsKrNCkLHKc4xjAQ=;
-        b=v7hj3LIG1qLDQoGTfpGTzjf9Pvq9XyeDGicA6BM7ScB8GkptBA13mVIyYE29b2waQSOpug
-        ipRFKAjfKAtlTKDg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] hrtimer: Avoid double reprogramming in
- __hrtimer_start_range_ns()
-Cc:     Lorenzo Colitti <lorenzo@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210713135157.873137732@linutronix.de>
-References: <20210713135157.873137732@linutronix.de>
+        Tue, 10 Aug 2021 12:03:39 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C460C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:03:17 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id r16-20020a0568304190b02904f26cead745so22185789otu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UOeBJb5cGy5paFAALWsFuASdLzBG7EqmkQ93lI0oDjg=;
+        b=xVCYLKEs/uDoz2qqKcRtH/cYFoZnbZtY9Tsrn8R8CS1Hqbg7ZL9bDIuxarRrVYwQdM
+         +ngMyxnNwBX5TVXYeeqDFzZw5ddBYJoMQOIXjyVTSxf736jyFNzE1HxEiGx7gNTLMIw6
+         p0om15jxaQbX7AdNnXcnl3wi1PpJK1xddiRfvez+TUVQLaNFawI5L/tHPNRHD731k4fm
+         mw2fTJ2IlQGWmQqoEXwoaB3FD5jDfiQZy7itDo4NBJskHHgnEx4FFQ2r4owqxYvXRMNr
+         pBRBpexnI1Uy68f9xSDEcijNmcw+Q1k1/GekGnKXWB+/aVSHzXzKiSi7za8l+9W4sba5
+         VVWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UOeBJb5cGy5paFAALWsFuASdLzBG7EqmkQ93lI0oDjg=;
+        b=H8B4JJVMXjdP9LfYYQwI+Fr/sDUTDUIqLEUxdrmbADM7ugV0DlVJyVb6d/k5sRrcbb
+         aPloh/jwFO2lN8T2xUbWWNl/g0Pqzgf66MCtD7RzA2+Cq1YJrGN+feJzifLgXybNW93d
+         +tISemRvlSZ+gz5tGTl3MB7rCgwHRn2ZbPJJ66+/MaBQi80LTduB40CzIruHXUc1hItA
+         alYBhlWypJPpUjm7wWzXORH/OAUVtuI9kpFzCkuUWP65ryKdMMj299iHld4TjQwFMoGp
+         Ld2FjATHVZkceOyblIbUMmhy4yzx9/zcALFbcdM0MyeH5eGxTSp8zE35RW2+rWvF0okJ
+         Ko5Q==
+X-Gm-Message-State: AOAM531K91SG41tvC2Idbg3xQxzBLv1OhijcrYcnZIeH78HVLceet6jZ
+        0BCdR7CLorVhvTpMqGrz2UFj/Q==
+X-Google-Smtp-Source: ABdhPJyb5luJDRgsrhvyVHotm5kjI3gsgDl7FNLBXBEL8BAgkYs1tlNbNSeNVUWUOeezbAkELGsIFg==
+X-Received: by 2002:a05:6830:b84:: with SMTP id a4mr20805679otv.357.1628611396393;
+        Tue, 10 Aug 2021 09:03:16 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id e22sm3072636otq.5.2021.08.10.09.03.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 09:03:15 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 11:03:12 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+Message-ID: <YRKjQJc0yiQXFqCD@builder.lan>
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
+ <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+ <20210706115517.GB4529@sirena.org.uk>
+ <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
+ <CAA8EJppSV--TBjnGxGhaTHeKWdpM6uz70bg7diU3_K7OHoka4g@mail.gmail.com>
+ <20210714164710.GC2719790@robh.at.kernel.org>
+ <CAPDyKFokvTFSpbnhhKeCmZzAjqvSpUiwz7QjjQNdcd3Sd3T0rQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <162861133829.395.6550293981870979815.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFokvTFSpbnhhKeCmZzAjqvSpUiwz7QjjQNdcd3Sd3T0rQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Tue 10 Aug 06:55 CDT 2021, Ulf Hansson wrote:
 
-Commit-ID:     627ef5ae2df8eeccb20d5af0e4cfa4df9e61ed28
-Gitweb:        https://git.kernel.org/tip/627ef5ae2df8eeccb20d5af0e4cfa4df9e61ed28
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 13 Jul 2021 15:39:46 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 17:57:22 +02:00
+> On Wed, 14 Jul 2021 at 18:47, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Thu, Jul 08, 2021 at 02:37:44PM +0300, Dmitry Baryshkov wrote:
+> > > Hi,
+> > >
+> > > On Thu, 8 Jul 2021 at 13:10, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > >
+> > > > - Peter (the email was bouncing)
+> > >
+> > > + Peter's kernel.org address
+> > >
+> > > >
+> > > > On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
+> > > > >
+> > > > > On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
+> > > > > > On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
+> > > > >
+> > > > > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+> > > > > > > being controlled through the UART and WiFi being present on PCIe
+> > > > > > > bus. Both blocks share common power sources. Add device driver handling
+> > > > > > > power sequencing of QCA6390/1.
+> > > > >
+> > > > > > Power sequencing of discoverable buses have been discussed several
+> > > > > > times before at LKML. The last attempt [1] I am aware of, was in 2017
+> > > > > > from Peter Chen. I don't think there is a common solution, yet.
+> > > > >
+> > > > > This feels a bit different to the power sequencing problem - it's not
+> > > > > exposing the individual inputs to the device but rather is a block that
+> > > > > manages everything but needs a bit of a kick to get things going (I'd
+> > > > > guess that with ACPI it'd be triggered via AML).  It's in the same space
+> > > > > but it's not quite the same issue I think, something that can handle
+> > > > > control of the individual resources might still struggle with this.
+> > > >
+> > > > Well, to me it looks very similar to those resouses we could manage
+> > > > with the mmc pwrseq, for SDIO. It's also typically the same kind of
+> > > > combo-chips that moved from supporting SDIO to PCIe, for improved
+> > > > performance I guess. More importantly, the same constraint to
+> > > > pre-power on the device is needed to allow it to be discovered/probed.
+> > >
+> > > In our case we'd definitely use pwrseq for PCIe bus and we can also
+> > > benefit from using pwrseq for serdev and for platform busses also (for
+> > > the same story of WiFi+BT chips).
+> > >
+> > > I can take a look at rewriting pwrseq code to also handle the PCIe
+> > > bus. Rewriting it to be a generic lib seems like an easy task,
+> > > plugging it into PCIe code would be more fun.
+> > >
+> > > Platform and serdev... Definitely even more fun.
+> >
+> > I don't want to see pwrseq (the binding) expanded to other buses. If
+> > that was the answer, we wouldn't be having this discussion. It was a
+> > mistake for MMC IMO.
+> 
+> Let's make sure we get your point correctly. I think we have discussed
+> this in the past, but let's refresh our memories.
+> 
+> If I recall correctly, you are against the mmc pwrseq DT bindings
+> because we are using a separate pwrseq OF node, that we point to via a
+> "mmc-pwrseq" property that contains a phandle from the mmc controller
+> device node. Is that correct?
+> 
+> If we would have encoded the power sequence specific properties, from
+> within a child node for the mmc controller node, that would have been
+> okay for you, right?
+> 
 
-hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()
+In Dmitry's case, we have an external chip with that needs to be powered
+on per a specific sequence, at which point the WiFi driver on PCIe and
+BT driver on serdev will be able to communicate with the device.
 
-If __hrtimer_start_range_ns() is invoked with an already armed hrtimer then
-the timer has to be canceled first and then added back. If the timer is the
-first expiring timer then on removal the clockevent device is reprogrammed
-to the next expiring timer to avoid that the pending expiry fires needlessly.
+The extended case of this is where we have an SDX55 modem soldered onto
+the pcb next to the SoC, in which case the power sequencing is even more
+complex and additionally there are incoming gpios used to detect things
+such as the firmware of the modem has crashed and Linux needs to toggle
+power and rescan the PCIe bus.
 
-If the new expiry time ends up to be the first expiry again then the clock
-event device has to reprogrammed again.
+In both of these cases it seems quite reasonable to represent that
+external chip (and it's power needs) as a separate DT node. But we need
+a way to link the functional devices to that thing.
 
-Avoid this by checking whether the timer is the first to expire and in that
-case, keep the timer on the current CPU and delay the reprogramming up to
-the point where the timer has been enqueued again.
+Regards,
+Bjorn
 
-Reported-by: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210713135157.873137732@linutronix.de
-
-
----
- kernel/time/hrtimer.c | 60 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 53 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 4a66725..ba2e0d0 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1030,12 +1030,13 @@ static void __remove_hrtimer(struct hrtimer *timer,
-  * remove hrtimer, called with base lock held
-  */
- static inline int
--remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
-+remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base,
-+	       bool restart, bool keep_local)
- {
- 	u8 state = timer->state;
- 
- 	if (state & HRTIMER_STATE_ENQUEUED) {
--		int reprogram;
-+		bool reprogram;
- 
- 		/*
- 		 * Remove the timer and force reprogramming when high
-@@ -1048,8 +1049,16 @@ remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool rest
- 		debug_deactivate(timer);
- 		reprogram = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
- 
-+		/*
-+		 * If the timer is not restarted then reprogramming is
-+		 * required if the timer is local. If it is local and about
-+		 * to be restarted, avoid programming it twice (on removal
-+		 * and a moment later when it's requeued).
-+		 */
- 		if (!restart)
- 			state = HRTIMER_STATE_INACTIVE;
-+		else
-+			reprogram &= !keep_local;
- 
- 		__remove_hrtimer(timer, base, state, reprogram);
- 		return 1;
-@@ -1103,9 +1112,31 @@ static int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
- 				    struct hrtimer_clock_base *base)
- {
- 	struct hrtimer_clock_base *new_base;
-+	bool force_local, first;
- 
--	/* Remove an active timer from the queue: */
--	remove_hrtimer(timer, base, true);
-+	/*
-+	 * If the timer is on the local cpu base and is the first expiring
-+	 * timer then this might end up reprogramming the hardware twice
-+	 * (on removal and on enqueue). To avoid that by prevent the
-+	 * reprogram on removal, keep the timer local to the current CPU
-+	 * and enforce reprogramming after it is queued no matter whether
-+	 * it is the new first expiring timer again or not.
-+	 */
-+	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
-+	force_local &= base->cpu_base->next_timer == timer;
-+
-+	/*
-+	 * Remove an active timer from the queue. In case it is not queued
-+	 * on the current CPU, make sure that remove_hrtimer() updates the
-+	 * remote data correctly.
-+	 *
-+	 * If it's on the current CPU and the first expiring timer, then
-+	 * skip reprogramming, keep the timer local and enforce
-+	 * reprogramming later if it was the first expiring timer.  This
-+	 * avoids programming the underlying clock event twice (once at
-+	 * removal and once after enqueue).
-+	 */
-+	remove_hrtimer(timer, base, true, force_local);
- 
- 	if (mode & HRTIMER_MODE_REL)
- 		tim = ktime_add_safe(tim, base->get_time());
-@@ -1115,9 +1146,24 @@ static int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
- 	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
- 
- 	/* Switch the timer base, if necessary: */
--	new_base = switch_hrtimer_base(timer, base, mode & HRTIMER_MODE_PINNED);
-+	if (!force_local) {
-+		new_base = switch_hrtimer_base(timer, base,
-+					       mode & HRTIMER_MODE_PINNED);
-+	} else {
-+		new_base = base;
-+	}
-+
-+	first = enqueue_hrtimer(timer, new_base, mode);
-+	if (!force_local)
-+		return first;
- 
--	return enqueue_hrtimer(timer, new_base, mode);
-+	/*
-+	 * Timer was forced to stay on the current CPU to avoid
-+	 * reprogramming on removal and enqueue. Force reprogram the
-+	 * hardware by evaluating the new first expiring timer.
-+	 */
-+	hrtimer_force_reprogram(new_base->cpu_base, 1);
-+	return 0;
- }
- 
- /**
-@@ -1183,7 +1229,7 @@ int hrtimer_try_to_cancel(struct hrtimer *timer)
- 	base = lock_hrtimer_base(timer, &flags);
- 
- 	if (!hrtimer_callback_running(timer))
--		ret = remove_hrtimer(timer, base, false);
-+		ret = remove_hrtimer(timer, base, false, false);
- 
- 	unlock_hrtimer_base(timer, &flags);
- 
+> >
+> > If pwrseq works as a kernel library/api, then I have no issue with that.
+> 
+> That's what Peter Chen was trying to do. A generic interface, flexible
+> enough so it can be used for many similar configurations (but not
+> exactly the same).
+> 
+> Perhaps it was too generic though.
+> 
+> >
+> > >
+> > > > Therefore, I think it would be worth having a common solution for
+> > > > this, rather than a solution per subsystem or even worse, per device.
+> >
+> > Power sequencing requirements are inheritently per device unless we're
+> > talking about standard connectors.
+> 
+> The requirements are certainly per device, but the way to manage them
+> doesn't have to be.
+> 
+> As you said above, a generic library that subsystems/drivers can call
+> to power on/off a discoverable device, before trying to probe it would
+> be a good start.
+> 
+> >
+> > This is a solved problem on MDIO. It's quite simple. If there's a DT
+> > node for a device you haven't discovered, then probe it anyways.
+> 
+> A child OF node?
+> 
+> Then what do you think about some common power sequence properties
+> that we can use in such node?
+> 
+> >
+> > Rob
+> 
+> Kind regards
+> Uffe
