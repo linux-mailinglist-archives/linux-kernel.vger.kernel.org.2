@@ -2,85 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E2F3E585A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3353E585C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234321AbhHJKah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:30:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:53188 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231688AbhHJKac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:30:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA2EC6D;
-        Tue, 10 Aug 2021 03:30:10 -0700 (PDT)
-Received: from [10.57.9.181] (unknown [10.57.9.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB6B33F70D;
-        Tue, 10 Aug 2021 03:30:08 -0700 (PDT)
-Subject: Re: [PATCH 8/8] cpufreq: vexpress: Use auto-registration for energy
- model
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <b48f04c1-9025-ccae-fe6d-da1d64dba4ed@arm.com>
-Date:   Tue, 10 Aug 2021 11:30:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S238605AbhHJKas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:30:48 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:36890 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231688AbhHJKar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:30:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UiadueK_1628591422;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UiadueK_1628591422)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 10 Aug 2021 18:30:23 +0800
+Subject: Re: [PATCH V2 2/3] KVM: X86: Set the hardware DR6 only when
+ KVM_DEBUGREG_WONT_EXIT
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <YRFdq8sNuXYpgemU@google.com>
+ <20210809174307.145263-1-jiangshanlai@gmail.com>
+ <20210809174307.145263-2-jiangshanlai@gmail.com>
+ <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <45fef019-8bd9-2acb-bd53-1243a8a07c4e@linux.alibaba.com>
+Date:   Tue, 10 Aug 2021 18:30:21 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
+In-Reply-To: <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 8/10/21 8:36 AM, Viresh Kumar wrote:
-> Use the CPUFREQ_REGISTER_WITH_EM flag to allow cpufreq core to
-> automatically register with the energy model.
+On 2021/8/10 18:07, Paolo Bonzini wrote:
+> On 09/08/21 19:43, Lai Jiangshan wrote:
+>> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>>
+>> Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
+>> registers") allows the guest accessing to DRs without exiting when
+>> KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
+>> on entry to the guest---including DR6 that was not synced before the commit.
+>>
+>> But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
+>> but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
+>> and just leads to a more case which leaks stale DR6 to the host which has
+>> to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
+>>
+>> We'd better to set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT,
+>> so that we can fine-grain control the cases when we need to reset it
+>> which is done in later patch.
+>>
+>> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+>> ---
+>>   arch/x86/kvm/x86.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index ad47a09ce307..d2aa49722064 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -9598,7 +9598,9 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>>           set_debugreg(vcpu->arch.eff_db[1], 1);
+>>           set_debugreg(vcpu->arch.eff_db[2], 2);
+>>           set_debugreg(vcpu->arch.eff_db[3], 3);
+>> -        set_debugreg(vcpu->arch.dr6, 6);
+>> +        /* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
+>> +        if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
+>> +            set_debugreg(vcpu->arch.dr6, 6);
+>>       } else if (unlikely(hw_breakpoint_active())) {
+>>           set_debugreg(0, 7);
+>>       }
+>>
 > 
-> This allows removal of boiler plate code from the driver and fixes the
-> unregistration part as well.
+> Even better, this should be moved to vmx.c's vcpu_enter_guest.  This
+> matches the handling in svm.c:
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->   drivers/cpufreq/vexpress-spc-cpufreq.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+>          /*
+>           * Run with all-zero DR6 unless needed, so that we can get the exact cause
+>           * of a #DB.
+>           */
+>          if (unlikely(vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT))
+>                  svm_set_dr6(svm, vcpu->arch.dr6);
+>          else
+>                  svm_set_dr6(svm, DR6_ACTIVE_LOW);
 > 
-> diff --git a/drivers/cpufreq/vexpress-spc-cpufreq.c b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> index 51dfa9ae6cf5..28c4c3254337 100644
-> --- a/drivers/cpufreq/vexpress-spc-cpufreq.c
-> +++ b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> @@ -442,8 +442,6 @@ static int ve_spc_cpufreq_init(struct cpufreq_policy *policy)
->   	policy->freq_table = freq_table[cur_cluster];
->   	policy->cpuinfo.transition_latency = 1000000; /* 1 ms */
->   
-> -	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
-> -
->   	if (is_bL_switching_enabled())
->   		per_cpu(cpu_last_req_freq, policy->cpu) =
->   						clk_get_cpu_rate(policy->cpu);
-> @@ -487,7 +485,8 @@ static void ve_spc_cpufreq_ready(struct cpufreq_policy *policy)
->   static struct cpufreq_driver ve_spc_cpufreq_driver = {
->   	.name			= "vexpress-spc",
->   	.flags			= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
-> -					CPUFREQ_NEED_INITIAL_FREQ_CHECK,
-> +				  CPUFREQ_NEED_INITIAL_FREQ_CHECK |
-> +				  CPUFREQ_REGISTER_WITH_EM,
->   	.verify			= cpufreq_generic_frequency_table_verify,
->   	.target_index		= ve_spc_cpufreq_set_target,
->   	.get			= ve_spc_cpufreq_get_rate,
+> That is,
 > 
+>      KVM: X86: Set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT
+>      Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
+>      registers") allows the guest accessing to DRs without exiting when
+>      KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
+>      on entry to the guest---including DR6 that was not synced before the commit.
+>      But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
+>      but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
+>      and just leads to a more case which leaks stale DR6 to the host which has
+>      to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
+>      Even if KVM_DEBUGREG_WONT_EXIT, however, setting the host DR6 only matters
+>      on VMX because SVM always uses the DR6 value from the VMCB.  So move this
+>      line to vmx.c and make it conditional on KVM_DEBUGREG_WONT_EXIT.
+>      Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index ae8e62df16dd..21a3ef3012cf 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6625,6 +6625,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>           vmx->loaded_vmcs->host_state.cr4 = cr4;
+>       }
+> 
+> +    /* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
+> +    if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
+> +        set_debugreg(vcpu->arch.dr6, 6);
 
-With the change for patch 1/8 the we discussed below this patch 8/8,
-it LGTM
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+I also noticed the related code in svm.c, but I refrained myself
+to add a new branch in vmx_vcpu_run().  But after I see you put
+the code of resetting dr6 in vmx_sync_dirty_debug_regs(), the whole
+solution is much clean and better.
+
+And if any chance you are also concern about the additional branch,
+could you add a new callback to set dr6 and call the callback from
+x86.c when KVM_DEBUGREG_WONT_EXIT.
+
+The possible implementation of the callback:
+for vmx: set_debugreg(vcpu->arch.dr6, 6);
+for svm: svm_set_dr6(svm, vcpu->arch.dr6);
+          and always do svm_set_dr6(svm, DR6_ACTIVE_LOW); at the end of the
+          svm_handle_exit().
+
+Thanks
+Lai
+
+> +
+>       /* When single-stepping over STI and MOV SS, we must clear the
+>        * corresponding interruptibility bits in the guest state. Otherwise
+>        * vmentry fails as it then expects bit 14 (BS) in pending debug
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a111899ab2b4..fbc536b21585 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9597,7 +9597,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>           set_debugreg(vcpu->arch.eff_db[1], 1);
+>           set_debugreg(vcpu->arch.eff_db[2], 2);
+>           set_debugreg(vcpu->arch.eff_db[3], 3);
+> -        set_debugreg(vcpu->arch.dr6, 6);
+>       } else if (unlikely(hw_breakpoint_active())) {
+>           set_debugreg(0, 7);
+>       }
+> 
+> Paolo
