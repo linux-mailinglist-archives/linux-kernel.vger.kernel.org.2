@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B863E522A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9690D3E522F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbhHJEZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 00:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhHJEZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 00:25:52 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C406C0613D3;
-        Mon,  9 Aug 2021 21:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=NEGF5gDAt4pUq5a1i0sb0u/njmzgcJkcsNysFdjs6Ds=; b=cCdkc11sAU8lof2Ri5/OeyAj+c
-        lsJc+gaVGkKfob+Bq5asqITNBoKBwsSbgCjL8imznn9NPNXhNhjZo22FEi3V9nt6t46vXiBp0yHY2
-        PDYBltHpjuBUpvSH+v0jtiDUZjfCUmquWZtxFeTrUM6CivxlJQwNKE/BCSuKZkjxWhpSYgi/i/6/g
-        2ZK++S85SGsTBvaWFAyCJf/oO8tyKrC/r20P0+jyT3ZuZXYpGLsfs65lMHz5i5j7RqqkkZ0kpnuGL
-        kyMKSOoePFAts0Hnx7f/8VYYx1r+sA+KQEF1nVCy78XNfkHVtCgYxPMrVjx2rRTMkxsBPL4r4oIFd
-        M+7V+CRA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDJKS-002OMd-R5; Tue, 10 Aug 2021 04:25:28 +0000
-Subject: Re: mmotm 2021-08-09-19-18 uploaded
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-References: <20210810021934.XcpwGUEMn%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3bc14281-4cfe-7cd6-1b88-128e51d08c3a@infradead.org>
-Date:   Mon, 9 Aug 2021 21:25:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210810021934.XcpwGUEMn%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S236048AbhHJE3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 00:29:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:46678 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231794AbhHJE3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 00:29:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 365FC6D;
+        Mon,  9 Aug 2021 21:29:17 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.67.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A9D663F70D;
+        Mon,  9 Aug 2021 21:29:14 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/mm: Define ID_AA64MMFR0_TGRAN_2_SHIFT
+Date:   Tue, 10 Aug 2021 09:59:42 +0530
+Message-Id: <1628569782-30213-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 7:19 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2021-08-09-19-18 has been uploaded to
-> 
->     https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
+Streamline the Stage-2 TGRAN value extraction from ID_AA64MMFR0 register by
+adding a page size agnostic ID_AA64MMFR0_TGRAN_2_SHIFT. This is similar to
+the existing Stage-1 TGRAN shift i.e ID_AA64MMFR0_TGRAN_SHIFT.
 
-Hm, my patch scripts usually work, but this one gives me:
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: kvmarm@lists.cs.columbia.edu
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v5.14-rc5.
 
-Hunk #5 FAILED at 603.
-Hunk #6 FAILED at 701.
-2 out of 19 hunks FAILED -- rejects in file include/linux/memcontrol.h
-Hunk #6 FAILED at 65.
-1 out of 6 hunks FAILED -- rejects in file include/linux/page_idle.h
-Hunk #25 FAILED at 6691.
-Hunk #26 FAILED at 6702.
-Hunk #27 FAILED at 6735.
-Hunk #29 FAILED at 6771.
-Hunk #33 FAILED at 6900.
-Hunk #34 FAILED at 6938.
-6 out of 36 hunks FAILED -- rejects in file mm/memcontrol.c
-Hunk #9 FAILED at 2711.
-Hunk #11 FAILED at 2820.
-2 out of 11 hunks FAILED -- rejects in file mm/page-writeback.c
+ arch/arm64/include/asm/sysreg.h |  3 +++
+ arch/arm64/kvm/reset.c          | 17 ++---------------
+ 2 files changed, 5 insertions(+), 15 deletions(-)
 
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 7b9c3acba684..943d31d92b5b 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -1028,14 +1028,17 @@
+ 
+ #if defined(CONFIG_ARM64_4K_PAGES)
+ #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN4_SHIFT
++#define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN4_2_SHIFT
+ #define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED
+ #define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
+ #elif defined(CONFIG_ARM64_16K_PAGES)
+ #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN16_SHIFT
++#define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN16_2_SHIFT
+ #define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED
+ #define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0xF
+ #elif defined(CONFIG_ARM64_64K_PAGES)
+ #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN64_SHIFT
++#define ID_AA64MMFR0_TGRAN_2_SHIFT		ID_AA64MMFR0_TGRAN64_2_SHIFT
+ #define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED
+ #define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
+ #endif
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index cba7872d69a8..20588220fe66 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -311,7 +311,7 @@ u32 get_kvm_ipa_limit(void)
+ 
+ int kvm_set_ipa_limit(void)
+ {
+-	unsigned int parange, tgran_2;
++	unsigned int parange;
+ 	u64 mmfr0;
+ 
+ 	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
+@@ -322,20 +322,7 @@ int kvm_set_ipa_limit(void)
+ 	 * Check with ARMv8.5-GTG that our PAGE_SIZE is supported at
+ 	 * Stage-2. If not, things will stop very quickly.
+ 	 */
+-	switch (PAGE_SIZE) {
+-	default:
+-	case SZ_4K:
+-		tgran_2 = ID_AA64MMFR0_TGRAN4_2_SHIFT;
+-		break;
+-	case SZ_16K:
+-		tgran_2 = ID_AA64MMFR0_TGRAN16_2_SHIFT;
+-		break;
+-	case SZ_64K:
+-		tgran_2 = ID_AA64MMFR0_TGRAN64_2_SHIFT;
+-		break;
+-	}
+-
+-	switch (cpuid_feature_extract_unsigned_field(mmfr0, tgran_2)) {
++	switch (cpuid_feature_extract_unsigned_field(mmfr0, ID_AA64MMFR0_TGRAN_2_SHIFT)) {
+ 	case ID_AA64MMFR0_TGRAN_2_SUPPORTED_NONE:
+ 		kvm_err("PAGE_SIZE not supported at Stage-2, giving up\n");
+ 		return -EINVAL;
 -- 
-~Randy
+2.20.1
 
