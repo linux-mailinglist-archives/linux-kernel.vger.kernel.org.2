@@ -2,88 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B4E3E8352
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE363E8353
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhHJS4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:56:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20728 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231465AbhHJS4d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:56:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628621771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aeyIMXFzQ8OzGR9pMLrY5l1FOe7kguJjNVeE5rzOXJQ=;
-        b=ElPVFFOpMvXAdrm5TMy3YVz78Zp+k3cWBfz3+9kyL7jFvewCe7NcNp3sNNJb2vUeSxyIia
-        O2/7YWq44q/ST+YvWFwQISnXbm480vQmskibnihUrgECXu7+CdjqU84JmjgNmIr8NDfdqp
-        TCHJ9npb7uHQY4EhnTNYtNLDuChuQjA=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-I99Z-FobN3SimwHg9TLs2A-1; Tue, 10 Aug 2021 14:56:09 -0400
-X-MC-Unique: I99Z-FobN3SimwHg9TLs2A-1
-Received: by mail-qv1-f69.google.com with SMTP id bo13-20020a05621414adb029035561c68664so5942629qvb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:56:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aeyIMXFzQ8OzGR9pMLrY5l1FOe7kguJjNVeE5rzOXJQ=;
-        b=pZdoqdP5gcWY/p05+rbj+OA1kj1gVJ9b4Z8rTm0vwlXWfb0CXaJLwiC1H12MUNQ4de
-         mkT9GiBtrMZvMLAVk3DWYM3ggopUQb+zGcT1T2H6A3gPQHnbdVwaGwp7I0Qfh86UViAU
-         Qb3r9pDvi6ePNirh+a/nNRRjnILIOfAU3GoBW3AqYrymovFtZ506NoY1zRhybl10OpAd
-         BD+jmJda/H8ckQ0urdwRnKgBsFVsLgLQP+kDcoJaxCTO2Rlm21GAAIMRVig7rnibAWTQ
-         tk65J+K3483QWQEeKtdQSaRRUUW9R8fxAtTK9TMoVU+58+TIBrhRxcAybPpwkuGlkTTd
-         4WsQ==
-X-Gm-Message-State: AOAM5305xh4YSzf6CuXp72sQZujwpFrTAQJU//AO6X/eRDKEIl4Ee4GH
-        N9OrrFWgiNlELEeripnjri8ghPCzqCdQQUpUMOjE0xy5X9A0Lpd5rwFDktMI5rIqtYABxfSwOIh
-        8FcSPFGYh0CY6PFBEBc2LCZ6N
-X-Received: by 2002:ad4:4801:: with SMTP id g1mr19233071qvy.34.1628621769275;
-        Tue, 10 Aug 2021 11:56:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyY/8eH8qraAlg3QzXb5kdVEZIVe5XqgOyT/w9ICdKgY1ZKVgnUtZNKNx1/TkE7BD326QwTlw==
-X-Received: by 2002:ad4:4801:: with SMTP id g1mr19233063qvy.34.1628621769108;
-        Tue, 10 Aug 2021 11:56:09 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id x125sm11300960qkd.8.2021.08.10.11.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 11:56:08 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 14:56:07 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jgg@nvidia.com
-Subject: Re: [PATCH 2/7] vfio: Export unmap_mapping_range() wrapper
-Message-ID: <YRLLx5O6gleDqsMR@t490s>
-References: <162818167535.1511194.6614962507750594786.stgit@omen>
- <162818324222.1511194.15934590640437021149.stgit@omen>
+        id S232139AbhHJS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:56:39 -0400
+Received: from mga01.intel.com ([192.55.52.88]:37374 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231753AbhHJS4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:56:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="236982410"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="236982410"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:56:15 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="503235334"
+Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:56:14 -0700
+Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
+To:     Andi Kleen <ak@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
+ <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
+ <9748c07c-4e59-89d0-f425-c57f778d1b42@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <17b6a3a3-bd7d-f57e-8762-96258b16247a@intel.com>
+Date:   Tue, 10 Aug 2021 11:56:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <9748c07c-4e59-89d0-f425-c57f778d1b42@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <162818324222.1511194.15934590640437021149.stgit@omen>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:07:22AM -0600, Alex Williamson wrote:
-> +void vfio_device_unmap_mapping_range(struct vfio_device *device,
-> +				     loff_t start, loff_t len)
-> +{
-> +	unmap_mapping_range(device->inode->i_mapping, start, len, true);
+On 8/10/21 11:30 AM, Andi Kleen wrote:
+>> So, this is right in the fast path of the page allocator.  It's a
+>> one-time thing per 2M page, so it's not permanent.
+>>
+>> *But* there's both a global spinlock and a firmware call hidden in
+>> clear_page_offline().  That's *GOT* to hurt if you were, for instance,
+>> running a benchmark while this code path is being tickled.  Not just to
+>>
+>> That could be just downright catastrophic for scalability, albeit
+>> temporarily
+> 
+> This would be only a short blib at initialization until the system
+> reaches steady state. So yes it would be temporary, but very short at that.
 
-(not a big deal, but still raise this up)
+But it can't be *that* short or we wouldn't be going to all this trouble
+in the first place.  This can't simultaneously be both bad enough that
+this series exists, but minor enough that nobody will notice or care at
+runtime.
 
-It seems to me VFIO MMIO regions do not allow private maps, so even_cow==true
-should be the same with even_cow==false. even_cow==true will just check the
-page mapping for each pte even though they should just all match, imho, so
-logically "false" should work the same and should be tiny-little faster.
+In general, I'd rather have a system which is running userspace, slowly,
+than one where I'm waiting for the kernel.  The trade-off being made is
+a *good* trade-off for me.  But, not everyone is going to agree with me.
 
-Thanks,
+This also begs the question of how folks know when this "blip" is over.
+ Do we have a counter for offline pages?  Is there any way to force page
+acceptance?  Or, are we just stuck allocating a bunch of memory to warm
+up the system?
 
-> +}
-> +EXPORT_SYMBOL_GPL(vfio_device_unmap_mapping_range);
+How do folks who care about these new blips avoid them?
 
--- 
-Peter Xu
-
+Again, I don't particularly care about how this affects the
+benchmarkers.  But, I do care that they're going to hound us when these
+blips start impacting their 99th percentile tail latencies.
