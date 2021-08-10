@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495C43E7F34
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC553E7F35
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhHJRiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43594 "EHLO mail.kernel.org"
+        id S234991AbhHJRix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:38:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233965AbhHJRgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:36:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F046610E9;
-        Tue, 10 Aug 2021 17:35:30 +0000 (UTC)
+        id S233516AbhHJRgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:36:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B48DA610FD;
+        Tue, 10 Aug 2021 17:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616931;
-        bh=ql3WK06ce4y9XwlSZdJk4v6L9Na7PFGpHvHYh5uojO8=;
+        s=korg; t=1628616933;
+        bh=ZMDDFpqSjtRvjmnYV8p+2q7qGs8S+7d3lJji4BjqxHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B22WRzdByhWvfEOjcklLeCk+WUpYqI9RAkQHiC3XWMIT2DAjMvMEL/HqqowiXUnZv
-         85qQPbS18iLkTtre/9qkPlPzimnC7K7ns/z6p+F+MxHhJxoGn2pbIEvPYS8OR9vZM3
-         5PHHKvkTTmvqDLtbOuOT+V50MqvYTsXZ6vNi6d5A=
+        b=hfZlWyrhAnEEmydTJl+2O9dNDdC1HUi+eut7Di0TzI2s8iFYSexfLwU77nwSnIr99
+         v6Et1bXBLtaBG9sCGOObNhZP5ROoBRTaIRwmIkCBcBW7xwvmh9ISf/0hx+Z1rXBqVX
+         C9h5hqvaRG4sCD5sXPiNF7wIcgJLOBINiNJBmpvw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 21/85] net: dsa: sja1105: overwrite dynamic FDB entries with static ones in .port_fdb_add
-Date:   Tue, 10 Aug 2021 19:29:54 +0200
-Message-Id: <20210810172948.913290545@linuxfoundation.org>
+Subject: [PATCH 5.4 22/85] net: dsa: sja1105: invalidate dynamic FDB entries learned concurrently with statically added ones
+Date:   Tue, 10 Aug 2021 19:29:55 +0200
+Message-Id: <20210810172948.945259392@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
 References: <20210810172948.192298392@linuxfoundation.org>
@@ -42,24 +42,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit e11e865bf84e3c6ea91563ff3e858cfe0e184bd2 ]
+[ Upstream commit 6c5fc159e0927531707895709eee1f8bfa04289f ]
 
-The SJA1105 switch family leaves it up to software to decide where
-within the FDB to install a static entry, and to concatenate destination
-ports for already existing entries (the FDB is also used for multicast
-entries), it is not as simple as just saying "please add this entry".
+The procedure to add a static FDB entry in sja1105 is concurrent with
+dynamic learning performed on all bridge ports and the CPU port.
 
-This means we first need to search for an existing FDB entry before
-adding a new one. The driver currently manages to fool itself into
-thinking that if an FDB entry already exists, there is nothing to be
-done. But that FDB entry might be dynamically learned, case in which it
-should be replaced with a static entry, but instead it is left alone.
+The switch looks up the FDB from left to right, and also learns
+dynamically from left to right, so it is possible that between the
+moment when we pick up a free slot to install an FDB entry, another slot
+to the left of that one becomes free due to an address ageing out, and
+that other slot is then immediately used by the switch to learn
+dynamically the same address as we're trying to add statically.
 
-This patch checks the LOCKEDS ("locked/static") bit from found FDB
-entries, and lets the code "goto skip_finding_an_index;" if the FDB
-entry was not static. So we also need to move the place where we set
-LOCKEDS = true, to cover the new case where a dynamic FDB entry existed
-but was dynamic.
+The result is that we succeeded to add our static FDB entry, but it is
+being shadowed by a dynamic FDB entry to its left, and the switch will
+behave as if our static FDB entry did not exist.
+
+We cannot really prevent this from happening unless we make the entire
+process to add a static FDB entry a huge critical section where address
+learning is temporarily disabled on _all_ ports, and then re-enabled
+according to the configuration done by sja1105_port_set_learning.
+However, that is kind of disruptive for the operation of the network.
+
+What we can do alternatively is to simply read back the FDB for dynamic
+entries located before our newly added static one, and delete them.
+This will guarantee that our static FDB entry is now operational. It
+will still not guarantee that there aren't dynamic FDB entries to the
+_right_ of that static FDB entry, but at least those entries will age
+out by themselves since they aren't hit, and won't bother anyone.
 
 Fixes: 291d1e72b756 ("net: dsa: sja1105: Add support for FDB and MDB management")
 Fixes: 1da73821343c ("net: dsa: sja1105: Add FDB operations for P/Q/R/S series")
@@ -67,56 +77,101 @@ Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/dsa/sja1105/sja1105_main.c | 57 +++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index 034f1b50ab28..54b77eafdf63 100644
+index 54b77eafdf63..a07d8051ec3e 100644
 --- a/drivers/net/dsa/sja1105/sja1105_main.c
 +++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -1007,7 +1007,7 @@ int sja1105et_fdb_add(struct dsa_switch *ds, int port,
- 		 * mask? If yes, we need to do nothing. If not, we need
- 		 * to rewrite the entry by adding this port to it.
- 		 */
--		if (l2_lookup.destports & BIT(port))
-+		if ((l2_lookup.destports & BIT(port)) && l2_lookup.lockeds)
- 			return 0;
- 		l2_lookup.destports |= BIT(port);
- 	} else {
-@@ -1038,6 +1038,7 @@ int sja1105et_fdb_add(struct dsa_switch *ds, int port,
- 						     index, NULL, false);
- 		}
- 	}
-+	l2_lookup.lockeds = true;
- 	l2_lookup.index = sja1105et_fdb_index(bin, way);
+@@ -992,10 +992,11 @@ static int sja1105et_is_fdb_entry_in_bin(struct sja1105_private *priv, int bin,
+ int sja1105et_fdb_add(struct dsa_switch *ds, int port,
+ 		      const unsigned char *addr, u16 vid)
+ {
+-	struct sja1105_l2_lookup_entry l2_lookup = {0};
++	struct sja1105_l2_lookup_entry l2_lookup = {0}, tmp;
+ 	struct sja1105_private *priv = ds->priv;
+ 	struct device *dev = ds->dev;
+ 	int last_unused = -1;
++	int start, end, i;
+ 	int bin, way, rc;
  
- 	rc = sja1105_dynamic_config_write(priv, BLK_IDX_L2_LOOKUP,
-@@ -1108,10 +1109,10 @@ int sja1105pqrs_fdb_add(struct dsa_switch *ds, int port,
- 	rc = sja1105_dynamic_config_read(priv, BLK_IDX_L2_LOOKUP,
- 					 SJA1105_SEARCH, &l2_lookup);
- 	if (rc == 0) {
--		/* Found and this port is already in the entry's
-+		/* Found a static entry and this port is already in the entry's
- 		 * port mask => job done
- 		 */
--		if (l2_lookup.destports & BIT(port))
-+		if ((l2_lookup.destports & BIT(port)) && l2_lookup.lockeds)
- 			return 0;
- 		/* l2_lookup.index is populated by the switch in case it
- 		 * found something.
-@@ -1134,10 +1135,11 @@ int sja1105pqrs_fdb_add(struct dsa_switch *ds, int port,
- 		dev_err(ds->dev, "FDB is full, cannot add entry.\n");
- 		return -EINVAL;
- 	}
--	l2_lookup.lockeds = true;
- 	l2_lookup.index = i;
+ 	bin = sja1105et_fdb_hash(priv, addr, vid);
+@@ -1047,6 +1048,29 @@ int sja1105et_fdb_add(struct dsa_switch *ds, int port,
+ 	if (rc < 0)
+ 		return rc;
  
- skip_finding_an_index:
-+	l2_lookup.lockeds = true;
++	/* Invalidate a dynamically learned entry if that exists */
++	start = sja1105et_fdb_index(bin, 0);
++	end = sja1105et_fdb_index(bin, way);
 +
- 	rc = sja1105_dynamic_config_write(priv, BLK_IDX_L2_LOOKUP,
- 					  l2_lookup.index, &l2_lookup,
- 					  true);
++	for (i = start; i < end; i++) {
++		rc = sja1105_dynamic_config_read(priv, BLK_IDX_L2_LOOKUP,
++						 i, &tmp);
++		if (rc == -ENOENT)
++			continue;
++		if (rc)
++			return rc;
++
++		if (tmp.macaddr != ether_addr_to_u64(addr) || tmp.vlanid != vid)
++			continue;
++
++		rc = sja1105_dynamic_config_write(priv, BLK_IDX_L2_LOOKUP,
++						  i, NULL, false);
++		if (rc)
++			return rc;
++
++		break;
++	}
++
+ 	return sja1105_static_fdb_change(priv, port, &l2_lookup, true);
+ }
+ 
+@@ -1088,7 +1112,7 @@ int sja1105et_fdb_del(struct dsa_switch *ds, int port,
+ int sja1105pqrs_fdb_add(struct dsa_switch *ds, int port,
+ 			const unsigned char *addr, u16 vid)
+ {
+-	struct sja1105_l2_lookup_entry l2_lookup = {0};
++	struct sja1105_l2_lookup_entry l2_lookup = {0}, tmp;
+ 	struct sja1105_private *priv = ds->priv;
+ 	int rc, i;
+ 
+@@ -1146,6 +1170,35 @@ skip_finding_an_index:
+ 	if (rc < 0)
+ 		return rc;
+ 
++	/* The switch learns dynamic entries and looks up the FDB left to
++	 * right. It is possible that our addition was concurrent with the
++	 * dynamic learning of the same address, so now that the static entry
++	 * has been installed, we are certain that address learning for this
++	 * particular address has been turned off, so the dynamic entry either
++	 * is in the FDB at an index smaller than the static one, or isn't (it
++	 * can also be at a larger index, but in that case it is inactive
++	 * because the static FDB entry will match first, and the dynamic one
++	 * will eventually age out). Search for a dynamically learned address
++	 * prior to our static one and invalidate it.
++	 */
++	tmp = l2_lookup;
++
++	rc = sja1105_dynamic_config_read(priv, BLK_IDX_L2_LOOKUP,
++					 SJA1105_SEARCH, &tmp);
++	if (rc < 0) {
++		dev_err(ds->dev,
++			"port %d failed to read back entry for %pM vid %d: %pe\n",
++			port, addr, vid, ERR_PTR(rc));
++		return rc;
++	}
++
++	if (tmp.index < l2_lookup.index) {
++		rc = sja1105_dynamic_config_write(priv, BLK_IDX_L2_LOOKUP,
++						  tmp.index, NULL, false);
++		if (rc < 0)
++			return rc;
++	}
++
+ 	return sja1105_static_fdb_change(priv, port, &l2_lookup, true);
+ }
+ 
 -- 
 2.30.2
 
