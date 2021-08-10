@@ -2,136 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A463B3E541B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B5B3E541D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhHJHLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:11:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229470AbhHJHLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:11:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42DC26101E;
-        Tue, 10 Aug 2021 07:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628579477;
-        bh=IwchdthcW4P+bBMYFrtyi8Xq04VaMOj01WPs6GFnGFI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PKLZrQMm1p+pZvggy5YfdVVIkuJ49ljD3TffLfk+xOs4fqjWBFFWEN9Y/x4lFigjG
-         hfHYFM3FGe5RAiTbyKgGsFBKQS3BvjnNIukChaXieJNgrSiSzAV1ym/SG5P/fECCO9
-         52sHs91VqLOZR55LCIHtmLb6+p8V7aj0WuWm/9e4=
-Date:   Tue, 10 Aug 2021 09:11:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
+        id S229947AbhHJHMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhHJHMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 03:12:43 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20ACC0613D3;
+        Tue, 10 Aug 2021 00:12:21 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id c16so19741111plh.7;
+        Tue, 10 Aug 2021 00:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ehXmyKvN8kss/jfEeUYnXkhGYphO5Th0k62KABCdSyc=;
+        b=QnkWXH3KfA1HA+w5xWE0trLsN+GUAK6H7yiuwuVHFfa4ATTh2vuxEOJnXwnm+gD9DC
+         acrk9DXtXVEdG23LT+wy82QORBXcOyOxWttLxBO6wk3YuoamXaqjYjSkqdmF6gaI/10q
+         S+PP9pkBGXpVpCwIRLpSOXN7M8jaLe+SQl2aaUFW4v+YPKrBGxDcEkYgGzNfYVF8maKZ
+         XvOiJTVVFjB6fga9iq3BJhEGdu9//Kl5OCkTAlN4Xq2dLuuVKuPLxpfHrtziNKFxqpAL
+         KT1QkcF0y+Erm9PHGmrIFKs1faBbFw8PFwhpcFS6pyZ1zTmf8QOQrzjbnFVR6pGYzsVd
+         zo1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ehXmyKvN8kss/jfEeUYnXkhGYphO5Th0k62KABCdSyc=;
+        b=qXB0RHeqiNEaSSaX4D/ibsMs3zk7+R/2tWmfIUucur8gGlhqnbd1/niRDhCFNfaFiO
+         lbeDA5WsIc2HumXwzPNNAVl9kjNwTysXj86jC+zwMAJnrjdOI+Q5cEImucGKnmDwFpuQ
+         vRLbc4+AnZ6kPCvEZkq9f1rha1tPSNA2EroBvr1UczhBaX7fExQicRsH+5UbOyrMxvdk
+         E57ECBJ49WYR0Ln97h9jMO6qGQT6GJwiWtVmWH/eB0idZVC19BzFWcwzB48SMVWKDMDg
+         RhCgdmKjzpFWzNaZ3HPDcRROrAjG7+yXI6FgLQdEqCVoc9i0qam4yf8wxgN1+MKRnwxJ
+         ZgQg==
+X-Gm-Message-State: AOAM533u2y1bCLD7qtzprGORb9ryDjNrjQ9cSIRm5W3DnBWyUtiIy4kt
+        sQXAPCPE5GYMVGx6LXlODhQ=
+X-Google-Smtp-Source: ABdhPJxQ+/dMFZkiowAoR2uGvr2PJJpknfXC4mgX+YtBG2Z6ZrSLZNwpFA26VSpHW8a81yIMmjDVUw==
+X-Received: by 2002:a63:fd54:: with SMTP id m20mr308868pgj.104.1628579541307;
+        Tue, 10 Aug 2021 00:12:21 -0700 (PDT)
+Received: from [192.168.1.71] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
+        by smtp.gmail.com with ESMTPSA id n1sm27941449pgt.63.2021.08.10.00.12.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 00:12:20 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jack Pham <jackp@codeaurora.org>, Todd Kjos <tkjos@google.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Petri Gynther <pgynther@google.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [RFC][PATCH] dwc3: gadget: Fix losing list items in
- dwc3_gadget_ep_cleanup_completed_requests()
-Message-ID: <YRImkgCDSvz11ytQ@kroah.com>
-References: <CANcMJZCEVxVLyFgLwK98hqBEdc0_n4P0x_K6Gih8zNH3ouzbJQ@mail.gmail.com>
- <20210809223159.2342385-1-john.stultz@linaro.org>
- <4e1bef57-8520-36b9-f5cb-bbc925626a19@synopsys.com>
- <CALAqxLXPGt69ceiXkGT-nDjeP72mmCUgEzDdMpXr=rSNwpespw@mail.gmail.com>
- <0dfa8cd6-99b6-55c7-8099-0f6f1187b7fd@synopsys.com>
- <YRIXPflAPtCPHQde@kroah.com>
+        linux-man <linux-man@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: Questions re the new mount_setattr(2) manual page
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+References: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <b23122c0-893a-c1b4-0b2d-3a332af4151f@gmail.com>
+Date:   Tue, 10 Aug 2021 09:12:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRIXPflAPtCPHQde@kroah.com>
+In-Reply-To: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 08:05:49AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Aug 09, 2021 at 10:57:27PM +0000, Thinh Nguyen wrote:
-> > John Stultz wrote:
-> > > On Mon, Aug 9, 2021 at 3:44 PM Thinh Nguyen <Thinh.Nguyen@synopsys.com> wrote:
-> > >>
-> > >> John Stultz wrote:
-> > >>> In commit d25d85061bd8 ("usb: dwc3: gadget: Use
-> > >>> list_replace_init() before traversing lists"), a local list_head
-> > >>> was introduced to process the started_list items to avoid races.
-> > >>>
-> > >>> However, in dwc3_gadget_ep_cleanup_completed_requests() if
-> > >>> dwc3_gadget_ep_cleanup_completed_request() fails, we break early,
-> > >>> causing the items on the local list_head to be lost.
-> > >>>
-> > >>> This issue showed up as problems on the db845c/RB3 board, where
-> > >>> adb connetions would fail, showing the device as "offline".
-> > >>>
-> > >>> This patch tries to fix the issue by if we are returning early
-> > >>> we splice in the local list head back into the started_list
-> > >>> and return (avoiding an infinite loop, as the started_list is
-> > >>> now non-null).
-> > >>>
-> > >>> Not sure if this is fully correct, but seems to work for me so I
-> > >>> wanted to share for feedback.
-> > >>>
-> > >>> Cc: Wesley Cheng <wcheng@codeaurora.org>
-> > >>> Cc: Felipe Balbi <balbi@kernel.org>
-> > >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > >>> Cc: Alan Stern <stern@rowland.harvard.edu>
-> > >>> Cc: Jack Pham <jackp@codeaurora.org>
-> > >>> Cc: Thinh Nguyen <thinh.nguyen@synopsys.com>
-> > >>> Cc: Todd Kjos <tkjos@google.com>
-> > >>> Cc: Amit Pundir <amit.pundir@linaro.org>
-> > >>> Cc: YongQin Liu <yongqin.liu@linaro.org>
-> > >>> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > >>> Cc: Petri Gynther <pgynther@google.com>
-> > >>> Cc: linux-usb@vger.kernel.org
-> > >>> Fixes: d25d85061bd8 ("usb: dwc3: gadget: Use list_replace_init() before traversing lists")
-> > >>> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> > >>> ---
-> > >>>  drivers/usb/dwc3/gadget.c | 6 ++++++
-> > >>>  1 file changed, 6 insertions(+)
-> > >>>
-> > >>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> > >>> index b8d4b2d327b23..a73ebe8e75024 100644
-> > >>> --- a/drivers/usb/dwc3/gadget.c
-> > >>> +++ b/drivers/usb/dwc3/gadget.c
-> > >>> @@ -2990,6 +2990,12 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
-> > >>>                       break;
-> > >>>       }
-> > >>>
-> > >>> +     if (!list_empty(&local)) {
-> > >>> +             list_splice_tail(&local, &dep->started_list);
-> > >>> +             /* Return so we don't hit the restart case and loop forever */
-> > >>> +             return;
-> > >>> +     }
-> > >>> +
-> > >>>       if (!list_empty(&dep->started_list))
-> > >>>               goto restart;
-> > >>>  }
-> > >>>
-> > >>
-> > >> No, we should revert the change for
-> > >> dwc3_gadget_ep_cleaup_completed_requests(). As I mentioned previously,
-> > >> we don't cleanup the entire started_list. If the original problem is due
-> > >> to disconnection in the middle of request completion, then we can just
-> > >> check for pullup_connected and exit the loop and let the
-> > >> dwc3_remove_requests() do the cleanup.
-> > > 
-> > > Ok, sorry, I didn't read your mail in depth until I had this patch
-> > > sent out. If a revert of d25d85061bd8 is the better fix, I'm fine with
-> > > that too.
-> > > 
-> > > thanks
-> > > -john
-> > > 
-> > 
-> > IMO, we should revert this patch for now since it will cause regression.
-> > We can review and test a proper fix at a later time.
-> 
-> Ok, can someone send me a revert please?  That will go faster than me
-> having to create it myself...
+Hi Christian,
 
-I'll go do this now...
+One more question...
+
+>>       The propagation field is used to specify the propagation typ
+>>       of the mount or mount tree.  Mount propagation options are
+>>       mutually exclusive; that is, the propagation values behave
+>>       like an enum.  The supported mount propagation types are:
+
+The manual page text doesn't actually say it, but if the 'propagation'
+field is 0, then this means leave the propagation type unchanged, 
+right? This of course should be mentioned in the manual page.
+
+Cheers,
+
+Michael
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
