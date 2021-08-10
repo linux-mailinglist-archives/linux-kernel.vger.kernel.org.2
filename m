@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083913E53A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C153E53AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236572AbhHJGjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
+        id S236723AbhHJGkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbhHJGjN (ORCPT
+        with ESMTP id S236694AbhHJGkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:39:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18792C0613D3;
-        Mon,  9 Aug 2021 23:38:52 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628577527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bSnzBs68VhjDQ3u78tqjUyQJhwzdf88dCvELM4pNA2Q=;
-        b=uqmqUId9lCIImeFKZg4WDPF8nF0evgk1x6FInFYKkm18Zycnzmpj5pEr4DhNNz2INmH7KW
-        GbX/7uWwYT5PGkW8CsjGn5Cuc1NvrxDQxCv4jwErQGUUnPp2xKyTqXvTSb/C10JT3vsQap
-        l3UV4GxFOEZS0VL3kUFb1KQa3+LCN2xzSNuqQx9ucjv2Rd4SrLG81EXowR9KNFzW33G6a3
-        83Bt27m1TMuQnumpcsn6rQYMj7SMV01ksbKSmhTXq0AM5JgiJIsN6MvNGVCsicP9WjhYld
-        W0pFNBzpYWRxugJF/xM6qGlgANJ172GVu3mKtMgk1XunpvCibOix8o0HhCN+8Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628577527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bSnzBs68VhjDQ3u78tqjUyQJhwzdf88dCvELM4pNA2Q=;
-        b=b9av0Nd34hog4yyxX9E+8vqOvNpEjZl3IiKG8E4g+Bm+ck63sLPzGl/uuA7Qf7eH5j3U5l
-        /t9DfkNG9il8IfDA==
-To:     Jeff Moyer <jmoyer@redhat.com>, dan.j.williams@intel.com
-Cc:     Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>, linux-edac@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [patch] x86/pat: pass correct address to sanitize_phys
-In-Reply-To: <x49tuknmosl.fsf@segfault.boston.devel.redhat.com>
-References: <x49tuknmosl.fsf@segfault.boston.devel.redhat.com>
-Date:   Tue, 10 Aug 2021 08:38:46 +0200
-Message-ID: <87wnotst1l.ffs@tglx>
+        Tue, 10 Aug 2021 02:40:24 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B33C061796
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 23:40:03 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so2921593pjr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 23:40:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gJh5g6sBkUyDOxH0aazRQXEM04p3XrayCtaq3Xsy8GM=;
+        b=yeGYerUfG0kXBiPcCujcvz6H84DiZtZfboDXJUsbds5MuuXbah9S4F8JURE6f0/Pu4
+         w10WRWwPwTRweg+7Rp8mD32OKwsEYIb28WLedjmAXZAPa6QYDlBRLtZ1gfWXLusFKQu/
+         U439iCD6UHoEsCwyshBGhnBqxQVdXyPS1RdK8RqfuDKwqAswf0/poUvb7dbv2L0nhnxQ
+         2yZQZhry4s3r4o9ohN0ePux2dIPrGVrWTnQsGLkW6C1QHGCSlMQfw2gAutQq0g6LVHVw
+         46Dm7ddYllxXF8DwQwVrZSFcXja92nqCiXnJ2pnXpEH06RGP6Ojd1xHWaiOEvHSwNj4p
+         REEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gJh5g6sBkUyDOxH0aazRQXEM04p3XrayCtaq3Xsy8GM=;
+        b=YlRq3y3aV0VCzIUTwUXm83cjhySUOzx3L5ev8njlHSpzfBsWu6gcjSH5/X1+a4maLM
+         QUEkmoVrTWLFewQgjYS169jctA+OR9WMfk6A+JhwNRy1j7MvTNs6fi+cVdAobNXAlv2t
+         rBbaGkhwcxo1tQmcXmxqi98Akj4B1c9jpq9q18n+uf9LkOjYkObl4DiqZ2x48Or0ZS4w
+         3p9/rt208dA9gAypN30Onhxr6S86rh3LejXqko8ZkfVKtKTDTjvZf4M2jAUPedoluPjW
+         2UN/2caTuLgISi00HKPbpyh+8QYrtoyITnH2/aVkz3q51eAlbbsqKaiKYVsYw7FQfcBj
+         rghw==
+X-Gm-Message-State: AOAM533rdyadgfBqF/mcCVbhATaxN4sPTfV2spkt5w5IQE2QmNcdsv6d
+        bk07WKwv+fWSjKPJJiLu3i8viQ==
+X-Google-Smtp-Source: ABdhPJwjGXEPnknZWOpS6jE/Tehvvsx9C9n+uRUSkeCrF295hclr2rjt9RO6XkB4IapiATVWdosRLA==
+X-Received: by 2002:a17:90a:7e0d:: with SMTP id i13mr29815845pjl.146.1628577602836;
+        Mon, 09 Aug 2021 23:40:02 -0700 (PDT)
+Received: from libai.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id q4sm25769355pgv.16.2021.08.09.23.39.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 23:40:02 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     dhowells@redhat.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhenwei pi <pizhenwei@bytedance.com>
+Subject: [PATCH] crypto: public_key: fix overflow during implicit conversion
+Date:   Tue, 10 Aug 2021 14:39:54 +0800
+Message-Id: <20210810063954.628244-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff,
+Hit kernel warning like this, it can be reproduced by verifying 256
+bytes datafile by keyctl command.
 
-On Wed, Jul 21 2021 at 15:48, Jeff Moyer wrote:
+ WARNING: CPU: 5 PID: 344556 at crypto/rsa-pkcs1pad.c:540 pkcs1pad_verify+0x160/0x190
+ ...
+ Call Trace:
+  public_key_verify_signature+0x282/0x380
+  ? software_key_query+0x12d/0x180
+  ? keyctl_pkey_params_get+0xd6/0x130
+  asymmetric_key_verify_signature+0x66/0x80
+  keyctl_pkey_verify+0xa5/0x100
+  do_syscall_64+0x35/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Please write function names with brackets, i.e. sanitize_phys().
+'.digest_size(u8) = params->in_len(u32)' leads overflow of an u8 value,
+so use u32 instead of u8 of digest. And reorder struct
+public_key_signature, it could save 8 bytes on a 64 bit machine.
 
-> memtype_reserve takes an address range of the form [start, end).  It
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+---
+ include/crypto/public_key.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-[start, end]
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 47accec68cb0..f603325c0c30 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -38,9 +38,9 @@ extern void public_key_free(struct public_key *key);
+ struct public_key_signature {
+ 	struct asymmetric_key_id *auth_ids[2];
+ 	u8 *s;			/* Signature */
+-	u32 s_size;		/* Number of bytes in signature */
+ 	u8 *digest;
+-	u8 digest_size;		/* Number of bytes in digest */
++	u32 s_size;		/* Number of bytes in signature */
++	u32 digest_size;	/* Number of bytes in digest */
+ 	const char *pkey_algo;
+ 	const char *hash_algo;
+ 	const char *encoding;
+-- 
+2.25.1
 
-
-> then passes the start and end addresses to sanitize_phys, which is meant
-> to operate on the inclusive addresses.  If end falls at the end of the
-> physical address space, sanitize_phys will return 0.  This can result in
-> drivers failing to load:
->
-> [   10.000087] mpt3sas_cm0: unable to map adapter memory! or resource not found
-> [   10.000334] mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10597/_scsih_probe()!
-
-Doesn't this trigger the WARN() right below that offending line?
-
-> Fix this by passing the inclusive end address to sanitize_phys.
->
-> Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "decoy" addresses")
-> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
-> --
-> It might be worth adding a comment, here.  If there are any suggestions
-> on what a sane wording would be, I'm all ears.
-
-See below.
-
-> diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-> index 3112ca7786ed..482557905294 100644
-> --- a/arch/x86/mm/pat/memtype.c
-> +++ b/arch/x86/mm/pat/memtype.c
-> @@ -583,7 +583,7 @@ int memtype_reserve(u64 start, u64 end, enum page_cache_mode req_type,
->  	int err = 0;
->  
->  	start = sanitize_phys(start);
-> -	end = sanitize_phys(end);
-
-        /*
-         * [start, end] is an exclusive address range, but
-         * sanitize_phys() expects an inclusive end address
-         */
-
-> +	end = sanitize_phys(end - 1) + 1;
->  	if (start >= end) {
->  		WARN(1, "%s failed: [mem %#010Lx-%#010Lx], req %s\n", __func__,
->  				start, end - 1, cattr_name(req_type));
-
-Thanks,
-
-        tglx
