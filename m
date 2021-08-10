@@ -2,227 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467113E5773
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52A23E5777
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238960AbhHJJuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:50:00 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:28230 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238647AbhHJJsw (ORCPT
+        id S239308AbhHJJuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:50:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239310AbhHJJtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:48:52 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 10 Aug 2021 02:48:28 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 10 Aug 2021 02:48:27 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 10 Aug 2021 15:18:16 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 1102821CA3; Tue, 10 Aug 2021 15:18:15 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v4 7/7] media: venus: Set buffer to FW based on FW min count requirement.
-Date:   Tue, 10 Aug 2021 15:17:55 +0530
-Message-Id: <1628588875-23790-8-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628588875-23790-1-git-send-email-dikshita@codeaurora.org>
-References: <1628588875-23790-1-git-send-email-dikshita@codeaurora.org>
+        Tue, 10 Aug 2021 05:49:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628588930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=59kuAZem85KPEOYWVkAOsAR4DDZk1OeL3s1/rT3mByM=;
+        b=ZZHNb6Ij3Duc7VyXBGF+Z56HqmJwUp8+aYDrN3qpKliaiM/J27KVnbvL0HLTkDnZVkwy+L
+        HXIrAAr+8AC4rc/DzsyWVEFFTI8YqUQwD4QM8+qC627zTHdO7sYqbQslnB2yeIeQpSHEUH
+        GNDHSsSsEAk63tuERSG8Abnf6PGJJWg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-qAtR2cvPMSGga2PEXQO7nw-1; Tue, 10 Aug 2021 05:48:46 -0400
+X-MC-Unique: qAtR2cvPMSGga2PEXQO7nw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAB24875049;
+        Tue, 10 Aug 2021 09:48:44 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-79.pek2.redhat.com [10.72.12.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7396410013C1;
+        Tue, 10 Aug 2021 09:48:39 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hch@lst.de,
+        robin.murphy@arm.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        m.szyprowski@samsung.com, rppt@linux.ibm.com,
+        Baoquan He <bhe@redhat.com>
+Subject: [RFC PATCH v2 0/5] Avoid requesting page from DMA zone when no managed pages
+Date:   Tue, 10 Aug 2021 17:48:30 +0800
+Message-Id: <20210810094835.13402-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Get the min buffer count required by FW from source event change
-  and use the same value to decide actual buffer count and for
-  buffer size calculation.
-- Setup DPB and OPB buffers after session continue incase of
-  reconfig.
+In some places of the current kernel, it assumes that DMA zone must have
+managed pages and try to request pages if CONFIG_ZONE_DMA is enabled.
+While this is not always true. E.g in kdump kernel of x86_64, only low 1M
+is presented and locked down at very early stage of boot, so that there's
+no managed pages at all in DMA zone. This exception will always cause page
+allocation failure if page is requested from DMA zone.
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.h             |  1 +
- drivers/media/platform/qcom/venus/helpers.c          |  8 +++++++-
- drivers/media/platform/qcom/venus/hfi_helper.h       |  9 +++++++++
- drivers/media/platform/qcom/venus/hfi_msgs.c         |  7 +++++++
- drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c |  6 ++++--
- drivers/media/platform/qcom/venus/vdec.c             | 20 +++++++++++++-------
- 6 files changed, 41 insertions(+), 10 deletions(-)
+E.g in kdump kernel of x86_64, atomic_pool_dma which is created with GFP_DMA
+will cause page allocation failure, and dma-kmalloc initialization also
+caused page allocation failure.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 29f2c4f..90ca6f9 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -407,6 +407,7 @@ struct venus_inst {
- 	u32 width;
- 	u32 height;
- 	struct v4l2_rect crop;
-+	u32 fw_min_cnt;
- 	u32 out_width;
- 	u32 out_height;
- 	u32 colorspace;
-diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-index 2db33ba..c076926 100644
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -623,9 +623,15 @@ int venus_helper_get_bufreq(struct venus_inst *inst, u32 type,
- 	if (req)
- 		memset(req, 0, sizeof(*req));
+In this v2 patchset:
+
+* Patch 1, 2 are clean up patches of atomic pool code when read code.
+* Patch 3 introduces helper functions to help check if DMA zone with managed
+  pages exists.
+* Patch 4 is to check if managed DMA zone exists, then create atomic_pool_dma
+  if yes.
+* Patch 5 is to check if managed DMA zone exists, then create
+* dma-kmalloc cache if yes.
+
+This is v1 post:
+https://lore.kernel.org/lkml/20210624052010.5676-1-bhe@redhat.com/
+
+v1->v2:
+ In v1, I tried to adjust code to allow user to disable atomic pool
+ completely with "coherent_pool=0" kernek parameter, then expect to add
+ this into kdump kernel to mute the page allocation failure. However,
+ later found atomic pool is needed when DMA_DIRECT_REMAP=y or
+ mem_encrypt_active() is true, and dma-kmalloc also always caused page
+ allocation failure. 
  
-+	if (type == HFI_BUFFER_OUTPUT || type == HFI_BUFFER_OUTPUT2)
-+		req->count_min = inst->fw_min_cnt;
-+
- 	ret = platform_get_bufreq(inst, type, req);
--	if (!ret)
-+	if (!ret) {
-+		if (type == HFI_BUFFER_OUTPUT || type == HFI_BUFFER_OUTPUT2)
-+			inst->fw_min_cnt = req->count_min;
- 		return 0;
-+	}
- 
- 	ret = hfi_session_get_property(inst, ptype, &hprop);
- 	if (ret)
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index dc9f992..bc11d15 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -167,6 +167,7 @@
- #define HFI_PROPERTY_PARAM_VDEC_RECOVERY_POINT_SEI_EXTRADATA	0x120300c
- #define HFI_PROPERTY_PARAM_VDEC_THUMBNAIL_MODE			0x120300d
- #define HFI_PROPERTY_PARAM_VDEC_FRAME_ASSEMBLY			0x120300e
-+#define HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS				0x120300e
- #define HFI_PROPERTY_PARAM_VDEC_VC1_FRAMEDISP_EXTRADATA		0x1203011
- #define HFI_PROPERTY_PARAM_VDEC_VC1_SEQDISP_EXTRADATA		0x1203012
- #define HFI_PROPERTY_PARAM_VDEC_TIMESTAMP_EXTRADATA		0x1203013
-@@ -910,6 +911,14 @@ struct hfi_extradata_input_crop {
- 	u32 height;
- };
- 
-+struct hfi_dpb_counts {
-+	u32 max_dpb_count;
-+	u32 max_ref_frames;
-+	u32 max_dec_buffering;
-+	u32 max_reorder_frames;
-+	u32 fw_min_cnt;
-+};
-+
- #define HFI_COLOR_FORMAT_MONOCHROME		0x01
- #define HFI_COLOR_FORMAT_NV12			0x02
- #define HFI_COLOR_FORMAT_NV21			0x03
-diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
-index d9fde66..21ab990 100644
---- a/drivers/media/platform/qcom/venus/hfi_msgs.c
-+++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
-@@ -32,6 +32,7 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
- 	struct hfi_colour_space *colour_info;
- 	struct hfi_buffer_requirements *bufreq;
- 	struct hfi_extradata_input_crop *crop;
-+	struct hfi_dpb_counts *dpb_count;
- 	u8 *data_ptr;
- 	u32 ptype;
- 
-@@ -110,6 +111,12 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
- 			event.input_crop.height = crop->height;
- 			data_ptr += sizeof(*crop);
- 			break;
-+		case HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS:
-+			data_ptr += sizeof(u32);
-+			dpb_count = (struct hfi_dpb_counts *)data_ptr;
-+			event.buf_count = dpb_count->fw_min_cnt;
-+			data_ptr += sizeof(*dpb_count);
-+			break;
- 		default:
- 			break;
- 		}
-diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
-index 479178b..ea25c45 100644
---- a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
-+++ b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
-@@ -1164,7 +1164,7 @@ static int output_buffer_count(u32 session_type, u32 codec)
- 			output_min_count = 6;
- 			break;
- 		case V4L2_PIX_FMT_VP9:
--			output_min_count = 9;
-+			output_min_count = 11;
- 			break;
- 		case V4L2_PIX_FMT_H264:
- 		case V4L2_PIX_FMT_HEVC:
-@@ -1213,6 +1213,8 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
- 	}
- 
- 	out_min_count = output_buffer_count(VIDC_SESSION_TYPE_DEC, codec);
-+	/* Max of driver and FW count */
-+	out_min_count = max(out_min_count, bufreq->count_min);
- 
- 	bufreq->type = buftype;
- 	bufreq->region_size = 0;
-@@ -1237,7 +1239,7 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
- 	} else if (buftype == HFI_BUFFER_INTERNAL_SCRATCH(version)) {
- 		bufreq->size = dec_ops->scratch(width, height, is_interlaced);
- 	} else if (buftype == HFI_BUFFER_INTERNAL_SCRATCH_1(version)) {
--		bufreq->size = dec_ops->scratch1(width, height, out_min_count,
-+		bufreq->size = dec_ops->scratch1(width, height, VB2_MAX_FRAME,
- 						 is_secondary_output,
- 						 num_vpp_pipes);
- 	} else if (buftype == HFI_BUFFER_INTERNAL_PERSIST_1) {
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 4e7b9e5..45cccd2 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -988,23 +988,23 @@ static int vdec_start_capture(struct venus_inst *inst)
- 	if (ret)
- 		goto err;
- 
-+	venus_pm_load_scale(inst);
-+
-+	inst->next_buf_last = false;
-+
- 	ret = venus_helper_alloc_dpb_bufs(inst);
- 	if (ret)
- 		goto err;
- 
--	ret = venus_helper_queue_dpb_bufs(inst);
-+	ret = hfi_session_continue(inst);
- 	if (ret)
- 		goto free_dpb_bufs;
- 
--	ret = venus_helper_process_initial_cap_bufs(inst);
-+	ret = venus_helper_queue_dpb_bufs(inst);
- 	if (ret)
- 		goto free_dpb_bufs;
- 
--	venus_pm_load_scale(inst);
--
--	inst->next_buf_last = false;
--
--	ret = hfi_session_continue(inst);
-+	ret = venus_helper_process_initial_cap_bufs(inst);
- 	if (ret)
- 		goto free_dpb_bufs;
- 
-@@ -1411,6 +1411,11 @@ static void vdec_event_change(struct venus_inst *inst,
- 		inst->crop.height = ev_data->height;
- 	}
- 
-+	inst->fw_min_cnt = ev_data->buf_count;
-+	/* overwriting this to 11 for vp9 due to fw bug */
-+	if (inst->hfi_codec == HFI_VIDEO_CODEC_VP9)
-+		inst->fw_min_cnt = 11;
-+
- 	inst->out_width = ev_data->width;
- 	inst->out_height = ev_data->height;
- 
-@@ -1514,6 +1519,7 @@ static void vdec_inst_init(struct venus_inst *inst)
- 	inst->crop.top = 0;
- 	inst->crop.width = inst->width;
- 	inst->crop.height = inst->height;
-+	inst->fw_min_cnt = 8;
- 	inst->out_width = frame_width_min(inst);
- 	inst->out_height = frame_height_min(inst);
- 	inst->fps = 30;
+ So in this v2, change to check if managed DMA zone exists. If DMA zone
+ has managed pages, we go further to request page from DMA zone to
+ initialize. Otherwise, just skip to initialize stuffs which need pages
+ from DMA zone.
+
+Baoquan He (5):
+  docs: kernel-parameters: Update to reflect the current default size of
+    atomic pool
+  dma-pool: allow user to disable atomic pool
+  mm_zone: add function to check if managed dma zone exists
+  dma/pool: create dma atomic pool only if dma zone has mamaged pages
+  mm/slub: do not create dma-kmalloc if no managed pages in DMA zone
+
+ .../admin-guide/kernel-parameters.txt         |  5 ++++-
+ include/linux/mmzone.h                        | 21 +++++++++++++++++++
+ kernel/dma/pool.c                             | 11 ++++++----
+ mm/page_alloc.c                               | 11 ++++++++++
+ mm/slab_common.c                              |  6 ++++++
+ 5 files changed, 49 insertions(+), 5 deletions(-)
+
 -- 
-2.7.4
+2.17.2
 
