@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E6A3E809D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB203E80AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbhHJRvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57234 "EHLO mail.kernel.org"
+        id S234208AbhHJRvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:51:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235310AbhHJRsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:48:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C567B610A3;
-        Tue, 10 Aug 2021 17:41:11 +0000 (UTC)
+        id S235539AbhHJRs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:48:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06D9E610CB;
+        Tue, 10 Aug 2021 17:41:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617272;
-        bh=TSSu0j/Y42OwHoJ9tyDjSyyjc/nHSELfyyCW/jHTfD0=;
+        s=korg; t=1628617274;
+        bh=MAHoygpLlLfY3HIeSAJW9XpLd4F/lbg16/4FUEcB4XI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=glMeAsADqK8ep+4xhQbmiWwIX4zLOpoitWDbCNJ07fxRWSnuAK1bZAz06+eByWCe3
-         /jjt8bvbadQo+J1sbjYfXj3CIE2xxOjsr+dU7NptWaSEaEv6kEL7lT4rTx7F2jJXsT
-         7xpTW/pob1KSpCs0BqiGxd+y4wBFNLAKJifDKFdg=
+        b=W0xbUtGPMO+AE3G4X0I2VWfM9cbq4QRP2C1/7aLlg3Pe+R9rg69zLyJ+BZjr2qVvj
+         wNuhkrbNrsw7p+YDsOZ/JsWoNzFGnSStPOz7VHI/oBgHMspPIDL8Cmb07D2KTBkmu0
+         fRbtqxoUUe2swGayuXqAJ4Ib0fNNiM9MW+VT9g2I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 5.10 122/135] soc: ixp4xx/qmgr: fix invalid __iomem access
-Date:   Tue, 10 Aug 2021 19:30:56 +0200
-Message-Id: <20210810172959.943307814@linuxfoundation.org>
+        stable@vger.kernel.org, Like Xu <likexu@tencent.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Kim Phillips <kim.phillips@amd.com>
+Subject: [PATCH 5.10 123/135] perf/x86/amd: Dont touch the AMD64_EVENTSEL_HOSTONLY bit inside the guest
+Date:   Tue, 10 Aug 2021 19:30:57 +0200
+Message-Id: <20210810172959.982346545@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 References: <20210810172955.660225700@linuxfoundation.org>
@@ -39,60 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Like Xu <likexu@tencent.com>
 
-commit a8eee86317f11e97990d755d4615c1c0db203d08 upstream.
+commit df51fe7ea1c1c2c3bfdb81279712fdd2e4ea6c27 upstream.
 
-Sparse reports a compile time warning when dereferencing an
-__iomem pointer:
+If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
+warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
 
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:149:37: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:153:40: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:154:40: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:174:38: warning: dereference of noderef expression
-drivers/soc/ixp4xx/ixp4xx-qmgr.c:174:44: warning: dereference of noderef expression
+  [] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write 0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
+  [] Call Trace:
+  []  amd_pmu_disable_event+0x22/0x90
+  []  x86_pmu_stop+0x4c/0xa0
+  []  x86_pmu_del+0x3a/0x140
 
-Use __raw_readl() here for consistency with the rest of the file.
-This should really get converted to some proper accessor, as the
-__raw functions are not meant to be used in drivers, but the driver
-has used these since the start, so for the moment, let's only fix
-the warning.
+The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
+while the guest perf driver should avoid such use.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: d4c9e9fc9751 ("IXP42x: Add QMgr support for IXP425 rev. A0 processors.")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 1018faa6cf23 ("perf/x86/kvm: Fix Host-Only/Guest-Only counting with SVM disabled")
+Signed-off-by: Like Xu <likexu@tencent.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Liam Merwick <liam.merwick@oracle.com>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Tested-by: Liam Merwick <liam.merwick@oracle.com>
+Link: https://lkml.kernel.org/r/20210802070850.35295-1-likexu@tencent.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soc/ixp4xx/ixp4xx-qmgr.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/x86/events/perf_event.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-+++ b/drivers/soc/ixp4xx/ixp4xx-qmgr.c
-@@ -145,12 +145,12 @@ static irqreturn_t qmgr_irq1_a0(int irq,
- 	/* ACK - it may clear any bits so don't rely on it */
- 	__raw_writel(0xFFFFFFFF, &qmgr_regs->irqstat[0]);
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1009,9 +1009,10 @@ void x86_pmu_stop(struct perf_event *eve
  
--	en_bitmap = qmgr_regs->irqen[0];
-+	en_bitmap = __raw_readl(&qmgr_regs->irqen[0]);
- 	while (en_bitmap) {
- 		i = __fls(en_bitmap); /* number of the last "low" queue */
- 		en_bitmap &= ~BIT(i);
--		src = qmgr_regs->irqsrc[i >> 3];
--		stat = qmgr_regs->stat1[i >> 3];
-+		src = __raw_readl(&qmgr_regs->irqsrc[i >> 3]);
-+		stat = __raw_readl(&qmgr_regs->stat1[i >> 3]);
- 		if (src & 4) /* the IRQ condition is inverted */
- 			stat = ~stat;
- 		if (stat & BIT(src & 3)) {
-@@ -170,7 +170,8 @@ static irqreturn_t qmgr_irq2_a0(int irq,
- 	/* ACK - it may clear any bits so don't rely on it */
- 	__raw_writel(0xFFFFFFFF, &qmgr_regs->irqstat[1]);
+ static inline void x86_pmu_disable_event(struct perf_event *event)
+ {
++	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
+ 	struct hw_perf_event *hwc = &event->hw;
  
--	req_bitmap = qmgr_regs->irqen[1] & qmgr_regs->statne_h;
-+	req_bitmap = __raw_readl(&qmgr_regs->irqen[1]) &
-+		     __raw_readl(&qmgr_regs->statne_h);
- 	while (req_bitmap) {
- 		i = __fls(req_bitmap); /* number of the last "high" queue */
- 		req_bitmap &= ~BIT(i);
+-	wrmsrl(hwc->config_base, hwc->config);
++	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
+ 
+ 	if (is_counter_pair(hwc))
+ 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
 
 
