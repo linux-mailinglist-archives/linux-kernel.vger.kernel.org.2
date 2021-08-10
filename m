@@ -2,97 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D34E3E8383
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9003E8388
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232396AbhHJTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhHJTSi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:18:38 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742D2C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:18:16 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id r17-20020a0568302371b0290504f3f418fbso295395oth.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=k1IK/wArPuofh/93ioTZO6H7LyceMDQimCWY2mD2ezU=;
-        b=aMODdZG5LqB7gNRAGk32Ef4rqadfXiaWqqB5wNgIvVygGukSPXzPIl+aBksSNVcB4l
-         72iehfYbtVacuS9r1/kMDqfr5k5oV3eo2H5QIlXmHNg+TYXMYdSFMMDikvuoz69lwBmj
-         TjslM7UhSLrZC7F9E0cdlJeetb59gZRoG73Qk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=k1IK/wArPuofh/93ioTZO6H7LyceMDQimCWY2mD2ezU=;
-        b=C4eg2xNU5hrzed+JIYSa4uN+KER38GnvXkueyniXLxP4vLza60/tZfsdkOA37WTzly
-         jQLn4cS1T5bfM4qjBIN8mOv1AdSs0pAoLq92NNcKHZ1BhK0wpWY25ygp09N0y86WT4ev
-         uITrHnbZMasWl//k9uaRZhLAGApiquB52YZrPM33DUxLmp/Grf8h/uSIBhPojGSHERoI
-         Bi1XvNu5XiQm2ESY6Nbo9pqqCkPjjb6sihFLPXBGD/yOcCzuBeFmSndDGhJkdLYIPMzD
-         86kc/lkVsMqZ9ROsTmb8WXl7M1geG56Qn/hItpghbLmPwxFeWM0JxyaAiT+cLoZx13Ag
-         US0g==
-X-Gm-Message-State: AOAM530yUUXC2XSluuV2yreGoY1Z0Mis2IZRse3TSDo5O1WKSCm469ot
-        PV3ennIHcwFcVXNoKYuW9jiZIlwwqyNPze3ntPo35ukUF0o=
-X-Google-Smtp-Source: ABdhPJyzZrxGALW9iwqei94wy7msgQgsAVIXnt+gxLetD1fNF2MnvVjum7qa8FZVoHBkeTc7UJtw7P9qjZXZ4yRP4kk=
-X-Received: by 2002:a05:6830:44a7:: with SMTP id r39mr22153068otv.25.1628623094548;
- Tue, 10 Aug 2021 12:18:14 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 12:18:14 -0700
+        id S232243AbhHJTTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:19:53 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39814 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230295AbhHJTTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 15:19:50 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="202158067"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="202158067"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:19:25 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="503241049"
+Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:19:24 -0700
+Subject: Re: [PATCH 2/5] efi/x86: Implement support for unaccepted memory
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <20210810062626.1012-3-kirill.shutemov@linux.intel.com>
+ <07c2770e-1171-24ab-9403-91b306b5b1a4@intel.com>
+ <20210810190836.cffj4fjqenuunwsd@black.fi.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ef45d48f-2e7f-850e-f4d0-f518d34c598d@intel.com>
+Date:   Tue, 10 Aug 2021 12:19:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8009f5a1458468dbf0b7b20dd166911c@codeaurora.org>
-References: <1628180254-758-1-git-send-email-deesin@codeaurora.org>
- <CAE-0n5203g4CkF5WP1fQYU57fntXbdyVBsMsTKU_xPkgvbt+7Q@mail.gmail.com>
- <bf2b00c5-0826-00d2-ca95-b4ae6a030211@codeaurora.org> <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
- <8009f5a1458468dbf0b7b20dd166911c@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 12:18:13 -0700
-Message-ID: <CAE-0n53TCo1UTVi3e18N5hF3+Y_bLiqgH1o5PEua7F9-bog_gQ@mail.gmail.com>
-Subject: Re: [PATCH V1 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P IRQ
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        bjorn.andersson@linaro.org, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210810190836.cffj4fjqenuunwsd@black.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sibi Sankar (2021-08-10 10:24:32)
-> On 2021-08-09 23:28, Stephen Boyd wrote:
-> > Quoting Deepak Kumar Singh (2021-08-09 04:05:08)
-> >>
-> >> On 8/6/2021 1:10 AM, Stephen Boyd wrote:
-> >> > Quoting Deepak Kumar Singh (2021-08-05 09:17:33)
-> >> >> Some use cases require SMP2P interrupts to wake up the host
-> >> >> from suspend.
-> >> > Please elaborate on this point so we understand what sort of scenarios
-> >> > want to wakeup from suspend.
-> >>
-> >> Once such scenario is where WiFi/modem crashes and notifies crash to
-> >> local host through smp2p
-> >>
-> >> if local host is in suspend it should wake up to handle the crash and
-> >> reboot the WiFi/modem.
-> >
-> > Does anything go wrong if the firmware crashes during suspend and the
-> > local host doesn't handle it until it wakes for some other reason? I'd
-> > like to understand if the crash handling can be delayed/combined with
-> > another wakeup.
->
-> If the modem firmware crashes
-> during suspend, the system comes
-> out of xo-shutdown and AFAIK stays
-> there until we handle the interrupt.
->
+On 8/10/21 12:08 PM, Kirill A. Shutemov wrote:
+>>> +config UNACCEPTED_MEMORY
+>>> +	bool
+>>> +	depends on EFI_STUB
+>>> +	help
+>>> +	   Some Virtual Machine platforms, such as Intel TDX, introduce
+>>> +	   the concept of memory acceptance, requiring memory to be accepted
+>>> +	   before it can be used by the guest. This protects against a class of
+>>> +	   attacks by the virtual machine platform.
+>>> +
+>>> +	   This option adds support for unaccepted memory and makes such memory
+>>> +	   usable by kernel.
+>> Do we really need a full-blown user-visible option here?  If we, for
+>> instance, just did:
+>>
+>> config UNACCEPTED_MEMORY
+>> 	bool
+>> 	depends on EFI_STUB
+>>
+>> it could be 'select'ed from the TDX Kconfig and no users would ever be
+>> bothered with it.  Would a user *ever* turn this on if they don't have
+>> TDX (or equivalent)?
+> But it's already not user selectable. Note that there's no prompt next to
+> the "bool". The "help" section is just for documentation. I think it can
+> be useful.
 
-So you're saying we waste power if we don't wakeup the AP and leave the
-SoC in a shallow low power state? That would be good to have indicated
-in the code via a comment and in the commit text so we know that we want
-to handle the wakeup by default.
+Ahh, gotcha.  I misread it.  Seems like an odd thing to do, but it's
+also fairly widespread in the tree.
+
+Can you even reach that help text from any of the configuration tools?
+If you're doing an 'oldconfig', you won't get a prompt to do the "?".
+Even in the 'meunconfig' search results, it doesn't display "help" text,
+only the "prompt".
+
+BTW, should this text call out that this is for parsing an actual UEFI
+feature along with the spec version?  It's not obvious from the text
+that "unaccepted memory" really is a UEFI thing as opposed to being some
+kernel-only concept.
