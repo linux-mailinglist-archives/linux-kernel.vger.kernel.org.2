@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F833E5BAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD2A3E5BA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239442AbhHJNcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:32:13 -0400
-Received: from smtpbg126.qq.com ([106.55.201.22]:23005 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238796AbhHJNcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:32:12 -0400
-X-QQ-mid: bizesmtp31t1628602205tp4e8e80
-Received: from localhost.localdomain (unknown [171.223.97.227])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 10 Aug 2021 21:30:04 +0800 (CST)
-X-QQ-SSF: 01000000004000B0C000B00A0000000
-X-QQ-FEAT: E35I0CyQR8MJpMBU3VbmZoT3ziQa0XRVzitwoGttQXjghkzbAC/i9Krx/J53M
-        hFQ+Pv+1TuG0T/WC9qOff4cFNBiI6Ueu5fISDAwlHAXp8JdL5aIZOy4Paoptc2op2or8XQG
-        exdlrE6lJ/pj3VGlVgmP5QY5NkZJ+AtutamNI0oGlwCUCOZXVJgWoCK6N6UOFSPpqig1HDw
-        YcmLlxz96gHzqa0P0ZvEdZC4qg3HA3bHHJpB2uV6H2hd6V5jLUc0BoFcOGKEDDhocBD7aSA
-        wbouTGQIoR41g+NyQQMvAhmBpE4c5dAGZMeMdYfMOrwbN9j9Zx0TLkW3lZlzffYD1TyTTRW
-        JsGr3cN7bh8+3ShMEY/Z+6w6Hmfqg==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     wens@csie.org
-Cc:     mripard@kernel.org, linux@armlinux.org.uk,
-        jernej.skrabec@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ARM: sunxi: Add a missing SPDX license header
-Date:   Tue, 10 Aug 2021 21:29:54 +0800
-Message-Id: <20210810132954.107518-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S237950AbhHJNbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:31:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232542AbhHJNba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:31:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DA4B601FA;
+        Tue, 10 Aug 2021 13:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628602268;
+        bh=9g4KB3k94i74QQB7YFvE+KdRAouTAqYyabRWaS73qHo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sNbpVUkI4h4ekQjr8OZvCUrNa439HxRQDf1YrgH0BSrOMTQh167nBFQEttr0HQNWa
+         l6ActKSc2gtRf4JUjjMaNt7sYRIJuboAN4kbL+T2RF9fwpZygNsxiHE8oPTaGQn1IE
+         SN8DtbNtGEAsBRhS+Zge5jTT4vLbgqDLhiZYYnmHUql8TFfz5pYnL7DUMPXZ7KoBjt
+         5I2ujVcAuFUNComKlstjLlrqHcjwdeOIMro/WBQVrAS9LbjWKWmqRuoF8ORGPr+h3n
+         iJpfbsH/11gPiFt+dqvklsTM0JKT0uP6U7O96Y4TzakkIeM5/t1SutIiTT1d2EXOwS
+         Lx75xYrfpy5eQ==
+Date:   Tue, 10 Aug 2021 14:31:01 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-perf-users@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/perf: Replace '0xf' instances with
+ ID_AA64DFR0_PMUVER_IMP_DEF
+Message-ID: <20210810133101.GD2946@willie-the-truck>
+References: <1628571998-13634-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628571998-13634-1-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing SPDX license header to arch/arm/mach-sunxi/sunxi.c.
+On Tue, Aug 10, 2021 at 10:36:38AM +0530, Anshuman Khandual wrote:
+> ID_AA64DFR0_PMUVER_IMP_DEF which indicate implementation defined PMU, never
+> actually gets used although there are '0xf' instances scattered all around.
+> Just do the macro replacement to improve readability.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: linux-perf-users@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: kvmarm@lists.cs.columbia.edu
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This applies on v5.14-rc5
+> 
+>  arch/arm64/include/asm/cpufeature.h | 2 +-
+>  arch/arm64/kernel/perf_event.c      | 2 +-
+>  arch/arm64/kvm/perf.c               | 2 +-
+>  arch/arm64/kvm/pmu-emul.c           | 6 +++---
+>  4 files changed, 6 insertions(+), 6 deletions(-)
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/arm/mach-sunxi/sunxi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Please can you split this with the KVM parts in their own patch?
 
-diff --git a/arch/arm/mach-sunxi/sunxi.c b/arch/arm/mach-sunxi/sunxi.c
-index 19635721013d..e1b7945aac99 100644
---- a/arch/arm/mach-sunxi/sunxi.c
-+++ b/arch/arm/mach-sunxi/sunxi.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Device Tree support for Allwinner A1X SoCs
-  *
-@@ -5,9 +6,6 @@
-  *
-  * Maxime Ripard <maxime.ripard@free-electrons.com>
-  *
-- * This file is licensed under the terms of the GNU General Public
-- * License version 2.  This program is licensed "as is" without any
-- * warranty of any kind, whether express or implied.
-  */
- 
- #include <linux/clocksource.h>
--- 
-2.32.0
+Thanks,
 
+Will
