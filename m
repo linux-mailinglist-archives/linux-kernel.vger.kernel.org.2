@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADE63E56E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CFC3E56EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235043AbhHJJaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232955AbhHJJaY (ORCPT
+        id S239095AbhHJJcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:32:52 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42568
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237915AbhHJJcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:30:24 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADADFC0613D3;
-        Tue, 10 Aug 2021 02:30:02 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Tue, 10 Aug 2021 05:32:50 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkSN82zl9z9sX5;
-        Tue, 10 Aug 2021 19:30:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628587800;
-        bh=7tvEHHo6wFA/9wFCZ+yXT1VQN4HCIabjZwE1lmKuMNo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EJpWISnjQkw6oYcqkslG7K9+vUmAfYzdnNsujLGlx8jPiqmXeIITgkZXXZi/o1xTt
-         vt+CL0k9pMt1gT5bUGyyqg38Z1t8fM3ZqUK+Dyh1y+ixMLUqsKAnn/u2LVgtJG4UKO
-         MtbQwb6XFOzM4f807BD7IQp61k8LPBAyMTPa3dmHbhsV0F7X7q4hjBIIDanvFEdbBf
-         Zoi76BVBgFKE23iC59/w6om4HAwOVluSBGuBXUn3Xf2JJgdPkg/MdmLIcDRBZoM5+F
-         kb69VxwraHjv0Wsz9asdrQ/kFrLdbydeLHSWKPAyk5g7HbmrIlTq8A67g0oGN4rjAL
-         n+px7at3NNusQ==
-Date:   Tue, 10 Aug 2021 19:29:59 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        "William A. Kennington III" <wak@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning from Linus' tree
-Message-ID: <20210810192959.05d6e588@canb.auug.org.au>
-In-Reply-To: <20210720173142.00a375c5@canb.auug.org.au>
-References: <20210601172026.6bc0a96f@canb.auug.org.au>
-        <20210708122544.011171b3@canb.auug.org.au>
-        <20210720173142.00a375c5@canb.auug.org.au>
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id C715540C82
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628587947;
+        bh=/TjUAhhwvSRFuslwguP2QiddIzNChxvR3o7MxjSQJ14=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=P3dMRhJ94z4SbEeqHGR2UwlFLPPStVsQmsleniCRwWm7MjWbX0yganjB3ITo7VugD
+         svZy0IpdGcGFLD2Ld4820VkvvU3PnXDXmT++JhmVnzNpfQ0EU6x8fvXR2gLby5mpKE
+         EuwcKSEL2+Id6neDf7wh71ETtu7mIVHlJ5zUyLszTllL8aUVHMOOgdMzdcDJJ1VE3J
+         C7d6/vmLEev1U0szgcRSUSfxMcbIrTDjV62rK03VkbFSxj2rrg0PyLUpJCyKL/80AS
+         OETUN1G81mGKUcyvpqUyi+Us3g+t6iOlKcvvXX9SLWbgzd9qclTj+a9OmYQuoJJ5Me
+         8rg+/XTH1wvcg==
+Received: by mail-ed1-f69.google.com with SMTP id dh21-20020a0564021d35b02903be0aa37025so8238609edb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:32:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/TjUAhhwvSRFuslwguP2QiddIzNChxvR3o7MxjSQJ14=;
+        b=AZ+xPcbG3qfslvFcpjgP3DD1UtrWaxN/wjf7QjlZyKE+oSIhLvCMb+0pxLCc8NGmbk
+         vi21mq0vox82qWTqmX4GFE6OnJS179NlmBpJ00Vast1BPvwKHyLsag4BbZOqCUhCIqRM
+         2Iagb90oaP3v7zh04CPwGHbXm2/8C7lTK5Xp4BM5MYk2huFDV5YEdSRlwf6AQD9z42y+
+         MyfSpJTWF50AsyAkGg5VebnVO2uG44VS1Tgfzx5GC1mRsJ/6AoxuaawDwpjHhIFjkgAa
+         rAuKg79FB1XR11iAqVwbGb4wjLWfFp1oczzWPEzb2usauwt+iJWiL9tqHqE16OLE2ZzO
+         cEbg==
+X-Gm-Message-State: AOAM530PPa/LSIaRoh+q2VOGmhR+jvtompgsC2mK5h0mmZw13gjp9YHc
+        0+jjrOeBaOa5rXtWMvFCJJbKPsqwrLr759spHce1b74wHSbPBK5POphpWiT3UvE4awX59PcWHKU
+        BsScQZmlAKVFXPd4DE5DdxVs/DRj7bVEn6Y2BlXUH3w==
+X-Received: by 2002:a05:6402:796:: with SMTP id d22mr3886385edy.57.1628587946810;
+        Tue, 10 Aug 2021 02:32:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxTDejpsnySJ5hI4EiBZYSmNUdOwiCDaSglUDL7QJIhM3zKW5UGTy4wbFQDlfcb7RdEzzFCRA==
+X-Received: by 2002:a05:6402:796:: with SMTP id d22mr3886364edy.57.1628587946598;
+        Tue, 10 Aug 2021 02:32:26 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id q21sm5117606ejs.43.2021.08.10.02.32.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 02:32:26 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sam Protsenko <semen.protsenko@linaro.org>
+Subject: [PATCH v2 0/8] dt-bindings: clock: samsung: convert to dtschema
+Date:   Tue, 10 Aug 2021 11:31:37 +0200
+Message-Id: <20210810093145.26153-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/triqxUS9/e=uPv==hqm8FPJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/triqxUS9/e=uPv==hqm8FPJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+Combined patchset of separate v1 sets:
 
-On Tue, 20 Jul 2021 17:31:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Thu, 8 Jul 2021 12:25:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote:
-> >
-> > On Tue, 1 Jun 2021 17:20:26 +1000 Stephen Rothwell <sfr@canb.auug.org.a=
-u> wrote: =20
-> > >
-> > > When building Linus' tree, today's linux-next build (htmldocs) produc=
-ed
-> > > this warning:
-> > >=20
-> > > include/linux/spi/spi.h:671: warning: Function parameter or member 'd=
-evm_allocated' not described in 'spi_controller'
-> > >=20
-> > > Introduced by commit
-> > >=20
-> > >   794aaf01444d ("spi: Fix use-after-free with devm_spi_alloc_*")
-> > >=20
-> > > This has been around for a while (at least v5.13-rc1 and next-2021040=
-9).
-> > > Sorry I did not report it earlier.   =20
-> >=20
-> > I am still getting this warning. =20
->=20
-> I am still getting this warning.  It is now on line 675.
+https://lore.kernel.org/linux-samsung-soc/20210809120544.56596-1-krzysztof.kozlowski@canonical.com/T/#t
+https://lore.kernel.org/linux-samsung-soc/20210809130935.80565-1-krzysztof.kozlowski@canonical.com/T/#t
+https://lore.kernel.org/linux-samsung-soc/20210809135942.100744-1-krzysztof.kozlowski@canonical.com/T/#t
 
-Now line 672 ...
+Changes since v1:
+1. Patch 7/8: include header to fix clock IDs error in example.
 
---=20
-Cheers,
-Stephen Rothwell
+Best regards,
+Krzysztof
 
---Sig_/triqxUS9/e=uPv==hqm8FPJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+Krzysztof Kozlowski (8):
+  dt-bindings: clock: samsung: convert Exynos5250 to dtschema
+  dt-bindings: clock: samsung: add bindings for Exynos external clock
+  dt-bindings: clock: samsung: convert Exynos542x to dtschema
+  dt-bindings: clock: samsung: convert Exynos3250 to dtschema
+  dt-bindings: clock: samsung: convert Exynos4 to dtschema
+  dt-bindings: clock: samsung: convert Exynos AudSS to dtschema
+  dt-bindings: clock: samsung: convert S5Pv210 AudSS to dtschema
+  MAINTAINERS: clock: include S3C and S5P in Samsung SoC clock entry
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESRxcACgkQAVBC80lX
-0GzEwwgAmvRIHoSdTDPqYSNeMHAeBkhJKY8cKL/Qzq28SsW1wzwd8xGeSXAj2JOi
-dEfN214p4101LO9n52s17j59mS4HF0+ecyDJdRWhv7Tkob2ACXCmGrPAVPNClXbM
-5BZoWYgVS4twZAYSbzWgZB+LVXF1xnrQMOJUepLBMkVdXwEbX/QaSlz3kybEU6Kl
-TTLEt3v53AhX3AE+4zhRjK285xuVvUmxLsj9Les4nRSbMrikSRRhN3pbticIVLBw
-IcAvTomQlkigd9nDAYf2oi3yAm45cYGqcf0/chmU/hyVkVroQVhVUYW9gYAa87je
-iyuAuTgffcCdi3o5De8CtDb1HqLY8Q==
-=v52h
------END PGP SIGNATURE-----
+ .../bindings/clock/clk-exynos-audss.txt       | 103 ------------------
+ .../bindings/clock/clk-s5pv210-audss.txt      |  53 ---------
+ .../bindings/clock/exynos3250-clock.txt       |  57 ----------
+ .../bindings/clock/exynos4-clock.txt          |  86 ---------------
+ .../bindings/clock/exynos5250-clock.txt       |  41 -------
+ .../bindings/clock/exynos5420-clock.txt       |  42 -------
+ .../clock/samsung,exynos-audss-clock.yaml     |  79 ++++++++++++++
+ .../bindings/clock/samsung,exynos-clock.yaml  |  87 +++++++++++++++
+ .../clock/samsung,exynos-ext-clock.yaml       |  46 ++++++++
+ .../clock/samsung,s5pv210-audss-clock.yaml    |  77 +++++++++++++
+ MAINTAINERS                                   |   4 +
+ 11 files changed, 293 insertions(+), 382 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/clk-exynos-audss.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/clk-s5pv210-audss.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/exynos3250-clock.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/exynos4-clock.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/exynos5250-clock.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/exynos5420-clock.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-audss-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-ext-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,s5pv210-audss-clock.yaml
 
---Sig_/triqxUS9/e=uPv==hqm8FPJ--
+-- 
+2.30.2
+
