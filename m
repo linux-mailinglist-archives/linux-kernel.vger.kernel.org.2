@@ -2,154 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0207D3E7B9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4D53E7B9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242414AbhHJPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:03:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:24648 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234153AbhHJPDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:03:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214905698"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="214905698"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:02:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="671795060"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 10 Aug 2021 08:02:43 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 84889142; Tue, 10 Aug 2021 18:02:16 +0300 (EEST)
-Date:   Tue, 10 Aug 2021 18:02:16 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        id S242484AbhHJPCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:02:44 -0400
+Received: from smtprelay0209.hostedemail.com ([216.40.44.209]:57676 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234153AbhHJPCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:02:43 -0400
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 42AD51836942D;
+        Tue, 10 Aug 2021 15:02:20 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id A6904D1516;
+        Tue, 10 Aug 2021 15:02:18 +0000 (UTC)
+Message-ID: <b3070c0352e2a5661a1a59d5c5354cc82a1cce1e.camel@perches.com>
+Subject: Re: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
+From:   Joe Perches <joe@perches.com>
+To:     Robert Richter <rric@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
-Message-ID: <20210810150216.dwn2rylcpzxx6b6l@black.fi.intel.com>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
- <dd4b7aff-ccf3-24f6-3f6e-14c4b6aa8b64@redhat.com>
+Date:   Tue, 10 Aug 2021 08:02:17 -0700
+In-Reply-To: <YRKO4An9UkObVGmB@rric.localdomain>
+References: <20210807155957.10069-1-len.baker@gmx.com>
+         <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
+         <20210808112617.GA1927@titan> <YRD90L6PMoVbbv+9@rric.localdomain>
+         <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
+         <YRKO4An9UkObVGmB@rric.localdomain>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd4b7aff-ccf3-24f6-3f6e-14c4b6aa8b64@redhat.com>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.10
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: A6904D1516
+X-Stat-Signature: zomo8gkouz7irgaf7tbabch1cxordum7
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+Gpl2phGQ76xLkFse458J6cytt06otvuo=
+X-HE-Tag: 1628607738-261957
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 09:48:04AM +0200, David Hildenbrand wrote:
-> On 10.08.21 08:26, Kirill A. Shutemov wrote:
-> > UEFI Specification version 2.9 introduces concept of memory acceptance:
-> > Some Virtual Machine platforms, such as Intel TDX or AMD SEV-SNP,
-> > requiring memory to be accepted before it can be used by the guest.
-> > Accepting happens via a protocol specific for the Virtrual Machine
-> > platform.
-> > 
-> > Accepting memory is costly and it makes VMM allocate memory for the
-> > accepted guest physical address range. It's better to postpone memory
-> > acceptation until memory is needed. It lowers boot time and reduces
-> > memory overhead.
-> > 
-> > Support of such memory requires few changes in core-mm code:
-> > 
-> >    - memblock has to accept memory on allocation;
-> > 
-> >    - page allocator has to accept memory on the first allocation of the
-> >      page;
-> > 
-> > Memblock change is trivial.
-> > 
-> > Page allocator is modified to accept pages on the first allocation.
-> > PageOffline() is used to indicate that the page requires acceptance.
-> > The flag currently used by hotplug and balloon. Such pages are not
-> > available to page allocator.
-> > 
-> > An architecture has to provide three helpers if it wants to support
-> > unaccepted memory:
-> > 
-> >   - accept_memory() makes a range of physical addresses accepted.
-> > 
-> >   - maybe_set_page_offline() marks a page PageOffline() if it requires
-> >     acceptance. Used during boot to put pages on free lists.
-> > 
-> >   - clear_page_offline() clears makes a page accepted and clears
-> >     PageOffline().
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >   mm/internal.h   | 14 ++++++++++++++
-> >   mm/memblock.c   |  1 +
-> >   mm/page_alloc.c | 13 ++++++++++++-
-> >   3 files changed, 27 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/internal.h b/mm/internal.h
-> > index 31ff935b2547..d2fc8a17fbe0 100644
-> > --- a/mm/internal.h
-> > +++ b/mm/internal.h
-> > @@ -662,4 +662,18 @@ void vunmap_range_noflush(unsigned long start, unsigned long end);
-> >   int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
-> >   		      unsigned long addr, int page_nid, int *flags);
-> > +#ifndef CONFIG_UNACCEPTED_MEMORY
-> > +static inline void maybe_set_page_offline(struct page *page, unsigned int order)
-> > +{
-> > +}
-> > +
-> > +static inline void clear_page_offline(struct page *page, unsigned int order)
-> > +{
-> > +}
-> > +
-> > +static inline void accept_memory(phys_addr_t start, phys_addr_t end)
-> > +{
-> > +}
+On Tue, 2021-08-10 at 16:36 +0200, Robert Richter wrote:
+> On 09.08.21 10:18:58, Joe Perches wrote:
 > 
-> Can we find better fitting names for the first two? The function names are
-> way too generic. For example:
+> > strscpy and scnprintf have different return values and it's simpler
+> > and much more common to use scnprintf for appended strings that are
+> > limited to a specific buffer length.
 > 
-> accept_or_set_page_offline()
-> 
-> accept_and_clear_page_offline()
+> Calculating the bytes written from the return value is a oneliner.
 
-Sounds good.
+Not really.
+You still have to test for strscpy's possible return of -E2BIG.
 
-> I thought for a second if
-> 	PAGE_TYPE_OPS(Unaccepted, offline)
-> makes sense as well, not sure.
 
-I find Offline fitting the situation. Don't see a reason to add more
-terminology here.
 
-> Also, please update the description of PageOffline in page-flags.h to
-> include the additional usage with PageBuddy set at the same time.
-
-Okay.
-
-> I assume you don't have to worry about page_offline_freeze/thaw ... as we
-> only set PageOffline initially, but not later at runtime when other
-> subsystems (/proc/kcore) might stumble over it.
-
-I think so, but I would need to look at this code once again.
-
--- 
- Kirill A. Shutemov
