@@ -2,102 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E4B3E8349
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493273E834A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhHJSyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhHJSys (ORCPT
+        id S231608AbhHJSy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:54:59 -0400
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:38870 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231789AbhHJSyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:54:48 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF4BC0613C1;
-        Tue, 10 Aug 2021 11:54:25 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id r72so277115iod.6;
-        Tue, 10 Aug 2021 11:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=VD0aZrnuCOe2NBtCZgekxjz8LxFzgKjYPfV0fPq6o94=;
-        b=gZLGwRBZSvHIk4e7F9G/AKqPTLBn/3+CgCLfuxQkgBpsrD38iUgZ2k+76lNjm/NhDF
-         4xHVftLzO5zWCUX4eyvE6PUKL6YJJG77MoOqypeINCHtUYJHSpkluD5sWnxVGZCHFpZK
-         UmYWrkWeulyaocXTV1QVUZ9WZfjdODn6YSoJ9EsZgZlSMJ+exmd0IdSs0SNfxI6I7vGs
-         5qZgB/Yz3c3ZwHa2cCIJEEzyuFLzmLEDb5+slWiw5ntxE3ehDkw7YhdmJRGywa44m+F5
-         FYBjarz+4rgyTm/aAOs0lzyHU0PK0m5bZfYlbNY3wGGYNBPV5ixq3mzBJl1ef7+pb5NV
-         xKKw==
+        Tue, 10 Aug 2021 14:54:54 -0400
+Received: by mail-lj1-f172.google.com with SMTP id u13so166209lje.5;
+        Tue, 10 Aug 2021 11:54:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=VD0aZrnuCOe2NBtCZgekxjz8LxFzgKjYPfV0fPq6o94=;
-        b=A8nnjXPg2lyThKEv/zBP3E4f8EAt2E4ICSrHoB8NRLgaiTx8k3PJDKrLZ05xCa8zwt
-         /YS2kosyJR3qpfMHIZToN52ttw7e9dTN04R2Qu6DVc5arKUW0fT3/SvNcpDhMHZqO7GU
-         b1k2/YLi45v8EqueIFwEIM+NLBuEYV9zuqZYZEKtuNUE8F0drO9Ned5xinYKq6v0/jqt
-         4b44oVjuAXqAIkwrHZRisjkYB2mZm/wc8nv3Egagg9x1lQd0IXk+fkoUs/tkmaBzI7NT
-         4H8AcrY6ianrsBaI/yz7Oue+Vg3WfbqE9HbP5IfcQMVcjYAfW/ut1o67xJCROw5iO2FJ
-         lw1Q==
-X-Gm-Message-State: AOAM532FIWf88tkDhVN1WeIls+/F7Vov6+/ZH7+RZ1kwqOs2mDz86ZYM
-        k5tCyQPcFh/LaEmcorC6tl0=
-X-Google-Smtp-Source: ABdhPJw03Q62oYxzkuLNuVPqy40evbAYGeqE0xFOXf6jYfhi9Fs3GS0D4hH5ig/Zhzbpl/4LMv5fhw==
-X-Received: by 2002:a05:6638:358b:: with SMTP id v11mr16180462jal.128.1628621665411;
-        Tue, 10 Aug 2021 11:54:25 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id c5sm2979748ioz.25.2021.08.10.11.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 11:54:24 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 11:54:17 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jiang Wang <jiang.wang@bytedance.com>, netdev@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Message-ID: <6112cb598ecc1_1c2c8208d4@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210809194742.1489985-1-jiang.wang@bytedance.com>
-References: <20210809194742.1489985-1-jiang.wang@bytedance.com>
-Subject: RE: [PATCH bpf-next v6 0/5] sockmap: add sockmap support for unix
- stream socket
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g2m9Db8eM0wZPkDtS4l8A8n22TL5TNtODzZR5QP0RwI=;
+        b=fIAXCkWkudxdrisVEtrWOBeEP+v1L2YNopGUzKnE5YR5MdksMcXl7A6WOfjRNJ4kVG
+         TOxTXmHxsuWiZqSMUKgQJ0mF+GP6nf9TEiFd2EZtV+qXTBJMFOPgGwHqaHGg2yiFaK4i
+         ZpGkkeX4ETA82DSSUu0krX7IdSOLqHJmmUP9pDxv8NK/zMybZFV9eB4BAQzuZHK61lv5
+         8VkUUOY+XHG1P4M4pr0yN3zxo4vhW1BFRJucomu3TvWG9X+dvbp6bAYUyLyL3fU584mC
+         uH+9QqCM3spXJc5+oJh9zIYqt1JctJlTvQ/WclarHvJs9Pk7z4hjXP/NU5vq3gqSdXma
+         1A4g==
+X-Gm-Message-State: AOAM530DBl9MiA9/jv8Q+tpR2u4m4fG5b18mBXSV0bxPuQpARrlY0nhl
+        PYlj/O6FYyNoASx7un2HU7F8cPM8VMysbVFOD+M=
+X-Google-Smtp-Source: ABdhPJwKSWuu612Ca7osDBU6ysDRDAhcRPoOoroymaaKOC0vBR9MMW2FeMVVoS05twhPztEkIY0DC2w+scr6RoDESkQ=
+X-Received: by 2002:a05:651c:1148:: with SMTP id h8mr10016795ljo.26.1628621670754;
+ Tue, 10 Aug 2021 11:54:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1627657061.git.rickyman7@gmail.com> <4f0cd6c8e77c0b4f4d4b8d553a7032757b976e61.1627657061.git.rickyman7@gmail.com>
+ <CAM9d7ci0LcdTZyDu5sxGkaS07Z-m4hvr2xU4TDK_aTRAJm7b7A@mail.gmail.com> <25278c08762593a5b0bd1873f6c0745c7ad97016.camel@gmail.com>
+In-Reply-To: <25278c08762593a5b0bd1873f6c0745c7ad97016.camel@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 10 Aug 2021 11:54:19 -0700
+Message-ID: <CAM9d7chuFG+cYPx34abvmciN0afUDqJ3uWo9Bsh-9jjLtQmWqQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 01/10] perf workqueue: threadpool creation and destruction
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiang Wang wrote:
-> This patch series add support for unix stream type
-> for sockmap. Sockmap already supports TCP, UDP,
-> unix dgram types. The unix stream support is similar
-> to unix dgram.
-> 
-> Also add selftests for unix stream type in sockmap tests.
-> 
-> 
-> Jiang Wang (5):
->   af_unix: add read_sock for stream socket types
->   af_unix: add unix_stream_proto for sockmap
->   selftest/bpf: add tests for sockmap with unix stream type.
->   selftest/bpf: change udp to inet in some function names
->   selftest/bpf: add new tests in sockmap for unix stream to tcp.
+On Mon, Aug 9, 2021 at 3:30 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> On Fri, 2021-08-06 at 19:24 -0700, Namhyung Kim wrote:
+> > > +
+> > > +/**
+> > > + * threadpool__strerror - print message regarding given @err in @pool
+> > > + *
+> > > + * Buffer size should be at least THREADPOOL_STRERR_BUFSIZE bytes.
+> > > + */
+> > > +int threadpool__strerror(struct threadpool *pool __maybe_unused, int err,
+> > > char *buf, size_t size)
+> > > +{
+> > > +       char sbuf[STRERR_BUFSIZE], *emsg;
+> > > +
+> > > +       emsg = str_error_r(err, sbuf, sizeof(sbuf));
+> > > +       return scnprintf(buf, size, "Error: %s.\n", emsg);
+> > > +}
+> > > +
+> > > +/**
+> > > + * threadpool__new_strerror - print message regarding @err_ptr
+> > > + *
+> > > + * Buffer size should be at least THREADPOOL_STRERR_BUFSIZE bytes.
+> > > + */
+> > > +int threadpool__new_strerror(struct threadpool *err_ptr, char *buf, size_t
+> > > size)
+> > > +{
+> > > +       return threadpool__strerror(err_ptr, PTR_ERR(err_ptr), buf, size);
+> > > +}
+> >
+> > Why two different functions?
+>
+> Since when new fails you don't have a err number, just an err_ptr so it's not
+> very clear how to call threadpool__strerror. Therefore I made a wrapper to
+> remove any ambiguity.
 
-For the series.
+What do you mean by "when new fails"?
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> >
+> > > +
+> > > +/**
+> > > + * threadpool__delete - free the @pool and all its resources
+> > > + */
+> > > +void threadpool__delete(struct threadpool *pool)
+> > > +{
+> > > +       int t;
+> > > +
+> > > +       if (IS_ERR_OR_NULL(pool))
+> > > +               return;
+> > > +
+> > > +       WARN_ON(pool->status != THREADPOOL_STATUS__STOPPED
+> > > +               && pool->status != THREADPOOL_STATUS__ERROR);
+> > > +
+> > > +       for (t = 0; t < pool->nr_threads; t++)
+> > > +               threadpool_entry__close_pipes(&pool->threads[t]);
+> > > +
+> > > +       zfree(&pool->threads);
+> > > +       free(pool);
+> > > +}
+> > > +
+> > > +/**
+> > > + * threadpool__size - get number of threads in the threadpool
+> > > + */
+> > > +int threadpool__size(struct threadpool *pool)
+> > > +{
+> > > +       return pool->nr_threads;
+> > > +}
+> > > diff --git a/tools/perf/util/workqueue/threadpool.h
+> > > b/tools/perf/util/workqueue/threadpool.h
+> > > new file mode 100644
+> > > index 0000000000000000..fb18aa32fb64f671
+> > > --- /dev/null
+> > > +++ b/tools/perf/util/workqueue/threadpool.h
+> > > @@ -0,0 +1,30 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +#ifndef __WORKQUEUE_THREADPOOL_H
+> > > +#define __WORKQUEUE_THREADPOOL_H
+> > > +
+> > > +struct threadpool;
+> > > +struct task_struct;
+> >
+> > You can just move the definition here.
+> >
+> > > +
+> > > +typedef void (*task_func_t)(int tidx, struct task_struct *task);
+> > > +
+> > > +struct task_struct {
+> > > +       task_func_t fn;
+> > > +};
+>
+> I thought it was not allowed, since task_func_t refers to task_struct and
+> viceversa.
+> I will try to remove it if possible.
+
+Oh, I missed that, sorry for the noise.
+
+Thanks,
+namhyung
