@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758273E5E52
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80D73E5E58
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241885AbhHJOsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:48:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40098 "EHLO mail.kernel.org"
+        id S241944AbhHJOsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241835AbhHJOr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:47:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 142F660F25;
-        Tue, 10 Aug 2021 14:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628606857;
-        bh=w2Dz/2K8UpCBs+YfXsHYqixApJ1UabAsDWwqZ5GOGyI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=neYehoZJC+E+pom8FC2YzXkQeIOrdOO7f+qVKzLZmEYJMjBxZ3I6HshcemhSxjCX0
-         cn7jNIFb9KFfBgpbsyaoahvkXD5tRe//TyLYS3fduF7Kae1TVR7/Nn0qzkOcT1bv5j
-         z7n0j9PQCAEwNrO9ey7gKp0xXVZG77mda8bMx2GNnPJ4W+uEn+npiELJdIw1DAtZHA
-         sZfEVEYLU38IupNn9xFdjwo0AJCM0s2F2GFUixswhe0bbNzM2RqtSD4RsU2GjeDsyC
-         rJ51mWmnVpa8FE1ERvvXDheCmhObDznChfl1PE+1Vbq3+kdPtRYjZ6NWH019pLN2TK
-         dUHAF1oUhnWHw==
-Date:   Tue, 10 Aug 2021 09:47:35 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     George Cherian <george.cherian@marvell.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        bhelgaas@google.com
-Subject: Re: [PATCH] PCI: Add ACS quirk for Cavium multi-function devices
-Message-ID: <20210810144735.GA2264304@bjorn-Precision-5520>
+        id S241888AbhHJOsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:48:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4835560F25;
+        Tue, 10 Aug 2021 14:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628606889;
+        bh=BCaw6jsYR+1+ch9MuRv11DN73c0NzIIA0uUPkD5qS+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aejb1GlEF8xfjZg3Dr67Ia/+4GKCFO8u3xGOqykZ1QOXFXvGioKaoWlknitlue5jy
+         qP6VTMWyAJbbfpGq7Os9IMYLQhtpH92htrvSy6mCEvGJMjWoGnbD2YsYH5f7kgir9r
+         XT4G8X93IOY/K4TixaZ117wv82K9ARjVLNNzBJ1g=
+Date:   Tue, 10 Aug 2021 16:48:05 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc:     axboe@kernel.dk, kernelnewbies@kernelnewbies.org,
+        Ian Pilcher <arequipeno@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        pavel@ucw.cz, pali@kernel.org, hch@lst.de,
+        linux-leds@vger.kernel.org
+Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
+Message-ID: <YRKRpQdLRJmAb5kZ@kroah.com>
+References: <20210809033217.1113444-1-arequipeno@gmail.com>
+ <20210809205633.4300bbea@thinkpad>
+ <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com>
+ <20210810004331.0f0094a5@thinkpad>
+ <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
+ <YRIeHH1SLl6tYCeY@kroah.com>
+ <20210810153840.42419d06@thinkpad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210810122425.1115156-1-george.cherian@marvell.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210810153840.42419d06@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 05:54:25PM +0530, George Cherian wrote:
-> Some Cavium endpoints are implemented as multi-function devices
-> without ACS capability, but they actually don't support peer-to-peer
-> transactions.
+On Tue, Aug 10, 2021 at 03:38:40PM +0200, Marek Behún wrote:
+> On Tue, 10 Aug 2021 08:35:08 +0200
+> Greg KH <gregkh@linuxfoundation.org> wrote:
 > 
-> Add ACS quirks to declare DMA isolation.
+> > On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
+> > > On 8/9/21 5:43 PM, Marek Behún wrote:  
+> > > > I confess that I am not very familiar with internal blkdev API.  
+> > > 
+> > > It's mainly a matter of symbol visibility.  See this thread from a few
+> > > months ago:
+> > > 
+> > >   https://www.spinics.net/lists/linux-leds/msg18244.html
+> > > 
+> > > Now ... my code currently lives in block/, so there isn't actually
+> > > anything technically preventing it from iterating through the block
+> > > devices.
+> > > 
+> > > The reactions to Enzo's patch (which you can see in that thread) make me
+> > > think that anything that iterates through all block devices is likely to
+> > > be rejected, but maybe I'm reading too much into it.
+> > > 
+> > > 
+> > > Greg / Christoph -
+> > > 
+> > > (As you were the people who expressed disapproval of Enzo's patch to
+> > > export block_class and disk_type ...)
+> > > 
+> > > Can you weigh in on the acceptability of iterating through the block
+> > > devices (searching by name) from LED trigger code within the block
+> > > subsystem (i.e. no new symbols would need to be exported)?
+> > > 
+> > > This would allow the trigger to implement the sysfs API that Marek and
+> > > Pavel want.  
+> > 
+> > No idea, let's see the change first, we can never promise anything :)
 > 
-> Apply te quirk for following devices
-> 1. BGX device found on Octeon-TX (8xxx)
-> 2. CGX device found on Octeon-TX2 (9xxx)
-> 3. RPM device found on Octeon-TX3 (10xxx)
+> Hi Greg,
 > 
-> Signed-off-by: George Cherian <george.cherian@marvell.com>
-> ---
->  drivers/pci/quirks.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 6d74386eadc2..076932018494 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -4840,6 +4840,10 @@ static const struct pci_dev_acs_enabled {
->  	{ 0x10df, 0x720, pci_quirk_mf_endpoint_acs }, /* Emulex Skyhawk-R */
->  	/* Cavium ThunderX */
->  	{ PCI_VENDOR_ID_CAVIUM, PCI_ANY_ID, pci_quirk_cavium_acs },
-> +	/* Cavium multi-function devices */
-> +	{ PCI_VENDOR_ID_CAVIUM, 0xA026, pci_quirk_mf_endpoint_acs },
-> +	{ PCI_VENDOR_ID_CAVIUM, 0xA059, pci_quirk_mf_endpoint_acs },
-> +	{ PCI_VENDOR_ID_CAVIUM, 0xA060, pci_quirk_mf_endpoint_acs },
+> Can't we use blkdev_get_by_path() (or blk_lookup_devt() with
+> blkdev_get_by_dev())?
+> This would open the block device and return a struct block_device *.
+> When the LED trigger is disabled, it would also have to release the
+> device.
 
-Is there a plan to add ACS capabilities to future devices, or is
-Cavium just resigned to forever adding and backporting quirks?
+But what about when the device is removed from the system first?  Be
+careful about that...
 
->  	/* APM X-Gene */
->  	{ PCI_VENDOR_ID_AMCC, 0xE004, pci_quirk_xgene_acs },
->  	/* Ampere Computing */
-> -- 
-> 2.25.1
-> 
+Anyway, sure, try those functions, I really do not know, all I
+originally complained about was those exports which did not need to be
+exported.
+
+thanks,
+
+greg k-h
