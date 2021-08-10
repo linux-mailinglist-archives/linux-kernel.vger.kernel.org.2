@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B9B3E85C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076503E85C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbhHJV7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234315AbhHJV7C (ORCPT
+        id S235016AbhHJV7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:59:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34106 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231372AbhHJV7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:59:02 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBD4C061765;
-        Tue, 10 Aug 2021 14:58:39 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 10 Aug 2021 17:59:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628632767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ElH7xQBolMkqBkTgOcSotCt04OkZm087iZKxD4bzejI=;
+        b=bbH9HE7vj2Ogj9wLX+IFHmyzv79GjYfEHf0bFtKyUmGb2LeVAZY+Dllj96Uw1cO5DfhqUt
+        q8ZUSxSkWQys9FIa53G2WaCOjmVOflXLJC1eM86Bv9Qaa+xvfsnLga+9xDtK8Mx0lz+DcU
+        QSQ6yGVkBwX3Oo641lWeVV/YAZahzYM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-RjGCULpxP1iqN7XStS2Y_w-1; Tue, 10 Aug 2021 17:59:26 -0400
+X-MC-Unique: RjGCULpxP1iqN7XStS2Y_w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gkmzw3rT2z9sCD;
-        Wed, 11 Aug 2021 07:58:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628632716;
-        bh=qHqa0Ty2Ne7tPAE1xBmKiYCEw14FMtO2sBfddx+zT+s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IEYyP02KN1oa1l/rozZ66Wd6QzBvFJHtOoN+cyPolsXNTYjsKfz74jYPCoWFuG3fD
-         b34zHNm5uJvUndVLGEzyebGhZKWRWpuNi0GLWN7brBM6xPC8TbaygNiBUeHYmWX5BX
-         VIPuujOik9ZhZ+SIqPYTQ1dR2He/+GO/flfPM1EsCIfxBpiqLmNmTpq05QBozGKNQa
-         g8EcU40Ptoxy+Ltx9XfKw2mY6Rs0Dgr0AtxikgYY70YMpi5wWfhv6Wv5/slH3NTpqd
-         jKFB+ae+4EE9ICRS5Vi7Zv4fwed6slSC02Fj3tknCr1zg8J5MXS4GfIhKG/6454DHi
-         cFL965hyZsMZA==
-Date:   Wed, 11 Aug 2021 07:58:35 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the block tree
-Message-ID: <20210811075835.76696f30@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A6CF1009607;
+        Tue, 10 Aug 2021 21:59:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DF7A421F;
+        Tue, 10 Aug 2021 21:59:24 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-87-willy@infradead.org>
+References: <20210715033704.692967-87-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 086/138] mm/filemap: Add filemap_add_folio()
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CVGJiKVe9CwnBbMloAmb=8.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1814869.1628632763.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 22:59:23 +0100
+Message-ID: <1814870.1628632763@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/CVGJiKVe9CwnBbMloAmb=8.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-Hi all,
+> Convert __add_to_page_cache_locked() into __filemap_add_folio().
+> Add an assertion to it that (for !hugetlbfs), the folio is naturally
+> aligned within the file.  Move the prototype from mm.h to pagemap.h.
+> Convert add_to_page_cache_lru() into filemap_add_folio().  Add a
+> compatibility wrapper for unconverted callers.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Commit
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-  9d3b8813895d ("block: change the refcounting for partitions")
-
-is missing a Signed-off-by from its author.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/CVGJiKVe9CwnBbMloAmb=8.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmES9osACgkQAVBC80lX
-0GwaJgf/aRmvKJ5IO4cd1sKgD7/5+Lqouue9opolVBcGS2JVUqBO93AvqLmaWXeY
-mKRAdmj1FEYf8mFbHfxOYSj09BFJNJYUKngVXhpBCL4bc+rDpHRMCPrH5T5T4hqe
-3s/WIJkEDo+CIQxT87FSdxBAkioBkpWQDranUPUdioUm+gmRy65ZaQeXojnIkVW/
-AbyNwHUelrRvltXuFoMXNxjSBVsXWEljc69ZCP1WUJ2VM45RG4ZFiWo2cEkiChLv
-/LQ+8MsOgy6tiPvy0EUQ2tC6R/1nvEDL/+4f7zO8UZ0eViWQh+pwo7IFB0DVEKlA
-ws3WHG5mcE4FchiP7CgA/NrVSRkt+w==
-=1nRw
------END PGP SIGNATURE-----
-
---Sig_/CVGJiKVe9CwnBbMloAmb=8.--
