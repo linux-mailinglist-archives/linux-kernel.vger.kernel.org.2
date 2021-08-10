@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0E33E83A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB1E3E83A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhHJT0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S230442AbhHJT1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231975AbhHJT0A (ORCPT
+        with ESMTP id S229655AbhHJT13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:26:00 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACF0C061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:25:37 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id t128so699009oig.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:25:37 -0700 (PDT)
+        Tue, 10 Aug 2021 15:27:29 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8AEC0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:27:07 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id u7so176352ilk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:27:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Qaz4xCN739RXFhIv84poX0ScDJwNuifosj/wmNYeKrI=;
-        b=Gd5MAtaiKtZayubjDqRGAyI3XDiBp5Oem/dVLOHadExJW1CH458Ic5Ck696RNY4z7R
-         Kcgb6rKMWcXpAHbi1BvRUx0qgqKUMotleU2XSfSD0qy8k+cAqzi8Q0uNyhxZ3P2Y56pM
-         NFrITyTsXdq3Zo+x+4YrcOELrdbAWfqTIp/7E=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sACdsDyDQsF4yV+XkTB5JJNrhLHQe5xnvwvES9nsAV4=;
+        b=wvgoQqvLEvW82Em5I64QcTOdjmrmncOcgqsxT1p7oqQ2uHkKHTFqet7M2MLzmmnRpV
+         QmLAajHimETprqe/kHTqxzgQFmWwqu6T8Qk/+2dOpEEaxMUHQTS34FYN1ee5c+7SHp/v
+         5IkCwNJz+ZK3CuDbPh7nGdN+uihg2GV5OpC+X7PdJM4TTs3fnUccuOVXA9UYJlP5YnQT
+         6nKijHQQBoGZ0pdeVEeVk6RdwN1WfC/f42+CiCNgTflDRww31xDtTu8Q6NvhRXXL7REa
+         w3YGIOu0E5Wb2I50MweGiBG9oh9pM1iL4aBeC4Uvib+4gNFSw0pLWSV8oqy4ZP64mKeO
+         sdQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Qaz4xCN739RXFhIv84poX0ScDJwNuifosj/wmNYeKrI=;
-        b=dyAAHohJ3aPqZOi9eIBC0EwCN7xcCmoc358lmlc/RjWTb4jWWO7wCBGsXKZZ0FQbLi
-         C5Nl+S6bGXQyZH2qaKX9ht4m5ltxMz5FKMtlFhrDCnu+03N/yOKKATzx16VH/UJjMJgl
-         GYb8DhQnZuLGHlm+9AxfE5xTQ72Ssp6ij4QzNQQqILCm27sT8uI9b4+FxqVaCyttq8Gw
-         2U4c4RqTEWyi07Y4oLt+7BkYzdJ5r1+Eaa1GI8Up09tFqzivDIBq00wvwABQLgVtQTHr
-         l+e7mIHLqTjppCXS41rMpK+SFx9bYvyWCkNN6MlM0++NVWCHZTFGkjnI92Fwm6CMffNQ
-         GZRQ==
-X-Gm-Message-State: AOAM533i87hykfHxIsUZa53E9ptn5dZnyefL/I0OaklBf6ylO8OJROuE
-        xPXL5l1dBHVyeT0tXR+qsnU+Fe9xraDsQPaaXFs2Ww==
-X-Google-Smtp-Source: ABdhPJzqQGzY1mBI3xr7FZKkIXaGjwxBnCoAClVfvG9imfTSZkgRoR57g4wmu62dncETwlAoAKYBAKxJ0ASAVABb++A=
-X-Received: by 2002:a05:6808:984:: with SMTP id a4mr4944772oic.166.1628623537400;
- Tue, 10 Aug 2021 12:25:37 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 12:25:36 -0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sACdsDyDQsF4yV+XkTB5JJNrhLHQe5xnvwvES9nsAV4=;
+        b=ndH1KrwUBai/iCadNBexrmTiko/7qE2AsKCB9CvE37MJQoNA/srFoFl0pGX7TkS8oR
+         uZ4v8kP07CwIzEiLoRW/YWyzTtRGSUDfOxuaXPzhRX7hKL7KyrE7kUNkts2f8MNalmdp
+         d72Agvbe4ru2fNSMNZpiPNCfl4gW2iDYRPNHFk/FExxO45elidzHqNd5zlDn+mF004sF
+         Qt5Bi6Ehnq5U7rFutl858NPB5U23ltvygGnXCNrSUQeq/mA8WTjeKqs+EaaPpxUvR2P1
+         NZOVOc/JRT6q3CIqb+KrSCHpi0Flt+6P4hnC6spqP74LEPKECDhqxNzMkZMc6pVMwQLB
+         v7yQ==
+X-Gm-Message-State: AOAM533g4CgKgAm1/yH3S/R/dHxEyy+bY5i3Md6oDP6ttxj0lbLwhKip
+        XDFsZMy88HPR48z5yNsXOU7Vww==
+X-Google-Smtp-Source: ABdhPJzHjWzV7Xx6Ap9v7F7ay9mxep4UjReaCxW31U7PdzcI24t3JarrHyv2/gHKX/8dBbi3JGauyg==
+X-Received: by 2002:a92:6e12:: with SMTP id j18mr671211ilc.243.1628623626983;
+        Tue, 10 Aug 2021 12:27:06 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id c5sm3025356ioz.25.2021.08.10.12.27.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 12:27:06 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/7] net: ipa: use runtime PM reference counting
+Date:   Tue, 10 Aug 2021 14:26:57 -0500
+Message-Id: <20210810192704.2476461-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1628568516-24155-3-git-send-email-pmaliset@codeaurora.org>
-References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org> <1628568516-24155-3-git-send-email-pmaliset@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 12:25:36 -0700
-Message-ID: <CAE-0n532Mwe2OzhM-_UT62FpxqmpecBda7q0ciW1WzaOPm_Q5Q@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Prasad Malisetty (2021-08-09 21:08:34)
-> Add PCIe controller and PHY nodes for sc7280 SOC.
->
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 126 +++++++++++++++++++++++++++++++++++
->  1 file changed, 126 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 53a21d0..4500d88 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -16,6 +16,7 @@
->  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
->  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->  #include <dt-bindings/thermal/thermal.h>
-> +#include <dt-bindings/gpio/gpio.h>
+This series does further rework of the IPA clock code so that we
+rely on some of the core runtime power management code (including
+its referencing counting) instead.
 
-Please sort this alphabetically, gpio comes before reset at the least.
+The first patch makes ipa_clock_get() act like pm_runtime_get_sync().
 
->
->  / {
->         interrupt-parent = <&intc>;
-> @@ -586,6 +587,119 @@
->                         qcom,bcm-voters = <&apps_bcm_voter>;
->                 };
->
-> +               pcie1: pci@1c08000 {
-> +                       compatible = "qcom,pcie-sc7280", "qcom,pcie-sm8250", "snps,dw-pcie";
-> +                       reg = <0 0x01c08000 0 0x3000>,
-> +                             <0 0x40000000 0 0xf1d>,
-> +                             <0 0x40000f20 0 0xa8>,
-> +                             <0 0x40001000 0 0x1000>,
-> +                             <0 0x40100000 0 0x100000>;
-> +
-> +                       reg-names = "parf", "dbi", "elbi", "atu", "config";
-> +                       device_type = "pci";
-> +                       linux,pci-domain = <1>;
-> +                       bus-range = <0x00 0xff>;
-> +                       num-lanes = <2>;
-> +                       pipe-clk-source-switch;
+The second patch makes system suspend occur regardless of the
+current reference count value, which is again more like how the
+runtime PM core code behaves.
 
-I'd rather not have this DT property, but key it off the compatible
-string.
+The third patch creates functions to encapsulate all hardware
+suspend and resume activity.  The fourth uses those functions as
+the ->runtime_suspend and ->runtime_resume power callbacks.  With
+that in place, ipa_clock_get() and ipa_clock_put() are changed to
+use runtime PM get and put functions when needed.
 
-> +
-> +                       #address-cells = <3>;
-> +                       #size-cells = <2>;
+The fifth patch eliminates an extra clock reference previously used
+to control system suspend.  The sixth eliminates the "IPA clock"
+reference count and mutex.
+
+The final patch replaces the one call to ipa_clock_get_additional()
+with a call to pm_runtime_get_if_active(), making the former
+unnecessary.
+
+					-Alec
+
+Alex Elder (7):
+  net: ipa: have ipa_clock_get() return a value
+  net: ipa: disable clock in suspend
+  net: ipa: resume in ipa_clock_get()
+  net: ipa: use runtime PM core
+  net: ipa: get rid of extra clock reference
+  net: ipa: kill IPA clock reference count
+  net: ipa: kill ipa_clock_get_additional()
+
+ drivers/net/ipa/ipa_clock.c     | 165 +++++++++++---------------------
+ drivers/net/ipa/ipa_clock.h     |  18 ++--
+ drivers/net/ipa/ipa_interrupt.c |   9 +-
+ drivers/net/ipa/ipa_main.c      |  35 +++----
+ drivers/net/ipa/ipa_modem.c     |  15 ++-
+ drivers/net/ipa/ipa_smp2p.c     |  33 ++++---
+ drivers/net/ipa/ipa_uc.c        |  12 ++-
+ 7 files changed, 121 insertions(+), 166 deletions(-)
+
+-- 
+2.27.0
+
