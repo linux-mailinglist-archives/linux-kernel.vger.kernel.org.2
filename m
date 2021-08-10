@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D633E568B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925CF3E5691
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238771AbhHJJQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:16:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238745AbhHJJQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:16:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3C166056B;
-        Tue, 10 Aug 2021 09:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628586986;
-        bh=hG1PKIfUobySTRl3kToyKQWcPI+bWs/Llfdg4HtV8Lc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mOAHGE6mrYyzdYOiATqBh3ctWbADLleThoclue/CxW6EWM3taq8sQYiRgsVZlnr09
-         pTsO2mPLnhhPRbGIXVu+JQJ2eRglxQu799oybVa190XqsKer2qr7WDXFO6on/S0RdX
-         rcaqL3+aDwZeiOVHzyEQ/0bEATuepbIqh1CLsdxN/hNFhyRgjwfkEBZW+iEoIap9QV
-         Gx8IBDY7U01l8JCBcG53fyX1QSncT2DWzpjXp4GoKw3IIKzCKbj/Cy16Vee4V4RCDg
-         +Y0VAfWigUKKCWw/eJynPJN7yEgpHxV4zOqqDEZ+BI+3XY4Utiq060cAGEHVTTGNQv
-         PykOiqiyVk43A==
-Date:   Tue, 10 Aug 2021 10:16:19 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>, " 
-        <iommu@lists.linux-foundation.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [Freedreno] [PATCH 0/3] iommu/drm/msm: Allow non-coherent
- masters to use system cache
-Message-ID: <20210810091619.GA2494@willie-the-truck>
-References: <20210802105544.GA27657@willie-the-truck>
- <CAF6AEGvtpFu8st=ZFNoKjP9YsAenciLxL1zMFi_iqMCvdby73w@mail.gmail.com>
- <20210802151409.GE28735@willie-the-truck>
- <CAF6AEGtzvyEUm0Fc8QT5t9KNK7i0FbFyi7zDM2_PMCzZBp7qbw@mail.gmail.com>
- <20210809145651.GC1458@willie-the-truck>
- <CAF6AEGsSUojA=V0n2iRWTCn++buqN=Eoxo0r3=+=PBu1O=H-AQ@mail.gmail.com>
- <20210809170508.GB1589@willie-the-truck>
- <CAF6AEGtmZ3LzAJdtnKDQDbEN-a6_JgdN-fZ96pkU3dZqkiW91g@mail.gmail.com>
- <20210809174022.GA1840@willie-the-truck>
- <76bfd0b4248148dfbf9d174ddcb4c2a2@codeaurora.org>
+        id S238802AbhHJJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238745AbhHJJRE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:17:04 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15D3C06179C;
+        Tue, 10 Aug 2021 02:16:36 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so4358759pjb.2;
+        Tue, 10 Aug 2021 02:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1eMLWbyBU/sRONtQIPvGPa9Xul5GM1ibC93IbV30gmk=;
+        b=uRHNZ/XSXpSd2EekLcyPlKNakWbcXrgdNHhu4LPh24wCi09/V4P/V4//poEFhQT9Kl
+         pJnwCjtsahSbrHXcUEEZSDvW4mau1uhNU0laOY0m+keJqPyLiHiAWpUbjM6x+rvEvP8E
+         9G+rYO9vvvb9qaf/oUS18om/kibXtTWxdFOqUpwP2Jpn4OtbY/ZUcrlf1j4WzCKfaVJI
+         6KIbbnv59I9a1r1X/AUarC2XIyyh+2wQZ78CwrpkYP26shn5C6oMV5AMd+qGL5SHMeZ3
+         XzMC+4/vaQTdQpqk6BdJIRE7Zx0VWFqxlyCFDECrChxBr5ra+M3u8qhCKGjD8Fn1F8v+
+         23MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1eMLWbyBU/sRONtQIPvGPa9Xul5GM1ibC93IbV30gmk=;
+        b=AY8sXAqpvkW0Zh9jVvSSN5gok1b5sCQWwpJWxXWVQnt5hrkrubbj+6ILjDQzpPzto7
+         W8s5xmnnHifd1J1q4zW9vquxY9ZixylTzhEH0J/fk0ia+2HuFdlqv1UvvCwDR1xumbqD
+         rxxYngxPdWVGmde+LtBNz20xq0X9NEtPboaly8p31dI4OAZLsK+wu7GQg2Vbb1kKyhLi
+         I1Qb96RIjXNoTWeQCmJswyqnh9Sko7Ynb7Kn4riOeFjy/SeMspdVtiJXrEsUhGbu1jka
+         9lsAVLoEjyqcwUhgvYW1fvw5Qe1kmHXzVv95am1ET/1zoVsBn8HXJeYXouzed3CcRraZ
+         R6rA==
+X-Gm-Message-State: AOAM530xgmas4CzQejhtMoxZ7/vvUKOha+ejLwaoy2JlFuTn10a9AAqZ
+        RpykGqqEJXhV2IyouyowkNo=
+X-Google-Smtp-Source: ABdhPJwo3IHlpSusugq84VzN8wuuLt/+jy01P9rYCZOEZCnx35yOgUFBFnfRqrRDwfFvwfVKiRGV9Q==
+X-Received: by 2002:a63:5fd4:: with SMTP id t203mr46726pgb.141.1628586996243;
+        Tue, 10 Aug 2021 02:16:36 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id x2sm2281054pjq.35.2021.08.10.02.16.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 02:16:35 -0700 (PDT)
+Subject: [PATCH v2] docs: sphinx-requirements: Move sphinx_rtd_theme to top
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <75f14c88-6091-1072-41cb-16b886aee5a0@gmail.com>
+Date:   Tue, 10 Aug 2021 18:16:32 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76bfd0b4248148dfbf9d174ddcb4c2a2@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 11:17:40PM +0530, Sai Prakash Ranjan wrote:
-> On 2021-08-09 23:10, Will Deacon wrote:
-> > On Mon, Aug 09, 2021 at 10:18:21AM -0700, Rob Clark wrote:
-> > > On Mon, Aug 9, 2021 at 10:05 AM Will Deacon <will@kernel.org> wrote:
-> > > > On Mon, Aug 09, 2021 at 09:57:08AM -0700, Rob Clark wrote:
-> > > > > But I suppose we could call it instead IOMMU_QCOM_LLC or something
-> > > > > like that to make it more clear that it is not necessarily something
-> > > > > that would work with a different outer level cache implementation?
-> > > >
-> > > > ... or we could just deal with the problem so that other people can reuse
-> > > > the code. I haven't really understood the reluctance to solve this properly.
-> > > >
-> > > > Am I missing some reason this isn't solvable?
-> > > 
-> > > Oh, was there another way to solve it (other than foregoing setting
-> > > INC_OCACHE in the pgtables)?  Maybe I misunderstood, is there a
-> > > corresponding setting on the MMU pgtables side of things?
-> > 
-> > Right -- we just need to program the CPU's MMU with the matching memory
-> > attributes! It's a bit more fiddly if you're just using ioremap_wc()
-> > though, as it's usually the DMA API which handles the attributes under
-> > the
-> > hood.
-> > 
-> > Anyway, sorry, I should've said that explicitly earlier on. We've done
-> > this
-> > sort of thing in the Android tree so I assumed Sai knew what needed to
-> > be
-> > done and then I didn't think to explain to you :(
-> > 
-> 
-> Right I was aware of that but even in the android tree there is no user :)
+sphinx_rtd_theme 0.5.2 has "docutils<0.17" in its requirements.
+docutils 0.17 released this April caused regression in
+sphinx_rtd_theme 0.5.1 [1].
 
-I'm assuming there are vendor modules using it there, otherwise we wouldn't
-have been asked to put it in. Since you work at Qualcomm, maybe you could
-talk to your colleagues (Isaac and Patrick) directly?
+By removing docutils and moving sphinx_rtd_theme before Sphinx in
+requirements.txt, the requirement of "docutils<0.17" can be met
+naturally.
 
-> I think we can't have a new memory type without any user right in upstream
-> like android tree?
+[1]: https://github.com/readthedocs/sphinx_rtd_theme/issues/1112
 
-Correct. But I don't think we should be adding IOMMU_* anything upstream
-if we don't have a user.
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+---
+Hi,
 
-Will
+It is better to keep requirements as minimal as possible.
+Let's leave the dependency to the sphinx_rtd_theme package.
+
+Changes in v1 [2] -> v2:
+
+    o Remove docutils entry.
+    o Move sphinx_rtd_theme to top.
+    o Adjust patch title.
+
+[2]: https://lore.kernel.org/linux-doc/974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com/
+
+        Thanks, Akira
+--
+ Documentation/sphinx/requirements.txt | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
+index 489f6626de67..9a35f50798a6 100644
+--- a/Documentation/sphinx/requirements.txt
++++ b/Documentation/sphinx/requirements.txt
+@@ -1,3 +1,2 @@
+-docutils
+-Sphinx==2.4.4
+ sphinx_rtd_theme
++Sphinx==2.4.4
+-- 
+2.17.1
+
+
