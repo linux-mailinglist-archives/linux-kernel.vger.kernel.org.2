@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBEC3E7E43
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325D43E7EE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhHJRcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:32:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59256 "EHLO mail.kernel.org"
+        id S231626AbhHJRf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:35:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhHJRcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4A760F13;
-        Tue, 10 Aug 2021 17:31:44 +0000 (UTC)
+        id S232627AbhHJRen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:34:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0806360E09;
+        Tue, 10 Aug 2021 17:34:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616705;
-        bh=eyc+daRaoGR+dX9G7q1Dqo4xSTQ57yvVz7tjWeA+AxE=;
+        s=korg; t=1628616861;
+        bh=3BNFiNOT6+j5Db8rEmPdLJrMAp5oMaqX49wllEV+pIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vxbx+saTc1mBEinFpa5pYvMAeXqU1aQi7mqKLt3gCVGKhYWjq7D45Ae3larTmWy7e
-         H97y9aKYP8IjpBESQ/DVujdKjUMtvaLHeCmC59N0/AVCVV3ioaO8+rw6oqqFMecXoz
-         z9IG3keII3KXZ3UQSJm1n/RTEAok2QiAJrUdVHug=
+        b=iJP8tWq0E+vq4fD17l3RPnSLcR/SlqifOpICBd+lX50g/zg6gI9tGEJiPjbAHBk6D
+         /FpJDKspurqllztgY4/OdtBkjnih1wCr6b1Gy69m5hUImN44PwTLw1WI1K5yUp+glP
+         iLXHenOC5TCE5bQ1hSTplpfHnILbmLaeQgFalEoc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/54] ARM: imx: add missing iounmap()
-Date:   Tue, 10 Aug 2021 19:29:57 +0200
-Message-Id: <20210810172944.296515584@linuxfoundation.org>
+Subject: [PATCH 5.4 25/85] gpio: tqmx86: really make IRQ optional
+Date:   Tue, 10 Aug 2021 19:29:58 +0200
+Message-Id: <20210810172949.049257220@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-[ Upstream commit f9613aa07f16d6042e74208d1b40a6104d72964a ]
+[ Upstream commit 9b87f43537acfa24b95c236beba0f45901356eb2 ]
 
-Commit e76bdfd7403a ("ARM: imx: Added perf functionality to mmdc driver")
-introduced imx_mmdc_remove(), the mmdc_base need be unmapped in it if
-config PERF_EVENTS is enabled.
+The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
+causes warnings with newer kernels.
 
-If imx_mmdc_perf_init() fails, the mmdc_base also need be unmapped.
+Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
+missing IRQ properly.
 
-Fixes: e76bdfd7403a ("ARM: imx: Added perf functionality to mmdc driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-imx/mmdc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/gpio/gpio-tqmx86.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-index 04b3bf71de94..1d340fda5e4f 100644
---- a/arch/arm/mach-imx/mmdc.c
-+++ b/arch/arm/mach-imx/mmdc.c
-@@ -472,6 +472,7 @@ static int imx_mmdc_remove(struct platform_device *pdev)
+diff --git a/drivers/gpio/gpio-tqmx86.c b/drivers/gpio/gpio-tqmx86.c
+index a3109bcaa0ac..09ca493b3617 100644
+--- a/drivers/gpio/gpio-tqmx86.c
++++ b/drivers/gpio/gpio-tqmx86.c
+@@ -235,8 +235,8 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int ret, irq;
  
- 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
- 	perf_pmu_unregister(&pmu_mmdc->pmu);
-+	iounmap(pmu_mmdc->mmdc_base);
- 	kfree(pmu_mmdc);
- 	return 0;
- }
-@@ -564,7 +565,11 @@ static int imx_mmdc_probe(struct platform_device *pdev)
- 	val &= ~(1 << BP_MMDC_MAPSR_PSD);
- 	writel_relaxed(val, reg);
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
++	irq = platform_get_irq_optional(pdev, 0);
++	if (irq < 0 && irq != -ENXIO)
+ 		return irq;
  
--	return imx_mmdc_perf_init(pdev, mmdc_base);
-+	err = imx_mmdc_perf_init(pdev, mmdc_base);
-+	if (err)
-+		iounmap(mmdc_base);
-+
-+	return err;
- }
+ 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+@@ -275,7 +275,7 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
  
- int imx_mmdc_get_ddr_type(void)
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	if (irq) {
++	if (irq > 0) {
+ 		struct irq_chip *irq_chip = &gpio->irq_chip;
+ 		u8 irq_status;
+ 
 -- 
 2.30.2
 
