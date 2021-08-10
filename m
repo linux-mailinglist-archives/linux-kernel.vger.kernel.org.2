@@ -2,210 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0A83E5327
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0663E532C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237372AbhHJF6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 01:58:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16774 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231716AbhHJF6t (ORCPT
+        id S237423AbhHJGAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:00:54 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23933 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237400AbhHJGAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 01:58:49 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17A5Y6He090552;
-        Tue, 10 Aug 2021 01:58:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=3MmnVrdD1xqpcE8h5t331LzNT9phObbJHwZanysa7EU=;
- b=PTkkDtgz+Xfu/ct4nDcLhZU7dNiy4jRc1hDpBT+BasBBJTbnBEgTCFo+4CBlsy5Id38y
- zMXbfl9D+k++gZxfms129hd5MLGW1adBiaI4h6s2k7cJZ67OdeJnMvTqRDo63yVsKU/g
- k6vv7abIrJ4NNthbsjFMdOFy2v0iv7G6tJQEJMRNoQxlq0/aq/7h+YxtRzsvePzzABsw
- UOK5Lz3cI4mdfbVDOlMjTWv0SeVTDf8Z/xA1NhGCELYOUuVLxNr1unetLDtrh0J3oENu
- 1f83SQJF7dPE6Fuu1CjcNd+ulH9Zlzj8NaMDo5UjR6EG1aIrSH2jRFGEGD+V8WMbHMcp Sg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3abg7kc11p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 01:58:26 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17A5s7QH031773;
-        Tue, 10 Aug 2021 05:58:24 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3a9hehdape-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 05:58:24 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17A5wJGP59638116
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Aug 2021 05:58:19 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BE273AE04D;
-        Tue, 10 Aug 2021 05:58:19 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C0CF6AE051;
-        Tue, 10 Aug 2021 05:58:17 +0000 (GMT)
-Received: from Nageswaras-MacBook-Pro-2.local (unknown [9.43.76.24])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 10 Aug 2021 05:58:17 +0000 (GMT)
-Subject: Re: [PATCH v4 1/2] tpm: ibmvtpm: Avoid error message when process
- gets signal while waiting
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>, jarkko@kernel.org
-Cc:     nasastry@in.ibm.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
- <20210809192159.2176580-2-stefanb@linux.vnet.ibm.com>
-From:   Nageswara Sastry <rnsastry@linux.ibm.com>
-Message-ID: <0047b861-c660-e126-a198-ebe77ca3c057@linux.ibm.com>
-Date:   Tue, 10 Aug 2021 11:28:15 +0530
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210809192159.2176580-2-stefanb@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: b3fLbRVj6INsErUfUPsbGL-BDpSqQCBz
-X-Proofpoint-ORIG-GUID: b3fLbRVj6INsErUfUPsbGL-BDpSqQCBz
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-10_01:2021-08-06,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108100034
+        Tue, 10 Aug 2021 02:00:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628575230; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=juLPiyMeLdi6FlmJGyTN34mpd6zTdOGoe9HwyEf3xkw=; b=Em+vyXjKE1FZh1+uIUSFP1xhGev7bIwXn14kThmP6hE/ovy+cmuFqVgp16ALO0z/zFVmxcC+
+ fZC04TaEEz7PKIJd7H7GkvLscTQG2okyLjk4qX7iFovzCGr7jkB8s53jSwwPeLtU/EZI7bgp
+ m7kyrAo6mrSvQAegBLmIZe4TqoA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 611215f5f746c298d99bbde2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 06:00:21
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7D4DDC43460; Tue, 10 Aug 2021 06:00:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47857C433F1;
+        Tue, 10 Aug 2021 06:00:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47857C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=okukatla@codeaurora.org
+From:   Odelu Kukatla <okukatla@codeaurora.org>
+To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com
+Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, okukatla@codeaurora.org,
+        seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: [v5 0/3] Add L3 provider support for SC7280
+Date:   Tue, 10 Aug 2021 11:29:53 +0530
+Message-Id: <1628575196-19975-1-git-send-email-okukatla@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add Epoch Subsystem (EPSS) L3 provider support on SM7280 SoCs.
 
+v5:
+ - Addressed review comments (Stephen Boyd)
+ 
+Depends on: https://lore.kernel.org/patchwork/patch/1466834/
 
-On 10/08/21 12:51 am, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> When rngd is run as root then lots of these types of message will appear
-> in the kernel log if the TPM has been configured to provide random bytes:
-> 
-> [ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
-> 
-> The issue is caused by the following call that is interrupted while
-> waiting for the TPM's response.
-> 
-> sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
-> 
-> Rather than waiting for the response in the low level driver, have it use
-> the polling loop in tpm_try_transmit() that uses a command's duration to
-> poll until a result has been returned by the TPM, thus ending when the
-> timeout has occurred but not responding to signals and ctrl-c anymore. To
-> stay in this polling loop extend tpm_ibmvtpm_status() to return
-> 'true' for as long as the vTPM is indicated as being busy in
-> tpm_processing_cmd. Since the loop requires the TPM's timeouts, get them
-> now using tpm_get_timeouts() after setting the TPM2 version flag on the
-> chip.
-> 
-> To recreat the resolved issue start rngd like this:
-> 
-> sudo rngd -r /dev/hwrng -t
-> sudo rngd -r /dev/tpm0 -t
-> 
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=1981473
-> Fixes: 6674ff145eef ("tpm_ibmvtpm: properly handle interrupted packet receptions")
-> Cc: Nayna Jain <nayna@linux.ibm.com>
-> Cc: George Wilson <gcwilson@linux.ibm.com>
-> Reported-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Odelu Kukatla (3):
+  dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
+  interconnect: qcom: Add EPSS L3 support on SC7280
+  arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
 
-
-Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-
-Tested with /dev/hwrng and /dev/tpm0 and not seen any tpm errors from 
-the kernel.
-
-> ---
->   drivers/char/tpm/tpm_ibmvtpm.c | 20 ++++++++++++--------
->   drivers/char/tpm/tpm_ibmvtpm.h |  2 +-
->   2 files changed, 13 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-> index 903604769de9..7a9eca5768f8 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.c
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
-> @@ -106,17 +106,12 @@ static int tpm_ibmvtpm_recv(struct tpm_chip *chip, u8 *buf, size_t count)
->   {
->   	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
->   	u16 len;
-> -	int sig;
->   
->   	if (!ibmvtpm->rtce_buf) {
->   		dev_err(ibmvtpm->dev, "ibmvtpm device is not ready\n");
->   		return 0;
->   	}
->   
-> -	sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
-> -	if (sig)
-> -		return -EINTR;
-> -
->   	len = ibmvtpm->res_len;
->   
->   	if (count < len) {
-> @@ -269,7 +264,9 @@ static void tpm_ibmvtpm_cancel(struct tpm_chip *chip)
->   
->   static u8 tpm_ibmvtpm_status(struct tpm_chip *chip)
->   {
-> -	return 0;
-> +	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
-> +
-> +	return ibmvtpm->tpm_processing_cmd;
->   }
->   
->   /**
-> @@ -457,7 +454,7 @@ static const struct tpm_class_ops tpm_ibmvtpm = {
->   	.send = tpm_ibmvtpm_send,
->   	.cancel = tpm_ibmvtpm_cancel,
->   	.status = tpm_ibmvtpm_status,
-> -	.req_complete_mask = 0,
-> +	.req_complete_mask = true,
->   	.req_complete_val = 0,
->   	.req_canceled = tpm_ibmvtpm_req_canceled,
->   };
-> @@ -688,8 +685,15 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
->   		goto init_irq_cleanup;
->   	}
->   
-> -	if (!strcmp(id->compat, "IBM,vtpm20")) {
-> +
-> +	if (!strcmp(id->compat, "IBM,vtpm20"))
->   		chip->flags |= TPM_CHIP_FLAG_TPM2;
-> +
-> +	rc = tpm_get_timeouts(chip);
-> +	if (rc)
-> +		goto init_irq_cleanup;
-> +
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
->   		rc = tpm2_get_cc_attrs_tbl(chip);
->   		if (rc)
->   			goto init_irq_cleanup;
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
-> index b92aa7d3e93e..51198b137461 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.h
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
-> @@ -41,7 +41,7 @@ struct ibmvtpm_dev {
->   	wait_queue_head_t wq;
->   	u16 res_len;
->   	u32 vtpm_version;
-> -	bool tpm_processing_cmd;
-> +	u8 tpm_processing_cmd;
->   };
->   
->   #define CRQ_RES_BUF_SIZE	PAGE_SIZE
-> 
+ .../bindings/interconnect/qcom,osm-l3.yaml         |   9 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   9 ++
+ drivers/interconnect/qcom/osm-l3.c                 | 140 +++++++++++++++++----
+ drivers/interconnect/qcom/sc7280.h                 |  10 ++
+ include/dt-bindings/interconnect/qcom,osm-l3.h     |  10 +-
+ 5 files changed, 153 insertions(+), 25 deletions(-)
 
 -- 
-Thanks and Regards
-R.Nageswara Sastry
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
