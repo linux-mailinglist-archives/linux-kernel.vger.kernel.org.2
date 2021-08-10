@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B083E581E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69153E5820
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238845AbhHJKTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:19:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49886 "EHLO mail.kernel.org"
+        id S239369AbhHJKTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:19:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:52976 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238920AbhHJKT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:19:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C6206108F;
-        Tue, 10 Aug 2021 10:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628590745;
-        bh=9CIYaoUk3OsY+BjiTGw8q0Huaalf7bY8/x0CBVVHlI4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HEcHyhYjtQz+a+HeSkTIh91M3Cso18O/SugDnEbx0canubN2xtecscTSm4r914SuY
-         faCtbl+EnNl3X/fhMHTSaPJeIYRaGPsIvzyBkARY2pb+37VY4GNTlva76lw4yxcwNr
-         uaty7syo7uVh4xMPAXdOsW4YjUI0xtjylZBmhOfs=
-Date:   Tue, 10 Aug 2021 12:19:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        id S238598AbhHJKTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:19:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE6C36D;
+        Tue, 10 Aug 2021 03:19:29 -0700 (PDT)
+Received: from [10.57.9.181] (unknown [10.57.9.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D5E63F70D;
+        Tue, 10 Aug 2021 03:19:28 -0700 (PDT)
+Subject: Re: [PATCH 2/8] cpufreq: dt: Use auto-registration for energy model
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove some dead files
-Message-ID: <YRJSlU9jquQkseXt@kroah.com>
-References: <20210809210912.1022-1-Larry.Finger@lwfinger.net>
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <f66047fca65a2d368e881d62e1623dbeef2eacd2.1628579170.git.viresh.kumar@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d6e6bb3c-55fc-7d2e-5716-a133c89e3efa@arm.com>
+Date:   Tue, 10 Aug 2021 11:19:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809210912.1022-1-Larry.Finger@lwfinger.net>
+In-Reply-To: <f66047fca65a2d368e881d62e1623dbeef2eacd2.1628579170.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 04:09:12PM -0500, Larry Finger wrote:
-> The porting of the new version included 3 source files that are
-> only used for testing of the device. They are not needed here.
+
+
+On 8/10/21 8:36 AM, Viresh Kumar wrote:
+> Use the CPUFREQ_REGISTER_WITH_EM flag to allow cpufreq core to
+> automatically register with the energy model.
 > 
-> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+> This allows removal of boiler plate code from the driver and fixes the
+> unregistration part as well.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  drivers/staging/r8188eu/Makefile            |    3 -
->  drivers/staging/r8188eu/core/rtw_mp.c       |  974 ---------------
->  drivers/staging/r8188eu/core/rtw_mp_ioctl.c | 1170 -------------------
->  drivers/staging/r8188eu/hal/rtl8188e_mp.c   |  798 -------------
->  4 files changed, 2945 deletions(-)
->  delete mode 100644 drivers/staging/r8188eu/core/rtw_mp.c
->  delete mode 100644 drivers/staging/r8188eu/core/rtw_mp_ioctl.c
->  delete mode 100644 drivers/staging/r8188eu/hal/rtl8188e_mp.c
+>   drivers/cpufreq/cpufreq-dt.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+> index ece52863ba62..b727006e85af 100644
+> --- a/drivers/cpufreq/cpufreq-dt.c
+> +++ b/drivers/cpufreq/cpufreq-dt.c
+> @@ -143,8 +143,6 @@ static int cpufreq_init(struct cpufreq_policy *policy)
+>   		cpufreq_dt_attr[1] = &cpufreq_freq_attr_scaling_boost_freqs;
+>   	}
+>   
+> -	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
+> -
+>   	return 0;
+>   
+>   out_clk_put:
+> @@ -176,7 +174,8 @@ static int cpufreq_exit(struct cpufreq_policy *policy)
+>   
+>   static struct cpufreq_driver dt_cpufreq_driver = {
+>   	.flags = CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+> -		 CPUFREQ_IS_COOLING_DEV,
+> +		 CPUFREQ_IS_COOLING_DEV |
+> +		 CPUFREQ_REGISTER_WITH_EM,
+>   	.verify = cpufreq_generic_frequency_table_verify,
+>   	.target_index = set_target,
+>   	.get = cpufreq_generic_get,
+> 
 
-I get the following error with this patch applied:
-
-ERROR: modpost: "rtl8188eu_oid_rt_pro_set_data_rate_hdl" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "rtl8188eu_oid_rt_pro_set_single_carrier_tx_hdl" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "rtl8188eu_oid_rt_pro_stop_test_hdl" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "mp_stop_test" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "MPT_InitializeAdapter" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "Hal_GetThermalMeter" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "Hal_SetThermalMeter" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "MP_PHY_SetRFPathSwitch" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "rtl8188eu_oid_rt_get_efuse_max_size_hdl" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-ERROR: modpost: "rtl8188eu_oid_rt_pro_trigger_gpio_hdl" [drivers/staging/r8188eu/r8188eu.ko] undefined!
-WARNING: modpost: suppressed 46 unresolved symbol warnings because there were too many)
-
-Are you sure those symbols are not used?
-
-thanks,
-
-greg k-h
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
