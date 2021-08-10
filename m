@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7883E806F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6E03E7E86
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236302AbhHJRtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:49:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
+        id S232502AbhHJRd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235730AbhHJRqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D27561251;
-        Tue, 10 Aug 2021 17:40:22 +0000 (UTC)
+        id S232327AbhHJRdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F1E60FC4;
+        Tue, 10 Aug 2021 17:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617222;
-        bh=s0g1xmmZwpz0X/vZ9KJFPr4XM+vbvQa7yuAIxalVp1c=;
+        s=korg; t=1628616775;
+        bh=uNj46yeC67x14SBlDSDwioGQohfjz0YFWOU/21UIun4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jo+Hz9igLqy9jYSDQUhHcIPPZMaai2VHVHQCRUYwTfFWxbtMH1h1pstrHT6xtJBzx
-         4AVGWLpecIZehYqgkGaJjp8IOSKdRSE7b2j47vJLQ1KifEbc+hlJkGN7spfWq3wTTP
-         mctD5Y1lP3WSdaOmK8Eeyz+V/LcZmZy5I2LYyt/k=
+        b=S8iFgbcNbxA4W5zhu3QBD2NgCUdwRybR4J2dioSxwuxdbV0ZPa6tXtO3qOYMXhQ1y
+         2Nnh3x0f4nHHMDl9A1aETvhNz0vjpTLNGgIBsQe11NHlME+VyCIQY7q2hKZn4oaMPk
+         IUnktQCLBCTHQvGwq7D0KH0sitJPG32rIGWLCDsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mario Kleiner <mario.kleiner.de@gmail.com>
-Subject: [PATCH 5.10 099/135] serial: 8250_pci: Avoid irq sharing for MSI(-X) interrupts.
-Date:   Tue, 10 Aug 2021 19:30:33 +0200
-Message-Id: <20210810172959.123092016@linuxfoundation.org>
+        =?UTF-8?q?=D0=91=D0=BB=D0=B0=D0=B3=D0=BE=D0=B4=D0=B0=D1=80=D0=B5=D0=BD=D0=BA=D0=BE=20=D0=90=D1=80=D1=82=D1=91=D0=BC?= 
+        <artem.blagodarenko@gmail.com>, Denis <denis@voxelsoft.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 4.19 40/54] ext4: fix potential htree corruption when growing large_dir directories
+Date:   Tue, 10 Aug 2021 19:30:34 +0200
+Message-Id: <20210810172945.509846502@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,96 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mario Kleiner <mario.kleiner.de@gmail.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-commit 341abd693d10e5f337a51f140ae3e7a1ae0febf6 upstream.
+commit 877ba3f729fd3d8ef0e29bc2a55e57cfa54b2e43 upstream.
 
-This attempts to fix a bug found with a serial port card which uses
-an MCS9922 chip, one of the 4 models for which MSI-X interrupts are
-currently supported. I don't possess such a card, and i'm not
-experienced with the serial subsystem, so this patch is based on what
-i think i found as a likely reason for failure, based on walking the
-user who actually owns the card through some diagnostic.
+Commit b5776e7524af ("ext4: fix potential htree index checksum
+corruption) removed a required restart when multiple levels of index
+nodes need to be split.  Fix this to avoid directory htree corruptions
+when using the large_dir feature.
 
-The user who reported the problem finds the following in his dmesg
-output for the relevant ttyS4 and ttyS5:
-
-[    0.580425] serial 0000:02:00.0: enabling device (0000 -> 0003)
-[    0.601448] 0000:02:00.0: ttyS4 at I/O 0x3010 (irq = 125, base_baud = 115200) is a ST16650V2
-[    0.603089] serial 0000:02:00.1: enabling device (0000 -> 0003)
-[    0.624119] 0000:02:00.1: ttyS5 at I/O 0x3000 (irq = 126, base_baud = 115200) is a ST16650V2
-...
-[    6.323784] genirq: Flags mismatch irq 128. 00000080 (ttyS5) vs. 00000000 (xhci_hcd)
-[    6.324128] genirq: Flags mismatch irq 128. 00000080 (ttyS5) vs. 00000000 (xhci_hcd)
-...
-
-Output of setserial -a:
-
-/dev/ttyS4, Line 4, UART: 16650V2, Port: 0x3010, IRQ: 127
-	Baud_base: 115200, close_delay: 50, divisor: 0
-	closing_wait: 3000
-	Flags: spd_normal skip_test
-
-This suggests to me that the serial driver wants to register and share a
-MSI/MSI-X irq 128 with the xhci_hcd driver, whereas the xhci driver does
-not want to share the irq, as flags 0x00000080 (== IRQF_SHARED) from the
-serial port driver means to share the irq, and this mismatch ends in some
-failed irq init?
-
-With this setup, data reception works very unreliable, with dropped data,
-already at a transmission rate of only a 16 Bytes chunk every 1/120th of
-a second, ie. 1920 Bytes/sec, presumably due to rx fifo overflow due to
-mishandled or not used at all rx irq's?
-
-See full discussion thread with attempted diagnosis at:
-
-https://psychtoolbox.discourse.group/t/issues-with-iscan-serial-port-recording/3886
-
-Disabling the use of MSI interrupts for the serial port pci card did
-fix the reliability problems. The user executed the following sequence
-of commands to achieve this:
-
-echo 0000:02:00.0 | sudo tee /sys/bus/pci/drivers/serial/unbind
-echo 0000:02:00.1 | sudo tee /sys/bus/pci/drivers/serial/unbind
-
-echo 0 | sudo tee /sys/bus/pci/devices/0000:02:00.0/msi_bus
-echo 0 | sudo tee /sys/bus/pci/devices/0000:02:00.1/msi_bus
-
-echo 0000:02:00.0 | sudo tee /sys/bus/pci/drivers/serial/bind
-echo 0000:02:00.1 | sudo tee /sys/bus/pci/drivers/serial/bind
-
-This resulted in the following log output:
-
-[   82.179021] pci 0000:02:00.0: MSI/MSI-X disallowed for future drivers
-[   87.003031] pci 0000:02:00.1: MSI/MSI-X disallowed for future drivers
-[   98.537010] 0000:02:00.0: ttyS4 at I/O 0x3010 (irq = 17, base_baud = 115200) is a ST16650V2
-[  103.648124] 0000:02:00.1: ttyS5 at I/O 0x3000 (irq = 18, base_baud = 115200) is a ST16650V2
-
-This patch attempts to fix the problem by disabling irq sharing when
-using MSI irq's. Note that all i know for sure is that disabling MSI
-irq's fixed the problem for the user, so this patch could be wrong and
-is untested. Please review with caution, keeping this in mind.
-
-Fixes: 8428413b1d14 ("serial: 8250_pci: Implement MSI(-X) support")
-Cc: Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Mario Kleiner <mario.kleiner.de@gmail.com>
-Link: https://lore.kernel.org/r/20210729043306.18528-1-mario.kleiner.de@gmail.com
+Cc: stable@kernel.org # v5.11
+Cc: Благодаренко Артём <artem.blagodarenko@gmail.com>
+Fixes: b5776e7524af ("ext4: fix potential htree index checksum corruption)
+Reported-by: Denis <denis@voxelsoft.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/8250/8250_pci.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/namei.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -3970,6 +3970,7 @@ pciserial_init_ports(struct pci_dev *dev
- 		if (pci_match_id(pci_use_msi, dev)) {
- 			dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
- 			pci_set_master(dev);
-+			uart.port.flags &= ~UPF_SHARE_IRQ;
- 			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2317,7 +2317,7 @@ again:
+ 				goto journal_error;
+ 			err = ext4_handle_dirty_dx_node(handle, dir,
+ 							frame->bh);
+-			if (err)
++			if (restart || err)
+ 				goto journal_error;
  		} else {
- 			dev_dbg(&dev->dev, "Using legacy interrupts\n");
+ 			struct dx_root *dxroot;
 
 
