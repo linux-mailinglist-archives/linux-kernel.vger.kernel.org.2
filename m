@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14E83E50F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6673E50F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237501AbhHJCIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 22:08:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51628 "EHLO mail.kernel.org"
+        id S235553AbhHJCIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 22:08:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234846AbhHJCIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 22:08:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AAA061056;
-        Tue, 10 Aug 2021 02:08:08 +0000 (UTC)
+        id S237377AbhHJCIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 22:08:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB33D61051;
+        Tue, 10 Aug 2021 02:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628561289;
-        bh=ed3CHeY/iMCEj4a2C3RS8k0kR6PkjPscsFt1GSrUlZQ=;
+        s=k20201202; t=1628561296;
+        bh=cK2uJqFI5AdXUBCrjz4aXtOXtAxYE1DIL/pMeuROH0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gR3iXTwnq6/yS8ovVV9W5LXsv1z8xOQz+uh8TP3+RrdVrZoOl6qtdOOSTXYIxecTD
-         kDTGMygFaMrrhk3ybhIeXAm2n3q6gEidCN16Cr221h5n1kWlSDn3nWmX85N571jOZp
-         Lbn89hqQjIUlZl0YDRUSMtd280PccJjyoD5BfQ8Gtc+q26HmXZKR2LbPrGaPrHdi0W
-         8AmKtsfTrp+R2wxDObhXJE0ohd3bd26FpJExHJVv3mfzx2Mo2Cb2TXSDgHRWTYMhmO
-         3imU5RWhDNUcarVDWMr0wzRgMqAPg48lGTb7WoSGzSQiApBIKMQeGY1GZbcXPzb52W
-         TS6qX3bYeuLHg==
+        b=EyWP7PmZ7dhcCdk22efHSyZqr8o+opJQ5PG74IAe9E/aqfBFRiIORJqqfCMAy9uSo
+         YrnTSijq5Edi1sxGOI4LhRDZXCRAainjq9YosazI6++yvFsFgckbbCOPbHSm1rQjif
+         CgF8SVUVrYxUVBGBTaeOZ1D0liQcMdDjQ0uF+D+wZD5Lp0mYfM74Ug4bgdbMIcVMFO
+         RXU0KeBwJ+4lcNmqu7YQlFc+RVRuID43U1s9ZocK1hB+nxYH5sqFs5tSbIPgJBeKdc
+         uKV0RvImvv/PK5tJ46W88KMm7wb5fmjD+7WkuoyJh9soKio6Mn3bkv0PD94/FNRBR0
+         lNnBYPephq7hA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v4 08/10] tools/bootconfig: Add histogram syntax support to bconf2ftrace.sh
-Date:   Tue, 10 Aug 2021 11:08:06 +0900
-Message-Id: <162856128672.203126.8240335908303312607.stgit@devnote2>
+Subject: [PATCH v4 09/10] tools/bootconfig: Use per-group/all enable option in ftrace2bconf script
+Date:   Tue, 10 Aug 2021 11:08:14 +0900
+Message-Id: <162856129436.203126.12462564671412940618.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162856122550.203126.17607127017097781682.stgit@devnote2>
 References: <162856122550.203126.17607127017097781682.stgit@devnote2>
@@ -41,136 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add histogram syntax support to bconf2ftrace.sh script.
+Use per-group/all enable option instead of ftrace.events option.
+This will make the bootconfig file more readable.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- Changes in v4:
-  - Fix to remove spaces in the expression for the variables.
----
- tools/bootconfig/scripts/bconf2ftrace.sh |   88 ++++++++++++++++++++++++++++++
- tools/bootconfig/scripts/xbc.sh          |    4 +
- 2 files changed, 90 insertions(+), 2 deletions(-)
+ tools/bootconfig/scripts/ftrace2bconf.sh |   24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/tools/bootconfig/scripts/bconf2ftrace.sh b/tools/bootconfig/scripts/bconf2ftrace.sh
-index 651049c782c0..850c2073433e 100755
---- a/tools/bootconfig/scripts/bconf2ftrace.sh
-+++ b/tools/bootconfig/scripts/bconf2ftrace.sh
-@@ -94,6 +94,92 @@ compose_synth() { # event_name branch
- 	xbc_get_val $2 | while read field; do echo -n "$field; "; done
+diff --git a/tools/bootconfig/scripts/ftrace2bconf.sh b/tools/bootconfig/scripts/ftrace2bconf.sh
+index a0c3bcc6da4f..fbaf07dc91bf 100755
+--- a/tools/bootconfig/scripts/ftrace2bconf.sh
++++ b/tools/bootconfig/scripts/ftrace2bconf.sh
+@@ -92,6 +92,10 @@ referred_vars() {
+ 	grep "^hist" $1/trigger | grep -o '$[a-zA-Z0-9]*'
  }
  
-+print_hist_array() { # prefix key
-+	__sep="="
-+	if xbc_has_key ${1}.${2}; then
-+		echo -n ":$2"
-+		xbc_get_val ${1}.${2} | while read field; do
-+			echo -n "$__sep$field"; __sep=","
-+		done
-+	fi
++event_is_enabled() { # enable-file
++	test -f $1 & grep -q "1" $1
 +}
 +
-+print_hist_action_array() { # prefix key
-+	__sep="("
-+	echo -n ".$2"
-+	xbc_get_val ${1}.${2} | while read field; do
-+		echo -n "$__sep$field"; __sep=","
-+	done
-+	echo -n ")"
-+}
-+
-+print_hist_one_action() { # prefix handler param
-+	echo -n ":${2}("`xbc_get_val ${1}.${3}`")"
-+	if xbc_has_key "${1}.trace"; then
-+		print_hist_action_array ${1} "trace"
-+	elif xbc_has_key "${1}.save"; then
-+		print_hist_action_array ${1} "save"
-+	elif xbc_has_key "${1}.snapshot"; then
-+		echo -n ".snapshot()"
-+	fi
-+}
-+
-+print_hist_actions() { # prefix handler param
-+	for __hdr in `xbc_subkeys ${1}.${2} 1 ".[0-9]"`; do
-+		print_hist_one_action ${1}.${2}.$__hdr ${2} ${3}
-+	done
-+	if xbc_has_key ${1}.${2}.${3} ; then
-+		print_hist_one_action ${1}.${2} ${2} ${3}
-+	fi
-+}
-+
-+print_hist_var() { # prefix varname
-+	echo -n ":${2}="`xbc_get_val ${1}.var.${2} | tr -d [:space:]`
-+}
-+
-+print_one_histogram() { # prefix
-+	echo -n "hist"
-+	print_hist_array $1 "keys"
-+	print_hist_array $1 "values"
-+	print_hist_array $1 "sort"
-+	if xbc_has_key "${1}.size"; then
-+		echo -n ":size="`xbc_get_val ${1}.size`
-+	fi
-+	if xbc_has_key "${1}.name"; then
-+		echo -n ":name="`xbc_get_val ${1}.name`
-+	fi
-+	for __var in `xbc_subkeys "${1}.var" 1`; do
-+		print_hist_var ${1} ${__var}
-+	done
-+	if xbc_has_key "${1}.pause"; then
-+		echo -n ":pause"
-+	elif xbc_has_key "${1}.continue"; then
-+		echo -n ":continue"
-+	elif xbc_has_key "${1}.clear"; then
-+		echo -n ":clear"
-+	fi
-+	print_hist_actions ${1} "onmax" "var"
-+	print_hist_actions ${1} "onchange" "var"
-+	print_hist_actions ${1} "onmatch" "event"
-+
-+	if xbc_has_key "${1}.filter"; then
-+		echo -n " if "`xbc_get_val ${1}.filter`
-+	fi
-+}
-+
-+setup_one_histogram() { # prefix trigger-file
-+	run_cmd "echo '`print_one_histogram ${1}`' >> ${2}"
-+}
-+
-+setup_histograms() { # prefix trigger-file
-+	for __hist in `xbc_subkeys ${1} 1 ".[0-9]"`; do
-+		setup_one_histogram ${1}.$__hist ${2}
-+	done
-+	if xbc_has_key ${1}.keys; then
-+		setup_one_histogram ${1} ${2}
-+	fi
-+}
-+
- setup_event() { # prefix group event [instance]
- 	branch=$1.$2.$3
- 	if [ "$4" ]; then
-@@ -121,6 +207,8 @@ setup_event() { # prefix group event [instance]
- 	set_value_of ${branch}.filter ${eventdir}/filter
- 	set_array_of ${branch}.actions ${eventdir}/trigger
+ per_event_options() { # event-dir
+ 	evdir=$1
+ 	# Check the special event which has no filter and no trigger
+@@ -113,7 +117,9 @@ per_event_options() { # event-dir
+ 		emit_kv $PREFIX.event.$group.$event.actions += \'$action\'
+ 	done
  
-+	setup_histograms ${branch}.hist ${eventdir}/trigger
-+
- 	if xbc_has_key ${branch}.enable; then
- 		run_cmd "echo 1 > ${eventdir}/enable"
+-	# enable is not checked; this is done by set_event in the instance.
++	if [ $GROUP_ENABLED -eq 0 ] && event_is_enabled $evdir/enable; then
++		emit_kv $PREFIX.event.$group.$event.enable
++	fi
+ 	val=`cat $evdir/filter`
+ 	if [ "$val" != "none" ]; then
+ 		emit_kv $PREFIX.event.$group.$event.filter = "$val"
+@@ -137,8 +143,19 @@ event_options() {
+ 		kprobe_event_options
+ 		synth_event_options
  	fi
-diff --git a/tools/bootconfig/scripts/xbc.sh b/tools/bootconfig/scripts/xbc.sh
-index b8c84e654556..1f0ebf50dd2d 100644
---- a/tools/bootconfig/scripts/xbc.sh
-+++ b/tools/bootconfig/scripts/xbc.sh
-@@ -49,8 +49,8 @@ xbc_has_branch() { # prefix-key
- 	grep -q "^$1" $XBC_TMPFILE
- }
++	ALL_ENABLED=0
++	if event_is_enabled $INSTANCE/events/enable; then
++		emit_kv $PREFIX.event.enable
++		ALL_ENABLED=1
++	fi
+ 	for group in `ls $INSTANCE/events/` ; do
+ 		[ ! -d $INSTANCE/events/$group ] && continue
++		GROUP_ENABLED=$ALL_ENABLED
++		if [ $ALL_ENABLED -eq 0 ] && \
++		   event_is_enabled $INSTANCE/events/$group/enable ;then
++			emit_kv $PREFIX.event.$group.enable
++			GROUP_ENABLED=1
++		fi
+ 		for event in `ls $INSTANCE/events/$group/` ;do
+ 			[ ! -d $INSTANCE/events/$group/$event ] && continue
+ 			per_event_options $INSTANCE/events/$group/$event
+@@ -226,11 +243,6 @@ instance_options() { # [instance-name]
+ 		emit_kv $PREFIX.tracing_on = $val
+ 	fi
  
--xbc_subkeys() { # prefix-key depth
-+xbc_subkeys() { # prefix-key depth [subkey-pattern]
- 	__keys=`echo $1 | sed "s/\./ /g"`
- 	__s=`nr_args $__keys`
--	grep "^$1" $XBC_TMPFILE | cut -d= -f1| cut -d. -f$((__s + 1))-$((__s + $2)) | uniq
-+	grep "^$1$3" $XBC_TMPFILE | cut -d= -f1| cut -d. -f$((__s + 1))-$((__s + $2)) | uniq
- }
+-	val=
+-	for i in `cat $INSTANCE/set_event`; do
+-		val="$val, $i"
+-	done
+-	[ "$val" ] && emit_kv $PREFIX.events = "${val#,}"
+ 	val=`cat $INSTANCE/current_tracer`
+ 	[ $val != nop ] && emit_kv $PREFIX.tracer = $val
+ 	if grep -qv "^#" $INSTANCE/set_ftrace_filter $INSTANCE/set_ftrace_notrace; then
 
