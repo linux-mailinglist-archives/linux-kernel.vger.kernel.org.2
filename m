@@ -2,237 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C5C3E518D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE643E5194
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236698AbhHJDiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 23:38:51 -0400
-Received: from mail-eopbgr00065.outbound.protection.outlook.com ([40.107.0.65]:64969
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230039AbhHJDit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 23:38:49 -0400
+        id S236739AbhHJDmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 23:42:10 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:19882 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236700AbhHJDmC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 23:42:02 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17A3awmp028163;
+        Tue, 10 Aug 2021 03:41:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=fWCP/Q5vMjOW8+eqC1DtmHdTRYrCpgTINdMU5puINjM=;
+ b=a9Gk/vK32fldVpT4HOn3d9lnm+zN6o1O9ZXFhyRzILZW27xZGA/Ziyt8GuGVQ7880tc4
+ XkbH6X/NGLPq8/zW4MQRzcOk+WtkF5W5Sf5yFJ3lSp87AbVFazLmpLaJgwMZkLYcTsUZ
+ Ycg/w6U87lkXUWrKoJJVlH8s+i7WAysCQCYZl66NOiFhC4LmwoLiNgI+T8kCBAaEwMdm
+ fSAhhZzr0mvkLlFQpf+q673E8I2SKrrRLy1culrw8aU5/BymFSE5IUe066Bq4tTuyf03
+ gJEoJz1z87SWkXk0ehrF8cfoVztWVio9r1HzIftJVjeUjC1x5UnqKb8xxZdduoXCt8l2 rg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=fWCP/Q5vMjOW8+eqC1DtmHdTRYrCpgTINdMU5puINjM=;
+ b=iZI4eJXDgFi3DvLwniN9o+5GhyIiJ/UrDY2ZmerjFHlEbog2sUNMVKqtF2Q2ot9HInCk
+ RsLkd5Zcy24KWtbudpHvxyLI8aoKyh+O1gtkmrQLXLCgqiSHQfM63yAo+1+UoqNKzakx
+ VXDK/AJpU+AIaZs4e1AEbF90JGNkuEUmTHluMBft4DlUZL5y41f95W+o86/xYXImxIcX
+ SHGfbLPo6Hj5zs47irjd+Qt0YJ8WI1JnS71Hllp0Clfrbw8T5kCKcWF0Tn+73+WitzsM
+ lYHNAzcw24tcTydHD9ZDcXEW/Qx0g0SgaXxOU6hXL+rhZNy/xs8VebxYDAYnSvJwCUxH pg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ab01racdj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Aug 2021 03:41:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17A3eLFw084948;
+        Tue, 10 Aug 2021 03:41:36 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
+        by aserp3020.oracle.com with ESMTP id 3a9vv3yn15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Aug 2021 03:41:36 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KU9PJhp8/+YIGtyJJvdfHk0GL1HU6VdOQcVnedr5AkXMUMM1nYyWN/hE94AiUaZMZHWQ7bPSFtbxLRisdaWlN3rvmdkYGu7KCG91qOHHKF5XTQeASGO+QiZP0kzyTLsH4xQhzVzVMUxMdsYovM8i6wa+CS26ArE0GllOWZtOldUZdKS2YbEcwSx+jaW3UFHnCDtKfoHRcJ/FLppR3zVHcuMidU9fpE3qr0lWEaQQbQXzyQo0c6JOE0Ip1N300zHim+v6xOfMVMfUu+e3lRFq9AvGVosi7LsN5HCtT9Czq+t74QR8Fny26DlT9rHg5mnbGiQnUsYRb87df9Te7W/WCw==
+ b=EW506ngmGj4vaFjJ/4Y43YL+XO4oyODosfui9X+UJ2f4xU4zuHm86e1YoQXrq7YKtHxFwj8xqxYa+TQiZUHgSe+tQBjhSpRtj+o+X+tqXW/8EOU1dCUwMjBUvEpZoQV9JYbf5YDHX5VsQFqHq76FsIEtITvJsfJD0vD9wr5rBZWGhqCHcw/AgvFiFH+ofS5XFbkdKcoF0dPSdSPmfQhgcKXHRlfL2CYqXgilqSLq1F5fmmw9wdvgW6bOuEuJ4F4Rj9fUe8sPte465prIQOYqjeDvJ+rVoeSf7quRm49s5myg5GvPd0LfZPV+yse6VzNpwqth9KG55yq/f175onLvXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gwiaGvfgI/InRAZ0ZKkwwHKsiw4geczTUDzdCpx6mX4=;
- b=WLCK/UbZuGYPEiviFClAntbePn73iAGL0L1U2a0PYquFV/gj/Bavz0aaVpu2FYJ0VF81L8CsFjskT7BaY5/Zh7PTdrIOYcAzardIjJscXvOEOKhdu/1Cng+L3T99Ve16lux5W/DCKRnsjcJeFiwyaGB44frhD2x41tNC41ft7+HrnR4Cr0UupTnSFPm0Rdrt5Oy9W6H7Ua7rsI8XI7OXjfWAVMWoJdKJBvnQhbbSWByGFnXHRMjU2qNu9MySh/dCHCC3bqzpUnk0TtoZiahlwSQFNYTSA2Y/z1LMoAcVMpJWnLmuYFmfgvyTNV6MzhZyoLA1ps6W3x+vp0pWeoPmxA==
+ bh=fWCP/Q5vMjOW8+eqC1DtmHdTRYrCpgTINdMU5puINjM=;
+ b=fJEH9mykHpPvSq27/ATEFUq8yshKr07ZKLqmBF8D/UhtPPoZu8Rhx3cCehMZ461O/eJe7o1rP/oNP+UJhrSLmyNHYRlxBIxE30QGQFsESkrBygct+w/RDsJnAjRx1GduymeNFf4teIt7d4AS2Jpk5um0mhAvb7i4JertAb+1DWzaC0FsO2c82RSVGx+drd8XCly+7Fjumfs4JtZcZ2/0dcrwFgBPfdkmX38lI0pKTDLPoUbYNp1hpwQvNFQeuGMbBE5fXFUwO7E9oF3LJgF0ihJPwW0Obil+lSFx0aQHb05aK2/u17VddZjOk3bmV1cVqJrqRIY/whCQSz1M5G02Ow==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gwiaGvfgI/InRAZ0ZKkwwHKsiw4geczTUDzdCpx6mX4=;
- b=NCQgWrTfFIQtCKoh+C3kCHNuYeIVeAzUPuNWA0kvsHAIi/a5h6imLXNSqzxO63M4pBttA8DVkXyDD0zKt5rkfsChq4o3yMeKm5a1AanGhIfb30x2gue2d9K3S1fGIPxcfF0IVVTZNO2haMwv7TbpFCfXSPUTnbZfzRikrgI491I=
-Received: from AS8PR04MB8946.eurprd04.prod.outlook.com (2603:10a6:20b:42d::18)
- by AS8PR04MB8705.eurprd04.prod.outlook.com (2603:10a6:20b:428::24) with
+ bh=fWCP/Q5vMjOW8+eqC1DtmHdTRYrCpgTINdMU5puINjM=;
+ b=J/pjfwVutHQIaTzDGtuyQqgS4jSNZlQEtY872qV92EacWPavZfwGNgGl77xqr/UIjcy8AtwFkIEN6o0Z8i65wxESIozJ9dnI9N+VudZV5Q9L3d3M0wQ+XsgHYzCLJiuZhAThpMwE9VNjFzP6l91RayRNyZLuYaGGVWBXFraP7fg=
+Authentication-Results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5641.namprd10.prod.outlook.com (2603:10b6:510:f8::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Tue, 10 Aug
- 2021 03:38:26 +0000
-Received: from AS8PR04MB8946.eurprd04.prod.outlook.com
- ([fe80::4d62:f78d:cea9:1ba6]) by AS8PR04MB8946.eurprd04.prod.outlook.com
- ([fe80::4d62:f78d:cea9:1ba6%6]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
- 03:38:26 +0000
-From:   Leo Li <leoyang.li@nxp.com>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
- LX2160A UART
-Thread-Topic: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
- LX2160A UART
-Thread-Index: AQHXYejVx8YR0SiBXEyplsaWZ0dlkatsHV6QgAAsv4CAACNCUA==
-Date:   Tue, 10 Aug 2021 03:38:26 +0000
-Message-ID: <AS8PR04MB8946913A8B97C18240ADBAEA8FF79@AS8PR04MB8946.eurprd04.prod.outlook.com>
-References: <20210615131605.616-1-thunder.leizhen@huawei.com>
- <20210615131605.616-2-thunder.leizhen@huawei.com>
- <AS8PR04MB8946D0EB15D631346F4D13198FF69@AS8PR04MB8946.eurprd04.prod.outlook.com>
- <03d7c7be-2f19-9fdf-2a4e-f49a62bb82f6@huawei.com>
-In-Reply-To: <03d7c7be-2f19-9fdf-2a4e-f49a62bb82f6@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f05fb863-7610-45bb-1e62-08d95bb04fe0
-x-ms-traffictypediagnostic: AS8PR04MB8705:
-x-microsoft-antispam-prvs: <AS8PR04MB87052DCC7D1068A7E60451908FF79@AS8PR04MB8705.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1824;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ahg//ULOoPmNmEjP4bLhWQn5RV4Vpioz5vEJopxtbDgnct2w6pgbQjytfOCyo2qhsll/M1hSlwHUX/ivwk2gu20wL9G/szBKVrZK9WqiAbdNCcIHy0g2ysS8Obrrfqpk8uS5eVl5CSwIOKAcaAdGQ6UDP+VQ+iQgg98ILXQmqMD6wvJ8tvqLgWtmLhtJTfcuNk/0oT7z8rJWt0qRg9v5SuS1j+0FUKFB9ushdgn+YoxHucoi/SPuIq8LqYnD8l6tFfRyUsADZp4/R+FDT0GMC1AuDI5rLNG5wDaKPfS67aHIAs49qybU3/UjG21APJ6N4IAI34b0wcZAqEX71cFa+IlIwLB0fVCVv3GsjoZHs/UFbF64DVS6+4bsZ5jEObwQB9qlGbP1YxPpRi56Ic1qEekmKEM+XPArS1F855o8MvS/bDzxMyTqb90GniLnYLv4BcflB45Elune+p73hx1zVnIu9bXKlMPsWrr5+DIpHaSUcr/cv7lmUKCY/l2IP1O6Rl9DNNa9Jk4AnjU6JSS+Xi2QsGYNwd6eTsB0iqkD4RTxQlc5trITML2MwNkIg0nrzICYxnzSE/NO8bfbm6bpw0MLaYS2LtTYav1ZAiTcdzgbuj+caZa2ombf9vcnz1HbNwSPE/xfEoEl8qOBgBQfIcx9bcqVaMrtNQEs1GCyuraExR9r9EgGp631VAoGWO2ur090P50H+iePaRWV/k5j+FfsVHZOhb/ucTJSAm6D6HgOLBNXJadAAgQXYopgVGOyGpBVULIvywYDszRKtlsA1OJEQiJUGRoNmkOvVBGZ2fI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8946.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(136003)(366004)(186003)(33656002)(26005)(53546011)(55016002)(38100700002)(8676002)(66446008)(478600001)(66556008)(66476007)(9686003)(316002)(83380400001)(66946007)(966005)(110136005)(7696005)(6506007)(5660300002)(71200400001)(2906002)(8936002)(45080400002)(76116006)(86362001)(52536014)(64756008)(122000001)(38070700005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SUlLmPFdqhoPKBC/eGQ79qtrMAtBUNmEBQ9xyxB4ZbkKxQyIH+nc7meIrb3T?=
- =?us-ascii?Q?O2QLOGROIxLk2jKGLT7JBRnIoa8Nb3NfdGixprCraAEJ7kJJILwL83/qkOPn?=
- =?us-ascii?Q?u/cGMpNvNF/69xH5r+TeLhZPPMAETa5LnV0uFrUGtq+QSXNUGhyefgKEDLlr?=
- =?us-ascii?Q?X34CpB7PREZUbyDXKzmMoh1S1Ct6B4QOcOWaO1XyM/s3dh+kxbHC57GuxCFu?=
- =?us-ascii?Q?zFIz8DTmGwkYan7Kciif+yWqf1ym23CMwRuPveJeSu7A3ix1dAQQ/1gJt6T3?=
- =?us-ascii?Q?HsaasfZqIWEwUcxEaczDNTm1qUCf3RAG6GD1A0diI+D3vKV03DUMYo1CEvgo?=
- =?us-ascii?Q?rSnKmWdMbjbULiVVTyKvY8SaXV4pZrAuHv9ENua4a+fD1IJ3aSq8HslI5E4m?=
- =?us-ascii?Q?65pX6oGzQp4EEWGr5q19JnLixJFyodH2M3dnNkogiHaeuoI9NdjKCRKRhUF1?=
- =?us-ascii?Q?Jn9LmII7eUSUigVDGO4hvLnNHW2O7N0ATBUVSvvO3++571c9HCqMl/pJ++ns?=
- =?us-ascii?Q?eRTy6NbA38I1HW7NF5vZFNyqbLbgXZZCmgEsuzmLlpVj/FjPTTUfvxMGKkuI?=
- =?us-ascii?Q?SrHsb7+hOpgNNHXvmVqnfufarLEc94+2XEohaW0k9IXAmU7himHzy/BzEqV8?=
- =?us-ascii?Q?TQxTwBD3Dar52+Do7Y94WJPzQPXGhFNY1kvTgv7lGvSM0lVHznPsRANHFeQC?=
- =?us-ascii?Q?+pdhTASBur6Ab+JSQajAFkBryNhyP4SrD3jsEYstl9fdgH6Qres/xbXXTEX9?=
- =?us-ascii?Q?kZOEWoeZVN4SqJT/l7Hnbk2NQyxfN7ZQZcG89Rl45YmrFpUiXpevQfspT2kN?=
- =?us-ascii?Q?tvvFVj6CaZHgNjEDPyP3T1EBPBaj1SRettozwxuztS2Ct7hQo3Jg3N48t541?=
- =?us-ascii?Q?syi4qHo2wAmGh4AVKImtD5pPNit5C4donTR5/FKWeskFg6PtaJBD8p6/xiTc?=
- =?us-ascii?Q?02Rx9uxoCJY3shBbvQ0Zc55MN3grN9XBqz8M6JblqXj8OBpVpH1fny0i7HPW?=
- =?us-ascii?Q?owi7sDAwdU9QIU5MUDQJzIBSjN3NY1hGxkZgE5Z4U3sSWOdi40arwy9U0Zd9?=
- =?us-ascii?Q?E8vue08Xu2/u84WWmQfrQzBRrck4u0OA9hnVk3/BV5qK4aTyjq5zJwPhgbtR?=
- =?us-ascii?Q?mGsUz/BqehebVYTYjANob+Ud8iLcapC2ym4K//rYcK6+MhKmiC26dgu970BF?=
- =?us-ascii?Q?ZBqsHqsAMO1HhGBP4iXcRmqa6GcH8vvpt89xwaVnorZUuq93EMSHE7GQF0M7?=
- =?us-ascii?Q?7VNcu5Ee4Y7CsT1OXvGAVyavxTa4M3jKzh84LmoqvLNyyIkZdSDYLu/5DwtS?=
- =?us-ascii?Q?ehTgF6T0YlPyRVvgMCJbjKc4?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Tue, 10 Aug
+ 2021 03:41:34 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::c0ed:36a0:7bc8:f2dc%6]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
+ 03:41:34 +0000
+To:     Colin King <colin.king@canonical.com>
+Cc:     James Smart <james.smart@broadcom.com>,
+        Ram Vegesna <ram.vegesna@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: elx: efct: Remove redundant initialization of
+ variable ret
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq135rivue5.fsf@ca-mkp.ca.oracle.com>
+References: <20210804132451.113086-1-colin.king@canonical.com>
+Date:   Mon, 09 Aug 2021 23:41:30 -0400
+In-Reply-To: <20210804132451.113086-1-colin.king@canonical.com> (Colin King's
+        message of "Wed, 4 Aug 2021 14:24:51 +0100")
+Content-Type: text/plain
+X-ClientProxiedBy: SA9PR13CA0028.namprd13.prod.outlook.com
+ (2603:10b6:806:21::33) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA9PR13CA0028.namprd13.prod.outlook.com (2603:10b6:806:21::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.6 via Frontend Transport; Tue, 10 Aug 2021 03:41:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2908a7a0-8162-467c-8d1b-08d95bb0c02e
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5641:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB56417D2948607F282B3598A68EF79@PH0PR10MB5641.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LD2Mv6EAGBRAf2lkRM/8h0RFE3D+CAhesv0UxKn2jh5PBH9Te6bBryThnMRCmBCQhZG60hSZ7qOCUh5kAiIeDLYCEo3TgVc7G2E2Vm91I1qKc4agal3oMFJUEcxDLEwv/wsSRp4Y2ktdfyFqgtUvLUzxbibK8wZ5P1LGo2EXopq8X1hS5I02Z59WYOWTU57eVdK8sQ8j9+PWt1t97e4wHNdK+EHp9/1tDoDRyQzJvVm6ryDBtpfBd8PduiZsw3CHgU/MpDx1pfcQUKGT/89/pqv99YH+a4x9rWP3Y3bw1NeAIM0yz2gXtgkC+DTSxpME+d1OhIcRTDZ5UC65vSlBur83CRFlxhOHbdcx3wBvC+Ysgg1EtYMwXoRhaDPIPxr5sQ1btwVkLloENpPwDus/0MOjiC+Lb1n3KjzEMInSRVhuclPQ2qcuiwH18rM9A/0THJqrkcTJuj41nKpHSP0hW3aEeFiJhiJZx+Fzq1eMcu/Cs/IF+dMvBUbTOcQn6RsIxf4vQONbztNWjQrb5F1tJo92kDvM5v4r5FI5PL9TC3ITqRvTXw04bYh3kgv93e1GWnRoChYoFR1Y2aBw/i4QIZOJSk4CSrGDGgstGWo5z/lmK/U1Pfsu1YP6VOMxpZO/n6RcIdvcJ5kUkbo5MhduseyREUfJMfojvkDijrZyBOnwMVAnSDe9NVtjN4fV97XKdjosWMaV5vtWEGMc08QD4A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(396003)(39860400002)(83380400001)(6916009)(956004)(5660300002)(38100700002)(316002)(86362001)(55016002)(8936002)(38350700002)(186003)(8676002)(36916002)(2906002)(66556008)(558084003)(66946007)(478600001)(4326008)(66476007)(7696005)(52116002)(54906003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9kW3nVAVsuVIADBkIrAKQwXxh82PW8n19eOUvZJR/Uo68guPzSD9m0bgBUtb?=
+ =?us-ascii?Q?ywi8Le5AQR/ZLKtDGXazN0GK0NdKGGRzToWdc9xoOowaKIZG7fG/5sTQVx3i?=
+ =?us-ascii?Q?TR48MGpwVjGVXs0iMvouRduhnQMjMahgd52T3CcMGEfKufnDfwpbtZIVczh0?=
+ =?us-ascii?Q?KQHcjALb/0iRNIe1CjpCIObT2aLq32B/qUvvaIg952qMtkwFy4gY3TyECYfv?=
+ =?us-ascii?Q?MALuNSIVgYiL2At+SnfL+ZIRRi0AjvLGttOilOWLw38j0eMwhZ80gbGUlJNm?=
+ =?us-ascii?Q?VuAhUofqKkasc4bgIRZHlF86O31836oEoFiIf5tQRBBTAWpmyMzCEj7a4xga?=
+ =?us-ascii?Q?p1FaXxlbxMiiS/37UKLbgj+kR5rYPUYDVRrd6xVo5Wem3BCqK/fZuwLVnwvn?=
+ =?us-ascii?Q?Heb3+RSGiXMJSImK5hE/K/fCJYFxl9243mfZyjAjNN1UxEhMAV0Fc2al1JAj?=
+ =?us-ascii?Q?Vw6ZWD8aeSlCtKnXUhnyfoWChrEgNgGla9Hfd2qd3WMpODuJwq7XQsMCcQeE?=
+ =?us-ascii?Q?MAnX2z7qih7XeEKpQzHCSuOSsUJjS6P0a37uY+tZJI7rG9hKp60txhlMvB44?=
+ =?us-ascii?Q?EDaVYS07Pb35DhE5kcUUUksdqBjf7DDRSiyPQUwkZQD7IwC/za2zxShW4OgD?=
+ =?us-ascii?Q?iQog0k81hHbQXqxWg/khuexU2EepYUuEi6y6rt1hx81xC9mrFqeVu2m1GvyR?=
+ =?us-ascii?Q?6rpqZvN6wkRlyF8riPOC5fCCgtYKBvSgczEa3rJEkCTGRjrSqpLY+oGoShD6?=
+ =?us-ascii?Q?5XCMcrATywE2IkbNp/k5lthF6YPpu3xrC5kQ6wvqR0TMhf3sSiDYpxYVasUU?=
+ =?us-ascii?Q?0RmnJPBPP11SyeFCGOjfFxxg930Bkce+2/dsQNHFHnND5PE4OYvWsT1+CW2T?=
+ =?us-ascii?Q?rWTGYitqW5Fu8whu1ycGkoTRLpLoywkzVJJC0/4slHR3Jgq7nWR60PTYt65p?=
+ =?us-ascii?Q?XwbVAtVMeI0cvSgaMZcv6uOkCWpujNxEGijJCGyzbO5PNGlBrUIoU7v2iCuO?=
+ =?us-ascii?Q?+qcuUkyrcyayBm85YKrvTzigXNjTYltFpy0DhXHjX4v9aO3Bb7hNNURJDg4M?=
+ =?us-ascii?Q?/PG4IzL4p7P5b5QaXWwTY673hM7juHC61BKS7T/SP3fzcjFAkZh8EOW+TpeW?=
+ =?us-ascii?Q?oZzKY5zi7zfl/SYsF0Qo6QZEEM5HfmVqn8uq2+1lLknKjK0sDl6ZKU3Vbhbp?=
+ =?us-ascii?Q?28fgPEQNOgMdvYcBadv0/SQRMGoZnpw12FI7Hs4Wku6Z4IkM3h46xQ9w0lY7?=
+ =?us-ascii?Q?DgjYnzps3JGbjKVCY4RpOg/1fKdQqk/KclKzxrER9YqVeA5QLlcfqi4Gv45M?=
+ =?us-ascii?Q?jvPDp2sy2k4qdEld/WSdgdda?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2908a7a0-8162-467c-8d1b-08d95bb0c02e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8946.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f05fb863-7610-45bb-1e62-08d95bb04fe0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2021 03:38:26.1079
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 03:41:34.7110
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YtRU2XyxZUu1xpIVuh3ZBkHYuHk981Uk7CvTyDS+WTLctczoFU9LkxY85HgwToMVTlPio1Ti2F0PIQlGaucD7g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8705
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I/RpJ41Zkfk6+GkkcwT8NY5nqbtd0qrhYWP3+curcAiZjKbLeiV9SlsRZoC8sjeC6Ae0yEBzJ0cL5tztumkWQmnO0msYFNOXBINFn9nCpys=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5641
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10071 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108100022
+X-Proofpoint-ORIG-GUID: YYhSem357j-o4-RXLIkhS8_6XKXPa_IX
+X-Proofpoint-GUID: YYhSem357j-o4-RXLIkhS8_6XKXPa_IX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Colin,
 
-> -----Original Message-----
-> From: Leizhen (ThunderTown) <thunder.leizhen@huawei.com>
-> Sent: Monday, August 9, 2021 8:28 PM
-> To: Leo Li <leoyang.li@nxp.com>; Shawn Guo <shawnguo@kernel.org>; Rob
-> Herring <robh+dt@kernel.org>; Mark Kettenis <mark.kettenis@xs4all.nl>;
-> devicetree <devicetree@vger.kernel.org>; linux-arm-kernel <linux-arm-
-> kernel@lists.infradead.org>; linux-kernel <linux-kernel@vger.kernel.org>
-> Subject: Re: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible strin=
-g of
-> LX2160A UART
->=20
->=20
->=20
-> On 2021/8/10 6:52, Leo Li wrote:
-> >
-> >
-> >> -----Original Message-----
-> >> From: Zhen Lei <thunder.leizhen@huawei.com>
-> >> Sent: Tuesday, June 15, 2021 8:16 AM
-> >> To: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>;
-> Rob
-> >> Herring <robh+dt@kernel.org>; Mark Kettenis
-> >> <mark.kettenis@xs4all.nl>; devicetree <devicetree@vger.kernel.org>;
-> >> linux-arm-kernel <linux-arm- kernel@lists.infradead.org>;
-> >> linux-kernel <linux-kernel@vger.kernel.org>
-> >> Cc: Zhen Lei <thunder.leizhen@huawei.com>
-> >> Subject: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible
-> >> string of LX2160A UART
-> >>
-> >> Mark Kettenis told us that:
-> >> According to the NXP documentation, the LX2160A has a real PL011 UART.
-> >>
-> >> Therefore, rewrite it to the compatible string of pl011. The property
-> >> "current- speed" specific to "arm,sbsa-uart" is also deleted.
-> >
-> > Sorry that I missed the discussion on the v1.  But looks like this chan=
-ge
-> breaks the LX2160 boot.  The AMBA matching doesn't seem to work.  And
-> the console is not registered correctly.
->=20
-> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.=
-k
-> ernel.org%2Flinux-arm-kernel%2Fcba3a29f-92b5-072a-9a27-
-> 60240f072dad%40huawei.com%2F&amp;data=3D04%7C01%7Cleoyang.li%40nx
-> p.com%7C9986b52f71724d7f6ae108d95b9e1d9b%7C686ea1d3bc2b4c6fa92cd
-> 99c5c301635%7C0%7C0%7C637641556923909225%7CUnknown%7CTWFpbGZ
-> sb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6M
-> n0%3D%7C1000&amp;sdata=3DwReesSfMj1hV2iPTN0%2F%2B%2Fb%2BKJH8xF
-> LLcDgOMfjx731I%3D&amp;reserved=3D0
->=20
-> Maybe we should fall back to v1.
+> The variable ret is being initialized with a value that is never read,
+> it is being updated later on. The assignment is redundant and can be
+> removed.
 
-I didn't look into the problem in detail.  Probably it is because of lackin=
-g the clock properties needed by the AMBA bus?
+Applied to 5.15/scsi-staging, thanks!
 
->=20
-> >
-> > [    0.639055] OF: amba_device_add() failed (-2) for /soc/serial@21c000=
-0
-> > [    0.645612] OF: amba_device_add() failed (-2) for /soc/serial@21d000=
-0
-> >
-> >>
-> >> Suggested-by: Shawn Guo <shawnguo@kernel.org>
-> >> Suggested-by: Mark Kettenis <mark.kettenis@xs4all.nl>
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> ---
-> >>  arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 12 ++++--------
-> >>  1 file changed, 4 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> >> b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> >> index c4b1a59ba424..d2e6f7285674 100644
-> >> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> >> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-> >> @@ -920,34 +920,30 @@ QORIQ_CLK_PLL_DIV(8)>,
-> >>  		};
-> >>
-> >>  		uart0: serial@21c0000 {
-> >> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> >> +			compatible =3D "arm,pl011", "arm,primecell";
-> >>  			reg =3D <0x0 0x21c0000 0x0 0x1000>;
-> >>  			interrupts =3D <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-> >> -			current-speed =3D <115200>;
-> >>  			status =3D "disabled";
-> >>  		};
-> >>
-> >>  		uart1: serial@21d0000 {
-> >> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> >> +			compatible =3D "arm,pl011", "arm,primecell";
-> >>  			reg =3D <0x0 0x21d0000 0x0 0x1000>;
-> >>  			interrupts =3D <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-> >> -			current-speed =3D <115200>;
-> >>  			status =3D "disabled";
-> >>  		};
-> >>
-> >>  		uart2: serial@21e0000 {
-> >> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> >> +			compatible =3D "arm,pl011", "arm,primecell";
-> >>  			reg =3D <0x0 0x21e0000 0x0 0x1000>;
-> >>  			interrupts =3D <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-> >> -			current-speed =3D <115200>;
-> >>  			status =3D "disabled";
-> >>  		};
-> >>
-> >>  		uart3: serial@21f0000 {
-> >> -			compatible =3D "arm,sbsa-uart","arm,pl011";
-> >> +			compatible =3D "arm,pl011", "arm,primecell";
-> >>  			reg =3D <0x0 0x21f0000 0x0 0x1000>;
-> >>  			interrupts =3D <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
-> >> -			current-speed =3D <115200>;
-> >>  			status =3D "disabled";
-> >>  		};
-> >>
-> >> --
-> >> 2.25.1
-> >>
-> >
-> > .
-> >
+-- 
+Martin K. Petersen	Oracle Linux Engineering
