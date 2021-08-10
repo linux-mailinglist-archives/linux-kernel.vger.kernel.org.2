@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06803E81B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047F23E81D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhHJSBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:01:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59496 "EHLO mail.kernel.org"
+        id S236276AbhHJSDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:03:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236208AbhHJR6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236210AbhHJR6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 13:58:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC9A60724;
-        Tue, 10 Aug 2021 17:46:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6065B61101;
+        Tue, 10 Aug 2021 17:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617562;
-        bh=jgEx8dShc2VzbMKEH74GN5kZSTKgwtV9KyXmvTd19Zk=;
+        s=korg; t=1628617564;
+        bh=SgdEzm93F5mtxhKSIBUxyhXnKpQX5fjHSsZuNqdxQkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e1PRs6k1oWxfi3RZ0nyYfs3WfX1fJxTB1H5uksevlvxUaHRTmiW6eMXeFb1MHudtf
-         naPWQ/CntTPsknIiwpmTbW5QKioGv80RXe0iFNiEt5XQXqO+vbGyBfW8UcPwVHKiA7
-         e0QjrJFNAxa2o86rpvqjmBn20jqHDDgi4LThsg8Y=
+        b=SF2bliAzbTt65RP/CAeTnXe9CJ6PbAszohxgMPsVRj7TsX5qQlDFeXroNRUg7uzFv
+         F4U9dK8ogBUBDpdRysdRRipNhk23UYScU1wccvPI3UXseida1H0ybzaGxtGGKLw4hb
+         fMHjrLqBOnYgOVvlk8P3bTfk4Lc3vTpBRzVNQJTo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Allen Pais <apais@linux.microsoft.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH 5.13 114/175] optee: fix tee out of memory failure seen during kexec reboot
-Date:   Tue, 10 Aug 2021 19:30:22 +0200
-Message-Id: <20210810173004.706412835@linuxfoundation.org>
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH 5.13 115/175] tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
+Date:   Tue, 10 Aug 2021 19:30:23 +0200
+Message-Id: <20210810173004.739657923@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -41,77 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Allen Pais <apais@linux.microsoft.com>
+From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit f25889f93184db8b07a543cc2bbbb9a8fcaf4333 upstream.
+commit dfb703ad2a8d366b829818a558337be779746575 upstream.
 
-The following out of memory errors are seen on kexec reboot
-from the optee core.
+dma-buf backed shared memory cannot be reliably freed and unregistered
+during a kexec operation even when tee_shm_free() is called on the shm
+from a .shutdown hook. The problem occurs because dma_buf_put() calls
+fput() which then uses task_work_add(), with the TWA_RESUME parameter,
+to queue tee_shm_release() to be called before the current task returns
+to user mode. However, the current task never returns to user mode
+before the kexec completes so the memory is never freed nor
+unregistered.
 
-[    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
-[    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
+Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
+allocation so that tee_shm_free() can directly call tee_shm_release().
+This will ensure that the shm can be freed and unregistered during a
+kexec operation.
 
-tee_shm_release() is not invoked on dma shm buffer.
-
-Implement .shutdown() method to handle the release of the buffers
-correctly.
-
-More info:
-https://github.com/OP-TEE/optee_os/issues/3637
-
+Fixes: 09e574831b27 ("tpm/tpm_ftpm_tee: A driver for firmware TPM running inside TEE")
+Fixes: 1760eb689ed6 ("tpm/tpm_ftpm_tee: add shutdown call back")
 Cc: stable@vger.kernel.org
-Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tee/optee/core.c |   20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/char/tpm/tpm_ftpm_tee.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -574,6 +574,13 @@ static optee_invoke_fn *get_invoke_func(
- 	return ERR_PTR(-EINVAL);
- }
+--- a/drivers/char/tpm/tpm_ftpm_tee.c
++++ b/drivers/char/tpm/tpm_ftpm_tee.c
+@@ -254,11 +254,11 @@ static int ftpm_tee_probe(struct device
+ 	pvt_data->session = sess_arg.session;
  
-+/* optee_remove - Device Removal Routine
-+ * @pdev: platform device information struct
-+ *
-+ * optee_remove is called by platform subsystem to alert the driver
-+ * that it should release the device
-+ */
-+
- static int optee_remove(struct platform_device *pdev)
- {
- 	struct optee *optee = platform_get_drvdata(pdev);
-@@ -604,6 +611,18 @@ static int optee_remove(struct platform_
- 	return 0;
- }
- 
-+/* optee_shutdown - Device Removal Routine
-+ * @pdev: platform device information struct
-+ *
-+ * platform_shutdown is called by the platform subsystem to alert
-+ * the driver that a shutdown, reboot, or kexec is happening and
-+ * device must be disabled.
-+ */
-+static void optee_shutdown(struct platform_device *pdev)
-+{
-+	optee_disable_shm_cache(platform_get_drvdata(pdev));
-+}
-+
- static int optee_probe(struct platform_device *pdev)
- {
- 	optee_invoke_fn *invoke_fn;
-@@ -749,6 +768,7 @@ MODULE_DEVICE_TABLE(of, optee_dt_match);
- static struct platform_driver optee_driver = {
- 	.probe  = optee_probe,
- 	.remove = optee_remove,
-+	.shutdown = optee_shutdown,
- 	.driver = {
- 		.name = "optee",
- 		.of_match_table = optee_dt_match,
+ 	/* Allocate dynamic shared memory with fTPM TA */
+-	pvt_data->shm = tee_shm_alloc(pvt_data->ctx,
+-				      MAX_COMMAND_SIZE + MAX_RESPONSE_SIZE,
+-				      TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++	pvt_data->shm = tee_shm_alloc_kernel_buf(pvt_data->ctx,
++						 MAX_COMMAND_SIZE +
++						 MAX_RESPONSE_SIZE);
+ 	if (IS_ERR(pvt_data->shm)) {
+-		dev_err(dev, "%s: tee_shm_alloc failed\n", __func__);
++		dev_err(dev, "%s: tee_shm_alloc_kernel_buf failed\n", __func__);
+ 		rc = -ENOMEM;
+ 		goto out_shm_alloc;
+ 	}
 
 
