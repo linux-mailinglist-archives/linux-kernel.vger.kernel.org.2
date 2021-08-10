@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B523E7EEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A173F3E8025
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhHJRgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:36:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42350 "EHLO mail.kernel.org"
+        id S235802AbhHJRq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233128AbhHJRes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:34:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EEAB6109E;
-        Tue, 10 Aug 2021 17:34:25 +0000 (UTC)
+        id S235795AbhHJRnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:43:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D7760F94;
+        Tue, 10 Aug 2021 17:39:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616865;
-        bh=kHC0BEt7uSPi7mzIZRmtyXHWQk8ug+KOaKNi/Q7JPqs=;
+        s=korg; t=1628617151;
+        bh=DoV5vHuMG6kNwCUV47p0+YaRnSi88p7jjC3YdvCAUr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yemaSyDwOx+fVk/jXvikfOkP6UQMCWze5B6V2rdt+CWy5WSxNiq9pMn03aqc7aCCU
-         +pArxG55lugCJ2WhvGs+Z5qn4CQQrZmS9ML4hQWJW8E1Pau7U/GNFUrkNLbvUGjfAr
-         1NTB6Aplm12GYNkTjtfNomnqfDrU3FJh5G/ix530=
+        b=jx4DPFiumOwBboTAfgEMdH0k03J8udCs8WOQGzLBSlSnXjp3Q315CrZPDWlg+lxkO
+         B33+bXDRyAkWIgOKxmYbPmOvF9LJOUXPu2Sw1v4wCBX0UPpcZyJdi4DBN3WMmbSREV
+         ZRYdO8hypg7T7H0Jv/xBEPfQkpjq4KAIShddZdd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fei Qin <fei.qin@corigine.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 27/85] nfp: update ethtool reporting of pauseframe control
+        stable@vger.kernel.org, Pawel Laszczak <pawell@cadence.com>,
+        Peter Chen <peter.chen@kernel.org>
+Subject: [PATCH 5.10 066/135] usb: cdns3: Fixed incorrect gadget state
 Date:   Tue, 10 Aug 2021 19:30:00 +0200
-Message-Id: <20210810172949.113738512@linuxfoundation.org>
+Message-Id: <20210810172957.948251993@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fei Qin <fei.qin@corigine.com>
+From: Pawel Laszczak <pawell@cadence.com>
 
-[ Upstream commit 9fdc5d85a8fe684cdf24dc31c6bc4a727decfe87 ]
+commit aa35772f61752d4c636d46be51a4f7ca6c029ee6 upstream.
 
-Pauseframe control is set to symmetric mode by default on the NFP.
-Pause frames can not be configured through ethtool now, but ethtool can
-report the supported mode.
+For delayed status phase, the usb_gadget->state was set
+to USB_STATE_ADDRESS and it has never been updated to
+USB_STATE_CONFIGURED.
+Patch updates the gadget state to correct USB_STATE_CONFIGURED.
+As a result of this bug the controller was not able to enter to
+Test Mode while using MSC function.
 
-Fixes: 265aeb511bd5 ("nfp: add support for .get_link_ksettings()")
-Signed-off-by: Fei Qin <fei.qin@corigine.com>
-Signed-off-by: Louis Peens <louis.peens@corigine.com>
-Signed-off-by: Simon Horman <simon.horman@corigine.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+Link: https://lore.kernel.org/r/20210623070247.46151-1-pawell@gli-login.cadence.com
+Signed-off-by: Peter Chen <peter.chen@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/cdns3/ep0.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
-index 17b91ed39369..2354dec99418 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
-@@ -266,6 +266,8 @@ nfp_net_get_link_ksettings(struct net_device *netdev,
+--- a/drivers/usb/cdns3/ep0.c
++++ b/drivers/usb/cdns3/ep0.c
+@@ -731,6 +731,7 @@ static int cdns3_gadget_ep0_queue(struct
+ 		request->actual = 0;
+ 		priv_dev->status_completion_no_call = true;
+ 		priv_dev->pending_status_request = request;
++		usb_gadget_set_state(&priv_dev->gadget, USB_STATE_CONFIGURED);
+ 		spin_unlock_irqrestore(&priv_dev->lock, flags);
  
- 	/* Init to unknowns */
- 	ethtool_link_ksettings_add_link_mode(cmd, supported, FIBRE);
-+	ethtool_link_ksettings_add_link_mode(cmd, supported, Pause);
-+	ethtool_link_ksettings_add_link_mode(cmd, advertising, Pause);
- 	cmd->base.port = PORT_OTHER;
- 	cmd->base.speed = SPEED_UNKNOWN;
- 	cmd->base.duplex = DUPLEX_UNKNOWN;
--- 
-2.30.2
-
+ 		/*
 
 
