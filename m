@@ -2,92 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DFA3E5BF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8843E5BEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241709AbhHJNkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241877AbhHJNji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD75E60EE7;
-        Tue, 10 Aug 2021 13:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628602749;
-        bh=fObxAgs+ulfRDwt7g5xTa8zsugCY1+6fJfkNM/IsNlA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rL/ZttqfxsO2dZRUHtzy9nzwGGoLFagpqaqSVFKyYkmwEk8jLLj+VGms3FbxODWOE
-         /axtGd5S9x+7lkyR5olgKW/uQ6xIG4FAyY22EBUvi0ygIQI/V8oqo0AztKG0xH8P+D
-         i2BUBtwAKuoo5FiwRcNTvRRH5OPAvTRFsERhYmH3cPbkdyodLTyF6MqRFOB3VOotNS
-         EgJsbqMLwqFLTVqbYkoNJRWhI2ATN7S7OajsyTWegqHLoNNk3q1brbNti/WGlP5hLq
-         Dtva7zVz02U1F7tX/hFspZj7RsQEplXREoFsMoN28qsjq+2ZvBsJ6Dl4XjCpPfWmew
-         qK1BAfDETIcpw==
-Date:   Tue, 10 Aug 2021 15:38:40 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Ian Pilcher <arequipeno@gmail.com>, hch@lst.de, axboe@kernel.dk,
-        kernelnewbies@kernelnewbies.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, pavel@ucw.cz, pali@kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
-Message-ID: <20210810153840.42419d06@thinkpad>
-In-Reply-To: <YRIeHH1SLl6tYCeY@kroah.com>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
-        <20210809205633.4300bbea@thinkpad>
-        <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com>
-        <20210810004331.0f0094a5@thinkpad>
-        <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
-        <YRIeHH1SLl6tYCeY@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S240103AbhHJNkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241846AbhHJNjU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:39:20 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AC1C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:38:58 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id n6so15884146ljp.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=bKq+cKQkHre2BJM3HKk8FCVah83tPSiVohlzsiSV18Y=;
+        b=vKmfRV0FQQRN+axhelfu14SkodsZsI9XRuSBRx7YKbougxLMj/BxZPA1mPcGYtcNjp
+         WWQB8lHBSvDCk75GdFVbfYAbxSLfRJuFvY/6YOM88OZQ+F6YFXVFN6dCAY8KEXHvRe7P
+         WOIECdJCqFl8pOeZXv8sI4fvXsqa6RyyfXSPve1G/L+cSZQD1gcx5CfV549JmC8/8lwL
+         qOTflVsdR5FAzw+wgb5JGgdCCVar5XZDabDePYOwO7lAPxOWK1zFJfoKBLFl+NBeZb6k
+         QmPgcxgYlcjChbh8qy7LGIWP5YKryv7O/Tx+d0EGER1bBMG/svUSj//tsfIJ3eN1EOGs
+         DpkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=bKq+cKQkHre2BJM3HKk8FCVah83tPSiVohlzsiSV18Y=;
+        b=fZZRuIizYt+ld/3G41YQGKSPmxisCTQlu9h0cq0WDBWESoIKZbNoESorKtQvMOcaJF
+         ESPpOPbobEEE7O8Gu4sQeT2MZ9GQyzghoi4buKilU11w6hkAZa7wV5il9uXvphUjgqfQ
+         L454T3wCtpmOudkx47Xbzf+s9FMUHVhwddQzeyv4yAj0T2NbNmTDJyi82zIh0ywOF0YQ
+         2Y/U82REyscDqG+bbuj42vrzl+rRwfYbtOivMPEzkywguhhoo+u71WPE4LsOECsdcVYc
+         tiBUD0U+ofHNcPc4kYkYSo4e8Z3tF0nGnmPTFSBgtaWB4eMqX2BKWye1Hkdf9osNEw3f
+         EPGw==
+X-Gm-Message-State: AOAM530244h1U0NYsYhLsMUIUlBq0eN7CsEhaqVTb3JqRUsazCpxBjGe
+        HWpwcLiOdUZZ6ECdVSS8/rOVXM0h+a1xkZcU9M0=
+X-Google-Smtp-Source: ABdhPJzp4zApArjfzdr7ajJ6y2hJHCM9NQs2SkkvzS0eeRRB3EhR9Yk2QXhhz1DuPuqh/foQOsxtceiuCpbF7Y88cP8=
+X-Received: by 2002:a2e:944a:: with SMTP id o10mr19395993ljh.119.1628602737206;
+ Tue, 10 Aug 2021 06:38:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: by 2002:a05:6512:2006:0:0:0:0 with HTTP; Tue, 10 Aug 2021 06:38:56
+ -0700 (PDT)
+Reply-To: mrs.bill_chantal66@europe.com
+From:   "Mrs.Bill.Chantal" <salemchantal11@gmail.com>
+Date:   Tue, 10 Aug 2021 15:38:56 +0200
+Message-ID: <CAKQUyukF5hqzxaTkBW6tELiPRVKmW9b8h_wiBdaOV1mgFp6gCg@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 08:35:08 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+You have been compensated with the sum of 4 million dollars in this
+united nation the payment will be Issue into atm visa card and send to
+you from the Santander bank of Spain we need your address passport and
+your Whatsapp number.You can contact my
+Email:mrs.bill_chantal66@europe.com
 
-> On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
-> > On 8/9/21 5:43 PM, Marek Beh=C3=BAn wrote: =20
-> > > I confess that I am not very familiar with internal blkdev API. =20
-> >=20
-> > It's mainly a matter of symbol visibility.  See this thread from a few
-> > months ago:
-> >=20
-> >   https://www.spinics.net/lists/linux-leds/msg18244.html
-> >=20
-> > Now ... my code currently lives in block/, so there isn't actually
-> > anything technically preventing it from iterating through the block
-> > devices.
-> >=20
-> > The reactions to Enzo's patch (which you can see in that thread) make me
-> > think that anything that iterates through all block devices is likely to
-> > be rejected, but maybe I'm reading too much into it.
-> >=20
-> >=20
-> > Greg / Christoph -
-> >=20
-> > (As you were the people who expressed disapproval of Enzo's patch to
-> > export block_class and disk_type ...)
-> >=20
-> > Can you weigh in on the acceptability of iterating through the block
-> > devices (searching by name) from LED trigger code within the block
-> > subsystem (i.e. no new symbols would need to be exported)?
-> >=20
-> > This would allow the trigger to implement the sysfs API that Marek and
-> > Pavel want. =20
->=20
-> No idea, let's see the change first, we can never promise anything :)
-
-Hi Greg,
-
-Can't we use blkdev_get_by_path() (or blk_lookup_devt() with
-blkdev_get_by_dev())?
-This would open the block device and return a struct block_device *.
-When the LED trigger is disabled, it would also have to release the
-device.
-
-Marek
+Thanks
+Mrs. bill Chantal
