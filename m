@@ -2,71 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A733E5A27
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827563E5A2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240670AbhHJMmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238812AbhHJMmH (ORCPT
+        id S240696AbhHJMmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:42:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6104 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240686AbhHJMmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:42:07 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8718FC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:41:45 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so4124742pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=jEv32BiVnu7fQqSnvPGcx5ruZj5V0HnF2prfpKqxjn4=;
-        b=0mjhlmrZSBz51JqUD9OH0DhuZBRxI34vxDlxoSVsklAlLVx+DB4RYGu4wXSCPJo6bE
-         0Rj1Ffse8Rzx2ep4AxTlkweNF25Z6t+4LZO9PAdFTLPcQXwbra9BkRNXLHiVKaTsNc0S
-         +ixAQQ2i6aJthqyAUcHvnh8fjB5XaFTimMRxJcK8KBdSEvIxfGKjYcbv5RpgW2yA029b
-         ZfALDvV0HR4/2en03DYTmB2UEgKkjXlvfeQd+NIYlDc4ILWvxdqWUoEG+deW7Q3HdAV6
-         XilWTUU3kgXGlUtEyArDUU12hOt0M0ah1oK3apBp/eiU70CaaFA9B1cMk20hy53/fqj7
-         I6rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references;
-        bh=jEv32BiVnu7fQqSnvPGcx5ruZj5V0HnF2prfpKqxjn4=;
-        b=IwjaRkPxcS/is6JCEDC/RlWeR0AdlYNnJtpEsaU0t/yt90f100izAUrHYcwJLW04e+
-         kV3+soAgB1pWMrGbXXbhpIdRiz1P0RGCQU5zv/D14mZQGdvQrdFshS88A7La9UX21pkC
-         +rwd5oYDddLCucqXYUEOcBu1BxoVodc2tdPvFa6BUiZw/X3/clNRdUvUWYG1j/JnIHH/
-         YjRgVxNe1gy+j9YDexPciEG5DjZDRW/XIYiGF5tHgfWLOPi9BivbPKZ5CAA/Yy9Hppvu
-         TahbDjIAZyGw0z14YPJU4c2yA6IkI6wUFCSQAYOaqzLoQIouXC83up+Iejpma8F1RRQd
-         lvGg==
-X-Gm-Message-State: AOAM532Q04KVvz/cCCpfikqBo/A7sxDyPvnjj5gj7sxo7VdmbrweUgpO
-        wQWDkn8Y+sPK3cFN2Xk55klSFA==
-X-Google-Smtp-Source: ABdhPJxAEsdQRashpCRGsGTtR9hGQpKEX2bQMXc4GZMfve1VZFx9ipQvlCg0rOzK62MK+kdtLSnIMw==
-X-Received: by 2002:a65:55c6:: with SMTP id k6mr188593pgs.129.1628599305051;
-        Tue, 10 Aug 2021 05:41:45 -0700 (PDT)
-Received: from ubuntu.huaqin.com ([101.78.151.214])
-        by smtp.gmail.com with ESMTPSA id y12sm23851561pfr.68.2021.08.10.05.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 05:41:44 -0700 (PDT)
-From:   xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-To:     pihsun@chromium.org, drinkcat@google.com, marcheu@chromium.org,
-        jitao.shi@mediatek.com, thierry.reding@gmail.com, sam@ravnborg.org,
-        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/panel: Add inx Himax8279d MIPI-DSI LCD panel driver
-Date:   Tue, 10 Aug 2021 20:41:40 +0800
-Message-Id: <20210810124140.16937-1-xiazhengqiao@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210412080134.24598-1-xiazhengqiao@huaqin.corp-partner.google.com>
-References: <20210412080134.24598-1-xiazhengqiao@huaqin.corp-partner.google.com>
+        Tue, 10 Aug 2021 08:42:38 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ACZnjb006759;
+        Tue, 10 Aug 2021 08:41:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=RHsR6aVGy+GaELvcNwuiB11e5P4OeCZdzOOLRCSalVI=;
+ b=UgSXAUjX8e9BxPI3R7A8uMNgvRpfJTmyKTpNNjav7mbpqx2AIVKSleA2bj0rNFBZvFSM
+ aKMuoQDRWM7UGi3LrKdC9P4scRndC+kNOI88NLYCD76sdDEOdcOaFsZWKqgWT34sillS
+ JVybsByWa4Id0LaT84AC2aauGA8RwwSQs8dmqmag8PE2Nc/ZZiAZx9mEa+3q4588wf4w
+ GY619hOs+QeuI7OyMVgxDfi/zZLgDAfTZwtCmxlRdjj1qSfCAgj0GZpq/ThLzRMpcPO+
+ GEJPB0s+JFoALdiWWHiN6gIHTQLyj/CAfx2P5QsJrHsrNJWntpS+eiBoRcs07bNXmMWt ng== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab8kk9qc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Aug 2021 08:41:55 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17ACbMF8004746;
+        Tue, 10 Aug 2021 12:41:52 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 3a9ht8ne50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Aug 2021 12:41:52 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17ACfohE59310512
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Aug 2021 12:41:50 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBE1D4C050;
+        Tue, 10 Aug 2021 12:41:49 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 005204C044;
+        Tue, 10 Aug 2021 12:41:48 +0000 (GMT)
+Received: from [9.171.19.103] (unknown [9.171.19.103])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 10 Aug 2021 12:41:47 +0000 (GMT)
+Subject: Re: [PATCH v2 net] net: switchdev: zero-initialize struct
+ switchdev_notifier_fdb_info emitted by drivers towards the bridge
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jianbo Liu <jianbol@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-s390@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Ido Schimmel <idosch@idosch.org>
+References: <20210810115024.1629983-1-vladimir.oltean@nxp.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+Message-ID: <dfa98bf7-cab4-4076-ef5f-880a8baa89ee@linux.ibm.com>
+Date:   Tue, 10 Aug 2021 14:41:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210810115024.1629983-1-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _j8fSda4zE-t-vI3t2qAYb9FXmKJ_HIy
+X-Proofpoint-ORIG-GUID: _j8fSda4zE-t-vI3t2qAYb9FXmKJ_HIy
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-10_05:2021-08-10,2021-08-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 lowpriorityscore=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108100080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/08/2021 13:50, Vladimir Oltean wrote:
+> The blamed commit a new field to struct switchdev_notifier_fdb_info, but
+                  ^^^ added?
 
-could you help to review this patch? This patch has been applied to our devices which use
+> did not make sure that all call paths set it to something valid. For
+> example, a switchdev driver may emit a SWITCHDEV_FDB_ADD_TO_BRIDGE
+> notifier, and since the 'is_local' flag is not set, it contains junk
+> from the stack, so the bridge might interpret those notifications as
+> being for local FDB entries when that was not intended.
+> 
+> To avoid that now and in the future, zero-initialize all
+> switchdev_notifier_fdb_info structures created by drivers such that all
+> newly added fields to not need to touch drivers again.
+> 
+> Fixes: 2c4eca3ef716 ("net: bridge: switchdev: include local flag in FDB notifications")
+> Reported-by: Ido Schimmel <idosch@idosch.org>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+> Tested-by: Ido Schimmel <idosch@nvidia.com>
+> ---
+> v1->v2: use an empty struct initializer as opposed to memset, as
+>         suggested by Leon Romanovsky
 
-INX 2081101qfh032011-53g 1200x1920 video panel and it works well.
+For drivers/s390/net/qeth_l2_main.c :
 
-thanks.
+Reviewed-by: Karsten Graul <kgraul@linux.ibm.com>
+
+Thanks
