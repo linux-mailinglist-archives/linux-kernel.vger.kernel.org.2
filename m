@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EC93E7FAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6063E7FAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235034AbhHJRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:41:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
+        id S235163AbhHJRly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:41:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234842AbhHJRi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:38:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDAF461154;
-        Tue, 10 Aug 2021 17:36:30 +0000 (UTC)
+        id S234869AbhHJRi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:38:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D4E661152;
+        Tue, 10 Aug 2021 17:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616991;
-        bh=dTVsgaI0Ijz/iBriwJNSMb7CCOp1qtmBVnOwQDSdRcg=;
+        s=korg; t=1628616993;
+        bh=MoZyFUn/L43HQ7SCPVtdqYj3nRTjcC/Hn3C0nmfTl4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dMwpGHo9rfYiYkn9DlsdPBVpzn1rNL1R+eqgR1VBWRgPy2gsASLE3HlDSHHbN27gV
-         A9kS2dSMOXH7b/jXAmFjdJDa4LWakujn9PQNtOZtmHHjPKOXoZGUP0IikDr7rsTlUY
-         L8AHIklzVWwu6UJ4nOeh1W18e6JDkay+p5KuCfw0=
+        b=mwrqwx6sXzNF6scHAT9KfiYSt8B+FDJB2J2wwyzelIrdzX5RpoZ97oS4LoRoI4kEG
+         6ly8t4+xM554kFPXthBeK/264sSicsHi1fOLD+jx9j/19JMbVfHCfpOd7AlFNU7ASj
+         SE6tYetqye8RdPLlpqmdsiSApbF+Z6JbOg5bj54Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com,
-        Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 81/85] reiserfs: check directory items on read from disk
-Date:   Tue, 10 Aug 2021 19:30:54 +0200
-Message-Id: <20210810172950.977785028@linuxfoundation.org>
+        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 82/85] virt_wifi: fix error on connect
+Date:   Tue, 10 Aug 2021 19:30:55 +0200
+Message-Id: <20210810172951.010212412@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
 References: <20210810172948.192298392@linuxfoundation.org>
@@ -41,77 +40,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+From: Matteo Croce <mcroce@microsoft.com>
 
-[ Upstream commit 13d257503c0930010ef9eed78b689cec417ab741 ]
+[ Upstream commit 17109e9783799be2a063b2bd861a508194b0a487 ]
 
-While verifying the leaf item that we read from the disk, reiserfs
-doesn't check the directory items, this could cause a crash when we
-read a directory item from the disk that has an invalid deh_location.
+When connecting without first doing a scan, the BSS list is empty
+and __cfg80211_connect_result() generates this warning:
 
-This patch adds a check to the directory items read from the disk that
-does a bounds check on deh_location for the directory entries. Any
-directory entry header with a directory entry offset greater than the
-item length is considered invalid.
+$ iw dev wlan0 connect -w VirtWifi
+[   15.371989] ------------[ cut here ]------------
+[   15.372179] WARNING: CPU: 0 PID: 92 at net/wireless/sme.c:756 __cfg80211_connect_result+0x402/0x440
+[   15.372383] CPU: 0 PID: 92 Comm: kworker/u2:2 Not tainted 5.13.0-kvm #444
+[   15.372512] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-3.fc34 04/01/2014
+[   15.372597] Workqueue: cfg80211 cfg80211_event_work
+[   15.372756] RIP: 0010:__cfg80211_connect_result+0x402/0x440
+[   15.372818] Code: 48 2b 04 25 28 00 00 00 75 59 48 8b 3b 48 8b 76 10 48 8d 65 e0 5b 41 5c 41 5d 41 5e 5d 49 8d 65 f0 41 5d e9 d0 d4 fd ff 0f 0b <0f> 0b e9 f6 fd ff ff e8 f2 4a b4 ff e9 ec fd ff ff 0f 0b e9 19 fd
+[   15.372966] RSP: 0018:ffffc900005cbdc0 EFLAGS: 00010246
+[   15.373022] RAX: 0000000000000000 RBX: ffff8880028e2400 RCX: ffff8880028e2472
+[   15.373088] RDX: 0000000000000002 RSI: 00000000fffffe01 RDI: ffffffff815335ba
+[   15.373149] RBP: ffffc900005cbe00 R08: 0000000000000008 R09: ffff888002bdf8b8
+[   15.373209] R10: ffff88803ec208f0 R11: ffffffffffffe9ae R12: ffff88801d687d98
+[   15.373280] R13: ffff88801b5fe000 R14: ffffc900005cbdc0 R15: dead000000000100
+[   15.373330] FS:  0000000000000000(0000) GS:ffff88803ec00000(0000) knlGS:0000000000000000
+[   15.373382] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   15.373425] CR2: 000056421c468958 CR3: 000000001b458001 CR4: 0000000000170eb0
+[   15.373478] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   15.373529] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   15.373580] Call Trace:
+[   15.373611]  ? cfg80211_process_wdev_events+0x10e/0x170
+[   15.373743]  cfg80211_process_wdev_events+0x10e/0x170
+[   15.373783]  cfg80211_process_rdev_events+0x21/0x40
+[   15.373846]  cfg80211_event_work+0x20/0x30
+[   15.373892]  process_one_work+0x1e9/0x340
+[   15.373956]  worker_thread+0x4b/0x3f0
+[   15.374017]  ? process_one_work+0x340/0x340
+[   15.374053]  kthread+0x11f/0x140
+[   15.374089]  ? set_kthread_struct+0x30/0x30
+[   15.374153]  ret_from_fork+0x1f/0x30
+[   15.374187] ---[ end trace 321ef0cb7e9c0be1 ]---
+wlan0 (phy #0): connected to 00:00:00:00:00:00
 
-Link: https://lore.kernel.org/r/20210709152929.766363-1-chouhan.shreyansh630@gmail.com
-Reported-by: syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com
-Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Add the fake bss just before the connect so that cfg80211_get_bss()
+finds the virtual network.
+As some code was duplicated, move it in a common function.
+
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+Link: https://lore.kernel.org/r/20210706154423.11065-1-mcroce@linux.microsoft.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/reiserfs/stree.c | 31 ++++++++++++++++++++++++++-----
- 1 file changed, 26 insertions(+), 5 deletions(-)
+ drivers/net/wireless/virt_wifi.c | 52 ++++++++++++++++++++------------
+ 1 file changed, 32 insertions(+), 20 deletions(-)
 
-diff --git a/fs/reiserfs/stree.c b/fs/reiserfs/stree.c
-index 9e64e23014e8..07d787145cc3 100644
---- a/fs/reiserfs/stree.c
-+++ b/fs/reiserfs/stree.c
-@@ -387,6 +387,24 @@ void pathrelse(struct treepath *search_path)
- 	search_path->path_length = ILLEGAL_PATH_ELEMENT_OFFSET;
- }
+diff --git a/drivers/net/wireless/virt_wifi.c b/drivers/net/wireless/virt_wifi.c
+index 9d04ca53229b..4e906910f110 100644
+--- a/drivers/net/wireless/virt_wifi.c
++++ b/drivers/net/wireless/virt_wifi.c
+@@ -136,6 +136,29 @@ static struct ieee80211_supported_band band_5ghz = {
+ /* Assigned at module init. Guaranteed locally-administered and unicast. */
+ static u8 fake_router_bssid[ETH_ALEN] __ro_after_init = {};
  
-+static int has_valid_deh_location(struct buffer_head *bh, struct item_head *ih)
++static void virt_wifi_inform_bss(struct wiphy *wiphy)
 +{
-+	struct reiserfs_de_head *deh;
-+	int i;
++	u64 tsf = div_u64(ktime_get_boottime_ns(), 1000);
++	struct cfg80211_bss *informed_bss;
++	static const struct {
++		u8 tag;
++		u8 len;
++		u8 ssid[8];
++	} __packed ssid = {
++		.tag = WLAN_EID_SSID,
++		.len = 8,
++		.ssid = "VirtWifi",
++	};
 +
-+	deh = B_I_DEH(bh, ih);
-+	for (i = 0; i < ih_entry_count(ih); i++) {
-+		if (deh_location(&deh[i]) > ih_item_len(ih)) {
-+			reiserfs_warning(NULL, "reiserfs-5094",
-+					 "directory entry location seems wrong %h",
-+					 &deh[i]);
-+			return 0;
-+		}
-+	}
-+
-+	return 1;
++	informed_bss = cfg80211_inform_bss(wiphy, &channel_5ghz,
++					   CFG80211_BSS_FTYPE_PRESP,
++					   fake_router_bssid, tsf,
++					   WLAN_CAPABILITY_ESS, 0,
++					   (void *)&ssid, sizeof(ssid),
++					   DBM_TO_MBM(-50), GFP_KERNEL);
++	cfg80211_put_bss(wiphy, informed_bss);
 +}
 +
- static int is_leaf(char *buf, int blocksize, struct buffer_head *bh)
+ /* Called with the rtnl lock held. */
+ static int virt_wifi_scan(struct wiphy *wiphy,
+ 			  struct cfg80211_scan_request *request)
+@@ -156,28 +179,13 @@ static int virt_wifi_scan(struct wiphy *wiphy,
+ /* Acquires and releases the rdev BSS lock. */
+ static void virt_wifi_scan_result(struct work_struct *work)
  {
- 	struct block_head *blkh;
-@@ -454,11 +472,14 @@ static int is_leaf(char *buf, int blocksize, struct buffer_head *bh)
- 					 "(second one): %h", ih);
- 			return 0;
- 		}
--		if (is_direntry_le_ih(ih) && (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE))) {
--			reiserfs_warning(NULL, "reiserfs-5093",
--					 "item entry count seems wrong %h",
--					 ih);
--			return 0;
-+		if (is_direntry_le_ih(ih)) {
-+			if (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE)) {
-+				reiserfs_warning(NULL, "reiserfs-5093",
-+						 "item entry count seems wrong %h",
-+						 ih);
-+				return 0;
-+			}
-+			return has_valid_deh_location(bh, ih);
- 		}
- 		prev_location = ih_location(ih);
- 	}
+-	struct {
+-		u8 tag;
+-		u8 len;
+-		u8 ssid[8];
+-	} __packed ssid = {
+-		.tag = WLAN_EID_SSID, .len = 8, .ssid = "VirtWifi",
+-	};
+-	struct cfg80211_bss *informed_bss;
+ 	struct virt_wifi_wiphy_priv *priv =
+ 		container_of(work, struct virt_wifi_wiphy_priv,
+ 			     scan_result.work);
+ 	struct wiphy *wiphy = priv_to_wiphy(priv);
+ 	struct cfg80211_scan_info scan_info = { .aborted = false };
+-	u64 tsf = div_u64(ktime_get_boottime_ns(), 1000);
+ 
+-	informed_bss = cfg80211_inform_bss(wiphy, &channel_5ghz,
+-					   CFG80211_BSS_FTYPE_PRESP,
+-					   fake_router_bssid, tsf,
+-					   WLAN_CAPABILITY_ESS, 0,
+-					   (void *)&ssid, sizeof(ssid),
+-					   DBM_TO_MBM(-50), GFP_KERNEL);
+-	cfg80211_put_bss(wiphy, informed_bss);
++	virt_wifi_inform_bss(wiphy);
+ 
+ 	/* Schedules work which acquires and releases the rtnl lock. */
+ 	cfg80211_scan_done(priv->scan_request, &scan_info);
+@@ -225,10 +233,12 @@ static int virt_wifi_connect(struct wiphy *wiphy, struct net_device *netdev,
+ 	if (!could_schedule)
+ 		return -EBUSY;
+ 
+-	if (sme->bssid)
++	if (sme->bssid) {
+ 		ether_addr_copy(priv->connect_requested_bss, sme->bssid);
+-	else
++	} else {
++		virt_wifi_inform_bss(wiphy);
+ 		eth_zero_addr(priv->connect_requested_bss);
++	}
+ 
+ 	wiphy_debug(wiphy, "connect\n");
+ 
+@@ -241,11 +251,13 @@ static void virt_wifi_connect_complete(struct work_struct *work)
+ 	struct virt_wifi_netdev_priv *priv =
+ 		container_of(work, struct virt_wifi_netdev_priv, connect.work);
+ 	u8 *requested_bss = priv->connect_requested_bss;
+-	bool has_addr = !is_zero_ether_addr(requested_bss);
+ 	bool right_addr = ether_addr_equal(requested_bss, fake_router_bssid);
+ 	u16 status = WLAN_STATUS_SUCCESS;
+ 
+-	if (!priv->is_up || (has_addr && !right_addr))
++	if (is_zero_ether_addr(requested_bss))
++		requested_bss = NULL;
++
++	if (!priv->is_up || (requested_bss && !right_addr))
+ 		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
+ 	else
+ 		priv->is_connected = true;
 -- 
 2.30.2
 
