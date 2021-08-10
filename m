@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E5C3E8417
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1603E8418
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbhHJUHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232888AbhHJUHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:07:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27862 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232836AbhHJUHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 16:07:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhHJUHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:07:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F218C60EC0;
-        Tue, 10 Aug 2021 20:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628626017;
-        bh=dYMLAdLlwEAxyd8jTPoXpFKuKuNTSFdWKtkdKgFw5QU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J9r9SHnOKzunQebZoc7NfQP7ef7ow0SY52KTIUc8l4bbpzZGOraE3n1hWGaZ8/Y6H
-         mQTrN497q3UdoD1kBQ2Uo5MdV0BlzddoXIrqMN4L+SHu4Jbi7BH2iPeRKp7x1ilu99
-         aZIZ+XWpJgF9r5rHgVHoCRgUl4yWvj3XzrzSed2TJvafiM1R9Jn9QcQmClbczA/vza
-         fInweENoSIUa73c7iyJ5Sr1dtScKMwNjL+cnfqQoD2455YYp6FqFMM3i/tAekdjjDp
-         6YJoAJ/KVgnZOwFgMQPk/CjT8ppRHF+cTHtinxE4RqC51N8PHcPXG94FnYKT8yrTIf
-         x1NrhU2OuBpYw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     feng.tang@intel.com
-Cc:     aarcange@redhat.com, ak@linux.intel.com, akpm@linux-foundation.org,
-        ben.widawsky@intel.com, dan.j.williams@intel.com,
-        dave.hansen@intel.com, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mgorman@techsingularity.net, mhocko@suse.com,
-        mike.kravetz@oracle.com, rdunlap@infradead.org,
-        rientjes@google.com, vbabka@suse.cz, ying.huang@intel.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] mm/hugetlb: Initialize page to NULL in alloc_buddy_huge_page_with_mpol()
-Date:   Tue, 10 Aug 2021 13:06:32 -0700
-Message-Id: <20210810200632.3812797-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc1
-In-Reply-To: <20210809024430.GA46432@shbuild999.sh.intel.com>
-References: <20210809024430.GA46432@shbuild999.sh.intel.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628626019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mb5VBTkb8S88umgyEx90HwHXvZnu9/1GybLMu7zbg4A=;
+        b=MudRFDEUCauBggYS05NPau25zgxR3EAksGcx3k3rbt8Vojc8TMriuBYJ9NWP9JGyPYfATM
+        ZWPWSAQN7xNzg92F8v2wVAJMWTs1rACzKh/Mk6LPixvGQIpURNMiUL1yBgY2hDQoKtsoxD
+        U/1LYs5gZK/sXlPv86CNLNhebItvBP0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-kHx-yYzKO2meQHTDf3jW6w-1; Tue, 10 Aug 2021 16:06:55 -0400
+X-MC-Unique: kHx-yYzKO2meQHTDf3jW6w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D0B53639F;
+        Tue, 10 Aug 2021 20:06:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EEFE5100EBB0;
+        Tue, 10 Aug 2021 20:06:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-36-willy@infradead.org>
+References: <20210715033704.692967-36-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 035/138] mm/memcg: Use the node id in mem_cgroup_update_tree()
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1809567.1628626012.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 21:06:52 +0100
+Message-ID: <1809568.1628626012@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-mm/hugetlb.c:2162:6: warning: variable 'page' is used uninitialized
-whenever 'if' condition is false [-Wsometimes-uninitialized]
-        if (mpol_is_preferred_many(mpol)) {
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-mm/hugetlb.c:2172:7: note: uninitialized use occurs here
-        if (!page)
-             ^~~~
-mm/hugetlb.c:2162:2: note: remove the 'if' if its condition is always
-true
-        if (mpol_is_preferred_many(mpol)) {
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-mm/hugetlb.c:2155:19: note: initialize the variable 'page' to silence
-this warning
-        struct page *page;
-                         ^
-                          = NULL
-1 warning generated.
+> By using the node id in mem_cgroup_update_tree(), we can delete
+> soft_limit_tree_from_page() and mem_cgroup_page_nodeinfo().  Saves 42
+> bytes of kernel text on my config.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Initialize page to NULL like in dequeue_huge_page_vma() so that page is
-not used uninitialized.
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Though I wonder if:
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3d9cd2722ea5..604e2d6bd506 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2152,7 +2152,7 @@ static
- struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
- 		struct vm_area_struct *vma, unsigned long addr)
- {
--	struct page *page;
-+	struct page *page = NULL;
- 	struct mempolicy *mpol;
- 	gfp_t gfp_mask = htlb_alloc_mask(h);
- 	int nid;
+> -		mz = mem_cgroup_page_nodeinfo(memcg, page);
+> +		mz = memcg->nodeinfo[nid];
 
-base-commit: 18f73b217b4633e27a61832e1485ce927a8ee5c1
--- 
-2.33.0.rc1
+should still have some sort of wrapper function.
 
