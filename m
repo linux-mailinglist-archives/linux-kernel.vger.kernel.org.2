@@ -2,94 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803233E56E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306803E56E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236631AbhHJJcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:32:15 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39885 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229741AbhHJJcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:32:14 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkSQG2Pg2z9sX5;
-        Tue, 10 Aug 2021 19:31:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628587910;
-        bh=kt+lDBI95xg3muQJf27gUpQkKk4gUz8MoNnRohL5jXU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Wq8Y1QsXKb59ll3embjvZtmw22fZMKdXeLL3SF2Pn4stnBW7Rw145+LBQH7FeCxcv
-         Fkd7M7IX7rQaOOobsIMQr8gT78/IPFkXD+A2fmUar4f6GlUUgK6x7R75EpFckqSoU2
-         DTEI3EVa5GkPeOcx4C5WTHrlVQl+G7o2gE8XsfL0CUTAB+OsVx4u38KSOpL8FsWJt4
-         xjLPT/EbkR9sUM57ge/btGYNmag5ZQ++c3mdCWdFced1HfgJp6locGIk+wf7MtXCFn
-         zSLw6Minef9c1tgTGOlBDtn6SpbzcY3qNHrg7wke6eXyOA7+q4Tob4z9D/6BoJADFL
-         feyCMlSeQWf7A==
-Date:   Tue, 10 Aug 2021 19:31:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the device-mapper tree
-Message-ID: <20210810193149.4ad4714a@canb.auug.org.au>
-In-Reply-To: <20210721173432.3dce9ce3@canb.auug.org.au>
-References: <20210721173432.3dce9ce3@canb.auug.org.au>
+        id S237889AbhHJJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236702AbhHJJcV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:32:21 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89D7C061799
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:31:59 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so2043193wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:31:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Fq/OAyt9tR1z4LnLP6//tUkpUqlQ4V8PVc64GMxq34c=;
+        b=FoY37oazvgJBwObkVJeS7apdeD0ExW53Tna+FSuiQK4P0tA0pxBfIFVNeXp/mYxLy1
+         JTOmNxXkeraPJw/epdbG44H8BgWTvRiZrYrx+12/bsBmYc06OmTN7THcP+8+9wWk2u89
+         i5eBj+6DBxjZY9v96ExCbIcUCRB5iFyjyJK84=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Fq/OAyt9tR1z4LnLP6//tUkpUqlQ4V8PVc64GMxq34c=;
+        b=PlLRO3aXfufAgdaBo/4AjPgcQvyEQ4ZYKHDMHkqyNJL2FXoJuGW6T7rXeA2Vdd1KDu
+         KOvO9obAHgd/DlkjnZrFSuJ545A1MKB569MQtp7OsJf6rhiiDPk1+/+5Cf4ifq2aoElb
+         TCZ4LyY4JeOIm8F97/3Bie+XTZak4TObwR6zN+W0YakYXU6nKGFc0IHWq4E9Cenm6uDP
+         FqWuVmUA1Z8pJiaq0tZZUSegyYHj4CtEI1BkFcmVcEJhNL3BLZ77tNTIg0ggJcj2nQTF
+         QZwtVaEqD7RhkbIEY4ecwaT8C+Mbc0angq4ANq1J8kD+axaWA31i/QKW1FxAcOukDsfQ
+         KFQQ==
+X-Gm-Message-State: AOAM531DOrYInRD6m91ah2GxpGFLcqAy6rKLGJ3RD0HqbPlQT95lhf5X
+        /ovLT/EQgcWWQ0Dp/gVly51EtQ==
+X-Google-Smtp-Source: ABdhPJzvZkH5pcJd6qwMb5LXZEjwx9xzqNaGqoFLYYda0Vgzpy45V7iyyowtXSubND6b/zl1tYBDlQ==
+X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr14300862wml.141.1628587918406;
+        Tue, 10 Aug 2021 02:31:58 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id s13sm2186328wmc.47.2021.08.10.02.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 02:31:57 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 11:31:55 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        Paul Boddie <paul@boddie.org.uk>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 8/8] [RFC] drm/ingenic: convert to component framework
+ for jz4780 hdmi
+Message-ID: <YRJHiydE2+6P81hg@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Paul Boddie <paul@boddie.org.uk>,
+        Jonas Karlman <jonas@kwiboo.se>, dri-devel@lists.freedesktop.org
+References: <cover.1628172477.git.hns@goldelico.com>
+ <77554dd2612f418f6ab74a8be06c82b71410e0e6.1628172477.git.hns@goldelico.com>
+ <YQv+DC5yTEGlJYuD@pendragon.ideasonboard.com>
+ <BDF501D1-BA1D-4866-8EAF-3862F6CEC6F4@goldelico.com>
+ <8XJDXQ.X70C5WOD0QB7@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qlCnOwipGmXBF4/fgyixnVv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8XJDXQ.X70C5WOD0QB7@crapouillou.net>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qlCnOwipGmXBF4/fgyixnVv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Aug 05, 2021 at 06:17:32PM +0200, Paul Cercueil wrote:
+> Hi Nikolaus and Laurent,
+> 
+> Le jeu., août 5 2021 at 18:07:20 +0200, H. Nikolaus Schaller
+> <hns@goldelico.com> a écrit :
+> > Hi Laurent,
+> > 
+> > >  Am 05.08.2021 um 17:04 schrieb Laurent Pinchart
+> > > <laurent.pinchart@ideasonboard.com>:
+> > > 
+> > >  Hi Nikolaus,
+> > > 
+> > >  Thank you for the patch.
+> > > 
+> > >  On Thu, Aug 05, 2021 at 04:07:57PM +0200, H. Nikolaus Schaller
+> > > wrote:
+> > > >  This patch attempts to convert the ingenic-dw-hdmi driver
+> > > >  into a version that uses the component framework.
+> > > 
+> > >  Why ? What problem would this solve ?
+> > 
+> > Well, it was suggested in a v1 we did post several months ago. I have
+> > not
+> > looked up by whom and do not exactly remember the reasons.
+> > 
+> > We now simply thought that it is common style since dome dw-hdmi drivers
+> > make use of it but some others don't. And we got it working without.
+> > 
+> > If it is not needed/requested by anyone, we can drop it from v3 (or add
+> > later).
+> 
+> I don't remember exactly TBH - the only reason to use a component is to have
+> access to the main driver's "drm_device" structure. The IPU needs it for
+> instance, to register planes; but I don't think this HDMI driver needs it as
+> it registers a bridge.
 
-Hi all,
+Imo for bridges/panels we really should move _away_ from component, not
+towards it. If there's a gap in the bridge/panel api (I think there's some
+patches floating around exactly to make this more a multi-step process for
+reasons like the above) then we need to fix that.
 
-On Wed, 21 Jul 2021 17:34:32 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the device-mapper tree, today's linux-next build (htmldocs)
-> produced this warning:
->=20
-> Documentation/admin-guide/device-mapper/dm-ima.rst:29: WARNING: Unexpecte=
-d indentation.
-> Documentation/admin-guide/device-mapper/dm-ima.rst:52: WARNING: Definitio=
-n list ends without a blank line; unexpected unindent.
-> Documentation/admin-guide/device-mapper/dm-ima.rst:109: WARNING: Unexpect=
-ed indentation.
-> Documentation/admin-guide/device-mapper/dm-ima.rst:129: WARNING: Unexpect=
-ed indentation.
->=20
-> Introduced by commit
->=20
->   e820ba87f9d1 ("dm: add documentation for IMA measurement support")
+Unfortunately the dw-hdmi and also dw-dsi drivers are very much built on
+top of component.c and side-step the bridge stuff quite a lot. That
+results in quite bad integration pains all around as we add more users of
+these.
 
-I am still getting these warnings.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qlCnOwipGmXBF4/fgyixnVv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESR4UACgkQAVBC80lX
-0GxZBwf/RxA2iB5oW/nzVSNgh69cikClXqvDkEUoyHm+pnI5uBTQcNQoU9hq1Q3x
-1z3AwCc8TuXp36dS3cDBiUh4jejkA3vORVw0xJXgS0JjiY3UECFGRnFfd747jJsR
-Bg/QtVcNnqEg58FxhUdlt/1SwY6aI5QisC+KnQnWsYscoda3rmugvbghcx/0mL9S
-oI425CYTcXWDXV3QcOFxoZOXjWoeKoc9KeHdWaaaMkOoErlqNgKjuO4i9LWgchJe
-dOyoIKXLmVzA5p1dwzOw0vBxbPj1Fe+Rn2uTD75Oj9X+XU+AaQf62iLsC6qtWwSW
-BhI0JfwQj89mTHoN32MXOgiehRk0Lw==
-=N8Pv
------END PGP SIGNATURE-----
-
---Sig_/qlCnOwipGmXBF4/fgyixnVv--
+The other unfortunate thing is that there's not many people working in
+this area, so fundamental improvements to the core design take a long time
+to make and then even longer to roll out. It's a bit a tough spot, but
+also, help very much welcome :-)
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
