@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623EA3E7F71
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D363E7F6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbhHJRk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
+        id S234374AbhHJRkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:40:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234990AbhHJRiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:38:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2865610CC;
-        Tue, 10 Aug 2021 17:36:41 +0000 (UTC)
+        id S234993AbhHJRix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:38:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D72D61153;
+        Tue, 10 Aug 2021 17:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617002;
-        bh=kMfrfxBLEc9gl+fcwjaNXU9MD349NhzmfzVKwN6TlnM=;
+        s=korg; t=1628617004;
+        bh=K0wODNoz+RecPUHNbQX1zVaU8w3RmzPHCktPrvzONCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c7C7OXtSnaZq6W5JnfACEdsZCOdAVvBEsd93eIh4q7H/i+xWLgRBSRk3AsudEWukb
-         BfPdPeyNFDUtIy1y5Ppcikojx8V74ia+6h3+cfGAFYOhI+Xv66BNVvg9OUJm9VcL2n
-         NIL6iruewI6W8C4ps6HJQ1fbDWzAvz3BYnr1COIs=
+        b=uRNwGX5IDez9QAjw1WOyL3EgaA2vaEnq2kHKB555NNpLK76SlM9hK+3t2RZQxsMtr
+         MCHhuixhJx03TbfW1hssVq7w+ZgO4Uziu/B11RNVDMutQaKpClHcfjqc3BnNrryQi9
+         cbDiUTW/bZZV+zFtTWo/ey3oq0H3LlPdFf4khJQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH 5.4 54/85] optee: Fix memory leak when failing to register shm pages
-Date:   Tue, 10 Aug 2021 19:30:27 +0200
-Message-Id: <20210810172950.066383606@linuxfoundation.org>
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH 5.4 55/85] tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
+Date:   Tue, 10 Aug 2021 19:30:28 +0200
+Message-Id: <20210810172950.097063274@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
 References: <20210810172948.192298392@linuxfoundation.org>
@@ -42,52 +43,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit ec185dd3ab257dc2a60953fdf1b6622f524cc5b7 upstream.
+commit dfb703ad2a8d366b829818a558337be779746575 upstream.
 
-Free the previously allocated pages when we encounter an error condition
-while attempting to register the pages with the secure world.
+dma-buf backed shared memory cannot be reliably freed and unregistered
+during a kexec operation even when tee_shm_free() is called on the shm
+from a .shutdown hook. The problem occurs because dma_buf_put() calls
+fput() which then uses task_work_add(), with the TWA_RESUME parameter,
+to queue tee_shm_release() to be called before the current task returns
+to user mode. However, the current task never returns to user mode
+before the kexec completes so the memory is never freed nor
+unregistered.
 
-Fixes: a249dd200d03 ("tee: optee: Fix dynamic shm pool allocations")
-Fixes: 5a769f6ff439 ("optee: Fix multi page dynamic shm pool alloc")
+Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
+allocation so that tee_shm_free() can directly call tee_shm_release().
+This will ensure that the shm can be freed and unregistered during a
+kexec operation.
+
+Fixes: 09e574831b27 ("tpm/tpm_ftpm_tee: A driver for firmware TPM running inside TEE")
+Fixes: 1760eb689ed6 ("tpm/tpm_ftpm_tee: add shutdown call back")
 Cc: stable@vger.kernel.org
 Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
 Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tee/optee/shm_pool.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/char/tpm/tpm_ftpm_tee.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/tee/optee/shm_pool.c
-+++ b/drivers/tee/optee/shm_pool.c
-@@ -32,8 +32,10 @@ static int pool_op_alloc(struct tee_shm_
- 		struct page **pages;
+--- a/drivers/char/tpm/tpm_ftpm_tee.c
++++ b/drivers/char/tpm/tpm_ftpm_tee.c
+@@ -255,11 +255,11 @@ static int ftpm_tee_probe(struct platfor
+ 	pvt_data->session = sess_arg.session;
  
- 		pages = kcalloc(nr_pages, sizeof(pages), GFP_KERNEL);
--		if (!pages)
--			return -ENOMEM;
-+		if (!pages) {
-+			rc = -ENOMEM;
-+			goto err;
-+		}
- 
- 		for (i = 0; i < nr_pages; i++) {
- 			pages[i] = page;
-@@ -44,8 +46,14 @@ static int pool_op_alloc(struct tee_shm_
- 		rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
- 					(unsigned long)shm->kaddr);
- 		kfree(pages);
-+		if (rc)
-+			goto err;
+ 	/* Allocate dynamic shared memory with fTPM TA */
+-	pvt_data->shm = tee_shm_alloc(pvt_data->ctx,
+-				      MAX_COMMAND_SIZE + MAX_RESPONSE_SIZE,
+-				      TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++	pvt_data->shm = tee_shm_alloc_kernel_buf(pvt_data->ctx,
++						 MAX_COMMAND_SIZE +
++						 MAX_RESPONSE_SIZE);
+ 	if (IS_ERR(pvt_data->shm)) {
+-		dev_err(dev, "%s: tee_shm_alloc failed\n", __func__);
++		dev_err(dev, "%s: tee_shm_alloc_kernel_buf failed\n", __func__);
+ 		rc = -ENOMEM;
+ 		goto out_shm_alloc;
  	}
- 
-+	return 0;
-+
-+err:
-+	__free_pages(page, order);
- 	return rc;
- }
- 
 
 
