@@ -2,104 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01923E57FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C26E3E57FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239717AbhHJKHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239700AbhHJKHl (ORCPT
+        id S239727AbhHJKIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:08:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42500 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239709AbhHJKIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:07:41 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38601C0613D3;
-        Tue, 10 Aug 2021 03:07:20 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id q2so20279873plr.11;
-        Tue, 10 Aug 2021 03:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/WTc/jRXHtXJWj+Wad8h2vDSBuhiirpHVCKMKslUCDg=;
-        b=TNzlV9OG9ouGtp33JYXV2CuqznwDNP+DLbiBbjPq10lw0tgYJQrVP/+stIoYG4DXet
-         B87oFA8bW29TZO5VXi2mOwA9Rk3vZXkZ80ISTqoP0SE3+1OxsVzP9hTM+rLn0uz/LCGE
-         +MKiFdsXZ6HFdR5FJTNDZ0dLjDLyMeSu0qmO+2oP7qzz1NQFdYQ0mo7CslWrZtMDxYqk
-         ww0SI0/bW4NQaPo5cOCiMiay3F5TWMZkyzimhZYDYpzGde+9z0BW+PP61iFT1w1ZNLb+
-         J54pBg8f8UjIP6T0Cmb9kBMSs2oddz0yD3GyW0JYhavYjirW7xymU0js/JVMWdw/eYe+
-         EXyA==
+        Tue, 10 Aug 2021 06:08:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628590075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dEgg1B68UoULU6E/e8M+gSz3xhhWUJATUN4So/YGl3Y=;
+        b=i7cs9mMqi6pNopsmG00nOwopPy39XcgZgKLDYX6ihcnlKr8KtIVmeT6of+QQTbfFHlfYwb
+        e3EjxoLAxWEdurM6SELrgeeVUzwMKFsqs/Jmdw17wcHIEXI2ueFU/F3NZh5FLVeN672ELM
+        LECJpUGZPFzqOctpI5KSS9DSzkx3QCA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-raw_DBI0MESbPvd2GHB3FQ-1; Tue, 10 Aug 2021 06:07:54 -0400
+X-MC-Unique: raw_DBI0MESbPvd2GHB3FQ-1
+Received: by mail-ej1-f70.google.com with SMTP id x5-20020a1709064bc5b02905305454f5d1so5369982ejv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:07:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/WTc/jRXHtXJWj+Wad8h2vDSBuhiirpHVCKMKslUCDg=;
-        b=oD98Cq46TLunVWDj+Ii2VmbDhSvUIVCl+Ihr6V+kZbyk2ttKTrfSgpYSN4VEHSqGyr
-         +jRR73I5JZG+TsitkVS901iEZ4fmeF2sQyhdWfiIeJmvPDU5PVnH7BTxpK7QWsbd+EE1
-         PsXsbMtRJrGZCN828k/JlMz+c6Yt5Sv0hAP76UQ+cnrPGV6ISHd/RmDLW+LvzuTl9ese
-         Bocti5GGgrR3I4ieZ3zXgRdf1XQ8pbVf1IdXXzFiuWkQPndLAVt+ROaK0/pZM8H/zWxZ
-         Puv1k0NZgmXJlmYPcDtxlI7pPSD3FAWJIAtrYLGmZB/mTbcRhAMPLHS/NOx+vXjpzMfp
-         xLCQ==
-X-Gm-Message-State: AOAM5311CWx/8+yrRMZ/QiZ/OuVLTx7YmIneuwCd/O0gRdAo39O1fgjj
-        m0/sOaidRvQdUbNwKtWi8UIT4jMvcq6BfA==
-X-Google-Smtp-Source: ABdhPJzQFOqSq8XNRMUD+FN2uxXqX1t0SFajo0UanRiC2+h2uFmQlLC6oXYrIbW9iIs84t6N9EOIAA==
-X-Received: by 2002:a62:ea0f:0:b029:319:8eef:5ff1 with SMTP id t15-20020a62ea0f0000b02903198eef5ff1mr28642049pfh.74.1628590039333;
-        Tue, 10 Aug 2021 03:07:19 -0700 (PDT)
-Received: from [192.168.1.22] (amarseille-551-1-7-65.w92-145.abo.wanadoo.fr. [92.145.152.65])
-        by smtp.gmail.com with ESMTPSA id bk24sm2421518pjb.26.2021.08.10.03.07.15
+        bh=dEgg1B68UoULU6E/e8M+gSz3xhhWUJATUN4So/YGl3Y=;
+        b=jv1PgHplbBIkZU43V5+AcK6v+3nbh6JS8oXlupf+yQ824QwkigTMEEd+meGjjOnS4G
+         TYwU79O0uuG78Tew//dthxChEmuE43E5cA5bOIPfRMHKPxERO5iiI6fRCvUPEU6lkSNL
+         ExO6XOhQX8iVgt7Ujog3n91P/y6GfIYMGAFo4mI1NwnHH5Qlt5j9wvftJ0qvcD37/W7m
+         8GmItL/LcPfQkLMGmLsaOQDNB5LV61IoyxVEtSDNQ3m7n6BJfV7aaxXPsupq2Tv74Ons
+         6863jha+k/BA4BO90wZG4nzctKzD5s4CAP3aD8NxgZ1LCkIis/lKI/sMCeeakrjd4r/J
+         gBAA==
+X-Gm-Message-State: AOAM533mulzz9nx6heXijGU9XEMS7Om8jIDYrB6vnOrvxAggxt9Z/JaI
+        yInmAe1eVmBM6sDFF61DQhzKcUxZaG0YYstGjBXHPZ7Za5TKpQF9l9AFsysllTK9MQgmeJk05BV
+        +0IhCHHtxQ4iZzH6KVmBhlMOn
+X-Received: by 2002:aa7:d593:: with SMTP id r19mr3945124edq.372.1628590073462;
+        Tue, 10 Aug 2021 03:07:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYqkxr4BqRE4gHuK0TVd5eV864l8peu17Yfal47wvKOtzFRGKt6JOM2SgOQK4q5WbXkMMQuQ==
+X-Received: by 2002:aa7:d593:: with SMTP id r19mr3945098edq.372.1628590073248;
+        Tue, 10 Aug 2021 03:07:53 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id e22sm9278995edu.35.2021.08.10.03.07.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 03:07:18 -0700 (PDT)
-Subject: Re: [PATCH 1/3] PCI: brcmstb: Break register definitions into
- separate header
-To:     Jeremy Linton <jeremy.linton@arm.com>, linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210805211200.491275-1-jeremy.linton@arm.com>
- <20210805211200.491275-2-jeremy.linton@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f82761b1-fb7e-08b2-8bc3-c84d258e26d3@gmail.com>
-Date:   Tue, 10 Aug 2021 03:07:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 10 Aug 2021 03:07:52 -0700 (PDT)
+Subject: Re: [PATCH V2 2/3] KVM: X86: Set the hardware DR6 only when
+ KVM_DEBUGREG_WONT_EXIT
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <YRFdq8sNuXYpgemU@google.com>
+ <20210809174307.145263-1-jiangshanlai@gmail.com>
+ <20210809174307.145263-2-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
+Date:   Tue, 10 Aug 2021 12:07:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210805211200.491275-2-jeremy.linton@arm.com>
+In-Reply-To: <20210809174307.145263-2-jiangshanlai@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/5/2021 2:11 PM, Jeremy Linton wrote:
-> We are about to create a standalone ACPI quirk module for the
-> bcmstb controller. Lets move the register definitions into a separate
-> file so they can be shared between the APCI quirk and the normal
-> host bridge driver.
+On 09/08/21 19:43, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
+> registers") allows the guest accessing to DRs without exiting when
+> KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
+> on entry to the guest---including DR6 that was not synced before the commit.
+> 
+> But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
+> but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
+> and just leads to a more case which leaks stale DR6 to the host which has
+> to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
+> 
+> We'd better to set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT,
+> so that we can fine-grain control the cases when we need to reset it
+> which is done in later patch.
+> 
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 > ---
->   drivers/pci/controller/pcie-brcmstb.c | 179 +------------------------
->   drivers/pci/controller/pcie-brcmstb.h | 182 ++++++++++++++++++++++++++
->   2 files changed, 183 insertions(+), 178 deletions(-)
->   create mode 100644 drivers/pci/controller/pcie-brcmstb.h
+>   arch/x86/kvm/x86.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index ad47a09ce307..d2aa49722064 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9598,7 +9598,9 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>   		set_debugreg(vcpu->arch.eff_db[1], 1);
+>   		set_debugreg(vcpu->arch.eff_db[2], 2);
+>   		set_debugreg(vcpu->arch.eff_db[3], 3);
+> -		set_debugreg(vcpu->arch.dr6, 6);
+> +		/* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
+> +		if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
+> +			set_debugreg(vcpu->arch.dr6, 6);
+>   	} else if (unlikely(hw_breakpoint_active())) {
+>   		set_debugreg(0, 7);
+>   	}
+> 
 
-You moved more than just register definitions into pcie-brcmstb.h you 
-also moved internal structure definitions, enumerations, etc. which are 
-not required since pcie-brcmstb-acpi.c does not access the brcm_pcie 
-structure but open codes accesses to the MISC_STATUS register instead.
+Even better, this should be moved to vmx.c's vcpu_enter_guest.  This
+matches the handling in svm.c:
 
-There are no include guards added to this file (it is debatable whether 
-we should add them), and it is also not covered by the existing BROADCOM 
-BCM2711/BCM2835 ARM ARCHITECTURE MAINTAINERS file entry.
+         /*
+          * Run with all-zero DR6 unless needed, so that we can get the exact cause
+          * of a #DB.
+          */
+         if (unlikely(vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT))
+                 svm_set_dr6(svm, vcpu->arch.dr6);
+         else
+                 svm_set_dr6(svm, DR6_ACTIVE_LOW);
 
-Given that there can be new platforms supported by this PCIe controller 
-in the future possibly with the same limitations as the 2711, but with a 
-seemingly different MISC_STATUS layout, you will have to think about a 
-solution that scales, maybe we cross that bridge when we get there.
--- 
-Florian
+That is,
+
+     KVM: X86: Set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT
+     
+     Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
+     registers") allows the guest accessing to DRs without exiting when
+     KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
+     on entry to the guest---including DR6 that was not synced before the commit.
+     
+     But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
+     but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
+     and just leads to a more case which leaks stale DR6 to the host which has
+     to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
+     
+     Even if KVM_DEBUGREG_WONT_EXIT, however, setting the host DR6 only matters
+     on VMX because SVM always uses the DR6 value from the VMCB.  So move this
+     line to vmx.c and make it conditional on KVM_DEBUGREG_WONT_EXIT.
+     
+     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index ae8e62df16dd..21a3ef3012cf 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6625,6 +6625,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+  		vmx->loaded_vmcs->host_state.cr4 = cr4;
+  	}
+  
++	/* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
++	if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
++		set_debugreg(vcpu->arch.dr6, 6);
++
+  	/* When single-stepping over STI and MOV SS, we must clear the
+  	 * corresponding interruptibility bits in the guest state. Otherwise
+  	 * vmentry fails as it then expects bit 14 (BS) in pending debug
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index a111899ab2b4..fbc536b21585 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9597,7 +9597,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+  		set_debugreg(vcpu->arch.eff_db[1], 1);
+  		set_debugreg(vcpu->arch.eff_db[2], 2);
+  		set_debugreg(vcpu->arch.eff_db[3], 3);
+-		set_debugreg(vcpu->arch.dr6, 6);
+  	} else if (unlikely(hw_breakpoint_active())) {
+  		set_debugreg(0, 7);
+  	}
+
+Paolo
+
