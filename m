@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B413E55D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868993E55DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237820AbhHJItD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:49:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59814 "EHLO
+        id S237877AbhHJItE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:49:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49568 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236844AbhHJIsw (ORCPT
+        by vger.kernel.org with ESMTP id S237420AbhHJIsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:48:52 -0400
+        Tue, 10 Aug 2021 04:48:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628585310;
+        s=mimecast20190719; t=1628585312;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WWWfZfczx65IParlduf54SQJn/f7jfyxJXfN8MyeRwI=;
-        b=X+gcnDxbEtivWjzPSrBUNjHhTGuxuiUh5A8qUZfKozXJ+pRStw1EsWOQ5pgGeF9p23i7DF
-        ru7GzqdIIR5jb77lIeOqTaguVUii/BEiy4DY1YkS8ATdfsJXMlGpgQjLxth3UKND31SK1g
-        5skF+KwYXzsk9kSNidQm4wgpnT8rvCE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-37-a6G3ROQZM1GhlKghC2WELg-1; Tue, 10 Aug 2021 04:48:29 -0400
-X-MC-Unique: a6G3ROQZM1GhlKghC2WELg-1
-Received: by mail-ej1-f72.google.com with SMTP id kf21-20020a17090776d5b02905af6ad96f02so1600341ejc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:48:29 -0700 (PDT)
+        bh=4yZNIu6PGRqh0XUsAg6YLnUrC7a2tSubYiI4yoIHuuI=;
+        b=LSRN8HbWQ9gyE7lFu5uFwKZbtFWXIcDagC7LpcfHSzqN0ytZcCO68/lanTWBiek/yxUdaZ
+        L+OEeURoLJ1lTQ7uQblnbOfXGbFDSa4OAZEqARcGBo3bIx8u/O2U8EWjHkn3/2EjlZD5jP
+        v8SoNLGBm9xizJNc4q//o8AWdU6T9yQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-KDqQqUCTO-6cuoUtzY87PA-1; Tue, 10 Aug 2021 04:48:31 -0400
+X-MC-Unique: KDqQqUCTO-6cuoUtzY87PA-1
+Received: by mail-ed1-f72.google.com with SMTP id c1-20020aa7df010000b02903bb5c6f746eso10375251edy.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:48:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WWWfZfczx65IParlduf54SQJn/f7jfyxJXfN8MyeRwI=;
-        b=hv7m8pTZYy+nSsiFYqTVOwUMrrySS0E3aIvwr3bg6i4eoTWiNuP87VU5GX9s4O04Za
-         HAEY4SU7qmba6urswgmiIEH7HT533EpZ1o/1dI9TxHFqwQl3IcdQRyPr1WwGg+BzJ4YJ
-         ARP5dx4r5Wbg07ln6AcJ7ULGiGQ0VkGnH/2/gBz2i0eA002WDDl1MFKW0LHfD+Uai3fs
-         23POWOzazFalS1vrCmG7uUtSg7MqwaG1KWtPh57AZcCjj5ZQfbQ7zHZ5fd0cVENL25YP
-         7TQ9zf1Qk3v1FgVxQ9ZQSLUBXhVCnjImLceE7llaieAOTIH9FS+oq6XIL0WCoNMQo9Zx
-         b9EQ==
-X-Gm-Message-State: AOAM532M0B0UCW4QZJfvMjLpmav9PnblFQn8toq9bO1zKOtt/3yVQbfC
-        eHGl7gf8RPQT31AnUbRUzWSSNvkBdJ0hCdXeyYFceFA8gOPTnv6ObKn8gwa0f+U5xdh9nFpL9xO
-        vW70AnIv78ERBXDMpKl4CELaR
-X-Received: by 2002:a17:906:c006:: with SMTP id e6mr26785997ejz.510.1628585308627;
-        Tue, 10 Aug 2021 01:48:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzn80ECnujwqU7hjqyUptCj/nIeG0tDzxXAB3iqy+3raekA06q/d65FphjKgOD6D/7OJW+HXg==
-X-Received: by 2002:a17:906:c006:: with SMTP id e6mr26785981ejz.510.1628585308409;
-        Tue, 10 Aug 2021 01:48:28 -0700 (PDT)
+        bh=4yZNIu6PGRqh0XUsAg6YLnUrC7a2tSubYiI4yoIHuuI=;
+        b=n3ZYNtRTz0RjJQasI+/z6mIEjF496epkdBE6W6mVMkH3QywvFrfAmm9WXkEyZ8DyAP
+         fUZ+HwQKIuSHNJal6sCDLLjGVxiJuc3AnEdP9q2IGn4bo+To6LHLWWkQMLaX6WBdWkeF
+         qauuRiw0mMH3kaWron8NddZ1ZjIeuit/kPmHjFjKMVoTUyd8PLCVXYJPmWQRrSFmEWRF
+         cMJ0EOli+6oouOFD+I+L55t7c9yeW1jBaby7QQHetTR0fDGr+e8zV5JNXk7dtw3sPIpR
+         3WwNa+zk+augXYbF9t6x0tw7G1gEa0ccp8VRm/P3tAga07YixL4n+PtAvUQMBbQSniEG
+         RUPg==
+X-Gm-Message-State: AOAM5302LntF1op43quhgfce8NR15eVRbwCmQzWhUL1kM413peP7WDeh
+        rRsge6OhPPmBe94RH2BDebkRkcIcbR/k8TUqMeIpHUi/wCyiSv7qJVaAkNWEfJtc9qlDZ4fF26B
+        VuGnVEl5X8l2RYig8velpd1Di
+X-Received: by 2002:a17:906:405:: with SMTP id d5mr26430800eja.189.1628585310190;
+        Tue, 10 Aug 2021 01:48:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz22EQal9Exqyj7ThilEjaTvbLq4Q2a5syoFgJGe/g8lj7NmDmRexbLX8nYJHLpkiLxzCdkUg==
+X-Received: by 2002:a17:906:405:: with SMTP id d5mr26430786eja.189.1628585310038;
+        Tue, 10 Aug 2021 01:48:30 -0700 (PDT)
 Received: from localhost.localdomain.com ([151.29.52.108])
-        by smtp.gmail.com with ESMTPSA id la23sm6557667ejc.63.2021.08.10.01.48.27
+        by smtp.gmail.com with ESMTPSA id la23sm6557667ejc.63.2021.08.10.01.48.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 01:48:27 -0700 (PDT)
+        Tue, 10 Aug 2021 01:48:29 -0700 (PDT)
 From:   Juri Lelli <juri.lelli@redhat.com>
 To:     paulmck@kernel.org, josh@joshtriplett.org
 Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
         rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
         jiangshanlai@gmail.com, joel@joelfernandes.org,
         rcu@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH v2 1/2] rcu: Make rcu_normal_after_boot writable again
-Date:   Tue, 10 Aug 2021 10:48:15 +0200
-Message-Id: <20210810084816.155203-2-juri.lelli@redhat.com>
+Subject: [PATCH v2 2/2] rcu: Make rcu update module parameters world-readable
+Date:   Tue, 10 Aug 2021 10:48:16 +0200
+Message-Id: <20210810084816.155203-3-juri.lelli@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210810084816.155203-1-juri.lelli@redhat.com>
 References: <20210810084816.155203-1-juri.lelli@redhat.com>
@@ -70,53 +70,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Certain configurations (e.g., systems that make heavy use of netns)
-need to use synchronize_rcu_expedited() to service RCU grace periods
-even after boot.
+rcu update module parameters currently don't appear in sysfs and this is
+a serviceability issue as it might be needed to access their default
+values at runtime.
 
-Even though synchronize_rcu_expedited() has been traditionally
-considered harmful for RT for the heavy use of IPIs, it is perfectly
-usable under certain conditions (e.g. nohz_full).
+Fix this issue by changing rcu update module parameters permissions to
+world-readable.
 
-Make rcupdate.rcu_normal_after_boot= again writeable on RT (if NO_HZ_
-FULL is defined), but keep its default value to 1 (enabled) to avoid
-regressions. Users who need synchronize_rcu_expedited() will boot with
-rcupdate.rcu_normal_after_ boot=0 in the kernel cmdline.
-
-Reflect the change in synchronize_rcu_expedited_wait() by removing the
-WARN related to CONFIG_PREEMPT_RT.
-
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/rcu/tree_exp.h | 1 -
- kernel/rcu/update.c   | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ kernel/rcu/update.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 2796084ef85a..d9e4f8eb9ae2 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -512,7 +512,6 @@ static void synchronize_rcu_expedited_wait(void)
- 		j = READ_ONCE(jiffies_till_first_fqs);
- 		if (synchronize_rcu_expedited_wait_once(j + HZ))
- 			return;
--		WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT));
- 	}
- 
- 	for (;;) {
 diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c21b38cc25e9..bd551134e2f4 100644
+index bd551134e2f4..94282dc12bab 100644
 --- a/kernel/rcu/update.c
 +++ b/kernel/rcu/update.c
-@@ -57,7 +57,7 @@
- module_param(rcu_expedited, int, 0);
- module_param(rcu_normal, int, 0);
+@@ -54,11 +54,11 @@
+ #define MODULE_PARAM_PREFIX "rcupdate."
+ 
+ #ifndef CONFIG_TINY_RCU
+-module_param(rcu_expedited, int, 0);
+-module_param(rcu_normal, int, 0);
++module_param(rcu_expedited, int, 0444);
++module_param(rcu_normal, int, 0444);
  static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
--#ifndef CONFIG_PREEMPT_RT
-+#if !defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)
- module_param(rcu_normal_after_boot, int, 0);
+ #if !defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)
+-module_param(rcu_normal_after_boot, int, 0);
++module_param(rcu_normal_after_boot, int, 0444);
  #endif
  #endif /* #ifndef CONFIG_TINY_RCU */
+ 
 -- 
 2.31.1
 
