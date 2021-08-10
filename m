@@ -2,78 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9673E5AC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211DC3E5ACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240341AbhHJNMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:12:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43324 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236764AbhHJNMf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:12:35 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628601132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OaBFwRmIkMYJ6nArGCfoxdS9fFU0RJW0EkC34EWy+pY=;
-        b=KadFt9TgeKOmX5hfgraer3970wg4d5deZONKOXsg7AvIqTxkG6d9u4k/CrL2glo7GHMESg
-        FW8VWh/DQKMrn0hCuOuLNC/Pdq/yrX9Lj4m1G6kcRXiKiL6FD+OnB58M0SaZSljK2tdWqQ
-        GpHZ0R721L94rr9Ng/PeP6v0uCIFclfga2mzvZ5Htla4kSJptK/PlLZyMhLx1v0xu8Uck8
-        fogFuqyK8MvDWQ8D+iYesDllCVmbT78TI9uqzcu0+Pt3IrXn+XmPXa8oKdrAfE0W2nDSkm
-        nVobG3/tcCJiIFGfhZtTjq2tbbee3UPLBn7NC0sB664FMrKTaQcqoF0n8f7INQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628601132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OaBFwRmIkMYJ6nArGCfoxdS9fFU0RJW0EkC34EWy+pY=;
-        b=6pAq73C7GB77pfq+iKRUFQYZRhSBuEqPClqwFBmdKSmpwiAV+a2ELp1IFRbnGK/wgCOaCm
-        r9deQiarsZoTNYDw==
-To:     Mingzhe Yang <cainiao666999@gmail.com>, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, yuxin.wooo@gmail.com,
-        becausehan@gmail.com, huan.xie@suse.com,
-        Mingzhe Yang <cainiao666999@gmail.com>
-Subject: Re: [PATCH] tasklets: simplify code in tasklet_action_common()
-In-Reply-To: <20210430122521.13957-1-cainiao666999@gmail.com>
-References: <20210430122521.13957-1-cainiao666999@gmail.com>
-Date:   Tue, 10 Aug 2021 15:12:11 +0200
-Message-ID: <87czqlsatw.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S241132AbhHJNP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:15:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241119AbhHJNP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:15:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B18E60F38;
+        Tue, 10 Aug 2021 13:15:05 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDRaw-0043sk-Qn; Tue, 10 Aug 2021 14:15:03 +0100
+Date:   Tue, 10 Aug 2021 14:15:02 +0100
+Message-ID: <874kbxbfvt.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 08/13] clocksource/arm_arch_timer: Work around broken CVAL implementations
+In-Reply-To: <20210810123407.GB52842@C02TD0UTHF1T.local>
+References: <20210809152651.2297337-1-maz@kernel.org>
+        <20210809152651.2297337-9-maz@kernel.org>
+        <20210810123407.GB52842@C02TD0UTHF1T.local>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, oupton@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30 2021 at 20:25, Mingzhe Yang wrote:
+On Tue, 10 Aug 2021 13:34:07 +0100,
+Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> On Mon, Aug 09, 2021 at 04:26:46PM +0100, Marc Zyngier wrote:
+> > The Applied Micro XGene-1 SoC has a busted implementation of the
+> > CVAL register: it looks like it is based on TVAL instead of the
+> > other way around. The net effect of this implementation blunder
+> > is that the maximum deadline you can program in the timer is
+> > 32bit wide.
+> > 
+> > Detect the problematic case and limit the timer to 32bit deltas.
+> > Note that we don't tie this bug to XGene specifically, as it may
+> > also catch similar defects on other high-quality implementations.
+> 
+> Do we know of any other implementations that have a similar bug?
+> 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/clocksource/arm_arch_timer.c | 38 +++++++++++++++++++++++++++-
+> >  1 file changed, 37 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> > index 895844c33351..1c596cd3cc5c 100644
+> > --- a/drivers/clocksource/arm_arch_timer.c
+> > +++ b/drivers/clocksource/arm_arch_timer.c
+> > @@ -778,9 +778,42 @@ static int arch_timer_set_next_event_phys_mem(unsigned long evt,
+> >  	return 0;
+> >  }
+> >  
+> > +static u64 __arch_timer_check_delta(void)
+> > +{
+> > +#ifdef CONFIG_ARM64
+> > +	u64 tmp;
+> > +
+> > +	/*
+> > +	 * XGene-1 implements CVAL in terms of TVAL, meaning that the
+> > +	 * maximum timer range is 32bit. Shame on them. Detect the
+> > +	 * issue by setting a timer to now+(1<<32), which will
+> > +	 * immediately fire on the duff CPU.
+> > +	 */
+> > +	write_sysreg(0, cntv_ctl_el0);
+> > +	isb();
+> > +	tmp = read_sysreg(cntvct_el0) | BIT(32);
+> > +	write_sysreg(tmp, cntv_cval_el0);
+> 
+> This will fire on legitimate implementations fairly often. Consider if
+> we enter this function at a time where CNTCVT_EL0[32] == 1, where:
+> 
+> * At 100MHz, bit 32 flips every ~42.95
+> * At 200MHz, bit 32 flips every ~21.47
+> * At 1GHz, bit 32 flips every ~4.29s
+> 
+> ... and ThunderX2 has a 200MHz frequency today, with SBSA recommending
+> 100MHz.
 
-> Use tasklet_is_disabled() to simplify the code in
-> tasklet_action_common.
+Yup, you're right, this is silly. Orr-ing the bit is a bad enough bug
+(it really should be a +), but also preemption in a guest will add
+another set of false positives.
 
-This changelog is not really helpful. Use a new function does not tell
-anything. Neither does it explain why there need to be two new functions
-and worse
-  
-> +static inline bool tasklet_is_enabled(struct tasklet_struct *t)
-> +{
-> +	smp_rmb();
+> What does XGene-1 return upon a read of CVAL? If it always returns 0 for
+> the high bits, we could do a timing-insensitive check for truncation of
+> CVAL, e.g.
+> 
+> | 	/* CVAL must be at least 56 bits wide, as with CNT */
+> | 	u64 mask = GENMASK(55, 0);
+> | 	u64 val;
+> | 
+> | 	write_sysreg(mask, cntv_cval_el0);
+> | 	val = read_sysread(cnt_cval_el0);
+> | 
+> | 	if (val != mask) {
+> | 		/* What a great CPU */
+> | 	}
 
-why there is suddenly a new undocumented SMP barrier in the code.
+No, the register itself returns what has been written. But only the
+low 32bits of the delta trickle into TVAL on write, which is then used
+as a countdown. I guess I could play the same trick as above with a
+higher bit, but it still is pretty unreliable, as it could then wrap
+through 0.
 
-> +	return !atomic_read(&t->count);
-> +}
-> +
-> +static inline bool tasklet_is_disabled(struct tasklet_struct *t)
-> +{
-> +	return !tasklet_is_enabled(t);
-> +}
-> +
+Maybe I'll just check the MIDR in the end...
 
-Aside of that there is no point in exposing these functions in a global
-header.
+	M.
 
-Thanks,
-
-        tglx
+-- 
+Without deviation from the norm, progress is not possible.
