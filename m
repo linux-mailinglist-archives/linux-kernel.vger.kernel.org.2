@@ -2,169 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8D03E57ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F763E57F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239610AbhHJKEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:04:47 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:39661 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbhHJKEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:04:45 -0400
-Received: by mail-wm1-f44.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso1517680wmg.4;
-        Tue, 10 Aug 2021 03:04:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nNPyEQUv6Ji6aWmVMQgSNl5jQ96sNm9i4LSvAWR0eaA=;
-        b=ikOb2NFm7xfUtkZSBxmo10hZiy9Wk4/phB8ClonedO1JzB+UuQFu3Rx04OPVA+pK27
-         GQLI6v9+1aawo09WWzk+Q6Rpz1/fSii3CjlRlXXzfr/hFbf3esthezsThHN2zjTrUm/S
-         R5ffvCUfteKyDuM254msd8SGiVxTSPOEQm2eK16qkrBpzZJtI4T7bRxHU7rgEgcArlpG
-         M30gLQBAn8zLmhlb62OfoKgGA5Q/cxn0QcPEEUKwZHH6S9vU7qGpmhB21T2cJOM8I2P9
-         N58ETkp9yBGCr0mYYYOIps8HhDqammGzjwunk494kWxAGou1Pp5TWIL6if/tf+Pa48qX
-         CKiQ==
-X-Gm-Message-State: AOAM5312a9JvG5HV7FAcciUZEMPmntTyRGcOm1fgUDQfkg1vKLZCCRbq
-        110mf1rb2H/tGWE17eDNUaM=
-X-Google-Smtp-Source: ABdhPJxqwuyMnHbZRg1qBZctOdB5h6Kf4V8NZCJ8ord6bBrxy7xEi7XisJdq+Xmsrl1aGAMEv6+vWg==
-X-Received: by 2002:a05:600c:1c11:: with SMTP id j17mr21277438wms.35.1628589862198;
-        Tue, 10 Aug 2021 03:04:22 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id e3sm9074443wro.15.2021.08.10.03.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 03:04:21 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 10:04:19 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        pasha.tatashin@soleen.com, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-Subject: Re: [RFC v1 6/8] mshv: command line option to skip devices in
- PV-IOMMU
-Message-ID: <20210810100419.g3rjj3xegydalyz3@liuwe-devbox-debian-v2>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-7-wei.liu@kernel.org>
- <4a6918ea-e3e5-55c9-a12d-bee7261301fd@linux.microsoft.com>
- <20210803215617.fzx2vrzhsabrrolc@liuwe-devbox-debian-v2>
- <8d9b6b9a-62b1-95ea-1bb6-258e72c1800d@linux.microsoft.com>
+        id S238080AbhHJKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:05:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:52810 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232974AbhHJKFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:05:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CFFC6D;
+        Tue, 10 Aug 2021 03:05:03 -0700 (PDT)
+Received: from [10.57.9.181] (unknown [10.57.9.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE0B83F70D;
+        Tue, 10 Aug 2021 03:05:01 -0700 (PDT)
+Subject: Re: [PATCH 8/8] cpufreq: vexpress: Use auto-registration for energy
+ model
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d3629cc7-d9db-0e54-94e9-278e308b7e8e@arm.com>
+Date:   Tue, 10 Aug 2021 11:05:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d9b6b9a-62b1-95ea-1bb6-258e72c1800d@linux.microsoft.com>
+In-Reply-To: <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 12:33:54PM +0530, Praveen Kumar wrote:
-> On 04-08-2021 03:26, Wei Liu wrote:
-> >>>  	struct iommu_domain domain;
-> >>> @@ -774,6 +784,41 @@ static struct iommu_device *hv_iommu_probe_device(struct device *dev)
-> >>>  	if (!dev_is_pci(dev))
-> >>>  		return ERR_PTR(-ENODEV);
-> >>>  
-> >>> +	/*
-> >>> +	 * Skip the PCI device specified in `pci_devs_to_skip`. This is a
-> >>> +	 * temporary solution until we figure out a way to extract information
-> >>> +	 * from the hypervisor what devices it is already using.
-> >>> +	 */
-> >>> +	if (pci_devs_to_skip && *pci_devs_to_skip) {
-> >>> +		int pos = 0;
-> >>> +		int parsed;
-> >>> +		int segment, bus, slot, func;
-> >>> +		struct pci_dev *pdev = to_pci_dev(dev);
-> >>> +
-> >>> +		do {
-> >>> +			parsed = 0;
-> >>> +
-> >>> +			sscanf(pci_devs_to_skip + pos,
-> >>> +				" (%x:%x:%x.%x) %n",
-> >>> +				&segment, &bus, &slot, &func, &parsed);
-> >>> +
-> >>> +			if (parsed <= 0)
-> >>> +				break;
-> >>> +
-> >>> +			if (pci_domain_nr(pdev->bus) == segment &&
-> >>> +				pdev->bus->number == bus &&
-> >>> +				PCI_SLOT(pdev->devfn) == slot &&
-> >>> +				PCI_FUNC(pdev->devfn) == func)
-> >>> +			{
-> >>> +				dev_info(dev, "skipped by MSHV IOMMU\n");
-> >>> +				return ERR_PTR(-ENODEV);
-> >>> +			}
-> >>> +
-> >>> +			pos += parsed;
-> >>> +
-> >>> +		} while (pci_devs_to_skip[pos]);
-> >>
-> >> Is there a possibility of pci_devs_to_skip + pos > sizeof(pci_devs_to_skip)
-> >> and also a valid memory ?
-> > 
-> > pos should point to the last parsed position. If parsing fails pos does
-> > not get updated and the code breaks out of the loop. If parsing is
-> > success pos should point to either the start of next element of '\0'
-> > (end of string). To me this is good enough.
-> 
-> The point is, hypothetically the address to pci_devs_to_skip + pos can
-> be valid address (later to '\0'), and thus there is a possibility,
-> that parsing may not fail.
 
-Have you found an example how at any given point in time
-pci_devs_to_skip + pos can point outside of user provided string?
 
-> Another, there is also a possibility of sscanf faulting accessing the
-> illegal address, if pci_devs_to_skip[pos] turns out to be not NULL or
-> valid address.
+On 8/10/21 8:36 AM, Viresh Kumar wrote:
+> Use the CPUFREQ_REGISTER_WITH_EM flag to allow cpufreq core to
+> automatically register with the energy model.
+> 
+> This allows removal of boiler plate code from the driver and fixes the
+> unregistration part as well.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>   drivers/cpufreq/vexpress-spc-cpufreq.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/vexpress-spc-cpufreq.c b/drivers/cpufreq/vexpress-spc-cpufreq.c
+> index 51dfa9ae6cf5..28c4c3254337 100644
+> --- a/drivers/cpufreq/vexpress-spc-cpufreq.c
+> +++ b/drivers/cpufreq/vexpress-spc-cpufreq.c
+> @@ -442,8 +442,6 @@ static int ve_spc_cpufreq_init(struct cpufreq_policy *policy)
+>   	policy->freq_table = freq_table[cur_cluster];
+>   	policy->cpuinfo.transition_latency = 1000000; /* 1 ms */
+>   
+> -	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
+> -
+>   	if (is_bL_switching_enabled())
+>   		per_cpu(cpu_last_req_freq, policy->cpu) =
+>   						clk_get_cpu_rate(policy->cpu);
+> @@ -487,7 +485,8 @@ static void ve_spc_cpufreq_ready(struct cpufreq_policy *policy)
+>   static struct cpufreq_driver ve_spc_cpufreq_driver = {
+>   	.name			= "vexpress-spc",
+>   	.flags			= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+> -					CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+> +				  CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+> +				  CPUFREQ_REGISTER_WITH_EM,
+>   	.verify			= cpufreq_generic_frequency_table_verify,
+>   	.target_index		= ve_spc_cpufreq_set_target,
+>   	.get			= ve_spc_cpufreq_get_rate,
+> 
 
-That depends on pci_devs_to_skip + pos can point to an invalid address
-in the first place, so that goes back to the question above.
+I can see that this driver calls explicitly the
+of_cpufreq_cooling_register()
+It does this in the cpufreq_driver->ready() callback
+implementation: ve_spc_cpufreq_ready()
 
-> 
-> > 
-> >> I would recommend to have a check of size as well before accessing the
-> >> array content, just to be safer accessing any memory.
-> >>
-> > 
-> > What check do you have in mind?
-> 
-> Something like,
-> size_t len = strlen(pci_devs_to_skip);
-> do {
-> 
-> 	len -= parsed;
-> } while (len);
-> 
-> OR
-> 
-> do {
-> ...
-> 	pos += parsed;
-> } while (pos < len);
-> 
-> Further, I'm also fine with the existing code, if you think this won't
-> break and already been taken care. Thanks.
+With that in mind, the new code in the patch 1/8, which
+registers the EM, should be called even earlier, above:
+---------------------8<---------------------------------
+/* Callback for handling stuff after policy is ready */
+	if (cpufreq_driver->ready)
+		cpufreq_driver->ready(policy);
+------------------->8----------------------------------
 
-But in the loop somewhere you will still need to parse pci_devs_to_skip
-+ some_offset. The new code structure does not remove that, right?
+This also triggered a question:
+If this new flag can be set in the cpufreq driver which hasn't set
+CPUFREQ_IS_COOLING_DEV
+?
+I can only see one driver (this one in the patch) which has such
+configuration.
 
-Given this is for debugging and is supposed to be temporary, I think the
-code is good enough. But I want to make sure if there is anything I
-missed.
-
-Wei.
-
-> 
-> Regards,
-> 
-> ~Praveen.
