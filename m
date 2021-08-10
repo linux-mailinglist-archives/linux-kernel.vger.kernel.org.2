@@ -2,266 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1303E547B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E6B3E547D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbhHJHlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:41:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41380 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbhHJHlT (ORCPT
+        id S236492AbhHJHlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229827AbhHJHls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:41:19 -0400
-Date:   Tue, 10 Aug 2021 09:40:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628581256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yCBDh1Ms6q0qVn26oKGgyybf19fVGPHHnw6ajA7SOes=;
-        b=JxvG3zF7N6EpGfBi3yiEQkkd1M1K26rCBFKIJwjqdU9Q0XfILiNHFQYg8xI7v69Aj4MMCJ
-        JrHcYINFC92COfbyBMI6pOoyn/0yKfMedNNf4dU3ja/fddDRn4xN4zYnIiOh8yAoTKY3Km
-        wHblwrDsa0ROrAUkzfQROrwvo3Fk0xxj21sbh4zlQlzC6IMqYuwFHHlEW2kcpX5OGMLQlG
-        1BxFqFWZmVhtov4IUD0V9l1770vjheILK6Z3B4ACabAzQSSb8bFbYHDjUjsL8XQLIbUfUA
-        i7Y9bJN0W28aMCdnMVlv/Agzx52JmhezxwWnGEsgHOc9El/EFbCp9988ybrG3w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628581256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yCBDh1Ms6q0qVn26oKGgyybf19fVGPHHnw6ajA7SOes=;
-        b=Cb7thcKvRmb4jsOQ6A0Gje1ldvTlo0LNT3HrI/1zaq+tDueLQHkM0TrMHlDAjyxSKSgyJ6
-        qx2jFo7oCElNIJAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <wagi@monom.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
-Message-ID: <20210810074054.mll3snv7vqfhef6i@linutronix.de>
-References: <20210804153308.oasahcxjmcw7vivo@linutronix.de>
- <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
- <20210804154743.niogqvnladdkfgi2@linutronix.de>
- <7c946918-ae0d-6195-6a78-b019f9bc1fd3@kernel.dk>
- <20210804155747.cwayhjsdjc4zaubd@linutronix.de>
- <c3fa07d1-a3c4-6775-f419-4875eb41bc88@kernel.dk>
- <20210804122029.6c5c837a@oasis.local.home>
- <4ffb8f7c-085c-f6cc-e308-3f75b24b8e47@kernel.dk>
- <20210804164735.sq6sjejusa37abkw@linutronix.de>
- <71d37a7d-af53-945e-0c49-3cb902487df4@kernel.dk>
+        Tue, 10 Aug 2021 03:41:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD0AC061796
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:41:26 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mDMO4-0005bc-BD; Tue, 10 Aug 2021 09:41:24 +0200
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+ <YRGdBiJQ3xqZAT4w@gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <2bc19003-82a1-0d2d-4548-3315686d77b4@pengutronix.de>
+Date:   Tue, 10 Aug 2021 09:41:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <YRGdBiJQ3xqZAT4w@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <71d37a7d-af53-945e-0c49-3cb902487df4@kernel.dk>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-04 10:57:11 [-0600], Jens Axboe wrote:
+Hello Eric,
+
+On 09.08.21 23:24, Eric Biggers wrote:
+> Hi Ahmad,
 > 
-> 1 out of 2 is better than 0 ;-)
+> This generally looks okay, but I have some comments below.
+> 
+> On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
+>> Kernel trusted keys don't require userspace knowledge of the raw key
+>> material and instead export a sealed blob, which can be persisted to
+>> unencrypted storage. Userspace can then load this blob into the kernel,
+>> where it's unsealed and from there on usable for kernel crypto.
+> 
+> Please be explicit about where and how the keys get generated in this case.
 
-The patch at the end of the email is what I ended up after rebasing to
--rc5. Also after testing I figured out that tools/io_uring/io_uring-cp.c
-is no longer working. The resulting file has a size of either 0 or 4KiB.
-Then, tglx pointed out that the example in liburing shares the same file
-name and is actually working.
+I intentionally avoided talking about this. You see, the trusted key documentation[1]
+phrases it as "all keys are created in the kernel", but you consider
+"'The key material is generated
+ within the kernel' [a] misleading claim'. [2]
 
-From: Jens Axboe <axboe@kernel.dk>
-Date: Wed, 4 Aug 2021 08:43:43 -0600
-Subject: [PATCH] io-wq: remove GFP_ATOMIC allocation off schedule out path
+Also, I hope patches to force kernel RNG and CAAM support (using kernel RNG as
+default) will soon be accepted, which would invalidate any further claims in the
+commit message without a means to correct them.
 
-Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
-stress-ng:
+I thus restricted my commit message to the necessary bit that are needed to
+understand the patch, which is: userspace knowledge of the key material is
+not required. If you disagree, could you provide me the text you'd prefer?
 
-| [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
-| [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
-| [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
-| [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-| [   90.202561] Call Trace:
-| [   90.202577]  dump_stack_lvl+0x34/0x44
-| [   90.202584]  ___might_sleep.cold+0x87/0x94
-| [   90.202588]  rt_spin_lock+0x19/0x70
-| [   90.202593]  ___slab_alloc+0xcb/0x7d0
-| [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
-| [   90.202603]  ? dequeue_entity+0xc3/0x290
-| [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
-| [   90.202610]  ? pick_next_task_fair+0xb9/0x330
-| [   90.202612]  ? __schedule+0x670/0x1410
-| [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
-| [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
-| [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
-| [   90.202625]  io_wq_worker_sleeping+0x37/0x50
-| [   90.202628]  schedule+0x30/0xd0
-| [   90.202630]  schedule_timeout+0x8f/0x1a0
-| [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
-| [   90.202637]  io_wqe_worker+0xfd/0x320
-| [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
-| [   90.202644]  ? io_worker_handle_work+0x670/0x670
-| [   90.202646]  ? io_worker_handle_work+0x670/0x670
-| [   90.202649]  ret_from_fork+0x22/0x30
+>> This is incompatible with fscrypt, where userspace is supposed to supply
+>> the raw key material. For TPMs, a work around is to do key unsealing in
+>> userspace, but this may not be feasible for other trusted key backends.
+> 
+> As far as I can see, "Key unsealing in userspace" actually is the preferred way
+> to implement TPM-bound encryption.  So it doesn't seem fair to call it a "work
+> around".
 
-which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
-a raw spinlock. Besides that not working on RT, doing any kind of
-allocation from inside schedule() is kind of nasty and should be avoided
-if at all possible.
+In the context of *kernel trusted keys*, direct interaction with the TPM
+outside the kernel to decrypt a kernel-encrypted blob is surely not the
+preferred way.
 
-This particular path happens when an io-wq worker goes to sleep, and we
-need a new worker to handle pending work. We currently allocate a small
-data item to hold the information we need to create a new worker, but we
-can instead include this data in the io_worker struct itself and just
-protect it with a single bit lock. We only really need one per worker
-anyway, as we will have run pending work between to sleep cycles.
+For TPM-bound encryption completely in userspace? Maybe. But that's not
+what this patch is about. It's about kernel trusted keys and offloading
+part of its functionality to userspace to _work around_ lack of kernel-side
+integration is exactly that: a _work around_.
 
-https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
+>> +  Most users leave this 0 and specify the raw key directly.
+>> +  "trusted" keys are useful to leverage kernel support for sealing
+>> +  and unsealing key material. Sealed keys can be persisted to
+>> +  unencrypted storage and later be used to decrypt the file system
+>> +  without requiring userspace to have knowledge of the raw key
+>> +  material.
+>> +  "fscrypt-provisioning" key support is intended mainly to allow
+>> +  re-adding keys after a filesystem is unmounted and re-mounted,
+>>    without having to store the raw keys in userspace memory.
+>>  
+>>  - ``raw`` is a variable-length field which must contain the actual
+>>    key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
+>>    nonzero, then this field is unused.
+>>  
+>> +.. note::
+>> +
+>> +   Users should take care not to reuse the fscrypt key material with
+>> +   different ciphers or in multiple contexts as this may make it
+>> +   easier to deduce the key.
+>> +   This also applies when the key material is supplied indirectly
+>> +   via a kernel trusted key. In this case, the trusted key should
+>> +   perferably be used only in a single context.
+> 
+> Again, please be explicit about key generation.  Note that key generation is
+> already discussed in a different section, "Master Keys".  There should be a
+> mention of trusted keys there.  The above note about not reusing keys probably
+> belongs there too.  (The section you're editing here is
+> "FS_IOC_ADD_ENCRYPTION_KEY", which is primarily intended to just document the
+> ioctl, so it's not necessarily the best place for this type of information.)
 
-Reported-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Tested-by: Daniel Wagner <dwagner@suse.de>
-Link: https://lore.kernel.org/r/a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- fs/io-wq.c |   75 ++++++++++++++++++++++++++++++++++---------------------------
- 1 file changed, 42 insertions(+), 33 deletions(-)
+Yes. The content of the note is more appropriate there.
 
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -51,6 +51,10 @@ struct io_worker {
- 
- 	struct completion ref_done;
- 
-+	unsigned long create_state;
-+	struct callback_head create_work;
-+	int create_index;
-+
- 	struct rcu_head rcu;
- };
- 
-@@ -270,50 +274,54 @@ static void io_wqe_inc_running(struct io
- 	atomic_inc(&acct->nr_running);
- }
- 
--struct create_worker_data {
--	struct callback_head work;
--	struct io_wqe *wqe;
--	int index;
--};
--
- static void create_worker_cb(struct callback_head *cb)
- {
--	struct create_worker_data *cwd;
-+	struct io_worker *worker;
- 	struct io_wq *wq;
- 	struct io_wqe *wqe;
- 	struct io_wqe_acct *acct;
- 
--	cwd = container_of(cb, struct create_worker_data, work);
--	wqe = cwd->wqe;
--	wq = wqe->wq;
--	acct = &wqe->acct[cwd->index];
-+	worker = container_of(cb, struct io_worker, create_work);
-+	wqe = worker->wqe;
-+	wq = worker->wq;
-+	acct = &wqe->acct[worker->create_index];
- 	raw_spin_lock_irq(&wqe->lock);
- 	if (acct->nr_workers < acct->max_workers)
- 		acct->nr_workers++;
- 	raw_spin_unlock_irq(&wqe->lock);
--	create_io_worker(wq, cwd->wqe, cwd->index);
--	kfree(cwd);
-+	create_io_worker(wq, wqe, worker->create_index);
-+	clear_bit_unlock(0, &worker->create_state);
-+	io_worker_release(worker);
- }
- 
--static void io_queue_worker_create(struct io_wqe *wqe, struct io_wqe_acct *acct)
-+static void io_queue_worker_create(struct io_wqe *wqe, struct io_worker
-+				   *worker, struct io_wqe_acct *acct)
- {
--	struct create_worker_data *cwd;
- 	struct io_wq *wq = wqe->wq;
- 
- 	/* raced with exit, just ignore create call */
- 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state))
- 		goto fail;
-+	if (!io_worker_get(worker))
-+		goto fail;
-+	/*
-+	 * create_state manages ownership of create_work/index. We should
-+	 * only need one entry per worker, as the worker going to sleep
-+	 * will trigger the condition, and waking will clear it once it
-+	 * runs the task_work.
-+	 */
-+	if (test_bit(0, &worker->create_state) ||
-+	    test_and_set_bit_lock(0, &worker->create_state))
-+		goto fail_release;
-+
-+	init_task_work(&worker->create_work, create_worker_cb);
-+	worker->create_index = acct->index;
-+	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
-+		return;
- 
--	cwd = kmalloc(sizeof(*cwd), GFP_ATOMIC);
--	if (cwd) {
--		init_task_work(&cwd->work, create_worker_cb);
--		cwd->wqe = wqe;
--		cwd->index = acct->index;
--		if (!task_work_add(wq->task, &cwd->work, TWA_SIGNAL))
--			return;
--
--		kfree(cwd);
--	}
-+	clear_bit_unlock(0, &worker->create_state);
-+fail_release:
-+	io_worker_release(worker);
- fail:
- 	atomic_dec(&acct->nr_running);
- 	io_worker_ref_put(wq);
-@@ -331,7 +339,7 @@ static void io_wqe_dec_running(struct io
- 	if (atomic_dec_and_test(&acct->nr_running) && io_wqe_run_queue(wqe)) {
- 		atomic_inc(&acct->nr_running);
- 		atomic_inc(&wqe->wq->worker_refs);
--		io_queue_worker_create(wqe, acct);
-+		io_queue_worker_create(wqe, worker, acct);
- 	}
- }
- 
-@@ -992,12 +1000,12 @@ struct io_wq *io_wq_create(unsigned boun
- 
- static bool io_task_work_match(struct callback_head *cb, void *data)
- {
--	struct create_worker_data *cwd;
-+	struct io_worker *worker;
- 
- 	if (cb->func != create_worker_cb)
- 		return false;
--	cwd = container_of(cb, struct create_worker_data, work);
--	return cwd->wqe->wq == data;
-+	worker = container_of(cb, struct io_worker, create_work);
-+	return worker->wqe->wq == data;
- }
- 
- void io_wq_exit_start(struct io_wq *wq)
-@@ -1014,12 +1022,13 @@ static void io_wq_exit_workers(struct io
- 		return;
- 
- 	while ((cb = task_work_cancel_match(wq->task, io_task_work_match, wq)) != NULL) {
--		struct create_worker_data *cwd;
-+		struct io_worker *worker;
- 
--		cwd = container_of(cb, struct create_worker_data, work);
--		atomic_dec(&cwd->wqe->acct[cwd->index].nr_running);
-+		worker = container_of(cb, struct io_worker, create_work);
-+		atomic_dec(&worker->wqe->acct[worker->create_index].nr_running);
- 		io_worker_ref_put(wq);
--		kfree(cwd);
-+		clear_bit_unlock(0, &worker->create_state);
-+		io_worker_release(worker);
- 	}
- 
- 	rcu_read_lock();
+>> @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
+>>  	key_ref_t ref;
+>>  	struct key *key;
+>>  	const struct fscrypt_provisioning_key_payload *payload;
+>> -	int err;
+>> +	int err = 0;
+>>  
+>>  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+>>  	if (IS_ERR(ref))
+>>  		return PTR_ERR(ref);
+>>  	key = key_ref_to_ptr(ref);
+>>  
+>> -	if (key->type != &key_type_fscrypt_provisioning)
+>> -		goto bad_key;
+>> -	payload = key->payload.data[0];
+>> +	if (key->type == &key_type_fscrypt_provisioning) {
+> 
+> This function is getting long; it probably should be broken this up into several
+> functions.  E.g.:
 
-Sebastian
+Will do for v3.
+
+> static int get_keyring_key(u32 key_id, u32 type,
+>                            struct fscrypt_master_key_secret *secret)
+> {
+>         key_ref_t ref;
+>         struct key *key;
+>         int err;
+> 
+>         ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+>         if (IS_ERR(ref))
+>                 return PTR_ERR(ref);
+>         key = key_ref_to_ptr(ref);
+> 
+>         if (key->type == &key_type_fscrypt_provisioning) {
+>                 err = fscrypt_get_provisioning_key(key, type, secret);
+>         } else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) &&
+>                    key->type == &key_type_trusted) {
+>                 err = fscrypt_get_trusted_key(key, secret);
+>         } else {
+>                 err = -EKEYREJECTED;
+>         }
+>         key_ref_put(ref);
+>         return err;
+> }
+> 
+>> +		/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
+> 
+> Please avoid overly-long lines.
+
+For v3 with helper functions, there will be one indentation level less,
+so this will be less 79 again instead of 87.
+
+> 
+>> +		tkp = key->payload.data[0];
+>> +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
+>> +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
+>> +			up_read(&key->sem);
+>> +			err = -EINVAL;
+>> +			goto out_put;
+>> +		}
+> 
+> What does the !tkp case mean?  For "user" and "logon" keys it means "key
+> revoked", but the "trusted" key type doesn't implement revoke.  Is this included
+> just to be safe?
+
+Oh, good point. I think I cargo-culted it off encrypted key support for
+eCryptfs and dm-crypt. Encrypted keys don't support revoke either..
+
+That might be reasonable, but perhaps the error code in that
+> case (but not the invalid length cases) should be -EKEYREVOKED instead?
+
+Yes. It was like this for v1, but I missed it when dropping the
+dependency on the key_extract_material patch. Will fix for v3.
+
+[1]: https://www.kernel.org/doc/html/v5.14-rc5/security/keys/trusted-encrypted.html
+[2]: https://lore.kernel.org/linux-fscrypt/YQLzOwnPF1434kUk@gmail.com/
+
+
+Cheers and thanks for the review,
+Ahmad
+
+
+> 
+> - Eric
+> 
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
