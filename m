@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDAC3E5A54
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1733E5A58
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240788AbhHJMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238768AbhHJMqi (ORCPT
+        id S240815AbhHJMr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:47:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22598 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240805AbhHJMrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:46:38 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD4DC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:46:16 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id x7so15181376ilh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZKt7SArs/iNOcmhmux0PvAgC04ew3//VWO8NyWkdDl0=;
-        b=GuFEzky/GCD0hN1Tan0ujZfCcWVxPMx65fy2SXCvekCM/+ERb8iC6Ti6VGGEDPjr8Q
-         rZ2LgjbAN1TJrG9ePSgAEfqUh5y7bwlkeXhrhIrVBljsob4si7oYfwquMHvlMPuWAb9w
-         bqm5ocWoG5hbwk2QOlNujyj77qiU/MGwBcOB/oGg2GTw42iAsbcETi/EwDBxMkHmDG7f
-         FIexoBnmasMUPocfzKBgXMOqUW+soheUDgKCa+PCeAvlzEYqzUhCOCc4Tj5+FrAqB6pO
-         QFbGvyI9SKhJSkltZ8DUdEyno7dhYB+BEv1xet5b6HNjy/xDgiD9alVbTWP9Lz46t3Ip
-         TafQ==
+        Tue, 10 Aug 2021 08:47:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628599653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A1vbqk+HrMkFDgZmPhDLQJTDofCmdnOiLqBGa7TgNLo=;
+        b=SDi3tTsdzmae2br0GzMxV2HIx3KgBiWwWu1V+ZS3ZhHiX94qKnA86i0+ucNNu44hGCif+a
+        FUy3GGDXR/M0Ps6H8UZfpNr7ZwtaO896gQ6d2jw0luWkdFAMDAcikacTFSdWVGdhLF23eO
+        ygiqiGb/JeE31CZhxt+q7MhxwhMXrmk=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-328-BQBUvUJsPri-VYTRJWH8ng-1; Tue, 10 Aug 2021 08:47:31 -0400
+X-MC-Unique: BQBUvUJsPri-VYTRJWH8ng-1
+Received: by mail-ej1-f69.google.com with SMTP id v3-20020a1709063383b02905b4d1d1e27cso911781eja.19
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:47:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ZKt7SArs/iNOcmhmux0PvAgC04ew3//VWO8NyWkdDl0=;
-        b=qXX0sqh0X1FF/tVtg1fON7/m+v1NuYvRGmAcCMZ8taC46iXuHEGmeAmRkvtFPazTH4
-         Bj2b96DFqDiLoORZa61twgNrXY9U77muXQTWAvLhhvIdCeC/gdQKc9zTrYJWwPqEcQGV
-         u7SJQaTtPIot55wrashJ6aiw8bx1aRxERsM2iYmNC2zLRtibREsLf0+S10X5x9K0FvOF
-         QI54+uCOT2KwYS3TLZqVEfXjCRzyGiCz4VrzjjxmGUv2NS4c6BrjqoRYcQzfeQwyBEj0
-         mcWoKvl8jgq84e1KLmR0ZwMkbO/N05Zmg7iG9+AnqyxC3cfi/rIzeIVpDIof3r+nsLjt
-         9NDQ==
-X-Gm-Message-State: AOAM532jf31f9r7x9H3cZiVbXTbJtn3+ca6IygvSImZSGQBFa+mjsK68
-        EbwbXVviICXHQ36nRTwHR+v/eA==
-X-Google-Smtp-Source: ABdhPJxnaVo8I1vb2eZhb04YoumJhrALjIqn2a8inaOnRQBJhWntxYqNa6v1sUVvoj2phheL7xdjhg==
-X-Received: by 2002:a92:a30a:: with SMTP id a10mr7883ili.219.1628599575923;
-        Tue, 10 Aug 2021 05:46:15 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id s16sm3992750iln.5.2021.08.10.05.46.14
+        bh=A1vbqk+HrMkFDgZmPhDLQJTDofCmdnOiLqBGa7TgNLo=;
+        b=B7VWK1Vh5iWE4l5M9J3J07Yb97ijvshQQpC7JIYB/brEtsgS+JSdkK3ONV9hUqxDFA
+         XW1DqC36TngRQb7gW58t81ftaDaU4lcKGQzIIffCjs2TZoMOZgbZxdDI1z9Z3Ak/qASm
+         SjGgksm0WC4zkZpsIpAJS7prwW9Nan6pGYKn0SLSUb1W+d9OYWhA9kMtEd5nvwqe7cJq
+         lX7ZI6op5cKKXNMENK9Ss6Ndy1rmkd7nXG5CCDqnoKHQL5bqrz3Q24FYEULtLJIWZGCa
+         Cbp7KpReMZxMGkAwk59tXahRZ3jJrcfzYPgPCBkyWZjpLHvS5D6Bsvy009VhrZNaNhfq
+         Gj4Q==
+X-Gm-Message-State: AOAM530dWjROn4BuqqnVPEqW2TlWesz1XXaxHNlcvAUskFgMixiLjHoQ
+        hU0XHkNcBnIjroSQv/EsE2w80LtJmJKrJ7B8M9sN4U+8FN05wS5CQMJ11fZEbcIby+zOaVTTzpv
+        wLSP874r3l2u4kC7iNPwzkzoq
+X-Received: by 2002:a17:907:1b22:: with SMTP id mp34mr1181770ejc.408.1628599650600;
+        Tue, 10 Aug 2021 05:47:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyE8QW/f8zbOv6QQNcq3X7xQP29i0UFEQ6RYzZJQFLRWZLXKX5NRRV05HIud8CMBLdXPoqZnQ==
+X-Received: by 2002:a17:907:1b22:: with SMTP id mp34mr1181758ejc.408.1628599650409;
+        Tue, 10 Aug 2021 05:47:30 -0700 (PDT)
+Received: from [192.168.10.118] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id df14sm9536725edb.90.2021.08.10.05.47.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 05:46:15 -0700 (PDT)
-Subject: Re: [v6 2/3] interconnect: qcom: Add EPSS L3 support on SC7280
-To:     Odelu Kukatla <okukatla@codeaurora.org>, georgi.djakov@linaro.org,
-        bjorn.andersson@linaro.org, evgreen@google.com,
-        Andy Gross <agross@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com,
-        linux-arm-msm-owner@vger.kernel.org
-References: <1628577962-3995-1-git-send-email-okukatla@codeaurora.org>
- <1628577962-3995-3-git-send-email-okukatla@codeaurora.org>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <8c046ac4-27c8-d858-941b-80f1509dbb61@linaro.org>
-Date:   Tue, 10 Aug 2021 07:46:14 -0500
+        Tue, 10 Aug 2021 05:47:29 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
+ level
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+References: <20210808192658.2923641-1-wei.huang2@amd.com>
+ <20210808192658.2923641-2-wei.huang2@amd.com>
+ <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
+ <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
+ <20210809042703.25gfuuvujicc3vj7@linux.intel.com>
+ <73bbaac0-701c-42dd-36da-aae1fed7f1a0@amd.com>
+ <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
+ <YRFKABg2MOJxcq+y@google.com>
+ <20210810074037.mizpggevgyhed6rm@linux.intel.com>
+ <0ac41a07-beeb-161e-9e5d-e45477106c01@redhat.com>
+ <20210810110031.h7vaqf3nljwm3wym@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <998dca9a-84b6-20ee-2646-3eb58df0b8a0@redhat.com>
+Date:   Tue, 10 Aug 2021 14:47:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1628577962-3995-3-git-send-email-okukatla@codeaurora.org>
+In-Reply-To: <20210810110031.h7vaqf3nljwm3wym@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,179 +86,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 1:46 AM, Odelu Kukatla wrote:
-> Add Epoch Subsystem (EPSS) L3 interconnect provider support on
-> SC7280 SoCs.
-> 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+On 10/08/21 13:00, Yu Zhang wrote:
+> I guess it's because, unlike EPT which are with either 4 or 5 levels, NPT's
+> level can range from 2 to 5, depending on the host paging mode...
 
-I don't have much to say about what this is doing but I
-have a few suggestions.
+Yes, on Linux that will be one of 3/4/5 based on host paging mode, and 
+it will apply to all N_CR3...
 
-					-Alex
+> But shadow EPT does not have such annoyance. Is above understanding correct?
 
-> ---
->   drivers/interconnect/qcom/osm-l3.c | 136 +++++++++++++++++++++++++++++++------
->   drivers/interconnect/qcom/sc7280.h |  10 +++
->   2 files changed, 125 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
-> index c7af143..3b16e73 100644
-> --- a/drivers/interconnect/qcom/osm-l3.c
-> +++ b/drivers/interconnect/qcom/osm-l3.c
-> @@ -9,12 +9,14 @@
->   #include <linux/io.h>
->   #include <linux/kernel.h>
->   #include <linux/module.h>
-> +#include <linux/of_address.h>
->   #include <linux/of_device.h>
->   #include <linux/platform_device.h>
->   
->   #include <dt-bindings/interconnect/qcom,osm-l3.h>
->   
->   #include "sc7180.h"
-> +#include "sc7280.h"
->   #include "sc8180x.h"
->   #include "sdm845.h"
->   #include "sm8150.h"
-> @@ -33,17 +35,33 @@
->   
->   /* EPSS Register offsets */
->   #define EPSS_LUT_ROW_SIZE		4
-> +#define EPSS_REG_L3_VOTE		0x90
->   #define EPSS_REG_FREQ_LUT		0x100
->   #define EPSS_REG_PERF_STATE		0x320
-> +#define EPSS_CORE_OFFSET		0x4
-> +#define EPSS_L3_VOTE_REG(base, cpu)\
-> +			(((base) + EPSS_REG_L3_VOTE) +\
-> +			((cpu) * EPSS_CORE_OFFSET))
->   
-> -#define OSM_L3_MAX_LINKS		1
-> +#define L3_DOMAIN_CNT		4
-> +#define L3_MAX_LINKS		9
+... Right, because shadow EPT cannot have less than 4 levels, and it can 
+always use 4 levels if that's what L1 uses.
 
-It may not matter much, but if you specified the
-qcom_osm_l3_node->links[] field as the last field
-in the structure, I think it could be a flexible
-array and you wouldn't have to specify the maximum
-number of links.  (You are already using the actual
-array size to set ->num_links in __DEFINE_QNODE().)
-
->   #define to_osm_l3_provider(_provider) \
->   	container_of(_provider, struct qcom_osm_l3_icc_provider, provider)
->   
-> +/**
-> + * @domain_base: an array of base address for each clock domain
-> + * @max_state: max supported frequency level
-> + * @per_core_dcvs: flag used to indicate whether the frequency scaling
-> + * for each core is enabled
-> + * @reg_perf_state: requested frequency level
-> + * @lut_tables: an array of supported frequency levels
-> + * @provider: interconnect provider of this node
-> + */
-
-Run this to check your kernel doc validity:
-     scripts/kernel-doc -none <file> [<file>...]
-
->   struct qcom_osm_l3_icc_provider {
-> -	void __iomem *base;
-> +	void __iomem *domain_base[L3_DOMAIN_CNT];
->   	unsigned int max_state;
-> +	bool per_core_dcvs;
->   	unsigned int reg_perf_state;
->   	unsigned long lut_tables[LUT_MAX_ENTRIES];
->   	struct icc_provider provider;
-
-. . .
-
-> @@ -235,12 +322,17 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   	if (!qp)
->   		return -ENOMEM;
->   
-> -	qp->base = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(qp->base))
-> -		return PTR_ERR(qp->base);
-> +	while (of_get_address(pdev->dev.of_node, i++, NULL, NULL))
-> +		nr_domain_bases++;
-
-Maybe you could combine these two loops by counting as you go.
-I.e.:
-
-     i = 0;
-     while (true) {
-	void __iomem *base;
-
-	if (of_get_address(pdev->dev.of_node, i, NULL, NULL))
-		break;
-	base = devm_platform_ioremap_resource(pdev, i);
-	if (IS_ERR(base))
-	    return PTR_ERR(base);
-	qp->domain_base[i++] = base
-     }
-     nr_domain_bases = i;
-
-> +
-> +	for (i = 0; i < nr_domain_bases ; i++) {
-> +		qp->domain_base[i] = devm_platform_ioremap_resource(pdev, i);
-> +		if (IS_ERR(qp->domain_base[i]))
-> +			return PTR_ERR(qp->domain_base[i]);
-> +	}
->   
->   	/* HW should be in enabled state to proceed */
-> -	if (!(readl_relaxed(qp->base + REG_ENABLE) & 0x1)) {
-> +	if (!(readl_relaxed(qp->domain_base[0] + REG_ENABLE) & 0x1)) {
->   		dev_err(&pdev->dev, "error hardware not enabled\n");
->   		return -ENODEV;
->   	}
-> @@ -252,7 +344,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   	qp->reg_perf_state = desc->reg_perf_state;
->   
->   	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
-> -		info = readl_relaxed(qp->base + desc->reg_freq_lut +
-> +		info = readl_relaxed(qp->domain_base[0] + desc->reg_freq_lut +
->   				     i * desc->lut_row_size);
-
-Maybe you could define a macro to encapsulate computing this
-register offset, along the lines of EPSS_L3_VOTE_REG().  (Here
-and elsewhere.)
-
->   		src = FIELD_GET(LUT_SRC, info);
->   		lval = FIELD_GET(LUT_L_VAL, info);
-> @@ -271,6 +363,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   		prev_freq = freq;
->   	}
->   	qp->max_state = i;
-> +	qp->per_core_dcvs = desc->per_core_dcvs;
->   
->   	qnodes = desc->nodes;
->   	num_nodes = desc->num_nodes;
-> @@ -326,6 +419,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   
->   static const struct of_device_id osm_l3_of_match[] = {
->   	{ .compatible = "qcom,sc7180-osm-l3", .data = &sc7180_icc_osm_l3 },
-> +	{ .compatible = "qcom,sc7280-epss-l3", .data = &sc7280_icc_epss_l3 },
->   	{ .compatible = "qcom,sdm845-osm-l3", .data = &sdm845_icc_osm_l3 },
->   	{ .compatible = "qcom,sm8150-osm-l3", .data = &sm8150_icc_osm_l3 },
->   	{ .compatible = "qcom,sc8180x-osm-l3", .data = &sc8180x_icc_osm_l3 },
-> diff --git a/drivers/interconnect/qcom/sc7280.h b/drivers/interconnect/qcom/sc7280.h
-> index 175e400..5df7600 100644
-> --- a/drivers/interconnect/qcom/sc7280.h
-> +++ b/drivers/interconnect/qcom/sc7280.h
-> @@ -150,5 +150,15 @@
->   #define SC7280_SLAVE_PCIE_1			139
->   #define SC7280_SLAVE_QDSS_STM			140
->   #define SC7280_SLAVE_TCU			141
-> +#define SC7280_MASTER_EPSS_L3_APPS			142
-> +#define SC7280_SLAVE_EPSS_L3_SHARED			143
-> +#define SC7280_SLAVE_EPSS_L3_CPU0			144
-> +#define SC7280_SLAVE_EPSS_L3_CPU1			145
-> +#define SC7280_SLAVE_EPSS_L3_CPU2			146
-> +#define SC7280_SLAVE_EPSS_L3_CPU3			147
-> +#define SC7280_SLAVE_EPSS_L3_CPU4			148
-> +#define SC7280_SLAVE_EPSS_L3_CPU5			149
-> +#define SC7280_SLAVE_EPSS_L3_CPU6			150
-> +#define SC7280_SLAVE_EPSS_L3_CPU7			151
->   
->   #endif
-> 
+Paolo
 
