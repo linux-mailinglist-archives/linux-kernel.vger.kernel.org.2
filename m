@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D28F3E57F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1C33E57F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239680AbhHJKGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:06:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:59569 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239669AbhHJKGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:06:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="278619487"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="278619487"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 03:05:53 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="638755375"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 03:05:48 -0700
-Received: by lahna (sSMTP sendmail emulation); Tue, 10 Aug 2021 13:05:45 +0300
-Date:   Tue, 10 Aug 2021 13:05:45 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Kate Hsuan <hpa@redhat.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 09/20] Move Intel SCU IPC of pdx86 to intel directory to
- increase readability.
-Message-ID: <YRJPebbK3uQBU9K8@lahna>
-References: <20210810095832.4234-1-hpa@redhat.com>
- <20210810095832.4234-10-hpa@redhat.com>
+        id S239683AbhHJKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238628AbhHJKGl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:06:41 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8620DC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:06:19 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id x14so6864386edr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NI43gDB60J+hHIWn2wpRcQ4Y1SAABWtayYuScdI0xvY=;
+        b=PBTQHuG5H7i5fq0usxFdSK7q/FRoT35VVvSoCAz0vlGvD2LY8wTC6JuD4VJPhMn0DG
+         7Yi485m97djxDTVz/bVjTiPbVoqM6awETH7FPVPYrCQcTVzeyUwSX6GD110pA2ighG99
+         /wLbBzo3g35axHdbDkcXQHkG1rKyEjoc8cZ3afockTrgcCEYKeJbiT99NLhUy1YKzr4V
+         cvPWp0ziyCDecSSLeKaDUc+KhPG9WmvP05F6WDRKVdO1mz0AvYtxaVUPld6dd0gd72PM
+         QqAIrfmWn/xtknCgxRd6otZc6NeXRrvgbGCMv8B1NleoY1bsA03ltPWxGc/ZgUO8ob8A
+         Q/WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NI43gDB60J+hHIWn2wpRcQ4Y1SAABWtayYuScdI0xvY=;
+        b=AsF7+6NMTIQSNb+yDLk3isTfRtJg97ckrqBE8zHkdxyIioFBF+LAW0fg6ADOHnbFms
+         lV6FieMnClaq3UC6xrSt36RniGb1KUnUOALyyUd6rqcSyFZ0sKbmTMv+AYPfN+2Mzej0
+         AfiXaJeRqoHLWE15WPJCf/j6gzl4YFYpO/XEewJVmORza6zjsV7PSxQsvsE3lpzIvINw
+         QoNHysvW6Xl9qUdKPGfb5Y9BkOOFoVn1xIkxZvAhyGmDeNFymYxJKHpS89kTo7D6riGf
+         Q3aK4Xb42YptwoAov2kTVVw7i9+0/FSOviCnexpA/2nhokdq2a4MbWJW7kalNr6qNB8L
+         pzgw==
+X-Gm-Message-State: AOAM530rcqDPIKNYQxWf83re9wsFQx6XBA70PjA9CNy7s24HWxkkFKS0
+        3nsdy6BDqELdV7/AJVteq3RNWb8qUwklGiW6+2A=
+X-Google-Smtp-Source: ABdhPJzwQV91mh4Q/+ptmYv179euaM8lt/V2Cgz4w/LBwdDZdQqdbPmJ5DlPgfN1SLf5XyCGBKfrrKLRrWllXPA5TlI=
+X-Received: by 2002:a05:6402:1648:: with SMTP id s8mr3897310edx.214.1628589978156;
+ Tue, 10 Aug 2021 03:06:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810095832.4234-10-hpa@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210810074932.3934499-1-mudongliangabcd@gmail.com> <YRJMssKBFeToLvKi@kroah.com>
+In-Reply-To: <YRJMssKBFeToLvKi@kroah.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 10 Aug 2021 18:05:51 +0800
+Message-ID: <CAD-N9QWBm01QMWHX_onMdO6mi+9ROF_MJMmg1Juxa++4eJVeVw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ipack: tpci200: fix many double free issues in tpci200_pci_probe
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        industrypack-devel@lists.sourceforge.net,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 10, 2021 at 5:53 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Aug 10, 2021 at 03:49:21PM +0800, Dongliang Mu wrote:
+> > The function tpci200_register called by tpci200_install and
+> > tpci200_unregister called by tpci200_uninstall are in pair. However,
+> > tpci200_unregister has some cleanup operations not in the
+> > tpci200_register. So the error handling code of tpci200_pci_probe has
+> > many different double free issues.
+> >
+> > Fix this problem by moving those cleanup operations out of
+> > tpci200_unregister, into tpci200_pci_remove and reverting
+> > the previous commit 9272e5d0028d ("ipack/carriers/tpci200:
+> > Fix a double free in tpci200_pci_probe").
+> >
+> > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > ---
+>
+> No cc: stable markings on the patches?
+>
 
-No objections, I think this is good idea but..
+I am sorry that I usually ignore that tag. I have sent a v4 patch with
+the Cc tag.
 
-On Tue, Aug 10, 2021 at 05:58:21PM +0800, Kate Hsuan wrote:
+Dongliang Mu
 
-.. I suggest to add proper commit message here. Many maintainers ignore
-patches that don't have one.
-
-> Signed-off-by: Kate Hsuan <hpa@redhat.com>
-> ---
->  drivers/platform/x86/Kconfig                  | 47 -----------------
->  drivers/platform/x86/Makefile                 |  6 +--
->  drivers/platform/x86/intel/Kconfig            |  1 +
->  drivers/platform/x86/intel/Makefile           |  5 ++
->  drivers/platform/x86/intel/scu/Kconfig        | 52 +++++++++++++++++++
->  drivers/platform/x86/intel/scu/Makefile       | 11 ++++
->  .../x86/{ => intel/scu}/intel_scu_ipc.c       |  0
->  .../x86/{ => intel/scu}/intel_scu_ipcutil.c   |  0
->  .../x86/{ => intel/scu}/intel_scu_pcidrv.c    |  0
->  .../x86/{ => intel/scu}/intel_scu_pltdrv.c    |  0
->  .../x86/{ => intel/scu}/intel_scu_wdt.c       |  0
->  11 files changed, 70 insertions(+), 52 deletions(-)
->  create mode 100644 drivers/platform/x86/intel/scu/Kconfig
->  create mode 100644 drivers/platform/x86/intel/scu/Makefile
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipc.c (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipcutil.c (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pcidrv.c (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pltdrv.c (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_wdt.c (100%)
+> :(
+>
