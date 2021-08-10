@@ -2,126 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6253E5672
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57893E567A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237876AbhHJJNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbhHJJNO (ORCPT
+        id S238604AbhHJJNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:13:53 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:36566 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229827AbhHJJNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:13:14 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A89FC0613D3;
-        Tue, 10 Aug 2021 02:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=8vt89Y6r+9GV+oFHjxZBGO2/Fiby2OsZ3MlYOti3J4Y=; b=UugJXkM0/kCE0nZHIyj6L438t
-        iCcuNqHh0+zzKlCRxGss8klqt2RqaFkXhpOESSTrJxE9fbquLbrg0H7Kt6zDWE6+WT4YrMWErzNXD
-        FD5VCM/8yqJNZP7ODUXQ+nik+cFY6xf/VAoQyPxXxYMhZR5frmK1eGn7NlWHE9mXWKFTjv8xMqUs9
-        t9o1fbtAaBRWx8VYdKtkb6j4LDd2eNAvjCJOnWPuplmaCdM7VZGf4RGnnfI/irfj5t5zo3UtfLaCN
-        f9v7C+qiPBJ1ABNYQ5ey6qeKq2dgVwIOeyZpJfTQptYUpA0TFDqb88QVEOKhfEwq08hFLh3+OKvUv
-        kyDXxh3OQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47142)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mDNoR-0006oG-7K; Tue, 10 Aug 2021 10:12:43 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mDNoM-00023a-V5; Tue, 10 Aug 2021 10:12:38 +0100
-Date:   Tue, 10 Aug 2021 10:12:38 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jianbo Liu <jianbol@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Ido Schimmel <idosch@idosch.org>
-Subject: Re: [PATCH net] net: switchdev: zero-initialize struct
- switchdev_notifier_fdb_info emitted by drivers towards the bridge
-Message-ID: <20210810091238.GB1343@shell.armlinux.org.uk>
-References: <20210809131152.509092-1-vladimir.oltean@nxp.com>
- <YRIhwQ3ji8eqPQOQ@unreal>
- <20210810081616.wjx6jnlh3qxqsfm2@skbuf>
+        Tue, 10 Aug 2021 05:13:49 -0400
+Received: by mail-vs1-f41.google.com with SMTP id y65so1469045vsy.3;
+        Tue, 10 Aug 2021 02:13:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D4zFUoQGWXvJJzszKGbYHtmhD6iQDxYUpdvSAl+bWOM=;
+        b=n/aBVUK99Rmm2MaI+JLChXRJm1A059O4buVZjxXJgxCY3kBlujqs7HeegoWLIiHvGa
+         E0LGs69wzyT8DIzIhaB1LNz3iEtk7lw9xx+LTdAgyEwYFq3hsHGwVVcaY+bPYqCX0mTh
+         499n2NF/ogRk9RdcVM4nCtI/TB/z/+Wv75yXp9aZ2Ni+wyjLxDXf/ZX6WZkgYTRBSpBA
+         c1fNZbD0Y6yyUkhom1Mwmgut/W/O1MseAEeDhzIgWevskuzK8c+L3mO13A2sBMOo5WSe
+         nv37EjGuDZSx4DWxyrHCYTV+cOU5hGF9AOIM/af11D/q+N2HXW04py7v8ewAFouhFV8i
+         H/FQ==
+X-Gm-Message-State: AOAM532zqhJnsUpDgFwIXI4dVsPoNYlluwXAWQfzrfWgWNOv0eJGdXBS
+        pyj593JnrZ+APGUgNe7qF9pvEpBkKpG4PdQG+SQ=
+X-Google-Smtp-Source: ABdhPJzi/lB8toRXF6TLgirnwNVqdViDEm3Wk1WLbMzBb5EExiEX3qWBYRajb5yqiHccxcg+Sc4I+H0YhXdr/mU8G4o=
+X-Received: by 2002:a67:e2c7:: with SMTP id i7mr20048451vsm.3.1628586807159;
+ Tue, 10 Aug 2021 02:13:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810081616.wjx6jnlh3qxqsfm2@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210727112328.18809-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210727112328.18809-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210727112328.18809-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 10 Aug 2021 11:13:15 +0200
+Message-ID: <CAMuHMdWy4JNZ2=Z+FdMdHukN6rGQMma7cc+Pm06AtsOk8j_eGA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] pinctrl: renesas: Add RZ/G2L pin and gpio
+ controller driver
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 08:16:17AM +0000, Vladimir Oltean wrote:
-> Hi Leon,
-> 
-> On Tue, Aug 10, 2021 at 09:50:41AM +0300, Leon Romanovsky wrote:
-> > > +	memset(&send_info, 0, sizeof(send_info));
-> > 
-> > This can be written simpler.
-> > struct switchdev_notifier_fdb_info send_info = {};
-> > 
-> > In all places.
-> 
-> Because the structure contains a sub-structure, I believe that a
-> compound literal initializer would require additional braces for the
-> initialization of its sub-objects too. At least I know that expressions
-> like that have attracted the attention of clang people in the past:
-> https://patchwork.ozlabs.org/project/netdev/patch/20190506202447.30907-1-natechancellor@gmail.com/
-> So I went for the 'unambiguous' path.
+Hi Prabhakar,
 
-There's a difference between:
+On Tue, Jul 27, 2021 at 1:23 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add support for pin and gpio controller driver for RZ/G2L SoC.
+>
+> Based on a patch in the BSP by Hien Huynh <hien.huynh.px@renesas.com>.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-	struct foo bar = { 0 };
+Thanks for your patch!
 
-and
+> --- /dev/null
+> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
 
-	struct foo bar = { };
+> +static void rzg2l_pinctrl_clk_disable(void *data)
+> +{
+> +       struct clk *clk = data;
 
-The former tells the compiler that you wish to set the first member of
-struct foo, which will be an integer type, to zero. The latter is an
-empty initialiser where all members and sub-members of the structure
-default to a zero value.
+No need for the intermediate variable.
 
-You should have no problem with the latter. You will encounter problems
-with the former if the first member of struct foo is not an integer
-type.
+> +
+> +       clk_disable_unprepare(clk);
+> +}
+> +
+> +static int rzg2l_pinctrl_probe(struct platform_device *pdev)
+> +{
+> +       struct rzg2l_pinctrl *pctrl;
+> +       int ret;
+> +
+> +       pctrl = devm_kzalloc(&pdev->dev, sizeof(*pctrl), GFP_KERNEL);
+> +       if (!pctrl)
+> +               return -ENOMEM;
+> +
+> +       pctrl->dev = &pdev->dev;
+> +
+> +       pctrl->data = of_device_get_match_data(&pdev->dev);
+> +       if (!pctrl->data)
+> +               return -EINVAL;
+> +
+> +       pctrl->base = devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(pctrl->base))
+> +               return PTR_ERR(pctrl->base);
+> +
+> +       pctrl->clk = devm_clk_get(pctrl->dev, NULL);
+> +       if (IS_ERR(pctrl->clk)) {
+> +               ret = PTR_ERR(pctrl->clk);
+> +               dev_err(pctrl->dev, "failed to get GPIO clk : %i\n", ret);
+> +               return ret;
+> +       };
+> +
+> +       spin_lock_init(&pctrl->lock);
+> +
+> +       platform_set_drvdata(pdev, pctrl);
+> +
+> +       ret = clk_prepare_enable(pctrl->clk);
+> +       if (ret) {
+> +               dev_err(pctrl->dev, "failed to enable GPIO clk: %i\n", ret);
+> +               return ret;
+> +       };
+> +
+> +       ret = devm_add_action_or_reset(&pdev->dev, rzg2l_pinctrl_clk_disable, pctrl->clk);
+
+This line is a bit long.
+
+> +       if (ret) {
+> +               dev_err(pctrl->dev, "failed to register pinctrl clk disable devm action, %i\n",
+
+Elsewhere, this is called the "GPIO clk".
+This line is a bit long.
+
+> +                       ret);
+> +               return ret;
+> +       }
+> +
+> +       ret = rzg2l_pinctrl_register(pctrl);
+> +       if (ret)
+> +               return ret;
+> +
+> +       dev_info(pctrl->dev, "%s support registered\n", DRV_NAME);
+> +       return 0;
+> +}
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v5.15, with the above fixed, so no need
+to resend.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
