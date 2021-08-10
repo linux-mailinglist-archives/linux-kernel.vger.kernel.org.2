@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780863E7E69
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9353E8057
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbhHJRdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33530 "EHLO mail.kernel.org"
+        id S235778AbhHJRsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231822AbhHJRcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F15F60F35;
-        Tue, 10 Aug 2021 17:32:25 +0000 (UTC)
+        id S236487AbhHJRow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:44:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A44DF61179;
+        Tue, 10 Aug 2021 17:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616746;
-        bh=ERX0QMlh4p07jgq2Pb5VAZYDdbT8+gREyoer7GZBAsw=;
+        s=korg; t=1628617196;
+        bh=3j6OXrGgf1G4CtlBsC9TKuCGsRnMjxBG0w4DxueHQhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BR/F+WVTzifaV8kI6F7JGN4IRon/E7Q2LRS3kCo77QWXxfsHfSXlqpVe5tCjETv+7
-         Kw40Jkop6+EJuNpE3Ms+Xos0RP29lhWJtAt2hI5L2IUnFEKBlBiS/stA+oMxNshQsP
-         Rr0tnG7jXm4iyDZIa0zftFu+bWke8ZI5ORIZ/er0=
+        b=XHlyZgNz76iE9u2OaNRC9R+dUZopbYbecikxkOMBpriMs7v/hENOd29bThHpMHdjU
+         lOiOLqi09zULLnLCrCzi5EdBaYMS6qi1PtXZ4jWJS1gaRRIgLcf0shdP7JDgJJtTZ+
+         DHAyyKSSuW6KpFgmZVXKzAGdyluDRi+U0tnP7D+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Maxim Devaev <mdevaev@gmail.com>
-Subject: [PATCH 4.19 28/54] usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 5.10 088/135] staging: rtl8712: get rid of flush_scheduled_work
 Date:   Tue, 10 Aug 2021 19:30:22 +0200
-Message-Id: <20210810172945.099464175@linuxfoundation.org>
+Message-Id: <20210810172958.748455585@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +38,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Devaev <mdevaev@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit afcff6dc690e24d636a41fd4bee6057e7c70eebd upstream.
+commit 9be550ee43919b070bcd77f9228bdbbbc073245b upstream.
 
-The USB HID standard declares mandatory support for GET_IDLE and SET_IDLE
-requests for Boot Keyboard. Most hosts can handle their absence, but others
-like some old/strange UEFIs and BIOSes consider this a critical error
-and refuse to work with f_hid.
+This patch is preparation for following patch for error handling
+refactoring.
 
-This primitive implementation of saving and returning idle is sufficient
-to meet the requirements of the standard and these devices.
+flush_scheduled_work() takes (wq_completion)events lock and
+it can lead to deadlock when r871xu_dev_remove() is called from workqueue.
+To avoid deadlock sutiation we can change flush_scheduled_work() call to
+flush_work() call for all possibly scheduled works in this driver,
+since next patch adds device_release_driver() in case of fw load failure.
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-Link: https://lore.kernel.org/r/20210721180351.129450-1-mdevaev@gmail.com
+Link: https://lore.kernel.org/r/6e028b4c457eeb7156c76c6ea3cdb3cb0207c7e1.1626895918.git.paskripkin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_hid.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/staging/rtl8712/rtl8712_led.c     |    8 ++++++++
+ drivers/staging/rtl8712/rtl871x_led.h     |    1 +
+ drivers/staging/rtl8712/rtl871x_pwrctrl.c |    8 ++++++++
+ drivers/staging/rtl8712/rtl871x_pwrctrl.h |    1 +
+ drivers/staging/rtl8712/usb_intf.c        |    3 ++-
+ 5 files changed, 20 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -41,6 +41,7 @@ struct f_hidg {
- 	unsigned char			bInterfaceSubClass;
- 	unsigned char			bInterfaceProtocol;
- 	unsigned char			protocol;
-+	unsigned char			idle;
- 	unsigned short			report_desc_length;
- 	char				*report_desc;
- 	unsigned short			report_length;
-@@ -529,6 +530,14 @@ static int hidg_setup(struct usb_functio
- 		goto respond;
+--- a/drivers/staging/rtl8712/rtl8712_led.c
++++ b/drivers/staging/rtl8712/rtl8712_led.c
+@@ -1820,3 +1820,11 @@ void LedControl871x(struct _adapter *pad
  		break;
- 
-+	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
-+		  | HID_REQ_GET_IDLE):
-+		VDBG(cdev, "get_idle\n");
-+		length = min_t(unsigned int, length, 1);
-+		((u8 *) req->buf)[0] = hidg->idle;
-+		goto respond;
-+		break;
+ 	}
+ }
 +
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
- 		  | HID_REQ_SET_REPORT):
- 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
-@@ -552,6 +561,14 @@ static int hidg_setup(struct usb_functio
- 		goto stall;
- 		break;
- 
-+	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
-+		  | HID_REQ_SET_IDLE):
-+		VDBG(cdev, "set_idle\n");
-+		length = 0;
-+		hidg->idle = value;
-+		goto respond;
-+		break;
++void r8712_flush_led_works(struct _adapter *padapter)
++{
++	struct led_priv *pledpriv = &padapter->ledpriv;
 +
- 	case ((USB_DIR_IN | USB_TYPE_STANDARD | USB_RECIP_INTERFACE) << 8
- 		  | USB_REQ_GET_DESCRIPTOR):
- 		switch (value >> 8) {
-@@ -779,6 +796,7 @@ static int hidg_bind(struct usb_configur
- 	hidg_interface_desc.bInterfaceSubClass = hidg->bInterfaceSubClass;
- 	hidg_interface_desc.bInterfaceProtocol = hidg->bInterfaceProtocol;
- 	hidg->protocol = HID_REPORT_PROTOCOL;
-+	hidg->idle = 1;
- 	hidg_ss_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
- 	hidg_ss_in_comp_desc.wBytesPerInterval =
- 				cpu_to_le16(hidg->report_length);
++	flush_work(&pledpriv->SwLed0.BlinkWorkItem);
++	flush_work(&pledpriv->SwLed1.BlinkWorkItem);
++}
+--- a/drivers/staging/rtl8712/rtl871x_led.h
++++ b/drivers/staging/rtl8712/rtl871x_led.h
+@@ -112,6 +112,7 @@ struct led_priv {
+ void r8712_InitSwLeds(struct _adapter *padapter);
+ void r8712_DeInitSwLeds(struct _adapter *padapter);
+ void LedControl871x(struct _adapter *padapter, enum LED_CTL_MODE LedAction);
++void r8712_flush_led_works(struct _adapter *padapter);
+ 
+ #endif
+ 
+--- a/drivers/staging/rtl8712/rtl871x_pwrctrl.c
++++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.c
+@@ -224,3 +224,11 @@ void r8712_unregister_cmd_alive(struct _
+ 	}
+ 	mutex_unlock(&pwrctrl->mutex_lock);
+ }
++
++void r8712_flush_rwctrl_works(struct _adapter *padapter)
++{
++	struct pwrctrl_priv *pwrctrl = &padapter->pwrctrlpriv;
++
++	flush_work(&pwrctrl->SetPSModeWorkItem);
++	flush_work(&pwrctrl->rpwm_workitem);
++}
+--- a/drivers/staging/rtl8712/rtl871x_pwrctrl.h
++++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
+@@ -111,5 +111,6 @@ void r8712_cpwm_int_hdl(struct _adapter
+ void r8712_set_ps_mode(struct _adapter *padapter, uint ps_mode,
+ 			uint smart_ps);
+ void r8712_set_rpwm(struct _adapter *padapter, u8 val8);
++void r8712_flush_rwctrl_works(struct _adapter *padapter);
+ 
+ #endif  /* __RTL871X_PWRCTRL_H_ */
+--- a/drivers/staging/rtl8712/usb_intf.c
++++ b/drivers/staging/rtl8712/usb_intf.c
+@@ -609,7 +609,8 @@ static void r871xu_dev_remove(struct usb
+ 			padapter->surprise_removed = true;
+ 		if (pnetdev->reg_state != NETREG_UNINITIALIZED)
+ 			unregister_netdev(pnetdev); /* will call netdev_close() */
+-		flush_scheduled_work();
++		r8712_flush_rwctrl_works(padapter);
++		r8712_flush_led_works(padapter);
+ 		udelay(1);
+ 		/* Stop driver mlme relation timer */
+ 		r8712_stop_drv_timers(padapter);
 
 
