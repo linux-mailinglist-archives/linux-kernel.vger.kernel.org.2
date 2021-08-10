@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1883E833B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4812C3E833F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhHJStA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:49:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52712 "EHLO
+        id S231767AbhHJSuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:50:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52322 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231414AbhHJStA (ORCPT
+        by vger.kernel.org with ESMTP id S229774AbhHJSuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:49:00 -0400
+        Tue, 10 Aug 2021 14:50:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628621317;
+        s=mimecast20190719; t=1628621394;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=uGh9fA/6SL05Y4+mEAteYPx6YCipxcI5JZ/cNQGYfos=;
-        b=FTSluNRFRa922gvXfScfHh6EV08e/2Z40BgXZHBmbibHEqmG/lD+yna/NGxb1R289AMpD+
-        PZTX95nP7UbZ4RhtpCpeZKpBEA1azfHlSt+DOqkQgydhxrB3huufsamdr+85wgbZNUiC/i
-        gtV+wvYsCZWK5/M3XRCTd7rBKYYspVo=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-GFUerK91PNeTkHexBg-QnQ-1; Tue, 10 Aug 2021 14:48:34 -0400
-X-MC-Unique: GFUerK91PNeTkHexBg-QnQ-1
-Received: by mail-qk1-f199.google.com with SMTP id p14-20020a05620a22eeb02903b94aaa0909so5365481qki.15
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:48:34 -0700 (PDT)
+        bh=sIY2+IC7WL45hNaXWA0mNkNCzPB+K2jEa8Wry58PE/U=;
+        b=fJqlEPwCjNtyRH3F7Rx5DbUd0oZprZR51q62a5OrXRi0gq16aKYLbPm9dHTLsDecZMRxO5
+        vNogN6hX8p75kPcXcZURvxr7wI99QlxAwGQGkJEVg4n2nlRQDja6eBQKE0ucxiW8aAlLIc
+        63n8meoIL31zHABjSBwBdNotgjZkuMc=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-104-rYZw8K4tN5eV_Y1JzAKK2A-1; Tue, 10 Aug 2021 14:49:47 -0400
+X-MC-Unique: rYZw8K4tN5eV_Y1JzAKK2A-1
+Received: by mail-qv1-f69.google.com with SMTP id a2-20020a0562141302b02903303839b843so17454726qvv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:49:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uGh9fA/6SL05Y4+mEAteYPx6YCipxcI5JZ/cNQGYfos=;
-        b=BJ5VU+YGxTjk8jDh2v/ExhpbkIVwss/DNl0sh7cBgpYa5gz1+eS8QA1a1YLmnMLHs3
-         784x2+nApgGlC++vp0A/cd7lxBbvdTIeexsiQ1K2NNpypW3AavBIBwA74N+N9nheepH6
-         kSIm6KPmLaVoV3CPSWw6Bwc4L1D5zgHgYnkG5IgiUbScHbXUQgDw9IvQ6s26vxSAK9dQ
-         KPNnsoJ7rE10PYGvdjIwyVQeHdDiCB6nsNCTcopYq//9XrAHwWSAsvZJiLNwWdTTLWBv
-         2XTEYgSpnlC0YGGhwa8VjTY/Hs4Irch6FHOIs3XBIi5SYpTPfGejwOmXXipmRYoiSohm
-         +BoQ==
-X-Gm-Message-State: AOAM530Z14D2z8CZDIBFs54LNqeYIlZ52/o+f3nD9IhyFyH/k0aK+1RL
-        bO5rqmckxppeqnrUXsl4b1SnGA6kEAOccd0vk+m/rvHg82niurpxOImsxVb2rAghnVodrBn4cOx
-        MJkExzkVzPjLOoETbz1UqwmvV
-X-Received: by 2002:a05:620a:2101:: with SMTP id l1mr14790458qkl.104.1628621313805;
-        Tue, 10 Aug 2021 11:48:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIyq0bJKC/A97FVUFNlJ4uivR7xL4lKUeKBCJnJ5l4dPxGWD2CLEAIiMGQtQn39x+UaF2hrA==
-X-Received: by 2002:a05:620a:2101:: with SMTP id l1mr14790443qkl.104.1628621313591;
-        Tue, 10 Aug 2021 11:48:33 -0700 (PDT)
+        bh=sIY2+IC7WL45hNaXWA0mNkNCzPB+K2jEa8Wry58PE/U=;
+        b=DiGQF81rzULbl7Y4xwE33PJLJEzQsFGR5dl9hHSt9w8Xyim62emZrBrPKF5G6yM4To
+         kVBUU/3yLHqaH9kbypSCiz/quyVPogDptY7x6zFgkQRrBJZzVqI9/dpxnp7eZKdVC31F
+         astvIeP1zZdSyUO0a6xWbBVAJhdDn8HH+EtxZbbKsFY8subWipbi/dilfF+hmyZ5rriT
+         Jz9jMTRZUEQAL7bW1FyVQfbSqc4mv2DA2yj8mMXNJYTNba2M53/qD/2/K9p+A0yk1GbU
+         Wp7a5CX/SM3olk7PL5VsRN0udPdOtVMeNgobIdptsH5lhQ6E5VW9+/hOpW2cTGMNLMfu
+         xpdA==
+X-Gm-Message-State: AOAM531nXNlWjoQe4gTqw+pNin771Ssmsq4eXmm74awwwJ37EeGnWy+C
+        N1JzDl5viOvSQkoUIDFFfaGO0KOk1y+DBL4uJdcYjgZ7eYQiqlYXpVPG08vBaMNQt3ewQcuDAQY
+        83ZJuGKmzKejP/MsZ78rDLzdU
+X-Received: by 2002:a05:620a:4495:: with SMTP id x21mr29960406qkp.468.1628621387550;
+        Tue, 10 Aug 2021 11:49:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQvFRashIBFVzGhqhv5sdxbxzhHektVx1wjA60NW0CdiaAdHl2bwdx2KS9QwBp6XM60FSi5Q==
+X-Received: by 2002:a05:620a:4495:: with SMTP id x21mr29960386qkp.468.1628621387352;
+        Tue, 10 Aug 2021 11:49:47 -0700 (PDT)
 Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id a24sm8898750qtj.43.2021.08.10.11.48.32
+        by smtp.gmail.com with ESMTPSA id c68sm11756909qkf.48.2021.08.10.11.49.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 11:48:32 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 14:48:31 -0400
+        Tue, 10 Aug 2021 11:49:46 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 14:49:45 -0400
 From:   Peter Xu <peterx@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org
-Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
-Message-ID: <YRLJ/wdiY/fnGj2d@t490s>
+Subject: Re: [PATCH 1/7] vfio: Create vfio_fs_type with inode per device
+Message-ID: <YRLKSYQL8VvTr3gc@t490s>
 References: <162818167535.1511194.6614962507750594786.stgit@omen>
- <162818325518.1511194.1243290800645603609.stgit@omen>
+ <162818322947.1511194.6035266132085405252.stgit@omen>
+ <YRI8Mev5yfeAXsrj@infradead.org>
+ <20210810085254.51da01d6.alex.williamson@redhat.com>
+ <YRKT2UhgjfWBmwuJ@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <162818325518.1511194.1243290800645603609.stgit@omen>
+In-Reply-To: <YRKT2UhgjfWBmwuJ@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:07:35AM -0600, Alex Williamson wrote:
-> @@ -1690,7 +1554,7 @@ static int vfio_pci_mmap(struct vfio_device *core_vdev, struct vm_area_struct *v
->  
->  	vma->vm_private_data = vdev;
->  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> -	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
-> +	vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
+On Tue, Aug 10, 2021 at 03:57:29PM +0100, Christoph Hellwig wrote:
+> On Tue, Aug 10, 2021 at 08:52:54AM -0600, Alex Williamson wrote:
+> > On Tue, 10 Aug 2021 10:43:29 +0200
+> > Christoph Hellwig <hch@infradead.org> wrote:
+> > 
+> > > > + * XXX Adopt the following when available:
+> > > > + * https://lore.kernel.org/lkml/20210309155348.974875-1-hch@lst.de/  
+> > > 
+> > > No need for this link.
+> > 
+> > Is that effort dead?  I've used the link several times myself to search
+> > for progress, so it's been useful to me.  Thanks,
+> 
+> No, but it seems odd to have reference to an old patchset in the kernel
+> tree.
 
-This addition seems to be an accident. :) Thanks,
+I learn from the reference too.  Maybe move into commit message?  Thanks,
 
 -- 
 Peter Xu
