@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156DE3E7D59
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E133E7D5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhHJQT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229783AbhHJQT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:19:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D515600CC;
-        Tue, 10 Aug 2021 16:19:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628612374;
-        bh=rUrQspPgCz1GB/kLMPpAV5Oz5uFIYwUtwRxo8l8CgxQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FoKJI/tWK/6kSLtIxyJfheigFp9Dbk39gOIdQawyWlg/IV94uf8MeVLmFCk/QQFGZ
-         nrURh8v2Y/B2Ah/51rD46AOuFfzffVzne77EWYedGNlu+fHlDNjC/TI0ahcurePvdQ
-         MRbnVzVIw3VloWG+nu87QnB1v4o+O5LBh8KhXkybvvbw7+Z0+xXZajZMOnP5Zy6vMx
-         yYLnP9WMwnDJVHB+x0oKDdtdOqdf8pStAfdCAqjQzZjXJxNo/bsOltJkph/KE8sFoa
-         J/M+fytEJTw0ReNNrAkT0GAGy4pF2vseBrTdWNnLtxsewLz4VYcDA+jV7RlAr0AEMR
-         jXgBkj8miZhkA==
-Date:   Tue, 10 Aug 2021 19:19:32 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ross Philipson <ross.philipson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        luto@amacapital.net, kanth.ghatraju@oracle.com,
-        trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH v3 02/14] x86/boot: Add missing handling of
- setup_indirect structures
-Message-ID: <20210810161932.wdwfu3wosjytdj4h@kernel.org>
-References: <1628527136-2478-1-git-send-email-ross.philipson@oracle.com>
- <1628527136-2478-3-git-send-email-ross.philipson@oracle.com>
+        id S231974AbhHJQU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhHJQU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:20:58 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34223C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:20:36 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id h1so32884778iol.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A3Wk2pDyXbmU+r0AsnVTvYVgVzJbiqOOteA35AVH/wQ=;
+        b=hprt/XB7CmBJP+eKFgA9sQuCJZrqn0qwTrgKhwazayta8qPLfTwKMVf9HNNmqzlgin
+         SOKNQiMlNrfI1NbrMxEtm4iyegkbOsAHBXY6+fGvYQwMtZKtJDihnlzBZTufFtt7MJ61
+         p3V9vR2GV5X/H4mwksUW3huUM/haXeZrPfZQdYs7HjclwN6KulS0tNUL6x7lFSV3pWf/
+         ceTdoxYF92UxVkbCq/2h31nEZ6WhNq1zx6PsANE8fSZyC6ZBkdpq0ZSY0F0zx4OeraDr
+         7WadLSHEtpM0nCFEi5TZGkxNWk8IJrfqYAaiCFSdzOLFewUJVelKF/mUSjHp6O6uh2Ok
+         Eo3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A3Wk2pDyXbmU+r0AsnVTvYVgVzJbiqOOteA35AVH/wQ=;
+        b=qT7ffZSDtUjP/kOn41rkYEi3cjDKhgOohNuPnxRbBWcfxBZp53dm+K0fc19v2xzKUH
+         kTMHP3iewzQwsmJ1YVuiPH5GuYypU0CrPkn+v9bqmiFr6ifK3f7xXixNLKhVBzGYSwrG
+         vvnXGh5uRno3Yu8Hz78cjWHkIUHlh3FOdoh+JRENrKSEeMmaM7yx+mpBFGSzCeK2ZmjN
+         gJsX53phv7rUilmNxyQOHX8uQlnQDlkDwvbaqsLbqXIe1b1t/X90xUHBi8DEU+sJoW/S
+         lzStyYp38iq5HlR+Vj9VfmRSzLhHKZcK/H77iZ6+a9wS738zTY1pbs9NAN3w5wctow3R
+         slMQ==
+X-Gm-Message-State: AOAM530t89meQaMAgq/mwcVXj/zKEgglVFgL3cpq5lnLVds6x+uR4GzG
+        k/KiTRyav5z064dbPvNQWvX8WBsx9g1uMA==
+X-Google-Smtp-Source: ABdhPJwRwEtZHSrnnARdft1xFnlfdBLTgiPEJwE4cmqZQ57BLYyVov0vj13z+J27bFF1sDO46MQslw==
+X-Received: by 2002:a05:6638:24c7:: with SMTP id y7mr7077324jat.64.1628612435584;
+        Tue, 10 Aug 2021 09:20:35 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id h26sm11898210ior.7.2021.08.10.09.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 09:20:35 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 1/1] dt-bindings: net: qcom,ipa: make imem interconnect optional
+Date:   Tue, 10 Aug 2021 11:20:33 -0500
+Message-Id: <20210810162033.2258604-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1628527136-2478-3-git-send-email-ross.philipson@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 12:38:44PM -0400, Ross Philipson wrote:
-> One of the two functions in ioremap.c that handles setup_data was
-> missing the correct handling of setup_indirect structures.
+On some newer SoCs, the interconnect between IPA and SoC internal
+memory (imem) is not used.  Update the binding to indicate that
+having just the memory and config interconnects is another allowed
+configuration.
 
-What is "correct handling", and how was it broken?
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+v3:  Based on net-next/master; sending for inclusion there.
+v2:  Based on linux-next/master, to be taken via Qualcomm repository.
 
-What is 'setup_indirect'?
+I sent version 2 of this only to linux-arm-msm, but Bjorn reminded
+me this binding update ought to go through the net-next repository.
 
-> Functionality missing from original commit:
+					-Alex
 
-Remove this sentence.
+ .../devicetree/bindings/net/qcom,ipa.yaml     | 24 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-> commit b3c72fc9a78e (x86/boot: Introduce setup_indirect)
-
-Should be.
-
-Fixes: b3c72fc9a78e ("x86/boot: Introduce setup_indirect")
-
+diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+index ed88ba4b94df5..b8a0b392b24ea 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+@@ -87,16 +87,24 @@ properties:
+       - const: ipa-setup-ready
  
-> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> ---
->  arch/x86/mm/ioremap.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-> index ab74e4f..f2b34c5 100644
-> --- a/arch/x86/mm/ioremap.c
-> +++ b/arch/x86/mm/ioremap.c
-> @@ -669,17 +669,34 @@ static bool __init early_memremap_is_setup_data(resource_size_t phys_addr,
->  
->  	paddr = boot_params.hdr.setup_data;
->  	while (paddr) {
-> -		unsigned int len;
-> +		unsigned int len, size;
->  
->  		if (phys_addr == paddr)
->  			return true;
->  
->  		data = early_memremap_decrypted(paddr, sizeof(*data));
-> +		size = sizeof(*data);
->  
->  		paddr_next = data->next;
->  		len = data->len;
->  
-> -		early_memunmap(data, sizeof(*data));
-> +		if ((phys_addr > paddr) && (phys_addr < (paddr + len))) {
-> +			early_memunmap(data, sizeof(*data));
-> +			return true;
-> +		}
-> +
-> +		if (data->type == SETUP_INDIRECT) {
-> +			size += len;
-> +			early_memunmap(data, sizeof(*data));
-> +			data = early_memremap_decrypted(paddr, size);
-> +
-> +			if (((struct setup_indirect *)data->data)->type != SETUP_INDIRECT) {
-> +				paddr = ((struct setup_indirect *)data->data)->addr;
-> +				len = ((struct setup_indirect *)data->data)->len;
-> +			}
-> +		}
-> +
-> +		early_memunmap(data, size);
->  
->  		if ((phys_addr > paddr) && (phys_addr < (paddr + len)))
->  			return true;
-> -- 
-> 1.8.3.1
-> 
-> 
+   interconnects:
+-    items:
+-      - description: Interconnect path between IPA and main memory
+-      - description: Interconnect path between IPA and internal memory
+-      - description: Interconnect path between IPA and the AP subsystem
++    oneOf:
++      - items:
++          - description: Path leading to system memory
++          - description: Path between the AP and IPA config space
++      - items:
++          - description: Path leading to system memory
++          - description: Path leading to internal memory
++          - description: Path between the AP and IPA config space
+ 
+   interconnect-names:
+-    items:
+-      - const: memory
+-      - const: imem
+-      - const: config
++    oneOf:
++      - items:
++          - const: memory
++          - const: config
++      - items:
++          - const: memory
++          - const: imem
++          - const: config
+ 
+   qcom,smem-states:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+-- 
+2.27.0
 
-/Jarkko
