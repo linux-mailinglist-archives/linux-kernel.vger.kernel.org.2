@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE4F3E5800
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866583E5805
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239733AbhHJKJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:09:49 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:45600
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230039AbhHJKJs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:09:48 -0400
-Received: from localhost.localdomain (61-220-137-37.HINET-IP.hinet.net [61.220.137.37])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 831763F107;
-        Tue, 10 Aug 2021 10:09:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628590165;
-        bh=x/Db548JcNjl7vdwhUu8F9KYkZB9HM7NmO3UOKZN8AY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=ruG57TO9RatLz8T7uzz1DsNt2wybJDlCcLk5KYb7ypRiDn1Bd7dagg0GIUEGQPupL
-         stPbMtKYuWoSknUevNiXrXiUaYQBZW9Gs6Jiwn9XZfyZvCCasFm1S/Z2/O1jnAltvr
-         Eph2aWGxeIlYghNVXnQ/gHl21wJk11Xl7FRxjX3uR6U28IIwbRd9L3C07otGMQu8rb
-         svlg0NbYqkqPsttqxUCYV3+tMz3cUZpm/IuVIVvxFd1oaLAcZWOTgZDwcJaabvpCau
-         R4PMOCqGVBzN+uy5QED3XJEVC4x6aFf5eQXAULKmWgWB1dPhwOiCmt/dvKWc3VuYlC
-         Dm7I9Hm421yMg==
-From:   Jeremy Szu <jeremy.szu@canonical.com>
-To:     tiwai@suse.com
-Cc:     Jeremy Szu <jeremy.szu@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kailang Yang <kailang@realtek.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Jian-Hong Pan <jhp@endlessos.org>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        PeiSen Hou <pshou@realtek.com>, Luke D Jones <luke@ljones.dev>,
-        Sami Loone <sami@loone.fi>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 650 G8 Notebook PC
-Date:   Tue, 10 Aug 2021 18:08:45 +0800
-Message-Id: <20210810100846.65844-1-jeremy.szu@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S239747AbhHJKL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:11:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:52896 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230039AbhHJKL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:11:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 608E46D;
+        Tue, 10 Aug 2021 03:11:34 -0700 (PDT)
+Received: from [10.57.9.181] (unknown [10.57.9.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8384F3F70D;
+        Tue, 10 Aug 2021 03:11:32 -0700 (PDT)
+Subject: Re: [PATCH 8/8] cpufreq: vexpress: Use auto-registration for energy
+ model
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
+ <d3629cc7-d9db-0e54-94e9-278e308b7e8e@arm.com>
+ <20210810100652.h473q6hgtc5czfyk@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <2210acb9-2666-7aa9-d36c-346480541f3c@arm.com>
+Date:   Tue, 10 Aug 2021 11:11:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210810100652.h473q6hgtc5czfyk@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HP ProBook 650 G8 Notebook PC is using ALC236 codec which is
-using 0x02 to control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
 
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4043a2362f27..a065260d0d20 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8431,6 +8431,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
-+	SND_PCI_QUIRK(0x103c, 0x8805, "HP ProBook 650 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
--- 
-2.25.1
+On 8/10/21 11:06 AM, Viresh Kumar wrote:
+> On 10-08-21, 11:05, Lukasz Luba wrote:
+>> I can see that this driver calls explicitly the
+>> of_cpufreq_cooling_register()
+>> It does this in the cpufreq_driver->ready() callback
+>> implementation: ve_spc_cpufreq_ready()
+>>
+>> With that in mind, the new code in the patch 1/8, which
+>> registers the EM, should be called even earlier, above:
+>> ---------------------8<---------------------------------
+>> /* Callback for handling stuff after policy is ready */
+>> 	if (cpufreq_driver->ready)
+>> 		cpufreq_driver->ready(policy);
+>> ------------------->8----------------------------------
+> 
+> Thanks. I will look at this sequencing issue again.
+> 
+>> This also triggered a question:
+>> If this new flag can be set in the cpufreq driver which hasn't set
+>> CPUFREQ_IS_COOLING_DEV
+>> ?
+> 
+> Why not ?
 
+I thought someone could try to call cpufreq_cooling_register()
+from the cpufreq driver init function, but it's not possible. I have
+just checked that, so should be good with these two flags being
+independent and working fine.
+
+> 
+>> I can only see one driver (this one in the patch) which has such
+>> configuration.
+> 
