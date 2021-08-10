@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160473E5C53
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26C03E5C52
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242084AbhHJNzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:55:05 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:60795 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242060AbhHJNzE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S242076AbhHJNzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 10 Aug 2021 09:55:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54348 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242049AbhHJNzA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:55:00 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628603682; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=k4nrFBYjkENYXFRZoyAl9snMXCad6DKybTDWMgXjTBE=; b=AJdgbISDLK52KgODdJs7/SO97K2MySktw+b3f58PmObb1BuxFFFp4ZesWLocfoMcw9hq+ItM
- BVSbo7WAcEXvpAGw+B9BvlSHsob7cFwQhQNsjfRqA6fn+9embfNew/jsVVXIAaJR4/ZN+5aR
- rp2Dirrl/CaJR4LCgLfsxfv2IT4=
+ s=smtp; t=1628603678; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=zmgMFu36hTXT896+HcyEK3jKVy9QFCSIhPn+Dbj1dOQ=; b=X7qzY1i+RzYDVZj5YZ/63TT6xvOzRJOYyPJtDSGPbrz8gvbCmgIvdmq9OEm1vr9zNXYrZ0x8
+ 9qaxsTtsWZP0TUJuT9UIxOmXpUdN1Scdk/o1m+3eDt5iYwP1EFteMMT4pwxswk3b5h4odHpy
+ eqQsYrhsxCvQN3Dwi/vI/14gDGM=
 X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 611285137ee6040977480b55 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 13:54:27
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 61128518f746c298d90625a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 13:54:32
  GMT
 Sender: psodagud=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C8998C4323A; Tue, 10 Aug 2021 13:54:26 +0000 (UTC)
+        id A4ED8C4323A; Tue, 10 Aug 2021 13:54:32 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: psodagud)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DE98C4323A;
-        Tue, 10 Aug 2021 13:54:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DE98C4323A
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C6B6C43460;
+        Tue, 10 Aug 2021 13:54:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C6B6C43460
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
 From:   Prasad Sodagudi <psodagud@codeaurora.org>
@@ -47,57 +48,63 @@ To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net
 Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
         linux-pm@vger.kernel.org, pavel@ucw.cz, psodagud@codeaurora.org
 Subject: [PATCH v2] PM: sleep: core: Avoid setting power.must_resume to false
-Date:   Tue, 10 Aug 2021 06:54:17 -0700
-Message-Id: <1628603658-261568-1-git-send-email-psodagud@codeaurora.org>
+Date:   Tue, 10 Aug 2021 06:54:18 -0700
+Message-Id: <1628603658-261568-2-git-send-email-psodagud@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1628603658-261568-1-git-send-email-psodagud@codeaurora.org>
+References: <1628603658-261568-1-git-send-email-psodagud@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is regarding suspend/resume(s2idle) scenario of devices and difference
-between the LTS kernels 5.4 and 5.10 with respect to devices suspend and
-resume. Observing that devices suspended in suspend_late stage are not
-getting resumed in resume_early stage.
-1) LTS kernel 5.4 kernel do not have this problem but 5.10 kernel
-shows this problem.
-2) 'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
-is skipping the driver early_resume callbacks.
+There are variables(power.may_skip_resume and dev->power.must_resume)
+and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+a system wide suspend transition.
 
-In device_resume_early function dev->power.must_resume is used to skip the
-resume call back. It looks this function is expecting that,
-__device_suspend_noirq() would set dev->power.must_resume = true for the
-devices which does not have DPM_FLAG_MAY_SKIP_RESUME flag set.
+Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+its "noirq" and "early" resume callbacks to be skipped if the device
+can be left in suspend after a system-wide transition into the working
+state. PM core determines that the driver's "noirq" and "early" resume
+callbacks should be skipped or not with dev_pm_skip_resume() function by
+checking power.may_skip_resume variable.
 
-3) Problematic scenario is as follows -  During the device suspend/resume
-scenario all the devices in  the suspend_late stage are successful and some
-device can fail to suspend in suspend_noirq(device_suspend_noirq->
-__device_suspend_noirq) phase.
-As a device failed in dpm_noirq_suspend_devices phase, dpm_resume_noirq is
-getting called to resume devices in dpm_late_early_list in the noirq phase.
+power.must_resume variable is getting set to false in __device_suspend()
+function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
+dev->power.usage_count variables. In problematic scenario, where
+all the devices in the suspend_late stage are successful and some
+device can fail to suspend in suspend_noirq phase. So some devices
+successfully suspended in suspend_late stage are not getting chance
+to execute __device_suspend_noirq() to set dev->power.must_resume
+variable to true and not getting resumed in early_resume phase.
 
-4) During the Devices_early_resume stage
-dpm_resume_early()-->device_resume_early() functions skipping the devices
-early resume callbacks.
-799         if (dev_pm_skip_resume(dev))
-800                  goto Skip;
+Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+setting power.must_resume variable in __device_suspend function.
 
-5) Devices suspended in suspend_late stage are not getting resumed in
-Devices_early_resume stage because of
-'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
-is skipping the driver early_resume callbacks when dev->power.must_resume is false.
-
-
-Changelog:
-v1 -> v2:
- - Fixed indentation comments.
- - Commit text updated to include scenario.
-
-Prasad Sodagudi (1):
-  PM: sleep: core: Avoid setting power.must_resume to false
+Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+---
+ V1 -> V2: Fixed indentation and commit text to include scenario
 
  drivers/base/power/main.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index d568772..9ee6987 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1642,7 +1642,11 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+ 	}
+ 
+ 	dev->power.may_skip_resume = true;
+-	dev->power.must_resume = false;
++	if ((atomic_read(&dev->power.usage_count) <= 1) &&
++	     (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
++		dev->power.must_resume = false;
++	else
++		dev->power.must_resume = true;
+ 
+ 	dpm_watchdog_set(&wd, dev);
+ 	device_lock(dev);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
