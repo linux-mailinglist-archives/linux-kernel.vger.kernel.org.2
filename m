@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30003E8056
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780863E7E69
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235747AbhHJRsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:48:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41108 "EHLO mail.kernel.org"
+        id S231861AbhHJRdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:33:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236440AbhHJRou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:44:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C11561052;
-        Tue, 10 Aug 2021 17:39:53 +0000 (UTC)
+        id S231822AbhHJRcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:32:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F15F60F35;
+        Tue, 10 Aug 2021 17:32:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617193;
-        bh=XkuHXJeEOLE1rHim8j/0K0cJkv4xXMTyjIm6eI6jOQY=;
+        s=korg; t=1628616746;
+        bh=ERX0QMlh4p07jgq2Pb5VAZYDdbT8+gREyoer7GZBAsw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zGsDqEjbslCrfvm2g6bhW4sz7ZSt5NoXi5wfPFv+cHwauQ9exS2VpWMkhbljQZXNV
-         uBAjHtM5T7bFq2bcFfap+6amK3yOVa/XUqSUo2ylAL99dw2xEEEWydMKMLYtok2Kf3
-         z7+wu27XYVruS8RorQ+0jqRC4u7mYsoXRaQXC/QY=
+        b=BR/F+WVTzifaV8kI6F7JGN4IRon/E7Q2LRS3kCo77QWXxfsHfSXlqpVe5tCjETv+7
+         Kw40Jkop6+EJuNpE3Ms+Xos0RP29lhWJtAt2hI5L2IUnFEKBlBiS/stA+oMxNshQsP
+         Rr0tnG7jXm4iyDZIa0zftFu+bWke8ZI5ORIZ/er0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Xiangyang Zhang <xyz.sun.ok@gmail.com>
-Subject: [PATCH 5.10 087/135] staging: rtl8723bs: Fix a resource leak in sd_int_dpc
-Date:   Tue, 10 Aug 2021 19:30:21 +0200
-Message-Id: <20210810172958.703790771@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Maxim Devaev <mdevaev@gmail.com>
+Subject: [PATCH 4.19 28/54] usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers
+Date:   Tue, 10 Aug 2021 19:30:22 +0200
+Message-Id: <20210810172945.099464175@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiangyang Zhang <xyz.sun.ok@gmail.com>
+From: Maxim Devaev <mdevaev@gmail.com>
 
-commit 990e4ad3ddcb72216caeddd6e62c5f45a21e8121 upstream.
+commit afcff6dc690e24d636a41fd4bee6057e7c70eebd upstream.
 
-The "c2h_evt" variable is not freed when function call
-"c2h_evt_read_88xx" failed
+The USB HID standard declares mandatory support for GET_IDLE and SET_IDLE
+requests for Boot Keyboard. Most hosts can handle their absence, but others
+like some old/strange UEFIs and BIOSes consider this a critical error
+and refuse to work with f_hid.
 
-Fixes: 554c0a3abf21 ("staging: Add rtl8723bs sdio wifi driver")
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Xiangyang Zhang <xyz.sun.ok@gmail.com>
+This primitive implementation of saving and returning idle is sufficient
+to meet the requirements of the standard and these devices.
+
+Acked-by: Felipe Balbi <balbi@kernel.org>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210628152239.5475-1-xyz.sun.ok@gmail.com
+Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
+Link: https://lore.kernel.org/r/20210721180351.129450-1-mdevaev@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8723bs/hal/sdio_ops.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/gadget/function/f_hid.c |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
-+++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-@@ -989,6 +989,8 @@ void sd_int_dpc(struct adapter *adapter)
- 				} else {
- 					rtw_c2h_wk_cmd(adapter, (u8 *)c2h_evt);
- 				}
-+			} else {
-+				kfree(c2h_evt);
- 			}
- 		} else {
- 			/* Error handling for malloc fail */
+--- a/drivers/usb/gadget/function/f_hid.c
++++ b/drivers/usb/gadget/function/f_hid.c
+@@ -41,6 +41,7 @@ struct f_hidg {
+ 	unsigned char			bInterfaceSubClass;
+ 	unsigned char			bInterfaceProtocol;
+ 	unsigned char			protocol;
++	unsigned char			idle;
+ 	unsigned short			report_desc_length;
+ 	char				*report_desc;
+ 	unsigned short			report_length;
+@@ -529,6 +530,14 @@ static int hidg_setup(struct usb_functio
+ 		goto respond;
+ 		break;
+ 
++	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
++		  | HID_REQ_GET_IDLE):
++		VDBG(cdev, "get_idle\n");
++		length = min_t(unsigned int, length, 1);
++		((u8 *) req->buf)[0] = hidg->idle;
++		goto respond;
++		break;
++
+ 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
+ 		  | HID_REQ_SET_REPORT):
+ 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
+@@ -552,6 +561,14 @@ static int hidg_setup(struct usb_functio
+ 		goto stall;
+ 		break;
+ 
++	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
++		  | HID_REQ_SET_IDLE):
++		VDBG(cdev, "set_idle\n");
++		length = 0;
++		hidg->idle = value;
++		goto respond;
++		break;
++
+ 	case ((USB_DIR_IN | USB_TYPE_STANDARD | USB_RECIP_INTERFACE) << 8
+ 		  | USB_REQ_GET_DESCRIPTOR):
+ 		switch (value >> 8) {
+@@ -779,6 +796,7 @@ static int hidg_bind(struct usb_configur
+ 	hidg_interface_desc.bInterfaceSubClass = hidg->bInterfaceSubClass;
+ 	hidg_interface_desc.bInterfaceProtocol = hidg->bInterfaceProtocol;
+ 	hidg->protocol = HID_REPORT_PROTOCOL;
++	hidg->idle = 1;
+ 	hidg_ss_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
+ 	hidg_ss_in_comp_desc.wBytesPerInterval =
+ 				cpu_to_le16(hidg->report_length);
 
 
