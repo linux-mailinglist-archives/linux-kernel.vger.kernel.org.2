@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A184F3E51BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19263E51BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbhHJEGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 00:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhHJEGu (ORCPT
+        id S235399AbhHJEJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 00:09:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18205 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233034AbhHJEJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 00:06:50 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC32C0613D3;
-        Mon,  9 Aug 2021 21:06:28 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so3382339pjl.4;
-        Mon, 09 Aug 2021 21:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6N0BAQWqIGCG70KaJSvwhn7HVFBd23LUGqOl1pjWdBc=;
-        b=n7zYqLMlnbTCPRqciEhJZGm7QNfHHw+f7bBaw6TxaydriNoApNDBwKySN/HHqclhFT
-         RqYmn1Z/csUrTrchNgL/ShPIE1VraPv2LnG9UJKsecqpkwzfQ1pPXROa6h4PEcXuG7iA
-         OWLmo60MDlOOntppb+vDVnF5w0dTTomnEqTCE9LcGamNIHivkzW0ALZsrXTFKXnwNXdl
-         CBCFVsaNOy+UCW66Y/p6Rrylv3lJ73NV1UFT3jsFRll4hhzXgj/nrcNwdOo5jf3D8yxG
-         nItMYS1PY4/y48Fj2F5UNMsRCBvWRMHrNyPHc81Q4ogHAKLiH8lgoBg/DH5iYVcg/T+P
-         R7jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6N0BAQWqIGCG70KaJSvwhn7HVFBd23LUGqOl1pjWdBc=;
-        b=ZBKBLnte+Dg+nLEFHKOuFY1uvDSVvu96Ep1YhOtwTx6KRp8SyS0O71DX5g+HPRiilK
-         7Zpo3qQr6swiGKola4Qh9uDrIgaU1860yPAJIma3X9f5bHc+ju054IiKgZZav8fU+JNn
-         BeAkHuIby2NeA0YgQmskVF6VzUlILfpEPYURoyEsyoluayDQ4YEd6iGkFYIEhIppVKnc
-         Y8q1y+dpiQRr/GMJw/jQ0Z5cfWZqvlsbhG96nPMPbJGqivDPQzfqDjcNKFAatzfIDf+2
-         QnzJ3s/bIJjvdsimr/xrPW4Nml1qatP/xANYXXa0q9XAiRUeLAT6osPytPwT1VM6Jwxo
-         4raQ==
-X-Gm-Message-State: AOAM530+DE+myM0QhaLMM1Z9lkI/YC/y89kj6FtPQW9DmeY8JZ5eXlmM
-        nnTs1/4MIiA040zzUD42psU=
-X-Google-Smtp-Source: ABdhPJxTpRcRZtpoL5iMuIP30OCDIud6VfWt/11NbbIIa+65NLjd2rqyoYDwiuUiBPxD7Ti/aQWSGA==
-X-Received: by 2002:a05:6a00:16d2:b029:300:200b:6572 with SMTP id l18-20020a056a0016d2b0290300200b6572mr21419129pfc.62.1628568388014;
-        Mon, 09 Aug 2021 21:06:28 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.103])
-        by smtp.gmail.com with ESMTPSA id s7sm21562339pfk.12.2021.08.09.21.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 21:06:27 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH v2] scsi: target: pscsi: Fix possible null-pointer dereference in pscsi_complete_cmd()
-Date:   Mon,  9 Aug 2021 21:04:13 -0700
-Message-Id: <20210810040414.248167-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 10 Aug 2021 00:09:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628568552; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=e8JKri0Okbv2vxM0zIH+hKFFTMww7MckSWYA3czW6uE=; b=GzhtSd7zZ1Dbf74G1RXpURPsoPNQTF873KoW9jIru/CkndEujvyL8wOKMKO04jj193vpP5KR
+ ZNLKN0Tol1KFzcM0wCHjWTlZzPvp2a7xtf/j/UMKoS5W7xq9wwj2HBh4bgNo1QNAQ4gLcor9
+ 9FUCZoaWFswzPMLhU5YFjz0RUOg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6111fbdc454b7a558fe7ca68 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 04:09:00
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1AF06C43144; Tue, 10 Aug 2021 04:09:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 64708C433F1;
+        Tue, 10 Aug 2021 04:08:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 64708C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pmaliset@codeaurora.org
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
+        Prasad Malisetty <pmaliset@codeaurora.org>
+Subject: [PATCH v5 0/4] Add DT bindings and DT nodes for PCIe and PHY in SC7280
+Date:   Tue, 10 Aug 2021 09:38:32 +0530
+Message-Id: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value of transport_kmap_data_sg() is assigned to the variable
-buf:
-  buf = transport_kmap_data_sg(cmd);
+Changes in v5:
+    
+            * Re ordered PCIe, PHY nodes in Soc and board specific dtsi files.
+            * Removed ref_clk entry in current patch [PATCH v4 P4/4].
+            * I will add ref clk entry in suspend/ resume commits.
+            * Added boolean flag in Soc specific dtsi file to differentiate
+              SM8250 and SC7280 platforms. based on boolean flag, platforms will handle
+              the pipe clk handling.
 
-And then it is checked:
-  if (!buf) {
+Changes in v4 as suggested by Bjorn:
 
-This indicates that buf can be NULL. However, it is dereferenced in the
-following statements:
-  if (!(buf[3] & 0x80))
-    buf[3] |= 0x80;
-  if (!(buf[2] & 0x80))
-    buf[2] |= 0x80;
+	* Changed pipe clk mux name as gcc_pcie_1_pipe_clk_src.
+	* Changed pipe_ext_src as phy_pipe_clk.
+	* Updated commit message for [PATCH v4 4/4]. 
 
-To fix these possible null-pointer dereferences, dereference buf and call 
-transport_kunmap_data_sg() only when buf is not NULL.
+Changes in v3:
+	* Changed pipe clock names in dt bindings as pipe_mux and phy_pipe.
+	* Moved reset and NVMe GPIO pin configs into board specific file.
+	* Updated pipe clk mux commit message.
+	
+Changes in v2:
+	* Moved pcie pin control settings into IDP file.
+	* Replaced pipe_clk_src with pipe_clk_mux in pcie driver 
+	* Included pipe clk mux setting change set in this series
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
-v2:
-* Put transport_kunmap_data_sg() into the else-branch of the if (!bug).
-  Thank Bodo Stroesser for helpful advice.
----
- drivers/target/target_core_pscsi.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Prasad Malisetty (4):
+  dt-bindings: pci: qcom: Document PCIe bindings for SC7280
+  arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
+  arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
+  PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
 
-diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
-index 2629d2ef3970..75ef52f008ff 100644
---- a/drivers/target/target_core_pscsi.c
-+++ b/drivers/target/target_core_pscsi.c
-@@ -620,17 +620,17 @@ static void pscsi_complete_cmd(struct se_cmd *cmd, u8 scsi_status,
- 			buf = transport_kmap_data_sg(cmd);
- 			if (!buf) {
- 				; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
--			}
--
--			if (cdb[0] == MODE_SENSE_10) {
--				if (!(buf[3] & 0x80))
--					buf[3] |= 0x80;
- 			} else {
--				if (!(buf[2] & 0x80))
--					buf[2] |= 0x80;
--			}
-+				if (cdb[0] == MODE_SENSE_10) {
-+					if (!(buf[3] & 0x80))
-+						buf[3] |= 0x80;
-+				} else {
-+					if (!(buf[2] & 0x80))
-+						buf[2] |= 0x80;
-+				}
- 
--			transport_kunmap_data_sg(cmd);
-+				transport_kunmap_data_sg(cmd);
-+			}
- 		}
- 	}
- after_mode_sense:
+ .../devicetree/bindings/pci/qcom,pcie.txt          |  17 +++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  38 +++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 126 +++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             |  18 +++
+ 4 files changed, 199 insertions(+)
+
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
