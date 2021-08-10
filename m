@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F19D3E8453
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F773E845C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233346AbhHJUaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233281AbhHJUaG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:30:06 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CB4C061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:43 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id u16so22934509ple.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hZjOsueYpGQZhP7Bl+kpLTfQ5nGKWlyBAih7CetRBqo=;
-        b=d27jbU5RObYQHtJTomYK15bAtbSLjYnuuQGarNydT4VQfGjI3fgRutZKx9f9jnFgZF
-         XdyptNt76rJ9ZDeUXc93+a+9ULz6cwZaJP7mqbiwyhRztgT2voZK8ZesrQxSEaWvhNVp
-         Nt26APxgTiBvC3UogJ4qu3swuHbFNuQ6MSQiS8R6S0STbxDpN7o2ZxjAv/p5aEDY7zN3
-         /Ahn/SVMsrbmC04xT6dyAZJs0RcjIfYG00VI5iRObuZwKJU6itBqmlPX5YKjuVzbeg3M
-         uXlRpbtBhUhaPrE8i+i1w48acx8Ncvc9zR+h5mxZ+IKZmuJ029grf5jaipsfEv8mSxtJ
-         tVdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hZjOsueYpGQZhP7Bl+kpLTfQ5nGKWlyBAih7CetRBqo=;
-        b=JmIRZjh2h2VwPvGI4lYhwzNH6CIfCT6eJpBbBfOoDMzxzrC8q7R9lvH7/QBSOm9yj2
-         i0IW78EYDl51RsYiJKcJ8soJKVBgU5+wKM5oN8xVij17Eru2+VdyIZdJTRjwLL9G5E50
-         8CXdCYOHdqU6qhWGgSwTHq0iNXWPw2Qst5d1vl09kDJxZJvDpPFCALAy61fj+ekPJK6q
-         tWm/Na/fZW3BYPo+x7/Q7o4cxqVEnTpnWKvOLhoj27sXUzmFtJ+I7IdaRrD7pg3QWmm8
-         OLgVPslDnN+oJ+c5mP1ZbsTsYMJV5v9BRpVXl0YPzG9EXrYVA7YENGTpkyuyey68DZX6
-         cX7A==
-X-Gm-Message-State: AOAM533Lqi4L27iQFD6IFUc9sBDiPOZWGC2z9eJOl9XQMBwzej2QKv7L
-        yjNN9G6lKOP9fcLLGzv7MYg=
-X-Google-Smtp-Source: ABdhPJwxeNtymkuQhLsqn6aJPUCztLEhhXqt/9LBl9cBwT9fLTENQbvFeFkGhVctnCs6SIZMzlNn1w==
-X-Received: by 2002:a62:e40d:0:b029:3ab:42cd:d156 with SMTP id r13-20020a62e40d0000b02903ab42cdd156mr24870896pfh.81.1628627383473;
-        Tue, 10 Aug 2021 13:29:43 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id e12sm24697145pfc.214.2021.08.10.13.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 13:29:42 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     hughd@google.com, ying.huang@intel.com, linmiaohe@huawei.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] Revert "mm: swap: check if swap backing device is congested or not"
-Date:   Tue, 10 Aug 2021 13:29:36 -0700
-Message-Id: <20210810202936.2672-3-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210810202936.2672-1-shy828301@gmail.com>
-References: <20210810202936.2672-1-shy828301@gmail.com>
+        id S233115AbhHJUbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233097AbhHJUa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:30:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E2E0C61052;
+        Tue, 10 Aug 2021 20:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628627405;
+        bh=NfvKcTCoRw6qOrd/NoyNgr/n2gMi1V/sk94m5s9Pk8I=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=M09AcgiwlUPRRk+FCI0xNoAlfci1NpU7tpJikKy9VttiJhiulhQIX7rT/C+Snghqs
+         d1/KZiFjW1XbASAtAg4BU1H+YzZmL/zSJdR1vTMjs0iEca4w5YjlroHZiOumcHIhyH
+         90Kk1uu0hRSXNCd3RDDzgKYvkEJNU72ABQoYQV42o2GRfIt/E3YOcM/an6eCXeDGEl
+         yPbGwHnjLPUP968mtdnjU/xahb2yrbtnh3M+7OyR6v1wyPkNKQc1uOKztewdOuU44+
+         UcY0qfKmzX8xzCxMiDn8rz0DW6a6sbK6gdMjt4RZHfGbpUUDx9jRovHxVwD/dhc+/V
+         lQXhl3VHGRXIg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D7C1C60986;
+        Tue, 10 Aug 2021 20:30:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] net: bridge: fix memleak in br_add_if()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162862740587.16281.11828580548669210727.git-patchwork-notify@kernel.org>
+Date:   Tue, 10 Aug 2021 20:30:05 +0000
+References: <20210809132023.978546-1-yangyingliang@huawei.com>
+In-Reply-To: <20210809132023.978546-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bridge@lists.linux-foundation.org, roopa@nvidia.com,
+        nikolay@nvidia.com, davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the change about how block layer detects congestion the
-justification of commit 8fd2e0b505d1 ("mm: swap: check if swap backing device
-is congested or not") doesn't stand anymore, so the commit could be just
-reverted in order to solve the race reported by commit 2efa33fc7f6e ("mm/shmem:
-fix shmem_swapin() race with swapoff"). The fix was reverted by the
-previous patch.
+Hello:
 
-Suggested-by: Hugh Dickins <hughd@google.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/swap_state.c | 7 -------
- 1 file changed, 7 deletions(-)
+This patch was applied to netdev/net.git (refs/heads/master):
 
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 1a29b4f98208..8d4104242100 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -628,13 +628,6 @@ struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	if (!mask)
- 		goto skip;
- 
--	/* Test swap type to make sure the dereference is safe */
--	if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
--		struct inode *inode = si->swap_file->f_mapping->host;
--		if (inode_read_congested(inode))
--			goto skip;
--	}
--
- 	do_poll = false;
- 	/* Read a page_cluster sized and aligned cluster around offset. */
- 	start_offset = offset & ~mask;
--- 
-2.26.2
+On Mon, 9 Aug 2021 21:20:23 +0800 you wrote:
+> I got a memleak report:
+> 
+> BUG: memory leak
+> unreferenced object 0x607ee521a658 (size 240):
+> comm "syz-executor.0", pid 955, jiffies 4294780569 (age 16.449s)
+> hex dump (first 32 bytes, cpu 1):
+> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> backtrace:
+> [<00000000d830ea5a>] br_multicast_add_port+0x1c2/0x300 net/bridge/br_multicast.c:1693
+> [<00000000274d9a71>] new_nbp net/bridge/br_if.c:435 [inline]
+> [<00000000274d9a71>] br_add_if+0x670/0x1740 net/bridge/br_if.c:611
+> [<0000000012ce888e>] do_set_master net/core/rtnetlink.c:2513 [inline]
+> [<0000000012ce888e>] do_set_master+0x1aa/0x210 net/core/rtnetlink.c:2487
+> [<0000000099d1cafc>] __rtnl_newlink+0x1095/0x13e0 net/core/rtnetlink.c:3457
+> [<00000000a01facc0>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
+> [<00000000acc9186c>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5550
+> [<00000000d4aabb9c>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
+> [<00000000bc2e12a3>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+> [<00000000bc2e12a3>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
+> [<00000000e4dc2d0e>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
+> [<000000000d22c8b3>] sock_sendmsg_nosec net/socket.c:654 [inline]
+> [<000000000d22c8b3>] sock_sendmsg+0x139/0x170 net/socket.c:674
+> [<00000000e281417a>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
+> [<00000000237aa2ab>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+> [<000000004f2dc381>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
+> [<0000000005feca6c>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
+> [<000000007304477d>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v3] net: bridge: fix memleak in br_add_if()
+    https://git.kernel.org/netdev/net/c/519133debcc1
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
