@@ -2,230 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B73E3E5E2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091DD3E5E32
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241358AbhHJOmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:42:24 -0400
-Received: from mga06.intel.com ([134.134.136.31]:43641 "EHLO mga06.intel.com"
+        id S241396AbhHJOnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:43:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241191AbhHJOmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:42:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="275950409"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="275950409"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 07:41:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="526170599"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Aug 2021 07:41:45 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH v4 6/6] sched/fair: Consider SMT in ASYM_PACKING load balance
-Date:   Tue, 10 Aug 2021 07:41:45 -0700
-Message-Id: <20210810144145.18776-7-ricardo.neri-calderon@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210810144145.18776-1-ricardo.neri-calderon@linux.intel.com>
-References: <20210810144145.18776-1-ricardo.neri-calderon@linux.intel.com>
+        id S241137AbhHJOnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:43:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C80D860F02;
+        Tue, 10 Aug 2021 14:43:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628606589;
+        bh=ozD8cwZNKn3odTH+KqEJhMRr1mfhtpueWtbLeeuQTmE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mLjCOt7dgwO3Zw6T1I+BApb8RKELVC4ldw0jU3X52uRYEIQL2zkrQg440QC/WFMDe
+         nW5UTk4L3ZqdynsL7GZZ3lsdQQSnV8AKzUtAQPlY4QcqwT0GvPLa78U93zPZZ6S+M7
+         rwANNXfmInPEaG2qoYobRKdfc941y5vYjHTfHPwOumy5R7NTQE7U0t6xpDokyF9Fhc
+         X7tqZRWmk6YlYmXf0p7zvhAPaBaUCCuqw2Ab7Wz7ciP8Ouw7d6QpS2e0jR5MybIRo8
+         53ezwlvnSoOKt2C7QIr3LndUAFzQUceqfk36RdN/37xp9bZZzPmS/EuRkZW7JE1Phu
+         6REpU9Y8oDpHQ==
+Date:   Tue, 10 Aug 2021 07:43:06 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>, brouer@redhat.com,
+        davem@davemloft.net, alexander.duyck@gmail.com,
+        linux@armlinux.org.uk, mw@semihalf.com, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, akpm@linux-foundation.org,
+        peterz@infradead.org, will@kernel.org, willy@infradead.org,
+        vbabka@suse.cz, fenghua.yu@intel.com, guro@fb.com,
+        peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
+        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
+        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
+        elver@google.com, yhs@fb.com, kpsingh@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, chenhao288@hisilicon.com,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH net-next v2 0/4] add frag page support in page pool
+Message-ID: <20210810074306.6cbd1a73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1eb903a5-a954-e405-6088-9b9209703f5e@redhat.com>
+References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
+        <20210810070159.367e680e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <1eb903a5-a954-e405-6088-9b9209703f5e@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When deciding to pull tasks in ASYM_PACKING, it is necessary not only to
-check for the idle state of the destination CPU, dst_cpu, but also of
-its SMT siblings.
+On Tue, 10 Aug 2021 16:23:52 +0200 Jesper Dangaard Brouer wrote:
+> On 10/08/2021 16.01, Jakub Kicinski wrote:
+> > On Fri, 6 Aug 2021 10:46:18 +0800 Yunsheng Lin wrote:  
+> >> enable skb's page frag recycling based on page pool in
+> >> hns3 drvier.  
+> > 
+> > Applied, thanks!  
+> 
+> I had hoped to see more acks / reviewed-by before this got applied.
+> E.g. from MM-people as this patchset changes struct page and page_pool 
+> (that I'm marked as maintainer of). 
 
-If dst_cpu is idle but its SMT siblings are busy, performance suffers
-if it pulls tasks from a medium priority CPU that does not have SMT
-siblings.
+Sorry, it was on the list for days and there were 7 or so prior
+versions, I thought it was ripe. If possible, a note that review 
+will come would be useful.
 
-Implement asym_smt_can_pull_tasks() to inspect the state of the SMT
-siblings of both dst_cpu and the CPUs in the candidate busiest group.
+> And I would have appreciated an reviewed-by credit to/from Alexander
+> as he did a lot of work in the RFC patchset for the split-page tricks.
 
-Cc: Aubrey Li <aubrey.li@intel.com>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Quentin Perret <qperret@google.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
----
-Changes since v3:
-  * Removed the arch_asym_check_smt_siblings() hook. Discussions with the
-    powerpc folks showed that this patch should not impact them. Also, more
-    recent powerpc processor no longer use asym_packing. (PeterZ)
-  * Removed unnecessary local variable in asym_can_pull_tasks(). (Dietmar)
-  * Removed unnecessary check for local CPUs when the local group has zero
-    utilization. (Joel)
-  * Renamed asym_can_pull_tasks() as asym_smt_can_pull_tasks() to reflect
-    the fact that it deals with SMT cases.
-  * Made asym_smt_can_pull_tasks() return false for !CONFIG_SCHED_SMT so
-    that callers can deal with non-SMT cases.
-
-Changes since v2:
-  * Reworded the commit message to reflect updates in code.
-  * Corrected misrepresentation of dst_cpu as the CPU doing the load
-    balancing. (PeterZ)
-  * Removed call to arch_asym_check_smt_siblings() as it is now called in
-    sched_asym().
-
-Changes since v1:
-  * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
-    tasks. Instead, reclassify the candidate busiest group, as it
-    may still be selected. (PeterZ)
-  * Avoid an expensive and unnecessary call to cpumask_weight() when
-    determining if a sched_group is comprised of SMT siblings.
-    (PeterZ).
----
- kernel/sched/fair.c | 95 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index dd411cefb63f..8a1a2a43732c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8531,10 +8531,99 @@ group_type group_classify(unsigned int imbalance_pct,
- 	return group_has_spare;
- }
- 
-+/**
-+ * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-+ * @dst_cpu:	Destination CPU of the load balancing
-+ * @sds:	Load-balancing data with statistics of the local group
-+ * @sgs:	Load-balancing statistics of the candidate busiest group
-+ * @sg:		The candidate busiet group
-+ *
-+ * Check the state of the SMT siblings of both @sds::local and @sg and decide
-+ * if @dst_cpu can pull tasks. If @dst_cpu does not have SMT siblings, it can
-+ * pull tasks if two or more of the SMT siblings of @sg are busy. If only one
-+ * CPU in @sg is busy, pull tasks only if @dst_cpu has higher priority.
-+ *
-+ * If both @dst_cpu and @sg have SMT siblings, even the number of idle CPUs
-+ * between @sds::local and @sg. Thus, pull tasks from @sg if the difference
-+ * between the number of busy CPUs is 2 or more. If the difference is of 1,
-+ * only pull if @dst_cpu has higher priority. If @sg does not have SMT siblings
-+ * only pull tasks if all of the SMT siblings of @dst_cpu are idle and @sg
-+ * has lower priority.
-+ */
-+static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
-+				    struct sg_lb_stats *sgs,
-+				    struct sched_group *sg)
-+{
-+#ifdef CONFIG_SCHED_SMT
-+	bool local_is_smt, sg_is_smt;
-+	int sg_busy_cpus;
-+
-+	local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
-+	sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
-+
-+	sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
-+
-+	if (!local_is_smt) {
-+		/*
-+		 * If we are here, @dst_cpu is idle and does not have SMT
-+		 * siblings. Pull tasks if candidate group has two or more
-+		 * busy CPUs.
-+		 */
-+		if (sg_is_smt && sg_busy_cpus >= 2)
-+			return true;
-+
-+		/*
-+		 * @dst_cpu does not have SMT siblings. @sg may have SMT
-+		 * siblings and only one is busy. In such case, @dst_cpu
-+		 * can help if it has higher priority and is idle.
-+		 */
-+		return !sds->local_stat.group_util &&
-+		       sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-+	}
-+
-+	/* @dst_cpu has SMT siblings. */
-+
-+	if (sg_is_smt) {
-+		int local_busy_cpus = sds->local->group_weight -
-+				      sds->local_stat.idle_cpus;
-+		int busy_cpus_delta = sg_busy_cpus - local_busy_cpus;
-+
-+		/* Local can always help to even the number busy CPUs. */
-+		if (busy_cpus_delta >= 2)
-+			return true;
-+
-+		if (busy_cpus_delta == 1)
-+			return sched_asym_prefer(dst_cpu,
-+						 sg->asym_prefer_cpu);
-+
-+		return false;
-+	}
-+
-+	/*
-+	 * @sg does not have SMT siblings. Ensure that @sds::local does not end
-+	 * up with more than one busy SMT sibling and only pull tasks if there
-+	 * are not busy CPUs. As CPUs move in and out of idle state frequently,
-+	 * also check the group utilization to smoother the decision.
-+	 */
-+	if (!sds->local_stat.group_util)
-+		return sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-+
-+	return false;
-+#else
-+	/* Always return false so that callers deal with non-SMT cases. */
-+	return false;
-+#endif
-+}
-+
- static inline bool
- sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
- 	   struct sched_group *group)
- {
-+	/* Only do SMT checks if either local or candidate have SMT siblings */
-+	if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
-+	    (group->flags & SD_SHARE_CPUCAPACITY))
-+		return asym_smt_can_pull_tasks(env->dst_cpu, sds, sgs, group);
-+
- 	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
- }
- 
-@@ -9540,6 +9629,12 @@ static struct rq *find_busiest_queue(struct lb_env *env,
- 		    nr_running == 1)
- 			continue;
- 
-+		/* Make sure we only pull tasks from a CPU of lower priority */
-+		if ((env->sd->flags & SD_ASYM_PACKING) &&
-+		    sched_asym_prefer(i, env->dst_cpu) &&
-+		    nr_running == 1)
-+			continue;
-+
- 		switch (env->migration_type) {
- 		case migrate_load:
- 			/*
--- 
-2.17.1
-
+I asked him off-list, he said something I interpreted as "code is okay,
+but the review tag is not coming".
