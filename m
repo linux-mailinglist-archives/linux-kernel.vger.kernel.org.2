@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EF83E8085
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D333E3E7F47
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbhHJRuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:50:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
+        id S233016AbhHJRjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233035AbhHJRrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2772260243;
-        Tue, 10 Aug 2021 17:40:56 +0000 (UTC)
+        id S234253AbhHJRhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:37:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 279B3600CD;
+        Tue, 10 Aug 2021 17:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617256;
-        bh=EpQXItnnKfAiIbmbeGSU6rhyO++6V+o/V39Qx5+LndE=;
+        s=korg; t=1628616957;
+        bh=VvLopI406tbUvH/4CFjosrGCCdL/9TLszR3wnygfY/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XWHt/uSvGF+5jXhMMNyAVKudrtWXQrDC+TXOPX+7E9pDrjRax9hn5dxMQHAgTZM//
-         bUqpCVV7GCSxyj7AycmuoyJKqizk0gB9MFBkIc/UIWBTExo02NZbYJJGr7A1XvgDaA
-         36ZUslib+WI0f3OgJY9o+az0Eo4HWz3YT3O7jHDY=
+        b=RbJJ+FqzDlU83Ry0VVp7jPgdSbGIP462ATg8FMxYt9hHVfxDfzkhEYkY7CrUIUub+
+         qnWKu+IZsWtzN5SaF0kSECJrTMigFZPZ5jmskw+MDxF7nGVteaXPgdDgxvSZ76Od7q
+         1zRPD1qhCxcttj5DGB8HxYoNZRyJK+2HNzBUYOEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5.10 107/135] Revert "gpio: mpc8xxx: change the gpio interrupt flags."
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [PATCH 5.4 68/85] pcmcia: i82092: fix a null pointer dereference bug
 Date:   Tue, 10 Aug 2021 19:30:41 +0200
-Message-Id: <20210810172959.397392587@linuxfoundation.org>
+Message-Id: <20210810172950.545583509@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit ec7099fdea8025988710ee6fecfd4e4210c29ab5 upstream.
+commit e39cdacf2f664b09029e7c1eb354c91a20c367af upstream.
 
-This reverts commit 3d5bfbd9716318b1ca5c38488aa69f64d38a9aa5.
+During the driver loading process, the 'dev' field was not assigned, but
+the 'dev' field was referenced in the subsequent 'i82092aa_set_mem_map'
+function.
 
-When booting with threadirqs, it causes a splat
-
-  WARNING: CPU: 0 PID: 29 at kernel/irq/handle.c:159 __handle_irq_event_percpu+0x1ec/0x27c
-  irq 66 handler irq_default_primary_handler+0x0/0x1c enabled interrupts
-
-That splat later went away with commit 81e2073c175b ("genirq: Disable
-interrupts for force threaded handlers"), which got backported to
--stable. However, when running an -rt kernel, the splat still
-exists. Moreover, quoting Thomas Gleixner [1]
-
-  But 3d5bfbd97163 ("gpio: mpc8xxx: change the gpio interrupt flags.")
-  has nothing to do with that:
-
-      "Delete the interrupt IRQF_NO_THREAD flags in order to gpio interrupts
-       can be threaded to allow high-priority processes to preempt."
-
-  This changelog is blatantly wrong. In mainline forced irq threads
-  have always been invoked with softirqs disabled, which obviously
-  makes them non-preemptible.
-
-So the patch didn't even do what its commit log said.
-
-[1] https://lore.kernel.org/lkml/871r8zey88.ffs@nanos.tec.linutronix.de/
-
-Cc: stable@vger.kernel.org # v5.9+
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+CC: <stable@vger.kernel.org>
+[linux@dominikbrodowski.net: shorten commit message, add Cc to stable]
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpio-mpc8xxx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pcmcia/i82092.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpio/gpio-mpc8xxx.c
-+++ b/drivers/gpio/gpio-mpc8xxx.c
-@@ -396,7 +396,7 @@ static int mpc8xxx_probe(struct platform
- 
- 	ret = devm_request_irq(&pdev->dev, mpc8xxx_gc->irqn,
- 			       mpc8xxx_gpio_irq_cascade,
--			       IRQF_SHARED, "gpio-cascade",
-+			       IRQF_NO_THREAD | IRQF_SHARED, "gpio-cascade",
- 			       mpc8xxx_gc);
- 	if (ret) {
- 		dev_err(&pdev->dev, "%s: failed to devm_request_irq(%d), ret = %d\n",
+--- a/drivers/pcmcia/i82092.c
++++ b/drivers/pcmcia/i82092.c
+@@ -106,6 +106,7 @@ static int i82092aa_pci_probe(struct pci
+ 	for (i = 0;i<socket_count;i++) {
+ 		sockets[i].card_state = 1; /* 1 = present but empty */
+ 		sockets[i].io_base = pci_resource_start(dev, 0);
++		sockets[i].dev = dev;
+ 		sockets[i].socket.features |= SS_CAP_PCCARD;
+ 		sockets[i].socket.map_size = 0x1000;
+ 		sockets[i].socket.irq_mask = 0;
 
 
