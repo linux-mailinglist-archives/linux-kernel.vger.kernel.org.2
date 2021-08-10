@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6439F3E7FD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A962B3E7FFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhHJRnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:43:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27950 "EHLO
+        id S231362AbhHJRpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:45:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55655 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233809AbhHJRj7 (ORCPT
+        by vger.kernel.org with ESMTP id S234811AbhHJRlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:39:59 -0400
+        Tue, 10 Aug 2021 13:41:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628617176;
+        s=mimecast20190719; t=1628617244;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kxN19a+MroQZhx7A5qG18Jbt63AkSc4ydhVAjM+POHs=;
-        b=ettadZlo8IiE7f8zMZTkO8XRUzltL0fB8P+e69eNpGSelm4nE/IDkchCzVVmXclE/h1tmm
-        TJa4LxBf0b8+MIEUkmXHDs0DoSbcqHsH5d6OlqgEHzTU0TGrA7FZfTgkJZlph/cyd8zror
-        6eVhgrLEzHu1XI0w8Ssj9VWsFn3LvOk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-KFsTBMt8PlausneB9WvPyA-1; Tue, 10 Aug 2021 13:39:35 -0400
-X-MC-Unique: KFsTBMt8PlausneB9WvPyA-1
-Received: by mail-ej1-f72.google.com with SMTP id v3-20020a1709063383b02905b4d1d1e27cso1251857eja.19
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:39:35 -0700 (PDT)
+        bh=JwFw0vQ/b0YrNjyPB8CLRbPWCk9k3NQcOgojHIc/fik=;
+        b=RtrNn/G2PT/Ptcnv8YyZuVlbZvspzDoJuBKfr3eeGdrZ4CEBw5uwO2xuNtOdC2IRQwqutP
+        FrWCfjXTEfzx5kLy0gZy+/ZLoOv6iuLfbmmX7kQIZ6AqSPyXh6GEh33aAL96AtmFB9rCBH
+        2tJEHFyGd6o4rGrHBjIThtIdbqiyb0s=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-iiXZtw2sOXSFZKb_WnlRzA-1; Tue, 10 Aug 2021 13:40:43 -0400
+X-MC-Unique: iiXZtw2sOXSFZKb_WnlRzA-1
+Received: by mail-ed1-f71.google.com with SMTP id a23-20020a50ff170000b02903b85a16b672so11110401edu.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:40:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=kxN19a+MroQZhx7A5qG18Jbt63AkSc4ydhVAjM+POHs=;
-        b=N2d7gzPE8FCXm3mgkigle6V20YlD9Butdk46Wo7Acrky8AaSehndms+osUotGFFR1Q
-         Rh1RhSMxqdx8anGj2dYNx3BPtKARd+B6onpKJWY13Yw4Y5UP2ee5nrg1sGFvukVkT/QC
-         BRDlThDKCW9IcaQXIrWCEy6zSa/G0iNc4KvokQ4UsE1duCEk5A3hib99R9771XYOr4rg
-         4rNCqzAxak44Hy1P+WcfKqjXprFgABYTF0hYOlPQy+hWzTAiXB+Yd4PjW9eSQnu8xxfd
-         xW3weKtPYMJHq498gQD3yoECSEynRuXaE8dWzo5+e6ZKR6hT5V2vF7NYiwNUX00KCW4G
-         W/8Q==
-X-Gm-Message-State: AOAM532Oeggf8n45f7uRBoziZm/4/W8mO5tI2uN9kMPw72kH7Gouu7Kd
-        AUpukm0Vg9e8RS9YA4nZ4BynEXi5N1RqKWGqCyYsaZATjno8tbJnCe6NQ0neTPQqAte4gN5asTG
-        oMJ9wxFZzgHsFi1QiPRRg3KkW
-X-Received: by 2002:aa7:de98:: with SMTP id j24mr6330821edv.139.1628617174331;
-        Tue, 10 Aug 2021 10:39:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWVKFWukPwwxPu5g/ntnx+DipGNbbaZcGhzNAN+QxG9vxT3SDsrA/60OB0pSyNLPfHpfLx6g==
-X-Received: by 2002:aa7:de98:: with SMTP id j24mr6330803edv.139.1628617174175;
-        Tue, 10 Aug 2021 10:39:34 -0700 (PDT)
+        bh=JwFw0vQ/b0YrNjyPB8CLRbPWCk9k3NQcOgojHIc/fik=;
+        b=UPMET1rTPDSmvr0CLTqc5qcXv/qd0xaCswH7LztqCpZr24cgB3Wfb87y3kjWJCC+2H
+         yiROnK1VgcdUBOq6Bz4DWCQwaw+pbi7lXEEJ/pqB8tJaDQXNh1ia00vkP8ujn1ZGjrLA
+         5hdRiuK2GcElpDR7T0Rz5AsmDIPoP5/g3mbPwDWjsZcQY/UPkC8tWJFzPV6kS/Xz6X/+
+         HvIhklkm0UNaFOv2WvX7GduH1zdfUozMNEnieIN1QSvpJzVaSAY0oUpcGoxg7HDEV7eE
+         OyZhQwuqyU4f8hE578JV+xn1j/jHZmvrRnzzIrGTe3YateuKWjobpQOAEvnsk33iu+OD
+         cUPA==
+X-Gm-Message-State: AOAM532KtPh+xzQ3+okV9vibCEQTFzi/MP82IaEJ1NaEu7kjpvOWL9ez
+        uwUFdfBYorscHH8WVqcy73OG/bf3HNAKUu6va0STr+LJdk1JyFsk7dQwCHcbDQ6CSqosRinNag+
+        edNSKK2D0xGm0yxvmCudTnxdY
+X-Received: by 2002:a05:6402:4d:: with SMTP id f13mr6282181edu.275.1628617242093;
+        Tue, 10 Aug 2021 10:40:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvsP/2Cpzsl+zrd39MLw+z0LxH32zxL8FL2Q1YVhE5zvDuswGyYn1nUJpMgkIWmikWh933Kw==
+X-Received: by 2002:a05:6402:4d:: with SMTP id f13mr6282156edu.275.1628617241946;
+        Tue, 10 Aug 2021 10:40:41 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id fl2sm2071296ejc.114.2021.08.10.10.39.32
+        by smtp.gmail.com with ESMTPSA id f12sm7132598ejz.99.2021.08.10.10.40.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 10:39:33 -0700 (PDT)
-Subject: Re: [PATCH 0/4] KVM: nVMX: Use vmcs01 ctrls shadow as basis for
- vmcs02
+        Tue, 10 Aug 2021 10:40:41 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] KVM: x86: Purge __ex() and __kvm_spurious_fault()
 To:     Sean Christopherson <seanjc@google.com>
 Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeng Guang <guang.zeng@intel.com>
-References: <20210810171952.2758100-1-seanjc@google.com>
+        linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>,
+        Like Xu <like.xu.linux@gmail.com>
+References: <20210809173955.1710866-1-seanjc@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4025c213-b238-7902-9323-ec512eea2d41@redhat.com>
-Date:   Tue, 10 Aug 2021 19:39:31 +0200
+Message-ID: <43409f31-1462-d046-4a1d-ee016970b050@redhat.com>
+Date:   Tue, 10 Aug 2021 19:40:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210810171952.2758100-1-seanjc@google.com>
+In-Reply-To: <20210809173955.1710866-1-seanjc@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,41 +75,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/21 19:19, Sean Christopherson wrote:
-> The goal of this series is to drop the vmx->secondary_exec_control cache
-> without degrading nested VM-Enter performance.  The cache is effective,
-> e.g. saves ~1000 cycles on nested VM-Enter, but confusing.  The worst of
-> the confusion could be eliminated by returning the computed value from
-> vmx_compute_secondary_exec_control() to make the calls to the "compute"
-> helper more like the other controls.  But, the nested VM-Enter path would
-> still have special handling for secondary exec controls, and ideally all
-> controls would benefit from caching, though the benefits are marginal for
-> other controls and thus difficult to justify.
+On 09/08/21 19:39, Sean Christopherson wrote:
+> Two patches to remove __ex() and __kvm_spurious_fault(), and hide
+> kvm_spurious_fault() in x86.h.  These were part of a larger series that
+> received the magic "Queued, thanks", but got lost at some point.
 > 
-> Happily, vmcs01 already caches the calculated controls in the
-> controls_shadow.  The only issue is that the controls_shadow may have
-> dynamically toggled bits set.  However, that is not a fundamental problem,
-> it's simply different than what is expected by the nested VM-Enter code
-> and is easily remedied.
+> v1: https://lore.kernel.org/kvm/20201231002702.2223707-1-seanjc@google.com/
 > 
-> TL;DR: Get KVM's (L0's) desires for vmcs02 controls from vmcs01's
-> controls_shadow instead of recalculating the desired controls on every
-> nested VM-Enter, thus eliminating the need to have a dedicated cache for
-> the secondary exec controls calulation.
+> Sean Christopherson (1):
+>    KVM: x86: Kill off __ex() and __kvm_handle_fault_on_reboot()
 > 
-> Sean Christopherson (4):
->    KVM: VMX: Use current VMCS to query WAITPKG support for MSR emulation
->    KVM: nVMX: Pull KVM L0's desired controls directly from vmcs01
->    KVM: VMX: Drop caching of KVM's desired sec exec controls for vmcs01
->    KVM: VMX: Hide VMCS control calculators in vmx.c
+> Uros Bizjak (1):
+>    KVM: x86: Move declaration of kvm_spurious_fault() to x86.h
 > 
->   arch/x86/kvm/vmx/nested.c | 25 ++++++++++++--------
->   arch/x86/kvm/vmx/vmx.c    | 48 +++++++++++++++++++++++++++------------
->   arch/x86/kvm/vmx/vmx.h    | 35 +++++-----------------------
->   3 files changed, 56 insertions(+), 52 deletions(-)
+>   arch/x86/include/asm/kvm_host.h | 25 -------------------------
+>   arch/x86/kvm/svm/sev.c          |  2 --
+>   arch/x86/kvm/svm/svm.c          |  2 --
+>   arch/x86/kvm/svm/svm_ops.h      |  2 +-
+>   arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
+>   arch/x86/kvm/x86.c              |  9 ++++++++-
+>   arch/x86/kvm/x86.h              |  2 ++
+>   7 files changed, 12 insertions(+), 34 deletions(-)
 > 
 
-Queued, thanks (patch 1 for 5.14, the rest for 5.15).
+Queued, thanks.
 
 Paolo
 
