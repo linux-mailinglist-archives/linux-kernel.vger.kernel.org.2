@@ -2,185 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A53F3E587B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36FC3E587F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239881AbhHJKlK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 06:41:10 -0400
-Received: from aposti.net ([89.234.176.197]:47398 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238566AbhHJKlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:41:09 -0400
-Date:   Tue, 10 Aug 2021 12:40:39 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Message-Id: <RNDMXQ.0B7HA1RXU7TB@crapouillou.net>
-In-Reply-To: <YRJLNHXR0PhykBwL@kroah.com>
-References: <20210805192110.90302-1-paul@crapouillou.net>
-        <20210805192110.90302-3-paul@crapouillou.net> <YQw9hjZll4QmYVLX@kroah.com>
-        <3HUDXQ.7RBGD4FUHR2F@crapouillou.net> <YQ0MU/GcLkPLiy5C@kroah.com>
-        <LYZEXQ.9UWPIAZCVXIK@crapouillou.net> <YRJLNHXR0PhykBwL@kroah.com>
+        id S239871AbhHJKlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:41:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238566AbhHJKl3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:41:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628592067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s9pAEsCFD860K7G3ngYhHNyW2RsGuwAWwprIRvW0J1w=;
+        b=M7rC4LZg2G13JHjQhCnKkJYRGYdvnUikfxwWhnOTvQ12K1Sl9me0UgyJkL8+HylSY8dPtG
+        6zuTbOYgyUtE688pVXGk3dtr3eGWcnuz+Qnif+8Zt+DDqowcfj57rucvLChhB2lHCYNM1O
+        ak0KOPEysegZvGkQLr3nXxkRtWG07ec=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-4oUVZdhQPVe9Nz4MsAUDSA-1; Tue, 10 Aug 2021 06:41:06 -0400
+X-MC-Unique: 4oUVZdhQPVe9Nz4MsAUDSA-1
+Received: by mail-wm1-f70.google.com with SMTP id f6-20020a05600c1546b029025af999e04dso4772439wmg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:41:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s9pAEsCFD860K7G3ngYhHNyW2RsGuwAWwprIRvW0J1w=;
+        b=dcEVj38dPGCHjU0hldEyinBCR+P8DV4zfwDhmOmdZTurVkROM+mzNtDVYmLe9vvDAr
+         BD/N6KORDSVs2WIRnYthezaMjWGSfLorg3L8VHKMtnBkcvcKgqMSuCqj9yIilfCaT6fG
+         mv4mgQ8MZ2BMwHgQQZ1a7izvOhcOEg8s0e5PKr7I97IvCdJtHk2lK8nZa/Ngebv9e6uL
+         pIDQ3mAzKTBQxUWGNxJ93N7Bb3Wyx9p0FHPBXR9R4F8Mb1pDcJObRw5boA4+pPDDSpOB
+         W1vAS8gb2rh366juoYTysYF8HyUGg+wxbjuivV+K/fhO+UwZq01052ZqbsZ1apf9MLQy
+         CdMw==
+X-Gm-Message-State: AOAM532IJXwcRTejIlDFu8YvOGQ8aUpPD1qyb1rX4UyWD1AUa4UDXXGe
+        /UZhDL3zkxGntev4SrAJodS+GVOTdJUxHmBVlqpIez3/bj0dEBrFjsoPH18IyZxrGlJo0FZ+53k
+        DvD0VUmgx3WRci4m/vwOG4fWe
+X-Received: by 2002:a05:600c:2248:: with SMTP id a8mr17137336wmm.80.1628592065227;
+        Tue, 10 Aug 2021 03:41:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxFkPOE/WqTwXfIvfEX6UsCx0IVanEKqLpjLWOY4PFuN4uVZV0K/DfrjVsqE4YOlcNDvFg0w==
+X-Received: by 2002:a05:600c:2248:: with SMTP id a8mr17137303wmm.80.1628592064999;
+        Tue, 10 Aug 2021 03:41:04 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id s10sm11066606wrv.54.2021.08.10.03.41.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 03:41:04 -0700 (PDT)
+Subject: Re: [PATCH V2 3/3] KVM: X86: Reset DR6 only when
+ KVM_DEBUGREG_WONT_EXIT
+To:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <YRFdq8sNuXYpgemU@google.com>
+ <20210809174307.145263-1-jiangshanlai@gmail.com>
+ <20210809174307.145263-3-jiangshanlai@gmail.com>
+ <f07b99f1-5a25-a246-9ef9-2b875d960675@redhat.com>
+ <7a1ca89f-7b4e-7df2-e47a-ac5207137a05@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3cfedf5c-e901-c65c-b654-4d004e79b6b9@redhat.com>
+Date:   Tue, 10 Aug 2021 12:41:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <7a1ca89f-7b4e-7df2-e47a-ac5207137a05@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-Le mar., ao�t 10 2021 at 11:47:32 +0200, Greg Kroah-Hartman 
-<gregkh@linuxfoundation.org> a �crit :
-> On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
->>  Hi Greg,
->> 
->>  Le ven., ao�t 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
->>  <gregkh@linuxfoundation.org> a �crit :
->>  > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
->>  > >  Hi Greg,
->>  > >
->>  > >  Le jeu., ao�t 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
->>  > >  <gregkh@linuxfoundation.org> a �crit :
->>  > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil 
->> wrote:
->>  > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
->>  > > disabled in
->>  > >  > > the
->>  > >  > >  config, we want the ingenic-drm driver to be able to probe
->>  > >  > > nonetheless
->>  > >  > >  with the other devices (e.g. internal LCD panel) that are
->>  > > enabled.
->>  > >  > >
->>  > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  > >  > >  ---
->>  > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 
->> ++++++++++++
->>  > >  > >   1 file changed, 12 insertions(+)
->>  > >  > >
->>  > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
->>  > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
->>  > > device
->>  > >  > > *dev, bool has_components)
->>  > >  > >   	for (i = 0; ; i++) {
->>  > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
->>  > > &panel,
->>  > >  > > &bridge);
->>  > >  > >   		if (ret) {
->>  > >  > >  +			/*
->>  > >  > >  +			 * Workaround for the case where the drivers for the
->>  > >  > >  +			 * remote devices are not enabled. When that happens,
->>  > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
->>  > >  > >  +			 * endlessly, which prevents the ingenic-drm driver 
->> from
->>  > >  > >  +			 * working at all.
->>  > >  > >  +			 */
->>  > >  > >  +			if (ret == -EPROBE_DEFER) {
->>  > >  > >  +				ret = driver_deferred_probe_check_state(dev);
->>  > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
->>  > >  > >  +					continue;
->>  > >  > >  +			}
->>  > >  >
->>  > >  > So you are mucking around with devices on other busses 
->> within this
->>  > >  > driver?  What could go wrong?  :(
->>  > >
->>  > >  I'm doing the same thing as everybody else. This is the DRM 
->> driver,
->>  > > and
->>  > >  there is a driver for the external HDMI chip which gives us a 
->> DRM
->>  > > bridge
->>  > >  that we can obtain from the device tree.
->>  >
->>  > But then why do you need to call this function that is there for 
->> a bus,
->>  > not for a driver.
->> 
->>  The documentation disagrees with you :)
->> 
->>  And, if that has any weight, this solution was proposed by Rob.
->> 
->>  > >  > Please use the existing driver core functionality for this 
->> type of
->>  > >  > thing, it is not unique, no need for this function to be 
->> called.
->>  > >
->>  > >  I'm not sure you understand what I'm doing here. This driver 
->> calls
->>  > >  drm_of_find_panel_or_bridge(), without guarantee that the 
->> driver
->>  > > for the
->>  > >  remote device (connected via DT graph) has been enabled in the
->>  > > kernel
->>  > >  config. In that case it will always return -EPROBE_DEFER and 
->> the
->>  > > ingenic-drm
->>  > >  driver will never probe.
->>  > >
->>  > >  This patch makes sure that the driver can probe if the HDMI 
->> driver
->>  > > has been
->>  > >  disabled in the kernel config, nothing more.
->>  >
->>  > That should not be an issue as you do not care if the config is 
->> enabled,
->>  > you just want to do something in the future if the driver shows 
->> up,
->>  > right?
->> 
->>  Well, the DRM subsystem doesn't really seem to handle hotplug of 
->> hardware.
->>  Right now all the drivers for the connected hardware need to probe 
->> before
->>  the main DRM driver. So I need to know that a remote device 
->> (connected via
->>  DT graph) will never probe.
+On 10/08/21 12:34, Lai Jiangshan wrote:
+>>
+>> +     * do_debug expects dr6 to be cleared after it runs, avoid that 
+>> it sees
+>> +     * a stale dr6 from the guest.
+>> +     */
 > 
-> But you never really know that.  That is what the recent driver core
-> changes were all about, to handle this very issue.  Only when the 
-> child
-> device shows up will you need to care about it.
 > 
->>  Give me a of_graph_remote_device_driver_will_never_probe() and I'll 
->> use
->>  that.
->> 
->>  > Much like the device link code, have you looked at that?
->> 
->>  I don't see how that would help in any way. The device link code 
->> would allow
->>  me to set a dependency between the remote hardware (HDMI chip, 
->> provider) and
->>  the LCD controller (consumer), but I already have that dependency 
->> though the
->>  DT graph. What I need is a way for the consumer to continue probing 
->> if the
->>  provider is not going to probe.
-> 
-> But again, you never know that, probing is async, and could happen in 
-> a
-> few milliseconds, or a few hours, your driver should never care about
-> this at all.
-> 
-> Just knowing if the kernel configuration is something is not the
-> solution here, please fix this properly like all other driver
-> interactions are in the kernel tree.
+> do_debug() is renamed. Maybe you can use "The host kernel #DB handler".
 
-A proper fix means reworking the DRM core so that it supports 
-hot-plugging bridges. Until then there is nothing else I can do.
+Or exc_debug.
 
--Paul
-
+Paolo
 
