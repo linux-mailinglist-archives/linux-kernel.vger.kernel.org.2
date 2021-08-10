@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80D73E5E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123E73E5E64
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241944AbhHJOsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:48:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241888AbhHJOsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:48:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4835560F25;
-        Tue, 10 Aug 2021 14:48:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628606889;
-        bh=BCaw6jsYR+1+ch9MuRv11DN73c0NzIIA0uUPkD5qS+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aejb1GlEF8xfjZg3Dr67Ia/+4GKCFO8u3xGOqykZ1QOXFXvGioKaoWlknitlue5jy
-         qP6VTMWyAJbbfpGq7Os9IMYLQhtpH92htrvSy6mCEvGJMjWoGnbD2YsYH5f7kgir9r
-         XT4G8X93IOY/K4TixaZ117wv82K9ARjVLNNzBJ1g=
-Date:   Tue, 10 Aug 2021 16:48:05 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     axboe@kernel.dk, kernelnewbies@kernelnewbies.org,
-        Ian Pilcher <arequipeno@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        pavel@ucw.cz, pali@kernel.org, hch@lst.de,
-        linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
-Message-ID: <YRKRpQdLRJmAb5kZ@kroah.com>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
- <20210809205633.4300bbea@thinkpad>
- <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com>
- <20210810004331.0f0094a5@thinkpad>
- <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
- <YRIeHH1SLl6tYCeY@kroah.com>
- <20210810153840.42419d06@thinkpad>
+        id S241702AbhHJOvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:51:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43854 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238617AbhHJOsy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:48:54 -0400
+Date:   Tue, 10 Aug 2021 14:48:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628606910;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rQoXve8pZEefDfzy1MSlgSkrq0iQwG1KVUsJRu5Ya68=;
+        b=kxNzHV7VyWE9A95z2Z/K1DPwiEiN0sMSKqWcpX3hGpSof7XDRL0y2uNU3V914fxwZOhU8B
+        4Vk87UT10zEEjFuFecoYzBJC578Rsjwqd9TTXjaFCP2h4PN6+qFWzr7wrtXq6vgWEe11nS
+        evIJtt6zFPJNttFOb1PCMtG64c8zpqsPz6dBMFsGxeshf2Bjfvfq0gQKMmaVIrB+k1/BDU
+        NAiX3H50KtUfmvNOOy2J1tNunuruVylfKPhzn4iz+9mq/jU/gDzXMG5px2yv165rNNfJPt
+        /8zfl76ifD8f+tUgpbNkXZc9cj0auQh4uGtppDhOUrkQR8oGlu6PI1//xGzOTg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628606910;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rQoXve8pZEefDfzy1MSlgSkrq0iQwG1KVUsJRu5Ya68=;
+        b=Z5hIJjOUJnlNz98AJWv9MGl+oFglOaK800xHR1qqzfL3LCqTNAOk6rqc6GeVozFBv8C0Ee
+        sX9dhP+SpgMy54AQ==
+From:   "tip-bot2 for Baokun Li" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq/matrix: Fix kernel doc warnings for
+ irq_matrix_alloc_managed()
+Cc:     Baokun Li <libaokun1@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210605063413.684085-1-libaokun1@huawei.com>
+References: <20210605063413.684085-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210810153840.42419d06@thinkpad>
+Message-ID: <162860690917.395.12740392525417806707.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 03:38:40PM +0200, Marek Behún wrote:
-> On Tue, 10 Aug 2021 08:35:08 +0200
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
-> > > On 8/9/21 5:43 PM, Marek Behún wrote:  
-> > > > I confess that I am not very familiar with internal blkdev API.  
-> > > 
-> > > It's mainly a matter of symbol visibility.  See this thread from a few
-> > > months ago:
-> > > 
-> > >   https://www.spinics.net/lists/linux-leds/msg18244.html
-> > > 
-> > > Now ... my code currently lives in block/, so there isn't actually
-> > > anything technically preventing it from iterating through the block
-> > > devices.
-> > > 
-> > > The reactions to Enzo's patch (which you can see in that thread) make me
-> > > think that anything that iterates through all block devices is likely to
-> > > be rejected, but maybe I'm reading too much into it.
-> > > 
-> > > 
-> > > Greg / Christoph -
-> > > 
-> > > (As you were the people who expressed disapproval of Enzo's patch to
-> > > export block_class and disk_type ...)
-> > > 
-> > > Can you weigh in on the acceptability of iterating through the block
-> > > devices (searching by name) from LED trigger code within the block
-> > > subsystem (i.e. no new symbols would need to be exported)?
-> > > 
-> > > This would allow the trigger to implement the sysfs API that Marek and
-> > > Pavel want.  
-> > 
-> > No idea, let's see the change first, we can never promise anything :)
-> 
-> Hi Greg,
-> 
-> Can't we use blkdev_get_by_path() (or blk_lookup_devt() with
-> blkdev_get_by_dev())?
-> This would open the block device and return a struct block_device *.
-> When the LED trigger is disabled, it would also have to release the
-> device.
+The following commit has been merged into the irq/core branch of tip:
 
-But what about when the device is removed from the system first?  Be
-careful about that...
+Commit-ID:     1d07a835819e2d3c85af8f093a02c2e6bca422d6
+Gitweb:        https://git.kernel.org/tip/1d07a835819e2d3c85af8f093a02c2e6bca422d6
+Author:        Baokun Li <libaokun1@huawei.com>
+AuthorDate:    Sat, 05 Jun 2021 14:34:13 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 16:46:26 +02:00
 
-Anyway, sure, try those functions, I really do not know, all I
-originally complained about was those exports which did not need to be
-exported.
+genirq/matrix: Fix kernel doc warnings for irq_matrix_alloc_managed()
 
-thanks,
+Describe the arguments correctly.
 
-greg k-h
+Fixes the following W=1 kernel build warning(s):
+
+kernel/irq/matrix.c:287: warning: Function parameter or
+ member 'msk' not described in 'irq_matrix_alloc_managed'
+kernel/irq/matrix.c:287: warning: Function parameter or
+ member 'mapped_cpu' not described in 'irq_matrix_alloc_managed'
+kernel/irq/matrix.c:287: warning: Excess function
+ parameter 'cpu' description in 'irq_matrix_alloc_managed'
+
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210605063413.684085-1-libaokun1@huawei.com
+
+---
+ kernel/irq/matrix.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/irq/matrix.c b/kernel/irq/matrix.c
+index 578596e..bbfb264 100644
+--- a/kernel/irq/matrix.c
++++ b/kernel/irq/matrix.c
+@@ -280,7 +280,8 @@ void irq_matrix_remove_managed(struct irq_matrix *m, const struct cpumask *msk)
+ /**
+  * irq_matrix_alloc_managed - Allocate a managed interrupt in a CPU map
+  * @m:		Matrix pointer
+- * @cpu:	On which CPU the interrupt should be allocated
++ * @msk:	Which CPUs to search in
++ * @mapped_cpu:	Pointer to store the CPU for which the irq was allocated
+  */
+ int irq_matrix_alloc_managed(struct irq_matrix *m, const struct cpumask *msk,
+ 			     unsigned int *mapped_cpu)
