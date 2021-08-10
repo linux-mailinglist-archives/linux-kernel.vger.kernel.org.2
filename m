@@ -2,91 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B893E59FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984E03E59FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240571AbhHJMeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
+        id S240579AbhHJMej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:34:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:54394 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240555AbhHJMeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:34:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8576D60462;
-        Tue, 10 Aug 2021 12:33:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628598837;
-        bh=fhsz0BxVURPIdp6eG839zOcCbucoqG9Srd3uY0rDGfM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UjQoAzF/KSd7KTwl/9zpnY1yw1HV3jqfcWuzxJlimpM7BlpR4AX2gQ8wVr54kNE5f
-         JzNcNaba5PKiJwigcmNrLnG+VyTBoPZ9gaWiV0ERZ0gF6VqVZ3g8qcEo7p8xFTwA7p
-         vGAAy+Y/MF07RzrrtXyAD3/3hWsSm4Svd/MbPyFjNriivatsjxcNK8fuJTvv9buswM
-         +GdXz9M/jnytv17hHZEDcgvE2RRnDdUqYMTPmvrhbI6UbvsDxGG4rAtiRdJEB6euWf
-         fn/EP/pjZFQp28E0qgnVmz+JIJjR3tf1ltrr9L0busOsNOZN3dTjFnfvA+jcW8P+ty
-         qapslyqaBremg==
-Subject: Re: [v6 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
- provider
-To:     Odelu Kukatla <okukatla@codeaurora.org>, georgi.djakov@linaro.org,
-        bjorn.andersson@linaro.org, evgreen@google.com,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-References: <1628577962-3995-1-git-send-email-okukatla@codeaurora.org>
- <1628577962-3995-4-git-send-email-okukatla@codeaurora.org>
-From:   Georgi Djakov <djakov@kernel.org>
-Message-ID: <544023fc-f440-53bb-3308-33a1782aac19@kernel.org>
-Date:   Tue, 10 Aug 2021 15:33:52 +0300
+        id S238617AbhHJMef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:34:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D2D76D;
+        Tue, 10 Aug 2021 05:34:13 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.41.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 881713F70D;
+        Tue, 10 Aug 2021 05:34:10 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 13:34:07 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 08/13] clocksource/arm_arch_timer: Work around broken
+ CVAL implementations
+Message-ID: <20210810123407.GB52842@C02TD0UTHF1T.local>
+References: <20210809152651.2297337-1-maz@kernel.org>
+ <20210809152651.2297337-9-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1628577962-3995-4-git-send-email-okukatla@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809152651.2297337-9-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Odelu,
-
-On 10.08.21 9:46, Odelu Kukatla wrote:
-> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
-> SoCs.
+On Mon, Aug 09, 2021 at 04:26:46PM +0100, Marc Zyngier wrote:
+> The Applied Micro XGene-1 SoC has a busted implementation of the
+> CVAL register: it looks like it is based on TVAL instead of the
+> other way around. The net effect of this implementation blunder
+> is that the maximum deadline you can program in the timer is
+> 32bit wide.
 > 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> Detect the problematic case and limit the timer to 32bit deltas.
+> Note that we don't tie this bug to XGene specifically, as it may
+> also catch similar defects on other high-quality implementations.
+
+Do we know of any other implementations that have a similar bug?
+
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 > ---
->   arch/arm64/boot/dts/qcom/sc7280.dtsi | 9 +++++++++
->   1 file changed, 9 insertions(+)
+>  drivers/clocksource/arm_arch_timer.c | 38 +++++++++++++++++++++++++++-
+>  1 file changed, 37 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 53a21d0..e78f055 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -586,6 +586,15 @@
->   			qcom,bcm-voters = <&apps_bcm_voter>;
->   		};
->   
-> +		epss_l3: interconnect@18590000 {
-
-This DT node should be moved after apps_rsc: rsc@18200000
-and before cpufreq@18591000
-
-> +			compatible = "qcom,sc7280-epss-l3";
-> +			reg = <0 0x18590000 0 1000>, <0 0x18591000 0 0x100>,
-> +				<0 0x18592000 0 0x100>, <0 0x18593000 0 0x100>;
-
-Please align to the open parenthesis, to be consistent with the rest of
-the file.
-
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
-> +			clock-names = "xo", "alternate";
-> +			#interconnect-cells = <1>;
-> +		};
+> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> index 895844c33351..1c596cd3cc5c 100644
+> --- a/drivers/clocksource/arm_arch_timer.c
+> +++ b/drivers/clocksource/arm_arch_timer.c
+> @@ -778,9 +778,42 @@ static int arch_timer_set_next_event_phys_mem(unsigned long evt,
+>  	return 0;
+>  }
+>  
+> +static u64 __arch_timer_check_delta(void)
+> +{
+> +#ifdef CONFIG_ARM64
+> +	u64 tmp;
 > +
->   		ipa: ipa@1e40000 {
->   			compatible = "qcom,sc7280-ipa";
+> +	/*
+> +	 * XGene-1 implements CVAL in terms of TVAL, meaning that the
+> +	 * maximum timer range is 32bit. Shame on them. Detect the
+> +	 * issue by setting a timer to now+(1<<32), which will
+> +	 * immediately fire on the duff CPU.
+> +	 */
+> +	write_sysreg(0, cntv_ctl_el0);
+> +	isb();
+> +	tmp = read_sysreg(cntvct_el0) | BIT(32);
+> +	write_sysreg(tmp, cntv_cval_el0);
+
+This will fire on legitimate implementations fairly often. Consider if
+we enter this function at a time where CNTCVT_EL0[32] == 1, where:
+
+* At 100MHz, bit 32 flips every ~42.95
+* At 200MHz, bit 32 flips every ~21.47
+* At 1GHz, bit 32 flips every ~4.29s
+
+... and ThunderX2 has a 200MHz frequency today, with SBSA recommending
+100MHz.
+
+What does XGene-1 return upon a read of CVAL? If it always returns 0 for
+the high bits, we could do a timing-insensitive check for truncation of
+CVAL, e.g.
+
+| 	/* CVAL must be at least 56 bits wide, as with CNT */
+| 	u64 mask = GENMASK(55, 0);
+| 	u64 val;
+| 
+| 	write_sysreg(mask, cntv_cval_el0);
+| 	val = read_sysread(cnt_cval_el0);
+| 
+| 	if (val != mask) {
+| 		/* What a great CPU */
+| 	}
 
 Thanks,
-Georgi
+Mark.
 
+> +	write_sysreg(ARCH_TIMER_CTRL_ENABLE | ARCH_TIMER_CTRL_IT_MASK,
+> +		     cntv_ctl_el0);
+> +	isb();
+> +
+> +	tmp = read_sysreg(cntv_ctl_el0);
+> +	write_sysreg(0, cntv_ctl_el0);
+> +	isb();
+> +
+> +	if (tmp & ARCH_TIMER_CTRL_IT_STAT) {
+> +		pr_warn_once("Detected broken implementation, limiting width to 32bits");
+> +		return CLOCKSOURCE_MASK(32);
+> +	}
+> +#endif
+> +	return CLOCKSOURCE_MASK(56);
+> +}
+> +
+>  static void __arch_timer_setup(unsigned type,
+>  			       struct clock_event_device *clk)
+>  {
+> +	u64 max_delta;
+> +
+>  	clk->features = CLOCK_EVT_FEAT_ONESHOT;
+>  
+>  	if (type == ARCH_TIMER_TYPE_CP15) {
+> @@ -812,6 +845,7 @@ static void __arch_timer_setup(unsigned type,
+>  		}
+>  
+>  		clk->set_next_event = sne;
+> +		max_delta = __arch_timer_check_delta();
+>  	} else {
+>  		clk->features |= CLOCK_EVT_FEAT_DYNIRQ;
+>  		clk->name = "arch_mem_timer";
+> @@ -828,11 +862,13 @@ static void __arch_timer_setup(unsigned type,
+>  			clk->set_next_event =
+>  				arch_timer_set_next_event_phys_mem;
+>  		}
+> +
+> +		max_delta = CLOCKSOURCE_MASK(56);
+>  	}
+>  
+>  	clk->set_state_shutdown(clk);
+>  
+> -	clockevents_config_and_register(clk, arch_timer_rate, 0xf, CLOCKSOURCE_MASK(56));
+> +	clockevents_config_and_register(clk, arch_timer_rate, 0xf, max_delta);
+>  }
+>  
+>  static void arch_timer_evtstrm_enable(int divider)
+> -- 
+> 2.30.2
+> 
