@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8C83E7E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF883E7DF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhHJRJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhHJRJ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:09:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D16C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:09:34 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628615372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qzC/LvzQoV4rEBw81fDUV8N2YJ6GodUbmge4n5nlRYY=;
-        b=PfRonojs7JWe7xu4IW2sSftyh4m0Y4rJryqyIu35UQtua2i/0v0n6i5SmnI5+K6O48R7I6
-        mngicddYeveWzX0dWzQam7AB3JoLwM9vJKOKbfv2mvMQ9SJanaaKgk87LabcMCS+0haP+Y
-        aXmtgVfBzeiEZnTUgTIZMvBniBEFMN8nSm7/53C9d6dIeBM4JfU2tsvNfGob1rtMuPkSTa
-        d/3FQf1IHT43P4ABi+wQ9b/d3FnKIDJ49NRj24g3SytwaEUTMIzPwYTtCZEF+8Cd691pxo
-        fUu7jZ1uCoGR+tBfpQ6aMHotinbnYdBX1h7Ii5QFtPMqQo+vHNf7WKYntRsiuQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628615372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qzC/LvzQoV4rEBw81fDUV8N2YJ6GodUbmge4n5nlRYY=;
-        b=7/fFI4h7TiEvKt/nJP4QMq6cyM7iMsOhGe1NAbPp80ZaFkExmwgydp0N5sPkxp5GEVjOvj
-        jE20Smgq7jscJ6Aw==
-To:     blinkin@email.it
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Bug report for kernel v4.15-rc8+
-In-Reply-To: <217397770.2008922.1628604301644.JavaMail.zimbra@email.it>
-References: <629765464.1655403.1628264743080.JavaMail.zimbra@email.it>
- <87tujxssp2.ffs@tglx>
- <217397770.2008922.1628604301644.JavaMail.zimbra@email.it>
-Date:   Tue, 10 Aug 2021 19:09:32 +0200
-Message-ID: <877dgtql9v.ffs@tglx>
+        id S231260AbhHJRHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:07:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhHJRH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:07:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E9F660E9B;
+        Tue, 10 Aug 2021 17:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628615225;
+        bh=40eaFF8avN00+fbxXyp/z0+R+jHa1WNUdvrM6QIjvTE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WqKINDld5jmqcKrrX24zJ1njg91xeEw+Y38BCMvGB65sHuzH35Z0IqKN6zQqAfDTi
+         rNKyNvw5EeXGCvQ8CDV71yPHkJMCG9mwCHdfF0yr1dp81wjK+95cFuHRJlJ6FBJTpJ
+         Clfum6ebtsrFSbxzhfHKEgtiAXhP02SoAwmZY7/+hjP+4f60lzFI4N8zjZeoKdqOIz
+         N5icP8C/qA8gOoGVC3xl3DdHJGXqQgHMa6ZRMAhY4+eFtuj97WJDmi5qsEZXT7QHJ6
+         lfCefJ+E1btctSush6kxoWoJszrANIVUhc08x5xxln7zNusIl0PqSakUFjcu7v2lwh
+         eAG/iMqOPAatQ==
+Date:   Tue, 10 Aug 2021 12:09:55 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v3] media: staging/intel-ipu3: css: Fix wrong size comparison
+ imgu_css_fw_init
+Message-ID: <20210810170955.GA49923@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10 2021 at 16:05, blinkin@email.it wrote:
-> The general symptom is a slow and unresponsive system (e.g. on gnome
-> there's a delay before displaying typed characters, up to 3-5
-> seconds. Animations are jittering, mouse clicks sometimes are missed).
-> 3D games are now impossible to play due to poor performance.
->
-> System feels as if the CPU is always busy (htop shows one core at ~
-> 90% most of the time both with and without the workaround, not sure
-> it's correlated)
+There is a wrong comparison of the total size of the loaded firmware
+css->fw->size with the size of a pointer to struct imgu_fw_header.
 
-That's definitely wrong. What is consuming CPU time?
+Turn binary_header into a flexible-array member[1][2], use the
+struct_size() helper and fix the wrong size comparison. Notice
+that the loaded firmware needs to contain at least one 'struct
+imgu_fw_info' item in the binary_header[] array.
 
-> It's running OpenSuse Leap 15.2 (the bug came out when upgrading from
-> 15.1, thus going from kernel 4.12 to 5.3) I suspect the same bug is
-> responsible for making me switch to suse after failing to upgrade
-> debian from 9 (kernel 4.9) to 10 (kernel 4.19)
->
-> The workaround is to pass irqaffinity=0 on boot.
->
-> Attached: dmesg output with and without the irqaffinity parameter,
-> lspci output, /proc/cpuinfo contents.
->
-> Let me know what else is needed.
+It's also worth mentioning that
 
-1) You're booting with an out of tree module:
+	"css->fw->size < struct_size(css->fwp, binary_header, 1)"
 
-   > [   17.080069] vboxdrv: loading out-of-tree module taints kernel.
+with binary_header declared as a flexible-array member is equivalent
+to
 
-   Please reproduce without this.
+	"css->fw->size < sizeof(struct imgu_fw_header)"
 
-2) Please provide information what is consuming 90% of a CPU
+with binary_header declared as a one-element array (as in the original
+code).
 
-3) Please provide the output of /proc/interrupts for both boot scenarios
+The replacement of the one-element array with a flexible-array member
+also helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
 
-   Take a snapshot right after boot and another one a minute later.
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
 
-Thanks,
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v3:
+ - Integrate the series into a single patch.
+ - Adjust relational operator and use struct_size().
+ - Update Subject line and changelog text.
+ * Thanks to Dan and Sakari for their feedback. :)
 
-        tglx
+Changes in v2:
+ - Use flexible array and adjust relational operator in patch 1.
+   Link: https://lore.kernel.org/linux-hardening/cover.1627646101.git.gustavoars@kernel.org/
+
+v1:
+ Link: https://lore.kernel.org/linux-hardening/cover.1627600430.git.gustavoars@kernel.org/
+
+ drivers/staging/media/ipu3/ipu3-css-fw.c | 7 +++----
+ drivers/staging/media/ipu3/ipu3-css-fw.h | 2 +-
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.c b/drivers/staging/media/ipu3/ipu3-css-fw.c
+index 45aff76198e2..981693eed815 100644
+--- a/drivers/staging/media/ipu3/ipu3-css-fw.c
++++ b/drivers/staging/media/ipu3/ipu3-css-fw.c
+@@ -124,12 +124,11 @@ int imgu_css_fw_init(struct imgu_css *css)
+ 	/* Check and display fw header info */
+ 
+ 	css->fwp = (struct imgu_fw_header *)css->fw->data;
+-	if (css->fw->size < sizeof(struct imgu_fw_header *) ||
++	if (css->fw->size < struct_size(css->fwp, binary_header, 1) ||
+ 	    css->fwp->file_header.h_size != sizeof(struct imgu_fw_bi_file_h))
+ 		goto bad_fw;
+-	if (sizeof(struct imgu_fw_bi_file_h) +
+-	    css->fwp->file_header.binary_nr * sizeof(struct imgu_fw_info) >
+-	    css->fw->size)
++	if (struct_size(css->fwp, binary_header,
++			css->fwp->file_header.binary_nr) > css->fw->size)
+ 		goto bad_fw;
+ 
+ 	dev_info(dev, "loaded firmware version %.64s, %u binaries, %zu bytes\n",
+diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.h b/drivers/staging/media/ipu3/ipu3-css-fw.h
+index 3c078f15a295..c0bc57fd678a 100644
+--- a/drivers/staging/media/ipu3/ipu3-css-fw.h
++++ b/drivers/staging/media/ipu3/ipu3-css-fw.h
+@@ -171,7 +171,7 @@ struct imgu_fw_bi_file_h {
+ 
+ struct imgu_fw_header {
+ 	struct imgu_fw_bi_file_h file_header;
+-	struct imgu_fw_info binary_header[1];	/* binary_nr items */
++	struct imgu_fw_info binary_header[];	/* binary_nr items */
+ };
+ 
+ /******************* Firmware functions *******************/
+-- 
+2.27.0
+
