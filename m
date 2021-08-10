@@ -2,151 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C463E5BD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66FA3E5BD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241551AbhHJNgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238260AbhHJNgg (ORCPT
+        id S241558AbhHJNha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:37:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237223AbhHJNh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:36:36 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D1AC061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:36:15 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id a4so6243804ilj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GAUdFxB/nuyD8e37Y4/cSwL2QvDgaa+OvSAdElWuutE=;
-        b=FiZK96vERTuIAuikDBL6Ooey+jHySbQUeXP0EOKfNnW56g/S1noMxovebcwVi9LqwN
-         UzgjVfebf964xNDcNAYat32UQQSCPcH29GksaL3Zu3+e2dnptQyDj1+yCCFbjLt30UEW
-         F+JL2qXk/po7FQaNvm4Bdr+NzFoIF4nnjdP3w7JweA0GmZuqpDcOfRGQC7zTASYZe0w5
-         LBvKNP+bP/me5K99z4dRX0bUTnnaTSPAxDhZrO8kBQbb9kaoKJAOjQlmUKBxfHeGKD4w
-         0U1MOobCPHu+8/7CgqhIwQxQbGSjxk7lo2LhL7uh4tM8GZwykestDrEJMsYPfWLGxhKd
-         5Eew==
+        Tue, 10 Aug 2021 09:37:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628602625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2LDlPss9QRTaBr474xlXhjE3rgK4GGCgbW9ZnFPF4VA=;
+        b=Wnq1QCh5gHGKKekL/hvFPHiVmg3zyicHZrN/pX8y0Fu0LP9I2thhpAL8WoX/dphEqkHKTP
+        ApFPEjjcsnKzknZQAtVuMCOroq69X8sTW5K6tYJFXVA6Mlf7v2AZlZRV4AVY2lJGE17q7g
+        iadaLBQcaS90DNfgxfM8ppG7BL0YVmo=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-DHu_JRabNtWV-7h44uxBDw-1; Tue, 10 Aug 2021 09:37:04 -0400
+X-MC-Unique: DHu_JRabNtWV-7h44uxBDw-1
+Received: by mail-qv1-f70.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so15383296qvt.20
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:37:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GAUdFxB/nuyD8e37Y4/cSwL2QvDgaa+OvSAdElWuutE=;
-        b=oII6gdl5YjJRJJOxR4maQWS6ftAAaZdN3H0i9iMfzV9wA6c1ruS/PaOFfjj54HDhcE
-         VWHIFrhFOQm4OX4x5Pou6WhoRqiEZVcsl3ug0ivOqpLhRuTSJeQPXl9LGY7KZDNoNZIn
-         ROiowvX82Vg6Qw3VUL5WeN0QEcInDyn1d5DHGabw/MIvmRUhEqrVck18WjRjvM2B9WWy
-         T+Y81TCgF3wYZLprpQ7MWZ3k7IAvUAgMtfZWk6igbVTfxmwuKZDe1suBK6owf44Mtq71
-         MgZBAPUJXl9e/8Wq5dTUkHjXu/kKD8kzM4roqb3o78nIyEhm5YAaOWONTD7DVhaVsEDN
-         AsAQ==
-X-Gm-Message-State: AOAM530i0FS1sBUpdfD5edOpoNym8sCuBmnWRoNRjfpeGSWkWhqTf/Ku
-        ZW0Ol3UCwRkXelqfKVnjeGUNxcMgRdwu9fJ2UowqVQ==
-X-Google-Smtp-Source: ABdhPJyBPhpZAm9pK9za4X7LfFBGg8KHUTGO1WamLDRCyuqF8oJJ8n1kh+U1CckiFSzq7xCSoeMHJzoKQjEaocRKOfc=
-X-Received: by 2002:a92:c5c8:: with SMTP id s8mr651292ilt.140.1628602574443;
- Tue, 10 Aug 2021 06:36:14 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2LDlPss9QRTaBr474xlXhjE3rgK4GGCgbW9ZnFPF4VA=;
+        b=Cp+GwRczCkdLhQv0HzMv6x7TWiYXWVU4lhvKZLAmHTLPYomcCOsiAta1WT5frg4eKg
+         bslQQO0C2Cg/lD18ek6VtZLupdeXHSxkxKY8izPOfrd+dyl73JNgTLnq9mHTB8xYTwcd
+         Qz1GsMn/WEn1Rn7Cf6G3maR+UmwDM1kxzTvgkrHmpffKXbsyk/RmuwbjcogLys8T4xPA
+         WUh4cLmuRNdIKoA+E6KsoY8sgQh92/C6nAQHQ0gya/lyzPrDAUBlqBhqLl8B02SBLGfR
+         mgGl1N6H8/MeeUHk2GCSlgUjsJqYuL1KTxFJwoVX7nQK3f28hWoORvVYjYOCVPUX5QJa
+         UTVQ==
+X-Gm-Message-State: AOAM530AeLBZFss6s5cjhA/INNLTCdFUxHmvqkZC7/ARZgWP8UJUr+uK
+        S5QuqD9nFGlQvxmENH51DnaPQ8MR1Kzn+oULRh9K6AwwpeBGU9ui4To/VQUQPkvmTO76nPB+owX
+        ZKB04ysw4toPieFTja4FQsVFX
+X-Received: by 2002:ac8:665a:: with SMTP id j26mr8267053qtp.173.1628602623923;
+        Tue, 10 Aug 2021 06:37:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJweRWFo+H68Fj3T4T7Iatetn7HaR/6adb+j5+Nf6P0/km/pU4GuQrXekeo83c8dya9bo80j0A==
+X-Received: by 2002:ac8:665a:: with SMTP id j26mr8267031qtp.173.1628602623592;
+        Tue, 10 Aug 2021 06:37:03 -0700 (PDT)
+Received: from crecklin.bos.csb (c-24-60-53-55.hsd1.nh.comcast.net. [24.60.53.55])
+        by smtp.gmail.com with ESMTPSA id z12sm7894678qtw.90.2021.08.10.06.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 06:37:03 -0700 (PDT)
+Subject: Re: [PATCH] fix UBSAN splat in test_scanf
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     pmladek@suse.com, rostedt@goodmis.org, senozhatsky@chromium.org,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org
+References: <20210809102013.525671-1-crecklin@redhat.com>
+ <YRJ/tTuj7r4jppv4@smile.fi.intel.com>
+From:   Christoph von Recklinghausen <crecklin@redhat.com>
+Message-ID: <1f4aa937-8e5d-33db-6479-e9b2011be147@redhat.com>
+Date:   Tue, 10 Aug 2021 09:37:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210717234859.351911-1-martin.blumenstingl@googlemail.com>
- <20210717234859.351911-3-martin.blumenstingl@googlemail.com>
- <20210728175823.GA2766167@p14s> <CAFBinCB0-bAa7Y+YhscczarGrGuio37F8vRyfW6U2DiiDAvr-g@mail.gmail.com>
- <20210805161506.GA3205691@p14s> <CAFBinCCkOgkzuxZPby-rJeH7ei-G_khiStkX9Zs3w1u1RAd7_Q@mail.gmail.com>
-In-Reply-To: <CAFBinCCkOgkzuxZPby-rJeH7ei-G_khiStkX9Zs3w1u1RAd7_Q@mail.gmail.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Tue, 10 Aug 2021 07:36:01 -0600
-Message-ID: <CANLsYkyz5h9Qb+ZLFAtegDHYeQoOYeF_6GF7jYo8kxhF-pt66Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
- AO ARC remote procesor
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRJ/tTuj7r4jppv4@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Aug 2021 at 14:37, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
+
+On 8/10/21 9:31 AM, Andy Shevchenko wrote:
+> On Mon, Aug 09, 2021 at 06:20:13AM -0400, Chris von Recklinghausen wrote:
 >
-> Hi Mathieu,
+> Thanks for the report and fix!
 >
-> On Thu, Aug 5, 2021 at 6:15 PM Mathieu Poirier
-> <mathieu.poirier@linaro.org> wrote:
-> >
-> > On Wed, Aug 04, 2021 at 11:03:57PM +0200, Martin Blumenstingl wrote:
-> > > Hi Mathieu,
-> > >
-> > > thanks for taking the time to look into this!
-> > >
-> > > (I will address any of your comments that I am not mentioning in this
-> > > email anymore. Thanks a lot for the suggestions!)
-> > >
-> > > On Wed, Jul 28, 2021 at 7:58 PM Mathieu Poirier
-> > > <mathieu.poirier@linaro.org> wrote:
-> > > [...]
-> > > > > +     writel(FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
-> > > > > +                            priv->sram_pa >> 14),
-> > > > Indentation problem
-> > > The idea here is to align priv->sram_pa with AO_REMAP_REG0... which
-> > > are both arguments to FIELD_PREP
-> >
-> > Right, this is what I would have expected.  When I applied the patch on my side
-> > "priv->sram_pa ..." was aligned wiht the 'M' of "AO_REMAP_ ...".
-> >
-> > > Maybe using something like this will make that easier to read:
-> > >     tmp = FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
-> > >                                      priv->sram_pa >> 14);
-> > >     writel(tmp, priv->remap_base + AO_REMAP_REG0);
-> >
-> > I think the main problem is that
-> > AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU is simply too long.  I
-> > suggest making is shorter and add a comment to describe exactly what it does.
-> AO_CPU_CNTL_AHB_SRAM_BITS_31_20 is used below and when looking at it
-> now I think the alignment is also strange.
-> For the next version I'll go with the tmp variable as I think it
-> improves readability, even with the long(er) macro names.
+> First of all, have you seen this:
+> https://lore.kernel.org/lkml/20210727150132.28920-1-andriy.shevchenko@linux.intel.com/T/#u
+> ?
+
+
+No I hadn't seen it. I'll defer to this fix then.
+
+Thanks,
+
+Chris
+
+
 >
-> [...]
-> > > > > +     priv->arc_reset = devm_reset_control_get_exclusive(dev, NULL);
-> > > > > +     if (IS_ERR(priv->arc_reset)) {
-> > > >
-> > > > Function __reset_control_get() in __devm_reset_control_get() can return NULL so
-> > > > this should be IS_ERR_OR_NULL().
-> > > The logic in there is: return optional ? NULL : ERR_PTR(-...);
-> >
-> > Ok, so you meant to do that.  And I just checked reset_control_reset() and it does
-> > account for a NULL parameter.  I'm good with this one but add a comment to
-> > make sure future readers don't think you've omitted to properly deal with the
-> > NULL return value.
-> >
-> > > I am requesting a mandatory reset line here, so reset core will never
-> > > return NULL
-> > > See also [0]
-> >
-> > Indeed, I've read that too.  Nonetheless __reset_control_get() can return NULL
-> > by way of __reset_control_get_from_lookup().
-> I could not find where __reset_control_get_from_lookup returns NULL in
-> case optional is false (which it is in this case because
-> devm_reset_control_get_exclusive requests a "mandatory" reset line).
-> Can you please point me to the problematic line(s) as I'd like to send
-> a patch (which fixes this) to the reset subsystem maintainers
+>> On a system with CONFIG_UBSAN_SHIFT=y, the following splat was observed:
+>> [  104.676826] test_scanf: loaded.
+>> [  104.680862] ================================================================================
+>> [  104.690304] UBSAN: shift-out-of-bounds in lib/test_scanf.c:274:51
+>> [  104.697144] shift exponent 32 is too large for 32-bit type 'unsigned int'
+> As you may see in the above the rule of thumb is to include only meaningful
+> parts of the oops.
 >
 
-I am currently traveling - I will get back to you in a week or so.
-
-> $ git grep -A1 devm_reset_control_get_exclusive | grep IS_ERR_OR_NULL
-> drivers/remoteproc/ti_k3_r5_remoteproc.c-       if
-> (IS_ERR_OR_NULL(core->reset)) {
-> $
->
-> I suspect that this can be simplified then as well.
->
->
-> Best regards,
-> Martin
->
->
-> [0] https://elixir.bootlin.com/linux/v5.14-rc4/source/include/linux/reset.h#L227
-> [1] https://elixir.bootlin.com/linux/v5.14-rc4/source/drivers/reset/core.c#L932
