@@ -2,82 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959EB3E8467
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5903E846E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233375AbhHJUd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbhHJUd2 (ORCPT
+        id S233328AbhHJUhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:37:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59423 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232968AbhHJUhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:33:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1821AC0613C1;
-        Tue, 10 Aug 2021 13:33:06 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628627582;
+        Tue, 10 Aug 2021 16:37:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628627818;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=VmNO/6PZX/ukpmKUxgFb784BLjZWMf0I28FYYc/qH+Q=;
-        b=geT0QKa+FGH9C4lt7qI+awsmOAPGEPnuKNhteiIPNmgcQaziJdqJBjQY00zPcEFuZmuBmB
-        oOh5oInajQrBVbX67j2q2iD9BWXDlbwu+g8lE5rVLGMCIErd9No4tCqHdEseYSHugHI1zg
-        zHWyd3cFWnmyd3BVs5lJX5LyVJozvZFjkzQaV/wHC6r+3d7TYpJlg2oG+v1mmVFYWDsD/m
-        yJWjYV/irDIoGlQPhZaJOQK49VMOnb5dU12SyIIcmXk83MxnTdGzx+YuXNArtOFDUHB7qb
-        PYtamAOAZKRt461Vh7cGXI2uzw3URsGPaKwXtzw2i4OBmySXjMRNqhkygKAVAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628627582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VmNO/6PZX/ukpmKUxgFb784BLjZWMf0I28FYYc/qH+Q=;
-        b=9RUz3+Q/kDOp5LEbghaANWydLhI9VhI74udmE/onDz0uMdyQg6tGx5YzKhMZhoGJCeflAI
-        3S/vPf9bzVldkWCw==
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Linus Walleij <linusw@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org
-Subject: Re: [SPLAT 3/3] gpio: dwapb: Sleeping spinlocks down IRQ mapping
-In-Reply-To: <20210810134127.1394269-4-valentin.schneider@arm.com>
-References: <20210810134127.1394269-1-valentin.schneider@arm.com>
- <20210810134127.1394269-4-valentin.schneider@arm.com>
-Date:   Tue, 10 Aug 2021 22:33:01 +0200
-Message-ID: <87v94doxaa.ffs@tglx>
+        bh=NQQ3vMbFXOyLNA8o0T1JkNTfAtfvFXrPq9SU5hge6L0=;
+        b=WqBI6sNhH42CKBWDdzWNIi3/ODABKzdjlBYeP/2gl9FxwxrQMQI9X6lv0dIAJFKWwlcOh/
+        ze4TJu4NX2+r014Qcv7tWw0CMFf6j8Eq0fw5ow5aDD2wIJjtrqyro8c/i+eo3xYT9kkNFF
+        +JWZB83CYd8vz1q88xG2bffrJelZzIU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-QNe406-APZi5ySA5y5-k6w-1; Tue, 10 Aug 2021 16:36:57 -0400
+X-MC-Unique: QNe406-APZi5ySA5y5-k6w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2075D107ACF5;
+        Tue, 10 Aug 2021 20:36:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DE27B3AFD;
+        Tue, 10 Aug 2021 20:36:54 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-50-willy@infradead.org>
+References: <20210715033704.692967-50-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 049/138] mm/memcg: Add folio_lruvec_relock_irq() and folio_lruvec_relock_irqsave()
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1811015.1628627814.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 21:36:54 +0100
+Message-ID: <1811016.1628627814@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10 2021 at 14:41, Valentin Schneider wrote:
-> [   11.549824] rt_spin_lock (kernel/locking/rtmutex.c:1641 (discriminator 4) kernel/locking/spinlock_rt.c:30 (discriminator 4) kernel/locking/spinlock_rt.c:36 (discriminator 4) kernel/locking/spinlock_rt.c:44 (discriminator 4)) 
-> [   11.549827] dwapb_irq_ack (drivers/gpio/gpio-dwapb.c:151 drivers/gpio/gpio-dwapb.c:233) gpio_dwapb
-> [   11.549831] __irq_do_set_handler (kernel/irq/chip.c:414 kernel/irq/chip.c:406 kernel/irq/chip.c:1009) 
-> [   11.549833] __irq_set_handler (kernel/irq/internals.h:178 kernel/irq/chip.c:1053) 
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-This is gpio_chip->bgpio_lock which is a regular spinlock. AFAICT this
-lock should merely serializing access to MMIO registers, so it should
-not be a problem to make this lock raw.
+> These are the folio equivalents of relock_page_lruvec_irq() and
+> folio_lruvec_relock_irqsave().  Also convert page_matches_lruvec()
+> to folio_matches_lruvec().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Except for the obligatory exception:
+Reviewed-by: David Howells <dhowells@redhat.com>
 
- grgpio_irq_handler() holds that lock from the demultiplexing
- handler and invokes all handlers for the individual GPIOs which have
- interrupts enabled without ever consulting a pending register.
-
- That drivers usage of that lock is interesting in general, see
- grgpio_map_irq() for illustration. Quality stuff for mission critical
- systems...
-
- But nevertheless it should just work with a raw lock on RT AFACIT.
-
-Thanks,
-
-        tglx
