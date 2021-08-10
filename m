@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671EB3E7FB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7ED3E8104
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbhHJRmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:42:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59558 "EHLO mail.kernel.org"
+        id S237759AbhHJRyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:54:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235228AbhHJRj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:39:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D91F6113E;
-        Tue, 10 Aug 2021 17:37:02 +0000 (UTC)
+        id S236066AbhHJRvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:51:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6516D6134F;
+        Tue, 10 Aug 2021 17:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617023;
-        bh=6CtMMWY43tOrknqGuMDP0XoXH39Ui/QQiMYCBapgyNw=;
+        s=korg; t=1628617387;
+        bh=QqPqNY2AxtVBbhsnUtXt1Zx++AmNMFlyXVZKAyqYUhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JOEKUCVhGiFS/ClxdMKSknZ8T7+Z+aXLjEUJYKztqERzDluvlNUqhA1VjKWhHeWS0
-         vfL6i+BEJNRckGenJt7hKKU7nMF6QPEQU8tPT2oVOs5A1+biTea9L1G8UidXCR88Iy
-         E2sjjtQxbk+o0jw3Ujhy9x/QpbYnIC6cQQdpOWSU=
+        b=YB1mfAMGHZPOsFupnzLjPmcNhSmQegpf5yuSWH38EA2P4YgTZ+4Wi3m9H5GlLu0FX
+         2KUAdTu9jVdC9GF1KiXoKacI9AxgE7rcCQa9IjMVbU0LRwWSEEH3Dn7e6A5NfCW4R9
+         4XaBuQo3SchmyNOx+d6kM8JLl/Fto2seoaCEJhDg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 011/135] ARM: imx: fix missing 3rd argument in macro imx_mmdc_perf_init
+Subject: [PATCH 5.13 037/175] ARM: dts: stm32: Disable LAN8710 EDPD on DHCOM
 Date:   Tue, 10 Aug 2021 19:29:05 +0200
-Message-Id: <20210810172956.056400324@linuxfoundation.org>
+Message-Id: <20210810173002.177092701@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
+References: <20210810173000.928681411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 20fb73911fec01f06592de1cdbca00b66602ebd7 ]
+[ Upstream commit 36862c1ebc92a7e6fcc55002965c44b8ad17d4ca ]
 
-The function imx_mmdc_perf_init recently had a 3rd argument added to
-it but the equivalent macro was not updated and is still the older
-2 argument version. Fix this by adding in the missing 3rd argumement
-mmdc_ipg_clk.
+The LAN8710 Energy Detect Power Down (EDPD) functionality might cause
+unreliable cable detection. There are multiple accounts of this in the
+SMSC PHY driver patches which attempted to make EDPD reliable, however
+it seems there is always some sort of corner case left. Unfortunatelly,
+there is no errata documented which would confirm this to be a silicon
+bug on the LAN87xx series of PHYs (LAN8700, LAN8710, LAN8720 at least).
 
-Fixes: f07ec8536580 ("ARM: imx: add missing clk_disable_unprepare()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Disable EDPD on the DHCOM SoM, just like multiple other boards already
+do as well, to make the cable detection reliable.
+
+Fixes: 34e0c7847dcf ("ARM: dts: stm32: Add DH Electronics DHCOM STM32MP1 SoM and PDK2 board")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Patrick Delaunay <patrick.delaunay@foss.st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-imx/mmdc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-index 4a6f1359e1e9..af12668d0bf5 100644
---- a/arch/arm/mach-imx/mmdc.c
-+++ b/arch/arm/mach-imx/mmdc.c
-@@ -534,7 +534,7 @@ pmu_free:
- 
- #else
- #define imx_mmdc_remove NULL
--#define imx_mmdc_perf_init(pdev, mmdc_base) 0
-+#define imx_mmdc_perf_init(pdev, mmdc_base, mmdc_ipg_clk) 0
- #endif
- 
- static int imx_mmdc_probe(struct platform_device *pdev)
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+index 8349c9099e30..8c41f819f776 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+@@ -140,6 +140,7 @@
+ 			reset-gpios = <&gpioh 3 GPIO_ACTIVE_LOW>;
+ 			reset-assert-us = <500>;
+ 			reset-deassert-us = <500>;
++			smsc,disable-energy-detect;
+ 			interrupt-parent = <&gpioi>;
+ 			interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+ 		};
 -- 
 2.30.2
 
