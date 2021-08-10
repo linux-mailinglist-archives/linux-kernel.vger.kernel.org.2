@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C5E3E85AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE6C3E85B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234976AbhHJVvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:51:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41626 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234748AbhHJVvu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:51:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628632287;
+        id S234993AbhHJVwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:52:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53452 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234545AbhHJVwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:52:13 -0400
+Received: from zn.tnic (p200300ec2f0d6500329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 95C511EC0347;
+        Tue, 10 Aug 2021 23:51:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628632305;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WOJbDaOgR9A4WIv7Hr0VHIDUG6WaV2S/pWdNcf5TSwI=;
-        b=KUIsjMlaoDGU/MWkIYNsaWtDWBnzHOK15ZtADUcmO0rlYj2AT7T9gn6IICak3MzrsdIs0m
-        kcb4zL1fZHFFQMIArvr8uGhYXestHSVXL+bkAMIEPXTYLu6d2+20ROZMoUS6L+clFSQRfG
-        2/OVwLyhO9/sGxS0EUNHtwf9WSlH2I4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-T7ZIgILRO2iicsiT8o-PHw-1; Tue, 10 Aug 2021 17:51:26 -0400
-X-MC-Unique: T7ZIgILRO2iicsiT8o-PHw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2258B1853026;
-        Tue, 10 Aug 2021 21:51:25 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F38C760BF1;
-        Tue, 10 Aug 2021 21:51:23 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-85-willy@infradead.org>
-References: <20210715033704.692967-85-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 084/138] mm/page_alloc: Add folio allocation functions
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=bhrvSWnua4QgXGDLToC7m7WROlxA3VPxoYeGWv6d9b4=;
+        b=p7oMu+RhNEK0R7x19i+M996JIz9jAolp9gSi95HKMhewjNccujQhOtGEXBac5xmuyWnoQ8
+        VtNpb/aUb4bne0yLrWo++9p6EawNSD7KAttCXyDPqb0UwUAg1MTrP2eFAOM1Zm3RyuHGj4
+        2kVcVvuDB8EtlmSykCB6fmc5ev+4LKM=
+Date:   Tue, 10 Aug 2021 23:52:25 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 05/36] x86/sev: Define the Linux specific
+ guest termination reasons
+Message-ID: <YRL1GSmdJhoUCXZv@zn.tnic>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-6-brijesh.singh@amd.com>
+ <YRJkDhcbUi9xQemM@zn.tnic>
+ <955b4f50-5a7b-8c60-d31e-864bc29638f5@amd.com>
+ <65c53556-94e1-b372-7fb1-64bb78c7ae15@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1814545.1628632283.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 22:51:23 +0100
-Message-ID: <1814546.1628632283@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <65c53556-94e1-b372-7fb1-64bb78c7ae15@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+On Tue, Aug 10, 2021 at 02:30:44PM -0500, Tom Lendacky wrote:
+> IIRC, during the review of the first GHCB version there was discussion
+> about assigning reason sets outside of 0 within the spec and the overall
+> feeling was to not do that as part of the spec.
+> 
+> We can re-open that discussion for the next version of the GHCB document.
 
-> +struct folio *folio_alloc(gfp_t gfp, unsigned order)
-> +{
-> +	struct page *page = alloc_pages(gfp | __GFP_COMP, order);
-> +
-> +	if (page && order > 1)
-> +		prep_transhuge_page(page);
+My worry is that if nothing documents which sets are allocated to which
+vendor, it'll become a mess.
 
-Ummm...  Shouldn't order==1 pages (two page folios) be prep'd also?
+Imagine a Linux SNP guest and a windoze one, both running on a KVM
+hypervisor (is that even possible?) and both using the same termination
+reason set with conflicting reason numbers.
 
-> +	return (struct folio *)page;
-> +}
+Unneeded confusion.
 
-Would it be better to just jump to alloc_pages() if order <= 1?  E.g.:
+Unless the spec says, "reason set 1 is allocated to Linux, set 2 to
+windoze, etc"
 
-struct folio *folio_alloc(gfp_t gfp, unsigned order)
-{
-	struct page *page;
+Then all know which is which.
 
-	if (order <= 1)
-		return (struct folio *)alloc_pages(gfp | __GFP_COMP, order);
+And so on...
 
-	page = alloc_pages(gfp | __GFP_COMP, order);
-	if (page)
-		prep_transhuge_page(page);
-	return (struct folio *)page;
-}
+Thx.
 
-David
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
