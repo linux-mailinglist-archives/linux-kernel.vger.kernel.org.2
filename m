@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F35C3E828D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56D83E827B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237663AbhHJSKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:10:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41000 "EHLO mail.kernel.org"
+        id S235265AbhHJSIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:08:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:10242 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239360AbhHJSFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0756044F;
-        Tue, 10 Aug 2021 18:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628618573;
-        bh=CliTSJM3KgHfirPfmC/pFeaaa3Zs4kVGiq7MtSbj8lg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qa5ffquXhY7PmT28/lxox3tcAtLD+RlXr+lLx0Sa9LdTuvzvQaaKVXyyYKBlUyGZc
-         RJf8tUO8K0Iukb717vDRMamLTLOYSighxonSn8xfFQgMNxUCBgNuM8LHpqKraQyPsT
-         VeGnikeqL4dzmbT0tJ09SG/01gLAYbnNmHLCnbj/TSnSWuxVc/qeMG8F/SutX6AKYh
-         2AnjdvGDVnhMgCJFO7HWT4EXgBmH9OuQzb+nv133npaTvLv9LaKpAJoHHcRKllywzz
-         X/fBK7Us9da2+o4zY8xUJQ+vOssg5ti9M7vA5dxUCWARzkSbxOrGnPAP6IUfcKmOMv
-         /PPcYeH4wFozQ==
-Date:   Tue, 10 Aug 2021 21:02:51 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <20210810180251.vwxxcoeivnwfxxtd@kernel.org>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <20210809094408.4iqwsx77u64usfx6@kernel.org>
- <10dac5c6-4530-217c-e1ea-a7e2e3572f43@pengutronix.de>
+        id S238958AbhHJSEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:04:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628618660; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=bDO2vmOnrMiag9r3MOqOnhI26ABF0ECDJ8jRg53NeCs=;
+ b=vp5l9wbjKgjMbu3oyMLMAHQ/nLc35/0m65p6zHsl8GK34QUwedmhntduraQCMCwQUvNN6ERx
+ iaAbl5awqt7xaYU+FSlQ+OHnYJglJB9JM3lGskxrQME56lRz7/+mHC+ngUOA9sHTQMnzpxvW
+ Sa5OZiel4r6JeVIiLh02LlbWQ48=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6112bf98b3873958f5e1ac9a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 18:04:08
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 483C4C358EB; Tue, 10 Aug 2021 18:04:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6113DC2E884;
+        Tue, 10 Aug 2021 18:04:05 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10dac5c6-4530-217c-e1ea-a7e2e3572f43@pengutronix.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Aug 2021 23:34:04 +0530
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, ohad@wizery.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org, sibis@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Add support for sc7280 WPSS PIL loading
+In-Reply-To: <162699197027.2679160.6825677812017791100@swboyd.mtv.corp.google.com>
+References: <1615361290-19238-1-git-send-email-pillair@codeaurora.org>
+ <162699197027.2679160.6825677812017791100@swboyd.mtv.corp.google.com>
+Message-ID: <25c4175bca7fb2f055d8f87fa61ed487@codeaurora.org>
+X-Sender: pillair@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 12:00:40PM +0200, Ahmad Fatoum wrote:
-> Hello Jarkko,
+On 2021-07-23 03:42, Stephen Boyd wrote:
+> Quoting Rakesh Pillai (2021-03-09 23:28:08)
+>> Add support for PIL loading of WPSS co-processor for SC7280 SOCs.
+>> 
+>> Rakesh Pillai (2):
+>>   dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+>>   remoteproc: qcom: q6v5_wpss: Add support for sc7280 WPSS
+>> 
 > 
-> On 09.08.21 11:44, Jarkko Sakkinen wrote:
-> > On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
-> >> Kernel trusted keys don't require userspace knowledge of the raw key
-> >> material and instead export a sealed blob, which can be persisted to
-> >> unencrypted storage. Userspace can then load this blob into the kernel,
-> >> where it's unsealed and from there on usable for kernel crypto.
-> >>
-> >> This is incompatible with fscrypt, where userspace is supposed to supply
-> >> the raw key material. For TPMs, a work around is to do key unsealing in
-> >> userspace, but this may not be feasible for other trusted key backends.
-> >>
-> >> Make it possible to benefit from both fscrypt and trusted key sealing
-> >> by extending fscrypt_add_key_arg::key_id to hold either the ID of a
-> >> fscrypt-provisioning or a trusted key.
-> >>
-> >> A non fscrypt-provisioning key_id was so far prohibited, so additionally
-> >> allowing trusted keys won't break backwards compatibility.
-> >>
-> >> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> >> ---
-> >> Tested with:
-> >> https://github.com/google/fscryptctl/pull/23
-> >> -	if (key->type != &key_type_fscrypt_provisioning)
-> >> -		goto bad_key;
-> >> -	payload = key->payload.data[0];
-> >> +	if (key->type == &key_type_fscrypt_provisioning) {
-> > 
-> > Why does fscrypt have own key type, and does not extend 'encrypted' with a
-> > new format [*]?
-> 
-> See the commit[1] adding it for more information. TL;DR:
-> 
-> fscrypt maintainers would've preferred keys to be associated with
-> a "domain". So an encrypted key generated for fscrypt use couldn't be reused
-> for e.g. dm-crypt. They are wary of fscrypt users being more exposed if their
-> keys can be used with weaker ciphers via other kernel functionality that could
-> be used to extract information about the raw key material.
-> 
-> Eric also mentioned dislike of the possibility of rooting encrypted keys to
-> user keys. v2 is only restricted to v2, so we didn't discuss this further.
-> 
-> Restricting the key to fscrypt-only precludes this reuse.
-> 
-> My commit makes no attempts in changing that. It just adds a new way to pass
-> raw key material into fscrypt. For more information, see the commit[1] adding
-> that key type.
-> 
-> > [*] https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93edd392ca
+> Is this patch series going to be resent?
 
-OK, so why does the trusted key does not seal a fscrypt key, but instead
-its key material is directly used?
+Hi Stephen,
+I posted a v2 for this patch series, with the dt-bindings converted to 
+yaml.
 
-> Cheers,
-> Ahmad
-
-/Jarkko
+Thanks,
+Rakesh Pillai.
