@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831C63E7E7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2013E7F89
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhHJRdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:33:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
+        id S234092AbhHJRks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:40:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232206AbhHJRdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:33:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35D2E60F56;
-        Tue, 10 Aug 2021 17:32:46 +0000 (UTC)
+        id S235065AbhHJRjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:39:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC43361078;
+        Tue, 10 Aug 2021 17:36:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616766;
-        bh=U9voHKdbdy7j3vhSy8C//XOKs1jcQG0JGPELGqh0ZNg=;
+        s=korg; t=1628617009;
+        bh=RSFUk0SyUBYNXUSC8fFEz0LAoNdQpRTXjd2SH2P5zTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qVMKrmgAbTD6YRkEzxd+MmMUXjksxyHd6ppYJUfQeH5pFLyEQp6H7K++BLyVy8/he
-         SMVKxQeSWno1M2Iy3mRcSNSWLrs8gRifkkJ2cX+xdZ3w5MvmVqxBRI2dsnmhM8GcUI
-         36P8Z5s1cUDal7/gt6zsoBCeAXNO+T82UUHfvYvw=
+        b=cf8vjDb+QA+wj83BhMSJz+QUOmvXXJItDGa1NAr0rAQdmmyJ+UZFJQIDBkWpCV23f
+         +PCZvqt97BFyoIlwlAJdG/dat1+rCo2neWmS7sMZA46R69Xxxi9OMzfUtb1AsKEl+G
+         Du6mm9cB4E/JuiwsaT9Cb1m2FXTdgd3dU8eolsZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 4.19 36/54] tee: add tee_shm_alloc_kernel_buf()
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 5.4 57/85] staging: rtl8712: get rid of flush_scheduled_work
 Date:   Tue, 10 Aug 2021 19:30:30 +0200
-Message-Id: <20210810172945.369365872@linuxfoundation.org>
+Message-Id: <20210810172950.163412621@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +38,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Wiklander <jens.wiklander@linaro.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit dc7019b7d0e188d4093b34bd0747ed0d668c63bf upstream.
+commit 9be550ee43919b070bcd77f9228bdbbbc073245b upstream.
 
-Adds a new function tee_shm_alloc_kernel_buf() to allocate shared memory
-from a kernel driver. This function can later be made more lightweight
-by unnecessary dma-buf export.
+This patch is preparation for following patch for error handling
+refactoring.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+flush_scheduled_work() takes (wq_completion)events lock and
+it can lead to deadlock when r871xu_dev_remove() is called from workqueue.
+To avoid deadlock sutiation we can change flush_scheduled_work() call to
+flush_work() call for all possibly scheduled works in this driver,
+since next patch adds device_release_driver() in case of fw load failure.
+
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/6e028b4c457eeb7156c76c6ea3cdb3cb0207c7e1.1626895918.git.paskripkin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tee/tee_shm.c   |   18 ++++++++++++++++++
- include/linux/tee_drv.h |    1 +
- 2 files changed, 19 insertions(+)
+ drivers/staging/rtl8712/rtl8712_led.c     |    8 ++++++++
+ drivers/staging/rtl8712/rtl871x_led.h     |    1 +
+ drivers/staging/rtl8712/rtl871x_pwrctrl.c |    8 ++++++++
+ drivers/staging/rtl8712/rtl871x_pwrctrl.h |    1 +
+ drivers/staging/rtl8712/usb_intf.c        |    3 ++-
+ 5 files changed, 20 insertions(+), 1 deletion(-)
 
---- a/drivers/tee/tee_shm.c
-+++ b/drivers/tee/tee_shm.c
-@@ -228,6 +228,24 @@ struct tee_shm *tee_shm_priv_alloc(struc
+--- a/drivers/staging/rtl8712/rtl8712_led.c
++++ b/drivers/staging/rtl8712/rtl8712_led.c
+@@ -1820,3 +1820,11 @@ void LedControl871x(struct _adapter *pad
+ 		break;
+ 	}
  }
- EXPORT_SYMBOL_GPL(tee_shm_priv_alloc);
- 
-+/**
-+ * tee_shm_alloc_kernel_buf() - Allocate shared memory for kernel buffer
-+ * @ctx:	Context that allocates the shared memory
-+ * @size:	Requested size of shared memory
-+ *
-+ * The returned memory registered in secure world and is suitable to be
-+ * passed as a memory buffer in parameter argument to
-+ * tee_client_invoke_func(). The memory allocated is later freed with a
-+ * call to tee_shm_free().
-+ *
-+ * @returns a pointer to 'struct tee_shm'
-+ */
-+struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
-+{
-+	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+}
-+EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
 +
- struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
- 				 size_t length, u32 flags)
- {
---- a/include/linux/tee_drv.h
-+++ b/include/linux/tee_drv.h
-@@ -317,6 +317,7 @@ void *tee_get_drvdata(struct tee_device
-  * @returns a pointer to 'struct tee_shm'
-  */
- struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags);
-+struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size);
++void r8712_flush_led_works(struct _adapter *padapter)
++{
++	struct led_priv *pledpriv = &padapter->ledpriv;
++
++	flush_work(&pledpriv->SwLed0.BlinkWorkItem);
++	flush_work(&pledpriv->SwLed1.BlinkWorkItem);
++}
+--- a/drivers/staging/rtl8712/rtl871x_led.h
++++ b/drivers/staging/rtl8712/rtl871x_led.h
+@@ -112,6 +112,7 @@ struct led_priv {
+ void r8712_InitSwLeds(struct _adapter *padapter);
+ void r8712_DeInitSwLeds(struct _adapter *padapter);
+ void LedControl871x(struct _adapter *padapter, enum LED_CTL_MODE LedAction);
++void r8712_flush_led_works(struct _adapter *padapter);
  
- /**
-  * tee_shm_priv_alloc() - Allocate shared memory privately
+ #endif
+ 
+--- a/drivers/staging/rtl8712/rtl871x_pwrctrl.c
++++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.c
+@@ -224,3 +224,11 @@ void r8712_unregister_cmd_alive(struct _
+ 	}
+ 	mutex_unlock(&pwrctrl->mutex_lock);
+ }
++
++void r8712_flush_rwctrl_works(struct _adapter *padapter)
++{
++	struct pwrctrl_priv *pwrctrl = &padapter->pwrctrlpriv;
++
++	flush_work(&pwrctrl->SetPSModeWorkItem);
++	flush_work(&pwrctrl->rpwm_workitem);
++}
+--- a/drivers/staging/rtl8712/rtl871x_pwrctrl.h
++++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
+@@ -111,5 +111,6 @@ void r8712_cpwm_int_hdl(struct _adapter
+ void r8712_set_ps_mode(struct _adapter *padapter, uint ps_mode,
+ 			uint smart_ps);
+ void r8712_set_rpwm(struct _adapter *padapter, u8 val8);
++void r8712_flush_rwctrl_works(struct _adapter *padapter);
+ 
+ #endif  /* __RTL871X_PWRCTRL_H_ */
+--- a/drivers/staging/rtl8712/usb_intf.c
++++ b/drivers/staging/rtl8712/usb_intf.c
+@@ -604,7 +604,8 @@ static void r871xu_dev_remove(struct usb
+ 			padapter->surprise_removed = true;
+ 		if (pnetdev->reg_state != NETREG_UNINITIALIZED)
+ 			unregister_netdev(pnetdev); /* will call netdev_close() */
+-		flush_scheduled_work();
++		r8712_flush_rwctrl_works(padapter);
++		r8712_flush_led_works(padapter);
+ 		udelay(1);
+ 		/* Stop driver mlme relation timer */
+ 		r8712_stop_drv_timers(padapter);
 
 
