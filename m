@@ -2,303 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96D33E7DEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EF03E7DF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhHJREG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:04:06 -0400
-Received: from mga09.intel.com ([134.134.136.24]:36149 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhHJREF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:04:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214932763"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="214932763"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 10:03:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="638866988"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 10 Aug 2021 10:03:41 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
-        by linux.intel.com (Postfix) with ESMTP id AE3A6580922;
-        Tue, 10 Aug 2021 10:03:41 -0700 (PDT)
-Message-ID: <9a142d180bffa7524bb36ccdba1c866f8b084720.camel@linux.intel.com>
-Subject: Re: [PATCH 00/20] Move Intel platform drivers to intel directory to
- improve readability.
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Kate Hsuan <hpa@redhat.com>, Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com
-Cc:     platform-driver-x86@vger.kernel.org
-Date:   Tue, 10 Aug 2021 10:03:41 -0700
-In-Reply-To: <20210810095832.4234-1-hpa@redhat.com>
-References: <20210810095832.4234-1-hpa@redhat.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231511AbhHJRE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230042AbhHJREz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:04:55 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B52C0613C1;
+        Tue, 10 Aug 2021 10:04:32 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id x10so22301982iop.13;
+        Tue, 10 Aug 2021 10:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=qKjLpOXK2E4x5JMD/1Vmmi19gIauGt4KxUD98Wehp14=;
+        b=C4k686O0v0ff0siTcVNGZOuwLSM9CxMC+GGzNAZIMG+utS3u3kiHTh31vLukr29RXO
+         c9Wcx6YEZvD5T9uFjJd6IUA4q4nhL100ZC6GgjEWFCC9vktBdRuUhK6tR69PgBAmGL+g
+         G9oSwkdrBIc59hYur/Z0ZFwMdcV7Mhi3HigxDgaspa/RiufWazatGolkskySoFxaUtuC
+         +ve1tybj23pShl3zzDb0PaBxAqu75SLfDCBbG+aidT1kT+KZ77auR9xYz9b0lkMDmfbj
+         10TKDKZziGNF8oAuy/uD8ixlW8TSP8WE/Lq+3Ghmf4Ac8Dp7/wbXo7bDJVj+i3lG1tpt
+         pZhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=qKjLpOXK2E4x5JMD/1Vmmi19gIauGt4KxUD98Wehp14=;
+        b=HhpSfXh8EcM7da5EU6nOkOBvo48x71PA9LW0MOc5B3cUKttqqH6fyFWSXB1nhRS6E1
+         cVgIr5wkhoe5pbJL7Cd2MumrpHvlfTzK2Jv9ZAMUyOskNF+0YJJ8DnUXkBHr8V1KZO/u
+         Wyae5VrMxgwk+WM37Zx1O1TESf21rhC8NP55+Sphbq9tcLlyYbbHh72IwVLK88XIQUGp
+         qhFTM4xM9ov7FhxLsXctni8+3L9/Ik4xlysJOb0Ly+GWNRFAuGrUkqEZ7XRdIefjFUjQ
+         km6dz14ngUTbww9TfOYVa2pBtWu+tVKuWjD/3X/vrjAtYK5098qRWGvnJMQQzg/38I5i
+         zu1w==
+X-Gm-Message-State: AOAM531bIpQ1TDgbJ6D0b35DQpDCHggAGqiJ8vcxlbfNSdtNBMbCy7wU
+        XaQNLPudZVq8GQdH3op42xM=
+X-Google-Smtp-Source: ABdhPJx7vGesJitEUC/rVgfxeFrtliJzvWzTg2gRC8q71LZvPzBhsGoM1kiiTTVevxkjfPFdVcWymQ==
+X-Received: by 2002:a5d:9bcf:: with SMTP id d15mr65210ion.88.1628615072105;
+        Tue, 10 Aug 2021 10:04:32 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id l5sm2607191iln.13.2021.08.10.10.04.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 10:04:31 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 10:04:26 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Jiang Wang <jiang.wang@bytedance.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Message-ID: <6112b19a30160_1c2c820888@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAM_iQpXiqhfL9M04x1hvJ_6zCCUoDAv1_ywysu=O7wnCUuJaTw@mail.gmail.com>
+References: <20210727001252.1287673-1-jiang.wang@bytedance.com>
+ <20210727001252.1287673-3-jiang.wang@bytedance.com>
+ <6100363add8a9_199a412089@john-XPS-13-9370.notmuch>
+ <CAM_iQpVedTzRbf-bC7WuGMFYF=qnUxbnUdqJ9+FaxrTAn5DkTw@mail.gmail.com>
+ <6101a56bf2a11_1e1ff620813@john-XPS-13-9370.notmuch>
+ <CAM_iQpXiqhfL9M04x1hvJ_6zCCUoDAv1_ywysu=O7wnCUuJaTw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/5] af_unix: add unix_stream_proto for
+ sockmap
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, 2021-08-10 at 17:58 +0800, Kate Hsuan wrote:
-> All the intel platform specific drivers are moved to intel/.
-> It makes more clear file structure to improve the readability.
+Cong Wang wrote:
+> On Wed, Jul 28, 2021 at 11:44 AM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> >
+> > Cong Wang wrote:
+> > > On Tue, Jul 27, 2021 at 9:37 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> > > > Do we really need an unhash hook for unix_stream? I'm doing some testing
+> > > > now to pull it out of TCP side as well. It seems to be an artifact of old
+> > > > code that is no longer necessary. On TCP side at least just using close()
+> > > > looks to be enough now.
+> > >
+> > > How do you handle the disconnection from remote without ->unhash()?
+> >
+> > Would close() not work for stream/dgram sockets?
 > 
+> close() is called when the local closes the sockets, but when the remote
+> closes or disconnects it, unhash() is called. This is why TCP calls unhash()
+> to remove the socket from established socket hash table. unhash() itself
+> might not make much sense for AF_UNIX as it probably does not need a
+> hash table to track established ones, however, the idea is the same, that
+> is, we have to handle remote disconnections here.
 
-A lot of subfolders for single files. Is this necessary? I'm submitting
-a single driver soon, unrelated to anything else. I was just going to
-drop it in /intel.
+Following up on this series. Leaving a socket in the sockmap until close()
+happens is not paticularly problematic, but does consume space in the map
+so unhash() is slightly better I guess. Thanks.
 
-David
-
-> Kate Hsuan (20):
->   Move Intel hid of pdx86 to intel directory to improve readability.
->   Move Intel WMI driver of pdx86 to intel/ directory to improve
->     readability.
->   Move Intel bxtwc driver of pdx86 to intel/ directory to improve
->     readability.
->   Move Intel chtdc_ti driver of pdx86 to improve readability.
->   Move MRFLD power button driver of pdx86 to intel directory to
-> improve
->     readability.
->   Move Intel PMC core of pdx86 to intel/ directory to improve
->     readability.
->   Move Intel PMT driver of pdx86 to intel/ to improve readability.
->   Move Intel P-Unit of pdx86 to intel/ directory to improve
-> readability.
->   Move Intel SCU IPC of pdx86 to intel directory to increase
->     readability.
->   Move Intel SoC telemetry driver to intel directory to improve
->     readability.
->   Move Intel IPS driver of pdx86 to improve readability.
->   Move Intel RST driver of pdx86 to intel directory to improve
->     readability.
->   Move Intel smartconnect driver of pdx86 to intel/ directory to
-> improve
->     readability.
->   Move Intel SST driver to intel/ directory to improve readability.
->   Move Intel turbo max 3 driver to intel/ directory to improve
->     readability.
->   Move Intel uncore freq driver to intel/ directory to improve
->     readability.
->   Move Intel int0002 vgpio driver to intel/ directory to inprove
->     readability.
->   Move Intel thermal driver for menlow platform driver to intel/
->     directory to improve readability.
->   Move OakTrail driver to the intel/ directory to improve
-> readability.
->   Move Intel virtual botton driver to intel/ directory to improve
->     readability.
 > 
->  drivers/platform/x86/Kconfig                  | 297 ----------------
-> --
->  drivers/platform/x86/Makefile                 |  34 +-
->  drivers/platform/x86/intel/Kconfig            |  21 ++
->  drivers/platform/x86/intel/Makefile           |  31 ++
->  drivers/platform/x86/intel/bxtwc/Kconfig      |  15 +
->  drivers/platform/x86/intel/bxtwc/Makefile     |   6 +
->  .../x86/{ => intel/bxtwc}/intel_bxtwc_tmu.c   |   0
->  drivers/platform/x86/intel/chtdc_ti/Kconfig   |  16 +
->  drivers/platform/x86/intel/chtdc_ti/Makefile  |   7 +
->  .../chtdc_ti}/intel_chtdc_ti_pwrbtn.c         |   0
->  drivers/platform/x86/intel/hid/Kconfig        |  17 +
->  drivers/platform/x86/intel/hid/Makefile       |   7 +
->  .../platform/x86/{ => intel/hid}/intel-hid.c  |   0
->  drivers/platform/x86/intel/int0002/Kconfig    |  23 ++
->  drivers/platform/x86/intel/int0002/Makefile   |   6 +
->  .../{ => intel/int0002}/intel_int0002_vgpio.c |   0
->  .../{ => intel}/intel_speed_select_if/Kconfig |   0
->  .../intel_speed_select_if/Makefile            |   0
->  .../intel_speed_select_if/isst_if_common.c    |   0
->  .../intel_speed_select_if/isst_if_common.h    |   0
->  .../intel_speed_select_if/isst_if_mbox_msr.c  |   0
->  .../intel_speed_select_if/isst_if_mbox_pci.c  |   0
->  .../intel_speed_select_if/isst_if_mmio.c      |   0
->  drivers/platform/x86/intel/ips/Kconfig        |  14 +
->  drivers/platform/x86/intel/ips/Makefile       |   6 +
->  .../platform/x86/{ => intel/ips}/intel_ips.c  |   0
->  .../platform/x86/{ => intel/ips}/intel_ips.h  |   0
->  drivers/platform/x86/intel/menlow/Kconfig     |  14 +
->  drivers/platform/x86/intel/menlow/Makefile    |   6 +
->  .../x86/{ => intel/menlow}/intel_menlow.c     |   0
->  drivers/platform/x86/intel/mrfld/Kconfig      |  17 +
->  drivers/platform/x86/intel/mrfld/Makefile     |   6 +
->  .../{ => intel/mrfld}/intel_mrfld_pwrbtn.c    |   0
->  drivers/platform/x86/intel/oaktrail/Kconfig   |  15 +
->  drivers/platform/x86/intel/oaktrail/Makefile  |   6 +
->  .../x86/{ => intel/oaktrail}/intel_oaktrail.c |   0
->  drivers/platform/x86/intel/pmc_core/Kconfig   |  26 ++
->  drivers/platform/x86/intel/pmc_core/Makefile  |   6 +
->  .../x86/{ => intel/pmc_core}/intel_pmc_core.c |   0
->  .../x86/{ => intel/pmc_core}/intel_pmc_core.h |   0
->  .../pmc_core}/intel_pmc_core_pltdrv.c         |   0
->  drivers/platform/x86/intel/pmt/Kconfig        |  41 +++
->  drivers/platform/x86/intel/pmt/Makefile       |   9 +
->  .../x86/{ => intel/pmt}/intel_pmt_class.c     |   0
->  .../x86/{ => intel/pmt}/intel_pmt_class.h     |   0
->  .../x86/{ => intel/pmt}/intel_pmt_crashlog.c  |   0
->  .../x86/{ => intel/pmt}/intel_pmt_telemetry.c |   0
->  drivers/platform/x86/intel/punit/Kconfig      |  10 +
->  drivers/platform/x86/intel/punit/Makefile     |   6 +
->  .../x86/{ => intel/punit}/intel_punit_ipc.c   |   0
->  drivers/platform/x86/intel/rst/Kconfig        |  16 +
->  drivers/platform/x86/intel/rst/Makefile       |   6 +
->  .../platform/x86/{ => intel/rst}/intel-rst.c  |   0
->  drivers/platform/x86/intel/scu/Kconfig        |  52 +++
->  drivers/platform/x86/intel/scu/Makefile       |  11 +
->  .../x86/{ => intel/scu}/intel_scu_ipc.c       |   0
->  .../x86/{ => intel/scu}/intel_scu_ipcutil.c   |   0
->  .../x86/{ => intel/scu}/intel_scu_pcidrv.c    |   0
->  .../x86/{ => intel/scu}/intel_scu_pltdrv.c    |   0
->  .../x86/{ => intel/scu}/intel_scu_wdt.c       |   0
->  .../platform/x86/intel/smartconnect/Kconfig   |  18 ++
->  .../platform/x86/intel/smartconnect/Makefile  |   6 +
->  .../smartconnect}/intel-smartconnect.c        |   0
->  drivers/platform/x86/intel/telemetry/Kconfig  |  16 +
->  drivers/platform/x86/intel/telemetry/Makefile |   9 +
->  .../telemetry}/intel_telemetry_core.c         |   0
->  .../telemetry}/intel_telemetry_debugfs.c      |   0
->  .../telemetry}/intel_telemetry_pltdrv.c       |   0
->  .../platform/x86/intel/turbo_max_3/Kconfig    |  14 +
->  .../platform/x86/intel/turbo_max_3/Makefile   |   6 +
->  .../turbo_max_3}/intel_turbo_max_3.c          |   0
->  .../platform/x86/intel/uncore_freq/Kconfig    |  15 +
->  .../platform/x86/intel/uncore_freq/Makefile   |   6 +
->  .../uncore_freq}/intel-uncore-frequency.c     |   0
->  drivers/platform/x86/intel/vbtn/Kconfig       |  16 +
->  drivers/platform/x86/intel/vbtn/Makefile      |   6 +
->  .../x86/{ => intel/vbtn}/intel-vbtn.c         |   0
->  drivers/platform/x86/intel/wmi/Kconfig        |  26 ++
->  drivers/platform/x86/intel/wmi/Makefile       |   7 +
->  .../{ => intel/wmi}/intel-wmi-sbl-fw-update.c |   0
->  .../{ => intel/wmi}/intel-wmi-thunderbolt.c   |   0
->  81 files changed, 562 insertions(+), 330 deletions(-)
->  create mode 100644 drivers/platform/x86/intel/bxtwc/Kconfig
->  create mode 100644 drivers/platform/x86/intel/bxtwc/Makefile
->  rename drivers/platform/x86/{ => intel/bxtwc}/intel_bxtwc_tmu.c
-> (100%)
->  create mode 100644 drivers/platform/x86/intel/chtdc_ti/Kconfig
->  create mode 100644 drivers/platform/x86/intel/chtdc_ti/Makefile
->  rename drivers/platform/x86/{ =>
-> intel/chtdc_ti}/intel_chtdc_ti_pwrbtn.c (100%)
->  create mode 100644 drivers/platform/x86/intel/hid/Kconfig
->  create mode 100644 drivers/platform/x86/intel/hid/Makefile
->  rename drivers/platform/x86/{ => intel/hid}/intel-hid.c (100%)
->  create mode 100644 drivers/platform/x86/intel/int0002/Kconfig
->  create mode 100644 drivers/platform/x86/intel/int0002/Makefile
->  rename drivers/platform/x86/{ =>
-> intel/int0002}/intel_int0002_vgpio.c (100%)
->  rename drivers/platform/x86/{ =>
-> intel}/intel_speed_select_if/Kconfig (100%)
->  rename drivers/platform/x86/{ =>
-> intel}/intel_speed_select_if/Makefile (100%)
->  rename drivers/platform/x86/{ =>
-> intel}/intel_speed_select_if/isst_if_common.c (100%)
->  rename drivers/platform/x86/{ =>
-> intel}/intel_speed_select_if/isst_if_common.h (100%)
->  rename drivers/platform/x86/{ =>
-> intel}/intel_speed_select_if/isst_if_mbox_msr.c (100%)
->  rename drivers/platform/x86/{ =>
-> intel}/intel_speed_select_if/isst_if_mbox_pci.c (100%)
->  rename drivers/platform/x86/{ =>
-> intel}/intel_speed_select_if/isst_if_mmio.c (100%)
->  create mode 100644 drivers/platform/x86/intel/ips/Kconfig
->  create mode 100644 drivers/platform/x86/intel/ips/Makefile
->  rename drivers/platform/x86/{ => intel/ips}/intel_ips.c (100%)
->  rename drivers/platform/x86/{ => intel/ips}/intel_ips.h (100%)
->  create mode 100644 drivers/platform/x86/intel/menlow/Kconfig
->  create mode 100644 drivers/platform/x86/intel/menlow/Makefile
->  rename drivers/platform/x86/{ => intel/menlow}/intel_menlow.c (100%)
->  create mode 100644 drivers/platform/x86/intel/mrfld/Kconfig
->  create mode 100644 drivers/platform/x86/intel/mrfld/Makefile
->  rename drivers/platform/x86/{ => intel/mrfld}/intel_mrfld_pwrbtn.c
-> (100%)
->  create mode 100644 drivers/platform/x86/intel/oaktrail/Kconfig
->  create mode 100644 drivers/platform/x86/intel/oaktrail/Makefile
->  rename drivers/platform/x86/{ => intel/oaktrail}/intel_oaktrail.c
-> (100%)
->  create mode 100644 drivers/platform/x86/intel/pmc_core/Kconfig
->  create mode 100644 drivers/platform/x86/intel/pmc_core/Makefile
->  rename drivers/platform/x86/{ => intel/pmc_core}/intel_pmc_core.c
-> (100%)
->  rename drivers/platform/x86/{ => intel/pmc_core}/intel_pmc_core.h
-> (100%)
->  rename drivers/platform/x86/{ =>
-> intel/pmc_core}/intel_pmc_core_pltdrv.c (100%)
->  create mode 100644 drivers/platform/x86/intel/pmt/Kconfig
->  create mode 100644 drivers/platform/x86/intel/pmt/Makefile
->  rename drivers/platform/x86/{ => intel/pmt}/intel_pmt_class.c (100%)
->  rename drivers/platform/x86/{ => intel/pmt}/intel_pmt_class.h (100%)
->  rename drivers/platform/x86/{ => intel/pmt}/intel_pmt_crashlog.c
-> (100%)
->  rename drivers/platform/x86/{ => intel/pmt}/intel_pmt_telemetry.c
-> (100%)
->  create mode 100644 drivers/platform/x86/intel/punit/Kconfig
->  create mode 100644 drivers/platform/x86/intel/punit/Makefile
->  rename drivers/platform/x86/{ => intel/punit}/intel_punit_ipc.c
-> (100%)
->  create mode 100644 drivers/platform/x86/intel/rst/Kconfig
->  create mode 100644 drivers/platform/x86/intel/rst/Makefile
->  rename drivers/platform/x86/{ => intel/rst}/intel-rst.c (100%)
->  create mode 100644 drivers/platform/x86/intel/scu/Kconfig
->  create mode 100644 drivers/platform/x86/intel/scu/Makefile
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipc.c (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipcutil.c
-> (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pcidrv.c
-> (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pltdrv.c
-> (100%)
->  rename drivers/platform/x86/{ => intel/scu}/intel_scu_wdt.c (100%)
->  create mode 100644 drivers/platform/x86/intel/smartconnect/Kconfig
->  create mode 100644 drivers/platform/x86/intel/smartconnect/Makefile
->  rename drivers/platform/x86/{ => intel/smartconnect}/intel-
-> smartconnect.c (100%)
->  create mode 100644 drivers/platform/x86/intel/telemetry/Kconfig
->  create mode 100644 drivers/platform/x86/intel/telemetry/Makefile
->  rename drivers/platform/x86/{ =>
-> intel/telemetry}/intel_telemetry_core.c (100%)
->  rename drivers/platform/x86/{ =>
-> intel/telemetry}/intel_telemetry_debugfs.c (100%)
->  rename drivers/platform/x86/{ =>
-> intel/telemetry}/intel_telemetry_pltdrv.c (100%)
->  create mode 100644 drivers/platform/x86/intel/turbo_max_3/Kconfig
->  create mode 100644 drivers/platform/x86/intel/turbo_max_3/Makefile
->  rename drivers/platform/x86/{ =>
-> intel/turbo_max_3}/intel_turbo_max_3.c (100%)
->  create mode 100644 drivers/platform/x86/intel/uncore_freq/Kconfig
->  create mode 100644 drivers/platform/x86/intel/uncore_freq/Makefile
->  rename drivers/platform/x86/{ => intel/uncore_freq}/intel-uncore-
-> frequency.c (100%)
->  create mode 100644 drivers/platform/x86/intel/vbtn/Kconfig
->  create mode 100644 drivers/platform/x86/intel/vbtn/Makefile
->  rename drivers/platform/x86/{ => intel/vbtn}/intel-vbtn.c (100%)
->  create mode 100644 drivers/platform/x86/intel/wmi/Kconfig
->  create mode 100644 drivers/platform/x86/intel/wmi/Makefile
->  rename drivers/platform/x86/{ => intel/wmi}/intel-wmi-sbl-fw-
-> update.c (100%)
->  rename drivers/platform/x86/{ => intel/wmi}/intel-wmi-thunderbolt.c
-> (100%)
-> 
+> Thanks.
 
 
