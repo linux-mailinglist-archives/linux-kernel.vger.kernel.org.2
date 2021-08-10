@@ -2,136 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7637A3E5871
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF443E5878
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239859AbhHJKgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:36:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59687 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239853AbhHJKgX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:36:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628591761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8MKdVxhmWHkSF7Qc4zBZXEqJWUbfI37hUIq+4sHXK5w=;
-        b=e8zqrthseXpaRUVLS4s2wHOlkI0YdLsuDLzzZdnTeumgjvt1wYkrfaROcfsW4KCtC6v56Y
-        XvSZhMT2rjG6ncxWTY2/oBcWAqTb3SBPBh/eeb8gU49qrJ8Wh6Ip/SN1HtUA+mJtq+MfMH
-        JRUT6qhIT6kpJ2LUMh6AiF3g3F/B+ek=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-SLez8Vj3PA270oq6Eepj1A-1; Tue, 10 Aug 2021 06:35:58 -0400
-X-MC-Unique: SLez8Vj3PA270oq6Eepj1A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S239873AbhHJKjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:39:25 -0400
+Received: from ozlabs.org ([203.11.71.1]:47307 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238566AbhHJKjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:39:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4B591008060;
-        Tue, 10 Aug 2021 10:35:56 +0000 (UTC)
-Received: from T590 (ovpn-13-190.pek2.redhat.com [10.72.13.190])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CC8415C232;
-        Tue, 10 Aug 2021 10:35:50 +0000 (UTC)
-Date:   Tue, 10 Aug 2021 18:35:45 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, iommu@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
- from remote numa node
-Message-ID: <YRJWgU5VhzBe1JP4@T590>
-References: <YPlGOOMSdm6Bcyy/@T590>
- <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com>
- <YPmUoBk9u+tU2rbS@T590>
- <0adbe03b-ce26-e4d3-3425-d967bc436ef5@arm.com>
- <YPqYDY9/VAhfHNfU@T590>
- <6ceab844-465f-3bf3-1809-5df1f1dbbc5c@huawei.com>
- <CAFj5m9J+9vO=CK3uPP+va5EoWffZj9ruSRe2fDDLXn+AE971CQ@mail.gmail.com>
- <ead87bf2-ddfa-eb67-db44-9619c6cdb714@huawei.com>
- <YQF1AKS6Y14dLU/A@T590>
- <dfdd16e8-278f-3bc9-da97-a91264aec909@huawei.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkTvl6nRZz9sRR;
+        Tue, 10 Aug 2021 20:38:59 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628591941;
+        bh=OKNXIzmcYrF54+bosmBPNPHgC8NwZvVHFBlRYj/dh38=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=J+X0xroDxqKg3xDnsy38f5bl0Ve8+fHDpJfvh4TT//HO4xJnvT1hSlO/KFHlKOv9f
+         keOEc+duSUqjVxEsut9mu1+/93P5KrS6d/R4RjrZUoMfHyXTClsv3HXt6naJLcml4D
+         cW/YX0B8YUFyW/R07xRDSYFjaZmfxqilAbURXz+GejMjNEIPJwJR118+a0g2V6ZaGy
+         3Mzb3azdF5+mpjnvmxtDXDs4V3iv749vvzIf1qxJTdxiXUYmA6mZpamP5wXgXp6PEH
+         MQ7GCYcqMA572/YZrNtow4QoyyFDKklLy0LUffIr7stlOFC5KK7rw7T6TLHEVKhiY7
+         eVW2Y0HwGXOWQ==
+Date:   Tue, 10 Aug 2021 20:38:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the drm tree
+Message-ID: <20210810203859.128649fc@canb.auug.org.au>
+In-Reply-To: <YRJRju/zo5YiF1EB@phenom.ffwll.local>
+References: <20210603193242.1ce99344@canb.auug.org.au>
+        <20210708122048.534c1c4d@canb.auug.org.au>
+        <20210810192636.625220ae@canb.auug.org.au>
+        <YRJRju/zo5YiF1EB@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dfdd16e8-278f-3bc9-da97-a91264aec909@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; boundary="Sig_/usJBfb3Y017NmDTWcQ5uJhD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:36:47AM +0100, John Garry wrote:
-> On 28/07/2021 16:17, Ming Lei wrote:
-> > > > > Have you tried turning off the IOMMU to ensure that this is really just
-> > > > > an IOMMU problem?
-> > > > > 
-> > > > > You can try setting CONFIG_ARM_SMMU_V3=n in the defconfig or passing
-> > > > > cmdline param iommu.passthrough=1 to bypass the the SMMU (equivalent to
-> > > > > disabling for kernel drivers).
-> > > > Bypassing SMMU via iommu.passthrough=1 basically doesn't make a difference
-> > > > on this issue.
-> > > A ~90% throughput drop still seems to me to be too high to be a software
-> > > issue. More so since I don't see similar on my system. And that throughput
-> > > drop does not lead to a total CPU usage drop, from the fio log.
-> > > 
-> > > Do you know if anyone has run memory benchmark tests on this board to find
-> > > out NUMA effect? I think lmbench or stream could be used for this.
-> > https://lore.kernel.org/lkml/YOhbc5C47IzC893B@T590/
-> 
-> Hi Ming,
-> 
-> Out of curiosity, did you investigate this topic any further?
+--Sig_/usJBfb3Y017NmDTWcQ5uJhD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-IMO, the issue is probably in device/system side, since completion latency is
-increased a lot, meantime submission latency isn't changed.
+Hi Daniel,
 
-Either the submission isn't committed to hardware in time, or the
-completion status isn't updated to HW in time from viewpoint of CPU.
+On Tue, 10 Aug 2021 12:14:38 +0200 Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> Matt Auld is on vacation, and the other issue is that the tree where this
+> is from isn't in linux-next. So will take a bit to get sorted in
+> linux-next.
 
-We have tried to update to new FW, but not see difference made.
+Those warnings are now coming from Linus' tree (some time before
+v5.14-rc1).  I first mentioned them on June 3.
 
-> 
-> And you also asked about my results earlier:
-> 
-> On 22/07/2021 16:54, Ming Lei wrote:
-> >> [   52.035895] nvme 0000:81:00.0: Adding to iommu group 5
-> >> [   52.047732] nvme nvme0: pci function 0000:81:00.0
-> >> [   52.067216] nvme nvme0: 22/0/2 default/read/poll queues
-> >> [   52.087318]  nvme0n1: p1
-> >>
-> >> So I get these results:
-> >> cpu0 335K
-> >> cpu32 346K
-> >> cpu64 300K
-> >> cpu96 300K
-> >>
-> >> So still not massive changes.
-> > In your last email, the results are the following with irq mode io_uring:
-> >
-> >   cpu0  497K
-> >   cpu4  307K
-> >   cpu32 566K
-> >   cpu64 488K
-> >   cpu96 508K
-> >
-> > So looks you get much worse result with real io_polling?
-> >
-> 
-> Would the expectation be that at least I get the same performance with
-> io_polling here?
+--=20
+Cheers,
+Stephen Rothwell
 
-io_polling is supposed to improve IO latency a lot compared with irq
-mode, and the perf data shows that clearly on x86_64.
+--Sig_/usJBfb3Y017NmDTWcQ5uJhD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> Anything else to try which you can suggest to investigate
-> this lower performance?
+-----BEGIN PGP SIGNATURE-----
 
-You may try to compare irq mode and polling and narrow down the possible
-reasons, no exact suggestion on how to investigate it, :-(
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESV0MACgkQAVBC80lX
+0GyfEAf/Q2pNtOXTIOduaAF7h395rNfz/1gJIcoQ1ybzGx3HTY/Saw4sf2TnncYM
+RmbpdGyQL2clpgIAvCDwuhbXKUIDSIPfqNz29SRDgHjhKW5hoHa+aSTVzdaoAv9+
+GQkn0ydHmMD5xR1aQZOm8M5YZPE87l8nPIodJElg0x7hxYcXAGFBY8B7F/e6NYL9
+TRY2LCvwpcxQ2VGBOd4b3XnZUyhqvl28qLObMw+ROxHdy+jzTjromrpi27jjju7N
+zExsHEeACJ/TwU3P03s/zKpbBcJAqfAJar06w4KkCeMD8OSm/2IndOb3INnEu3+J
+e0zWbelIk+JfHlFy7Lb1VSUOqYZsfQ==
+=4z7z
+-----END PGP SIGNATURE-----
 
-
-Thanks,
-Ming
-
+--Sig_/usJBfb3Y017NmDTWcQ5uJhD--
