@@ -2,152 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1333E5C7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AB23E5C78
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240535AbhHJODt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236686AbhHJODr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:03:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F371960E52;
-        Tue, 10 Aug 2021 14:03:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628604205;
-        bh=Td8E4SnrU0EwYxqbg86EgADaAZSpTbgyuIW0jEf6cek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WnPHh11oY7YFlpTdsCAQ+09LermdZbMkyjzjjyr8yoJ09r80n5nE1bMblfcW9dSfw
-         599+S1R1XP5jQQj9v9ad4/S/ML13MNGvIae/qztxO2dU3eWHmsJQ2RN19Bf+EEMSNQ
-         2JSrTCBOnh5l1Za9wWMI09xdHXKEohmeX8ly+5bzfV+XgCAw3qmAqS4qTFDloePGGu
-         u/uUIeb73MiqOobayU/ipgqc7D5bl4m3uoA49xfE9foxqCd8HF1jqIfcN42dVdjO3A
-         hBJPhL5I5FlFtCeZrrsNA8E7jDikFCdBrN5FXpZ9oHXxnfwmfjLjGBXf5BzK2ZSqMX
-         PTkkviwJCIkUA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6FFC8403F2; Tue, 10 Aug 2021 11:03:22 -0300 (-03)
-Date:   Tue, 10 Aug 2021 11:03:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S240490AbhHJODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236686AbhHJODM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:03:12 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D61AC0613D3;
+        Tue, 10 Aug 2021 07:02:50 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d650032a7c3e3b83a4c54.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:32a7:c3e3:b83a:4c54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 43F6D1EC0236;
+        Tue, 10 Aug 2021 16:02:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628604163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=PVX/m13LlgW2RqeJado5fh0rRBijUO5c/y0yBM9F/DE=;
+        b=JWZPzNZ/xGpf7iPnHSEAqrFCvp+lnaHI0oBVV2vKcj/Tog4CULHEumJH7s2bOwhs2geilQ
+        oMRRacR8FZigRA1lDkloeXT5wLQCy9NaPsGi/3El21mNKEPpczb/tFxxXhvIzmBjiy9N3M
+        z7uLILiZ+jAyP/muqU7zSEgv5peuAIk=
+Date:   Tue, 10 Aug 2021 16:03:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf bench: add benchmark for evlist open/close
- operations
-Message-ID: <YRKHKiHMSaYZWwQv@kernel.org>
-References: <20210809201101.277594-1-rickyman7@gmail.com>
- <YRGOwx3xlPRxNAXM@kernel.org>
- <YRGP3DR8f6ZEvn/P@kernel.org>
- <aa2e93cdaf636b0cd9df05d759661363b2a59d3f.camel@gmail.com>
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 03/36] x86/sev: Add support for hypervisor
+ feature VMGEXIT
+Message-ID: <YRKHLwrV1Q1oG9Nn@zn.tnic>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-4-brijesh.singh@amd.com>
+ <YRJha2XSZo3u7KIr@zn.tnic>
+ <a95a7b8f-fb86-62ce-0900-66761771a0ca@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aa2e93cdaf636b0cd9df05d759661363b2a59d3f.camel@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <a95a7b8f-fb86-62ce-0900-66761771a0ca@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 10, 2021 at 12:31:55PM +0200, Riccardo Mancini escreveu:
-> Hi Arnaldo,
-> 
-> On Mon, 2021-08-09 at 17:28 -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Aug 09, 2021 at 05:23:31PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Mon, Aug 09, 2021 at 10:11:02PM +0200, Riccardo Mancini escreveu:
-> > > > +static struct evlist *bench__create_evlist(char *evstr)
-> > > > +{
-> > > > +       struct evlist *evlist;
-> > > > +       struct parse_events_error err;
-> > > > +       int ret;
-> > 
-> > > > +       evlist = evlist__new();
-> > > > +       if (!evlist) {
-> > > > +               pr_err("Not enough memory to create evlist\n");
-> > > > +               return NULL;
-> > > > +       }
-> > 
-> > > > +       bzero(&err, sizeof(err));
-> > 
-> > > man bzero
-> > > 
-> > >        The bzero() function is deprecated (marked as LEGACY in POSIX.1-2001);
-> > > use memset(3) in new programs.  POSIX.1-2008 removes the specification of
-> > > bzero().  The bzero() function first appeared in 4.3BSD.
-> 
-> Oops, I didn't know, but I saw it is being used in some parts in perf, maybe we
-> should get rid of them:
-> $ rg -c bzero
-> builtin-lock.c:1
-> arch/powerpc/util/kvm-stat.c:1
-> builtin-stat.c:1
-> builtin-trace.c:2
-> bench/evlist-open-close.c:1
-> bench/numa.c:5
-> tests/parse-events.c:1
-> tests/backward-ring-buffer.c:1
-> tests/bpf.c:2
-> util/metricgroup.c:1
-> util/parse-events.c:1
+On Tue, Aug 10, 2021 at 08:39:02AM -0500, Brijesh Singh wrote:
+> I was thinking that some driver may need it in future, but nothing in my
+> series needs it yet. I will drop it and we can revisit it later.
 
-Yeah, patches are welcome, but at least lets not add new ones :-)
- 
-> > > I'm replacing it with a memset().
-> > 
-> > This one is also equivalent:
-> > 
-> > tools/perf/tests/pmu-events.c:  struct parse_events_error error = { .idx = 0, };
-> > 
-> > https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
-> > 
-> > That text is a bit roundabout, as it says that the members that are not
-> > explicitely initialized will be initialized as variables with static
-> > storage duration, i.e. zeroed.
-> 
-> Would it be the same doing the shorter {0}. It would be a general solution for
-> these init-to-zero cases.
+Yeah, please never do such exports in anticipation.
 
-I'd have to do some extra research to remember why that is also not
-optimal, IIRC the '= { .a = 0, };' is the optimal one.
- 
-> Unrelated to this small issue, I noticed I forgot to check the return of
-> bench__create_evlist. Would you like me to send a v2 fixing both issues or are
-> you able to apply this other small change yourself?
+And if we *ever* need them, they should be _GPL ones - not
+EXPORT_SYMBOL. And then the API needs to be discussed and potentially
+proper accessors added instead of exporting naked variables...
 
-Nah, as this is the HEAD right now in my local branch, I'll apply it
-myself, thanks!
-
-- Arnaldo
- 
-> diff --git a/tools/perf/bench/evlist-open-close.c b/tools/perf/bench/evlist-open-close.c
-> index 40bce06f5ca7bef3..f0b9c330f34f2984 100644
-> --- a/tools/perf/bench/evlist-open-close.c
-> +++ b/tools/perf/bench/evlist-open-close.c
-> @@ -168,7 +168,11 @@ static int bench_evlist_open_close__run(char *evstr)
->  
->         for (i = 0; i < iterations; i++) {
->                 pr_debug("Started iteration %d\n", i);
-> +
->                 evlist = bench__create_evlist(evstr);
-> +               if (!evlist)
-> +                       return -ENOMEM;
-> +
->                 gettimeofday(&start, NULL);
->                 err = bench__do_evlist_open_close(evlist);
->                 if (err) {
-> 
-> Thanks,
-> Riccardo
-> 
-> > 
-> > - Arnaldo
-> 
-> 
+Thx.
 
 -- 
+Regards/Gruss,
+    Boris.
 
-- Arnaldo
+https://people.kernel.org/tglx/notes-about-netiquette
