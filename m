@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AB23E5C78
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148CE3E5C7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240490AbhHJODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
+        id S241368AbhHJOFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236686AbhHJODM (ORCPT
+        with ESMTP id S231716AbhHJOFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:03:12 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D61AC0613D3;
-        Tue, 10 Aug 2021 07:02:50 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d650032a7c3e3b83a4c54.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:32a7:c3e3:b83a:4c54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 43F6D1EC0236;
-        Tue, 10 Aug 2021 16:02:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628604163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=PVX/m13LlgW2RqeJado5fh0rRBijUO5c/y0yBM9F/DE=;
-        b=JWZPzNZ/xGpf7iPnHSEAqrFCvp+lnaHI0oBVV2vKcj/Tog4CULHEumJH7s2bOwhs2geilQ
-        oMRRacR8FZigRA1lDkloeXT5wLQCy9NaPsGi/3El21mNKEPpczb/tFxxXhvIzmBjiy9N3M
-        z7uLILiZ+jAyP/muqU7zSEgv5peuAIk=
-Date:   Tue, 10 Aug 2021 16:03:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 03/36] x86/sev: Add support for hypervisor
- feature VMGEXIT
-Message-ID: <YRKHLwrV1Q1oG9Nn@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-4-brijesh.singh@amd.com>
- <YRJha2XSZo3u7KIr@zn.tnic>
- <a95a7b8f-fb86-62ce-0900-66761771a0ca@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a95a7b8f-fb86-62ce-0900-66761771a0ca@amd.com>
+        Tue, 10 Aug 2021 10:05:30 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD1CC0613D3;
+        Tue, 10 Aug 2021 07:05:08 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id t66so22463310qkb.0;
+        Tue, 10 Aug 2021 07:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=69ttibL9r/y/UWLlZYU/dvsb3ho1ANknfZxnaYGPTwI=;
+        b=CJZ46BLJKnKEPx3cNCoHnWylR/I1OCHvD++LG8z/DMex1/4d+1A5f1CfvcHPy2wK4r
+         R622cmamRDdsO4mGcnQoNAj9Q0LMoMZfgFxZZaWxzI/W90bILN3Y9VVSN4aZx50f4vWg
+         5aPb1+qHnWx3hCLc4aGngBdN2u8kB/dX1ptZrmDYlTmH6y2nMRePBNv/oG5kq3YU/PNB
+         OfCpTN0Peu5eTutsHPnRi7T7lXqc8B1db5CszlRIJB5VBPmMnGGDdvZqGjaX4bDfe8qB
+         uNKcbOaIlqJy6uUpO0JtHlAjfbURLu40soWgZAo0Mse2SbdGMGBTUggjnj4CQ6CsmxW7
+         54Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=69ttibL9r/y/UWLlZYU/dvsb3ho1ANknfZxnaYGPTwI=;
+        b=LjINQinXnIAmaMi9CfV3lztg7jkj3Abm9+wOrxxyJSAXlsB4YmhAwIj+d5T78ctqd3
+         HpohW1g9cytu7eyBgLevLx7qh5CBnCgW6lxiq/Ao3XKNByaK2P4mg6NcNu9BPO5uM38g
+         nlxhxAPXRqApnZHbJBl2Kr/Ig76NvFm/bwk6394iK0migm4fW5gsI0wD1/GQoIgqTBSC
+         m2/hu5ta3rQ+o9T7XYFTd9pEpErbsWKIlbR20K5/I7bP7Xl0gHbihPNxhp6LYKhsuj5e
+         x251BkpP/lWW3bh6SNc+lRW6wjZUqMbqhFgPNEbfdOGVFkzLDQ3BRk6CcDyXSemapGCJ
+         yz5g==
+X-Gm-Message-State: AOAM531NioVVMwF6mNWD5MbfiR9AG5y+P4m2Ys5NqUoMlhack3eByWFO
+        5QiGEs72uiN+faxCMCqiBgA=
+X-Google-Smtp-Source: ABdhPJyLfXRzzkVHFRBzfNXlHKPiNcE1TAgx4z07mJFqt2Z9gYK7jqeeTX2fpWAe5zueSTcPsX8irA==
+X-Received: by 2002:a05:620a:1998:: with SMTP id bm24mr28464979qkb.171.1628604307930;
+        Tue, 10 Aug 2021 07:05:07 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id e6sm4223390qtw.35.2021.08.10.07.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 07:05:07 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+To:     shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+        SeongJae Park <sjpark@amazon.de>
+Subject: [PATCH] selftests/kselftest/runner/run_one(): Allow running non-executable files
+Date:   Tue, 10 Aug 2021 14:04:59 +0000
+Message-Id: <20210810140459.23990-1-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 08:39:02AM -0500, Brijesh Singh wrote:
-> I was thinking that some driver may need it in future, but nothing in my
-> series needs it yet. I will drop it and we can revisit it later.
+From: SeongJae Park <sjpark@amazon.de>
 
-Yeah, please never do such exports in anticipation.
+When running a test program, 'run_one()' checks if the program has the
+execution permission and fails if it doesn't.  However, it's easy to
+mistakenly missing the permission, as some common tools like 'diff'
+don't support the permission change well[1].  Compared to that, making
+mistakes in the test program's path would only rare, as those are
+explicitly listed in 'TEST_PROGS'.  Therefore, it might make more sense
+to resolve the situation on our own and run the program.
 
-And if we *ever* need them, they should be _GPL ones - not
-EXPORT_SYMBOL. And then the API needs to be discussed and potentially
-proper accessors added instead of exporting naked variables...
+For the reason, this commit makes the test program runner function to
+still print the warning message but run the program after giving the
+execution permission in the case.  To make nothing corrupted, it also
+restores the permission after running it.
 
-Thx.
+[1] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
 
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ tools/testing/selftests/kselftest/runner.sh | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+index cc9c846585f0..2eb31e945709 100644
+--- a/tools/testing/selftests/kselftest/runner.sh
++++ b/tools/testing/selftests/kselftest/runner.sh
+@@ -65,15 +65,16 @@ run_one()
+ 
+ 	TEST_HDR_MSG="selftests: $DIR: $BASENAME_TEST"
+ 	echo "# $TEST_HDR_MSG"
+-	if [ ! -x "$TEST" ]; then
+-		echo -n "# Warning: file $TEST is "
+-		if [ ! -e "$TEST" ]; then
+-			echo "missing!"
+-		else
+-			echo "not executable, correct this."
+-		fi
++	if [ ! -e "$TEST" ]; then
++		echo "# Warning: file $TEST is missing!"
+ 		echo "not ok $test_num $TEST_HDR_MSG"
+ 	else
++		permission_added="false"
++		if [ ! -x "$TEST" ]; then
++			echo "# Warning: file $TEST is not executable"
++			chmod u+x "$TEST"
++			permission_added="true"
++		fi
+ 		cd `dirname $TEST` > /dev/null
+ 		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
+ 			tap_prefix >&4) 3>&1) |
+@@ -88,6 +89,9 @@ run_one()
+ 		else
+ 			echo "not ok $test_num $TEST_HDR_MSG # exit=$rc"
+ 		fi)
++		if [ "$permission_added" = "true" ]; then
++			chmod u-x "$TEST"
++		fi
+ 		cd - >/dev/null
+ 	fi
+ }
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
