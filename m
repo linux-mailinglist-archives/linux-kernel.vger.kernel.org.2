@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4B83E7F5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4853A3E80CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhHJRkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:40:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37254 "EHLO mail.kernel.org"
+        id S235598AbhHJRwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:52:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234257AbhHJRhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:37:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6758F60295;
-        Tue, 10 Aug 2021 17:35:59 +0000 (UTC)
+        id S236623AbhHJRtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:49:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 994E66124B;
+        Tue, 10 Aug 2021 17:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616959;
-        bh=K42bGWNxHrgDLBVJIrAu0dnTY4Fm2tfgkVSEZ0fd0xk=;
+        s=korg; t=1628617306;
+        bh=oB0hprW6J5hYBJxtKmiWG+da6M0HtAcv804jgpvC75U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ugevDNuCqy/Va3ZgtmDLc1qdsNbU32nkrA3898OCX4xIReRPz631fH6OJb9UT5sXu
-         MjdQ/3lxDYbT9IUQuVC+aeLdR2qmJgDDjyxM0ryqdYpR3MUxn1s0JxZI2+3bXqbOnO
-         Uho+l9fbyvSrcc1Dm+/tPbmcqoyo+WP3i25N7rEk=
+        b=Pi0+njE8xnkPSAI5CFLYeKwZe94HhvdLMUP/d5LXog81M7AQWQFZHxwwxV/vX5Nhe
+         qVC7ivslcdGnKC9tAw0Bk02LRNbZYtuONPOCJsnHDcif0/+CsPK6lJx1/CVzWzJdiy
+         9w1xrPR1n4AXVNy4PUXDz+lZkoiDoN3Q7CZuI6dE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Wei Shuyu <wsy@dogben.com>,
         Guoqing Jiang <jiangguoqing@kylinos.cn>,
         Song Liu <song@kernel.org>
-Subject: [PATCH 5.4 69/85] md/raid10: properly indicate failure when ending a failed write request
-Date:   Tue, 10 Aug 2021 19:30:42 +0200
-Message-Id: <20210810172950.576307848@linuxfoundation.org>
+Subject: [PATCH 5.10 109/135] md/raid10: properly indicate failure when ending a failed write request
+Date:   Tue, 10 Aug 2021 19:30:43 +0200
+Message-Id: <20210810172959.477804309@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,7 +62,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/md/raid1.c
 +++ b/drivers/md/raid1.c
-@@ -452,8 +452,6 @@ static void raid1_end_write_request(stru
+@@ -472,8 +472,6 @@ static void raid1_end_write_request(stru
  		/*
  		 * When the device is faulty, it is not necessary to
  		 * handle write error.
