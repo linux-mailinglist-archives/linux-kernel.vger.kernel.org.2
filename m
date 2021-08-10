@@ -2,84 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62693E8550
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D123E8559
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbhHJVcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        id S234310AbhHJVeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbhHJVcl (ORCPT
+        with ESMTP id S233792AbhHJVdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:32:41 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F131C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:32:19 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so832777otq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:32:19 -0700 (PDT)
+        Tue, 10 Aug 2021 17:33:53 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01E0C061765;
+        Tue, 10 Aug 2021 14:33:30 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so471242wmb.5;
+        Tue, 10 Aug 2021 14:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=2TEOQGiAQW3LJuAkSRtxbwnZcRI4cSybco52ZSAwzug=;
-        b=WVkAnSE/ZGx5+Eaqx1oMrPKB2m9ZEuZle+H2fzP31C8LKJ7blO9okOvrJLCQngLMh1
-         AYEXnqpEZNMcpoVL3zyjTy+UEMJ3ccQBkrS02f0R78bJPpVcVDwPjIUFcZFhCKtFnaMy
-         x8wkpt8HDoL6UpxGKAo7IzrZcHaADNQahWkyo=
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DzwMjTW+ta0tsVW5xQVnGvx2kSdGFVU4IVXb6iVUJt8=;
+        b=G0Bkx9v7i/C3jmLEn7HQHUa4GmDZLSRJH05ysgnyhMVwczV8vEzvrfQlrLV9ffx2zE
+         JBX47i+3gOn1/9mUSqumvZfffFWgrsXfHNlYQ2lUyfAsp8xJnzB7i4yfP8V2e4TKFb+W
+         9xaFg/6dkFbzuv1Ekca2JVGWfl53LekZ3x1Tg5V6zeGo7s1wq8tVhhrdwyLFUyy/dseH
+         gLlvWrX36sN+LMA786JXFdWx08ABJ0elMSjQAiz8ePL1oaxYyh0JZuBDxAw+tgFGdV+g
+         ScNPDYlhlEfyQFRWbw8HoqPXltBv0hkurHr0DvaSiSA35NEEjJSsDEcaNJcgb+isO9Aa
+         x7DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=2TEOQGiAQW3LJuAkSRtxbwnZcRI4cSybco52ZSAwzug=;
-        b=f6Bp/u0WHeCrpSWZ2L5hce2rCa/zvmS17NoeWlNr+uBihINaxQZdoRJZ6D0IfYoATQ
-         hVpHnftqyIwRQZMgMHUfusnTlsgiv13GkRVTgrdJGmMrnF7OBex3iKvft2AtBgiKUDar
-         itvmJCUbO04xBrr2a/eEE43QEvaVt+9SmBnIQseYABmrXEHANZDV7/FY9KB4TMZVg6Ic
-         PDB3jOBumobMBlgE2IftpLxH4A+G+C6990GOaL0DI6OlDAhrPNWiVl/aVchHp/IH2sAT
-         7A8QQQqCdQJAspDQqViMoBt9QhZKZGeJSv9YvivhmJa1eoVF3EBQVzQFWrb6/AC/U98A
-         eGmg==
-X-Gm-Message-State: AOAM531/4e+KoBbzOBdXvUnCEIsihIKeNpv+4s4X3w/dqQ1ZSmtJzAZz
-        h7ziGURtqcus5y4oL9++0g8KqewBpGCeIquOAvZeRQ==
-X-Google-Smtp-Source: ABdhPJzKuHGG5SEuOgiuv6zSynYUbXFakY1O5WFVDqIOV8i6nqaif26ZzTNpPcImURd0czHpta4tzT+W1oQ71p7UW1g=
-X-Received: by 2002:a05:6830:44a7:: with SMTP id r39mr22526030otv.25.1628631138739;
- Tue, 10 Aug 2021 14:32:18 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 14:32:18 -0700
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DzwMjTW+ta0tsVW5xQVnGvx2kSdGFVU4IVXb6iVUJt8=;
+        b=fYxv0b3u0Jfszidu845+5S5uoNvybSrf917z8iBjacq1HCsEp069Vy7sgeJak+xiyR
+         g1zLKkD8T4FWn6lb1G2ps9dFlcWYjIP45+s7sBZo7ewtAu0Kn4GH+WIeMxsCNtWlku3U
+         OWFAQS94TVhLkYZl+UbTFRktgyLe5nvMGJKDWWmdNpoIS33JLsV0r82NTCi2wgbbcfqO
+         lnJj24EL91b2ydO1UuFs1BTwnOO/rNTXdTcfa2bOklc42LP8otKJ/bh5FaWekCQMNCHN
+         hj7oSwhNpFOHgC5xB9nbWk+aqWKep+jOthqjGM5ye//OOMLM/a2N6WvkPZo7SSf84C2l
+         0x/g==
+X-Gm-Message-State: AOAM530Wo16khtl5skHH9G+dgVa1UobP1d9B4f72wO0qMAk7e53wK6Av
+        9tnxBRR1u7MhHWVMAWXM1flIkmsdxJ4=
+X-Google-Smtp-Source: ABdhPJwwa20bO+CvlEiRMOaD8Y5J68iBoMAuQlc3lluouzaZUYyrqQLS4EDluQsEMIp/+/UBnxyu5g==
+X-Received: by 2002:a7b:c8c6:: with SMTP id f6mr6568522wml.44.1628631209374;
+        Tue, 10 Aug 2021 14:33:29 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.133.97])
+        by smtp.gmail.com with ESMTPSA id b20sm4241397wmj.20.2021.08.10.14.33.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 14:33:29 -0700 (PDT)
+To:     Nadav Amit <nadav.amit@gmail.com>,
+        Olivier Langlois <olivier@trillion01.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210808001342.964634-1-namit@vmware.com>
+ <20210808001342.964634-2-namit@vmware.com>
+ <fdd54421f4d4e825152192e327c838d035352945.camel@trillion01.com>
+ <A4DC14BA-74CA-41DB-BE08-D7B693C11AE0@gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH 1/2] io_uring: clear TIF_NOTIFY_SIGNAL when running task
+ work
+Message-ID: <bbd25a42-eac0-a8f9-0e54-3c8c8e9894fd@gmail.com>
+Date:   Tue, 10 Aug 2021 22:32:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <1628196295-7382-3-git-send-email-khsieh@codeaurora.org>
-References: <1628196295-7382-1-git-send-email-khsieh@codeaurora.org> <1628196295-7382-3-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 14:32:18 -0700
-Message-ID: <CAE-0n52xzaGKd=5fdXFnqixekRYHf8pfvcp+K3eEZk=+siPH1w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/6] drm/msm/dp: reduce link rate if failed at link
- training 1
-To:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <A4DC14BA-74CA-41DB-BE08-D7B693C11AE0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-08-05 13:44:51)
-> Reduce link rate and re start link training if link training 1
-> failed due to loss of clock recovery done to fix Link Layer
-> CTS case 4.3.1.7.  Also only update voltage and pre-emphasis
-> swing level after link training started to fix Link Layer CTS
-> case 4.3.1.6.
->
-> Changes in V2:
-> -- replaced cr_status with link_status[DP_LINK_STATUS_SIZE]
-> -- replaced dp_ctrl_any_lane_cr_done() with dp_ctrl_colco_recovery_any_ok()
-> -- replaced dp_ctrl_any_ane_cr_lose() with !drm_dp_clock_recovery_ok()
->
-> Changes in V3:
-> -- return failed if lane_count <= 1
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+On 8/10/21 9:28 AM, Nadav Amit wrote:
+>> On Aug 9, 2021, at 2:48 PM, Olivier Langlois <olivier@trillion01.com> wrote:
+>> On Sat, 2021-08-07 at 17:13 -0700, Nadav Amit wrote:
+>>> From: Nadav Amit <namit@vmware.com>
+>>>
+>>> When using SQPOLL, the submission queue polling thread calls
+>>> task_work_run() to run queued work. However, when work is added with
+>>> TWA_SIGNAL - as done by io_uring itself - the TIF_NOTIFY_SIGNAL remains
+>>> set afterwards and is never cleared.
+>>>
+>>> Consequently, when the submission queue polling thread checks whether
+>>> signal_pending(), it may always find a pending signal, if
+>>> task_work_add() was ever called before.
+>>>
+>>> The impact of this bug might be different on different kernel versions.
+>>> It appears that on 5.14 it would only cause unnecessary calculation and
+>>> prevent the polling thread from sleeping. On 5.13, where the bug was
+>>> found, it stops the polling thread from finding newly submitted work.
+>>>
+>>> Instead of task_work_run(), use tracehook_notify_signal() that clears
+>>> TIF_NOTIFY_SIGNAL. Test for TIF_NOTIFY_SIGNAL in addition to
+>>> current->task_works to avoid a race in which task_works is cleared but
+>>> the TIF_NOTIFY_SIGNAL is set.
+>>
+>> thx a lot for this patch!
+>>
+>> This explains what I am seeing here:
+>> https://lore.kernel.org/io-uring/4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com/
+>>
+>> I was under the impression that task_work_run() was clearing
+>> TIF_NOTIFY_SIGNAL.
+>>
+>> your patch made me realize that it does not…
+> 
+> Happy it could help.
+> 
+> Unfortunately, there seems to be yet another issue (unless my code
+> somehow caused it). It seems that when SQPOLL is used, there are cases
+> in which we get stuck in io_uring_cancel_sqpoll() when tctx_inflight()
+> never goes down to zero.
+> 
+> Debugging... (while also trying to make some progress with my code)
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+It's most likely because a request has been lost (mis-refcounted).
+Let us know if you need any help. Would be great to solve it for 5.14.
+quick tips: 
+
+1) if not already, try out Jens' 5.14 branch
+git://git.kernel.dk/linux-block io_uring-5.14
+
+2) try to characterise the io_uring use pattern. Poll requests?
+Read/write requests? Send/recv? Filesystem vs bdev vs sockets?
+
+If easily reproducible, you can match io_alloc_req() with it
+getting into io_dismantle_req();
+
+-- 
+Pavel Begunkov
