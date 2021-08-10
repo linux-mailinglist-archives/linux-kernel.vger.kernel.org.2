@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003DF3E8119
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883E03E7FB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhHJRz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:55:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43222 "EHLO mail.kernel.org"
+        id S235431AbhHJRmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:42:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235031AbhHJRwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:52:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AEAA6120F;
-        Tue, 10 Aug 2021 17:43:23 +0000 (UTC)
+        id S235139AbhHJRjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:39:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14D2E61101;
+        Tue, 10 Aug 2021 17:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617404;
-        bh=UAwRYL7AItP8ekZw+OqmT25AAyAFcsLrphfL+XTWv+A=;
+        s=korg; t=1628617018;
+        bh=Do6S9tWsL50rvbJAWA7Y25g1Mhue883Dv9sJ0GOnHvo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UtXhad5FY2OMWfP+N1QGO2T2F1y/waZj4YdUA8Oa9nbwHTHQRe4Fg2OlXEYMHIiZb
-         KBUd00UXicTj8kNCPftgTD7Gmf/avKzSYiVh6p4QGh+58qceqlyFtCKb/4N/oIdUzE
-         vDocju2HKGuVM70ebgGNnnV/vvZDDpL12HaH7E1o=
+        b=EUR3A/p0V2j/h9WyiynASq5uNIvq6hkLxWvrOdv15+735p7vzkyoemk5N/ZDmUQU3
+         JrBryIsLjyZl+vXTY0cdTzyBz898v1V6a70E3HIdR7nF76uVUh8onsXN3CER1bIi01
+         TVBqcLl600fFpuUBRBezJBnIQR/Dks82I52GL4o0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 026/175] omap5-board-common: remove not physically existing vdds_1v8_main fixed-regulator
-Date:   Tue, 10 Aug 2021 19:28:54 +0200
-Message-Id: <20210810173001.821799502@linuxfoundation.org>
+        stable@vger.kernel.org, Adrien Precigout <dev@asdrip.fr>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.10 001/135] Revert "ACPICA: Fix memory leak caused by _CID repair function"
+Date:   Tue, 10 Aug 2021 19:28:55 +0200
+Message-Id: <20210810172955.711732308@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
-References: <20210810173000.928681411@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,79 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: H. Nikolaus Schaller <hns@goldelico.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit c68ef4ad180e09805fa46965d15e1dfadf09ffa5 ]
+commit 6511a8b5b7a65037340cd8ee91a377811effbc83 upstream.
 
-This device tree include file describes a fixed-regulator
-connecting smps7_reg output (1.8V) to some 1.8V rail and
-consumers (vdds_1v8_main).
+Revert commit c27bac0314131 ("ACPICA: Fix memory leak caused by _CID
+repair function") which is reported to cause a boot issue on Acer
+Swift 3 (SF314-51).
 
-This regulator does not physically exist.
-
-I assume it was introduced as a wrapper around smps7_reg
-to provide a speaking signal name "vdds_1v8_main" as label.
-
-This fixed-regulator without real function was not an issue
-in driver code until
-
-  Commit 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
-
-introduced a new check for regulator initialization which
-makes Palmas regulator registration fail:
-
-[    5.407712] ldo1: supplied by vsys_cobra
-[    5.412748] ldo2: supplied by vsys_cobra
-[    5.417603] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to register 48070000.i2c:palmas@48:palmas_pmic regulator
-
-The reason is that the supply-chain of regulators is too
-long and goes from ldo3 through the virtual vdds_1v8_main
-regulator and then back to smps7. This adds a cross-dependency
-of probing Palmas regulators and the fixed-regulator which
-leads to probe deferral by the new check and is no longer
-resolved.
-
-Since we do not control what device tree files including this
-one reference (either &vdds_1v8_main or &smps7_reg or both)
-we keep both labels for smps7 for compatibility.
-
-Fixes: 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Adrien Precigout <dev@asdrip.fr>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/omap5-board-common.dtsi | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ drivers/acpi/acpica/nsrepair2.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap5-board-common.dtsi b/arch/arm/boot/dts/omap5-board-common.dtsi
-index d8f13626cfd1..3a8f10231475 100644
---- a/arch/arm/boot/dts/omap5-board-common.dtsi
-+++ b/arch/arm/boot/dts/omap5-board-common.dtsi
-@@ -30,14 +30,6 @@
- 		regulator-max-microvolt = <5000000>;
- 	};
+--- a/drivers/acpi/acpica/nsrepair2.c
++++ b/drivers/acpi/acpica/nsrepair2.c
+@@ -375,13 +375,6 @@ acpi_ns_repair_CID(struct acpi_evaluate_
  
--	vdds_1v8_main: fixedregulator-vdds_1v8_main {
--		compatible = "regulator-fixed";
--		regulator-name = "vdds_1v8_main";
--		vin-supply = <&smps7_reg>;
--		regulator-min-microvolt = <1800000>;
--		regulator-max-microvolt = <1800000>;
--	};
+ 			(*element_ptr)->common.reference_count =
+ 			    original_ref_count;
 -
- 	vmmcsd_fixed: fixedregulator-mmcsd {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vmmcsd_fixed";
-@@ -487,6 +479,7 @@
- 					regulator-boot-on;
- 				};
+-			/*
+-			 * The original_element holds a reference from the package object
+-			 * that represents _HID. Since a new element was created by _HID,
+-			 * remove the reference from the _CID package.
+-			 */
+-			acpi_ut_remove_reference(original_element);
+ 		}
  
-+				vdds_1v8_main:
- 				smps7_reg: smps7 {
- 					/* VDDS_1v8_OMAP over VDDS_1v8_MAIN */
- 					regulator-name = "smps7";
--- 
-2.30.2
-
+ 		element_ptr++;
 
 
