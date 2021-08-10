@@ -2,136 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2E13E5431
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA7F3E5438
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhHJHTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        id S232528AbhHJHZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhHJHTG (ORCPT
+        with ESMTP id S229484AbhHJHYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:19:06 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BD9C0613D3;
-        Tue, 10 Aug 2021 00:18:44 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r6so2626157wrt.4;
-        Tue, 10 Aug 2021 00:18:44 -0700 (PDT)
+        Tue, 10 Aug 2021 03:24:54 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC0DC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:24:32 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id a8so31788548pjk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:24:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gWww76GCF5bdJ3wwOyrVrOe81eD6ccbw3CbNhzGl6sA=;
-        b=NZkGabqAvmYmZUO16jJsqhjL/CVU0Sj7skB8PuJhN/s7osQ3QymAZOFTma81Cnb1gT
-         gyTR2VraTsCp515ookPa3CDbMKBwIZF6CDbBRp9+yA9YQm6QJ8VhaAzGEBv+tRZKt6J+
-         bMdoQyA0GtZ87GGhT2cO8yvSXHBpjWqax6Sdl4mGfTpyV0O8LSqbRK9FHeC9J24mCXsk
-         uXti+uGGUSHGAAJPfwbtGGszxhLiNkkaHLBLXnYidNI+9GnrH/qH08ouH5pgtoWwxT02
-         +dCFV7bh6Cq6DDvneOO5EEhh6zzjUwc2/wWY3isQD2YQSL/HO/sBie9U48PTfn2w5+x7
-         cIig==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cYnOcpl3RqojwjJFnnVg8/yScojJWlu8lq+uPSDpFCs=;
+        b=kpE7jy+RHLjjTgDUj5ZCNtZFEzhNDgahQds/OSrJZWyhOmabvFIlJIVOzfdPJF/B9P
+         r6tO+Ajm1Sj8684aXZxS0vH0hhOpRHjk5Xf7KsRpgPjW5jaLFNx6oNDqmFq8K/VWsmOP
+         0Kt28fsAFLXJjxUJbRPXkpMiIKS1wYVYaSeBVyKqTU04etoiMnpk83r7C1PiBGlMWyRj
+         3ike4BGfczGrizs9Pf8wtfrgPL0i2ijRLi3bSOhszEcGit2bgxcKDSBei3uyDPyIYDvw
+         4XxmBpztEQYAzOmovDM2o0s/GqYDIlsSAPJTmrxmDgq14tE8mMZjgs/zcnl/UljW9ji2
+         suEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gWww76GCF5bdJ3wwOyrVrOe81eD6ccbw3CbNhzGl6sA=;
-        b=eweDzgqKh4sUcNpEuLEJZ47OM4weXu0FeIwDkMQTo4HEe7DDM+iyt4Q0u0xOsU3niJ
-         RmY3zG4vD0hmcu4DvLEsY0gd8x1bcq8jzt9UobtopVdezTEi/HXJnyOofCAmYnSxS+6b
-         aD2fasKahjubd+6Wry6nbvFUq8d2Gldu2uv1+VOdGOTa5Ir42eqtRLmiLn2NN0/Q6pKw
-         6qAVVEYEWlqmbOGb1EQvOUEjapH1cPUhfDhZmI7AKnuSJnwaDsFPaOYwuT1zXj/XoIqo
-         J+rIg1rx3E3XF8ChYdAZHTf4ycT3QzbVAxFhs3FJ/ZgIoha8poOPKg4VDui4IVPcNzK5
-         mRPg==
-X-Gm-Message-State: AOAM532bKvVYDJG/6yikB5GhKIMUvA8+yliMs2tBwOZfQGqURTsCfJMv
-        GhEIibpfUZBWosgQsNspu/k=
-X-Google-Smtp-Source: ABdhPJzeEI+6Wv48bLWllrtYVIG0GxMW7kOVFVZN/f/T4Pmfr25NEsZMy6wo5bmChExdxlHB+PCWKA==
-X-Received: by 2002:a05:6000:18c2:: with SMTP id w2mr29071731wrq.282.1628579922602;
-        Tue, 10 Aug 2021 00:18:42 -0700 (PDT)
-Received: from [192.168.178.40] (ipbcc187b7.dynamic.kabel-deutschland.de. [188.193.135.183])
-        by smtp.gmail.com with ESMTPSA id d8sm22313152wrv.20.2021.08.10.00.18.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 00:18:42 -0700 (PDT)
-Subject: Re: [PATCH v2] scsi: target: pscsi: Fix possible null-pointer
- dereference in pscsi_complete_cmd()
-To:     Tuo Li <islituo@gmail.com>, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-References: <20210810040414.248167-1-islituo@gmail.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <e45b6019-0ccd-cb8a-20cd-80f8f26146d9@gmail.com>
-Date:   Tue, 10 Aug 2021 09:18:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=cYnOcpl3RqojwjJFnnVg8/yScojJWlu8lq+uPSDpFCs=;
+        b=l3/71xiH93M+UjtnvewDEe25gSYaRcuCakXCc8W8OnbmYU7yfB/qeVu1PI9kA+G8ZB
+         NHlF2IEefvypEzKJPowNv7EEkaIVUPVNj6E7zYwUmjOmNK0Q3wJEvPgRFMZu8JPweogm
+         EelAT7uUHpsShhxCRGBLlkgfFvuoYfN8BgVLydwnKmEItO0L1y0w3IhAUxcMuX5NKnrx
+         mKLWkJij15oxPAIl/lwI6imdaIW3IWrz7U6XW9gsJnwWe0BrSc/ROyBd7+HSjXj4+Uyq
+         OE49tr87CCv3C7TNbmtU8ovmxPdg8osAFMz0m11nvc909w80/sCvF0+MUjW7ZiK60POz
+         WrAg==
+X-Gm-Message-State: AOAM533UvYrmPj20PLzYvNgtnNkVD2bDXSzu/21NnRbb6Y9rOjmxVmw+
+        Vge9CAqJ9GYWm5w8t86Jx8g=
+X-Google-Smtp-Source: ABdhPJw4PyPIV7cQtAVaumkgLBq8X4eRVCkdZumHP2PheLVmuVa8cZoFBLhJwAZGov6XX9cJdk6VwQ==
+X-Received: by 2002:a63:3e05:: with SMTP id l5mr330017pga.403.1628580272230;
+        Tue, 10 Aug 2021 00:24:32 -0700 (PDT)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id f4sm27326222pgi.68.2021.08.10.00.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 00:24:31 -0700 (PDT)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] erofs: remove the mapping parameter from erofs_try_to_free_cached_page()
+Date:   Tue, 10 Aug 2021 15:24:16 +0800
+Message-Id: <20210810072416.1392-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-In-Reply-To: <20210810040414.248167-1-islituo@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.21 06:04, Tuo Li wrote:
-> The return value of transport_kmap_data_sg() is assigned to the variable
-> buf:
->    buf = transport_kmap_data_sg(cmd);
-> 
-> And then it is checked:
->    if (!buf) {
-> 
-> This indicates that buf can be NULL. However, it is dereferenced in the
-> following statements:
->    if (!(buf[3] & 0x80))
->      buf[3] |= 0x80;
->    if (!(buf[2] & 0x80))
->      buf[2] |= 0x80;
-> 
-> To fix these possible null-pointer dereferences, dereference buf and call
-> transport_kunmap_data_sg() only when buf is not NULL.
-> 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Tuo Li <islituo@gmail.com>
-> ---
-> v2:
-> * Put transport_kunmap_data_sg() into the else-branch of the if (!bug).
->    Thank Bodo Stroesser for helpful advice.
-> ---
->   drivers/target/target_core_pscsi.c | 18 +++++++++---------
->   1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
-> index 2629d2ef3970..75ef52f008ff 100644
-> --- a/drivers/target/target_core_pscsi.c
-> +++ b/drivers/target/target_core_pscsi.c
-> @@ -620,17 +620,17 @@ static void pscsi_complete_cmd(struct se_cmd *cmd, u8 scsi_status,
->   			buf = transport_kmap_data_sg(cmd);
->   			if (!buf) {
->   				; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
-> -			}
-> -
-> -			if (cdb[0] == MODE_SENSE_10) {
-> -				if (!(buf[3] & 0x80))
-> -					buf[3] |= 0x80;
->   			} else {
-> -				if (!(buf[2] & 0x80))
-> -					buf[2] |= 0x80;
-> -			}
-> +				if (cdb[0] == MODE_SENSE_10) {
-> +					if (!(buf[3] & 0x80))
-> +						buf[3] |= 0x80;
-> +				} else {
-> +					if (!(buf[2] & 0x80))
-> +						buf[2] |= 0x80;
-> +				}
->   
-> -			transport_kunmap_data_sg(cmd);
-> +				transport_kunmap_data_sg(cmd);
-> +			}
->   		}
->   	}
->   after_mode_sense:
-> 
+From: Yue Hu <huyue2@yulong.com>
 
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
+The mapping is not used at all, remove it and update related code.
 
-Regards,
-Bodo
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ fs/erofs/internal.h | 3 +--
+ fs/erofs/super.c    | 2 +-
+ fs/erofs/zdata.c    | 3 +--
+ 3 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index f92e3e3..e21b147 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -442,8 +442,7 @@ struct erofs_workgroup *erofs_insert_workgroup(struct super_block *sb,
+ void z_erofs_exit_zip_subsystem(void);
+ int erofs_try_to_free_all_cached_pages(struct erofs_sb_info *sbi,
+ 				       struct erofs_workgroup *egrp);
+-int erofs_try_to_free_cached_page(struct address_space *mapping,
+-				  struct page *page);
++int erofs_try_to_free_cached_page(struct page *page);
+ int z_erofs_load_lz4_config(struct super_block *sb,
+ 			    struct erofs_super_block *dsb,
+ 			    struct z_erofs_lz4_cfgs *lz4, int len);
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index bbf3bbd..72fff34 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -430,7 +430,7 @@ static int erofs_managed_cache_releasepage(struct page *page, gfp_t gfp_mask)
+ 	DBG_BUGON(mapping->a_ops != &managed_cache_aops);
+ 
+ 	if (PagePrivate(page))
+-		ret = erofs_try_to_free_cached_page(mapping, page);
++		ret = erofs_try_to_free_cached_page(page);
+ 
+ 	return ret;
+ }
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index a809730..c8e1594 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -337,8 +337,7 @@ int erofs_try_to_free_all_cached_pages(struct erofs_sb_info *sbi,
+ 	return 0;
+ }
+ 
+-int erofs_try_to_free_cached_page(struct address_space *mapping,
+-				  struct page *page)
++int erofs_try_to_free_cached_page(struct page *page)
+ {
+ 	struct z_erofs_pcluster *const pcl = (void *)page_private(page);
+ 	int ret = 0;	/* 0 - busy */
+-- 
+1.9.1
+
