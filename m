@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DC23E7F4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7819C3E7EBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhHJRjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:39:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42464 "EHLO mail.kernel.org"
+        id S232892AbhHJRe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234241AbhHJRhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9C1661139;
-        Tue, 10 Aug 2021 17:35:54 +0000 (UTC)
+        id S232498AbhHJRd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB6C160F94;
+        Tue, 10 Aug 2021 17:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616955;
-        bh=GBrSoOxBabQpupBnr6S3T++qEDhE6dEb789I1e35w/8=;
+        s=korg; t=1628616814;
+        bh=ihAvkDK7uaKrqIGBsVrJT2bcZ8CGQmp7iO0hrwSPxCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z3eYsafzcRWaLMJxyMcbHhBaybCQBOlL/7sXL0WJfI+pXFVLfpNUPCHOZ1AG+sISP
-         VXFN4a0lgOR68VkaMnpCGDT9f7Hf+1wfdiE9aTMsYAfAhcvg6ugIOCKl+f4RSj6MJf
-         dOCr2KRoovBvJs1N5speykiKy/I3dq5Ysfv7dyY0=
+        b=Asf5BRfO55dIBxJRSRxqo1SuML9UakDP+d3bzcd29lHofD32nRZf9dUB+yedSPysQ
+         3P11obWpmbZGXvi3XPbJLwk7DNjyTMhDHnUlO+hn8UphcdRE0Qh13YpYOwQAmk03I2
+         sxEwrcAwEBGDNrXuW2odQdAf8xaHXD0MVYjUOBH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com,
-        syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 5.4 67/85] timers: Move clearing of base::timer_running under base:: Lock
-Date:   Tue, 10 Aug 2021 19:30:40 +0200
-Message-Id: <20210810172950.507553991@linuxfoundation.org>
+        stable@vger.kernel.org, Like Xu <likexu@tencent.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Kim Phillips <kim.phillips@amd.com>
+Subject: [PATCH 4.19 47/54] perf/x86/amd: Dont touch the AMD64_EVENTSEL_HOSTONLY bit inside the guest
+Date:   Tue, 10 Aug 2021 19:30:41 +0200
+Message-Id: <20210810172945.744299691@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Like Xu <likexu@tencent.com>
 
-commit bb7262b295472eb6858b5c49893954794027cd84 upstream.
+commit df51fe7ea1c1c2c3bfdb81279712fdd2e4ea6c27 upstream.
 
-syzbot reported KCSAN data races vs. timer_base::timer_running being set to
-NULL without holding base::lock in expire_timers().
+If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
+warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
 
-This looks innocent and most reads are clearly not problematic, but
-Frederic identified an issue which is:
+  [] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write 0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
+  [] Call Trace:
+  []  amd_pmu_disable_event+0x22/0x90
+  []  x86_pmu_stop+0x4c/0xa0
+  []  x86_pmu_del+0x3a/0x140
 
- int data = 0;
+The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
+while the guest perf driver should avoid such use.
 
- void timer_func(struct timer_list *t)
- {
-    data = 1;
- }
-
- CPU 0                                            CPU 1
- ------------------------------                   --------------------------
- base = lock_timer_base(timer, &flags);           raw_spin_unlock(&base->lock);
- if (base->running_timer != timer)                call_timer_fn(timer, fn, baseclk);
-   ret = detach_if_pending(timer, base, true);    base->running_timer = NULL;
- raw_spin_unlock_irqrestore(&base->lock, flags);  raw_spin_lock(&base->lock);
-
- x = data;
-
-If the timer has previously executed on CPU 1 and then CPU 0 can observe
-base->running_timer == NULL and returns, assuming the timer has completed,
-but it's not guaranteed on all architectures. The comment for
-del_timer_sync() makes that guarantee. Moving the assignment under
-base->lock prevents this.
-
-For non-RT kernel it's performance wise completely irrelevant whether the
-store happens before or after taking the lock. For an RT kernel moving the
-store under the lock requires an extra unlock/lock pair in the case that
-there is a waiter for the timer, but that's not the end of the world.
-
-Reported-by: syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com
-Reported-by: syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com
-Fixes: 030dcdd197d7 ("timers: Prepare support for PREEMPT_RT")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/87lfea7gw8.fsf@nanos.tec.linutronix.de
-Cc: stable@vger.kernel.org
+Fixes: 1018faa6cf23 ("perf/x86/kvm: Fix Host-Only/Guest-Only counting with SVM disabled")
+Signed-off-by: Like Xu <likexu@tencent.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Liam Merwick <liam.merwick@oracle.com>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Tested-by: Liam Merwick <liam.merwick@oracle.com>
+Link: https://lkml.kernel.org/r/20210802070850.35295-1-likexu@tencent.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/time/timer.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/events/perf_event.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1269,8 +1269,10 @@ static inline void timer_base_unlock_exp
- static void timer_sync_wait_running(struct timer_base *base)
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -799,9 +799,10 @@ void x86_pmu_stop(struct perf_event *eve
+ 
+ static inline void x86_pmu_disable_event(struct perf_event *event)
  {
- 	if (atomic_read(&base->timer_waiters)) {
-+		raw_spin_unlock_irq(&base->lock);
- 		spin_unlock(&base->expiry_lock);
- 		spin_lock(&base->expiry_lock);
-+		raw_spin_lock_irq(&base->lock);
- 	}
++	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
+ 	struct hw_perf_event *hwc = &event->hw;
+ 
+-	wrmsrl(hwc->config_base, hwc->config);
++	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
  }
  
-@@ -1454,14 +1456,14 @@ static void expire_timers(struct timer_b
- 		if (timer->flags & TIMER_IRQSAFE) {
- 			raw_spin_unlock(&base->lock);
- 			call_timer_fn(timer, fn, baseclk);
--			base->running_timer = NULL;
- 			raw_spin_lock(&base->lock);
-+			base->running_timer = NULL;
- 		} else {
- 			raw_spin_unlock_irq(&base->lock);
- 			call_timer_fn(timer, fn, baseclk);
-+			raw_spin_lock_irq(&base->lock);
- 			base->running_timer = NULL;
- 			timer_sync_wait_running(base);
--			raw_spin_lock_irq(&base->lock);
- 		}
- 	}
- }
+ void x86_pmu_enable_event(struct perf_event *event);
 
 
