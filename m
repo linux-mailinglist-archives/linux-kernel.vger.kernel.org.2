@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC303E7E62
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C38C3E8050
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhHJRc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:32:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33258 "EHLO mail.kernel.org"
+        id S235650AbhHJRsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:48:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhHJRcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DA9B60F94;
-        Tue, 10 Aug 2021 17:32:19 +0000 (UTC)
+        id S236432AbhHJRou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:44:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30ECB60EBD;
+        Tue, 10 Aug 2021 17:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616739;
-        bh=d3zBzhSd99CWVBT9rN43GfypKWv50i8yK0avktkkfJ4=;
+        s=korg; t=1628617191;
+        bh=SgdEzm93F5mtxhKSIBUxyhXnKpQX5fjHSsZuNqdxQkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L51+VaNljCuGc/FpU6nDngNVVuZMMgSOQkhA5CZH0Jq+P0RxF6FJMyH4iju/GzntW
-         j1v/H48IoUm/lThoHvEjl9rOmZef8hpFZwcF4i+sIH5KFYAw3G+ad7nwg+5eodTMad
-         UcP9kagGk6BEfsAMUNOLg7nM6YJjMKrh7hTdcNIU=
+        b=T5Fceeb+6y/7ztCowCB2UO14rtnUpKm2YsTJDJQEouBY7Bmer4ZXGhGN39KSM3g4S
+         dKUiM0TyKDLGkGDYN2MwNYOtLLhN6kaRsdFVfaqzjMwnGCNAnbD4pACyabSDoO0Ws4
+         yhQyLlPFtBH8+xX/ug/KppiGzAfJs3yHV52Xp6es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>
-Subject: [PATCH 4.19 25/54] firmware_loader: use -ETIMEDOUT instead of -EAGAIN in fw_load_sysfs_fallback
-Date:   Tue, 10 Aug 2021 19:30:19 +0200
-Message-Id: <20210810172945.006060660@linuxfoundation.org>
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH 5.10 086/135] tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
+Date:   Tue, 10 Aug 2021 19:30:20 +0200
+Message-Id: <20210810172958.668054234@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit 0d6434e10b5377a006f6dd995c8fc5e2d82acddc upstream.
+commit dfb703ad2a8d366b829818a558337be779746575 upstream.
 
-The only motivation for using -EAGAIN in commit 0542ad88fbdd81bb
-("firmware loader: Fix _request_firmware_load() return val for fw load
-abort") was to distinguish the error from -ENOMEM, and so there is no
-real reason in keeping it. -EAGAIN is typically used to tell the
-userspace to try something again and in this case re-using the sysfs
-loading interface cannot be retried when a timeout happens, so the
-return value is also bogus.
+dma-buf backed shared memory cannot be reliably freed and unregistered
+during a kexec operation even when tee_shm_free() is called on the shm
+from a .shutdown hook. The problem occurs because dma_buf_put() calls
+fput() which then uses task_work_add(), with the TWA_RESUME parameter,
+to queue tee_shm_release() to be called before the current task returns
+to user mode. However, the current task never returns to user mode
+before the kexec completes so the memory is never freed nor
+unregistered.
 
--ETIMEDOUT is received when the wait times out and returning that
-is much more telling of what the reason for the failure was. So, just
-propagate that instead of returning -EAGAIN.
+Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
+allocation so that tee_shm_free() can directly call tee_shm_release().
+This will ensure that the shm can be freed and unregistered during a
+kexec operation.
 
-Suggested-by: Luis Chamberlain <mcgrof@kernel.org>
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210728085107.4141-2-mail@anirudhrb.com
+Fixes: 09e574831b27 ("tpm/tpm_ftpm_tee: A driver for firmware TPM running inside TEE")
+Fixes: 1760eb689ed6 ("tpm/tpm_ftpm_tee: add shutdown call back")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/firmware_loader/fallback.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/char/tpm/tpm_ftpm_tee.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/base/firmware_loader/fallback.c
-+++ b/drivers/base/firmware_loader/fallback.c
-@@ -581,8 +581,6 @@ static int fw_load_sysfs_fallback(struct
- 	if (fw_state_is_aborted(fw_priv)) {
- 		if (retval == -ERESTARTSYS)
- 			retval = -EINTR;
--		else
--			retval = -EAGAIN;
- 	} else if (fw_priv->is_paged_buf && !fw_priv->data)
- 		retval = -ENOMEM;
+--- a/drivers/char/tpm/tpm_ftpm_tee.c
++++ b/drivers/char/tpm/tpm_ftpm_tee.c
+@@ -254,11 +254,11 @@ static int ftpm_tee_probe(struct device
+ 	pvt_data->session = sess_arg.session;
  
+ 	/* Allocate dynamic shared memory with fTPM TA */
+-	pvt_data->shm = tee_shm_alloc(pvt_data->ctx,
+-				      MAX_COMMAND_SIZE + MAX_RESPONSE_SIZE,
+-				      TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++	pvt_data->shm = tee_shm_alloc_kernel_buf(pvt_data->ctx,
++						 MAX_COMMAND_SIZE +
++						 MAX_RESPONSE_SIZE);
+ 	if (IS_ERR(pvt_data->shm)) {
+-		dev_err(dev, "%s: tee_shm_alloc failed\n", __func__);
++		dev_err(dev, "%s: tee_shm_alloc_kernel_buf failed\n", __func__);
+ 		rc = -ENOMEM;
+ 		goto out_shm_alloc;
+ 	}
 
 
