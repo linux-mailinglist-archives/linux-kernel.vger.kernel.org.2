@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968183E50F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1BD3E50F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237504AbhHJCI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 22:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236131AbhHJCIY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 22:08:24 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAE6C0613D3;
-        Mon,  9 Aug 2021 19:08:03 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so2135148pjs.0;
-        Mon, 09 Aug 2021 19:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v7qOXxkhDcJDtLfYGjeWm7crxawwUhx3Jo2RHArHK7o=;
-        b=kZr2MFpJb+HrDAFlUE+B1DBa4v2e+sEelA93ZpD8k/EqGx6HDNZc0Ma/obngQAYFTs
-         9swosAEHpVF9VSA++7ZAysUPKcikf9ixUtoaQDd+/tbt1A1twrWcJJGE20d5AdgtMCvK
-         bUP1Yc6WuxCITOUUMIGV9s9tr+TW/4vzr+CDtLbKjo8M4zor8IoPerygOyUIVUfLkuyw
-         gsB61Xl6MnEDx7lpfzz/hcqVL5TQn45hEA9/tq66LzWQiW4fXPed5oSvUbckk3KanMR3
-         QXdPI1SPGEjFnZsU0v94wKaO8yztqh+Mayr8fU4kLD9CiA/9TD6rTmNhq6erYIzF6d/6
-         MN+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v7qOXxkhDcJDtLfYGjeWm7crxawwUhx3Jo2RHArHK7o=;
-        b=Bh2KK5F7MALtyzWU4GBqWkpo/RGvWf66aeiaNoGEyikIIl0IozglJSGGYuRFQy9vGh
-         Zjota9a9eVsAwpMWX8ldtMz9ppw0llHRhiBSvGuyVyo8ykgJq2e2unywMfLag8hjG64t
-         TMVZq+5jwmwdXT6MUtwK/WuAfU5ippz2rSpdBlneMTQ9uIDwuI3HJXShlxmre1ZBMGet
-         Z1qjBmm63hVfBRd9rG6s9arswNLb1Dfa2/xdgT8TI6cBfwLlFNV//e5g2Av2tZugGjYb
-         DNQavZ+vi941lfam3LqgcjKTjw6xlyIzoLaXOt1EHQrad/O964klcIrT3k1Mks1BRlhD
-         3M0Q==
-X-Gm-Message-State: AOAM532R2Aj1ibXXArgpG3A5lR+xDzZNCMMuzDsGOQGAPHW4B+M+EP5Q
-        PNxihor3HygZbDxehEnIX5Af9QCBS7k=
-X-Google-Smtp-Source: ABdhPJzl24llLvq6TUgfoQq5igPpwr6oDqJYKMfP77TqoX9ynYvLNX1tbw0ygzuuKXn1CLZFMQvHaQ==
-X-Received: by 2002:a65:6a0c:: with SMTP id m12mr86484pgu.267.1628561282668;
-        Mon, 09 Aug 2021 19:08:02 -0700 (PDT)
-Received: from [192.168.1.71] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
-        by smtp.gmail.com with ESMTPSA id z1sm17392853pfg.18.2021.08.09.19.07.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 19:08:01 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-api@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] seccomp.2: Clarify that bad system calls kill the thread
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-References: <87r1gkp9i7.fsf@disp2133> <202106292156.9458CF22@keescook>
- <87k0mbp0yc.fsf_-_@disp2133>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <1da46e75-fd67-e3e6-4db3-1d37dcae7f75@gmail.com>
-Date:   Tue, 10 Aug 2021 04:07:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237473AbhHJCIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 22:08:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237494AbhHJCIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 22:08:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 781DD61052;
+        Tue, 10 Aug 2021 02:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628561281;
+        bh=vaf7IXrO+D43TpfJjrN9eJvnVZ3kEp0F/CUYvNolEU0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gDXqIAtd6FB5Xu0Sp1lXRQL+86uCrGyyhNbbV2yhYWsANIp3JU+mYYsK6NeZZp3dn
+         WF34FyxieWwDVGZ7JjKx7JHKyc9eR39YAYqr8kxNRZgWkwGGz9RMLbdtjLdBQSY+Cg
+         /OW9ivOIi4WAozF+6y9HdQnBFxplIF7235pEcSGS/AC9A/kB4zB6NtkZ3u+WuL3hHw
+         MJYfv9f9LME8EFKvCQg0HSaEbXbTVAlqOvQ/yOYHAGGEnkzr318EltnxVybn2GUFbv
+         JCzBg4jIENEdNPwD1mVyTLsXkeIPG8fz9r6ZBpaeQCmk1hD2rns3FdmZEfXtkRGoSX
+         4vEdconVUMa8A==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH v4 07/10] tools/bootconfig: Support per-group/all event enabling option
+Date:   Tue, 10 Aug 2021 11:07:58 +0900
+Message-Id: <162856127850.203126.16694505101982548237.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <162856122550.203126.17607127017097781682.stgit@devnote2>
+References: <162856122550.203126.17607127017097781682.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-In-Reply-To: <87k0mbp0yc.fsf_-_@disp2133>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ tools/bootconfig/scripts/bconf2ftrace.sh |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-On 6/30/21 10:11 PM, Eric W. Biederman wrote:
-> 
-> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+diff --git a/tools/bootconfig/scripts/bconf2ftrace.sh b/tools/bootconfig/scripts/bconf2ftrace.sh
+index feb30c2c7881..651049c782c0 100755
+--- a/tools/bootconfig/scripts/bconf2ftrace.sh
++++ b/tools/bootconfig/scripts/bconf2ftrace.sh
+@@ -101,6 +101,12 @@ setup_event() { # prefix group event [instance]
+ 	else
+ 		eventdir="$TRACEFS/events/$2/$3"
+ 	fi
++	# group enable
++	if [ "$3" = "enable" ]; then
++		run_cmd "echo 1 > ${eventdir}"
++		return
++	fi
++
+ 	case $2 in
+ 	kprobes)
+ 		xbc_get_val ${branch}.probes | while read line; do
+@@ -127,6 +133,13 @@ setup_events() { # prefix("ftrace" or "ftrace.instance.INSTANCE") [instance]
+ 			setup_event $prefix ${grpev%.*} ${grpev#*.} $2
+ 		done
+ 	fi
++	if xbc_has_branch ${1}.event.enable; then
++		if [ "$2" ]; then
++			run_cmd "echo 1 > $TRACEFS/instances/$2/events/enable"
++		else
++			run_cmd "echo 1 > $TRACEFS/events/enable"
++		fi
++	fi
+ }
+ 
+ size2kb() { # size[KB|MB]
 
-Thanks. Patch applied, with Kees' Ack.
-
-Cheers,
-
-Michael
-
-
-> ---
->  man2/seccomp.2 | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/man2/seccomp.2 b/man2/seccomp.2
-> index a3421871f0f4..bde54c3e3e99 100644
-> --- a/man2/seccomp.2
-> +++ b/man2/seccomp.2
-> @@ -69,9 +69,10 @@ The only system calls that the calling thread is permitted to make are
->  .BR exit_group (2)),
->  and
->  .BR sigreturn (2).
-> -Other system calls result in the delivery of a
-> +Other system calls result in the termination of the calling thread,
-> +or termination of the entire process with the
->  .BR SIGKILL
-> -signal.
-> +signal when there is only one thread.
->  Strict secure computing mode is useful for number-crunching
->  applications that may need to execute untrusted byte code, perhaps
->  obtained by reading from a pipe or socket.
-> 
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
