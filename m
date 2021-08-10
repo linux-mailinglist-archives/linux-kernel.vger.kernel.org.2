@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5103E854B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7323E854D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234087AbhHJVbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:31:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57296 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234590AbhHJVaz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:30:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628631032;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Ty+ydYn1pML2P/TxDV/t1IRGgO3smk0UHuoRcYPGPk=;
-        b=SDsJchlEFUFUg8/BHTJV8k/erb/8Mh+P4Gqo5SRenpXjgsE5fgtrNT2v3mMtOzQICPyZcA
-        SOn1Im9YCFA5bU8QJH4Lsi+R5db9tHo3fo7VT6fnWm23DEgT1ycgSnZiHIFCKCX5bDmgoD
-        dqKDXLxnLpL9HkgXHvOPS989m+H0zlQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-CAwpK4s2MB2ow40EJgENLA-1; Tue, 10 Aug 2021 17:30:28 -0400
-X-MC-Unique: CAwpK4s2MB2ow40EJgENLA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 319ED8799E0;
-        Tue, 10 Aug 2021 21:30:26 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3754C60BF1;
-        Tue, 10 Aug 2021 21:30:25 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-79-willy@infradead.org>
-References: <20210715033704.692967-79-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 078/138] mm/filemap: Add folio_mkwrite_check_truncate()
+        id S234183AbhHJVb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233625AbhHJVbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:31:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0542461019;
+        Tue, 10 Aug 2021 21:31:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628631087;
+        bh=UDMwx2q99TfgQbOEjtpB26rCgk+Rsd+p41hRotSTIao=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fXv4mVXSEqjH2bEBdG5SF20qh3Y4W8zp7EbFFDQEGloJtpxeSZSG27jdb/pDTSrvO
+         X2aGW+PmDVR9rJY6OS7SbmO0iM7xvNmnjyln3rmOVEUxy1L0YHAk2oGlbQj6SwuS1s
+         O6NkLAjAHUQ+9hsnWy6KTyxf7xeRVYk787TAanUWurI4Xdd/rDWtaM40RZ3BXd9B7O
+         OG7tKUHvXOmfO2GzLqOovC/Lo8eCi98g4CvT4surhIP7gAYbRJ885UcjCvVhBnzGmY
+         l0KCTAn922VGYMVmOWOivB0L0Fi0aRLSgn79jimjr8Tqjchw3KYow24ht6Vjne4eUh
+         sg7hWsXRV6aRw==
+Received: by mail-qv1-f41.google.com with SMTP id m12so62703qvt.1;
+        Tue, 10 Aug 2021 14:31:26 -0700 (PDT)
+X-Gm-Message-State: AOAM533ceMWJmzMRoDV6fYFVhDYnsPU/D9Db17Us07ayD09RCrlzYivG
+        gAXtu2LChTbNQvDq+2bfbpSBX65HAWLYVpNEg/k=
+X-Google-Smtp-Source: ABdhPJxOskfCDOWSoSq/GETYRKrlJxVpP30mI6v88L3ZWrcvSduFa4roezd2UW+1ImoP+XQavwTSJMpvRGQpBZEDI0M=
+X-Received: by 2002:ad4:4ea8:: with SMTP id ed8mr19931056qvb.2.1628631086202;
+ Tue, 10 Aug 2021 14:31:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1813577.1628631024.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 22:30:24 +0100
-Message-ID: <1813578.1628631024@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210727201045.2540681-1-mcgrof@kernel.org> <20210727201045.2540681-4-mcgrof@kernel.org>
+In-Reply-To: <20210727201045.2540681-4-mcgrof@kernel.org>
+From:   Luis Chamberlain <mcgrof@kernel.org>
+Date:   Tue, 10 Aug 2021 14:31:14 -0700
+X-Gmail-Original-Message-ID: <CAB=NE6U0Evs5mAwvgLBnMNHB0pF+UjTB66R_3r+nu8EHxN5hWg@mail.gmail.com>
+Message-ID: <CAB=NE6U0Evs5mAwvgLBnMNHB0pF+UjTB66R_3r+nu8EHxN5hWg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] common/module: add a patient module rmmod
+To:     fstests <fstests@vger.kernel.org>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+I see the first two patches in this series were applied. Great!
 
-> This is the folio equivalent of page_mkwrite_check_truncate().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+I also see this patch and the next one is not applied yet. Please
+don't apply as I'll resend a new set now with some more enhancements
+after finding out this issue is very generic and requires a kmod
+solution. I'll post these patches soon.
 
-Reviewed-by: David Howells <dhowells@redhat.com>
-
+ Luis
