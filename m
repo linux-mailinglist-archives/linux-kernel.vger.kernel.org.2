@@ -2,140 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E403E53DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6355C3E53DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237919AbhHJGtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:49:10 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:45885 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235627AbhHJGtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:49:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628578127; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=rY9lZ62jXAuPNEI3pRZHDQQkULdfwiTLhfApWfVkKvo=; b=NwhMcwxbqfanO4JeYdS3Aw9uJh04f/myPPT5eMpnJgPUweiRWlY/A53T3f99sOrzP2Ya1EEM
- RqfxLXwG2SfdNw8mq96aNCsf9mAG+WHSRO6WCPXBDzKJqHFnNdHMnTxF60F1a3JPfOH+o6ur
- DErIRjnagfB6l1xBIKk+e9vB8GI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6112213a7ee6040977f8d882 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 06:48:26
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BF35AC43217; Tue, 10 Aug 2021 06:48:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D245C4338A;
-        Tue, 10 Aug 2021 06:48:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D245C4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCHv2] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to system pm callbacks
-Date:   Tue, 10 Aug 2021 12:18:08 +0530
-Message-Id: <20210810064808.32486-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S236408AbhHJGt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:49:57 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47850 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233940AbhHJGtz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:49:55 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17A6nAh2050275;
+        Tue, 10 Aug 2021 01:49:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1628578150;
+        bh=MYLJFCwahrTEm7bq5Zb4TWOzVKjmV67QXu9jFv0GK8E=;
+        h=From:To:CC:Subject:Date;
+        b=ssbBEZHx3MfvFarhhd8xsVqo4svJ6kk9hLvHBGeFQxkm4Sl8unsXo1drZ32gCbOD/
+         7WIZcBUsRqnRCVTiVHn4vULoBl4v2SGurs5C8QhURKlNOwan4kO+pTS7/N137MBqIh
+         83SzLiP2PvT49tSoDwdq1ddi0krPLOqzDlBZY+C8=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17A6nAv7087737
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Aug 2021 01:49:10 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 10
+ Aug 2021 01:49:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 10 Aug 2021 01:49:10 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17A6n6qx011042;
+        Tue, 10 Aug 2021 01:49:07 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        Cory Tusar <cory.tusar@pid1solutions.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: eeprom-93xx46: Convert to json schema\
+Date:   Tue, 10 Aug 2021 12:18:59 +0530
+Message-ID: <20210810064904.10846-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
-of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
-such cases, we would need to drop the XO clock vote in unprepare call and
-this unprepare callback for XO is in RPMh (Resource Power Manager-Hardened)
-clock driver which controls RPMh managed clock resources for new QTI SoCs.
+Convert eeprom-93xx46 binding documentation from txt to yaml format
 
-Given we cannot have a sleeping calls such as clk_bulk_prepare() and
-clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
-operations like map and unmap can be in atomic context and are in fast
-path, add this prepare and unprepare call to drop the XO vote only for
-system pm callbacks since it is not a fast path and we expect the system
-to enter deep sleep states with system pm as opposed to runtime pm.
-
-This is a similar sequence of clock requests (prepare,enable and
-disable,unprepare) in arm-smmu probe and remove.
-
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 ---
 
-Changes in v2:
- * Add clk unprepare when clk enable fails in resume (Will)
+Device tree fixes required are posted in the following patch,
+https://lore.kernel.org/patchwork/project/lkml/list/?series=511477
 
----
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index d3c6f54110a5..da8ef9d82d79 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -2277,18 +2277,38 @@ static int __maybe_unused arm_smmu_runtime_suspend(struct device *dev)
- 
- static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
- {
-+	int ret;
-+	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+ .../bindings/misc/eeprom-93xx46.txt           | 29 --------
+ .../bindings/misc/eeprom-93xx46.yaml          | 72 +++++++++++++++++++
+ 2 files changed, 72 insertions(+), 29 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/misc/eeprom-93xx46.txt
+ create mode 100644 Documentation/devicetree/bindings/misc/eeprom-93xx46.yaml
+
+diff --git a/Documentation/devicetree/bindings/misc/eeprom-93xx46.txt b/Documentation/devicetree/bindings/misc/eeprom-93xx46.txt
+deleted file mode 100644
+index 72ea0af368d4..000000000000
+--- a/Documentation/devicetree/bindings/misc/eeprom-93xx46.txt
++++ /dev/null
+@@ -1,29 +0,0 @@
+-EEPROMs (SPI) compatible with Microchip Technology 93xx46 family.
+-
+-Required properties:
+-- compatible : shall be one of:
+-    "atmel,at93c46"
+-    "atmel,at93c46d"
+-    "atmel,at93c56"
+-    "atmel,at93c66"
+-    "eeprom-93xx46"
+-    "microchip,93lc46b"
+-- data-size : number of data bits per word (either 8 or 16)
+-
+-Optional properties:
+-- read-only : parameter-less property which disables writes to the EEPROM
+-- select-gpios : if present, specifies the GPIO that will be asserted prior to
+-  each access to the EEPROM (e.g. for SPI bus multiplexing)
+-
+-Property rules described in Documentation/devicetree/bindings/spi/spi-bus.txt
+-apply.  In particular, "reg" and "spi-max-frequency" properties must be given.
+-
+-Example:
+-	eeprom@0 {
+-		compatible = "eeprom-93xx46";
+-		reg = <0>;
+-		spi-max-frequency = <1000000>;
+-		spi-cs-high;
+-		data-size = <8>;
+-		select-gpios = <&gpio4 4 GPIO_ACTIVE_HIGH>;
+-	};
+diff --git a/Documentation/devicetree/bindings/misc/eeprom-93xx46.yaml b/Documentation/devicetree/bindings/misc/eeprom-93xx46.yaml
+new file mode 100644
+index 000000000000..4254a7be5a70
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/eeprom-93xx46.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/misc/eeprom-93xx46.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
-+	if (ret)
-+		return ret;
++title: Microchip 93xx46 SPI compatible EEPROM family dt bindings
 +
- 	if (pm_runtime_suspended(dev))
- 		return 0;
- 
--	return arm_smmu_runtime_resume(dev);
-+	ret = arm_smmu_runtime_resume(dev);
-+	if (ret)
-+		clk_bulk_unprepare(smmu->num_clks, smmu->clks);
++maintainers:
++  - Cory Tusar <cory.tusar@pid1solutions.com>
 +
-+	return ret;
- }
- 
- static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
- {
-+	int ret = 0;
-+	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
++properties:
++  $nodename:
++    pattern: "@[0-9]+$"
 +
- 	if (pm_runtime_suspended(dev))
--		return 0;
-+		goto clk_unprepare;
- 
--	return arm_smmu_runtime_suspend(dev);
-+	ret = arm_smmu_runtime_suspend(dev);
-+	if (ret)
-+		return ret;
++  compatible:
++    enum:
++      - atmel,at93c46
++      - atmel,at93c46d
++      - atmel,at93c56
++      - atmel,at93c66
++      - eeprom-93xx46
++      - microchip,93lc46b
 +
-+clk_unprepare:
-+	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
-+	return ret;
- }
- 
- static const struct dev_pm_ops arm_smmu_pm_ops = {
++  data-size:
++    description: number of data bits per word
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [8, 16]
++
++  reg:
++    description: chip select of EEPROM
++    maxItems: 1
++
++  spi-max-frequency: true
++  spi-cs-high: true
++
++  read-only:
++    description:
++      parameter-less property which disables writes to the EEPROM
++
++  select-gpios:
++    description:
++      specifies the GPIO that needs to be asserted prior to each access
++      of EEPROM (e.g. for SPI bus multiplexing)
++    maxItems: 1
++
++
++required:
++  - compatible
++  - reg
++  - data-size
++  - spi-max-frequency
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      eeprom@0 {
++        compatible = "eeprom-93xx46";
++        reg = <0>;
++        spi-max-frequency = <1000000>;
++        spi-cs-high;
++        data-size = <8>;
++        select-gpios = <&gpio4 4 GPIO_ACTIVE_HIGH>;
++      };
++    };
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
 
