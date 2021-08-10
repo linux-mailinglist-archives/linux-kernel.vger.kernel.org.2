@@ -2,100 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CB13E582E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB1A3E582F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239817AbhHJKVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:21:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239800AbhHJKVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C1D661051;
-        Tue, 10 Aug 2021 10:21:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628590869;
-        bh=/neDvGFqen0Ho9gJnce0tGXE6fYsBJbEyvmkPBb11rQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LH1HTTRrWKFtEiDynQfyzk0k9Kkadnst9PXEEUDBpDdwp5uG2AWlnEu3XhrnHIsoH
-         1hDg9yf0mx2+6TCr5eVrKEww38/TvqsadXZ+Z97RPWIP0YHK1TVkmwPXEJPZbM7hps
-         HygMUeCHfjmvjw+/eKFiv1uZIjyyeCO8g9q0JDO4=
-Date:   Tue, 10 Aug 2021 12:21:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Replace BITn with BIT(n)
-Message-ID: <YRJTEp7jpZ+Tg7OB@kroah.com>
-References: <20210809182006.29452-1-Larry.Finger@lwfinger.net>
+        id S239824AbhHJKV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:21:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50865 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238932AbhHJKV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:21:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628590896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UoOPav9mt5YOVdwvQ7MavZDm5DJmX9UQzZ8YeI9L690=;
+        b=Z5gqo5ItEiokNOg17GSlgOnUvF3yamW6t964ZiLyoU3xrKqp8ONLTA7YSP3X3PAg6Rheq2
+        QtIrqmS3xYbk2YRS3BdZkHC6GuWn6hsxR64HDnS/vMZykDJ+zawDZQcDMGlrZSECGh/jxB
+        1+Zk/fYNLgMigDEn8fqCSoFDpeQBVRY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-iqfl7gTKMauT6qazEkfrjw-1; Tue, 10 Aug 2021 06:21:35 -0400
+X-MC-Unique: iqfl7gTKMauT6qazEkfrjw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 790868799E0;
+        Tue, 10 Aug 2021 10:21:34 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3875C60BF1;
+        Tue, 10 Aug 2021 10:21:34 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] KVM: stats: remove dead stores
+Date:   Tue, 10 Aug 2021 06:21:33 -0400
+Message-Id: <20210810102133.3316768-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210809182006.29452-1-Larry.Finger@lwfinger.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 01:20:06PM -0500, Larry Finger wrote:
-> The driver uses BITn instead of BIT(n). All such usage is converted.
-> 
-> Note that this patch does not address any warnings that checkpatch
-> will note. These include missing space around operators and lines
-> that are too long. These problems will be addressed in a separate
-> patch.
-> 
-> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-> ---
+These stores are copied and pasted from the "if" statements above.
+They are dead and while they are not really a bug, they can be
+confusing to anyone reading the code as well.  Remove them.
 
-Breaks the build:
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ virt/kvm/binary_stats.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-n file included from drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:4:
-drivers/staging/r8188eu/hal/../include/Hal8188EPwrSeq.h:45:105: error: ‘BIT1’ undeclared here (not in a function); did you mean ‘BIT’?
-   45 |         {0x0006, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_ALL_MSK, PWR_BASEADDR_MAC, PWR_CMD_POLLING, BIT1, BIT1},/* wait till 0x04[17] = 1    power ready*/  \
-      |                                                                                                         ^~~~
-drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:12:9: note: in expansion of macro ‘RTL8188E_TRANS_CARDEMU_TO_ACT’
-   12 |         RTL8188E_TRANS_CARDEMU_TO_ACT
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:4:
-drivers/staging/r8188eu/hal/../include/Hal8188EPwrSeq.h:46:103: error: ‘BIT0’ undeclared here (not in a function); did you mean ‘BIT’?
-   46 |         {0x0002, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_ALL_MSK, PWR_BASEADDR_MAC, PWR_CMD_WRITE, BIT0|BIT1, 0}, /* 0x02[1:0] = 0   reset BB*/                      \
-      |                                                                                                       ^~~~
-drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:12:9: note: in expansion of macro ‘RTL8188E_TRANS_CARDEMU_TO_ACT’
-   12 |         RTL8188E_TRANS_CARDEMU_TO_ACT
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/staging/r8188eu/hal/../include/Hal8188EPwrSeq.h:47:103: error: ‘BIT7’ undeclared here (not in a function); did you mean ‘BIT’?
-   47 |         {0x0026, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_ALL_MSK, PWR_BASEADDR_MAC, PWR_CMD_WRITE, BIT7, BIT7}, /*0x24[23] = 2b'01 schmit trigger */ \
-      |                                                                                                       ^~~~
-drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:12:9: note: in expansion of macro ‘RTL8188E_TRANS_CARDEMU_TO_ACT’
-   12 |         RTL8188E_TRANS_CARDEMU_TO_ACT
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/staging/r8188eu/hal/../include/Hal8188EPwrSeq.h:49:103: error: ‘BIT4’ undeclared here (not in a function); did you mean ‘BIT’?
-   49 |         {0x0005, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_ALL_MSK, PWR_BASEADDR_MAC, PWR_CMD_WRITE, BIT4|BIT3, 0}, /*0x04[12:11] = 2b'00 disable WL suspend*/ \
-      |                                                                                                       ^~~~
-drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:12:9: note: in expansion of macro ‘RTL8188E_TRANS_CARDEMU_TO_ACT’
-   12 |         RTL8188E_TRANS_CARDEMU_TO_ACT
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/staging/r8188eu/hal/../include/Hal8188EPwrSeq.h:49:108: error: ‘BIT3’ undeclared here (not in a function); did you mean ‘BIT’?
-   49 |         {0x0005, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_ALL_MSK, PWR_BASEADDR_MAC, PWR_CMD_WRITE, BIT4|BIT3, 0}, /*0x04[12:11] = 2b'00 disable WL suspend*/ \
-      |                                                                                                            ^~~~
-drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:12:9: note: in expansion of macro ‘RTL8188E_TRANS_CARDEMU_TO_ACT’
-   12 |         RTL8188E_TRANS_CARDEMU_TO_ACT
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/staging/r8188eu/hal/../include/Hal8188EPwrSeq.h:123:103: error: ‘BIT5’ undeclared here (not in a function); did you mean ‘BIT’?
-  123 |         {0x0553, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_ALL_MSK, PWR_BASEADDR_MAC, PWR_CMD_WRITE, BIT5, BIT5},/*Respond TxOK to scheduler*/ \
-      |                                                                                                       ^~~~
-drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:60:9: note: in expansion of macro ‘RTL8188E_TRANS_ACT_TO_LPS’
-   60 |         RTL8188E_TRANS_ACT_TO_LPS
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/staging/r8188eu/hal/../include/Hal8188EPwrSeq.h:134:103: error: ‘BIT6’ undeclared here (not in a function); did you mean ‘BIT’?
-  134 |         {0x0029, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_ALL_MSK, PWR_BASEADDR_MAC, PWR_CMD_WRITE, BIT6|BIT7, 0}, /*.        0x29[7:6] = 2b'00        enable BB clock*/\
-      |                                                                                                       ^~~~
-drivers/staging/r8188eu/hal/Hal8188EPwrSeq.c:67:9: note: in expansion of macro ‘RTL8188E_TRANS_LPS_TO_ACT’
-   67 |         RTL8188E_TRANS_LPS_TO_ACT
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-:(
-
+diff --git a/virt/kvm/binary_stats.c b/virt/kvm/binary_stats.c
+index e609d428811a..eefca6c69f51 100644
+--- a/virt/kvm/binary_stats.c
++++ b/virt/kvm/binary_stats.c
+@@ -136,9 +136,7 @@ ssize_t kvm_stats_read(char *id, const struct kvm_stats_header *header,
+ 		src = stats + pos - header->data_offset;
+ 		if (copy_to_user(dest, src, copylen))
+ 			return -EFAULT;
+-		remain -= copylen;
+ 		pos += copylen;
+-		dest += copylen;
+ 	}
+ 
+ 	*offset = pos;
+-- 
+2.27.0
 
