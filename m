@@ -2,160 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89053E83E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364C33E83EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhHJTq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:46:57 -0400
-Received: from mga07.intel.com ([134.134.136.100]:42637 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhHJTqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:46:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="278727230"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="278727230"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:46:33 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="503247620"
-Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:46:32 -0700
-Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
-To:     Andi Kleen <ak@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Kuppuswamy Sathyanarayanan 
+        id S232322AbhHJTt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:49:28 -0400
+Received: from mail-bn8nam12on2058.outbound.protection.outlook.com ([40.107.237.58]:32944
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230077AbhHJTtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 15:49:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BZ+3qyej49za+0VS+FD0wQ6mn8leKkX2WPHFmxDsYkJ3C99PZj6HMFOXtTlXIfB59M7CEZs6CxLLDfLbFeE7qYhIeEdozRBnnbstqaA7e2hj6JeFZWue83dfjNO4uX1zXIIP+M1xO3+aSKP7UBdYwFWvxy7dX7qc4VEJvtgzr14bC5kDmcp0hPwOvhiQdeUNknZIqQylUPK9lhmAiEDtAHR8HuMhmWt9b0FSh5hIfeXRXeRIquwBxMoj1QiJ+2I3cn7kfVR7i2tgxjZIuYA/7wxsab52xInwOjsMGNpYSB9w8eJi+AROIRlzyaPkOvLNpVdZAouQN6H367+E2zbuDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zh+wIW78M8BTE50i5ZnMzfjoH3JWoQ2z4zwDegZcjTw=;
+ b=KDHD2sKkMdWQ9JMKZSZCWKf9fOX2IjzvRCFn5KIcvJq9QU/vKiHqh1wtOCUdvCyQpmbMoiBcaG7a6xasYRC8oWWtfSFFWIfuqc0WsqWxweIAnNuWaMwZ5Xj3HbAwql752qIijPSazho8hJGhbERZDZ2rA3x1PtP28AqbXaz8vjQuh0wIijsNW+N3WOZnn1/m8B/3+/dac0BaahP9PSXjCWCuK2Sbg0AhAAkZhHVQtsjAbTF+D1mpme4pq0t1OT5otqpqjXKg/uDJh6dXg/MOkm8lYYvR4/V6RIE9CAPKTUA5c//m4abSaAw9ZWnorwyThbnIpWICVfK39nQ+qe/IuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zh+wIW78M8BTE50i5ZnMzfjoH3JWoQ2z4zwDegZcjTw=;
+ b=RJ3Whm8Dil40S3MwjVoL8Ot4+SIib44VjBGVtC7vbK9LLgmdSb1XOzN/cOMTjxX+jdQjvpCVBElu3F3/rUUTir1zh9+UGitv4ZF3nm2mepQasce6vsuzSR4DEO6JQLK3W4kGGEjXW9jyUEmkD2JNkkgjbjn75FdHgV+hbHtkPAw=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5213.namprd12.prod.outlook.com (2603:10b6:5:394::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Tue, 10 Aug
+ 2021 19:48:57 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::73:2581:970b:3208]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::73:2581:970b:3208%3]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
+ 19:48:57 +0000
+Subject: Re: [PATCH 07/11] treewide: Replace the use of mem_encrypt_active()
+ with prot_guest_has()
+To:     "Kuppuswamy, Sathyanarayanan" 
         <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
- <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
- <9748c07c-4e59-89d0-f425-c57f778d1b42@linux.intel.com>
- <17b6a3a3-bd7d-f57e-8762-96258b16247a@intel.com>
- <796a4b20-7fa3-3086-efa0-2f728f35ae06@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f445da8b-c044-3765-65f2-f911dbf6a507@intel.com>
-Date:   Tue, 10 Aug 2021 12:46:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <796a4b20-7fa3-3086-efa0-2f728f35ae06@linux.intel.com>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Will Deacon <will@kernel.org>, Dave Young <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>
+References: <cover.1627424773.git.thomas.lendacky@amd.com>
+ <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
+ <166f30d8-9abb-02de-70d8-6e97f44f85df@linux.intel.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <4b885c52-f70a-147e-86bd-c71a8f4ef564@amd.com>
+Date:   Tue, 10 Aug 2021 14:48:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <166f30d8-9abb-02de-70d8-6e97f44f85df@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR10CA0003.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::8) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.241] (165.204.77.1) by SA9PR10CA0003.namprd10.prod.outlook.com (2603:10b6:806:a7::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Tue, 10 Aug 2021 19:48:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c7519805-b04f-44e9-0267-08d95c37e478
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5213:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5213808E81BF3C9D4453E6ABECF79@DM4PR12MB5213.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dnNi92GSpZMslhiJrfA3rObWOy/Id+q1gKm6thqBC060XYwLZe3GyzbHxgGkUNk+wdDB54v7EICc2ePegDwKUVeIDWdwhvekpABUuvATXrDiMI61I+GaorVEfOjYCHuSMlsA9wDeZL1bLmuTZKQj5IFitAjkp4VMlkr2j+wwsgt88F2tEpfBvkezJV7bb1aA5jWOE68pfUkK/1yK0sSmRc0tWOgDhAJFZsvjpKYvendWlZxekxJMIHfk2V17Redu26emXLnu5ls/D8YeTO1cJG80QslBjpzrgZi03VKK5vkzwUs+WGDYRIjqwEP+tXOVZD2vNT/vAjy9VGPROLEV45Q+OKVJxuQL+uQcvptiOmRxvYeJhvI91mt77eGnYDif0Sfstz9v1mBaglWw397KFtF5JvHE/r+tRZbhPDa+bnMrAmWd3sR6CkI2pruLC+eak1Y2sSM5JPhVwTyGV65WccTsePjRbmXt9kdt717rld973FpbqYxeuAYtPCaoTRh2DhmHCzbA6Y7MPb0XnEHyGD4EzJd51+0p3jb9mXM1eL/zDZv+uiJ8+NjnOrfaG8QnhHX6DD+eLBcbDuMyN4dV11BriDVTj6t5cyPjnE3vlu3DDhVnolDffVc963g9xuGGR/uG5ElqGjGYS7bLialLp230ItD3vgYgjpy4ZqkxpkGM58VL4Fjc0+ffnOn0qfCoRUFv4nlqzIgg63QKSHzxF50VH0SiO9vCVIdhoq0F0ay6XaI4/+X2m/9MNYK24vmA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(2906002)(83380400001)(316002)(16576012)(26005)(53546011)(186003)(54906003)(508600001)(66476007)(36756003)(31696002)(86362001)(8936002)(8676002)(66556008)(921005)(66946007)(6486002)(7416002)(38100700002)(5660300002)(31686004)(2616005)(956004)(7406005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R01YRS8ydDdKVjY4QmV4UStDYy94VjVRS1pOeXVleGNkdDBKd0xKM2FlR0xM?=
+ =?utf-8?B?cDBMSUIxMHFHSXdURy9UY3JZVFN0VnE0NEt1cTBXU2Y3L3VoUFpVYnpWc0d4?=
+ =?utf-8?B?VndNK3FHSytDdTRkbU5YZDRGTTNTNjZzU0pFdGI3TWhPRmhlYXVMREoxSmZi?=
+ =?utf-8?B?WHpTSjBpLzFBVFBkdVl2Z0VCalIwc3J3QjB2Q1dkUjV0MFExMmRtSW5EbTUx?=
+ =?utf-8?B?cG8rMkdWOGl1TmdVTGkzRE1ZQ09XQm8zWWVxeStnYXBGcTA3NmRGS0hRNzNE?=
+ =?utf-8?B?c2w1ZlRjUmZYY1FReTZIcklnUWtGK0w3VjRYYlpYMG1JQ2NlZTEvTkhQY3BL?=
+ =?utf-8?B?SVNtU1o1TlllNTZrS3ZrbGNIK25hNXZnSG1XbE9zMk5sUEZJNlB4Z2ZtNHBi?=
+ =?utf-8?B?ODVWOGFDREtzdXptS3lvWDFnKzNQTXZubjRodExLQU0vZ05UeG9la2F0ckxi?=
+ =?utf-8?B?NXdJSTd3eEhLZEU5Vit1WWdKenVXWjhVL0IybWRnREtUM1VtaEdNNnJGV2lL?=
+ =?utf-8?B?UFNNY0ZIdWlRTXBXMzF1TStidjlYL2JHTFNJVm16SWY2OVBvRXZtYmk1djd2?=
+ =?utf-8?B?SHJ5cFdGLzg4LytKS0JrcnA5SnhNU0U5MkVXbEVjcXd4MzhPVXNXc0dmaWxX?=
+ =?utf-8?B?QWgvNldpVFRta2R0cVpPZ1dQK3U3eWMrTmlaa25MSHR3WDJCc25BL29EdytH?=
+ =?utf-8?B?WWlOK3V4UDJMSlk5WGhCRWZDajk3NUlRKzRGRnZVNmdtY2dGRmlOY1NYTlpq?=
+ =?utf-8?B?VUp1cEp5dHhjbUdNQUkrR1RpUzBUcmhDaVZLOGlDZVR6MTE3Z0I1M1c3a0t5?=
+ =?utf-8?B?Z2NQamt6Ujl1QWlwMURxUVIxdmFteE83eEljMUtFRGdzekdKUi9BMkZnam51?=
+ =?utf-8?B?bXViTjlrZWVXTHozcFpKY1lYaHVEZWJ6RVpzeG9zMnBaMHlBanc5Y1JoeCtq?=
+ =?utf-8?B?eGJReU4wcTNBbUgrT1lqMllKQ1NKRUg1OVl1UnE4VmdFSjZ4VnVOQkd3aU9W?=
+ =?utf-8?B?bkNudHhKSmJnZUVWd2Y0Ri9nc1lySkZHdEovNk1vRTdaMHhIWGU2NFNTTkhr?=
+ =?utf-8?B?NlZGNEdEQy8welBLT1cvMmcvUW5ybVIvcitXdkdETlZyc2I1NWd2T1BYbk93?=
+ =?utf-8?B?M3h6VnU1dWZnUlNDMXUzOVlOdzhENTZrK1F1bGpONm9YcVN3aWlrSSt2WHFm?=
+ =?utf-8?B?REpOSFVLQ2swL1Y2YjdJZlBsby9MVjlSZHI4aE85blBURWVlOVhOY1llSTdp?=
+ =?utf-8?B?TTJXdk5xa3JLanlBVEZhdzNTaUtJVzE4VnhORjlEcDVXam9RUmZHTTA1K2hZ?=
+ =?utf-8?B?TCtiYklYV05oNGlCNFJteHN0S1d2M0REeXNXNXBHeUNneGdRbWhESDRsNEls?=
+ =?utf-8?B?Ymw1SlZTRWoxZjVzMk5JRmxKUjZIQjVsWmZadUN5UjRtYXpzcGNxb1Y5ZElR?=
+ =?utf-8?B?Z1l4OE94OWgvSmdEcGNteEJObUFTaW1IWHVBRTkvcThMb0wxaWJBM2FydVdo?=
+ =?utf-8?B?UXpIczRZcmhzWjFGanNNbUtuWHl6TGxKSWtHTmZuWDVPTmVXaG8vc1h1VnNo?=
+ =?utf-8?B?UC9qcUJPL2tTY0dsYm5tRytaeDhjdndzZmNTZGltdWw0S3N5Q0dkZWZwN01V?=
+ =?utf-8?B?MTY0WWV1TmtERHZ6ZnlTZEE1ZitFMXRrQTF5a01WK1hDWHdDYXBOdFdtU2F3?=
+ =?utf-8?B?NUVpUFRPTGwxeEI4Ti94V0QwYXJzbEcwUktJSmpuODRGNm1mdG1tM1NqYUNG?=
+ =?utf-8?Q?fQ9evLIdYd8zEwDHlrF8On6CF1u6qb8BapODFJ7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7519805-b04f-44e9-0267-08d95c37e478
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 19:48:57.8699
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LkQmC0BMFabM+hD+NZCRsqRDlnlmUWZdnM+SN3S137DV+6ebAPKAIvjN9s/s+GoNlwKXx1Ivo44BngEr7cMMzw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5213
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 12:23 PM, Andi Kleen wrote:
->> But, not everyone is going to agree with me.
+On 8/10/21 1:45 PM, Kuppuswamy, Sathyanarayanan wrote:
 > 
-> Both the Intel TDX and the AMD SEV side independently came to opposite
-> conclusions. In general people care a lot about boot time of VM guests.
-
-I was also saying that getting to userspace fast is important to me.
-Almost everyone agrees there.
-
->> This also begs the question of how folks know when this "blip" is over.
->>   Do we have a counter for offline pages?  Is there any way to force page
->> acceptance?  Or, are we just stuck allocating a bunch of memory to warm
->> up the system?
->>
->> How do folks who care about these new blips avoid them?
 > 
-> It's not different than any other warmup. At warmup time you always have
-> lots of blips until the working set stabilizes. For example in
-> virtualization first touch of a new page is usually an EPT violation
-> handled to the host. Or in the native case you may need to do IO or free
-> memory. Everybody who based their critical latency percentiles around a
-> warming up process would be foolish, the picture would be completely
-> distorted.
+> On 7/27/21 3:26 PM, Tom Lendacky wrote:
+>> diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+>> index de01903c3735..cafed6456d45 100644
+>> --- a/arch/x86/kernel/head64.c
+>> +++ b/arch/x86/kernel/head64.c
+>> @@ -19,7 +19,7 @@
+>>   #include <linux/start_kernel.h>
+>>   #include <linux/io.h>
+>>   #include <linux/memblock.h>
+>> -#include <linux/mem_encrypt.h>
+>> +#include <linux/protected_guest.h>
+>>   #include <linux/pgtable.h>
+>>     #include <asm/processor.h>
+>> @@ -285,7 +285,7 @@ unsigned long __head __startup_64(unsigned long
+>> physaddr,
+>>        * there is no need to zero it after changing the memory encryption
+>>        * attribute.
+>>        */
+>> -    if (mem_encrypt_active()) {
+>> +    if (prot_guest_has(PATTR_MEM_ENCRYPT)) {
+>>           vaddr = (unsigned long)__start_bss_decrypted;
+>>           vaddr_end = (unsigned long)__end_bss_decrypted;
 > 
-> So the basic operation is adding some overhead, but I don't think
-> anything is that unusual compared to the state of the art.
+> 
+> Since this change is specific to AMD, can you replace PATTR_MEM_ENCRYPT with
+> prot_guest_has(PATTR_SME) || prot_guest_has(PATTR_SEV). It is not used in
+> TDX.
 
-Except that today, you can totally avoid the allocation latency (not
-sure about the EPT violation/fill latency) from things like QEMU's
--mem-prealloc.
+This is a direct replacement for now. I think the change you're requesting
+should be done as part of the TDX support patches so it's clear why it is
+being changed.
 
-> Now perhaps the locking might be a problem if the other operations all
-> run in parallel, causing unnecessary serialization If that's really a
-> problem I guess we can optimize later. I don't think there's anything
-> fundamental about the current locking.
+But, wouldn't TDX still need to do something with this shared/unencrypted
+area, though? Or since it is shared, there's actually nothing you need to
+do (the bss decrpyted section exists even if CONFIG_AMD_MEM_ENCRYPT is not
+configured)?
 
-These boot blips are not the biggest issue in the world.  But, it is
-fully under the guest's control and I think the guest has some
-responsibility to provide *some* mitigation for it.
+Thanks,
+Tom
 
-1. Do background acceptance, as opposed to relying 100% on demand-driven
-   acceptance.  Guarantees a limited window in which blips can occur.
-2. Do acceptance based on user input, like from sysfs.
-3. Add a command-line argument to accept everything up front, or at
-   least before userspace runs.
-4. Add some statistic for how much unaccepted memory remains.
-
-I can think of at least four ways we could mitigate it.  A sysfs
-statistic file would probably take ~30 lines of code to loop over the
-bitmap.  A command-line option would probably be <10 lines of code to
-just short-circuit the bitmap and accept everything up front.  A file to
-force acceptance would probably be pretty quick too.
-
-Nothing there seem too onerous.
+> 
