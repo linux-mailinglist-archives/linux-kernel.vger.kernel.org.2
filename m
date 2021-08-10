@@ -2,155 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3556A3E7C89
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565F83E7C93
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243559AbhHJPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:40:34 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:27344 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243429AbhHJPin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:38:43 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17AAlVvD027584;
-        Tue, 10 Aug 2021 10:38:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=irJBOBLhsE1mq0f5FXZVdYE91m99aLTThi9zgZpov0g=;
- b=EZn9TekSVFbcZIsVLPA9yL78I+dMvotCLiF5Vl02eE+gXSG/RnZL7FL4ayarRry2hlEc
- 2a/ZkfFSLiPOFZea/cECr0C6ainvOiPIuGcpbE455EX5hTEFTjAB7Z6lCXnZZtger5QL
- iTfoHC/ramGhsKjvVHF9Iku9Z4+QjxMWxyDlBPPC+F4J7g7goFtk1Zs0IpzI07RUVOQO
- 6BnRvwKPvtWSJoB5kV9+aIntm+WJXs49o9/z1wWLmw6K8/rwnxhi0vUxyrQvmzUCKGpv
- R8rlohXuqSsa29qzw8L5wOyT+9BQMQhiEm5W5gcTEqGXoLRDnAMUdFdYBuxwMY53cd+Z DQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3abr0u0e2c-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 10 Aug 2021 10:38:09 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 10 Aug
- 2021 16:38:05 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Tue, 10 Aug 2021 16:38:05 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.221])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BAEFF46E;
-        Tue, 10 Aug 2021 15:38:05 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 12/12] ASoC: cs42l42: Add control for audio slow-start switch
-Date:   Tue, 10 Aug 2021 16:37:59 +0100
-Message-ID: <20210810153759.24333-13-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210810153759.24333-1-rf@opensource.cirrus.com>
-References: <20210810153759.24333-1-rf@opensource.cirrus.com>
+        id S243545AbhHJPlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:41:03 -0400
+Received: from mga04.intel.com ([192.55.52.120]:53942 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243549AbhHJPjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:39:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213074200"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="213074200"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:39:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="445193987"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Aug 2021 08:39:13 -0700
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 10 Aug 2021 08:39:12 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 10 Aug 2021 08:39:11 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Tue, 10 Aug 2021 08:39:11 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Tue, 10 Aug 2021 08:39:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ExuTyYYXXuSR5E1P2/vaEl1+zzIgiW9ozCfrnDCJbimVvp28AMD74jOL1K7FVoPKEdvu7Skv7K4VowudN2s2X4m2qSA6MZtVIPzjxW85DtSIcuDHnLMJqL3oGN+cgDpxlNVSxpHKDXcuirHSTubnrdqDFSXXmVBYge7lj4RNq8gIYl0/ZcIfYiLSMicUmR4UdGvJToCck+PAem9jmwclMa0VI/n0/saa1dnIxVt1t3t0xE8WneQaQ3SMfzjgYWGJXIad2JFchKISB6dLVF6Y8FNejZU0kOdj+p/57OrEC3XR5yG0GvQAOAjj5NwoFfVuxmpxdy99sGd3Ds2Q4axalQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NeBy5DLs/x/Fdwpbu1QNUPYhaP+BIkANSY6TeoIME0Q=;
+ b=btjRMXI10ktxjYrQSzdvWaPnaLN4M3006Rw1aUmq+8VoGO/7BqjzpPe6Js9vPFH3W9ujMXBZK0fMMs9mX9TRnaT9TyY+C2H8CI88Mlz1zT/Xtlxa3hsIqw5HBNvdwmTf5hOYFup1awvkf6X1OLoXh1Vnf6WXzR5bUZ8UmTg44WHyBmJHoG9eKdQNm/ZGwBraEWoQtcfkCiLQZka2iJv+CQqkpNx7z/YCW+ydOGwLseXVE4ajMmyzgjawIIckNz6/dNt4G+ImKfKOqLkfmVo7aUBt+vQp0GeRsyKmIQKK24VLx5S4HrNgeNz2VCcapNFdQPmJ89iTKoCRNL+3/gZ8fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NeBy5DLs/x/Fdwpbu1QNUPYhaP+BIkANSY6TeoIME0Q=;
+ b=axtznPXlRZ7hJJTZznG+rn8+x2AinfFUA5S9JidbXvIR2MAOoOvE8MlaSvejRKAbul7B6a2oj6v1L+JiBoAAnPeqt/XRktRTFSHE9hsk1A0YiyL+7GBYZXuW5zEXGM761iUSCnrb2zfkSn92u0AX599QwCmzmIwzegurEJYpgxE=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+Received: from DM8PR11MB5736.namprd11.prod.outlook.com (2603:10b6:8:11::11) by
+ DM4PR11MB5296.namprd11.prod.outlook.com (2603:10b6:5:393::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4394.17; Tue, 10 Aug 2021 15:39:07 +0000
+Received: from DM8PR11MB5736.namprd11.prod.outlook.com
+ ([fe80::2920:8181:ca3f:8666]) by DM8PR11MB5736.namprd11.prod.outlook.com
+ ([fe80::2920:8181:ca3f:8666%3]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
+ 15:39:07 +0000
+Subject: Re: [PATCH v28 04/32] x86/cpufeatures: Introduce CPU setup and option
+ parsing for CET
+To:     Borislav Petkov <bp@alien8.de>
+CC:     <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eugene Syromiatnikov" <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
+ <20210722205219.7934-5-yu-cheng.yu@intel.com> <YRFSg45dDMfeiGbt@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <c7867ec7-f03e-8928-3cce-88eaafd1efa1@intel.com>
+Date:   Tue, 10 Aug 2021 08:39:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
+In-Reply-To: <YRFSg45dDMfeiGbt@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR1601CA0016.namprd16.prod.outlook.com
+ (2603:10b6:300:da::26) To DM8PR11MB5736.namprd11.prod.outlook.com
+ (2603:10b6:8:11::11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: CAJRppaKcH18AbJAEtgdKiORnIPr60kI
-X-Proofpoint-GUID: CAJRppaKcH18AbJAEtgdKiORnIPr60kI
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108100099
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.18] (98.33.34.38) by MWHPR1601CA0016.namprd16.prod.outlook.com (2603:10b6:300:da::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend Transport; Tue, 10 Aug 2021 15:39:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95dcfa56-61a9-49a9-c0df-08d95c14fd8e
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5296:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR11MB5296C59D869269B8D921BEF7ABF79@DM4PR11MB5296.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sGTpjYa5Cfqdj07G/J9ZGdYQOsM3Q70CmkblpimpKmysV9QH7ZOBiY9eskX8oP04pEIszX8aYw8KBDPbwBeNwe3e990P+yVileTkNrfMmTCOxSjEGYyXGze5/KXf/8fL0AUB2Fdkmdj9pnxND3pKMGqZG2Hu2+gIu9VTngjGouVYwTR0WqBs4Lh7+fBadiJn3o14XJQ+wkdBsz6QxKHG7cEvvCYmRUlIVH8X9LOaibRnExggob3bKNaHw4hCVrJkiLwy8cls2ZqEFoMsLyEhFD8Kpzfg8QB76fu8SaE0cqbgwE1YSL4rwyRodm814kPD9WWFi3sC8kx/BtZNZY5LGFJ0A8OxKBJMnBtqPLJo3VFFguiFdgA4h+++extpjeywehBfmeZ0UThe/EAB0ypE4qSjA0X0VaIjpOxeg5vQ9Ti9N0h+ASVPtC6sut32l2DBQD1sHJ8RXhj/6qytB4AsBS0h6smXlVWsFDGq51eitRedgd+7pm/f0pj+WVzIiPjAdW45B3PSC6ngV+OhkZSOtnIX/VSWSFOulheQuEIhg39KqyhxQDDp3JW8DZO0OEyVb9tLJcKoXgWOS+Q9MkF/WL39b4SZEsgJ4l0OsQwJC19Jt85tLQ27o9aisr36WYQH0jqz9+9cv7BqjV5sqIygmK18BuDt3VbPUXqi16Oo98gj9VcWuXZRWqkSzE69GG1fEMb+q0NF+EyBMusJtUzJ9jCN+Ijf3NFNaGolqerDE+4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5736.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(186003)(2906002)(66476007)(53546011)(4326008)(478600001)(38100700002)(26005)(66556008)(66946007)(4744005)(54906003)(5660300002)(16576012)(6666004)(316002)(31686004)(8936002)(36756003)(956004)(8676002)(86362001)(7416002)(31696002)(6916009)(6486002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXpBMjdaZ2VSSTZaakhtMllTZWcwRk1hdGdnOWhlTW83b0NwbFFxM2R4cjFi?=
+ =?utf-8?B?U0VBRDBQVXBNWkVUdnQwVG5RRVNORkNWRkROOFdZcHVQOUNjV0VXZmsyWFd6?=
+ =?utf-8?B?NGVzWlNHWmdtSzNwbjBkUzVWUkpsN1FRd3lwT0JvTDhCQThYNndsWHg4NzNC?=
+ =?utf-8?B?aUxIckJGNy95RE10N21KbHRQcWZHOWRlbVArSEwxc3lrZ1dvUWN3eFRHK1ZK?=
+ =?utf-8?B?YkUySW1wVXRyYlNlZ0dTWlFwcE9Xa1QvQlhheGoxNTBhN0JwbUlrSmorK1Ew?=
+ =?utf-8?B?TXYxeERVQjBSMVIzdUtNRFl2L0ltdFBlZ0x0VGpYSWY0dENqZjJPNHhmRW5x?=
+ =?utf-8?B?U1ZVVHFUWm1OUURxajl6VzRMZENqWlR6anV1MXJ2R3A0WUVDQ2xGWDVDOTRx?=
+ =?utf-8?B?NVh3UGZ3dDk5azNiSE1qOXdsdS9jbTBqTHRJQmdMcnRVbHQ3SmJ1ZElRWVVZ?=
+ =?utf-8?B?MWxaWG5ycHp2b2Z5YVVTRVRpYjhydHRtQzVUVFVtbC90dDhNM2FGeFJ2WmJE?=
+ =?utf-8?B?MlJZWWRVMXAwdnZCSWE2VzlpOEJmbzZHcGpkVDhvVGVPK1dKTFM2R2x4R283?=
+ =?utf-8?B?eGV2UzdSancrVmlYOVhhb2pWK2xqWTg0K1J6ZGxMVHdSQmpFM3NkeTRncHhY?=
+ =?utf-8?B?amZhVFVYOE0xLzBOV01uSmE0RHFUSWFiUjFma3B3REkrbFAwR2YzcG1ycGxP?=
+ =?utf-8?B?dG5GVy8wOXdiS281cVlzRkNXamJqaE1pRUx3dHEyNFNMell5VTgvbmdGQUpZ?=
+ =?utf-8?B?T3hEYUFJV1VSaTZscy8yVksrTTczeDA4NXJXS0xUY2ZzWjN6WU5WRDJEMmJr?=
+ =?utf-8?B?aTc1aC9oMUFoTy9ZdURwejB0QWNVaCtJeE1MQ2lPUDU2RmhUSEpNWDErMzBL?=
+ =?utf-8?B?blhxS1VnbkhQUXY0eWc5MkdtMlU1ODFuZWhJS1BlVndXSnFpelFlek1KWUc2?=
+ =?utf-8?B?c2x0Um5HSjNpa0NhUno5cVJYMCtnMGNQQlJRb2t1S2VJc2NjQldjVlVMR1Yz?=
+ =?utf-8?B?TUZlSk9qOXpRc0p1bmRtSEllN0c1VDN5WC9IbWY4a1lGSW5vNEZmazN0VnZt?=
+ =?utf-8?B?M1NsSzVPNFkyVHJJVEV6azF1YVNCQklYSnU5UUVIdFZ0bkRNVEVYMUJtOE5F?=
+ =?utf-8?B?VmgrelAxY3UwbWxGT2dxNHlqWEFxUkd5Qm0zdjRyTDRNNHJRWnZQQzM1VDBa?=
+ =?utf-8?B?NzlOTWxaQk50SDQ5U1o0SmxpVVJHbEU0TmdzemtRbnNKRGZ5UkFMY3RUbk1M?=
+ =?utf-8?B?cUpHTDhWdnJUVDRyeHNzcFJEc3Z1MExUaWI2WTRpSWdjV2szY1R0NWhBMllO?=
+ =?utf-8?B?eXE5dWJFNG9HZGdRRkFxa2lEczc2V0J6Q3JFYldCdytBdVowb1pobUN5dHZU?=
+ =?utf-8?B?YTc5UnBjbTM3VEdSR1FYZjBNS05PQkJrZEp0WEFYMlg1anhsWitEeTVSRnJo?=
+ =?utf-8?B?ekt4UEVCSXVtaVBjWG4rMkNTOGwybkRMSUdvVnZ2WFY2S0srSzdxQnB3UjZQ?=
+ =?utf-8?B?VHFOWXJKTzgzalB6dHZOQUJqU2NCRTFaUjVRVnNlUXVpRnVvY2tVZ25uL1lZ?=
+ =?utf-8?B?NkNHTmd1ZWR6Mk94Vy9vMS9oczFPR3BBMVJiRytsR2Q2dHZqQ3FSMkc1RTJm?=
+ =?utf-8?B?OXdERkFxa0l2aW5XenR6blBFNm51bmQzUnRybnlMaDF3WitZYU1OWjBNQ3kw?=
+ =?utf-8?B?ZWxsTmdqOUZ6Ukp6N2taOXlnWWlGdnFEU1JuaHo2TDBuZHljZnpIUkVkQVhE?=
+ =?utf-8?Q?07iYJYnhQQG/X2VKMg0tpTuKonKtTIgeDP/Uw13?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95dcfa56-61a9-49a9-c0df-08d95c14fd8e
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5736.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 15:39:07.4769
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JMR7nEHGjLlrFQo2s+J3LrlzDjAfijVUfdsuC+JrPbeMnK22JpcSbfiFzgLKmHWF/tAa3coaYQ7VnU3eBFRzJQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5296
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an ALSA control so that the slow-start audio ramp feature
-can be disabled. This is useful for high-definition audio applications.
+On 8/9/2021 9:06 AM, Borislav Petkov wrote:
+> On Thu, Jul 22, 2021 at 01:51:51PM -0700, Yu-cheng Yu wrote:
+>>   /*
+>>    * Some CPU features depend on higher CPUID levels, which may not always
+>>    * be available due to CPUID level capping or broken virtualization
+>> @@ -1249,6 +1257,11 @@ static void __init cpu_parse_early_param(void)
+>>   	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+>>   		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
+>>   
+>> +	if (cmdline_find_option_bool(boot_command_line, "no_user_shstk"))
+>> +		setup_clear_cpu_cap(X86_FEATURE_SHSTK);
+>> +	if (cmdline_find_option_bool(boot_command_line, "no_user_ibt"))
+>> +		setup_clear_cpu_cap(X86_FEATURE_IBT);
+> 
+> Patch 1 says:
+> 
+> "Disabling shadow stack also disables IBT."
+> 
+> I don't see that here.
+> 
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 33 ++++++++++++++++++++++++++++++++-
- sound/soc/codecs/cs42l42.h |  3 +++
- 2 files changed, 35 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index b2632fdef9a0..ae9190720380 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -43,6 +43,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_MCLK_STATUS,			0x02 },
- 	{ CS42L42_MCLK_CTL,			0x02 },
- 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
-+	{ CS42L42_SLOW_START_ENABLE,		0x70 },
- 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
- 	{ CS42L42_I2C_STRETCH,			0x03 },
- 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
-@@ -198,6 +199,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
- 	case CS42L42_MCLK_STATUS:
- 	case CS42L42_MCLK_CTL:
- 	case CS42L42_SFTRAMP_RATE:
-+	case CS42L42_SLOW_START_ENABLE:
- 	case CS42L42_I2C_DEBOUNCE:
- 	case CS42L42_I2C_STRETCH:
- 	case CS42L42_I2C_TIMEOUT:
-@@ -408,6 +410,30 @@ static const struct regmap_config cs42l42_regmap = {
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
- static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
- 
-+static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	u8 val;
-+
-+	/* all bits of SLOW_START_EN must be 1 to enable */
-+	switch (ucontrol->value.integer.value[0]) {
-+	case 0:
-+		val = 0;
-+		break;
-+	case 1:
-+		val = CS42L42_SLOW_START_EN_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
-+				      CS42L42_SLOW_START_EN_MASK, val);
-+
-+	return 0;
-+}
-+
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
- };
-@@ -461,7 +487,12 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 	SOC_ENUM("HP Volume Scale", cs42l42_full_scale_vol_enum),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3f, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv),
-+
-+	/* Global */
-+	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
-+			CS42L42_SLOW_START_EN_SHIFT, true, false,
-+			snd_soc_get_volsw, cs42l42_slow_start_put),
- };
- 
- static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index b10796d755ae..85ba1d846072 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -62,6 +62,9 @@
- #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
- 
- #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
-+#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
-+#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
-+#define CS42L42_SLOW_START_EN_SHIFT	4
- #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
- #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
- #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
--- 
-2.11.0
-
+We have X86_FEATURE_IBT dependent on X86_FEATURE_SHSTK (patch #3).
