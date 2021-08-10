@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E803E54B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E16E3E54B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237988AbhHJH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237976AbhHJH7L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:59:11 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DB9C061796
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:49 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id g138so547342wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=az+6FbSVeQcfGxgUtfAori5lUKY+79GO47gVQy0HruY=;
-        b=oHSnIxVK1R+pxluaznogtJUMVrSIlFuRXfYUMzUeGgoOkk6ypUuvTf5A2TcNYZRQKN
-         mLIyMvSMRkceMA53LvBUjQepkis4FapdxtKMdlk+OanN9HdKL4K/7i6N1uhorIDv73EB
-         FjBYC6a1cUgRlGQk1DPqDgdE1CNj85ArR7kppfaRSo6zPRcQnEe1MvpJcM3PtPLRy4E/
-         ILQsBWfMTI9vjjb8PnMEtvl+FaqWuPNh35knUmPTiJ+vyZ+GiX8+q+dcLriIhtC/G2oK
-         B1IZn+KDAmMLKMUR2zXqoe0W25tD3OI/3hnjtZPKj0lCfxdD5vBGXktUH8ojmprhqnG2
-         7Ucw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=az+6FbSVeQcfGxgUtfAori5lUKY+79GO47gVQy0HruY=;
-        b=syTqyq7e/0tjQfFKqD6J2DHwF6JoeaZ1DpjrZ8aeelrltZKgq3WhYDgnvbgzYDOgYy
-         Fr6FsehsWckbgUy1fFEfndpdeZ7bTHd6bwufJ8dh4T3rXP6mAwxq09aBKi5FEYU8r/9V
-         092GWsoO8ttMlo0C+7uUwjWczwfnzCA+AcqLbsrvZdqtCmp67Ai7rK87CmO5tFVU4a8o
-         TcWFQkQGx5SG200xKXcfQ9dOGbNxGp4IwVzmZAqtfQP8wgjfLWm/ctn4V2bkRU0fqC/Q
-         4qsj0HuNzxH9ok1nJ2dRPgYGgj+4u49vPhPXCJJtYGcmxlAOApZrFNivDRPzC0klbayI
-         05Hw==
-X-Gm-Message-State: AOAM5336FR+y9PyF3R98/3Wc1MXUf4nE+8fP6APSZj7HPPNfFugBnxG6
-        V5nNnOXAf1LLu7Tn46jNuaXvRA==
-X-Google-Smtp-Source: ABdhPJz8XCNayFApSfos4bR2F31+2QXn4+nRfP5W1mwgK39NBwUs+TU0oX74xTulywVs1cp4h0Ol0w==
-X-Received: by 2002:a05:600c:3b12:: with SMTP id m18mr21387489wms.143.1628582328412;
-        Tue, 10 Aug 2021 00:58:48 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:b710:2b6e:27aa:f0a0])
-        by smtp.gmail.com with ESMTPSA id d5sm22175380wre.77.2021.08.10.00.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 00:58:48 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     linux-amlogic@lists.infradead.org,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+        id S237983AbhHJH7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:59:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237965AbhHJH71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 03:59:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5492060F11;
+        Tue, 10 Aug 2021 07:59:05 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDMf9-003zxb-HC; Tue, 10 Aug 2021 08:59:03 +0100
+Date:   Tue, 10 Aug 2021 08:59:03 +0100
+Message-ID: <87h7fxbuig.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH] arm64: dts: meson: add audio playback to vega-s95 dtsi
-Date:   Tue, 10 Aug 2021 09:58:35 +0200
-Message-Id: <162858223387.1486110.6330831652699678995.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210804140258.4666-1-christianshewitt@gmail.com>
-References: <20210804140258.4666-1-christianshewitt@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 13/13] arm64: Add CNT{P,V}CTSS_EL0 alternatives to cnt{p,v}ct_el0
+In-Reply-To: <CAOQ_Qsh6h_afu_-WjJ2JTP=gYBYW4hbC92qmxzyJ8dgRCCgLKw@mail.gmail.com>
+References: <20210809152651.2297337-1-maz@kernel.org>
+        <20210809152651.2297337-14-maz@kernel.org>
+        <CAOQ_QshjRWh=onT-j3dWgmVfnAXsMFJoz0i7OEezQxkW4O9KZA@mail.gmail.com>
+        <87im0ebi9m.wl-maz@kernel.org>
+        <CAOQ_Qsh6h_afu_-WjJ2JTP=gYBYW4hbC92qmxzyJ8dgRCCgLKw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oupton@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 09 Aug 2021 19:17:38 +0100,
+Oliver Upton <oupton@google.com> wrote:
+> 
+> On Mon, Aug 9, 2021 at 11:11 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Mon, 09 Aug 2021 17:42:00 +0100,
+> > Oliver Upton <oupton@google.com> wrote:
+> > >
+> > > On Mon, Aug 9, 2021 at 8:48 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > CNTPCTSS_EL0 and CNTVCTSS_EL0 are alternatives to the usual
+> > > > CNTPCT_EL0 and CNTVCT_EL0 that do not require a previous ISB
+> > > > to be synchronised (SS stands for Self-Synchronising).
+> > > >
+> > > > Use the ARM64_HAS_ECV capability to control alternative sequences
+> > > > that switch to these low(er)-cost primitives. Note that the
+> > > > counter access in the VDSO is for now left alone until we decide
+> > > > whether we want to allow this.
+> > >
+> > > What remains to be figured out before we add this to the vDSO (and
+> > > presumably advertise to userspace through some standard convention)?
+> >
+> > We need to understand what breaks if we runtime-patch the VDSO just
+> > like we do with the rest of the kernel. To start with, the debug
+> > version of the shared object is not the same as the object presented
+> > to the process. Maybe that's not a problem, but I would tend to err on
+> > the side of caution.
+> 
+> I would too, but there sadly are instances of Linux patching *user*
+> memory already (go look at how KVM/x86 handles the VMCALL/VMMCALL
+> instruction). But yes, I would much prefer the debug vDSO correspond
+> to the actual instructions.
 
-On Wed, 4 Aug 2021 14:02:58 +0000, Christian Hewitt wrote:
-> Add initial support limited to HDMI i2s and SPDIF (LPCM).
+Urghhh... This reminds me of
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.15/dt64)
+https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=arm/netwinder&id=72797818a31d37a7ec28db659afcab0a56d47968
 
-[1/1] arm64: dts: meson: add audio playback to vega-s95 dtsi
-      https://git.kernel.org/amlogic/c/c6cf488e3bfdf92427686317d99e0342516753de
+which I never tried to get merged for this exact reason. I'd rather
+not replicate this sort of braindamage^Wthing if I can avoid it.
+
+Thanks,
+
+	M.
 
 -- 
-Neil
+Without deviation from the norm, progress is not possible.
