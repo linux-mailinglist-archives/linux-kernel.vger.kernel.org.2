@@ -2,319 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538563E5988
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43013E598C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238732AbhHJL66 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 07:58:58 -0400
-Received: from aposti.net ([89.234.176.197]:48670 "EHLO aposti.net"
+        id S240282AbhHJL7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:59:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233167AbhHJL65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:58:57 -0400
-Date:   Tue, 10 Aug 2021 13:58:24 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Message-Id: <C9HMXQ.KW3EEZJNMS8I@crapouillou.net>
-In-Reply-To: <YRJcKeFKVoaFUeck@phenom.ffwll.local>
-References: <20210805192110.90302-1-paul@crapouillou.net>
-        <20210805192110.90302-3-paul@crapouillou.net> <YQw9hjZll4QmYVLX@kroah.com>
-        <3HUDXQ.7RBGD4FUHR2F@crapouillou.net> <YQ0MU/GcLkPLiy5C@kroah.com>
-        <LYZEXQ.9UWPIAZCVXIK@crapouillou.net> <YRJIb8ofHe8r5g1z@phenom.ffwll.local>
-        <4BDMXQ.S6A97ME8XJUV@crapouillou.net> <YRJcKeFKVoaFUeck@phenom.ffwll.local>
+        id S238798AbhHJL7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:59:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F29860EBD;
+        Tue, 10 Aug 2021 11:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628596720;
+        bh=mGS5Gc7W6N/iGmYXqSU1qGE5hU54bLGn93VwUvI393M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=mDmTgYLnmU8OWwCJ34jbIcKcbUcImg9O9l2CFCwhn4Hn9VcORUrjPm8m/4/2xI+Ui
+         U65jKpR/IHKgNxNShNniqoBzVh5Z5e0jSGz9s3LR/40JxJcZ37xi2tW91fGpzdy2bm
+         hLOGv8r9QGMlrj5JKCAESuV5fuhPn79utX8f7l0Oc0P5ZiNsqZV8jlkV4ifVbpXggf
+         4f4e5WWsfmYGaw4HmrZ7LzT1fFbYBblp/ZQTCsAZoWT7R8wMcV00iYJ1+fC4+Z7Nyx
+         a4aUDCau7gb7TecEiUYbm3Ns7z53T3UFdGScMI2CSdCYLOhctZcVFjHB+h6NUb7n8/
+         Lo4n2ZYxN0NaA==
+Subject: Re: [v6 2/3] interconnect: qcom: Add EPSS L3 support on SC7280
+To:     Odelu Kukatla <okukatla@codeaurora.org>, georgi.djakov@linaro.org,
+        bjorn.andersson@linaro.org, evgreen@google.com,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-arm-msm-owner@vger.kernel.org
+References: <1628577962-3995-1-git-send-email-okukatla@codeaurora.org>
+ <1628577962-3995-3-git-send-email-okukatla@codeaurora.org>
+From:   Georgi Djakov <djakov@kernel.org>
+Message-ID: <b2e74ff4-c15c-3df3-27d9-87cebbf9342d@kernel.org>
+Date:   Tue, 10 Aug 2021 14:58:26 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1628577962-3995-3-git-send-email-okukatla@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi Odelu,
 
-Le mar., août 10 2021 at 12:59:53 +0200, Daniel Vetter 
-<daniel@ffwll.ch> a écrit :
-> On Tue, Aug 10, 2021 at 12:33:04PM +0200, Paul Cercueil wrote:
->>  Hi Daniel,
->> 
->>  Le mar., août 10 2021 at 11:35:43 +0200, Daniel Vetter 
->> <daniel@ffwll.ch> a
->>  écrit :
->>  > On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
->>  > >  Hi Greg,
->>  > >
->>  > >  Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
->>  > >  <gregkh@linuxfoundation.org> a écrit :
->>  > >  > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil 
->> wrote:
->>  > >  > >  Hi Greg,
->>  > >  > >
->>  > >  > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg 
->> Kroah-Hartman
->>  > >  > >  <gregkh@linuxfoundation.org> a écrit :
->>  > >  > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil
->>  > > wrote:
->>  > >  > >  > >  When the drivers of remote devices (e.g. HDMI chip) 
->> are
->>  > >  > > disabled in
->>  > >  > >  > > the
->>  > >  > >  > >  config, we want the ingenic-drm driver to be able to 
->> probe
->>  > >  > >  > > nonetheless
->>  > >  > >  > >  with the other devices (e.g. internal LCD panel) 
->> that are
->>  > >  > > enabled.
->>  > >  > >  > >
->>  > >  > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  > >  > >  > >  ---
->>  > >  > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12
->>  > > ++++++++++++
->>  > >  > >  > >   1 file changed, 12 insertions(+)
->>  > >  > >  > >
->>  > >  > >  > >  diff --git 
->> a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
->>  > >  > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  > >  > >  > >  @@ -1058,6 +1058,18 @@ static int 
->> ingenic_drm_bind(struct
->>  > >  > > device
->>  > >  > >  > > *dev, bool has_components)
->>  > >  > >  > >   	for (i = 0; ; i++) {
->>  > >  > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 
->> 0, i,
->>  > >  > > &panel,
->>  > >  > >  > > &bridge);
->>  > >  > >  > >   		if (ret) {
->>  > >  > >  > >  +			/*
->>  > >  > >  > >  +			 * Workaround for the case where the drivers for 
->> the
->>  > >  > >  > >  +			 * remote devices are not enabled. When that 
->> happens,
->>  > >  > >  > >  +			 * drm_of_find_panel_or_bridge() returns 
->> -EPROBE_DEFER
->>  > >  > >  > >  +			 * endlessly, which prevents the ingenic-drm 
->> driver
->>  > > from
->>  > >  > >  > >  +			 * working at all.
->>  > >  > >  > >  +			 */
->>  > >  > >  > >  +			if (ret == -EPROBE_DEFER) {
->>  > >  > >  > >  +				ret = driver_deferred_probe_check_state(dev);
->>  > >  > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
->>  > >  > >  > >  +					continue;
->>  > >  > >  > >  +			}
->>  > >  > >  >
->>  > >  > >  > So you are mucking around with devices on other busses
->>  > > within this
->>  > >  > >  > driver?  What could go wrong?  :(
->>  > >  > >
->>  > >  > >  I'm doing the same thing as everybody else. This is the 
->> DRM
->>  > > driver,
->>  > >  > > and
->>  > >  > >  there is a driver for the external HDMI chip which gives 
->> us a
->>  > > DRM
->>  > >  > > bridge
->>  > >  > >  that we can obtain from the device tree.
->>  > >  >
->>  > >  > But then why do you need to call this function that is there 
->> for
->>  > > a bus,
->>  > >  > not for a driver.
->>  > >
->>  > >  The documentation disagrees with you :)
->>  > >
->>  > >  And, if that has any weight, this solution was proposed by Rob.
->>  > >
->>  > >  > >  > Please use the existing driver core functionality for 
->> this
->>  > > type of
->>  > >  > >  > thing, it is not unique, no need for this function to be
->>  > > called.
->>  > >  > >
->>  > >  > >  I'm not sure you understand what I'm doing here. This 
->> driver
->>  > > calls
->>  > >  > >  drm_of_find_panel_or_bridge(), without guarantee that the
->>  > > driver
->>  > >  > > for the
->>  > >  > >  remote device (connected via DT graph) has been enabled 
->> in the
->>  > >  > > kernel
->>  > >  > >  config. In that case it will always return -EPROBE_DEFER 
->> and
->>  > > the
->>  > >  > > ingenic-drm
->>  > >  > >  driver will never probe.
->>  > >  > >
->>  > >  > >  This patch makes sure that the driver can probe if the 
->> HDMI
->>  > > driver
->>  > >  > > has been
->>  > >  > >  disabled in the kernel config, nothing more.
->>  > >  >
->>  > >  > That should not be an issue as you do not care if the config 
->> is
->>  > > enabled,
->>  > >  > you just want to do something in the future if the driver 
->> shows
->>  > > up,
->>  > >  > right?
->>  > >
->>  > >  Well, the DRM subsystem doesn't really seem to handle hotplug 
->> of
->>  > > hardware.
->>  > >  Right now all the drivers for the connected hardware need to 
->> probe
->>  > > before
->>  > >  the main DRM driver. So I need to know that a remote device
->>  > > (connected via
->>  > >  DT graph) will never probe.
->>  > >
->>  > >  Give me a of_graph_remote_device_driver_will_never_probe() and 
->> I'll
->>  > > use
->>  > >  that.
->>  > >
->>  > >  > Much like the device link code, have you looked at that?
->>  > >
->>  > >  I don't see how that would help in any way. The device link 
->> code
->>  > > would allow
->>  > >  me to set a dependency between the remote hardware (HDMI chip,
->>  > > provider) and
->>  > >  the LCD controller (consumer), but I already have that 
->> dependency
->>  > > though the
->>  > >  DT graph. What I need is a way for the consumer to continue 
->> probing
->>  > > if the
->>  > >  provider is not going to probe.
->>  >
->>  > Is this actually a legit use-case?
->>  >
->>  > Like you have hw with a bunch of sub-devices linked, and you 
->> decided to
->>  > disable some of them, which makes the driver not load.
->> 
->>  Yes. I'm facing that issue with a board that has a LCD panel and a 
->> HDMI
->>  controller (IT66121). I have a "flasher" program for all the 
->> Ingenic boards,
->>  that's basically just a Linux kernel + initramfs booted over USB 
->> (device). I
->>  can't realistically enable every single driver for all the hardware 
->> that's
->>  on these boards while still having a tiny footprint. And I 
->> shouldn't have to
->>  care about it either.
+On 10.08.21 9:46, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider support on
+> SC7280 SoCs.
 > 
-> I think this is were things go wrong.
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>   drivers/interconnect/qcom/osm-l3.c | 136 +++++++++++++++++++++++++++++++------
+>   drivers/interconnect/qcom/sc7280.h |  10 +++
+>   2 files changed, 125 insertions(+), 21 deletions(-)
 > 
-> Either you have a generic image, where all the needed drivers are 
-> included
-> as modules.
-> 
-> Or you have a bespoke image, where you just built-in what you actually
-> needed.
+> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
+> index c7af143..3b16e73 100644
+> --- a/drivers/interconnect/qcom/osm-l3.c
+> +++ b/drivers/interconnect/qcom/osm-l3.c
+> @@ -9,12 +9,14 @@
+>   #include <linux/io.h>
+>   #include <linux/kernel.h>
+>   #include <linux/module.h>
+> +#include <linux/of_address.h>
+>   #include <linux/of_device.h>
+>   #include <linux/platform_device.h>
+>   
+>   #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>   
+>   #include "sc7180.h"
+> +#include "sc7280.h"
+>   #include "sc8180x.h"
+>   #include "sdm845.h"
+>   #include "sm8150.h"
+> @@ -33,17 +35,33 @@
+>   
+>   /* EPSS Register offsets */
+>   #define EPSS_LUT_ROW_SIZE		4
+> +#define EPSS_REG_L3_VOTE		0x90
+>   #define EPSS_REG_FREQ_LUT		0x100
+>   #define EPSS_REG_PERF_STATE		0x320
+> +#define EPSS_CORE_OFFSET		0x4
+> +#define EPSS_L3_VOTE_REG(base, cpu)\
+> +			(((base) + EPSS_REG_L3_VOTE) +\
+> +			((cpu) * EPSS_CORE_OFFSET))
+>   
+> -#define OSM_L3_MAX_LINKS		1
+> +#define L3_DOMAIN_CNT		4
+> +#define L3_MAX_LINKS		9
+>   
+>   #define to_osm_l3_provider(_provider) \
+>   	container_of(_provider, struct qcom_osm_l3_icc_provider, provider)
+>   
+> +/**
+> + * @domain_base: an array of base address for each clock domain
 
-Yes, and that's what I want - a kernel with just the minimal number of 
-built-in drivers that I need (so, not the HDMI chip).
+This is not a valid kerneldoc. Please add a title for
+	struct qcom_osm_l3_icc_provider
 
-> Asking for both is a bit much ...
-> 
->>  > Why should we care? Is that hdmi driver really that big that we 
->> have to
->>  > support this use-case?
->> 
->>  DRM maintainers work with what embedded devs would call "infinite
->>  resources". It annoys me that CONFIG_DRM pulls the I2C code even 
->> though I
->>  may just have a LCD panel, and it annoys me that I have to enable 
->> support
->>  for hardware that I'm not even planning to use, just so that the 
->> DRM driver
->>  works for the hardware I do want to use.
-> 
-> No.
-> 
-> What I'm rejecting is when people add Kconfig knobs for a single 
-> function,
-> while we have everything else as fairly monolithic dependencies in 
-> drm.
-> That makes no sense.
-> 
-> The only requirement for tiny drm that I have is that whomever 
-> proposes
-> it:
-> 
-> - does an overall survey and shows that we do actually get rid of the 
-> big
->   pieces, and not just of the pieces which are easy to make optional
-> 
-> - has a solid answer to the maintainance cost this will incur. This 
-> one is
->   very important, because for historical reasons we have a bunch of
->   optional things like backlight, and the trend is to make them less
->   optional because a) those are all rather invalid configs anyway b) 
-> no on
->   has time to review the constant flux of busy-work bugfixes when
->   something inevitably breaks again
-> 
-> Thus far all I got from people who want to make drm tiny is some 
-> wishlist
-> items and stand-alone patches that don't make sense stand-alone. Until
-> that's fixed and someone invests serious amounts of time here drm 
-> will be
-> a big behemoth. And that's because we're very much not operating in
-> an "infinite resource" world, the most constraint supply we have is
-> contributor, reviewer and maintainer bandwidth.
-> 
-> Which yes means occasionally things will continue to suck because no 
-> one
-> cared enough about it yet.
+> + * @max_state: max supported frequency level
+> + * @per_core_dcvs: flag used to indicate whether the frequency scaling
+> + * for each core is enabled
+> + * @reg_perf_state: requested frequency level
+> + * @lut_tables: an array of supported frequency levels
+> + * @provider: interconnect provider of this node
+> + */
+>   struct qcom_osm_l3_icc_provider {
+> -	void __iomem *base;
+> +	void __iomem *domain_base[L3_DOMAIN_CNT];
+>   	unsigned int max_state;
+> +	bool per_core_dcvs;
+>   	unsigned int reg_perf_state;
+>   	unsigned long lut_tables[LUT_MAX_ENTRIES];
+>   	struct icc_provider provider;
+> @@ -56,32 +74,44 @@ struct qcom_osm_l3_icc_provider {
+>    * @id: a unique node identifier
+>    * @num_links: the total number of @links
+>    * @buswidth: width of the interconnect between a node and the bus
+> + * @domain: clock domain of the cpu node
+> + * @cpu: cpu instance within its clock domain
+>    */
+>   struct qcom_osm_l3_node {
+>   	const char *name;
+> -	u16 links[OSM_L3_MAX_LINKS];
+> +	u16 links[L3_MAX_LINKS];
+>   	u16 id;
+>   	u16 num_links;
+>   	u16 buswidth;
+> +	u8 domain;
+> +	u8 cpu;
+>   };
+>   
+>   struct qcom_osm_l3_desc {
+>   	const struct qcom_osm_l3_node **nodes;
+>   	size_t num_nodes;
+> +	bool per_core_dcvs;
+>   	unsigned int lut_row_size;
+>   	unsigned int reg_freq_lut;
+>   	unsigned int reg_perf_state;
+>   };
+>   
+> -#define DEFINE_QNODE(_name, _id, _buswidth, ...)			\
+> +#define __DEFINE_QNODE(_name, _id, _buswidth, _domain, _cpu, ...)	\
+>   	static const struct qcom_osm_l3_node _name = {			\
+>   		.name = #_name,						\
+>   		.id = _id,						\
+>   		.buswidth = _buswidth,					\
+> +		.domain = _domain,					\
+> +		.cpu = _cpu,						\
+>   		.num_links = ARRAY_SIZE(((int[]){ __VA_ARGS__ })),	\
+>   		.links = { __VA_ARGS__ },				\
+>   	}
+>   
+> +#define DEFINE_QNODE(_name, _id, _buswidth, ...)		\
+> +		__DEFINE_QNODE(_name, _id, _buswidth, 0, 0, __VA_ARGS__ )
 
-Alright, I can totally understand that.
+Nit: No space before the close parenthesis please.
 
->>  > I know it's possible to do this, that doesn't mean it's a good 
->> idea.
->>  > There's inifinitely more randconfigs that don't boot on my 
->> machine here
->>  > for various reasons than the ones that do boot. We don't have 
->> "fixes"
->>  > for
->>  > all of these to make things still work, despite user 
->> misconfiguring
->>  > their
->>  > kernel.
->> 
->>  I understand, you can't really expect random configs to work every 
->> time. But
->>  it should still be possible to disable drivers for *optional* 
->> hardware in
->>  the config and end up with a working system.
-> 
-> The thing is, right now that stuff just isn't optional. Except if you
-> patch your dt, which I think is the other approach that's been 
-> discussed
-> here.
+> +#define DEFINE_DCVS_QNODE(_name, _id, _buswidth, _domain, _cpu, ...)		\
+> +		__DEFINE_QNODE(_name, _id, _buswidth, _domain, _cpu, __VA_ARGS__ )
 
-It's not been discussed yet - I think we talked about it a few weeks 
-ago on IRC.
+Ditto
 
-DT is supposed to represent the hardware though, and not a specific 
-configuration, which would be policy; so this isn't really the best 
-solution either.
+> +
+>   DEFINE_QNODE(sdm845_osm_apps_l3, SDM845_MASTER_OSM_L3_APPS, 16, SDM845_SLAVE_OSM_L3);
+>   DEFINE_QNODE(sdm845_osm_l3, SDM845_SLAVE_OSM_L3, 16);
+>   
+> @@ -162,26 +192,80 @@ static const struct qcom_osm_l3_desc sm8250_icc_epss_l3 = {
+>   	.reg_perf_state = EPSS_REG_PERF_STATE,
+>   };
+>   
+> +DEFINE_DCVS_QNODE(sc7280_epss_apps_l3, SC7280_MASTER_EPSS_L3_APPS, 32, 0, 0,
+> +					SC7280_SLAVE_EPSS_L3_SHARED, SC7280_SLAVE_EPSS_L3_CPU0,
+> +					SC7280_SLAVE_EPSS_L3_CPU1, SC7280_SLAVE_EPSS_L3_CPU2,
+> +					SC7280_SLAVE_EPSS_L3_CPU3, SC7280_SLAVE_EPSS_L3_CPU4,
+> +					SC7280_SLAVE_EPSS_L3_CPU5, SC7280_SLAVE_EPSS_L3_CPU6,
+> +					SC7280_SLAVE_EPSS_L3_CPU7);
 
-Cheers,
--Paul
+Nit: Please align these to the open parenthesis.
 
+Thanks,
+Georgi
 
