@@ -2,258 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC093E8286
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692243E82CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236030AbhHJSKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:10:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239290AbhHJSFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:05:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 286D861019;
-        Tue, 10 Aug 2021 17:53:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628617994;
-        bh=nhphOhlR/r4UBhu6C1zun38LJpoMJAd+6yhSi0ambv8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CtOXnXxHSzIOdwwaPs7XUMk5w3WhEnJAMtTuSnPNmid8XoHolm1tCli0ub5HRiHg/
-         lUtaZlLBtYhHm8iPx1C7DwseXKJROqgNWBpftD5vmVZXkcEssnnIsF00bPheiGpFHx
-         3j+X1oLA2O/6uWNXqoHpg82WZ/U3Wkb3KyHh7s4MiH7dGBvUvZmHPoRz1fltr/0Ehz
-         pYZkjhR08E/SPXUgoYpknR16OROgbGZIQGmj3ZmJj9ZSMt7i/dwcb6IVE0F7PyCY11
-         WpIIsKf2GISlStF9xugOqtJlzG6r6mfw6wEa23fk+/ObkJiOJH+K996WEpXL4AyGLq
-         7OBv96/niv5/w==
-Date:   Tue, 10 Aug 2021 20:53:12 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borys Movchan <borysmn@axis.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel@axis.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Message-ID: <20210810175312.ziglxdlqimsmxbak@kernel.org>
-References: <20210809174731.27924-1-borysmn@axis.com>
+        id S237044AbhHJSSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240411AbhHJSPz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:15:55 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A33C04E093;
+        Tue, 10 Aug 2021 10:53:28 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id b7so31495027edu.3;
+        Tue, 10 Aug 2021 10:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QM3H90oSp2wbFz4Ss9RbrFJEXcRByIUH4Fe/bMzcbEo=;
+        b=e32YB+FaC/fXHtxLd1eNUxJjJoNjb9C1/YiTwNqROQinvJ5rS9lTSl/+XQBe1A6aVc
+         Kb/kjt4JvmpHNxJht9Ryk6VjP+CXBrBB6hJ0PV+fDL/PQh3OLg+3G5QWdBqf10mhsvRh
+         V6TPxLoSi35sUuT5+KuDFDow62iqXGA8skm7R8NfOCG049S06UkWo9n4w+uA3n0P+vb5
+         HvgOiGRzGi/pZA+U7X2azFxArlYIvbB6AhjbPO6ED5bhr8PxnbG6DHwOdMsSlPPBqXCv
+         6K34V67xddauYia8uA4cbFU1RD315q+BHqzn4oLGrrxz3rd+t8tjZbmXF8HLEmNPTaGH
+         Ma6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QM3H90oSp2wbFz4Ss9RbrFJEXcRByIUH4Fe/bMzcbEo=;
+        b=UVFRb3PACIt0c2dz0ybQmLTlu52oKWd9PAAUnvBMUFqwCApDTl4f+TEBquzg/Bxh3F
+         2VidK8QAuWodW0x8YqdEp7SNgpVpcwFxePaRMFrADKYziZEnpM/a+LnPxP5ak6+v4Owa
+         PbM02JipG1mYn/NxoEeZIhixbmhhkdCZYTEXIT5zsDAbxmtnDv9BV3tfxVPBONGMxDZO
+         W1rjWkuuA9b7ZUxs6m1ATAljGgZJF/ETfIHnolTB4O4t8mNgMDG4o+NMW3BatFyUVvOA
+         slAOOT5Y9rFsgs0oX9qgdLzOsXEwhzJJzJox4p3x9k9PCfFpYz8Z/irATWECgoqNuTEa
+         ix1Q==
+X-Gm-Message-State: AOAM530gzEAeoYVSOanAzE2amZxHDVbzqknJR1rWS7z9JTWa7o85AFlQ
+        Y/21VotY+ZZmh/sHCSg6qIM=
+X-Google-Smtp-Source: ABdhPJxOTqCMoM0wWJ0eO0tUOMox8i4MBJbE5kqat3SnZ1/q69HKWPJeRayBdf48ZJkNl3Dg5YBxBA==
+X-Received: by 2002:a50:8fe1:: with SMTP id y88mr6326667edy.101.1628618007322;
+        Tue, 10 Aug 2021 10:53:27 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id nb39sm7106805ejc.95.2021.08.10.10.53.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 10:53:26 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 20:53:24 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andre Valentin <avalentin@marcant.net>
+Cc:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Jonathan McDowell <noodles@earth.li>,
+        Michal =?utf-8?B?Vm9rw6HEjQ==?= <vokac.m@gmail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
+        Hannu Nyman <hannu.nyman@iki.fi>,
+        Imran Khan <gururug@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Nick Lowe <nick.lowe@gmail.com>
+Subject: Re: [RFC net-next 2/3] net: dsa: qca8k: enable assisted learning on
+ CPU port
+Message-ID: <20210810175324.ijodmycvxfnwu4yf@skbuf>
+References: <20210807120726.1063225-1-dqfext@gmail.com>
+ <20210807120726.1063225-3-dqfext@gmail.com>
+ <20210807222555.y6r7qxhdyy6d3esx@skbuf>
+ <20210808160503.227880-1-dqfext@gmail.com>
+ <0072b721-7520-365d-26ef-a2ad70117ac2@marcant.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809174731.27924-1-borysmn@axis.com>
+In-Reply-To: <0072b721-7520-365d-26ef-a2ad70117ac2@marcant.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 07:47:30PM +0200, Borys Movchan wrote:
-> If something went wrong during the TPM firmware upgrade, like power
-> failure or the firmware image file get corrupted, the TPM might end
-> up in Upgrade or Failure mode upon the next start. The state is
-> persistent between the TPM power cycle/restart.
-> 
-> According to TPM specification:
->  * If the TPM is in Upgrade mode, it will answer with TPM2_RC_UPGRADE
->    to all commands except Field Upgrade related ones.
->  * If the TPM is in Failure mode, it will allow performing TPM
->    initialization but will not provide any crypto operations.
->    Will happily respond to Field Upgrade calls.
-> 
-> Change the behavior of the tpm2_auto_startup(), so it detects the active
-> running mode of the TPM by adding the following checks.  If
-> tpm2_do_selftest() call returns TPM2_RC_UPGRADE, the TPM is in Upgrade
-> mode.
-> If the TPM is in Failure mode, it will successfully respond to both
-> tpm2_do_selftest() and tpm2_startup() calls. Although, will fail to
-> answer to tpm2_get_cc_attrs_tbl(). Use this fact to conclude that TPM is
-> in Failure mode.
-> 
-> If detected that the TPM is in the Upgrade or Failure mode, the function
-> sets TPM_CHIP_FLAG_LIMITED_MODE flag.
+On Tue, Aug 10, 2021 at 07:27:05PM +0200, Andre Valentin wrote:
+> On Sun, Aug 08, 2021 at 1805, DENG Qingfang wrote:
+> > On Sun, Aug 08, 2021 at 01:25:55AM +0300, Vladimir Oltean wrote:
+> >> On Sat, Aug 07, 2021 at 08:07:25PM +0800, DENG Qingfang wrote:
+> >>> Enable assisted learning on CPU port to fix roaming issues.
+> >>
+> >> 'roaming issues' implies to me it suffered from blindness to MAC
+> >> addresses learned on foreign interfaces, which appears to not be true
+> >> since your previous patch removes hardware learning on the CPU port
+> >> (=> hardware learning on the CPU port was supported, so there were no
+> >> roaming issues)
+>
+> The issue is with a wifi AP bridged into dsa and previously learned
+> addresses.
+>
+> Test setup:
+> We have to wifi APs a and b(with qca8k). Client is on AP a.
+>
+> The qca8k switch in AP b sees also the broadcast traffic from the client
+> and takes the address into its fdb.
+>
+> Now the client roams to AP b.
+> The client starts DHCP but does not get an IP. With tcpdump, I see the
+> packets going through the switch (ap->cpu port->ethernet port) and they
+> arrive at the DHCP server. It responds, the response packet reaches the
+> ethernet port of the qca8k, and is not forwarded.
+>
+> After about 3 minutes the fdb entry in the qca8k on AP b is
+> "cleaned up" and the client can immediately get its IP from the DHCP server.
+>
+> I hope this helps understanding the background.
 
-Does this apply for TPM 1.2? Are there differences?
-
-> The limited mode flag is used later during driver
-> initialization/deinitialization to disable functionality which makes no
-> sense or will fail in the current TPM state. Following functionality is
-> affected:
->  * do not register TPM as a hwrng
->  * do not register sysfs entries which provide information impossible to
->    obtain in limited mode
->  * do not register resource managed character device
-
-Maybe for consistency call it TPM_CHIP_FLAG_UPGRADE_MODE? It makes easier
-to "connect dots" later on (has probably something to do TPM_RC_UPGRADE).
-
-
-> 
-> Signed-off-by: Borys Movchan <borysmn@axis.com>
-> ---
-> 
-> Notes:
->     v2:
->      * Commit message updated.
->     
->     v3:
->      * Commit message reworked.
->     
->     v4:
->      * Description of how tpm2_auto_startup() detects the mode added to
->        commit message.
->     
->     v5:
->      * Introduce global flag: TPM_CHIP_FLAG_LIMITED_MODE.
->      * Add checks for the flag in places that will not work properly when TPM
->        functionality is limited.
->      * Avoid registering sysfs and character device entries that have no useful
->        function in limited mode.
->      * Do not register TPM as a hwrng.
->      * Do not try to obtain any crypto-related properties from TPM as it will fail
->        in limited mode.
-> 
->  drivers/char/tpm/tpm-chip.c  | 16 ++++++++++------
->  drivers/char/tpm/tpm-sysfs.c |  3 +++
->  drivers/char/tpm/tpm2-cmd.c  | 13 ++++++++++++-
->  include/linux/tpm.h          |  2 ++
->  4 files changed, 27 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index ddaeceb7e109..8d159db39392 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -444,7 +444,7 @@ static int tpm_add_char_device(struct tpm_chip *chip)
->  		return rc;
->  	}
->  
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2 && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)) {
-
-You cannot rely on validity of TPM_CHIP_FLAG_TPM2, as tpm_tis driver
-uses a TPM command to probe the TPM version.
-
->  		rc = cdev_device_add(&chip->cdevs, &chip->devs);
->  		if (rc) {
->  			dev_err(&chip->devs,
-> @@ -506,7 +506,8 @@ static int tpm_add_legacy_sysfs(struct tpm_chip *chip)
->  	struct attribute **i;
->  	int rc;
->  
-> -	if (chip->flags & (TPM_CHIP_FLAG_TPM2 | TPM_CHIP_FLAG_VIRTUAL))
-> +	if (chip->flags & (TPM_CHIP_FLAG_TPM2 | TPM_CHIP_FLAG_VIRTUAL) ||
-> +		chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
->  		return 0;
->  
->  	rc = compat_only_sysfs_link_entry_to_kobj(
-> @@ -536,7 +537,7 @@ static int tpm_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
->  
->  static int tpm_add_hwrng(struct tpm_chip *chip)
->  {
-> -	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM))
-> +	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM) || chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
->  		return 0;
->  
->  	snprintf(chip->hwrng_name, sizeof(chip->hwrng_name),
-> @@ -550,6 +551,9 @@ static int tpm_get_pcr_allocation(struct tpm_chip *chip)
->  {
->  	int rc;
->  
-> +	if (chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
-> +		return 0;
-> +
->  	rc = (chip->flags & TPM_CHIP_FLAG_TPM2) ?
->  	     tpm2_get_pcr_allocation(chip) :
->  	     tpm1_get_pcr_allocation(chip);
-> @@ -612,7 +616,7 @@ int tpm_chip_register(struct tpm_chip *chip)
->  	return 0;
->  
->  out_hwrng:
-> -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM))
-> +	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE))
->  		hwrng_unregister(&chip->hwrng);
->  out_ppi:
->  	tpm_bios_log_teardown(chip);
-> @@ -637,10 +641,10 @@ EXPORT_SYMBOL_GPL(tpm_chip_register);
->  void tpm_chip_unregister(struct tpm_chip *chip)
->  {
->  	tpm_del_legacy_sysfs(chip);
-> -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM))
-> +	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE))
->  		hwrng_unregister(&chip->hwrng);
->  	tpm_bios_log_teardown(chip);
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2 && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE))
->  		cdev_device_del(&chip->cdevs, &chip->devs);
->  	tpm_del_char_device(chip);
->  }
-> diff --git a/drivers/char/tpm/tpm-sysfs.c b/drivers/char/tpm/tpm-sysfs.c
-> index 63f03cfb8e6a..43ea9c66342d 100644
-> --- a/drivers/char/tpm/tpm-sysfs.c
-> +++ b/drivers/char/tpm/tpm-sysfs.c
-> @@ -478,6 +478,9 @@ void tpm_sysfs_add_device(struct tpm_chip *chip)
->  {
->  	int i;
->  
-> +	if (chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
-> +		return;
-> +
->  	WARN_ON(chip->groups_cnt != 0);
->  
->  	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-> index a25815a6f625..598d62695310 100644
-> --- a/drivers/char/tpm/tpm2-cmd.c
-> +++ b/drivers/char/tpm/tpm2-cmd.c
-> @@ -729,7 +729,12 @@ int tpm2_auto_startup(struct tpm_chip *chip)
->  		goto out;
->  
->  	rc = tpm2_do_selftest(chip);
-> -	if (rc && rc != TPM2_RC_INITIALIZE)
-> +	if (rc == TPM2_RC_UPGRADE) {
-> +		dev_info(&chip->dev, "TPM is in upgrade mode, functionality limited\n");
-> +		chip->flags |= TPM_CHIP_FLAG_LIMITED_MODE;
-> +		rc = 0;
-> +		goto out;
-> +	} else if (rc && rc != TPM2_RC_INITIALIZE)
->  		goto out;
->  
->  	if (rc == TPM2_RC_INITIALIZE) {
-> @@ -743,6 +748,12 @@ int tpm2_auto_startup(struct tpm_chip *chip)
->  	}
->  
->  	rc = tpm2_get_cc_attrs_tbl(chip);
-> +	if (rc) {
-
-Why all rc's apply?
-
-> +		dev_info(&chip->dev, "TPM is in failure mode, functionality limited\n");
-
-Here is again a different name for the same thing (different than
-TPM_CHIP_FLAG_LIMITED_MODE).
-
-> +		chip->flags |= TPM_CHIP_FLAG_LIMITED_MODE;
-> +		rc = 0;
-> +		goto out;
-> +	}
->  
->  out:
->  	if (rc > 0)
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index aa11fe323c56..231d7c7ec913 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -207,6 +207,7 @@ enum tpm2_return_codes {
->  	TPM2_RC_INITIALIZE	= 0x0100, /* RC_VER1 */
->  	TPM2_RC_FAILURE		= 0x0101,
->  	TPM2_RC_DISABLED	= 0x0120,
-> +	TPM2_RC_UPGRADE		= 0x012D,
->  	TPM2_RC_COMMAND_CODE    = 0x0143,
->  	TPM2_RC_TESTING		= 0x090A, /* RC_WARN */
->  	TPM2_RC_REFERENCE_H0	= 0x0910,
-> @@ -277,6 +278,7 @@ enum tpm_chip_flags {
->  	TPM_CHIP_FLAG_HAVE_TIMEOUTS	= BIT(4),
->  	TPM_CHIP_FLAG_ALWAYS_POWERED	= BIT(5),
->  	TPM_CHIP_FLAG_FIRMWARE_POWER_MANAGED	= BIT(6),
-> +	TPM_CHIP_FLAG_LIMITED_MODE	= BIT(7),
->  };
->  
->  #define to_tpm_chip(d) container_of(d, struct tpm_chip, dev)
-> -- 
-> 2.20.1
-> 
-> 
-
-/Jarkko
+How does this differ from what is described in commit d5f19486cee7
+("net: dsa: listen for SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign
+bridge neighbors")?
