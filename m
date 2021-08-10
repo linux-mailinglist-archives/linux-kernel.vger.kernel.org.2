@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925CF3E5691
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBD63E5689
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238802AbhHJJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238745AbhHJJRE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:17:04 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15D3C06179C;
-        Tue, 10 Aug 2021 02:16:36 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so4358759pjb.2;
-        Tue, 10 Aug 2021 02:16:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1eMLWbyBU/sRONtQIPvGPa9Xul5GM1ibC93IbV30gmk=;
-        b=uRHNZ/XSXpSd2EekLcyPlKNakWbcXrgdNHhu4LPh24wCi09/V4P/V4//poEFhQT9Kl
-         pJnwCjtsahSbrHXcUEEZSDvW4mau1uhNU0laOY0m+keJqPyLiHiAWpUbjM6x+rvEvP8E
-         9G+rYO9vvvb9qaf/oUS18om/kibXtTWxdFOqUpwP2Jpn4OtbY/ZUcrlf1j4WzCKfaVJI
-         6KIbbnv59I9a1r1X/AUarC2XIyyh+2wQZ78CwrpkYP26shn5C6oMV5AMd+qGL5SHMeZ3
-         XzMC+4/vaQTdQpqk6BdJIRE7Zx0VWFqxlyCFDECrChxBr5ra+M3u8qhCKGjD8Fn1F8v+
-         23MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1eMLWbyBU/sRONtQIPvGPa9Xul5GM1ibC93IbV30gmk=;
-        b=AY8sXAqpvkW0Zh9jVvSSN5gok1b5sCQWwpJWxXWVQnt5hrkrubbj+6ILjDQzpPzto7
-         W8s5xmnnHifd1J1q4zW9vquxY9ZixylTzhEH0J/fk0ia+2HuFdlqv1UvvCwDR1xumbqD
-         rxxYngxPdWVGmde+LtBNz20xq0X9NEtPboaly8p31dI4OAZLsK+wu7GQg2Vbb1kKyhLi
-         I1Qb96RIjXNoTWeQCmJswyqnh9Sko7Ynb7Kn4riOeFjy/SeMspdVtiJXrEsUhGbu1jka
-         9lsAVLoEjyqcwUhgvYW1fvw5Qe1kmHXzVv95am1ET/1zoVsBn8HXJeYXouzed3CcRraZ
-         R6rA==
-X-Gm-Message-State: AOAM530xgmas4CzQejhtMoxZ7/vvUKOha+ejLwaoy2JlFuTn10a9AAqZ
-        RpykGqqEJXhV2IyouyowkNo=
-X-Google-Smtp-Source: ABdhPJwo3IHlpSusugq84VzN8wuuLt/+jy01P9rYCZOEZCnx35yOgUFBFnfRqrRDwfFvwfVKiRGV9Q==
-X-Received: by 2002:a63:5fd4:: with SMTP id t203mr46726pgb.141.1628586996243;
-        Tue, 10 Aug 2021 02:16:36 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id x2sm2281054pjq.35.2021.08.10.02.16.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 02:16:35 -0700 (PDT)
-Subject: [PATCH v2] docs: sphinx-requirements: Move sphinx_rtd_theme to top
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <75f14c88-6091-1072-41cb-16b886aee5a0@gmail.com>
-Date:   Tue, 10 Aug 2021 18:16:32 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238794AbhHJJRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:17:06 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:51294 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238777AbhHJJQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:16:59 -0400
+Received: from zn.tnic (p200300ec2f0d65002f77173b43e63b63.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:2f77:173b:43e6:3b63])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 32D221EC01B7;
+        Tue, 10 Aug 2021 11:16:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628586988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7e+HGcOHJ96LFGWVJDME/h9ZcJWYWo7cdlDC8qUJl3Y=;
+        b=Hyiz6S9AveiAXpd7wTU8ZQM3+2JzRq/DaHuPlGM6Ou7O3jgv8sL12UwwrJ4VIDwUeR4O4e
+        8rTFGfeQxlxvrrg48r/pEYoZKC6y5SNfI3wKzdZhG+F/3Q644VAtkWyXNFnTR31GmiYIKZ
+        EGsiOkk1vDviIZy1rZDkLdz0L+2ypxY=
+Date:   Tue, 10 Aug 2021 11:17:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 02/36] x86/sev: Save the negotiated GHCB
+ version
+Message-ID: <YRJEE6C/NC3Epa8G@zn.tnic>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-3-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210707181506.30489-3-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sphinx_rtd_theme 0.5.2 has "docutils<0.17" in its requirements.
-docutils 0.17 released this April caused regression in
-sphinx_rtd_theme 0.5.1 [1].
+On Wed, Jul 07, 2021 at 01:14:32PM -0500, Brijesh Singh wrote:
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index 114f62fe2529..19c2306ac02d 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
+> @@ -14,6 +14,15 @@
+>  #define has_cpuflag(f)	boot_cpu_has(f)
+>  #endif
+>  
+> +/*
+> + * Since feature negotiation related variables are set early in the boot
+> + * process they must reside in the .data section so as not to be zeroed
+> + * out when the .bss section is later cleared.
+> + *
+> + * GHCB protocol version negotiated with the hypervisor.
+> + */
+> +static u16 ghcb_version __section(".data..ro_after_init");
 
-By removing docutils and moving sphinx_rtd_theme before Sphinx in
-requirements.txt, the requirement of "docutils<0.17" can be met
-naturally.
+There's a define for that section specifier: __ro_after_init
 
-[1]: https://github.com/readthedocs/sphinx_rtd_theme/issues/1112
-
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
----
-Hi,
-
-It is better to keep requirements as minimal as possible.
-Let's leave the dependency to the sphinx_rtd_theme package.
-
-Changes in v1 [2] -> v2:
-
-    o Remove docutils entry.
-    o Move sphinx_rtd_theme to top.
-    o Adjust patch title.
-
-[2]: https://lore.kernel.org/linux-doc/974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com/
-
-        Thanks, Akira
---
- Documentation/sphinx/requirements.txt | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
-index 489f6626de67..9a35f50798a6 100644
---- a/Documentation/sphinx/requirements.txt
-+++ b/Documentation/sphinx/requirements.txt
-@@ -1,3 +1,2 @@
--docutils
--Sphinx==2.4.4
- sphinx_rtd_theme
-+Sphinx==2.4.4
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
