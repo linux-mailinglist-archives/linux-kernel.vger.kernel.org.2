@@ -2,135 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266AA3E58B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890A93E58BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239966AbhHJK5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
+        id S239957AbhHJLAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236996AbhHJK5o (ORCPT
+        with ESMTP id S232489AbhHJLAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:57:44 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4D2C061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:57:22 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id g138so909630wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:57:22 -0700 (PDT)
+        Tue, 10 Aug 2021 07:00:19 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93468C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:59:57 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id q10so2418485wro.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tYhapPe5H4mgp99/xIK0U3JAgB8Az9f2F1V7ARndpoI=;
-        b=AhB9IzC8N70Gkz+16zkOwjsZF/JBPizz4JhvEBW8U0aZ6Wi5VbDm8loljB0HEFNPoq
-         AvzkUISNyWFs/12scBaSXcdcHM0WRbYHdkbvvPy6CTQ0D2RhIJuRRabU4QizyWpgkAMv
-         M4rdVgbR9O0/GV+/cUKoRJTWKvA9wUlW/RSfip2F9BCutzu9neQgm5LhhMro6IaUURRT
-         g3g3vR5m+ilAjyMo2VNDgldGvH6jkjyW59laaO0TQXlGmqlo1etTkHVlQnJeNA8DePRi
-         sInHmvZlz6RwYdOqXbmADv7YCBgHjBCTOwokBMFXbtRyvKypW1X3kM0EUkCQN2py0KuZ
-         62Aw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=S17kkOE7NXl9gCUN+dzBg78chbeum9RRJd1kaJZW5m8=;
+        b=LddAyGozybyccp7yls42cvZQv6zW8IQSh3HvQfDjQd5rwAlnj0akLl+/UFVqMtNbGs
+         qfAgDr+Tofp2Vi6JrtSHPxev3XoJ0VnUHwklzPacI3wemDXBMFML+VPYsfvh+4OYgosA
+         6MooerljDrdoxh/1f7z7q824amqm4gFWY0nFk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tYhapPe5H4mgp99/xIK0U3JAgB8Az9f2F1V7ARndpoI=;
-        b=EFBvkV5XHpyoO3Ko3EOuHW2VggNLsdnHcNXj4LBiiCTKKxtMrV2b+8KfdSow2BAYpv
-         9jd/0XVlSfpOFQCRJKMbTnIq7TUyiX+C9MRkwbeKw/z3nq66TU8gqQ2bSKr9sOgvaiQo
-         4NbI83ibLPkvgu4cnTZaoKfNGZf89ncPUJBWDAR13id7lllDaFq+6kdMjM4NpmbKTLJJ
-         Y/jo8ffQk3gbtxx3lGFOnIQtll32XE3JSG43/xIn/Eo5kz77a3DARfoM77TIKnpLP3n0
-         j11dwvUnKt4houJqyyLOdDdYbxhrQqamw1P/M32whtHi+V2hKa3yhwnpjF7IClCf0/Iz
-         VNMQ==
-X-Gm-Message-State: AOAM532o9CFWn5AwQro1A/TDAk2t1vBRIpQBHCa4Keg+RRLofLV17RR/
-        Z4hpb1FmXSQkis92O33vt+5IWToVhohetw==
-X-Google-Smtp-Source: ABdhPJx+VZCy4y7O0qYRDJKBrvGIBsNubqdg/hBRfB6E8JiB0w1awHjnpL/wVPnZe4LlEaivmn3SVg==
-X-Received: by 2002:a7b:c7d7:: with SMTP id z23mr21542255wmk.136.1628593040855;
-        Tue, 10 Aug 2021 03:57:20 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id q17sm925952wrr.91.2021.08.10.03.57.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 03:57:20 -0700 (PDT)
-Subject: Re: [PATCH v4 0/5] nvmem: nintendo-otp: Add new driver for the Wii
- and Wii U OTP
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        Rob Herring <robh+dt@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Cc:     Ash Logan <ash@heyquark.com>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-References: <20210701225743.14631-1-linkmauve@linkmauve.fr>
- <20210801073822.12452-1-linkmauve@linkmauve.fr>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <cd854a84-7fd3-38bd-5a28-9306867a990f@linaro.org>
-Date:   Tue, 10 Aug 2021 11:57:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=S17kkOE7NXl9gCUN+dzBg78chbeum9RRJd1kaJZW5m8=;
+        b=AzT5rjfEQMRGXTT16F/4ojFdI7S63CHxKmpC99NI6ROyS84x39SqHDSbvCXzG2lEAp
+         PCLNSjwT1YII8oUXSBvZpDZEcL7CHXQrogeHgOEAiOgU6aKYFIYPawb7My88DWIS9TYi
+         33VDbhLOJfpTDuVmEBDmWpdHc+h5blX6NkO2qPEWs8eNmtoWXE0WztjXvU5hqWVOebR2
+         /TT4zwHEe2myA1Xs9NQiVFlTVoN/aozSDd3OGSmWGi4GG6q48VLMxwJAwfzYl0fmRMnX
+         xFXRdafPZUY7WxIkE86CXHj45so/Zpl/5kCgewqyT5J9HlQUYYX8yIabZoZb4n1Vgb8l
+         IcBA==
+X-Gm-Message-State: AOAM533fT7BKEzxbN9mA200AQqSi5q2jCFSTKJa7/hg5Jbykx0k0aBX7
+        cD8mjIGQgwIAD38V+0qSY2oVdg==
+X-Google-Smtp-Source: ABdhPJy0Bdm7iMJcLDPGmkKD0Q1zFAprjkJgqaO7/wj21af24FjLeDIUIuJou2C3Q0tPo0RAETFXGQ==
+X-Received: by 2002:adf:ec02:: with SMTP id x2mr29408295wrn.426.1628593196160;
+        Tue, 10 Aug 2021 03:59:56 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id y19sm2575471wmq.5.2021.08.10.03.59.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 03:59:55 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 12:59:53 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
+Message-ID: <YRJcKeFKVoaFUeck@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        list@opendingux.net, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210805192110.90302-1-paul@crapouillou.net>
+ <20210805192110.90302-3-paul@crapouillou.net>
+ <YQw9hjZll4QmYVLX@kroah.com>
+ <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
+ <YQ0MU/GcLkPLiy5C@kroah.com>
+ <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
+ <YRJIb8ofHe8r5g1z@phenom.ffwll.local>
+ <4BDMXQ.S6A97ME8XJUV@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <20210801073822.12452-1-linkmauve@linkmauve.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4BDMXQ.S6A97ME8XJUV@crapouillou.net>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 10, 2021 at 12:33:04PM +0200, Paul Cercueil wrote:
+> Hi Daniel,
+> 
+> Le mar., août 10 2021 at 11:35:43 +0200, Daniel Vetter <daniel@ffwll.ch> a
+> écrit :
+> > On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
+> > >  Hi Greg,
+> > > 
+> > >  Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
+> > >  <gregkh@linuxfoundation.org> a écrit :
+> > >  > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
+> > >  > >  Hi Greg,
+> > >  > >
+> > >  > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
+> > >  > >  <gregkh@linuxfoundation.org> a écrit :
+> > >  > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil
+> > > wrote:
+> > >  > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
+> > >  > > disabled in
+> > >  > >  > > the
+> > >  > >  > >  config, we want the ingenic-drm driver to be able to probe
+> > >  > >  > > nonetheless
+> > >  > >  > >  with the other devices (e.g. internal LCD panel) that are
+> > >  > > enabled.
+> > >  > >  > >
+> > >  > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  > >  > >  ---
+> > >  > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12
+> > > ++++++++++++
+> > >  > >  > >   1 file changed, 12 insertions(+)
+> > >  > >  > >
+> > >  > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
+> > >  > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
+> > >  > > device
+> > >  > >  > > *dev, bool has_components)
+> > >  > >  > >   	for (i = 0; ; i++) {
+> > >  > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
+> > >  > > &panel,
+> > >  > >  > > &bridge);
+> > >  > >  > >   		if (ret) {
+> > >  > >  > >  +			/*
+> > >  > >  > >  +			 * Workaround for the case where the drivers for the
+> > >  > >  > >  +			 * remote devices are not enabled. When that happens,
+> > >  > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
+> > >  > >  > >  +			 * endlessly, which prevents the ingenic-drm driver
+> > > from
+> > >  > >  > >  +			 * working at all.
+> > >  > >  > >  +			 */
+> > >  > >  > >  +			if (ret == -EPROBE_DEFER) {
+> > >  > >  > >  +				ret = driver_deferred_probe_check_state(dev);
+> > >  > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
+> > >  > >  > >  +					continue;
+> > >  > >  > >  +			}
+> > >  > >  >
+> > >  > >  > So you are mucking around with devices on other busses
+> > > within this
+> > >  > >  > driver?  What could go wrong?  :(
+> > >  > >
+> > >  > >  I'm doing the same thing as everybody else. This is the DRM
+> > > driver,
+> > >  > > and
+> > >  > >  there is a driver for the external HDMI chip which gives us a
+> > > DRM
+> > >  > > bridge
+> > >  > >  that we can obtain from the device tree.
+> > >  >
+> > >  > But then why do you need to call this function that is there for
+> > > a bus,
+> > >  > not for a driver.
+> > > 
+> > >  The documentation disagrees with you :)
+> > > 
+> > >  And, if that has any weight, this solution was proposed by Rob.
+> > > 
+> > >  > >  > Please use the existing driver core functionality for this
+> > > type of
+> > >  > >  > thing, it is not unique, no need for this function to be
+> > > called.
+> > >  > >
+> > >  > >  I'm not sure you understand what I'm doing here. This driver
+> > > calls
+> > >  > >  drm_of_find_panel_or_bridge(), without guarantee that the
+> > > driver
+> > >  > > for the
+> > >  > >  remote device (connected via DT graph) has been enabled in the
+> > >  > > kernel
+> > >  > >  config. In that case it will always return -EPROBE_DEFER and
+> > > the
+> > >  > > ingenic-drm
+> > >  > >  driver will never probe.
+> > >  > >
+> > >  > >  This patch makes sure that the driver can probe if the HDMI
+> > > driver
+> > >  > > has been
+> > >  > >  disabled in the kernel config, nothing more.
+> > >  >
+> > >  > That should not be an issue as you do not care if the config is
+> > > enabled,
+> > >  > you just want to do something in the future if the driver shows
+> > > up,
+> > >  > right?
+> > > 
+> > >  Well, the DRM subsystem doesn't really seem to handle hotplug of
+> > > hardware.
+> > >  Right now all the drivers for the connected hardware need to probe
+> > > before
+> > >  the main DRM driver. So I need to know that a remote device
+> > > (connected via
+> > >  DT graph) will never probe.
+> > > 
+> > >  Give me a of_graph_remote_device_driver_will_never_probe() and I'll
+> > > use
+> > >  that.
+> > > 
+> > >  > Much like the device link code, have you looked at that?
+> > > 
+> > >  I don't see how that would help in any way. The device link code
+> > > would allow
+> > >  me to set a dependency between the remote hardware (HDMI chip,
+> > > provider) and
+> > >  the LCD controller (consumer), but I already have that dependency
+> > > though the
+> > >  DT graph. What I need is a way for the consumer to continue probing
+> > > if the
+> > >  provider is not going to probe.
+> > 
+> > Is this actually a legit use-case?
+> > 
+> > Like you have hw with a bunch of sub-devices linked, and you decided to
+> > disable some of them, which makes the driver not load.
+> 
+> Yes. I'm facing that issue with a board that has a LCD panel and a HDMI
+> controller (IT66121). I have a "flasher" program for all the Ingenic boards,
+> that's basically just a Linux kernel + initramfs booted over USB (device). I
+> can't realistically enable every single driver for all the hardware that's
+> on these boards while still having a tiny footprint. And I shouldn't have to
+> care about it either.
 
+I think this is were things go wrong.
 
-On 01/08/2021 08:38, Emmanuel Gil Peyrot wrote:
-> The OTP is a read-only memory area which contains various keys and
-> signatures used to decrypt, encrypt or verify various pieces of storage.
-> 
-> Its size depends on the console, it is 128Â bytes on the Wii and
-> 1024Â bytes on the WiiÂ U (split into eight 128Â bytes banks).
-> 
-> It can be used directly by writing into one register and reading from
-> the other one, without any additional synchronisation.
-> 
-> This series has been tested on both the WiiÂ U (using my downstream
-> master-wiiu branch[1]), as well as on the Wii on mainline.
-> 
-> [1] https://gitlab.com/linkmauve/linux-wiiu/-/commits/master-wiiu
-> 
-> Changes since v1:
-> - Fixed the commit messages so they can be accepted by other email
->    servers, sorry about that.
-> 
-> Changes since v2:
-> - Switched the dt binding documentation to YAML.
-> - Used more obvious register arithmetic, and tested that gcc (at -O1 and
->    above) outputs the exact same rlwinm instructions for them.
-> - Use more #defines to make the code easier to read.
-> - Include some links to the reversed documentation.
-> - Avoid overlapping dt regions by changing the existing control@d800100
->    node to end before the OTP registers, with some bigger dt refactoring
->    left for a future series.
-> 
-> Changes since v3:
-> - Relicense the dt-binding documentation under GPLv2-only or
->    BSD-2-clauses.
-> 
-> Emmanuel Gil Peyrot (5):
->    nvmem: nintendo-otp: Add new driver for the Wii and Wii U OTP
->    dt-bindings: nintendo-otp: Document the Wii and Wii U OTP support
+Either you have a generic image, where all the needed drivers are included
+as modules.
 
+Or you have a bespoke image, where you just built-in what you actually
+needed.
 
-Applied 1/5 and 2/5 to nvmem next,
-rest of the patches should go via powerpc dts tree.
+Asking for both is a bit much ...
 
-thanks,
---srini
->    powerpc: wii.dts: Reduce the size of the control area
->    powerpc: wii.dts: Expose the OTP on this platform
->    powerpc: wii_defconfig: Enable OTP by default
+> > Why should we care? Is that hdmi driver really that big that we have to
+> > support this use-case?
 > 
->   .../bindings/nvmem/nintendo-otp.yaml          |  44 +++++++
->   arch/powerpc/boot/dts/wii.dts                 |  13 +-
->   arch/powerpc/configs/wii_defconfig            |   1 +
->   drivers/nvmem/Kconfig                         |  11 ++
->   drivers/nvmem/Makefile                        |   2 +
->   drivers/nvmem/nintendo-otp.c                  | 124 ++++++++++++++++++
->   6 files changed, 194 insertions(+), 1 deletion(-)
->   create mode 100644 Documentation/devicetree/bindings/nvmem/nintendo-otp.yaml
->   create mode 100644 drivers/nvmem/nintendo-otp.c
+> DRM maintainers work with what embedded devs would call "infinite
+> resources". It annoys me that CONFIG_DRM pulls the I2C code even though I
+> may just have a LCD panel, and it annoys me that I have to enable support
+> for hardware that I'm not even planning to use, just so that the DRM driver
+> works for the hardware I do want to use.
+
+No.
+
+What I'm rejecting is when people add Kconfig knobs for a single function,
+while we have everything else as fairly monolithic dependencies in drm.
+That makes no sense.
+
+The only requirement for tiny drm that I have is that whomever proposes
+it:
+
+- does an overall survey and shows that we do actually get rid of the big
+  pieces, and not just of the pieces which are easy to make optional
+
+- has a solid answer to the maintainance cost this will incur. This one is
+  very important, because for historical reasons we have a bunch of
+  optional things like backlight, and the trend is to make them less
+  optional because a) those are all rather invalid configs anyway b) no on
+  has time to review the constant flux of busy-work bugfixes when
+  something inevitably breaks again
+
+Thus far all I got from people who want to make drm tiny is some wishlist
+items and stand-alone patches that don't make sense stand-alone. Until
+that's fixed and someone invests serious amounts of time here drm will be
+a big behemoth. And that's because we're very much not operating in
+an "infinite resource" world, the most constraint supply we have is
+contributor, reviewer and maintainer bandwidth.
+
+Which yes means occasionally things will continue to suck because no one
+cared enough about it yet.
+
+> > I know it's possible to do this, that doesn't mean it's a good idea.
+> > There's inifinitely more randconfigs that don't boot on my machine here
+> > for various reasons than the ones that do boot. We don't have "fixes"
+> > for
+> > all of these to make things still work, despite user misconfiguring
+> > their
+> > kernel.
 > 
+> I understand, you can't really expect random configs to work every time. But
+> it should still be possible to disable drivers for *optional* hardware in
+> the config and end up with a working system.
+
+The thing is, right now that stuff just isn't optional. Except if you
+patch your dt, which I think is the other approach that's been discussed
+here.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
