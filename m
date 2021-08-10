@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC07D3E860A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D412B3E860D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhHJWZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 18:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbhHJWZD (ORCPT
+        id S235065AbhHJW1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 18:27:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33796 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231380AbhHJW1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:25:03 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90BAC061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:24:40 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id j3so23314733plx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QrhRnlztM32IaZrIGZ9Mi5bnSi+S4AFi7dtGVRZ3+oE=;
-        b=lxGFxypI3awP4jFNDHn9zjYNhCggd/GIfQmD8Hl1CdGYU4MNCyFNk9r05maXP8F22G
-         HdaczcdSjxSQu4pazGCUjomJ0bST5B9nWtVdqw1Bl4Qx5VxRvquT2As9HgOJsjD626xE
-         R1L882FgllHUtXsys4b+sA0gL6I4YGZilh1cXW14V8QPLS0H+JG8J2nF/GTeE0cl0Ht9
-         oVad7U14wENl9sBb8SKKAes/kZKHoTxke6i3L+ornLWZ6wmD8NgUq5KrbDG68+aeyPhS
-         9+zwpkTfhK6stWLcqmKMdxCIMkHjsvYygE36Bds305cuWqccbqdYlBs7ExOVXEuh9WSK
-         wzkw==
+        Tue, 10 Aug 2021 18:27:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628634450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rKtkcMoRO4/SmKHkWSTGcVIokr6+s/Nfptu/B3gHJZ4=;
+        b=VRq5dXPptuCXrk1Y4GUcDpjLK1Lp7wMbznfKIXTrMZdhSwWaGT29pw3c0qIRJ4kHC1b0wm
+        oK/zPFOAiZgBEpgjYGPqagEJ2Wuor1oG3cn5AH4lSngONLwSB/vx8LS5FtfwD/ipnJK8Hv
+        onn+QhFLvKgV5B5dNSNaB3TOv2Z5CTw=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-TmbQFms3P0yhKrY0eH3_hw-1; Tue, 10 Aug 2021 18:27:28 -0400
+X-MC-Unique: TmbQFms3P0yhKrY0eH3_hw-1
+Received: by mail-qk1-f198.google.com with SMTP id 18-20020a05620a0792b02903b8e915ccceso62631qka.18
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:27:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QrhRnlztM32IaZrIGZ9Mi5bnSi+S4AFi7dtGVRZ3+oE=;
-        b=a1FTwI0k4QNoju3qz9ZdG+aa+T6fFIkUtPkeatcRCn+G5SFbyXs9TZaNhyzgNC8FEv
-         V1N/6ST+lv4/ik8nCPJQMvWruuXiBFpPKsNu4CdKWX0K/cYc0KKbZU0z/F/Xk2JTg7g9
-         DOcE4RaXzeFZnipr7xxRU6Sdh3tu0U37kL/VuenOCibXaitZM21tMEePna9gnFKjnmoD
-         092mJ3cRkXK172M30V0JoRlr/v3YQSdPcXSeCR80t4/osXTARZmkrtQT0s00fGg+AFL7
-         ueRCCKEto+mnfrtyncWbpP5CaI0SjmOgIWNHFEZYNTYJuuTYu2oPZfINXFzGqFlIfh1c
-         5EYQ==
-X-Gm-Message-State: AOAM531mxCRVv0R6a+poO+FPwUjgJN4PaDArvwgDytJg32TzeGY+SIij
-        o0Lxn2vBb05c+fpVjtqE5sGKtgF3fsXvo01EgV8E6A==
-X-Google-Smtp-Source: ABdhPJxYEaa4G0PKpfOtWkOuWJlc/+m01d8/a9mzzT44r+II16GS1SFt58hWCXe5dgu781qx1ubqndrSao0dUKuOrsw=
-X-Received: by 2002:a65:6a0a:: with SMTP id m10mr368854pgu.82.1628634280452;
- Tue, 10 Aug 2021 15:24:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rKtkcMoRO4/SmKHkWSTGcVIokr6+s/Nfptu/B3gHJZ4=;
+        b=q4OSTAZAQ0iNC22xNjTJWxEcf53uBdjYER0bZwNuA4trIsRNL/Mi0XY18TfjRkaN/M
+         cEE94wmziznDVjENq1VtGWYmHghDhiVd/i0ncHhkRLlQhxDv4TkvBPpbU9NgruSJUt+H
+         +p++MpKtQU3hHWO+B38VOSU0/jYeobm3VVYkhZgS7zn3CnAiNR9EINHVwvwFZq4pOyJb
+         1Z4PUw6Aq85BiL1u5zrnixCTU6NusAYQR6MyzdbQUjlOhbzc22RW/IILi8UNe5Znoph4
+         aabEZrvS/p31SoKxJM14lrJG+EZ5TOHTant5vN5QReOtvkO6jZ1SOCVXlRs6UsTX48gf
+         7/hQ==
+X-Gm-Message-State: AOAM533m+82dw7nqfm4Q89fYJVS6ZXq4fwSbgvxHvRuLf2ODFT+qnE4T
+        iae9itYtig/CueFyYSRrbNbmPUOirOF0ClibyRqZGKlm7CQuWbcjmISeWd07jxZldiHC4lZbF3T
+        kjUTDLwQt9nduiwSGfJsEuKmE
+X-Received: by 2002:a05:620a:13c8:: with SMTP id g8mr14086268qkl.258.1628634448377;
+        Tue, 10 Aug 2021 15:27:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6ol+Dk+1WWikh+M4yXdniloOOnQpQMxQ/tgcF5y35oJ1E0R3kXcExU8u5AzE9C/Qmja70zA==
+X-Received: by 2002:a05:620a:13c8:: with SMTP id g8mr14086248qkl.258.1628634448157;
+        Tue, 10 Aug 2021 15:27:28 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
+        by smtp.gmail.com with ESMTPSA id o26sm4628328qkm.29.2021.08.10.15.27.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 15:27:27 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 18:27:26 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 7/7] vfio/pci: Remove map-on-fault behavior
+Message-ID: <YRL9TmcGcLMRHlgO@t490s>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+ <162818330190.1511194.10498114924408843888.stgit@omen>
+ <YRLne7/S1euppJQr@t490s>
+ <20210810154512.5aa8eeb3.alex.williamson@redhat.com>
 MIME-Version: 1.0
-References: <20210810074504.957-1-phil@philpotter.co.uk> <CAK8P3a2n6WfsQUKP7W4VytJ6K=CGcfOz-eSc=6FzvkANWkk87A@mail.gmail.com>
- <YRJTgMI5CaG7VdGx@kroah.com>
-In-Reply-To: <YRJTgMI5CaG7VdGx@kroah.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 10 Aug 2021 23:24:29 +0100
-Message-ID: <CAA=Fs0khyHV4AytW=smDMmKtR2Dv8QazcOBuuNpPfN+Z0nc_AQ@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove rtw_ioctl function
-To:     gregkh <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210810154512.5aa8eeb3.alex.williamson@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 at 11:23, gregkh <gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Aug 10, 2021 at 10:08:31AM +0200, Arnd Bergmann wrote:
-> > On Tue, Aug 10, 2021 at 9:45 AM Phillip Potter <phil@philpotter.co.uk> wrote:
-> > > -int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
-> > > -{
-> > > -       struct iwreq *wrq = (struct iwreq *)rq;
-> > > -       int ret = 0;
-> > > -
-> > > -       switch (cmd) {
-> > > -       case RTL_IOCTL_WPA_SUPPLICANT:
-> > > -               ret = wpa_supplicant_ioctl(dev, &wrq->u.data);
-> > > -               break;
-> > > -#ifdef CONFIG_88EU_AP_MODE
-> > > -       case RTL_IOCTL_HOSTAPD:
-> > > -               ret = rtw_hostapd_ioctl(dev, &wrq->u.data);
-> > > -               break;
-> > > -#endif /*  CONFIG_88EU_AP_MODE */
-> > > -       case SIOCDEVPRIVATE:
-> > > -               ret = rtw_ioctl_wext_private(dev, &wrq->u);
-> > > -               break;
-> >
-> >
-> > I think these functions are all defined 'static' in the same file, so
-> > removing the
-> > caller will cause a warning about an unused function. Better remove the
-> > called functions along with the caller.
->
-> I get no build warnings/errors with this patch applied, which is odd.
->
-> So I'll take this for now, but a follow-on patch to remove these unused
-> functions would be great to have.
->
-> thanks,
->
-> greg k-h
+On Tue, Aug 10, 2021 at 03:45:12PM -0600, Alex Williamson wrote:
+> On Tue, 10 Aug 2021 16:54:19 -0400
+> Peter Xu <peterx@redhat.com> wrote:
+> 
+> > On Thu, Aug 05, 2021 at 11:08:21AM -0600, Alex Williamson wrote:
+> > > diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
+> > > index 0aa542fa1e26..9aedb78a4ae3 100644
+> > > --- a/drivers/vfio/pci/vfio_pci_private.h
+> > > +++ b/drivers/vfio/pci/vfio_pci_private.h
+> > > @@ -128,6 +128,7 @@ struct vfio_pci_device {
+> > >  	bool			needs_reset;
+> > >  	bool			nointx;
+> > >  	bool			needs_pm_restore;
+> > > +	bool			zapped_bars;  
+> > 
+> > Would it be nicer to invert the meaning of "zapped_bars" and rename it to
+> > "memory_enabled"?  Thanks,
+> 
+> I think this has it's own down sides, for example is this really less
+> confusing?:
+> 
+>   if (!vdev->memory_enabled && __vfio_pci_memory_enabled(vdev))
 
-Dear Greg,
+Maybe "memory_enabled_last"?  No strong opinion, especially for namings. :)
+zapped_bars still looks okay to me.  Thanks,
 
-Many thanks, and of course, I shall prepare one now.
+-- 
+Peter Xu
 
-Regards,
-Phil
