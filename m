@@ -2,192 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546003E5BBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCAC3E5B9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbhHJNdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:33:02 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13262 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239862AbhHJNcz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:32:55 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GkYlj43XKz1CTJm;
-        Tue, 10 Aug 2021 21:32:17 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 21:32:31 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 10 Aug 2021 21:32:30 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
-Subject: [PATCH net-next] net: hns3: add support for triggering reset by ethtool
-Date:   Tue, 10 Aug 2021 21:28:48 +0800
-Message-ID: <1628602128-15640-1-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S238853AbhHJN3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:29:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhHJN3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:29:38 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C49FD60F25;
+        Tue, 10 Aug 2021 13:29:16 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDRog-00448e-Ro; Tue, 10 Aug 2021 14:29:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+Date:   Tue, 10 Aug 2021 14:29:14 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] KVM: arm64: Define KVM_PHYS_SHIFT_MIN
+In-Reply-To: <1628578961-29097-6-git-send-email-anshuman.khandual@arm.com>
+References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
+ <1628578961-29097-6-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <2dbeb2c329cfeb1ee9a7331683cdbc97@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufeng Mo <moyufeng@huawei.com>
+On 2021-08-10 08:02, Anshuman Khandual wrote:
+> Drop the hard coded value for the minimum IPA range i.e 32 bit. Instead
+> define a macro KVM_PHYS_SHIFT_MIN which improves the code readability.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: kvmarm@lists.cs.columbia.edu
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_mmu.h | 3 ++-
+>  arch/arm64/kvm/reset.c           | 2 +-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_mmu.h 
+> b/arch/arm64/include/asm/kvm_mmu.h
+> index b52c5c4b9a3d..716f999818d9 100644
+> --- a/arch/arm64/include/asm/kvm_mmu.h
+> +++ b/arch/arm64/include/asm/kvm_mmu.h
+> @@ -141,7 +141,8 @@ static __always_inline unsigned long
+> __kern_hyp_va(unsigned long v)
+>   * We currently support using a VM-specified IPA size. For backward
+>   * compatibility, the default IPA size is fixed to 40bits.
+>   */
+> -#define KVM_PHYS_SHIFT	(40)
+> +#define KVM_PHYS_SHIFT		(40)
+> +#define KVM_PHYS_SHIFT_MIN	(32)
+> 
+>  #define kvm_phys_shift(kvm)		VTCR_EL2_IPA(kvm->arch.vtcr)
+>  #define kvm_phys_size(kvm)		(_AC(1, ULL) << kvm_phys_shift(kvm))
+> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+> index cba7872d69a8..8dc8b4b9de37 100644
+> --- a/arch/arm64/kvm/reset.c
+> +++ b/arch/arm64/kvm/reset.c
+> @@ -369,7 +369,7 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned
+> long type)
+>  	phys_shift = KVM_VM_TYPE_ARM_IPA_SIZE(type);
+>  	if (phys_shift) {
+>  		if (phys_shift > kvm_ipa_limit ||
+> -		    phys_shift < 32)
+> +		    phys_shift < KVM_PHYS_SHIFT_MIN)
+>  			return -EINVAL;
+>  	} else {
+>  		phys_shift = KVM_PHYS_SHIFT;
 
-Currently, four reset types are supported for the HNS3 ethernet
-driver: IMP reset, global reset, function reset, and FLR. Only
-FLR can now be triggered by the user. To restore the device when
-an exception occurs, add support for triggering reset by ethtool.
+This is not a KVM property, but an architectural one. If you
+want to replace it with something more readable, please
+make it global to the whole of arm64 (ARM64_MIN_PARANGE?).
 
-Run the "ethtool --reset DEVNAME mgmt | all | dedicated" to
-trigger the IMP | global | function reset manually.
+Thanks,
 
-In addition, VF can only trigger function reset.
-
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  5 ++
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 56 ++++++++++++++++++++++
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |  6 +++
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |  1 +
- 4 files changed, 68 insertions(+)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 27809d68d6ed..b0e696b08b8b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -596,6 +596,11 @@ struct hns3_hw_error_info {
- 	const char *msg;
- };
- 
-+struct hns3_reset_type_map {
-+	enum ethtool_reset_flags rst_flags;
-+	enum hnae3_reset_type rst_type;
-+};
-+
- static inline int ring_space(struct hns3_enet_ring *ring)
- {
- 	/* This smp_load_acquire() pairs with smp_store_release() in
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 82061ab6930f..c8f09b07185e 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -953,6 +953,60 @@ static int hns3_get_rxnfc(struct net_device *netdev,
- 	}
- }
- 
-+static const struct hns3_reset_type_map hns3_reset_type[] = {
-+	{ETH_RESET_MGMT, HNAE3_IMP_RESET},
-+	{ETH_RESET_ALL, HNAE3_GLOBAL_RESET},
-+	{ETH_RESET_DEDICATED, HNAE3_FUNC_RESET},
-+};
-+
-+static const struct hns3_reset_type_map hns3vf_reset_type[] = {
-+	{ETH_RESET_DEDICATED, HNAE3_VF_FUNC_RESET},
-+};
-+
-+static int hns3_set_reset(struct net_device *netdev, u32 *flags)
-+{
-+	enum hnae3_reset_type rst_type = HNAE3_NONE_RESET;
-+	struct hnae3_handle *h = hns3_get_handle(netdev);
-+	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(h->pdev);
-+	const struct hnae3_ae_ops *ops = h->ae_algo->ops;
-+	const struct hns3_reset_type_map *rst_type_map;
-+	u32 i, size;
-+
-+	if (ops->ae_dev_resetting && ops->ae_dev_resetting(h))
-+		return -EBUSY;
-+
-+	if (!ops->set_default_reset_request || !ops->reset_event)
-+		return -EOPNOTSUPP;
-+
-+	if (h->flags & HNAE3_SUPPORT_VF) {
-+		rst_type_map = hns3vf_reset_type;
-+		size = ARRAY_SIZE(hns3vf_reset_type);
-+	} else {
-+		rst_type_map = hns3_reset_type;
-+		size = ARRAY_SIZE(hns3_reset_type);
-+	}
-+
-+	for (i = 0; i < size; i++) {
-+		if (rst_type_map[i].rst_flags == *flags) {
-+			rst_type = rst_type_map[i].rst_type;
-+			break;
-+		}
-+	}
-+
-+	if (rst_type == HNAE3_NONE_RESET ||
-+	    (rst_type == HNAE3_IMP_RESET &&
-+	     ae_dev->dev_version <= HNAE3_DEVICE_VERSION_V2))
-+		return -EOPNOTSUPP;
-+
-+	netdev_info(netdev, "Setting reset type %d\n", rst_type);
-+
-+	ops->set_default_reset_request(ae_dev, rst_type);
-+
-+	ops->reset_event(h->pdev, h);
-+
-+	return 0;
-+}
-+
- static void hns3_change_all_ring_bd_num(struct hns3_nic_priv *priv,
- 					u32 tx_desc_num, u32 rx_desc_num)
- {
-@@ -1699,6 +1753,7 @@ static const struct ethtool_ops hns3vf_ethtool_ops = {
- 	.set_priv_flags = hns3_set_priv_flags,
- 	.get_tunable = hns3_get_tunable,
- 	.set_tunable = hns3_set_tunable,
-+	.reset = hns3_set_reset,
- };
- 
- static const struct ethtool_ops hns3_ethtool_ops = {
-@@ -1740,6 +1795,7 @@ static const struct ethtool_ops hns3_ethtool_ops = {
- 	.get_ts_info = hns3_get_ts_info,
- 	.get_tunable = hns3_get_tunable,
- 	.set_tunable = hns3_set_tunable,
-+	.reset = hns3_set_reset,
- };
- 
- void hns3_ethtool_set_ops(struct net_device *netdev)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index f15d76ec0068..9fd15287986f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -3789,6 +3789,12 @@ static void hclge_do_reset(struct hclge_dev *hdev)
- 	}
- 
- 	switch (hdev->reset_type) {
-+	case HNAE3_IMP_RESET:
-+		dev_info(&pdev->dev, "IMP reset requested\n");
-+		val = hclge_read_dev(&hdev->hw, HCLGE_PF_OTHER_INT_REG);
-+		hnae3_set_bit(val, HCLGE_TRIGGER_IMP_RESET_B, 1);
-+		hclge_write_dev(&hdev->hw, HCLGE_PF_OTHER_INT_REG, val);
-+		break;
- 	case HNAE3_GLOBAL_RESET:
- 		dev_info(&pdev->dev, "global reset requested\n");
- 		val = hclge_read_dev(&hdev->hw, HCLGE_GLOBAL_RESET_REG);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
-index cc31b12904ad..ada5c68f2851 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
-@@ -194,6 +194,7 @@ enum HLCGE_PORT_TYPE {
- #define HCLGE_VECTOR0_IMP_CMDQ_ERR_B	4U
- #define HCLGE_VECTOR0_IMP_RD_POISON_B	5U
- #define HCLGE_VECTOR0_ALL_MSIX_ERR_B	6U
-+#define HCLGE_TRIGGER_IMP_RESET_B	7U
- 
- #define HCLGE_MAC_DEFAULT_FRAME \
- 	(ETH_HLEN + ETH_FCS_LEN + 2 * VLAN_HLEN + ETH_DATA_LEN)
+       M.
 -- 
-2.8.1
-
+Jazz is not dead. It just smells funny...
