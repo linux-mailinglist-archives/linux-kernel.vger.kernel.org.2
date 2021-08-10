@@ -2,63 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33243E53C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194123E53D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237768AbhHJGqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236783AbhHJGql (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:46:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC175C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 23:46:19 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628577978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PFP9ghY8Fg5e+/EYvbpFTDNqoMQvRI/FsSOV8DUq0rk=;
-        b=UwzOxTG+NI0SOoFaBwwE3YZoVB3ljP7GUsCJFRmtz9uTkmshMMIxSi13aJVgcLY0gJ+b7P
-        NuQyEwtYr1mfumoJH61PY1Rg05QBAOf5wthnYUL9nn8WJBPEA1gT7BJvsb/TE91R7z7Dq7
-        l8S19wsg3xdeDAwEfmHztj36UApSXLKOhrUuGEWslWj4iHAgyi2WIj6UVteHoGFXHykybp
-        YBMHwyfUq6+s/dXmy2V3F++jTOQ/h62VedhnF/egQ05BAnQ1Pj57Udr3J51FDP6Fm0DJel
-        T+htlLuAK5oGzXYk4qfPlo/pQTLSCf8VY9PPoEamJoy4onjZNqn/d1eJHvVr9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628577978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PFP9ghY8Fg5e+/EYvbpFTDNqoMQvRI/FsSOV8DUq0rk=;
-        b=nr3dWOR7qRQKWCa6Hlnou999JzDJjlGCpmryTpaa8vP2HRgLVYkvJ8XF8DI5ffquEac0f7
-        1QRo6W4u5gFdKqAQ==
-To:     blinkin@email.it
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Bug report for kernel v4.15-rc8+
-In-Reply-To: <629765464.1655403.1628264743080.JavaMail.zimbra@email.it>
-References: <629765464.1655403.1628264743080.JavaMail.zimbra@email.it>
-Date:   Tue, 10 Aug 2021 08:46:17 +0200
-Message-ID: <87tujxssp2.ffs@tglx>
+        id S236959AbhHJGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:47:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234331AbhHJGra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:47:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D3461058;
+        Tue, 10 Aug 2021 06:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628578028;
+        bh=EwApVal98GJfGLrb0/RTF40PF/lUG0GVeGxLHsgKH7I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CVN757FRS1gi/Y3lvE4P4YibmF7yaIUlKzDvclQOpm16d8lBEmubBUx/RUUJELrpd
+         c+4sBjWHP9L4zatRbHZ43X2HalE8LN7679dg7k2h+yvqB/ekIlG2uQmHk9YAe3X1eS
+         Jhc0/do/eA5qmKQTw98eSsVkTYCjC+Fgl2QxptfVikZHvOcmYHW7xexhTL9kl02OBG
+         siGyHbhKAYYp67V0JHdxZRTGE/dXngEldBcHRGLuCSe5CVNXhKRfEefpxN4O7hPJtX
+         2oucPH6NRTnh3QTIXgBVdWsi8jVk/B6sZ4tWmNWszdSmOz0Wga+k2HqfMtmCKDcoJ7
+         D9ZXpWC15mJcg==
+Date:   Mon, 9 Aug 2021 23:47:08 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, oleksandr@natalenko.name
+Subject: Re: [PATCH v27 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+Message-ID: <20210810064708.GI3601405@magnolia>
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210810054637.aap4zuiiparfl2gq@kari-VirtualBox>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810054637.aap4zuiiparfl2gq@kari-VirtualBox>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06 2021 at 17:45, blinkin@email.it wrote:
+On Tue, Aug 10, 2021 at 08:46:37AM +0300, Kari Argillander wrote:
+> On Thu, Jul 29, 2021 at 04:49:33PM +0300, Konstantin Komarov wrote:
+> > This patch adds NTFS Read-Write driver to fs/ntfs3.
+> > 
+> > Having decades of expertise in commercial file systems development and huge
+> > test coverage, we at Paragon Software GmbH want to make our contribution to
+> > the Open Source Community by providing implementation of NTFS Read-Write
+> > driver for the Linux Kernel.
+> > 
+> > This is fully functional NTFS Read-Write driver. Current version works with
+> > NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
+> > 
+> > We plan to support this version after the codebase once merged, and add new
+> > features and fix bugs. For example, full journaling support over JBD will be
+> > added in later updates.
+> 
+> I'm not expert but I have try to review this series best I can and have
+> not found any major mistakes which prevents merging. Yeah there are
+> couple bugs but because this is not going to replace NTFS driver just
+> yet then IMO it is best that merge will happend sooner so development
+> fot others get easier. I will also try to review future patches (from
+> Paragon and others), test patches and make contribution at my own for this
+> driver. So please use
+> 
+> Reviewed by: Kari Argillander <kari.argillander@gmail.com>
 
-> I'm not sure where and how to report it, the kernel I used for the
-> tests is built from the opensuse tree but it looks like an upstream
-> bug.  Can you give me pointers on how to proceed from here? I can
-> provide informations about the symptoms, the hardware config and the
-> workaround but I know nothing about CPU/IRQ management in the linux
-> kernel.
+Nit: there's supposed to be a dash between 'Reviewed' and 'by'.
 
-Detailed information about the problem would indeed be helpful.
+That said, thanks for putting your name out there! :)
 
-Thanks,
-
-        tglx
+--D
