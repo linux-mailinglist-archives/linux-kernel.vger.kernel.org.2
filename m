@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533AD3E5809
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA603E580F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239757AbhHJKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239749AbhHJKMt (ORCPT
+        id S239746AbhHJKOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:14:49 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54195 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238809AbhHJKOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:12:49 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D2DC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:12:28 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id oa17so7451916pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Lb2oLRW+qirgEGtmZTSETxpjUU/FIl6TZgWJI5M3pUc=;
-        b=Frz8NOYZ2sDr4nXo6PZVCIBFRX3W07wAF8WRLD5F+/2RxJ/w8QLrvP8EMmgMThdtR5
-         7JSuRlz0LdXu0XnFQDf3UKAn5Gk19e5rdE1Kze1nM0Nv7LO1UaW5MMMSQ72te6lLEFSG
-         dMg/zWUKPx8QGfHJD9rRfAx5DnNJ4FlUAwwGNZwneX4Ba2FGhgjc7t3YWkxRWvPgot0v
-         Br3xyvCuIUoB5GUwIpsRj8wIvt8lUnLI9GjWi7LdIkbhVAlNUDAXdvGGN0R4BMC0qMa3
-         RLx6GOrNtI6DEJ2Rz60XTsJgrgl50fjsoVVV1+Bm9zhHq7g5BerAWEvaEqqByMwraXxP
-         3weQ==
+        Tue, 10 Aug 2021 06:14:46 -0400
+Received: by mail-il1-f198.google.com with SMTP id c4-20020a056e020cc4b02902242bd90889so69320ilj.20
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Lb2oLRW+qirgEGtmZTSETxpjUU/FIl6TZgWJI5M3pUc=;
-        b=LKrTGdmqPk/tvqSD4VVcinLpgkeG77LxOYhmYkiTG52KKcKcieogsHXeiXTqh+PEhD
-         Qj1uNNR0qRhzDgOLvy6sROVgmSZtXiMEwbgnFCKJb7Xj3ZM63MdKiuBul/T2RER8oKDT
-         g+EykUlpD2donUEAaVcNVDBjC9Ch3JpPxYB7hHculYS8ELe2L/wsEINlKzM7Rt+p5ft+
-         XZ3q42Y6yHoV+RFW29cE9+cNlEP8Sck7An58bXrrsuX0azbO0jpXs+N3SkNzZNW8/dwg
-         EA0PwzibxY7/erQN3X2YryWqyo0c4rLTZj06YLlmbWctc2XXpbkYtpwSJsDIT7UvmVR3
-         yDUw==
-X-Gm-Message-State: AOAM533RuqFYg561uOL9tIrDROANX5bbhIrmjQNtCXUufrZ0jBRIePVD
-        mFmkIsW1rSRKvi89h2/RW+Pm5g==
-X-Google-Smtp-Source: ABdhPJxFyVVd1Ae6QHv4GN87hQJdzWmyopNdKZgqpZDm9JyTldYrN4/9fgZpXoBdVQisxHIbmxvL3A==
-X-Received: by 2002:aa7:88ca:0:b029:3cd:cc14:9fc9 with SMTP id k10-20020aa788ca0000b02903cdcc149fc9mr3257287pff.80.1628590347677;
-        Tue, 10 Aug 2021 03:12:27 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id v10sm2476286pjd.29.2021.08.10.03.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 03:12:27 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 15:42:25 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 8/8] cpufreq: vexpress: Use auto-registration for energy
- model
-Message-ID: <20210810101225.hw6co5ymuqpuntnt@vireshk-i7>
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
- <d3629cc7-d9db-0e54-94e9-278e308b7e8e@arm.com>
- <20210810100652.h473q6hgtc5czfyk@vireshk-i7>
- <2210acb9-2666-7aa9-d36c-346480541f3c@arm.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=O1g4JrkA9NjMeeDfGiKWUc6Pg4ez/f2UwNV15GU1aBI=;
+        b=HRumlfS724tdmH4FDeoCVidXC6I8FuQ0uR13P6OJcyC1ME/wtrUrBq/hj+hNRx6/8J
+         c6CRg3+su2peMEijbXcVPBX5QiyFwNZbl0IE5eGnPuhrSUeRPg3MjdvGdpiWhkeZFyYD
+         j97xa63FY0Sll+BQxMn5WtDYxBTFCUPcobDFwpb1FefyRXinTBlOS2DeHhOIQnuXVJpp
+         T8y8OdIB/jJzAonQ6o3td0NWxmprYq6eQWUlqrtTqc18LpWuyCZ+K0usAvEI3EGce1Om
+         RMgUzXf6Z45CkT1jMtL02yln5URkyFk16A3HKKipC4gL8hTPA1O7YbHwH3WPFUWb/9vF
+         Gnug==
+X-Gm-Message-State: AOAM530Ba0JKecHkxYrfnxp67gcuL8FJbhc1SU46EXq1yekXCPBdJddW
+        OsHk//PFgsMhGbPthQUl9mjO6a4ZinmjrZZKOAG5ZzRBcxZU
+X-Google-Smtp-Source: ABdhPJzmhgIjrzV3NpaMAd2D5Q0SdpgSxy9cM3nVw2Rsj/wtKGs5LQiCEQOnpA0FqudfW+b74QzVFBI6Fsdt3mN77yK0k28Ax7wQ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2210acb9-2666-7aa9-d36c-346480541f3c@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Received: by 2002:a05:6638:1b9:: with SMTP id b25mr22902549jaq.23.1628590464559;
+ Tue, 10 Aug 2021 03:14:24 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 03:14:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001fefaf05c931c476@google.com>
+Subject: [syzbot] UBSAN: array-index-out-of-bounds in taprio_change
+From:   syzbot <syzbot+2b3e5fb6c7ef285a94f6@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-08-21, 11:11, Lukasz Luba wrote:
-> 
-> 
-> On 8/10/21 11:06 AM, Viresh Kumar wrote:
-> > On 10-08-21, 11:05, Lukasz Luba wrote:
-> > > I can see that this driver calls explicitly the
-> > > of_cpufreq_cooling_register()
-> > > It does this in the cpufreq_driver->ready() callback
-> > > implementation: ve_spc_cpufreq_ready()
-> > > 
-> > > With that in mind, the new code in the patch 1/8, which
-> > > registers the EM, should be called even earlier, above:
-> > > ---------------------8<---------------------------------
-> > > /* Callback for handling stuff after policy is ready */
-> > > 	if (cpufreq_driver->ready)
-> > > 		cpufreq_driver->ready(policy);
-> > > ------------------->8----------------------------------
-> > 
-> > Thanks. I will look at this sequencing issue again.
-> > 
-> > > This also triggered a question:
-> > > If this new flag can be set in the cpufreq driver which hasn't set
-> > > CPUFREQ_IS_COOLING_DEV
-> > > ?
-> > 
-> > Why not ?
-> 
-> I thought someone could try to call cpufreq_cooling_register()
-> from the cpufreq driver init function, but it's not possible. I have
-> just checked that, so should be good with these two flags being
-> independent and working fine.
+Hello,
 
-Ahh, I see. Great.
+syzbot found the following issue on:
 
--- 
-viresh
+HEAD commit:    36a21d51725a Linux 5.14-rc5
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=127f3379300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=730106bfb5bf8ace
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b3e5fb6c7ef285a94f6
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2b3e5fb6c7ef285a94f6@syzkaller.appspotmail.com
+
+UBSAN: array-index-out-of-bounds in net/sched/sch_taprio.c:1519:10
+index 16 is out of range for type '__u16 [16]'
+CPU: 0 PID: 13032 Comm: syz-executor.2 Not tainted 5.14.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
+ ubsan_epilogue lib/ubsan.c:148 [inline]
+ __ubsan_handle_out_of_bounds+0xdb/0x130 lib/ubsan.c:288
+ taprio_change+0x33d0/0x5c90 net/sched/sch_taprio.c:1519
+ qdisc_create+0x7c2/0x1480 net/sched/sch_api.c:1247
+ tc_modify_qdisc+0xa88/0x1ea0 net/sched/sch_api.c:1646
+ rtnetlink_rcv_msg+0x91c/0xe50 net/core/rtnetlink.c:5574
+ netlink_rcv_skb+0x1f0/0x460 net/netlink/af_netlink.c:2504
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x7de/0x9b0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x9e7/0xe00 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg net/socket.c:723 [inline]
+ ____sys_sendmsg+0x5a2/0x900 net/socket.c:2392
+ ___sys_sendmsg net/socket.c:2446 [inline]
+ __sys_sendmsg+0x319/0x400 net/socket.c:2475
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f399085a188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000007
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe9b94383f R14: 00007f399085a300 R15: 0000000000022000
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
