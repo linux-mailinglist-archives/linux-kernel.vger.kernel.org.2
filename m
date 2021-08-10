@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46E93E81B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06803E81B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237698AbhHJSBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:01:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
+        id S232986AbhHJSBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:01:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234428AbhHJR6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:58:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D731D6109E;
-        Tue, 10 Aug 2021 17:45:59 +0000 (UTC)
+        id S236208AbhHJR6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:58:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC9A60724;
+        Tue, 10 Aug 2021 17:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617560;
-        bh=OK1lbszpzHAL0zQ7PVkci79wU+TeslVIa+LxOjcUW+s=;
+        s=korg; t=1628617562;
+        bh=jgEx8dShc2VzbMKEH74GN5kZSTKgwtV9KyXmvTd19Zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s++eWm/Nhb6Qp0OBNAWWLyWDgpItQbMab3dV1kFIbmuYJHvLTsS/VfFxqN1Fu5oyb
-         wWWPiivbRm1YlA2gpS2O5LMdR9ntIqte+vQsCJMLe3sVPB97Sv31K9pr6STI4NqMeC
-         eC0u6gjDxQ/7tqHXTIEzYMMehgrhRMCa5OjzQxAs=
+        b=e1PRs6k1oWxfi3RZ0nyYfs3WfX1fJxTB1H5uksevlvxUaHRTmiW6eMXeFb1MHudtf
+         naPWQ/CntTPsknIiwpmTbW5QKioGv80RXe0iFNiEt5XQXqO+vbGyBfW8UcPwVHKiA7
+         e0QjrJFNAxa2o86rpvqjmBn20jqHDDgi4LThsg8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        stable@vger.kernel.org, Allen Pais <apais@linux.microsoft.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
         Jens Wiklander <jens.wiklander@linaro.org>,
         Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH 5.13 113/175] optee: Refuse to load the driver under the kdump kernel
-Date:   Tue, 10 Aug 2021 19:30:21 +0200
-Message-Id: <20210810173004.676680209@linuxfoundation.org>
+Subject: [PATCH 5.13 114/175] optee: fix tee out of memory failure seen during kexec reboot
+Date:   Tue, 10 Aug 2021 19:30:22 +0200
+Message-Id: <20210810173004.706412835@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -40,87 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyler Hicks <tyhicks@linux.microsoft.com>
+From: Allen Pais <apais@linux.microsoft.com>
 
-commit adf752af454e91e123e85e3784972d166837af73 upstream.
+commit f25889f93184db8b07a543cc2bbbb9a8fcaf4333 upstream.
 
-Fix a hung task issue, seen when booting the kdump kernel, that is
-caused by all of the secure world threads being in a permanent suspended
-state:
+The following out of memory errors are seen on kexec reboot
+from the optee core.
 
- INFO: task swapper/0:1 blocked for more than 120 seconds.
-       Not tainted 5.4.83 #1
- "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
- swapper/0       D    0     1      0 0x00000028
- Call trace:
-  __switch_to+0xc8/0x118
-  __schedule+0x2e0/0x700
-  schedule+0x38/0xb8
-  schedule_timeout+0x258/0x388
-  wait_for_completion+0x16c/0x4b8
-  optee_cq_wait_for_completion+0x28/0xa8
-  optee_disable_shm_cache+0xb8/0xf8
-  optee_probe+0x560/0x61c
-  platform_drv_probe+0x58/0xa8
-  really_probe+0xe0/0x338
-  driver_probe_device+0x5c/0xf0
-  device_driver_attach+0x74/0x80
-  __driver_attach+0x64/0xe0
-  bus_for_each_dev+0x84/0xd8
-  driver_attach+0x30/0x40
-  bus_add_driver+0x188/0x1e8
-  driver_register+0x64/0x110
-  __platform_driver_register+0x54/0x60
-  optee_driver_init+0x20/0x28
-  do_one_initcall+0x54/0x24c
-  kernel_init_freeable+0x1e8/0x2c0
-  kernel_init+0x18/0x118
-  ret_from_fork+0x10/0x18
+[    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+[    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
 
-The invoke_fn hook returned OPTEE_SMC_RETURN_ETHREAD_LIMIT, indicating
-that the secure world threads were all in a suspended state at the time
-of the kernel crash. This intermittently prevented the kdump kernel from
-booting, resulting in a failure to collect the kernel dump.
+tee_shm_release() is not invoked on dma shm buffer.
 
-Make kernel dump collection more reliable on systems utilizing OP-TEE by
-refusing to load the driver under the kdump kernel.
+Implement .shutdown() method to handle the release of the buffers
+correctly.
+
+More info:
+https://github.com/OP-TEE/optee_os/issues/3637
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
 Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tee/optee/core.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/tee/optee/core.c |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 --- a/drivers/tee/optee/core.c
 +++ b/drivers/tee/optee/core.c
-@@ -6,6 +6,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -574,6 +574,13 @@ static optee_invoke_fn *get_invoke_func(
+ 	return ERR_PTR(-EINVAL);
+ }
  
- #include <linux/arm-smccc.h>
-+#include <linux/crash_dump.h>
- #include <linux/errno.h>
- #include <linux/io.h>
- #include <linux/module.h>
-@@ -613,6 +614,16 @@ static int optee_probe(struct platform_d
- 	u32 sec_caps;
- 	int rc;
- 
-+	/*
-+	 * The kernel may have crashed at the same time that all available
-+	 * secure world threads were suspended and we cannot reschedule the
-+	 * suspended threads without access to the crashed kernel's wait_queue.
-+	 * Therefore, we cannot reliably initialize the OP-TEE driver in the
-+	 * kdump kernel.
-+	 */
-+	if (is_kdump_kernel())
-+		return -ENODEV;
++/* optee_remove - Device Removal Routine
++ * @pdev: platform device information struct
++ *
++ * optee_remove is called by platform subsystem to alert the driver
++ * that it should release the device
++ */
 +
- 	invoke_fn = get_invoke_func(&pdev->dev);
- 	if (IS_ERR(invoke_fn))
- 		return PTR_ERR(invoke_fn);
+ static int optee_remove(struct platform_device *pdev)
+ {
+ 	struct optee *optee = platform_get_drvdata(pdev);
+@@ -604,6 +611,18 @@ static int optee_remove(struct platform_
+ 	return 0;
+ }
+ 
++/* optee_shutdown - Device Removal Routine
++ * @pdev: platform device information struct
++ *
++ * platform_shutdown is called by the platform subsystem to alert
++ * the driver that a shutdown, reboot, or kexec is happening and
++ * device must be disabled.
++ */
++static void optee_shutdown(struct platform_device *pdev)
++{
++	optee_disable_shm_cache(platform_get_drvdata(pdev));
++}
++
+ static int optee_probe(struct platform_device *pdev)
+ {
+ 	optee_invoke_fn *invoke_fn;
+@@ -749,6 +768,7 @@ MODULE_DEVICE_TABLE(of, optee_dt_match);
+ static struct platform_driver optee_driver = {
+ 	.probe  = optee_probe,
+ 	.remove = optee_remove,
++	.shutdown = optee_shutdown,
+ 	.driver = {
+ 		.name = "optee",
+ 		.of_match_table = optee_dt_match,
 
 
