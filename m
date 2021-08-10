@@ -2,181 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4618C3E7E22
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC733E7E2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhHJRUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhHJRUd (ORCPT
+        id S229650AbhHJRZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:25:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32424 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhHJRZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:20:33 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245ABC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:20:11 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id w19-20020ac87e930000b029025a2609eb04so11077186qtj.17
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:20:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=gTrvBU5BCZz88nYYTzOB3fPPmplR6fDFeeaXK8gldEk=;
-        b=l9PJFM/0r1rwinnIsqSDGisVVjf0eWKNm5DQQYfUs+E+j51lqIA0oil6yCvF3BOiYw
-         sGV1DdLN/LsTt+CeAyIvu3cqALJoeuETJ0h1xFEmHAg6pN3QXPg4kWwWwkQE5cn8a+Wi
-         hRT+CmSDa2LY4r+g5sa9zJtwE0H19PUZhrS7zVWEUNya/mIPuQ7cwcFFpFA/o/XFvKC+
-         sHpO7jPWlFqkydcY8Jxqk+MnASUr5HB2taxPymStlS+Ut1pngHvCLf0P2mGiHiGASk0R
-         M9xsdHoXisOYtZSQypAio2qkcvfAaeMIwj7arPmvdbgH0f1Einnagg7/04XNDRsKYVK+
-         wZDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=gTrvBU5BCZz88nYYTzOB3fPPmplR6fDFeeaXK8gldEk=;
-        b=k6FYH/WrSz+V6lyo7B+7tu/zNpkiOfZwjaignFaVLpua7iYd6J49OfeyKHv/84lM9X
-         iBZjkET37vAhKTQgmUFGIIfytXQnn61ISMT48cZf+TsoPRmWZycqCZuyb40wG1WPK2XC
-         5ofVtsJDIvh2tct0ZtoxXOKgiv7n7iglmX/Mk0XfXLZeFvW0bbVrdmEz2Q6edaYZ/xfn
-         ejw6Q2K2No/tLVufP6uTqrEaJplaipyNhF1EtWzYgqhMNBC9y2Gro1UMHT5X17WaZRUY
-         GYxskr9VWWSR+X4liJuGVRnf+Gt+r33T82G6zhygcRe3dwbw7cWuIExwGonWJSj+rcVz
-         UFQA==
-X-Gm-Message-State: AOAM533SSMJsyJZXix7+QujD7HrHvPJy1Sxo79GG6R1CckGp50FWVp1+
-        NdsejBp4iNPHwHzlrmaZwe1+qceIfAo=
-X-Google-Smtp-Source: ABdhPJz8zUkSj29Bso6TbU2Lkpcvx9y9QcGRUVf1oj8MCD/YRyTJHg7pCkQ/AG9NrNvd8tygdWcjmo0IviE=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:de69:b19a:1af5:866d])
- (user=seanjc job=sendgmr) by 2002:ad4:5ccc:: with SMTP id iu12mr19232697qvb.47.1628616010064;
- Tue, 10 Aug 2021 10:20:10 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 10 Aug 2021 10:19:52 -0700
-In-Reply-To: <20210810171952.2758100-1-seanjc@google.com>
-Message-Id: <20210810171952.2758100-5-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210810171952.2758100-1-seanjc@google.com>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH 4/4] KVM: VMX: Hide VMCS control calculators in vmx.c
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeng Guang <guang.zeng@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 10 Aug 2021 13:25:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628616288; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=+3yCOOv0STMKM7fB/JrNNxWZsSbOgMZ8PpxGIFa4PSQ=;
+ b=ajMqzwNrpmnELVsozFkzJuYu8NZLDs3E61eGPp9REPokwxunqK3Jf/uZqFFcKMBVdQfarCxz
+ TxZghN2oUa1Fv498BdZ8DnFe2l6UreXJ+thX9dXweR7j/8XgySXmk9kG0zWBToa85iskKbnB
+ CLuNTSHUC1KR5G6idUNQkKSHejo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6112b651454b7a558f5d8e69 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 17:24:33
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6B5B7C43460; Tue, 10 Aug 2021 17:24:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4613C433D3;
+        Tue, 10 Aug 2021 17:24:32 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Aug 2021 22:54:32 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Deepak Kumar Singh <deesin@codeaurora.org>,
+        bjorn.andersson@linaro.org, clew@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V1 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P
+ IRQ
+In-Reply-To: <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
+References: <1628180254-758-1-git-send-email-deesin@codeaurora.org>
+ <CAE-0n5203g4CkF5WP1fQYU57fntXbdyVBsMsTKU_xPkgvbt+7Q@mail.gmail.com>
+ <bf2b00c5-0826-00d2-ca95-b4ae6a030211@codeaurora.org>
+ <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
+Message-ID: <8009f5a1458468dbf0b7b20dd166911c@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that nested VMX pulls KVM's desired VMCS controls from vmcs01 instead
-of re-calculating on the fly, bury the helpers that do the calcluations
-in vmx.c.
+On 2021-08-09 23:28, Stephen Boyd wrote:
+> Quoting Deepak Kumar Singh (2021-08-09 04:05:08)
+>> 
+>> On 8/6/2021 1:10 AM, Stephen Boyd wrote:
+>> > Quoting Deepak Kumar Singh (2021-08-05 09:17:33)
+>> >> Some use cases require SMP2P interrupts to wake up the host
+>> >> from suspend.
+>> > Please elaborate on this point so we understand what sort of scenarios
+>> > want to wakeup from suspend.
+>> 
+>> Once such scenario is where WiFi/modem crashes and notifies crash to
+>> local host through smp2p
+>> 
+>> if local host is in suspend it should wake up to handle the crash and
+>> reboot the WiFi/modem.
+> 
+> Does anything go wrong if the firmware crashes during suspend and the
+> local host doesn't handle it until it wakes for some other reason? I'd
+> like to understand if the crash handling can be delayed/combined with
+> another wakeup.
 
-No functional change intended.
+If the modem firmware crashes
+during suspend, the system comes
+out of xo-shutdown and AFAIK stays
+there until we handle the interrupt.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/vmx/vmx.c | 30 +++++++++++++++++++++++++++---
- arch/x86/kvm/vmx/vmx.h | 26 --------------------------
- 2 files changed, 27 insertions(+), 29 deletions(-)
+> 
+>> 
+>> >> Mark smp2p interrupt as wakeup capable to abort
+>> >> the suspend.
+>> >>
+>> >> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+>> >> ---
+>> >>   drivers/soc/qcom/smp2p.c | 11 +++++++++++
+>> >>   1 file changed, 11 insertions(+)
+>> >>
+>> >> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
+>> >> index 2df4883..f8659b0 100644
+>> >> --- a/drivers/soc/qcom/smp2p.c
+>> >> +++ b/drivers/soc/qcom/smp2p.c
+>> >> @@ -18,6 +18,7 @@
+>> >>   #include <linux/soc/qcom/smem.h>
+>> >>   #include <linux/soc/qcom/smem_state.h>
+>> >>   #include <linux/spinlock.h>
+>> >> +#include <linux/pm_wakeirq.h>
+>> >>
+>> >>   /*
+>> >>    * The Shared Memory Point to Point (SMP2P) protocol facilitates communication
+>> >> @@ -538,9 +539,19 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
+>> >>                  goto unwind_interfaces;
+>> >>          }
+>> >>
+>> >> +       ret = device_init_wakeup(&pdev->dev, true);
+>> > Is smp2p supposed to wake up the device by default? If not, then this
+>> > should be device_set_wakeup_capable() instead so that userspace can
+>> > decide if it wants to get the wakeup.
+>> yes, we want smp2p to be wake up capable by default.
+> 
+> Why?
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 6c93122363b2..c771575a8c9c 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4095,7 +4095,7 @@ void set_cr4_guest_host_mask(struct vcpu_vmx *vmx)
- 	vmcs_writel(CR4_GUEST_HOST_MASK, ~vcpu->arch.cr4_guest_owned_bits);
- }
- 
--u32 vmx_pin_based_exec_ctrl(struct vcpu_vmx *vmx)
-+static u32 vmx_pin_based_exec_ctrl(struct vcpu_vmx *vmx)
- {
- 	u32 pin_based_exec_ctrl = vmcs_config.pin_based_exec_ctrl;
- 
-@@ -4111,6 +4111,30 @@ u32 vmx_pin_based_exec_ctrl(struct vcpu_vmx *vmx)
- 	return pin_based_exec_ctrl;
- }
- 
-+static u32 vmx_vmentry_ctrl(void)
-+{
-+	u32 vmentry_ctrl = vmcs_config.vmentry_ctrl;
-+
-+	if (vmx_pt_mode_is_system())
-+		vmentry_ctrl &= ~(VM_ENTRY_PT_CONCEAL_PIP |
-+				  VM_ENTRY_LOAD_IA32_RTIT_CTL);
-+	/* Loading of EFER and PERF_GLOBAL_CTRL are toggled dynamically */
-+	return vmentry_ctrl &
-+		~(VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | VM_ENTRY_LOAD_IA32_EFER);
-+}
-+
-+static u32 vmx_vmexit_ctrl(void)
-+{
-+	u32 vmexit_ctrl = vmcs_config.vmexit_ctrl;
-+
-+	if (vmx_pt_mode_is_system())
-+		vmexit_ctrl &= ~(VM_EXIT_PT_CONCEAL_PIP |
-+				 VM_EXIT_CLEAR_IA32_RTIT_CTL);
-+	/* Loading of EFER and PERF_GLOBAL_CTRL are toggled dynamically */
-+	return vmexit_ctrl &
-+		~(VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL | VM_EXIT_LOAD_IA32_EFER);
-+}
-+
- static void vmx_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
-@@ -4130,7 +4154,7 @@ static void vmx_refresh_apicv_exec_ctrl(struct kvm_vcpu *vcpu)
- 	vmx_update_msr_bitmap_x2apic(vcpu);
- }
- 
--u32 vmx_exec_control(struct vcpu_vmx *vmx)
-+static u32 vmx_exec_control(struct vcpu_vmx *vmx)
- {
- 	u32 exec_control = vmcs_config.cpu_based_exec_ctrl;
- 
-@@ -4212,7 +4236,7 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
- #define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
- 	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
- 
--u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
-+static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
- {
- 	struct kvm_vcpu *vcpu = &vmx->vcpu;
- 
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 2bd07867e9da..4858c5fd95f2 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -452,32 +452,6 @@ static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
- 	vcpu->arch.regs_dirty = 0;
- }
- 
--static inline u32 vmx_vmentry_ctrl(void)
--{
--	u32 vmentry_ctrl = vmcs_config.vmentry_ctrl;
--	if (vmx_pt_mode_is_system())
--		vmentry_ctrl &= ~(VM_ENTRY_PT_CONCEAL_PIP |
--				  VM_ENTRY_LOAD_IA32_RTIT_CTL);
--	/* Loading of EFER and PERF_GLOBAL_CTRL are toggled dynamically */
--	return vmentry_ctrl &
--		~(VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | VM_ENTRY_LOAD_IA32_EFER);
--}
--
--static inline u32 vmx_vmexit_ctrl(void)
--{
--	u32 vmexit_ctrl = vmcs_config.vmexit_ctrl;
--	if (vmx_pt_mode_is_system())
--		vmexit_ctrl &= ~(VM_EXIT_PT_CONCEAL_PIP |
--				 VM_EXIT_CLEAR_IA32_RTIT_CTL);
--	/* Loading of EFER and PERF_GLOBAL_CTRL are toggled dynamically */
--	return vmexit_ctrl &
--		~(VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL | VM_EXIT_LOAD_IA32_EFER);
--}
--
--u32 vmx_exec_control(struct vcpu_vmx *vmx);
--u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx);
--u32 vmx_pin_based_exec_ctrl(struct vcpu_vmx *vmx);
--
- static inline struct kvm_vmx *to_kvm_vmx(struct kvm *kvm)
- {
- 	return container_of(kvm, struct kvm_vmx, kvm);
 -- 
-2.32.0.605.g8dce9f2422-goog
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
