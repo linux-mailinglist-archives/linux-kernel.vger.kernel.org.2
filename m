@@ -2,202 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FB63E5584
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD023E5581
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236694AbhHJIeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhHJId6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:33:58 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC37C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:33:36 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id t9so39875606lfc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p2Fr5BJzhcYbE5uoZF3uMydSpmFYCPWUAIM4ZDQIAO8=;
-        b=ZX9kpQH2G3eesgI+qHAHL1ZSUCALh+QYm9VkNA2ZVb4n/vvxRRGVrH2bWa1vk9TrG4
-         WxOt/pG3CQ1DojqpbuVR2VUvdEnpDh82SwV8LJ9fHWaqlMshBTghsuUy7R+K9Kq1I5EH
-         eD5wvl1lFJ7sEiLKpGMZ84snliGClZ20x7TIZZvnTuJaGmti15gmHEEtLmmi9rpM/QYg
-         mXzrXV1qeourKNTywlvA3jrQcO2M+coW+i0DxdbhOD676KkBDzhAk2zMfu5zHwUhRu/o
-         Sp89C5VSXEQPSyKKGrBmI9gRUzAObj3Y29jcYXn/Cn617MSfFtEqsBJ7EoU54HxTwYBa
-         d69g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p2Fr5BJzhcYbE5uoZF3uMydSpmFYCPWUAIM4ZDQIAO8=;
-        b=KCJ1jbQ5UJfN2lgwNNNvvXoT8QyF0fq/EKIEpfbgmjYOMWZt4dpKjHRgygzRqSkUT7
-         a+IWeEV2XUPCbpQmx8lUmFokGnOrPXEKa1YKwgKxBmlV4cpSLPR/zBmOwcA9DRLLkPL6
-         Rg+xK1XN6tOS3h93viU0j9JQqoOj6XILbhchTbLs06On8XeUcEHorAqNF+4yEJ3TEMLC
-         GtZZPusyZt8o56i5kzw4a3/49m6fw8cqyynBMGWZbswVS+r+eTdK8yFV2aIpz5cbaeO4
-         algacHCsMRNup4zjmYMlT8dzdB7P9wO90AWELSXclAZoABuLwXQNsFj8cBylTsM414BJ
-         QosQ==
-X-Gm-Message-State: AOAM530q1clS7xxcp6U5HvB3Jl79TxEWKnJzcMhrbJiVYtdP6uEbchSz
-        VdZuDSNAba9E1o5LkNOsjZzyQw0+CrLj+v3kSGw=
-X-Google-Smtp-Source: ABdhPJyrI9dStbUFIFtHPxBjTNID3TeK9D5oT0XbVpIxhRowhuOAkAEEEqiEYMCwd5D31/PuAwcBbvCpSVEWo7Kufs4=
-X-Received: by 2002:a05:6512:53c:: with SMTP id o28mr21246802lfc.641.1628584414971;
- Tue, 10 Aug 2021 01:33:34 -0700 (PDT)
+        id S237425AbhHJIdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:33:47 -0400
+Received: from mga14.intel.com ([192.55.52.115]:14775 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhHJIdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 04:33:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214590714"
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="214590714"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 01:33:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="483961752"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 10 Aug 2021 01:33:17 -0700
+Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 8C3CD580922;
+        Tue, 10 Aug 2021 01:33:15 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 16:33:12 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH net 1/1] net: dsa: sja1105: fix error handling on NULL
+ returned by xpcs_create()
+Message-ID: <20210810083312.GA30383@linux.intel.com>
+References: <20210810063513.1757614-1-vee.khee.wong@linux.intel.com>
+ <20210810082528.rff3aembgge62pd6@skbuf>
 MIME-Version: 1.0
-References: <20210807010239.416055-1-sxwjean@me.com> <20210807010239.416055-2-sxwjean@me.com>
- <127de0c7-5e30-6797-1e72-6414d4a60119@csgroup.eu>
-In-Reply-To: <127de0c7-5e30-6797-1e72-6414d4a60119@csgroup.eu>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Tue, 10 Aug 2021 16:33:08 +0800
-Message-ID: <CAEVVKH_G1GjofNU4M0mtuaOAtLyTZ+Fcjjr3ywqeXJrJVwpgrA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] powerpc: Optimize register usage for esr register
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Xiongwei Song <sxwjean@me.com>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>, oleg@redhat.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, npiggin@gmail.com,
-        ravi.bangoria@linux.ibm.com, aneesh.kumar@linux.ibm.com,
-        efremov@linux.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810082528.rff3aembgge62pd6@skbuf>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 7, 2021 at 2:57 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 07/08/2021 =C3=A0 03:02, sxwjean@me.com a =C3=A9crit :
-> > From: Xiongwei Song <sxwjean@gmail.com>
-> >
-> > Create an anonymous union for dsisr and esr regsiters, we can reference
-> > esr to get the exception detail when CONFIG_4xx=3Dy or CONFIG_BOOKE=3Dy=
-.
-> > Otherwise, reference dsisr. This makes code more clear.
-> >
-> > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+On Tue, Aug 10, 2021 at 08:25:29AM +0000, Vladimir Oltean wrote:
+> Hi VK,
+> 
+> On Tue, Aug 10, 2021 at 02:35:13PM +0800, Wong Vee Khee wrote:
+> > There is a possibility xpcs_create() returned a NULL and this is not
+> > handled properly in the sja1105 driver.
+> > 
+> > Fixed this by using IS_ERR_ON_NULL() instead of IS_ERR().
+> > 
+> > Fixes: 3ad1d171548e ("net: dsa: sja1105: migrate to xpcs for SGMII")
+> > Cc: Vladimir Olten <vladimir.oltean@nxp.com>
+> > Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
 > > ---
-> >   arch/powerpc/include/asm/ptrace.h          | 5 ++++-
-> >   arch/powerpc/kernel/process.c              | 2 +-
-> >   arch/powerpc/kernel/ptrace/ptrace.c        | 2 ++
-> >   arch/powerpc/kernel/traps.c                | 2 +-
-> >   arch/powerpc/platforms/44x/machine_check.c | 4 ++--
-> >   arch/powerpc/platforms/4xx/machine_check.c | 2 +-
-> >   6 files changed, 11 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/a=
-sm/ptrace.h
-> > index 3e5d470a6155..c252d04b1206 100644
-> > --- a/arch/powerpc/include/asm/ptrace.h
-> > +++ b/arch/powerpc/include/asm/ptrace.h
-> > @@ -44,7 +44,10 @@ struct pt_regs
-> >   #endif
-> >                       unsigned long trap;
-> >                       unsigned long dar;
-> > -                     unsigned long dsisr;
-> > +                     union {
-> > +                             unsigned long dsisr;
-> > +                             unsigned long esr;
-> > +                     };
-> >                       unsigned long result;
-> >               };
-> >       };
-> > diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/proces=
-s.c
-> > index 185beb290580..f74af8f9133c 100644
-> > --- a/arch/powerpc/kernel/process.c
-> > +++ b/arch/powerpc/kernel/process.c
-> > @@ -1499,7 +1499,7 @@ static void __show_regs(struct pt_regs *regs)
-> >           trap =3D=3D INTERRUPT_DATA_STORAGE ||
-> >           trap =3D=3D INTERRUPT_ALIGNMENT) {
-> >               if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> > -                     pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, reg=
-s->dsisr);
-> > +                     pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, reg=
-s->esr);
-> >               else
-> >                       pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar, re=
-gs->dsisr);
-> >       }
-> > diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/=
-ptrace/ptrace.c
-> > index 0a0a33eb0d28..a222fd4d6334 100644
-> > --- a/arch/powerpc/kernel/ptrace/ptrace.c
-> > +++ b/arch/powerpc/kernel/ptrace/ptrace.c
-> > @@ -375,6 +375,8 @@ void __init pt_regs_check(void)
-> >                    offsetof(struct user_pt_regs, dar));
-> >       BUILD_BUG_ON(offsetof(struct pt_regs, dsisr) !=3D
-> >                    offsetof(struct user_pt_regs, dsisr));
-> > +     BUILD_BUG_ON(offsetof(struct pt_regs, esr) !=3D
-> > +                  offsetof(struct user_pt_regs, dsisr));
+> >  drivers/net/dsa/sja1105/sja1105_mdio.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/dsa/sja1105/sja1105_mdio.c b/drivers/net/dsa/sja1105/sja1105_mdio.c
+> > index 19aea8fb76f6..2c69a759ce6e 100644
+> > --- a/drivers/net/dsa/sja1105/sja1105_mdio.c
+> > +++ b/drivers/net/dsa/sja1105/sja1105_mdio.c
+> > @@ -438,7 +438,7 @@ static int sja1105_mdiobus_pcs_register(struct sja1105_private *priv)
+> >  		}
+> >  
+> >  		xpcs = xpcs_create(mdiodev, priv->phy_mode[port]);
+> > -		if (IS_ERR(xpcs)) {
+> > +		if (IS_ERR_OR_NULL(xpcs)) {
+> >  			rc = PTR_ERR(xpcs);
+> >  			goto out_pcs_free;
+> >  		}
+> > -- 
+> > 2.25.1
+> > 
+> 
+> I think posting to 'net' is a bit drastic for this patch. I agree it is
+> an issue but it has bothered absolutely nobody so far, and if sending
+> this patch to 'net' means you'll be blocked with your patches until the
+> 'net'->'net-next' merge, I'm not sure it's worth it.
 >
-> esr and dsisr are the same, so checking the same thing a second time is p=
-ointless.
 
-Hmm...it's better to check if the changes on pt_regs structure is
-expected I think.
-
-Regards,
-Xiongwei
-
->
-> >       BUILD_BUG_ON(offsetof(struct pt_regs, result) !=3D
-> >                    offsetof(struct user_pt_regs, result));
-> >
-> > diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-> > index dfbce527c98e..2164f5705a0b 100644
-> > --- a/arch/powerpc/kernel/traps.c
-> > +++ b/arch/powerpc/kernel/traps.c
-> > @@ -562,7 +562,7 @@ static inline int check_io_access(struct pt_regs *r=
-egs)
-> >   #ifdef CONFIG_PPC_ADV_DEBUG_REGS
-> >   /* On 4xx, the reason for the machine check or program exception
-> >      is in the ESR. */
-> > -#define get_reason(regs)     ((regs)->dsisr)
-> > +#define get_reason(regs)     ((regs)->esr)
-> >   #define REASON_FP           ESR_FP
-> >   #define REASON_ILLEGAL              (ESR_PIL | ESR_PUO)
-> >   #define REASON_PRIVILEGED   ESR_PPR
-> > diff --git a/arch/powerpc/platforms/44x/machine_check.c b/arch/powerpc/=
-platforms/44x/machine_check.c
-> > index a5c898bb9bab..5d19daacd78a 100644
-> > --- a/arch/powerpc/platforms/44x/machine_check.c
-> > +++ b/arch/powerpc/platforms/44x/machine_check.c
-> > @@ -11,7 +11,7 @@
-> >
-> >   int machine_check_440A(struct pt_regs *regs)
-> >   {
-> > -     unsigned long reason =3D regs->dsisr;
-> > +     unsigned long reason =3D regs->esr;
-> >
-> >       printk("Machine check in kernel mode.\n");
-> >       if (reason & ESR_IMCP){
-> > @@ -48,7 +48,7 @@ int machine_check_440A(struct pt_regs *regs)
-> >   #ifdef CONFIG_PPC_47x
-> >   int machine_check_47x(struct pt_regs *regs)
-> >   {
-> > -     unsigned long reason =3D regs->dsisr;
-> > +     unsigned long reason =3D regs->esr;
-> >       u32 mcsr;
-> >
-> >       printk(KERN_ERR "Machine check in kernel mode.\n");
-> > diff --git a/arch/powerpc/platforms/4xx/machine_check.c b/arch/powerpc/=
-platforms/4xx/machine_check.c
-> > index a71c29892a91..a905da1d6f41 100644
-> > --- a/arch/powerpc/platforms/4xx/machine_check.c
-> > +++ b/arch/powerpc/platforms/4xx/machine_check.c
-> > @@ -10,7 +10,7 @@
-> >
-> >   int machine_check_4xx(struct pt_regs *regs)
-> >   {
-> > -     unsigned long reason =3D regs->dsisr;
-> > +     unsigned long reason =3D regs->esr;
-> >
-> >       if (reason & ESR_IMCP) {
-> >               printk("Instruction");
-> >
+Sounds reasonable for me. I will marked V2 to target net-next.
+ 
+> Anyway, I don't think that PTR_ERR(xpcs) does the right thing when
+> IS_NULL(xpcs). So how about you make this change:
+> 
+> -----------------------------[ cut here ]-----------------------------
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> index a5d150c5f3d8..ca12bf986d4d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> @@ -415,7 +415,7 @@ int stmmac_xpcs_setup(struct mii_bus *bus)
+>  			continue;
+>  
+>  		xpcs = xpcs_create(mdiodev, mode);
+> -		if (IS_ERR_OR_NULL(xpcs)) {
+> +		if (IS_ERR(xpcs)) {
+>  			mdio_device_free(mdiodev);
+>  			continue;
+>  		}
+> diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+> index 63fda3fc40aa..4bd61339823c 100644
+> --- a/drivers/net/pcs/pcs-xpcs.c
+> +++ b/drivers/net/pcs/pcs-xpcs.c
+> @@ -1089,7 +1089,7 @@ struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
+>  
+>  	xpcs = kzalloc(sizeof(*xpcs), GFP_KERNEL);
+>  	if (!xpcs)
+> -		return NULL;
+> +		return ERR_PTR(-ENOMEM);
+>  
+>  	xpcs->mdiodev = mdiodev;
+>  
+> -----------------------------[ cut here ]-----------------------------
