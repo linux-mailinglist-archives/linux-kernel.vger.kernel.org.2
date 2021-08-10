@@ -2,168 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3353E585C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28993E585F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238605AbhHJKas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:30:48 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:36890 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231688AbhHJKar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:30:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UiadueK_1628591422;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UiadueK_1628591422)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 10 Aug 2021 18:30:23 +0800
-Subject: Re: [PATCH V2 2/3] KVM: X86: Set the hardware DR6 only when
- KVM_DEBUGREG_WONT_EXIT
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <YRFdq8sNuXYpgemU@google.com>
- <20210809174307.145263-1-jiangshanlai@gmail.com>
- <20210809174307.145263-2-jiangshanlai@gmail.com>
- <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <45fef019-8bd9-2acb-bd53-1243a8a07c4e@linux.alibaba.com>
-Date:   Tue, 10 Aug 2021 18:30:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S239072AbhHJKcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:32:00 -0400
+Received: from ozlabs.org ([203.11.71.1]:60013 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239045AbhHJKb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:31:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkTlD4QSNz9sRR;
+        Tue, 10 Aug 2021 20:31:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628591496;
+        bh=MReQHuDSQSRyaLKya4YJSHkkokyUvKDV4rZHCUVOo9w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mMB6IxNU8nDT7DzLxHPKBl4JWy+re8UxY/CwPq5ZR0s0LdTM6gl7std6eHlrNVuJX
+         08IJbCXsyQm22daiNYqlUnar5+/GCfrZt5dyl24YG4XJCX7R6xKc1AYO1J4OlUrGvm
+         DzSgLIFtE7+mHQ6+2jj+7S4Ga5WV7Of1qWMxPCkrH7YFVkh+0pj6LKkwFUPMM5GLPS
+         6FhMfGJeLs186l4ucLc2e9h+TZk52Jpeeb6ZBmi8gOLwhi3zs8e9NXe6si/MUhuqW1
+         6RtUht0u4NHt1GlbuSjN2DAt0iDh6HNKclazYh8puwM5I4u6eoM4Vn4MQtlzg19XzJ
+         /sdiNgmJFCB+Q==
+Date:   Tue, 10 Aug 2021 20:31:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the block tree
+Message-ID: <20210810203135.7eb7b01a@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/n=5DrvZNE8yPU4kfr7exugS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/n=5DrvZNE8yPU4kfr7exugS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2021/8/10 18:07, Paolo Bonzini wrote:
-> On 09/08/21 19:43, Lai Jiangshan wrote:
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
->> registers") allows the guest accessing to DRs without exiting when
->> KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
->> on entry to the guest---including DR6 that was not synced before the commit.
->>
->> But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
->> but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
->> and just leads to a more case which leaks stale DR6 to the host which has
->> to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
->>
->> We'd better to set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT,
->> so that we can fine-grain control the cases when we need to reset it
->> which is done in later patch.
->>
->> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
->> ---
->>   arch/x86/kvm/x86.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index ad47a09ce307..d2aa49722064 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -9598,7 +9598,9 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->>           set_debugreg(vcpu->arch.eff_db[1], 1);
->>           set_debugreg(vcpu->arch.eff_db[2], 2);
->>           set_debugreg(vcpu->arch.eff_db[3], 3);
->> -        set_debugreg(vcpu->arch.dr6, 6);
->> +        /* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
->> +        if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
->> +            set_debugreg(vcpu->arch.dr6, 6);
->>       } else if (unlikely(hw_breakpoint_active())) {
->>           set_debugreg(0, 7);
->>       }
->>
-> 
-> Even better, this should be moved to vmx.c's vcpu_enter_guest.  This
-> matches the handling in svm.c:
-> 
->          /*
->           * Run with all-zero DR6 unless needed, so that we can get the exact cause
->           * of a #DB.
->           */
->          if (unlikely(vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT))
->                  svm_set_dr6(svm, vcpu->arch.dr6);
->          else
->                  svm_set_dr6(svm, DR6_ACTIVE_LOW);
-> 
-> That is,
-> 
->      KVM: X86: Set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT
->      Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
->      registers") allows the guest accessing to DRs without exiting when
->      KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
->      on entry to the guest---including DR6 that was not synced before the commit.
->      But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
->      but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
->      and just leads to a more case which leaks stale DR6 to the host which has
->      to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
->      Even if KVM_DEBUGREG_WONT_EXIT, however, setting the host DR6 only matters
->      on VMX because SVM always uses the DR6 value from the VMCB.  So move this
->      line to vmx.c and make it conditional on KVM_DEBUGREG_WONT_EXIT.
->      Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index ae8e62df16dd..21a3ef3012cf 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6625,6 +6625,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->           vmx->loaded_vmcs->host_state.cr4 = cr4;
->       }
-> 
-> +    /* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
-> +    if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
-> +        set_debugreg(vcpu->arch.dr6, 6);
+After merging the block tree, today's linux-next build (or32
+or1ksim_defconfig) failed like this:
 
+mm/page-writeback.c:2044:6: error: redefinition of 'laptop_sync_completion'
+ 2044 | void laptop_sync_completion(void)
+      |      ^~~~~~~~~~~~~~~~~~~~~~
+In file included from include/linux/memcontrol.h:22,
+                 from include/linux/swap.h:9,
+                 from mm/page-writeback.c:20:
+include/linux/writeback.h:345:20: note: previous definition of 'laptop_sync=
+_completion' was here
+  345 | static inline void laptop_sync_completion(void) { }
+      |                    ^~~~~~~~~~~~~~~~~~~~~~
 
-I also noticed the related code in svm.c, but I refrained myself
-to add a new branch in vmx_vcpu_run().  But after I see you put
-the code of resetting dr6 in vmx_sync_dirty_debug_regs(), the whole
-solution is much clean and better.
+Caused by commit
 
-And if any chance you are also concern about the additional branch,
-could you add a new callback to set dr6 and call the callback from
-x86.c when KVM_DEBUGREG_WONT_EXIT.
+  5ed964f8e54e ("mm: hide laptop_mode_wb_timer entirely behind the BDI API")
 
-The possible implementation of the callback:
-for vmx: set_debugreg(vcpu->arch.dr6, 6);
-for svm: svm_set_dr6(svm, vcpu->arch.dr6);
-          and always do svm_set_dr6(svm, DR6_ACTIVE_LOW); at the end of the
-          svm_handle_exit().
+This build does not have CONFIG_BLOCK set.
 
-Thanks
-Lai
+--=20
+Cheers,
+Stephen Rothwell
 
-> +
->       /* When single-stepping over STI and MOV SS, we must clear the
->        * corresponding interruptibility bits in the guest state. Otherwise
->        * vmentry fails as it then expects bit 14 (BS) in pending debug
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a111899ab2b4..fbc536b21585 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9597,7 +9597,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->           set_debugreg(vcpu->arch.eff_db[1], 1);
->           set_debugreg(vcpu->arch.eff_db[2], 2);
->           set_debugreg(vcpu->arch.eff_db[3], 3);
-> -        set_debugreg(vcpu->arch.dr6, 6);
->       } else if (unlikely(hw_breakpoint_active())) {
->           set_debugreg(0, 7);
->       }
-> 
-> Paolo
+--Sig_/n=5DrvZNE8yPU4kfr7exugS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESVYcACgkQAVBC80lX
+0GwuAwf/QGq9DJ/XQu+tSinoG1lJhOu/lSlN52C53itoGSu3pVplA0VnkxJOVEx6
+uIQcNNK4dpUY9aM6TzWJTjCkPUiA0i0NLUEWKrLd8MN0f58fmCJlQfChMkKyHwtr
+jtiHNmge4l54oHOWpuD6ATn7zGhHNsvbzVMMV0OlZ+WMVyb92MdG8PZHfupq7a2C
+SlQ/xV/0wUxQ4fqhCuyG9IkzrJYxZmwtTMdmKI3l6C6C3js9n6H0KUQD+dRJjL32
+aSKjvrdzBV+ko/F45exIclyqTA5Bb6oHoK6cfVWrrkZDpjvqM8Zj3D3rNyjAjolK
+oT1Hm4KyPAI71QZBBCamvBaiqOrInw==
+=XgCK
+-----END PGP SIGNATURE-----
+
+--Sig_/n=5DrvZNE8yPU4kfr7exugS--
