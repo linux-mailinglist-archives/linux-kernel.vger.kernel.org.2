@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F67E3E5C92
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277903E5C8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242128AbhHJOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241805AbhHJOJb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S241813AbhHJOJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 10 Aug 2021 10:09:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174E2C0613D3;
-        Tue, 10 Aug 2021 07:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5o2X/hCLV7cpukH2oc7YrdoxcLinZ80KA7F0XExRIIQ=; b=G7JNfDn2E3Yqko3QMw5vmP2NW2
-        ioSwGdje9u+wA6M5Y0AlzbnP1x+YGPiFcjLq8UK0nhfFiuM9R3jdBoVvhn4td7tEUywlRmqE0QwUf
-        5OY2S869MiBiQMcecsZVtd9qtk4sotUTXTbKqw+1xVDaKrrsSOFhLboCKmfaJR8cMyf4/e1JtpkhM
-        by1+c+X6twREHyKgD2J1Lnul+zwZJDAUu1jgiyJhLBh4QyA0Y4SNJ0+G2J3sCjwRyRCnihFH0fq/v
-        KSrWIiphg7cUXidSSULbagNVzERZ9yvY4Kf44hNXeBZkPnadyyFp+LFYTbL99Ncw0QB3eBCC+wXqC
-        VSIWKBDw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDSQX-00CC2G-5a; Tue, 10 Aug 2021 14:08:27 +0000
-Date:   Tue, 10 Aug 2021 15:08:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Vishal Moola <vishal.moola@gmail.com>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] Page Cache Allowing Hard Interrupts
-Message-ID: <YRKIVZIxdirjg7Ih@casper.infradead.org>
-References: <20210730213630.44891-1-vishal.moola@gmail.com>
- <YRI1oLdiueUbBVwb@infradead.org>
- <YRJsiapS/M3BOH9D@casper.infradead.org>
- <YRJyGMLAFKoB1qUQ@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRJyGMLAFKoB1qUQ@infradead.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238554AbhHJOJ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:09:26 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33950C0613D3;
+        Tue, 10 Aug 2021 07:09:04 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id t66so22479926qkb.0;
+        Tue, 10 Aug 2021 07:09:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=N+Mqo44friizGPZUJX1Ewr3TjH86QyYiAYe5f7DbBYA=;
+        b=OYurtlbEe4ErTd65/L3fC+rqU6BiBOgPghCMJqZKL3PtLC9v97HJDdlhXWmIrJ+ZSY
+         at4xkApKIZMwRbLlM791u3ckYEzSnguZ8OUEnRdJVkmbU2XnWY+vJuupPUGOLbr0FUTH
+         /IG0uXFSvztgZQZg07NSJ+SZkS+7dZfnZjg9hhq+e2kY/ON9+qd0K7Ca/aOu8dIhgHOg
+         ziR37EaThLBLZXZalzWlpS/srlfJxHxqqEBdykLNJghedp+hcyhkXezPyNtvrkQzscCe
+         LMzFWCpcgbDxybPrVT1mLNwgVNTU9EM6u0YaQN+MI7mrIr6155XkzayFPINki+fi21YC
+         TpYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=N+Mqo44friizGPZUJX1Ewr3TjH86QyYiAYe5f7DbBYA=;
+        b=X0NgvOV07Ug6yJMVLYpmUITdaffR5m2+ggkyVH/8k6JhGY2w6+OozVxPXHUnvhU7ds
+         xwCCJIsOzt9p8imq/mnjPkaTnp6alagZRqzQPoz4uMIeGigWqf821Qz8iVflLqV5PNqh
+         PouJnFrZLjVQeKEA2eL0+jfedxdR+wlHkxqEhI1gGOr1S/aodVewTxil8KQCGlAi9kOc
+         MJGF41c8mbwX0QEJ3tNqF0indZZAp2OSqN4Y07Z9gOBY2hzoxiQNK2uI07AHUf5TDajz
+         AhRjL5tqHULKBzFl0NEGsbzdCzRgABQWDtbHYSxGa4gcch3EHLr126iw/kSTLN4nmrkz
+         2JoA==
+X-Gm-Message-State: AOAM531PMp+AgWkduxpYt8MIdnl3iDRsFm26vSF/okh97gVIV9QincBO
+        XrbMG1nB8XA+YB38dMqI9+U=
+X-Google-Smtp-Source: ABdhPJwOt2Dt7W2XQ8abETFNU3b+kRYO8Ccx+wjswwLY8WD3pp+TNQrBooGa5qSHPeUDGV1LZmCM4Q==
+X-Received: by 2002:ae9:c10a:: with SMTP id z10mr27838964qki.71.1628604543451;
+        Tue, 10 Aug 2021 07:09:03 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id f24sm2318309qtp.1.2021.08.10.07.09.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 07:09:02 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     SeongJae Park <sj38.park@gmail.com>, akpm@linux-foundation.org,
+        shuah@kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mm-commits@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
+Subject: Re: [PATCH] selftests/damon/debugfs_attrs: Add missing execute permission
+Date:   Tue, 10 Aug 2021 14:08:58 +0000
+Message-Id: <20210810140858.24122-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YRJisBs9AunccCD4@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 01:33:28PM +0100, Christoph Hellwig wrote:
-> On Tue, Aug 10, 2021 at 01:09:45PM +0100, Matthew Wilcox wrote:
-> > On Tue, Aug 10, 2021 at 09:15:28AM +0100, Christoph Hellwig wrote:
-> > > Stupid question, but where do we ever do page cache interaction from
-> > > soft irq context?
+From: SeongJae Park <sjpark@amazon.de>
+
+On Tue, 10 Aug 2021 13:27:44 +0200 Greg KH <gregkh@linuxfoundation.org> wrote:
+
+> On Tue, Aug 10, 2021 at 11:20:50AM +0000, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
 > > 
-> > test_clear_page_writeback() happens in _some_ interrupt context (ie
-> > the io completion path).  We had been under the impression that it was
-> > always actually softirq context, and so this patch was safe.  However,
-> > it's now clear that some drivers are calling it from hardirq context.
-> > Writeback completions are clearly not latency sensitive and so can
-> > be delayed from hardirq to softirq context without any problem, so I
-> > think fixing this is just going to be a matter of tagging requests as
-> > "complete in softirq context" and ensuring that blk_mq_raise_softirq()
-> > is called for them.
+> > Commit 04edafbc0c07 ("mm/damon: add user space selftests") of
+> > linux-mm[1] gives no execute permission to 'debugfs_attrs.sh' file.
+> > This results in a DAMON selftest failure as below:
 > > 
-> > Assuming that DIO write completions _are_ latency-sensitive, of course.
-> > Maybe all write completions could be run in softirqs.
+> >     $ make -C tools/testing/selftests/damon run_tests
+> >     make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
+> >     TAP version 13
+> >     1..1
+> >     # selftests: damon: debugfs_attrs.sh
+> >     # Warning: file debugfs_attrs.sh is not executable, correct this.
+> >     not ok 1 selftests: damon: debugfs_attrs.sh
+> >     make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
+> > 
+> > To solve the problem, this commit adds the execute permission for
+> > 'debugfs_attrs.sh' file.
+> > 
+> > [1] https://github.com/hnaz/linux-mm/commit/04edafbc0c07
+> > 
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > ---
+> >  tools/testing/selftests/damon/debugfs_attrs.sh | 0
+> >  1 file changed, 0 insertions(+), 0 deletions(-)
+> >  mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_attrs.sh
+> > 
+> > diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
+> > old mode 100644
+> > new mode 100755
+> > -- 
+> > 2.17.1
+> > 
 > 
-> I really don't really see any benefit in introducing softirqs into
-> the game.
+> Why not fix the tools to execute the file properly as changing the mode
+> of a file does not work well with all tools that we use (i.e. patch
+> files.)
 
-The benefit is not having to disable interrupts while manipulating
-the page cache, eg delete_from_page_cache_batch().
+Ok, It sounds make some sense.  Hence, I posted this patch:
+https://lore.kernel.org/linux-kselftest/20210810140459.23990-1-sj38.park@gmail.com/
 
-> If we want to simplify the locking and do not care too much
-> about latency, we should just defer to workqueue/thread context.
 
-It's not a bad idea.  I thought BH would be the better place for it
-because it wouldn't require scheduling in a task.  If we are going to
-schedule in a task though, can we make it the task which submitted the I/O
-(assuming it still exists), or do we not have the infrastructure for that?
+Thanks,
+SeongJae Park
 
-> For example XFS already does that for all writeback except for pure
-> overwrites.  Those OTOH can be latency critical for O_SYNC writes, but
-> you're apparently looking into that already.
-
-To my mind if you've asked for O_SYNC, you've asked for bad performance.
-
-The writethrough improvement that I'm working on skips dirtying the page,
-but still marks the page as writeback so that we don't submit overlapping
-writes to the device.  The O_SYNC write will wait for the writeback to
-finish, so it'll still be delayed by one additional scheduling event
-... unless we run the write completion in the context of this task.
+[...]
