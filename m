@@ -2,133 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001103E849A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B0E3E849B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhHJUvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232783AbhHJUvO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:51:14 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFE7C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:50:52 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id c3so465716ilh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:50:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/9J86AJkM0SgjMI5lLWkCNhr060Mfr5eCjO1FJrYPFI=;
-        b=e361z9bIGL3trwA5MJqldspICgOpDYTB7FTTvuBcwYQqYom6u+KUW1dCBMdhHDPwUd
-         u7f2ZaMQyF+BF+S8mrlygBQkS1I2KlbiMbUTsrL1UszMHkrCh/CUQfPH0zFS1Cpyt5g+
-         tDQTZMRIa38r2rXTCMip7dw5FY0GWPnaK9k/w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/9J86AJkM0SgjMI5lLWkCNhr060Mfr5eCjO1FJrYPFI=;
-        b=d2SXISLeFoUD3WR1lFbKYjjxa3E/JKBvE256Gp9jcf75RFXVSf/C3zWMDpxACdwyOD
-         1HMr6jBrxQY89EJgaIw8Jkm5EiBLrTOIfOk8NHfi1GjWog7AX7Whxod07sk+m86PPvfX
-         hthoqcE0nSu18JTqB+zxYtFSNSn6hTat3A8uEHGBSLiWkmwBPEXEDTzLyXUzk4Pi6nfn
-         izTJ0KgVVwfh+WwKIvTnTZoXc+uBnNG/QbPUYjmPGE0g5luQH8ohc3gNzQ5tC2ssX2XH
-         C5XTXUe6hP1skcwSvhSIqdoRuDFSd3cNcExzajA3OFsNxXD/E/wE/W7epybKi5Qru902
-         HxlQ==
-X-Gm-Message-State: AOAM533OlQcOb0dgaBADpyg1/QoF3Rmaa+81iBScJlR/2tXf4LDYPbBG
-        Xf4af0laE+QhPhSRmpTqku7V6g==
-X-Google-Smtp-Source: ABdhPJySJXGR110wRXGY3CxHwveH41AuwDZOY9qOKOY3DOI1vt3kZ0eId/Q33wXFrl1SZh743mmb3Q==
-X-Received: by 2002:a05:6e02:893:: with SMTP id z19mr89633ils.237.1628628651848;
-        Tue, 10 Aug 2021 13:50:51 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r8sm13285075iov.39.2021.08.10.13.50.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 13:50:51 -0700 (PDT)
-Subject: Re: [PATCH v4 3/3] configfs: Add unit tests
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210805043503.20252-1-bvanassche@acm.org>
- <20210805043503.20252-4-bvanassche@acm.org> <20210809145953.GB21234@lst.de>
- <bcf5fd83-b30a-8887-361e-603821562d9a@acm.org>
- <20210810165029.GA20722@lst.de>
- <9b1e5c35-1d11-0afa-d382-6f5dc0b14a23@acm.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e329b0a1-ffe4-9bfa-2bea-33e17da70f58@linuxfoundation.org>
-Date:   Tue, 10 Aug 2021 14:50:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233535AbhHJUvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:51:25 -0400
+Received: from mga07.intel.com ([134.134.136.100]:47284 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233412AbhHJUvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:51:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="278739050"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="278739050"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 13:51:00 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="503261274"
+Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 13:51:00 -0700
+Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
+From:   Dave Hansen <dave.hansen@intel.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
+ <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <f7667988-4d6c-461e-901d-a6c3612b2f0f@intel.com>
+Date:   Tue, 10 Aug 2021 13:50:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9b1e5c35-1d11-0afa-d382-6f5dc0b14a23@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 12:45 PM, Bart Van Assche wrote:
-> On 8/10/21 9:50 AM, Christoph Hellwig wrote:
->> On Mon, Aug 09, 2021 at 11:31:23AM -0700, Bart Van Assche wrote:
->>>>> +config CONFIGFS_KUNIT_TEST
->>>>> +    bool "Configfs Kunit test" if !KUNIT_ALL_TESTS
->>>>> +    depends on CONFIGFS_FS && KUNIT=y
->>>>> +    default KUNIT_ALL_TESTS
->>>>
->>>> Why does it depend on KUNIT=y?  What is the issue with a modular KUNIT
->>>> build?
->>>
->>> The unit tests calls do_mount(). do_mount() has not been exported and
->>> hence is not available to kernel modules. Hence the exclusion of KUNIT=m.
->>
->> You should probably document that.  But then again this is another
->> big red flag that this code should live in userspace.
->>
->>>> To me this sounds like userspace would be a better place for these
->>>> kinds of tests.
->>>
->>> Splitting the code that can only be run from inside the kernel (creation
->>> of configfs attributes) and the code that can be run from user space and
->>> making sure that the two run in a coordinated fashion would involve a
->>> significant amount of work. I prefer to keep the current approach.
->>
->> But userspace is the right place to do this kind of pathname
->> based file system I/O.
+On 8/10/21 11:13 AM, Dave Hansen wrote:
+>> @@ -1001,6 +1004,9 @@ static inline void del_page_from_free_list(struct page *page, struct zone *zone,
+>>  	if (page_reported(page))
+>>  		__ClearPageReported(page);
+>>  
+>> +	if (PageOffline(page))
+>> +		clear_page_offline(page, order);
+>> +
+>>  	list_del(&page->lru);
+>>  	__ClearPageBuddy(page);
+>>  	set_page_private(page, 0);
+> So, this is right in the fast path of the page allocator.  It's a
+> one-time thing per 2M page, so it's not permanent.
 > 
-> Shuah, as selftest maintainer, can you recommend an approach? How about splitting patch 3/3 from this series into a kernel module (the code that creates the configfs test attributes) and user space code (the code that reads and writes the configfs attributes) and adding the user space code in a subdirectory of tools/testing/selftests/?
+> *But* there's both a global spinlock and a firmware call hidden in
+> clear_page_offline().  That's *GOT* to hurt if you were, for instance,
+> running a benchmark while this code path is being tickled.  Not just to
 > 
+> That could be just downright catastrophic for scalability, albeit
+> temporarily.
 
-I am missing a lot of context here. I don't see this series in my inbox
-except patch 2/3 which says:
+One more thing...
 
-"A common feature of unit testing frameworks is support for sharing a test
-configuration across multiple unit tests. Add this functionality to the
-KUnit framework. This functionality will be used in the next patch in this
-series."
+How long are these calls?  You have to make at least 512 calls into the
+SEAM module.  Assuming they're syscall-ish, so ~1,000 cycles each,
+that's ~500,000 cycles, even if we ignore the actual time it takes to
+zero that 2MB worth of memory and all other overhead within the SEAM module.
 
-That doesn't tell me much other than what happens that it is a common unit
-testing framework without explaining why it should be done this way.
+So, we're sitting on one CPU with interrupts off, blocking all the other
+CPUs from doing page allocation in this zone.  Then, we're holding a
+global lock which prevents any other NUMA nodes from accepting pages.
+If the other node happens to *try* to do an accept, it will sit with its
+zone lock held waiting for this one.
 
-Taking a quick look at the original message on lore - I agree with Christoph
-that this code belongs in userspace. I would like to see the division of
-kernel userspace.
+Maybe nobody will ever notice.  But, it seems like an awfully big risk
+to me.  I'd at least *try* do these calls outside of the zone lock.
+Then the collateral damage will at least be limited to things doing
+accepts rather than all zone->lock users.
 
-Why do the unit tests need to call do_mount() - can whatever the unit tests
-are currently doing can be done from userspace.
+Couldn't we delay the acceptance to, say the place where we've dropped
+the zone->lock and do the __GFP_ZERO memset() like at prep_new_page()?
+Or is there some concern that the page has been split at that point?
 
-If part of the test code must live in kernel space then kernel test module
-approach can be used.
+I guess that makes it more complicated because you might have a 4k page
+but you need to go accept a 2M page.  You might end up having to check
+the bitmap 511 more times because you might see 511 more PageOffline()
+pages come through.
 
-thanks,
--- Shuah
-
-
-
-
+You shouldn't even need the bitmap lock to read since it's a one-way
+trip from unaccepted->accepted.
