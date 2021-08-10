@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF3F3E5AA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EB43E5AA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241076AbhHJNEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:04:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:54952 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237619AbhHJNEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:04:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DC8B1FB;
-        Tue, 10 Aug 2021 06:04:29 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E1B23F70D;
-        Tue, 10 Aug 2021 06:04:26 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-        linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v2 2/4] sched: Introduce is_pcpu_safe()
-In-Reply-To: <YRJ1yvfRjDJpXZWf@boqun-archlinux>
-References: <20210807005807.1083943-1-valentin.schneider@arm.com> <20210807005807.1083943-3-valentin.schneider@arm.com> <800ff941e3ec86ea1397cddf8ecea3d4a17c55dc.camel@gmx.de> <87a6lrap5z.mognet@arm.com> <YRJ1yvfRjDJpXZWf@boqun-archlinux>
-Date:   Tue, 10 Aug 2021 14:04:16 +0100
-Message-ID: <87wnot8n8v.mognet@arm.com>
+        id S241049AbhHJNFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241082AbhHJNFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:05:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D96BC0613D3;
+        Tue, 10 Aug 2021 06:04:38 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 13:04:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628600675;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ohNlUPaCg+7iU7Dok+8hrnQRHcDVe2ZHoNGzMH2LBTs=;
+        b=pqi73+oiOBVS68C9uifqMXO9QXh4tYLPqLBgwCtb2ILMutKU5HgtVCEESE1DIbHdmDgGmK
+        KIVlUID/l/IPWSjxPh1BBvuG6MymgaJ7rGdjVVMt7JhZnmZIkpVqRwW+h9ZJCj2vbFcUH3
+        qH8OM518El09qAokWfOdPX4As62QEDBO67+9u8RldgNZXe7W1NqpEd7WOtQy9gtALv1qFQ
+        QlBTyF9aFel/kfzsVXiUoaNAw075oIhFA6+1k/sGsABSCTlmYtzSA+ckCa9SQ7a/LTmaAu
+        t2vUoXvmG3sr5bdm+lIgGpEHLUq5F2giHcGGzrHyctb5xU9NgYeZA5YL00eL+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628600675;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ohNlUPaCg+7iU7Dok+8hrnQRHcDVe2ZHoNGzMH2LBTs=;
+        b=Z8gGAvOb8BxjllxR+M9zaFMzDNd/tm8LJd5q2d92dle+jf6tuP9AnaIGSwuqZPZMtOQ9wv
+        ESGJJKUOZxVn+NCg==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/hw_breakpoint: Replace deprecated CPU-hotplug
+ functions.
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210803141621.780504-12-bigeasy@linutronix.de>
+References: <20210803141621.780504-12-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <162860067460.395.10174321015684125894.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/21 20:49, Boqun Feng wrote:
-> On Sun, Aug 08, 2021 at 05:15:20PM +0100, Valentin Schneider wrote:
->> On 07/08/21 03:42, Mike Galbraith wrote:
->> > On Sat, 2021-08-07 at 01:58 +0100, Valentin Schneider wrote:
->> >>
->> >> +static inline bool is_pcpu_safe(void)
->> >
->> > Nit: seems odd to avoid spelling it out to save two characters, percpu
->> > is word like, rolls off the ole tongue better than p-c-p-u.
->> >
->> >       -Mike
->> 
->> True. A quick grep says both versions are used, though "percpu" wins by
->> about a factor of 2. I'll tweak that for a v3.
->
-> I wonder why is_percpu_safe() is the correct name. The safety of
-> accesses to percpu variables means two things to me:
->
-> a)	The thread cannot migrate to other CPU in the middle of
-> 	accessing a percpu variable, in other words, the following
-> 	cannot happen:
->
-> 	{ percpu variable X is 0 on CPU 0 and 2 on CPU 1
-> 	CPU 0				CPU 1
-> 	========			=========
-> 	<in thread A>
-> 	__this_cpu_inc(X);
-> 	  tmp = X; // tmp is 0
-> 	  <preempted>
-> 	  <migrate to CPU 1>
-> 	  				// continue __this_cpu_inc(X);
-> 					X = tmp + 1; // CPU 0 miss this
-> 						     // increment (this
-> 						     // may be OK), and
-> 						     // CPU 1's X got
-> 						     // corrupted.
->
-> b)	The accesses to a percpu variable are exclusive, i.e. no
-> 	interrupt or preemption can happen in the middle of accessing,
-> 	in other words, the following cannot happen:
->
-> 	{ percpu variable X is 0 on CPU 0 }
-> 	CPU 0
-> 	========
-> 	<in thread A>
-> 	__this_cpu_inc(X);
-> 	  tmp = X; // tmp is 0
-> 	  <preempted>
-> 	  <in other thread>
-> 	  this_cpu_inc(X); // X is 1 afterwards.
-> 	  <back to thread A>
-> 	  X = tmp + 1; // X is 1, and we have a race condition.
->
-> And the is_p{er}cpu_safe() only detects the first, and it doesn't mean
-> totally safe for percpu accesses.
->
+The following commit has been merged into the perf/core branch of tip:
 
-Right. I do briefly point this out in the changelog (the bit about
-"acquiring a sleepable lock if relevant"), but that doesn't do much to
-clarify the helper name itself.
+Commit-ID:     b28a32083bfa485f516c8b08c5d6050ff5aef3fb
+Gitweb:        https://git.kernel.org/tip/b28a32083bfa485f516c8b08c5d6050ff5aef3fb
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Tue, 03 Aug 2021 16:15:54 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 15:00:26 +02:00
 
-> Maybe we can implement a migratable()? Although not sure it's a English
-> word.
->
+perf/hw_breakpoint: Replace deprecated CPU-hotplug functions.
 
-Funnily enough that is exactly how I named the thing in my initial draft,
-but then I somehow convinced myself that tailoring the name to per-CPU
-accesses would make its intent clearer.
+The functions get_online_cpus() and put_online_cpus() have been
+deprecated during the CPU hotplug rework. They map directly to
+cpus_read_lock() and cpus_read_unlock().
 
-I think you're right that "migratable()" is less confusing at the end of
-the day. Oh well, so much for overthinking the naming problem :-)
+Replace deprecated CPU-hotplug functions with the official version.
+The behavior remains unchanged.
 
-> Regards,
-> Boqun
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210803141621.780504-12-bigeasy@linutronix.de
+
+---
+ kernel/events/hw_breakpoint.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/events/hw_breakpoint.c b/kernel/events/hw_breakpoint.c
+index 8359734..f32320a 100644
+--- a/kernel/events/hw_breakpoint.c
++++ b/kernel/events/hw_breakpoint.c
+@@ -568,7 +568,7 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
+ 	if (!cpu_events)
+ 		return (void __percpu __force *)ERR_PTR(-ENOMEM);
+ 
+-	get_online_cpus();
++	cpus_read_lock();
+ 	for_each_online_cpu(cpu) {
+ 		bp = perf_event_create_kernel_counter(attr, cpu, NULL,
+ 						      triggered, context);
+@@ -579,7 +579,7 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
+ 
+ 		per_cpu(*cpu_events, cpu) = bp;
+ 	}
+-	put_online_cpus();
++	cpus_read_unlock();
+ 
+ 	if (likely(!err))
+ 		return cpu_events;
