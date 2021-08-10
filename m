@@ -2,97 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3ED3E7CFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A0D3E7CFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243120AbhHJQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:01:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48992 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239168AbhHJQBl (ORCPT
+        id S233761AbhHJQCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:02:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44406 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231767AbhHJQCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:01:41 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 14F9322069;
-        Tue, 10 Aug 2021 16:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628611278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 10 Aug 2021 12:02:36 -0400
+Date:   Tue, 10 Aug 2021 16:02:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628611332;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oCRKUveE33VvcZMJL2XnwneZOV742TksTwb3FEBahsM=;
-        b=T+BoxSbgtruUXzJbuimf79cKwQ8YblfGeaVl6NlwHHvNVCX1ET1707rrLhseItDqI5QKKv
-        49yogIW1pIrkWiXBr5tjZ/mTHGp8bL/AbDGnK3fBxL4i/m8zx2ro888PClvHo67EW6hqdt
-        qp/S2tnKignm0KJSkYP+RA+szTkooMs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628611278;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=g9JNhx301Xiph19AdrsambMTTJYcJzIdKgA0fyeJQ0M=;
+        b=ffzqsD8aVCe7Nqk3rAUUYCfEz15KkxnDZgTO1cCKCToG4Z/sfD784Yt+8bphH52fTyxYDG
+        U3wxEZPCxaFHK/Bo9Jf1iRNyP6YbvnaB0aFG5uK/CSdphLdgg1HdupB2DewjKWx9RegCOn
+        VbcL2MRSH7XhWaGnNiQ0qCHyNqrmFfvc/XW9lXGDWoEdf07Mb/URmGzFjOTLK+ZDIAInky
+        W/jnOusHjCjYdXDP8sRbsmAK2oiDUyLJVEjtkZbxUI7xgVFqdN87mFJASgnmHEKKIIrr40
+        YKJ3PO65MNWQpb3gzRGgoOHt+6t5GLG3nSjnEA+6Kosp9QiyklA8b3I61B9DOQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628611332;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oCRKUveE33VvcZMJL2XnwneZOV742TksTwb3FEBahsM=;
-        b=D0JRzRyOU3Hm1PxLBc+KyqIa2waelCCd+hvILDxPW+CQIuVV3uwseBnATR7ldEjY7+jpj9
-        Mt9ZjvdRuTOCKrBg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E8896137DA;
-        Tue, 10 Aug 2021 16:01:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id D70YOM2iEmF2SwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Tue, 10 Aug 2021 16:01:17 +0000
-Subject: Re: [PATCH v14 011/138] mm/lru: Add folio LRU functions
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        bh=g9JNhx301Xiph19AdrsambMTTJYcJzIdKgA0fyeJQ0M=;
+        b=TJ91ApAMSMHUATuGR81ZWmqxLIrD5btlXgKZCYN7abS5Op+VG71Y5N7NPoH3ZnpAHfHDA/
+        pftvKdL0nLGBiXBA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] hrtimer: Avoid more SMP function calls in clock_was_set()
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Yu Zhao <yuzhao@google.com>, Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-12-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <91fb7d5b-9f5f-855e-2c87-dab105d5c977@suse.cz>
-Date:   Tue, 10 Aug 2021 18:01:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+In-Reply-To: <20210713135158.887322464@linutronix.de>
+References: <20210713135158.887322464@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-12-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <162861133186.395.4745802282790716508.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:34 AM, Matthew Wilcox (Oracle) wrote:
-> Handle arbitrary-order folios being added to the LRU.  By definition,
-> all pages being added to the LRU were already head or base pages, but
-> call page_folio() on them anyway to get the type right and avoid the
-> buried calls to compound_head().
-> 
-> Saves 783 bytes of kernel text; no functions grow.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: David Howells <dhowells@redhat.com>
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+The following commit has been merged into the timers/core branch of tip:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Commit-ID:     1e7f7fbcd40c69d23e3fe641ead9f3dc128fa8aa
+Gitweb:        https://git.kernel.org/tip/1e7f7fbcd40c69d23e3fe641ead9f3dc128fa8aa
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 13 Jul 2021 15:39:55 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 17:57:23 +02:00
 
-Actually looking at the git version, which has also this:
+hrtimer: Avoid more SMP function calls in clock_was_set()
 
- static __always_inline void update_lru_size(struct lruvec *lruvec,
-                                enum lru_list lru, enum zone_type zid,
--                               int nr_pages)
-+                               long nr_pages)
- {
+By unconditionally updating the offsets there are more indicators
+whether the SMP function calls on clock_was_set() can be avoided:
 
-Why now and here? Some of the functions called from update_lru_size()
-still take int so this looks arbitrary?
+  - When the offset update already happened on the remote CPU then the
+    remote update attempt will yield the same seqeuence number and no
+    IPI is required.
 
+  - When the remote CPU is currently handling hrtimer_interrupt(). In
+    that case the remote CPU will reevaluate the timer bases before
+    reprogramming anyway, so nothing to do.
+
+  - After updating it can be checked whether the first expiring timer in
+    the affected clock bases moves before the first expiring (softirq)
+    timer of the CPU. If that's not the case then sending the IPI is not
+    required.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210713135158.887322464@linutronix.de
+
+---
+ kernel/time/hrtimer.c | 74 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 65 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 5d44c90..88aefc3 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -866,6 +866,68 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ 	__hrtimer_reprogram(cpu_base, true, timer, expires);
+ }
+ 
++static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
++			     unsigned int active)
++{
++	struct hrtimer_clock_base *base;
++	unsigned int seq;
++	ktime_t expires;
++
++	/*
++	 * Update the base offsets unconditionally so the following
++	 * checks whether the SMP function call is required works.
++	 *
++	 * The update is safe even when the remote CPU is in the hrtimer
++	 * interrupt or the hrtimer soft interrupt and expiring affected
++	 * bases. Either it will see the update before handling a base or
++	 * it will see it when it finishes the processing and reevaluates
++	 * the next expiring timer.
++	 */
++	seq = cpu_base->clock_was_set_seq;
++	hrtimer_update_base(cpu_base);
++
++	/*
++	 * If the sequence did not change over the update then the
++	 * remote CPU already handled it.
++	 */
++	if (seq == cpu_base->clock_was_set_seq)
++		return false;
++
++	/*
++	 * If the remote CPU is currently handling an hrtimer interrupt, it
++	 * will reevaluate the first expiring timer of all clock bases
++	 * before reprogramming. Nothing to do here.
++	 */
++	if (cpu_base->in_hrtirq)
++		return false;
++
++	/*
++	 * Walk the affected clock bases and check whether the first expiring
++	 * timer in a clock base is moving ahead of the first expiring timer of
++	 * @cpu_base. If so, the IPI must be invoked because per CPU clock
++	 * event devices cannot be remotely reprogrammed.
++	 */
++	active &= cpu_base->active_bases;
++
++	for_each_active_base(base, cpu_base, active) {
++		struct timerqueue_node *next;
++
++		next = timerqueue_getnext(&base->active);
++		expires = ktime_sub(next->expires, base->offset);
++		if (expires < cpu_base->expires_next)
++			return true;
++
++		/* Extra check for softirq clock bases */
++		if (base->clockid < HRTIMER_BASE_MONOTONIC_SOFT)
++			continue;
++		if (cpu_base->softirq_activated)
++			continue;
++		if (expires < cpu_base->softirq_expires_next)
++			return true;
++	}
++	return false;
++}
++
+ /*
+  * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
+  * CLOCK_BOOTTIME (for late sleep time injection).
+@@ -900,16 +962,10 @@ void clock_was_set(unsigned int bases)
+ 		unsigned long flags;
+ 
+ 		raw_spin_lock_irqsave(&cpu_base->lock, flags);
+-		/*
+-		 * Only send the IPI when there are timers queued in one of
+-		 * the affected clock bases. Otherwise update the base
+-		 * remote to ensure that the next enqueue of a timer on
+-		 * such a clock base will see the correct offsets.
+-		 */
+-		if (cpu_base->active_bases & bases)
++
++		if (update_needs_ipi(cpu_base, bases))
+ 			cpumask_set_cpu(cpu, mask);
+-		else
+-			hrtimer_update_base(cpu_base);
++
+ 		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
+ 	}
+ 
