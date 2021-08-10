@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8DC3E5D6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE6F3E5DD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238425AbhHJOTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:19:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8002 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242738AbhHJOQ4 (ORCPT
+        id S241416AbhHJOZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:25:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3622 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242414AbhHJOYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:16:56 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GkZkT2X8PzYly6;
-        Tue, 10 Aug 2021 22:16:17 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 22:16:31 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 10 Aug 2021 10:24:09 -0400
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GkZtT07Nmz6BD6W;
+        Tue, 10 Aug 2021 22:23:13 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 10 Aug 2021 16:23:42 +0200
+Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
- 2021 22:16:30 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
-CC:     <ldewangan@nvidia.com>, <broonie@kernel.org>
-Subject: [PATCH -next] spi: tegra20-slink: remove spi_master_put() in tegra_slink_remove()
-Date:   Tue, 10 Aug 2021 22:22:30 +0800
-Message-ID: <20210810142230.2220453-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ 2021 15:23:42 +0100
+Subject: Re: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <yao.jin@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <irogers@google.com>, <linuxarm@huawei.com>
+References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
+ <1627566986-30605-3-git-send-email-john.garry@huawei.com>
+ <YQgHMt4BsDeJnE09@kernel.org>
+ <90094733-741c-50e5-ac7d-f5640b5f0bdd@huawei.com>
+ <88294bb8-6fb1-b485-446c-4ec15ff28d4a@huawei.com>
+ <YRKGo1AtfBn85sZ7@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <40e85ad2-3db4-aecf-d972-7d4aa5c2278c@huawei.com>
+Date:   Tue, 10 Aug 2021 15:23:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
+In-Reply-To: <YRKGo1AtfBn85sZ7@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.4]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-spi_master_put() is already called in spi_unregister_master(), or it
-will lead a double decrement refcount.
+On 10/08/2021 15:01, Arnaldo Carvalho de Melo wrote:
+>> Shall I send this as a formal patch?
+> The question is when should I apply this patch? After this series? After
+> the patch I commented about, before?
+> 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/spi/spi-tegra20-slink.c | 2 --
- 1 file changed, 2 deletions(-)
+Hi Arnaldo,
 
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index deff16ba6d58..ebd27f883033 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -1154,8 +1154,6 @@ static int tegra_slink_remove(struct platform_device *pdev)
- 	if (tspi->rx_dma_chan)
- 		tegra_slink_deinit_dma_param(tspi, true);
- 
--	spi_master_put(master);
--
- 	return 0;
- }
- 
--- 
-2.25.1
+I think that you can apply it before the series. This is a pre-existing 
+issue that there was no dependency checking on the test events folder 
+for rebuilding pmu-event.c .
+
+Thanks
 
