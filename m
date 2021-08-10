@@ -2,121 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AE33E8668
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66C93E866D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235437AbhHJXXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:23:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44671 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235242AbhHJXXG (ORCPT
+        id S235319AbhHJXZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233570AbhHJXZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:23:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628637762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zebpogOe1quBLKE4Uo3idNxbcVJ3dkkOF+OjhdeOFhQ=;
-        b=FJV3Enk97eLoVlCtxOazQGI2hPVz2Xvfl4Ymd65Nv75CEGMgNAIoRz6c7mjPvjZ2nY7vNg
-        P3zhyex+KCRPMWvTMLFVcCm0Tb4TCXjnntBeB/DNYwzT1vQfaQVFmgbYcGzyLOR0Y7YL7B
-        hw3D2tPYHpRsRYuzQmETGvBgI9DB/lU=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-8sUeBw2HMiS1znibykBByA-1; Tue, 10 Aug 2021 19:22:40 -0400
-X-MC-Unique: 8sUeBw2HMiS1znibykBByA-1
-Received: by mail-qt1-f200.google.com with SMTP id w11-20020ac857cb0000b029024e7e455d67so321340qta.16
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:22:40 -0700 (PDT)
+        Tue, 10 Aug 2021 19:25:40 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CE2C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:25:17 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id yk17so359447ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=lghdrSZtTl0kY+s9Tapi7Mnd/ccHoio1Yid/BdW6bxA=;
+        b=qqHlNivY0RYjAbDSQppf902gUAGvosW4KPXXDb7R2q2PmOt51sS7jjilYvsAA2LAo8
+         0UE15xzKY8nFx+uXjg5vFC28xwPwjDP9WVcBYFLi+npnBkLBkjWgB/9FhbxclIkMUj0+
+         PzTOWJ1G7+mMbBxTcIDP4AbF9jmG90cjObXHXpKUzo8xlKFdyxkCkHd4oKT8kOAN1CPD
+         m6AN3kPTONIVauiAZbCFuyWMhyGBhl8zJwUWQw56PPdTb6DaaJfSE0iP3iQciCIGR6mZ
+         sz2uETizaVv9M/D5cqZeZ5JwVPQoZLLkAkXjqeFAXgz54DgMsa/+GECZy0EkSDm4Al77
+         i4uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zebpogOe1quBLKE4Uo3idNxbcVJ3dkkOF+OjhdeOFhQ=;
-        b=PdBviySRWf2lRXZsvfVDP66fodQ82UvLK2tSL07LF/9KdVmooJ8X2Cm6pmsUk9Khtr
-         e/wMfukeZohPb23DlyNQfMdSvR02Vg36WfcK6BbUBZWm+fjjwQCVbEkS5f9oAEmqVeJi
-         Ycm2D9vDQME3RcmYCVHIDTTmpUCAb/P2PGH9lsgG1Nu15GEeNgvU+zd9BJaWXIY7yY+4
-         MdBBjAj04W6bfz3WeAbfQpVrtKx6CBsEFJYo8j82vwuuNyk+B0v7E4XYP79oEZMz2Ved
-         0A8EBKcqqZN+CO393e8k1atXF4/MgnYlfTOYBmK/DxAKC+sirXgr52H17M5OJTzVjNzQ
-         BSqw==
-X-Gm-Message-State: AOAM530qR+uHA91WQU/58l7JyGjvKUoQREsI6BFtNB1GqYAP0g7Mh7GH
-        Eo9ILGYOrbObWylWbhmdI4/Of3dDk9VSjuMYkUFReaeKThZdcYNOJH4j1dsfmIBb8Z6F18EyKWB
-        V4QLLbLaVLulyUz7HJPCrfyPZ
-X-Received: by 2002:a05:620a:318b:: with SMTP id bi11mr17242552qkb.302.1628637759724;
-        Tue, 10 Aug 2021 16:22:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRqxrHLUeXL8415G82p0kwf+OoH+p90MLbtMF/Y3gvXjd4Z1rzFmseE9OfMSwFwyYvyHyAVA==
-X-Received: by 2002:a05:620a:318b:: with SMTP id bi11mr17242527qkb.302.1628637759517;
-        Tue, 10 Aug 2021 16:22:39 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id b11sm5934711qtt.42.2021.08.10.16.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 16:22:38 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 19:22:37 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
-Message-ID: <YRMKPd2ZarXCX6vm@t490s>
-References: <20210803044607.599629-1-mizhang@google.com>
- <20210803044607.599629-4-mizhang@google.com>
- <CALMp9eR4AB0O7__VwGNbnm-99Pp7fNssr8XGHpq+6Pwkpo_oAw@mail.gmail.com>
- <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
- <CAL715WLO9+CpNa4ZQX4J2OdyqOBsX0+g0M4bNe+A+6FVxB2OxA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=lghdrSZtTl0kY+s9Tapi7Mnd/ccHoio1Yid/BdW6bxA=;
+        b=q+aSpWCAXr8QLnoiHx9gl4Ct+jPD0CuuQs0aD/41waeEu2XZJ3PtgvB4m93Aj/oklr
+         j1gaQy41ayQIpUZSJj7ueUaaQ+XkUj2BXia+9G+e1cV65m2L88tylPEbQEz3/4UpcxIP
+         oiYH+lk41YqMROl8psUylhKCujutJBSTWE6h5LishDm2NFR8OdxHYvXKl7d0wq5/LF9m
+         Cbr1yxiE1aH6WhrkJIxpMnPORsHT/EG3gK9AxygI+263D7hq/spnX6pT9Cc7Zm7WAhGE
+         //oTfPql9XniCT+8VC4Hzs2ZJlcIxxUXSr3QDIJHRzVU4BZ1OCNt9+zPt4svdXfadi4b
+         xtkw==
+X-Gm-Message-State: AOAM533TxF7OkwS33N+z2P5sp6IN6M1/JYtrg+tBkvjQyBbtx/y/qW+P
+        EHZTV8by7JYCpgDPs4GcpVX9gmRviWmi749WJ8PKMA==
+X-Google-Smtp-Source: ABdhPJwu6KcgH6NQprGnF9kZSkdiTifMLo0YFm1ytSkChZ8KoNEaVImCcNn2ffJre9evpdBt5rgy/qjGaFXJ3QMMbpI=
+X-Received: by 2002:a17:906:b0d4:: with SMTP id bk20mr792106ejb.535.1628637915175;
+ Tue, 10 Aug 2021 16:25:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAL715WLO9+CpNa4ZQX4J2OdyqOBsX0+g0M4bNe+A+6FVxB2OxA@mail.gmail.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Tue, 10 Aug 2021 16:25:03 -0700
+Message-ID: <CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com>
+Subject: RFC - kernel test result specification (KTAP)
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, Tim.Bird@sony.com,
+        shuah@kernel.org, Daniel Latypov <dlatypov@google.com>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 05:01:39PM -0700, Mingwei Zhang wrote:
-> Hi Paolo,
+We are looking to further standardise the output format used by kernel
+test frameworks like kselftest and KUnit. Thus far we have used the
+TAP (Test Anything Protocol) specification, but it has been extended
+in many different ways, so we would like to agree on a common "Kernel
+TAP" (KTAP) format to resolve these differences. Thus, below is a
+draft of a specification of KTAP. Note that this specification is
+largely based on the current format of test results for KUnit tests.
 
-Hi, Mingwei,
+Additionally, this specification was heavily inspired by the KTAP
+specification draft by Tim Bird
+(https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/).
+However, there are some notable differences to his specification. One
+such difference is the format of nested tests is more fully specified
+in the following specification. However, they are specified in a way
+which may not be compatible with many kselftest nested tests.
 
-> 
-> I recently looked at the patches queued and I find this patch from
-> Peter Xu (Cced), which is also adding 'page stats' information into
-> KVM:
-> 
-> https://patchwork.kernel.org/project/kvm/patch/20210625153214.43106-7-peterx@redhat.com/
-> 
-> From a functionality point of view, the above patch seems duplicate
-> with mine.
+=====================
+Specification of KTAP
+=====================
 
-The rmap statistics are majorly for rmap, not huge pages.
+TAP, or the Test Anything Protocol is a format for specifying test
+results used by a number of projects. It's website and specification
+are found at: https://testanything.org/. The Linux Kernel uses TAP
+output for test results. However, KUnit (and other Kernel testing
+frameworks such as kselftest) have some special needs for test results
+which don't gel perfectly with the original TAP specification. Thus, a
+"Kernel TAP" (KTAP) format is specified to extend and alter TAP to
+support these use-cases.
 
-> But in detail, Peter's approach is using debugfs with
-> proper locking to traverse the whole rmap to get the detailed page
-> sizes in different granularity.
-> 
-> In comparison, mine is to add extra code in low level SPTE update
-> routines and store aggregated data in kvm->kvm_stats. This data could
-> be retrieved from Jing's fd based API without any lock required, but
-> it does not provide the fine granular information such as the number
-> of contiguous 4KG/2MB/1GB pages.
-> 
-> So would you mind giving me some feedback on this patch? I would
-> really appreciate it.
+KTAP Output consists of 5 major elements (all line-based):
+- The version line
+- Plan lines
+- Test case result lines
+- Diagnostic lines
+- A bail out line
 
-I have a question: why change to using atomic ops?  As most kvm statistics
-seems to be not with atomics before.
+An important component in this specification of KTAP is the
+specification of the format of nested tests. This can be found in the
+section on nested tests below.
 
-AFAIK atomics are expensive, and they get even more expensive when the host is
-bigger (it should easily go into ten-nanosecond level).  So I have no idea
-whether it's worth it for persuing that accuracy.
+The version line
+----------------
 
-Thanks,
+The first line of KTAP output must be the version line. As this
+specification documents the first version of KTAP,  the recommended
+version line is "KTAP version 1". However, since all kernel testing
+frameworks use TAP version lines, "TAP version 14" and "TAP version
+13" are all acceptable version lines. Version lines with other
+versions of TAP or KTAP will not cause the parsing of the test results
+to fail but it will produce an error.
 
--- 
-Peter Xu
+Plan lines
+----------
 
+Plan lines must follow the format of "1..N" where N is the number of
+subtests. The second line of KTAP output must be a plan line, which
+indicates the number of tests at the highest level, such that the
+tests do not have a parent. Also, in the instance of a test having
+subtests, the second line of the test after the subtest header must be
+a plan line which indicates the number of subtests within that test.
+
+Test case result lines
+----------------------
+
+Test case result lines must have the format:
+
+    <result> <number> [-] [<description>] [<directive>] [<diagnostic data>]
+
+The result can be either "ok", which indicates the test case passed,
+or "not ok", which indicates that the test case failed.
+
+The number represents the number of the test case or suite being
+performed. The first test case or suite must have the number 1 and the
+number must increase by 1 for each additional test case or result at
+the same level and within the same testing suite.
+
+The "-" character is optional.
+
+The description is a description of the test, generally the name of
+the test, and can be any string of words (can't include #). The
+description is optional.
+
+The directive is used to indicate if a test was skipped. The format
+for the directive is: "# SKIP [<skip_description>]". The
+skip_description is optional and can be any string of words to
+describe why the test was skipped. The result of the test case result
+line can be either "ok" or "not ok" if the skip directive is used.
+Finally, note that TAP 14 specification includes TODO directives but
+these are not supported for KTAP.
+
+Examples of test case result lines:
+
+Test passed:
+
+    ok 1 - test_case_name
+
+Test was skipped:
+
+    not ok 1 - test_case_name # SKIP test_case_name should be skipped
+
+Test failed:
+
+    not_ok 1 - test_case_name
+
+Diagnostic lines
+----------------
+
+Diagnostic lines are used for description of testing operations.
+Diagnostic lines are generally formatted as "#
+<diagnostic_description>", where the description can be any string.
+However, in practice, diagnostic lines are all lines that don't follow
+the format of any other KTAP line format. Diagnostic lines can be
+anywhere in the test output after the first two lines. There are a few
+special diagnostic lines. Diagnostic lines of the format "# Subtest:
+<test_name>" indicate the start of a test with subtests. Also,
+diagnostic lines of the format "# <test_name>: <description>" refer to
+a specific test and tend to occur before the test result line of that
+test but are optional.
+
+Bail out line
+-------------
+
+A bail out line can occur anywhere in the KTAP output and will
+indicate that a test has crashed. The format of a bail out line is
+"Bail out! [<description>]",  where the description can give
+information on why the bail out occurred and can be any string.
+
+Nested tests
+------------
+
+The new specification for KTAP will support an arbitrary number of
+nested subtests. Thus, tests can now have subtests and those subtests
+can have subtests. This can be useful to further categorize tests and
+organize test results.
+
+The new required format for a test with subtests consists of: a
+subtest header line, a plan line, all subtests, and a final test
+result line.
+
+The first line of the test must be the subtest header line with the
+format: "# Subtest: <test_name>".
+
+The second line of the test must be the plan line, which is formatted
+as "1..N", where N is the number of subtests.
+
+Following the plan line, all lines pertaining to the subtests will follow.
+
+Finally, the last line of the test is a final test result line with
+the format: "(ok|not ok) <number> [-] [<description>] [<directive>]
+[<diagnostic data>]", which follows the same format as the general
+test result lines described in this section. The result line should
+indicate the result of the subtests. Thus, if one of the subtests
+fail, the test should fail. The description in the final test result
+line should match the name of the test in the subtest header.
+
+An example format:
+
+KTAP version 1
+1..1
+    # Subtest: test_suite
+    1..2
+    ok 1 - test_1
+    ok 2 - test_2
+ok 1 - test_suite
+
+An example format with multiple levels of nested testing:
+
+KTAP version 1
+1..1
+    # Subtest: test_suite
+    1..2
+        # Subtest: sub_test_suite
+        1..2
+        ok 1 - test_1
+        ok 2 test_2
+    ok 1 - sub_test_suite
+    ok 2 - test
+ok 1 - test_suite
+
+In the instance that the plan line is missing, the end of the test
+will be denoted by the final result line containing a description that
+matches the name of the test given in the subtest header. Note that
+thus, if the plan line is missing and one of the subtests have a
+matching name to the test suite this will cause errors.
+
+Lastly, indentation is also recommended for improved readability.
+
+
+Major differences between TAP 14 and KTAP specification
+-------------------------------------------------------
+
+Note that the major differences between TAP 14 and KTAP specification:
+- yaml and json are not allowed in diagnostic messages
+- TODO directive not allowed
+- KTAP allows for an arbitrary number of tests to be nested with
+specified nested test format
+
+Example of KTAP
+---------------
+
+KTAP version 1
+1..1
+    # Subtest: test_suite
+    1..1
+        # Subtest: sub_test_suite
+        1..2
+        ok 1 - test_1
+        ok 2 test_2
+    ok 1 - sub_test_suite
+ok 1 - test_suite
+
+=========================================
+Note on incompatibilities with kselftests
+=========================================
+
+To my knowledge, the above specification seems to generally accept the
+TAP format of many non-nested test results of kselftests.
+
+An example of a common kselftests TAP format for non-nested test
+results that are accepted by the above specification:
+
+TAP version 13
+1..2
+# selftests: vDSO: vdso_test_gettimeofday
+# The time is 1628024856.096879
+ok 1 selftests: vDSO: vdso_test_gettimeofday
+# selftests: vDSO: vdso_test_getcpu
+# Could not find __vdso_getcpu
+ok 2 selftests: vDSO: vdso_test_getcpu # SKIP
+
+However, one major difference noted with kselftests is the use of more
+directives than the "# SKIP" directive. kselftest also supports XPASS
+and XFAIL directives. Some additional examples found in kselftests:
+
+    not ok 5 selftests: netfilter: nft_concat_range.sh # TIMEOUT 45 seconds
+
+    not ok 45 selftests: kvm: kvm_binary_stats_test # exit=127
+
+Should the specification be expanded to include these directives?
+
+However, the general format for kselftests with nested test results
+seems to differ from the above specification. It seems that a general
+format for nested tests is as follows:
+
+TAP version 13
+1..2
+# selftests: membarrier: membarrier_test_single_thread
+# TAP version 13
+# 1..2
+# ok 1 sys_membarrier available
+# ok 2 sys membarrier invalid command test: command = -1, flags = 0,
+errno = 22. Failed as expected
+ok 1 selftests: membarrier: membarrier_test_single_thread
+# selftests: membarrier: membarrier_test_multi_thread
+# TAP version 13
+# 1..2
+# ok 1 sys_membarrier available
+# ok 2 sys membarrier invalid command test: command = -1, flags = 0,
+errno = 22. Failed as expected
+ok 2 selftests: membarrier: membarrier_test_multi_thread
+
+The major differences here, that do not match the above specification,
+are use of "# " as an indentation and using a TAP version line to
+denote a new test with subtests rather than the subtest header line
+described above. If these are widely utilized formats in kselftests,
+should we include both versions in the specification or should we
+attempt to agree on a single format for nested tests? I personally
+believe we should try to agree on a single format for nested tests.
+This would allow for a cleaner specification of KTAP and would reduce
+possible confusion.
+
+====
+
+So what do people think about the above specification?
+How should we handle the differences with kselftests?
+If this specification is accepted, where should the specification be documented?
