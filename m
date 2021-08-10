@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB7F3E7BB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957F63E7BB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242600AbhHJPGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:06:37 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43014 "EHLO vps0.lunn.ch"
+        id S241888AbhHJPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:06:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241917AbhHJPGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:06:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=dtySB9rjcxH7bxKw5rZgefC4uBmGW785dtYYNm9V7pY=; b=nq
-        Hzm31SVDVhMomio9sKwpp33QpzqLna0pZOu0cYQ1ET87R9oaWvwLfH+lcywouk0338tcnnR74LTaO
-        FG7gC6c8p8szDknYV7bpH0nCxT9+lD0v691DkEZqm8k+3cHXTZdTZqK/+g4OweHINcO1tWDoShtwK
-        7b4kQcFLsHizbw4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mDTKF-00GvYZ-Ol; Tue, 10 Aug 2021 17:05:55 +0200
-Date:   Tue, 10 Aug 2021 17:05:55 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH net-next v1] net: phy: nxp-tja11xx: log critical health
- state
-Message-ID: <YRKV05IoqtJYr6Cj@lunn.ch>
-References: <20210810125618.20255-1-o.rempel@pengutronix.de>
+        id S231346AbhHJPGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:06:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF5A960EE7;
+        Tue, 10 Aug 2021 15:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628607968;
+        bh=dqo+NJskWQkpj9z6N8xQUfDVCUEgPwqRUPQ6njYYZIU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ioa/h9et+21lof64iWcP5IEezko5Fo8Nqs6H05OAupK1dLhs3GN9D51vWnWrbqE5n
+         wT1Wy+cJFuzI5alZMPTwRpfA0mB9YMF/Od757RFP+NeKLfRVrWhgHSe0MNpC5BWscQ
+         BqH5kEV/rpZYKkl8BIlTBkXMHmBLcbnkTqXnC1ck=
+Date:   Tue, 10 Aug 2021 17:06:05 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     rjw@rjwysocki.net, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pavel@ucw.cz
+Subject: Re: [PATCH v2] PM: sleep: core: Avoid setting power.must_resume to
+ false
+Message-ID: <YRKV3aYPvQhkL/9m@kroah.com>
+References: <1628602932-246733-1-git-send-email-psodagud@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210810125618.20255-1-o.rempel@pengutronix.de>
+In-Reply-To: <1628602932-246733-1-git-send-email-psodagud@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij
+On Tue, Aug 10, 2021 at 06:42:11AM -0700, Prasad Sodagudi wrote:
+> This is regarding suspend/resume(s2idle) scenario of devices and difference
+> between the LTS kernels 5.4 and 5.10 with respect to devices suspend and
+> resume. Observing that devices suspended in suspend_late stage are not
+> getting resumed in resume_early stage.
+> 1) LTS kernel 5.4 kernel do not have this problem but 5.10 kernel
+> shows this problem.
+> 2) 'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
+> is skipping the driver early_resume callbacks.
+> 
+> In device_resume_early function dev->power.must_resume is used to skip the
+> resume call back. It looks this function is expecting that,
+> __device_suspend_noirq() would set dev->power.must_resume = true for the
+> devices which does not have DPM_FLAG_MAY_SKIP_RESUME flag set.
+> 
+> 3) Problematic scenario is as follows -  During the device suspend/resume
+> scenario all the devices in  the suspend_late stage are successful and some
+> device can fail to suspend in suspend_noirq(device_suspend_noirq->
+> __device_suspend_noirq) phase.
+> As a device failed in dpm_noirq_suspend_devices phase, dpm_resume_noirq is
+> getting called to resume devices in dpm_late_early_list in the noirq phase.
+> 
+> 4) During the Devices_early_resume stage
+> dpm_resume_early()-->device_resume_early() functions skipping the devices
+> early resume callbacks.
+> 799         if (dev_pm_skip_resume(dev))
+> 800                  goto Skip;
+> 
+> 5) Devices suspended in suspend_late stage are not getting resumed in
+> Devices_early_resume stage because of
+> 'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
+> is skipping the driver early_resume callbacks when dev->power.must_resume is false.
+> 
+> 
+> Changelog:
+> v1 -> v2:
+>  - Fixed indentation comments.
+>  - Commit text updated to include scenario.
+> 
+> Prasad Sodagudi (1):
+>   PM: sleep: core: Avoid setting power.must_resume to false
+> 
+>  drivers/base/power/main.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
 
-> @@ -89,6 +91,12 @@ static struct tja11xx_phy_stats tja11xx_hw_stats[] = {
->  	{ "phy_polarity_detect", 25, 6, BIT(6) },
->  	{ "phy_open_detect", 25, 7, BIT(7) },
->  	{ "phy_short_detect", 25, 8, BIT(8) },
-> +	{ "phy_temp_warn (temp > 155C°)", 25, 9, BIT(9) },
-> +	{ "phy_temp_high (temp > 180C°)", 25, 10, BIT(10) },
-> +	{ "phy_uv_vddio", 25, 11, BIT(11) },
-> +	{ "phy_uv_vddd_1v8", 25, 13, BIT(13) },
-> +	{ "phy_uv_vdda_3v3", 25, 14, BIT(14) },
-> +	{ "phy_uv_vddd_3v3", 25, 15, BIT(15) },
->  	{ "phy_rem_rcvr_count", 26, 0, GENMASK(7, 0) },
->  	{ "phy_loc_rcvr_count", 26, 8, GENMASK(15, 8) },
+I do not see a patch here, what happened?
 
-I'm not so happy abusing the statistic counters like this. Especially
-when we have a better API for temperature and voltage: hwmon.
-
-phy_temp_warn maps to hwmon_temp_max_alarm. phy_temp_high maps to
-either hwmon_temp_crit_alarm or hwmon_temp_emergency_alarm.
-
-The under voltage maps to hwmon_in_lcrit_alarm.
-
-> @@ -630,6 +640,11 @@ static irqreturn_t tja11xx_handle_interrupt(struct phy_device *phydev)
->  		return IRQ_NONE;
->  	}
->  
-> +	if (irq_status & MII_INTSRC_TEMP_ERR)
-> +		dev_err(dev, "Overtemperature error detected (temp > 155C°).\n");
-> +	if (irq_status & MII_INTSRC_UV_ERR)
-> +		dev_err(dev, "Undervoltage error detected.\n");
-> +
-
-These are not actual errors, in the linux sense. So dev_warn() or
-maybe dev_info().
-
-      Andrew
+:(
