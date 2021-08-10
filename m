@@ -2,99 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAD63E55B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6380F3E55BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbhHJIl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
+        id S235322AbhHJIoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhHJIlz (ORCPT
+        with ESMTP id S231569AbhHJIok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:41:55 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A427FC0613D3;
-        Tue, 10 Aug 2021 01:41:33 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id f11so31047535ioj.3;
-        Tue, 10 Aug 2021 01:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xB1ACiy7Io0kW/dBZ3duTDNb8SeLXwDQNctKQur/fh8=;
-        b=WyyT1rbehAfV2SiLbf+Z59W37jcNL2wHrtZIEBmyJEHmeMTEWOEp121p7nNWgkGLkl
-         g5/AEobroGqP7YelCTbTmT2PDz1oaj/AVhItZ+lV/KiIOoDigWZ6kbqlviZT1CDUPsww
-         i5uJsPFRi0q65h2vtyFju/j0s+KuZPztx2oxUF4QjHfh3T+PZWOtGmnB28iAvVaZLeG8
-         Bfy9KYqPbp6wmnb9lJi1Wlxo/Z0JRex4P5Qxc+ZJG5ebPx+LoqqID9A6tv7FWYs+DCSV
-         3S177aikTY8CxPH79pcmhgng3GWUJdZseBrPRL/vlHCWWYpSW6Xp39ETr4MlfhZ+LrFY
-         3zzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xB1ACiy7Io0kW/dBZ3duTDNb8SeLXwDQNctKQur/fh8=;
-        b=KOhaZpTGEEA46Zne0N6E+j5ac4Yz57AwB8KNMfcFgUTZGONbyPb925ubS8x7DfhEQu
-         /ROTlkP2AIolc3AfNIdwxX2fJRPDmUgWCUlrWvCDx5dQPl5HFRpWc9JzSbB6JXM94nhV
-         J49gZ1H+8D4uk6a7GVSdRKf7l79zbz2QSIzWa5CxkLH+tr/+cANigXhrPa+NMOiQoF22
-         Gmo5pqswmpE7vvaTcURBkY/uazBnJpYspomxJ6y4SnLYBe0swzsPZbz/lGLalKjjt0/s
-         KMOsyQsR8U4EHeTutAWc2jNlEu3Bz7Rmc/XCra5DMsU8xgThnZeJVg2lpSnJirqdkNXg
-         ozlQ==
-X-Gm-Message-State: AOAM530q3uHaI+CXUMd1S3GBzMCtK9mJI1KfUZUCQi68bcOsvb+NVgNj
-        vAQAe+MLYIqJdiCQztrBZ0KiV9FyNVRPtC8hds0=
-X-Google-Smtp-Source: ABdhPJzqMo9V5pQJsK+5D81gy4SX3IpJ5wO1t4vb+Ak3Z2jc9b20h2i1IYQY/j+sZtJZiGv/rULFj5j6VVw6UMdP/Jo=
-X-Received: by 2002:a05:6602:24d9:: with SMTP id h25mr2370ioe.11.1628584893196;
- Tue, 10 Aug 2021 01:41:33 -0700 (PDT)
+        Tue, 10 Aug 2021 04:44:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B807C0613D3;
+        Tue, 10 Aug 2021 01:44:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wjcjJP3fIhiBNIkloAsoPiOZrQYFqb20BfwL09gssaA=; b=cf2QKqehd0F6baIPP76hpDkgac
+        5+O4JcVPafqA5d6Oz06BwZUDqQ4C+QgPIuxBj5j/sjIGPTkqj269KmiHd1Q2CuI0OmaJPVvYj4G7L
+        3Zagvi092WfGpOvoKmjLQpSF5gvxPl+be1XJV7CcFbxXAgDzXKdqt0rniafPhVDGYsXLp5WGMlUGD
+        4+rm/RnRHDxDHP1+Ar3a3s2BsD/FhbEiRzuwvtfxDduynNrDFU0/VaNnoBmMEcQdH9ZCnyQBJrOIM
+        ytiGg5ab1yzhpfa4NCeUwyK4UoA/OetDEjxXOrOLWhdw5y0h9mw+XGqlrJO9AEJ7JnnK3pRiVgQxi
+        F8ZLKP4Q==;
+Received: from [2001:4bb8:184:6215:a004:cea2:5ea9:6eca] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDNMA-00BuLM-Ex; Tue, 10 Aug 2021 08:43:40 +0000
+Date:   Tue, 10 Aug 2021 10:43:29 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, peterx@redhat.com
+Subject: Re: [PATCH 1/7] vfio: Create vfio_fs_type with inode per device
+Message-ID: <YRI8Mev5yfeAXsrj@infradead.org>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+ <162818322947.1511194.6035266132085405252.stgit@omen>
 MIME-Version: 1.0
-References: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210727133022.634-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdU7-AahJmKLabba_ZF2bcPwktU00Q_uBOYm+AdiBVGyTA@mail.gmail.com>
- <CA+V-a8vfnnfgK1cY8dqsPJUwotK7SZZu5MjeGuJTa--+qaN4gg@mail.gmail.com> <20210810083925.weikjhpnzmq77oeh@pengutronix.de>
-In-Reply-To: <20210810083925.weikjhpnzmq77oeh@pengutronix.de>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 10 Aug 2021 09:41:07 +0100
-Message-ID: <CA+V-a8uVrzyOhdJFU+vy9Bpp8GuZrZAq4gnfZ-YfisJBPNwmmA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] can: rcar_canfd: Add support for RZ/G2L family
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162818322947.1511194.6035266132085405252.stgit@omen>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 9:39 AM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->
-> On 10.08.2021 09:36:50, Lad, Prabhakar wrote:
-> > > > +static void rcar_canfd_handle_global_recieve(struct rcar_canfd_global *gpriv, u32 ch)
-> > >
-> > > receive (everywhere)
-> > >
-> > Ouch, I'll respin with the typo's fixed.
->
-> No need, I've fixed it here.
->
-Thanks Marc.
+> + * XXX Adopt the following when available:
+> + * https://lore.kernel.org/lkml/20210309155348.974875-1-hch@lst.de/
 
-Cheers,
-Prabhakar
-
-> Marc
->
-> --
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+No need for this link.
