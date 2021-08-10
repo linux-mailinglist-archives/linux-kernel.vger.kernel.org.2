@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24B13E7E5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0563E804D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhHJRcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60974 "EHLO mail.kernel.org"
+        id S232382AbhHJRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:47:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231522AbhHJRcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 917B560F56;
-        Tue, 10 Aug 2021 17:32:09 +0000 (UTC)
+        id S236398AbhHJRoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:44:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 776EC6113A;
+        Tue, 10 Aug 2021 17:39:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616730;
-        bh=woKJPOPt/rh8d06DzkxMJZvZhND9Md2VJmpbfosLjbo=;
+        s=korg; t=1628617184;
+        bh=kMfrfxBLEc9gl+fcwjaNXU9MD349NhzmfzVKwN6TlnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iX7nkVu70SlR3oARbiBWOCWGR2wrI9k1quEUpg5wcs0Ah9bjDVc7JN8ae14Nw0bML
-         F+sTmLkwAWg6N2AKxo2OvCfZG+WiieDosZtz9+WNq7+s7TpTX6sFdBl3WfyCwK6gTr
-         UfnunLJ8XMKHsUL8PdPZR1v3mcCx/x6d3WBGWqhk=
+        b=B58lSdEDXBQUYkUp2nSP8C71lL9N8QWGC9Vqg6QOQ1vdFJg5oxfR18lUp5vj4VBrY
+         kaZ4RsPbj/nUyn22nZwYBczd8sYDMh454anSnqszA0GevS6tEKFrgtOGICcPTPG8Gi
+         zmP+IVstJ8e+xe+oEiRYYLm7DRfpQ4SYQ3qK9GUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 22/54] USB: serial: option: add Telit FD980 composition 0x1056
-Date:   Tue, 10 Aug 2021 19:30:16 +0200
-Message-Id: <20210810172944.904309734@linuxfoundation.org>
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH 5.10 083/135] optee: Fix memory leak when failing to register shm pages
+Date:   Tue, 10 Aug 2021 19:30:17 +0200
+Message-Id: <20210810172958.566373568@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit 5648c073c33d33a0a19d0cb1194a4eb88efe2b71 upstream.
+commit ec185dd3ab257dc2a60953fdf1b6622f524cc5b7 upstream.
 
-Add the following Telit FD980 composition 0x1056:
+Free the previously allocated pages when we encounter an error condition
+while attempting to register the pages with the secure world.
 
-Cfg #1: mass storage
-Cfg #2: rndis, tty, adb, tty, tty, tty, tty
-
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20210803194711.3036-1-dnlplm@gmail.com
+Fixes: a249dd200d03 ("tee: optee: Fix dynamic shm pool allocations")
+Fixes: 5a769f6ff439 ("optee: Fix multi page dynamic shm pool alloc")
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/tee/optee/shm_pool.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1203,6 +1203,8 @@ static const struct usb_device_id option
- 	  .driver_info = NCTRL(2) | RSVD(3) },
- 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1055, 0xff),	/* Telit FN980 (PCIe) */
- 	  .driver_info = NCTRL(0) | RSVD(1) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1056, 0xff),	/* Telit FD980 */
-+	  .driver_info = NCTRL(2) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
+--- a/drivers/tee/optee/shm_pool.c
++++ b/drivers/tee/optee/shm_pool.c
+@@ -32,8 +32,10 @@ static int pool_op_alloc(struct tee_shm_
+ 		struct page **pages;
+ 
+ 		pages = kcalloc(nr_pages, sizeof(pages), GFP_KERNEL);
+-		if (!pages)
+-			return -ENOMEM;
++		if (!pages) {
++			rc = -ENOMEM;
++			goto err;
++		}
+ 
+ 		for (i = 0; i < nr_pages; i++) {
+ 			pages[i] = page;
+@@ -44,8 +46,14 @@ static int pool_op_alloc(struct tee_shm_
+ 		rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
+ 					(unsigned long)shm->kaddr);
+ 		kfree(pages);
++		if (rc)
++			goto err;
+ 	}
+ 
++	return 0;
++
++err:
++	__free_pages(page, order);
+ 	return rc;
+ }
+ 
 
 
