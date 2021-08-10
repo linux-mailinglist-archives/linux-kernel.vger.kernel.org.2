@@ -2,203 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137243E83DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3733E3E83E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhHJTnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:43:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhHJTnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:43:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00EE560F38;
-        Tue, 10 Aug 2021 19:42:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628624572;
-        bh=vLtJ1EiYM+s1L8PUym60/lK3H9ghJQRAHr0pTCwBfzQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=uVtpsTg7/8Q2vqjZBe8ZJR4eqSalmV+AVT+gjGm3bWvEDeLHdqcJwriS6O1+4BvA3
-         9QeA46gVn31VPPT32d2rwDgzIO7uEudm/M2CDqGnIe4I3EKBJ7h2MV/75hBvMg620L
-         aT9+dGjt1wXxLTuEbqMkr0Nf9CZphhWdYyPcWc7Jk16BqwcReZ7xaqZbfQzkgqZOV9
-         KQax/Ovo7ZxfUjLOs3lwHMJs5ltp6XESiJ1NABPLN1OV8qyWq7wM29/xbo7F2yqqh8
-         1vrpDvB8Da4YoEGjBYHZQEhlkPIjrnwOWdjAfTNElEc2uZSFaggx0/hrHrGwTrBqt0
-         WAao3f3Hfk0FA==
-Date:   Tue, 10 Aug 2021 14:42:50 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Chuanjia Liu <chuanjia.liu@mediatek.com>
-Cc:     robh+dt@kernel.org, bhelgaas@google.com, matthias.bgg@gmail.com,
-        lorenzo.pieralisi@arm.com, ryder.lee@mediatek.com,
-        jianjun.wang@mediatek.com, yong.wu@mediatek.com,
-        Frank Wunderlich <frank-w@public-files.de>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/4] PCI: mediatek: Add new method to get shared
- pcie-cfg base address and parse node
-Message-ID: <20210810194250.GA2276275@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719073456.28666-3-chuanjia.liu@mediatek.com>
+        id S231782AbhHJTqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhHJTql (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 15:46:41 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCA6C0613C1;
+        Tue, 10 Aug 2021 12:46:19 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id bl13so5788037qvb.5;
+        Tue, 10 Aug 2021 12:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:subject:from
+         :to:cc:references:in-reply-to;
+        bh=7uKhEd6eOX5t2b+eg1FPghI/jUcRjPOp/WnfQQyxxWY=;
+        b=Cf5gKsRwjqoQHx9oIyDJAKGUxUbuOLczqOVlcz9xPxDXx80ilyxeI0Zb6rqIrBoAL2
+         T48RQCZIhT5Fxz53eDY6a1DzGL10RBlx5i7eln1OKUeNnFRt6R1Pf6c7ydwoxgq+s+SQ
+         YqEYYgWW6Fi2PTqMj+g7X1tlcTa5eCv+K2UP5vZw9/WlRv4wkmsLaZjclYXR1S5Fln7R
+         yDQDPkgCoJvl6Dgtqcg2YH8lwWXK4Nnkrs69XlHWHXh72G9bETAY+PWXOigcGCSxxsYA
+         VWU5aRyTx9FG46i3e1Lk4Mz2DTLeA7luZLLX59RBf2pYmGRrrxfnnNHPW/ccfPhqJx90
+         qtXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:subject:from:to:cc:references:in-reply-to;
+        bh=7uKhEd6eOX5t2b+eg1FPghI/jUcRjPOp/WnfQQyxxWY=;
+        b=YQUPvOhjAS4qAzI1OnX8gvvl17gU/gNFcpewI2gu2GePxOZBJBSJPGgVngwFHwfywl
+         M1GM8N6Hob9/RZOZbGmspTiP+UJKMuZacd49Swt0L1UH3dl5Z9Rj7IgKbPtiGC9JQng5
+         KxLxnuZ/M4kqlcUgb1Fd5wrWuxW/+q3RbBwFdsyYG6Vp91TdC6QjLEN1aRehOju6RQMb
+         E11OrwIMvDNBwxnX8ePewmFQxUo0vRcRTWmDbSkDlbka05F+HlEx3e99KbMU4f0TLnHV
+         EgA0KDPdAXTEOet/fbHcQzubUtgrXDHljOKtPq5saeDlRLtGr/1OHupx71pEYW1N/rwI
+         CxSw==
+X-Gm-Message-State: AOAM532S58wXVA5WZU9GTZx9tJ945s96QE/xTjk6pXzq6+krwqmSMklN
+        XIlQNFaOb/+XOAyj9STzPLE=
+X-Google-Smtp-Source: ABdhPJwAAxuvIqF3lzOesrPoEyxuMuaQHzyagNGW6nN0Zo4K+lcCE+lWTZGz/KFNAp0UNnbacp4tXw==
+X-Received: by 2002:ad4:4dc5:: with SMTP id cw5mr6748758qvb.62.1628624778573;
+        Tue, 10 Aug 2021 12:46:18 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id b22sm3257166qtr.2.2021.08.10.12.46.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 12:46:17 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 10 Aug 2021 15:46:16 -0400
+Message-Id: <CDG3ATRV00VV.57ZPL3OPU5N4@shaak>
+Subject: Re: [PATCH v5 3/5] iio: adc: ad7949: add support for internal vref
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Cc:     "Jonathan Cameron" <jic23@kernel.org>, <lars@metafoo.de>,
+        <Michael.Hennerich@analog.com>,
+        <charles-antoine.couret@essensium.com>, <Nuno.Sa@analog.com>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+References: <20210808015659.2955443-1-liambeguin@gmail.com>
+ <20210808015659.2955443-4-liambeguin@gmail.com>
+ <20210808173630.5c384a4b@jic23-huawei> <CDEHT583QT0A.2QAXX9AC2FMLO@shaak>
+ <CAHp75Vc3o-RrHD_wt_CfJY3P8hoRhJkdiRRySFS_O_7VdtJTQA@mail.gmail.com>
+In-Reply-To: <CAHp75Vc3o-RrHD_wt_CfJY3P8hoRhJkdiRRySFS_O_7VdtJTQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 03:34:54PM +0800, Chuanjia Liu wrote:
-> For the new dts format, add a new method to get
-> shared pcie-cfg base address and parse node.
+On Tue Aug 10, 2021 at 8:15 AM EDT, Andy Shevchenko wrote:
+> On Mon, Aug 9, 2021 at 1:50 AM Liam Beguin <liambeguin@gmail.com> wrote:
+> > On Sun Aug 8, 2021 at 12:36 PM EDT, Jonathan Cameron wrote:
+> > > On Sat, 7 Aug 2021 21:56:57 -0400
+> >         ret =3D fwnode_property_read_u32(child, "adi,internal-ref-micro=
+volt", &tmp);
+> >         if (ret =3D=3D -EINVAL && mode & AD7949_CFG_VAL_REF_EXTERNAL) {
+> >                 continue;
+>
+> >         } else if (ret < 0) {
+>
 
-This commit log doesn't seem to really cover what's going on here.  It
-looks like:
+Hi Andy,
 
-  - You added a check for "mediatek,generic-pciecfg" (I guess this is
-    the "shared pcie-cfg base address" part).  Probably could have
-    been its own patch.
+> Side note, redundant 'else'
 
-  - You added checks for "interrupt-names" and "pcie_irq".  Not
-    explained in commit log; probably could have been its own patch,
-    too.
+Are you asking to add an 'else' statement?
 
-  - You now look for "linux,pci-domain" (via of_get_pci_domain_nr()).
-    If present, you parse only one port instead of looking for all the
-    children of the node.
+because, unless I'm mistaken, in this case ret can have other negative valu=
+es
+that we want to catch with this 'else if'.
 
-    That's sort of weird behavior -- why should the presence of
-    "linux,pci-domain" determine whether the node can have children?
-    Is that really what you intend?
+Thanks for your time,
+Liam
 
-    Should be explained in the commit log and could have been its own
-    patch, too.
+>
+> >                 dev_err(dev, "invalid voltage reference in %pfw\n", chi=
+ld);
+> >                 fwnode_handle_put(child);
+> >                 return ret;
+> >         }
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-> Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> ---
->  drivers/pci/controller/pcie-mediatek.c | 52 +++++++++++++++++++-------
->  1 file changed, 39 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-> index 25bee693834f..928e0983a900 100644
-> --- a/drivers/pci/controller/pcie-mediatek.c
-> +++ b/drivers/pci/controller/pcie-mediatek.c
-> @@ -14,6 +14,7 @@
->  #include <linux/irqchip/chained_irq.h>
->  #include <linux/irqdomain.h>
->  #include <linux/kernel.h>
-> +#include <linux/mfd/syscon.h>
->  #include <linux/msi.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> @@ -23,6 +24,7 @@
->  #include <linux/phy/phy.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/regmap.h>
->  #include <linux/reset.h>
->  
->  #include "../pci.h"
-> @@ -207,6 +209,7 @@ struct mtk_pcie_port {
->   * struct mtk_pcie - PCIe host information
->   * @dev: pointer to PCIe device
->   * @base: IO mapped register base
-> + * @cfg: IO mapped register map for PCIe config
->   * @free_ck: free-run reference clock
->   * @mem: non-prefetchable memory resource
->   * @ports: pointer to PCIe port information
-> @@ -215,6 +218,7 @@ struct mtk_pcie_port {
->  struct mtk_pcie {
->  	struct device *dev;
->  	void __iomem *base;
-> +	struct regmap *cfg;
->  	struct clk *free_ck;
->  
->  	struct list_head ports;
-> @@ -650,7 +654,11 @@ static int mtk_pcie_setup_irq(struct mtk_pcie_port *port,
->  		return err;
->  	}
->  
-> -	port->irq = platform_get_irq(pdev, port->slot);
-> +	if (of_find_property(dev->of_node, "interrupt-names", NULL))
-> +		port->irq = platform_get_irq_byname(pdev, "pcie_irq");
-> +	else
-> +		port->irq = platform_get_irq(pdev, port->slot);
-> +
->  	if (port->irq < 0)
->  		return port->irq;
->  
-> @@ -682,6 +690,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
->  		val |= PCIE_CSR_LTSSM_EN(port->slot) |
->  		       PCIE_CSR_ASPM_L1_EN(port->slot);
->  		writel(val, pcie->base + PCIE_SYS_CFG_V2);
-> +	} else if (pcie->cfg) {
-> +		val = PCIE_CSR_LTSSM_EN(port->slot) |
-> +		      PCIE_CSR_ASPM_L1_EN(port->slot);
-> +		regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
->  	}
->  
->  	/* Assert all reset signals */
-> @@ -985,6 +997,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
->  	struct device *dev = pcie->dev;
->  	struct platform_device *pdev = to_platform_device(dev);
->  	struct resource *regs;
-> +	struct device_node *cfg_node;
->  	int err;
->  
->  	/* get shared registers, which are optional */
-> @@ -995,6 +1008,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
->  			return PTR_ERR(pcie->base);
->  	}
->  
-> +	cfg_node = of_find_compatible_node(NULL, NULL,
-> +					   "mediatek,generic-pciecfg");
-> +	if (cfg_node) {
-> +		pcie->cfg = syscon_node_to_regmap(cfg_node);
-> +		if (IS_ERR(pcie->cfg))
-> +			return PTR_ERR(pcie->cfg);
-> +	}
-> +
->  	pcie->free_ck = devm_clk_get(dev, "free_ck");
->  	if (IS_ERR(pcie->free_ck)) {
->  		if (PTR_ERR(pcie->free_ck) == -EPROBE_DEFER)
-> @@ -1027,22 +1048,27 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
->  	struct device *dev = pcie->dev;
->  	struct device_node *node = dev->of_node, *child;
->  	struct mtk_pcie_port *port, *tmp;
-> -	int err;
-> +	int err, slot;
-> +
-> +	slot = of_get_pci_domain_nr(dev->of_node);
-> +	if (slot < 0) {
-> +		for_each_available_child_of_node(node, child) {
-> +			err = of_pci_get_devfn(child);
-> +			if (err < 0) {
-> +				dev_err(dev, "failed to get devfn: %d\n", err);
-> +				goto error_put_node;
-> +			}
->  
-> -	for_each_available_child_of_node(node, child) {
-> -		int slot;
-> +			slot = PCI_SLOT(err);
->  
-> -		err = of_pci_get_devfn(child);
-> -		if (err < 0) {
-> -			dev_err(dev, "failed to parse devfn: %d\n", err);
-> -			goto error_put_node;
-> +			err = mtk_pcie_parse_port(pcie, child, slot);
-> +			if (err)
-> +				goto error_put_node;
->  		}
-> -
-> -		slot = PCI_SLOT(err);
-> -
-> -		err = mtk_pcie_parse_port(pcie, child, slot);
-> +	} else {
-> +		err = mtk_pcie_parse_port(pcie, node, slot);
->  		if (err)
-> -			goto error_put_node;
-> +			return err;
->  	}
->  
->  	err = mtk_pcie_subsys_powerup(pcie);
-> -- 
-> 2.18.0
-> 
