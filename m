@@ -2,172 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA373E50C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B943E50C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237276AbhHJBt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 21:49:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24640 "EHLO
+        id S237270AbhHJBt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 21:49:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31892 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232334AbhHJBtY (ORCPT
+        by vger.kernel.org with ESMTP id S232781AbhHJBtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Aug 2021 21:49:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628560142;
+        s=mimecast20190719; t=1628560143;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=G/dSgq/cGf57vOSvcWuPjjmCIcASPDhZxQFXSenWC5Q=;
-        b=CDb0HJlYyJHF07uGMSuXFla6M/W0tJeAZ0itE69r4wfM6yjSY0VEgriYHAK0lHLjLbsIwK
-        ixtMQ3eVhWyqX/JVR9rkkAcGw/Lw1iK6aaDEfRigMrkwOnHFyGlRxIKMGByKDlwcqlrZfQ
-        HahmSC2idxAr2FkmgVJmPDNEjObaF7c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-y01V_X30N12RlviB-2aszw-1; Mon, 09 Aug 2021 21:49:01 -0400
-X-MC-Unique: y01V_X30N12RlviB-2aszw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFB5787146F;
-        Tue, 10 Aug 2021 01:48:59 +0000 (UTC)
-Received: from T590 (ovpn-13-190.pek2.redhat.com [10.72.13.190])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B73C210016FB;
-        Tue, 10 Aug 2021 01:48:51 +0000 (UTC)
-Date:   Tue, 10 Aug 2021 09:48:46 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, josef@toxicpanda.com, bvanassche@acm.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nbd@other.debian.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v2 2/2] nbd: convert to use blk_mq_get_rq_by_tag()
-Message-ID: <YRHa/keJ4pHP3hnL@T590>
-References: <20210809030927.1946162-1-yukuai3@huawei.com>
- <20210809030927.1946162-3-yukuai3@huawei.com>
- <YRDK9tBFscK5ScK8@T590>
- <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
- <YRD5krmF/C7JxchE@T590>
- <3adf6183-bf40-10cd-b8ed-552120028ca3@huawei.com>
+        bh=H/wAzrc8J5cmRbOchhGbtSEbD1ZOJi+Aa/9jK/YVSb4=;
+        b=YP/2bhvunI0ZRRBUqkt+vTZEW28JkQBgoabRmj5SNLdI93XnU6/QR0E7H7UFzBz3jkEkIK
+        RuaFyx1+B46z+a56T94mRaMTTcxB6yjOw44MlvyGucsnGMygZRMnY7UoQDFwkWdBItGLEO
+        CVRpcpahdSoT2/r5wKwSlw2p1jDtCjc=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-qqM4ZMadMTOEt1dtFfEXXQ-1; Mon, 09 Aug 2021 21:49:01 -0400
+X-MC-Unique: qqM4ZMadMTOEt1dtFfEXXQ-1
+Received: by mail-qv1-f69.google.com with SMTP id b2-20020a0cc9820000b0290352b2c7d7e1so4829851qvk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 18:49:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=H/wAzrc8J5cmRbOchhGbtSEbD1ZOJi+Aa/9jK/YVSb4=;
+        b=XGxdCDGA+Rhcm3wh5ROxg8US6so7y8iit6MJ1Ezc6j7UzCt9brX2QKyNauJET1v9KE
+         7aYiipSGhxSm/QEft3FUexoWd8ioSZ1dE25i9SS5NYavgZcCBwkpEsVGueAiM7d72GR9
+         yoWAEDJh4Dm00/Zcm4/gGRAG6cF15OLvuAIKJ71xMyihuadg8xn0S5eGRUqHDMQRceBC
+         JxiRTOTd8lpCRyNNx2dCHUmwBdMRtFjfIrd0iuzhI/gQDfS35rx1oqoRcV6M9ZWuNrft
+         JqOaIysn9yiEUq4NkNfBUu42yvu7QpGLmYHqf0/+fByQ34bMdKSj591cAgejO93xTb8n
+         l8Jg==
+X-Gm-Message-State: AOAM532091ZjMdOKyttrQfdFEsF+GC58U3zsaC+SZgWZeL0D7b5BPTq9
+        F3Lgj2VCUjeOeJ7EpVeBL64XCp6Qm33HCIJ3AnQTfPf+vy0CO4VzR7V5nsa6VIARjxS2Dq7yZWQ
+        4KbDpUG2/iyZ+viIMZ97a53Pi
+X-Received: by 2002:ac8:774b:: with SMTP id g11mr21973515qtu.380.1628560141371;
+        Mon, 09 Aug 2021 18:49:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxS96rEJ7oHThL6ULlmD05tFerias1RrhZgDQJBFfovNbEIMgoaj5F5YHivPXC6VoUI51JWWg==
+X-Received: by 2002:ac8:774b:: with SMTP id g11mr21973505qtu.380.1628560141206;
+        Mon, 09 Aug 2021 18:49:01 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id y67sm10104324qkd.58.2021.08.09.18.49.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 18:49:00 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] ipc: replace costly bailout check in sysvipc_find_ipc()
+To:     Rafael Aquini <aquini@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Waiman Long <llong@redhat.com>
+References: <20210809203554.1562989-1-aquini@redhat.com>
+Message-ID: <c67b8612-d299-704e-9294-7c5f82028272@redhat.com>
+Date:   Mon, 9 Aug 2021 21:48:59 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3adf6183-bf40-10cd-b8ed-552120028ca3@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210809203554.1562989-1-aquini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 10:04:32PM +0800, yukuai (C) wrote:
-> On 2021/08/09 17:46, Ming Lei wrote:
-> > On Mon, Aug 09, 2021 at 03:08:26PM +0800, yukuai (C) wrote:
-> > > On 2021/08/09 14:28, Ming Lei wrote:
-> > > > On Mon, Aug 09, 2021 at 11:09:27AM +0800, Yu Kuai wrote:
-> > > > > blk_mq_tag_to_rq() might return freed request, use
-> > > > > blk_mq_get_rq_by_tag() instead.
-> > > > > 
-> > > > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > > > > ---
-> > > > >    drivers/block/nbd.c | 11 ++++++-----
-> > > > >    1 file changed, 6 insertions(+), 5 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > > > > index c38317979f74..9e56975a8eee 100644
-> > > > > --- a/drivers/block/nbd.c
-> > > > > +++ b/drivers/block/nbd.c
-> > > > > @@ -713,11 +713,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
-> > > > >    	tag = nbd_handle_to_tag(handle);
-> > > > >    	hwq = blk_mq_unique_tag_to_hwq(tag);
-> > > > >    	if (hwq < nbd->tag_set.nr_hw_queues)
-> > > > > -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
-> > > > > -				       blk_mq_unique_tag_to_tag(tag));
-> > > > > -	if (!req || !blk_mq_request_started(req)) {
-> > > > > -		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
-> > > > > -			tag, req);
-> > > > > +		req = blk_mq_get_rq_by_tag(nbd->tag_set.tags[hwq],
-> > > > > +					   blk_mq_unique_tag_to_tag(tag));
-> > > > > +	if (!req) {
-> > > > > +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d\n", tag);
-> > > > >    		return ERR_PTR(-ENOENT);
-> > > > >    	}
-> > > > >    	trace_nbd_header_received(req, handle);
-> > > > > @@ -779,6 +778,8 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
-> > > > >    	}
-> > > > >    out:
-> > > > >    	trace_nbd_payload_received(req, handle);
-> > > > > +	if (req)
-> > > > > +		blk_mq_put_rq_ref(req);
-> > > > >    	mutex_unlock(&cmd->lock);
-> > > > >    	return ret ? ERR_PTR(ret) : cmd;
-> > > > 
-> > > > After blk_mq_put_rq_ref() returns, this request may have been freed,
-> > > > so the returned 'cmd' may have been freed too.
-> > > > 
-> > > > As I replied in your another thread, it is driver's responsibility to
-> > > > cover race between normal completion and timeout/error handling, that
-> > > > means the caller of blk_mq_tag_to_rq need to make sure that the request
-> > > > represented by the passed 'tag' can't be freed.
-> > > 
-> > > Hi, Ming
-> > > 
-> > > There are two problems here in nbd, both reported by our syzkaller.
-> > > 
-> > > The first is that blk_mq_tag_to_rq() returned a freed request, which is
-> > > because tags->static_rq[] is freed without clearing tags->rq[].
-> > > Syzkaller log shows that a reply package is sent to client without
-> > > the client's request package. And this patch is trying to solve this
-> > > problem.
-> > 
-> > It is still driver's problem:
-> > 
-> > ->static_rq is freed in blk_mq_free_tag_set() which is called after
-> > blk_cleanup_disk() returns. Once blk_cleanup_disk() returns, there
-> > shouldn't be any driver activity, including calling blk_mq_tag_to_rq()
-> > by passing one invalid tag.
-> > 
-> 
-> Hi, Ming
-> 
-> I understand if static_rq is freed through blk_mq_free_tag_set(),
-> drivers should not use static_rq anymore.
-> 
-> By the way, I was thinking about another path:
-> 
-> blk_mq_update_nr_requests
->  if (!hctx->sched_tags) -> if this is true
->   ret = blk_mq_tag_update_depth(hctx, &hctx->tags, nr, false)
->    blk_mq_free_rqs -> static_rq is freed here
-> 
-> If this path concurrent with nbd_read_stat(), nbd_read_stat() can
-> get a freed request by blk_mq_tag_to_rq(), since tags->lock is not
-> held.
-> 
-> t1: nbd_read_stat	  t2: blk_mq_update_nr_requests
-> rq = blk_mq_tag_to_rq()
-> 			  blk_mq_free_rqs
+On 8/9/21 4:35 PM, Rafael Aquini wrote:
+> sysvipc_find_ipc() was left with a costly way to check if the offset
+> position fed to it is bigger than the total number of IPC IDs in use.
+> So much so that the time it takes to iterate over /proc/sysvipc/* files
+> grows exponentially for a custom benchmark that creates "N" SYSV shm
+> segments and then times the read of /proc/sysvipc/shm (milliseconds):
+>
+>      12 msecs to read   1024 segs from /proc/sysvipc/shm
+>      18 msecs to read   2048 segs from /proc/sysvipc/shm
+>      65 msecs to read   4096 segs from /proc/sysvipc/shm
+>     325 msecs to read   8192 segs from /proc/sysvipc/shm
+>    1303 msecs to read  16384 segs from /proc/sysvipc/shm
+>    5182 msecs to read  32768 segs from /proc/sysvipc/shm
+>
+> The root problem lies with the loop that computes the total amount of ids
+> in use to check if the "pos" feeded to sysvipc_find_ipc() grew bigger than
+> "ids->in_use". That is a quite inneficient way to get to the maximum index
+> in the id lookup table, specially when that value is already provided by
+> struct ipc_ids.max_idx.
+>
+> This patch follows up on the optimization introduced via commit 15df03c879836
+> ("sysvipc: make get_maxid O(1) again") and gets rid of the aforementioned
+> costly loop replacing it by a simpler checkpoint based on ipc_get_maxidx()
+> returned value, which allows for a smooth linear increase in time complexity
+> for the same custom benchmark:
+>
+>       2 msecs to read   1024 segs from /proc/sysvipc/shm
+>       2 msecs to read   2048 segs from /proc/sysvipc/shm
+>       4 msecs to read   4096 segs from /proc/sysvipc/shm
+>       9 msecs to read   8192 segs from /proc/sysvipc/shm
+>      19 msecs to read  16384 segs from /proc/sysvipc/shm
+>      39 msecs to read  32768 segs from /proc/sysvipc/shm
+>
+> Signed-off-by: Rafael Aquini <aquini@redhat.com>
+> ---
+>   ipc/util.c | 16 ++++------------
+>   1 file changed, 4 insertions(+), 12 deletions(-)
+>
+> diff --git a/ipc/util.c b/ipc/util.c
+> index 0027e47626b7..d48d8cfa1f3f 100644
+> --- a/ipc/util.c
+> +++ b/ipc/util.c
+> @@ -788,21 +788,13 @@ struct pid_namespace *ipc_seq_pid_ns(struct seq_file *s)
+>   static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+>   					      loff_t *new_pos)
+>   {
+> -	struct kern_ipc_perm *ipc;
+> -	int total, id;
+> -
+> -	total = 0;
+> -	for (id = 0; id < pos && total < ids->in_use; id++) {
+> -		ipc = idr_find(&ids->ipcs_idr, id);
+> -		if (ipc != NULL)
+> -			total++;
+> -	}
+> +	struct kern_ipc_perm *ipc = NULL;
+> +	int max_idx = ipc_get_maxidx(ids);
+>   
+> -	ipc = NULL;
+> -	if (total >= ids->in_use)
+> +	if (max_idx == -1 || pos > max_idx)
+>   		goto out;
+>   
+> -	for (; pos < ipc_mni; pos++) {
+> +	for (; pos <= max_idx; pos++) {
+>   		ipc = idr_find(&ids->ipcs_idr, pos);
+>   		if (ipc != NULL) {
+>   			rcu_read_lock();
 
-t1 isn't supposed to happen when t2 is running.
+The "pos > max_idx" check is redundant and so is not really necessary. 
+Other than that, the patch looks good to me.
 
-blk_mq_update_nr_requests() is only called by nbd_start_device().
-
-nbd_start_device():
-	        if (nbd->task_recv)
-                return -EBUSY;
-			...
-			nbd->recv_workq = alloc_workqueue()
-
-That means nbd_config_put() has been called and ->config_refs has
-dropped to zero, so socket has been shutdown, and ->recv_workq has
-been destroyed, so t1 isn't supposed to happen when t2 is running.
-
-> 
-> By holding tags->lock, we can check that rq state is idle, and it's
-> ref is 0.
-
-Firstly tags->lock can't fix the race[1], secondly it should be addressed
-in driver.
-
-[1] https://lore.kernel.org/linux-block/20210809030927.1946162-2-yukuai3@huawei.com/T/#m6651289c5718b45a8ae8a7efc889248f8cb904a3
-
-
-Thanks,
-Ming
+Reviewed-by: Waiman Long <longman@redhat.com>
 
