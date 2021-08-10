@@ -2,143 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77953E509A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857663E50A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237208AbhHJB2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 21:28:31 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13407 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237196AbhHJB2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 21:28:30 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GkFbx2JylzcmLm;
-        Tue, 10 Aug 2021 09:24:29 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 09:28:07 +0800
-Received: from [10.174.179.0] (10.174.179.0) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
- 2021 09:28:06 +0800
-Subject: Re: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
- LX2160A UART
-To:     Leo Li <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210615131605.616-1-thunder.leizhen@huawei.com>
- <20210615131605.616-2-thunder.leizhen@huawei.com>
- <AS8PR04MB8946D0EB15D631346F4D13198FF69@AS8PR04MB8946.eurprd04.prod.outlook.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <03d7c7be-2f19-9fdf-2a4e-f49a62bb82f6@huawei.com>
-Date:   Tue, 10 Aug 2021 09:28:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S237227AbhHJBbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 21:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232750AbhHJBbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 21:31:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6941261058
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628559043;
+        bh=S42P87zuOxcShQBFog8uPKE6+86eeoijqysy2RGAP6Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oXbyQ+/6McNx6XOrHDKr9vnNwpwajhsipBglzuTLxlVf3Ypc3mRGk1PsZOp9Npmuc
+         PvbQY/U9I1noVOLzCKG/Rc68/hQ3bQzc6Lh6ySXRaeAdGDQ38ubcQR6z/JiweKLOIl
+         CiGArjGM7CtjEZClcLSq3t04xq/f7epiyagr/qn8VI3ddsJ1opNH1F0ruSpdznb1/F
+         33T8laf5U30ndMegErBsStj0mhEHJbfyBhLUEkEnUMqqgTgn2eCPMHYPXvDP8lHU/H
+         wrnLlVxuQPHvZZsnutZ10+vPWSRPwVp2Q8yULRpV6k5tuhTW0uBc6ZQHQsoTwBiRWt
+         63UKy5f+CH75Q==
+Received: by mail-lf1-f45.google.com with SMTP id c24so11277271lfi.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 18:30:43 -0700 (PDT)
+X-Gm-Message-State: AOAM533rMFY8t8OHN0na/WyFuWLwh+/BqCPB5m9xvEGxHIEttf9zXaBb
+        5RBIbfPP9kQkUrhKUsf5wDrdtRCPq+iTNlKpXA4=
+X-Google-Smtp-Source: ABdhPJw9OPdu/bMj6+nQcqx2Of0EJ7zweLdKgPop70koiNNTZpEc8HxMacnrohGa3cIHb1iRqhZg/sL2HKygJpeI0+c=
+X-Received: by 2002:ac2:454f:: with SMTP id j15mr20404372lfm.555.1628559041654;
+ Mon, 09 Aug 2021 18:30:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AS8PR04MB8946D0EB15D631346F4D13198FF69@AS8PR04MB8946.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20210807145537.124744-1-xianting.tian@linux.alibaba.com>
+ <20210809003044.6692ddce@xhacker> <6a189d9d-b35d-3a15-5bfa-172c50e60c8c@linux.alibaba.com>
+In-Reply-To: <6a189d9d-b35d-3a15-5bfa-172c50e60c8c@linux.alibaba.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 10 Aug 2021 09:30:30 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTjBDF9cpN4J=ff2pCLXjc9uoBpfTzeTHhMAwg7OCShfA@mail.gmail.com>
+Message-ID: <CAJF2gTTjBDF9cpN4J=ff2pCLXjc9uoBpfTzeTHhMAwg7OCShfA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add ARCH_DMA_MINALIGN support
+To:     Xianting TIan <xianting.tian@linux.alibaba.com>
+Cc:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 9, 2021 at 9:55 AM Xianting TIan
+<xianting.tian@linux.alibaba.com> wrote:
+>
+>
+> =E5=9C=A8 2021/8/9 =E4=B8=8A=E5=8D=8812:30, Jisheng Zhang =E5=86=99=E9=81=
+=93:
+> > On Sat,  7 Aug 2021 22:55:37 +0800
+> > Xianting Tian <xianting.tian@linux.alibaba.com> wrote:
+> >
+> >> Introduce ARCH_DMA_MINALIGN to riscv arch.
+> >>
+> >> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> >> ---
+> >>   arch/riscv/include/asm/cache.h | 2 ++
+> >>   1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/c=
+ache.h
+> >> index 9b58b1045..2945bbe2b 100644
+> >> --- a/arch/riscv/include/asm/cache.h
+> >> +++ b/arch/riscv/include/asm/cache.h
+> >> @@ -11,6 +11,8 @@
+> >>
+> >>   #define L1_CACHE_BYTES             (1 << L1_CACHE_SHIFT)
+> >>
+> >> +#define ARCH_DMA_MINALIGN   L1_CACHE_BYTES
+> > It's not a good idea to blindly set this for all riscv. For "coherent"
+> > platforms, this is not necessary and will waste memory.
+
+quote from slab.h:
+ * Some archs want to perform DMA into kmalloc caches and need a guaranteed
+ * alignment larger than the alignment of a 64-bit integer.
+ * Setting ARCH_KMALLOC_MINALIGN in arch headers allows that.
+
+ARCH_DMA_MINALIGN is for the whole system, maybe we could give a
+DMA_MINALIGN Kconfig entry in arch/riscv?
+
+> >
+> thanks for the reply,
+>
+> So riscv is the "coherent" platform?
+>
+> I submit this patch as I got a fix suggestion of another patch to use
+> ARCH_DMA_MINALIGN, but riscv doesn't define it.
+>
+> https://lkml.org/lkml/2021/8/6/723 <https://lkml.org/lkml/2021/8/6/723>
+>
+> Considering the portability of the code, in my opinion, it is better to
+> define it for riscv if it is not "coherent" platform.
+>
+> >> +
+> >>   /*
+> >>    * RISC-V requires the stack pointer to be 16-byte aligned, so ensur=
+e that
+> >>    * the flat loader aligns it accordingly.
 
 
-On 2021/8/10 6:52, Leo Li wrote:
-> 
-> 
->> -----Original Message-----
->> From: Zhen Lei <thunder.leizhen@huawei.com>
->> Sent: Tuesday, June 15, 2021 8:16 AM
->> To: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
->> Herring <robh+dt@kernel.org>; Mark Kettenis <mark.kettenis@xs4all.nl>;
->> devicetree <devicetree@vger.kernel.org>; linux-arm-kernel <linux-arm-
->> kernel@lists.infradead.org>; linux-kernel <linux-kernel@vger.kernel.org>
->> Cc: Zhen Lei <thunder.leizhen@huawei.com>
->> Subject: [PATCH v2 1/1] arm64: dts: lx2160a: Fix the compatible string of
->> LX2160A UART
->>
->> Mark Kettenis told us that:
->> According to the NXP documentation, the LX2160A has a real PL011 UART.
->>
->> Therefore, rewrite it to the compatible string of pl011. The property "current-
->> speed" specific to "arm,sbsa-uart" is also deleted.
-> 
-> Sorry that I missed the discussion on the v1.  But looks like this change breaks the LX2160 boot.  The AMBA matching doesn't seem to work.  And the console is not registered correctly.
 
-https://lore.kernel.org/linux-arm-kernel/cba3a29f-92b5-072a-9a27-60240f072dad@huawei.com/
+--=20
+Best Regards
+ Guo Ren
 
-Maybe we should fall back to v1.
-
-> 
-> [    0.639055] OF: amba_device_add() failed (-2) for /soc/serial@21c0000
-> [    0.645612] OF: amba_device_add() failed (-2) for /soc/serial@21d0000
-> 
->>
->> Suggested-by: Shawn Guo <shawnguo@kernel.org>
->> Suggested-by: Mark Kettenis <mark.kettenis@xs4all.nl>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 12 ++++--------
->>  1 file changed, 4 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
->> b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
->> index c4b1a59ba424..d2e6f7285674 100644
->> --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
->> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
->> @@ -920,34 +920,30 @@ QORIQ_CLK_PLL_DIV(8)>,
->>  		};
->>
->>  		uart0: serial@21c0000 {
->> -			compatible = "arm,sbsa-uart","arm,pl011";
->> +			compatible = "arm,pl011", "arm,primecell";
->>  			reg = <0x0 0x21c0000 0x0 0x1000>;
->>  			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
->> -			current-speed = <115200>;
->>  			status = "disabled";
->>  		};
->>
->>  		uart1: serial@21d0000 {
->> -			compatible = "arm,sbsa-uart","arm,pl011";
->> +			compatible = "arm,pl011", "arm,primecell";
->>  			reg = <0x0 0x21d0000 0x0 0x1000>;
->>  			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
->> -			current-speed = <115200>;
->>  			status = "disabled";
->>  		};
->>
->>  		uart2: serial@21e0000 {
->> -			compatible = "arm,sbsa-uart","arm,pl011";
->> +			compatible = "arm,pl011", "arm,primecell";
->>  			reg = <0x0 0x21e0000 0x0 0x1000>;
->>  			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
->> -			current-speed = <115200>;
->>  			status = "disabled";
->>  		};
->>
->>  		uart3: serial@21f0000 {
->> -			compatible = "arm,sbsa-uart","arm,pl011";
->> +			compatible = "arm,pl011", "arm,primecell";
->>  			reg = <0x0 0x21f0000 0x0 0x1000>;
->>  			interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
->> -			current-speed = <115200>;
->>  			status = "disabled";
->>  		};
->>
->> --
->> 2.25.1
->>
-> 
-> .
-> 
+ML: https://lore.kernel.org/linux-csky/
