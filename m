@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959E73E81AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62FD3E81CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbhHJSBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:01:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
+        id S235894AbhHJSCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233561AbhHJR6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:58:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0303613A5;
-        Tue, 10 Aug 2021 17:45:48 +0000 (UTC)
+        id S235629AbhHJR6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:58:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07ABE6137E;
+        Tue, 10 Aug 2021 17:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617549;
-        bh=qyHYpfO6S+3MYiwQ7LxkJNtfn/CQ6Me4JgV38nc+KkM=;
+        s=korg; t=1628617551;
+        bh=bGh5QvqC+eND7kjxfvppyy/sXfLhsN9tVo9c+eq8RBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J/oYtnbNDtc52biReV75Unkd49GWYCHdhCangH/Esb5+V49dkgY4W5w0/+U1EHuzb
-         nVaLmC/l3LHBYyvtR74catDnfVtbP3Qg9K7nizrodpF5IQOdaR1C3TM/Z6FaedObfe
-         BVvE3JQIwo7lACIMC7r2bv468alsMBi/sP1qRukI=
+        b=h+z+2fX9bQhbNHc791cunL4R6nuN2KEXDx3vlrx3g68uWKDWOaJHmVVv2rn/r2Yju
+         ajGMI0rbJHGtRxGBYSWmMBY8wleY0Emq9Vf40oRApA56HzJW9zv84Pduuh7hHC8DM3
+         PPYqf6546Rp3KqMl39GJcRKQ3F8aGw4V1atyzs8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
-Subject: [PATCH 5.13 108/175] arm64: stacktrace: avoid tracing arch_stack_walk()
-Date:   Tue, 10 Aug 2021 19:30:16 +0200
-Message-Id: <20210810173004.517693481@linuxfoundation.org>
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH 5.13 109/175] optee: Clear stale cache entries during initialization
+Date:   Tue, 10 Aug 2021 19:30:17 +0200
+Message-Id: <20210810173004.549410482@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -41,133 +40,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit 0c32706dac1b0a72713184246952ab0f54327c21 upstream.
+commit b5c10dd04b7418793517e3286cde5c04759a86de upstream.
 
-When the function_graph tracer is in use, arch_stack_walk() may unwind
-the stack incorrectly, erroneously reporting itself, missing the final
-entry which is being traced, and reporting all traced entries between
-these off-by-one from where they should be.
+The shm cache could contain invalid addresses if
+optee_disable_shm_cache() was not called from the .shutdown hook of the
+previous kernel before a kexec. These addresses could be unmapped or
+they could point to mapped but unintended locations in memory.
 
-When ftrace hooks a function return, the original return address is
-saved to the fgraph ret_stack, and the return address  in the LR (or the
-function's frame record) is replaced with `return_to_handler`.
+Clear the shared memory cache, while being careful to not translate the
+addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
+initialization. Once all pre-cache shm objects are removed, proceed with
+enabling the cache so that we know that we can handle cached shm objects
+with confidence later in the .shutdown hook.
 
-When arm64's unwinder encounter frames returning to `return_to_handler`,
-it finds the associated original return address from the fgraph ret
-stack, assuming the most recent `ret_to_hander` entry on the stack
-corresponds to the most recent entry in the fgraph ret stack, and so on.
-
-When arch_stack_walk() is used to dump the current task's stack, it
-starts from the caller of arch_stack_walk(). However, arch_stack_walk()
-can be traced, and so may push an entry on to the fgraph ret stack,
-leaving the fgraph ret stack offset by one from the expected position.
-
-This can be seen when dumping the stack via /proc/self/stack, where
-enabling the graph tracer results in an unexpected
-`stack_trace_save_tsk` entry at the start of the trace, and `el0_svc`
-missing form the end of the trace.
-
-This patch fixes this by marking arch_stack_walk() as notrace, as we do
-for all other functions on the path to ftrace_graph_get_ret_stack().
-While a few helper functions are not marked notrace, their calls/returns
-are balanced, and will have no observable effect when examining the
-fgraph ret stack.
-
-It is possible for an exeption boundary to cause a similar offset if the
-return address of the interrupted context was in the LR. Fixing those
-cases will require some more substantial rework, and is left for
-subsequent patches.
-
-Before:
-
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
-| # echo function_graph > /sys/kernel/tracing/current_tracer
-| # cat /proc/self/stack
-| [<0>] stack_trace_save_tsk+0xa4/0x110
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
-
-After:
-
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
-| # echo function_graph > /sys/kernel/tracing/current_tracer
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Reviwed-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210802164845.45506-3-mark.rutland@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/stacktrace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tee/optee/call.c          |   36 +++++++++++++++++++++++++++++++++---
+ drivers/tee/optee/core.c          |    9 +++++++++
+ drivers/tee/optee/optee_private.h |    1 +
+ 3 files changed, 43 insertions(+), 3 deletions(-)
 
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -220,7 +220,7 @@ void show_stack(struct task_struct *tsk,
+--- a/drivers/tee/optee/call.c
++++ b/drivers/tee/optee/call.c
+@@ -416,11 +416,13 @@ void optee_enable_shm_cache(struct optee
+ }
  
- #ifdef CONFIG_STACKTRACE
- 
--noinline void arch_stack_walk(stack_trace_consume_fn consume_entry,
-+noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
- 			      void *cookie, struct task_struct *task,
- 			      struct pt_regs *regs)
+ /**
+- * optee_disable_shm_cache() - Disables caching of some shared memory allocation
+- *			      in OP-TEE
++ * __optee_disable_shm_cache() - Disables caching of some shared memory
++ *                               allocation in OP-TEE
+  * @optee:	main service struct
++ * @is_mapped:	true if the cached shared memory addresses were mapped by this
++ *		kernel, are safe to dereference, and should be freed
+  */
+-void optee_disable_shm_cache(struct optee *optee)
++static void __optee_disable_shm_cache(struct optee *optee, bool is_mapped)
  {
+ 	struct optee_call_waiter w;
+ 
+@@ -439,6 +441,13 @@ void optee_disable_shm_cache(struct opte
+ 		if (res.result.status == OPTEE_SMC_RETURN_OK) {
+ 			struct tee_shm *shm;
+ 
++			/*
++			 * Shared memory references that were not mapped by
++			 * this kernel must be ignored to prevent a crash.
++			 */
++			if (!is_mapped)
++				continue;
++
+ 			shm = reg_pair_to_ptr(res.result.shm_upper32,
+ 					      res.result.shm_lower32);
+ 			tee_shm_free(shm);
+@@ -449,6 +458,27 @@ void optee_disable_shm_cache(struct opte
+ 	optee_cq_wait_final(&optee->call_queue, &w);
+ }
+ 
++/**
++ * optee_disable_shm_cache() - Disables caching of mapped shared memory
++ *                             allocations in OP-TEE
++ * @optee:	main service struct
++ */
++void optee_disable_shm_cache(struct optee *optee)
++{
++	return __optee_disable_shm_cache(optee, true);
++}
++
++/**
++ * optee_disable_unmapped_shm_cache() - Disables caching of shared memory
++ *                                      allocations in OP-TEE which are not
++ *                                      currently mapped
++ * @optee:	main service struct
++ */
++void optee_disable_unmapped_shm_cache(struct optee *optee)
++{
++	return __optee_disable_shm_cache(optee, false);
++}
++
+ #define PAGELIST_ENTRIES_PER_PAGE				\
+ 	((OPTEE_MSG_NONCONTIG_PAGE_SIZE / sizeof(u64)) - 1)
+ 
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -686,6 +686,15 @@ static int optee_probe(struct platform_d
+ 	optee->memremaped_shm = memremaped_shm;
+ 	optee->pool = pool;
+ 
++	/*
++	 * Ensure that there are no pre-existing shm objects before enabling
++	 * the shm cache so that there's no chance of receiving an invalid
++	 * address during shutdown. This could occur, for example, if we're
++	 * kexec booting from an older kernel that did not properly cleanup the
++	 * shm cache.
++	 */
++	optee_disable_unmapped_shm_cache(optee);
++
+ 	optee_enable_shm_cache(optee);
+ 
+ 	if (optee->sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -159,6 +159,7 @@ int optee_cancel_req(struct tee_context
+ 
+ void optee_enable_shm_cache(struct optee *optee);
+ void optee_disable_shm_cache(struct optee *optee);
++void optee_disable_unmapped_shm_cache(struct optee *optee);
+ 
+ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 		       struct page **pages, size_t num_pages,
 
 
