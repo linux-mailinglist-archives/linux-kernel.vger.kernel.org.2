@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6043E844F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32E13E8451
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbhHJU3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:29:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42079 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229764AbhHJU3T (ORCPT
+        id S233165AbhHJUaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhHJUaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:29:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628627337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GDPhmoVx2vCnSG0qG6Q26w8x0PkAworRMKK+FXNiReY=;
-        b=Rlh2Q1csekykottCDyyVz1JIkvvmQljAKqxu1qymSvYSA20UXsy0JvUpZOe7jEoFAYxRVB
-        sS5jZsD0xokZZfrAI2VAdjKf6EXPGUbxqD+vCTz6oDxttRPnHo0ysYS1WSX2kFFGOKbGF3
-        rz0eAyGmIxDGvPAjkvfi1PeZWWrw8gI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-RdFyykJoNgKDmF-72fLxpQ-1; Tue, 10 Aug 2021 16:28:51 -0400
-X-MC-Unique: RdFyykJoNgKDmF-72fLxpQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B06B5CC626;
-        Tue, 10 Aug 2021 20:28:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 89B0627C5F;
-        Tue, 10 Aug 2021 20:28:48 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-46-willy@infradead.org>
-References: <20210715033704.692967-46-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 045/138] mm/memcg: Add folio_memcg_lock() and folio_memcg_unlock()
+        Tue, 10 Aug 2021 16:30:03 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1A9C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:40 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id oa17so9936761pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k9wsqN7YVW74vSpW7e/ejgv7USagZP+TqAT+Y6PYQHY=;
+        b=uLhHC4BB4SdqtXeV4nk8oKb2M/EPPK+qS0dWpRp1kk8U+pDB1fzViuhbYBGl3IX04c
+         gtPHvtptqrK6J1ZXgpQh9WH3ir8YRql+k03hsoNTHj1SEAw0C4/6pzKFAeWFP3b1r0GA
+         P0Grgo6j3P7CmVX6kvog4SK9BjzJy0pEMl9TwdeWD3QHp+/kCX1L5kISAFr9zJxC/5xR
+         ajGXf1Iuln/CQyv05+fsCUW35yL/LoLBG07ZDDRHsfjIduPCX9nHQk/USlk03l2caAnE
+         zCjEzY7t7a3Q92c40EfqGSQTy1R+b/fSEiD8i1+J86gYA0ep0cGCCM99NM2RCdXtQgoq
+         1MwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k9wsqN7YVW74vSpW7e/ejgv7USagZP+TqAT+Y6PYQHY=;
+        b=ahHT8X9BWgAZsXlITUvHfeiIYSidN+vF2GPyrzQEoJq4I4UsDtc6ihxk/7KD4ThAf6
+         O2Nk8QfivEHUgge28pj0ikQQle+fR69fVHP3rVpxFe5DqZIAF99G87vG0kjcoRHTk/EM
+         wfckh6Rkt1kKZej5GgSg6t+P42cYMt3ttMm3hsDUHLUkM/dGqKHLPYhea4rpBkJ7qR8B
+         U9lz1pW37H+/8iM01y7P5CBWPB4ER9O6f8WQZf7t9jomLvhMCcCyjQkDfQbHpmJw+hYd
+         xDvOQWyxEtyfwIIbpEZfKOTWhxKiT9wXFwDwGyZK8YzH/OWOJx4/w/FGFbAopPCMND/1
+         m7ZQ==
+X-Gm-Message-State: AOAM531DCKnqyu/TdpaZSdgnC7umLmPAcjySKFp4U12CeBukE7PGZMrK
+        AAxxXncK5KaO8nTW4otimWY=
+X-Google-Smtp-Source: ABdhPJwRkFSelQQu1jRuLdTr7MZ+iU84dCdmsYiR/77wsHUICwrhjerxSHAZmBvF1ZtDjbvnPqX6lw==
+X-Received: by 2002:aa7:9254:0:b029:3c9:268e:ae68 with SMTP id 20-20020aa792540000b02903c9268eae68mr19345505pfp.58.1628627379720;
+        Tue, 10 Aug 2021 13:29:39 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id e12sm24697145pfc.214.2021.08.10.13.29.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 13:29:38 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     hughd@google.com, ying.huang@intel.com, linmiaohe@huawei.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3 linux-next] Revert "mm,shmem: fix a typo in shmem_swapin_page()"
+Date:   Tue, 10 Aug 2021 13:29:34 -0700
+Message-Id: <20210810202936.2672-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1810622.1628627327.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 21:28:47 +0100
-Message-ID: <1810623.1628627327@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+Due to the change about how block layer detects congestion the
+justification of commit 8fd2e0b505d1 ("mm: swap: check if swap backing device
+is congested or not") doesn't stand anymore, so the commit could be just
+reverted in order to solve the race reported by commit 2efa33fc7f6e ("mm/shmem:
+fix shmem_swapin() race with swapoff"), so the fix commit and this fix's fix
+commit could be reverted as well.
 
-> These are the folio equivalents of lock_page_memcg() and
-> unlock_page_memcg().
-> 
-> lock_page_memcg() and unlock_page_memcg() have too many callers to be
-> easily replaced in a single patch, so reimplement them as wrappers for
-> now to be cleaned up later when enough callers have been converted to
-> use folios.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+Suggested-by: Hugh Dickins <hughd@google.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+This revert is for linux-next/-mm tree only since this commit has not
+merged into Linus's tree yet.
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+ mm/shmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 1bea7f50825b..dcc07d14162e 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1711,7 +1711,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	/* Prevent swapoff from happening to us. */
+ 	si = get_swap_device(swap);
+ 	if (!si) {
+-		error = -EINVAL;
++		error = EINVAL;
+ 		goto failed;
+ 	}
+ 	/* Look it up and read it in.. */
+-- 
+2.26.2
 
