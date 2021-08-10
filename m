@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F1A3E7D4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156DE3E7D59
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhHJQS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:18:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44546 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233981AbhHJQPE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:15:04 -0400
-Date:   Tue, 10 Aug 2021 16:14:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628612081;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QZp/B+KFF7/Emkoq1FLpDQbSf6cHVKNazvE8BmlNWik=;
-        b=FlaNHpKQbDOftfzSAGHLeeSsiaYJw73CoLi+cQ5yoEGpQnuQFoO6Z0MfjpeYQKSHBH7hRW
-        sl+/9ed1+W0o6+keJt+U5f3xUVQcgs9NeesrBfpnOm5SJv+xPaK0O9KpqThySLdPgZtVqI
-        cMIyUCI9jTGTxn/aPITwjsPQG+/y18t3EedObLyl/uiFp0Q6ZfhiQwrFIYC1lPsOub1NVk
-        B1h/d7SZ/BPHw3sD1WcTokMziQTR1tSXTWEQeGiC94TCZ01qZWUJfV+qHIzywyamUxImfU
-        DUcZB21IaUwUocH3kGR8rtIMJX2Doaqwv9owH7NYIT4d8rR3tYKhS6ySy5WcwA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628612081;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QZp/B+KFF7/Emkoq1FLpDQbSf6cHVKNazvE8BmlNWik=;
-        b=s4G20fcsc+ANjYDDjFgZvi4+mR2yhj01Uif/vcq/ckxADJXxFuGJOJzExhIuv/R4pFDoFe
-        K5Gp1HeuaS4y8ABA==
-From:   "tip-bot2 for John Garry" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: smp/core] cpu/hotplug: Fix comment typo
-Cc:     John Garry <john.garry@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1621585689-177398-1-git-send-email-john.garry@huawei.com>
-References: <1621585689-177398-1-git-send-email-john.garry@huawei.com>
+        id S232666AbhHJQT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:19:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229783AbhHJQT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:19:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D515600CC;
+        Tue, 10 Aug 2021 16:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628612374;
+        bh=rUrQspPgCz1GB/kLMPpAV5Oz5uFIYwUtwRxo8l8CgxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FoKJI/tWK/6kSLtIxyJfheigFp9Dbk39gOIdQawyWlg/IV94uf8MeVLmFCk/QQFGZ
+         nrURh8v2Y/B2Ah/51rD46AOuFfzffVzne77EWYedGNlu+fHlDNjC/TI0ahcurePvdQ
+         MRbnVzVIw3VloWG+nu87QnB1v4o+O5LBh8KhXkybvvbw7+Z0+xXZajZMOnP5Zy6vMx
+         yYLnP9WMwnDJVHB+x0oKDdtdOqdf8pStAfdCAqjQzZjXJxNo/bsOltJkph/KE8sFoa
+         J/M+fytEJTw0ReNNrAkT0GAGy4pF2vseBrTdWNnLtxsewLz4VYcDA+jV7RlAr0AEMR
+         jXgBkj8miZhkA==
+Date:   Tue, 10 Aug 2021 19:19:32 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Ross Philipson <ross.philipson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        luto@amacapital.net, kanth.ghatraju@oracle.com,
+        trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH v3 02/14] x86/boot: Add missing handling of
+ setup_indirect structures
+Message-ID: <20210810161932.wdwfu3wosjytdj4h@kernel.org>
+References: <1628527136-2478-1-git-send-email-ross.philipson@oracle.com>
+ <1628527136-2478-3-git-send-email-ross.philipson@oracle.com>
 MIME-Version: 1.0
-Message-ID: <162861208109.395.17310369237583962117.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628527136-2478-3-git-send-email-ross.philipson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the smp/core branch of tip:
+On Mon, Aug 09, 2021 at 12:38:44PM -0400, Ross Philipson wrote:
+> One of the two functions in ioremap.c that handles setup_data was
+> missing the correct handling of setup_indirect structures.
 
-Commit-ID:     c91eb2837310a4e8490fb712598aa7d7148e6d7f
-Gitweb:        https://git.kernel.org/tip/c91eb2837310a4e8490fb712598aa7d7148e6d7f
-Author:        John Garry <john.garry@huawei.com>
-AuthorDate:    Fri, 21 May 2021 16:28:09 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 18:02:37 +02:00
+What is "correct handling", and how was it broken?
 
-cpu/hotplug: Fix comment typo
+What is 'setup_indirect'?
 
-/s/reatdown/teardown/
+> Functionality missing from original commit:
 
-Signed-off-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/1621585689-177398-1-git-send-email-john.garry@huawei.com
+Remove this sentence.
 
+> commit b3c72fc9a78e (x86/boot: Introduce setup_indirect)
 
----
- include/linux/cpuhotplug.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Should be.
 
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index f39b34b..6ac543d 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -399,7 +399,7 @@ static inline int cpuhp_state_remove_instance(enum cpuhp_state state,
+Fixes: b3c72fc9a78e ("x86/boot: Introduce setup_indirect")
+
  
- /**
-  * cpuhp_state_remove_instance_nocalls - Remove hotplug instance from state
-- *					 without invoking the reatdown callback
-+ *					 without invoking the teardown callback
-  * @state:	The state from which the instance is removed
-  * @node:	The node for this individual state.
-  *
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+> ---
+>  arch/x86/mm/ioremap.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+> index ab74e4f..f2b34c5 100644
+> --- a/arch/x86/mm/ioremap.c
+> +++ b/arch/x86/mm/ioremap.c
+> @@ -669,17 +669,34 @@ static bool __init early_memremap_is_setup_data(resource_size_t phys_addr,
+>  
+>  	paddr = boot_params.hdr.setup_data;
+>  	while (paddr) {
+> -		unsigned int len;
+> +		unsigned int len, size;
+>  
+>  		if (phys_addr == paddr)
+>  			return true;
+>  
+>  		data = early_memremap_decrypted(paddr, sizeof(*data));
+> +		size = sizeof(*data);
+>  
+>  		paddr_next = data->next;
+>  		len = data->len;
+>  
+> -		early_memunmap(data, sizeof(*data));
+> +		if ((phys_addr > paddr) && (phys_addr < (paddr + len))) {
+> +			early_memunmap(data, sizeof(*data));
+> +			return true;
+> +		}
+> +
+> +		if (data->type == SETUP_INDIRECT) {
+> +			size += len;
+> +			early_memunmap(data, sizeof(*data));
+> +			data = early_memremap_decrypted(paddr, size);
+> +
+> +			if (((struct setup_indirect *)data->data)->type != SETUP_INDIRECT) {
+> +				paddr = ((struct setup_indirect *)data->data)->addr;
+> +				len = ((struct setup_indirect *)data->data)->len;
+> +			}
+> +		}
+> +
+> +		early_memunmap(data, size);
+>  
+>  		if ((phys_addr > paddr) && (phys_addr < (paddr + len)))
+>  			return true;
+> -- 
+> 1.8.3.1
+> 
+> 
+
+/Jarkko
