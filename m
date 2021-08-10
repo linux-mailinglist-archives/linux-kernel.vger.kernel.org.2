@@ -2,95 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6BC3E8187
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E779C3E8175
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237064AbhHJSAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:00:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:39454 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237085AbhHJR44 (ORCPT
+        id S238379AbhHJR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:59:33 -0400
+Received: from smtprelay0175.hostedemail.com ([216.40.44.175]:42078 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234555AbhHJR4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:56:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628618193; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=nZwLC8/2+nLBKjH7ldDqFj6R3W+sRvtGK7QbXrDghZs=; b=tK1bZtQ3UZQnb3pseHa3595w95XnF8fG7CMC1yr+LbCEY6v5mkwK7FM6DkcqUz5BoYJeQdbU
- qtDboSPkTgTFQO3IiKpbLNWZmHlum7rvpsf7Y6eKkiyRNT+tKXqyw8rzNWUycGzf1y5QELnH
- tOnbAJchJeGEScGaS5sHvTagr1Q=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6112bdd0b14e7e2ecb94ce5b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 17:56:32
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 163BBC35973; Tue, 10 Aug 2021 17:56:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C9DBC3596D;
-        Tue, 10 Aug 2021 17:56:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9C9DBC3596D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
-From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
-        Souradeep Chowdhury <schowdhu@codeaurora.org>
-Subject: [PATCH V6 7/7] arm64: dts: qcom: sdm845: Add Data Capture and Compare(DCC) support node
-Date:   Tue, 10 Aug 2021 23:24:43 +0530
-Message-Id: <db71a289cfceddc2d93f3f63423d67b545992e12.1628617260.git.schowdhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1628617260.git.schowdhu@codeaurora.org>
-References: <cover.1628617260.git.schowdhu@codeaurora.org>
-In-Reply-To: <cover.1628617260.git.schowdhu@codeaurora.org>
-References: <cover.1628617260.git.schowdhu@codeaurora.org>
+        Tue, 10 Aug 2021 13:56:04 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 73407182C370A;
+        Tue, 10 Aug 2021 17:55:41 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 9D9932448B5;
+        Tue, 10 Aug 2021 17:55:40 +0000 (UTC)
+Message-ID: <5a7cf87075177ab374c55e15f677eac167ac767a.camel@perches.com>
+Subject: [PATCH] genirq/irqdesc: Use sysfs_emit in the <foo>_show functions
+From:   Joe Perches <joe@perches.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Craig Gallek <kraig@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 10 Aug 2021 10:55:37 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 9D9932448B5
+X-Spam-Status: No, score=-2.53
+X-Stat-Signature: e9ejqwf67utbwqtm646cyc9993yftnqz
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18nKbbugOuXDegY3+4HxXNnggSK8K1BVRU=
+X-HE-Tag: 1628618140-92576
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the DCC(Data Capture and Compare) device tree node entry along with
-the address of the register region.
+Convert the nominally unbounded sprintf output to use sysfs_emit and the
+scnprintf uses to sysfs_emit_at.
 
-Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+Miscellanea:
+
+o sysfs_emit: Use the more common int len not ssize_t ret
+o hwirq_show: Add a minimum newline output when irq_data.domain is not set
+  and remove an unnecessary cast of an unsigned long to int ("%d" -> "%lu)
+o name_show: Add a minimum newline output when desc->name is not set
+
+trivially reduces object size (x86-64 defconfig, gcc 10.3)
+
+$ size kernel/irq/irqdesc.o*
+   text	   data	    bss	    dec	    hex	filename
+   5809	    576	   1608	   7993	   1f39	kernel/irq/irqdesc.o.new
+   5896	    576	   1608	   8080	   1f90	kernel/irq/irqdesc.o.old
+
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/irq/irqdesc.c | 65 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 32 insertions(+), 33 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index ff6bda1..ee13b5f 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -1968,6 +1968,12 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index fadb937660202..8d47b8667c989 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -147,19 +147,20 @@ static ssize_t per_cpu_count_show(struct kobject *kobj,
+ 				  struct kobj_attribute *attr, char *buf)
+ {
+ 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+-	ssize_t ret = 0;
+-	char *p = "";
++	int len = 0;
++	const char *p = "";
+ 	int cpu;
  
-+		dma@10a2000 {
-+			compatible = "qcom,sdm845-dcc", "qcom,dcc";
-+			reg = <0x0 0x010a2000 0x0 0x1000>,
-+			      <0x0 0x010ae000 0x0 0x2000>;
-+		};
+ 	for_each_possible_cpu(cpu) {
+ 		unsigned int c = irq_desc_kstat_cpu(desc, cpu);
+ 
+-		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%u", p, c);
++		len += sysfs_emit_at(buf, len, "%s%u", p, c);
+ 		p = ",";
+ 	}
+ 
+-	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
+-	return ret;
++	len += sysfs_emit_at(buf, len, "\n");
 +
- 		pcie0: pci@1c00000 {
- 			compatible = "qcom,pcie-sdm845", "snps,dw-pcie";
- 			reg = <0 0x01c00000 0 0x2000>,
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
++	return len;
+ }
+ IRQ_ATTR_RO(per_cpu_count);
+ 
+@@ -167,16 +168,15 @@ static ssize_t chip_name_show(struct kobject *kobj,
+ 			      struct kobj_attribute *attr, char *buf)
+ {
+ 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+-	ssize_t ret = 0;
++	int len = 0;
+ 
+ 	raw_spin_lock_irq(&desc->lock);
+-	if (desc->irq_data.chip && desc->irq_data.chip->name) {
+-		ret = scnprintf(buf, PAGE_SIZE, "%s\n",
+-				desc->irq_data.chip->name);
+-	}
++	len = sysfs_emit(buf, "%s\n",
++			 desc->irq_data.chip && desc->irq_data.chip->name ?
++			 desc->irq_data.chip->name : "");
+ 	raw_spin_unlock_irq(&desc->lock);
+ 
+-	return ret;
++	return len;
+ }
+ IRQ_ATTR_RO(chip_name);
+ 
+@@ -184,14 +184,16 @@ static ssize_t hwirq_show(struct kobject *kobj,
+ 			  struct kobj_attribute *attr, char *buf)
+ {
+ 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+-	ssize_t ret = 0;
++	int len = 0;
+ 
+ 	raw_spin_lock_irq(&desc->lock);
+ 	if (desc->irq_data.domain)
+-		ret = sprintf(buf, "%d\n", (int)desc->irq_data.hwirq);
++		len = sysfs_emit(buf, "%lu\n", desc->irq_data.hwirq);
++	else
++		len = sysfs_emit(buf, "\n");
+ 	raw_spin_unlock_irq(&desc->lock);
+ 
+-	return ret;
++	return len;
+ }
+ IRQ_ATTR_RO(hwirq);
+ 
+@@ -199,14 +201,14 @@ static ssize_t type_show(struct kobject *kobj,
+ 			 struct kobj_attribute *attr, char *buf)
+ {
+ 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+-	ssize_t ret = 0;
++	int len = 0;
+ 
+ 	raw_spin_lock_irq(&desc->lock);
+-	ret = sprintf(buf, "%s\n",
+-		      irqd_is_level_type(&desc->irq_data) ? "level" : "edge");
++	len = sysfs_emit(buf, "%s\n",
++			 irqd_is_level_type(&desc->irq_data) ? "level" : "edge");
+ 	raw_spin_unlock_irq(&desc->lock);
+ 
+-	return ret;
++	return len;
+ 
+ }
+ IRQ_ATTR_RO(type);
+@@ -215,14 +217,14 @@ static ssize_t wakeup_show(struct kobject *kobj,
+ 			   struct kobj_attribute *attr, char *buf)
+ {
+ 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+-	ssize_t ret = 0;
++	int len = 0;
+ 
+ 	raw_spin_lock_irq(&desc->lock);
+-	ret = sprintf(buf, "%s\n",
+-		      irqd_is_wakeup_set(&desc->irq_data) ? "enabled" : "disabled");
++	len = sysfs_emit(buf, "%s\n",
++			 irqd_is_wakeup_set(&desc->irq_data) ? "enabled" : "disabled");
+ 	raw_spin_unlock_irq(&desc->lock);
+ 
+-	return ret;
++	return len;
+ 
+ }
+ IRQ_ATTR_RO(wakeup);
+@@ -231,14 +233,13 @@ static ssize_t name_show(struct kobject *kobj,
+ 			 struct kobj_attribute *attr, char *buf)
+ {
+ 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+-	ssize_t ret = 0;
++	int len = 0;
+ 
+ 	raw_spin_lock_irq(&desc->lock);
+-	if (desc->name)
+-		ret = scnprintf(buf, PAGE_SIZE, "%s\n", desc->name);
++	len = sysfs_emit(buf, "%s\n", desc->name ?: "");
+ 	raw_spin_unlock_irq(&desc->lock);
+ 
+-	return ret;
++	return len;
+ }
+ IRQ_ATTR_RO(name);
+ 
+@@ -247,21 +248,19 @@ static ssize_t actions_show(struct kobject *kobj,
+ {
+ 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+ 	struct irqaction *action;
+-	ssize_t ret = 0;
+-	char *p = "";
++	int len = 0;
++	const char *p = "";
+ 
+ 	raw_spin_lock_irq(&desc->lock);
+ 	for (action = desc->action; action != NULL; action = action->next) {
+-		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
+-				 p, action->name);
++		len += sysfs_emit_at(buf, len, "%s%s", p, action->name);
+ 		p = ",";
+ 	}
+ 	raw_spin_unlock_irq(&desc->lock);
+ 
+-	if (ret)
+-		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
++	len += sysfs_emit_at(buf, len, "\n");
+ 
+-	return ret;
++	return len;
+ }
+ IRQ_ATTR_RO(actions);
+ 
 
