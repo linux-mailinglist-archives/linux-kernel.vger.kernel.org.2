@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EED3E8399
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1ED3E839B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhHJTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhHJTX6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:23:58 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E075AC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:23:35 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id be20so636581oib.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=gbNCzQEoZzdqhswDFYAzHfEyUYgfJuQIU33EIgWMMXo=;
-        b=kFL5rzZpadirkAhLE2tGfeO6LjQTce17lnPNSp+BWQyeiRDkxIegGLus53E5JV+x5H
-         TzYRWaiDzQtfy+PKm4IswLi3Bg93FquYoAacozMVz14/wyMVZQ2Qv+gcZX6o2p69dG7A
-         Z5521vOWj+Dl4HA/CVvYlDl40nN6iZ6YgXF8U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=gbNCzQEoZzdqhswDFYAzHfEyUYgfJuQIU33EIgWMMXo=;
-        b=gC12WIySj68RDgS5I0IcXqtB0cesu8qRQg+xx9r3Xt0LJx6Rw/b848qrSgyKofUbHk
-         vWCRl+EsXzoSX20jEH3+kcPhYKT0IjKQWhP4uR56AFQFVIA/ITDQBHvgsOusbzKFKMqK
-         xBTK+5UPIODdCH7DY3/L6sIbgKlKm5TU7nWDLVe9fhsuCoAPzXZCvxie69VZ0PHm5cqU
-         1VsAKHm7AhMJBLpVoK3svefi8zgil6D+bgsdSsWXhFMKVc4qq/1AWPwiVYcySkTFaQO9
-         jBuu7KVpyGWcw5pdl2CgOHVtWZH59Ry/2yOMgwX9Ac0YDTjD2a0hdzdVvdt0Ri+u87AG
-         iLIQ==
-X-Gm-Message-State: AOAM531C+WI2XnGYKlI/TlRByw5ykg3ICoIqCtdIPdZbAr7FdT04siHn
-        +iRKTMLSakV5I5788A2lvFRWNgCP3hyuEu+0nJHl7g==
-X-Google-Smtp-Source: ABdhPJzMsxkOmMEvS4X7L5p033iIi+R8pUAaMXRbTWMCFKsky5WKLkf7f7xLj0/wZhPuKNLFX+3Xvli4+2iPGOdYA5A=
-X-Received: by 2002:a05:6808:984:: with SMTP id a4mr4938223oic.166.1628623415364;
- Tue, 10 Aug 2021 12:23:35 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 12:23:35 -0700
+        id S232452AbhHJTYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:24:14 -0400
+Received: from mga09.intel.com ([134.134.136.24]:48238 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231152AbhHJTYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 15:24:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214962085"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="214962085"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:23:51 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="515958752"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.69.62]) ([10.209.69.62])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:23:49 -0700
+Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
+To:     Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
+ <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
+ <9748c07c-4e59-89d0-f425-c57f778d1b42@linux.intel.com>
+ <17b6a3a3-bd7d-f57e-8762-96258b16247a@intel.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <796a4b20-7fa3-3086-efa0-2f728f35ae06@linux.intel.com>
+Date:   Tue, 10 Aug 2021 12:23:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <abd00c9d395473875c31379ca0288116@codeaurora.org>
-References: <1628609362-2109-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n52a8i-2oNxtqKaS+XGBE0+wcp0Jx05VgL2KnHoQLW-vDQ@mail.gmail.com> <abd00c9d395473875c31379ca0288116@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 12:23:34 -0700
-Message-ID: <CAE-0n51NsjfT62anGiQ7FaBgs=bThVq89j3UMp4rNj9raGkwOw@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dp: add drm debug logs to dp_pm_resume/suspend
-To:     khsieh@codeaurora.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <17b6a3a3-bd7d-f57e-8762-96258b16247a@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting khsieh@codeaurora.org (2021-08-10 12:18:02)
-> On 2021-08-10 11:33, Stephen Boyd wrote:
-> > Quoting Kuogee Hsieh (2021-08-10 08:29:22)
-> >> Changes in V2:
-> >> -- correct Fixes text
-> >> -- drop commit text
-> >>
-> >> Fixes: 601f0479c583 ("drm/msm/dp: add logs across DP driver for ease
-> >> of debugging")
-> >> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> >> ---
-> >>  drivers/gpu/drm/msm/dp/dp_display.c | 13 +++++++++++++
-> >>  1 file changed, 13 insertions(+)
-> >
-> > BTW, this conflicts with commit
-> > e8a767e04dbc7b201cb17ab99dca723a3488b6d4
-> > in msm-next. The resolution is trivial but just wanted to mention it.
->
-> I Just fetched msm-next and cherry-pick this patch over, no conflict
-> seen.
-> Is this conflict need to be fixed?
->
 
-Oh sorry, I mean commit afc9b8b6bab8 ("drm/msm/dp: signal audio plugged
-change at dp_pm_resume") which doesn't seem to be in msm-next. Maybe Rob
-will resolve the conflict directly.
+> But, not everyone is going to agree with me.
+
+Both the Intel TDX and the AMD SEV side independently came to opposite 
+conclusions. In general people care a lot about boot time of VM guests.
+
+
+>
+> This also begs the question of how folks know when this "blip" is over.
+>   Do we have a counter for offline pages?  Is there any way to force page
+> acceptance?  Or, are we just stuck allocating a bunch of memory to warm
+> up the system?
+>
+> How do folks who care about these new blips avoid them?
+
+It's not different than any other warmup. At warmup time you always have 
+lots of blips until the working set stabilizes. For example in 
+virtualization first touch of a new page is usually an EPT violation 
+handled to the host. Or in the native case you may need to do IO or free 
+memory. Everybody who based their critical latency percentiles around a 
+warming up process would be foolish, the picture would be completely 
+distorted.
+
+So the basic operation is adding some overhead, but I don't think 
+anything is that unusual compared to the state of the art.
+
+Now perhaps the locking might be a problem if the other operations all 
+run in parallel, causing unnecessary serialization If that's really a 
+problem I guess we can optimize later. I don't think there's anything 
+fundamental about the current locking.
+
+
+-Andi
+
+
