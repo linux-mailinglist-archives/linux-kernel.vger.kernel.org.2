@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912AC3E812D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32BE3E7FD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhHJR4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:56:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
+        id S233606AbhHJRnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:43:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236449AbhHJRw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:52:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52B6F61356;
-        Tue, 10 Aug 2021 17:43:41 +0000 (UTC)
+        id S233535AbhHJRju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A50611C9;
+        Tue, 10 Aug 2021 17:37:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617421;
-        bh=aL/VQwDpDgwc8M6Z3IAq8wEXrwsD5+ryJJ/fgRSQzzk=;
+        s=korg; t=1628617058;
+        bh=alSV5i+p+vCyqW+3jdy1LbDabKcch9gv5yPSuw4Ztbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vh1EV1Pkx2KNLciXYAQeYL5E/bfNp703OUqmuqLYo0m/4qRzDCL88FXYNIMCqSxgB
-         SZNe/7VTDDqgdbzgSufSrGEfVVgVqiloDme+Rb/OD17lf1cZ7JSSlxIH/72yI8oGMB
-         ReREV97hjMs7bOZQtmISjjU/2N1q34hxK3zjgYcI=
+        b=rT6+SyGpwpBEtea3xDbE1TZzYwNZCvrUgdAMvuJ/EdYAN83aIqB+Z4VkWJLsXJrE/
+         WPH5yQurzE6sFeQGhlFNah8Q4moIpTZy0dR30siByR3RDzmPkWDuFcwPRXwRM6y24q
+         wFeA5g8qgrPbh++UkmMjPCKVoHVdhCFY+WYHT/90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ying Xu <yinxu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 051/175] sctp: move the active_key update after sh_keys is added
-Date:   Tue, 10 Aug 2021 19:29:19 +0200
-Message-Id: <20210810173002.618322615@linuxfoundation.org>
+Subject: [PATCH 5.10 026/135] media: videobuf2-core: dequeue if start_streaming fails
+Date:   Tue, 10 Aug 2021 19:29:20 +0200
+Message-Id: <20210810172956.560676352@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
-References: <20210810173000.928681411@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +42,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit ae954bbc451d267f7d60d7b49db811d5a68ebd7b ]
+[ Upstream commit c592b46907adbeb81243f7eb7a468c36692658b8 ]
 
-In commit 58acd1009226 ("sctp: update active_key for asoc when old key is
-being replaced"), sctp_auth_asoc_init_active_key() is called to update
-the active_key right after the old key is deleted and before the new key
-is added, and it caused that the active_key could be found with the key_id.
+If a vb2_queue sets q->min_buffers_needed then when the number of
+queued buffers reaches q->min_buffers_needed, vb2_core_qbuf() will call
+the start_streaming() callback. If start_streaming() returns an error,
+then that error was just returned by vb2_core_qbuf(), but the buffer
+was still queued. However, userspace expects that if VIDIOC_QBUF fails,
+the buffer is returned dequeued.
 
-In Ying Xu's testing, the BUG_ON in sctp_auth_asoc_init_active_key() was
-triggered:
+So if start_streaming() fails, then remove the buffer from the queue,
+thus avoiding this unwanted side-effect.
 
-  [ ] kernel BUG at net/sctp/auth.c:416!
-  [ ] RIP: 0010:sctp_auth_asoc_init_active_key.part.8+0xe7/0xf0 [sctp]
-  [ ] Call Trace:
-  [ ]  sctp_auth_set_key+0x16d/0x1b0 [sctp]
-  [ ]  sctp_setsockopt.part.33+0x1ba9/0x2bd0 [sctp]
-  [ ]  __sys_setsockopt+0xd6/0x1d0
-  [ ]  __x64_sys_setsockopt+0x20/0x30
-  [ ]  do_syscall_64+0x5b/0x1a0
-
-So fix it by moving the active_key update after sh_keys is added.
-
-Fixes: 58acd1009226 ("sctp: update active_key for asoc when old key is being replaced")
-Reported-by: Ying Xu <yinxu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Tested-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Fixes: b3379c6201bb ("[media] vb2: only call start_streaming if sufficient buffers are queued")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/auth.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/media/common/videobuf2/videobuf2-core.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/net/sctp/auth.c b/net/sctp/auth.c
-index fe74c5f95630..db6b7373d16c 100644
---- a/net/sctp/auth.c
-+++ b/net/sctp/auth.c
-@@ -857,14 +857,18 @@ int sctp_auth_set_key(struct sctp_endpoint *ep,
- 	memcpy(key->data, &auth_key->sca_key[0], auth_key->sca_keylength);
- 	cur_key->key = key;
+diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+index 89e38392509c..72350343a56a 100644
+--- a/drivers/media/common/videobuf2/videobuf2-core.c
++++ b/drivers/media/common/videobuf2/videobuf2-core.c
+@@ -1573,6 +1573,7 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb,
+ 		  struct media_request *req)
+ {
+ 	struct vb2_buffer *vb;
++	enum vb2_buffer_state orig_state;
+ 	int ret;
  
--	if (replace) {
--		list_del_init(&shkey->key_list);
--		sctp_auth_shkey_release(shkey);
--		if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
--			sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
-+	if (!replace) {
-+		list_add(&cur_key->key_list, sh_keys);
-+		return 0;
+ 	if (q->error) {
+@@ -1673,6 +1674,7 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb,
+ 	 * Add to the queued buffers list, a buffer will stay on it until
+ 	 * dequeued in dqbuf.
+ 	 */
++	orig_state = vb->state;
+ 	list_add_tail(&vb->queued_entry, &q->queued_list);
+ 	q->queued_count++;
+ 	q->waiting_for_buffers = false;
+@@ -1703,8 +1705,17 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb,
+ 	if (q->streaming && !q->start_streaming_called &&
+ 	    q->queued_count >= q->min_buffers_needed) {
+ 		ret = vb2_start_streaming(q);
+-		if (ret)
++		if (ret) {
++			/*
++			 * Since vb2_core_qbuf will return with an error,
++			 * we should return it to state DEQUEUED since
++			 * the error indicates that the buffer wasn't queued.
++			 */
++			list_del(&vb->queued_entry);
++			q->queued_count--;
++			vb->state = orig_state;
+ 			return ret;
++		}
  	}
-+
-+	list_del_init(&shkey->key_list);
-+	sctp_auth_shkey_release(shkey);
- 	list_add(&cur_key->key_list, sh_keys);
  
-+	if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
-+		sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
-+
- 	return 0;
- }
- 
+ 	dprintk(q, 2, "qbuf of buffer %d succeeded\n", vb->index);
 -- 
 2.30.2
 
