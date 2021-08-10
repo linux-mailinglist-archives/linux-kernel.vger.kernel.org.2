@@ -2,300 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821943E8376
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECFD3E8378
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhHJTQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:16:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37805 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230295AbhHJTQB (ORCPT
+        id S232306AbhHJTQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232239AbhHJTQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:16:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628622938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BddaJPgpQ/rhqTkwil8HE9U5ak8ldL/K5xuBKYTh0lM=;
-        b=VCypaL5k/Z0aFos6bUCKxmHbQXGuIT4HBHL4nGvCWINvtmwAXw1smkPtS9Oxfxihde12/v
-        PP4UFERF2B5JRyx5Xze2ZexojYmeFZDWABmPPrMHJ73SC05fCjOQXcimobu35rtEgkugnE
-        3WLidIijzs1OfjxxanwGi3Jeynqr44w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-OLrprlAKPoWmEerVhXTw5w-1; Tue, 10 Aug 2021 15:15:37 -0400
-X-MC-Unique: OLrprlAKPoWmEerVhXTw5w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37535100E425;
-        Tue, 10 Aug 2021 19:15:36 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5849C781E6;
-        Tue, 10 Aug 2021 19:15:30 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 7D1564175294; Tue, 10 Aug 2021 16:15:26 -0300 (-03)
-Date:   Tue, 10 Aug 2021 16:15:26 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [patch 0/4] extensible prctl task isolation interface and vmstat
- sync (v2)
-Message-ID: <20210810191526.GA38862@fuller.cnet>
-References: <20210730201827.269106165@fuller.cnet>
- <87czqlqmlr.ffs@tglx>
- <20210810183746.GA32986@fuller.cnet>
+        Tue, 10 Aug 2021 15:16:08 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447A1C0613D3;
+        Tue, 10 Aug 2021 12:15:46 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso2683600wmq.3;
+        Tue, 10 Aug 2021 12:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TIh0iMs8nw7ZRS40sjBbyQljsrkzHDlv/+9/rQIQFf0=;
+        b=EmA6euqSfBkGEjwppT7Ij8g6e6NOctGs71YHBHP9Uzscuhn9o55a7NjtvchERi8eM4
+         4gRI8ZcBVxj01mQKgHOj+efAFVYDoHx4N6FdJRpm1jpy4tVkcyIy7JGjB2qIbc2kvh8+
+         9US2/gZVtlw7VvxuOIM5XOD6vmjgeLAE8rZTt2iWetvud7DnoyVts2kAeqosRZ3kN0vW
+         WthS4EhKX7PdbY0EhNM96ymvp809ZbgTaiO5LnK1o+uWkC4RLUgbCLzgpmrQkui4prKd
+         5kepz+3SQVxCXxkATbwVvjwdjcMmugQwQ8ES8mVaWJnHZkhIqvbq0ZRYqc3CwJ6C9+DQ
+         mlaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TIh0iMs8nw7ZRS40sjBbyQljsrkzHDlv/+9/rQIQFf0=;
+        b=gCsq6bynyO5TWhv28jv+ZfxYDcCitngiAZdLiE/qYNAcC3T/bAZQIU4hgeRxZGABbL
+         6StY1i5Qfa0jgtnOaHH+okgdzXLT3125TTKg93TAYbvn+LtpZ5JzRU+nq7p95SKOzCYs
+         7ObprdsG3gMc0JLFmlVaW+vGZ4SEyV60WQ5hM+Rp9XbgiYSOZwTC3BDDEzC9hne1Lu6X
+         fZladD20+ugGBWf2T2ZmnCrEeKFSNCk5NjtXnYxJV4xv5pUhtqIqNzm51vcx082CnxgT
+         7V1FDyIh80f1y4dyxSj0XCz3NIe32uXHY6Ih/yu01IOC5VJZU0rRz+sFeFSlRwNXHD/F
+         IxpA==
+X-Gm-Message-State: AOAM531HCae0RZbeG9bIlGD8+bTlOhailhMrqbQV+mseZASgKEZvCONc
+        5qywdO/IQAZgzNpsrdn9Zpo=
+X-Google-Smtp-Source: ABdhPJxzpJRdz6/LpV+u3j0cUTiQB/GXqS09VRw4e4KgPFyUNWmpK2uhrcpRWxqyH0qo9AKo3HGdvg==
+X-Received: by 2002:a1c:4487:: with SMTP id r129mr5988337wma.62.1628622944840;
+        Tue, 10 Aug 2021 12:15:44 -0700 (PDT)
+Received: from gmail.com (aftr-62-216-202-192.dynamic.mnet-online.de. [62.216.202.192])
+        by smtp.gmail.com with ESMTPSA id s13sm3703005wmc.47.2021.08.10.12.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 12:15:44 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 21:15:39 +0200
+From:   Mete Polat <metepolat2000@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v2] rbtree: remove unneeded explicit alignment in struct
+ rb_node
+Message-ID: <YRLQW1JAlh0GqPVA@gmail.com>
+References: <YQ1ToK8EMdAO4CyH@precision>
+ <20210806174457.GA2184@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810183746.GA32986@fuller.cnet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210806174457.GA2184@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 03:37:46PM -0300, Marcelo Tosatti wrote:
-> On Tue, Aug 10, 2021 at 06:40:48PM +0200, Thomas Gleixner wrote:
-> > Marcelo,
+On Fri, Aug 06, 2021 at 07:44:57PM +0200, Peter Zijlstra wrote:
+> On Fri, Aug 06, 2021 at 05:22:08PM +0200, Mete Polat wrote:
+> > Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
+> > struct rb_node.") adds an explicit alignment to the struct rb_node due to
+> > some speciality of the CRIS architecture.
 > > 
-> > On Fri, Jul 30 2021 at 17:18, Marcelo Tosatti wrote:
+> > The support for the CRIS architecture was removed with commit c690eddc2f3b
+> > ("CRIS: Drop support for the CRIS port")
 > > 
-> > can you pretty please:
+> > So, remove this now unneeded explicit alignment in struct rb_node as well.
 > > 
-> >  1) Add a version number to your patch series right where it belongs:
+> > This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
+> > alignment to sizeof(long) for struct rb_node.").
 > > 
-> >     [patch V2 N/M]
-> > 
-> >     Just having a (v2) at the end of the subject line of 0/M is sloppy
-> >     at best.
-> > 
-> >  2) Provide a lore link to the previous version
-> > 
-> > Thanks,
-> > 
-> >         tglx
+> > The rbtree node color is stored in the LSB of '__rb_parent_color'.
+> > Only mask the first bit in '__rb_parent()', otherwise it modifies the
+> > node's parent address on m68k.
 > 
-> Thomas,
-> 
-> Sure, will resend -v3 once done with the following:
-> 
-> 1) Adding support for KVM.
-> 
-> 2) Adding a tool called "chisol" to util-linux, similar 
-> to chrt/taskset, to prctl+exec (for unmodified applications).
-> 
-> This raises the question whether or not to add an option to preserve
-> the task parameters across fork (i think the answer is yes).
-> 
-> --
-> 
-> But the following points are unclear to me (in quotes are earlier 
-> comments you made):
-> 
-> 1) "It's about silencing different and largely independent parts of the OS
-> on a particular CPU. Just defining upfront that there is only the choice
-> of all or nothing _is_ policy.
-> 
-> There is a very wide range of use case scenarios out there and just
-> because the ones which you care about needs X does not mean that X is
-> the right thing for everybody else. You still can have X and let other
-> people define their own set of things they want to be protected
-> against.
-> 
-> Aside of that having it selectively is a plus for debugability, testing
-> etc."
-> 
-> So for the ability to individually select what parts of the OS 
-> on a particular CPU are quiesced, there is:
-> 
-> +	defmask = defmask | ISOL_F_QUIESCE_VMSTATS;
-> +
-> +	ret = prctl(PR_ISOL_SET, ISOL_F_QUIESCE, defmask,
-> +                   0, 0);
-> +	if (ret == -1) {
-> +               perror("prctl PR_ISOL_SET");
-> +               return EXIT_FAILURE;
-> +	}
-> 
-> However there is a feeling that implementation details are being exposed 
-> to userspace... However that seems to be alright: what could happen is that
-> the feature ceases to exist (say vmstat sync), in kernel, and the bit
-> is kept for compability (but the kernel does nothing about it). 
-> 
-> That of course means whatever "vmstat sync" replacement comes up, it should
-> avoid IPIs as well.
-> 
-> Any thoughts on this?
-> 
-> 2) "Again: I fundamentaly disagree with the proposed task isolation patches
-> approach as they leave no choice at all.
-> 
-> There is a reasonable middle ground where an application is willing to
-> pay the price (delay) until the reqested quiescing has taken place in
-> order to run undisturbed (hint: cache ...) and also is willing to take
-> the addtional overhead of an occacional syscall in the slow path without
-> tripping some OS imposed isolation safe guard.
-> 
-> Aside of that such a granular approach does not necessarily require the
-> application to be aware of it. If the admin knows the computational
-> pattern of the application, e.g.
-> 
->  1     read_data_set() <- involving syscalls/OS obviously
->  2     compute_set()   <- let me alone
->  3     save_data_set() <- involving syscalls/OS obviously
-> 
->        repeat the above...
-> 
-> then it's at his discretion to decide to inflict a particular isolation
-> set on the task which is obviously ineffective while doing #1 and #3 but
-> might provide the so desired 0.9% boost for compute_set() which
-> dominates the judgement.
-> 
-> That's what we need to think about and once we figured out how to do
-> that it gives Marcelo the mechanism to solve his 'run virt undisturbed
-> by vmstat or whatever' problem and it allows Alex to build his stuff on
-> it.
-> 
-> Summary: The problem to be solved cannot be restricted to
-> 
->     self_defined_important_task(OWN_WORLD);
-> 
-> Policy is not a binary on/off problem. It's manifold across all levels
-> of the stack and only a kernel problem when it comes down to the last
-> line of defence.
-> 
-> Up to the point where the kernel puts the line of last defence, policy
-> is defined by the user/admin via mechanims provided by the kernel.
-> 
-> Emphasis on "mechanims provided by the kernel", aka. user API.
-> 
-> Just in case, I hope that I don't have to explain what level of scrunity
-> and thought this requires."
-> 
-> OK, so perhaps a handful of use-cases can clarify whether the proposed
-> interface requires changes?
-> 
-> The example on samples/task_isolation/ is focused on "enter task isolation
-> and very rarely exit".
-> 
-> There are two other cases i am aware of:
-> 
-> A) Christoph's use-case:
-> 
-> 	1) Enter task-isolation.
-> 	2) Latency sensitive loop begins.
-> 	3) Some event interrupts latency sensitive section.
-> 
-> 	4) Handling of the event requires N syscalls, which the programmer
-> 	   would be interested in happening without quiescing at 
-> 	   every return to system call. The current scheme would be:
-> 
-> 
->        /*
->         * Application can either set the value from ISOL_F_QUIESCE_DEFMASK,
->         * which is configurable through
->         * /sys/kernel/task_isolation/default_quiesce_activities,
->         * or specific values.
->         *
->         * Using ISOL_F_QUIESCE_DEFMASK allows for the application to
->         * take advantage of future quiescing capabilities without
->         * modification (provided default_quiesce_activities is
->         * configured accordingly).
->         */
->        defmask = defmask | ISOL_F_QUIESCE_VMSTATS;
-> 
->        ret = prctl(PR_ISOL_SET, ISOL_F_QUIESCE, defmask,
->                    0, 0);
->        if (ret == -1) {
->                perror("prctl PR_ISOL_SET");
->                return EXIT_FAILURE;
->        }
-> 
-> lat_loop:
->        ret = prctl(PR_ISOL_CTRL_SET, ISOL_F_QUIESCE, 0, 0, 0);
->        if (ret == -1) {
->                perror("prctl PR_ISOL_CTRL_SET (ISOL_F_QUIESCE)");
->                return EXIT_FAILURE;
->        }
-> 
->        latency sensitive loop
-> 
->        if (event == 1) {
-> 		/* disables quiescing of all features, while maintaining
-> 		 * other features such as logging and avoidance of
-> 		 * interruptions enabled.
-> 		 */
-> 		ret = prctl(PR_ISOL_CTRL_SET, 0, 0, 0, 0);
-> 		syscall1
-> 		syscall2
-> 		...
-> 		syscallN
-> 		/* reenter isolated mode with quiescing */
-> 		goto lat_loop;
-> 	}
-> 	...
-> 
-> Should it be possible to modify individual quiescing parts individually
-> while maintaining isolated mode? Yes, that seems to be desired.
-> 
-> 
-> The other use-case (from you) seems to be:
-> 
->  1     read_data_set() <- involving syscalls/OS obviously
->  2     compute_set()   <- let me alone
->  3     save_data_set() <- involving syscalls/OS obviously
-> 
->        repeat the above...
-> 
-> Well, the implementation of Christoph's use above seems not
-> to be that bad as well:
-> 
->  1     read_data_set() <- involving syscalls/OS obviously
-> 	/* disables quiescing of all (or some, if desired)
-> 	 * features, while maintaining other features such
-> 	 * as logging and avoidance of interruptions enabled.
-> 	 */
-> 	ret = prctl(PR_ISOL_CTRL_SET, ISOL_F_QUIESCE, 0, 0, 0);
-> 
->  2     compute_set()   <- let me alone
-> 
-> 	ret = prctl(PR_ISOL_CTRL_SET, 0, 0, 0, 0);
-> 
->  3     save_data_set() <- involving syscalls/OS obviously
-> 
->        repeat the above...
-> 
-> What kind of different behaviour, other than enabling/disabling
-> quiescing, would be desired in this use-case?
+> I still don't believe for a second this will actually work. We rely on
+> rcu_assign_pointer() and rcu_dereference() to work on the
+> rb_{left,right} members, and I don't think any architecture can provide
+> single copy atomic loads and stores that are not naturally aligned (eg.
+> when they straddle a cache or page boundary).
 > 
 
-And 3) Is a global ISOL_F_QUIESCE_DEFMASK sufficient, or should this 
-be per-task, or cgroups?
-
-       /*
-        * Application can either set the value from ISOL_F_QUIESCE_DEFMASK,
-        * which is configurable through
-        * /sys/kernel/task_isolation/default_quiesce_activities,
-        * or specific values.
-        *
-        * Using ISOL_F_QUIESCE_DEFMASK allows for the application to
-        * take advantage of future quiescing capabilities without
-        * modification (provided default_quiesce_activities is
-        * configured accordingly).
-        */
-       defmask = defmask | ISOL_F_QUIESCE_VMSTATS;
-
-       ret = prctl(PR_ISOL_SET, ISOL_F_QUIESCE, defmask,
-                   0, 0);
-       if (ret == -1) {
-               perror("prctl PR_ISOL_SET");
-               return EXIT_FAILURE;
-       }
-
+I guess I am misunderstanding something here, but isn't that then a
+problem that all rcu pointers in any struct would face, independent of
+an 'aligned' struct attribute? As long as allocators do not place a
+small struct as rb_node over page boundaries and the rcu pointers itself
+are aligned we should be fine, aren't we? I am not sure if any of the
+SL*B allocators is doing that though.
