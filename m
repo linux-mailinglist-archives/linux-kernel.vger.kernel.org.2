@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CF53E817A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA383E8030
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhHJR7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:59:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55598 "EHLO mail.kernel.org"
+        id S236196AbhHJRqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235287AbhHJR4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:56:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1986861373;
-        Tue, 10 Aug 2021 17:45:09 +0000 (UTC)
+        id S235860AbhHJRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:43:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4E27610A7;
+        Tue, 10 Aug 2021 17:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617510;
-        bh=LzN8h3QUBT0+yFbN/7lI2jC5K3HR9//KGqZ/8sk/A0k=;
+        s=korg; t=1628617160;
+        bh=ySdgxvltRO98Yof6wxQm2ulBxYe/gQDIxZkggTO7v6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TFnf7yr4VEADKwmZzHHpGYL8oVgmzTvSWslqPjn239zS2gwI1M0+JRkoFEgJhXUb9
-         Hh8I+WGU850ZgB1t1/y8uS/yyvzHDlHHW5EzkTSHe/DD+9lTgLPL5IQwWpnj9xwWCi
-         kReUu6F72VYMrEHhYLc/aGMsFq3WVIPBsK3jDOes=
+        b=yC9n+4VzciA219pQxn2j4O5af1wdkFu2OJcph1ChPdh2hn4UAszGe8e/2oEbmZ6sq
+         Ox+6f6bJ3bZ08JkYI3dx/KOUlAmfa55Pm4F4XBmANRJHezoa7Pu3OcjvHWLZdo5g7x
+         TOu9YSjZ0xSxUNSmtueB4hOQVivtj/aRc+3A9MrY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John S Gruber <johnsgruber@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 063/175] kbuild: cancel sub_make_done for the install target to fix DKMS
+Subject: [PATCH 5.10 037/135] gpio: tqmx86: really make IRQ optional
 Date:   Tue, 10 Aug 2021 19:29:31 +0200
-Message-Id: <20210810173003.020042754@linuxfoundation.org>
+Message-Id: <20210810172956.938521606@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
-References: <20210810173000.928681411@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-[ Upstream commit 14ccc638b02f9ec500c17d9e39efe979145a4b61 ]
+[ Upstream commit 9b87f43537acfa24b95c236beba0f45901356eb2 ]
 
-Since commit bcf637f54f6d ("kbuild: parse C= and M= before changing the
-working directory"), external module builds invoked by DKMS fail because
-M= option is not parsed.
+The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
+causes warnings with newer kernels.
 
-I wanted to add 'unset sub_make_done' in install.sh but similar scripts,
-arch/*/boot/install.sh, are duplicated, so I set sub_make_done empty in
-the top Makefile.
+Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
+missing IRQ properly.
 
-Fixes: bcf637f54f6d ("kbuild: parse C= and M= before changing the working directory")
-Reported-by: John S Gruber <johnsgruber@gmail.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Tested-by: John S Gruber <johnsgruber@gmail.com>
+Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpio/gpio-tqmx86.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 9d810e13a83f..218f44d7fc80 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1366,6 +1366,15 @@ scripts_unifdef: scripts_basic
- 	$(Q)$(MAKE) $(build)=scripts scripts/unifdef
+diff --git a/drivers/gpio/gpio-tqmx86.c b/drivers/gpio/gpio-tqmx86.c
+index 5022e0ad0fae..0f5d17f343f1 100644
+--- a/drivers/gpio/gpio-tqmx86.c
++++ b/drivers/gpio/gpio-tqmx86.c
+@@ -238,8 +238,8 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int ret, irq;
  
- # ---------------------------------------------------------------------------
-+# Install
-+
-+# Many distributions have the custom install script, /sbin/installkernel.
-+# If DKMS is installed, 'make install' will eventually recuses back
-+# to the this Makefile to build and install external modules.
-+# Cancel sub_make_done so that options such as M=, V=, etc. are parsed.
-+
-+install: sub_make_done :=
-+
- # Kernel selftest
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
++	irq = platform_get_irq_optional(pdev, 0);
++	if (irq < 0 && irq != -ENXIO)
+ 		return irq;
  
- PHONY += kselftest
+ 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+@@ -278,7 +278,7 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	if (irq) {
++	if (irq > 0) {
+ 		struct irq_chip *irq_chip = &gpio->irq_chip;
+ 		u8 irq_status;
+ 
 -- 
 2.30.2
 
