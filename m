@@ -2,115 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2F43E5812
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8013E581A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239784AbhHJKPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        id S238246AbhHJKTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239774AbhHJKPE (ORCPT
+        with ESMTP id S229940AbhHJKTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:15:04 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BCCC061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:42 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q11so7309333wrr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:42 -0700 (PDT)
+        Tue, 10 Aug 2021 06:19:03 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C408DC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:18:41 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id b11so9375731wrx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Y3QS1FCrYdlmaqXiG1OJXl7lfED7PyktVQVwB2bvr8I=;
-        b=BmXmFejb/qK7hA260JrWvlGX/gLQXJ9JOd6a76DvoRbbGZE0g593TmqcZzU/wU5IIu
-         YLakd4oCkkwGHF+AJfseqjQvDUEvI/IrRrxhJ8/jk+3PQX9Ve3nSU7FqsEQ/W7p29IU2
-         Ei5X9ir+BQAqfPiHDoU+SrQot7rpZB1ioEGL0=
+        bh=ypz43Y7ht5yYPrHsmCF+aueU4gZCkS1cG/1GAPtZPFc=;
+        b=R+OW/xFuOkLahmCf4qAPxmhZ0v0kNmMW8QPSLqB83Ihp6rlDsVgu3zCMRpFZdHI8L5
+         EO9zUOTjLrZckWIMazJuhc9wx9MUiAHuFJnK5r5irvffTxUcLQw+TscabHn9fkt+Ox6/
+         kYCi1+bs1d48eKqq5cXH8sw9Ny5ATK9r62gMU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=Y3QS1FCrYdlmaqXiG1OJXl7lfED7PyktVQVwB2bvr8I=;
-        b=nuO1giNniL0rInSliK9wnjQFA9L8l6OnxGnaX3zentDhLlBJzdwgByYaDlbi8i8aA2
-         ckwYZon/EmcArVaj68R0ZrsCcuaG+HoFa7SiS0aNwUXXYfyxvmfxdrHSaryYCa+cCXzB
-         dkBTn1BVqIbr7G/QmYVwCEYaOnngyJTSTdtdE9niI4w0vmChFu3MNvehry4g3T6cA9aE
-         23hVY/nPUeZyWNsQ+TPY4ckIK8Lt7BvxeMxoBmiN5b9ItjLlWNGG8nD7D6q/FiqXvZF+
-         dcZrwpl8pE8WhhmK2R7HM7N/jnX0cIDbw/0ervFKdFClyVMkpHCnL6EOGj5sCEVuXZpL
-         fYjQ==
-X-Gm-Message-State: AOAM530jK9oBdVuEvPd2MPslVszxYB0c/Zv6k8AQUOgxmeNr/dsj3g0X
-        Ekno5TXU0Q1UDB95QYWI4mNA8A==
-X-Google-Smtp-Source: ABdhPJxvdfIs0xvibG7SFc6t4/K9jAdA0Rjh5XE53jIDVKUe4LIjSEvpazKK2sTVLHBfF9e8ZU0rQg==
-X-Received: by 2002:a05:6000:18a5:: with SMTP id b5mr29599858wri.184.1628590480822;
-        Tue, 10 Aug 2021 03:14:40 -0700 (PDT)
+        bh=ypz43Y7ht5yYPrHsmCF+aueU4gZCkS1cG/1GAPtZPFc=;
+        b=AJCPdd4mw1aYiqxV2+M6oIkxF1PqiE/NdiWpS+RHxXaeSy6rGQlyGmJluR7qcnz5X3
+         iBNv9gfxiQVbuW5+Fglh1A5/72nMZwKHMXHjXKsfrVrUq7MYCxjWz909JnaWaCsV5S7T
+         caaV98nr7epuToggIudozAB7jULo41aXh8luTZh/DM9JiEi34bBwG9MuysCWgnoTr7aN
+         zK5qLdKH+c3R8NI4f0WRGoK68FKvrF79bLyokf5uLHd21LsjIggrcNqfNFDDIkV58VB1
+         9wOAeRTG7zmoIgbDn2MDADT7HoX/wiOi02mR80HyPM+PN1+4EVVHTFvkRAi+NAPHSLiE
+         SrQQ==
+X-Gm-Message-State: AOAM533+WDrJc9N3a8UDFPEJ/ME+n1gt5FtlslT07SNYHagptccE2bP3
+        R3cnem6VOWfSnymXmvTwEqnZUg==
+X-Google-Smtp-Source: ABdhPJyJynbXqePsNSwEyVY1512w9lGozC+ZnWM7Y5j68AQk7xYtQOTJceaK4TGRZ3ho9pMitB0j/Q==
+X-Received: by 2002:a5d:4309:: with SMTP id h9mr15828319wrq.299.1628590720316;
+        Tue, 10 Aug 2021 03:18:40 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id 140sm21738829wmb.43.2021.08.10.03.14.39
+        by smtp.gmail.com with ESMTPSA id j6sm2332384wmq.29.2021.08.10.03.18.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 03:14:40 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 12:14:38 +0200
+        Tue, 10 Aug 2021 03:18:39 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 12:18:37 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the drm tree
-Message-ID: <YRJRju/zo5YiF1EB@phenom.ffwll.local>
-Mail-Followup-To: Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210603193242.1ce99344@canb.auug.org.au>
- <20210708122048.534c1c4d@canb.auug.org.au>
- <20210810192636.625220ae@canb.auug.org.au>
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        yingjoe.chen@mediatek.com, eddie.huang@mediatek.com,
+        cawa.cheng@mediatek.com, bibby.hsieh@mediatek.com,
+        ck.hu@mediatek.com, stonea168@163.com
+Subject: Re: [PATCH v2 1/3] drm/panel: seperate panel power control from
+ panel prepare/unprepare
+Message-ID: <YRJSfdsAv9gZCO2R@phenom.ffwll.local>
+Mail-Followup-To: Jitao Shi <jitao.shi@mediatek.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        yingjoe.chen@mediatek.com, eddie.huang@mediatek.com,
+        cawa.cheng@mediatek.com, bibby.hsieh@mediatek.com,
+        ck.hu@mediatek.com, stonea168@163.com
+References: <20210808125218.63029-1-jitao.shi@mediatek.com>
+ <20210808125218.63029-2-jitao.shi@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810192636.625220ae@canb.auug.org.au>
+In-Reply-To: <20210808125218.63029-2-jitao.shi@mediatek.com>
 X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 07:26:36PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Sun, Aug 08, 2021 at 08:52:16PM +0800, Jitao Shi wrote:
+> Some dsi panels require the dsi lanes keeping low before panel power
+> on. So seperate the panel power control and the communication with panel.
 > 
-> On Thu, 8 Jul 2021 12:20:48 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > On Thu, 3 Jun 2021 19:32:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > After merging the drm tree, today's linux-next build (htmldocs) produced
-> > > these warnings:
-> > > 
-> > > Documentation/gpu/driver-uapi.rst:2412: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:1393.
-> > > Declaration is '.. c:enum:: drm_i915_gem_memory_class'.
-> > > Documentation/gpu/driver-uapi.rst:2484: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:2484.
-> > > Declaration is '.. c:struct:: drm_i915_gem_memory_class_instance'.
-> > > Documentation/gpu/driver-uapi.rst:7: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:7.
-> > > Declaration is '.. c:struct:: drm_i915_memory_region_info'.
-> > > Documentation/gpu/driver-uapi.rst:2531: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:2531.
-> > > Declaration is '.. c:struct:: drm_i915_query_memory_regions'.
-> > > Documentation/gpu/driver-uapi.rst:2595: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:1393.
-> > > Declaration is '.. c:struct:: drm_i915_gem_create_ext'.
-> > > Documentation/gpu/driver-uapi.rst:2615: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:1393.
-> > > Declaration is '.. c:struct:: drm_i915_gem_create_ext_memory_regions'.
-> > > 
-> > > Introduced by (one or more of) commits
-> > > 
-> > >   0c1a77cbdafb ("drm/doc: add section for driver uAPI")
-> > >   2bc9c04ea702 ("drm/doc/rfc: i915 DG1 uAPI")
-> > >   727ecd99a4c9 ("drm/doc/rfc: drop the i915_gem_lmem.h header")  
-> > 
-> > I am still getting these warning.
+> And put the power control in drm_panel_prepare_power and
+> drm_panel_unprepare_power. Put the communication with panel in
+> drm_panel_prepare and drm_panel_unprepare.
 > 
-> Still getting them ...
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
 
-Matt Auld is on vacation, and the other issue is that the tree where this
-is from isn't in linux-next. So will take a bit to get sorted in
-linux-next.
+This solves your problem, but it breaks the panel standard for everyone
+else since you're not converting them over.
+
+There needs to be more thought here in how to make this all compatible.
+
+Also I think we need very precise spec for how this is supposed to work
+with DSI panels, and then making sure existing drivers mostly follow this.
+
+Hacking up a shared interface that's used by lots of drivers just to then
+fix a bug in one user and one implementation is not good.
 -Daniel
+
+> ---
+>  drivers/gpu/drm/bridge/panel.c | 17 +++++++++++++++
+>  drivers/gpu/drm/drm_panel.c    | 38 ++++++++++++++++++++++++++++++++++
+>  include/drm/drm_bridge.h       |  2 ++
+>  include/drm/drm_panel.h        | 17 +++++++++++++++
+>  4 files changed, 74 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
+> index c916f4b8907e..3a846ac8e24c 100644
+> --- a/drivers/gpu/drm/bridge/panel.c
+> +++ b/drivers/gpu/drm/bridge/panel.c
+> @@ -137,6 +137,23 @@ static int panel_bridge_get_modes(struct drm_bridge *bridge,
+>  	return drm_panel_get_modes(panel_bridge->panel, connector);
+>  }
+>  
+> +int panel_bridge_prepare_power(struct drm_bridge *bridge)
+> +{
+> +	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
+> +
+> +	return drm_panel_prepare_power(panel_bridge->panel);
+> +}
+> +EXPORT_SYMBOL(panel_bridge_prepare_power);
+> +
+> +int panel_bridge_unprepare_power(struct drm_bridge *bridge)
+> +{
+> +        struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
+> +
+> +        return drm_panel_unprepare_power(panel_bridge->panel);
+> +}
+> +EXPORT_SYMBOL(panel_bridge_unprepare_power);
+> +
+> +
+>  static const struct drm_bridge_funcs panel_bridge_bridge_funcs = {
+>  	.attach = panel_bridge_attach,
+>  	.detach = panel_bridge_detach,
+> diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
+> index f634371c717a..7bb5185db17d 100644
+> --- a/drivers/gpu/drm/drm_panel.c
+> +++ b/drivers/gpu/drm/drm_panel.c
+> @@ -115,6 +115,24 @@ int drm_panel_prepare(struct drm_panel *panel)
+>  }
+>  EXPORT_SYMBOL(drm_panel_prepare);
+>  
+> +/**
+> + * drm_panel_prepare_power - power on a panel's power
+> + * @panel: DRM panel
+> + *
+> + * Calling this function will enable power and deassert any reset signals to
+> + * the panel.
+> + *
+> + * Return: 0 on success or a negative error code on failure.
+> + */
+> +int drm_panel_prepare_power(struct drm_panel *panel)
+> +{
+> +	if (panel && panel->funcs && panel->funcs->prepare_power)
+> +		return panel->funcs->prepare_power(panel);
+> +
+> +	return panel ? -ENOSYS : -EINVAL;
+> +}
+> +EXPORT_SYMBOL(drm_panel_prepare_power);
+> +
+>  /**
+>   * drm_panel_unprepare - power off a panel
+>   * @panel: DRM panel
+> @@ -138,6 +156,26 @@ int drm_panel_unprepare(struct drm_panel *panel)
+>  }
+>  EXPORT_SYMBOL(drm_panel_unprepare);
+>  
+> +/**
+> + * drm_panel_unprepare_power - power off a panel
+> + * @panel: DRM panel
+> + *
+> + * Calling this function will completely power off a panel (assert the panel's
+> + * reset, turn off power supplies, ...). After this function has completed, it
+> + * is usually no longer possible to communicate with the panel until another
+> + * call to drm_panel_prepare_power and drm_panel_prepare().
+> + *
+> + * Return: 0 on success or a negative error code on failure.
+> + */
+> +int drm_panel_unprepare_power(struct drm_panel *panel)
+> +{
+> +	if (panel && panel->funcs && panel->funcs->unprepare_power)
+> +		return panel->funcs->unprepare_power(panel);
+> +
+> +	return panel ? -ENOSYS : -EINVAL;
+> +}
+> +EXPORT_SYMBOL(drm_panel_unprepare_power);
+> +
+>  /**
+>   * drm_panel_enable - enable a panel
+>   * @panel: DRM panel
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index 2195daa289d2..cc94c9da47d8 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -892,6 +892,8 @@ struct drm_bridge *devm_drm_panel_bridge_add_typed(struct device *dev,
+>  						   struct drm_panel *panel,
+>  						   u32 connector_type);
+>  struct drm_connector *drm_panel_bridge_connector(struct drm_bridge *bridge);
+> +int panel_bridge_prepare_power(struct drm_bridge *bridge);
+> +int panel_bridge_unprepare_power(struct drm_bridge *bridge);
+>  #endif
+>  
+>  #endif
+> diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
+> index 33605c3f0eba..48e83712ad44 100644
+> --- a/include/drm/drm_panel.h
+> +++ b/include/drm/drm_panel.h
+> @@ -68,6 +68,13 @@ enum drm_panel_orientation;
+>   * functionality to enable/disable backlight.
+>   */
+>  struct drm_panel_funcs {
+> +	/**
+> +	 * @prepare_power:
+> +	 *
+> +	 * Turn on panel power.
+> +	 */
+> +	int (*prepare_power)(struct drm_panel *panel);
+> +
+>  	/**
+>  	 * @prepare:
+>  	 *
+> @@ -115,6 +122,13 @@ struct drm_panel_funcs {
+>  	int (*get_modes)(struct drm_panel *panel,
+>  			 struct drm_connector *connector);
+>  
+> +	/**
+> +	 * @unprepare_power:
+> +	 *
+> +	 * Turn off panel_power.
+> +	 */
+> +	int (*unprepare_power)(struct drm_panel *panel);
+> +
+>  	/**
+>  	 * @get_timings:
+>  	 *
+> @@ -180,6 +194,9 @@ void drm_panel_init(struct drm_panel *panel, struct device *dev,
+>  void drm_panel_add(struct drm_panel *panel);
+>  void drm_panel_remove(struct drm_panel *panel);
+>  
+> +int drm_panel_prepare_power(struct drm_panel *panel);
+> +int drm_panel_unprepare_power(struct drm_panel *panel);
+> +
+>  int drm_panel_prepare(struct drm_panel *panel);
+>  int drm_panel_unprepare(struct drm_panel *panel);
+>  
+> -- 
+> 2.25.1
+
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
