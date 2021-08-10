@@ -2,89 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A5E3E7BCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAF63E7BCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242630AbhHJPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:10:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:57658 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242538AbhHJPKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:10:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 803A01FB;
-        Tue, 10 Aug 2021 08:10:31 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1016E3F718;
-        Tue, 10 Aug 2021 08:10:31 -0700 (PDT)
-Subject: Re: [PATCH 1/3] PCI: brcmstb: Break register definitions into
- separate header
-To:     Florian Fainelli <f.fainelli@gmail.com>, linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210805211200.491275-1-jeremy.linton@arm.com>
- <20210805211200.491275-2-jeremy.linton@arm.com>
- <f82761b1-fb7e-08b2-8bc3-c84d258e26d3@gmail.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <ab2aa9e3-cdc7-1bc7-d493-8f3c991c3285@arm.com>
-Date:   Tue, 10 Aug 2021 10:10:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S242666AbhHJPLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237554AbhHJPLr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:11:47 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECC4C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:11:25 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id x10so21828442iop.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:11:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=24eQSegGgTAQct3c3ZDXvjME4kw/3yiL3Gj6Xe/n13w=;
+        b=at/MKIGeLCAYbO+Ydd2zLsZPp8HXWW0fZpNY6zj939Lk6MJYmhFzKQwgDtb9ochemg
+         lm9OyF5HqNn+M15cHO/ZvGd2h8mrSZ1athAJxnC8dnJf5Fl6hEmZe5WkpQsZhN+p9PRr
+         eKzdkTqFq2Ua6r63NLtFSWsfO5V3CF5lesjXcyE2gu+3gbtyzlbStl9jJncsaQPnVVx0
+         HNyr7LaZ7KVXEzxDGQzTQCfeKRLRnFb906bFS74Un2CtpF4HpINg0rLJS/Zw5vIO/ZcW
+         Mg0jsVCJfsGgEmWXmZuP1OrPfw6058bKmU0OMvkiL5v/EBEbmNR/10tMC5GbBGdB6HJG
+         7t0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=24eQSegGgTAQct3c3ZDXvjME4kw/3yiL3Gj6Xe/n13w=;
+        b=MRIzxOAKHB8eFeoM9eocw7dqSUXhgBUMlKvqSFEbxC8p2y2H8jO5fzCgeJWoSrKwTU
+         LO02Gm812Z7Liic4fzZZK4FKNRvKXfaFB6plu4F+CzI8JH+KYdNe41j2ZK+nIcg1n3x+
+         sLRBSfm3RxwEgY9DfKESGOZIyLD3jbyikv6X34DQJ3el431+88pb7JmI0UsVWxCZzmMb
+         KaHyGJsMHMcmKq1TNTObeXyvyLU5GYF57POm7SD5ZCdJsnx5K8xC19Aje0N9EFId5wS2
+         gPZTjbDGGaCsUyIvL3eZErFk5FQRXjJsv7R0TELDZNEL+K+k7TWsVo6mzlVyjoyH5W+z
+         k1Ig==
+X-Gm-Message-State: AOAM530p/wlv9BPpLN+qTJTvzNX/y8/gOhedoQU7fMHZGwfxMIrlplsd
+        FeGVXcbpLbO+7vRdxq2x0gHFulwlqIGQWFv/qw8=
+X-Google-Smtp-Source: ABdhPJy059m/HIwrjY9V3mRYz2Teewm3r7ui68KDeZMd2v8MXG5zW9IpGDkoiY5xMon4HVVlZkvBOQ4wbJFHh02IH+0=
+X-Received: by 2002:a02:1d04:: with SMTP id 4mr2252896jaj.98.1628608284774;
+ Tue, 10 Aug 2021 08:11:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f82761b1-fb7e-08b2-8bc3-c84d258e26d3@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <202108101908.Xq5QKkNW-lkp@intel.com>
+In-Reply-To: <202108101908.Xq5QKkNW-lkp@intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 10 Aug 2021 08:11:13 -0700
+Message-ID: <CAEf4BzaxSUF31qjjZx1+7OLomxyx3mAaqNY71GAV-TQMoGnOCQ@mail.gmail.com>
+Subject: Re: [linux-stable-rc:linux-5.10.y 4948/4972] tools/testing/selftests/bpf/prog_tests/core_reloc.c:860:
+ undefined reference to `ASSERT_FALSE'
+To:     kernel test robot <lkp@intel.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, kbuild-all@lists.01.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 10, 2021 at 4:25 AM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> head:   e97bd1e03e6ef58ec47ee7f085f8c14ed6329cf7
+> commit: 183d9ebd449c20658a1aaf580f311140bbc7421d [4948/4972] selftests/bpf: Fix core_reloc test runner
+> config: x86_64-rhel-8.3-kselftests (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-348-gf0e6938b-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=183d9ebd449c20658a1aaf580f311140bbc7421d
+>         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>         git fetch --no-tags linux-stable-rc linux-5.10.y
+>         git checkout 183d9ebd449c20658a1aaf580f311140bbc7421d
+>         # save the attached .config to linux build tree
+>         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash -C tools/testing/selftests/bpf install
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    /usr/bin/ld: tools/testing/selftests/bpf/core_reloc.test.o: in function `test_core_reloc':
+> >> tools/testing/selftests/bpf/prog_tests/core_reloc.c:860: undefined reference to `ASSERT_FALSE'
+>    collect2: error: ld returned 1 exit status
+> --
+>    /usr/bin/ld: tools/testing/selftests/bpf/no_alu32/core_reloc.test.o: in function `test_core_reloc':
+> >> tools/testing/selftests/bpf/prog_tests/core_reloc.c:860: undefined reference to `ASSERT_FALSE'
+>    collect2: error: ld returned 1 exit status
+>
 
-Thanks for taking a look at this!
+ASSERT_FALSE() macro is defined in test_progs.h, which is included
+from core_reloc.c. There must be something wrong about how kernel test
+robot is building selftests/bpf.
 
+>
+> vim +860 tools/testing/selftests/bpf/prog_tests/core_reloc.c
+>
+>    765
+>    766  void test_core_reloc(void)
+>    767  {
+>    768          const size_t mmap_sz = roundup_page(sizeof(struct data));
+>    769          struct bpf_object_load_attr load_attr = {};
+>    770          struct core_reloc_test_case *test_case;
+>    771          const char *tp_name, *probe_name;
+>    772          int err, i, equal;
+>    773          struct bpf_link *link = NULL;
+>    774          struct bpf_map *data_map;
+>    775          struct bpf_program *prog;
+>    776          struct bpf_object *obj;
+>    777          uint64_t my_pid_tgid;
+>    778          struct data *data;
+>    779          void *mmap_data = NULL;
+>    780
 
-On 8/10/21 5:07 AM, Florian Fainelli wrote:
-> 
-> 
-> On 8/5/2021 2:11 PM, Jeremy Linton wrote:
->> We are about to create a standalone ACPI quirk module for the
->> bcmstb controller. Lets move the register definitions into a separate
->> file so they can be shared between the APCI quirk and the normal
->> host bridge driver.
->>
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> ---
->>   drivers/pci/controller/pcie-brcmstb.c | 179 +------------------------
->>   drivers/pci/controller/pcie-brcmstb.h | 182 ++++++++++++++++++++++++++
->>   2 files changed, 183 insertions(+), 178 deletions(-)
->>   create mode 100644 drivers/pci/controller/pcie-brcmstb.h
-> 
-> You moved more than just register definitions into pcie-brcmstb.h you 
-> also moved internal structure definitions, enumerations, etc. which are 
-> not required since pcie-brcmstb-acpi.c does not access the brcm_pcie 
-> structure but open codes accesses to the MISC_STATUS register instead.
-> 
-> There are no include guards added to this file (it is debatable whether 
-> we should add them), and it is also not covered by the existing BROADCOM 
-> BCM2711/BCM2835 ARM ARCHITECTURE MAINTAINERS file entry.
-
-Sure, I will reduce the .h to just the register definitions, guard it, 
-and tweak maintainers to cover pcie-brcmstb*.
-
-
-> 
-> Given that there can be new platforms supported by this PCIe controller 
-> in the future possibly with the same limitations as the 2711, but with a 
-> seemingly different MISC_STATUS layout, you will have to think about a 
-> solution that scales, maybe we cross that bridge when we get there.
-
-Yes, given I don't know what those changes are I can't predict how they 
-would have to be handled, or even if the platform would be a target of 
-the community maintaining the UEFI/ACPI port on the RPi. So punting on 
-that topic seems a reasonable solution at the moment. Better yet, more 
-of the linux community will see the advantage of the firmware interface 
-and this platform can utilize that method.
+[...]
