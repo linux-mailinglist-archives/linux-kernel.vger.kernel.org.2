@@ -2,86 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF443E5878
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A53F3E587B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239873AbhHJKjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:39:25 -0400
-Received: from ozlabs.org ([203.11.71.1]:47307 "EHLO ozlabs.org"
+        id S239881AbhHJKlK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 06:41:10 -0400
+Received: from aposti.net ([89.234.176.197]:47398 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238566AbhHJKjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:39:24 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkTvl6nRZz9sRR;
-        Tue, 10 Aug 2021 20:38:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628591941;
-        bh=OKNXIzmcYrF54+bosmBPNPHgC8NwZvVHFBlRYj/dh38=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J+X0xroDxqKg3xDnsy38f5bl0Ve8+fHDpJfvh4TT//HO4xJnvT1hSlO/KFHlKOv9f
-         keOEc+duSUqjVxEsut9mu1+/93P5KrS6d/R4RjrZUoMfHyXTClsv3HXt6naJLcml4D
-         cW/YX0B8YUFyW/R07xRDSYFjaZmfxqilAbURXz+GejMjNEIPJwJR118+a0g2V6ZaGy
-         3Mzb3azdF5+mpjnvmxtDXDs4V3iv749vvzIf1qxJTdxiXUYmA6mZpamP5wXgXp6PEH
-         MQ7GCYcqMA572/YZrNtow4QoyyFDKklLy0LUffIr7stlOFC5KK7rw7T6TLHEVKhiY7
-         eVW2Y0HwGXOWQ==
-Date:   Tue, 10 Aug 2021 20:38:59 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the drm tree
-Message-ID: <20210810203859.128649fc@canb.auug.org.au>
-In-Reply-To: <YRJRju/zo5YiF1EB@phenom.ffwll.local>
-References: <20210603193242.1ce99344@canb.auug.org.au>
-        <20210708122048.534c1c4d@canb.auug.org.au>
-        <20210810192636.625220ae@canb.auug.org.au>
-        <YRJRju/zo5YiF1EB@phenom.ffwll.local>
+        id S238566AbhHJKlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:41:09 -0400
+Date:   Tue, 10 Aug 2021 12:40:39 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Message-Id: <RNDMXQ.0B7HA1RXU7TB@crapouillou.net>
+In-Reply-To: <YRJLNHXR0PhykBwL@kroah.com>
+References: <20210805192110.90302-1-paul@crapouillou.net>
+        <20210805192110.90302-3-paul@crapouillou.net> <YQw9hjZll4QmYVLX@kroah.com>
+        <3HUDXQ.7RBGD4FUHR2F@crapouillou.net> <YQ0MU/GcLkPLiy5C@kroah.com>
+        <LYZEXQ.9UWPIAZCVXIK@crapouillou.net> <YRJLNHXR0PhykBwL@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/usJBfb3Y017NmDTWcQ5uJhD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/usJBfb3Y017NmDTWcQ5uJhD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Greg,
 
-Hi Daniel,
+Le mar., août 10 2021 at 11:47:32 +0200, Greg Kroah-Hartman 
+<gregkh@linuxfoundation.org> a écrit :
+> On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
+>>  Hi Greg,
+>> 
+>>  Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
+>>  <gregkh@linuxfoundation.org> a écrit :
+>>  > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
+>>  > >  Hi Greg,
+>>  > >
+>>  > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
+>>  > >  <gregkh@linuxfoundation.org> a écrit :
+>>  > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil 
+>> wrote:
+>>  > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
+>>  > > disabled in
+>>  > >  > > the
+>>  > >  > >  config, we want the ingenic-drm driver to be able to probe
+>>  > >  > > nonetheless
+>>  > >  > >  with the other devices (e.g. internal LCD panel) that are
+>>  > > enabled.
+>>  > >  > >
+>>  > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  > >  > >  ---
+>>  > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 
+>> ++++++++++++
+>>  > >  > >   1 file changed, 12 insertions(+)
+>>  > >  > >
+>>  > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
+>>  > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
+>>  > > device
+>>  > >  > > *dev, bool has_components)
+>>  > >  > >   	for (i = 0; ; i++) {
+>>  > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
+>>  > > &panel,
+>>  > >  > > &bridge);
+>>  > >  > >   		if (ret) {
+>>  > >  > >  +			/*
+>>  > >  > >  +			 * Workaround for the case where the drivers for the
+>>  > >  > >  +			 * remote devices are not enabled. When that happens,
+>>  > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
+>>  > >  > >  +			 * endlessly, which prevents the ingenic-drm driver 
+>> from
+>>  > >  > >  +			 * working at all.
+>>  > >  > >  +			 */
+>>  > >  > >  +			if (ret == -EPROBE_DEFER) {
+>>  > >  > >  +				ret = driver_deferred_probe_check_state(dev);
+>>  > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
+>>  > >  > >  +					continue;
+>>  > >  > >  +			}
+>>  > >  >
+>>  > >  > So you are mucking around with devices on other busses 
+>> within this
+>>  > >  > driver?  What could go wrong?  :(
+>>  > >
+>>  > >  I'm doing the same thing as everybody else. This is the DRM 
+>> driver,
+>>  > > and
+>>  > >  there is a driver for the external HDMI chip which gives us a 
+>> DRM
+>>  > > bridge
+>>  > >  that we can obtain from the device tree.
+>>  >
+>>  > But then why do you need to call this function that is there for 
+>> a bus,
+>>  > not for a driver.
+>> 
+>>  The documentation disagrees with you :)
+>> 
+>>  And, if that has any weight, this solution was proposed by Rob.
+>> 
+>>  > >  > Please use the existing driver core functionality for this 
+>> type of
+>>  > >  > thing, it is not unique, no need for this function to be 
+>> called.
+>>  > >
+>>  > >  I'm not sure you understand what I'm doing here. This driver 
+>> calls
+>>  > >  drm_of_find_panel_or_bridge(), without guarantee that the 
+>> driver
+>>  > > for the
+>>  > >  remote device (connected via DT graph) has been enabled in the
+>>  > > kernel
+>>  > >  config. In that case it will always return -EPROBE_DEFER and 
+>> the
+>>  > > ingenic-drm
+>>  > >  driver will never probe.
+>>  > >
+>>  > >  This patch makes sure that the driver can probe if the HDMI 
+>> driver
+>>  > > has been
+>>  > >  disabled in the kernel config, nothing more.
+>>  >
+>>  > That should not be an issue as you do not care if the config is 
+>> enabled,
+>>  > you just want to do something in the future if the driver shows 
+>> up,
+>>  > right?
+>> 
+>>  Well, the DRM subsystem doesn't really seem to handle hotplug of 
+>> hardware.
+>>  Right now all the drivers for the connected hardware need to probe 
+>> before
+>>  the main DRM driver. So I need to know that a remote device 
+>> (connected via
+>>  DT graph) will never probe.
+> 
+> But you never really know that.  That is what the recent driver core
+> changes were all about, to handle this very issue.  Only when the 
+> child
+> device shows up will you need to care about it.
+> 
+>>  Give me a of_graph_remote_device_driver_will_never_probe() and I'll 
+>> use
+>>  that.
+>> 
+>>  > Much like the device link code, have you looked at that?
+>> 
+>>  I don't see how that would help in any way. The device link code 
+>> would allow
+>>  me to set a dependency between the remote hardware (HDMI chip, 
+>> provider) and
+>>  the LCD controller (consumer), but I already have that dependency 
+>> though the
+>>  DT graph. What I need is a way for the consumer to continue probing 
+>> if the
+>>  provider is not going to probe.
+> 
+> But again, you never know that, probing is async, and could happen in 
+> a
+> few milliseconds, or a few hours, your driver should never care about
+> this at all.
+> 
+> Just knowing if the kernel configuration is something is not the
+> solution here, please fix this properly like all other driver
+> interactions are in the kernel tree.
 
-On Tue, 10 Aug 2021 12:14:38 +0200 Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> Matt Auld is on vacation, and the other issue is that the tree where this
-> is from isn't in linux-next. So will take a bit to get sorted in
-> linux-next.
+A proper fix means reworking the DRM core so that it supports 
+hot-plugging bridges. Until then there is nothing else I can do.
 
-Those warnings are now coming from Linus' tree (some time before
-v5.14-rc1).  I first mentioned them on June 3.
+-Paul
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/usJBfb3Y017NmDTWcQ5uJhD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESV0MACgkQAVBC80lX
-0GyfEAf/Q2pNtOXTIOduaAF7h395rNfz/1gJIcoQ1ybzGx3HTY/Saw4sf2TnncYM
-RmbpdGyQL2clpgIAvCDwuhbXKUIDSIPfqNz29SRDgHjhKW5hoHa+aSTVzdaoAv9+
-GQkn0ydHmMD5xR1aQZOm8M5YZPE87l8nPIodJElg0x7hxYcXAGFBY8B7F/e6NYL9
-TRY2LCvwpcxQ2VGBOd4b3XnZUyhqvl28qLObMw+ROxHdy+jzTjromrpi27jjju7N
-zExsHEeACJ/TwU3P03s/zKpbBcJAqfAJar06w4KkCeMD8OSm/2IndOb3INnEu3+J
-e0zWbelIk+JfHlFy7Lb1VSUOqYZsfQ==
-=4z7z
------END PGP SIGNATURE-----
-
---Sig_/usJBfb3Y017NmDTWcQ5uJhD--
