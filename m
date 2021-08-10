@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615D03E7FB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4A03E7F9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234397AbhHJRmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:42:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44144 "EHLO mail.kernel.org"
+        id S234359AbhHJRlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:41:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234036AbhHJRgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:36:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31B1661102;
-        Tue, 10 Aug 2021 17:35:37 +0000 (UTC)
+        id S233720AbhHJRhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:37:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A782C603E7;
+        Tue, 10 Aug 2021 17:36:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616937;
-        bh=b8ucVcPD2wtz7DtHz5kQaTr0FZT+ixBzfUtIHfKnbeo=;
+        s=korg; t=1628616962;
+        bh=OFEBgr4VXBm6Ho5C/vyJntXGXOedipYLtwXZl5inAB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YOBQR/h+fGJyt5/F+2sIbmM9rvdhsoe4zYeuzzylJIHNTJQfNRu4H0VFN+UQMKruW
-         sLz8lEytvtvmfs1HjvTiOSoGlFm6jbdtLfgaErdu1cIEurma4xAV8JxWEKFQwzcfa0
-         0ji76p4TLYU3oB9hevk+JIAm29CEZeMJ2oLGIll4=
+        b=R2PN2RJoZyeZFwlME4Uk9us77wo3501JP3JMebbpkQcWAAqIh4fyEpNYIPC9KF/2c
+         EeQJDZ5ptZ2GPJW6ATOQZS3tzBoe/5RzyJvGLmXTZkC+ZgMGoTAnWICLlp9l8eOw5P
+         oJoEw+9UiOx+1m4M5Ug/sNJuJfW9IO0vC21sYxwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 51/85] tracing / histogram: Give calculation hist_fields a size
-Date:   Tue, 10 Aug 2021 19:30:24 +0200
-Message-Id: <20210810172949.960836411@linuxfoundation.org>
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH 5.4 52/85] optee: Clear stale cache entries during initialization
+Date:   Tue, 10 Aug 2021 19:30:25 +0200
+Message-Id: <20210810172949.998606371@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
 References: <20210810172948.192298392@linuxfoundation.org>
@@ -43,65 +40,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit 2c05caa7ba8803209769b9e4fe02c38d77ae88d0 upstream.
+commit b5c10dd04b7418793517e3286cde5c04759a86de upstream.
 
-When working on my user space applications, I found a bug in the synthetic
-event code where the automated synthetic event field was not matching the
-event field calculation it was attached to. Looking deeper into it, it was
-because the calculation hist_field was not given a size.
+The shm cache could contain invalid addresses if
+optee_disable_shm_cache() was not called from the .shutdown hook of the
+previous kernel before a kexec. These addresses could be unmapped or
+they could point to mapped but unintended locations in memory.
 
-The synthetic event fields are matched to their hist_fields either by
-having the field have an identical string type, or if that does not match,
-then the size and signed values are used to match the fields.
+Clear the shared memory cache, while being careful to not translate the
+addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
+initialization. Once all pre-cache shm objects are removed, proceed with
+enabling the cache so that we know that we can handle cached shm objects
+with confidence later in the .shutdown hook.
 
-The problem arose when I tried to match a calculation where the fields
-were "unsigned int". My tool created a synthetic event of type "u32". But
-it failed to match. The string was:
-
-  diff=field1-field2:onmatch(event).trace(synth,$diff)
-
-Adding debugging into the kernel, I found that the size of "diff" was 0.
-And since it was given "unsigned int" as a type, the histogram fallback
-code used size and signed. The signed matched, but the size of u32 (4) did
-not match zero, and the event failed to be created.
-
-This can be worse if the field you want to match is not one of the
-acceptable fields for a synthetic event. As event fields can have any type
-that is supported in Linux, this can cause an issue. For example, if a
-type is an enum. Then there's no way to use that with any calculations.
-
-Have the calculation field simply take on the size of what it is
-calculating.
-
-Link: https://lkml.kernel.org/r/20210730171951.59c7743f@oasis.local.home
-
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: stable@vger.kernel.org
-Fixes: 100719dcef447 ("tracing: Add simple expression support to hist triggers")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace_events_hist.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/tee/optee/call.c          |   36 +++++++++++++++++++++++++++++++++---
+ drivers/tee/optee/core.c          |    9 +++++++++
+ drivers/tee/optee/optee_private.h |    1 +
+ 3 files changed, 43 insertions(+), 3 deletions(-)
 
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3169,6 +3169,10 @@ static struct hist_field *parse_expr(str
+--- a/drivers/tee/optee/call.c
++++ b/drivers/tee/optee/call.c
+@@ -407,11 +407,13 @@ void optee_enable_shm_cache(struct optee
+ }
  
- 	expr->operands[0] = operand1;
- 	expr->operands[1] = operand2;
+ /**
+- * optee_disable_shm_cache() - Disables caching of some shared memory allocation
+- *			      in OP-TEE
++ * __optee_disable_shm_cache() - Disables caching of some shared memory
++ *                               allocation in OP-TEE
+  * @optee:	main service struct
++ * @is_mapped:	true if the cached shared memory addresses were mapped by this
++ *		kernel, are safe to dereference, and should be freed
+  */
+-void optee_disable_shm_cache(struct optee *optee)
++static void __optee_disable_shm_cache(struct optee *optee, bool is_mapped)
+ {
+ 	struct optee_call_waiter w;
+ 
+@@ -430,6 +432,13 @@ void optee_disable_shm_cache(struct opte
+ 		if (res.result.status == OPTEE_SMC_RETURN_OK) {
+ 			struct tee_shm *shm;
+ 
++			/*
++			 * Shared memory references that were not mapped by
++			 * this kernel must be ignored to prevent a crash.
++			 */
++			if (!is_mapped)
++				continue;
 +
-+	/* The operand sizes should be the same, so just pick one */
-+	expr->size = operand1->size;
+ 			shm = reg_pair_to_ptr(res.result.shm_upper32,
+ 					      res.result.shm_lower32);
+ 			tee_shm_free(shm);
+@@ -440,6 +449,27 @@ void optee_disable_shm_cache(struct opte
+ 	optee_cq_wait_final(&optee->call_queue, &w);
+ }
+ 
++/**
++ * optee_disable_shm_cache() - Disables caching of mapped shared memory
++ *                             allocations in OP-TEE
++ * @optee:	main service struct
++ */
++void optee_disable_shm_cache(struct optee *optee)
++{
++	return __optee_disable_shm_cache(optee, true);
++}
 +
- 	expr->operator = field_op;
- 	expr->name = expr_str(expr, 0);
- 	expr->type = kstrdup(operand1->type, GFP_KERNEL);
++/**
++ * optee_disable_unmapped_shm_cache() - Disables caching of shared memory
++ *                                      allocations in OP-TEE which are not
++ *                                      currently mapped
++ * @optee:	main service struct
++ */
++void optee_disable_unmapped_shm_cache(struct optee *optee)
++{
++	return __optee_disable_shm_cache(optee, false);
++}
++
+ #define PAGELIST_ENTRIES_PER_PAGE				\
+ 	((OPTEE_MSG_NONCONTIG_PAGE_SIZE / sizeof(u64)) - 1)
+ 
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -628,6 +628,15 @@ static struct optee *optee_probe(struct
+ 	optee->memremaped_shm = memremaped_shm;
+ 	optee->pool = pool;
+ 
++	/*
++	 * Ensure that there are no pre-existing shm objects before enabling
++	 * the shm cache so that there's no chance of receiving an invalid
++	 * address during shutdown. This could occur, for example, if we're
++	 * kexec booting from an older kernel that did not properly cleanup the
++	 * shm cache.
++	 */
++	optee_disable_unmapped_shm_cache(optee);
++
+ 	optee_enable_shm_cache(optee);
+ 
+ 	if (optee->sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -152,6 +152,7 @@ int optee_cancel_req(struct tee_context
+ 
+ void optee_enable_shm_cache(struct optee *optee);
+ void optee_disable_shm_cache(struct optee *optee);
++void optee_disable_unmapped_shm_cache(struct optee *optee);
+ 
+ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 		       struct page **pages, size_t num_pages,
 
 
