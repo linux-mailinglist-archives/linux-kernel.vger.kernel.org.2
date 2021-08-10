@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26C03E5C52
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E7F3E5C4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242076AbhHJNzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:55:04 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54348 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242049AbhHJNzA (ORCPT
+        id S242035AbhHJNy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236814AbhHJNy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:55:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628603678; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=zmgMFu36hTXT896+HcyEK3jKVy9QFCSIhPn+Dbj1dOQ=; b=X7qzY1i+RzYDVZj5YZ/63TT6xvOzRJOYyPJtDSGPbrz8gvbCmgIvdmq9OEm1vr9zNXYrZ0x8
- 9qaxsTtsWZP0TUJuT9UIxOmXpUdN1Scdk/o1m+3eDt5iYwP1EFteMMT4pwxswk3b5h4odHpy
- eqQsYrhsxCvQN3Dwi/vI/14gDGM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61128518f746c298d90625a2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 13:54:32
- GMT
-Sender: psodagud=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A4ED8C4323A; Tue, 10 Aug 2021 13:54:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Tue, 10 Aug 2021 09:54:27 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87357C0613D3;
+        Tue, 10 Aug 2021 06:54:05 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d650032a7c3e3b83a4c54.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:32a7:c3e3:b83a:4c54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: psodagud)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C6B6C43460;
-        Tue, 10 Aug 2021 13:54:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C6B6C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
-From:   Prasad Sodagudi <psodagud@codeaurora.org>
-To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net
-Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, pavel@ucw.cz, psodagud@codeaurora.org
-Subject: [PATCH v2] PM: sleep: core: Avoid setting power.must_resume to false
-Date:   Tue, 10 Aug 2021 06:54:18 -0700
-Message-Id: <1628603658-261568-2-git-send-email-psodagud@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628603658-261568-1-git-send-email-psodagud@codeaurora.org>
-References: <1628603658-261568-1-git-send-email-psodagud@codeaurora.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 804C71EC0345;
+        Tue, 10 Aug 2021 15:53:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628603638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=wy0O3e24ZiuBDTN+sdm5ZVuQfM7Q7G9zPYzrOaizwCs=;
+        b=ZMNituR4rApaF2UHuKbkO1Smmnc5TClj8CptOX/+I8T1/BBlFukUMJP8LRKLOYiEhlrNYW
+        4JMYEaqREmSHsXVv51V2+fUyrAiXiFhb9RdXnKVdfusNRU2RVug5CSRqkBgmFL8PjJBihd
+        UWY7tav0rZ3dboeVncrZyRgTr4zl1Z4=
+Date:   Tue, 10 Aug 2021 15:54:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>
+Cc:     "Ghannam, Yazen" <Yazen.Ghannam@amd.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>
+Subject: Re: [PATCH 1/7] x86/amd_nb: Add Aldebaran device to PCI IDs
+Message-ID: <YRKFHuj/2K4FHZS+@zn.tnic>
+References: <20210630152828.162659-1-nchatrad@amd.com>
+ <20210630152828.162659-2-nchatrad@amd.com>
+ <20210719192830.GA19451@aus-x-yghannam.amd.com>
+ <BL1PR12MB5286FFF1B2B421A2E37DDF44E8F79@BL1PR12MB5286.namprd12.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <BL1PR12MB5286FFF1B2B421A2E37DDF44E8F79@BL1PR12MB5286.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are variables(power.may_skip_resume and dev->power.must_resume)
-and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
-a system wide suspend transition.
+On Tue, Aug 10, 2021 at 12:45:17PM +0000, Chatradhi, Naveen Krishna wrote:
+> But I think this patch can be part of the next patch
+> where this value is first used. [naveenk:] Squashed
+> this change into the 2nd patch and submitted v2
+> https://patchwork.kernel.org/project/linux-edac/patch/20210806074350.1
+> 14614-2-nchatrad@amd.com/
 
-Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
-its "noirq" and "early" resume callbacks to be skipped if the device
-can be left in suspend after a system-wide transition into the working
-state. PM core determines that the driver's "noirq" and "early" resume
-callbacks should be skipped or not with dev_pm_skip_resume() function by
-checking power.may_skip_resume variable.
+Btw, I'd suggest you find someone at AMD to teach you to use a proper
+mail client for replying to lkml messages which does proper quoting,
+etc. Outlook and windoze simply isn't cut out for this type of
+communication but rather for managerial blabla.
 
-power.must_resume variable is getting set to false in __device_suspend()
-function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
-dev->power.usage_count variables. In problematic scenario, where
-all the devices in the suspend_late stage are successful and some
-device can fail to suspend in suspend_noirq phase. So some devices
-successfully suspended in suspend_late stage are not getting chance
-to execute __device_suspend_noirq() to set dev->power.must_resume
-variable to true and not getting resumed in early_resume phase.
+Alternatively, you can read this here:
 
-Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
-setting power.must_resume variable in __device_suspend function.
+https://www.kernel.org/doc/html/latest/process/email-clients.html
 
-Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
-Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
----
- V1 -> V2: Fixed indentation and commit text to include scenario
+and try to set up something yourself.
 
- drivers/base/power/main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Thx.
 
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index d568772..9ee6987 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -1642,7 +1642,11 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
- 	}
- 
- 	dev->power.may_skip_resume = true;
--	dev->power.must_resume = false;
-+	if ((atomic_read(&dev->power.usage_count) <= 1) &&
-+	     (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
-+		dev->power.must_resume = false;
-+	else
-+		dev->power.must_resume = true;
- 
- 	dpm_watchdog_set(&wd, dev);
- 	device_lock(dev);
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
