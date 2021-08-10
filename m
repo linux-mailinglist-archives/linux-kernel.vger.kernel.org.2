@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11ABC3E82D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50EB3E82DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233913AbhHJSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:21:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52042 "EHLO mail.kernel.org"
+        id S230006AbhHJSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:21:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232466AbhHJSUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1FA760724;
-        Tue, 10 Aug 2021 18:20:16 +0000 (UTC)
+        id S236534AbhHJSV3 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:21:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 941AF60724;
+        Tue, 10 Aug 2021 18:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628619616;
-        bh=VNhoF4DKiz90uuvdpHoB+AGd6rm+6fOeCpgR3CD4raw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=p6wm1jwaxLHiOXhkwwzrtYSHMMLlIIYdYL+4bwl/Q7cXF+g6jrM0W+EjTvAFfqIoh
-         PDyT7F8rXu8vPb61jHGjtiFIODAfiUBQ2hM9kt8+SRNBaa5u+NmXbv6yd9bRGzKvhq
-         T+sK1t7CYB6kFuodhAF2AJ41hn3O3C9bJ9QFmppbgir2R7yNnXm67EcxSqdQDaCkGL
-         1vCHY5gAkg7sbdCosbWRTtpXvTRbl68gTJEdWUADmi2ht8MA1KawOYoXhYU0p8Hr9W
-         p0TUgDmysIDsUBp7FY2kp+cWlBDuidZyVLo1lLgTDUeCDMocfzheLvUHCvb1b8APEK
-         v7XnpIjxdGQkg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9F46A5C039B; Tue, 10 Aug 2021 11:20:16 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 11:20:16 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 31/38] rcu: Replace deprecated CPU-hotplug functions.
-Message-ID: <20210810182016.GI4126399@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210803141621.780504-1-bigeasy@linutronix.de>
- <20210803141621.780504-32-bigeasy@linutronix.de>
- <20210803160021.GR4397@paulmck-ThinkPad-P17-Gen-1>
- <87fsvhsc7y.ffs@tglx>
+        s=k20201202; t=1628619666;
+        bh=eY5Cf4toWrA1zQVY1KB4wnEL5WdhJvdEvei+Bwdkfkc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T6bDmRr3HI0xuxXiZhqqEdYYPYMQzzegelRP+BQKWJrGYjtUHpb584VSPf2tZ0Ri4
+         rqdC1AbdjXCkZJ8InkxHtjowdj/trjfw3gtYedwLeF/G73Lr6DLy0wF4FDMebj19TB
+         tiMBpYlljmEBj4CeO1dsclC8HaxcwFkPKgu6Rdl+buWi5PqyiQ4sRzyvahJZuv9rif
+         71WQT6LyE3PJCvSJ7SZp+KYq9PH+Vhjm09f9mziu3AA40uS2eMBinyg+eOL5LL7OSg
+         d3wSXnTQaMIxbhWVuuG9uDJKnmMHk1fuq5sUO6XR5dIr4ykpF+EPaJ0kzb6np0yFgA
+         tzuzEufifqrUg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6AC0A403F2; Tue, 10 Aug 2021 15:21:03 -0300 (-03)
+Date:   Tue, 10 Aug 2021 15:21:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com
+Subject: Re: [PATCH 0/6] perf events update for CascadeLake server and
+ SkyLake server
+Message-ID: <YRLDj4ur6dmSxisZ@kernel.org>
+References: <20210810020508.31261-1-yao.jin@linux.intel.com>
+ <YRLAWhHWX3oa0iyt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87fsvhsc7y.ffs@tglx>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRLAWhHWX3oa0iyt@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 02:42:09PM +0200, Thomas Gleixner wrote:
-> On Tue, Aug 03 2021 at 09:00, Paul E. McKenney wrote:
-> > On Tue, Aug 03, 2021 at 04:16:14PM +0200, Sebastian Andrzej Siewior wrote:
-> >> The functions get_online_cpus() and put_online_cpus() have been
-> >> deprecated during the CPU hotplug rework. They map directly to
-> >> cpus_read_lock() and cpus_read_unlock().
-> >> 
-> >> Replace deprecated CPU-hotplug functions with the official version.
-> >> The behavior remains unchanged.
-> >> 
-> > I have queued this one and 35/38 (rcutorture) for v5.16.  If you would
-> > prefer to send them some other route, please let me know and:
+Em Tue, Aug 10, 2021 at 03:07:22PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Aug 10, 2021 at 10:05:02AM +0800, Jin Yao escreveu:
+> > - Update JSON core/uncore events and metrics for CascadeLake Server.
+> > - Update JSON core/uncore events and metrics for SkyLake Server.
+> > 
+> > The patch series can be found at (in case broken by mailing system potentially):
+> > https://github.com/yaoj/perf-clx-events.git
+> > branch: perf/core
 > 
-> 5.15 would be appreciated so we can get rid of the old interface around
-> rc1.
+> Hey, can you keep just one repository and then create branches?
+> 
+> $ git remote -v
+> 
+> yaoj	https://github.com/yaoj/icx-events.git (fetch)
+> yaoj	https://github.com/yaoj/icx-events.git (push)
+> yaoj-perf	https://github.com/yaoj/perf-intel-events.git (fetch)
+> yaoj-perf	https://github.com/yaoj/perf-intel-events.git (push)
+> 
+> And now:
+> 
+> ⬢[acme@toolbox perf]$ https://github.com/yaoj/perf-clx-events.git
+> 
+> :-)
+> 
+> Applying from the git tree now.
 
-Fair enough!  I have rebased to pull those two patches into my v5.15 pile.
+Thanks, applied.
 
-							Thanx, Paul
+- Arnaldo
+
