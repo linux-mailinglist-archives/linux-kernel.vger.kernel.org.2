@@ -2,923 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C2F3E596B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC7E3E5973
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240464AbhHJLsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 07:48:50 -0400
-Received: from mga01.intel.com ([192.55.52.88]:64071 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240316AbhHJLs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:48:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="236894509"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="236894509"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 04:47:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="589277385"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Aug 2021 04:47:50 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] perf tools: Add dlfilter test
-Date:   Tue, 10 Aug 2021 14:48:13 +0300
-Message-Id: <20210810114813.12951-6-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210810114813.12951-1-adrian.hunter@intel.com>
-References: <20210810114813.12951-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S237845AbhHJLvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:51:04 -0400
+Received: from mail-eopbgr30048.outbound.protection.outlook.com ([40.107.3.48]:17390
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234975AbhHJLvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:51:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n1JfGAFSl84SmslV2b5pTJdpvsKzrD5c0Smpq+YTErn6f2yNoziq46IM+a6fJB6F6mKqTdqPjCCSLo9gC3YRYDmxZrXTTMN0PGwAcB8mGgRt+Ha0eVD5t+w4rdae5ys3cY2z7V8OqZ4e4SCqzCkEtdeVwa0BIQI0qwzJktiK4CjVm7SS2Yj+JL9QGu2vgZb3iSSvA90rgY7+WdEjphEZsXv7VsuvDizpI7lc/+h/44IVwtYy2jw+VU6ra4hO6nj3AGgW/LZANcjrApfcUuGQreHN9i1JFnjZ5f1r8miY3LzGB2HSiRp03aDh5mYJ9wHf34YFWxkgeIbW/rEX7X4T/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rp78oVL7S1vqc2mkZWkh8pbR4xD1LuPn5XunSdx1m50=;
+ b=X7WpgvoR4pBTHX0JtabaA0LuUm4qR2051UXOF+GtIzvGBFv5NgcqtCwdpe57lECbORRvtOJY7st3eltJ993HEOPRZjg1JlKuAFiIOtHEkPolA6ocfd1xcosI/YEiUzXTxM4BBUx36Kkqth3simmopJHXm7mT1Bbhvd1ls+/Jk0S4RqOCAOYRa1vFgcH2TJXcUOqskkgKQYzPrcnVWBurz282MVDIWk98VyaiiYwkdY690nxGnCpLEKReUIPg85/naowUqWKL0SsHr6Vi/iN0LA3kPbngPjHp1g8QbX46T5hQQ1+6UI95vrh5GyST6Vm3mUx332qat97D3N0kgD7e4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rp78oVL7S1vqc2mkZWkh8pbR4xD1LuPn5XunSdx1m50=;
+ b=nzsf8oP3mG7LYc7XThxV0xhCh9OqZrRzM8VB4PYyFU+e1EbTLE2fKpyOhQjgIfjVeKfteNrZECTy+T5qdFc92nzBKosDQVMudq8KNug4Y3d7UqG8qa7pu/HYXP6jxD0oKLgaAOpZRVuE3X4qt9dzl8/wknFsr1pROGTzYHA3lxg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR0401MB2510.eurprd04.prod.outlook.com (2603:10a6:800:54::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Tue, 10 Aug
+ 2021 11:50:37 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
+ 11:50:37 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jianbo Liu <jianbol@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-s390@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Ido Schimmel <idosch@idosch.org>
+Subject: [PATCH v2 net] net: switchdev: zero-initialize struct switchdev_notifier_fdb_info emitted by drivers towards the bridge
+Date:   Tue, 10 Aug 2021 14:50:24 +0300
+Message-Id: <20210810115024.1629983-1-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: FR0P281CA0014.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:15::19) To VI1PR04MB5136.eurprd04.prod.outlook.com
+ (2603:10a6:803:55::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (188.25.144.60) by FR0P281CA0014.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:15::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.5 via Frontend Transport; Tue, 10 Aug 2021 11:50:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d132849b-0c2d-4412-38c2-08d95bf51170
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2510:
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB25102B10FBF3A7597AE523B8E0F79@VI1PR0401MB2510.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UgY0ZSliPpSjxz5Zc/SZ8Ucr7owktTPAIggxVAI9i6n+79jqMZMuHIKbs3ZhpCBbyiMOBEB56v7lO51XTIVC+gBLnf2W+pEQ5TAkr71mDu2lGLGikOZrKmTjGq3EX+rQ3R6GJWi/2BXw5rC2orZkzXlPTOFlvYlDtGvDwAGU2a0bl4DJBOALPyaRsQS+9heDeyZuvp6v8ThFcE06JDr6koke1wWnPgp/5bY7Scx3nvos9aN3SlzWb+TnJkxpaqJ/DraRzzHdRIWmIg9OMSHN52oKFe01y+gOut0vMnNvmR+x2vYKBTIRMtXM3Bdlu7H6p5h6wbqSeL7f3LxakZsKkZv54C9omegSD0oksz9u4zTc/YqMxtDy4neKPpHcBl9cSeTtzw8MVF/1cT97/Fedao9+5HNANJNJLxjeOyiHr8Q059QKMZGbKzkoAsmRDtpjRSxIax6b/0uCQ+dFa+NZ/gtQdm+AcVlMeFpNfyb2TIfWvS3qDWJcuEhXHF09HXf7jgtJhRtOFG++kePxPrpj38rLFo9Hv1TipvvZXg9FjjavIIoslGkMHtr83vnDZnF5Ep5UhRGcRiQk131aoF8f265m13IPI2U4EsYghRpWTgyWHXdHVxji368K99XUhsuJ1cSwEvOenYu4h+0a54H18yrLyzCUgOtAmykwltgKtJOfD9/mWOBleWZpdDIDKO85I0hM27cWBlMFgBRZAboOzg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(366004)(346002)(39860400002)(36756003)(66574015)(8936002)(26005)(186003)(86362001)(6506007)(2906002)(4326008)(316002)(6666004)(956004)(44832011)(7416002)(7406005)(2616005)(66946007)(52116002)(54906003)(38100700002)(478600001)(38350700002)(66476007)(1076003)(83380400001)(6512007)(110136005)(5660300002)(66556008)(8676002)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?I5qR3VlFoQt4I2qX6LqjQ655lKjgP5Q4ZUCHNWjDnOBakcOLVLzhSsw71Ha+?=
+ =?us-ascii?Q?4OdiYuF+skUzHvlrCdIpjmTHvfAtNzlQ4b/y9hP8c9QgAF9DBzKsxL+3UXnR?=
+ =?us-ascii?Q?h9rikHf9uhv3fU/F21PBU4lzKyd20iZwF1CKnEkM7A4hY60ao0prUx4Tjyu/?=
+ =?us-ascii?Q?PFCziukKpKs7x0SWfMyq4FmcUOnw5at7zcKBfEj+wWwX3lx/hKJrG3TwFIn3?=
+ =?us-ascii?Q?99gbZug38CV2195Ir0gAfHikBP8JL7YsBROYavMNuaKNPAWXj2OyRsm3ftTd?=
+ =?us-ascii?Q?vZq2u59O05yJW9nN8ujvhgMa65H4MhOsCdccV+0k6MrHOG0kmok35X6g9KIr?=
+ =?us-ascii?Q?VvTckedGA5oNytM0C5RcZLVqzEtHFs8bKBeEESKUBctxDQBMwtdLFZD9uCWJ?=
+ =?us-ascii?Q?ZWrn/ZO1yOzvBgDRfIP9BzhyCsYQp+Gcx4LfcjBx2hMdZiUsMWto3pQZTY1K?=
+ =?us-ascii?Q?njhMmQYJaS4CEFU9XOnLe8O30uu5usHCY78gECXndd4othhyMMCSbCfQMtTn?=
+ =?us-ascii?Q?0fyoMgac2sVFmOcO+DEARVKZcepzXVK7+DBTnrE3GZ5shOZr46VRUbyoidtS?=
+ =?us-ascii?Q?xaANmRSk5HFmpxjV2nyinKL6LV57m7AoQJFmYvKPNv4EZxDBVbgvHNl/1B59?=
+ =?us-ascii?Q?kNDBgRidzxMLTyyHG9VucTAxTl/aXh4AAp5Htb9w+1H3vmthiTZTpcxJ31a1?=
+ =?us-ascii?Q?1q8/PH739La3CIhoX30+SfvM13NDQqINFj/v/H6kJrf80nMTwLHE3JdhKX7x?=
+ =?us-ascii?Q?zKm4pRDx4EECUCQol7aF2v4B6Tp0Rqv0T8gbjvr3li32v3VVD/iUpHJv9o9i?=
+ =?us-ascii?Q?tTcK/mf2WnDlAb30JPLDA0MNLdUXzzdlTqiZ9jzhC4ICSZTg1Fc/QShmHpQM?=
+ =?us-ascii?Q?64xwkHnK6SYbNnlsn2eOjJjhnxIyFlI/urdtkdKOnYlqXAKMxhKD/CFask5R?=
+ =?us-ascii?Q?4TUt6j8rym9GR62jB/dJwQjqxVX9j30z6B7p3RXdMyScHJdrZOfYEXjsJRs7?=
+ =?us-ascii?Q?4rAfetgDKdgwY/LTFgrQlv8NbytWFNP1abazxvcA2F7Y5usgxxvrSeRW4Ov6?=
+ =?us-ascii?Q?8PGvd2WWhio9iLEwBIel9VDFeMbwofyCs0xxRRk+YlhXAAeDJ2wcae+CGI0l?=
+ =?us-ascii?Q?QWe54jDAQ1wceorOTcRIAT2BcAHR/Qtch40glCk6Gg4QlErEe8MWJTLyA/NS?=
+ =?us-ascii?Q?NaqGXeGueNwc8P1KZPPOUxl/4ZyGJK34qjZNi1Z2Bd0k12Bh8V5MEmobnvGG?=
+ =?us-ascii?Q?f2LB5SeFHoRd4wQ+ONZdJ98+3lGsEUXVSDXV95mLtd17DoRwb0aSzDwN0+jt?=
+ =?us-ascii?Q?W5h3jTsrWeRb0Z3cbp4TxrgK?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d132849b-0c2d-4412-38c2-08d95bf51170
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 11:50:36.8807
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eFwF+uuAfXLlX7zgvEIphgiXf6X7EirVWRtwDjjYC6Jw8I9IB7efmD5hgSEcfmEz703SmObqV88XOJMEpyaEpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2510
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a perf test to test the dlfilter C API.
+The blamed commit a new field to struct switchdev_notifier_fdb_info, but
+did not make sure that all call paths set it to something valid. For
+example, a switchdev driver may emit a SWITCHDEV_FDB_ADD_TO_BRIDGE
+notifier, and since the 'is_local' flag is not set, it contains junk
+from the stack, so the bridge might interpret those notifications as
+being for local FDB entries when that was not intended.
 
-A perf.data file is synthesized and then processed by perf script with a
-dlfilter named dlfilter-test-api-v0.so. Also a C file is compiled to
-provide a dso to match the synthesized perf.data file.
+To avoid that now and in the future, zero-initialize all
+switchdev_notifier_fdb_info structures created by drivers such that all
+newly added fields to not need to touch drivers again.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 2c4eca3ef716 ("net: bridge: switchdev: include local flag in FDB notifications")
+Reported-by: Ido Schimmel <idosch@idosch.org>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Tested-by: Ido Schimmel <idosch@nvidia.com>
 ---
- tools/perf/Makefile.perf                    |  15 +-
- tools/perf/dlfilters/dlfilter-test-api-v0.c | 336 ++++++++++++++++
- tools/perf/tests/Build                      |   1 +
- tools/perf/tests/builtin-test.c             |   4 +
- tools/perf/tests/dlfilter-test.c            | 409 ++++++++++++++++++++
- tools/perf/tests/tests.h                    |   1 +
- tools/perf/util/dlfilter.c                  |   4 +-
- tools/perf/util/dlfilter.h                  |   2 +
- 8 files changed, 769 insertions(+), 3 deletions(-)
- create mode 100644 tools/perf/dlfilters/dlfilter-test-api-v0.c
- create mode 100644 tools/perf/tests/dlfilter-test.c
+v1->v2: use an empty struct initializer as opposed to memset, as
+        suggested by Leon Romanovsky
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 6dafde69d5e3..24623599113d 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -360,8 +360,11 @@ ifndef NO_JVMTI
- PROGRAMS += $(OUTPUT)$(LIBJVMTI)
- endif
- 
-+DLFILTERS := dlfilter-test-api-v0.so
-+DLFILTERS := $(patsubst %,$(OUTPUT)dlfilters/%,$(DLFILTERS))
-+
- # what 'all' will build and 'install' will install, in perfexecdir
--ALL_PROGRAMS = $(PROGRAMS) $(SCRIPTS)
-+ALL_PROGRAMS = $(PROGRAMS) $(SCRIPTS) $(DLFILTERS)
- 
- # what 'all' will build but not install in perfexecdir
- OTHER_PROGRAMS = $(OUTPUT)perf
-@@ -780,6 +783,13 @@ $(OUTPUT)perf-read-vdsox32: perf-read-vdso.c util/find-map.c
- 	$(QUIET_CC)$(CC) -mx32 $(filter -static,$(LDFLAGS)) -Wall -Werror -o $@ perf-read-vdso.c
- endif
- 
-+$(OUTPUT)dlfilters/%.o: dlfilters/%.c include/perf/perf_dlfilter.h
-+	$(Q)$(MKDIR) -p $(OUTPUT)dlfilters
-+	$(QUIET_CC)$(CC) -c -Iinclude -o $@ -fpic $<
-+
-+$(OUTPUT)dlfilters/%.so: $(OUTPUT)dlfilters/%.o
-+	$(QUIET_LINK)$(CC) -shared -o $@ $<
-+
- ifndef NO_JVMTI
- LIBJVMTI_IN := $(OUTPUT)jvmti/jvmti-in.o
- 
-@@ -978,6 +988,9 @@ ifndef NO_LIBPYTHON
- 		$(INSTALL) scripts/python/*.py -m 644 -t '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/scripts/python'; \
- 		$(INSTALL) scripts/python/bin/* -t '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/scripts/python/bin'
- endif
-+	$(call QUIET_INSTALL, dlfilters) \
-+		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/dlfilters'; \
-+		$(INSTALL) $(DLFILTERS) '$(DESTDIR_SQ)$(perfexec_instdir_SQ)/dlfilters';
- 	$(call QUIET_INSTALL, perf_completion-script) \
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(sysconfdir_SQ)/bash_completion.d'; \
- 		$(INSTALL) perf-completion.sh '$(DESTDIR_SQ)$(sysconfdir_SQ)/bash_completion.d/perf'
-diff --git a/tools/perf/dlfilters/dlfilter-test-api-v0.c b/tools/perf/dlfilters/dlfilter-test-api-v0.c
-new file mode 100644
-index 000000000000..401656badef8
---- /dev/null
-+++ b/tools/perf/dlfilters/dlfilter-test-api-v0.c
-@@ -0,0 +1,336 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dlfilter-test-api-v0.c: test original (v0) API for perf --dlfilter shared object
-+ * Copyright (c) 2021, Intel Corporation.
-+ */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <stdbool.h>
-+
-+/*
-+ * Copy original (v0) API instead of including current API
-+ */
-+#include <linux/perf_event.h>
-+#include <linux/types.h>
-+
-+/* Definitions for perf_dlfilter_sample flags */
-+enum {
-+	PERF_DLFILTER_FLAG_BRANCH	= 1ULL << 0,
-+	PERF_DLFILTER_FLAG_CALL		= 1ULL << 1,
-+	PERF_DLFILTER_FLAG_RETURN	= 1ULL << 2,
-+	PERF_DLFILTER_FLAG_CONDITIONAL	= 1ULL << 3,
-+	PERF_DLFILTER_FLAG_SYSCALLRET	= 1ULL << 4,
-+	PERF_DLFILTER_FLAG_ASYNC	= 1ULL << 5,
-+	PERF_DLFILTER_FLAG_INTERRUPT	= 1ULL << 6,
-+	PERF_DLFILTER_FLAG_TX_ABORT	= 1ULL << 7,
-+	PERF_DLFILTER_FLAG_TRACE_BEGIN	= 1ULL << 8,
-+	PERF_DLFILTER_FLAG_TRACE_END	= 1ULL << 9,
-+	PERF_DLFILTER_FLAG_IN_TX	= 1ULL << 10,
-+	PERF_DLFILTER_FLAG_VMENTRY	= 1ULL << 11,
-+	PERF_DLFILTER_FLAG_VMEXIT	= 1ULL << 12,
-+};
-+
-+/*
-+ * perf sample event information (as per perf script and <linux/perf_event.h>)
-+ */
-+struct perf_dlfilter_sample {
-+	__u32 size; /* Size of this structure (for compatibility checking) */
-+	__u16 ins_lat;		/* Refer PERF_SAMPLE_WEIGHT_TYPE in <linux/perf_event.h> */
-+	__u16 p_stage_cyc;	/* Refer PERF_SAMPLE_WEIGHT_TYPE in <linux/perf_event.h> */
-+	__u64 ip;
-+	__s32 pid;
-+	__s32 tid;
-+	__u64 time;
-+	__u64 addr;
-+	__u64 id;
-+	__u64 stream_id;
-+	__u64 period;
-+	__u64 weight;		/* Refer PERF_SAMPLE_WEIGHT_TYPE in <linux/perf_event.h> */
-+	__u64 transaction;	/* Refer PERF_SAMPLE_TRANSACTION in <linux/perf_event.h> */
-+	__u64 insn_cnt;	/* For instructions-per-cycle (IPC) */
-+	__u64 cyc_cnt;		/* For instructions-per-cycle (IPC) */
-+	__s32 cpu;
-+	__u32 flags;		/* Refer PERF_DLFILTER_FLAG_* above */
-+	__u64 data_src;		/* Refer PERF_SAMPLE_DATA_SRC in <linux/perf_event.h> */
-+	__u64 phys_addr;	/* Refer PERF_SAMPLE_PHYS_ADDR in <linux/perf_event.h> */
-+	__u64 data_page_size;	/* Refer PERF_SAMPLE_DATA_PAGE_SIZE in <linux/perf_event.h> */
-+	__u64 code_page_size;	/* Refer PERF_SAMPLE_CODE_PAGE_SIZE in <linux/perf_event.h> */
-+	__u64 cgroup;		/* Refer PERF_SAMPLE_CGROUP in <linux/perf_event.h> */
-+	__u8  cpumode;		/* Refer CPUMODE_MASK etc in <linux/perf_event.h> */
-+	__u8  addr_correlates_sym; /* True => resolve_addr() can be called */
-+	__u16 misc;		/* Refer perf_event_header in <linux/perf_event.h> */
-+	__u32 raw_size;		/* Refer PERF_SAMPLE_RAW in <linux/perf_event.h> */
-+	const void *raw_data;	/* Refer PERF_SAMPLE_RAW in <linux/perf_event.h> */
-+	__u64 brstack_nr;	/* Number of brstack entries */
-+	const struct perf_branch_entry *brstack; /* Refer <linux/perf_event.h> */
-+	__u64 raw_callchain_nr;	/* Number of raw_callchain entries */
-+	const __u64 *raw_callchain; /* Refer <linux/perf_event.h> */
-+	const char *event;
-+};
-+
-+/*
-+ * Address location (as per perf script)
-+ */
-+struct perf_dlfilter_al {
-+	__u32 size; /* Size of this structure (for compatibility checking) */
-+	__u32 symoff;
-+	const char *sym;
-+	__u64 addr; /* Mapped address (from dso) */
-+	__u64 sym_start;
-+	__u64 sym_end;
-+	const char *dso;
-+	__u8  sym_binding; /* STB_LOCAL, STB_GLOBAL or STB_WEAK, refer <elf.h> */
-+	__u8  is_64_bit; /* Only valid if dso is not NULL */
-+	__u8  is_kernel_ip; /* True if in kernel space */
-+	__u32 buildid_size;
-+	__u8 *buildid;
-+	/* Below members are only populated by resolve_ip() */
-+	__u8 filtered; /* True if this sample event will be filtered out */
-+	const char *comm;
-+};
-+
-+struct perf_dlfilter_fns {
-+	/* Return information about ip */
-+	const struct perf_dlfilter_al *(*resolve_ip)(void *ctx);
-+	/* Return information about addr (if addr_correlates_sym) */
-+	const struct perf_dlfilter_al *(*resolve_addr)(void *ctx);
-+	/* Return arguments from --dlarg option */
-+	char **(*args)(void *ctx, int *dlargc);
-+	/*
-+	 * Return information about address (al->size must be set before
-+	 * calling). Returns 0 on success, -1 otherwise.
-+	 */
-+	__s32 (*resolve_address)(void *ctx, __u64 address, struct perf_dlfilter_al *al);
-+	/* Return instruction bytes and length */
-+	const __u8 *(*insn)(void *ctx, __u32 *length);
-+	/* Return source file name and line number */
-+	const char *(*srcline)(void *ctx, __u32 *line_number);
-+	/* Return perf_event_attr, refer <linux/perf_event.h> */
-+	struct perf_event_attr *(*attr)(void *ctx);
-+	/* Read object code, return numbers of bytes read */
-+	__s32 (*object_code)(void *ctx, __u64 ip, void *buf, __u32 len);
-+	/* Reserved */
-+	void *(*reserved[120])(void *);
-+};
-+
-+const struct perf_dlfilter_fns perf_dlfilter_fns;
-+
-+static int verbose;
-+
-+#define pr_debug(fmt, ...) do { \
-+		if (verbose) \
-+			fprintf(stderr, fmt, ##__VA_ARGS__); \
-+	} while (0)
-+
-+static int test_fail(const char *msg)
-+{
-+	pr_debug("%s\n", msg);
-+	return -1;
-+}
-+
-+#define CHECK(x) do { \
-+		if (!(x)) \
-+			return test_fail("Check '" #x "' failed\n"); \
-+	} while (0)
-+
-+struct filter_data {
-+	__u64 ip;
-+	__u64 addr;
-+	int do_early;
-+	int early_filter_cnt;
-+	int filter_cnt;
-+};
-+
-+static struct filter_data *filt_dat;
-+
-+int start(void **data, void *ctx)
-+{
-+	int dlargc;
-+	char **dlargv;
-+	struct filter_data *d;
-+	static bool called;
-+
-+	verbose = 1;
-+
-+	CHECK(!filt_dat && !called);
-+	called = true;
-+
-+	d = calloc(1, sizeof(*d));
-+	if (!d)
-+		test_fail("Failed to allocate memory");
-+	filt_dat = d;
-+	*data = d;
-+
-+	dlargv = perf_dlfilter_fns.args(ctx, &dlargc);
-+
-+	CHECK(dlargc == 6);
-+	CHECK(!strcmp(dlargv[0], "first"));
-+	verbose = strtol(dlargv[1], NULL, 0);
-+	d->ip = strtoull(dlargv[2], NULL, 0);
-+	d->addr = strtoull(dlargv[3], NULL, 0);
-+	d->do_early = strtol(dlargv[4], NULL, 0);
-+	CHECK(!strcmp(dlargv[5], "last"));
-+
-+	pr_debug("%s API\n", __func__);
-+
-+	return 0;
-+}
-+
-+#define CHECK_SAMPLE(x) do { \
-+		if (sample->x != expected.x) \
-+			return test_fail("'" #x "' not expected value\n"); \
-+	} while (0)
-+
-+static int check_sample(struct filter_data *d, const struct perf_dlfilter_sample *sample)
-+{
-+	struct perf_dlfilter_sample expected = {
-+		.ip		= d->ip,
-+		.pid		= 12345,
-+		.tid		= 12346,
-+		.time		= 1234567890,
-+		.addr		= d->addr,
-+		.id		= 99,
-+		.stream_id	= 101,
-+		.period		= 543212345,
-+		.cpu		= 31,
-+		.cpumode	= PERF_RECORD_MISC_USER,
-+		.addr_correlates_sym = 1,
-+		.misc		= PERF_RECORD_MISC_USER,
-+	};
-+
-+	CHECK(sample->size >= sizeof(struct perf_dlfilter_sample));
-+
-+	CHECK_SAMPLE(ip);
-+	CHECK_SAMPLE(pid);
-+	CHECK_SAMPLE(tid);
-+	CHECK_SAMPLE(time);
-+	CHECK_SAMPLE(addr);
-+	CHECK_SAMPLE(id);
-+	CHECK_SAMPLE(stream_id);
-+	CHECK_SAMPLE(period);
-+	CHECK_SAMPLE(cpu);
-+	CHECK_SAMPLE(cpumode);
-+	CHECK_SAMPLE(addr_correlates_sym);
-+	CHECK_SAMPLE(misc);
-+
-+	CHECK(!sample->raw_data);
-+	CHECK_SAMPLE(brstack_nr);
-+	CHECK(!sample->brstack);
-+	CHECK_SAMPLE(raw_callchain_nr);
-+	CHECK(!sample->raw_callchain);
-+
-+#define EVENT_NAME "branches:"
-+	CHECK(!strncmp(sample->event, EVENT_NAME, strlen(EVENT_NAME)));
-+
-+	return 0;
-+}
-+
-+static int check_al(void *ctx)
-+{
-+	const struct perf_dlfilter_al *al;
-+
-+	al = perf_dlfilter_fns.resolve_ip(ctx);
-+	if (!al)
-+		return test_fail("resolve_ip() failed");
-+
-+	CHECK(al->sym && !strcmp("foo", al->sym));
-+	CHECK(!al->symoff);
-+
-+	return 0;
-+}
-+
-+static int check_addr_al(void *ctx)
-+{
-+	const struct perf_dlfilter_al *addr_al;
-+
-+	addr_al = perf_dlfilter_fns.resolve_addr(ctx);
-+	if (!addr_al)
-+		return test_fail("resolve_addr() failed");
-+
-+	CHECK(addr_al->sym && !strcmp("bar", addr_al->sym));
-+	CHECK(!addr_al->symoff);
-+
-+	return 0;
-+}
-+
-+static int check_attr(void *ctx)
-+{
-+	struct perf_event_attr *attr = perf_dlfilter_fns.attr(ctx);
-+
-+	CHECK(attr);
-+	CHECK(attr->type == PERF_TYPE_HARDWARE);
-+	CHECK(attr->config == PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
-+
-+	return 0;
-+}
-+
-+static int do_checks(void *data, const struct perf_dlfilter_sample *sample, void *ctx, bool early)
-+{
-+	struct filter_data *d = data;
-+
-+	CHECK(data && filt_dat == data);
-+
-+	if (early) {
-+		CHECK(!d->early_filter_cnt);
-+		d->early_filter_cnt += 1;
-+	} else {
-+		CHECK(!d->filter_cnt);
-+		CHECK(d->early_filter_cnt);
-+		CHECK(d->do_early != 2);
-+		d->filter_cnt += 1;
-+	}
-+
-+	if (check_sample(data, sample))
-+		return -1;
-+
-+	if (check_attr(ctx))
-+		return -1;
-+
-+	if (early && !d->do_early)
-+		return 0;
-+
-+	if (check_al(ctx) || check_addr_al(ctx))
-+		return -1;
-+
-+	if (early)
-+		return d->do_early == 2;
-+
-+	return 1;
-+}
-+
-+int filter_event_early(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
-+{
-+	pr_debug("%s API\n", __func__);
-+
-+	return do_checks(data, sample, ctx, true);
-+}
-+
-+int filter_event(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
-+{
-+	struct filter_data *d = data;
-+
-+	pr_debug("%s API\n", __func__);
-+
-+	return do_checks(data, sample, ctx, false);
-+}
-+
-+int stop(void *data, void *ctx)
-+{
-+	static bool called;
-+
-+	pr_debug("%s API\n", __func__);
-+
-+	CHECK(data && filt_dat == data && !called);
-+	called = true;
-+
-+	free(data);
-+	filt_dat = NULL;
-+	return 0;
-+}
-+
-+const char *filter_description(const char **long_description)
-+{
-+	*long_description = "Filter used by the 'dlfilter C API' perf test";
-+	return "dlfilter to test v0 C API";
-+}
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 650aec19d490..803ca426f8e6 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -64,6 +64,7 @@ perf-y += parse-metric.o
- perf-y += pe-file-parsing.o
- perf-y += expand-cgroup.o
- perf-y += perf-time-to-tsc.o
-+perf-y += dlfilter-test.o
- 
- $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
- 	$(call rule_mkdir)
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 5e6242576236..fb5846db02e1 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -360,6 +360,10 @@ static struct test generic_tests[] = {
- 		.func = test__perf_time_to_tsc,
- 		.is_supported = test__tsc_is_supported,
- 	},
-+	{
-+		.desc = "dlfilter C API",
-+		.func = test__dlfilter,
-+	},
- 	{
- 		.func = NULL,
- 	},
-diff --git a/tools/perf/tests/dlfilter-test.c b/tools/perf/tests/dlfilter-test.c
-new file mode 100644
-index 000000000000..7fadf6e12f99
---- /dev/null
-+++ b/tools/perf/tests/dlfilter-test.c
-@@ -0,0 +1,409 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Test dlfilter C API. A perf.data file is synthesized and then processed
-+ * by perf script with a dlfilter named dlfilter-test-api-v0.so. Also a C file
-+ * is compiled to provide a dso to match the synthesized perf.data file.
-+ */
-+
-+#include <linux/compiler.h>
-+#include <linux/kernel.h>
-+#include <linux/string.h>
-+#include <linux/perf_event.h>
-+#include <internal/lib.h>
-+#include <subcmd/exec-cmd.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <inttypes.h>
-+#include <libgen.h>
-+#include <string.h>
-+#include <errno.h>
-+#include "debug.h"
-+#include "tool.h"
-+#include "event.h"
-+#include "header.h"
-+#include "machine.h"
-+#include "dso.h"
-+#include "map.h"
-+#include "symbol.h"
-+#include "synthetic-events.h"
-+#include "util.h"
-+#include "archinsn.h"
-+#include "dlfilter.h"
-+#include "tests.h"
-+
-+#define MAP_START 0x400000
-+
-+struct test_data {
-+	struct perf_tool tool;
-+	struct machine *machine;
-+	int fd;
-+	u64 foo;
-+	u64 bar;
-+	u64 ip;
-+	u64 addr;
-+	char perf[PATH_MAX];
-+	char perf_data_file_name[PATH_MAX];
-+	char c_file_name[PATH_MAX];
-+	char prog_file_name[PATH_MAX];
-+	char dlfilters[PATH_MAX];
-+};
-+
-+static int test_result(const char *msg, int ret)
-+{
-+	pr_debug("%s\n", msg);
-+	return ret;
-+}
-+
-+static int process(struct perf_tool *tool, union perf_event *event,
-+		   struct perf_sample *sample __maybe_unused,
-+		   struct machine *machine __maybe_unused)
-+{
-+	struct test_data *td = container_of(tool, struct test_data, tool);
-+	int fd = td->fd;
-+
-+	if (writen(fd, event, event->header.size) != event->header.size)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+#define MAXCMD 4096
-+#define REDIRECT_TO_DEV_NULL " >/dev/null 2>&1"
-+
-+static __printf(1, 2) int system_cmd(const char *fmt, ...)
-+{
-+	char cmd[MAXCMD + sizeof(REDIRECT_TO_DEV_NULL)];
-+	int ret;
-+
-+	va_list args;
-+
-+	va_start(args, fmt);
-+	ret = vsnprintf(cmd, MAXCMD, fmt, args);
-+	va_end(args);
-+
-+	if (ret <= 0 || ret >= MAXCMD)
-+		return -1;
-+
-+	if (!verbose)
-+		strcat(cmd, REDIRECT_TO_DEV_NULL);
-+
-+	pr_debug("Command: %s\n", cmd);
-+	ret = system(cmd);
-+	if (ret)
-+		pr_debug("Failed with return value %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static bool have_gcc(void)
-+{
-+	pr_debug("Checking for gcc\n");
-+	return !system_cmd("gcc --version");
-+}
-+
-+static int write_attr(struct test_data *td, u64 sample_type, u64 *id)
-+{
-+	struct perf_event_attr attr = {
-+		.size = sizeof(attr),
-+		.type = PERF_TYPE_HARDWARE,
-+		.config = PERF_COUNT_HW_BRANCH_INSTRUCTIONS,
-+		.sample_type = sample_type,
-+		.sample_period = 1,
-+	};
-+
-+	return perf_event__synthesize_attr(&td->tool, &attr, 1, id, process);
-+}
-+
-+static int write_comm(int fd, pid_t pid, pid_t tid, const char *comm_str)
-+{
-+	struct perf_record_comm comm;
-+	ssize_t sz = sizeof(comm);
-+
-+	comm.header.type = PERF_RECORD_COMM;
-+	comm.header.misc = PERF_RECORD_MISC_USER;
-+	comm.header.size = sz;
-+
-+	comm.pid = pid;
-+	comm.tid = tid;
-+	strncpy(comm.comm, comm_str, 16);
-+
-+	if (writen(fd, &comm, sz) != sz) {
-+		pr_debug("%s failed\n", __func__);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int write_mmap(int fd, pid_t pid, pid_t tid, u64 start, u64 len, u64 pgoff,
-+		      const char *filename)
-+{
-+	char buf[PERF_SAMPLE_MAX_SIZE];
-+	struct perf_record_mmap *mmap = (struct perf_record_mmap *)buf;
-+	size_t fsz = roundup(strlen(filename) + 1, 8);
-+	ssize_t sz = sizeof(*mmap) - sizeof(mmap->filename) + fsz;
-+
-+	mmap->header.type = PERF_RECORD_MMAP;
-+	mmap->header.misc = PERF_RECORD_MISC_USER;
-+	mmap->header.size = sz;
-+
-+	mmap->pid   = pid;
-+	mmap->tid   = tid;
-+	mmap->start = start;
-+	mmap->len   = len;
-+	mmap->pgoff = pgoff;
-+	strncpy(mmap->filename, filename, sizeof(mmap->filename));
-+
-+	if (writen(fd, mmap, sz) != sz) {
-+		pr_debug("%s failed\n", __func__);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int write_sample(struct test_data *td, u64 sample_type, u64 id, pid_t pid, pid_t tid)
-+{
-+	char buf[PERF_SAMPLE_MAX_SIZE];
-+	union perf_event *event = (union perf_event *)buf;
-+	struct perf_sample sample = {
-+		.ip		= td->ip,
-+		.addr		= td->addr,
-+		.id		= id,
-+		.time		= 1234567890,
-+		.cpu		= 31,
-+		.pid		= pid,
-+		.tid		= tid,
-+		.period		= 543212345,
-+		.stream_id	= 101,
-+	};
-+	int err;
-+
-+	event->header.type = PERF_RECORD_SAMPLE;
-+	event->header.misc = PERF_RECORD_MISC_USER;
-+	event->header.size = perf_event__sample_event_size(&sample, sample_type, 0);
-+	err = perf_event__synthesize_sample(event, sample_type, 0, &sample);
-+	if (err)
-+		return test_result("perf_event__synthesize_sample() failed", TEST_FAIL);
-+
-+	err = process(&td->tool, event, &sample, td->machine);
-+	if (err)
-+		return test_result("Failed to write sample", TEST_FAIL);
-+
-+	return TEST_OK;
-+}
-+
-+static void close_fd(int fd)
-+{
-+	if (fd >= 0)
-+		close(fd);
-+}
-+
-+static const char *prog = "int bar(){};int foo(){bar();};int main(){foo();return 0;}";
-+
-+static int write_prog(char *file_name)
-+{
-+	int fd = creat(file_name, 0644);
-+	ssize_t n = strlen(prog);
-+	bool err = fd < 0 || writen(fd, prog, n) != n;
-+
-+	close_fd(fd);
-+	return err ? -1 : 0;
-+}
-+
-+static int get_dlfilters_path(char *buf, size_t sz)
-+{
-+	char perf[PATH_MAX];
-+	char path[PATH_MAX];
-+	char *perf_path;
-+	char *exec_path;
-+
-+	perf_exe(perf, sizeof(perf));
-+	perf_path = dirname(perf);
-+	snprintf(path, sizeof(path), "%s/dlfilters/dlfilter-test-api-v0.so", perf_path);
-+	if (access(path, R_OK)) {
-+		exec_path = get_argv_exec_path();
-+		if (!exec_path)
-+			return -1;
-+		snprintf(path, sizeof(path), "%s/dlfilters/dlfilter-test-api-v0.so", exec_path);
-+		free(exec_path);
-+		if (access(path, R_OK))
-+			return -1;
-+	}
-+	strlcpy(buf, dirname(path), sz);
-+	return 0;
-+}
-+
-+static int check_filter_desc(struct test_data *td)
-+{
-+	char *long_desc;
-+	char *desc;
-+
-+	if (get_filter_desc(td->dlfilters, "dlfilter-test-api-v0.so", &desc, &long_desc) &&
-+	    long_desc && !strcmp(long_desc, "Filter used by the 'dlfilter C API' perf test") &&
-+	    desc && !strcmp(desc, "dlfilter to test v0 C API"))
-+		return 0;
-+
-+	return -1;
-+}
-+
-+static int get_ip_addr(struct test_data *td)
-+{
-+	struct map *map;
-+	struct symbol *sym;
-+
-+	map = dso__new_map(td->prog_file_name);
-+	if (!map)
-+		return -1;
-+
-+	sym = map__find_symbol_by_name(map, "foo");
-+	if (sym)
-+		td->foo = sym->start;
-+
-+	sym = map__find_symbol_by_name(map, "bar");
-+	if (sym)
-+		td->bar = sym->start;
-+
-+	map__put(map);
-+
-+	td->ip = MAP_START + td->foo;
-+	td->addr = MAP_START + td->bar;
-+
-+	return td->foo && td->bar ? 0 : -1;
-+}
-+
-+static int do_run_perf_script(struct test_data *td, int do_early)
-+{
-+	return system_cmd("%s script -i %s "
-+			  "--dlfilter %s/dlfilter-test-api-v0.so "
-+			  "--dlarg first "
-+			  "--dlarg %d "
-+			  "--dlarg %" PRIu64 " "
-+			  "--dlarg %" PRIu64 " "
-+			  "--dlarg %d "
-+			  "--dlarg last",
-+			  td->perf, td->perf_data_file_name, td->dlfilters,
-+			  verbose, td->ip, td->addr, do_early);
-+}
-+
-+static int run_perf_script(struct test_data *td)
-+{
-+	int do_early;
-+	int err;
-+
-+	for (do_early = 0; do_early < 3; do_early++) {
-+		err = do_run_perf_script(td, do_early);
-+		if (err)
-+			return err;
-+	}
-+	return 0;
-+}
-+
-+#define TEST_SAMPLE_TYPE (PERF_SAMPLE_IP | PERF_SAMPLE_TID | \
-+			  PERF_SAMPLE_IDENTIFIER | PERF_SAMPLE_TIME | \
-+			  PERF_SAMPLE_ADDR | PERF_SAMPLE_CPU | \
-+			  PERF_SAMPLE_PERIOD | PERF_SAMPLE_STREAM_ID)
-+
-+static int test__dlfilter_test(struct test_data *td)
-+{
-+	u64 sample_type = TEST_SAMPLE_TYPE;
-+	pid_t pid = 12345;
-+	pid_t tid = 12346;
-+	u64 id = 99;
-+	int err;
-+
-+	if (get_dlfilters_path(td->dlfilters, PATH_MAX))
-+		return test_result("dlfilters not found", TEST_SKIP);
-+
-+	if (check_filter_desc(td))
-+		return test_result("Failed to get expected filter description", TEST_FAIL);
-+
-+	if (!have_gcc())
-+		return test_result("gcc not found", TEST_SKIP);
-+
-+	pr_debug("dlfilters path: %s\n", td->dlfilters);
-+
-+	if (write_prog(td->c_file_name))
-+		return test_result("Failed to write test C file", TEST_FAIL);
-+
-+	if (verbose > 1)
-+		system_cmd("cat %s ; echo", td->c_file_name);
-+
-+	if (system_cmd("gcc -g -o %s %s", td->prog_file_name, td->c_file_name))
-+		return TEST_FAIL;
-+
-+	if (verbose > 2)
-+		system_cmd("objdump -x -dS %s", td->prog_file_name);
-+
-+	if (get_ip_addr(td))
-+		return test_result("Failed to find program symbols", TEST_FAIL);
-+
-+	pr_debug("Creating new host machine structure\n");
-+	td->machine = machine__new_host();
-+	td->machine->env = &perf_env;
-+
-+	td->fd = creat(td->perf_data_file_name, 0644);
-+	if (td->fd < 0)
-+		return test_result("Failed to create test perf.data file", TEST_FAIL);
-+
-+	err = perf_header__write_pipe(td->fd);
-+	if (err < 0)
-+		return test_result("perf_header__write_pipe() failed", TEST_FAIL);
-+
-+	err = write_attr(td, sample_type, &id);
-+	if (err)
-+		return test_result("perf_event__synthesize_attr() failed", TEST_FAIL);
-+
-+	if (write_comm(td->fd, pid, tid, "test-prog"))
-+		return TEST_FAIL;
-+
-+	if (write_mmap(td->fd, pid, tid, MAP_START, 0x10000, 0, td->prog_file_name))
-+		return TEST_FAIL;
-+
-+	if (write_sample(td, sample_type, id, pid, tid) != TEST_OK)
-+		return TEST_FAIL;
-+
-+	if (verbose > 1)
-+		system_cmd("%s script -i %s -D", td->perf, td->perf_data_file_name);
-+
-+	err = run_perf_script(td);
-+	if (err)
-+		return TEST_FAIL;
-+
-+	return TEST_OK;
-+}
-+
-+static void unlink_path(const char *path)
-+{
-+	if (*path)
-+		unlink(path);
-+}
-+
-+static void test_data__free(struct test_data *td)
-+{
-+	machine__delete(td->machine);
-+	close_fd(td->fd);
-+	unlink_path(td->c_file_name);
-+	unlink_path(td->prog_file_name);
-+	unlink_path(td->perf_data_file_name);
-+}
-+
-+int test__dlfilter(struct test *test __maybe_unused, int subtest __maybe_unused)
-+{
-+	struct test_data td = {.fd = -1};
-+	int pid = getpid();
-+	int err;
-+
-+	perf_exe(td.perf, sizeof(td.perf));
-+
-+	snprintf(td.perf_data_file_name, PATH_MAX, "/tmp/dlfilter-test-%u-perf-data", pid);
-+	snprintf(td.c_file_name, PATH_MAX, "/tmp/dlfilter-test-%u-prog.c", pid);
-+	snprintf(td.prog_file_name, PATH_MAX, "/tmp/dlfilter-test-%u-prog", pid);
-+
-+	err = test__dlfilter_test(&td);
-+	test_data__free(&td);
-+	return err;
-+}
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 1100dd55b657..fe1306f58495 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -127,6 +127,7 @@ int test__parse_metric(struct test *test, int subtest);
- int test__pe_file_parsing(struct test *test, int subtest);
- int test__expand_cgroup_events(struct test *test, int subtest);
- int test__perf_time_to_tsc(struct test *test, int subtest);
-+int test__dlfilter(struct test *test, int subtest);
- 
- bool test__bp_signal_is_supported(void);
- bool test__bp_account_is_supported(void);
-diff --git a/tools/perf/util/dlfilter.c b/tools/perf/util/dlfilter.c
-index 7d11ce76157c..db964d5a52af 100644
---- a/tools/perf/util/dlfilter.c
-+++ b/tools/perf/util/dlfilter.c
-@@ -530,8 +530,8 @@ int dlfilter__do_filter_event(struct dlfilter *d,
- 	return ret;
- }
- 
--static bool get_filter_desc(const char *dirname, const char *name,
--			    char **desc, char **long_desc)
-+bool get_filter_desc(const char *dirname, const char *name, char **desc,
-+		     char **long_desc)
+ drivers/net/ethernet/marvell/prestera/prestera_switchdev.c | 4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c       | 2 +-
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c      | 4 ++--
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c   | 2 +-
+ drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c    | 2 +-
+ drivers/net/ethernet/rocker/rocker_main.c                  | 2 +-
+ drivers/net/ethernet/rocker/rocker_ofdpa.c                 | 2 +-
+ drivers/net/ethernet/ti/am65-cpsw-switchdev.c              | 2 +-
+ drivers/net/ethernet/ti/cpsw_switchdev.c                   | 2 +-
+ drivers/s390/net/qeth_l2_main.c                            | 4 ++--
+ net/dsa/slave.c                                            | 2 +-
+ 11 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+index 0b3e8f2db294..9a309169dbae 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+@@ -748,7 +748,7 @@ static void
+ prestera_fdb_offload_notify(struct prestera_port *port,
+ 			    struct switchdev_notifier_fdb_info *info)
  {
- 	char path[PATH_MAX];
- 	void *handle;
-diff --git a/tools/perf/util/dlfilter.h b/tools/perf/util/dlfilter.h
-index 505980442360..cc4bb9657d05 100644
---- a/tools/perf/util/dlfilter.h
-+++ b/tools/perf/util/dlfilter.h
-@@ -93,5 +93,7 @@ static inline int dlfilter__filter_event_early(struct dlfilter *d,
- }
+-	struct switchdev_notifier_fdb_info send_info;
++	struct switchdev_notifier_fdb_info send_info = {};
  
- int list_available_dlfilters(const struct option *opt, const char *s, int unset);
-+bool get_filter_desc(const char *dirname, const char *name, char **desc,
-+		     char **long_desc);
+ 	send_info.addr = info->addr;
+ 	send_info.vid = info->vid;
+@@ -1123,7 +1123,7 @@ static int prestera_switchdev_blk_event(struct notifier_block *unused,
+ static void prestera_fdb_event(struct prestera_switch *sw,
+ 			       struct prestera_event *evt, void *arg)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 	struct net_device *dev = NULL;
+ 	struct prestera_port *port;
+ 	struct prestera_lag *lag;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
+index f3f56f32e435..69a3630818d7 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
+@@ -69,7 +69,7 @@ static void
+ mlx5_esw_bridge_fdb_offload_notify(struct net_device *dev, const unsigned char *addr, u16 vid,
+ 				   unsigned long val)
+ {
+-	struct switchdev_notifier_fdb_info send_info;
++	struct switchdev_notifier_fdb_info send_info = {};
  
- #endif
+ 	send_info.addr = addr;
+ 	send_info.vid = vid;
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+index 7e221ef01437..f69cbb3852d5 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+@@ -9079,7 +9079,7 @@ mlxsw_sp_rif_fid_fid_get(struct mlxsw_sp_rif *rif,
+ 
+ static void mlxsw_sp_rif_fid_fdb_del(struct mlxsw_sp_rif *rif, const char *mac)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 	struct net_device *dev;
+ 
+ 	dev = br_fdb_find_port(rif->dev, mac, 0);
+@@ -9127,8 +9127,8 @@ mlxsw_sp_rif_vlan_fid_get(struct mlxsw_sp_rif *rif,
+ 
+ static void mlxsw_sp_rif_vlan_fdb_del(struct mlxsw_sp_rif *rif, const char *mac)
+ {
++	struct switchdev_notifier_fdb_info info = {};
+ 	u16 vid = mlxsw_sp_fid_8021q_vid(rif->fid);
+-	struct switchdev_notifier_fdb_info info;
+ 	struct net_device *br_dev;
+ 	struct net_device *dev;
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+index c5ef9aa64efe..8f90cd323d5f 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+@@ -2508,7 +2508,7 @@ mlxsw_sp_fdb_call_notifiers(enum switchdev_notifier_type type,
+ 			    const char *mac, u16 vid,
+ 			    struct net_device *dev, bool offloaded)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 
+ 	info.addr = mac;
+ 	info.vid = vid;
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+index 0443f66b5550..9a8e4f201eb1 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+@@ -277,7 +277,7 @@ static void sparx5_fdb_call_notifiers(enum switchdev_notifier_type type,
+ 				      const char *mac, u16 vid,
+ 				      struct net_device *dev, bool offloaded)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 
+ 	info.addr = mac;
+ 	info.vid = vid;
+diff --git a/drivers/net/ethernet/rocker/rocker_main.c b/drivers/net/ethernet/rocker/rocker_main.c
+index a46633606cae..1f06b92ee5bb 100644
+--- a/drivers/net/ethernet/rocker/rocker_main.c
++++ b/drivers/net/ethernet/rocker/rocker_main.c
+@@ -2715,7 +2715,7 @@ static void
+ rocker_fdb_offload_notify(struct rocker_port *rocker_port,
+ 			  struct switchdev_notifier_fdb_info *recv_info)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 
+ 	info.addr = recv_info->addr;
+ 	info.vid = recv_info->vid;
+diff --git a/drivers/net/ethernet/rocker/rocker_ofdpa.c b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+index 967a634ee9ac..e33a9d283a4e 100644
+--- a/drivers/net/ethernet/rocker/rocker_ofdpa.c
++++ b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+@@ -1822,7 +1822,7 @@ static void ofdpa_port_fdb_learn_work(struct work_struct *work)
+ 		container_of(work, struct ofdpa_fdb_learn_work, work);
+ 	bool removing = (lw->flags & OFDPA_OP_FLAG_REMOVE);
+ 	bool learned = (lw->flags & OFDPA_OP_FLAG_LEARNED);
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 
+ 	info.addr = lw->addr;
+ 	info.vid = lw->vid;
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-switchdev.c b/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
+index 9c29b363e9ae..599708a3e81d 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
+@@ -358,7 +358,7 @@ static int am65_cpsw_port_obj_del(struct net_device *ndev, const void *ctx,
+ static void am65_cpsw_fdb_offload_notify(struct net_device *ndev,
+ 					 struct switchdev_notifier_fdb_info *rcv)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 
+ 	info.addr = rcv->addr;
+ 	info.vid = rcv->vid;
+diff --git a/drivers/net/ethernet/ti/cpsw_switchdev.c b/drivers/net/ethernet/ti/cpsw_switchdev.c
+index f7fb6e17dadd..a7d97d429e06 100644
+--- a/drivers/net/ethernet/ti/cpsw_switchdev.c
++++ b/drivers/net/ethernet/ti/cpsw_switchdev.c
+@@ -368,7 +368,7 @@ static int cpsw_port_obj_del(struct net_device *ndev, const void *ctx,
+ static void cpsw_fdb_offload_notify(struct net_device *ndev,
+ 				    struct switchdev_notifier_fdb_info *rcv)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 
+ 	info.addr = rcv->addr;
+ 	info.vid = rcv->vid;
+diff --git a/drivers/s390/net/qeth_l2_main.c b/drivers/s390/net/qeth_l2_main.c
+index 2abf86c104d5..d7cdd9cfe485 100644
+--- a/drivers/s390/net/qeth_l2_main.c
++++ b/drivers/s390/net/qeth_l2_main.c
+@@ -279,7 +279,7 @@ static void qeth_l2_set_pnso_mode(struct qeth_card *card,
+ 
+ static void qeth_l2_dev2br_fdb_flush(struct qeth_card *card)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 
+ 	QETH_CARD_TEXT(card, 2, "fdbflush");
+ 
+@@ -679,7 +679,7 @@ static void qeth_l2_dev2br_fdb_notify(struct qeth_card *card, u8 code,
+ 				      struct net_if_token *token,
+ 				      struct mac_addr_lnid *addr_lnid)
+ {
+-	struct switchdev_notifier_fdb_info info;
++	struct switchdev_notifier_fdb_info info = {};
+ 	u8 ntfy_mac[ETH_ALEN];
+ 
+ 	ether_addr_copy(ntfy_mac, addr_lnid->mac);
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 532085da8d8f..23be8e01026b 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -2291,8 +2291,8 @@ static int dsa_slave_netdevice_event(struct notifier_block *nb,
+ static void
+ dsa_fdb_offload_notify(struct dsa_switchdev_event_work *switchdev_work)
+ {
++	struct switchdev_notifier_fdb_info info = {};
+ 	struct dsa_switch *ds = switchdev_work->ds;
+-	struct switchdev_notifier_fdb_info info;
+ 	struct dsa_port *dp;
+ 
+ 	if (!dsa_is_user_port(ds, switchdev_work->port))
 -- 
-2.17.1
+2.25.1
 
