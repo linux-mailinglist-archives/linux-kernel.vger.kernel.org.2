@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6123E802C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BF53E8031
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236510AbhHJRqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:46:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41666 "EHLO mail.kernel.org"
+        id S236213AbhHJRqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234012AbhHJRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:43:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBFCB606A5;
-        Tue, 10 Aug 2021 17:39:21 +0000 (UTC)
+        id S234985AbhHJRoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 362BD610FC;
+        Tue, 10 Aug 2021 17:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617162;
-        bh=XJBcsXSIRcusmHj+x5GP3rBMU2877z0rlhQN0e2SMvM=;
+        s=korg; t=1628617164;
+        bh=aL/VQwDpDgwc8M6Z3IAq8wEXrwsD5+ryJJ/fgRSQzzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBRyyjXudmEr1EQI1vq5OMWB34kltepa6cvcTfqaklhnh7WPsf/HnF6z2HW6km/eQ
-         wZoKIlPV+Egax2i/I1dha0Z3ZhpWHPZ5eI8Dv6LY+wKKXI5ktn42g+mBG0G4KP/IKf
-         gLDuBPESMop+vSzJJf/cV36+HcF9l2t7HdXlTYaI=
+        b=viGM5xV4QjYjMVFE8+wgu/uhYpy2bqwRJ5R6B/sGN80FCtHBkcV7tnhciNiJyp4pi
+         Vhtt6TKLL/kXlL6Wj1rv9bd9ri7JwdpBuaLuzYnDwX763lgrenbQAD6akD0tLAe4AN
+         6BPA13xv18s4J4rPczPlG1EkKnegGeYZX+w7WF+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aharon Landau <aharonl@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Ying Xu <yinxu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 038/135] RDMA/mlx5: Delay emptying a cache entry when a new MR is added to it recently
-Date:   Tue, 10 Aug 2021 19:29:32 +0200
-Message-Id: <20210810172956.979317851@linuxfoundation.org>
+Subject: [PATCH 5.10 039/135] sctp: move the active_key update after sh_keys is added
+Date:   Tue, 10 Aug 2021 19:29:33 +0200
+Message-Id: <20210810172957.011233690@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 References: <20210810172955.660225700@linuxfoundation.org>
@@ -42,41 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit d6793ca97b76642b77629dd0783ec64782a50bdb ]
+[ Upstream commit ae954bbc451d267f7d60d7b49db811d5a68ebd7b ]
 
-Fixing a typo that causes a cache entry to shrink immediately after adding
-to it new MRs if the entry size exceeds the high limit.  In doing so, the
-cache misses its purpose to prevent the creation of new mkeys on the
-runtime by using the cached ones.
+In commit 58acd1009226 ("sctp: update active_key for asoc when old key is
+being replaced"), sctp_auth_asoc_init_active_key() is called to update
+the active_key right after the old key is deleted and before the new key
+is added, and it caused that the active_key could be found with the key_id.
 
-Fixes: b9358bdbc713 ("RDMA/mlx5: Fix locking in MR cache work queue")
-Link: https://lore.kernel.org/r/fcb546986be346684a016f5ca23a0567399145fa.1627370131.git.leonro@nvidia.com
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+In Ying Xu's testing, the BUG_ON in sctp_auth_asoc_init_active_key() was
+triggered:
+
+  [ ] kernel BUG at net/sctp/auth.c:416!
+  [ ] RIP: 0010:sctp_auth_asoc_init_active_key.part.8+0xe7/0xf0 [sctp]
+  [ ] Call Trace:
+  [ ]  sctp_auth_set_key+0x16d/0x1b0 [sctp]
+  [ ]  sctp_setsockopt.part.33+0x1ba9/0x2bd0 [sctp]
+  [ ]  __sys_setsockopt+0xd6/0x1d0
+  [ ]  __x64_sys_setsockopt+0x20/0x30
+  [ ]  do_syscall_64+0x5b/0x1a0
+
+So fix it by moving the active_key update after sh_keys is added.
+
+Fixes: 58acd1009226 ("sctp: update active_key for asoc when old key is being replaced")
+Reported-by: Ying Xu <yinxu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/mr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/sctp/auth.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 971694e781b6..19346693c1da 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -526,8 +526,8 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
- 		 */
- 		spin_unlock_irq(&ent->lock);
- 		need_delay = need_resched() || someone_adding(cache) ||
--			     time_after(jiffies,
--					READ_ONCE(cache->last_add) + 300 * HZ);
-+			     !time_after(jiffies,
-+					 READ_ONCE(cache->last_add) + 300 * HZ);
- 		spin_lock_irq(&ent->lock);
- 		if (ent->disabled)
- 			goto out;
+diff --git a/net/sctp/auth.c b/net/sctp/auth.c
+index fe74c5f95630..db6b7373d16c 100644
+--- a/net/sctp/auth.c
++++ b/net/sctp/auth.c
+@@ -857,14 +857,18 @@ int sctp_auth_set_key(struct sctp_endpoint *ep,
+ 	memcpy(key->data, &auth_key->sca_key[0], auth_key->sca_keylength);
+ 	cur_key->key = key;
+ 
+-	if (replace) {
+-		list_del_init(&shkey->key_list);
+-		sctp_auth_shkey_release(shkey);
+-		if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
+-			sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
++	if (!replace) {
++		list_add(&cur_key->key_list, sh_keys);
++		return 0;
+ 	}
++
++	list_del_init(&shkey->key_list);
++	sctp_auth_shkey_release(shkey);
+ 	list_add(&cur_key->key_list, sh_keys);
+ 
++	if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
++		sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
++
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
