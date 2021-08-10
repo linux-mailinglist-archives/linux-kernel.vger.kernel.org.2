@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537243E84A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E8D3E84A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhHJUvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:51:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32464 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233412AbhHJUvr (ORCPT
+        id S233709AbhHJUvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232739AbhHJUvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:51:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628628684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BRAP3UcLgpqf8XsYQHiUMWSMjCOCoU43rTaFEkutFE4=;
-        b=VQ5V6RZT+eXQvel8/CD/v9/r/nUWZxKSSF6+mhzVRCAKQu5rocml+KXkqml22mvnVUSImg
-        obWtLVqQQMxZ7NcWIXpnuJbB9bs8wZ56zcFgfqkBMSkY75/XOZwI2+tjZotKGrCAByR2i8
-        3VMMlpfMQwZNBBqLrPNNO5MWPP0UysE=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-6tnHwVbFMoeK6s2X0eA8fg-1; Tue, 10 Aug 2021 16:51:23 -0400
-X-MC-Unique: 6tnHwVbFMoeK6s2X0eA8fg-1
-Received: by mail-ot1-f70.google.com with SMTP id s44-20020a05683043acb02904f41dddb2beso202050otv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
+        Tue, 10 Aug 2021 16:51:46 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17EBC0613C1;
+        Tue, 10 Aug 2021 13:51:23 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id t68so24012958qkf.8;
+        Tue, 10 Aug 2021 13:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=5mYXNmeFQWZZstD53CM/l7n7XLqNKoMiU1KuQzcBS4w=;
+        b=TxtFHFqFPe8sq61wlfFVSXCqbFLVqoWzpUc0VUi8orYW/A6PWl30RK1LrImf60fnyi
+         x9E5uDKTgMXzxBM5zba0+ZzzFU4h4ClqSOp9ZjVc8dx2/N2kU5XIUM7ivQkH1U4NSor5
+         yOAtIddDiJhva8ad0vQDRfbFEHZYmdqtv8i8H+9KaqjDWTUbAq7a6+LC4GeO7zVlWsTa
+         9nGyUR96kyfzIb+OVbJNBOaRysgSPtzNzPqfaH35eYfJgxDFpAZvY6JTAVICXLmKY8IG
+         0dSDhI6ycQfikcaW4e0wGAgk627ohpct5KejUDooWUIdAFYRmQi4t11Vm7ZYxVxKQbnK
+         FTAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BRAP3UcLgpqf8XsYQHiUMWSMjCOCoU43rTaFEkutFE4=;
-        b=iwtkKA6vFLmuP1V2bk6P0pE68rzAMfN2h8euWBCi7LPcjivU/66bnt9Wej2nd1Aeko
-         igHlsEx1+JZkoUTVuJP+mRLitYzF7w9YinZTMTGvQr7sOML+WCATRgQNIt64lDwYkmht
-         sURy2Qz05V7K45Jjla8p7vZMC2MrKlvLdbH/sigArVNaM/bbvRCWE1VyEfNpvWWDFllx
-         Up/nJIaP2EmhbYt/tCL6r8dm/+BN9crLiNJDujuDC+FyE1mllu7FAHPw+UVN7msxhQOB
-         TjulgPqQHE207vJuv0wbtVI9KrP+Vx14dgJtObVO+6gVuuITqWvlNJwoP7b1rnbqlUPX
-         JtMw==
-X-Gm-Message-State: AOAM531kgTSs5zjeO0pV4ZMDO3n4QD2LAxUjns+tnlIW88GwkuQsY4Cn
-        J1Ffg4GLBrJ+VEFRJlBFSxUmnzoS3ItdW+CHHqe/u3vvzZqnECkJydSNc5poxdCm4585d2mQeSe
-        ZWeUPPw+9owC88EhLwPBuj7xG
-X-Received: by 2002:aca:4554:: with SMTP id s81mr5073410oia.41.1628628682453;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=5mYXNmeFQWZZstD53CM/l7n7XLqNKoMiU1KuQzcBS4w=;
+        b=pWNSExCPqvCTPp0tczs13sG/S4u3TDyN0t09WDiLHQhnsboNkAsq4JhnynNcsYZX2V
+         GtAxO3+M58DpQay6UOqi9qoWDJ8JDhoMy/3ViuYzGuYdLJlbqXg+X6Mz+lahtmKA1Gi9
+         P12ODyMLKj6ihaQ2aV1HRHc9x+2bEoq6OLyGbA+Q5ParqTJbUSxbWDXkmd5dm10qfR0O
+         4B3iYVDGpKFGZEvnP4S82qdCaY3pRI9mpB9tqLdEcbjzR0Aixd0jx5+5Np2PzESTnEQs
+         dsD225UrItfua+s0AZBBusXNsOUiZ8s8ejrPMGATXSMAqhOM+qwFw4e36YqT0XdYIFfq
+         FwVg==
+X-Gm-Message-State: AOAM533gzoHVh2Wkn9o8u0AQwez+9ROwe6FOnIzUfwNI9+grqZaFHYh1
+        9CJ/4qxV8Pkkg3F62KcXCCc=
+X-Google-Smtp-Source: ABdhPJzLb7WxcsucQE1flCY1q3+sLtkuyf5b4pcnIup/qZ27viKkr7U5PpFgwmuXm4BQdnQj+vvgFA==
+X-Received: by 2002:a05:620a:1790:: with SMTP id ay16mr31029115qkb.67.1628628683067;
+        Tue, 10 Aug 2021 13:51:23 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id l145sm1493002qke.92.2021.08.10.13.51.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy78YX4WsIPZVstJJSezqWHWGPHEZO0W2taQXaEHV3PPUALBc3Bl+022KgyUSRnEeR2u7YVTQ==
-X-Received: by 2002:aca:4554:: with SMTP id s81mr5073400oia.41.1628628682265;
-        Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id e20sm621635otj.4.2021.08.10.13.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 14:51:20 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
-Message-ID: <20210810145120.28759d65.alex.williamson@redhat.com>
-In-Reply-To: <YRLNMv3UhwVa8Pd4@t490s>
-References: <162818167535.1511194.6614962507750594786.stgit@omen>
-        <162818325518.1511194.1243290800645603609.stgit@omen>
-        <YRI+nsVAr3grftB4@infradead.org>
-        <YRLNMv3UhwVa8Pd4@t490s>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 10 Aug 2021 16:51:21 -0400
+Message-Id: <CDG4ONJVGKQ9.1BNDI32KIK6R9@shaak>
+Cc:     "Jonathan Cameron" <jic23@kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        "Michael Hennerich" <Michael.Hennerich@analog.com>,
+        "Charles-Antoine Couret" <charles-antoine.couret@essensium.com>,
+        =?utf-8?q?Nuno_S=C3=A1?= <Nuno.Sa@analog.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "linux-iio" <linux-iio@vger.kernel.org>,
+        "devicetree" <devicetree@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>
+Subject: Re: [PATCH v5 3/5] iio: adc: ad7949: add support for internal vref
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+References: <20210808015659.2955443-1-liambeguin@gmail.com>
+ <20210808015659.2955443-4-liambeguin@gmail.com>
+ <20210808173630.5c384a4b@jic23-huawei> <CDEHT583QT0A.2QAXX9AC2FMLO@shaak>
+ <CAHp75Vc3o-RrHD_wt_CfJY3P8hoRhJkdiRRySFS_O_7VdtJTQA@mail.gmail.com>
+ <CDG3ATRV00VV.57ZPL3OPU5N4@shaak>
+ <CAHp75Ve6Csjeeh7+ti6UE0-YPRHHFHXFA3jQwp+bqTAfL50_ig@mail.gmail.com>
+In-Reply-To: <CAHp75Ve6Csjeeh7+ti6UE0-YPRHHFHXFA3jQwp+bqTAfL50_ig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 15:02:10 -0400
-Peter Xu <peterx@redhat.com> wrote:
+On Tue Aug 10, 2021 at 3:55 PM EDT, Andy Shevchenko wrote:
+> On Tue, Aug 10, 2021 at 10:46 PM Liam Beguin <liambeguin@gmail.com>
+> wrote:
+> > On Tue Aug 10, 2021 at 8:15 AM EDT, Andy Shevchenko wrote:
+> > > On Mon, Aug 9, 2021 at 1:50 AM Liam Beguin <liambeguin@gmail.com> wro=
+te:
+> > > > On Sun Aug 8, 2021 at 12:36 PM EDT, Jonathan Cameron wrote:
+> > > > > On Sat, 7 Aug 2021 21:56:57 -0400
+> > > >         ret =3D fwnode_property_read_u32(child, "adi,internal-ref-m=
+icrovolt", &tmp);
+> > > >         if (ret =3D=3D -EINVAL && mode & AD7949_CFG_VAL_REF_EXTERNA=
+L) {
+> > > >                 continue;
+> > >
+> > > >         } else if (ret < 0) {
+>
+> > > Side note, redundant 'else'
+> >
+> > Are you asking to add an 'else' statement?
+> >
+> > because, unless I'm mistaken, in this case ret can have other negative =
+values
+> > that we want to catch with this 'else if'.
+>
+> You lost me, I have no idea what "to add" and "other" mean here. No, I
+> asked to remove it. It's redundant.
+>
 
-> On Tue, Aug 10, 2021 at 10:53:50AM +0200, Christoph Hellwig wrote:
-> > On Thu, Aug 05, 2021 at 11:07:35AM -0600, Alex Williamson wrote:  
-> > > +static void vfio_pci_zap_bars(struct vfio_pci_device *vdev)
-> > >  {
-> > > +	vfio_device_unmap_mapping_range(&vdev->vdev,
-> > > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
-> > > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
-> > > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX));  
-> > 
-> > Maybe make this a little more readable by having local variables:  
-> 
-> Or just pass in unmap_mapping_range(start=0, len=0)?  As unmap_mapping_range()
-> understands len==0 as "to the end of file".  Thanks,
+Oh, I see what you meant now. I'll fix it. Thanks!
 
-But we're not actually trying to unmap the entire device fd, we're only
-targeting the ranges of it that correspond to standard MMIO resources
-of the device.  Our vma-to-pfn function for vfio-pci also only knows
-how to lookup vmas in this range.  If there were mmap'able regions
-outside of this, for example provided by vendor specific extensions, we
-a) don't generically know if they're related to the device itself or
-some supporting information managed in software (ex. IGD OpRegion) and
-b) don't know how to lookup the pfn to remap them when MMIO is
-re-enabled.
+Liam
 
-I don't think we have any such extensions today, but we might with
-vfio-pci-core and we'd need to figure out how to include those regions
-in some future work.  Thanks,
-
-Alex
+> > > >                 dev_err(dev, "invalid voltage reference in %pfw\n",=
+ child);
+> > > >                 fwnode_handle_put(child);
+> > > >                 return ret;
+> > > >         }
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
