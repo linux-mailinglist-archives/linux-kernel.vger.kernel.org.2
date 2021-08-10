@@ -2,143 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED0E3E865A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799863E865F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235341AbhHJXP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
+        id S235343AbhHJXS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235192AbhHJXPZ (ORCPT
+        with ESMTP id S235258AbhHJXS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:15:25 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56642C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:15:02 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id f13so543626edq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:15:02 -0700 (PDT)
+        Tue, 10 Aug 2021 19:18:27 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA04EC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:18:04 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id m3-20020a17090b0683b0290178cb50bc1aso746894pjz.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:18:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GUPlvlIHsVV1HyaB0WHrhJqrkm62V56QQdb99OyYrME=;
-        b=d548327fMFrF4HElne/pg8ZqB2axWgruQV3eF98nujz9NYnC+r6K/uE8dl1ll2yvWU
-         HrL6VLhRBFsZIiJeWHg/92oQjvsa9voWfSaUIv3v2mzWjTyTGxRyC49zS0Blaetkpewe
-         HsPYSFAbQSosuutny2je80yTuPqRd+C+UVW2+PqGEzK+Eib6MQ+pSSmryahjRVE28uYD
-         WsG6XiVsRbzOZZmePrjTgsRpum3tpLHurlDCpKtJmjMeoUYWNTyAe+ZMbn5ebWxpoFDO
-         jubdfL3e546ZAAc7dKRZfcTZa9RQoPuvM0T6HGhJjYFCaMd3iHCBzcYjgLO/1r/X7IVi
-         gR9Q==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=E8Aj/fL5iGPfl9iYHtcSD7Ifgdxa0r41M3PNgmyPyak=;
+        b=p/c5xE+4cJjJDX/cyiXUQQUoZPUgIToX7/lcdt/0nChru9fCTjdkOQKWFnEfc89zTy
+         7K5QPv+YdxATjxQmrBaMiRwC7OpCbfFfPqX+tkkOp6CKHA+kQo7jUi1xCJu8zWlDTzCY
+         j1m0sn8wybItzq3EUXjbnbbkJmbEslCtaPv+pWGLIgex3aJti2NzMB4uYj2A1Mo0n1jj
+         1VE5IleS3SOEF7sp684nd2fkMH7gnKe1oBP0qeiPiIMhoou83/SHhkq9Tq8gW1uIQS6O
+         BuA6CYlJma4k0TrNf3WfIWe3hLE7litvV1Se3P+FxnlaXZwMjWkAVNZoJVsAkX3gfaGW
+         l7UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GUPlvlIHsVV1HyaB0WHrhJqrkm62V56QQdb99OyYrME=;
-        b=V+USThNCm1mDc6lUwv0wqXKAIqCK1FiU+Hrf+ph6PgFOjcGCc/1zIVwy7QxuxBN7c+
-         jfPKUdWGU66lqIGM7lCQo5ENvT4djRXZs5smTMVxYti6DiWQV6/MePBq6Ma9xRh6Y9nT
-         c1cLZg8LenS3WGQBElF2YlPjuBFzB3v4cr2liDbT9aursJcuHqQ/VZczieeokUViSc5s
-         1oNFzWLGTTOV2zj4J1boxtDGSBV+pzkHt2Ag5NkvU4mqAdb2s/tftqxeSQDH2DRsx9Uz
-         4ep41OAw16V96y4OvltCLSmshuBgbbvNrRwY7sJV0AClUy8r8U2btcz2G0i3pAyeSF0m
-         T1Ww==
-X-Gm-Message-State: AOAM531tuk1C3ToZsboBukhy3LEp9PfaxNBHGOS3S5pPbVFm1+B2/Ltg
-        FJd3dEUpFSHGwxdN3/me2BhdB7lmxbpl0nv82dg=
-X-Google-Smtp-Source: ABdhPJxxoE6GGiwyiU+8OQ6VLJJz2j17ieL2oT4PyQDdF9V5sGkUgy9f2f+bfNF3WYpY+hQCVYSrZHyvGX/gHpWsRDg=
-X-Received: by 2002:a50:954c:: with SMTP id v12mr7793777eda.313.1628637300909;
- Tue, 10 Aug 2021 16:15:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210810202936.2672-1-shy828301@gmail.com> <20210810202936.2672-2-shy828301@gmail.com>
-In-Reply-To: <20210810202936.2672-2-shy828301@gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 10 Aug 2021 16:14:49 -0700
-Message-ID: <CAHbLzkoWyY+SvR2suej8c7nRArTt5Y6490QXrV1RTfdYX0HJVQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] Revert "mm/shmem: fix shmem_swapin() race with swapoff"
-To:     Hugh Dickins <hughd@google.com>, Huang Ying <ying.huang@intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=E8Aj/fL5iGPfl9iYHtcSD7Ifgdxa0r41M3PNgmyPyak=;
+        b=WQUmP+Q3+NrBrlVlIZWJNM/3vWW2C/CGkui3rtg35w9tp/drTWiOrq9e1LcfzLXIAe
+         9hjrzkfdRB1AUIhABkt1VBlTwwaMRLRPMGTEesp6EbZz+TQjzwP5KZCGzi+ew1wsMmBI
+         /cjQz4PeWyv757ERxj+Dmj2KEhMI7x0A0cl+Pxb5mi48lTflrkjPZ4cwVGlL4dKJirFp
+         686tBPCkaOKC6HSHBLg/3HiNNef3CUtNA1IJxwkB/1VeEBrf/4cU/FLZRS9kr++pmdKP
+         +nUOD+WPiYJQ8j4t3VF0K5iLtyGoflxQwEoRZAmLz5FuaA08lMdZ1ovjGDg18aAG1TJZ
+         M9ng==
+X-Gm-Message-State: AOAM5307QMNs66tzXNxx4m4KgdiqmGe8dmOnCBUKwr+ifd7iTr8G4lBQ
+        kqq1wdmh8Evu9Y1EgzJ/M8RZeVhTog==
+X-Google-Smtp-Source: ABdhPJyb51vgZGJ83rqquzLnLshtObvbPMhnS6d+bkM6fAJDJP8gMjmKZgFb1YsAnccZYEE6WYj9iue2xg==
+X-Received: from adelg-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:d1f])
+ (user=adelg job=sendgmr) by 2002:a05:6a00:a94:b029:384:1dc6:7012 with SMTP id
+ b20-20020a056a000a94b02903841dc67012mr31128194pfl.53.1628637484118; Tue, 10
+ Aug 2021 16:18:04 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 23:17:55 +0000
+Message-Id: <20210810231755.1743524-1-adelg@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH v2] arm64: clean vdso & vdso32 files
+From:   Andrew Delgadillo <adelg@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andrew Delgadillo <adelg@google.com>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 1:29 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> Due to the change about how block layer detects congestion the
-> justification of commit 8fd2e0b505d1 ("mm: swap: check if swap backing device
-> is congested or not") doesn't stand anymore, so the commit could be just
-> reverted in order to solve the race reported by commit 2efa33fc7f6e ("mm/shmem:
-> fix shmem_swapin() race with swapoff"), so the fix commit could be just
-> reverted as well.
+commit a5b8ca97fbf8 ("arm64: do not descend to vdso directories twice")
+changes the cleaning behavior of arm64's vdso files, in that vdso.lds,
+vdso.so, and vdso.so.dbg are not removed upon a 'make clean/mrproper':
 
-The updated commit log per the discussion with Hugh:
+$ make defconfig ARCH=arm64
+$ make ARCH=arm64
+$ make mrproper ARCH=arm64
+$ git clean -nxdf
+Would remove arch/arm64/kernel/vdso/vdso.lds
+Would remove arch/arm64/kernel/vdso/vdso.so
+Would remove arch/arm64/kernel/vdso/vdso.so.dbg
 
-Due to the change about how block layer detects congestion the
-justification of commit 8fd2e0b505d1 ("mm: swap: check if swap backing device
-is congested or not") doesn't stand anymore, so the commit could be just
-reverted in order to solve the race reported by commit 2efa33fc7f6e ("mm/shmem:
-fix shmem_swapin() race with swapoff"), so the fix commit could be just
-reverted as well.
+To remedy this, manually descend into arch/arm64/kernel/vdso upon
+cleaning.
 
-And that fix is also kind of buggy as discussed by [1] and [2].
+After this commit:
+$ make defconfig ARCH=arm64
+$ make ARCH=arm64
+$ make mrproper ARCH=arm64
+$ git clean -nxdf
+<empty>
 
-[1] https://lore.kernel.org/linux-mm/24187e5e-069-9f3f-cefe-39ac70783753@google.com/
-[2] https://lore.kernel.org/linux-mm/e82380b9-3ad4-4a52-be50-6d45c7f2b5da@google.com/
+Similar results are obtained for the vdso32 equivalent.
 
->
-> Suggested-by: Hugh Dickins <hughd@google.com>
-> Cc: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/shmem.c | 14 +-------------
->  1 file changed, 1 insertion(+), 13 deletions(-)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index dcc07d14162e..d5427de5bf02 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1699,8 +1699,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->         struct address_space *mapping = inode->i_mapping;
->         struct shmem_inode_info *info = SHMEM_I(inode);
->         struct mm_struct *charge_mm = vma ? vma->vm_mm : NULL;
-> -       struct swap_info_struct *si;
-> -       struct page *page = NULL;
-> +       struct page *page;
->         swp_entry_t swap;
->         int error;
->
-> @@ -1708,12 +1707,6 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->         swap = radix_to_swp_entry(*pagep);
->         *pagep = NULL;
->
-> -       /* Prevent swapoff from happening to us. */
-> -       si = get_swap_device(swap);
-> -       if (!si) {
-> -               error = EINVAL;
-> -               goto failed;
-> -       }
->         /* Look it up and read it in.. */
->         page = lookup_swap_cache(swap, NULL, 0);
->         if (!page) {
-> @@ -1775,8 +1768,6 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->         swap_free(swap);
->
->         *pagep = page;
-> -       if (si)
-> -               put_swap_device(si);
->         return 0;
->  failed:
->         if (!shmem_confirm_swap(mapping, index, swap))
-> @@ -1787,9 +1778,6 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->                 put_page(page);
->         }
->
-> -       if (si)
-> -               put_swap_device(si);
-> -
->         return error;
->  }
->
-> --
-> 2.26.2
->
+Signed-off-by: Andrew Delgadillo <adelg@google.com>
+Cc: stable@vger.kernel.org
+---
+Changelog since v1:
+- Also descend into vdso32 upon archclean
+- Add stable to cc in signoff area
+
+ arch/arm64/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index b52481f0605d..02997b253dee 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -181,6 +181,8 @@ archprepare:
+ # We use MRPROPER_FILES and CLEAN_FILES now
+ archclean:
+ 	$(Q)$(MAKE) $(clean)=$(boot)
++	$(Q)$(MAKE) $(clean)=arch/arm64/kernel/vdso
++	$(Q)$(MAKE) $(clean)=arch/arm64/kernel/vdso32
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+ # We need to generate vdso-offsets.h before compiling certain files in kernel/.
+-- 
+2.32.0.605.g8dce9f2422-goog
+
