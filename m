@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A32E3E82DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F35C3E828D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbhHJSVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236175AbhHJSV0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:21:26 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F31C078343
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:02:57 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id z128so37734466ybc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xHqo7EILZW+YSdl/5VDjBLKY3WeyT9Im9UwiXpyexBw=;
-        b=Sw7EYklMxIPD0A8sP1K+skIL/5d0j4lSfLuBb4r4dyLQKR7LMu5dIWjxonOvY9yyC0
-         xGFbH2KRwJBUtg95pOvNgtVRjgGlx8CkxbDMQyLIPQ5hLLFseEHWDwhWO1jkD295A00y
-         W6Amka+vQ3u8dcJTfHuhVE02RWlxhCaVmbyA0t7lJSOeYcHiN+NYI+qkL/ucIHInZ4uA
-         /xy20aqQ6ORz0/f2n9xTlgE9/KAjKy5Zgjncl1iocDmw/EAkTjeKvoA7U1uk/hNCM5GI
-         BSyfN/0T01618F5ABgd5VUWtS3ebBM6W85mKTcGtNtISkaWdUT44hq2y8hRzfoZkYnRn
-         5MYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xHqo7EILZW+YSdl/5VDjBLKY3WeyT9Im9UwiXpyexBw=;
-        b=NnLZDZj3OE1ACfLsoiugq8/Hjr9i71PS7h8rZMP4/qh0ygVCl3z+jb1YUeh6Asq/En
-         NzTrAu7AArpnJiE7S9ZQeZvHtPsXS7BmSuAJu95SEnaCir5+kHAfCWJJF3wpMzTHS48W
-         bC+mtYQGT7lNzljsjO/Ufh85fvl3jkxH0Sh9Eb9mf2OfZkPA+NUZJcB6HVo+TbjTvD8f
-         pAyko0lMKAiB5ffc5zZ5Wf9brMPjLh9BGcmwSoapRWfqGScAgHKcxzHBjtV4VlbDoJ5Z
-         EhXbNa9Yuho1S+jLMA/nTG3PFX6qsKRz34XpmavUB5XhG9deBQmX6197eDt3fRbLGMQR
-         KdZQ==
-X-Gm-Message-State: AOAM532yCSO6BCWN9ee9EycXSZTgU4NhmZJhtt9Sv8ezQYJRwEGwWNqX
-        N6tvVZmoF2bdfGAwkXVdHCMsy00sZPmclxYJXFQNQw==
-X-Google-Smtp-Source: ABdhPJwhzD7auOcf0ZhqBy6VIuL8hOMQlMVIgekREU2RxDG23KP2hJm1lqS0l9oHkUCuzeMJy+M5U2zN6NzTtOYTO5o=
-X-Received: by 2002:a25:cc44:: with SMTP id l65mr5183317ybf.303.1628618576203;
- Tue, 10 Aug 2021 11:02:56 -0700 (PDT)
+        id S237663AbhHJSKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:10:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239360AbhHJSFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:05:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0756044F;
+        Tue, 10 Aug 2021 18:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628618573;
+        bh=CliTSJM3KgHfirPfmC/pFeaaa3Zs4kVGiq7MtSbj8lg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qa5ffquXhY7PmT28/lxox3tcAtLD+RlXr+lLx0Sa9LdTuvzvQaaKVXyyYKBlUyGZc
+         RJf8tUO8K0Iukb717vDRMamLTLOYSighxonSn8xfFQgMNxUCBgNuM8LHpqKraQyPsT
+         VeGnikeqL4dzmbT0tJ09SG/01gLAYbnNmHLCnbj/TSnSWuxVc/qeMG8F/SutX6AKYh
+         2AnjdvGDVnhMgCJFO7HWT4EXgBmH9OuQzb+nv133npaTvLv9LaKpAJoHHcRKllywzz
+         X/fBK7Us9da2+o4zY8xUJQ+vOssg5ti9M7vA5dxUCWARzkSbxOrGnPAP6IUfcKmOMv
+         /PPcYeH4wFozQ==
+Date:   Tue, 10 Aug 2021 21:02:51 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+Message-ID: <20210810180251.vwxxcoeivnwfxxtd@kernel.org>
+References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+ <20210809094408.4iqwsx77u64usfx6@kernel.org>
+ <10dac5c6-4530-217c-e1ea-a7e2e3572f43@pengutronix.de>
 MIME-Version: 1.0
-References: <0000000000006bd0b305c914c3dc@google.com> <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
- <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
- <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com> <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
- <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com> <CANn89iKcSvJ5U37q1Jz2gVYxVS=_ydNmDuTRZuAW=YvB+jGChg@mail.gmail.com>
- <CANn89iKqv4Ca8A1DmQsjvOqKvgay3-5j9gKPJKwRkwtUkmETYg@mail.gmail.com>
- <ca6a188a-6ce4-782b-9700-9ae4ac03f83e@oracle.com> <66417ce5-a0f0-9012-6c2e-7c8f1b161cff@gmail.com>
- <583beba4-2595-5f4c-49a8-f8d999f0ebe7@oracle.com>
-In-Reply-To: <583beba4-2595-5f4c-49a8-f8d999f0ebe7@oracle.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 10 Aug 2021 20:02:44 +0200
-Message-ID: <CANn89iJOFoMa2-Dx+_b8p0-FNNKhYn4DsB3AbtL7zR4bvNR5DA@mail.gmail.com>
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in _copy_to_iter
-To:     Shoaib Rao <rao.shoaib@oracle.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        jamorris@linux.microsoft.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10dac5c6-4530-217c-e1ea-a7e2e3572f43@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 7:50 PM Shoaib Rao <rao.shoaib@oracle.com> wrote:
->
->
-> On 8/10/21 2:19 AM, Eric Dumazet wrote:
-> >
-> > On 8/9/21 10:31 PM, Shoaib Rao wrote:
-> >> On 8/9/21 1:09 PM, Eric Dumazet wrote:
-> >>> I am guessing that even your test would trigger the warning,
-> >>> if you make sure to include CONFIG_DEBUG_ATOMIC_SLEEP=y in your kernel build.
-> >> Eric,
+On Mon, Aug 09, 2021 at 12:00:40PM +0200, Ahmad Fatoum wrote:
+> Hello Jarkko,
+> 
+> On 09.08.21 11:44, Jarkko Sakkinen wrote:
+> > On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
+> >> Kernel trusted keys don't require userspace knowledge of the raw key
+> >> material and instead export a sealed blob, which can be persisted to
+> >> unencrypted storage. Userspace can then load this blob into the kernel,
+> >> where it's unsealed and from there on usable for kernel crypto.
 > >>
-> >> Thanks for the pointer, have you ever over looked at something when coding?
+> >> This is incompatible with fscrypt, where userspace is supposed to supply
+> >> the raw key material. For TPMs, a work around is to do key unsealing in
+> >> userspace, but this may not be feasible for other trusted key backends.
 > >>
-> > I _think_ I was trying to help, not shaming you in any way.
-> How did the previous email help? I did not get any reply when I asked
-> what could be the cause.
+> >> Make it possible to benefit from both fscrypt and trusted key sealing
+> >> by extending fscrypt_add_key_arg::key_id to hold either the ID of a
+> >> fscrypt-provisioning or a trusted key.
+> >>
+> >> A non fscrypt-provisioning key_id was so far prohibited, so additionally
+> >> allowing trusted keys won't break backwards compatibility.
+> >>
+> >> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> >> ---
+> >> Tested with:
+> >> https://github.com/google/fscryptctl/pull/23
+> >> -	if (key->type != &key_type_fscrypt_provisioning)
+> >> -		goto bad_key;
+> >> -	payload = key->payload.data[0];
+> >> +	if (key->type == &key_type_fscrypt_provisioning) {
+> > 
+> > Why does fscrypt have own key type, and does not extend 'encrypted' with a
+> > new format [*]?
+> 
+> See the commit[1] adding it for more information. TL;DR:
+> 
+> fscrypt maintainers would've preferred keys to be associated with
+> a "domain". So an encrypted key generated for fscrypt use couldn't be reused
+> for e.g. dm-crypt. They are wary of fscrypt users being more exposed if their
+> keys can be used with weaker ciphers via other kernel functionality that could
+> be used to extract information about the raw key material.
+> 
+> Eric also mentioned dislike of the possibility of rooting encrypted keys to
+> user keys. v2 is only restricted to v2, so we didn't discuss this further.
+> 
+> Restricting the key to fscrypt-only precludes this reuse.
+> 
+> My commit makes no attempts in changing that. It just adds a new way to pass
+> raw key material into fscrypt. For more information, see the commit[1] adding
+> that key type.
+> 
+> > [*] https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
+> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93edd392ca
 
-Which previous email ? Are you expecting immediate answers to your emails ?
-I am not working for Oracle.
+OK, so why does the trusted key does not seal a fscrypt key, but instead
+its key material is directly used?
 
-> >
-> > My question about spinlock/mutex was not sarcastic, you authored
-> > 6 official linux patches, there is no evidence for linux kernel expertise.
->
-> That is no measure of someones understanding. There are other OS's as
-> well. I have worked on Solaris and other *unix* OS's for over 20+ years.
-> This was an oversight on my part and I apologize, but instead of
-> questioning my expertise it would have been helpful to say what might
-> have caused it.
+> Cheers,
+> Ahmad
 
-
-I sent two emails with _useful_ _information_.
-
-If you felt you were attacked, I suggest you take a deep breath,
-and read my emails without trying to change their intention and meaning.
-
-If you think my emails were not useful, just ignore them, this is fine by me.
+/Jarkko
