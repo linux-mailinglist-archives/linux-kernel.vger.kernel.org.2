@@ -2,177 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A213E7D08
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF85C3E7D0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236517AbhHJQCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:02:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44420 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbhHJQCh (ORCPT
+        id S234405AbhHJQDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235417AbhHJQCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:02:37 -0400
-Date:   Tue, 10 Aug 2021 16:02:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628611334;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tiuhBpP4+euhjWICSx7gtfYGOgu+IbTsh6zaIkkkN3c=;
-        b=Ew/WBQVeAOTIGcqXkhE71arL3v7mphD26z9UCjI9hlJ6FqQ/QhlL6/Rn++n+M8ov5eBDLB
-        5DrXOPeOh7Yujq9XcFYckWthfEQttQx3KOTnnzHOLYtX8kxisL7ydN2MBJ10JBu9kXTraA
-        OLGHTdbWCye85iAF9U+rIIAQjCmR8IMFIs3zXpXFE+dU28AkKUbkkd94+n0tUN6BUTAnmh
-        bHuHyiy1BK9Und1U4ByhpETE0JT5eJxvOhYjsesl/fBNPvOwKY+sDyxzKn+2KDUWrv9vjh
-        qwVWy3HmpD/3/3Dl5eK26aETZf68lMrQ1SwTerBbG/JS/ei9iHal+jpFbg8CCw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628611334;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tiuhBpP4+euhjWICSx7gtfYGOgu+IbTsh6zaIkkkN3c=;
-        b=wCOvZpm44SZyGoE5UROGrJaHdJvpme0FwQ++OPtp9HboC4CgDkAoxfD9Akmv4PMLDbEM26
-        aDCXzuJLl/UUusDw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] hrtimer: Add bases argument to clock_was_set()
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Tue, 10 Aug 2021 12:02:39 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4E1C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:02:17 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id x10so22047092iop.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:02:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1PRnQFLgAZaDD7EbkN4+BWtHqGym0jkd6ykX1SJWWbg=;
+        b=RgaCat+Wj7sgZfBz3lRTE4ZluwhtWbKv7VRgfVdJX5vymBcX2czGapoM2BDWpbdEIX
+         skDkn4uJH176nacMm9IaQoXjxR6JR9cnEnkSkIW0y/s2u/rS2qUvA9k3gP3jsMUxMK6F
+         LGWh1NcUskwLYdxTFSos2FIV6hW9yGkfNmCtauUu7RdckLLE6wey+CcP+Dyl+Z4fTFZU
+         TTTgdxLRnaSXVK1zfT236/gCz8ar73Fgdra3zOOeXtcAU28DYiJeXEuX3rJSCpDTLx0l
+         fNB5M9zPPYBMJOPlsER7dNsQupPlkuQir2bZnHC0Hlkdn+Frk7y9y3wdvGfLOsoBf0hL
+         6kdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1PRnQFLgAZaDD7EbkN4+BWtHqGym0jkd6ykX1SJWWbg=;
+        b=ubKJ8hELL6jzR/yBUnzCziC7xzDhSxhutWuXcA7G/p5o2X11q7A7NhFjZtAJUvdUh9
+         3QxeZzxGy9lbwnMWBEU13ruLgx64bzby8+0s+ZJtYkSnfp63zzMvfyc0svzR2GV6xYYN
+         TD9LkSkU/aBN4mXOODRoRKVgbbJ8Aq5KFaz2c9RtpELnX4wyhgkb8Cyj2SjFKtHqLypm
+         DAbVmC6u7692DHEi1P8E66yj+VZXFueK51v0Jwkj8nT58ZxGOMSZONNAGMu/DnDnM/hX
+         hG1cBfpJlQPDNlN2Q6ahbngBamDyLr67u3e/te+I/jHoCeuqG2Hp5IAKMUmQjTSC3Zu8
+         R0tQ==
+X-Gm-Message-State: AOAM533H8Xzdvgt9tev3c9l0jX006jYmXhp2znTO9oNAhXZmJIMQaqN8
+        T86hIrpJHCX1EL7XiIj7Zjqg7A==
+X-Google-Smtp-Source: ABdhPJwLbvmmEDn/Srer4jrtXyQHYRDsJF5nBQ77YAuwBPv0xQcvbyNmJ6eHC4HvCrLCdlLcPWQMzw==
+X-Received: by 2002:a02:c9c4:: with SMTP id c4mr4735367jap.67.1628611336887;
+        Tue, 10 Aug 2021 09:02:16 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id p8sm12765248iol.49.2021.08.10.09.02.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 09:02:16 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, lkp@intel.com,
+        elder@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210713135158.691083465@linutronix.de>
-References: <20210713135158.691083465@linutronix.de>
+Subject: [PATCH net-next] net: ipa: always inline ipa_aggr_granularity_val()
+Date:   Tue, 10 Aug 2021 11:02:13 -0500
+Message-Id: <20210810160213.2257424-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Message-ID: <162861133341.395.7457578233576977877.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+It isn't required, but all callers of ipa_aggr_granularity_val()
+pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
+Two of those callers are in ipa_validate_build(), with the result
+being passed to BUILD_BUG_ON().
 
-Commit-ID:     17a1b8826b451c80e7999a7c68e06b70579b2b8f
-Gitweb:        https://git.kernel.org/tip/17a1b8826b451c80e7999a7c68e06b70579b2b8f
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 13 Jul 2021 15:39:53 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 17:57:23 +02:00
+Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
+inline ipa_aggr_granularity_val(), so the result of the function is
+not constant at compile time, and that leads to build errors.
 
-hrtimer: Add bases argument to clock_was_set()
+Define the function with the __always_inline attribute to avoid the
+errors.  And given that the function is inline, we can switch the
+WARN_ON() there to be BUILD_BUG_ON().
 
-clock_was_set() unconditionaly invokes retrigger_next_event() on all online
-CPUs. This was necessary because that mechanism was also used for resume
-from suspend to idle which is not longer the case.
-
-The bases arguments allows the callers of clock_was_set() to hand in a mask
-which tells clock_was_set() which of the hrtimer clock bases are affected
-by the clock setting. This mask will be used in the next step to check
-whether a CPU base has timers queued on a clock base affected by the event
-and avoid the SMP function call if there are none.
-
-Add a @bases argument, provide defines for the active bases masking and
-fixup all callsites.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210713135158.691083465@linutronix.de
-
+Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- kernel/time/hrtimer.c       |  4 ++--
- kernel/time/tick-internal.h |  9 ++++++++-
- kernel/time/timekeeping.c   | 14 +++++++-------
- 3 files changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 68e56f0..c8af165 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -880,7 +880,7 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
-  * in the tick, which obviously might be stopped, so this has to bring out
-  * the remote CPU which might sleep in idle to get this sorted.
+David/Jakub, this fixes a bug in a commit in net-next/master.  -Alex
+
+ drivers/net/ipa/ipa_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 25bbb456e0078..f90b3521e266b 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -255,9 +255,9 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
+  * less than the number of timer ticks in the requested period.  0 is not
+  * a valid granularity value.
   */
--void clock_was_set(void)
-+void clock_was_set(unsigned int bases)
+-static u32 ipa_aggr_granularity_val(u32 usec)
++static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
  {
- 	if (!hrtimer_hres_active() && !tick_nohz_active)
- 		goto out_timerfd;
-@@ -894,7 +894,7 @@ out_timerfd:
+-	WARN_ON(!usec);
++	BUILD_BUG_ON(!usec);
  
- static void clock_was_set_work(struct work_struct *work)
- {
--	clock_was_set();
-+	clock_was_set(CLOCK_SET_WALL);
+ 	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
  }
- 
- static DECLARE_WORK(hrtimer_work, clock_was_set_work);
-diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
-index 22de98c..3548f08 100644
---- a/kernel/time/tick-internal.h
-+++ b/kernel/time/tick-internal.h
-@@ -166,7 +166,14 @@ DECLARE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases);
- extern u64 get_next_timer_interrupt(unsigned long basej, u64 basem);
- void timer_clear_idle(void);
- 
--void clock_was_set(void);
-+#define CLOCK_SET_WALL							\
-+	(BIT(HRTIMER_BASE_REALTIME) | BIT(HRTIMER_BASE_REALTIME_SOFT) |	\
-+	 BIT(HRTIMER_BASE_TAI) | BIT(HRTIMER_BASE_TAI_SOFT))
-+
-+#define CLOCK_SET_BOOT							\
-+	(BIT(HRTIMER_BASE_BOOTTIME) | BIT(HRTIMER_BASE_BOOTTIME_SOFT))
-+
-+void clock_was_set(unsigned int bases);
- void clock_was_set_delayed(void);
- 
- void hrtimers_resume_local(void);
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 19ed58e..b348749 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -1323,8 +1323,8 @@ out:
- 	write_seqcount_end(&tk_core.seq);
- 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
- 
--	/* signal hrtimers about time change */
--	clock_was_set();
-+	/* Signal hrtimers about time change */
-+	clock_was_set(CLOCK_SET_WALL);
- 
- 	if (!ret)
- 		audit_tk_injoffset(ts_delta);
-@@ -1371,8 +1371,8 @@ error: /* even if we error out, we forwarded the time, so call update */
- 	write_seqcount_end(&tk_core.seq);
- 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
- 
--	/* signal hrtimers about time change */
--	clock_was_set();
-+	/* Signal hrtimers about time change */
-+	clock_was_set(CLOCK_SET_WALL);
- 
- 	return ret;
- }
-@@ -1746,8 +1746,8 @@ void timekeeping_inject_sleeptime64(const struct timespec64 *delta)
- 	write_seqcount_end(&tk_core.seq);
- 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
- 
--	/* signal hrtimers about time change */
--	clock_was_set();
-+	/* Signal hrtimers about time change */
-+	clock_was_set(CLOCK_SET_WALL | CLOCK_SET_BOOT);
- }
- #endif
- 
-@@ -2440,7 +2440,7 @@ int do_adjtimex(struct __kernel_timex *txc)
- 		clock_set |= timekeeping_advance(TK_ADV_FREQ);
- 
- 	if (clock_set)
--		clock_was_set();
-+		clock_was_set(CLOCK_REALTIME);
- 
- 	ntp_notify_cmos_timer();
- 
+-- 
+2.27.0
+
