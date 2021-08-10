@@ -2,56 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165983E5436
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38183E52E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhHJHWb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 03:22:31 -0400
-Received: from mail.maynitek.ru ([94.137.227.4]:59964 "EHLO mail.maynitek.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229484AbhHJHW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:22:27 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.maynitek.ru (Postfix) with ESMTP id 6327718C5C2E;
-        Tue, 10 Aug 2021 10:24:59 +0500 (+05)
-Received: from mail.maynitek.ru ([127.0.0.1])
-        by localhost (mail.maynitek.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id euqW0rj6GrzH; Tue, 10 Aug 2021 10:24:57 +0500 (+05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.maynitek.ru (Postfix) with ESMTP id 8A1AB34FDFCE;
-        Tue, 10 Aug 2021 10:23:22 +0500 (+05)
-X-Virus-Scanned: amavisd-new at maynitek.ru
-Received: from mail.maynitek.ru ([127.0.0.1])
-        by localhost (mail.maynitek.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Lzong1lDslad; Tue, 10 Aug 2021 10:23:22 +0500 (+05)
-Received: from [192.168.1.3] (unknown [178.151.250.143])
-        by mail.maynitek.ru (Postfix) with ESMTPSA id 0B93234FB544;
-        Tue, 10 Aug 2021 10:22:07 +0500 (+05)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S237660AbhHJFZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 01:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237643AbhHJFZV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 01:25:21 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D68DC061798
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 22:24:59 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id n6so13974733ljp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 22:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CFWqBCQp2YlhCV7jSxWtmoCr8RILzISB86MNoTEBHeU=;
+        b=kOohwNbQp4KuzGJcZF4yy50pxkQN5Pb3iyD+ksrmfBVybK+TUfjtOwUyb7bKShe8tW
+         SdRFWAigtNDsjm+fYfhVo3pIxT6X/DNEHzlL1Yb+k45momrT3GI3kLzx/UC1L3NV5WvG
+         6dFgkqQwdB9tsG044F0FDPRv7bPPwEyO0WdNtgH2iU48kKdX3L++yX8EzxA0ZGhCs3f8
+         fJ5M+aYhbYV2OGcTpV+3ZpCUjy6t4JcreBfppE3CEU/cX5lIAyYfeMjg11Z4yiCF8DEQ
+         bxpEyJUVg8TveXXvdXTMtRzWZrcVTWIQZBTGaawTSWC3BK3cVJm1GvVbvcK1fDoPfnOF
+         sDYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CFWqBCQp2YlhCV7jSxWtmoCr8RILzISB86MNoTEBHeU=;
+        b=XW6KBHTUHRkPT0tlxDxEfT3CRm6gOEzpJj/QqDeYs/0OQZAT3p8o7qLwjwRXXMswXu
+         nYlV1G3eJTb3/Tx30nt9jwMf2CLDX+zOrJBu8BISgnxJqPCtr5UwV1qVgLZ/OVz3dNy5
+         a74FoF5qJ/TDnQHoBm3Ja70iJm49Eod37s6MGjGEdJ/i9/0m4TgjxcK2aFytI5Q5QFUF
+         2ZBdSVYZNiBV8ZoAGUSUNwHdivjfT/AwHQFarhEAN3SrMp1f9MIwzoiRDHlWptQx09lt
+         VtINKmZ4/MYcg6F5shWpjFka7fAk55GCSU58KWNGJg5HiswTf9gJ2noIKgAIdJpFzM8A
+         MbsQ==
+X-Gm-Message-State: AOAM532LsbDEq8cvkxLh9OEqm8x2+nSkAI4m/BqprDdLjqpGW2HO9B45
+        DCFDGwCQTNfQiYe8VV9wRdZNVXnBgYoLjMgkhEVyXQ==
+X-Google-Smtp-Source: ABdhPJwAO97YdfcdCAmTaAWes9GxsrI5CP30XQe+NgCZoBVV5RVlt4j0z3ZrFIcGb4t5MvWxg/JuOLFUnrMQtk2HCJI=
+X-Received: by 2002:a05:651c:516:: with SMTP id o22mr17678549ljp.152.1628573097700;
+ Mon, 09 Aug 2021 22:24:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Lesen Sie Ihre EMail.
-To:     Recipients <vao@maynitek.ru>
-From:   vao@maynitek.ru
-Date:   Tue, 10 Aug 2021 08:21:49 +0300
-Reply-To: rinatakhmeto@gmail.com
-Message-Id: <20210810052207.0B93234FB544@mail.maynitek.ru>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <7b771da7b09a01c8b4da2ed21f05251ea797b2e8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <CAFA6WYOskwZNe5Wb5PTtnSHQBonSXZ48eEex0w9jQ+JW4vG=+w@mail.gmail.com>
+ <7537c853-3641-a6d3-91d8-70fea9f01a89@pengutronix.de> <20210809095647.7xcxjeot5gyvmlpj@kernel.org>
+In-Reply-To: <20210809095647.7xcxjeot5gyvmlpj@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 10 Aug 2021 10:54:46 +0530
+Message-ID: <CAFA6WYPg20EiYATXStt1mgGJVjkOK5BK7WDbTdzOujBdcH6KLg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] KEYS: trusted: allow trust sources to use kernel RNG
+ for key material
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Richard Weinberger <richard@nod.at>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guter Tag,
+On Mon, 9 Aug 2021 at 15:26, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> On Mon, Aug 09, 2021 at 09:52:20AM +0200, Ahmad Fatoum wrote:
+> > Hello Sumit,
+> >
+> > On 22.07.21 08:31, Sumit Garg wrote:
+> > > On Wed, 21 Jul 2021 at 22:19, Ahmad Fatoum <a.fatoum@pengutronix.de> =
+wrote:
+> > >>
+> > >> The two existing trusted key sources don't make use of the kernel RN=
+G,
+> > >> but instead let the hardware that does the sealing/unsealing also
+> > >> generate the random key material. While a previous change offers use=
+rs
+> > >> the choice to use the kernel RNG instead for both, new trust sources
+> > >> may want to unconditionally use the kernel RNG for generating key
+> > >> material, like it's done elsewhere in the kernel.
+> > >>
+> > >> This is especially prudent for hardware that has proven-in-productio=
+n
+> > >> HWRNG drivers implemented, as otherwise code would have to be duplic=
+ated
+> > >> only to arrive at a possibly worse result.
+> > >>
+> > >> Make this possible by turning struct trusted_key_ops::get_random
+> > >> into an optional member. If a driver leaves it NULL, kernel RNG
+> > >> will be used instead.
+> > >>
+> > >> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> > >> ---
+> > >> To: James Bottomley <jejb@linux.ibm.com>
+> > >> To: Jarkko Sakkinen <jarkko@kernel.org>
+> > >> To: Mimi Zohar <zohar@linux.ibm.com>
+> > >> To: David Howells <dhowells@redhat.com>
+> > >> Cc: James Morris <jmorris@namei.org>
+> > >> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> > >> Cc: "Horia Geant=C4=83" <horia.geanta@nxp.com>
+> > >> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+> > >> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > >> Cc: "David S. Miller" <davem@davemloft.net>
+> > >> Cc: Udit Agarwal <udit.agarwal@nxp.com>
+> > >> Cc: Eric Biggers <ebiggers@kernel.org>
+> > >> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
+> > >> Cc: David Gstir <david@sigma-star.at>
+> > >> Cc: Richard Weinberger <richard@nod.at>
+> > >> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
+> > >> Cc: Sumit Garg <sumit.garg@linaro.org>
+> > >> Cc: keyrings@vger.kernel.org
+> > >> Cc: linux-crypto@vger.kernel.org
+> > >> Cc: linux-integrity@vger.kernel.org
+> > >> Cc: linux-kernel@vger.kernel.org
+> > >> Cc: linux-security-module@vger.kernel.org
+> > >> ---
+> > >>  include/keys/trusted-type.h               | 2 +-
+> > >>  security/keys/trusted-keys/trusted_core.c | 2 +-
+> > >>  2 files changed, 2 insertions(+), 2 deletions(-)
+> > >>
+> > >> diff --git a/include/keys/trusted-type.h b/include/keys/trusted-type=
+.h
+> > >> index d89fa2579ac0..4eb64548a74f 100644
+> > >> --- a/include/keys/trusted-type.h
+> > >> +++ b/include/keys/trusted-type.h
+> > >> @@ -64,7 +64,7 @@ struct trusted_key_ops {
+> > >>         /* Unseal a key. */
+> > >>         int (*unseal)(struct trusted_key_payload *p, char *datablob)=
+;
+> > >>
+> > >> -       /* Get a randomized key. */
+> > >> +       /* Optional: Get a randomized key. */
+> > >>         int (*get_random)(unsigned char *key, size_t key_len);
+> > >>
+> > >>         /* Exit key interface. */
+> > >> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/ke=
+ys/trusted-keys/trusted_core.c
+> > >> index 569af9af8df0..d2b7626cde8b 100644
+> > >> --- a/security/keys/trusted-keys/trusted_core.c
+> > >> +++ b/security/keys/trusted-keys/trusted_core.c
+> > >> @@ -334,7 +334,7 @@ static int __init init_trusted(void)
+> > >>                         continue;
+> > >>
+> > >>                 get_random =3D trusted_key_sources[i].ops->get_rando=
+m;
+> > >> -               if (trusted_kernel_rng)
+> > >> +               if (trusted_kernel_rng || !get_random)
+> > >>                         get_random =3D kernel_get_random;
+> > >>
+> > >
+> > > For ease of understanding, I would prefer to write it as:
+> > >
+> > >                   get_random =3D trusted_key_sources[i].ops->get_rand=
+om ?:
+> > >                                          kernel_get_random;
+> > >                   if (trusted_kernel_rng)
+> > >                         get_random =3D kernel_get_random;
+> > >
+> > > With that:
+> > >
+> > > Acked-by: Sumit Garg <sumit.garg@linaro.org>
+> >
+> > I don't think it improves readability to split up the conditional.
+> > At least I need to take a second pass over the code to understand
+> > the second conditional.
+>
+> Ternary operators are pain to read, unless a super trivial case.
+>
+> I'd stick to what you did.
 
+Fair enough, I am fine with the current patch.
 
-Bitte akzeptieren Sie meine Entschuldigung, wenn meine Post Ihre persönliche Ethik verletzt. Sie wurden von Rinat Akhmetov, einem ukrainischen milliardenschweren Geschäftsmann und Oligarchen sowie Gründer und Präsident von System Capital Management in der Ukraine (Europa), für eine Spendensumme von 1.500.000,00 Euro ausgewählt. Sie können unten über mich lesen.
+-Sumit
 
-https://en.wikipedia.org/wiki/Rinat_Akhmetov
-
-Ich beabsichtige, Ihnen einen Teil (Viertel) meines Nettovermögens von je 1.500.000.00 EURO im Rahmen unseres Wohltätigkeitsprojekts, das ich überwiesen habe, an 4 Personen weltweit zu geben. Wenn Sie meine E-Mail erhalten haben, senden Sie uns bitte Ihre Daten dass wir unsere Bank anweisen, die Überweisung der
-
-Euro 1.500.000- in der Hoffnung, dass es Ihnen und anderen hilft.
-
-E-Mail zur Bestätigung unten.
-
-E-Mail oder Antwort an:rinatakhmeto@gmail.com
+>
+> /Jarkko
