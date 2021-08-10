@@ -2,176 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378B43E516D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DE53E516F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236600AbhHJDVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 23:21:37 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:15516 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233987AbhHJDVf (ORCPT
+        id S236627AbhHJDW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 23:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233987AbhHJDW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 23:21:35 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17A3CJ75019010;
-        Tue, 10 Aug 2021 03:21:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=aDNn5MUn0UlUn+FaFAYDGrNsI9A/fjMlNqqSQYJVR80=;
- b=P6od2glQmksopu4Eg2NAn9X5++bMwgCMyATlbZnosteBroBHHv3XJO/jYhho0pEXdBMz
- XAl189p3jR21BTn4HHnpWD2rg/i6I+EbcdcUXYSItcCpn2fbEraKuO2sFEcCrvRo9Dnq
- pAq6e0p9yTJvPZlO/ujA/S3RQEoSYsYOzdLl3UHeNgpYaRV9oAbohnr5XiNxePsiNefV
- MACo6gxs/ell6QgNiDddQcJX0wgFeW8bleEaSNZwjYul5sWA2uKpJ6Sw5sxCYSIwfLbp
- 97/EMvNYXyj8wsVP28rMsFjv/1bcm2042D5Tdv4mfA6+0gaY69VOUfJApUcutllnM6rr NA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=aDNn5MUn0UlUn+FaFAYDGrNsI9A/fjMlNqqSQYJVR80=;
- b=kBH3Rk+56uMr5ebKAgIx8oAFVcNV0N6cI80+iMe/ciZgaRBOJIXDV2My7xF+Ob/3KOpD
- KYFJ34M2p2LwYEiZyW4ZXujM++PLLo/2n6PFdcFcBBMWl3bgyHkn9eM6PWxwcCcXJae+
- qtob9O3+XNKnLRn1iJBVbTV1AjvKT0PlG2I1wLjY27CKpFlNK9qj2WNOyRCdTTMb5mtN
- JTYbT+S/FJQNQXXVXaqTa1VZR0ow4iZwbgHrzGrsNIPS0AE2UniwXqMHkQWReYRTPp5+
- 2Isw1ZwrAfqp1fcA6yY1Yfd3BLeM7xzoFmomOibcJ8wXmpUJkzlAjOoOXoTjmo1WXbxW oQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3aaq8aatrv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Aug 2021 03:21:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17A3A80N085198;
-        Tue, 10 Aug 2021 03:21:04 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2106.outbound.protection.outlook.com [104.47.58.106])
-        by userp3030.oracle.com with ESMTP id 3a9f9w34b5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Aug 2021 03:21:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M0Vsii4dNnOM4pDk5exVRy8x/6EP9sPI3NcKdasFbfmujJeOPr0vPi7jnswp8BVXANaVO0p/0byQ25u81gVfTgJe2wnJoZHXs9VNB7utdVa0uafG5v2grtHFYDg4PX2TDlRqSRdRohb28v3dND02wYf54JJqlYb/Tk2dzW+NGcxWx3ZppR6oVxCicasR1iFq/CapqjqsmCwilnARI3NFhGr8nrYhX5hHwx6E6kPoMBrGNLSo73BhXLZetN8fQulOj48Jr58plBmj/JbKYgQCsVarxPoOGtXM9O0y6TA/JLuUg51FS+R7dk6OD95VoC/4LTUpAn6eNbHwZ2I8GnvjVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aDNn5MUn0UlUn+FaFAYDGrNsI9A/fjMlNqqSQYJVR80=;
- b=j2adXAZ7ICSYgrnX5HnsEjNSOoQQ8wmZATHLg4M80CazvA/pr7JtY1qLPFezWNcIMA7qWMwkifTppC9cdxoRYn05k9psFGY5OPxDDljnpITZKihTf6dYy9hatBYIWMnkUjhJCXksMsZQ7GwJffC9CuqlW/Kf+XHayI5NruB11jaAJKKCfz7jTHfVRfP4eWtzF9VRo6Q0njt8UxWjchxNGuf2Ioy9aZ7e998+qNhoJui9s1oolH7+bmCfyaQ7ZLR+zI5LPaL1LKzxZ7S2S9XOkAyu7xuxGEUfJQemGJpLSSrSyMaArVt9Zhou3V4nAGzEpFi4BTTSEUoE/W8KXWXP8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 9 Aug 2021 23:22:26 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2891BC0613D3;
+        Mon,  9 Aug 2021 20:22:05 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so3253006pjb.3;
+        Mon, 09 Aug 2021 20:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aDNn5MUn0UlUn+FaFAYDGrNsI9A/fjMlNqqSQYJVR80=;
- b=Q8i0iZGpQgp8oveHdiRDNe6wum9YppbZGEaKvKJYQU9fnI+m5U4Y6sRTlcnnRfRpcU78mDN8q3APTxJg2evbpdF8NDNlTlw16mSizUwYK6tw1/1GhVT5cGJTGWoL3gxPpb9XNBo2v0gDItJech8iM0ntVfJ9IZGLhqnuiNVekIQ=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5563.namprd10.prod.outlook.com (2603:10b6:510:f2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Tue, 10 Aug
- 2021 03:21:02 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc%6]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
- 03:21:02 +0000
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH V5] scsi: ufshcd: Fix device links when BOOT WLUN fails
- to probe
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1pmumvvce.fsf@ca-mkp.ca.oracle.com>
-References: <20210716114408.17320-1-adrian.hunter@intel.com>
-        <20210716114408.17320-3-adrian.hunter@intel.com>
-        <c78aac34-5c55-f6b6-3450-d5c3f09781fa@intel.com>
-        <35b2bd0f-5766-debd-2b4c-c642a85df367@acm.org>
-        <yq1czqrguch.fsf@ca-mkp.ca.oracle.com>
-        <739a1abf-fca0-458e-5c8c-1d6ed90b56e0@intel.com>
-        <a1c9bac8-b560-b662-f0aa-58c7e000cbbd@intel.com>
-Date:   Mon, 09 Aug 2021 23:21:00 -0400
-In-Reply-To: <a1c9bac8-b560-b662-f0aa-58c7e000cbbd@intel.com> (Adrian Hunter's
-        message of "Fri, 6 Aug 2021 16:04:41 +0300")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0236.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::31) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:organization:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fpAQ85toVv8Dv3of/inO66JEQ6cmQUeELsu6eu6hedA=;
+        b=BAoJ9Xava6/MAoixg0T0JTdAqgUHmyQuO/cM9DMNcRoJ8GTGafBLn0LIC3xV3NI3dg
+         6WbDyVKVQhTXg6YKbyiVLuUuC99JRo6veebwu/lvN/dG7mDfk0I/wn6Ef1e25BWTvYWQ
+         rhT+8uwh1lPP8QGHTeugdn4EUNPnsajAwd9oxDBNZGl9HfJWOkCGgIQzz0iJKVcFKjDx
+         SucPGgfbXoWaNTcWcg3jywsi7SjHT58Ei7eKGDxzfOb1ghiDc7ap33HGYFEDxDS6NXJQ
+         mgnUTiy/JqrwKr+KDRO2N8yO/fM7afNv/0XHY/ug0+Z3ZMote6Y7hhhyU75oINAHGvos
+         Wk1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fpAQ85toVv8Dv3of/inO66JEQ6cmQUeELsu6eu6hedA=;
+        b=fElSYVcA7/T8BY/QbXasw7wYISmqF9NX6XeohLnHtXYNT/jj306aHKAWHHUgOqsBsQ
+         uu3qa6iDh6aQ+KAUia6KUV3DGIb9PQkiQqjDuaPRVy7Co0r9nKjRvWdPb2gFWNbNs7WB
+         b/LIogmusQVjQ7OOOKdFW/GLhUK9ycejy1Trnxm7otV0w/ecL0WM9uaRteHkU8PnDOzk
+         SCdVtgWsG3Cn2I4Qe2Ln5HRbJwYR4+dCsoQloJOwArpXWzcwK/9N45DKRTfnSFqq/vWO
+         zXzKl3Fx7VRRH+l1DPjXIc8+pMVcQGxaZgw96s2AApP1oAgnDBF8G+7LvUeqaLM3YH4G
+         PefQ==
+X-Gm-Message-State: AOAM530CQvr4PKJoZHM+YOeGQfnOB60YjnoctYkUIMVnpPLjP2xiYd4F
+        +t0RjJGU1f58z874QmbaxaBIILcaQQXdvKyq4vI=
+X-Google-Smtp-Source: ABdhPJzv2zMnwTQ01WcOML45Ef0kbcqQIROl0WFXDTRirJYBZAzP/2xKWNK+MYC5qdwZPYyPcpNFTQ==
+X-Received: by 2002:a17:902:7b93:b029:12b:a0a5:78d2 with SMTP id w19-20020a1709027b93b029012ba0a578d2mr23237440pll.51.1628565724607;
+        Mon, 09 Aug 2021 20:22:04 -0700 (PDT)
+Received: from Likes-MacBook-Pro.local ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id a11sm25870385pgj.75.2021.08.09.20.22.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Aug 2021 20:22:04 -0700 (PDT)
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210809074803.43154-1-likexu@tencent.com>
+ <7599a987-c931-20f1-9441-d86222a4519d@linux.intel.com>
+ <CAA3+yLfF8a5Jwz6s3ZG6zMgRn7GEF5Q8ENucuu3Ne977MmVUug@mail.gmail.com>
+ <9a7def9e-8609-e442-524a-d8439b1432d1@linux.intel.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Organization: Tencent
+Subject: Re: [NAK][PATCH] KVM: x86/pmu: Don't expose guest LBR if the
+ LBR_SELECT is shared per physical core
+Message-ID: <7e1f2dd5-d8a3-3e63-bedc-e2f1b2ae10d4@gmail.com>
+Date:   Tue, 10 Aug 2021 11:21:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR03CA0236.namprd03.prod.outlook.com (2603:10b6:a03:39f::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend Transport; Tue, 10 Aug 2021 03:21:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 61b97948-84eb-48a2-9995-08d95bade1e5
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5563:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB55633D284136F6102A3C36F28EF79@PH0PR10MB5563.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TT1+dWLYryBBQFchAkbKK21FuVyrmerbfnlnvKwASWhXuJVP2+rRl0E1+9DvxjoAxEEtEzcA9oN2NrC4b7y6Tkub2/J1xGKE5y5uyZuhumHiC1hXxQVVtNK+EBL7fVujjQoHpoEzK5Gcco3bKVURN5uwLw+VmViWb5gz4syVqHVH8PFSW+CByScs4vJgRB1frKJwaeTEIlND1gi2hOwSvxdOV242dCUtSaXfnJmuTITXp5Z3oqtM2rTd0lUEARmMQUMMj1QRpK18JvMwPjYTPVs0txfdXCtYIkX/YC+hm4xSFdtrsw6CRxB8Kun1yTVMH01TgZPQBgWH8NL6B+pTlsMxyQqA/aMWfhN16p7tGfKPHo9b2dOwxIpCFkfG/XwnJTOot58qgLr+76iEoRUMoGa1eoHaJ+pWiptwMExBg9PKduZ5loHuBqdu83taaRMi9QndBZLVEnNvLGYBZXbrQAmDl/FL4RIDr6sc+Ha2KPgyJZnrQwKEIBVrJWJz4nic9CknPGeokwkj64QQRINWUmYMcyQsrPn2I6XO1YylJ5/LEkEj53TnXfwd43ocT4Gv9OiP5r0QqFGF6TF30qnWjBQkgxbgLTRfqErPENgtnxjTcrmOAtZSGqZ/OJ7QGhLrjUxdiJcrc1hEcihtwztpKMNT2QHCkvyZZX06/u7wLOVSx0+P3LB8L1M3kuM3Ry4z
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(376002)(396003)(366004)(186003)(4326008)(956004)(55016002)(4744005)(86362001)(26005)(2906002)(7416002)(38100700002)(38350700002)(54906003)(478600001)(6916009)(8936002)(5660300002)(52116002)(36916002)(7696005)(83380400001)(8676002)(66946007)(316002)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XkApIZeUnO2jvCYPiAhxsCrM75mnZ4K+V53bySK/7h9V2sgDm0sjA3F2msn0?=
- =?us-ascii?Q?YiAXoB2rb72AsEhIe5ehv28TbZNXO5ze8VYg9dyynb9mRJedy/biogTw/Nui?=
- =?us-ascii?Q?d2ayaRP/LlYzGcfAMiZLG0qkQyaCLvrOftAxwMLFOI8jTGbCVunJFX+Rfbp5?=
- =?us-ascii?Q?DYD+tvs71Nfpjntp0jNDMwNvCUcb9jerpQ9EvtDuiqLOFnwMw1VBNw5OI7Mh?=
- =?us-ascii?Q?kAmI2P9ZaB6PCZHsbrIJoYzcxtMFiYFnaexb3iX2SxoTkRX9KzNtjyHAOXXA?=
- =?us-ascii?Q?XFVOHq3juI81cAmikishViYy3FfPUi1PNI0IcEZhjnKBSrpFftq0oaRdTBTU?=
- =?us-ascii?Q?m/Ut6MEbrcXo+NHnuMqJF2MsyW4yZyzNHeffQp93jAQGALd0s3ny0IXgQPDs?=
- =?us-ascii?Q?JaMWkz0ajYTUZ04qHnJ3guWmsuYniaIjAWOlyjy7cziyQa+Lk71q4Qro9xSf?=
- =?us-ascii?Q?B+FGC29JboxpyCgRLxXXJQLXgW0B1qXWnr8sJKeF2w25EOzHPLbNRRiObEBy?=
- =?us-ascii?Q?s7L06F1I1k9zC9sttotKazoCcbfGp8SRD1KIvjhM8bDz+KzWgtebpqPHki12?=
- =?us-ascii?Q?YlFHAXq+uKxxwVhArI5EmVQyHtc5ylbahbuzdqFy8xMuqr4NUDZno22qrZ78?=
- =?us-ascii?Q?YFR7EyJ0RMRp9yjz8jG9WtON2KiwW5bR9hJNaL8Y3MyaCJJiz5qJcrh09svf?=
- =?us-ascii?Q?RVfFZL5F+6oYiu2cewJNhU31Pk1+pYbnu6Q9f4f8PhDbkFg0Lwb0FpZesB3B?=
- =?us-ascii?Q?aM5jDXWFLrSWu2Vd0bh/FaLarBP3957ypULCRnNvV1tppr2/TdByGt2IsZN1?=
- =?us-ascii?Q?xHt78Zm5Wvu4+HS5GCISles8BhoAbsHfF1sj+0V2UT+zzaLztursbPGDqfIN?=
- =?us-ascii?Q?thkHz4pjtYaGq9w+rMdzx2qamQDzsRU5Lk1TnvjKMnZWEtFYO9psA1+zmtEm?=
- =?us-ascii?Q?upx0EAz1tI4hG7cGTdq4xjhBQZomjZqRW439waNHqppUjHjruWua7hGQla/H?=
- =?us-ascii?Q?jQ2e3YTucG9LULEBqppfihuXZ7D+aSTRgiHDWY/F+BKYQA240qniLmnsqcFi?=
- =?us-ascii?Q?w9lDa5snqX8cv49uDKzZeI6FoXvmoSfJ5O0bHN8fAPWtpgk0pzCblgEjMfui?=
- =?us-ascii?Q?48ege+IdRr/2j/2z94ezMRmcNNyL1VhfUdHbaOyP5RLvMW1pBoq2FUKNwd/v?=
- =?us-ascii?Q?r5idDYZt0lpkkbjGms45qFW8DOPYyGmkSV6G73/n9AxlbIB5JA3nkUC2pvGa?=
- =?us-ascii?Q?0uuqcAoJUoldSIF9VrlFNf52N7W6YXz9YOAOAs4Y8sUOu+sUfLYl0dEHifMY?=
- =?us-ascii?Q?i7j0xyfyB5Ec2fcXsG+1/ImT?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61b97948-84eb-48a2-9995-08d95bade1e5
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 03:21:02.7763
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7O5SexZtwfWpn7f1GylJiX8wP1OsC2pJ2s1FdqsuDi/MApu5x3a2gIt/oewVQpZ4YsMFpHrIvliXzd9X9CKqDvqxdyIoq3tp7sBjXRHywu4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5563
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10071 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108100019
-X-Proofpoint-ORIG-GUID: b54y-D-c0DvfWQQhZoxIiVUGB-aTl5Mk
-X-Proofpoint-GUID: b54y-D-c0DvfWQQhZoxIiVUGB-aTl5Mk
+In-Reply-To: <9a7def9e-8609-e442-524a-d8439b1432d1@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thank you, Kan.
 
-Adrian,
+On 10/8/2021 2:03 am, Liang, Kan wrote:
+> 
+> 
+> On 8/9/2021 11:08 AM, Like Xu wrote:
+>> On Mon, Aug 9, 2021 at 10:12 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>>
+>>>
+>>>
+>>> On 8/9/2021 3:48 AM, Like Xu wrote:
+>>>> From: Like Xu <likexu@tencent.com>
+>>>>
+>>>> According to Intel SDM, the Last Branch Record Filtering Select Register
+>>>> (R/W) is defined as shared per physical core rather than per logical core
+>>>> on some older Intel platforms: Silvermont, Airmont, Goldmont and Nehalem.
+>>>>
+>>>> To avoid LBR attacks or accidental data leakage, on these specific
+>>>> platforms, KVM should not expose guest LBR capability even if HT is
+>>>> disabled on the host, considering that the HT state can be dynamically
+>>>> changed, yet the KVM capabilities are initialized at module initialisation.
+>>>>
+>>>> Fixes: be635e34c284 ("KVM: vmx/pmu: Expose LBR_FMT in the 
+>>>> MSR_IA32_PERF_CAPABILITIES")
+>>>> Signed-off-by: Like Xu <likexu@tencent.com>
+>>>> ---
+>>>>    arch/x86/include/asm/intel-family.h |  1 +
+>>>>    arch/x86/kvm/vmx/capabilities.h     | 19 ++++++++++++++++++-
+>>>>    2 files changed, 19 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/x86/include/asm/intel-family.h 
+>>>> b/arch/x86/include/asm/intel-family.h
+>>>> index 27158436f322..f35c915566e3 100644
+>>>> --- a/arch/x86/include/asm/intel-family.h
+>>>> +++ b/arch/x86/include/asm/intel-family.h
+>>>> @@ -119,6 +119,7 @@
+>>>>
+>>>>    #define INTEL_FAM6_ATOM_SILVERMONT  0x37 /* Bay Trail, Valleyview */
+>>>>    #define INTEL_FAM6_ATOM_SILVERMONT_D        0x4D /* Avaton, Rangely */
+>>>> +#define INTEL_FAM6_ATOM_SILVERMONT_X3        0x5D /* X3-C3000 based on 
+>>>> Silvermont */
+>>>
+>>>
+>>> Please submit a separate patch if you want to add a new CPU ID. Also,
+>>> the comments should be platform code name, not the model.
+>>>
+>>> AFAIK, Atom X3 should be SoFIA which is for mobile phone. It's an old
+>>> product. I don't think I enabled it in perf. I have no idea why you want
+>>> to add it here for KVM. If you have a product and want to enable it, I
+>>> guess you may want to enable it for perf first.
+>>
+>> Thanks for your clarification about SoFIA. I'll drop 0x5D check
+>> for V2 since we doesn't have host support as you said.
+>>
+>> Do the other models here and the idea of banning guest LBR make sense to you ?
+>>
+> 
+> For the Atom after Silvermont, I don't think hyper-threading is supported. 
+> That's why it's per physical core. I don't think we should disable LBR because 
+> of it.
 
-> Managed device links are deleted by device_del(). However it is
-> possible to add a device link to a consumer before device_add(), and
-> then discovering an error prevents the device from being used. In that
-> case normally references to the device would be dropped and the device
-> would be deleted.  However the device link holds a reference to the
-> device, so the device link and device remain indefinitely (unless the
-> supplier is deleted).
+In addition to your clarification below, it makes sense to keep it as it is.
 
-Applied to 5.15/scsi-staging, thanks!
+> 
+> For Nehalem, it seems possible that the MSR_LBR_SELECT can be overridden if the 
+> other logical core has a different configure. But I'm not sure whether it brings 
+> any severe problems. Logical core A may miss some LBRs or get extra LBRs, but I 
+> don't think LBRs can be leaked to Logical core B. Also, Nehalem is a 13+ year 
+> old machine. Not sure how many people still use it.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Allowing one guest to prevent another guest from using the LBR (writing zero
+consistently) is quite a serious flaw, but considering that only such an old model
+is affected, adding a maintenance burden to KVM here is not a good choice.
+
+> 
+> LBR format 0 is also a valid format version, LBR_FORMAT_32. It seems this patch 
+> just forces the format to LBR_FORMAT_32 for these machines. It doesn't sound 
+> correct.
+
+Sigh, I assume that the platform reporting LBR_FORMAT_32 is older than Nehalem.
+
+> 
+> Thanks,
+> Kan
+>>>
+>>>>    #define INTEL_FAM6_ATOM_SILVERMONT_MID      0x4A /* Merriefield */
+>>>>
+>>>>    #define INTEL_FAM6_ATOM_AIRMONT             0x4C /* Cherry Trail, 
+>>>> Braswell */
+>>>> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+>>>> index 4705ad55abb5..ff9596d7112d 100644
+>>>> --- a/arch/x86/kvm/vmx/capabilities.h
+>>>> +++ b/arch/x86/kvm/vmx/capabilities.h
+>>>> @@ -3,6 +3,7 @@
+>>>>    #define __KVM_X86_VMX_CAPS_H
+>>>>
+>>>>    #include <asm/vmx.h>
+>>>> +#include <asm/cpu_device_id.h>
+>>>>
+>>>>    #include "lapic.h"
+>>>>
+>>>> @@ -376,6 +377,21 @@ static inline bool vmx_pt_mode_is_host_guest(void)
+>>>>        return pt_mode == PT_MODE_HOST_GUEST;
+>>>>    }
+>>>>
+>>>> +static const struct x86_cpu_id lbr_select_shared_cpu[] = {
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_MID, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_D, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_X3, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT_MID, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_PLUS, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_EP, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(NEHALEM, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_G, NULL),
+>>>> +     X86_MATCH_INTEL_FAM6_MODEL(NEHALEM_EX, NULL),
+>>>> +     {}
+>>>> +};
+>>>> +
+>>>>    static inline u64 vmx_get_perf_capabilities(void)
+>>>>    {
+>>>>        u64 perf_cap = 0;
+>>>> @@ -383,7 +399,8 @@ static inline u64 vmx_get_perf_capabilities(void)
+>>>>        if (boot_cpu_has(X86_FEATURE_PDCM))
+>>>>                rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
+>>>>
+>>>> -     perf_cap &= PMU_CAP_LBR_FMT;
+>>>> +     if (!x86_match_cpu(lbr_select_shared_cpu))
+>>>> +             perf_cap &= PMU_CAP_LBR_FMT;
+>>>>
+>>>>        /*
+>>>>         * Since counters are virtualized, KVM would support full
+>>>>
+> 
