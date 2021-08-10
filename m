@@ -2,262 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21073E542D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2E13E5431
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhHJHRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:17:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41604 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229484AbhHJHRj (ORCPT
+        id S231624AbhHJHTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229484AbhHJHTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:17:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628579836;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MiJQ0VtQH9ot0EVFN/FpusLl8DGmShMhIr9rUyrSbi8=;
-        b=Zufxo6h4PQ/qZKvZ+STI/z2SDqi/Gy0FXnyu/JsP4gZ3HXJi463oHTvUfj4f/AM20a/611
-        NgENb0E8vtuwV1krC+J4iIyC19Iv7Jbx3xBRNPI3pJ5C7qUZobPb9HY+GyCuz021DV5t2S
-        qAgFak2Qd/NGRM7789NaOv0AwN16R0k=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-MmeiFl_yOySi2pqFth98BQ-1; Tue, 10 Aug 2021 03:17:14 -0400
-X-MC-Unique: MmeiFl_yOySi2pqFth98BQ-1
-Received: by mail-wm1-f70.google.com with SMTP id a18-20020a05600c2252b02902531dcdc68fso694390wmm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:17:14 -0700 (PDT)
+        Tue, 10 Aug 2021 03:19:06 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BD9C0613D3;
+        Tue, 10 Aug 2021 00:18:44 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r6so2626157wrt.4;
+        Tue, 10 Aug 2021 00:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gWww76GCF5bdJ3wwOyrVrOe81eD6ccbw3CbNhzGl6sA=;
+        b=NZkGabqAvmYmZUO16jJsqhjL/CVU0Sj7skB8PuJhN/s7osQ3QymAZOFTma81Cnb1gT
+         gyTR2VraTsCp515ookPa3CDbMKBwIZF6CDbBRp9+yA9YQm6QJ8VhaAzGEBv+tRZKt6J+
+         bMdoQyA0GtZ87GGhT2cO8yvSXHBpjWqax6Sdl4mGfTpyV0O8LSqbRK9FHeC9J24mCXsk
+         uXti+uGGUSHGAAJPfwbtGGszxhLiNkkaHLBLXnYidNI+9GnrH/qH08ouH5pgtoWwxT02
+         +dCFV7bh6Cq6DDvneOO5EEhh6zzjUwc2/wWY3isQD2YQSL/HO/sBie9U48PTfn2w5+x7
+         cIig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=MiJQ0VtQH9ot0EVFN/FpusLl8DGmShMhIr9rUyrSbi8=;
-        b=aDPFnH+UmbQGVKmWPqcf8GypM3VZALz9egATpG4ortNipwXnBTqRDT5ajlXQCAxv8P
-         +H4KduIN48OVC0+fJU42clVNbi1uQkMsA8CvnP7beGV87Psum+n0cYVCSEyeSvfHTXyh
-         +ASniYb5TeAvhQDRcaArlBjAlNDpl8mrArHsxcMEAHGPAfcNWWfH/7RtU7QgKMhlnskx
-         Rq/9Ue3eWbodor3Hy9YpdzdKY2SpB3O/rvvJC4XSmeF4PcbS+wX67WRBF/xfPFAlOI69
-         euGZ1logdk4Q+cP27K27+wlV1dmlfWsgiTAi9POsmazXR7pSYQE93ez7uZSBganyTANZ
-         DLyA==
-X-Gm-Message-State: AOAM530mvMGg0IeYPEhU9jkFbYGzCJij/7FzWBtOMsKBi+jLYt+n287l
-        rqnW2rjNfxe7Y8K4DlQ5vdTLhLWhn55qmQPUP116jufcLsqLA+8qng38txOcqTI2TgP3urebCej
-        p9i1mkOOWRqAYlnMOIUznQP8f
-X-Received: by 2002:adf:d1e4:: with SMTP id g4mr28689953wrd.371.1628579833708;
-        Tue, 10 Aug 2021 00:17:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2sXBFQLPATOSL8T+i3nnZsUZlnH9PbhvTEdK3n2egew9pjkW+nMrccCqe/ExhSXeo0tjD2w==
-X-Received: by 2002:adf:d1e4:: with SMTP id g4mr28689919wrd.371.1628579833497;
-        Tue, 10 Aug 2021 00:17:13 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id z17sm22634714wrt.47.2021.08.10.00.17.11
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gWww76GCF5bdJ3wwOyrVrOe81eD6ccbw3CbNhzGl6sA=;
+        b=eweDzgqKh4sUcNpEuLEJZ47OM4weXu0FeIwDkMQTo4HEe7DDM+iyt4Q0u0xOsU3niJ
+         RmY3zG4vD0hmcu4DvLEsY0gd8x1bcq8jzt9UobtopVdezTEi/HXJnyOofCAmYnSxS+6b
+         aD2fasKahjubd+6Wry6nbvFUq8d2Gldu2uv1+VOdGOTa5Ir42eqtRLmiLn2NN0/Q6pKw
+         6qAVVEYEWlqmbOGb1EQvOUEjapH1cPUhfDhZmI7AKnuSJnwaDsFPaOYwuT1zXj/XoIqo
+         J+rIg1rx3E3XF8ChYdAZHTf4ycT3QzbVAxFhs3FJ/ZgIoha8poOPKg4VDui4IVPcNzK5
+         mRPg==
+X-Gm-Message-State: AOAM532bKvVYDJG/6yikB5GhKIMUvA8+yliMs2tBwOZfQGqURTsCfJMv
+        GhEIibpfUZBWosgQsNspu/k=
+X-Google-Smtp-Source: ABdhPJzeEI+6Wv48bLWllrtYVIG0GxMW7kOVFVZN/f/T4Pmfr25NEsZMy6wo5bmChExdxlHB+PCWKA==
+X-Received: by 2002:a05:6000:18c2:: with SMTP id w2mr29071731wrq.282.1628579922602;
+        Tue, 10 Aug 2021 00:18:42 -0700 (PDT)
+Received: from [192.168.178.40] (ipbcc187b7.dynamic.kabel-deutschland.de. [188.193.135.183])
+        by smtp.gmail.com with ESMTPSA id d8sm22313152wrv.20.2021.08.10.00.18.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 00:17:12 -0700 (PDT)
-Reply-To: eric.auger@redhat.com
-Subject: Re: [RFC v2] /dev/iommu uAPI proposal
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
- <b83a25de-7c32-42c4-d99d-f7242cc9e2da@redhat.com>
- <BN9PR11MB5433453DED3546F5011C3BDD8CF29@BN9PR11MB5433.namprd11.prod.outlook.com>
-From:   Eric Auger <eric.auger@redhat.com>
-Message-ID: <cec41751-c300-40f2-a8d6-f4916fb4a34e@redhat.com>
-Date:   Tue, 10 Aug 2021 09:17:10 +0200
+        Tue, 10 Aug 2021 00:18:42 -0700 (PDT)
+Subject: Re: [PATCH v2] scsi: target: pscsi: Fix possible null-pointer
+ dereference in pscsi_complete_cmd()
+To:     Tuo Li <islituo@gmail.com>, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+References: <20210810040414.248167-1-islituo@gmail.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <e45b6019-0ccd-cb8a-20cd-80f8f26146d9@gmail.com>
+Date:   Tue, 10 Aug 2021 09:18:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <BN9PR11MB5433453DED3546F5011C3BDD8CF29@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210810040414.248167-1-islituo@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+On 10.08.21 06:04, Tuo Li wrote:
+> The return value of transport_kmap_data_sg() is assigned to the variable
+> buf:
+>    buf = transport_kmap_data_sg(cmd);
+> 
+> And then it is checked:
+>    if (!buf) {
+> 
+> This indicates that buf can be NULL. However, it is dereferenced in the
+> following statements:
+>    if (!(buf[3] & 0x80))
+>      buf[3] |= 0x80;
+>    if (!(buf[2] & 0x80))
+>      buf[2] |= 0x80;
+> 
+> To fix these possible null-pointer dereferences, dereference buf and call
+> transport_kunmap_data_sg() only when buf is not NULL.
+> 
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Tuo Li <islituo@gmail.com>
+> ---
+> v2:
+> * Put transport_kunmap_data_sg() into the else-branch of the if (!bug).
+>    Thank Bodo Stroesser for helpful advice.
+> ---
+>   drivers/target/target_core_pscsi.c | 18 +++++++++---------
+>   1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
+> index 2629d2ef3970..75ef52f008ff 100644
+> --- a/drivers/target/target_core_pscsi.c
+> +++ b/drivers/target/target_core_pscsi.c
+> @@ -620,17 +620,17 @@ static void pscsi_complete_cmd(struct se_cmd *cmd, u8 scsi_status,
+>   			buf = transport_kmap_data_sg(cmd);
+>   			if (!buf) {
+>   				; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
+> -			}
+> -
+> -			if (cdb[0] == MODE_SENSE_10) {
+> -				if (!(buf[3] & 0x80))
+> -					buf[3] |= 0x80;
+>   			} else {
+> -				if (!(buf[2] & 0x80))
+> -					buf[2] |= 0x80;
+> -			}
+> +				if (cdb[0] == MODE_SENSE_10) {
+> +					if (!(buf[3] & 0x80))
+> +						buf[3] |= 0x80;
+> +				} else {
+> +					if (!(buf[2] & 0x80))
+> +						buf[2] |= 0x80;
+> +				}
+>   
+> -			transport_kunmap_data_sg(cmd);
+> +				transport_kunmap_data_sg(cmd);
+> +			}
+>   		}
+>   	}
+>   after_mode_sense:
+> 
 
-On 8/5/21 2:36 AM, Tian, Kevin wrote:
->> From: Eric Auger <eric.auger@redhat.com>
->> Sent: Wednesday, August 4, 2021 11:59 PM
->>
-> [...] 
->>> 1.2. Attach Device to I/O address space
->>> +++++++++++++++++++++++++++++++++++++++
->>>
->>> Device attach/bind is initiated through passthrough framework uAPI.
->>>
->>> Device attaching is allowed only after a device is successfully bound to
->>> the IOMMU fd. User should provide a device cookie when binding the
->>> device through VFIO uAPI. This cookie is used when the user queries
->>> device capability/format, issues per-device iotlb invalidation and
->>> receives per-device I/O page fault data via IOMMU fd.
->>>
->>> Successful binding puts the device into a security context which isolates
->>> its DMA from the rest system. VFIO should not allow user to access the
->> s/from the rest system/from the rest of the system
->>> device before binding is completed. Similarly, VFIO should prevent the
->>> user from unbinding the device before user access is withdrawn.
->> With Intel scalable IOV, I understand you could assign an RID/PASID to
->> one VM and another one to another VM (which is not the case for ARM). Is
->> it a targetted use case?How would it be handled? Is it related to the
->> sub-groups evoked hereafter?
-> Not related to sub-group. Each mdev is bound to the IOMMU fd respectively
-> with the defPASID which represents the mdev.
-But how does it work in term of security. The device (RID) is bound to
-an IOMMU fd. But then each SID/PASID may be working for a different VM.
-How do you detect this is safe as each SID can work safely for a
-different VM versus the ARM case where it is not possible.
+Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
 
-1.3 says
-"
-
-1)  A successful binding call for the first device in the group creates
-    the security context for the entire group, by:
-"
-What does it mean for above scalable IOV use case?
-
->
->> Actually all devices bound to an IOMMU fd should have the same parent
->> I/O address space or root address space, am I correct? If so, maybe add
->> this comment explicitly?
-> in most cases yes but it's not mandatory. multiple roots are allowed
-> (e.g. with vIOMMU but no nesting).
-OK, right, this corresponds to example 4.2 for example. I misinterpreted
-the notion of security context. The security context does not match the
-IOMMU fd but is something implicit created on 1st device binding.
->
-> [...]
->>> The device in the /dev/iommu context always refers to a physical one
->>> (pdev) which is identifiable via RID. Physically each pdev can support
->>> one default I/O address space (routed via RID) and optionally multiple
->>> non-default I/O address spaces (via RID+PASID).
->>>
->>> The device in VFIO context is a logic concept, being either a physical
->>> device (pdev) or mediated device (mdev or subdev). Each vfio device
->>> is represented by RID+cookie in IOMMU fd. User is allowed to create
->>> one default I/O address space (routed by vRID from user p.o.v) per
->>> each vfio_device.
->> The concept of default address space is not fully clear for me. I
->> currently understand this is a
->> root address space (not nesting). Is that coorect.This may need
->> clarification.
-> w/o PASID there is only one address space (either GPA or GIOVA)
-> per device. This one is called default. whether it's root is orthogonal
-> (e.g. GIOVA could be also nested) to the device view of this space.
->
-> w/ PASID additional address spaces can be targeted by the device.
-> those are called non-default.
->
-> I could also rename default to RID address space and non-default to 
-> RID+PASID address space if doing so makes it clearer.
-Yes I think it is worth having a kind of glossary and defining root as,
-default as as you clearly defined child/parent.
->
->>> VFIO decides the routing information for this default
->>> space based on device type:
->>>
->>> 1)  pdev, routed via RID;
->>>
->>> 2)  mdev/subdev with IOMMU-enforced DMA isolation, routed via
->>>     the parent's RID plus the PASID marking this mdev;
->>>
->>> 3)  a purely sw-mediated device (sw mdev), no routing required i.e. no
->>>     need to install the I/O page table in the IOMMU. sw mdev just uses
->>>     the metadata to assist its internal DMA isolation logic on top of
->>>     the parent's IOMMU page table;
->> Maybe you should introduce this concept of SW mediated device earlier
->> because it seems to special case the way the attach behaves. I am
->> especially refering to
->>
->> "Successful attaching activates an I/O address space in the IOMMU, if the
->> device is not purely software mediated"
-> makes sense.
->
->>> In addition, VFIO may allow user to create additional I/O address spaces
->>> on a vfio_device based on the hardware capability. In such case the user
->>> has its own view of the virtual routing information (vPASID) when marking
->>> these non-default address spaces.
->> I do not catch what does mean "marking these non default address space".
-> as explained above, those non-default address spaces are identified/routed
-> via PASID. 
->
->>> 1.3. Group isolation
->>> ++++++++++++++++++++
-> [...]
->>> 1)  A successful binding call for the first device in the group creates
->>>     the security context for the entire group, by:
->>>
->>>     * Verifying group viability in a similar way as VFIO does;
->>>
->>>     * Calling IOMMU-API to move the group into a block-dma state,
->>>       which makes all devices in the group attached to an block-dma
->>>       domain with an empty I/O page table;
->> this block-dma state/domain would deserve to be better defined (I know
->> you already evoked it in 1.1 with the dma mapping protocol though)
->> activates an empty I/O page table in the IOMMU (if the device is not
->> purely SW mediated)?
-> sure. some explanations are scattered in following paragraph, but I
-> can consider to further clarify it.
->
->> How does that relate to the default address space? Is it the same?
-> different. this block-dma domain doesn't hold any valid mapping. The
-> default address space is represented by a normal unmanaged domain.
-> the ioasid attaching operation will detach the device from the block-dma
-> domain and then attach it to the target ioasid.
-OK
-
-Thanks
-
-Eric
->
->>> 2. uAPI Proposal
->>> ----------------------
-> [...]
->>> /*
->>>   * Allocate an IOASID.
->>>   *
->>>   * IOASID is the FD-local software handle representing an I/O address
->>>   * space. Each IOASID is associated with a single I/O page table. User
->>>   * must call this ioctl to get an IOASID for every I/O address space that is
->>>   * intended to be tracked by the kernel.
->>>   *
->>>   * User needs to specify the attributes of the IOASID and associated
->>>   * I/O page table format information according to one or multiple devices
->>>   * which will be attached to this IOASID right after. The I/O page table
->>>   * is activated in the IOMMU when it's attached by a device. Incompatible
->> .. if not SW mediated
->>>   * format between device and IOASID will lead to attaching failure.
->>>   *
->>>   * The root IOASID should always have a kernel-managed I/O page
->>>   * table for safety. Locked page accounting is also conducted on the root.
->> The definition of root IOASID is not easily found in this spec. Maybe
->> this would deserve some clarification.
-> make sense.
->
-> and thanks for other typo-related comments.
->
-> Thanks
-> Kevin
-
+Regards,
+Bodo
