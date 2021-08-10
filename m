@@ -2,81 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34B23E569E
+	by mail.lfdr.de (Postfix) with ESMTP id F0D823E569F
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238827AbhHJJSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:18:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:51682 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238813AbhHJJS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:18:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 78AA6D6E;
-        Tue, 10 Aug 2021 02:18:04 -0700 (PDT)
-Received: from [10.57.9.181] (unknown [10.57.9.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC2E23F718;
-        Tue, 10 Aug 2021 02:17:59 -0700 (PDT)
-Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <6449a61f-a5fc-0b81-65b2-7bf77b8a71aa@arm.com>
-Date:   Tue, 10 Aug 2021 10:17:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S238843AbhHJJSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237320AbhHJJSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:18:45 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DFBC061799;
+        Tue, 10 Aug 2021 02:18:24 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id u16so20151068ple.2;
+        Tue, 10 Aug 2021 02:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w+XOmb9EKTUysSLlZUkv3LmEhzI+OrIVJ3S44VA1yDo=;
+        b=corIsdxSFyN7QcwU9IowkhXaEYzWaCYQjd/rt+eGl7DB/oby6g5Tk6+IEW+amdTKf/
+         7ev3yYjnd1m6WgPzbZr13U1M2J8sv4xlQJ5RHuOGeu4XJzas7SbTcGY1vbyApklVl8Tt
+         I7gxzpvYi++OMmtAMf3HhycHVUbcjXeTBPF2XADmn+JynjVbrxDrKzWMHdQZdgNqIiNO
+         YN5C9CCOETRD+JGjsCgsteP4M+knjMNQHi1iPTXVhcqwzzD1NpmryFcWf2McEBbf8QpK
+         UzN3kdrRGaCBjAk3zDnIYVNCItikepEcBz3Iibgx3CVog2iw26cN66kCOLTeKe4QYARI
+         hrMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w+XOmb9EKTUysSLlZUkv3LmEhzI+OrIVJ3S44VA1yDo=;
+        b=WYi+Q73ZFCdeNsxZ0OoGBNIaiulxX3gsbgs/b4iPleJ5RZEbdYhzNlcV4T6e+DyoNA
+         kuu0EYoNyhnZdcg21EPSsoCD9SWbI6iCEqgQ2YAu1ueYXm2p0ojCOZsTJN01r931OJ5l
+         IIcRQHqWWb7VwYmg/l9sRcGSCn6zD1u7ksVjHD0xxk/wVSRGsTCg9dqDjW2Hs0BZb4jP
+         +tXr3wTaCvxZZixIEdezBCqv61ZqlIQBOgaHHXB1YU9dI/1Vm1jCZQO3U4yM85gVXTWR
+         wG+GGlDUAZIe89W18TCA8OnQO6KXNhvZzIGhrrBF9MpXj+x7JTIEdBY9TNtpwaezy3CG
+         Dy6g==
+X-Gm-Message-State: AOAM531b8r5Bfax1LrGfoAXmYwyZ0SCyzrOGH+lRgAdvH9iERSWCqQ1t
+        mAQzPODsqj2fW8gp0Q/X6EM=
+X-Google-Smtp-Source: ABdhPJznUQMbjUf5j9hsDN3vDvvQ9YB0D2WEhdHvBC4TfnelnS19szODZs9Te4i0BiGtx0L8QFXU1w==
+X-Received: by 2002:a17:90b:296:: with SMTP id az22mr3854614pjb.79.1628587103929;
+        Tue, 10 Aug 2021 02:18:23 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.40])
+        by smtp.gmail.com with ESMTPSA id k6sm2252089pjl.55.2021.08.10.02.18.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 02:18:23 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     sridhar.samudrala@intel.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] net: core: Fix possible null-pointer dereference in failover_slave_register()
+Date:   Tue, 10 Aug 2021 02:18:00 -0700
+Message-Id: <20210810091800.291272-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <cover.1628579170.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+The variable fops is checked in:
+  if (fops && fops->slave_pre_register &&
+    fops->slave_pre_register(slave_dev, failover_dev))
 
-I like the idea, only small comments here in the cover letter.
+This indicates that it can be NULL.
+However, it is dereferenced when calling netdev_rx_handler_register():
+  err = netdev_rx_handler_register(slave_dev, fops->slave_handle_frame,
+                    failover_dev);
 
-On 8/10/21 8:36 AM, Viresh Kumar wrote:
-> Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
-> with the EM core on their behalf. This allows us to get rid of duplicated code
-> in the drivers and fix the unregistration part as well, which none of the
-> drivers have done until now.
+To fix this possible null-pointer dereference, check fops first, and if 
+it is NULL, assign -EINVAL to err.
 
-The EM is never freed for CPUs by design. The unregister function was
-introduced for devfreq devices.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ net/core/failover.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> 
-> This would also make the registration with EM core to happen only after policy
-> is fully initialized, and the EM core can do other stuff from in there, like
-> marking frequencies as inefficient (WIP). Though this patchset is useful without
-> that work being done and should be merged nevertheless.
-> 
-> This doesn't update scmi cpufreq driver for now as it is a special case and need
-> to be handled differently. Though we can make it work with this if required.
+diff --git a/net/core/failover.c b/net/core/failover.c
+index b5cd3c727285..113a4dacdf48 100644
+--- a/net/core/failover.c
++++ b/net/core/failover.c
+@@ -63,8 +63,11 @@ static int failover_slave_register(struct net_device *slave_dev)
+ 	    fops->slave_pre_register(slave_dev, failover_dev))
+ 		goto done;
+ 
+-	err = netdev_rx_handler_register(slave_dev, fops->slave_handle_frame,
++	if (fops)
++		err = netdev_rx_handler_register(slave_dev, fops->slave_handle_frame,
+ 					 failover_dev);
++	else
++		err = -EINVAL;
+ 	if (err) {
+ 		netdev_err(slave_dev, "can not register failover rx handler (err = %d)\n",
+ 			   err);
+-- 
+2.25.1
 
-The scmi cpufreq driver uses direct EM API, which provides flexibility
-and should stay as is.
-
-Let me review the patches.
-
-Regards,
-Lukasz
