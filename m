@@ -2,152 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF8C3E50BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA373E50C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237258AbhHJBrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 21:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbhHJBry (ORCPT
+        id S237276AbhHJBt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 21:49:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24640 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232334AbhHJBtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 21:47:54 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3EFC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 18:47:32 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id f8so13652605ilr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 18:47:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1zULoJHWd9UvDL/zXcD+qAf4WLgg91y1oOYfAdlxaxA=;
-        b=ImcjR3UZWaBdi+ZMuqtDKPBeq+ErHoylBndX94+E8WYPbc5/3EidCO91Ie9GhwFWLe
-         Ep01uUtFFwFBiNQ3rB7kvJdWCyLQ6RYGIBgR2sQ2f8AyHYiWYSfDfo5xNG80alv2wXEi
-         JjTiKGudIvijOc7v5uSwgT3nBllMSGs0OGFyg+AXwkMaiRtQR7LnE1igBKBrHWpJfm2Z
-         1rtV3w3smuvRCbF4lO2GG3zPM4TUYOi9FN3rFUQGOlMDhUZiZulMFgec6MzHWG/V067z
-         rQgtzIIRkjUw3RQ67fZKv+QLp1J1xpjk+0cbZBlC4yzxQz8Go0tsB0sTSfGP3UofPIjs
-         4WjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1zULoJHWd9UvDL/zXcD+qAf4WLgg91y1oOYfAdlxaxA=;
-        b=eC6+Kf8jvfPP7kJLZly7q78CubkGJK2oO+/uLnljZFZ0geXeK2bBtqBIggwWNgpJs1
-         H48GfTdlTe9NFx7vBJHpwpCKsKQW4TiXi1f6UHSF+OtUxRtO2NRt7DSallAYF7foBlfC
-         AwRw//xWy4a142jw0Rr7OWQXTNmvk1SiyExB1FtYd5H0FG6buYNA9wtCNvr1vpbe6SMJ
-         gzoeEvI2DxJ7sc0lW//5P1J/XaoG8HL/IfiW+X/63MHyDlV0yVpTgbL3zFvkX0zI/UvJ
-         DbVYOb8ReveQbDsTASos8/Kmr41NeHSftpktLBBziBtapBrd4HYh6r2NPenwWh+zMfZy
-         4XFA==
-X-Gm-Message-State: AOAM532WRn5xTsAVdmBxWKerMPdO6sBxUu8UYo50mmbYAlnLmsf2LqgR
-        a7DaHWHICSXOepFK/44aUDs=
-X-Google-Smtp-Source: ABdhPJz0uTjTE3aLaZHl7FNUVy56+5x294o/cD1OhN2K/ZFgLGFZcco/KrMqfUCvTFF1jV0HRyntcg==
-X-Received: by 2002:a92:ad12:: with SMTP id w18mr225214ilh.3.1628560052210;
-        Mon, 09 Aug 2021 18:47:32 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id z7sm3107450iog.4.2021.08.09.18.47.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 18:47:31 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 044ED27C0054;
-        Mon,  9 Aug 2021 21:47:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 09 Aug 2021 21:47:31 -0400
-X-ME-Sender: <xms:sNoRYU1gFFbRxtGTYzwGpItGS_lGHOsBf7ydeqHaP_-QSTMXvs-V1Q>
-    <xme:sNoRYfFKJMqyLRjCpT5AtfBCfEEGYnBxPWCeg5cxE-HJ-TI3IC5Cgm2d7dbh5Y7pl
-    QAa_8Z5iRjfD5CpJg>
-X-ME-Received: <xmr:sNoRYc7GVLieYFB1575xsOReK6AbQSh9rpFmxu2949FvW3tcvbt9i2I2KkQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeekgdehtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeevieejtdfhieejfeduheehvdevgedugeethefggfdtvdeutdevgeetvddvfeeg
-    tdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
-    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
-    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:sNoRYd0lgdXYcJ6FywNwYt8fzu6BEznXuHEWDVgp90IH6w0nwTHAww>
-    <xmx:sNoRYXFxAbpTTH9YBvu1R4DEqlpsLYHCcIWgSuxyP47GakZ4jGdokg>
-    <xmx:sNoRYW9vm5Egoc79Ggy8oO_chdDGsGZijUmUD2frw0kG4vG2_DXlFQ>
-    <xmx:stoRYc5yPjJleGel7vjZjQxWcQVhwYWBjFH1M-17S7XBhX1raZEMrA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 9 Aug 2021 21:47:28 -0400 (EDT)
-Date:   Tue, 10 Aug 2021 09:47:21 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] locking/rtmutex: Add the missing 'ES' of macro
- CONFIG_DEBUG_RT_MUTEXES
-Message-ID: <YRHaqT5jm8N4G0Nj@boqun-archlinux>
-References: <20210731123011.4555-1-thunder.leizhen@huawei.com>
- <20210809144107.GA1458@willie-the-truck>
- <196ac7c4-f6db-247c-689e-13e7bbae5660@huawei.com>
+        Mon, 9 Aug 2021 21:49:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628560142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G/dSgq/cGf57vOSvcWuPjjmCIcASPDhZxQFXSenWC5Q=;
+        b=CDb0HJlYyJHF07uGMSuXFla6M/W0tJeAZ0itE69r4wfM6yjSY0VEgriYHAK0lHLjLbsIwK
+        ixtMQ3eVhWyqX/JVR9rkkAcGw/Lw1iK6aaDEfRigMrkwOnHFyGlRxIKMGByKDlwcqlrZfQ
+        HahmSC2idxAr2FkmgVJmPDNEjObaF7c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-y01V_X30N12RlviB-2aszw-1; Mon, 09 Aug 2021 21:49:01 -0400
+X-MC-Unique: y01V_X30N12RlviB-2aszw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFB5787146F;
+        Tue, 10 Aug 2021 01:48:59 +0000 (UTC)
+Received: from T590 (ovpn-13-190.pek2.redhat.com [10.72.13.190])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B73C210016FB;
+        Tue, 10 Aug 2021 01:48:51 +0000 (UTC)
+Date:   Tue, 10 Aug 2021 09:48:46 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, bvanassche@acm.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v2 2/2] nbd: convert to use blk_mq_get_rq_by_tag()
+Message-ID: <YRHa/keJ4pHP3hnL@T590>
+References: <20210809030927.1946162-1-yukuai3@huawei.com>
+ <20210809030927.1946162-3-yukuai3@huawei.com>
+ <YRDK9tBFscK5ScK8@T590>
+ <47e5faa8-f8e5-86db-05a1-559e3b3c04b5@huawei.com>
+ <YRD5krmF/C7JxchE@T590>
+ <3adf6183-bf40-10cd-b8ed-552120028ca3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <196ac7c4-f6db-247c-689e-13e7bbae5660@huawei.com>
+In-Reply-To: <3adf6183-bf40-10cd-b8ed-552120028ca3@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 09:21:15AM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/8/9 22:41, Will Deacon wrote:
-> > On Sat, Jul 31, 2021 at 08:30:11PM +0800, Zhen Lei wrote:
-> >> The build option name is defined as DEBUG_RT_MUTEXES in lib/Kconfig.debug,
-> >> commit f41dcc18698e ("locking/rtmutex: Move debug functions as inlines
-> >> into common header") can also corroborate this.
-> >>
-> >> Fixes: f7efc4799f81 ("locking/rtmutex: Inline chainwalk depth check")
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> ---
-> >>  kernel/locking/rtmutex.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-> >> index b5d9bb5202c6..ad0db322ed3b 100644
-> >> --- a/kernel/locking/rtmutex.c
-> >> +++ b/kernel/locking/rtmutex.c
-> >> @@ -343,7 +343,7 @@ static __always_inline bool
-> >>  rt_mutex_cond_detect_deadlock(struct rt_mutex_waiter *waiter,
-> >>  			      enum rtmutex_chainwalk chwalk)
-> >>  {
-> >> -	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEX))
-> >> +	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES))
-> >>  		return waiter != NULL;
-> >>  	return chwalk == RT_MUTEX_FULL_CHAINWALK;
+On Mon, Aug 09, 2021 at 10:04:32PM +0800, yukuai (C) wrote:
+> On 2021/08/09 17:46, Ming Lei wrote:
+> > On Mon, Aug 09, 2021 at 03:08:26PM +0800, yukuai (C) wrote:
+> > > On 2021/08/09 14:28, Ming Lei wrote:
+> > > > On Mon, Aug 09, 2021 at 11:09:27AM +0800, Yu Kuai wrote:
+> > > > > blk_mq_tag_to_rq() might return freed request, use
+> > > > > blk_mq_get_rq_by_tag() instead.
+> > > > > 
+> > > > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > > > > ---
+> > > > >    drivers/block/nbd.c | 11 ++++++-----
+> > > > >    1 file changed, 6 insertions(+), 5 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> > > > > index c38317979f74..9e56975a8eee 100644
+> > > > > --- a/drivers/block/nbd.c
+> > > > > +++ b/drivers/block/nbd.c
+> > > > > @@ -713,11 +713,10 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
+> > > > >    	tag = nbd_handle_to_tag(handle);
+> > > > >    	hwq = blk_mq_unique_tag_to_hwq(tag);
+> > > > >    	if (hwq < nbd->tag_set.nr_hw_queues)
+> > > > > -		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
+> > > > > -				       blk_mq_unique_tag_to_tag(tag));
+> > > > > -	if (!req || !blk_mq_request_started(req)) {
+> > > > > -		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
+> > > > > -			tag, req);
+> > > > > +		req = blk_mq_get_rq_by_tag(nbd->tag_set.tags[hwq],
+> > > > > +					   blk_mq_unique_tag_to_tag(tag));
+> > > > > +	if (!req) {
+> > > > > +		dev_err(disk_to_dev(nbd->disk), "Unexpected reply %d\n", tag);
+> > > > >    		return ERR_PTR(-ENOENT);
+> > > > >    	}
+> > > > >    	trace_nbd_header_received(req, handle);
+> > > > > @@ -779,6 +778,8 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
+> > > > >    	}
+> > > > >    out:
+> > > > >    	trace_nbd_payload_received(req, handle);
+> > > > > +	if (req)
+> > > > > +		blk_mq_put_rq_ref(req);
+> > > > >    	mutex_unlock(&cmd->lock);
+> > > > >    	return ret ? ERR_PTR(ret) : cmd;
+> > > > 
+> > > > After blk_mq_put_rq_ref() returns, this request may have been freed,
+> > > > so the returned 'cmd' may have been freed too.
+> > > > 
+> > > > As I replied in your another thread, it is driver's responsibility to
+> > > > cover race between normal completion and timeout/error handling, that
+> > > > means the caller of blk_mq_tag_to_rq need to make sure that the request
+> > > > represented by the passed 'tag' can't be freed.
+> > > 
+> > > Hi, Ming
+> > > 
+> > > There are two problems here in nbd, both reported by our syzkaller.
+> > > 
+> > > The first is that blk_mq_tag_to_rq() returned a freed request, which is
+> > > because tags->static_rq[] is freed without clearing tags->rq[].
+> > > Syzkaller log shows that a reply package is sent to client without
+> > > the client's request package. And this patch is trying to solve this
+> > > problem.
 > > 
-> > Oops, yes. How did you find this?
+> > It is still driver's problem:
+> > 
+> > ->static_rq is freed in blk_mq_free_tag_set() which is called after
+> > blk_cleanup_disk() returns. Once blk_cleanup_disk() returns, there
+> > shouldn't be any driver activity, including calling blk_mq_tag_to_rq()
+> > by passing one invalid tag.
+> > 
 > 
-> I found it by chance. When locating a futex problem, I was confused when
-> reading this part of the code. I used "git grep -wn CONFIG_DEBUG_RT_MUTEX"
-> to search for the implementation in other places. But I found that it was
-> not used in other places, then I checked the patch history and found it.
+> Hi, Ming
 > 
+> I understand if static_rq is freed through blk_mq_free_tag_set(),
+> drivers should not use static_rq anymore.
+> 
+> By the way, I was thinking about another path:
+> 
+> blk_mq_update_nr_requests
+>  if (!hctx->sched_tags) -> if this is true
+>   ret = blk_mq_tag_update_depth(hctx, &hctx->tags, nr, false)
+>    blk_mq_free_rqs -> static_rq is freed here
+> 
+> If this path concurrent with nbd_read_stat(), nbd_read_stat() can
+> get a freed request by blk_mq_tag_to_rq(), since tags->lock is not
+> held.
+> 
+> t1: nbd_read_stat	  t2: blk_mq_update_nr_requests
+> rq = blk_mq_tag_to_rq()
+> 			  blk_mq_free_rqs
 
-FWIW, script/checkkconfigsymbols.py can be used to detect usage of
-undefined CONFIG_*, Zhouyi Zhou used it to find a few cases in RCU
-recently:
+t1 isn't supposed to happen when t2 is running.
 
-	https://lore.kernel.org/lkml/CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com/
+blk_mq_update_nr_requests() is only called by nbd_start_device().
 
-And thanks for the fix:
+nbd_start_device():
+	        if (nbd->task_recv)
+                return -EBUSY;
+			...
+			nbd->recv_workq = alloc_workqueue()
 
-Acked-by: Boqun Feng <boqun.feng@gmail.com>
+That means nbd_config_put() has been called and ->config_refs has
+dropped to zero, so socket has been shutdown, and ->recv_workq has
+been destroyed, so t1 isn't supposed to happen when t2 is running.
 
-Regards,
-Boqun
+> 
+> By holding tags->lock, we can check that rq state is idle, and it's
+> ref is 0.
 
-> > 
-> > Acked-by: Will Deacon <will@kernel.org>
-> > 
-> > Will
-> > .
-> > 
+Firstly tags->lock can't fix the race[1], secondly it should be addressed
+in driver.
+
+[1] https://lore.kernel.org/linux-block/20210809030927.1946162-2-yukuai3@huawei.com/T/#m6651289c5718b45a8ae8a7efc889248f8cb904a3
+
+
+Thanks,
+Ming
+
