@@ -2,103 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB75B3E84AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9CE3E84C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbhHJUxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:53:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45894 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233412AbhHJUxJ (ORCPT
+        id S234227AbhHJUyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:54:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36541 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234052AbhHJUyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:53:09 -0400
-Date:   Tue, 10 Aug 2021 20:52:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628628765;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 10 Aug 2021 16:54:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628628822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iB+/vF6PsFvdkS91kFy/wK6G7KsTsousXDU4teBoqfs=;
-        b=YbaCxG2m0cfTQxssMuh6750swQs/kSmLSNUD6W7F27wKp/FbZsijJcso97xymJAxeXAU4w
-        nDqa3608gzwE1G1gkP16ctKE4hY45QsMe3vEZzzpqFcRfV8Cz1aYNhdYjwkF3IhUSjUt2c
-        cY+gl5chzHuI78oNRjCV8SAdecJIG2vRXEyJRATgAjitZ2VC/Y/A7gyurc4NvDiCo1b3yz
-        sGk10ErvbMzPUtEsAJRESHNtCnyVRUjMv0e3kG5wWLLhFs7KfZYkdyDXxVaVzOQ8bF52XE
-        /Uh7PWYDe2znf6FX6ibbLiHwlM61+Mkwmun2i50mXIBHH0DXsibu/NQz1IazJQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628628765;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iB+/vF6PsFvdkS91kFy/wK6G7KsTsousXDU4teBoqfs=;
-        b=9Mfiv5xmQDwkYWqC5cSxN9FzB19ZKqUbKJGS2Mx3lKxx7MlUw+I3KZl3CKxBwDJ2BRAusx
-        RkJDMcX0X+SppRAA==
-From:   "tip-bot2 for Baokun Li" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq/matrix: Fix kernel doc warnings for
- irq_matrix_alloc_managed()
-Cc:     Baokun Li <libaokun1@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210605063413.684085-1-libaokun1@huawei.com>
-References: <20210605063413.684085-1-libaokun1@huawei.com>
+        bh=zRmGslpFqQWJkcIjZOsxZu4cXo4YW/mr/81aUSTAihs=;
+        b=DK6IIuB/PqLIn2lKPLtPkaxglr5idVpb7AVN1PWaojaE/h8lw6Pl5pK+x/KaVUAT8IHjAZ
+        dl6aeIAdnmz2dN8JLlq3w6ZKK/M+mHYkwRDCIv/tyWGWSfjnSuE8q8Lay8qtvyj84W1hdi
+        /zAf9gBN7IfCo/tvxEj9RLeMYU8I22M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-1vQ6CVqiPgm1p5esLZNG3Q-1; Tue, 10 Aug 2021 16:53:41 -0400
+X-MC-Unique: 1vQ6CVqiPgm1p5esLZNG3Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36EF71853026;
+        Tue, 10 Aug 2021 20:53:39 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 99E4C620DE;
+        Tue, 10 Aug 2021 20:53:35 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v4 09/16] KVM: x86: APICv: fix race in kvm_request_apicv_update on SVM
+Date:   Tue, 10 Aug 2021 23:52:44 +0300
+Message-Id: <20210810205251.424103-10-mlevitsk@redhat.com>
+In-Reply-To: <20210810205251.424103-1-mlevitsk@redhat.com>
+References: <20210810205251.424103-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Message-ID: <162862876446.395.6827089715538356182.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+Currently on SVM, the kvm_request_apicv_update toggles the APICv
+memslot without doing any synchronization.
 
-Commit-ID:     92848731c45f4f9c3d9818e6b4ba1b2884002324
-Gitweb:        https://git.kernel.org/tip/92848731c45f4f9c3d9818e6b4ba1b2884002324
-Author:        Baokun Li <libaokun1@huawei.com>
-AuthorDate:    Sat, 05 Jun 2021 14:34:13 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 22:50:07 +02:00
+If there is a mismatch between that memslot state and the AVIC state,
+on one of the vCPUs, an APIC mmio access can be lost:
 
-genirq/matrix: Fix kernel doc warnings for irq_matrix_alloc_managed()
+For example:
 
-Describe the arguments correctly.
+VCPU0: enable the APIC_ACCESS_PAGE_PRIVATE_MEMSLOT
+VCPU1: access an APIC mmio register.
 
-Fixes the following W=1 kernel build warning(s):
+Since AVIC is still disabled on VCPU1, the access will not be intercepted
+by it, and neither will it cause MMIO fault, but rather it will just be
+read/written from/to the dummy page mapped into the
+APIC_ACCESS_PAGE_PRIVATE_MEMSLOT.
 
-kernel/irq/matrix.c:287: warning: Function parameter or
- member 'msk' not described in 'irq_matrix_alloc_managed'
-kernel/irq/matrix.c:287: warning: Function parameter or
- member 'mapped_cpu' not described in 'irq_matrix_alloc_managed'
-kernel/irq/matrix.c:287: warning: Excess function
- parameter 'cpu' description in 'irq_matrix_alloc_managed'
+Fix that by adding a lock guarding the AVIC state changes, and carefully
+order the operations of kvm_request_apicv_update to avoid this race:
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210605063413.684085-1-libaokun1@huawei.com
+1. Take the lock
+2. Send KVM_REQ_APICV_UPDATE
+3. Update the apic inhibit reason
+4. Release the lock
 
+This ensures that at (2) all vCPUs are kicked out of the guest mode,
+but don't yet see the new avic state.
+Then only after (4) all other vCPUs can update their AVIC state and resume.
 
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- kernel/irq/matrix.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/kvm_host.h |  6 +++++
+ arch/x86/kvm/x86.c              | 39 ++++++++++++++++++++-------------
+ 2 files changed, 30 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/irq/matrix.c b/kernel/irq/matrix.c
-index 578596e..bbfb264 100644
---- a/kernel/irq/matrix.c
-+++ b/kernel/irq/matrix.c
-@@ -280,7 +280,8 @@ void irq_matrix_remove_managed(struct irq_matrix *m, const struct cpumask *msk)
- /**
-  * irq_matrix_alloc_managed - Allocate a managed interrupt in a CPU map
-  * @m:		Matrix pointer
-- * @cpu:	On which CPU the interrupt should be allocated
-+ * @msk:	Which CPUs to search in
-+ * @mapped_cpu:	Pointer to store the CPU for which the irq was allocated
-  */
- int irq_matrix_alloc_managed(struct irq_matrix *m, const struct cpumask *msk,
- 			     unsigned int *mapped_cpu)
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index d800ee894c92..27627e32f362 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1047,6 +1047,9 @@ struct kvm_arch {
+ 	struct kvm_apic_map __rcu *apic_map;
+ 	atomic_t apic_map_dirty;
+ 
++	/* Protects apic_access_memslot_enabled and apicv_inhibit_reasons */
++	struct mutex apicv_update_lock;
++
+ 	bool apic_access_memslot_enabled;
+ 	unsigned long apicv_inhibit_reasons;
+ 
+@@ -1730,6 +1733,9 @@ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu);
+ void kvm_request_apicv_update(struct kvm *kvm, bool activate,
+ 			      unsigned long bit);
+ 
++void __kvm_request_apicv_update(struct kvm *kvm, bool activate,
++				unsigned long bit);
++
+ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu);
+ 
+ int kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 error_code,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index b8952001ee44..b6185921fe44 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8579,6 +8579,8 @@ EXPORT_SYMBOL_GPL(kvm_apicv_activated);
+ 
+ static void kvm_apicv_init(struct kvm *kvm)
+ {
++	mutex_init(&kvm->arch.apicv_update_lock);
++
+ 	if (enable_apicv)
+ 		clear_bit(APICV_INHIBIT_REASON_DISABLE,
+ 			  &kvm->arch.apicv_inhibit_reasons);
+@@ -9240,6 +9242,8 @@ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
+ 	if (!lapic_in_kernel(vcpu))
+ 		return;
+ 
++	mutex_lock(&vcpu->kvm->arch.apicv_update_lock);
++
+ 	vcpu->arch.apicv_active = kvm_apicv_activated(vcpu->kvm);
+ 	kvm_apic_update_apicv(vcpu);
+ 	static_call(kvm_x86_refresh_apicv_exec_ctrl)(vcpu);
+@@ -9252,39 +9256,44 @@ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
+ 	 */
+ 	if (!vcpu->arch.apicv_active)
+ 		kvm_make_request(KVM_REQ_EVENT, vcpu);
++
++	mutex_unlock(&vcpu->kvm->arch.apicv_update_lock);
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_update_apicv);
+ 
+-void kvm_request_apicv_update(struct kvm *kvm, bool activate, ulong bit)
++void __kvm_request_apicv_update(struct kvm *kvm, bool activate, ulong bit)
+ {
+-	unsigned long old, new, expected;
++	unsigned long old, new;
+ 
+ 	if (!kvm_x86_ops.check_apicv_inhibit_reasons ||
+ 	    !static_call(kvm_x86_check_apicv_inhibit_reasons)(bit))
+ 		return;
+ 
+-	old = READ_ONCE(kvm->arch.apicv_inhibit_reasons);
+-	do {
+-		expected = new = old;
+-		if (activate)
+-			__clear_bit(bit, &new);
+-		else
+-			__set_bit(bit, &new);
+-		if (new == old)
+-			break;
+-		old = cmpxchg(&kvm->arch.apicv_inhibit_reasons, expected, new);
+-	} while (old != expected);
++	old = new = kvm->arch.apicv_inhibit_reasons;
++
++	if (activate)
++		__clear_bit(bit, &new);
++	else
++		__set_bit(bit, &new);
+ 
+ 	if (!!old != !!new) {
+ 		trace_kvm_apicv_update_request(activate, bit);
+ 		kvm_make_all_cpus_request(kvm, KVM_REQ_APICV_UPDATE);
++		kvm->arch.apicv_inhibit_reasons = new;
+ 		if (new) {
+ 			unsigned long gfn = gpa_to_gfn(APIC_DEFAULT_PHYS_BASE);
+-
+ 			kvm_zap_gfn_range(kvm, gfn, gfn+1);
+ 		}
+-	}
++	} else
++		kvm->arch.apicv_inhibit_reasons = new;
++}
++EXPORT_SYMBOL_GPL(__kvm_request_apicv_update);
+ 
++void kvm_request_apicv_update(struct kvm *kvm, bool activate, ulong bit)
++{
++	mutex_lock(&kvm->arch.apicv_update_lock);
++	__kvm_request_apicv_update(kvm, activate, bit);
++	mutex_unlock(&kvm->arch.apicv_update_lock);
+ }
+ EXPORT_SYMBOL_GPL(kvm_request_apicv_update);
+ 
+-- 
+2.26.3
+
