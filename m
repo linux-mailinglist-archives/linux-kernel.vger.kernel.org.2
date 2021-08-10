@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1733E5A58
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4324A3E5A5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240815AbhHJMr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:47:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22598 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240805AbhHJMrz (ORCPT
+        id S240819AbhHJMtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238630AbhHJMtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:47:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628599653;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A1vbqk+HrMkFDgZmPhDLQJTDofCmdnOiLqBGa7TgNLo=;
-        b=SDi3tTsdzmae2br0GzMxV2HIx3KgBiWwWu1V+ZS3ZhHiX94qKnA86i0+ucNNu44hGCif+a
-        FUy3GGDXR/M0Ps6H8UZfpNr7ZwtaO896gQ6d2jw0luWkdFAMDAcikacTFSdWVGdhLF23eO
-        ygiqiGb/JeE31CZhxt+q7MhxwhMXrmk=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-BQBUvUJsPri-VYTRJWH8ng-1; Tue, 10 Aug 2021 08:47:31 -0400
-X-MC-Unique: BQBUvUJsPri-VYTRJWH8ng-1
-Received: by mail-ej1-f69.google.com with SMTP id v3-20020a1709063383b02905b4d1d1e27cso911781eja.19
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:47:31 -0700 (PDT)
+        Tue, 10 Aug 2021 08:49:01 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F76C061798
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:48:39 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id x7so17294706ljn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:48:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vrcMLWtfOeCXSMGpjMYNY3zEn4WCrRn/aqSB39sMZio=;
+        b=eD3vQDsassz7bEN0mNbQhZAijheRKwqU+oK96s9ut4efsxy/pfcMMgLfN/39mBcNzA
+         CWcAVe/mxoYkiw5lw9HAubl20qZcNVos3RgWK1m2BARdzZAuLzG/CDkcJg/YoPg6pxSO
+         6pWektyrqQeFMs+3mYXfOkCXNiN4k44T+Av9Xfx5y9PLMvke9N7nIVdxG7ov3uqszD0G
+         s+pKlKviR2OdDnoh4hi918VXhjTAb4W2zC/pe4xpQmBAlIe5/uu0nqio9njHt6C5sx0A
+         nTPOCui2hn2g9N2pRraqtmMEHWvGpHUdOCSzjrh2QSS7U+ahTai2W/biKy52JtUBdbgL
+         rUTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A1vbqk+HrMkFDgZmPhDLQJTDofCmdnOiLqBGa7TgNLo=;
-        b=B7VWK1Vh5iWE4l5M9J3J07Yb97ijvshQQpC7JIYB/brEtsgS+JSdkK3ONV9hUqxDFA
-         XW1DqC36TngRQb7gW58t81ftaDaU4lcKGQzIIffCjs2TZoMOZgbZxdDI1z9Z3Ak/qASm
-         SjGgksm0WC4zkZpsIpAJS7prwW9Nan6pGYKn0SLSUb1W+d9OYWhA9kMtEd5nvwqe7cJq
-         lX7ZI6op5cKKXNMENK9Ss6Ndy1rmkd7nXG5CCDqnoKHQL5bqrz3Q24FYEULtLJIWZGCa
-         Cbp7KpReMZxMGkAwk59tXahRZ3jJrcfzYPgPCBkyWZjpLHvS5D6Bsvy009VhrZNaNhfq
-         Gj4Q==
-X-Gm-Message-State: AOAM530dWjROn4BuqqnVPEqW2TlWesz1XXaxHNlcvAUskFgMixiLjHoQ
-        hU0XHkNcBnIjroSQv/EsE2w80LtJmJKrJ7B8M9sN4U+8FN05wS5CQMJ11fZEbcIby+zOaVTTzpv
-        wLSP874r3l2u4kC7iNPwzkzoq
-X-Received: by 2002:a17:907:1b22:: with SMTP id mp34mr1181770ejc.408.1628599650600;
-        Tue, 10 Aug 2021 05:47:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyE8QW/f8zbOv6QQNcq3X7xQP29i0UFEQ6RYzZJQFLRWZLXKX5NRRV05HIud8CMBLdXPoqZnQ==
-X-Received: by 2002:a17:907:1b22:: with SMTP id mp34mr1181758ejc.408.1628599650409;
-        Tue, 10 Aug 2021 05:47:30 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id df14sm9536725edb.90.2021.08.10.05.47.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 05:47:29 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
- level
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-References: <20210808192658.2923641-1-wei.huang2@amd.com>
- <20210808192658.2923641-2-wei.huang2@amd.com>
- <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
- <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
- <20210809042703.25gfuuvujicc3vj7@linux.intel.com>
- <73bbaac0-701c-42dd-36da-aae1fed7f1a0@amd.com>
- <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
- <YRFKABg2MOJxcq+y@google.com>
- <20210810074037.mizpggevgyhed6rm@linux.intel.com>
- <0ac41a07-beeb-161e-9e5d-e45477106c01@redhat.com>
- <20210810110031.h7vaqf3nljwm3wym@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <998dca9a-84b6-20ee-2646-3eb58df0b8a0@redhat.com>
-Date:   Tue, 10 Aug 2021 14:47:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vrcMLWtfOeCXSMGpjMYNY3zEn4WCrRn/aqSB39sMZio=;
+        b=jx22IRN540lk69bcQwmue3PNb58VWjQuzgh3mhbJ08rToBJ+U/YUzoNzZcakNT59uU
+         7Xe2eU9alcjgueeDHdvaOdQ3z7yPGUJjE/l2oxZekCLQ4sNBDmVpkZHbcuZ7VeWI03sh
+         P0yY6EZWLzvsSFIQdJYt6u++3LsMJSNjEHJL6blK3GsiX97hE8sZJrPUELI2bsI9U+0a
+         a9h+6jK4ERXrbsYLLYXF2jrbt2BDdzcqRevJurstz8a/X/zz3He9a9HoxKJUMruJnquA
+         B01KoIh4UgjO+H8pp//ryGknkCNVQDPFakxQtep5DVwgrgW4s9gxMR7s7m2DDzfzGu0s
+         5mtw==
+X-Gm-Message-State: AOAM5327a7g41bYGNYhjPpgvok3Zv678CAvvKYAulIvEfNJTyLKffSs/
+        PgPzlhahJAm9A4zy6+dBDIXCdJzohUW8ckl+eT6HtQ==
+X-Google-Smtp-Source: ABdhPJyLep687DdIq4Uf7xmhfsYa46ZEV2mhNzCv+q7NsAgri4IdNPReJB6X5A+3utEOR+kjh7KGMkjlhyQd0vAmS5A=
+X-Received: by 2002:a2e:a231:: with SMTP id i17mr9037133ljm.467.1628599717797;
+ Tue, 10 Aug 2021 05:48:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210810110031.h7vaqf3nljwm3wym@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210725180830.250218-1-maz@kernel.org>
+In-Reply-To: <20210725180830.250218-1-maz@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 10 Aug 2021 14:48:26 +0200
+Message-ID: <CACRpkdbAnvk2AyT=Gom=AHZacm7sDJONR=6EnHLZ+cEySqQ4KQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: stmfx: Fix hazardous u8[] to unsigned long cast
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        stable <stable@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/21 13:00, Yu Zhang wrote:
-> I guess it's because, unlike EPT which are with either 4 or 5 levels, NPT's
-> level can range from 2 to 5, depending on the host paging mode...
+On Sun, Jul 25, 2021 at 8:08 PM Marc Zyngier <maz@kernel.org> wrote:
 
-Yes, on Linux that will be one of 3/4/5 based on host paging mode, and 
-it will apply to all N_CR3...
+> Casting a small array of u8 to an unsigned long is *never* OK:
+>
+> - it does funny thing when the array size is less than that of a long,
+>   as it accesses random places in the stack
+> - it makes everything even more fun with a BE kernel
+>
+> Fix this by building the unsigned long used as a bitmap byte by byte,
+> in a way that works across endianess and has no undefined behaviours.
+>
+> An extra BUILD_BUG_ON() catches the unlikely case where the array
+> would be larger than a single unsigned long.
+>
+> Fixes: 1490d9f841b1 ("pinctrl: Add STMFX GPIO expander Pinctrl/GPIO driver")
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Cc: stable@vger.kernel.org
+> Cc: Amelie Delaunay <amelie.delaunay@foss.st.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
 
-> But shadow EPT does not have such annoyance. Is above understanding correct?
+Patch applied!
 
-... Right, because shadow EPT cannot have less than 4 levels, and it can 
-always use 4 levels if that's what L1 uses.
-
-Paolo
-
+Yours,
+Linus Walleij
