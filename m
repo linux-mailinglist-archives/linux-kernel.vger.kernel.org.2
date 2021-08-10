@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1C33E57F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6F53E57FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239683AbhHJKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
+        id S239696AbhHJKHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238628AbhHJKGl (ORCPT
+        with ESMTP id S237776AbhHJKHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:06:41 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8620DC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:06:19 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id x14so6864386edr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:06:19 -0700 (PDT)
+        Tue, 10 Aug 2021 06:07:17 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936B3C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:06:55 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso3571759pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:06:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NI43gDB60J+hHIWn2wpRcQ4Y1SAABWtayYuScdI0xvY=;
-        b=PBTQHuG5H7i5fq0usxFdSK7q/FRoT35VVvSoCAz0vlGvD2LY8wTC6JuD4VJPhMn0DG
-         7Yi485m97djxDTVz/bVjTiPbVoqM6awETH7FPVPYrCQcTVzeyUwSX6GD110pA2ighG99
-         /wLbBzo3g35axHdbDkcXQHkG1rKyEjoc8cZ3afockTrgcCEYKeJbiT99NLhUy1YKzr4V
-         cvPWp0ziyCDecSSLeKaDUc+KhPG9WmvP05F6WDRKVdO1mz0AvYtxaVUPld6dd0gd72PM
-         QqAIrfmWn/xtknCgxRd6otZc6NeXRrvgbGCMv8B1NleoY1bsA03ltPWxGc/ZgUO8ob8A
-         Q/WQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=86LjhHwH2Y01JTFkrW4LltEIu0xfncQuIXbpof7c38U=;
+        b=EPTZS1zs4hk/XgPzFZqbffWZQVnvrLyR3ikBz/nldBEri4wKTNPG02YCMYf3qAitT6
+         q+Z4cbOAc+zBcMmq3+5mHoTiue9Oo7xe7e/GL5CVZ04ytybTU4xlb2s2j6jHQjQk62bx
+         QF28hlimfhwV5gfNzfpwvrbzhJIZwfbT2HB+x2ZZtC/clMpcdRJQkXr0qth60U2HVJ7e
+         667FyQcw0RUlRQ3txtiM1oraHW0alOh+QhDLENmbpQfvclDNkfEEpUTvYhT2R6HaMF8L
+         buUhy+OmMCSHsLxF3cVcRztrvwwPRv6uD8LFb+ZoxIzUw9b+Fua3foOHksXpoLVrHKuZ
+         VDng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NI43gDB60J+hHIWn2wpRcQ4Y1SAABWtayYuScdI0xvY=;
-        b=AsF7+6NMTIQSNb+yDLk3isTfRtJg97ckrqBE8zHkdxyIioFBF+LAW0fg6ADOHnbFms
-         lV6FieMnClaq3UC6xrSt36RniGb1KUnUOALyyUd6rqcSyFZ0sKbmTMv+AYPfN+2Mzej0
-         AfiXaJeRqoHLWE15WPJCf/j6gzl4YFYpO/XEewJVmORza6zjsV7PSxQsvsE3lpzIvINw
-         QoNHysvW6Xl9qUdKPGfb5Y9BkOOFoVn1xIkxZvAhyGmDeNFymYxJKHpS89kTo7D6riGf
-         Q3aK4Xb42YptwoAov2kTVVw7i9+0/FSOviCnexpA/2nhokdq2a4MbWJW7kalNr6qNB8L
-         pzgw==
-X-Gm-Message-State: AOAM530rcqDPIKNYQxWf83re9wsFQx6XBA70PjA9CNy7s24HWxkkFKS0
-        3nsdy6BDqELdV7/AJVteq3RNWb8qUwklGiW6+2A=
-X-Google-Smtp-Source: ABdhPJzwQV91mh4Q/+ptmYv179euaM8lt/V2Cgz4w/LBwdDZdQqdbPmJ5DlPgfN1SLf5XyCGBKfrrKLRrWllXPA5TlI=
-X-Received: by 2002:a05:6402:1648:: with SMTP id s8mr3897310edx.214.1628589978156;
- Tue, 10 Aug 2021 03:06:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=86LjhHwH2Y01JTFkrW4LltEIu0xfncQuIXbpof7c38U=;
+        b=jOsTRpQf/0qK1GpwB61FIr69kizAWfgyR1kgzQUkXxdJelaDt9jGveGnl51nMz28bv
+         oKYRrvijt0HGJazyOwVMsL0ZKCRPKBiKDqV2UrCw8rTsq9tYko/Wxi41GG09Z3mttgNu
+         TfNTvRP1+SCdee0Vcjnm1vy9xkA7aipPDW8RaZL5K40KTqoiiVemGrW0Yl1d0FtgfDLZ
+         FTt6lubdG9vjW7PTs+GJJc+WnFFX7vRQNNEqNdEigBlLynlmTaKXGkjSWgFc0mgJ0qri
+         30L9g7SUulR+K2z16MbdprPlZLvz6sQOwfDJA8aEOChkvpG1kaAH8l0iixMXrhUuS+gG
+         6W1A==
+X-Gm-Message-State: AOAM532mhtyGf6ahMBB9n1YTUsYtTloKO59pmVChxYym8TScShqZkyfF
+        Nq3LShz45YZC/NLu6IHP469JyA==
+X-Google-Smtp-Source: ABdhPJya2Sgo4k+tUz0e5kI+ZjaNDAiFasmQ7SRwJDsYaa4PKlQ/HHyqa0QnogcR6+emA0GopdeupQ==
+X-Received: by 2002:a17:903:248f:b029:128:d5ea:18a7 with SMTP id p15-20020a170903248fb0290128d5ea18a7mr10803526plw.83.1628590015127;
+        Tue, 10 Aug 2021 03:06:55 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id t13sm20302715pjg.25.2021.08.10.03.06.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 03:06:54 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 15:36:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 8/8] cpufreq: vexpress: Use auto-registration for energy
+ model
+Message-ID: <20210810100652.h473q6hgtc5czfyk@vireshk-i7>
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
+ <d3629cc7-d9db-0e54-94e9-278e308b7e8e@arm.com>
 MIME-Version: 1.0
-References: <20210810074932.3934499-1-mudongliangabcd@gmail.com> <YRJMssKBFeToLvKi@kroah.com>
-In-Reply-To: <YRJMssKBFeToLvKi@kroah.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 10 Aug 2021 18:05:51 +0800
-Message-ID: <CAD-N9QWBm01QMWHX_onMdO6mi+9ROF_MJMmg1Juxa++4eJVeVw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] ipack: tpci200: fix many double free issues in tpci200_pci_probe
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3629cc7-d9db-0e54-94e9-278e308b7e8e@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 5:53 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Aug 10, 2021 at 03:49:21PM +0800, Dongliang Mu wrote:
-> > The function tpci200_register called by tpci200_install and
-> > tpci200_unregister called by tpci200_uninstall are in pair. However,
-> > tpci200_unregister has some cleanup operations not in the
-> > tpci200_register. So the error handling code of tpci200_pci_probe has
-> > many different double free issues.
-> >
-> > Fix this problem by moving those cleanup operations out of
-> > tpci200_unregister, into tpci200_pci_remove and reverting
-> > the previous commit 9272e5d0028d ("ipack/carriers/tpci200:
-> > Fix a double free in tpci200_pci_probe").
-> >
-> > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
->
-> No cc: stable markings on the patches?
->
+On 10-08-21, 11:05, Lukasz Luba wrote:
+> I can see that this driver calls explicitly the
+> of_cpufreq_cooling_register()
+> It does this in the cpufreq_driver->ready() callback
+> implementation: ve_spc_cpufreq_ready()
+> 
+> With that in mind, the new code in the patch 1/8, which
+> registers the EM, should be called even earlier, above:
+> ---------------------8<---------------------------------
+> /* Callback for handling stuff after policy is ready */
+> 	if (cpufreq_driver->ready)
+> 		cpufreq_driver->ready(policy);
+> ------------------->8----------------------------------
 
-I am sorry that I usually ignore that tag. I have sent a v4 patch with
-the Cc tag.
+Thanks. I will look at this sequencing issue again.
 
-Dongliang Mu
+> This also triggered a question:
+> If this new flag can be set in the cpufreq driver which hasn't set
+> CPUFREQ_IS_COOLING_DEV
+> ?
 
-> :(
->
+Why not ?
+
+> I can only see one driver (this one in the patch) which has such
+> configuration.
+
+-- 
+viresh
