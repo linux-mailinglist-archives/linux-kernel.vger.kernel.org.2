@@ -2,118 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30893E50CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357B23E50CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 03:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236604AbhHJBzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 21:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236481AbhHJBzd (ORCPT
+        id S233996AbhHJB6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 21:58:33 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:40044
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234278AbhHJB6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 21:55:33 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E055C0613D3;
-        Mon,  9 Aug 2021 18:55:12 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Mon, 9 Aug 2021 21:58:32 -0400
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkGHH0CjQz9sX5;
-        Tue, 10 Aug 2021 11:55:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628560508;
-        bh=aoPKbT5fndLKSdVrshsTacs3H5b9TMoIS4mCUFOcQ3A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iFjyoVw6gE+BuvguLNraOfg6VUywGhuBK9ygxMlWq0BFQ/zfC3lnzyDE1a15laBiH
-         KAm3PUs4G17MxWvOQsiGzXfSKYNnsojrcthXSPltWSWXF37ZlV+GPKOVkiJNycsSS9
-         2FEvNZD0pdNbrFA8wen1HEOJiAt3XUTVGxpD8upsWkGGgtBAEdNJmOnic7rxSsoy1O
-         ETD6SK2aJOH+qTyVDDD08mY+hgrbA1x+LtMZQ+eU2/4lvnWrnNs0sf5zT+3RuSY3lT
-         lZVQmn8k89cHij9RAzsgcbOSDm2fyLIdtjN7gG3HUpdKbZeae7cUyBl5Dd5v64eWJu
-         bIeQ5LnHfLcRA==
-Date:   Tue, 10 Aug 2021 11:55:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Subject: linux-next: manual merge of the device-mapper tree with the block
- tree
-Message-ID: <20210810115504.79d24799@canb.auug.org.au>
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id AE1F13F338
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:58:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628560688;
+        bh=wDvk7hS2vC0Ko5lDE0tYhcGzdcZyfo0vPTPLB4iBAAQ=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=KBSkRbJuneJVf6no5tsPuFl5b0YTB5DYohXNLktxlGlHNKf6fv3qhjk9aDdeY4Qj4
+         Jz5SxlZRJz0V+rTSS/lMM97PTvk4dmUJL3X5l8cF+USdbgrB/RsllbIivuz2CleWnZ
+         RruHqFWzysTqEByJgTSFYs0wOcfG6DtFUHnN+mBLIdYHH0uUneUdzUgPBTbu2j4pUE
+         +jxgOT3K+WzBF3wSxOwGipwz7lrQPaX0B+PGPrJ4WD5kOV8ytfkoNJPt8THuBqvb1P
+         dwFaKD3JQJHy9WjagA6KwgFUfrjhs/n0KN+R7xsV6FpNgN4iKZYUTAj0YxtkLfSkK1
+         XhRlYNFoGEK4g==
+Received: by mail-ej1-f70.google.com with SMTP id k21-20020a1709062a55b0290590e181cc34so5096604eje.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 18:58:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wDvk7hS2vC0Ko5lDE0tYhcGzdcZyfo0vPTPLB4iBAAQ=;
+        b=ZAMe7r/lv4inJB/M19iIhANVK+ZPBZgsOtIsi2sbqoZSR+puSO4yp/PsY5md3tghvR
+         La9fb7+fy/8D8ryjdzDbM0Lr7X3HymYIHRiYSFpFKEAwk8rfUS5hesKimIoVNUdTtwAX
+         HO3v6mpNEhxAKEiZQ74Cvg4La0so8OBqOV6KBk3kGxF5tydizT1WF8nT6I+2bbRrN2cS
+         r7pj7o+sAOvUm3mFkUt8DXxZRdWauRQXqe3+3y0s+p3Gx1fgXLfThm0sEtQVeAkATT04
+         HP4QccWoRplNdE65Dm6Rn6YvJq6T4siuNoIeYGhZDuV6UhH/jz3VG6USCiJNE9IIy2RG
+         RaKg==
+X-Gm-Message-State: AOAM531zRxd+EgIOHOBYha9rMpUh2eUPrVYQ7GF3uvCwv2RnLjdnj80g
+        omRpraKzqEYyAGoUy5rN4KySuZ8qOOFahex7Dz4oGvBPVKY2SLER/fsxwIYY1FPYMyemYkVVlkW
+        lLRu1FA8J4pm5klC4rhG61q4gi8Pr6QsCRJboEgSlJCKhvXojKonni1o65g==
+X-Received: by 2002:a17:906:76d8:: with SMTP id q24mr25354309ejn.22.1628560688255;
+        Mon, 09 Aug 2021 18:58:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgPpQQvYWabrwLzRNdDEE/qBeTIccMjZQ6kbOh9PK708tVhxYducZG+feHVgvZ0VpgPPmXbPGb/lc4/AE5fMA=
+X-Received: by 2002:a17:906:76d8:: with SMTP id q24mr25354299ejn.22.1628560688093;
+ Mon, 09 Aug 2021 18:58:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ddxFlyEPSImG0iHYTvZd0cD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210809032809.1224002-1-acelan.kao@canonical.com> <YRDCcDZGVkCdNF34@unreal>
+In-Reply-To: <YRDCcDZGVkCdNF34@unreal>
+From:   AceLan Kao <acelan.kao@canonical.com>
+Date:   Tue, 10 Aug 2021 09:57:57 +0800
+Message-ID: <CAFv23Qn=c_EZNPxu90s0n-HB6_vQCqaUG34YAq7-T6Np+10ZUA@mail.gmail.com>
+Subject: Re: [RESEND][PATCH] net: called rtnl_unlock() before runpm resumes devices
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Antoine Tenart <atenart@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ddxFlyEPSImG0iHYTvZd0cD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Leon Romanovsky <leon@kernel.org> =E6=96=BC 2021=E5=B9=B48=E6=9C=889=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=881:51=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Mon, Aug 09, 2021 at 11:28:09AM +0800, AceLan Kao wrote:
+> > From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+> >
+> > The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
+> > __dev_open() it calls pm_runtime_resume() to resume devices, and in
+> > some devices' resume function(igb_resum,igc_resume) they calls rtnl_loc=
+k()
+> > again. That leads to a recursive lock.
+> >
+> > It should leave the devices' resume function to decide if they need to
+> > call rtnl_lock()/rtnl_unlock(),
+>
+> Why? It doesn't sound right that drivers internally decide if to take or
+> release some external to them lock without seeing full picture.
+From what I observed, this is the only calling path that acquired
+rtnl_lock() before calling drivers' resume function.
+So, it encounters recursive lock while driver is going to cal rtnl_lock() a=
+gain.
 
-Hi all,
+>
+> Most of the time, device driver authors do it wrong. I afraid that igs
+> is one of such drivers that did it wrong.
+The issues could be if we remove rtnl_lock in device drivers, then in
+other calling path, it won't be protected by the rtnl lock,
+and maybe we shouldn't call pm_runtime_resume() here(within rtnl
+lock), for device drivers don't know if they are protected by the rtnl
+lock while their resume() got called.
 
-Today's linux-next merge of the device-mapper tree got a conflict in:
-
-  drivers/md/dm.c
-
-between commit:
-
-  89f871af1b26 ("dm: delay registering the gendisk")
-
-from the block tree and commit:
-
-  0a3bec81a409 ("dm ima: measure data on table load")
-
-from the device-mapper tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/md/dm.c
-index 7981b7287628,2e82757b4ab7..000000000000
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@@ -1997,6 -2001,14 +1998,8 @@@ int dm_create(int minor, struct mapped_
-  	if (!md)
-  		return -ENXIO;
- =20
- -	r =3D dm_sysfs_init(md);
- -	if (r) {
- -		free_dev(md);
- -		return r;
- -	}
- -
-+ 	dm_ima_reset_data(md);
-+=20
-  	*result =3D md;
-  	return 0;
-  }
-
---Sig_/ddxFlyEPSImG0iHYTvZd0cD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmER3HgACgkQAVBC80lX
-0GwlSgf+PYnOvhyQwXFZ5OKIPIL6KNtwaa2O7RJXaJl07fuHQVe+kWkze/NYIQFw
-JXZf/6MYMQfzxkHt2BttmYPuxQcmyn04tBbcx5Uag8JEqnl0Bns3ASv9wVo+0p7w
-jKxa3aLMUfNkVKSrtY5gOq4fl5PzbFTHdB6iVHpm6ygZ6UqXc17jioDQ0Pe3cxVm
-cj1OgG7IvORAKtXDuJl2llNTLSAaMuor7GzkhvknOllVFiCUcB8zrpDaDyh1TlcI
-VjKHl5MCNtohr6wOTYmqLrl2u0lE3edNAkphsFcXdTobwHwepWJvdPAUAvkArdg3
-X8q3I5I1lgjhjmnCXmLhof0YWdGWgA==
-=jv5F
------END PGP SIGNATURE-----
-
---Sig_/ddxFlyEPSImG0iHYTvZd0cD--
+>
+> Thanks
+>
+> > so call rtnl_unlock() before calling pm_runtime_resume() and then call
+> > rtnl_lock() after it in __dev_open().
+> >
+> > [  967.723577] INFO: task ip:6024 blocked for more than 120 seconds.
+> > [  967.723588]       Not tainted 5.12.0-rc3+ #1
+> > [  967.723592] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disab=
+les this message.
+> > [  967.723594] task:ip              state:D stack:    0 pid: 6024 ppid:=
+  5957 flags:0x00004000
+> > [  967.723603] Call Trace:
+> > [  967.723610]  __schedule+0x2de/0x890
+> > [  967.723623]  schedule+0x4f/0xc0
+> > [  967.723629]  schedule_preempt_disabled+0xe/0x10
+> > [  967.723636]  __mutex_lock.isra.0+0x190/0x510
+> > [  967.723644]  __mutex_lock_slowpath+0x13/0x20
+> > [  967.723651]  mutex_lock+0x32/0x40
+> > [  967.723657]  rtnl_lock+0x15/0x20
+> > [  967.723665]  igb_resume+0xee/0x1d0 [igb]
+> > [  967.723687]  ? pci_pm_default_resume+0x30/0x30
+> > [  967.723696]  igb_runtime_resume+0xe/0x10 [igb]
+> > [  967.723713]  pci_pm_runtime_resume+0x74/0x90
+> > [  967.723718]  __rpm_callback+0x53/0x1c0
+> > [  967.723725]  rpm_callback+0x57/0x80
+> > [  967.723730]  ? pci_pm_default_resume+0x30/0x30
+> > [  967.723735]  rpm_resume+0x547/0x760
+> > [  967.723740]  __pm_runtime_resume+0x52/0x80
+> > [  967.723745]  __dev_open+0x56/0x160
+> > [  967.723753]  ? _raw_spin_unlock_bh+0x1e/0x20
+> > [  967.723758]  __dev_change_flags+0x188/0x1e0
+> > [  967.723766]  dev_change_flags+0x26/0x60
+> > [  967.723773]  do_setlink+0x723/0x10b0
+> > [  967.723782]  ? __nla_validate_parse+0x5b/0xb80
+> > [  967.723792]  __rtnl_newlink+0x594/0xa00
+> > [  967.723800]  ? nla_put_ifalias+0x38/0xa0
+> > [  967.723807]  ? __nla_reserve+0x41/0x50
+> > [  967.723813]  ? __nla_reserve+0x41/0x50
+> > [  967.723818]  ? __kmalloc_node_track_caller+0x49b/0x4d0
+> > [  967.723824]  ? pskb_expand_head+0x75/0x310
+> > [  967.723830]  ? nla_reserve+0x28/0x30
+> > [  967.723835]  ? skb_free_head+0x25/0x30
+> > [  967.723843]  ? security_sock_rcv_skb+0x2f/0x50
+> > [  967.723850]  ? netlink_deliver_tap+0x3d/0x210
+> > [  967.723859]  ? sk_filter_trim_cap+0xc1/0x230
+> > [  967.723863]  ? skb_queue_tail+0x43/0x50
+> > [  967.723870]  ? sock_def_readable+0x4b/0x80
+> > [  967.723876]  ? __netlink_sendskb+0x42/0x50
+> > [  967.723888]  ? security_capable+0x3d/0x60
+> > [  967.723894]  ? __cond_resched+0x19/0x30
+> > [  967.723900]  ? kmem_cache_alloc_trace+0x390/0x440
+> > [  967.723906]  rtnl_newlink+0x49/0x70
+> > [  967.723913]  rtnetlink_rcv_msg+0x13c/0x370
+> > [  967.723920]  ? _copy_to_iter+0xa0/0x460
+> > [  967.723927]  ? rtnl_calcit.isra.0+0x130/0x130
+> > [  967.723934]  netlink_rcv_skb+0x55/0x100
+> > [  967.723939]  rtnetlink_rcv+0x15/0x20
+> > [  967.723944]  netlink_unicast+0x1a8/0x250
+> > [  967.723949]  netlink_sendmsg+0x233/0x460
+> > [  967.723954]  sock_sendmsg+0x65/0x70
+> > [  967.723958]  ____sys_sendmsg+0x218/0x290
+> > [  967.723961]  ? copy_msghdr_from_user+0x5c/0x90
+> > [  967.723966]  ? lru_cache_add_inactive_or_unevictable+0x27/0xb0
+> > [  967.723974]  ___sys_sendmsg+0x81/0xc0
+> > [  967.723980]  ? __mod_memcg_lruvec_state+0x22/0xe0
+> > [  967.723987]  ? kmem_cache_free+0x244/0x420
+> > [  967.723991]  ? dentry_free+0x37/0x70
+> > [  967.723996]  ? mntput_no_expire+0x4c/0x260
+> > [  967.724001]  ? __cond_resched+0x19/0x30
+> > [  967.724007]  ? security_file_free+0x54/0x60
+> > [  967.724013]  ? call_rcu+0xa4/0x250
+> > [  967.724021]  __sys_sendmsg+0x62/0xb0
+> > [  967.724026]  ? exit_to_user_mode_prepare+0x3d/0x1a0
+> > [  967.724032]  __x64_sys_sendmsg+0x1f/0x30
+> > [  967.724037]  do_syscall_64+0x38/0x90
+> > [  967.724044]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > Fixes: bd869245a3dc ("net: core: try to runtime-resume detached device =
+in __dev_open")
+> > Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> > ---
+> >  net/core/dev.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 8f1a47ad6781..dd43a29419fd 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -1585,8 +1585,11 @@ static int __dev_open(struct net_device *dev, st=
+ruct netlink_ext_ack *extack)
+> >
+> >       if (!netif_device_present(dev)) {
+> >               /* may be detached because parent is runtime-suspended */
+> > -             if (dev->dev.parent)
+> > +             if (dev->dev.parent) {
+> > +                     rtnl_unlock();
+> >                       pm_runtime_resume(dev->dev.parent);
+> > +                     rtnl_lock();
+> > +             }
+> >               if (!netif_device_present(dev))
+> >                       return -ENODEV;
+> >       }
+> > --
+> > 2.25.1
+> >
