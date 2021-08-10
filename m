@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C728E3E8633
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54C13E8636
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235261AbhHJWse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 18:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        id S235153AbhHJWvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 18:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhHJWsc (ORCPT
+        with ESMTP id S234889AbhHJWvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:48:32 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A061C061765;
-        Tue, 10 Aug 2021 15:48:10 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so6654946pjs.0;
-        Tue, 10 Aug 2021 15:48:10 -0700 (PDT)
+        Tue, 10 Aug 2021 18:51:01 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2412AC061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:50:38 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so602673wmi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:50:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=v+HOSXKCXGzdCgapEot+fGOS6gcgsZ8oF8c9VBXcAr0=;
-        b=kb6Sr2KwWdAcF+y+bFzPHXnQzoxM9KTz0Kc7XnnslmrCZupXk+DsdEpYbuuZnMIh5S
-         mqNhGCey50y8Lv1Mqxcnv9pg2QCrdAk17XPnfC7vNscM0DiaibEWGYuzcKeV8FRoZVxx
-         OaBlME5dYsAuEaNzZ6lSWBpkWgq7ZLANO9QZNWpXtM+KX/nJmWs73eHQW/ECZqQL4inu
-         WPhLkd9zLhzGl5/2qQazKSOJ0CJQs2VJuctOk4P9n9ZCO5E7OnXSaa6O1mbAL6AosIxm
-         Eqa6HaIDGp0Rlanc/cLYUCHlKtFxPjowlBDuUV8BvBurFJrcHfrgKKQ7+SoriWbEQfao
-         oE5Q==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xfyFHHFlfEpnQFC6plmot+LFQsVamLEZ8n6xAQLz3I0=;
+        b=sQEFllmDCQb6T586tGCkYXElYhLj6oIP0gskBtlvlf5V65+Xm+JtJApGA7V4vwfHHT
+         TcTUSYuoXumJK8oOTGxP3ccerMhqu8PX8zjzM4q8N8KPnZlKVVlz6b0Hy5Xk+9HXW+7d
+         33ZviV5FNBPiDXipLiCymxMPm5JRoGNaKPas11h2C2edIWzqClA0uEUWZcpSv77Hwt2L
+         Z4aep4FwqYNmY1E0ln22zoSFmDBryD4pPeWRzasDHR4LPChNZv9gMQz8UWDzLM6ylm05
+         k9WwTMQKOu64RFm//ssGD3DrXYF+dJPRMIZdDbc0nFi0zm3EjJG50f1A+Q6JE/gqzmKM
+         u3Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=v+HOSXKCXGzdCgapEot+fGOS6gcgsZ8oF8c9VBXcAr0=;
-        b=GaPXO+Y1Zq4r+KJqOfthV+CwRIKS0HTvThpiAvGiE05SLCObL3JTXgzRDInhUd0/Up
-         0OFCDSdT6dZyPk75NzsIfhyHAFB4/wDt4XNfIF/iiyzoma5uxAYHKdfXbmpBuOMgdOo2
-         1um/L89FWCNJ62f0vSF93Pl1kAk51efzOkUm1AM9bV1iQQ6oqylj0YKushJ06pwBkSUw
-         nXtEY89kGJ7eltJbub7owYtvcBOEkBG9YVND9K7R4C5yLL5n/i2giKpZcHBYiJC1oMwg
-         tjBKuThhI+z2tiFtRib1QuMdc/7HGKwwjtCtu0j+gleMvRGX4iL3PdFJGrUuqVeOR1eM
-         O2Vw==
-X-Gm-Message-State: AOAM530ovJY6eYTdC3xdW1TpUrDoYqxCLpWrD0taai9E4aZvwRSsSkNk
-        B5Sf6jaBbJ+5L42dsECEZ1GibfIz+PU1IeeYuQY=
-X-Google-Smtp-Source: ABdhPJyb0D5D3QjkEekD1Uxj3MGVWjAf2J4DtMEmnDNZ0KjlMWmy4PhLR9RdlNVoCUpiwzEBtFcyDA==
-X-Received: by 2002:a65:6441:: with SMTP id s1mr395559pgv.214.1628635689341;
-        Tue, 10 Aug 2021 15:48:09 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id d20sm5365829pfu.36.2021.08.10.15.48.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xfyFHHFlfEpnQFC6plmot+LFQsVamLEZ8n6xAQLz3I0=;
+        b=Xv1/mmonmdOsVzXMr913Jgo5ETnePvHae3oNbiCAQTUX70rs777cgeltrOZ9aW+ZBG
+         VantmZuqNK3wLVj3E4NFQqE5TWTt3oXKatFfqzKHFImwRXwZU3ARUpjGr4sKz5hYHi7e
+         53vVp0aJeoASuv6MLag/MkDYnFIwJaVczzUX2sYOBXuXK9EEcX/CmlYkCvTRnzj/uRO/
+         9KlMoOUGlVuXn0kAI9kU0Pt356C4+Wt4OvTe5xOCfSPWW7Av2LC6R1iqLvu/0JYJjqTp
+         hjikEFb7tCxu87bCfh+eK44oC/BdM1osugwGgOq37Kl1Ha2Y0SuNhJWe4HtZLv2Qd8Qg
+         Lsow==
+X-Gm-Message-State: AOAM530MRNxNqsw+DO6kNVzrztEZm9cxMT2+AUeriCv+WkXzyBXN150k
+        WHSH+ULUwVK/j30/3Hc2xbftFw==
+X-Google-Smtp-Source: ABdhPJwKNK0wbQ2CzmeUk4pisA2wARwQSZ3SQSPHKRNT/TuPutCdQEwDkDO3C5V9wmauQER/o+CWyg==
+X-Received: by 2002:a7b:c14a:: with SMTP id z10mr6930211wmi.36.1628635836729;
+        Tue, 10 Aug 2021 15:50:36 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id z137sm4090938wmc.14.2021.08.10.15.50.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 15:48:08 -0700 (PDT)
-Message-ID: <61130228.1c69fb81.7a46c.0c24@mx.google.com>
-Date:   Tue, 10 Aug 2021 15:48:08 -0700 (PDT)
-X-Google-Original-Date: Tue, 10 Aug 2021 22:48:07 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/135] 5.10.58-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Tue, 10 Aug 2021 15:50:36 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 23:50:34 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: r8188eu: Replace BITn with BIT(n)
+Message-ID: <YRMCug2ULtA6JoLn@equinox>
+References: <20210810180511.8986-1-Larry.Finger@lwfinger.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810180511.8986-1-Larry.Finger@lwfinger.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 19:28:54 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.58 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Aug 10, 2021 at 01:05:11PM -0500, Larry Finger wrote:
+> The driver uses BITn instead of BIT(n). All such usage is converted.
 > 
-> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
-> Anything received after that time might be too late.
+> Note that this patch does not address any warnings that checkpatch
+> will find. These include missing space around operators and lines
+> that are too long. These problems will be addressed in a separate
+> patch.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.58-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> ---
+> v2 - Removed dependency on incorrect patch
+>      Fixed typo n comment noted by Dan Carpenter
+> ---
+>  drivers/staging/r8188eu/core/rtw_ioctl_set.c  |   2 +-
+>  drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |  40 +-
+>  drivers/staging/r8188eu/hal/odm.c             |  68 +--
+>  drivers/staging/r8188eu/hal/odm_HWConfig.c    |   4 +-
+>  drivers/staging/r8188eu/hal/odm_RTL8188E.c    | 116 ++---
+>  drivers/staging/r8188eu/hal/rtl8188e_cmd.c    |  14 +-
+>  .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  66 +--
+>  drivers/staging/r8188eu/hal/rtl8188e_mp.c     |  34 +-
+>  drivers/staging/r8188eu/hal/rtl8188e_phycfg.c |   8 +-
+>  drivers/staging/r8188eu/hal/rtl8188eu_led.c   |  10 +-
+>  drivers/staging/r8188eu/hal/usb_halinit.c     |  48 +-
+>  .../staging/r8188eu/include/Hal8188EPhyCfg.h  |  14 +-
+>  .../staging/r8188eu/include/Hal8188EPwrSeq.h  |  84 ++--
+>  drivers/staging/r8188eu/include/hal_intf.h    |  16 +-
+>  drivers/staging/r8188eu/include/odm.h         | 106 ++---
+>  drivers/staging/r8188eu/include/odm_reg.h     |   2 +-
+>  drivers/staging/r8188eu/include/odm_types.h   |   8 +-
+>  .../staging/r8188eu/include/osdep_service.h   |  42 --
+>  .../staging/r8188eu/include/rtl8188e_spec.h   | 415 ++++++++----------
+>  drivers/staging/r8188eu/include/rtw_sreset.h  |  14 +-
+>  drivers/staging/r8188eu/os_dep/ioctl_linux.c  |   4 +-
+>  21 files changed, 518 insertions(+), 597 deletions(-)
+>
 
-5.10.58-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Dear Larry,
 
+Looks good and builds fine for me.
+
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
+
+Regards,
+Phil
