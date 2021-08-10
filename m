@@ -2,100 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9797C3E83FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31AC3E83FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbhHJT4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhHJT4l (ORCPT
+        id S232174AbhHJT5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:57:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45596 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhHJT5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:56:41 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D29C0613C1;
-        Tue, 10 Aug 2021 12:56:19 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id l11so11155821plk.6;
-        Tue, 10 Aug 2021 12:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O/j6nJ0B+kt+FPNV9uDLOFseO7eqExy2LCXzZeR9upk=;
-        b=ogUh0JUyREhosEeVYeXwQDP707P1FsYPiK+cJyGzmmFluA+i8uiJiJ/PnVkavM2Q8B
-         aeNegKcPTRHzYRlhMALFCtDTtI6tICFYLx9x7aPWT3/pRBR0zp2NY6wR6AmzWL0WnvGp
-         KrULQMvqwgJcLWYJkKrqJY793KSthEDkD842ItyXZTEcfxsenwZOpx2+s+fCZH1DaeWB
-         UzHBMFXulbVj/XWUB4dfUUyopGwKvjyygdNQJuxVEReQ7pX2xS2GdlUOH1gRo/ghafXm
-         bH5m6rjIWqWyuuiNIKUeBEDTdz0fl+bHedmjiad77RSuRsa/pSk7eIwUDo8sd8BEsnzb
-         lm5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O/j6nJ0B+kt+FPNV9uDLOFseO7eqExy2LCXzZeR9upk=;
-        b=irTNJZEyynsOVVix1G3uDBNFy6MLVT06RwNEIMuVNmtQPk70/AlsNgOvYn1VOoz7AS
-         QjNM0ONK0X711q3SqDZczjM4MNN44KQeDpMq6BZ2uxy3xuCtLTIm0w3RZRHIuCE0dyj1
-         RVVawddnvx+65lAZEh8caSsDNuldV/NS7JrQmft6alMwd7E12PMt0Wqu7bdH3HJifW9K
-         fkogk/CIYdbzdjv2q5HCCyj7MyBFLcwcKQcCl2S03SWte0pHFYbF/+53AF00fFEjR03a
-         CrCfWjaMDNp2uqOqfkb2G0oLLpsIdjlnYOtF2cP+28Ix7+mUrugSlMBq9PThwm76LT6w
-         WOkQ==
-X-Gm-Message-State: AOAM5320G1I0ET/tpoQiXjstO5f2cRVG6Q1tU/JK4aXN99OgWB1BdqdU
-        MrdVApumReVlPvNn/T6s3IogjkzYeZ85mtv4Mm8=
-X-Google-Smtp-Source: ABdhPJzivJY4JlUn+1BeeSlPgwz/WrMUsywF5eaw6NopOPVjc2meRLGoyXcG6YH7XsURzoWNY38O0M6FOcFz4Ke9GM4=
-X-Received: by 2002:a17:902:e786:b029:12d:2a7:365f with SMTP id
- cp6-20020a170902e786b029012d02a7365fmr1147639plb.21.1628625378803; Tue, 10
- Aug 2021 12:56:18 -0700 (PDT)
+        Tue, 10 Aug 2021 15:57:10 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628625406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ShLdXjBcRSN9+BSVuD5nhnixRvrV/nyBzQZnWsE/3A=;
+        b=3G90QhTytbFw6VrnKeea1yg5ZCHrs3LXJvjVjT9HNpXZOnMnRPlC2Sh8P0cO/4zRg2TZvQ
+        P1UxKTFSrnHDbGOaVHNEPyK5ktgTvyzTuEvVTRuGlZMDpYX/0skgS7gOOnWJUB5w3uKwMM
+        kY1hC9M5wJbFOYPPVjL/rdxU7hEa01UQpJp7tZV2jTz5mVe0Pp7cxSjrIO2tI5lzAzKJcl
+        BAX6Iyj9KX8OyWy7u4O51dPdJo+lKegAZNNYGWDoxor1uePe5DQfvIRaZU8u+zyPiBykLN
+        DevwdrZHEXaAF4GIUaiIIJXCkGHmIjnTi9kiH/4jTyDx4YCJ8RZDS/8bQEXc1Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628625406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ShLdXjBcRSN9+BSVuD5nhnixRvrV/nyBzQZnWsE/3A=;
+        b=k9OBeh92PPZgA6Dvms0FBuNB/LFYVADGW92G6SzPJjftUgl2/saJRBBbzMb4VmWXat1tbG
+        /PKLujNzZnrbyiDg==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [SPLAT 1/3] arm_pmu: Sleeping spinlocks down armpmu_alloc_atomic()
+In-Reply-To: <20210810183914.2wd7hehdz7y4crla@linutronix.de>
+References: <20210810134127.1394269-1-valentin.schneider@arm.com>
+ <20210810134127.1394269-2-valentin.schneider@arm.com>
+ <20210810135453.roczkohgm2lzhg66@linutronix.de> <874kbxqkyk.ffs@tglx>
+ <20210810183914.2wd7hehdz7y4crla@linutronix.de>
+Date:   Tue, 10 Aug 2021 21:56:45 +0200
+Message-ID: <87y299oyyq.ffs@tglx>
 MIME-Version: 1.0
-References: <20210808015659.2955443-1-liambeguin@gmail.com>
- <20210808015659.2955443-4-liambeguin@gmail.com> <20210808173630.5c384a4b@jic23-huawei>
- <CDEHT583QT0A.2QAXX9AC2FMLO@shaak> <CAHp75Vc3o-RrHD_wt_CfJY3P8hoRhJkdiRRySFS_O_7VdtJTQA@mail.gmail.com>
- <CDG3ATRV00VV.57ZPL3OPU5N4@shaak>
-In-Reply-To: <CDG3ATRV00VV.57ZPL3OPU5N4@shaak>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 10 Aug 2021 22:55:42 +0300
-Message-ID: <CAHp75Ve6Csjeeh7+ti6UE0-YPRHHFHXFA3jQwp+bqTAfL50_ig@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] iio: adc: ad7949: add support for internal vref
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Charles-Antoine Couret <charles-antoine.couret@essensium.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <Nuno.Sa@analog.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:46 PM Liam Beguin <liambeguin@gmail.com> wrote:
-> On Tue Aug 10, 2021 at 8:15 AM EDT, Andy Shevchenko wrote:
-> > On Mon, Aug 9, 2021 at 1:50 AM Liam Beguin <liambeguin@gmail.com> wrote:
-> > > On Sun Aug 8, 2021 at 12:36 PM EDT, Jonathan Cameron wrote:
-> > > > On Sat, 7 Aug 2021 21:56:57 -0400
-> > >         ret = fwnode_property_read_u32(child, "adi,internal-ref-microvolt", &tmp);
-> > >         if (ret == -EINVAL && mode & AD7949_CFG_VAL_REF_EXTERNAL) {
-> > >                 continue;
-> >
-> > >         } else if (ret < 0) {
-
-> > Side note, redundant 'else'
+On Tue, Aug 10 2021 at 20:39, Sebastian Andrzej Siewior wrote:
+> On 2021-08-10 19:16:19 [+0200], Thomas Gleixner wrote:
+>> On Tue, Aug 10 2021 at 15:54, Sebastian Andrzej Siewior wrote:
+>> > On 2021-08-10 14:41:25 [+0100], Valentin Schneider wrote:
+>> >> [    4.172817] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+>> >
+>> > Would it work to allocate the memory upfront and invoke the HP callback
+>> > via smp_function_call()?
+>> 
+>> Huch? If the memory is allocated during the prepare stage then the
+>> actual hotplug callback can just use it. So what's the SMP function call
+>> for?
 >
-> Are you asking to add an 'else' statement?
->
-> because, unless I'm mistaken, in this case ret can have other negative values
-> that we want to catch with this 'else if'.
+> You allocate the memory per-node (based on cpuid id) and you figure that
+> out on the target CPU. That is the smp-function call for unless there
+> another way to gather that information.
+> That is done in
+>  arm_pmu_acpi_find_alloc_pmu() -> read_cpuid_id()
 
-You lost me, I have no idea what "to add" and "other" mean here. No, I
-asked to remove it. It's redundant.
+There is no SMP function call involved. This is straight CPU hotplug
+context on the upcoming CPU.
 
-> > >                 dev_err(dev, "invalid voltage reference in %pfw\n", child);
-> > >                 fwnode_handle_put(child);
-> > >                 return ret;
-> > >         }
+You cannot allocate upfront on the control CPU and do an SMP function
+call to a not even started CPU. No idea what you are trying to do, but
+this is going nowhere.
 
--- 
-With Best Regards,
-Andy Shevchenko
+The reason why this atomic allocation is done is described in this
+commit:
+
+commit 0dc1a1851af1d593eee248b94c1277c7c7ccbbce
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Feb 5 16:41:58 2018 +0000
+
+    arm_pmu: add armpmu_alloc_atomic()
+    
+    In ACPI systems, we don't know the makeup of CPUs until we hotplug them
+    on, and thus have to allocate the PMU datastructures at hotplug time.
+    Thus, we must use GFP_ATOMIC allocations.
+
+I have no idea why ACPI does not expose topology and PMU information in
+the first place, but do I really want to know?
+
+So the easy way out is to preallocate one PMU and use that preallocation
+when needed in the starting callback. Completely untested patch
+below. Note, that because I'm lazy this will waste one preallocated PMU
+at the end, but that's trivial enough to clean up.
+
+Thanks,
+
+        tglx
+---
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -861,12 +861,12 @@ static void cpu_pmu_destroy(struct arm_p
+ 					    &cpu_pmu->node);
+ }
+ 
+-static struct arm_pmu *__armpmu_alloc(gfp_t flags)
++struct arm_pmu *armpmu_alloc(void)
+ {
+ 	struct arm_pmu *pmu;
+ 	int cpu;
+ 
+-	pmu = kzalloc(sizeof(*pmu), flags);
++	pmu = kzalloc(sizeof(*pmu), GFP_KERNEL);
+ 	if (!pmu)
+ 		goto out;
+ 
+@@ -916,17 +916,6 @@ static struct arm_pmu *__armpmu_alloc(gf
+ 	return NULL;
+ }
+ 
+-struct arm_pmu *armpmu_alloc(void)
+-{
+-	return __armpmu_alloc(GFP_KERNEL);
+-}
+-
+-struct arm_pmu *armpmu_alloc_atomic(void)
+-{
+-	return __armpmu_alloc(GFP_ATOMIC);
+-}
+-
+-
+ void armpmu_free(struct arm_pmu *pmu)
+ {
+ 	free_percpu(pmu->hw_events);
+--- a/drivers/perf/arm_pmu_acpi.c
++++ b/drivers/perf/arm_pmu_acpi.c
+@@ -185,6 +185,8 @@ static int arm_pmu_acpi_parse_irqs(void)
+ 	return err;
+ }
+ 
++static struct arm_pmu *arm_pmu_prealloced;
++
+ static struct arm_pmu *arm_pmu_acpi_find_alloc_pmu(void)
+ {
+ 	unsigned long cpuid = read_cpuid_id();
+@@ -199,15 +201,9 @@ static struct arm_pmu *arm_pmu_acpi_find
+ 		return pmu;
+ 	}
+ 
+-	pmu = armpmu_alloc_atomic();
+-	if (!pmu) {
+-		pr_warn("Unable to allocate PMU for CPU%d\n",
+-			smp_processor_id());
+-		return NULL;
+-	}
+-
++	pmu = arm_pmu_prealloced;
++	arm_pmu_prealloced = NULL;
+ 	pmu->acpi_cpuid = cpuid;
+-
+ 	return pmu;
+ }
+ 
+@@ -284,6 +280,19 @@ static int arm_pmu_acpi_cpu_starting(uns
+ 	return 0;
+ }
+ 
++static int arm_pmu_acpi_cpu_prepare(unsigned int cpu)
++{
++	if (per_cpu(probed_pmus, cpu) || arm_pmu_prealloced)
++		return 0;
++
++	arm_pmu_prealloced = armpmu_alloc();
++	if (!arm_pmu_prealloced) {
++		pr_warn("Unable to allocate PMU for CPU%d\n", cpu);
++		return -ENOMEM;
++	}
++	return 0;
++}
++
+ int arm_pmu_acpi_probe(armpmu_init_fn init_fn)
+ {
+ 	int pmu_idx = 0;
+@@ -338,7 +347,7 @@ int arm_pmu_acpi_probe(armpmu_init_fn in
+ 
+ static int arm_pmu_acpi_init(void)
+ {
+-	int ret;
++	int ret, dynstate;
+ 
+ 	if (acpi_disabled)
+ 		return 0;
+@@ -349,9 +358,17 @@ static int arm_pmu_acpi_init(void)
+ 	if (ret)
+ 		return ret;
+ 
++	dynstate = cpuhp_setup_state(CPUHP_BP_PREPARE_DYN,
++				     "perf/arm/pmu_acpi:prepare",
++				     arm_pmu_acpi_cpu_prepare, NULL);
++	if (dynstate < 0)
++		return dynstate;
++
+ 	ret = cpuhp_setup_state(CPUHP_AP_PERF_ARM_ACPI_STARTING,
+ 				"perf/arm/pmu_acpi:starting",
+ 				arm_pmu_acpi_cpu_starting, NULL);
++	if (ret)
++		cpuhp_remove_state(dynstate);
+ 
+ 	return ret;
+ }
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -165,7 +165,6 @@ static inline int arm_pmu_acpi_probe(arm
+ 
+ /* Internal functions only for core arm_pmu code */
+ struct arm_pmu *armpmu_alloc(void);
+-struct arm_pmu *armpmu_alloc_atomic(void);
+ void armpmu_free(struct arm_pmu *pmu);
+ int armpmu_register(struct arm_pmu *pmu);
+ int armpmu_request_irq(int irq, int cpu);
