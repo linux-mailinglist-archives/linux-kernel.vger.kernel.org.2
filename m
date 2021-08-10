@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489073E7E48
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1B43E7EFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhHJRcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:32:16 -0400
-Received: from mga03.intel.com ([134.134.136.65]:23278 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhHJRcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214979758"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="214979758"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 10:31:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="570859629"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 10 Aug 2021 10:31:43 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 2147AF9; Tue, 10 Aug 2021 20:31:24 +0300 (EEST)
-Date:   Tue, 10 Aug 2021 20:31:24 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
-Message-ID: <20210810173124.vzxpluaepdfe5aum@black.fi.intel.com>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <4b80289a-07a4-bf92-9946-b0a8afb27326@intel.com>
- <20210810151548.4exag5uj73bummsr@black.fi.intel.com>
- <82b8836f-a467-e5ff-08f3-704a85b9faa0@intel.com>
+        id S234096AbhHJRg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233298AbhHJRfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:35:10 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C53FC0619D0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:33:24 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x8so43143914lfe.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=y3BZ+wT7TMDVjM2/WQcyPOhYkG/NWjvDbJIsMqFI2RA=;
+        b=RsiBBdA9QKOcTCF5lGXKVsjmClQ3sMV8nYRHi5UzQ6RFRdaZ6t981j56diJ7q3WLiT
+         dSrogDmRt6kwHS+J+pcIdphvlu5Vk62bOJudqb0dzEOf5Tr6sAVMWTY2NbEn++ZnSdaf
+         F4yj6h4F7VBk6uVCXN4p2StSiBpSckLhr0NJoCtUTvVh+gCrpSdvA2dss+nT8Q4XWg+b
+         4x9fMuBGMminOSzPCK8njOsWexpWsfb2omBFXa3GLhHqzUauC1r8oyB3fDvFuiS7qNjT
+         fDqijYMWxjmP3EeBvtWaIUY7Z5YEma/9OhqmI5Ya7ZKqW/5hzlkm8xAdNsqyzESz/5Xj
+         5sZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=y3BZ+wT7TMDVjM2/WQcyPOhYkG/NWjvDbJIsMqFI2RA=;
+        b=g8eFIAj3VGSUi5NGZNU4QCXpOaE1HvLRQL8LimtEruNZXGwDOIqi992+6FdLhP0KWo
+         +hLV5m8d32XLiUDxh5ZhJzEHQl7uwU65D1VSqNshlbEx9Cu4x084wT6X4z+5wk9z7t/P
+         rCe0OoH69b0/nwApOZqz4sz1bVIDzKgzlH4/8bQneCjdvgrrS9E5OPUSKrnHADFS/MjT
+         6NlyV9B/NEjWR8Pl77pnNAEDKZrGQFD4xTDwSF0BfTtmo+0kjcK1eqhy2QuoIl2VOJ9Y
+         +bIYgamFY1YkNMpuNMd0Co5M6XNgDZs/rX4ApguOxAws3lkp5g2s6uxIzoKCHGX6eVSR
+         4R3A==
+X-Gm-Message-State: AOAM532lCd0CMHkwcBcppb6/p5DB3NfnW5B7IGRNW4AqXoz54MdvlrBV
+        lWa4+HHIOFvZvaiFV1pk2N3S+TGXRXF3VmW4fdpUsZ8+1Bg=
+X-Google-Smtp-Source: ABdhPJw+sC+pBQw0G+0ULVvin/r/jCVVb1V7XUqN67UCoWrnBzyIXnaSzK5br1SZrCupI/L0LIZWgMfi7vhpZK+Wcm0=
+X-Received: by 2002:a05:651c:32c:: with SMTP id b12mr1745558ljp.198.1628616792032;
+ Tue, 10 Aug 2021 10:33:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <82b8836f-a467-e5ff-08f3-704a85b9faa0@intel.com>
+Received: by 2002:ac2:5d2e:0:0:0:0:0 with HTTP; Tue, 10 Aug 2021 10:33:10
+ -0700 (PDT)
+Reply-To: majidmuzaffar8@gmail.com
+From:   Majid Muzaffar <ing.abdullabin.rishid.me@gmail.com>
+Date:   Tue, 10 Aug 2021 20:33:10 +0300
+Message-ID: <CAFsu49XXzY7ugKhGzJm5OPKe2LG1R35c-Dkp83VgS3+u27y=sQ@mail.gmail.com>
+Subject: Proposal
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 08:51:01AM -0700, Dave Hansen wrote:
-> In other words, I buy the boot speed argument.  But, I don't buy the
-> "this saves memory long term" argument at all.
+Salam alaikum,
 
-Okay, that's a fair enough. I guess there's *some* workloads that may
-have memory footprint reduced, but I agree it's minority.
+I am the investment officer of UAE based investment company who are
+ready to fund projects outside UAE, in the form of debt finance. We
+grant loan to both Corporate and private entities at a low interest
+rate of 3% ROI per annum. The terms are very flexible and interesting.
+Kindly revert back if you have projects that needs funding for further
+discussion and negotiation.
 
-> >> I had expected this series, but I also expected it to be connected to
-> >> CONFIG_DEFERRED_STRUCT_PAGE_INIT somehow.  Could you explain a bit how
-> >> this problem is different and demands a totally orthogonal solution?
-> >>
-> >> For instance, what prevents us from declaring: "Memory is accepted at
-> >> the time that its 'struct page' is initialized" ?  Then, we use all the
-> >> infrastructure we already have for DEFERRED_STRUCT_PAGE_INIT.
-> > 
-> > That was my first thought too and I tried it just to realize that it is
-> > not what we want. If we would accept page on page struct init it means we
-> > would make host allocate all memory assigned to the guest on boot even if
-> > guest actually use small portion of it.
-> > 
-> > Also deferred page init only allows to scale memory accept across multiple
-> > CPUs, but doesn't allow to get to userspace before we done with it. See
-> > wait_for_completion(&pgdat_init_all_done_comp).
-> 
-> That's good information.  It's a refinement of the "I want to boot
-> faster" requirement.  What you want is not just going _faster_, but
-> being able to run userspace before full acceptance has completed.
-> 
-> Would you be able to quantify how fast TDX page acceptance is?  Are we
-> talking about MB/s, GB/s, TB/s?  This series is rather bereft of numbers
-> for a feature which making a performance claim.
-> 
-> Let's say we have a 128GB VM.  How much does faster does this approach
-> reach userspace than if all memory was accepted up front?  How much
-> memory _could_ have been accepted at the point userspace starts running?
+Thanks
 
-Acceptance code is not optimized yet: we accept memory in 4k chunk which
-is very slow because hypercall overhead dominates the picture.
-
-As of now, kernel boot time of 1 VCPU and 64TiB VM with upfront memory
-accept is >20 times slower than with this lazy memory accept approach.
-
-The difference is going to be substantially lower once we get it optimized
-properly.
-
--- 
- Kirill A. Shutemov
+investment officer
