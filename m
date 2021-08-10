@@ -2,169 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6423E548E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DDB3E548F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237290AbhHJHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhHJHsH (ORCPT
+        id S237345AbhHJHsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:48:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231705AbhHJHsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:48:07 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815D4C0613D3;
-        Tue, 10 Aug 2021 00:47:45 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so16987415lfu.5;
-        Tue, 10 Aug 2021 00:47:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9ho5vi/DVYwm8HX90yRCWh3kL6ZbH0pPpPt+rtsTu+E=;
-        b=Tq25JJsTwzCuLHsWd9rZoCPk3z64mDLARlSk6+OF1bu8+lJF6AiA2eUxq1xjeaH0rY
-         rQILgAW4IsPYmnv2U/XsUxcbpintogfNKMqmMOG2SbcVjUt3MJ4fHJ8mtJzfGOx+TZ9e
-         uc8L76lsWJU4YsBdWpxtXKDH+/G24jsxOdJHRqzrFOOeUpgwY96/T+HasQKBHlBmrOj1
-         rqocaSnG9epHbk/fQ1lWBux5srmnIX1Pf4+ALLz+qQElDi69NJzlYFvTcwh+w9UDCQ5X
-         PqiPbkwOZEYVyAQjqJ+fYNiDuBhK7bJYBJ9U7ftfnftbJh0xHrmOWyF4O0NYARUXgEAX
-         bGiw==
+        Tue, 10 Aug 2021 03:48:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628581688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qyiZQfgk3j2MX/M11JnnsZSFCKezwOSWW55OSmu9ncY=;
+        b=WZf8WkUuIjZIkJrVlXCuL7mkeR/J3GwD+1LVyeZMU6qogn1BB5J6XAv0ktL+IrI0aZwda8
+        h1/KfGnO6nLKCs7EyRR2uUsZFiC1FICxwlqnSJ8VTZcycmTZCYBDSX60mAnizXrjLboIHw
+        a+0KbZ8YxToz02tH/D36ydoR1GSKiiA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-JftbnBHvOqmSn1yUubFSgg-1; Tue, 10 Aug 2021 03:48:07 -0400
+X-MC-Unique: JftbnBHvOqmSn1yUubFSgg-1
+Received: by mail-wm1-f69.google.com with SMTP id y186-20020a1c32c30000b02902b5ac887cfcso733364wmy.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:48:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9ho5vi/DVYwm8HX90yRCWh3kL6ZbH0pPpPt+rtsTu+E=;
-        b=uSGa9+fID7eyUS4X++NT6kIGi6qMJnh4L5AROLuggroC7Z8AwBw1GNnLdAkQql19lu
-         9rhCYSmCoAYO1s5vBOO0SYI7WLXghS9XwJEOq+YGGNGJLHYxgYSaRXtbpT5DhdUHOc3V
-         g+AHZiny+z6IAV7vy25a3Yzx4PLU4cQ0v2iZWQDmlbzsIOXO6qoIZwP24Nqd2CQ6Zc4q
-         2sCbJjgzy7A18Cza5LYV6Ii13NZCsldWhvXd3UWjlMFmzHqQ8ATu/KkiqZQnGNrD4Wtq
-         /9RcDfOHA42DyWtKJeL0PsJyqnKIAhwfaBkvKvi3M/TK/A21aYsqvN78Z1wZFofkVOyJ
-         SY/A==
-X-Gm-Message-State: AOAM5309j8hJPt/jybm95KGLpilQj3t3Rpxguq+5rtreQpoam9xxNG16
-        JO3PZjq5UQtodpI5uroLLpA=
-X-Google-Smtp-Source: ABdhPJwNu3wAQ5xPPvZPKr1/VluV1GfO/Sd7e30s19zJ3T6BV3QajBVWSPz5ccTJyW7KMMhPLGgKug==
-X-Received: by 2002:a05:6512:2354:: with SMTP id p20mr20919562lfu.26.1628581663777;
-        Tue, 10 Aug 2021 00:47:43 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id u14sm2153481lfu.120.2021.08.10.00.47.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 00:47:43 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 10:47:40 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, oleksandr@natalenko.name
-Subject: Re: [PATCH v27 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-Message-ID: <20210810074740.mkjcow2inyjaakch@kari-VirtualBox>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729134943.778917-9-almaz.alexandrovich@paragon-software.com>
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=qyiZQfgk3j2MX/M11JnnsZSFCKezwOSWW55OSmu9ncY=;
+        b=X7oEWCYj67gj4BfMbDQa3WDjjBJeeivnOg5LfPXYPC0RcjSxpfpZ9SmbyuTRPoK6hR
+         YbJ9QwhgD0zyhO36/2hzNOwX3hOd2HBlkYnoJXi4tybyw1EJ5EARDf3LA/PR4wnWYkMN
+         WOi7PnjFYF0JSQ32DhSoZTmmz0hwV9mhSvPJov1lEBMIAEsMK6pihyyXnGCw0G3mmLkH
+         RiMLMieiuJLplwBNw7ykQh3EmxqjBjrZPyWyYhOEgJ0prCYWgHHTKJ2fCTWVweHTHMDg
+         PsuM6e+5fC+VaCs7vxXMrmHuUvIZQEY9Mmhc9/XNpWEB3xTxeuv16Cj/6NGWm936p0Of
+         e16A==
+X-Gm-Message-State: AOAM5304YhgQ5MuALb5YW7dARyztbDSOHDq092fltpE1IS4uu3Ckt0ni
+        ROq4QAriTDtWgjBYAAE3w5aZp337tC7x09wSMCv9xG32IZhCu7iFcx11oLX00vKepogBiE/27p9
+        FL2U0BVoZL6tXbUKLez7aHFZJ
+X-Received: by 2002:a1c:3847:: with SMTP id f68mr118827wma.27.1628581686197;
+        Tue, 10 Aug 2021 00:48:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3nGwLd7fpNoXzdy/z33L+jLJPlF/DBsrza1eqzfBVIcellVymHPn+c/mpsbj+CQSbYYkvpg==
+X-Received: by 2002:a1c:3847:: with SMTP id f68mr118784wma.27.1628581685855;
+        Tue, 10 Aug 2021 00:48:05 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id e11sm2137939wrm.80.2021.08.10.00.48.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 00:48:05 -0700 (PDT)
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
+Message-ID: <dd4b7aff-ccf3-24f6-3f6e-14c4b6aa8b64@redhat.com>
+Date:   Tue, 10 Aug 2021 09:48:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729134943.778917-9-almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:49:41PM +0300, Konstantin Komarov wrote:
-> This adds Kconfig, Makefile and doc
+On 10.08.21 08:26, Kirill A. Shutemov wrote:
+> UEFI Specification version 2.9 introduces concept of memory acceptance:
+> Some Virtual Machine platforms, such as Intel TDX or AMD SEV-SNP,
+> requiring memory to be accepted before it can be used by the guest.
+> Accepting happens via a protocol specific for the Virtrual Machine
+> platform.
 > 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> Accepting memory is costly and it makes VMM allocate memory for the
+> accepted guest physical address range. It's better to postpone memory
+> acceptation until memory is needed. It lowers boot time and reduces
+> memory overhead.
+> 
+> Support of such memory requires few changes in core-mm code:
+> 
+>    - memblock has to accept memory on allocation;
+> 
+>    - page allocator has to accept memory on the first allocation of the
+>      page;
+> 
+> Memblock change is trivial.
+> 
+> Page allocator is modified to accept pages on the first allocation.
+> PageOffline() is used to indicate that the page requires acceptance.
+> The flag currently used by hotplug and balloon. Such pages are not
+> available to page allocator.
+> 
+> An architecture has to provide three helpers if it wants to support
+> unaccepted memory:
+> 
+>   - accept_memory() makes a range of physical addresses accepted.
+> 
+>   - maybe_set_page_offline() marks a page PageOffline() if it requires
+>     acceptance. Used during boot to put pages on free lists.
+> 
+>   - clear_page_offline() clears makes a page accepted and clears
+>     PageOffline().
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 > ---
->  Documentation/filesystems/ntfs3.rst | 107 ++++++++++++++++++++++++++++
-
-Still missing Documentation/filesystems/index.rst as I stated before
-https://lore.kernel.org/linux-fsdevel/20210103220739.2gkh6gy3iatv4fog@kari-VirtualBox/
-
->  fs/ntfs3/Kconfig                    |  46 ++++++++++++
->  fs/ntfs3/Makefile                   |  36 ++++++++++
->  3 files changed, 189 insertions(+)
->  create mode 100644 Documentation/filesystems/ntfs3.rst
->  create mode 100644 fs/ntfs3/Kconfig
->  create mode 100644 fs/ntfs3/Makefile
+>   mm/internal.h   | 14 ++++++++++++++
+>   mm/memblock.c   |  1 +
+>   mm/page_alloc.c | 13 ++++++++++++-
+>   3 files changed, 27 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
-
-
-> +Mount Options
-> +=============
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 31ff935b2547..d2fc8a17fbe0 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -662,4 +662,18 @@ void vunmap_range_noflush(unsigned long start, unsigned long end);
+>   int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
+>   		      unsigned long addr, int page_nid, int *flags);
+>   
+> +#ifndef CONFIG_UNACCEPTED_MEMORY
+> +static inline void maybe_set_page_offline(struct page *page, unsigned int order)
+> +{
+> +}
 > +
-> +The list below describes mount options supported by NTFS3 driver in addition to
-> +generic ones.
+> +static inline void clear_page_offline(struct page *page, unsigned int order)
+> +{
+> +}
 > +
-> +===============================================================================
-> +
-> +nls=name		This option informs the driver how to interpret path
-> +			strings and translate them to Unicode and back. If
-> +			this option is not set, the default codepage will be
-> +			used (CONFIG_NLS_DEFAULT).
-> +			Examples:
-> +				'nls=utf8'
+> +static inline void accept_memory(phys_addr_t start, phys_addr_t end)
+> +{
+> +}
 
-It seems that kernel community will start use iocharset= as default. nls
-option can still be alias but will need deprecated message. See message
-https://lore.kernel.org/linux-fsdevel/20200102211855.gg62r7jshp742d6i@pali/
+Can we find better fitting names for the first two? The function names 
+are way too generic. For example:
 
-and current work from Pali
-https://lore.kernel.org/linux-fsdevel/20210808162453.1653-1-pali@kernel.org/
+accept_or_set_page_offline()
 
-This is still RFC state so probably no horry, but good to know stuff. I
-also added Pali so he also knows.
+accept_and_clear_page_offline()
 
-> diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-> new file mode 100644
-> index 000000000..279701b62
-> --- /dev/null
-> +++ b/fs/ntfs3/Makefile
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Makefile for the ntfs3 filesystem support.
-> +#
-> +
-> +# to check robot warnings
-> +ccflags-y += -Wint-to-pointer-cast \
-> +	$(call cc-option,-Wunused-but-set-variable,-Wunused-const-variable) \
-> +	$(call cc-option,-Wold-style-declaration,-Wout-of-line-declaration)
+I thought for a second if
+	PAGE_TYPE_OPS(Unaccepted, offline)
+makes sense as well, not sure.
 
-It is good idea to include this url in commit message.
-https://lore.kernel.org/linux-fsdevel/212218590.13874.1621431781547@office.mailbox.org/
 
-And also add that signed off tag from Tor Vic.
+Also, please update the description of PageOffline in page-flags.h to 
+include the additional usage with PageBuddy set at the same time.
 
-> +
-> +obj-$(CONFIG_NTFS3_FS) += ntfs3.o
-> +
-> +ntfs3-y :=	attrib.o \
-> +		attrlist.o \
-> +		bitfunc.o \
-> +		bitmap.o \
-> +		dir.o \
-> +		fsntfs.o \
-> +		frecord.o \
-> +		file.o \
-> +		fslog.o \
-> +		inode.o \
-> +		index.o \
-> +		lznt.o \
-> +		namei.o \
-> +		record.o \
-> +		run.o \
-> +		super.o \
-> +		upcase.o \
-> +		xattr.o
-> +
-> +ntfs3-$(CONFIG_NTFS3_LZX_XPRESS) += $(addprefix lib/,\
-> +		decompress_common.o \
-> +		lzx_decompress.o \
-> +		xpress_decompress.o \
-> +		)
-> \ No newline at end of file
-> -- 
-> 2.25.4
-> 
+
+I assume you don't have to worry about page_offline_freeze/thaw ... as 
+we only set PageOffline initially, but not later at runtime when other 
+subsystems (/proc/kcore) might stumble over it.
+
+-- 
+Thanks,
+
+David / dhildenb
+
