@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325D43E7EE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5853D3E7E46
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhHJRf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:35:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
+        id S229456AbhHJRcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:32:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232627AbhHJRen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:34:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0806360E09;
-        Tue, 10 Aug 2021 17:34:20 +0000 (UTC)
+        id S230267AbhHJRcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:32:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F3A760EBD;
+        Tue, 10 Aug 2021 17:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616861;
-        bh=3BNFiNOT6+j5Db8rEmPdLJrMAp5oMaqX49wllEV+pIo=;
+        s=korg; t=1628616707;
+        bh=Iu6W+aucb0aktf+z3AmbVFRr50+3uJ/lbQzb8BDpTVY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJP8tWq0E+vq4fD17l3RPnSLcR/SlqifOpICBd+lX50g/zg6gI9tGEJiPjbAHBk6D
-         /FpJDKspurqllztgY4/OdtBkjnih1wCr6b1Gy69m5hUImN44PwTLw1WI1K5yUp+glP
-         iLXHenOC5TCE5bQ1hSTplpfHnILbmLaeQgFalEoc=
+        b=YAQTWtsxhhmgH2A2b9xLjH7+blin320sayIfMDmaoL1KWUDEk0lOWV0WgnF87Oy6e
+         ByhS2rcWHM30mA7E2UaDdhKj7ctPMuNDTDqNirmFJk800n7zcdunLNpQjRx9M8tEsn
+         MjRYAFGS9EqeEDxp8zSRRGlpBK3tY2UMFU6xMgyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 25/85] gpio: tqmx86: really make IRQ optional
+Subject: [PATCH 4.19 04/54] ARM: dts: colibri-imx6ull: limit SDIO clock to 25MHz
 Date:   Tue, 10 Aug 2021 19:29:58 +0200
-Message-Id: <20210810172949.049257220@linuxfoundation.org>
+Message-Id: <20210810172944.329760082@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+From: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 
-[ Upstream commit 9b87f43537acfa24b95c236beba0f45901356eb2 ]
+[ Upstream commit 828db68f4ff1ab6982a36a56522b585160dc8c8e ]
 
-The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
-causes warnings with newer kernels.
+NXP and AzureWave don't recommend using SDIO bus mode 3.3V@50MHz due
+to noise affecting the wireless throughput. Colibri iMX6ULL uses only
+3.3V signaling for Wi-Fi module AW-CM276NF.
 
-Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
-missing IRQ properly.
+Limit the SDIO Clock on Colibri iMX6ULL to 25MHz.
 
-Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fixes: c2e4987e0e02 ("ARM: dts: imx6ull: add Toradex Colibri iMX6ULL support")
+Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-tqmx86.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpio/gpio-tqmx86.c b/drivers/gpio/gpio-tqmx86.c
-index a3109bcaa0ac..09ca493b3617 100644
---- a/drivers/gpio/gpio-tqmx86.c
-+++ b/drivers/gpio/gpio-tqmx86.c
-@@ -235,8 +235,8 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	int ret, irq;
- 
--	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
-+	irq = platform_get_irq_optional(pdev, 0);
-+	if (irq < 0 && irq != -ENXIO)
- 		return irq;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-@@ -275,7 +275,7 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(&pdev->dev);
- 
--	if (irq) {
-+	if (irq > 0) {
- 		struct irq_chip *irq_chip = &gpio->irq_chip;
- 		u8 irq_status;
- 
+diff --git a/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi b/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi
+index 038d8c90f6df..621396884c31 100644
+--- a/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi
++++ b/arch/arm/boot/dts/imx6ull-colibri-wifi.dtsi
+@@ -43,6 +43,7 @@
+ 	assigned-clock-rates = <0>, <198000000>;
+ 	cap-power-off-card;
+ 	keep-power-in-suspend;
++	max-frequency = <25000000>;
+ 	mmc-pwrseq = <&wifi_pwrseq>;
+ 	no-1-8-v;
+ 	non-removable;
 -- 
 2.30.2
 
