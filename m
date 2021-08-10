@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF0F3E5144
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5243E514B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 05:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236454AbhHJDCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 23:02:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24786 "EHLO
+        id S236391AbhHJDGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 23:06:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39506 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236243AbhHJDCu (ORCPT
+        by vger.kernel.org with ESMTP id S232897AbhHJDF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 23:02:50 -0400
+        Mon, 9 Aug 2021 23:05:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628564548;
+        s=mimecast20190719; t=1628564736;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oaO6ycaF20ZgcRI3wGSVNh4K2MMhBW7g6tA5PypVq9o=;
-        b=bagKjRKoJldUOmEUH9H0R9LTfci0nvSg95s7XZjN/aACXXcxKIHgw0Iy7CJvp8TpZF3jLc
-        EPR7W9SBNyzTsCdtkaJbHnmikE/evwmXD2/dBr8L7et4aTThsYgzgSuCSd1J6qqn9sWIt0
-        Gsd9BTE3qz+AMdfr5GIInToyNWoXxTQ=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-e3WMgQtMMxST4LCHn38iiw-1; Mon, 09 Aug 2021 23:02:27 -0400
-X-MC-Unique: e3WMgQtMMxST4LCHn38iiw-1
-Received: by mail-pl1-f197.google.com with SMTP id s3-20020a1709029883b029012b41197000so1135633plp.16
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 20:02:27 -0700 (PDT)
+        bh=FNAD9HvPLL20RnA7Fm9EynMKwbGxKPvS4YW5JmvO4X8=;
+        b=aTQKRcVlu3h39rfRnxSo4jghn3CBn34dqIhm7nWrTAGhY77OTE0TjVmyfPIlsXA2Y8qWIt
+        p2dQMA1nfrYbeJXq4ivrfBEsX9vHiBg0op/bXQkfWniclK2RKh+y/V3PZ7GS0Hkj163X7k
+        gJjMn2X91iJ9Go+wnQLjd1ZgVdG0vxc=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-5MdIuSl-NO-mn3w94-XYvA-1; Mon, 09 Aug 2021 23:05:35 -0400
+X-MC-Unique: 5MdIuSl-NO-mn3w94-XYvA-1
+Received: by mail-pj1-f71.google.com with SMTP id d35-20020a17090a6f26b0290178ab46154dso3496257pjk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 20:05:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=oaO6ycaF20ZgcRI3wGSVNh4K2MMhBW7g6tA5PypVq9o=;
-        b=ryonC3DkV5mc1/DhwryhFTtom0UbW/cazbTAWOaY6HsnejWXNTCWc/TsNaZzzBC3j9
-         dekJDw2MT/sG32RjZBbdGIYl5aXrljlIvEuMWrelt4g62tdcfSBmEP3PJ0jwCLDOeP9b
-         De5YdYyAtjMpK+eo8CR0x25xwqPA4sZjOVssySGF8aeC7oUKwo7hgvDNYZ9J6pcmUqnm
-         SW/z2/VsWKIixxJB3hY5eghoW37A8qQzYc5PdtsKohEGfvY3J4cORApzNAIsmSKXCLSJ
-         7RerHexRLOrSRLrbT24yI8QX/ojB1LFJILx6aScHile7LpXF63a6peVtM7339pAvBi5V
-         qUqg==
-X-Gm-Message-State: AOAM533307PdQLe1wXRUfru/IDkAF9y4SbqwGkOxcRYgT48yZUgFratQ
-        9EhSUJpEF6UNmIavdQJQ7P8SPoIHp3qdkD9EMta7OtzgnekqMOMhLdgmQZJDTMFx1R4aWxCs7hI
-        6VD48VQFV3a69WHnjmaeNWjH0
-X-Received: by 2002:a63:f754:: with SMTP id f20mr131581pgk.385.1628564546404;
-        Mon, 09 Aug 2021 20:02:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4iIBidP48y9gv61bBqE2YoRFI1FZjnrIQXCCS9iv1FkdxvVNARb2MOe/u6xBBvn1K8bmYbw==
-X-Received: by 2002:a63:f754:: with SMTP id f20mr131560pgk.385.1628564546126;
-        Mon, 09 Aug 2021 20:02:26 -0700 (PDT)
+        bh=FNAD9HvPLL20RnA7Fm9EynMKwbGxKPvS4YW5JmvO4X8=;
+        b=p46BzSB4eKYx1a+EGl1wXClTh+iiUNlXo+c33K5oO4nK6uUrNU6PPfwajQ8IxBUwP0
+         wGOOCaHkPmhKbIecgqJpimfOSgqp1U1D8yxIVGNWc9OSdib5yH1/iPiZS8cYBsfKEfEn
+         S2wqxALFMmYbSfjfQWVXdnP41dxPu52mh5ltXGnwSkLwPx6JubZAuqrWlZFF2CL2meEc
+         HP6M+8ne83iz3CQH3yLV0vQrgjroDrLQunLAiepgzINJNwVr786xWzOrZVmR+nlHe4PU
+         1XbHb+NXWQPnBX9Y/Y4dvr1T+FyoGx6XYM2XfOqed/BBw7ZLsbQzEUyMDM/mOgWYzy7U
+         xM3w==
+X-Gm-Message-State: AOAM530tLNIDPERoCLmtJuh7tFcHCkOI5pkqZx5AfPSWWpGx86l0jHMh
+        JrphryOjfq6Aao+Cs9Istqcxwux21GBdmq/kSbPHSvP9l72lATV743PLd2WbjeZj5ZCbm6ch+G1
+        6TIOlQjCN48egHT4qifyrtLpFR7gStSlBBej8pmHEGKJGNVVMlPNepnn5lyzRDgpwuU219+oNnt
+        XC
+X-Received: by 2002:a63:2585:: with SMTP id l127mr303535pgl.318.1628564734500;
+        Mon, 09 Aug 2021 20:05:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXfNDEqGz8UY7V4AUjb+V6s581Q/QII16jDbubwX4LuBoC0RVi6HBrqCF4aijatpedgi9vtg==
+X-Received: by 2002:a63:2585:: with SMTP id l127mr303496pgl.318.1628564734150;
+        Mon, 09 Aug 2021 20:05:34 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z18sm17386165pfn.88.2021.08.09.20.02.18
+        by smtp.gmail.com with ESMTPSA id s5sm16264880pji.56.2021.08.09.20.05.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 20:02:25 -0700 (PDT)
-Subject: Re: [PATCH v10 01/17] iova: Export alloc_iova_fast() and
- free_iova_fast()
-To:     Yongji Xie <xieyongji@bytedance.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     kvm <kvm@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        songmuchun@bytedance.com, Jens Axboe <axboe@kernel.dk>,
-        He Zhe <zhe.he@windriver.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, bcrl@kvack.org,
-        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
-References: <20210729073503.187-1-xieyongji@bytedance.com>
- <20210729073503.187-2-xieyongji@bytedance.com>
- <43d88942-1cd3-c840-6fec-4155fd544d80@redhat.com>
- <CACycT3vcpwyA3xjD29f1hGnYALyAd=-XcWp8+wJiwSqpqUu00w@mail.gmail.com>
- <6e05e25e-e569-402e-d81b-8ac2cff1c0e8@arm.com>
- <CACycT3sm2r8NMMUPy1k1PuSZZ3nM9aic-O4AhdmRRCwgmwGj4Q@mail.gmail.com>
- <417ce5af-4deb-5319-78ce-b74fb4dd0582@arm.com>
- <CACycT3vARzvd4-dkZhDHqUkeYoSxTa2ty0z0ivE1znGti+n1-g@mail.gmail.com>
- <8c381d3d-9bbd-73d6-9733-0f0b15c40820@redhat.com>
- <CACycT3steXFeg7NRbWpo2J59dpYcumzcvM2zcPJAVe40-EvvEg@mail.gmail.com>
+        Mon, 09 Aug 2021 20:05:33 -0700 (PDT)
+Subject: Re: [PATCH v5] virtio-blk: Add validation for block size in config
+ space
+To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
+        stefanha@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210809101609.148-1-xieyongji@bytedance.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <b427cf12-2ff6-e5cd-fe6a-3874d8622a29@redhat.com>
-Date:   Tue, 10 Aug 2021 11:02:14 +0800
+Message-ID: <08366773-76b5-be73-7e32-d9ce6f6799bf@redhat.com>
+Date:   Tue, 10 Aug 2021 11:05:29 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CACycT3steXFeg7NRbWpo2J59dpYcumzcvM2zcPJAVe40-EvvEg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210809101609.148-1-xieyongji@bytedance.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 Precedence: bulk
@@ -101,79 +75,103 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-åœ¨ 2021/8/9 ä¸‹åˆ1:56, Yongji Xie å†™é“:
-> On Thu, Aug 5, 2021 at 9:31 PM Jason Wang <jasowang@redhat.com> wrote:
->>
->> åœ¨ 2021/8/5 ä¸‹åˆ8:34, Yongji Xie å†™é“:
->>>> My main point, though, is that if you've already got something else
->>>> keeping track of the actual addresses, then the way you're using an
->>>> iova_domain appears to be something you could do with a trivial bitmap
->>>> allocator. That's why I don't buy the efficiency argument. The main
->>>> design points of the IOVA allocator are to manage large address spaces
->>>> while trying to maximise spatial locality to minimise the underlying
->>>> pagetable usage, and allocating with a flexible limit to support
->>>> multiple devices with different addressing capabilities in the same
->>>> address space. If none of those aspects are relevant to the use-case -
->>>> which AFAICS appears to be true here - then as a general-purpose
->>>> resource allocator it's rubbish and has an unreasonably massive memory
->>>> overhead and there are many, many better choices.
->>>>
->>> OK, I get your point. Actually we used the genpool allocator in the
->>> early version. Maybe we can fall back to using it.
->>
->> I think maybe you can share some perf numbers to see how much
->> alloc_iova_fast() can help.
->>
-> I did some fio tests[1] with a ram-backend vduse block device[2].
+ÔÚ 2021/8/9 ÏÂÎç6:16, Xie Yongji Ð´µÀ:
+> An untrusted device might presents an invalid block size
+> in configuration space. This tries to add validation for it
+> in the validate callback and clear the VIRTIO_BLK_F_BLK_SIZE
+> feature bit if the value is out of the supported range.
 >
-> Following are some performance data:
+> And we also double check the value in virtblk_probe() in
+> case that it's changed after the validation.
 >
->                              numjobs=1   numjobs=2    numjobs=4   numjobs=8
-> iova_alloc_fast    145k iops      265k iops      514k iops      758k iops
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> ---
+>   drivers/block/virtio_blk.c | 39 +++++++++++++++++++++++++++++++++------
+>   1 file changed, 33 insertions(+), 6 deletions(-)
 >
-> iova_alloc            137k iops     170k iops      128k iops      113k iops
->
-> gen_pool_alloc   143k iops      270k iops      458k iops      521k iops
->
-> The iova_alloc_fast() has the best performance since we always hit the
-> per-cpu cache. Regardless of the per-cpu cache, the genpool allocator
-> should be better than the iova allocator.
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index 4b49df2dfd23..afb37aac09e8 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -692,6 +692,28 @@ static const struct blk_mq_ops virtio_mq_ops = {
+>   static unsigned int virtblk_queue_depth;
+>   module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
+>   
+> +static int virtblk_validate(struct virtio_device *vdev)
+> +{
+> +	u32 blk_size;
+> +
+> +	if (!vdev->config->get) {
+> +		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> +			__func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!virtio_has_feature(vdev, VIRTIO_BLK_F_BLK_SIZE))
+> +		return 0;
+> +
+> +	blk_size = virtio_cread32(vdev,
+> +			offsetof(struct virtio_blk_config, blk_size));
+> +
+> +	if (blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE)
+> +		__virtio_clear_bit(vdev, VIRTIO_BLK_F_BLK_SIZE);
 
 
-I think we see convincing numbers for using iova_alloc_fast() than the 
-gen_poll_alloc() (45% improvement on job=8).
+I wonder if it's better to just fail here as what we did for probe().
 
 Thanks
 
 
->
-> [1] fio jobfile:
->
-> [global]
-> rw=randread
-> direct=1
-> ioengine=libaio
-> iodepth=16
-> time_based=1
-> runtime=60s
-> group_reporting
-> bs=4k
-> filename=/dev/vda
-> [job]
-> numjobs=..
->
-> [2]  $ qemu-storage-daemon \
->        --chardev socket,id=charmonitor,path=/tmp/qmp.sock,server,nowait \
->        --monitor chardev=charmonitor \
->        --blockdev
-> driver=host_device,cache.direct=on,aio=native,filename=/dev/nullb0,node-name=disk0
-> \
->        --export type=vduse-blk,id=test,node-name=disk0,writable=on,name=vduse-null,num-queues=16,queue-size=128
->
-> The qemu-storage-daemon can be builded based on the repo:
-> https://github.com/bytedance/qemu/tree/vduse-test.
->
-> Thanks,
-> Yongji
->
+> +
+> +	return 0;
+> +}
+> +
+>   static int virtblk_probe(struct virtio_device *vdev)
+>   {
+>   	struct virtio_blk *vblk;
+> @@ -703,12 +725,6 @@ static int virtblk_probe(struct virtio_device *vdev)
+>   	u8 physical_block_exp, alignment_offset;
+>   	unsigned int queue_depth;
+>   
+> -	if (!vdev->config->get) {
+> -		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> -			__func__);
+> -		return -EINVAL;
+> -	}
+> -
+>   	err = ida_simple_get(&vd_index_ida, 0, minor_to_index(1 << MINORBITS),
+>   			     GFP_KERNEL);
+>   	if (err < 0)
+> @@ -823,6 +839,14 @@ static int virtblk_probe(struct virtio_device *vdev)
+>   	else
+>   		blk_size = queue_logical_block_size(q);
+>   
+> +	if (unlikely(blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE)) {
+> +		dev_err(&vdev->dev,
+> +			"block size is changed unexpectedly, now is %u\n",
+> +			blk_size);
+> +		err = -EINVAL;
+> +		goto err_cleanup_disk;
+> +	}
+> +
+>   	/* Use topology information if available */
+>   	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_TOPOLOGY,
+>   				   struct virtio_blk_config, physical_block_exp,
+> @@ -881,6 +905,8 @@ static int virtblk_probe(struct virtio_device *vdev)
+>   	device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
+>   	return 0;
+>   
+> +err_cleanup_disk:
+> +	blk_cleanup_disk(vblk->disk);
+>   out_free_tags:
+>   	blk_mq_free_tag_set(&vblk->tag_set);
+>   out_free_vq:
+> @@ -983,6 +1009,7 @@ static struct virtio_driver virtio_blk = {
+>   	.driver.name			= KBUILD_MODNAME,
+>   	.driver.owner			= THIS_MODULE,
+>   	.id_table			= id_table,
+> +	.validate			= virtblk_validate,
+>   	.probe				= virtblk_probe,
+>   	.remove				= virtblk_remove,
+>   	.config_changed			= virtblk_config_changed,
 
