@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AD73E819D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18BB3E81A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbhHJSA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:00:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
+        id S237488AbhHJSAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:00:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237163AbhHJR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:56:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F8F0610FC;
-        Tue, 10 Aug 2021 17:45:12 +0000 (UTC)
+        id S237308AbhHJR47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:56:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EF2561078;
+        Tue, 10 Aug 2021 17:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617512;
-        bh=sJcqfH1Q4IrnK/z7vHlXFzLXPIrHRa2rRBS6dIPiPA4=;
+        s=korg; t=1628617524;
+        bh=aXMTZTT3kSUoVe5ZEbLDNMkbdOrpCxLP548lkwqAPrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mO94tx+Ou0B6cXNbF0lluSz4layUZKbGybdULBKViaEmjoeXo0k5/mdHpZxUI+2cl
-         5I6bJEHGVjE9YWRT/Jpl7sVirqWJHn6SBSagnjHcZgHwPOc5Uk3a78H17SbloMUIMx
-         WCCraXe6/NPQfyqaFY4gLc/L+0YeSUXj2VO3uD4U=
+        b=JbDx9AyK1tPI8qbRo48umzO3i3oKjBO6OM1RRzSiP0x5dcFUW0LwDGhz1BH7u7SGs
+         2dJZHgsyEXS5m03hAv5sO1315dDFoRNcgljvjsg9+P1bhDPCcu4s1BSiIMxiF1/2Ef
+         pCVEFRcyzSaJfXT7ABk2ceunvQRdrXz8Iz62NgVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 5.13 090/175] usb: dwc3: gadget: Avoid runtime resume if disabling pullup
-Date:   Tue, 10 Aug 2021 19:29:58 +0200
-Message-Id: <20210810173003.905650577@linuxfoundation.org>
+        stable@vger.kernel.org, Maxim Devaev <mdevaev@gmail.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Subject: [PATCH 5.13 095/175] usb: gadget: f_hid: fixed NULL pointer dereference
+Date:   Tue, 10 Aug 2021 19:30:03 +0200
+Message-Id: <20210810173004.083111183@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -39,66 +39,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: Phil Elwell <phil@raspberrypi.com>
 
-commit cb10f68ad8150f243964b19391711aaac5e8ff42 upstream.
+commit 2867652e4766360adf14dfda3832455e04964f2a upstream.
 
-If the device is already in the runtime suspended state, any call to
-the pullup routine will issue a runtime resume on the DWC3 core
-device.  If the USB gadget is disabling the pullup, then avoid having
-to issue a runtime resume, as DWC3 gadget has already been
-halted/stopped.
+Disconnecting and reconnecting the USB cable can lead to crashes
+and a variety of kernel log spam.
 
-This fixes an issue where the following condition occurs:
+The problem was found and reproduced on the Raspberry Pi [1]
+and the original fix was created in Raspberry's own fork [2].
 
-usb_gadget_remove_driver()
--->usb_gadget_disconnect()
- -->dwc3_gadget_pullup(0)
-  -->pm_runtime_get_sync() -> ret = 0
-  -->pm_runtime_put() [async]
--->usb_gadget_udc_stop()
- -->dwc3_gadget_stop()
-  -->dwc->gadget_driver = NULL
-...
-
-dwc3_suspend_common()
--->dwc3_gadget_suspend()
- -->DWC3 halt/stop routine skipped, driver_data == NULL
-
-This leads to a situation where the DWC3 gadget is not properly
-stopped, as the runtime resume would have re-enabled EP0 and event
-interrupts, and since we avoided the DWC3 gadget suspend, these
-resources were never disabled.
-
-Fixes: 77adb8bdf422 ("usb: dwc3: gadget: Allow runtime suspend if UDC unbinded")
+Link: https://github.com/raspberrypi/linux/issues/3870 [1]
+Link: https://github.com/raspberrypi/linux/commit/a6e47d5f4efbd2ea6a0b6565cd2f9b7bb217ded5 [2]
+Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
+Signed-off-by: Phil Elwell <phil@raspberrypi.com>
 Cc: stable <stable@vger.kernel.org>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Link: https://lore.kernel.org/r/1628058245-30692-1-git-send-email-wcheng@codeaurora.org
+Link: https://lore.kernel.org/r/20210723155928.210019-1-mdevaev@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/gadget.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/usb/gadget/function/f_hid.c |   26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2257,6 +2257,17 @@ static int dwc3_gadget_pullup(struct usb
- 	}
+--- a/drivers/usb/gadget/function/f_hid.c
++++ b/drivers/usb/gadget/function/f_hid.c
+@@ -339,6 +339,11 @@ static ssize_t f_hidg_write(struct file
  
- 	/*
-+	 * Avoid issuing a runtime resume if the device is already in the
-+	 * suspended state during gadget disconnect.  DWC3 gadget was already
-+	 * halted/stopped during runtime suspend.
-+	 */
-+	if (!is_on) {
-+		pm_runtime_barrier(dwc->dev);
-+		if (pm_runtime_suspended(dwc->dev))
-+			return 0;
+ 	spin_lock_irqsave(&hidg->write_spinlock, flags);
+ 
++	if (!hidg->req) {
++		spin_unlock_irqrestore(&hidg->write_spinlock, flags);
++		return -ESHUTDOWN;
 +	}
 +
-+	/*
- 	 * Check the return value for successful resume, or error.  For a
- 	 * successful resume, the DWC3 runtime PM resume routine will handle
- 	 * the run stop sequence, so avoid duplicate operations here.
+ #define WRITE_COND (!hidg->write_pending)
+ try_again:
+ 	/* write queue */
+@@ -359,8 +364,14 @@ try_again:
+ 	count  = min_t(unsigned, count, hidg->report_length);
+ 
+ 	spin_unlock_irqrestore(&hidg->write_spinlock, flags);
+-	status = copy_from_user(req->buf, buffer, count);
+ 
++	if (!req) {
++		ERROR(hidg->func.config->cdev, "hidg->req is NULL\n");
++		status = -ESHUTDOWN;
++		goto release_write_pending;
++	}
++
++	status = copy_from_user(req->buf, buffer, count);
+ 	if (status != 0) {
+ 		ERROR(hidg->func.config->cdev,
+ 			"copy_from_user error\n");
+@@ -388,14 +399,17 @@ try_again:
+ 
+ 	spin_unlock_irqrestore(&hidg->write_spinlock, flags);
+ 
++	if (!hidg->in_ep->enabled) {
++		ERROR(hidg->func.config->cdev, "in_ep is disabled\n");
++		status = -ESHUTDOWN;
++		goto release_write_pending;
++	}
++
+ 	status = usb_ep_queue(hidg->in_ep, req, GFP_ATOMIC);
+-	if (status < 0) {
+-		ERROR(hidg->func.config->cdev,
+-			"usb_ep_queue error on int endpoint %zd\n", status);
++	if (status < 0)
+ 		goto release_write_pending;
+-	} else {
++	else
+ 		status = count;
+-	}
+ 
+ 	return status;
+ release_write_pending:
 
 
