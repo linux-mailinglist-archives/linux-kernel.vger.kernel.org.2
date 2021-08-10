@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F723E85ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A583E85FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbhHJWHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 18:07:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27965 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235007AbhHJWHt (ORCPT
+        id S234999AbhHJWQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 18:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234315AbhHJWQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:07:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628633246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hmzm8caQt3TdVyNzd3tgJRC0GlnTJtY3kcYH2J6COrc=;
-        b=A7QMdstue/2zD8R0NgQEIolyF73LOTECOqbSvb42Y6dzIQxJhpelnb66clQIDvMxIIG9UP
-        eZgu54KKKEh39I68eEbCJe0g5/Xjj2ODGPinyQZjJrOQeWgDtKZAVyFW5qgpuF73KP0KYw
-        cjQkZSbn6zf1ax3NFUXbsJCzsnULmlo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-YUI6OfTyOci4zi2LL-OQ9A-1; Tue, 10 Aug 2021 18:07:25 -0400
-X-MC-Unique: YUI6OfTyOci4zi2LL-OQ9A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 10 Aug 2021 18:16:47 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF11FC061765;
+        Tue, 10 Aug 2021 15:16:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D1B62E74;
-        Tue, 10 Aug 2021 22:07:24 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8894E10016FB;
-        Tue, 10 Aug 2021 22:07:23 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-90-willy@infradead.org>
-References: <20210715033704.692967-90-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 089/138] mm/filemap: Add FGP_STABLE
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GknNN0KWvz9sCD;
+        Wed, 11 Aug 2021 08:16:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628633781;
+        bh=o+cglQLIotr3Y1Xh6JHcobmP+1AlGVcxzeiliZX3GiI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Gfzg4+iW2oqO1Qsg7WOkLwDBr9w5wj23nCg4kga8wPp3Z9cFm66EDN3CsIJmduR2U
+         M/V6ZYyZEwUwOrCt2voKbj3KWmU5Wxf/thIWRhwLU/BUeZhmJv2DPizgMRZMkq2StN
+         wiOOMNNHfWVrhTzf06eiDmI6zzJLJTTUNxEFuHyZp/T985k0gjUWhHNNuqx+g3hQ5H
+         Xn3KOVxnosmXr2U4t5oI+tmEItJ0LkGjLrDLkniLUVfRerghEXaAApDtHDDvkU0qhp
+         Yk2JrloaLXnmBBtB2nTdEZqeoFq4FGrlP8D5drfQZjhmOF2zOIoTZYkd+lvfk6eUJV
+         gYV6oqPAxAy5A==
+Date:   Wed, 11 Aug 2021 08:16:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the drivers-x86 tree
+Message-ID: <20210811081619.3d3434cb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1815219.1628633242.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 23:07:22 +0100
-Message-ID: <1815220.1628633242@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: multipart/signed; boundary="Sig_/mTpN0s_=Ab.rly/fo02oUB5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+--Sig_/mTpN0s_=Ab.rly/fo02oUB5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Allow filemap_get_folio() to wait for writeback to complete (if the
-> filesystem wants that behaviour).  This is the folio equivalent of
-> grab_cache_page_write_begin(), which is moved into the folio-compat
-> file as a reminder to migrate all the code using it.  This paves the
-> way for getting rid of AOP_FLAG_NOFS once grab_cache_page_write_begin()
-> is removed.
-> 
-> Kernel grows by 11 bytes.  filemap_get_folio() grows by 33 bytes but
-> grab_cache_page_write_begin() shrinks by 22 bytes to make up for it.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Hi all,
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+In commit
 
+  5c62c3d98b87 ("platform/x86: ISST: Fix optimization with use of numa")
+
+Fixes tag
+
+  Fixes: aa2ddd242572 ("ISST: Use numa node id for cpu pci dev mapping")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/mTpN0s_=Ab.rly/fo02oUB5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmES+rMACgkQAVBC80lX
+0GxCRAf+KuoIpI0DU26V/X9tfMiav5x4xFJxKvbkP6J/dPJZF2pcaJQkKkdKxpPl
+2JzW4SmJso+4tNZSu9fMsw93e9yGwZ82soC+dLwlnajTT/Qd1DoIFRwZc9U68zm8
+gA0FDrt2Pty6hgmDsOw71mEOyElJCVX+p3kZpAUJZwuCEZp9b3nAtKKqeod+gr+g
+06HIZl4mmFpW4gvBXd9UOn8VnIEXnYjOOixciVlFVY57Rw7ztUZvW2zvEUMsKFOA
+iLTAR3ppYOmAdS8PUPN90BDVIPi6DjKVtguPhrxLERSoP9X9ODpsAREywAXZ2fUA
+U+Diuktjb9HNiE6dkU0fUAlMRYFZJg==
+=iNgF
+-----END PGP SIGNATURE-----
+
+--Sig_/mTpN0s_=Ab.rly/fo02oUB5--
