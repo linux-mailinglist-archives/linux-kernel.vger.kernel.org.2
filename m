@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12C93E80D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2C63E7F57
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236452AbhHJRw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57234 "EHLO mail.kernel.org"
+        id S235735AbhHJRkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:40:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236762AbhHJRtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:49:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C91D461209;
-        Tue, 10 Aug 2021 17:41:56 +0000 (UTC)
+        id S233287AbhHJRhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1202E61051;
+        Tue, 10 Aug 2021 17:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617317;
-        bh=Jha8fhg1mL/utIyZdziZC4Sv7ThFgnNodpeJY1iJvf4=;
+        s=korg; t=1628616975;
+        bh=aUQN+ps0+WrA92b8jdBM+CXbpGx5aOvw2PA2MQT661k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jn0qbr0BzXP62uyuitqQcGPt2pZY+kLueYztYUN33ESgcSHu8Vpflnf0E9aDwXJ/Y
-         DtAwfpwN3ObYtFUDxqKy1I4BmD6CWf7xX0uCOkgNYZaVjojO8iuhmlJj0lZgupgOmV
-         CuwL1+xjj4yc24qCCId7hSk+VAudlUGYxTj74f9s=
+        b=1yX0LmLJ6PSTFrOUT4KqF9eGMmo/cdkfQNKwWafcf3MD0BW6+ZX1pE47eDUHwQ0lz
+         oxwvp9h7ZHuk0pEMt40OLynu/eLVHKbKSygSdLyXMc+A8WLxdxjcBPBiQ/XUMnX64Z
+         TI8AbmjSGrVRQdqq6kkAXgXuUYU9RJr3hFdlaFsU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 5.10 114/135] soc: ixp4xx: fix printing resources
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 75/85] spi: meson-spicc: fix memory leak in meson_spicc_remove
 Date:   Tue, 10 Aug 2021 19:30:48 +0200
-Message-Id: <20210810172959.671094025@linuxfoundation.org>
+Message-Id: <20210810172950.772393521@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,57 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit 8861452b2097bb0b5d0081a1c137fb3870b0a31f upstream.
+commit 8311ee2164c5cd1b63a601ea366f540eae89f10e upstream.
 
-When compile-testing with 64-bit resource_size_t, gcc reports an invalid
-printk format string:
+In meson_spicc_probe, the error handling code needs to clean up master
+by calling spi_master_put, but the remove function does not have this
+function call. This will lead to memory leak of spicc->master.
 
-In file included from include/linux/dma-mapping.h:7,
-                 from drivers/soc/ixp4xx/ixp4xx-npe.c:15:
-drivers/soc/ixp4xx/ixp4xx-npe.c: In function 'ixp4xx_npe_probe':
-drivers/soc/ixp4xx/ixp4xx-npe.c:694:18: error: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Werror=format=]
-    dev_info(dev, "NPE%d at 0x%08x-0x%08x not available\n",
-
-Use the special %pR format string to print the resources.
-
-Fixes: 0b458d7b10f8 ("soc: ixp4xx: npe: Pass addresses as resources")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Fixes: 454fa271bc4e("spi: Add Meson SPICC driver")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Link: https://lore.kernel.org/r/20210720100116.1438974-1-mudongliangabcd@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soc/ixp4xx/ixp4xx-npe.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/spi/spi-meson-spicc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/soc/ixp4xx/ixp4xx-npe.c
-+++ b/drivers/soc/ixp4xx/ixp4xx-npe.c
-@@ -690,8 +690,8 @@ static int ixp4xx_npe_probe(struct platf
+--- a/drivers/spi/spi-meson-spicc.c
++++ b/drivers/spi/spi-meson-spicc.c
+@@ -597,6 +597,8 @@ static int meson_spicc_remove(struct pla
  
- 		if (!(ixp4xx_read_feature_bits() &
- 		      (IXP4XX_FEATURE_RESET_NPEA << i))) {
--			dev_info(dev, "NPE%d at 0x%08x-0x%08x not available\n",
--				 i, res->start, res->end);
-+			dev_info(dev, "NPE%d at %pR not available\n",
-+				 i, res);
- 			continue; /* NPE already disabled or not present */
- 		}
- 		npe->regs = devm_ioremap_resource(dev, res);
-@@ -699,13 +699,12 @@ static int ixp4xx_npe_probe(struct platf
- 			return PTR_ERR(npe->regs);
+ 	clk_disable_unprepare(spicc->core);
  
- 		if (npe_reset(npe)) {
--			dev_info(dev, "NPE%d at 0x%08x-0x%08x does not reset\n",
--				 i, res->start, res->end);
-+			dev_info(dev, "NPE%d at %pR does not reset\n",
-+				 i, res);
- 			continue;
- 		}
- 		npe->valid = 1;
--		dev_info(dev, "NPE%d at 0x%08x-0x%08x registered\n",
--			 i, res->start, res->end);
-+		dev_info(dev, "NPE%d at %pR registered\n", i, res);
- 		found++;
- 	}
++	spi_master_put(spicc->master);
++
+ 	return 0;
+ }
  
 
 
