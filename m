@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FC53E7E71
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49553E7FA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhHJRdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33258 "EHLO mail.kernel.org"
+        id S233985AbhHJRlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:41:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231625AbhHJRc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0784460F13;
-        Tue, 10 Aug 2021 17:32:34 +0000 (UTC)
+        id S234815AbhHJRiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:38:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4186A60F94;
+        Tue, 10 Aug 2021 17:36:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616755;
-        bh=CKykmzahHhMXt9m0NrdblO10om6+KNmQ7qwbpRTb4xQ=;
+        s=korg; t=1628616986;
+        bh=rGZAAZud7g183QE05V55OSjEt/5Nazlr+Sqq49jwqSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FTqECcEjYhj1pfKXyhwPMmqKYZKKwCqWgc5SqQ8V0/MvDfYJaaCXWi1t4khM9Nw9u
-         d1AANUcTCur1DZzIYAycIT9UElHHjrZjNpV4r3D6ttkX7N2dY5Epm24ExMyub9aB7M
-         BDepK08LZOummycco8VXvWWJod/FkEWHYIcixYTY=
+        b=UlP4WRw+aDeSGMtB+MuV3dDK8AHbb2zJfmARkye8tIcYNd99q57ZlMJfMhBDTAfsj
+         fhNGRqD5i953e4Yc3sL62eUe328f/ixdYyck2v3JWJP8p9olOGv4JMIjilvWU5ndF6
+         Yluk8x9iGcymdjnw+5d9KKcG0N19CRHUlHOPWFM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Su <suhui@zeku.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 32/54] scripts/tracing: fix the bug that cant parse raw_trace_func
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH 5.4 53/85] tee: add tee_shm_alloc_kernel_buf()
 Date:   Tue, 10 Aug 2021 19:30:26 +0200
-Message-Id: <20210810172945.232697473@linuxfoundation.org>
+Message-Id: <20210810172950.035313191@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Su <suhui@zeku.com>
+From: Jens Wiklander <jens.wiklander@linaro.org>
 
-commit 1c0cec64a7cc545eb49f374a43e9f7190a14defa upstream.
+commit dc7019b7d0e188d4093b34bd0747ed0d668c63bf upstream.
 
-Since commit 77271ce4b2c0 ("tracing: Add irq, preempt-count and need resched info
-to default trace output"), the default trace output format has been changed to:
-          <idle>-0       [009] d.h. 22420.068695: _raw_spin_lock_irqsave <-hrtimer_interrupt
-          <idle>-0       [000] ..s. 22420.068695: _nohz_idle_balance <-run_rebalance_domains
-          <idle>-0       [011] d.h. 22420.068695: account_process_tick <-update_process_times
-
-origin trace output format:(before v3.2.0)
-     # tracer: nop
-     #
-     #           TASK-PID    CPU#    TIMESTAMP  FUNCTION
-     #              | |       |          |         |
-          migration/0-6     [000]    50.025810: rcu_note_context_switch <-__schedule
-          migration/0-6     [000]    50.025812: trace_rcu_utilization <-rcu_note_context_switch
-          migration/0-6     [000]    50.025813: rcu_sched_qs <-rcu_note_context_switch
-          migration/0-6     [000]    50.025815: rcu_preempt_qs <-rcu_note_context_switch
-          migration/0-6     [000]    50.025817: trace_rcu_utilization <-rcu_note_context_switch
-          migration/0-6     [000]    50.025818: debug_lockdep_rcu_enabled <-__schedule
-          migration/0-6     [000]    50.025820: debug_lockdep_rcu_enabled <-__schedule
-
-The draw_functrace.py(introduced in v2.6.28) can't parse the new version format trace_func,
-So we need modify draw_functrace.py to adapt the new version trace output format.
-
-Link: https://lkml.kernel.org/r/20210611022107.608787-1-suhui@zeku.com
+Adds a new function tee_shm_alloc_kernel_buf() to allocate shared memory
+from a kernel driver. This function can later be made more lightweight
+by unnecessary dma-buf export.
 
 Cc: stable@vger.kernel.org
-Fixes: 77271ce4b2c0 tracing: Add irq, preempt-count and need resched info to default trace output
-Signed-off-by: Hui Su <suhui@zeku.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/tracing/draw_functrace.py |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/tee/tee_shm.c   |   18 ++++++++++++++++++
+ include/linux/tee_drv.h |    1 +
+ 2 files changed, 19 insertions(+)
 
---- a/scripts/tracing/draw_functrace.py
-+++ b/scripts/tracing/draw_functrace.py
-@@ -17,7 +17,7 @@ Usage:
- 	$ cat /sys/kernel/debug/tracing/trace_pipe > ~/raw_trace_func
- 	Wait some times but not too much, the script is a bit slow.
- 	Break the pipe (Ctrl + Z)
--	$ scripts/draw_functrace.py < raw_trace_func > draw_functrace
-+	$ scripts/tracing/draw_functrace.py < ~/raw_trace_func > draw_functrace
- 	Then you have your drawn trace in draw_functrace
- """
+--- a/drivers/tee/tee_shm.c
++++ b/drivers/tee/tee_shm.c
+@@ -219,6 +219,24 @@ struct tee_shm *tee_shm_priv_alloc(struc
+ }
+ EXPORT_SYMBOL_GPL(tee_shm_priv_alloc);
  
-@@ -103,10 +103,10 @@ def parseLine(line):
- 	line = line.strip()
- 	if line.startswith("#"):
- 		raise CommentLineException
--	m = re.match("[^]]+?\\] +([0-9.]+): (\\w+) <-(\\w+)", line)
-+	m = re.match("[^]]+?\\] +([a-z.]+) +([0-9.]+): (\\w+) <-(\\w+)", line)
- 	if m is None:
- 		raise BrokenLineException
--	return (m.group(1), m.group(2), m.group(3))
-+	return (m.group(2), m.group(3), m.group(4))
++/**
++ * tee_shm_alloc_kernel_buf() - Allocate shared memory for kernel buffer
++ * @ctx:	Context that allocates the shared memory
++ * @size:	Requested size of shared memory
++ *
++ * The returned memory registered in secure world and is suitable to be
++ * passed as a memory buffer in parameter argument to
++ * tee_client_invoke_func(). The memory allocated is later freed with a
++ * call to tee_shm_free().
++ *
++ * @returns a pointer to 'struct tee_shm'
++ */
++struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
++{
++	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++}
++EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
++
+ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
+ 				 size_t length, u32 flags)
+ {
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -317,6 +317,7 @@ void *tee_get_drvdata(struct tee_device
+  * @returns a pointer to 'struct tee_shm'
+  */
+ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags);
++struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size);
  
- 
- def main():
+ /**
+  * tee_shm_priv_alloc() - Allocate shared memory privately
 
 
