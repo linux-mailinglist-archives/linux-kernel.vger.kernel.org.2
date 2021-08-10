@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6453E5663
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322023E5664
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238533AbhHJJIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:08:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41874 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238628AbhHJJIK (ORCPT
+        id S238790AbhHJJI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238676AbhHJJIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:08:10 -0400
-Date:   Tue, 10 Aug 2021 09:07:46 -0000
+        Tue, 10 Aug 2021 05:08:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB20CC0613D3;
+        Tue, 10 Aug 2021 02:07:52 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 09:07:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628586466;
+        s=2020; t=1628586467;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h6Gn03aDoUvJFxrpWmheTVCvJLR4JDX1gKgWkTybXzA=;
-        b=v7SeherpwONI238S+ymIsA57f63NRCenS5f4UITlZVzIUD9qyXkK0kfA9UfekisLNrmolj
-        QkFeMYsI43s4MABqIxwNOMHyhLxw0kubQQW9RaDk6QwAwJTsAOBRy7zWclkBLUyuTuodEL
-        400qm2RHwkqJ+Z208r8tWKIFyWdD7IeXN74H9bucx1KrwJzKGRKErvrfXb4LQeweIpfsZf
-        PjNE3L3egOO8ql0H+S2o68gsv/BeZAG9QW+/5ikNlJ/a9GPZxd9opMScRUiwd6qQxFcpPz
-        XtUgw8TNuihVWwYBRIMFRYePHcaf0rmZec8gVZGZYhkaYl0pcuj8qXpjBht7wQ==
+        bh=n5lxTLaZbsqU9+Yhln4Ijh0kHaWboFskcRp3znU4cXU=;
+        b=rkbW51NiW255usKFyBYDfAX6Zbp4mT7sN/3/K/C0eUblDl0XV+FHjQscbETOZ+YJcg6UG6
+        WFe5KE/Tkt+WYBEuUK4HXzhL9aGPAJWARENxRUnK+I3c7LgYZXVbrF8xQxuuFU8rxXyn46
+        Cws6LPj6OBNFt50qcCey2HdKQYquBgeMPe2DY1n5ik/vaH47LnVTgRhXBqPFmPjXb1JLPO
+        VbrvTgipto3TWDmQo87xosBv59k7p75Zw3vod0tnqv2kPIGC3qWTuSEM6FbjYrNe5h9bul
+        RDS1qCMd0VmGGo/tpWrLIgjwsAahrZ7ZGYtKeCQNaFTlIZr/qNZ3TgGowN6u1w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628586466;
+        s=2020e; t=1628586467;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h6Gn03aDoUvJFxrpWmheTVCvJLR4JDX1gKgWkTybXzA=;
-        b=xYZup98//iXNiDGXAEDHTg6ME9b7Ps9LH6okpkhMnBemccBG4VAN4nudxflKP3WKbSVT+O
-        EmCtFfb6S11p6JCg==
+        bh=n5lxTLaZbsqU9+Yhln4Ijh0kHaWboFskcRp3znU4cXU=;
+        b=6CpTWFHpQZ5JNzkzu0zC8FF4ACso6BTGcPCDuwg3ia4sFCo3jHWhGLU93lgC2L5Fbd6Jyj
+        htOAOZkWitNrfWBw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] PCI/MSI: Enforce MSI[X] entry updates to be visible
+Subject: [tip: irq/core] PCI/MSI: Mask all unused MSI-X entries
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210729222542.515188147@linutronix.de>
-References: <20210729222542.515188147@linutronix.de>
+In-Reply-To: <20210729222542.403833459@linutronix.de>
+References: <20210729222542.403833459@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162858646605.395.9862515344185034186.tip-bot2@tip-bot2>
+Message-ID: <162858646718.395.12144785049690735295.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,25 +62,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     b9255a7cb51754e8d2645b65dd31805e282b4f3e
-Gitweb:        https://git.kernel.org/tip/b9255a7cb51754e8d2645b65dd31805e282b4f3e
+Commit-ID:     7d5ec3d3612396dc6d4b76366d20ab9fc06f399f
+Gitweb:        https://git.kernel.org/tip/7d5ec3d3612396dc6d4b76366d20ab9fc06f399f
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 29 Jul 2021 23:51:43 +02:00
+AuthorDate:    Thu, 29 Jul 2021 23:51:41 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 10 Aug 2021 10:59:20 +02:00
 
-PCI/MSI: Enforce MSI[X] entry updates to be visible
+PCI/MSI: Mask all unused MSI-X entries
 
-Nothing enforces the posted writes to be visible when the function
-returns. Flush them even if the flush might be redundant when the entry is
-masked already as the unmask will flush as well. This is either setup or a
-rare affinity change event so the extra flush is not the end of the world.
+When MSI-X is enabled the ordering of calls is:
 
-While this is more a theoretical issue especially the logic in the X86
-specific msi_set_affinity() function relies on the assumption that the
-update has reached the hardware when the function returns.
+  msix_map_region();
+  msix_setup_entries();
+  pci_msi_setup_msi_irqs();
+  msix_program_entries();
 
-Again, as this never has been enforced the Fixes tag refers to a commit in:
+This has a few interesting issues:
+
+ 1) msix_setup_entries() allocates the MSI descriptors and initializes them
+    except for the msi_desc:masked member which is left zero initialized.
+
+ 2) pci_msi_setup_msi_irqs() allocates the interrupt descriptors and sets
+    up the MSI interrupts which ends up in pci_write_msi_msg() unless the
+    interrupt chip provides its own irq_write_msi_msg() function.
+
+ 3) msix_program_entries() does not do what the name suggests. It solely
+    updates the entries array (if not NULL) and initializes the masked
+    member for each MSI descriptor by reading the hardware state and then
+    masks the entry.
+
+Obviously this has some issues:
+
+ 1) The uninitialized masked member of msi_desc prevents the enforcement
+    of masking the entry in pci_write_msi_msg() depending on the cached
+    masked bit. Aside of that half initialized data is a NONO in general
+
+ 2) msix_program_entries() only ensures that the actually allocated entries
+    are masked. This is wrong as experimentation with crash testing and
+    crash kernel kexec has shown.
+
+    This limited testing unearthed that when the production kernel had more
+    entries in use and unmasked when it crashed and the crash kernel
+    allocated a smaller amount of entries, then a full scan of all entries
+    found unmasked entries which were in use in the production kernel.
+
+    This is obviously a device or emulation issue as the device reset
+    should mask all MSI-X table entries, but obviously that's just part
+    of the paper specification.
+
+Cure this by:
+
+ 1) Masking all table entries in hardware
+ 2) Initializing msi_desc::masked in msix_setup_entries()
+ 3) Removing the mask dance in msix_program_entries()
+ 4) Renaming msix_program_entries() to msix_update_entries() to
+    reflect the purpose of that function.
+
+As the masking of unused entries has never been done the Fixes tag refers
+to a commit in:
    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
 
 Fixes: f036d4ea5fa7 ("[PATCH] ia32 Message Signalled Interrupt support")
@@ -86,32 +129,119 @@ Tested-by: Marc Zyngier <maz@kernel.org>
 Reviewed-by: Marc Zyngier <maz@kernel.org>
 Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.515188147@linutronix.de
+Link: https://lore.kernel.org/r/20210729222542.403833459@linutronix.de
 
 ---
- drivers/pci/msi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/pci/msi.c | 45 +++++++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 7ee1ac4..434c704 100644
+index 5d39ed8..57c9ec9 100644
 --- a/drivers/pci/msi.c
 +++ b/drivers/pci/msi.c
-@@ -311,6 +311,9 @@ void __pci_write_msi_msg(struct msi_desc *entry, struct msi_msg *msg)
+@@ -691,6 +691,7 @@ static int msix_setup_entries(struct pci_dev *dev, void __iomem *base,
+ {
+ 	struct irq_affinity_desc *curmsk, *masks = NULL;
+ 	struct msi_desc *entry;
++	void __iomem *addr;
+ 	int ret, i;
+ 	int vec_count = pci_msix_vec_count(dev);
  
- 		if (unmasked)
- 			__pci_msix_desc_mask_irq(entry, 0);
+@@ -711,6 +712,7 @@ static int msix_setup_entries(struct pci_dev *dev, void __iomem *base,
+ 
+ 		entry->msi_attrib.is_msix	= 1;
+ 		entry->msi_attrib.is_64		= 1;
 +
-+		/* Ensure that the writes are visible in the device */
-+		readl(base + PCI_MSIX_ENTRY_DATA);
- 	} else {
- 		int pos = dev->msi_cap;
- 		u16 msgctl;
-@@ -331,6 +334,8 @@ void __pci_write_msi_msg(struct msi_desc *entry, struct msi_msg *msg)
- 			pci_write_config_word(dev, pos + PCI_MSI_DATA_32,
- 					      msg->data);
- 		}
-+		/* Ensure that the writes are visible in the device */
-+		pci_read_config_word(dev, pos + PCI_MSI_FLAGS, &msgctl);
+ 		if (entries)
+ 			entry->msi_attrib.entry_nr = entries[i].entry;
+ 		else
+@@ -722,6 +724,10 @@ static int msix_setup_entries(struct pci_dev *dev, void __iomem *base,
+ 		entry->msi_attrib.default_irq	= dev->irq;
+ 		entry->mask_base		= base;
+ 
++		addr = pci_msix_desc_addr(entry);
++		if (addr)
++			entry->masked = readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
++
+ 		list_add_tail(&entry->list, dev_to_msi_list(&dev->dev));
+ 		if (masks)
+ 			curmsk++;
+@@ -732,26 +738,25 @@ out:
+ 	return ret;
+ }
+ 
+-static void msix_program_entries(struct pci_dev *dev,
+-				 struct msix_entry *entries)
++static void msix_update_entries(struct pci_dev *dev, struct msix_entry *entries)
+ {
+ 	struct msi_desc *entry;
+-	int i = 0;
+-	void __iomem *desc_addr;
+ 
+ 	for_each_pci_msi_entry(entry, dev) {
+-		if (entries)
+-			entries[i++].vector = entry->irq;
++		if (entries) {
++			entries->vector = entry->irq;
++			entries++;
++		}
++	}
++}
+ 
+-		desc_addr = pci_msix_desc_addr(entry);
+-		if (desc_addr)
+-			entry->masked = readl(desc_addr +
+-					      PCI_MSIX_ENTRY_VECTOR_CTRL);
+-		else
+-			entry->masked = 0;
++static void msix_mask_all(void __iomem *base, int tsize)
++{
++	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
++	int i;
+ 
+-		msix_mask_irq(entry, 1);
+-	}
++	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
++		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
+ 
+ /**
+@@ -768,9 +773,9 @@ static void msix_program_entries(struct pci_dev *dev,
+ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 				int nvec, struct irq_affinity *affd)
+ {
+-	int ret;
+-	u16 control;
+ 	void __iomem *base;
++	int ret, tsize;
++	u16 control;
+ 
+ 	/*
+ 	 * Some devices require MSI-X to be enabled before the MSI-X
+@@ -782,12 +787,16 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 
+ 	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+ 	/* Request & Map MSI-X table region */
+-	base = msix_map_region(dev, msix_table_size(control));
++	tsize = msix_table_size(control);
++	base = msix_map_region(dev, tsize);
+ 	if (!base) {
+ 		ret = -ENOMEM;
+ 		goto out_disable;
  	}
  
- skip:
++	/* Ensure that all table entries are masked. */
++	msix_mask_all(base, tsize);
++
+ 	ret = msix_setup_entries(dev, base, entries, nvec, affd);
+ 	if (ret)
+ 		goto out_disable;
+@@ -801,7 +810,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 	if (ret)
+ 		goto out_free;
+ 
+-	msix_program_entries(dev, entries);
++	msix_update_entries(dev, entries);
+ 
+ 	ret = populate_msi_sysfs(dev);
+ 	if (ret)
