@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB203E80AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D753E7F7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234208AbhHJRvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:51:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58770 "EHLO mail.kernel.org"
+        id S232954AbhHJRkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235539AbhHJRs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:48:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06D9E610CB;
-        Tue, 10 Aug 2021 17:41:13 +0000 (UTC)
+        id S234985AbhHJRiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:38:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D9C9606A5;
+        Tue, 10 Aug 2021 17:36:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617274;
-        bh=MAHoygpLlLfY3HIeSAJW9XpLd4F/lbg16/4FUEcB4XI=;
+        s=korg; t=1628616998;
+        bh=Fr9fWJZ6P9hFkMTIaJf8zVHekJKi7LwuDtiSoVlG4Pg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W0xbUtGPMO+AE3G4X0I2VWfM9cbq4QRP2C1/7aLlg3Pe+R9rg69zLyJ+BZjr2qVvj
-         wNuhkrbNrsw7p+YDsOZ/JsWoNzFGnSStPOz7VHI/oBgHMspPIDL8Cmb07D2KTBkmu0
-         fRbtqxoUUe2swGayuXqAJ4Ib0fNNiM9MW+VT9g2I=
+        b=LZIjy5YlbuFD+DMfhpr8k8MyyU1fcPambB9gJ+5Mhs2FaFjHjoJXNLz7LWhpaXKLD
+         CUeIHE2olGmYh/6uKLW1UKh1qKzLPEW61HfJt3BwH2elGYYbF+yOEpI9UV45/yeXTQ
+         29w2XNxJuCUOjxGlRFmXmwKx1TQOgL2AOPTtYHrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Like Xu <likexu@tencent.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Kim Phillips <kim.phillips@amd.com>
-Subject: [PATCH 5.10 123/135] perf/x86/amd: Dont touch the AMD64_EVENTSEL_HOSTONLY bit inside the guest
+        stable@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 84/85] net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
 Date:   Tue, 10 Aug 2021 19:30:57 +0200
-Message-Id: <20210810172959.982346545@linuxfoundation.org>
+Message-Id: <20210810172951.073260425@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+From: Letu Ren <fantasquex@gmail.com>
 
-commit df51fe7ea1c1c2c3bfdb81279712fdd2e4ea6c27 upstream.
+[ Upstream commit 92766c4628ea349c8ddab0cd7bd0488f36e5c4ce ]
 
-If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
-warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
+When calling the 'ql_wait_for_drvr_lock' and 'ql_adapter_reset', the driver
+has already acquired the spin lock, so the driver should not call 'ssleep'
+in atomic context.
 
-  [] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write 0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
-  [] Call Trace:
-  []  amd_pmu_disable_event+0x22/0x90
-  []  x86_pmu_stop+0x4c/0xa0
-  []  x86_pmu_del+0x3a/0x140
+This bug can be fixed by using 'mdelay' instead of 'ssleep'.
 
-The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
-while the guest perf driver should avoid such use.
-
-Fixes: 1018faa6cf23 ("perf/x86/kvm: Fix Host-Only/Guest-Only counting with SVM disabled")
-Signed-off-by: Like Xu <likexu@tencent.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Liam Merwick <liam.merwick@oracle.com>
-Tested-by: Kim Phillips <kim.phillips@amd.com>
-Tested-by: Liam Merwick <liam.merwick@oracle.com>
-Link: https://lkml.kernel.org/r/20210802070850.35295-1-likexu@tencent.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Letu Ren <fantasquex@gmail.com>
+Signed-off-by: Letu Ren <fantasquex@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/perf_event.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qla3xxx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1009,9 +1009,10 @@ void x86_pmu_stop(struct perf_event *eve
+diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
+index 5dc36c51636c..6ca2216e4058 100644
+--- a/drivers/net/ethernet/qlogic/qla3xxx.c
++++ b/drivers/net/ethernet/qlogic/qla3xxx.c
+@@ -155,7 +155,7 @@ static int ql_wait_for_drvr_lock(struct ql3_adapter *qdev)
+ 				      "driver lock acquired\n");
+ 			return 1;
+ 		}
+-		ssleep(1);
++		mdelay(1000);
+ 	} while (++i < 10);
  
- static inline void x86_pmu_disable_event(struct perf_event *event)
- {
-+	u64 disable_mask = __this_cpu_read(cpu_hw_events.perf_ctr_virt_mask);
- 	struct hw_perf_event *hwc = &event->hw;
+ 	netdev_err(qdev->ndev, "Timed out waiting for driver lock...\n");
+@@ -3291,7 +3291,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
+ 		if ((value & ISP_CONTROL_SR) == 0)
+ 			break;
  
--	wrmsrl(hwc->config_base, hwc->config);
-+	wrmsrl(hwc->config_base, hwc->config & ~disable_mask);
+-		ssleep(1);
++		mdelay(1000);
+ 	} while ((--max_wait_time));
  
- 	if (is_counter_pair(hwc))
- 		wrmsrl(x86_pmu_config_addr(hwc->idx + 1), 0);
+ 	/*
+@@ -3327,7 +3327,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
+ 						   ispControlStatus);
+ 			if ((value & ISP_CONTROL_FSR) == 0)
+ 				break;
+-			ssleep(1);
++			mdelay(1000);
+ 		} while ((--max_wait_time));
+ 	}
+ 	if (max_wait_time == 0)
+-- 
+2.30.2
+
 
 
