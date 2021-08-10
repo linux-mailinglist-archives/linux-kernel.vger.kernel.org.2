@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3343E8317
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD83E3E8318
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhHJSkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:40:22 -0400
-Received: from mga09.intel.com ([134.134.136.24]:44526 "EHLO mga09.intel.com"
+        id S230444AbhHJSll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:41:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhHJSkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:40:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214952916"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="214952916"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:39:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="506299459"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 10 Aug 2021 11:39:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 417E7F9; Tue, 10 Aug 2021 21:39:38 +0300 (EEST)
-Date:   Tue, 10 Aug 2021 21:39:38 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
-Message-ID: <20210810183938.hdlqjhqj5kl4z3wp@black.fi.intel.com>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <4b80289a-07a4-bf92-9946-b0a8afb27326@intel.com>
- <20210810151548.4exag5uj73bummsr@black.fi.intel.com>
- <82b8836f-a467-e5ff-08f3-704a85b9faa0@intel.com>
- <20210810173124.vzxpluaepdfe5aum@black.fi.intel.com>
- <51d9168c-ac14-0907-79b3-5d4dd46f92d6@intel.com>
- <20210810175144.uqlddcicyrweqb4j@black.fi.intel.com>
- <615ac2fc-8add-2dc4-22fa-e82d1bb745e1@intel.com>
+        id S229480AbhHJSlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:41:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 604E660231;
+        Tue, 10 Aug 2021 18:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628620875;
+        bh=LQmKjNaYxTFmzULlF8n8LkI2UE/YwJDrLt5T3bsXrlU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WGMunM/cVKwC3ZF2KkBLTwQniyzzS9XtOCDuJDXuGF9+RayEHH/0fSmr82u7lPVMF
+         yNbnwZ6pHP3cJYtaTbQLhGWzRNDGkRMPJtZwlPbPgViM9M8NFzovHXA1FcPMYfvrKG
+         98ScIeKkxMKMTELo0KVCHX+Dapf7YePN26Hc4AAwNLTb+ONPf3DoexK2/KTNnkojxq
+         MJEJapHHmGOwMQgT5AeZGiWl7JVp/oKbFLSE5CSbOoJu6cmr0KEgtDtkL59x9rIUMD
+         yhBExOglOjpAAeQ/35FrwLMlErgWaJsk3Kpjc3i8IzEzcVUZrxb9udxwHwr+ilc2A5
+         897agaOuXRQfg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3B98F5C039B; Tue, 10 Aug 2021 11:41:15 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 11:41:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, peterz@infradead.org,
+        bigeasy@linutronix.de, tglx@linutronix.de, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] rcu: Make rcu_normal_after_boot writable again
+Message-ID: <20210810184115.GJ4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210810084816.155203-1-juri.lelli@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <615ac2fc-8add-2dc4-22fa-e82d1bb745e1@intel.com>
+In-Reply-To: <20210810084816.155203-1-juri.lelli@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:19:30AM -0700, Dave Hansen wrote:
-> On 8/10/21 10:51 AM, Kirill A. Shutemov wrote:
-> > On Tue, Aug 10, 2021 at 10:36:21AM -0700, Dave Hansen wrote:
-> >>> The difference is going to be substantially lower once we get it optimized
-> >>> properly.
-> >> What does this mean?  Is this future work in the kernel or somewhere in
-> >> the TDX hardware/firmware which will speed things up?
-> > Kernel has to be changed to accept memory in 2M and 1G chunks where
-> > possible. The interface exists and described in spec, but not yet used in
-> > guest kernel.
+On Tue, Aug 10, 2021 at 10:48:14AM +0200, Juri Lelli wrote:
+> Hi,
 > 
-> From a quick scan of the spec, I only see:
+> v2 of a proposed RCU change to make rcu_normal_after_boot feature usable
+> on PREEMPT_RT as well, as it turns out it's useful on RT as well on
+> NO_HZ_FULL configurations.
 > 
-> > 7.9.3. Page Acceptance by the Guest TD: TDG.MEM.PAGE.ACCEPT ... The guest
-> > TD can accept a dynamically added 4KB page using TDG.MEM.PAGE.ACCEPT
-> > with the page GPA as an input.
-> Is there some other 2M/1G page-acceptance call that I'm missing?
+> v2 gained an additional patch to revise rcu update module parameters
+> permissions (as suggested during v1 review [1]).
 
-I referred to GHCI[1], section 2.4.7. RDX=0 is 4k, RDX=1 is 2M and
-RDX=2 is 1G.
+Queued and pushed, thank you!
 
-Public specs have mismatches. I hope it will get sorted out soon. :/
+							Thanx, Paul
 
-[1] https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
-
-> > It would cut hypercall overhead dramatically. It makes upfront memory
-> > accept more bearable and lowers latency of lazy memory accept. So I expect
-> > the gap being not 20x, but like 3-5x (which is still huge).
+> Changes wrt v1:
 > 
-> It would be nice to be able to judge the benefits of this series based
-> on the final form.  I guess we'll take what we can get, though.
+>  - Restrict the option to !PREEMPT_RT || NO_HZ_FULL (Paul, Sebastian)
+>  - Change module params permissions (Paul) (02/02)
 > 
-> Either way, I'd still like to see some *actual* numbers for at least one
-> configuration:
+> Thanks,
+> Juri
 > 
-> 	With this series applied, userspace starts to run at X seconds
-> 	after kernel boot.  Without this series, userspace runs at Y
-> 	seconds.
-
-Getting absolute numbers in public for unreleased product is tricky.
-I hoped to get away with ratios or percentage of difference. 
-
--- 
- Kirill A. Shutemov
+> v1 - https://lore.kernel.org/lkml/20210805080123.16320-1-juri.lelli@redhat.com/
+> 
+> Juri Lelli (2):
+>   rcu: Make rcu_normal_after_boot writable again
+>   rcu: Make rcu update module parameters world-readable
+> 
+>  kernel/rcu/tree_exp.h | 1 -
+>  kernel/rcu/update.c   | 8 ++++----
+>  2 files changed, 4 insertions(+), 5 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
