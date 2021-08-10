@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0C33E8062
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252E43E7E75
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbhHJRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:48:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42798 "EHLO mail.kernel.org"
+        id S232086AbhHJRd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:33:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233060AbhHJRpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:45:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A1FE61245;
-        Tue, 10 Aug 2021 17:40:11 +0000 (UTC)
+        id S232102AbhHJRdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 742EA60F94;
+        Tue, 10 Aug 2021 17:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617211;
-        bh=M4uIk6HnIuaXHioYD4GBx7fOuXBr8/MhwfLnOPzphCQ=;
+        s=korg; t=1628616759;
+        bh=DOAmAyXxq3S/qD8wBVYdYaCo2PYS9/Ha2cyHrBFRU4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q+OruZ2PEK7ZNNe4fwnOKpHBQZY0wkUmnSZXDy+PX9Fnv2gRLmxHrSh/I/o5l8BKy
-         6/ksjPbWkUNL4WBqM0bq8Ca3a7nE+dxqsRm2YXRIR6H3/Bs1Tg3EtOMormLju90Bnf
-         4apJ5tdgcPGK8+XhRPTJZ1+WwUqlCJr8kQhFlpcw=
+        b=NmvEuyAwix0QAUq6pUE5daCWhwmuqh0QrJxjxwJCEO5ebO5b+vYqlSyfHO+CATnOE
+         u81RjUVA0+3jFLf9UpLJUa94k26sFS3AUSPxKk1hTIbJunZzt+E9jwO44jrpSTiRh+
+         t+74QPEiepserAfwfp0eUr9m0y1tWkMPgH3pZVEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH 5.10 094/135] serial: tegra: Only print FIFO error message when an error occurs
+        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 34/54] tracing/histogram: Rename "cpu" to "common_cpu"
 Date:   Tue, 10 Aug 2021 19:30:28 +0200
-Message-Id: <20210810172958.952262066@linuxfoundation.org>
+Message-Id: <20210810172945.304188037@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +43,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Hunter <jonathanh@nvidia.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit cc9ca4d95846cbbece48d9cd385550f8fba6a3c1 upstream.
+commit 1e3bac71c5053c99d438771fc9fa5082ae5d90aa upstream.
 
-The Tegra serial driver always prints an error message when enabling the
-FIFO for devices that have support for checking the FIFO enable status.
-Fix this by displaying the error message, only when an error occurs.
+Currently the histogram logic allows the user to write "cpu" in as an
+event field, and it will record the CPU that the event happened on.
 
-Finally, update the error message to make it clear that enabling the
-FIFO failed and display the error code.
+The problem with this is that there's a lot of events that have "cpu"
+as a real field, and using "cpu" as the CPU it ran on, makes it
+impossible to run histograms on the "cpu" field of events.
 
-Fixes: 222dcdff3405 ("serial: tegra: check for FIFO mode enabled status")
-Cc: <stable@vger.kernel.org>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20210630125643.264264-1-jonathanh@nvidia.com
+For example, if I want to have a histogram on the count of the
+workqueue_queue_work event on its cpu field, running:
+
+ ># echo 'hist:keys=cpu' > events/workqueue/workqueue_queue_work/trigger
+
+Gives a misleading and wrong result.
+
+Change the command to "common_cpu" as no event should have "common_*"
+fields as that's a reserved name for fields used by all events. And
+this makes sense here as common_cpu would be a field used by all events.
+
+Now we can even do:
+
+ ># echo 'hist:keys=common_cpu,cpu if cpu < 100' > events/workqueue/workqueue_queue_work/trigger
+ ># cat events/workqueue/workqueue_queue_work/hist
+ # event histogram
+ #
+ # trigger info: hist:keys=common_cpu,cpu:vals=hitcount:sort=hitcount:size=2048 if cpu < 100 [active]
+ #
+
+ { common_cpu:          0, cpu:          2 } hitcount:          1
+ { common_cpu:          0, cpu:          4 } hitcount:          1
+ { common_cpu:          7, cpu:          7 } hitcount:          1
+ { common_cpu:          0, cpu:          7 } hitcount:          1
+ { common_cpu:          0, cpu:          1 } hitcount:          1
+ { common_cpu:          0, cpu:          6 } hitcount:          2
+ { common_cpu:          0, cpu:          5 } hitcount:          2
+ { common_cpu:          1, cpu:          1 } hitcount:          4
+ { common_cpu:          6, cpu:          6 } hitcount:          4
+ { common_cpu:          5, cpu:          5 } hitcount:         14
+ { common_cpu:          4, cpu:          4 } hitcount:         26
+ { common_cpu:          0, cpu:          0 } hitcount:         39
+ { common_cpu:          2, cpu:          2 } hitcount:        184
+
+Now for backward compatibility, I added a trick. If "cpu" is used, and
+the field is not found, it will fall back to "common_cpu" and work as
+it did before. This way, it will still work for old programs that use
+"cpu" to get the actual CPU, but if the event has a "cpu" as a field, it
+will get that event's "cpu" field, which is probably what it wants
+anyway.
+
+I updated the tracefs/README to include documentation about both the
+common_timestamp and the common_cpu. This way, if that text is present in
+the README, then an application can know that common_cpu is supported over
+just plain "cpu".
+
+Link: https://lkml.kernel.org/r/20210721110053.26b4f641@oasis.local.home
+
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Fixes: 8b7622bf94a44 ("tracing: Add cpu field for hist triggers")
+Reviewed-by: Tom Zanussi <zanussi@kernel.org>
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/serial-tegra.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ Documentation/trace/histogram.rst |    2 +-
+ kernel/trace/trace.c              |    4 ++++
+ kernel/trace/trace_events_hist.c  |   21 +++++++++++++++------
+ 3 files changed, 20 insertions(+), 7 deletions(-)
 
---- a/drivers/tty/serial/serial-tegra.c
-+++ b/drivers/tty/serial/serial-tegra.c
-@@ -1040,9 +1040,11 @@ static int tegra_uart_hw_init(struct teg
+--- a/Documentation/trace/histogram.rst
++++ b/Documentation/trace/histogram.rst
+@@ -191,7 +191,7 @@ Documentation written by Tom Zanussi
+                                 with the event, in nanoseconds.  May be
+ 			        modified by .usecs to have timestamps
+ 			        interpreted as microseconds.
+-    cpu                    int  the cpu on which the event occurred.
++    common_cpu             int  the cpu on which the event occurred.
+     ====================== ==== =======================================
  
- 	if (tup->cdata->fifo_mode_enable_status) {
- 		ret = tegra_uart_wait_fifo_mode_enabled(tup);
--		dev_err(tup->uport.dev, "FIFO mode not enabled\n");
--		if (ret < 0)
-+		if (ret < 0) {
-+			dev_err(tup->uport.dev,
-+				"Failed to enable FIFO mode: %d\n", ret);
- 			return ret;
-+		}
- 	} else {
- 		/*
- 		 * For all tegra devices (up to t210), there is a hardware
+ Extended error information
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4727,6 +4727,10 @@ static const char readme_msg[] =
+ 	"\t            [:pause][:continue][:clear]\n"
+ 	"\t            [:name=histname1]\n"
+ 	"\t            [if <filter>]\n\n"
++	"\t    Note, special fields can be used as well:\n"
++	"\t            common_timestamp - to record current timestamp\n"
++	"\t            common_cpu - to record the CPU the event happened on\n"
++	"\n"
+ 	"\t    When a matching event is hit, an entry is added to a hash\n"
+ 	"\t    table using the key(s) and value(s) named, and the value of a\n"
+ 	"\t    sum called 'hitcount' is incremented.  Keys and values\n"
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1773,7 +1773,7 @@ static const char *hist_field_name(struc
+ 		 field->flags & HIST_FIELD_FL_ALIAS)
+ 		field_name = hist_field_name(field->operands[0], ++level);
+ 	else if (field->flags & HIST_FIELD_FL_CPU)
+-		field_name = "cpu";
++		field_name = "common_cpu";
+ 	else if (field->flags & HIST_FIELD_FL_EXPR ||
+ 		 field->flags & HIST_FIELD_FL_VAR_REF) {
+ 		if (field->system) {
+@@ -2627,14 +2627,23 @@ parse_field(struct hist_trigger_data *hi
+ 		hist_data->enable_timestamps = true;
+ 		if (*flags & HIST_FIELD_FL_TIMESTAMP_USECS)
+ 			hist_data->attrs->ts_in_usecs = true;
+-	} else if (strcmp(field_name, "cpu") == 0)
++	} else if (strcmp(field_name, "common_cpu") == 0)
+ 		*flags |= HIST_FIELD_FL_CPU;
+ 	else {
+ 		field = trace_find_event_field(file->event_call, field_name);
+ 		if (!field || !field->size) {
+-			hist_err("Couldn't find field: ", field_name);
+-			field = ERR_PTR(-EINVAL);
+-			goto out;
++			/*
++			 * For backward compatibility, if field_name
++			 * was "cpu", then we treat this the same as
++			 * common_cpu.
++			 */
++			if (strcmp(field_name, "cpu") == 0) {
++				*flags |= HIST_FIELD_FL_CPU;
++			} else {
++				hist_err("Couldn't find field: ", field_name);
++				field = ERR_PTR(-EINVAL);
++				goto out;
++			}
+ 		}
+ 	}
+  out:
+@@ -5052,7 +5061,7 @@ static void hist_field_print(struct seq_
+ 		seq_printf(m, "%s=", hist_field->var.name);
+ 
+ 	if (hist_field->flags & HIST_FIELD_FL_CPU)
+-		seq_puts(m, "cpu");
++		seq_puts(m, "common_cpu");
+ 	else if (field_name) {
+ 		if (hist_field->flags & HIST_FIELD_FL_VAR_REF ||
+ 		    hist_field->flags & HIST_FIELD_FL_ALIAS)
 
 
