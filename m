@@ -2,78 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E7F3E5C4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADBF3E5C55
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242035AbhHJNy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236814AbhHJNy1 (ORCPT
+        id S242088AbhHJNzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:55:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43542 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240449AbhHJNzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:54:27 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87357C0613D3;
-        Tue, 10 Aug 2021 06:54:05 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d650032a7c3e3b83a4c54.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:32a7:c3e3:b83a:4c54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 804C71EC0345;
-        Tue, 10 Aug 2021 15:53:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628603638;
+        Tue, 10 Aug 2021 09:55:18 -0400
+Date:   Tue, 10 Aug 2021 15:54:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628603694;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=wy0O3e24ZiuBDTN+sdm5ZVuQfM7Q7G9zPYzrOaizwCs=;
-        b=ZMNituR4rApaF2UHuKbkO1Smmnc5TClj8CptOX/+I8T1/BBlFukUMJP8LRKLOYiEhlrNYW
-        4JMYEaqREmSHsXVv51V2+fUyrAiXiFhb9RdXnKVdfusNRU2RVug5CSRqkBgmFL8PjJBihd
-        UWY7tav0rZ3dboeVncrZyRgTr4zl1Z4=
-Date:   Tue, 10 Aug 2021 15:54:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>
-Cc:     "Ghannam, Yazen" <Yazen.Ghannam@amd.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>
-Subject: Re: [PATCH 1/7] x86/amd_nb: Add Aldebaran device to PCI IDs
-Message-ID: <YRKFHuj/2K4FHZS+@zn.tnic>
-References: <20210630152828.162659-1-nchatrad@amd.com>
- <20210630152828.162659-2-nchatrad@amd.com>
- <20210719192830.GA19451@aus-x-yghannam.amd.com>
- <BL1PR12MB5286FFF1B2B421A2E37DDF44E8F79@BL1PR12MB5286.namprd12.prod.outlook.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=LAm8+J0PoLsg3z7wkOQ5GEdMzf4ynZW7cGFbgngHFV0=;
+        b=J8PVTxzmJS5zZvpLsrS4epEgaNpTWyri3l/p4h/m6X7s7jBW1RqzolQ8g+Sy0ilRsu9SIJ
+        wdWRW6Ceq+BfnuSdeIig37kKfbsZErxTVaMB9Oq9diqsc4+iD0nWYAPMOhdpZLY1vg8TVK
+        8c12zS1AGv9hQg9NRKxSig7v4C2tzvVAEYGLtTvNlHzAYpfJTsUF9LFOhUCYgv7iTJfHBD
+        sMKmFtQjmupOBBbduA4yu/7rT2KxkzwThuUqZ/J7B8ipV/D+kWsCO9ABNM/kHk5OpFHJhW
+        BpPj4FA6n5Uk0XKjZQ53sa4PYwn6eAXpb0LtxG+HHwIYgOkAPx71vnPA/80e5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628603694;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LAm8+J0PoLsg3z7wkOQ5GEdMzf4ynZW7cGFbgngHFV0=;
+        b=wFRPF9vvb/EoGELIPU2LuoMzg35guhpd2aHt0hFLXhWJ89rAwpmN9VmScw7kUZ50LgfNdi
+        SpBmHVvV46pANIAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [SPLAT 1/3] arm_pmu: Sleeping spinlocks down
+ armpmu_alloc_atomic()
+Message-ID: <20210810135453.roczkohgm2lzhg66@linutronix.de>
+References: <20210810134127.1394269-1-valentin.schneider@arm.com>
+ <20210810134127.1394269-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <BL1PR12MB5286FFF1B2B421A2E37DDF44E8F79@BL1PR12MB5286.namprd12.prod.outlook.com>
+In-Reply-To: <20210810134127.1394269-2-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 12:45:17PM +0000, Chatradhi, Naveen Krishna wrote:
-> But I think this patch can be part of the next patch
-> where this value is first used. [naveenk:] Squashed
-> this change into the 2nd patch and submitted v2
-> https://patchwork.kernel.org/project/linux-edac/patch/20210806074350.1
-> 14614-2-nchatrad@amd.com/
+On 2021-08-10 14:41:25 [+0100], Valentin Schneider wrote:
+> [    4.172817] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
 
-Btw, I'd suggest you find someone at AMD to teach you to use a proper
-mail client for replying to lkml messages which does proper quoting,
-etc. Outlook and windoze simply isn't cut out for this type of
-communication but rather for managerial blabla.
+Would it work to allocate the memory upfront and invoke the HP callback
+via smp_function_call()? That is implemented via the hp-callback. It is
+invoked after all CPUs are up. There is one "memory allocation" per
+"node". This does not change during runtime, right?
 
-Alternatively, you can read this here:
-
-https://www.kernel.org/doc/html/latest/process/email-clients.html
-
-and try to set up something yourself.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Sebastian
