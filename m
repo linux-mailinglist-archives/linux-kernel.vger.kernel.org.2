@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0D93E5A22
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411FF3E5A24
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240688AbhHJMkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:40:22 -0400
-Received: from smtpbg127.qq.com ([109.244.180.96]:16269 "EHLO smtpbg.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240678AbhHJMkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:40:20 -0400
-X-QQ-mid: bizesmtp37t1628599174tyw4pwyz
-Received: from localhost.localdomain (unknown [171.223.97.227])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 10 Aug 2021 20:39:32 +0800 (CST)
-X-QQ-SSF: 01000000004000B0C000B00A0000000
-X-QQ-FEAT: 3pmN80QJYaRFZzPyB0vJaRCgwd6ff8O/hIzko3qChSRzLjuJNa/uNtNGkzPJz
-        aKS9lEacsFv34hIDZJVgeJwKxyPrAbtJ+nj5HV2mHPD7pacca2S5jwU3cnLX8N8eDfBQ947
-        R6Emozrvk5aV+tafzykQ2m4mK3/mug71GK/SbWXUkybg5kfM6lDG88gew0cL44t3mKp3UI9
-        CQHhOSzo0wlgzj0G6s1y7/A7YiIn1o9EXXIaxWFqncVe22n9iIuxdmtVpEcUZY1ZEyqh/Vs
-        MT9Ucr85uoGTYJMOOtg4g+rnVXcqt3oMSunaK9WlL6/9wV5MY73Vt/X549aEu82CoAWQ==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     martin.petersen@oracle.com
-Cc:     jejb@linux.ibm.com, brking@us.ibm.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] scsi: ipr: Remove unneeded semicolon
-Date:   Tue, 10 Aug 2021 20:39:19 +0800
-Message-Id: <20210810123919.75443-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S240618AbhHJMkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:40:41 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39778 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240682AbhHJMkc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:40:32 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B8C5A1C0B77; Tue, 10 Aug 2021 14:40:07 +0200 (CEST)
+Date:   Tue, 10 Aug 2021 14:40:07 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Tony Lindgren <tony@atomide.com>, sashal@kernel.org
+Cc:     linux-omap@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH] bus: ti-sysc: Fix gpt12 system timer issue with reserved
+ status
+Message-ID: <20210810124006.GA25121@amd>
+References: <20210611060224.36769-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
+Content-Disposition: inline
+In-Reply-To: <20210611060224.36769-1-tony@atomide.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The semicolon after a code block bracket is unneeded in C. Thus, we can
-remove the redundant semicolon from the code safely.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- drivers/scsi/ipr.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--bp/iNruPH9dso1Pn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/scsi/ipr.h b/drivers/scsi/ipr.h
-index 69444d21fca1..54e47ce18338 100644
---- a/drivers/scsi/ipr.h
-+++ b/drivers/scsi/ipr.h
-@@ -1977,7 +1977,7 @@ static inline int ipr_sdt_is_fmt2(u32 sdt_word)
- 	case IPR_SDT_FMT2_BAR5_SEL:
- 	case IPR_SDT_FMT2_EXP_ROM_SEL:
- 		return 1;
--	};
-+	}
- 
- 	return 0;
- }
--- 
-2.32.0
+Hi!
 
+I noticed the issue while reviewing stable kernels, as this is being
+backported.
+
+> Jarkko Nikula <jarkko.nikula@bitmer.com> reported that Beagleboard
+> revision c2 stopped booting. Jarkko bisected the issue down to
+> commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend
+> and resume for am3 and am4").
+>=20
+> Let's fix the issue by tagging system timers as reserved rather than
+> ignoring them. And let's not probe any interconnect target module child
+> devices for reserved modules.
+
++++ b/drivers/bus/ti-sysc.c
+> @@ -3093,8 +3095,8 @@ static int sysc_probe(struct platform_device *pdev)
+>  		return error;
+> =20
+>  	error =3D sysc_check_active_timer(ddata);
+> -	if (error)
+> -		return error;
+> +	if (error =3D=3D -EBUSY)
+> +		ddata->reserved =3D true;
+> =20
+>  	error =3D sysc_get_clocks(ddata);
+>  	if (error)
+
+What is going on here? First, we silently ignore errors other than
+EBUSY. Second, sysc_check_active_timer() can't return -EBUSY: it
+returns either 0 or -ENXIO. (I checked 5.10-stable, mainline and
+-next-20210806).
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--bp/iNruPH9dso1Pn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmESc6YACgkQMOfwapXb+vKZ5wCeLKBimzJgT4TZyjOoeCGslBeJ
+BH8AoKYD1/pIPyYP4B42sem9TRwrdWEx
+=XRbK
+-----END PGP SIGNATURE-----
+
+--bp/iNruPH9dso1Pn--
