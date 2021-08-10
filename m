@@ -2,80 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55873E583F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4DD3E5845
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhHJKZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:25:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:53088 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhHJKZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:25:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F7586D;
-        Tue, 10 Aug 2021 03:24:56 -0700 (PDT)
-Received: from [10.57.9.181] (unknown [10.57.9.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B99F3F70D;
-        Tue, 10 Aug 2021 03:24:54 -0700 (PDT)
-Subject: Re: [PATCH 5/8] cpufreq: omap: Use auto-registration for energy model
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Kevin Hilman <khilman@kernel.org>, linux-pm@vger.kernel.org,
+        id S231247AbhHJKZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhHJKZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:25:48 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0205C061798
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:25:26 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso4541169pjy.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZdCiYC9u4FnuS70bUd9/octYWkdJG1zK6Pj5AbL4FKs=;
+        b=cQctpUWGgS8XavHH49A7V07HpxQh3UZrgT0rpm6Xo7pjORT+h6V/gpJmAk/K9q82l0
+         BXpx2fSycKX07osBbPOk/myawlvQA2W1M+F/f8oOsBLdfuRqo6JaTriVSznwdhJadbrP
+         2kKOFPWUDPXnGnLFu5FFweje7fwSYSsPE36n/iipqP85ti4NnpCTiS+XjRlVk1MFh/nE
+         Bfno9U2KlR96Faike7CAHkTU3WBSWpIlTIaEY9yC7TQ4/ZJvYmj0aashV0IlkVQFkRi2
+         JFkacqTJxlS3oqGOYl77XZRvrIPSD6kp9q20EvRFTryUlmnBhYmsbKQadXdFz8Cur9No
+         0ccw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZdCiYC9u4FnuS70bUd9/octYWkdJG1zK6Pj5AbL4FKs=;
+        b=nSS9Tj/aMwITA1/U/nut7/JBxpNeygb0LqDZmJuu88SxaWg4pUpsh2BcioVNDBJQfB
+         borXnm+S+N6PyhY3x3MT2gU8VG7/ti4voW09bMjLe/+LfO5Krbswrtvjpe8PBELfkvwQ
+         oUnpOJheDGAzl9VzqpDtdN5FxIcD70bG+hZRw7QwwHkaPWORc8/MdrGKJtk4hP2rw1FD
+         ODxuJKz3TGmMTRmPhXxo8zGGIGzv9bFKYYPx5i9fou8FVw2yer1O1eSUu9tMU/3bryOg
+         R/ow41l1JXOOdIdTWQ8T8kM097OezSt3fB619LVMDBIFWyrshFVF9b/izyqmxKk+lpGW
+         lKLQ==
+X-Gm-Message-State: AOAM533UTGp9CQFpgCrcOfrAmhaVOcoGvLKKs8MPQO1Xw94ViR0LtmGU
+        EWz4Z5n4M6hkyppBdpZ/XShuoA==
+X-Google-Smtp-Source: ABdhPJwfe8truRga+QTqCjf8OWZq0lELLcSbl5CksIhnr3YftGvX2WA1G7Yb3PcGGaa9QKuM2Hs74w==
+X-Received: by 2002:a65:450c:: with SMTP id n12mr312121pgq.316.1628591126406;
+        Tue, 10 Aug 2021 03:25:26 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id a11sm27981920pgj.75.2021.08.10.03.25.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 03:25:25 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <a17b0f64c3a4cd84a126b3315539c13b15b4738c.1628579170.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <e1d23a96-d9af-7151-3023-c279f6b0c970@arm.com>
-Date:   Tue, 10 Aug 2021 11:24:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        stratos-dev@op-lists.linaro.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH V5 0/2] gpio: Add virtio based driver
+Date:   Tue, 10 Aug 2021 15:55:14 +0530
+Message-Id: <cover.1628590591.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-In-Reply-To: <a17b0f64c3a4cd84a126b3315539c13b15b4738c.1628579170.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+This adds Virtio GPIO driver based on the proposed specification [1].
 
-On 8/10/21 8:36 AM, Viresh Kumar wrote:
-> Use the CPUFREQ_REGISTER_WITH_EM flag to allow cpufreq core to
-> automatically register with the energy model.
-> 
-> This allows removal of boiler plate code from the driver and fixes the
-> unregistration part as well.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->   drivers/cpufreq/omap-cpufreq.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/omap-cpufreq.c b/drivers/cpufreq/omap-cpufreq.c
-> index e035ee216b0f..303136f97773 100644
-> --- a/drivers/cpufreq/omap-cpufreq.c
-> +++ b/drivers/cpufreq/omap-cpufreq.c
-> @@ -131,7 +131,6 @@ static int omap_cpu_init(struct cpufreq_policy *policy)
->   
->   	/* FIXME: what's the actual transition time? */
->   	cpufreq_generic_init(policy, freq_table, 300 * 1000);
-> -	dev_pm_opp_of_register_em(mpu_dev, policy->cpus);
->   
->   	return 0;
->   }
-> @@ -144,7 +143,8 @@ static int omap_cpu_exit(struct cpufreq_policy *policy)
->   }
->   
->   static struct cpufreq_driver omap_driver = {
-> -	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
-> +	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK |
-> +			  CPUFREQ_REGISTER_WITH_EM,
->   	.verify		= cpufreq_generic_frequency_table_verify,
->   	.target_index	= omap_target,
->   	.get		= cpufreq_generic_get,
-> 
+The specification for basic GPIO operations is already reviewed by Linus and
+Arnd, while the IRQ stuff is still under discussion and not finalized.
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+I am sharing the code, so everyone gets more clarity on how it will work
+eventually in Linux.
+
+I have tested this patchset with Qemu guest with help of the libgpiod utility.
+I have also tested basic handling of interrupts on the guest side. It works as
+expected.
+
+The host side virtio-backend isn't ready yet and my tests only tested the flow
+control between guest and host, but didn't play with real GPIO pins.  That will
+be done once I have a working backend in place (WIP).
+
+V4->V5:
+- Use ____cacheline_aligned for buffers.
+- Proper locking in place, which avoids the use of work-item for processing
+  interrupts.
+- Separate callbacks for enable/disable of irqs.
+- The irq is disabled at the host only for enable/disable now, instead of
+  mask/unmask.
+- mask/unmask only control the queuing of buffers now.
+- Use handle_level_irq() instead of handle_fasteoi_irq().
+- Other minor changes.
+
+V3->V4:
+- Lots of changes, as the specification changed too much. Better forget
+  everything we have done until now :)
+
+--
+Viresh
+
+[1] https://lists.oasis-open.org/archives/virtio-dev/202107/msg00232.html
+
+Viresh Kumar (2):
+  gpio: Add virtio-gpio driver
+  gpio: virtio: Add IRQ support
+
+ MAINTAINERS                      |   7 +
+ drivers/gpio/Kconfig             |  10 +
+ drivers/gpio/Makefile            |   1 +
+ drivers/gpio/gpio-virtio.c       | 668 +++++++++++++++++++++++++++++++
+ include/uapi/linux/virtio_gpio.h |  72 ++++
+ 5 files changed, 758 insertions(+)
+ create mode 100644 drivers/gpio/gpio-virtio.c
+ create mode 100644 include/uapi/linux/virtio_gpio.h
+
+-- 
+2.31.1.272.g89b43f80a514
+
