@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5CA3E8172
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54A03E7EE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238270AbhHJR70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:59:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47970 "EHLO mail.kernel.org"
+        id S232714AbhHJRfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:35:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237848AbhHJRzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:55:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1595B610F7;
-        Tue, 10 Aug 2021 17:44:39 +0000 (UTC)
+        id S230397AbhHJReh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:34:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E0F160F94;
+        Tue, 10 Aug 2021 17:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617480;
-        bh=q0c/HAEw4TuA8hj9e5JKp07Q0ukq9lXTP7eTX7pVdfU=;
+        s=korg; t=1628616854;
+        bh=STCnNq7jPMiGyCe9y4kyJgJihnvUsfArWd8j5F1UWfI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ejlGBhiimtFF8EQYfEoqapV0MCIkvNRdwucwhSp8OR2Y7xkQbSq8ycYqvGm+hoFB1
-         U0bQUmkhoNO/YD9/9H9yIW+bL7oOgg+JIlU0Abl2gm+SGqMr3kIuuwnW0w0cRFAgqB
-         5DU2WUoKYMsciV+gwbgqpr5CcsJWDBKJ3+0K97DQ=
+        b=jE9SV6F5qiXYzx/HAHdcFjXqvuVs42ebm+kCGFMx6desZ3CPrUIz61VEN353+9Rpu
+         tMdH73SMt2UaefY4nVX/X15lZ9FGWv3UnDMqdeCrz2V0MZPc5WhcV0HuUK29ObtXZd
+         vkf8ZxaLtn96ioHb7XEikNjEF6ditcePpZl9cf/g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Khoruzhick <anarsoul@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.13 078/175] USB: serial: pl2303: fix GT type detection
-Date:   Tue, 10 Aug 2021 19:29:46 +0200
-Message-Id: <20210810173003.507377531@linuxfoundation.org>
+        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 14/85] omap5-board-common: remove not physically existing vdds_1v8_main fixed-regulator
+Date:   Tue, 10 Aug 2021 19:29:47 +0200
+Message-Id: <20210810172948.689177141@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
-References: <20210810173000.928681411@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: H. Nikolaus Schaller <hns@goldelico.com>
 
-commit 3212a99349cee5fb611d3ffcf0e65bc3cd6dcf2f upstream.
+[ Upstream commit c68ef4ad180e09805fa46965d15e1dfadf09ffa5 ]
 
-At least some PL2303GT have a bcdDevice of 0x305 instead of 0x100 as the
-datasheet claims. Add it to the list of known release numbers for the
-HXN (G) type.
+This device tree include file describes a fixed-regulator
+connecting smps7_reg output (1.8V) to some 1.8V rail and
+consumers (vdds_1v8_main).
 
-Fixes: 894758d0571d ("USB: serial: pl2303: tighten type HXN (G) detection")
-Reported-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Tested-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: stable@vger.kernel.org	# 5.13
-Link: https://lore.kernel.org/r/20210804093100.24811-1-johan@kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This regulator does not physically exist.
+
+I assume it was introduced as a wrapper around smps7_reg
+to provide a speaking signal name "vdds_1v8_main" as label.
+
+This fixed-regulator without real function was not an issue
+in driver code until
+
+  Commit 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
+
+introduced a new check for regulator initialization which
+makes Palmas regulator registration fail:
+
+[    5.407712] ldo1: supplied by vsys_cobra
+[    5.412748] ldo2: supplied by vsys_cobra
+[    5.417603] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to register 48070000.i2c:palmas@48:palmas_pmic regulator
+
+The reason is that the supply-chain of regulators is too
+long and goes from ldo3 through the virtual vdds_1v8_main
+regulator and then back to smps7. This adds a cross-dependency
+of probing Palmas regulators and the fixed-regulator which
+leads to probe deferral by the new check and is no longer
+resolved.
+
+Since we do not control what device tree files including this
+one reference (either &vdds_1v8_main or &smps7_reg or both)
+we keep both labels for smps7 for compatibility.
+
+Fixes: 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/pl2303.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/omap5-board-common.dtsi | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -432,6 +432,7 @@ static int pl2303_detect_type(struct usb
- 	case 0x200:
- 		switch (bcdDevice) {
- 		case 0x100:
-+		case 0x305:
- 			/*
- 			 * Assume it's an HXN-type if the device doesn't
- 			 * support the old read request value.
+diff --git a/arch/arm/boot/dts/omap5-board-common.dtsi b/arch/arm/boot/dts/omap5-board-common.dtsi
+index 68ac04641bdb..c7bf68c90ea8 100644
+--- a/arch/arm/boot/dts/omap5-board-common.dtsi
++++ b/arch/arm/boot/dts/omap5-board-common.dtsi
+@@ -30,14 +30,6 @@
+ 		regulator-max-microvolt = <5000000>;
+ 	};
+ 
+-	vdds_1v8_main: fixedregulator-vdds_1v8_main {
+-		compatible = "regulator-fixed";
+-		regulator-name = "vdds_1v8_main";
+-		vin-supply = <&smps7_reg>;
+-		regulator-min-microvolt = <1800000>;
+-		regulator-max-microvolt = <1800000>;
+-	};
+-
+ 	vmmcsd_fixed: fixedregulator-mmcsd {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vmmcsd_fixed";
+@@ -487,6 +479,7 @@
+ 					regulator-boot-on;
+ 				};
+ 
++				vdds_1v8_main:
+ 				smps7_reg: smps7 {
+ 					/* VDDS_1v8_OMAP over VDDS_1v8_MAIN */
+ 					regulator-name = "smps7";
+-- 
+2.30.2
+
 
 
