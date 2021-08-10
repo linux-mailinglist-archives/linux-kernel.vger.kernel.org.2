@@ -2,166 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E453E5C96
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1503E5C9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241509AbhHJOLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233046AbhHJOLY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:11:24 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EC0C0613D3;
-        Tue, 10 Aug 2021 07:11:01 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id d4so12896100lfk.9;
-        Tue, 10 Aug 2021 07:11:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Q4ynKSZrlzxY6UgcjVFs5XU8y4Ot1KDO144fUqq/Tac=;
-        b=WHkasInhxybnCNi2BzTg0K/0mK03T6Bj4uam9z5/GOep7FpH/K4xqY7oQZOyLMVVuz
-         JrYl6NIFigl+r/dqpCFY512f1JAi49eIMEBjPDAmQQIhhyIsXWfaNFDHGKO2mHeM4ZS6
-         SLMy9T9TcPlo6SosnTnaR3M7khZtSd0zyZEtKB4zGZKh8um1UxRFrbSQ50SEt/zWYoc5
-         gyHexvD6k6FNmYvrCTl0T0eCth2wDBpc9sAqipC2vZEv6OgwL/H9+WvuCYhsUSTboV0U
-         d4v0mo2CLSPO9csjdafZHEHLNyGERz8WgdrhTw1TMHf1LmYvA4qfUt+L1p+OKQuPNO3r
-         Dt7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q4ynKSZrlzxY6UgcjVFs5XU8y4Ot1KDO144fUqq/Tac=;
-        b=TU3qR0u5gHmfVEEKGyykzn0uisa3NarwFozcUkMX/ahzlwNNirop2a0MPIQIekt2p6
-         MRBhVpyAxSkVkvfiLn7l1XUR6u59z3RCVWIxRZY5vfSz5iTfkNjMWawZjC4qCPcdJi9A
-         H+BtmW4FPeeE/9nIOdQ3KB5Wz2sZ834VLGNN259NIEJSvM4nsQGmAbGBMyc29j97fewp
-         zI90bk0jFwuqc/BZsBLIVeTewLy0YEbXAskcRdJ5vVXNQX+sfeRZ0LkB64T+FxgejOfv
-         8YlOxDjhDV1u2Nj7wcSWU3HJikLBSmMnJJWb84hCcwdOOjlKUBcyc8wqMNIbCLt5AYXW
-         pYWw==
-X-Gm-Message-State: AOAM53324a1bZ9UAeffjsnhCqYyAZoO4AGSn8CPaxDW7/F9czgJ1bFJL
-        jI7EFjCXAksg9ENYbQWZg4Y=
-X-Google-Smtp-Source: ABdhPJzqsS/2yGBkKpw4N+uQCqgP93F3TlP9ctQLZkS9vGFH7yjMmyd3O9i9iRV6/1t+B6QpdjlOmA==
-X-Received: by 2002:a05:6512:6d3:: with SMTP id u19mr14671130lff.483.1628604658642;
-        Tue, 10 Aug 2021 07:10:58 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.232])
-        by smtp.gmail.com with ESMTPSA id i3sm1470644lfr.217.2021.08.10.07.10.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 07:10:57 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in udmabuf_create
-To:     syzbot <syzbot+e9cd3122a37c5d6c51e8@syzkaller.appspotmail.com>,
-        christian.koenig@amd.com, dongwon.kim@intel.com,
-        dri-devel@lists.freedesktop.org, kraxel@redhat.com,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, sumit.semwal@linaro.org,
-        syzkaller-bugs@googlegroups.com, vivek.kasireddy@intel.com
-References: <000000000000263db905c934be32@google.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <d7bd2585-ef80-d2ab-c474-acbe238c54a0@gmail.com>
-Date:   Tue, 10 Aug 2021 17:10:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S242132AbhHJOL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240651AbhHJOL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:11:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C8FB60EC0;
+        Tue, 10 Aug 2021 14:11:31 +0000 (UTC)
+Date:   Tue, 10 Aug 2021 16:11:25 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: Questions re the new mount_setattr(2) manual page
+Message-ID: <20210810141125.nxmvnwpyjxajvxl4@wittgenstein>
+References: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
+ <b23122c0-893a-c1b4-0b2d-3a332af4151f@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <000000000000263db905c934be32@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b23122c0-893a-c1b4-0b2d-3a332af4151f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 4:47 PM, syzbot wrote:
-> Hello,
+On Tue, Aug 10, 2021 at 09:12:14AM +0200, Michael Kerrisk (man-pages) wrote:
+> Hi Christian,
 > 
-> syzbot found the following issue on:
+> One more question...
 > 
-> HEAD commit:    7999516e20bd Add linux-next specific files for 20210806
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10f15f8e300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2f518e910b029c31
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e9cd3122a37c5d6c51e8
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1181099a300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b6fce9300000
+> >>       The propagation field is used to specify the propagation typ
+> >>       of the mount or mount tree.  Mount propagation options are
+> >>       mutually exclusive; that is, the propagation values behave
+> >>       like an enum.  The supported mount propagation types are:
 > 
-> The issue was bisected to:
-> 
-> commit 16c243e99d335e1ef3059871897119affc98b493
-> Author: Vivek Kasireddy <vivek.kasireddy@intel.com>
-> Date:   Wed Jun 9 18:29:15 2021 +0000
-> 
->      udmabuf: Add support for mapping hugepages (v4)
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12f73dc9300000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=11f73dc9300000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16f73dc9300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+e9cd3122a37c5d6c51e8@syzkaller.appspotmail.com
-> Fixes: 16c243e99d33 ("udmabuf: Add support for mapping hugepages (v4)")
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-> CPU: 0 PID: 6603 Comm: syz-executor127 Not tainted 5.14.0-rc4-next-20210806-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:_compound_head include/linux/page-flags.h:187 [inline]
-> RIP: 0010:get_page include/linux/mm.h:1203 [inline]
-> RIP: 0010:udmabuf_create+0x664/0x16f0 drivers/dma-buf/udmabuf.c:236
-> Code: 03 48 89 84 24 90 00 00 00 e9 38 01 00 00 e8 23 7a f7 fc 4d 89 f4 49 c1 e4 06 4c 03 24 24 49 8d 7c 24 08 48 89 f8 48 c1 e8 03 <42> 80 3c 38 00 0f 85 d3 0d 00 00 4d 8b 6c 24 08 31 ff 4c 89 eb 83
-> RSP: 0018:ffffc90002d7fc70 EFLAGS: 00010202
-> RAX: 0000000000000001 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: ffff888023f69c80 RSI: ffffffff847e4f3d RDI: 0000000000000008
-> RBP: 0000000000000000 R08: fffffffffffff000 R09: 0000000000000000
-> R10: ffffffff847e50f5 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: dffffc0000000000
-> FS:  0000000000935300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000002000020c CR3: 0000000018d16000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   udmabuf_ioctl_create drivers/dma-buf/udmabuf.c:305 [inline]
+> The manual page text doesn't actually say it, but if the 'propagation'
+> field is 0, then this means leave the propagation type unchanged, 
+> right? This of course should be mentioned in the manual page.
 
-The problem is wrong error handling:
+Yes, if none of the documented values is set the propagation is unchanged.
 
-	hpage = find_get_page_flags(mapping, pgoff, FGP_ACCESSED);
-	if (IS_ERR(hpage)) {
-		ret = PTR_ERR(hpage);
-		goto err;
-	}
-
-find_get_page_flags() return NULL on failure, so this patch should work:
-
-diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
-index 8df761a10251..c57a609db75b 100644
---- a/drivers/dma-buf/udmabuf.c
-+++ b/drivers/dma-buf/udmabuf.c
-@@ -227,8 +227,8 @@ static long udmabuf_create(struct miscdevice *device,
-  				if (!hpage) {
-  					hpage = find_get_page_flags(mapping, pgoff,
-  								    FGP_ACCESSED);
--					if (IS_ERR(hpage)) {
--						ret = PTR_ERR(hpage);
-+					if (!hpage) {
-+						ret = -EINVAL;
-  						goto err;
-  					}
-  				}
-
-I am not sure about ret value in case of failure, so I am looking for 
-any reviews :)
-
-
->   udmabuf_ioctl+0x152/0x2c0 drivers/dma-buf/udmabuf.c:336
->   vfs_ioctl fs/ioctl.c:51 [inline]
->   __do_sys_ioctl fs/ioctl.c:874 [inline]
->   __se_sys_ioctl fs/ioctl.c:860 [inline]
->   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-With regards,
-Pavel Skripkin
+Christian
