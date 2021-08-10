@@ -2,165 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984E03E59FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A51A3E5A09
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240579AbhHJMej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:34:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:54394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238617AbhHJMef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:34:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D2D76D;
-        Tue, 10 Aug 2021 05:34:13 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 881713F70D;
-        Tue, 10 Aug 2021 05:34:10 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 13:34:07 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH 08/13] clocksource/arm_arch_timer: Work around broken
- CVAL implementations
-Message-ID: <20210810123407.GB52842@C02TD0UTHF1T.local>
-References: <20210809152651.2297337-1-maz@kernel.org>
- <20210809152651.2297337-9-maz@kernel.org>
+        id S240630AbhHJMgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240605AbhHJMgK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:36:10 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDA4C061799
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:35:47 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id k29so13263963wrd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cXcVfaJa9gxQfqomI6BeLC46V441BROQ5crN/C0u7tQ=;
+        b=aFsv3vr+XQ6POKdiOCpyItN/s1A3yD15/zjn5UostldN1x0iL5S1t/7EXoUl4mMz8Q
+         8uowNLbyuG2VkEPcjjwnxbK6tW9BeU8zchx6GlPqOffGl7lbLoMYd2ECnz8EIIuFGAW4
+         Rjt6Db4jWbDc7edO/2yn9cC82+Y6maFBe7ARMIb6MT9SB32P8lSW/xxLmi6ooVHg1n1R
+         fWj5yHcEtOUtG6Zie4y9ktNsQrvGTNFnDBCFkPxHUKFMLVmRIrHiV6Yn7GSXi+ytpjxw
+         UFqTo3igkPxFx/S9aTva5s6e+RD887u4ahF5QGcNM7fvB5Dfu3sNWWxy584kPwVotjxq
+         cW3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cXcVfaJa9gxQfqomI6BeLC46V441BROQ5crN/C0u7tQ=;
+        b=Iauv5/GmT8sy7qCpmN2mnXzOsBlD2dXFAQ6cSwK6R+YznngUKLwMJxrXL0pA5L1gIe
+         +j3QAwJmAw/2rf5vaPz6mM6inCY9CfU2XHcPt/NoYJ5YphS2nmlo3T1gAXVLw9cm5d4P
+         8Qda1jMH9D/gKrvzrvZ6822NtPB44+x4y1iCpUv/C5FcYBzQADV9m0NYJboVQ8b0RqXS
+         yTNtiDWloF4H2RhyxGCu/osSrSKNHJg7qSNmmuSiKk/8RdRuCTbZxdNmRAI73fR7JUWF
+         aulV8cSpPoheNMlhvY3uZOC+FuacdzG3suVdfacf7UVHz5ehEtWowlKJp/iti/dC+Edy
+         Qjog==
+X-Gm-Message-State: AOAM532gMqYtPm+EuOvIxWVPMlAPfSiO33tK+j+18MipjO7Wu5Cf5kEH
+        gqWhuCt7u+jftlhzHF2KTqybtg==
+X-Google-Smtp-Source: ABdhPJyrxhF8E0q6i871koPqo7IgwEwcQPwaC+jYoSQxm92eBV0IEuOY/clY+5owwOhTp0yntrvIQw==
+X-Received: by 2002:adf:e5cf:: with SMTP id a15mr30538552wrn.362.1628598945798;
+        Tue, 10 Aug 2021 05:35:45 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:e920:cedf:a082:9d02])
+        by smtp.gmail.com with ESMTPSA id 104sm23687271wrc.4.2021.08.10.05.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 05:35:45 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 13:35:39 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
+Message-ID: <YRJym+Vn4bbwQzzs@google.com>
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809152651.2297337-9-maz@kernel.org>
+In-Reply-To: <cover.1628579170.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 04:26:46PM +0100, Marc Zyngier wrote:
-> The Applied Micro XGene-1 SoC has a busted implementation of the
-> CVAL register: it looks like it is based on TVAL instead of the
-> other way around. The net effect of this implementation blunder
-> is that the maximum deadline you can program in the timer is
-> 32bit wide.
+On Tuesday 10 Aug 2021 at 13:06:47 (+0530), Viresh Kumar wrote:
+> Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
+> with the EM core on their behalf.
+
+Hmm, that's not quite what this does. This asks the cpufreq core to
+use *PM_OPP* to register an EM, which I think is kinda wrong to do from
+there IMO. The decision to use PM_OPP or another mechanism to register
+an EM belongs to platform specific code (drivers), so it is odd for the
+PM_OPP registration to have its own cpufreq flag but not the other ways.
+
+As mentioned in another thread, the very reason to have PM_EM is to not
+depend on PM_OPP, so I'm worried about the direction of travel with this
+series TBH.
+
+> This allows us to get rid of duplicated code
+> in the drivers and fix the unregistration part as well, which none of the
+> drivers have done until now.
+
+This series adds more code than it removes, and the unregistration is
+not a fix as we don't ever remove the EM tables by design, so not sure
+either of these points are valid arguments.
+
+> This would also make the registration with EM core to happen only after policy
+> is fully initialized, and the EM core can do other stuff from in there, like
+> marking frequencies as inefficient (WIP). Though this patchset is useful without
+> that work being done and should be merged nevertheless.
 > 
-> Detect the problematic case and limit the timer to 32bit deltas.
-> Note that we don't tie this bug to XGene specifically, as it may
-> also catch similar defects on other high-quality implementations.
+> This doesn't update scmi cpufreq driver for now as it is a special case and need
+> to be handled differently. Though we can make it work with this if required.
 
-Do we know of any other implementations that have a similar bug?
-
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/clocksource/arm_arch_timer.c | 38 +++++++++++++++++++++++++++-
->  1 file changed, 37 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index 895844c33351..1c596cd3cc5c 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -778,9 +778,42 @@ static int arch_timer_set_next_event_phys_mem(unsigned long evt,
->  	return 0;
->  }
->  
-> +static u64 __arch_timer_check_delta(void)
-> +{
-> +#ifdef CONFIG_ARM64
-> +	u64 tmp;
-> +
-> +	/*
-> +	 * XGene-1 implements CVAL in terms of TVAL, meaning that the
-> +	 * maximum timer range is 32bit. Shame on them. Detect the
-> +	 * issue by setting a timer to now+(1<<32), which will
-> +	 * immediately fire on the duff CPU.
-> +	 */
-> +	write_sysreg(0, cntv_ctl_el0);
-> +	isb();
-> +	tmp = read_sysreg(cntvct_el0) | BIT(32);
-> +	write_sysreg(tmp, cntv_cval_el0);
-
-This will fire on legitimate implementations fairly often. Consider if
-we enter this function at a time where CNTCVT_EL0[32] == 1, where:
-
-* At 100MHz, bit 32 flips every ~42.95
-* At 200MHz, bit 32 flips every ~21.47
-* At 1GHz, bit 32 flips every ~4.29s
-
-... and ThunderX2 has a 200MHz frequency today, with SBSA recommending
-100MHz.
-
-What does XGene-1 return upon a read of CVAL? If it always returns 0 for
-the high bits, we could do a timing-insensitive check for truncation of
-CVAL, e.g.
-
-| 	/* CVAL must be at least 56 bits wide, as with CNT */
-| 	u64 mask = GENMASK(55, 0);
-| 	u64 val;
-| 
-| 	write_sysreg(mask, cntv_cval_el0);
-| 	val = read_sysread(cnt_cval_el0);
-| 
-| 	if (val != mask) {
-| 		/* What a great CPU */
-| 	}
+Note that we'll have more 'special cases' if other architectures start
+using PM_EM, which is what we have been trying to allow since the
+beginning, so that's worth keeping in mind.
 
 Thanks,
-Mark.
-
-> +	write_sysreg(ARCH_TIMER_CTRL_ENABLE | ARCH_TIMER_CTRL_IT_MASK,
-> +		     cntv_ctl_el0);
-> +	isb();
-> +
-> +	tmp = read_sysreg(cntv_ctl_el0);
-> +	write_sysreg(0, cntv_ctl_el0);
-> +	isb();
-> +
-> +	if (tmp & ARCH_TIMER_CTRL_IT_STAT) {
-> +		pr_warn_once("Detected broken implementation, limiting width to 32bits");
-> +		return CLOCKSOURCE_MASK(32);
-> +	}
-> +#endif
-> +	return CLOCKSOURCE_MASK(56);
-> +}
-> +
->  static void __arch_timer_setup(unsigned type,
->  			       struct clock_event_device *clk)
->  {
-> +	u64 max_delta;
-> +
->  	clk->features = CLOCK_EVT_FEAT_ONESHOT;
->  
->  	if (type == ARCH_TIMER_TYPE_CP15) {
-> @@ -812,6 +845,7 @@ static void __arch_timer_setup(unsigned type,
->  		}
->  
->  		clk->set_next_event = sne;
-> +		max_delta = __arch_timer_check_delta();
->  	} else {
->  		clk->features |= CLOCK_EVT_FEAT_DYNIRQ;
->  		clk->name = "arch_mem_timer";
-> @@ -828,11 +862,13 @@ static void __arch_timer_setup(unsigned type,
->  			clk->set_next_event =
->  				arch_timer_set_next_event_phys_mem;
->  		}
-> +
-> +		max_delta = CLOCKSOURCE_MASK(56);
->  	}
->  
->  	clk->set_state_shutdown(clk);
->  
-> -	clockevents_config_and_register(clk, arch_timer_rate, 0xf, CLOCKSOURCE_MASK(56));
-> +	clockevents_config_and_register(clk, arch_timer_rate, 0xf, max_delta);
->  }
->  
->  static void arch_timer_evtstrm_enable(int divider)
-> -- 
-> 2.30.2
-> 
+Quentin
