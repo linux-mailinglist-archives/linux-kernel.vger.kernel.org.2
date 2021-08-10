@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2C23E5A05
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC42E3E5A03
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240611AbhHJMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:36:04 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:47416 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236886AbhHJMfz (ORCPT
+        id S240587AbhHJMf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237391AbhHJMfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:35:55 -0400
-X-UUID: 6f4aa03e1f494d4284d2cd45b99e0a48-20210810
-X-UUID: 6f4aa03e1f494d4284d2cd45b99e0a48-20210810
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1365449332; Tue, 10 Aug 2021 20:35:30 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Aug 2021 20:35:28 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 10 Aug 2021 20:35:27 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     David Ahern <dsahern@gmail.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
-        <chao.song@mediatek.com>, <zhuoliang.zhang@mediatek.com>,
-        Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH net-next v3] ipv6: add IFLA_INET6_RA_MTU to expose mtu value in the RA message
-Date:   Tue, 10 Aug 2021 20:33:27 +0800
-Message-ID: <20210810123327.15998-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <c0a6f817-0225-c863-722c-19c798daaa4b@gmail.com>
-References: <c0a6f817-0225-c863-722c-19c798daaa4b@gmail.com>
+        Tue, 10 Aug 2021 08:35:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66288C0613D3;
+        Tue, 10 Aug 2021 05:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1Eibxde9ggx54b5TBpNP+oBpZ0ThMzYJ1OQ+F+Hf7IU=; b=r1eXHXnv/xi2nTA4IlUEdZL/gl
+        aiAmEz31byi7ERD4xN/iaW8IozUq8x8hAecNx1Rc73WW430UhZWuAkryy1uMmmqTbW1TnHZuvXrqK
+        FsjVrILygugSexALlOacSKdxYERbCfNYhOM3P5mt8bhYxoZK1aiPM0wDWTIvJ1X9LxQb23wKxYT3v
+        1f5K/5a+LiW0cMjtZrxKrwjFb4TqsLxNVld7nMi4oY06na7TTAATHxj8YgLPexLuF9RvQlYJmdpbJ
+        ay0NuZjJDP/0RIlwLpJiDJFAULErz5D1AKSPwQNyDnaQ+HWVKn5xtvD5h4T+hyhvqM/jTw+5f+KjW
+        lWhn0SGQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDQwi-00C6cz-GN; Tue, 10 Aug 2021 12:33:52 +0000
+Date:   Tue, 10 Aug 2021 13:33:28 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] Page Cache Allowing Hard Interrupts
+Message-ID: <YRJyGMLAFKoB1qUQ@infradead.org>
+References: <20210730213630.44891-1-vishal.moola@gmail.com>
+ <YRI1oLdiueUbBVwb@infradead.org>
+ <YRJsiapS/M3BOH9D@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRJsiapS/M3BOH9D@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-09 at 16:43 -0600, David Ahern wrote:
-> On 8/9/21 8:01 AM, Rocco Yue wrote:
-
-> +
->>  #ifdef CONFIG_SYSCTL
->>  
->>  static int addrconf_sysctl_forward(struct ctl_table *ctl, int write,
->> diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
->> index c467c6419893..a04164cbd77f 100644
->> --- a/net/ipv6/ndisc.c
->> +++ b/net/ipv6/ndisc.c
->> @@ -1496,6 +1496,12 @@ static void ndisc_router_discovery(struct sk_buff *skb)
->>  		memcpy(&n, ((u8 *)(ndopts.nd_opts_mtu+1))+2, sizeof(mtu));
->>  		mtu = ntohl(n);
->>  
->> +		if (in6_dev->ra_mtu != mtu) {
->> +			in6_dev->ra_mtu = mtu;
->> +			inet6_iframtu_notify(in6_dev);
->> +			ND_PRINTK(2, info, "update ra_mtu to %d\n", in6_dev->ra_mtu);
->> +		}
->> +
->>  		if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu) {
->>  			ND_PRINTK(2, warn, "RA: invalid mtu: %d\n", mtu);
->>  		} else if (in6_dev->cnf.mtu6 != mtu) {
+On Tue, Aug 10, 2021 at 01:09:45PM +0100, Matthew Wilcox wrote:
+> On Tue, Aug 10, 2021 at 09:15:28AM +0100, Christoph Hellwig wrote:
+> > Stupid question, but where do we ever do page cache interaction from
+> > soft irq context?
 > 
-> Since this MTU is getting reported via af_info infrastructure,
-> rtmsg_ifinfo should be sufficient.
+> test_clear_page_writeback() happens in _some_ interrupt context (ie
+> the io completion path).  We had been under the impression that it was
+> always actually softirq context, and so this patch was safe.  However,
+> it's now clear that some drivers are calling it from hardirq context.
+> Writeback completions are clearly not latency sensitive and so can
+> be delayed from hardirq to softirq context without any problem, so I
+> think fixing this is just going to be a matter of tagging requests as
+> "complete in softirq context" and ensuring that blk_mq_raise_softirq()
+> is called for them.
 > 
-> From there use 'ip monitor' to make sure you are not generating multiple
-> notifications; you may only need this on the error path.
+> Assuming that DIO write completions _are_ latency-sensitive, of course.
+> Maybe all write completions could be run in softirqs.
 
-Hi David,
-
-To avoid generating multiple notifications, I added a separate ramtu notify
-function in this patch, and I added RTNLGRP_IPV6_IFINFO nl_mgrp to the ipmonitor.c
-to verify this patch was as expected.
-
-I look at the rtmsg_ifinfo code, it should be appropriate and I will use it and
-verify it.
-
-But there's one thing, I'm sorry I didn't fully understand the meaning of this
-sentence "you may only need this on the error path". Honestly, I'm not sure what
-the error patch refers to, do you mean "if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu)" ?
-
-Thanks
-Rocco
+I really don't really see any benefit in introducing softirqs into
+the game.  If we want to simplify the locking and do not care too much
+about latency, we should just defer to workqueue/thread context.
+For example XFS already does that for all writeback except for pure
+overwrites.  Those OTOH can be latency critical for O_SYNC writes, but
+you're apparently looking into that already.
