@@ -2,69 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4363E828C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA4B3E828A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237420AbhHJSKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:10:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40998 "EHLO mail.kernel.org"
+        id S236731AbhHJSKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:10:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239359AbhHJSFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE67603E7;
-        Tue, 10 Aug 2021 17:58:57 +0000 (UTC)
+        id S239351AbhHJSFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:05:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3DE560E09;
+        Tue, 10 Aug 2021 17:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1628618337;
-        bh=e8AfQnkbBJUTBN66fx3ZNZlZaWyTkgvckUWpfKYlrgA=;
+        bh=Cr9R1HwNiLcb2/9udQyjfu9g8wdlTQKPfK0qsaBcKmQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=edymIbhwlGNVazPpMSqv5zJ5TjFUn0QqAddAKi+3BVwOp7gtn1uNGdciLnW1EieM6
-         czjev0CYwKBrEKg35h5gTF+2EvtVOyDljxQ2pGYRnYfQ9tx3v5jiUP1IFsKMxaV0xz
-         BNqMaf6wBOS4ScVvQnaJZLV4RN//o/dZ2bFx0k7eDcwvD/goqsf6L20TCvsxsafnpA
-         dmbFnE6yuZg8M5syNnAtTO0U2/j1naK2h4jisns2PsP+wfH7cuPD9de63uJ6e8qggy
-         aQ40Mlx8Ire9riQK3ZG6YD8bF7uoc+AmfxH7rDIwiChd0fK9UpdHglkb7RdnZKp1xD
-         /3Wj/B3ntqn3A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 12093403F2; Tue, 10 Aug 2021 14:58:55 -0300 (-03)
-Date:   Tue, 10 Aug 2021 14:58:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, linuxarm@huawei.com
-Subject: Re: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
-Message-ID: <YRK+X/f44UK+btRx@kernel.org>
-References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
- <1627566986-30605-3-git-send-email-john.garry@huawei.com>
- <YQgHMt4BsDeJnE09@kernel.org>
- <90094733-741c-50e5-ac7d-f5640b5f0bdd@huawei.com>
- <88294bb8-6fb1-b485-446c-4ec15ff28d4a@huawei.com>
- <YRKGo1AtfBn85sZ7@kernel.org>
- <40e85ad2-3db4-aecf-d972-7d4aa5c2278c@huawei.com>
+        b=VvkLCcXCLH/BXu25BLnQ6wa/OBSgEqmCMlUp2N0oJ/TmSTAgKOPpTcMTxce/dFrp1
+         0kbzwY3aP7UPfy87J6oljCCt/AiScETUutlYm1w95QrKQSf8is8GX3Y7jN0Byx59t5
+         yPouQsUk6AtSB9dn/GEbeJo3dFPQKTORq8dLXEQw/H9F1aE1vUqWm0EJnuY5BPHpEW
+         nn7ZrjGm6ofKlXRG9VyDaiJEzE0i+3Saien1c1Tbncjpg0VVYWTI0NHLMpQ/OnviHV
+         wHEJsFsroZ1tbbHrtpNbJLsQxSzEgFAUH+vCZclor6jmP8Xt6aap+fqlkGBHZgpdsE
+         IMnB3Hdjk+l1g==
+Date:   Tue, 10 Aug 2021 20:58:55 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     nasastry@in.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        George Wilson <gcwilson@linux.ibm.com>
+Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to
+ tpm_status and define flag
+Message-ID: <20210810175855.fixtw5jks4gbmkua@kernel.org>
+References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
+ <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <40e85ad2-3db4-aecf-d972-7d4aa5c2278c@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 10, 2021 at 03:23:07PM +0100, John Garry escreveu:
-> On 10/08/2021 15:01, Arnaldo Carvalho de Melo wrote:
-> > > Shall I send this as a formal patch?
-> > The question is when should I apply this patch? After this series? After
-> > the patch I commented about, before?
-> > 
+On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
 > 
-> Hi Arnaldo,
+> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
+> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
 > 
-> I think that you can apply it before the series. This is a pre-existing
-> issue that there was no dependency checking on the test events folder for
-> rebuilding pmu-event.c .
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Cc: Nayna Jain <nayna@linux.ibm.com>
+> Cc: George Wilson <gcwilson@linux.ibm.com>
+> ---
+>  drivers/char/tpm/tpm_ibmvtpm.c | 15 ++++++++-------
+>  drivers/char/tpm/tpm_ibmvtpm.h |  3 ++-
+>  2 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
+> index 7a9eca5768f8..5d795866b483 100644
+> --- a/drivers/char/tpm/tpm_ibmvtpm.c
+> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
+> @@ -215,11 +215,12 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
+>  		return -EIO;
+>  	}
+>  
+> -	if (ibmvtpm->tpm_processing_cmd) {
+> +	if ((ibmvtpm->tpm_status & TPM_STATUS_BUSY)) {
+>  		dev_info(ibmvtpm->dev,
+>  		         "Need to wait for TPM to finish\n");
+>  		/* wait for previous command to finish */
+> -		sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
+> +		sig = wait_event_interruptible(ibmvtpm->wq,
+> +				(ibmvtpm->tpm_status & TPM_STATUS_BUSY) == 0);
+>  		if (sig)
+>  			return -EINTR;
+>  	}
+> @@ -232,7 +233,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
+>  	 * set the processing flag before the Hcall, since we may get the
+>  	 * result (interrupt) before even being able to check rc.
+>  	 */
+> -	ibmvtpm->tpm_processing_cmd = true;
+> +	ibmvtpm->tpm_status |= TPM_STATUS_BUSY;
+>  
+>  again:
+>  	rc = ibmvtpm_send_crq(ibmvtpm->vdev,
+> @@ -250,7 +251,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
+>  			goto again;
+>  		}
+>  		dev_err(ibmvtpm->dev, "tpm_ibmvtpm_send failed rc=%d\n", rc);
+> -		ibmvtpm->tpm_processing_cmd = false;
+> +		ibmvtpm->tpm_status &= ~TPM_STATUS_BUSY;
+>  	}
+>  
+>  	spin_unlock(&ibmvtpm->rtce_lock);
+> @@ -266,7 +267,7 @@ static u8 tpm_ibmvtpm_status(struct tpm_chip *chip)
+>  {
+>  	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
+>  
+> -	return ibmvtpm->tpm_processing_cmd;
+> +	return ibmvtpm->tpm_status;
+>  }
+>  
+>  /**
+> @@ -454,7 +455,7 @@ static const struct tpm_class_ops tpm_ibmvtpm = {
+>  	.send = tpm_ibmvtpm_send,
+>  	.cancel = tpm_ibmvtpm_cancel,
+>  	.status = tpm_ibmvtpm_status,
+> -	.req_complete_mask = true,
+> +	.req_complete_mask = TPM_STATUS_BUSY,
+>  	.req_complete_val = 0,
+>  	.req_canceled = tpm_ibmvtpm_req_canceled,
+>  };
+> @@ -547,7 +548,7 @@ static void ibmvtpm_crq_process(struct ibmvtpm_crq *crq,
+>  		case VTPM_TPM_COMMAND_RES:
+>  			/* len of the data in rtce buffer */
+>  			ibmvtpm->res_len = be16_to_cpu(crq->len);
+> -			ibmvtpm->tpm_processing_cmd = false;
+> +			ibmvtpm->tpm_status &= ~TPM_STATUS_BUSY;
+>  			wake_up_interruptible(&ibmvtpm->wq);
+>  			return;
+>  		default:
+> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
+> index 51198b137461..252f1cccdfc5 100644
+> --- a/drivers/char/tpm/tpm_ibmvtpm.h
+> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
+> @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
+>  	wait_queue_head_t wq;
+>  	u16 res_len;
+>  	u32 vtpm_version;
+> -	u8 tpm_processing_cmd;
+> +	u8 tpm_status;
+> +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
 
-Its all now in tmp.perf/core, will move to perf/core as soon as my test
-suite finishes.
+Declare this already in the fix, and just leave the rename here.
 
-- Arnaldo
+>  };
+>  
+>  #define CRQ_RES_BUF_SIZE	PAGE_SIZE
+> -- 
+> 2.31.1
+> 
+> 
+
+Otherwise, these look fine.
+
+/Jarkko
