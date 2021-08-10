@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD5C3E7F3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE9B3E8070
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhHJRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:39:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41904 "EHLO mail.kernel.org"
+        id S230506AbhHJRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:49:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234112AbhHJRg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:36:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 815D461019;
-        Tue, 10 Aug 2021 17:35:41 +0000 (UTC)
+        id S235882AbhHJRqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:46:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEB9561241;
+        Tue, 10 Aug 2021 17:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616942;
-        bh=Jz8QiYSXreNbFwoLw5zrbC/bz82Q5zNd+nLKSS9EdOM=;
+        s=korg; t=1628617227;
+        bh=Z0qU4/2yKzhC+XXVvaVOFrD17qTEYzJulLpeR9Dy9Yo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VsjCQk00k4H8WVyaoIblhf8k5QLJe6FmQMVFQbAWa1sJbvTtgS4KAsWfv49f26JAo
-         0vL5F0vvoo4DuRngecOoGrNg7ZAYQJdj3lh4YbybDYfAi1bbVLd3dpUTSHLDH7L7p9
-         hDj/R3TgfditL7Oze65vNEl1fntg+e7fBerthjcA=
+        b=mQFc/phvf9OnTzmpFVniTmCHH6FgmDyEtUzbgCTkTrEPOxXCp7a+pknlCWpvpnNQp
+         jWPrGud+hiwgMWSLo1/+2MbwwBwsalB51zg7A5xMsExiRGhIVx5gSm8/m0ZHpnHeYK
+         /Uz9lChDhx1cocShF607+KUhkJUArPiWS/obJrEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH 5.4 61/85] serial: tegra: Only print FIFO error message when an error occurs
+        stable@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Kajol Jain <kjain@linux.ibm.com>,
+        Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 5.10 100/135] fpga: dfl: fme: Fix cpu hotplug issue in performance reporting
 Date:   Tue, 10 Aug 2021 19:30:34 +0200
-Message-Id: <20210810172950.301372110@linuxfoundation.org>
+Message-Id: <20210810172959.154865395@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Hunter <jonathanh@nvidia.com>
+From: Kajol Jain <kjain@linux.ibm.com>
 
-commit cc9ca4d95846cbbece48d9cd385550f8fba6a3c1 upstream.
+commit ec6446d5304b3c3dd692a1e244df7e40bbb5af36 upstream.
 
-The Tegra serial driver always prints an error message when enabling the
-FIFO for devices that have support for checking the FIFO enable status.
-Fix this by displaying the error message, only when an error occurs.
+The performance reporting driver added cpu hotplug
+feature but it didn't add pmu migration call in cpu
+offline function.
+This can create an issue incase the current designated
+cpu being used to collect fme pmu data got offline,
+as based on current code we are not migrating fme pmu to
+new target cpu. Because of that perf will still try to
+fetch data from that offline cpu and hence we will not
+get counter data.
 
-Finally, update the error message to make it clear that enabling the
-FIFO failed and display the error code.
+Patch fixed this issue by adding pmu_migrate_context call
+in fme_perf_offline_cpu function.
 
-Fixes: 222dcdff3405 ("serial: tegra: check for FIFO mode enabled status")
-Cc: <stable@vger.kernel.org>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20210630125643.264264-1-jonathanh@nvidia.com
+Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
+Cc: stable@vger.kernel.org
+Tested-by: Xu Yilun <yilun.xu@intel.com>
+Acked-by: Wu Hao <hao.wu@intel.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/serial-tegra.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/fpga/dfl-fme-perf.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/tty/serial/serial-tegra.c
-+++ b/drivers/tty/serial/serial-tegra.c
-@@ -1028,9 +1028,11 @@ static int tegra_uart_hw_init(struct teg
+--- a/drivers/fpga/dfl-fme-perf.c
++++ b/drivers/fpga/dfl-fme-perf.c
+@@ -953,6 +953,8 @@ static int fme_perf_offline_cpu(unsigned
+ 		return 0;
  
- 	if (tup->cdata->fifo_mode_enable_status) {
- 		ret = tegra_uart_wait_fifo_mode_enabled(tup);
--		dev_err(tup->uport.dev, "FIFO mode not enabled\n");
--		if (ret < 0)
-+		if (ret < 0) {
-+			dev_err(tup->uport.dev,
-+				"Failed to enable FIFO mode: %d\n", ret);
- 			return ret;
-+		}
- 	} else {
- 		/*
- 		 * For all tegra devices (up to t210), there is a hardware
+ 	priv->cpu = target;
++	perf_pmu_migrate_context(&priv->pmu, cpu, target);
++
+ 	return 0;
+ }
+ 
 
 
