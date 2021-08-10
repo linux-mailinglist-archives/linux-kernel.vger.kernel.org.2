@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B073E5B93
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBE73E5B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238852AbhHJN1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235376AbhHJN1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:27:50 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92ADC06179A
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:27:28 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id n6so15822697ljp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pF6V8VR884m9lXXeStRNQD2bGZpEx7NkDPcYVysjhp8=;
-        b=KacULvs7Gu39X4aVuaAJXdO3DXrjG4oS+2EpZc1lDyoaoWfuNfRTvT8zZISfFMYGmP
-         4uU03/er7SfPLLSJ+vvI4AtJ+VgSS5Qxdob/NDspowXDSBBd+NiZrccN6tZmOSw4zDkk
-         cL8mH3a18bdrhqwla80xiRVOROi5Uvu8w2etXNmB3aoWIi/goqFs9lbQqFImz7y1uVAq
-         d/iqcSXCqC9eB0w5AMhY/rnaPCijGtILa6CDw1JfR3o5n1E7Y7WIKM+/uHT7W47PWsuI
-         2doXFF/XI1xpTYPXIUWf2tBfkNH94xdg2sT0mCqENI9vRU9aKFz2UydyKT23owQSehU4
-         n5Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pF6V8VR884m9lXXeStRNQD2bGZpEx7NkDPcYVysjhp8=;
-        b=MqOZxUmqDpWmtuOZ5nFMh0IVNoFXJlP6VfXqms1EB/T6v0gShYBQH2ZocM8r9i+GFI
-         Hnq6Vt3xjMT//purJC0JceMwiO0aYd/rE+K0LBbjh1em9VrBySxdnlBbWEYQ+fahU1Uc
-         yQxZojJeqoWxEuoX2AvE6zGOx76yI+C9mG08wh/PdoCjWMww7irLdFZUYaw18HHu6M6x
-         WOWFY56nlRQcul+upj8fVClcz1EmHzCfN9Sz9gMOE2Ogd0B5oy72th944s5OdYwf7gtc
-         YbfnNRE7pqzsFtipx/UDth/OODE4FuX0CUu9ffuMNAvIWUfkvqmAembKcadsRiWI/FfQ
-         G7rw==
-X-Gm-Message-State: AOAM533DON5gjYZUBkB++3W2f1wdtyWPho2KeJQ/hO6LyRZT1G3LZC3C
-        nUpggxfuVbeZVKlcoRamoq2yyPf7dIchHnrOqbD2XA==
-X-Google-Smtp-Source: ABdhPJyvjj3KxX7v1w+P5zqdN+YPQt4DlGffAink3HMU1FfLlBQDLLhxd/EdjbMGVZ2Pui9bq3uJ5c93ohZxQv3mEto=
-X-Received: by 2002:a2e:a804:: with SMTP id l4mr12623209ljq.273.1628602047152;
- Tue, 10 Aug 2021 06:27:27 -0700 (PDT)
+        id S239670AbhHJN2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:28:10 -0400
+Received: from mga09.intel.com ([134.134.136.24]:16224 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235376AbhHJN2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:28:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214886544"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="214886544"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 06:27:46 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="506142307"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 06:27:42 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mDRn5-007PyS-SM; Tue, 10 Aug 2021 16:27:35 +0300
+Date:   Tue, 10 Aug 2021 16:27:35 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kate Hsuan <hpa@redhat.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Sujith Thomas <sujith.thomas@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 09/20] Move Intel SCU IPC of pdx86 to intel directory to
+ increase readability.
+Message-ID: <YRJ+x7s+xYgzme/w@smile.fi.intel.com>
+References: <20210810095832.4234-1-hpa@redhat.com>
+ <20210810095832.4234-10-hpa@redhat.com>
+ <YRJPebbK3uQBU9K8@lahna>
+ <CAEth8oE5we991RS12AJdFHtfD4kJkzFd4A0wHdEFKkX-i6kmvg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210627045631.2882-1-jiaxun.yang@flygoat.com>
- <20210627045631.2882-7-jiaxun.yang@flygoat.com> <CACRpkdZkvSg___ZxdE639SMbTs5rJbjHBq-HkTCuv0e645Rssg@mail.gmail.com>
- <c7de97c3-196b-6bc3-a8b1-d6c6e6ab583d@flygoat.com>
-In-Reply-To: <c7de97c3-196b-6bc3-a8b1-d6c6e6ab583d@flygoat.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Aug 2021 15:27:15 +0200
-Message-ID: <CACRpkdZjdNasty5g1K5nL+fztN+LPgwYog91bi-UvVH39TXMkg@mail.gmail.com>
-Subject: Re: [PATCH 6/9] pinctrl: pistachio: Make it as a option
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-phy@lists.infradead.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEth8oE5we991RS12AJdFHtfD4kJkzFd4A0wHdEFKkX-i6kmvg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 4:49 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote=
-:
-> =E5=9C=A8 2021/7/24 =E4=B8=8A=E5=8D=8812:13, Linus Walleij =E5=86=99=E9=
-=81=93:
-> > On Sun, Jun 27, 2021 at 6:57 AM Jiaxun Yang <jiaxun.yang@flygoat.com> w=
-rote:
+On Tue, Aug 10, 2021 at 07:43:42PM +0800, Kate Hsuan wrote:
+> Hi Mika,
+> 
+> Thanks for your suggestion.
+> I'll add them to the patches and resend them again.
+> 
+> Thank you.
+
+Please, do not top post!
+
+> On Tue, Aug 10, 2021 at 6:06 PM Mika Westerberg
+> <mika.westerberg@linux.intel.com> wrote:
 > >
-> >> So it will be avilable for generic MIPS kernel.
-> >>
-> >> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > Is this solved, or should I apply this patch?
->
-> I guess so, btw I think it should go via MIPS tree to avoid troubles.
+> > Hi,
+> >
+> > No objections, I think this is good idea but..
+> >
+> > On Tue, Aug 10, 2021 at 05:58:21PM +0800, Kate Hsuan wrote:
+> >
+> > .. I suggest to add proper commit message here. Many maintainers ignore
+> > patches that don't have one.
 
-OK feel free to merge this in the MIPS tree then:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> > >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipc.c (100%)
+> > >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipcutil.c (100%)
+> > >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pcidrv.c (100%)
+> > >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pltdrv.c (100%)
+> > >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_wdt.c (100%)
 
-Yours,
-Linus Walleij
+Besides what Mika said this should follow the example of pmt, like dropping the
+intel_scu prefix from the files, but leave it for the module (see Makefile
+tricks for the details how to achieve this).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
