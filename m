@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348AF3E829C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BA63E82D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhHJSNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:13:44 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42312 "EHLO mga09.intel.com"
+        id S233266AbhHJSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:18:39 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4417 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237194AbhHJSNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:13:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214947818"
+        id S240679AbhHJSQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:16:50 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213107399"
 X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="214947818"
+   d="scan'208";a="213107399"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:13:08 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:16:27 -0700
 X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="503219294"
+   d="scan'208";a="503220614"
 Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:13:08 -0700
-Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:16:26 -0700
+Subject: Re: [PATCH 4/5] x86/mm: Provide helpers for unaccepted memory
 To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
         Borislav Petkov <bp@alien8.de>,
         Andy Lutomirski <luto@kernel.org>,
@@ -43,7 +43,7 @@ Cc:     Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
+ <20210810062626.1012-5-kirill.shutemov@linux.intel.com>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -88,12 +88,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
-Date:   Tue, 10 Aug 2021 11:13:05 -0700
+Message-ID: <67ce254c-aacc-43b6-d8d5-168ef9200f9e@intel.com>
+Date:   Tue, 10 Aug 2021 11:16:26 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
+In-Reply-To: <20210810062626.1012-5-kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -101,24 +101,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -1001,6 +1004,9 @@ static inline void del_page_from_free_list(struct page *page, struct zone *zone,
->  	if (page_reported(page))
->  		__ClearPageReported(page);
->  
-> +	if (PageOffline(page))
-> +		clear_page_offline(page, order);
+On 8/9/21 11:26 PM, Kirill A. Shutemov wrote:
+> +void accept_memory(phys_addr_t start, phys_addr_t end)
+> +{
+> +	if (!boot_params.unaccepted_memory)
+> +		return;
 > +
->  	list_del(&page->lru);
->  	__ClearPageBuddy(page);
->  	set_page_private(page, 0);
+> +	spin_lock(&unaccepted_memory_lock);
+> +	__accept_memory(start, end);
+> +	spin_unlock(&unaccepted_memory_lock);
+> +}
 
-So, this is right in the fast path of the page allocator.  It's a
-one-time thing per 2M page, so it's not permanent.
+Isn't this taken in the:
 
-*But* there's both a global spinlock and a firmware call hidden in
-clear_page_offline().  That's *GOT* to hurt if you were, for instance,
-running a benchmark while this code path is being tickled.  Not just to
+	del_page_from_free_list()->
+	clear_page_offline()->
+	accept_memory()
 
-That could be just downright catastrophic for scalability, albeit
-temporarily.
+call path?
 
+That's underneath:
+
+	spin_lock_irqsave(&zone->lock, flags);
+
+Which means that accept_memory() can happen from interrupt context.  Is
+it always covered by another spin_lock_irqsave() which means that it can
+use a plain spin_lock()?
+
+If so, it would be nice to call out that logic.  It *looks* like a
+spinlock that we would want to be spin_lock_irqsave().
