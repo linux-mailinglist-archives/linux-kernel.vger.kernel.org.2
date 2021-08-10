@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298F43E8542
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F843E8546
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234579AbhHJV2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:28:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233968AbhHJV1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:27:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A87D061019;
-        Tue, 10 Aug 2021 21:27:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628630846;
-        bh=mjloMTiIdTRuQibK5edGwphq2JrQh540Z20LUrsqdPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VGuJpX+XfmOQoRt/Z+ROdsbw47SJelREzPoqRjL8ak10G0aAanUW0x4ixMkmgh3LF
-         REkjaE+noiZ2oAGLK3t1Dn/PvsrdIlylne3+omQVNFoexbRLXgs5r5EfpvY1efuUZp
-         swc91rXKmS1s+kOSeo0dB8YjlDd03c8KhP0YymmmjDlaGy6KBCpDal6CYQlUNaQ3gw
-         wRMlrxdaJmxvZi96/3b1sGfClbJbtKt62m3FpDFja7Gh8AqeS9MwvNHzJPHxgr7xqx
-         5zA+PAuRxtBj1ge3DqIM8sSfLiPHsr5VDwkfq/nkUm1qCmMyWQ5TMwUteiomQjr8Xg
-         cxU3UDalnpsJg==
-Date:   Tue, 10 Aug 2021 14:27:24 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <YRLvPJehAeMiYb2Z@gmail.com>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <20210809094408.4iqwsx77u64usfx6@kernel.org>
- <YRGVcaquAJiuc8bp@gmail.com>
- <20210810180636.vqwaeftv7alsodgn@kernel.org>
- <YRLJmaafp941uOdA@gmail.com>
- <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
+        id S234639AbhHJV3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:29:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58715 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229582AbhHJV2y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:28:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628630911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7W+BJA5izsCfvfOVQ5W0TJSnZONv7dHE2tmjYF6PPTw=;
+        b=FTvzSoLOoO0/KMLEJD21UimTPH8zI+BflOyQG2aZl08mEbHMl4HQvz8DMSreCnyKJnQrE8
+        jBzw+Y1FCMOdRfYBdXkoC/7Psu6xycpFdh1Kv7aPfkrQ+mjmY7v5uqJahPgyk9Qb9flb82
+        6VDu7lC/oivk/PCpvOfW0WizfPZYi0U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-k0adTsQJONalutK6SS-W8A-1; Tue, 10 Aug 2021 17:28:30 -0400
+X-MC-Unique: k0adTsQJONalutK6SS-W8A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBE326409E;
+        Tue, 10 Aug 2021 21:28:28 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 46286100763B;
+        Tue, 10 Aug 2021 21:28:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-78-willy@infradead.org>
+References: <20210715033704.692967-78-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 077/138] mm/filemap: Add i_blocks_per_folio()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1813488.1628630900.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 22:28:20 +0100
+Message-ID: <1813489.1628630900@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:21:40AM +0300, Jarkko Sakkinen wrote:
-> On Tue, Aug 10, 2021 at 11:46:49AM -0700, Eric Biggers wrote:
-> > On Tue, Aug 10, 2021 at 09:06:36PM +0300, Jarkko Sakkinen wrote:
-> > > > > 
-> > > > > I don't think this is right, or at least it does not follow the pattern
-> > > > > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
-> > > > 
-> > > > What's the benefit of the extra layer of indirection over just using a "trusted"
-> > > > key directly?  The use case for "encrypted" keys is not at all clear to me.
-> > > 
-> > > Because it is more robust to be able to use small amount of trusted keys,
-> > > which are not entirely software based.
-> > > 
-> > > And since it's also a pattern on existing kernel features utilizing trusted
-> > > keys, the pressure here to explain why break the pattern, should be on the
-> > > side of the one who breaks it.
-> > 
-> > This is a new feature, so it's on the person proposing the feature to explain
-> > why it's useful.  The purpose of "encrypted" keys is not at all clear, and the
-> > documentation for them is heavily misleading.  E.g.:
-> > 
-> >     "user space sees, stores, and loads only encrypted blobs"
-> >     (Not necessarily true, as I've explained previously.)
-> > 
-> >     "Encrypted keys do not depend on a trust source" ...  "The main disadvantage
-> >     of encrypted keys is that if they are not rooted in a trusted key"
-> >     (Not necessarily true, and in fact it seems they're only useful when they
-> >     *do* depend on a trust source.  At least that's the use case that is being
-> >     proposed here, IIUC.)
-> > 
-> > I do see a possible use for the layer of indirection that "encrypted" keys are,
-> > which is that it would reduce the overhead of having lots of keys be directly
-> > encrypted by the TPM/TEE/CAAM.  Is this the use case?  If so, it needs to be
-> > explained.
-> 
-> If trusted keys are used directly, it's an introduction of a bottleneck.
-> If they are used indirectly, you can still choose to have one trusted
-> key per fscrypt key.
-> 
-> Thus, it's obviously a bad idea to use them directly.
-> 
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-So actually explain that in the documentation.  It's not obvious at all.  And
-does this imply that the support for trusted keys in dm-crypt is a mistake?
+> Reimplement i_blocks_per_page() as a wrapper around i_blocks_per_folio().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-- Eric
+Reviewed-by: David Howells <dhowells@redhat.com>
+
