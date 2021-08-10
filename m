@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D363E7F6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0C33E8062
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhHJRkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
+        id S236093AbhHJRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:48:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234993AbhHJRix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:38:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D72D61153;
-        Tue, 10 Aug 2021 17:36:44 +0000 (UTC)
+        id S233060AbhHJRpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:45:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A1FE61245;
+        Tue, 10 Aug 2021 17:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617004;
-        bh=K0wODNoz+RecPUHNbQX1zVaU8w3RmzPHCktPrvzONCs=;
+        s=korg; t=1628617211;
+        bh=M4uIk6HnIuaXHioYD4GBx7fOuXBr8/MhwfLnOPzphCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uRNwGX5IDez9QAjw1WOyL3EgaA2vaEnq2kHKB555NNpLK76SlM9hK+3t2RZQxsMtr
-         MCHhuixhJx03TbfW1hssVq7w+ZgO4Uziu/B11RNVDMutQaKpClHcfjqc3BnNrryQi9
-         cbDiUTW/bZZV+zFtTWo/ey3oq0H3LlPdFf4khJQc=
+        b=Q+OruZ2PEK7ZNNe4fwnOKpHBQZY0wkUmnSZXDy+PX9Fnv2gRLmxHrSh/I/o5l8BKy
+         6/ksjPbWkUNL4WBqM0bq8Ca3a7nE+dxqsRm2YXRIR6H3/Bs1Tg3EtOMormLju90Bnf
+         4apJ5tdgcPGK8+XhRPTJZ1+WwUqlCJr8kQhFlpcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 5.4 55/85] tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
+        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH 5.10 094/135] serial: tegra: Only print FIFO error message when an error occurs
 Date:   Tue, 10 Aug 2021 19:30:28 +0200
-Message-Id: <20210810172950.097063274@linuxfoundation.org>
+Message-Id: <20210810172958.952262066@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyler Hicks <tyhicks@linux.microsoft.com>
+From: Jon Hunter <jonathanh@nvidia.com>
 
-commit dfb703ad2a8d366b829818a558337be779746575 upstream.
+commit cc9ca4d95846cbbece48d9cd385550f8fba6a3c1 upstream.
 
-dma-buf backed shared memory cannot be reliably freed and unregistered
-during a kexec operation even when tee_shm_free() is called on the shm
-from a .shutdown hook. The problem occurs because dma_buf_put() calls
-fput() which then uses task_work_add(), with the TWA_RESUME parameter,
-to queue tee_shm_release() to be called before the current task returns
-to user mode. However, the current task never returns to user mode
-before the kexec completes so the memory is never freed nor
-unregistered.
+The Tegra serial driver always prints an error message when enabling the
+FIFO for devices that have support for checking the FIFO enable status.
+Fix this by displaying the error message, only when an error occurs.
 
-Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
-allocation so that tee_shm_free() can directly call tee_shm_release().
-This will ensure that the shm can be freed and unregistered during a
-kexec operation.
+Finally, update the error message to make it clear that enabling the
+FIFO failed and display the error code.
 
-Fixes: 09e574831b27 ("tpm/tpm_ftpm_tee: A driver for firmware TPM running inside TEE")
-Fixes: 1760eb689ed6 ("tpm/tpm_ftpm_tee: add shutdown call back")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+Fixes: 222dcdff3405 ("serial: tegra: check for FIFO mode enabled status")
+Cc: <stable@vger.kernel.org>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20210630125643.264264-1-jonathanh@nvidia.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/char/tpm/tpm_ftpm_tee.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/tty/serial/serial-tegra.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/char/tpm/tpm_ftpm_tee.c
-+++ b/drivers/char/tpm/tpm_ftpm_tee.c
-@@ -255,11 +255,11 @@ static int ftpm_tee_probe(struct platfor
- 	pvt_data->session = sess_arg.session;
+--- a/drivers/tty/serial/serial-tegra.c
++++ b/drivers/tty/serial/serial-tegra.c
+@@ -1040,9 +1040,11 @@ static int tegra_uart_hw_init(struct teg
  
- 	/* Allocate dynamic shared memory with fTPM TA */
--	pvt_data->shm = tee_shm_alloc(pvt_data->ctx,
--				      MAX_COMMAND_SIZE + MAX_RESPONSE_SIZE,
--				      TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+	pvt_data->shm = tee_shm_alloc_kernel_buf(pvt_data->ctx,
-+						 MAX_COMMAND_SIZE +
-+						 MAX_RESPONSE_SIZE);
- 	if (IS_ERR(pvt_data->shm)) {
--		dev_err(dev, "%s: tee_shm_alloc failed\n", __func__);
-+		dev_err(dev, "%s: tee_shm_alloc_kernel_buf failed\n", __func__);
- 		rc = -ENOMEM;
- 		goto out_shm_alloc;
- 	}
+ 	if (tup->cdata->fifo_mode_enable_status) {
+ 		ret = tegra_uart_wait_fifo_mode_enabled(tup);
+-		dev_err(tup->uport.dev, "FIFO mode not enabled\n");
+-		if (ret < 0)
++		if (ret < 0) {
++			dev_err(tup->uport.dev,
++				"Failed to enable FIFO mode: %d\n", ret);
+ 			return ret;
++		}
+ 	} else {
+ 		/*
+ 		 * For all tegra devices (up to t210), there is a hardware
 
 
