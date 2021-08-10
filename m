@@ -2,179 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637853E8375
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821943E8376
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhHJTPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:15:23 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40386 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhHJTPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:15:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="278722006"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="278722006"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:15:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="671878403"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 10 Aug 2021 12:14:59 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDXDG-000Kqw-GR; Tue, 10 Aug 2021 19:14:58 +0000
-Date:   Wed, 11 Aug 2021 03:14:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- 07d25971b220e477eb019fcb520a9f2e3ac966af
-Message-ID: <6112d02d.curF6/ZN0jPR0nZX%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232210AbhHJTQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:16:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37805 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230295AbhHJTQB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 15:16:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628622938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BddaJPgpQ/rhqTkwil8HE9U5ak8ldL/K5xuBKYTh0lM=;
+        b=VCypaL5k/Z0aFos6bUCKxmHbQXGuIT4HBHL4nGvCWINvtmwAXw1smkPtS9Oxfxihde12/v
+        PP4UFERF2B5JRyx5Xze2ZexojYmeFZDWABmPPrMHJ73SC05fCjOQXcimobu35rtEgkugnE
+        3WLidIijzs1OfjxxanwGi3Jeynqr44w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-OLrprlAKPoWmEerVhXTw5w-1; Tue, 10 Aug 2021 15:15:37 -0400
+X-MC-Unique: OLrprlAKPoWmEerVhXTw5w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37535100E425;
+        Tue, 10 Aug 2021 19:15:36 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5849C781E6;
+        Tue, 10 Aug 2021 19:15:30 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 7D1564175294; Tue, 10 Aug 2021 16:15:26 -0300 (-03)
+Date:   Tue, 10 Aug 2021 16:15:26 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch 0/4] extensible prctl task isolation interface and vmstat
+ sync (v2)
+Message-ID: <20210810191526.GA38862@fuller.cnet>
+References: <20210730201827.269106165@fuller.cnet>
+ <87czqlqmlr.ffs@tglx>
+ <20210810183746.GA32986@fuller.cnet>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210810183746.GA32986@fuller.cnet>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
-branch HEAD: 07d25971b220e477eb019fcb520a9f2e3ac966af  locking/rtmutex: Use the correct rtmutex debugging config option
+On Tue, Aug 10, 2021 at 03:37:46PM -0300, Marcelo Tosatti wrote:
+> On Tue, Aug 10, 2021 at 06:40:48PM +0200, Thomas Gleixner wrote:
+> > Marcelo,
+> > 
+> > On Fri, Jul 30 2021 at 17:18, Marcelo Tosatti wrote:
+> > 
+> > can you pretty please:
+> > 
+> >  1) Add a version number to your patch series right where it belongs:
+> > 
+> >     [patch V2 N/M]
+> > 
+> >     Just having a (v2) at the end of the subject line of 0/M is sloppy
+> >     at best.
+> > 
+> >  2) Provide a lore link to the previous version
+> > 
+> > Thanks,
+> > 
+> >         tglx
+> 
+> Thomas,
+> 
+> Sure, will resend -v3 once done with the following:
+> 
+> 1) Adding support for KVM.
+> 
+> 2) Adding a tool called "chisol" to util-linux, similar 
+> to chrt/taskset, to prctl+exec (for unmodified applications).
+> 
+> This raises the question whether or not to add an option to preserve
+> the task parameters across fork (i think the answer is yes).
+> 
+> --
+> 
+> But the following points are unclear to me (in quotes are earlier 
+> comments you made):
+> 
+> 1) "It's about silencing different and largely independent parts of the OS
+> on a particular CPU. Just defining upfront that there is only the choice
+> of all or nothing _is_ policy.
+> 
+> There is a very wide range of use case scenarios out there and just
+> because the ones which you care about needs X does not mean that X is
+> the right thing for everybody else. You still can have X and let other
+> people define their own set of things they want to be protected
+> against.
+> 
+> Aside of that having it selectively is a plus for debugability, testing
+> etc."
+> 
+> So for the ability to individually select what parts of the OS 
+> on a particular CPU are quiesced, there is:
+> 
+> +	defmask = defmask | ISOL_F_QUIESCE_VMSTATS;
+> +
+> +	ret = prctl(PR_ISOL_SET, ISOL_F_QUIESCE, defmask,
+> +                   0, 0);
+> +	if (ret == -1) {
+> +               perror("prctl PR_ISOL_SET");
+> +               return EXIT_FAILURE;
+> +	}
+> 
+> However there is a feeling that implementation details are being exposed 
+> to userspace... However that seems to be alright: what could happen is that
+> the feature ceases to exist (say vmstat sync), in kernel, and the bit
+> is kept for compability (but the kernel does nothing about it). 
+> 
+> That of course means whatever "vmstat sync" replacement comes up, it should
+> avoid IPIs as well.
+> 
+> Any thoughts on this?
+> 
+> 2) "Again: I fundamentaly disagree with the proposed task isolation patches
+> approach as they leave no choice at all.
+> 
+> There is a reasonable middle ground where an application is willing to
+> pay the price (delay) until the reqested quiescing has taken place in
+> order to run undisturbed (hint: cache ...) and also is willing to take
+> the addtional overhead of an occacional syscall in the slow path without
+> tripping some OS imposed isolation safe guard.
+> 
+> Aside of that such a granular approach does not necessarily require the
+> application to be aware of it. If the admin knows the computational
+> pattern of the application, e.g.
+> 
+>  1     read_data_set() <- involving syscalls/OS obviously
+>  2     compute_set()   <- let me alone
+>  3     save_data_set() <- involving syscalls/OS obviously
+> 
+>        repeat the above...
+> 
+> then it's at his discretion to decide to inflict a particular isolation
+> set on the task which is obviously ineffective while doing #1 and #3 but
+> might provide the so desired 0.9% boost for compute_set() which
+> dominates the judgement.
+> 
+> That's what we need to think about and once we figured out how to do
+> that it gives Marcelo the mechanism to solve his 'run virt undisturbed
+> by vmstat or whatever' problem and it allows Alex to build his stuff on
+> it.
+> 
+> Summary: The problem to be solved cannot be restricted to
+> 
+>     self_defined_important_task(OWN_WORLD);
+> 
+> Policy is not a binary on/off problem. It's manifold across all levels
+> of the stack and only a kernel problem when it comes down to the last
+> line of defence.
+> 
+> Up to the point where the kernel puts the line of last defence, policy
+> is defined by the user/admin via mechanims provided by the kernel.
+> 
+> Emphasis on "mechanims provided by the kernel", aka. user API.
+> 
+> Just in case, I hope that I don't have to explain what level of scrunity
+> and thought this requires."
+> 
+> OK, so perhaps a handful of use-cases can clarify whether the proposed
+> interface requires changes?
+> 
+> The example on samples/task_isolation/ is focused on "enter task isolation
+> and very rarely exit".
+> 
+> There are two other cases i am aware of:
+> 
+> A) Christoph's use-case:
+> 
+> 	1) Enter task-isolation.
+> 	2) Latency sensitive loop begins.
+> 	3) Some event interrupts latency sensitive section.
+> 
+> 	4) Handling of the event requires N syscalls, which the programmer
+> 	   would be interested in happening without quiescing at 
+> 	   every return to system call. The current scheme would be:
+> 
+> 
+>        /*
+>         * Application can either set the value from ISOL_F_QUIESCE_DEFMASK,
+>         * which is configurable through
+>         * /sys/kernel/task_isolation/default_quiesce_activities,
+>         * or specific values.
+>         *
+>         * Using ISOL_F_QUIESCE_DEFMASK allows for the application to
+>         * take advantage of future quiescing capabilities without
+>         * modification (provided default_quiesce_activities is
+>         * configured accordingly).
+>         */
+>        defmask = defmask | ISOL_F_QUIESCE_VMSTATS;
+> 
+>        ret = prctl(PR_ISOL_SET, ISOL_F_QUIESCE, defmask,
+>                    0, 0);
+>        if (ret == -1) {
+>                perror("prctl PR_ISOL_SET");
+>                return EXIT_FAILURE;
+>        }
+> 
+> lat_loop:
+>        ret = prctl(PR_ISOL_CTRL_SET, ISOL_F_QUIESCE, 0, 0, 0);
+>        if (ret == -1) {
+>                perror("prctl PR_ISOL_CTRL_SET (ISOL_F_QUIESCE)");
+>                return EXIT_FAILURE;
+>        }
+> 
+>        latency sensitive loop
+> 
+>        if (event == 1) {
+> 		/* disables quiescing of all features, while maintaining
+> 		 * other features such as logging and avoidance of
+> 		 * interruptions enabled.
+> 		 */
+> 		ret = prctl(PR_ISOL_CTRL_SET, 0, 0, 0, 0);
+> 		syscall1
+> 		syscall2
+> 		...
+> 		syscallN
+> 		/* reenter isolated mode with quiescing */
+> 		goto lat_loop;
+> 	}
+> 	...
+> 
+> Should it be possible to modify individual quiescing parts individually
+> while maintaining isolated mode? Yes, that seems to be desired.
+> 
+> 
+> The other use-case (from you) seems to be:
+> 
+>  1     read_data_set() <- involving syscalls/OS obviously
+>  2     compute_set()   <- let me alone
+>  3     save_data_set() <- involving syscalls/OS obviously
+> 
+>        repeat the above...
+> 
+> Well, the implementation of Christoph's use above seems not
+> to be that bad as well:
+> 
+>  1     read_data_set() <- involving syscalls/OS obviously
+> 	/* disables quiescing of all (or some, if desired)
+> 	 * features, while maintaining other features such
+> 	 * as logging and avoidance of interruptions enabled.
+> 	 */
+> 	ret = prctl(PR_ISOL_CTRL_SET, ISOL_F_QUIESCE, 0, 0, 0);
+> 
+>  2     compute_set()   <- let me alone
+> 
+> 	ret = prctl(PR_ISOL_CTRL_SET, 0, 0, 0, 0);
+> 
+>  3     save_data_set() <- involving syscalls/OS obviously
+> 
+>        repeat the above...
+> 
+> What kind of different behaviour, other than enabling/disabling
+> quiescing, would be desired in this use-case?
+> 
 
-elapsed time: 723m
+And 3) Is a global ISOL_F_QUIESCE_DEFMASK sufficient, or should this 
+be per-task, or cgroups?
 
-configs tested: 121
-configs skipped: 3
+       /*
+        * Application can either set the value from ISOL_F_QUIESCE_DEFMASK,
+        * which is configurable through
+        * /sys/kernel/task_isolation/default_quiesce_activities,
+        * or specific values.
+        *
+        * Using ISOL_F_QUIESCE_DEFMASK allows for the application to
+        * take advantage of future quiescing capabilities without
+        * modification (provided default_quiesce_activities is
+        * configured accordingly).
+        */
+       defmask = defmask | ISOL_F_QUIESCE_VMSTATS;
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+       ret = prctl(PR_ISOL_SET, ISOL_F_QUIESCE, defmask,
+                   0, 0);
+       if (ret == -1) {
+               perror("prctl PR_ISOL_SET");
+               return EXIT_FAILURE;
+       }
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210810
-arc                            hsdk_defconfig
-arm                        realview_defconfig
-arm                           spitz_defconfig
-powerpc                   currituck_defconfig
-arm                           viper_defconfig
-powerpc                 mpc834x_mds_defconfig
-sh                          rsk7264_defconfig
-ia64                        generic_defconfig
-sh                        sh7785lcr_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                         tb0219_defconfig
-arm                           corgi_defconfig
-x86_64                              defconfig
-arm                        neponset_defconfig
-arm                         s3c6400_defconfig
-sh                             sh03_defconfig
-riscv                    nommu_virt_defconfig
-i386                                defconfig
-powerpc                     tqm5200_defconfig
-sh                            titan_defconfig
-powerpc                     taishan_defconfig
-arm                            hisi_defconfig
-x86_64                            allnoconfig
-arm                          pxa910_defconfig
-powerpc                     powernv_defconfig
-mips                         bigsur_defconfig
-powerpc                     pseries_defconfig
-mips                          ath79_defconfig
-mips                           ci20_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-i386                 randconfig-a004-20210809
-i386                 randconfig-a005-20210809
-i386                 randconfig-a006-20210809
-i386                 randconfig-a002-20210809
-i386                 randconfig-a001-20210809
-i386                 randconfig-a003-20210809
-i386                 randconfig-a004-20210808
-i386                 randconfig-a005-20210808
-i386                 randconfig-a006-20210808
-i386                 randconfig-a002-20210808
-i386                 randconfig-a001-20210808
-i386                 randconfig-a003-20210808
-x86_64               randconfig-a016-20210808
-x86_64               randconfig-a012-20210808
-x86_64               randconfig-a013-20210808
-x86_64               randconfig-a011-20210808
-x86_64               randconfig-a014-20210808
-x86_64               randconfig-a015-20210808
-i386                 randconfig-a012-20210809
-i386                 randconfig-a015-20210809
-i386                 randconfig-a011-20210809
-i386                 randconfig-a013-20210809
-i386                 randconfig-a014-20210809
-i386                 randconfig-a016-20210809
-i386                 randconfig-a011-20210810
-i386                 randconfig-a015-20210810
-i386                 randconfig-a013-20210810
-i386                 randconfig-a016-20210810
-i386                 randconfig-a012-20210810
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c001-20210810
-x86_64               randconfig-c001-20210809
-x86_64               randconfig-a016-20210809
-x86_64               randconfig-a012-20210809
-x86_64               randconfig-a013-20210809
-x86_64               randconfig-a011-20210809
-x86_64               randconfig-a014-20210809
-x86_64               randconfig-a015-20210809
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
