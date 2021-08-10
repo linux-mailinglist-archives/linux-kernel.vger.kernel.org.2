@@ -2,105 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA603E580F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8651A3E5814
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239746AbhHJKOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:14:49 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:54195 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238809AbhHJKOq (ORCPT
+        id S239791AbhHJKPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:15:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48325 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239780AbhHJKPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:14:46 -0400
-Received: by mail-il1-f198.google.com with SMTP id c4-20020a056e020cc4b02902242bd90889so69320ilj.20
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:24 -0700 (PDT)
+        Tue, 10 Aug 2021 06:15:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628590482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A42WvvsgdwjkwZlZk69nEpIcOnUU9ZyOs8J0bgwxJg8=;
+        b=Ss4fy/PLexcOVUleBPG0nv+WatgqfFkYJYOXspN9Unv0MHnJsnWCukCd+7D/wf5oqxUAHq
+        QQnxF6pNKHdR6PPtzjOtVQtsqpWSjghEcDVRlL7JWEpJUrt6DO9aabyT84jujnErzHBoQk
+        n8uMlnSPpWNjQJTAlRb0J6SKzoPCCeY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-3dN3pw3KNQyeTjHYzb6OUw-1; Tue, 10 Aug 2021 06:14:40 -0400
+X-MC-Unique: 3dN3pw3KNQyeTjHYzb6OUw-1
+Received: by mail-ed1-f69.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso10491049edh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=O1g4JrkA9NjMeeDfGiKWUc6Pg4ez/f2UwNV15GU1aBI=;
-        b=HRumlfS724tdmH4FDeoCVidXC6I8FuQ0uR13P6OJcyC1ME/wtrUrBq/hj+hNRx6/8J
-         c6CRg3+su2peMEijbXcVPBX5QiyFwNZbl0IE5eGnPuhrSUeRPg3MjdvGdpiWhkeZFyYD
-         j97xa63FY0Sll+BQxMn5WtDYxBTFCUPcobDFwpb1FefyRXinTBlOS2DeHhOIQnuXVJpp
-         T8y8OdIB/jJzAonQ6o3td0NWxmprYq6eQWUlqrtTqc18LpWuyCZ+K0usAvEI3EGce1Om
-         RMgUzXf6Z45CkT1jMtL02yln5URkyFk16A3HKKipC4gL8hTPA1O7YbHwH3WPFUWb/9vF
-         Gnug==
-X-Gm-Message-State: AOAM530Ba0JKecHkxYrfnxp67gcuL8FJbhc1SU46EXq1yekXCPBdJddW
-        OsHk//PFgsMhGbPthQUl9mjO6a4ZinmjrZZKOAG5ZzRBcxZU
-X-Google-Smtp-Source: ABdhPJzmhgIjrzV3NpaMAd2D5Q0SdpgSxy9cM3nVw2Rsj/wtKGs5LQiCEQOnpA0FqudfW+b74QzVFBI6Fsdt3mN77yK0k28Ax7wQ
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A42WvvsgdwjkwZlZk69nEpIcOnUU9ZyOs8J0bgwxJg8=;
+        b=OAt5Z4hWKR3srk0rzgM5f9y/K6ZfScTWc4Q6MhHMbSO8cBltt+bJCtKwdckRexDJuN
+         8FBed1CHtkpxy1fcJBzMwIvm+lEJJ//QkMSrmFI5xgEg0mFgZKDiOasN/CUO4lALZiuy
+         vf+qusw4LjmdeFdvG+TlqTbhWE52AgLBTUyfjZAYHHe5gEtyHxtoc1HfyIP2Mg5+UIjH
+         PIemQUID3hyETD3vulywLbMC3Ni/wTL5edIYILN/Ewsd9hTagm3PZkrEMY7fnR0njzw3
+         11vp8YKdgoJlFjbX7kYZnSuHcMHyf3K66Ac3bPIryY2qC9t4PSsilpe/mLBA1DdeGLeh
+         LwLw==
+X-Gm-Message-State: AOAM531EXhy2E19QxNS05FeKq1XAB1XQJP0YQYEQDtiFkXcP3GD34/UK
+        0p4/sl5f5s4x2sl1c1gE9sW4P5bgRwZL6i6wAsOF4QiaON0LxUc5aYzEQmcEfKK1EW+YwcPViJx
+        1HXT17VysoDL6ULBl1+1Nenyc
+X-Received: by 2002:a17:906:410c:: with SMTP id j12mr4943738ejk.553.1628590479574;
+        Tue, 10 Aug 2021 03:14:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyPsmFryraUujm14vlfLq082aKn28Q0FPYdy2YVFyu0Ghw/NOtkyi4/HcVIa689iLhOoNqCng==
+X-Received: by 2002:a17:906:410c:: with SMTP id j12mr4943712ejk.553.1628590479302;
+        Tue, 10 Aug 2021 03:14:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id bm1sm6713471ejb.38.2021.08.10.03.14.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 03:14:38 -0700 (PDT)
+Subject: Re: [PATCH V2 3/3] KVM: X86: Reset DR6 only when
+ KVM_DEBUGREG_WONT_EXIT
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <YRFdq8sNuXYpgemU@google.com>
+ <20210809174307.145263-1-jiangshanlai@gmail.com>
+ <20210809174307.145263-3-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f07b99f1-5a25-a246-9ef9-2b875d960675@redhat.com>
+Date:   Tue, 10 Aug 2021 12:14:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1b9:: with SMTP id b25mr22902549jaq.23.1628590464559;
- Tue, 10 Aug 2021 03:14:24 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 03:14:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001fefaf05c931c476@google.com>
-Subject: [syzbot] UBSAN: array-index-out-of-bounds in taprio_change
-From:   syzbot <syzbot+2b3e5fb6c7ef285a94f6@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210809174307.145263-3-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 09/08/21 19:43, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> The commit efdab992813fb ("KVM: x86: fix escape of guest dr6 to the host")
+> fixed a bug by reseting DR6 unconditionally when the vcpu being scheduled out.
+> 
+> But writing to debug registers is slow, and it can be shown in perf results
+> sometimes even neither the host nor the guest activate breakpoints.
+> 
+> It'd be better to reset it conditionally and this patch moves the code of
+> reseting DR6 to the path of VM-exit and only reset it when
+> KVM_DEBUGREG_WONT_EXIT which is the only case that DR6 is guest value.
+> 
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   arch/x86/kvm/x86.c | 8 ++------
+>   1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d2aa49722064..f40cdd7687d8 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4309,12 +4309,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>   
+>   	static_call(kvm_x86_vcpu_put)(vcpu);
+>   	vcpu->arch.last_host_tsc = rdtsc();
+> -	/*
+> -	 * If userspace has set any breakpoints or watchpoints, dr6 is restored
+> -	 * on every vmexit, but if not, we might have a stale dr6 from the
+> -	 * guest. do_debug expects dr6 to be cleared after it runs, do the same.
+> -	 */
+> -	set_debugreg(0, 6);
+>   }
+>   
+>   static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
+> @@ -9630,6 +9624,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>   		static_call(kvm_x86_sync_dirty_debug_regs)(vcpu);
+>   		kvm_update_dr0123(vcpu);
+>   		kvm_update_dr7(vcpu);
+> +		/* Reset Dr6 which is guest value. */
+> +		set_debugreg(DR6_RESERVED, 6);
+>   	}
+>   
+>   	/*
+> 
 
-syzbot found the following issue on:
+... and this should also be done exclusively for VMX, in vmx_sync_dirty_debug_regs:
 
-HEAD commit:    36a21d51725a Linux 5.14-rc5
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=127f3379300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=730106bfb5bf8ace
-dashboard link: https://syzkaller.appspot.com/bug?extid=2b3e5fb6c7ef285a94f6
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+     KVM: VMX: Reset DR6 only when KVM_DEBUGREG_WONT_EXIT
+     
+     The commit efdab992813fb ("KVM: x86: fix escape of guest dr6 to the host")
+     fixed a bug by resetting DR6 unconditionally when the vcpu being scheduled out.
+     
+     But writing to debug registers is slow, and it can be visible in perf results
+     sometimes, even if neither the host nor the guest activate breakpoints.
+     
+     Since KVM_DEBUGREG_WONT_EXIT on Intel processors is the only case
+     where DR6 gets the guest value, and it never happens at all on SVM,
+     the register can be cleared in vmx.c right after reading it.
+     
+     Reported-by: Lai Jiangshan <laijs@linux.alibaba.com>
+     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2b3e5fb6c7ef285a94f6@syzkaller.appspotmail.com
-
-UBSAN: array-index-out-of-bounds in net/sched/sch_taprio.c:1519:10
-index 16 is out of range for type '__u16 [16]'
-CPU: 0 PID: 13032 Comm: syz-executor.2 Not tainted 5.14.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
- ubsan_epilogue lib/ubsan.c:148 [inline]
- __ubsan_handle_out_of_bounds+0xdb/0x130 lib/ubsan.c:288
- taprio_change+0x33d0/0x5c90 net/sched/sch_taprio.c:1519
- qdisc_create+0x7c2/0x1480 net/sched/sch_api.c:1247
- tc_modify_qdisc+0xa88/0x1ea0 net/sched/sch_api.c:1646
- rtnetlink_rcv_msg+0x91c/0xe50 net/core/rtnetlink.c:5574
- netlink_rcv_skb+0x1f0/0x460 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x7de/0x9b0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x9e7/0xe00 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg net/socket.c:723 [inline]
- ____sys_sendmsg+0x5a2/0x900 net/socket.c:2392
- ___sys_sendmsg net/socket.c:2446 [inline]
- __sys_sendmsg+0x319/0x400 net/socket.c:2475
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665e9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f399085a188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
-RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000007
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffe9b94383f R14: 00007f399085a300 R15: 0000000000022000
-================================================================================
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 21a3ef3012cf..3a91302d05c0 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -5110,6 +5110,12 @@ static void vmx_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
+  
+  	vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_WONT_EXIT;
+  	exec_controls_setbit(to_vmx(vcpu), CPU_BASED_MOV_DR_EXITING);
++
++	/*
++	 * do_debug expects dr6 to be cleared after it runs, avoid that it sees
++	 * a stale dr6 from the guest.
++	 */
++	set_debugreg(DR6_RESERVED, 6);
+  }
+  
+  static void vmx_set_dr7(struct kvm_vcpu *vcpu, unsigned long val)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index fbc536b21585..04c393551fb0 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -4313,12 +4313,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+  
+  	static_call(kvm_x86_vcpu_put)(vcpu);
+  	vcpu->arch.last_host_tsc = rdtsc();
+-	/*
+-	 * If userspace has set any breakpoints or watchpoints, dr6 is restored
+-	 * on every vmexit, but if not, we might have a stale dr6 from the
+-	 * guest. do_debug expects dr6 to be cleared after it runs, do the same.
+-	 */
+-	set_debugreg(0, 6);
+  }
+  
+  static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Paolo
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
