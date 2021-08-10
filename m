@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EB03E7F03
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C903E7EFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbhHJRgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:36:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43106 "EHLO mail.kernel.org"
+        id S231679AbhHJRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:36:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233218AbhHJRfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:35:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A76660FC4;
-        Tue, 10 Aug 2021 17:34:40 +0000 (UTC)
+        id S232922AbhHJRfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:35:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5461F61019;
+        Tue, 10 Aug 2021 17:34:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616881;
-        bh=padmp1EfJk5gEo26tVeSIiRYdf6NZwwoY/vBdgBuUMs=;
+        s=korg; t=1628616883;
+        bh=QT8WDrtLTOazFFsZarpCkRObMPa0NPlyyOzmsPPAPrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mW95Q/lofdST/qLr1FeNB9owmzXjNH8huWB4Nf57PNWgqv7F/g8GJiyfDP2AJdQi5
-         kskAlphfCVfN0TtVFrYps2IyBPjfL8jXFuN49pFg+stMJrwqCXhiNEqW96TwlfoMNZ
-         MjQNYT9ODY7EW6Foqqn8kRjr22nI5y5wW75Rqs40=
+        b=O1300PzbVK//W8ZO8VNQbB1ZcAPd9q2lWu8rUE+N+fNKtvK18QFhYDWI5UcwMfE7O
+         2jg6TvciQtvYeE/OYNIm3F1Us4NfHqzM6VOO3N6nBf/RXkX+zNQ2PLxS01nJVjwOuF
+         BCEV2IcM4peOlnvFzjhQnnibWynsoGxkP1kbWA5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 33/85] net: vxge: fix use-after-free in vxge_device_unregister
-Date:   Tue, 10 Aug 2021 19:30:06 +0200
-Message-Id: <20210810172949.315217211@linuxfoundation.org>
+Subject: [PATCH 5.4 34/85] blk-iolatency: error out if blk_get_queue() failed in iolatency_set_limit()
+Date:   Tue, 10 Aug 2021 19:30:07 +0200
+Message-Id: <20210810172949.354530109@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
 References: <20210810172948.192298392@linuxfoundation.org>
@@ -42,51 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 942e560a3d3862dd5dee1411dbdd7097d29b8416 ]
+[ Upstream commit 8d75d0eff6887bcac7225e12b9c75595e523d92d ]
 
-Smatch says:
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
-drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+If queue is dying while iolatency_set_limit() is in progress,
+blk_get_queue() won't increment the refcount of the queue. However,
+blk_put_queue() will still decrement the refcount later, which will
+cause the refcout to be unbalanced.
 
-Since vdev pointer is netdev private data accessing it after free_netdev()
-call can cause use-after-free bug. Fix it by moving free_netdev() call at
-the end of the function
+Thus error out in such case to fix the problem.
 
-Fixes: 6cca200362b4 ("vxge: cleanup probe error paths")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 8c772a9bfc7c ("blk-iolatency: fix IO hang due to negative inflight counter")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/20210805124645.543797-1-yukuai3@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/neterion/vxge/vxge-main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ block/blk-iolatency.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
-index 1d334f2e0a56..607e2ff272dc 100644
---- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
-+++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
-@@ -3524,13 +3524,13 @@ static void vxge_device_unregister(struct __vxge_hw_device *hldev)
+diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+index c128d50cb410..71a82528d4bf 100644
+--- a/block/blk-iolatency.c
++++ b/block/blk-iolatency.c
+@@ -832,7 +832,11 @@ static ssize_t iolatency_set_limit(struct kernfs_open_file *of, char *buf,
  
- 	kfree(vdev->vpaths);
- 
--	/* we are safe to free it now */
--	free_netdev(dev);
--
- 	vxge_debug_init(vdev->level_trace, "%s: ethernet device unregistered",
- 			buf);
- 	vxge_debug_entryexit(vdev->level_trace,	"%s: %s:%d  Exiting...", buf,
- 			     __func__, __LINE__);
+ 	enable = iolatency_set_min_lat_nsec(blkg, lat_val);
+ 	if (enable) {
+-		WARN_ON_ONCE(!blk_get_queue(blkg->q));
++		if (!blk_get_queue(blkg->q)) {
++			ret = -ENODEV;
++			goto out;
++		}
 +
-+	/* we are safe to free it now */
-+	free_netdev(dev);
- }
+ 		blkg_get(blkg);
+ 	}
  
- /*
 -- 
 2.30.2
 
