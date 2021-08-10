@@ -2,199 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38183E52E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F003E52FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237660AbhHJFZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 01:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237643AbhHJFZV (ORCPT
+        id S237672AbhHJFlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 01:41:51 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:57212 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236443AbhHJFlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 01:25:21 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D68DC061798
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 22:24:59 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id n6so13974733ljp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 22:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CFWqBCQp2YlhCV7jSxWtmoCr8RILzISB86MNoTEBHeU=;
-        b=kOohwNbQp4KuzGJcZF4yy50pxkQN5Pb3iyD+ksrmfBVybK+TUfjtOwUyb7bKShe8tW
-         SdRFWAigtNDsjm+fYfhVo3pIxT6X/DNEHzlL1Yb+k45momrT3GI3kLzx/UC1L3NV5WvG
-         6dFgkqQwdB9tsG044F0FDPRv7bPPwEyO0WdNtgH2iU48kKdX3L++yX8EzxA0ZGhCs3f8
-         fJ5M+aYhbYV2OGcTpV+3ZpCUjy6t4JcreBfppE3CEU/cX5lIAyYfeMjg11Z4yiCF8DEQ
-         bxpEyJUVg8TveXXvdXTMtRzWZrcVTWIQZBTGaawTSWC3BK3cVJm1GvVbvcK1fDoPfnOF
-         sDYg==
+        Tue, 10 Aug 2021 01:41:49 -0400
+Received: by mail-io1-f72.google.com with SMTP id c22-20020a5d9a960000b029059c9e04cd63so3818622iom.23
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 22:41:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CFWqBCQp2YlhCV7jSxWtmoCr8RILzISB86MNoTEBHeU=;
-        b=XW6KBHTUHRkPT0tlxDxEfT3CRm6gOEzpJj/QqDeYs/0OQZAT3p8o7qLwjwRXXMswXu
-         nYlV1G3eJTb3/Tx30nt9jwMf2CLDX+zOrJBu8BISgnxJqPCtr5UwV1qVgLZ/OVz3dNy5
-         a74FoF5qJ/TDnQHoBm3Ja70iJm49Eod37s6MGjGEdJ/i9/0m4TgjxcK2aFytI5Q5QFUF
-         2ZBdSVYZNiBV8ZoAGUSUNwHdivjfT/AwHQFarhEAN3SrMp1f9MIwzoiRDHlWptQx09lt
-         VtINKmZ4/MYcg6F5shWpjFka7fAk55GCSU58KWNGJg5HiswTf9gJ2noIKgAIdJpFzM8A
-         MbsQ==
-X-Gm-Message-State: AOAM532LsbDEq8cvkxLh9OEqm8x2+nSkAI4m/BqprDdLjqpGW2HO9B45
-        DCFDGwCQTNfQiYe8VV9wRdZNVXnBgYoLjMgkhEVyXQ==
-X-Google-Smtp-Source: ABdhPJwAO97YdfcdCAmTaAWes9GxsrI5CP30XQe+NgCZoBVV5RVlt4j0z3ZrFIcGb4t5MvWxg/JuOLFUnrMQtk2HCJI=
-X-Received: by 2002:a05:651c:516:: with SMTP id o22mr17678549ljp.152.1628573097700;
- Mon, 09 Aug 2021 22:24:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=4k3xWVuvPtnO7/RXGNQCf+RD5uKUG8Fe1RKWCEcPJwo=;
+        b=XgZwQ5uPQO4XshrB5iMwN2rZiDMSKRCp+C/7LNhwQdai45yG4URNhtrto5TCpMNNmC
+         iJvpIvaWeZPIldJvVxjabVllXc/CuxeBKAfwarPn93CUiFMkNDZvyAA4aRQ+3dBd3Oan
+         yG6W8vy6Jk1dHG5Rlut7BJSncLyCgeAQuUmddIIF/p+6SHpWNn8qw0T49K/wNyKvUZvk
+         QOaq1uBW56IVqG1CfjUQB/8aIU6eRPy1NvMnsliFy+K9K0ZjNyTsEf0bUHJMXVJ/t6jW
+         ERJQFGGB1phWyqsn78uy272F71tKUEQwelh6vcTrXPa19FcOfEJO/mZ0FfnBB5F2rBqR
+         gy3A==
+X-Gm-Message-State: AOAM531bQKfHYQOWSaK9S4qVNky6NyqOn8IrdZAU/dLcq475sgjz4gg9
+        fGWvcig60yFiCPmibAkN8wMIMeWCvQKqOGvq47X7w/1kZ1/8
+X-Google-Smtp-Source: ABdhPJw2Y4cmUsuL+QNQmnFFZz3f6/vxNEs3Dx7AIXnMWq7mXzVaULjZNUvNWeEqZ01SSCF0Cj1IIY53oII6KN9FE20Vgte83UNf
 MIME-Version: 1.0
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
- <7b771da7b09a01c8b4da2ed21f05251ea797b2e8.1626885907.git-series.a.fatoum@pengutronix.de>
- <CAFA6WYOskwZNe5Wb5PTtnSHQBonSXZ48eEex0w9jQ+JW4vG=+w@mail.gmail.com>
- <7537c853-3641-a6d3-91d8-70fea9f01a89@pengutronix.de> <20210809095647.7xcxjeot5gyvmlpj@kernel.org>
-In-Reply-To: <20210809095647.7xcxjeot5gyvmlpj@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 10 Aug 2021 10:54:46 +0530
-Message-ID: <CAFA6WYPg20EiYATXStt1mgGJVjkOK5BK7WDbTdzOujBdcH6KLg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] KEYS: trusted: allow trust sources to use kernel RNG
- for key material
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        kernel <kernel@pengutronix.de>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Richard Weinberger <richard@nod.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>
+X-Received: by 2002:a5e:961a:: with SMTP id a26mr20924ioq.90.1628574087990;
+ Mon, 09 Aug 2021 22:41:27 -0700 (PDT)
+Date:   Mon, 09 Aug 2021 22:41:27 -0700
+In-Reply-To: <0000000000007faf7505c91bb19d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000156a605c92df4b2@google.com>
+Subject: Re: [syzbot] general protection fault in hwsim_new_edge_nl
+From:   syzbot <syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        mudongliangabcd@gmail.com, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 at 15:26, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Mon, Aug 09, 2021 at 09:52:20AM +0200, Ahmad Fatoum wrote:
-> > Hello Sumit,
-> >
-> > On 22.07.21 08:31, Sumit Garg wrote:
-> > > On Wed, 21 Jul 2021 at 22:19, Ahmad Fatoum <a.fatoum@pengutronix.de> =
-wrote:
-> > >>
-> > >> The two existing trusted key sources don't make use of the kernel RN=
-G,
-> > >> but instead let the hardware that does the sealing/unsealing also
-> > >> generate the random key material. While a previous change offers use=
-rs
-> > >> the choice to use the kernel RNG instead for both, new trust sources
-> > >> may want to unconditionally use the kernel RNG for generating key
-> > >> material, like it's done elsewhere in the kernel.
-> > >>
-> > >> This is especially prudent for hardware that has proven-in-productio=
-n
-> > >> HWRNG drivers implemented, as otherwise code would have to be duplic=
-ated
-> > >> only to arrive at a possibly worse result.
-> > >>
-> > >> Make this possible by turning struct trusted_key_ops::get_random
-> > >> into an optional member. If a driver leaves it NULL, kernel RNG
-> > >> will be used instead.
-> > >>
-> > >> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> > >> ---
-> > >> To: James Bottomley <jejb@linux.ibm.com>
-> > >> To: Jarkko Sakkinen <jarkko@kernel.org>
-> > >> To: Mimi Zohar <zohar@linux.ibm.com>
-> > >> To: David Howells <dhowells@redhat.com>
-> > >> Cc: James Morris <jmorris@namei.org>
-> > >> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> > >> Cc: "Horia Geant=C4=83" <horia.geanta@nxp.com>
-> > >> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-> > >> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > >> Cc: "David S. Miller" <davem@davemloft.net>
-> > >> Cc: Udit Agarwal <udit.agarwal@nxp.com>
-> > >> Cc: Eric Biggers <ebiggers@kernel.org>
-> > >> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
-> > >> Cc: David Gstir <david@sigma-star.at>
-> > >> Cc: Richard Weinberger <richard@nod.at>
-> > >> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
-> > >> Cc: Sumit Garg <sumit.garg@linaro.org>
-> > >> Cc: keyrings@vger.kernel.org
-> > >> Cc: linux-crypto@vger.kernel.org
-> > >> Cc: linux-integrity@vger.kernel.org
-> > >> Cc: linux-kernel@vger.kernel.org
-> > >> Cc: linux-security-module@vger.kernel.org
-> > >> ---
-> > >>  include/keys/trusted-type.h               | 2 +-
-> > >>  security/keys/trusted-keys/trusted_core.c | 2 +-
-> > >>  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >>
-> > >> diff --git a/include/keys/trusted-type.h b/include/keys/trusted-type=
-.h
-> > >> index d89fa2579ac0..4eb64548a74f 100644
-> > >> --- a/include/keys/trusted-type.h
-> > >> +++ b/include/keys/trusted-type.h
-> > >> @@ -64,7 +64,7 @@ struct trusted_key_ops {
-> > >>         /* Unseal a key. */
-> > >>         int (*unseal)(struct trusted_key_payload *p, char *datablob)=
-;
-> > >>
-> > >> -       /* Get a randomized key. */
-> > >> +       /* Optional: Get a randomized key. */
-> > >>         int (*get_random)(unsigned char *key, size_t key_len);
-> > >>
-> > >>         /* Exit key interface. */
-> > >> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/ke=
-ys/trusted-keys/trusted_core.c
-> > >> index 569af9af8df0..d2b7626cde8b 100644
-> > >> --- a/security/keys/trusted-keys/trusted_core.c
-> > >> +++ b/security/keys/trusted-keys/trusted_core.c
-> > >> @@ -334,7 +334,7 @@ static int __init init_trusted(void)
-> > >>                         continue;
-> > >>
-> > >>                 get_random =3D trusted_key_sources[i].ops->get_rando=
-m;
-> > >> -               if (trusted_kernel_rng)
-> > >> +               if (trusted_kernel_rng || !get_random)
-> > >>                         get_random =3D kernel_get_random;
-> > >>
-> > >
-> > > For ease of understanding, I would prefer to write it as:
-> > >
-> > >                   get_random =3D trusted_key_sources[i].ops->get_rand=
-om ?:
-> > >                                          kernel_get_random;
-> > >                   if (trusted_kernel_rng)
-> > >                         get_random =3D kernel_get_random;
-> > >
-> > > With that:
-> > >
-> > > Acked-by: Sumit Garg <sumit.garg@linaro.org>
-> >
-> > I don't think it improves readability to split up the conditional.
-> > At least I need to take a second pass over the code to understand
-> > the second conditional.
->
-> Ternary operators are pain to read, unless a super trivial case.
->
-> I'd stick to what you did.
+syzbot has found a reproducer for the following issue on:
 
-Fair enough, I am fine with the current patch.
+HEAD commit:    2a2b6e3640c4 devlink: Fix port_type_set function pointer c..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11abd8a1300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8075b2614f3db143
+dashboard link: https://syzkaller.appspot.com/bug?extid=fafb46da3f65fdbacd16
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13371f79300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fabc4a300000
 
--Sumit
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com
 
->
-> /Jarkko
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 8442 Comm: syz-executor760 Not tainted 5.14.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
+RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
+RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
+Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d e3 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
+RSP: 0018:ffffc9000178f568 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff8534cab3 RDI: ffff88801dd72a10
+RBP: ffffc9000178f678 R08: 0000000000000001 R09: ffffc9000178f6a8
+R10: fffff520002f1ed6 R11: 0000000000000000 R12: ffffc9000178f698
+R13: ffff888025fbd014 R14: ffff8880278afb40 R15: 0000000000000000
+FS:  00000000013a1300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000744 CR3: 0000000031221000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
+ genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ef39
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff22c3c298 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
+R10: 00000000004ac018 R11: 0000000000000246 R12: 0000000000402fb0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+Modules linked in:
+---[ end trace 63fa4e15cfb16ac5 ]---
+RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
+RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
+RIP: 0010:hwsim_new_edge_nl+0xf4/0x8c0 drivers/net/ieee802154/mac802154_hwsim.c:425
+Code: 00 0f 85 76 07 00 00 4d 85 ed 48 8b 5b 10 0f 84 5e 05 00 00 e8 0d e3 40 fc 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 87
+RSP: 0018:ffffc9000178f568 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff8534cab3 RDI: ffff88801dd72a10
+RBP: ffffc9000178f678 R08: 0000000000000001 R09: ffffc9000178f6a8
+R10: fffff520002f1ed6 R11: 0000000000000000 R12: ffffc9000178f698
+R13: ffff888025fbd014 R14: ffff8880278afb40 R15: 0000000000000000
+FS:  00000000013a1300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000744 CR3: 0000000031221000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
