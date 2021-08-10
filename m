@@ -2,267 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89823E869F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84473E86AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbhHJXkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:40:32 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:59688 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235493AbhHJXka (ORCPT
+        id S235561AbhHJXr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235508AbhHJXrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:40:30 -0400
-Received: from mailhost.synopsys.com (badc-mailhost4.synopsys.com [10.192.0.82])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 3E50041282;
-        Tue, 10 Aug 2021 23:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1628638808; bh=GEDMsW0Mb4OTJL4B/U45oYmj244jLOdAF4K52WzBulE=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=e1bIvTaNqmGU+fKzgx5oRhziq3o8+bawx0Ogfcjind5mPfjAE2cBKNgbmiFBgLBGV
-         bk572qduHH3ZnviKbu3yaP+SRPUbHZ/LPRwErC2jQAljbIcu3Ktl/DvTfzL2Ux2izc
-         vJ01noG+Sem4RV+wNROLyjjX5KqhmCqNzqNlE1n5Zl5kA40qEDpNC647Vk9xEVhFo9
-         EqvVgHH0KLQ8iFrWCEN5OJUZk7vK3rcOnH4n+AuANEmzPwBJll14NA66oKPdtQTFUb
-         FtqbFOII90zPMged3RBYiBgQEFXT92c25xQMt36alq7Sl+5ICTyuIy9WgSg5LEJ8kh
-         umQm7wmzVDRRQ==
-Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 79D17A006E;
-        Tue, 10 Aug 2021 23:40:06 +0000 (UTC)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 6E8EC400D8;
-        Tue, 10 Aug 2021 23:40:05 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=thinhn@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="NW3F/z7y";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l8U6PUcY11vRevNshjVQDBY28Kzl8pKhC3AItKaYtTlZH+MsnyBxUhYtEPoXX8HxT33Le6pd0QGB1VbV+K6Sk8VEcx29aKSSvtjdj3jQbiyEG2ofYgCqhRbZbnHGNhJQO9Hw3a5YPdJmQl+TNthw4F3uDAOyeQdQWzx/2Q+dovXw+aPkzwT95BWXP84K8OhIjf2wK0KAT33NoKPAk+lgiDrcx+MV2vckJCdDt2deUd7U8lHwwCr8UGk473HgAkGmTyk361x8s3Tqs9j4b4i2qLy90LQS8ZqIcgX5aTpU1LMZixf/4UCGZw0ZKBtQQfbaVEqjDEkkVhdA5mNCUQ1O9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GEDMsW0Mb4OTJL4B/U45oYmj244jLOdAF4K52WzBulE=;
- b=Ew+Uh46EnRBNUWXC21uPJ3vI7tfKtJgQ6uyBRziIVkVeJszAflZc/6lrz/z+6B3AWbvxt7kdc37y8TmsFED6wzFxgO51c0ZD3xTiIN5ODaZPki09wXlkzUfjMt99F/WLYS0sqdTiz5OEJH57q7ToRPGN49cyG3AGEH2Z3NxTwI08Ys3t3eq+54hBpkYkuPD3fyO59sB+mQoC0TdPhM/fx6ovPnX5WgIw/N9+1GFhWQknxLakzktbUlhzwuvMKfj5iYRvBA4lr949qPlAXqaxEP9bxPvMy0gnJjBcqeEQHXoqj2WLb47vcGjicXwtJ9uJ2BpF6fqCZsDGs4+ndwG9vQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GEDMsW0Mb4OTJL4B/U45oYmj244jLOdAF4K52WzBulE=;
- b=NW3F/z7yf0wpWX9LxQ7tuDTdaq144RcyO4iOId6rohv92WpAL4CYftMB3+DEhix4SmOT27m7Om6f3jbsKINdrFnUjN9ITcARy/eVxWJxKRzSovcRDBJ2rnCcqycGuLjtq4ik2FFFnQG+WAiqJgImjjfoKJI2np2JtS4NEfigxEE=
-Received: from BYAPR12MB4791.namprd12.prod.outlook.com (2603:10b6:a03:10a::12)
- by BYAPR12MB2904.namprd12.prod.outlook.com (2603:10b6:a03:137::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Tue, 10 Aug
- 2021 23:40:03 +0000
-Received: from BYAPR12MB4791.namprd12.prod.outlook.com
- ([fe80::163:f142:621e:3db9]) by BYAPR12MB4791.namprd12.prod.outlook.com
- ([fe80::163:f142:621e:3db9%7]) with mapi id 15.20.4415.014; Tue, 10 Aug 2021
- 23:40:03 +0000
-X-SNPS-Relay: synopsys.com
-From:   Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>
-CC:     lkml <linux-kernel@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jack Pham <jackp@codeaurora.org>, Todd Kjos <tkjos@google.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Petri Gynther <pgynther@google.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [RFC][PATCH] dwc3: gadget: Fix losing list items in
- dwc3_gadget_ep_cleanup_completed_requests()
-Thread-Topic: [RFC][PATCH] dwc3: gadget: Fix losing list items in
- dwc3_gadget_ep_cleanup_completed_requests()
-Thread-Index: AQHXjW5ko6qYUR8aokekS5eRbPy7oKtrxUWAgAACvICAAAD6AIABMcaAgAAy+YCAAADCAIAAOLoA
-Date:   Tue, 10 Aug 2021 23:40:02 +0000
-Message-ID: <89bb9ef4-f85e-5ccf-9288-780efec72f5c@synopsys.com>
-References: <CANcMJZCEVxVLyFgLwK98hqBEdc0_n4P0x_K6Gih8zNH3ouzbJQ@mail.gmail.com>
- <20210809223159.2342385-1-john.stultz@linaro.org>
- <4e1bef57-8520-36b9-f5cb-bbc925626a19@synopsys.com>
- <CALAqxLXPGt69ceiXkGT-nDjeP72mmCUgEzDdMpXr=rSNwpespw@mail.gmail.com>
- <0dfa8cd6-99b6-55c7-8099-0f6f1187b7fd@synopsys.com>
- <b025412f-c27a-a59b-cd8f-aec0faa98928@codeaurora.org>
- <a2139dcd-2512-2138-66b4-311056d92afa@synopsys.com>
- <915337ae-07d4-6a19-ec98-a8b88c5d9743@synopsys.com>
-In-Reply-To: <915337ae-07d4-6a19-ec98-a8b88c5d9743@synopsys.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-authentication-results: synopsys.com; dkim=none (message not signed)
- header.d=none;synopsys.com; dmarc=none action=none header.from=synopsys.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ff733032-8d85-43b3-57f0-08d95c582cf2
-x-ms-traffictypediagnostic: BYAPR12MB2904:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB29047BF6513FA71F3D79EAD3AAF79@BYAPR12MB2904.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mVQfKr1naddWh9OLrlQQdm7bfrXTmef+vaTpQFIsJwZwx+kI/tNhmu5rAkrHi0FYlv6utZljRqk0uktYIY6qrYSScyNNz6OVZjNYlTG+pVR6U8TobFy7Bepbxow0NlQRnQdnq6aXb3ruxZtZk+Dlzzu0wXrHKHTEhWZtqVQlo4K7fW1Q9/SLU8kcZpRuEaducKKIDRgWdB3w0L0V0bf9++MRe5uVLboZHFZ4jBq76K/j2oUrWJIv5mursU3P0l2aK1xoYpAXyrGSq4qO+zXv9B8IbeA5giu5qeI5CONbz3TDn7ya94jZWGJqp+wXudmVZaA2UHWTl2SN5O6uPtV/luU6ZnjmjXwLbhJUfRsHvS0SM41smhMiliaMG2f6qg5idi7GwqAw4Xy4ERz3t3/EjWv3D6lhUKNYNy/TWQ/ombRT3BSIBe0K3gA1BIM4SC5e6PoZEup1kkXdPBXqINc3q3pWnZQhIC4tiUT6Vwl/cFKYf7nWFof/reuhBOTQtr+/hTkzfD2qYtwtX37lPWBY/dvGnoDhlvHhDIDHehLiwTIQBanHzrcxTpAyILq9pkAomahwYwRzoJ0oSB7n5W1W8UCNevZEEN7fU67ctz5+YsayNYDp2JrMkHiqwCV7AFCTJRa0zjzDvpnspdvMFQST8bSCVpjLQFIyXRNiBJpth5FlXHkv4VMnLoCtZvFmYoZxDkkjunxqy1/iSBROlu6HkeXGLnUys4bqrnYh/QlCmGdJnc6Wrzv4HY5MlVapPi5cJsAyEotYwIxmI/voOBhoT9ZtaHtAypAHh+OJizGZiF14YzFOh+Jq7RspWaibRCwyPmxkUcJx5EPkDMQyzsfNwIs7PKo580PPjUk1qTIllV4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4791.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(4326008)(83380400001)(966005)(6486002)(316002)(64756008)(66556008)(66446008)(86362001)(66476007)(8936002)(122000001)(110136005)(31686004)(36756003)(38070700005)(6512007)(38100700002)(8676002)(2906002)(508600001)(54906003)(66946007)(76116006)(71200400001)(6506007)(5660300002)(7416002)(26005)(53546011)(2616005)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WDdNeWpqUEhZeDAxczE1YjBYdlNYV1NZRnlKd01iYVRRZVpxa1VEMitVV1Vk?=
- =?utf-8?B?bzZMMmU3R1l1NDRLdEFyekh0bFZVekUvM24zRE9zcWNUMWVTdnRSR1hEUTcy?=
- =?utf-8?B?SmdqcVhhV2ZnWlRWYk16aVRGbTBEck53RG1sNHVwTWpWa2pvK0NUSDh4OXp5?=
- =?utf-8?B?MXRaYXNGbTFrc2R5S00rdHJyMnZDY21hSldjQm44QWxiaS9OWHhtZ00zeFc4?=
- =?utf-8?B?QjNHZ25oc2VWZG1jWktUY2luamVidGhqVUpYODJWQ2Y5YkVyeG9ZK25zY3lk?=
- =?utf-8?B?QS9Eb2t4WUppQW9tMDJuNVZHYmh2MWxOMFg5aXh0WTdrd3VwY3hkUVRFRStQ?=
- =?utf-8?B?UUNVNWZuTytlRTdmMmgwVGI1QUYwczRxTVRJNDhrT2EvSERWbG9tU1RaMFFT?=
- =?utf-8?B?Zzgwd29pZEM2RTc2UGVocjVCSm9RSElTL0I5OWJEZWM1Ym54NmVZNmpLTjRZ?=
- =?utf-8?B?TktIZHI4azkyS2I4UWRWNWtVY2YxUDkxVzN2UFhKZlhJWURUYXBNYjVuTkg0?=
- =?utf-8?B?c3JhSGxNMG1oVnVaVGFaNFcrQmZIdWttQ2dwQkUxNzFmMnZROHcyOEFoc1RX?=
- =?utf-8?B?cHBpS3dxVCtkSytQckI4QlppT0U0bnFnNlVHTTc3VnNPMGdnVUt4RXcwMVdM?=
- =?utf-8?B?aG9wWm9uRXVmMTB6S3lkeXUzc3VpTldhd1BYSngzM2VITXRUdFhRQjdkNGZE?=
- =?utf-8?B?RFNuayt1bk5TYnIzYWczZmh3WEdOM2xWWUpxSW5YdjBkc2sxTTg2UWdYTlls?=
- =?utf-8?B?eUd1TDVla1U0MEZ5bTdqMVJJVDY4MU41eVB5OGVmSmo3dFFoWkhGMkNwSkJB?=
- =?utf-8?B?RkwrZ21oQzQ3N2pEd1haendzaDQrSGxsOEFqK0Z4bW1KcFVadEZWZEFIU1dX?=
- =?utf-8?B?bkdsVWZuVXI1dEU3cFprSjVjWkVRbjIzZGliUmk1dklCb0NYVUdHQUY2VTYw?=
- =?utf-8?B?L3BtUEtDdURieWJUUTlJbWt6ZHpMQ3VnN25OcTZaNjZaVUptS1ZwUkkzNlA3?=
- =?utf-8?B?ajgxdWlQU21peFJnN0dISjdSdENMM3RGRmgwTTh5MGFYbXBMcnAxVXRmZ2Fy?=
- =?utf-8?B?dHhsRTI4aXc4SGR0VlF0dGdnR2ZWMkxURUFDYURuVEVUS3lNcFNrNjg3MUhh?=
- =?utf-8?B?L0N3ZVBmQWxRdU5PQ2lHRGVBdXFFejhhQUFIM3dHQ0ZvV0d6ZmRlM2NjSUJH?=
- =?utf-8?B?Sjl4eUFWTmhaMTZSRGVoRzY1dDhEcDd4VDJrVGxxU0xZQVU5ZGQ4ZnFZRC9E?=
- =?utf-8?B?NDFDUy85RjNFNG9pYm5GQXh5ck1jV0taNGtDeUxuM01xWjBvTW54UGt2RXlz?=
- =?utf-8?B?TEU2cTRPV2IvM0k2ZXJCKzBhMEpHZmk3dnc1NXF0czlGTlg2NS9NUUovU2sw?=
- =?utf-8?B?MzB1MmNGQmlWbFI3S2dnWWtjd0xxZFVYMW1XOEh2MFFjU0RiZW1UVSs4UXQ0?=
- =?utf-8?B?bitmQnk2NUpySjkrcDI1Z1h5ZWZVYWxpWUswSWp6OUVPQjhmdWVGeGQ4THBo?=
- =?utf-8?B?eVRZZHFRc01CazdheXJrdENrSUFqcDQrbTNlT2NlaHY0cjRhRVdrYmV1ZzNR?=
- =?utf-8?B?dGdXY1lOTWk4VnBrR0lnbXpXTnluUytKem1qYkR2N2RXeEVCK2JkOUQ4WFdv?=
- =?utf-8?B?TEcweFpZd0NIZXl4WUsvSjRMbitPU3VLSmFYWndpTXVmQjMzRytIYVlKKzNh?=
- =?utf-8?B?aE5JNnF2Z1Q1aEdDem5JZTRHMWpXWkp0ZXh6OEd2Zzc1aXRUbTJhd3owWk9H?=
- =?utf-8?Q?DKfAKBaCM/kyEw9pl8=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <402E3627C380AC4A93347D306EAABAF5@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 10 Aug 2021 19:47:24 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D54BC061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:47:02 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id a93so1102097ybi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:47:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VMZc2dJG0IVvDii0ju/5gk9CLgIViJqtLaSJR0JaFr4=;
+        b=tsObyjyGNKaaWd/XQtMX2ikFBbCOkak2xZoV4i5q9X/iLIajvaWzO3zjheULnyCF/F
+         upR6zOg+WFekaC3TVEH0RRiFXqViDdtRu+yJ3N6pHZdQQD2mFwuBTAG/Hst/DZ+txfOr
+         HzZvbnURCbGQs7/65nW2lKNMxdwP1DZrBDuIv1MVH5pxKXELQcsAbBJ1s1voaf/yuBzW
+         BbBduIsSRWHGw09nKRDh1GWCmhxmX7IRYZjYsTqJRGo31iMUTvLWldThb9q7KOREd06z
+         OxFATCOI+AstmwInuZXhrmmPHqPFVgIk3aB6tUITeHwYFTz+krFoIRNrbeCrH+MI8vEW
+         +ffw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VMZc2dJG0IVvDii0ju/5gk9CLgIViJqtLaSJR0JaFr4=;
+        b=Rj56KxJ7+M8FmPS1bsZctwqLbf1eWTprOFCDhdtD//KusvaXbLKW+LhUUBLIG3OYr3
+         /OJVTGCOJ3Hxj+0SYKXQbM0YmsD6vOBfHDtuAjL3CgbSL+6pFJesR+VmWbzoPfNQhnle
+         oDCIO2mVqCWa2CBGhd7ywx9PyunPcisWhaxpgzTMbVAB6KgytiJgY+OfAadyLUBqSZx3
+         zlRy0adh9plWDu8B2DtOG63nhxodngKd2/bKu7HZG8wOR4dJKms5zQET2R7rOAKkKwn9
+         dxta7Mr2LIPGs9D0P6v4kOQzKJQwUdTlVjnrnBR37DjxDDNgc4C4I3+1FybbUXxaB0z6
+         bdJg==
+X-Gm-Message-State: AOAM5333Fugbe81lQXen3vNhmdsVq+KcNOocdtz3vZZ/zgpkwr8k359Q
+        9EnQDdv6PDkEoxgF5PDDNN/w+qhOtxKGGzeFtAg=
+X-Google-Smtp-Source: ABdhPJz2jGiRfVs3tdMPjobotXKYCEf+KoQRuTVyKQHORzgudkLGxDROD/H42cfwDts5PBgsM8hLM6XMZ/+XSqyLWCE=
+X-Received: by 2002:a25:d113:: with SMTP id i19mr41191742ybg.39.1628639221313;
+ Tue, 10 Aug 2021 16:47:01 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4791.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff733032-8d85-43b3-57f0-08d95c582cf2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2021 23:40:02.9253
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PtVSwUFbVEasqDouGQX/we6SgRqIwRQ0K8D6j1sPPO4o6sMcWtElCOA9S/HM+oLV2VbPNVsoSNnbA22XCKamYg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2904
+References: <20210810223123.2174596-1-pgwipeout@gmail.com> <3455830.ypAZr3mf50@diego>
+In-Reply-To: <3455830.ypAZr3mf50@diego>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Tue, 10 Aug 2021 19:46:50 -0400
+Message-ID: <CAMdYzYp7FvkOt3u+UJfTep1qb5Vs_ynv4tLVyWbzmXtD+Bvo5w@mail.gmail.com>
+Subject: Re: [BUG] dw-mipi-dsi-rockchip display corruption with dsi panel
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Sandy Huang <hjc@rock-chips.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgV2VzbGV5LA0KDQpUaGluaCBOZ3V5ZW4gd3JvdGU6DQo+IFRoaW5oIE5ndXllbiB3cm90ZToN
-Cj4+IFdlc2xleSBDaGVuZyB3cm90ZToNCj4+PiBIaSBUaGluaCwNCj4+Pg0KPj4+IE9uIDgvOS8y
-MDIxIDM6NTcgUE0sIFRoaW5oIE5ndXllbiB3cm90ZToNCj4+Pj4gSm9obiBTdHVsdHogd3JvdGU6
-DQo+Pj4+PiBPbiBNb24sIEF1ZyA5LCAyMDIxIGF0IDM6NDQgUE0gVGhpbmggTmd1eWVuIDxUaGlu
-aC5OZ3V5ZW5Ac3lub3BzeXMuY29tPiB3cm90ZToNCj4+Pj4+Pg0KPj4+Pj4+IEpvaG4gU3R1bHR6
-IHdyb3RlOg0KPj4+Pj4+PiBJbiBjb21taXQgZDI1ZDg1MDYxYmQ4ICgidXNiOiBkd2MzOiBnYWRn
-ZXQ6IFVzZQ0KPj4+Pj4+PiBsaXN0X3JlcGxhY2VfaW5pdCgpIGJlZm9yZSB0cmF2ZXJzaW5nIGxp
-c3RzIiksIGEgbG9jYWwgbGlzdF9oZWFkDQo+Pj4+Pj4+IHdhcyBpbnRyb2R1Y2VkIHRvIHByb2Nl
-c3MgdGhlIHN0YXJ0ZWRfbGlzdCBpdGVtcyB0byBhdm9pZCByYWNlcy4NCj4+Pj4+Pj4NCj4+Pj4+
-Pj4gSG93ZXZlciwgaW4gZHdjM19nYWRnZXRfZXBfY2xlYW51cF9jb21wbGV0ZWRfcmVxdWVzdHMo
-KSBpZg0KPj4+Pj4+PiBkd2MzX2dhZGdldF9lcF9jbGVhbnVwX2NvbXBsZXRlZF9yZXF1ZXN0KCkg
-ZmFpbHMsIHdlIGJyZWFrIGVhcmx5LA0KPj4+Pj4+PiBjYXVzaW5nIHRoZSBpdGVtcyBvbiB0aGUg
-bG9jYWwgbGlzdF9oZWFkIHRvIGJlIGxvc3QuDQo+Pj4+Pj4+DQo+Pj4+Pj4+IFRoaXMgaXNzdWUg
-c2hvd2VkIHVwIGFzIHByb2JsZW1zIG9uIHRoZSBkYjg0NWMvUkIzIGJvYXJkLCB3aGVyZQ0KPj4+
-Pj4+PiBhZGIgY29ubmV0aW9ucyB3b3VsZCBmYWlsLCBzaG93aW5nIHRoZSBkZXZpY2UgYXMgIm9m
-ZmxpbmUiLg0KPj4+Pj4+Pg0KPj4+Pj4+PiBUaGlzIHBhdGNoIHRyaWVzIHRvIGZpeCB0aGUgaXNz
-dWUgYnkgaWYgd2UgYXJlIHJldHVybmluZyBlYXJseQ0KPj4+Pj4+PiB3ZSBzcGxpY2UgaW4gdGhl
-IGxvY2FsIGxpc3QgaGVhZCBiYWNrIGludG8gdGhlIHN0YXJ0ZWRfbGlzdA0KPj4+Pj4+PiBhbmQg
-cmV0dXJuIChhdm9pZGluZyBhbiBpbmZpbml0ZSBsb29wLCBhcyB0aGUgc3RhcnRlZF9saXN0IGlz
-DQo+Pj4+Pj4+IG5vdyBub24tbnVsbCkuDQo+Pj4+Pj4+DQo+Pj4+Pj4+IE5vdCBzdXJlIGlmIHRo
-aXMgaXMgZnVsbHkgY29ycmVjdCwgYnV0IHNlZW1zIHRvIHdvcmsgZm9yIG1lIHNvIEkNCj4+Pj4+
-Pj4gd2FudGVkIHRvIHNoYXJlIGZvciBmZWVkYmFjay4NCj4+Pj4+Pj4NCj4+Pj4+Pj4gQ2M6IFdl
-c2xleSBDaGVuZyA8d2NoZW5nQGNvZGVhdXJvcmEub3JnPg0KPj4+Pj4+PiBDYzogRmVsaXBlIEJh
-bGJpIDxiYWxiaUBrZXJuZWwub3JnPg0KPj4+Pj4+PiBDYzogR3JlZyBLcm9haC1IYXJ0bWFuIDxn
-cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4+Pj4+Pj4gQ2M6IEFsYW4gU3Rlcm4gPHN0ZXJu
-QHJvd2xhbmQuaGFydmFyZC5lZHU+DQo+Pj4+Pj4+IENjOiBKYWNrIFBoYW0gPGphY2twQGNvZGVh
-dXJvcmEub3JnPg0KPj4+Pj4+PiBDYzogVGhpbmggTmd1eWVuIDx0aGluaC5uZ3V5ZW5Ac3lub3Bz
-eXMuY29tPg0KPj4+Pj4+PiBDYzogVG9kZCBLam9zIDx0a2pvc0Bnb29nbGUuY29tPg0KPj4+Pj4+
-PiBDYzogQW1pdCBQdW5kaXIgPGFtaXQucHVuZGlyQGxpbmFyby5vcmc+DQo+Pj4+Pj4+IENjOiBZ
-b25nUWluIExpdSA8eW9uZ3Fpbi5saXVAbGluYXJvLm9yZz4NCj4+Pj4+Pj4gQ2M6IFN1bWl0IFNl
-bXdhbCA8c3VtaXQuc2Vtd2FsQGxpbmFyby5vcmc+DQo+Pj4+Pj4+IENjOiBQZXRyaSBHeW50aGVy
-IDxwZ3ludGhlckBnb29nbGUuY29tPg0KPj4+Pj4+PiBDYzogbGludXgtdXNiQHZnZXIua2VybmVs
-Lm9yZw0KPj4+Pj4+PiBGaXhlczogZDI1ZDg1MDYxYmQ4ICgidXNiOiBkd2MzOiBnYWRnZXQ6IFVz
-ZSBsaXN0X3JlcGxhY2VfaW5pdCgpIGJlZm9yZSB0cmF2ZXJzaW5nIGxpc3RzIikNCj4+Pj4+Pj4g
-U2lnbmVkLW9mZi1ieTogSm9obiBTdHVsdHogPGpvaG4uc3R1bHR6QGxpbmFyby5vcmc+DQo+Pj4+
-Pj4+IC0tLQ0KPj4+Pj4+PiAgZHJpdmVycy91c2IvZHdjMy9nYWRnZXQuYyB8IDYgKysrKysrDQo+
-Pj4+Pj4+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspDQo+Pj4+Pj4+DQo+Pj4+Pj4+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9kd2MzL2dhZGdldC5jIGIvZHJpdmVycy91c2IvZHdj
-My9nYWRnZXQuYw0KPj4+Pj4+PiBpbmRleCBiOGQ0YjJkMzI3YjIzLi5hNzNlYmU4ZTc1MDI0IDEw
-MDY0NA0KPj4+Pj4+PiAtLS0gYS9kcml2ZXJzL3VzYi9kd2MzL2dhZGdldC5jDQo+Pj4+Pj4+ICsr
-KyBiL2RyaXZlcnMvdXNiL2R3YzMvZ2FkZ2V0LmMNCj4+Pj4+Pj4gQEAgLTI5OTAsNiArMjk5MCwx
-MiBAQCBzdGF0aWMgdm9pZCBkd2MzX2dhZGdldF9lcF9jbGVhbnVwX2NvbXBsZXRlZF9yZXF1ZXN0
-cyhzdHJ1Y3QgZHdjM19lcCAqZGVwLA0KPj4+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgYnJl
-YWs7DQo+Pj4+Pj4+ICAgICAgIH0NCj4+Pj4+Pj4NCj4+Pj4+Pj4gKyAgICAgaWYgKCFsaXN0X2Vt
-cHR5KCZsb2NhbCkpIHsNCj4+Pj4+Pj4gKyAgICAgICAgICAgICBsaXN0X3NwbGljZV90YWlsKCZs
-b2NhbCwgJmRlcC0+c3RhcnRlZF9saXN0KTsNCj4+Pj4+Pj4gKyAgICAgICAgICAgICAvKiBSZXR1
-cm4gc28gd2UgZG9uJ3QgaGl0IHRoZSByZXN0YXJ0IGNhc2UgYW5kIGxvb3AgZm9yZXZlciAqLw0K
-Pj4+Pj4+PiArICAgICAgICAgICAgIHJldHVybjsNCj4+Pj4+Pj4gKyAgICAgfQ0KPj4+Pj4+PiAr
-DQo+Pj4+Pj4+ICAgICAgIGlmICghbGlzdF9lbXB0eSgmZGVwLT5zdGFydGVkX2xpc3QpKQ0KPj4+
-Pj4+PiAgICAgICAgICAgICAgIGdvdG8gcmVzdGFydDsNCj4+Pj4+Pj4gIH0NCj4+Pj4+Pj4NCj4+
-Pj4+Pg0KPj4+Pj4+IE5vLCB3ZSBzaG91bGQgcmV2ZXJ0IHRoZSBjaGFuZ2UgZm9yDQo+Pj4+Pj4g
-ZHdjM19nYWRnZXRfZXBfY2xlYXVwX2NvbXBsZXRlZF9yZXF1ZXN0cygpLiBBcyBJIG1lbnRpb25l
-ZCBwcmV2aW91c2x5LA0KPj4+Pj4+IHdlIGRvbid0IGNsZWFudXAgdGhlIGVudGlyZSBzdGFydGVk
-X2xpc3QuIElmIHRoZSBvcmlnaW5hbCBwcm9ibGVtIGlzIGR1ZQ0KPj4+Pj4+IHRvIGRpc2Nvbm5l
-Y3Rpb24gaW4gdGhlIG1pZGRsZSBvZiByZXF1ZXN0IGNvbXBsZXRpb24sIHRoZW4gd2UgY2FuIGp1
-c3QNCj4+Pj4+PiBjaGVjayBmb3IgcHVsbHVwX2Nvbm5lY3RlZCBhbmQgZXhpdCB0aGUgbG9vcCBh
-bmQgbGV0IHRoZQ0KPj4+Pj4+IGR3YzNfcmVtb3ZlX3JlcXVlc3RzKCkgZG8gdGhlIGNsZWFudXAu
-DQo+Pj4+Pg0KPj4+Pj4gT2ssIHNvcnJ5LCBJIGRpZG4ndCByZWFkIHlvdXIgbWFpbCBpbiBkZXB0
-aCB1bnRpbCBJIGhhZCB0aGlzIHBhdGNoDQo+Pj4+PiBzZW50IG91dC4gSWYgYSByZXZlcnQgb2Yg
-ZDI1ZDg1MDYxYmQ4IGlzIHRoZSBiZXR0ZXIgZml4LCBJJ20gZmluZSB3aXRoDQo+Pj4+PiB0aGF0
-IHRvby4NCj4+Pj4+DQo+Pj4+PiB0aGFua3MNCj4+Pj4+IC1qb2huDQo+Pj4+Pg0KPj4+Pg0KPj4+
-PiBJTU8sIHdlIHNob3VsZCByZXZlcnQgdGhpcyBwYXRjaCBmb3Igbm93IHNpbmNlIGl0IHdpbGwg
-Y2F1c2UgcmVncmVzc2lvbi4NCj4+Pj4gV2UgY2FuIHJldmlldyBhbmQgdGVzdCBhIHByb3BlciBm
-aXggYXQgYSBsYXRlciB0aW1lLg0KPj4+Pg0KPj4+PiBUaGFua3MsDQo+Pj4+IFRoaW5oDQo+Pj4+
-DQo+Pj4NCj4+PiBBbm90aGVyIHN1Z2dlc3Rpb24gd291bGQganVzdCBiZSB0byByZXBsYWNlIHRo
-ZSBsb29wIHdpdGggYSB3aGlsZSgpIGxvb3ANCj4+PiBhbmQgdXNpbmcgbGlzdF9lbnRyeSgpIGlu
-c3RlYWQuICBUaGF0IHdhcyB3aGF0IHdhcyBkaXNjdXNzZWQgaW4gdGhlDQo+Pj4gZWFybGllciBw
-YXRjaCBzZXJpZXMgd2hpY2ggYWxzbyBhZGRyZXNzZXMgdGhlIHByb2JsZW0gYXMgd2VsbC4gIElz
-c3VlDQo+Pj4gaGVyZSBpcyB0aGUgdG1wIHZhcmlhYmxlIHN0aWxsIGNhcnJpZXMgYSBzdGFsZSBy
-ZXF1ZXN0IGFmdGVyIHRoZSBkd2MzDQo+Pj4gZ2l2ZWJhY2sgaXMgY2FsbGVkLiAgV2UgY2FuIGF2
-b2lkIHRoYXQgYnkgYWx3YXlzIGZldGNoaW5nIHRoZQ0KPj4+IGxpc3RfZW50cnkoKSBpbnN0ZWFk
-IG9mIHJlbHlpbmcgb24gbGlzdF9mb3JfZWFjaF9zYWZlKCkNCj4+Pg0KPj4+IGh0dHBzOi8vdXJs
-ZGVmZW5zZS5jb20vdjMvX19odHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC11c2IvMTYyMDcx
-NjYzNi0xMjQyMi0xLWdpdC1zZW5kLWVtYWlsLXdjaGVuZ0Bjb2RlYXVyb3JhLm9yZy9fXzshIUE0
-RjJSOUdfcGchUDBFMXB2M0MwUFN0RGVwS3l5OGlxS2dVYU9oRHkwWkRoWWR6LV9jWnduSlJRak5q
-dncwTWRKUUNkVTZYd250M1lBc18kIA0KPj4+DQo+Pg0KPj4gVGhpcyBzaG91bGQgd29yaywgYnV0
-IHRoZSBhd2t3YXJkIHRoaW5nIGlzIDIgbG9vcHMgZnJvbSAyIHNlcGFyYXRlDQo+PiB0aHJlYWRz
-IGNvbXBldGluZyB0byByZW1vdmUvZ2l2ZWJhY2sgdGhlIHJlcXVlc3RzIGFuZCBtYXkgcmVwb3J0
-IG1peCBzdGF0dXMuDQo+Pg0KDQoNCkNhbiB5b3UgdHJ5IHRoaXM/DQoNCmRpZmYgLS1naXQgYS9k
-cml2ZXJzL3VzYi9kd2MzL2dhZGdldC5jIGIvZHJpdmVycy91c2IvZHdjMy9nYWRnZXQuYw0KaW5k
-ZXggNzA2MjQ2ZDkzYTAwLi4xN2IyZDhkNGVmYjQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3VzYi9k
-d2MzL2dhZGdldC5jDQorKysgYi9kcml2ZXJzL3VzYi9kd2MzL2dhZGdldC5jDQpAQCAtMjAyOSw2
-ICsyMDI5LDEzIEBAIHN0YXRpYyB2b2lkIGR3YzNfZ2FkZ2V0X2VwX2NsZWFudXBfY2FuY2VsbGVk
-X3JlcXVlc3RzKHN0cnVjdCBkd2MzX2VwICpkZXApDQogICAgICAgICAgICAgICAgICAgICAgICBk
-d2MzX2dhZGdldF9naXZlYmFjayhkZXAsIHJlcSwgLUVDT05OUkVTRVQpOw0KICAgICAgICAgICAg
-ICAgICAgICAgICAgYnJlYWs7DQogICAgICAgICAgICAgICAgfQ0KKw0KKyAgICAgICAgICAgICAg
-IC8qDQorICAgICAgICAgICAgICAgICogVGhlIGVuZHBvaW50IGlzIGRpc2FibGVkLCBsZXQgdGhl
-IGR3YzNfcmVtb3ZlX3JlcXVlc3RzKCkNCisgICAgICAgICAgICAgICAgKiBoYW5kbGUgdGhlIGNs
-ZWFudXAuDQorICAgICAgICAgICAgICAgICovDQorICAgICAgICAgICAgICAgaWYgKCFkZXAtPmVu
-ZHBvaW50LmRlc2MpDQorICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCiAgICAgICAgfQ0K
-IH0NCiANCkBAIC0zNDAyLDYgKzM0MDksMTMgQEAgc3RhdGljIHZvaWQgZHdjM19nYWRnZXRfZXBf
-Y2xlYW51cF9jb21wbGV0ZWRfcmVxdWVzdHMoc3RydWN0IGR3YzNfZXAgKmRlcCwNCiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgcmVxLCBzdGF0dXMpOw0KICAgICAgICAgICAgICAgIGlm
-IChyZXQpDQogICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCisNCisgICAgICAgICAgICAg
-ICAvKg0KKyAgICAgICAgICAgICAgICAqIFRoZSBlbmRwb2ludCBpcyBkaXNhYmxlZCwgbGV0IHRo
-ZSBkd2MzX3JlbW92ZV9yZXF1ZXN0cygpDQorICAgICAgICAgICAgICAgICogaGFuZGxlIHRoZSBj
-bGVhbnVwLg0KKyAgICAgICAgICAgICAgICAqLw0KKyAgICAgICAgICAgICAgIGlmICghZGVwLT5l
-bmRwb2ludC5kZXNjKQ0KKyAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQogICAgICAgIH0N
-CiB9DQoNCklmIG5lZWRlZCwgeW91IGNhbiBhbHNvIHVzZSB5b3VyIGNoYW5nZSB3aGlsZSghbGlz
-dF9lbXB0eShzdGFydGVkX2xpc3QpKSBhbG9uZyB3aXRoIHRoaXMgZm9yIGZ1dHVyZSBwcm9vZi4N
-Cg0KQlIsDQpUaGluaA0K
+On Tue, Aug 10, 2021 at 7:11 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
+>
+> Hi Peter,
+>
+> Am Mittwoch, 11. August 2021, 00:31:24 CEST schrieb Peter Geis:
+> > Good Evening,
+> >
+> > I've been attempting to light off the feiyang fy07024di26a30d panel on
+> > the rockpro64. This is the official panel from the Pine64 store.
+> > I've confirmed it works with the downstream kernel on both the rk3399
+> > and rk3566, but on the mainline driver the display is partially
+> > corrupted (see attached photo: [1]).
+> >
+> > As you can see, the left half of the display is fine, but the right hal=
+f
+> > of the display is corrupted with the pixels smearing horizontally.
+> >
+> > I saw when the panel was added, some additional code was added to
+> > handle burst mode in the sun6_mipi_dsi driver [2].
+> > I've seen that the dw-mipi-dsi driver appears to already support burst
+> > mode and I can't find anything out of place there.
+> > I also haven't had much success finding anything obviously different in
+> > the downstream driver vs the upstream driver that would explain this.
+> >
+> > Attached below is the in-progress dts changes for an example of how the
+> > panel is plugged in.
+>
+> is that really a dual-dsi panel needing two dsi controllers to drive it?
+>
+> With that tiny resultion of 1024x600 I definitly wouldn't expect this,
+> in contrast to say the 2048x1536 dual-dsi displays used in the
+> Gru-Scarlet ChromeOS tablets.
+>
+> So maybe just drop the 2nd dsi controller connection in a first step?
+> Because I really don't think that is the case on the hardware.
+>
+> The dual-dsi setup means that you have one vop supplying half of its
+> display data to each of the 2 involved dsi controllers. And you're missin=
+g
+> in fact half of your display data.
+
+Thanks, that was it.
+I had tried removing the link previously, but I had to also disable
+that controller altogether or the vop fails to probe silently.
+
+That is a common issue I ran into when getting this all set up,
+anything failed to probe for the dsi panel the vop just silently dies
+in the background and graphics fail everywhere.
+
+>
+>
+> Heiko
+>
+>
+>
+> > I admit, I have little understanding of the mipi-dsi internal workings,
+> > so I'm reaching out to the experts on how to correct this.
+> >
+> > Thank you for your time,
+> > Peter Geis
+> >
+> > [1] https://photos.app.goo.gl/LBA9M2WcweGaEb4cA
+> > [2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/2018111=
+6163916.29621-1-jagan@amarulasolutions.com/
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/=
+arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > index 687a5afa5d2c..af55a30297ae 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > @@ -20,6 +20,13 @@ chosen {
+> >               stdout-path =3D "serial2:1500000n8";
+> >       };
+> >
+> > +     backlight: backlight {
+> > +             compatible =3D "pwm-backlight";
+> > +             pwms =3D <&pwm0 0 1000000 0>;
+> > +             brightness-levels =3D <0 4 8 16 32 64 128 255>;
+> > +             default-brightness-level =3D <128>;
+> > +     };
+> > +
+> >       clkin_gmac: external-gmac-clock {
+> >               compatible =3D "fixed-clock";
+> >               clock-frequency =3D <125000000>;
+> > @@ -69,7 +76,7 @@ diy_led: led-1 {
+> >
+> >       fan: pwm-fan {
+> >               compatible =3D "pwm-fan";
+> > -             cooling-levels =3D <0 150 200 255>;
+> > +             cooling-levels =3D <0 100 150 255>;
+> >               #cooling-cells =3D <2>;
+> >               fan-supply =3D <&vcc12v_dcin>;
+> >               pwms =3D <&pwm1 0 50000 0>;
+> > @@ -220,6 +227,16 @@ vdd_log: vdd-log {
+> >               regulator-max-microvolt =3D <1700000>;
+> >               vin-supply =3D <&vcc5v0_sys>;
+> >       };
+> > +
+> > +     avdd: avdd {
+> > +             compatible =3D "regulator-fixed";
+> > +             regulator-name =3D "avdd";
+> > +             regulator-always-on;
+> > +             regulator-boot-on;
+> > +             regulator-min-microvolt =3D <11000000>;
+> > +             regulator-max-microvolt =3D <11000000>;
+> > +             vin-supply =3D <&vcc3v3_s0>;
+> > +     };
+> >  };
+> >
+> >  &cpu_l0 {
+> > @@ -428,8 +445,8 @@ regulator-state-mem {
+> >
+> >                       vcc3v0_touch: LDO_REG2 {
+> >                               regulator-name =3D "vcc3v0_touch";
+> > -                             regulator-always-on;
+> > -                             regulator-boot-on;
+> > +//                           regulator-always-on;
+> > +//                           regulator-boot-on;
+> >                               regulator-min-microvolt =3D <3000000>;
+> >                               regulator-max-microvolt =3D <3000000>;
+> >                               regulator-state-mem {
+> > @@ -518,8 +535,8 @@ regulator-state-mem {
+> >
+> >                       vcc3v3_s0: SWITCH_REG2 {
+> >                               regulator-name =3D "vcc3v3_s0";
+> > -                             regulator-always-on;
+> > -                             regulator-boot-on;
+> > +//                           regulator-always-on;
+> > +//                           regulator-boot-on;
+> >                               regulator-state-mem {
+> >                                       regulator-off-in-suspend;
+> >                               };
+> > @@ -593,6 +610,19 @@ fusb0: typec-portc@22 {
+> >               vbus-supply =3D <&vcc5v0_typec>;
+> >               status =3D "okay";
+> >       };
+> > +
+> > +     touch: touchscreen@5d {
+> > +             compatible =3D "goodix,gt911";
+> > +             reg =3D <0x5d>;
+> > +             AVDD28-supply =3D <&vcc3v0_touch>;
+> > +             VDDIO-supply =3D <&vcc3v0_touch>;
+> > +             interrupt-parent =3D <&gpio4>;
+> > +             interrupts =3D <RK_PD5 IRQ_TYPE_EDGE_FALLING>;
+> > +             irq-gpios =3D <&gpio4 RK_PD5 GPIO_ACTIVE_HIGH>;
+> > +             reset-gpios =3D <&gpio4 RK_PD6 GPIO_ACTIVE_HIGH>;
+> > +//           touchscreen-inverted-x;
+> > +//           touchscreen-inverted-y;
+> > +     };
+> >  };
+> >
+> >  &i2s0 {
+> > @@ -628,6 +658,88 @@ &io_domains {
+> >       gpio1830-supply =3D <&vcc_3v0>;
+> >  };
+> >
+> > +&mipi_dsi {
+> > +     status =3D "okay";
+> > +     clock-master;
+> > +
+> > +     ports {
+> > +             mipi_out: port@1 {
+> > +                     reg =3D <1>;
+> > +
+> > +                     mipi_out_panel: endpoint {
+> > +                             remote-endpoint =3D <&mipi_in_panel>;
+> > +                     };
+> > +             };
+> > +     };
+> > +
+> > +     mipi_panel: panel@0 {
+> > +             compatible =3D "feiyang,fy07024di26a30d";
+> > +             reg =3D <0>;
+> > +             backlight =3D <&backlight>;
+> > +             reset-gpios =3D <&gpio4 25 GPIO_ACTIVE_HIGH>;
+> > +//           enable-gpios =3D <&gpio4 25 GPIO_ACTIVE_HIGH>;
+> > +             width-mm =3D <154>;
+> > +             height-mm =3D <86>;
+> > +             rotation =3D <0>;
+> > +             avdd-supply =3D <&avdd>;
+> > +             dvdd-supply =3D <&vcc3v3_s0>;
+> > +
+> > +             display-timings {
+> > +                     native-mode =3D <&timing0>;
+> > +                     timing0: timing0 {
+> > +                             clock-frequency =3D <50000000>;
+> > +                             hactive =3D <1024>;
+> > +                             vactive =3D <600>;
+> > +                             hfront-porch =3D <160>;
+> > +                             hback-porch =3D <160>;
+> > +                             hsync-len =3D <10>;
+> > +                             vback-porch =3D <23>;
+> > +                             vfront-porch =3D <12>;
+> > +                             vsync-len =3D <1>;
+> > +                             hsync-active =3D <0>;
+> > +                             vsync-active =3D <0>;
+> > +                             pixelclk-active =3D <0>;
+> > +                             de-active =3D <0>;
+> > +                     };
+> > +             };
+> > +
+> > +             ports {
+> > +                     #address-cells =3D <1>;
+> > +                     #size-cells =3D <0>;
+> > +
+> > +                     port@0 {
+> > +                             reg =3D <0>;
+> > +
+> > +                             mipi_in_panel: endpoint {
+> > +                                     remote-endpoint =3D <&mipi_out_pa=
+nel>;
+> > +                             };
+> > +                     };
+> > +
+> > +                     port@1 {
+> > +                             reg =3D <1>;
+> > +
+> > +                             mipi1_in_panel: endpoint@1 {
+> > +                                     remote-endpoint =3D <&mipi1_out_p=
+anel>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +     };
+> > +};
+> > +
+> > +&mipi_dsi1 {
+> > +     status =3D "okay";
+> > +
+> > +     ports {
+> > +             mipi1_out: port@1 {
+> > +                     reg =3D <1>;
+> > +
+> > +                     mipi1_out_panel: endpoint {
+> > +                             remote-endpoint =3D <&mipi1_in_panel>;
+> > +                     };
+> > +             };
+> > +     };
+> > +};
+> > +
+> >  &pcie0 {
+> >       ep-gpios =3D <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
+> >       num-lanes =3D <4>;
+> >
+>
+>
+>
+>
