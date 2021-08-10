@@ -2,165 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298CE3E7C75
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B873E7C74
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242086AbhHJPhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:37:55 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:42358
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243269AbhHJPhw (ORCPT
+        id S243354AbhHJPhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:37:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33853 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243270AbhHJPhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:37:52 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 807963F107
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:37:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628609849;
-        bh=V4JCrLtO4cRvhqN1sG1W5Ma2FLvhmCKkVeREp756lBA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=NHGnd8yj29JBgnvB3oWve0BipQxHbotTVZFJxJFqAFIlnb8dY7lJ+5zzNYQthgz3m
-         zVWBnXur64Ow7A6zR6xvr/FUyiFITTRR1MnVIfGpHAJX09PpQZ4/dbzzHgbNvT6yw2
-         vmckRdDpI0/x8yo8edlEiS1b52ZYcRbH+ByVeGSPgzxWP7ZX+Ojilq+TbpjFuWS38V
-         SbPEyohwhnsfRlE5NnGWgC3KDrWcKgZPQsQ+nGrLoqEvh4ZxZBmgA51mmEzfx7qIIg
-         LweWZ/FVG4mYiPtsgv0jFvjQa73Xcew3UfLFh9xxMMw0TrCxUttYvYMQTkkLsH0Utw
-         rlJd6ygHGkZhQ==
-Received: by mail-ed1-f72.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so10957362edq.17
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:37:29 -0700 (PDT)
+        Tue, 10 Aug 2021 11:37:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628609839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kBYBVLFUuqcbHN0Vn7qdk9GROPKy6ZMoXPiOiWvTwPA=;
+        b=hxmH2uxpJSafv0dk4im773s+8JyKaKr0uA70BtUwaWai1CL6ggNDvap90sWZc5vcbX4DzR
+        o1ixlymA+6YJxgMTXDQjAswyaoJ6uMDIVzEiuMDFp15785f37eQZWUpkinZi9eagf4tOfa
+        bPNbkWN/NSHFgvtle+dm4JZ8XFMbQeI=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-Fzjvfi-mN46pZkNk3_0guA-1; Tue, 10 Aug 2021 11:37:18 -0400
+X-MC-Unique: Fzjvfi-mN46pZkNk3_0guA-1
+Received: by mail-qv1-f71.google.com with SMTP id t9-20020a0562140c69b029033e8884d712so16006070qvj.18
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:37:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V4JCrLtO4cRvhqN1sG1W5Ma2FLvhmCKkVeREp756lBA=;
-        b=NqaSm51AfAf7VsfQgkENpfbaoHFi17Q5DigWoURAqc1c1zpbMJ36lHDFGOg2kC9EJk
-         m7d06/pfru7o6wQicvnhe1N/jPYRnBY9Eb/ZCxI/dIOyNXONUoy67c8CQPacDZMfiY8e
-         Cq4GI/k6fiYdwPthk9WFCb98E8SC+NeHOGOet3zhiqsHfrkberwNMBOuKfiTtVVwQuKq
-         aiOmFUOWICy5VxiRe74j5SGP/ipWzx62iDxiAiaUoQbf3tK9BAxTFAzGIgLyJ/WUfhxq
-         1rjibvTWZ9edWBrM+OZORzvZZni5uG8e6UoVjjD+A8tdtz7blxJmgEw1uHF4mSbkyKv9
-         hmkQ==
-X-Gm-Message-State: AOAM530Cgcsm1LcT9Sx34dBbTuBNOYtfiQgDpDF6IOjnhGINbN58/EeB
-        CpBxBDqy3aqAoceLfbLJ3oNKh7xkpcqAncGGD1VggQImScy1shxuHwTwWWwPSX1i7VQXwvVQyPN
-        K5Y9e7yuEug7W+kIhE1slqghr7Z3O+UOsjHwcdC8OfM76miQin7UtbvQSQw==
-X-Received: by 2002:a17:906:5855:: with SMTP id h21mr8750089ejs.230.1628609848111;
-        Tue, 10 Aug 2021 08:37:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyO79SEXR3fza5J1CuMJKz2W4dwLasWiXGBGugj43FtUB/yk1977ekIs7BvIay+TLOvqYt8fvr4BN9qEwlT2oo=
-X-Received: by 2002:a17:906:5855:: with SMTP id h21mr8749848ejs.230.1628609844666;
- Tue, 10 Aug 2021 08:37:24 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=kBYBVLFUuqcbHN0Vn7qdk9GROPKy6ZMoXPiOiWvTwPA=;
+        b=S7HDHpTUkLPHbRC/DYbfcpPGNp3cWHS2JfqX5XfUX37wTtz+m0bNmQH/qGO1OEsHvo
+         T01kT2ycBg9yhrsNgN4hcgo5JY6zzA7dFk9RRdMgFlK+Er80lnxxLSerho0c7VWauA+P
+         1eUk9uV00kwSLujn41sJppBGSZL833wBH2pDajqmLrYM/8ROfqH5EGhPqYavwQSBCA/s
+         +cDd0I3AIQlEdJ0SUssvGnCi+6xRkvOJL6K4wyZGL9VdFXXjyttQb/vkZNDd/3kuvVU9
+         cyONepHzi0e2khCfo2B53B/sRmd/ubwqfp/Nm4TGwCQp1W1AeULKtQKlWq/gQcHLZz79
+         3FAQ==
+X-Gm-Message-State: AOAM531baDc/an2GbvA6kmn1rZJ3ocqtfU2Ki8koH3YxYxijoT4TvOHx
+        h3vpma+zoh2cMyqF7ilUEKR8RsCpatYlP3Guff5UWaly7zCqz4WQQVyXkbHLsBYhBOeM3kGNbXi
+        y20fflkq6sfd33zakj/vuoVyu
+X-Received: by 2002:a05:6214:f0c:: with SMTP id gw12mr18537904qvb.33.1628609837640;
+        Tue, 10 Aug 2021 08:37:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOm0EFOKMF7EgqNWVhF6h0Ag5o+ey7u/ZRHLmnbXOgs9I+L3hLZXhW5JKjn8aYN/3AGF2qmw==
+X-Received: by 2002:a05:6214:f0c:: with SMTP id gw12mr18537893qvb.33.1628609837376;
+        Tue, 10 Aug 2021 08:37:17 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id f17sm2970346qkm.107.2021.08.10.08.37.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 08:37:16 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3] vm_swappiness=0 should still try to avoid swapping
+ anon memory
+To:     Nico Pache <npache@redhat.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     hannes@cmpxchg.org, aquini@redhat.com, shakeelb@google.com,
+        llong@redhat.com, mhocko@suse.com, hakavlad@inbox.lv
+References: <20210809223740.59009-1-npache@redhat.com>
+Message-ID: <88f76721-3786-625f-b867-216f7904e116@redhat.com>
+Date:   Tue, 10 Aug 2021 11:37:15 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
- <20210809042414.107430-1-kai.heng.feng@canonical.com> <20210809094731.GA16595@wunner.de>
- <CAAd53p7cR3EzUjEU04cDhJDY5F=5k+eRHMVNKQ=jEfbZvUQq3Q@mail.gmail.com> <20210809150005.GA6916@wunner.de>
-In-Reply-To: <20210809150005.GA6916@wunner.de>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Tue, 10 Aug 2021 23:37:12 +0800
-Message-ID: <CAAd53p7qm=K99xO1n0Pwmn020Q7_iDj2S6-QGjeRjP0CpSphTg@mail.gmail.com>
-Subject: Re: [PATCH] PCI/portdrv: Disallow runtime suspend when waekup is
- required but PME service isn't supported
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210809223740.59009-1-npache@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 11:00 PM Lukas Wunner <lukas@wunner.de> wrote:
+On 8/9/21 6:37 PM, Nico Pache wrote:
+> Since commit 170b04b7ae49 ("mm/workingset: prepare the workingset detection
+> infrastructure for anon LRU") and commit b91ac374346b ("mm: vmscan: enforce
+> inactive:active ratio at the reclaim root") swappiness can start prematurely
+> swapping anon memory. This is due to the assumption that refaulting anon should
+> always allow the shrinker to target anon memory. Add a check for swappiness
+> being >0 before indiscriminately targeting Anon. Before these commits
+> when a user had swappiness=0 anon memory would rarely get swapped; this
+> behavior has remained constant sense RHEL5. This commit keeps that behavior
+Typo: "sense" -> "since"
+> intact and prevents the new workingset refaulting from challenging the anon
+> memory when swappiness=0.
 >
-> [cc += Rafael]
+> Anon can still be swapped to prevent OOM. This does not completely disable
+> swapping, but rather tames the refaulting aspect of the code that allows for
+> the deactivating of anon memory.
 >
-> On Mon, Aug 09, 2021 at 06:40:41PM +0800, Kai-Heng Feng wrote:
-> > On Mon, Aug 9, 2021 at 5:47 PM Lukas Wunner <lukas@wunner.de> wrote:
-> > > On Mon, Aug 09, 2021 at 12:24:12PM +0800, Kai-Heng Feng wrote:
-> > > > Some platforms cannot detect ethernet hotplug once its upstream port is
-> > > > runtime suspended because PME isn't enabled in _OSC.
-> > >
-> > > If PME is not handled natively, why does the NIC runtime suspend?
-> > > Shouldn't this be fixed in the NIC driver by keeping the device
-> > > runtime active if PME cannot be used?
-> >
-> > That means we need to fix every user of pci_dev_run_wake(), or fix the
-> > issue in pci_dev_run_wake() helper itself.
+> We have two customer workloads that discovered this issue:
+> 1) A VM claiming 95% of the hosts memory followed by file reads (never dirty)
+>     which begins to challenge the anon. Refaulting the anon working set will then
+>     cause the indiscriminant swapping of the anon.
 >
-> If PME is not granted to the OS, the only consequence is that the PME
-> port service is not instantiated at the root port.  But PME is still
-> enabled for downstream devices.  Maybe that's a mistake?  I think the
-> ACPI spec is a little unclear what to do if PME control is *not* granted.
-> It only specifies what to do if PME control is *granted*:
+> 2) A VM running a in-memory DB is being populated from file reads.
+>     Swappiness is set to 0 or 1 to defer write I/O as much as possible. Once
+>     the customer experienced low memory, swapping anon starts, with
+>     little-to-no PageCache being swapped.
 
-So do you prefer to just disable runtime PM for the downstream device?
+Pagecache are not swapped. It is discarded under memory pressure and 
+written back if dirty.
 
->
->    "If the OS successfully receives control of this feature, it must
->     handle power management events as described in the PCI Express Base
->     Specification."
->
->    "If firmware allows the OS control of this feature, then in the context
->     of the _OSC method it must ensure that all PMEs are routed to root port
->     interrupts as described in the PCI Express Base Specification.
->     Additionally, after control is transferred to the OS, firmware must not
->     update the PME Status field in the Root Status register or the PME
->     Interrupt Enable field in the Root Control register. If control of this
->     feature was requested and denied or was not requested, firmware returns
->     this bit set to 0."
->
-> Perhaps something like the below is appropriate, I'm not sure.
->
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 091b4a4..7e64185 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3099,7 +3099,7 @@ void pci_pm_init(struct pci_dev *dev)
->         }
->
->         pmc &= PCI_PM_CAP_PME_MASK;
-> -       if (pmc) {
-> +       if (pmc && pci_find_host_bridge(dev->bus)->native_pme) {
->                 pci_info(dev, "PME# supported from%s%s%s%s%s\n",
->                          (pmc & PCI_PM_CAP_PME_D0) ? " D0" : "",
->                          (pmc & PCI_PM_CAP_PME_D1) ? " D1" : "",
->
->
+Other than that, the patch looks good to me.
 
-I think this will also prevent non-root port devices from using PME.
+Cheers,
+Longman
 
-[snipped]
-
-> >
-> > I think PME IRQ and D3cold are different things here.
-> > The root port of the affected NIC doesn't support D3cold because
-> > there's no power resource.
->
-> If a bridge is runtime suspended to D3, the hierarchy below it is
-> inaccessible, which is basically the same as if it's put in D3cold,
-> hence the name pci_dev_check_d3cold().  That function allows a device
-> to block an upstream bridge from runtime suspending because the device
-> is not allowed to go to D3cold.  The function specifically checks whether
-> a device is PME-capable from D3cold.  The NIC claims it's capable but
-> the PME event has no effect because PME control wasn't granted to the
-> OS and firmware neglected to set PME Interrupt Enable in the Root Control
-> register.  We could check for this case and block runtime PM of bridges
-> based on the rationale that PME polling is needed to detect wakeup.
-
-So for this case, should we prevent the downstream devices from
-runtime suspending, or let it suspend but keep the root port active in
-order to make pci_pme_list_scan() work?
-
-Kai-Heng
-
->
-> Thanks,
->
-> Lukas
