@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125B43E85AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C5E3E85AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbhHJVv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:51:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23049 "EHLO
+        id S234976AbhHJVvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:51:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41626 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234852AbhHJVvZ (ORCPT
+        by vger.kernel.org with ESMTP id S234748AbhHJVvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:51:25 -0400
+        Tue, 10 Aug 2021 17:51:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628632261;
+        s=mimecast20190719; t=1628632287;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oH36/9wH82mNkALKpSBwfhqJr/0cHRA60oHpFS8duTI=;
-        b=DAp0ugyrAOwGImwkGYC7NThWgRlljVL68YYInh+fZhUMU4CmSeM4ttc2Ap9Y5roMbJSd/f
-        6pxyVPXYKnUYuqEf05rYygTeVCaTOrfcC5Cn+UE4vKGnI4ucLofwTMV8EgI4tggPmIy53O
-        tZMCZYAA5GAiARH8pN1pxz5kFkCgcNU=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-aBPDBkatN2K37mphjgpN_w-1; Tue, 10 Aug 2021 17:51:00 -0400
-X-MC-Unique: aBPDBkatN2K37mphjgpN_w-1
-Received: by mail-ot1-f70.google.com with SMTP id s44-20020a05683043acb02904f41dddb2beso259164otv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:51:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oH36/9wH82mNkALKpSBwfhqJr/0cHRA60oHpFS8duTI=;
-        b=TzTlWAKr+Oplnj0xH1vy1gvsinEYcV98w+eC15l0kFq54665/RfO5vYNVQXbSa0drT
-         0Y/K0+QHwVaIFiw8cbz0qi8XNN1DQOROw1utZx889uO5zLJjAe5LWRo+gYiVWEBzFk4O
-         uw7zTuNBtbLYlUIsCBuO9OGbroVAAWC4528wW1PUFa4C5x2C3XE77KTnmUcebjKVa7+w
-         uNK4F66BJ65IjyF87wxgVUiDSl9OrNx7B/sQhT8qAzBRqT8cBA4U0OIo5xT/QpHKECfu
-         pbY3yEQcUIL4I+rU0qAlPIuVi8lo8kg7CL3ntUDEHXXRz2RUQey6c3QilKOR1Jh5QJ4h
-         LWUQ==
-X-Gm-Message-State: AOAM530sl01sQSbGU6gU+iCOruqXA0QoUHZrqcGDD0foEQ4IE9CXz+G9
-        ZpSOsU/3pmvqAnI0kKXWYBdpvoUZwVadzJtECIZvZDfgPmdBQQGkf47d1ODJPKSkpncL65f0K7a
-        ZKpO3XNdIiCxfEf2iqA9KnW3W
-X-Received: by 2002:aca:1911:: with SMTP id l17mr7944507oii.160.1628632260033;
-        Tue, 10 Aug 2021 14:51:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx0YdnMUdm+pqFd5LmIbRWI/f3AmnZFLtHNMH7iPqJDMGpCMBi118Y1XtZ+GSFLbmgWeFotoA==
-X-Received: by 2002:aca:1911:: with SMTP id l17mr7944498oii.160.1628632259915;
-        Tue, 10 Aug 2021 14:50:59 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id e20sm655457otj.4.2021.08.10.14.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 14:50:59 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 15:50:58 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, peterx@redhat.com
-Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
-Message-ID: <20210810155058.4199a86b.alex.williamson@redhat.com>
-In-Reply-To: <YRJ3JD7gyi11x5Hw@infradead.org>
-References: <162818167535.1511194.6614962507750594786.stgit@omen>
-        <162818325518.1511194.1243290800645603609.stgit@omen>
-        <20210806010418.GF1672295@nvidia.com>
-        <20210806141745.1d8c3e0a.alex.williamson@redhat.com>
-        <YRI9+7CCSq++pYfM@infradead.org>
-        <20210810115722.GA5158@nvidia.com>
-        <YRJ3JD7gyi11x5Hw@infradead.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        bh=WOJbDaOgR9A4WIv7Hr0VHIDUG6WaV2S/pWdNcf5TSwI=;
+        b=KUIsjMlaoDGU/MWkIYNsaWtDWBnzHOK15ZtADUcmO0rlYj2AT7T9gn6IICak3MzrsdIs0m
+        kcb4zL1fZHFFQMIArvr8uGhYXestHSVXL+bkAMIEPXTYLu6d2+20ROZMoUS6L+clFSQRfG
+        2/OVwLyhO9/sGxS0EUNHtwf9WSlH2I4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-T7ZIgILRO2iicsiT8o-PHw-1; Tue, 10 Aug 2021 17:51:26 -0400
+X-MC-Unique: T7ZIgILRO2iicsiT8o-PHw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2258B1853026;
+        Tue, 10 Aug 2021 21:51:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F38C760BF1;
+        Tue, 10 Aug 2021 21:51:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-85-willy@infradead.org>
+References: <20210715033704.692967-85-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 084/138] mm/page_alloc: Add folio allocation functions
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1814545.1628632283.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 22:51:23 +0100
+Message-ID: <1814546.1628632283@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 13:55:00 +0100
-Christoph Hellwig <hch@infradead.org> wrote:
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-> On Tue, Aug 10, 2021 at 08:57:22AM -0300, Jason Gunthorpe wrote:
-> > I'm not sure there is a real performance win to chase here? Doesn't
-> > this only protect mmap against reset? The mmap isn't performance
-> > sensitive, right?
-> > 
-> > If this really needs extra optimization adding a rwsem to the devset
-> > and using that across the whole set would surely be sufficient.  
-> 
-> Every mmio read or write takes memory_lock.
+> +struct folio *folio_alloc(gfp_t gfp, unsigned order)
+> +{
+> +	struct page *page = alloc_pages(gfp | __GFP_COMP, order);
+> +
+> +	if (page && order > 1)
+> +		prep_transhuge_page(page);
 
-Exactly.  Ideally we're not using that path often, but I don't think
-that's a good excuse to introduce memory access serialization, or even
-dependencies between devices.  Thanks,
+Ummm...  Shouldn't order==1 pages (two page folios) be prep'd also?
 
-Alex
+> +	return (struct folio *)page;
+> +}
+
+Would it be better to just jump to alloc_pages() if order <= 1?  E.g.:
+
+struct folio *folio_alloc(gfp_t gfp, unsigned order)
+{
+	struct page *page;
+
+	if (order <= 1)
+		return (struct folio *)alloc_pages(gfp | __GFP_COMP, order);
+
+	page = alloc_pages(gfp | __GFP_COMP, order);
+	if (page)
+		prep_transhuge_page(page);
+	return (struct folio *)page;
+}
+
+David
 
