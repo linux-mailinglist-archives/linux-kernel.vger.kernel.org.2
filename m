@@ -2,119 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D913E597A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DAB3E597F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238510AbhHJLxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 07:53:35 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:39494 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233558AbhHJLxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:53:33 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 42A2140D4004;
-        Tue, 10 Aug 2021 11:53:04 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH] media: atomisp: Fix error handling in probe
-Date:   Tue, 10 Aug 2021 14:53:03 +0300
-Message-Id: <20210810115303.9089-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S238619AbhHJL4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237770AbhHJL4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:56:08 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CA9C061798
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 04:55:46 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id a1so12136338vsd.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 04:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F7xu/bBnCf8IofdJc86gnO8/ycUPqIN8iSkmT0WuVQk=;
+        b=l4Ceei4KMRjCvuuh2dEJXRgD7arZhfm9zTdC0UuddCXFyjoQ6R8qwWj2cfcM4Xb3NU
+         iQgkHohQsJ/B52fCulLHrMjkeSm6n1KrOphOeYTaIq3wc1onp8T7VYUl3EFgtLLqf1/b
+         pbFnJhrcZMzBUb9AqqW5lgfPzlsDORldw65Y5z+C4zz+G0D0P7shxhHHScEJA7rnEMpi
+         If2YF6+YhSoadfey74zwnhRL8vLIb91zw/4tKiCfMNEctKWHk96NJ7MVgQZcbd3XBYw+
+         8mPL3MVamWCkmBY7DWi23EqOOpOmABzfSlUlbY3Nq1bQltYxlrR9CFZCW1jCTu/lTSiw
+         th0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F7xu/bBnCf8IofdJc86gnO8/ycUPqIN8iSkmT0WuVQk=;
+        b=HkgrNiBkCv2W6LB4nZFLOmJYm1Hlb7utJFAkDwor66kP7cWbMynl2TyYoXFUz+3TCP
+         q6iieV1n1tW2Ed0ujXqi5E+K+5eqYMPptxGy46fbGmQe7i/TAEH3jI3clQKJFgMmVB3k
+         JkYAHXr2IT9LjY4VJbwnEBqXv8aGmbSvhbYg1NAFsfbXMxuLQ5Hzvtq0InRa/6QbYisd
+         JTiRt3wqGX8KfwaBu+DOLuDGLnHaTNJQjcrkL9Bit2CVih9ludhGeTNnaPBLzdOv/e/a
+         KCP0Fr7LM+70Il3/ZcB10ABrRt2bIyg+X+7g05NK6+tP2W3Jd347fskIL80F4lBMFq3F
+         qqjQ==
+X-Gm-Message-State: AOAM531kV7BQa4XT0axNBYSSsj7V3rChjwBDNYdBE1iD3NblrKZo/gAW
+        3tVZLoUOzMyaDfL2QEsrmt3NIotuR4R9Y+eMaE5V4g==
+X-Google-Smtp-Source: ABdhPJzs5hioDbWm1Xnso+x3JzEaN9qdFPUT/HFC1aBPmwjgDn/+SCnR6iNy/JdyXVCbu99bZqbGsOKUbdGC0egdpl8=
+X-Received: by 2002:a67:f6d8:: with SMTP id v24mr21612180vso.48.1628596545956;
+ Tue, 10 Aug 2021 04:55:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+ <20210621223141.1638189-3-dmitry.baryshkov@linaro.org> <CAPDyKFo6dmjw0TnaK7=35dq5Si_6YYpeeSa=gU++1od7WkQZ7A@mail.gmail.com>
+ <20210706115517.GB4529@sirena.org.uk> <CAPDyKFr=8spZBD+bTe3SjS=nATL-ByFu_epnT2Z4chSuQNke2w@mail.gmail.com>
+ <CAA8EJppSV--TBjnGxGhaTHeKWdpM6uz70bg7diU3_K7OHoka4g@mail.gmail.com> <20210714164710.GC2719790@robh.at.kernel.org>
+In-Reply-To: <20210714164710.GC2719790@robh.at.kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 10 Aug 2021 13:55:09 +0200
+Message-ID: <CAPDyKFokvTFSpbnhhKeCmZzAjqvSpUiwz7QjjQNdcd3Sd3T0rQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
+ powerup sequence
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There were several issues with handling errors in lm3554_probe():
-- Probe did not set the error code when v4l2_ctrl_handler_init() failed.
-- It intermixed gotos for handling errors of v4l2_ctrl_handler_init()
-  and media_entity_pads_init().
-- Probe did not free resources in case of failures of
-  atomisp_register_i2c_module().
+On Wed, 14 Jul 2021 at 18:47, Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Jul 08, 2021 at 02:37:44PM +0300, Dmitry Baryshkov wrote:
+> > Hi,
+> >
+> > On Thu, 8 Jul 2021 at 13:10, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > - Peter (the email was bouncing)
+> >
+> > + Peter's kernel.org address
+> >
+> > >
+> > > On Tue, 6 Jul 2021 at 13:55, Mark Brown <broonie@kernel.org> wrote:
+> > > >
+> > > > On Tue, Jul 06, 2021 at 09:54:03AM +0200, Ulf Hansson wrote:
+> > > > > On Tue, 22 Jun 2021 at 00:32, Dmitry Baryshkov
+> > > >
+> > > > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
+> > > > > > being controlled through the UART and WiFi being present on PCIe
+> > > > > > bus. Both blocks share common power sources. Add device driver handling
+> > > > > > power sequencing of QCA6390/1.
+> > > >
+> > > > > Power sequencing of discoverable buses have been discussed several
+> > > > > times before at LKML. The last attempt [1] I am aware of, was in 2017
+> > > > > from Peter Chen. I don't think there is a common solution, yet.
+> > > >
+> > > > This feels a bit different to the power sequencing problem - it's not
+> > > > exposing the individual inputs to the device but rather is a block that
+> > > > manages everything but needs a bit of a kick to get things going (I'd
+> > > > guess that with ACPI it'd be triggered via AML).  It's in the same space
+> > > > but it's not quite the same issue I think, something that can handle
+> > > > control of the individual resources might still struggle with this.
+> > >
+> > > Well, to me it looks very similar to those resouses we could manage
+> > > with the mmc pwrseq, for SDIO. It's also typically the same kind of
+> > > combo-chips that moved from supporting SDIO to PCIe, for improved
+> > > performance I guess. More importantly, the same constraint to
+> > > pre-power on the device is needed to allow it to be discovered/probed.
+> >
+> > In our case we'd definitely use pwrseq for PCIe bus and we can also
+> > benefit from using pwrseq for serdev and for platform busses also (for
+> > the same story of WiFi+BT chips).
+> >
+> > I can take a look at rewriting pwrseq code to also handle the PCIe
+> > bus. Rewriting it to be a generic lib seems like an easy task,
+> > plugging it into PCIe code would be more fun.
+> >
+> > Platform and serdev... Definitely even more fun.
+>
+> I don't want to see pwrseq (the binding) expanded to other buses. If
+> that was the answer, we wouldn't be having this discussion. It was a
+> mistake for MMC IMO.
 
-The patch fixes all these issues.
+Let's make sure we get your point correctly. I think we have discussed
+this in the past, but let's refresh our memories.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+If I recall correctly, you are against the mmc pwrseq DT bindings
+because we are using a separate pwrseq OF node, that we point to via a
+"mmc-pwrseq" property that contains a phandle from the mmc controller
+device node. Is that correct?
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
- .../media/atomisp/i2c/atomisp-lm3554.c        | 28 +++++++++++++------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+If we would have encoded the power sequence specific properties, from
+within a child node for the mmc controller node, that would have been
+okay for you, right?
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
-index 362ed44b4eff..1e9432d6ec0c 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
-@@ -835,7 +835,6 @@ static int lm3554_probe(struct i2c_client *client)
- 	int err = 0;
- 	struct lm3554 *flash;
- 	unsigned int i;
--	int ret;
- 
- 	flash = kzalloc(sizeof(*flash), GFP_KERNEL);
- 	if (!flash)
-@@ -852,12 +851,12 @@ static int lm3554_probe(struct i2c_client *client)
- 	flash->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
- 	flash->mode = ATOMISP_FLASH_MODE_OFF;
- 	flash->timeout = LM3554_MAX_TIMEOUT / LM3554_TIMEOUT_STEPSIZE - 1;
--	ret =
-+	err =
- 	    v4l2_ctrl_handler_init(&flash->ctrl_handler,
- 				   ARRAY_SIZE(lm3554_controls));
--	if (ret) {
-+	if (err) {
- 		dev_err(&client->dev, "error initialize a ctrl_handler.\n");
--		goto fail3;
-+		goto fail2;
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(lm3554_controls); i++)
-@@ -873,7 +872,7 @@ static int lm3554_probe(struct i2c_client *client)
- 	err = media_entity_pads_init(&flash->sd.entity, 0, NULL);
- 	if (err) {
- 		dev_err(&client->dev, "error initialize a media entity.\n");
--		goto fail2;
-+		goto fail3;
- 	}
- 
- 	flash->sd.entity.function = MEDIA_ENT_F_FLASH;
-@@ -884,12 +883,23 @@ static int lm3554_probe(struct i2c_client *client)
- 
- 	err = lm3554_gpio_init(client);
- 	if (err) {
--		dev_err(&client->dev, "gpio request/direction_output fail");
--		goto fail3;
-+		dev_err(&client->dev, "gpio request/direction_output fail.\n");
-+		goto fail4;
- 	}
--	return atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
--fail3:
-+
-+	err = atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
-+	if (err) {
-+		dev_err(&client->dev, "fail to register atomisp i2c module.\n");
-+		goto fail5;
-+	}
-+
-+	return 0;
-+
-+fail5:
-+	lm3554_gpio_uninit(client);
-+fail4:
- 	media_entity_cleanup(&flash->sd.entity);
-+fail3:
- 	v4l2_ctrl_handler_free(&flash->ctrl_handler);
- fail2:
- 	v4l2_device_unregister_subdev(&flash->sd);
--- 
-2.26.2
+>
+> If pwrseq works as a kernel library/api, then I have no issue with that.
 
+That's what Peter Chen was trying to do. A generic interface, flexible
+enough so it can be used for many similar configurations (but not
+exactly the same).
+
+Perhaps it was too generic though.
+
+>
+> >
+> > > Therefore, I think it would be worth having a common solution for
+> > > this, rather than a solution per subsystem or even worse, per device.
+>
+> Power sequencing requirements are inheritently per device unless we're
+> talking about standard connectors.
+
+The requirements are certainly per device, but the way to manage them
+doesn't have to be.
+
+As you said above, a generic library that subsystems/drivers can call
+to power on/off a discoverable device, before trying to probe it would
+be a good start.
+
+>
+> This is a solved problem on MDIO. It's quite simple. If there's a DT
+> node for a device you haven't discovered, then probe it anyways.
+
+A child OF node?
+
+Then what do you think about some common power sequence properties
+that we can use in such node?
+
+>
+> Rob
+
+Kind regards
+Uffe
