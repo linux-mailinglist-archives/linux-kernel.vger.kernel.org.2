@@ -2,173 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CA73E84D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A734D3E84D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhHJUzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:55:32 -0400
-Received: from mga17.intel.com ([192.55.52.151]:11042 "EHLO mga17.intel.com"
+        id S234352AbhHJUzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:55:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234545AbhHJUz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:55:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="195259080"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="195259080"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 13:55:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="589571238"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Aug 2021 13:55:04 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDYm8-000KvN-6L; Tue, 10 Aug 2021 20:55:04 +0000
-Date:   Wed, 11 Aug 2021 04:54:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:efi/urgent] BUILD SUCCESS
- 55203550f9afb027389bd24ce85bd90044c3aa81
-Message-ID: <6112e79d.vfMNhjL3NAnXwEMb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234556AbhHJUzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:55:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42FE561100;
+        Tue, 10 Aug 2021 20:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628628914;
+        bh=lXVCb81Ds/VdhoshPZIHAlr3P7ZKsCBLDSx3SIJXrYw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BdC54j871H68/YQ2QalAxXiBsMwC6eUDQufRWlDZava2qtmjEG5DsLAyHE6lJK0vE
+         gvQfwIrqjeIcp6/mxTlmi4vemk6rtmohIEmjZsSzX4ju+0SOjd1DwCi+Qh/S3g5jKP
+         K8YicFnZaXBTmrgA0TQv8pEjH2ozaN8+aAVLrrSpqoDqTeod0NaatkdrLViIepGUc6
+         Q5r1JLOV+5c0/6a/uxV0yXtd16BFDoOYVQ1ySiZrowCq1nzFlrBf5JZgI9dsBbcK16
+         u70Z/s1QFUq1DOe6h5TqGn+9RlzzfgpWjqok17FXe38EEUTEIeRa1uaqVCacAZsM0R
+         wp8Y7pjs2mbVw==
+Date:   Tue, 10 Aug 2021 22:55:11 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] i2c: dev: zero out array used for i2c reads from
+ userspace
+Message-ID: <YRLnr24IBwe5HS+j@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        stable <stable@vger.kernel.org>
+References: <20210729143532.47240-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9Swibbr0MaEeP+pe"
+Content-Disposition: inline
+In-Reply-To: <20210729143532.47240-1-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi/urgent
-branch HEAD: 55203550f9afb027389bd24ce85bd90044c3aa81  Merge tag 'efi-urgent-for-v5.14-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/urgent
 
-elapsed time: 723m
+--9Swibbr0MaEeP+pe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-configs tested: 115
-configs skipped: 3
+On Thu, Jul 29, 2021 at 04:35:32PM +0200, Greg Kroah-Hartman wrote:
+> If an i2c driver happens to not provide the full amount of data that a
+> user asks for, it is possible that some uninitialized data could be sent
+> to userspace.  While all in-kernel drivers look to be safe, just be sure
+> by initializing the buffer to zero before it is passed to the i2c driver
+> so that any future drivers will not have this issue.
+>=20
+> Also properly copy the amount of data recvieved to the userspace buffer,
+> as pointed out by Dan Carpenter.
+>=20
+> Reported-by: Eric Dumazet <edumazet@google.com>
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> Cc: stable <stable@vger.kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Fixed checkpatch warning "WARNING: Invalid email format for stable:
+'stable <stable@vger.kernel.org>', prefer 'stable@vger.kernel.org' " and
+applied to for-current, thanks!
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                        vdk_hs38_defconfig
-arm                       imx_v6_v7_defconfig
-arm                      integrator_defconfig
-arm                          lpd270_defconfig
-powerpc                  iss476-smp_defconfig
-sh                          rsk7264_defconfig
-ia64                        generic_defconfig
-sh                        sh7785lcr_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                           ip28_defconfig
-powerpc                     tqm8541_defconfig
-i386                             alldefconfig
-powerpc                      bamboo_defconfig
-arm                          pxa910_defconfig
-powerpc                          g5_defconfig
-arm                      footbridge_defconfig
-xtensa                          iss_defconfig
-arm                       omap2plus_defconfig
-mips                        bcm47xx_defconfig
-sh                           se7721_defconfig
-mips                   sb1250_swarm_defconfig
-s390                       zfcpdump_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                         lubbock_defconfig
-arm                         palmz72_defconfig
-m68k                        m5272c3_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-i386                 randconfig-a004-20210809
-i386                 randconfig-a005-20210809
-i386                 randconfig-a006-20210809
-i386                 randconfig-a002-20210809
-i386                 randconfig-a001-20210809
-i386                 randconfig-a003-20210809
-x86_64               randconfig-a016-20210808
-x86_64               randconfig-a012-20210808
-x86_64               randconfig-a013-20210808
-x86_64               randconfig-a011-20210808
-x86_64               randconfig-a014-20210808
-x86_64               randconfig-a015-20210808
-i386                 randconfig-a011-20210810
-i386                 randconfig-a015-20210810
-i386                 randconfig-a013-20210810
-i386                 randconfig-a014-20210810
-i386                 randconfig-a016-20210810
-i386                 randconfig-a012-20210810
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-c001-20210810
-x86_64               randconfig-a013-20210810
-x86_64               randconfig-a011-20210810
-x86_64               randconfig-a012-20210810
-x86_64               randconfig-a016-20210810
-x86_64               randconfig-a014-20210810
-x86_64               randconfig-a015-20210810
-x86_64               randconfig-a016-20210809
-x86_64               randconfig-a012-20210809
-x86_64               randconfig-a013-20210809
-x86_64               randconfig-a011-20210809
-x86_64               randconfig-a014-20210809
-x86_64               randconfig-a015-20210809
+--9Swibbr0MaEeP+pe
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmES568ACgkQFA3kzBSg
+KbYTXhAAlT/K3AtvhsnMS3vwbfA+wSr0BYsT6io4lLdFK7t1KZbtTiH08jhSWe0Z
+nZrWxmgCGmQ0zHTDJslFzZz2LtuLE/rhSDqz/pW5l1rKfkOSdeATwmvoU/COZ30i
+O0Gx9DYR/BFANzOEJa8OGApuGeloah6X/5JDRDCZbqU2ZoLPFzJumkQxk4TesLBq
+QwrMXWhl5hsuccfEeEVOuyqpXqkNDCnVgqK1MFqAGawQvMlbiYa5wbn5PR0VKAO0
+IVzz9YLIP+fxyssk0IA1NxiJn5aIqVjlW2wfX5Tu3yT8lJAH/11i3MNfwzMO/XvS
+7IMr00AafqQkAi6ZRvRpn9G0wWL5twuv+weOuJsDgYqyGGX0KWAugEV9PibSV5n3
+4+b8Yb70kwQvAFOz19nBUlIDchVh1Wm8svMJSZO78CGeXmQZLbDfomB0Gvfpjhb8
+hsMzl4SNBqvywRVFqtbj9mVDCjtyMyKNZfY9OOo67mT7PcNPhXUJS/xRmP697oom
+2/l/Iq07xP54i1gEMLhZcNAChJFOXeKbCzL3z/qduvhgbLyXHzwK8wa9jDizk8Ez
+cJ8/nFqa3c9KPrbzst8ql7RNNNHu3DfPslw7rvI52/s8Uqk3Y3DRh5/x9qC6V0j6
+N3Awz9C1CFixVkwGbtzcwd3WKOzglqf9X2nd93yQrX2S9Ldry7s=
+=8fOf
+-----END PGP SIGNATURE-----
+
+--9Swibbr0MaEeP+pe--
