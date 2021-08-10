@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2953E7D0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5E13E7D0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbhHJQDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:03:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44420 "EHLO
+        id S235772AbhHJQDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:03:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44426 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235105AbhHJQCj (ORCPT
+        with ESMTP id S233043AbhHJQCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:02:39 -0400
-Date:   Tue, 10 Aug 2021 16:02:15 -0000
+        Tue, 10 Aug 2021 12:02:40 -0400
+Date:   Tue, 10 Aug 2021 16:02:16 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628611336;
+        s=2020; t=1628611337;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5mANIcYKHEMI7WG90FRbdwp2aLOWx7M3IGTk1FA9SRs=;
-        b=LvORq15RgJzjxLxvcs0XJPz43Ge6stfX+uXRrCs9HW2xpwoQoUZKigo+kObl6/Kd9Pf8M/
-        FQQMWwB8ENVKm7M9+cZ/k15PTdeyYR+dBS4p5p+KxaWwUrTDTaTjMJqPkQGxALzSrMHH3z
-        UaVDfeJGtJsd1gzeCYEFGEDaRH6IKs2UekVgXNvRfjNhfo7G5ItryB/gvesy49/CZT0j3A
-        RWiAtLkfA+pJuR1t9B2IQnIjsVVkbC/gJZF5qi8v6bWI+HM+5KPy380IOT/pCf10nNqSrd
-        TpQeBAuNSu08rxYctJTiMxJ+XAFmXsMVtfvWLQMMjZ5JzawmwKg0IW4iTQveaw==
+        bh=G+Di+oeQb7qp/YkaWpFPls2/C+FOqofGDg2cAkYs4bU=;
+        b=qahBW7Gd7E0VRYSs7tKezdb02qLkEtpnyQwvkZDgudg/KhaoY1iw3yTx+ey/ZmBfV+YOkr
+        p18BKIGuAF2LaqMYmTLYG1gcoWdXn0QLG5yStsg9N8kxfNgMOquGCPTHbdEo9YwP7m6yQJ
+        QIhQY1FmE47WnRe4ROWPRQyBKM7igPX84PSBnbAXeJmmfQSiuooviSQ7fZXp//iKA9Nsqd
+        zdRYDn9A1PUaEsxJHmO98xJM44BwX6MrY7WmMTgO7jwl+sE7GPNAy/Rg7W43AexM45dVk+
+        1med7TjHQlhtpZJOzcCoECe29QIzswcU8+ByQ/hDVAt/axQIk1vnVyB+USR3fg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628611336;
+        s=2020e; t=1628611337;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5mANIcYKHEMI7WG90FRbdwp2aLOWx7M3IGTk1FA9SRs=;
-        b=Wc+B4VmufXzfNQQq12J+vvqQ71Q6IT5iv6gk83XBmdl2xacCJsE3Pye/s1bQN+G/yVj9sa
-        X/zYdic061MEO4DA==
+        bh=G+Di+oeQb7qp/YkaWpFPls2/C+FOqofGDg2cAkYs4bU=;
+        b=84hfHiVogeh4vdx6lJdxXRtPEa4kPs2Pq0oIdxtFnVWfIIk90DUZu/i02ZnFpGnl929/rj
+        MZY+fMSb580TPVAg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timerfd: Provide timerfd_resume()
+Subject: [tip: timers/core] hrtimer: Ensure timerfd notification for HIGHRES=n
 Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210713135158.395287410@linutronix.de>
-References: <20210713135158.395287410@linutronix.de>
+In-Reply-To: <20210713135158.196661266@linutronix.de>
+References: <20210713135158.196661266@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162861133556.395.15546123456255340363.tip-bot2@tip-bot2>
+Message-ID: <162861133691.395.4435108606724237099.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,70 +57,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     66f7b0c8aadd2785fc29f2c71477ebc16f4e38cc
-Gitweb:        https://git.kernel.org/tip/66f7b0c8aadd2785fc29f2c71477ebc16f4e38cc
+Commit-ID:     8c3b5e6ec0fee18bc2ce38d1dfe913413205f908
+Gitweb:        https://git.kernel.org/tip/8c3b5e6ec0fee18bc2ce38d1dfe913413205f908
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 13 Jul 2021 15:39:50 +02:00
+AuthorDate:    Tue, 13 Jul 2021 15:39:48 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 10 Aug 2021 17:57:22 +02:00
 
-timerfd: Provide timerfd_resume()
+hrtimer: Ensure timerfd notification for HIGHRES=n
 
-Resuming timekeeping is a clock-was-set event and uses the clock-was-set
-notification mechanism. This is in the way of making the clock-was-set
-update for hrtimers selective so unnecessary IPIs are avoided when a CPU
-base does not have timers queued which are affected by the clock setting.
+If high resolution timers are disabled the timerfd notification about a
+clock was set event is not happening for all cases which use
+clock_was_set_delayed() because that's a NOP for HIGHRES=n, which is wrong.
 
-Provide a seperate timerfd_resume() interface so the resume logic and the
-clock-was-set mechanism can be distangled in the core code.
+Make clock_was_set_delayed() unconditially available to fix that.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210713135158.395287410@linutronix.de
+Link: https://lore.kernel.org/r/20210713135158.196661266@linutronix.de
 
 ---
- fs/timerfd.c            | 16 ++++++++++++++++
- include/linux/hrtimer.h |  2 ++
- 2 files changed, 18 insertions(+)
+ include/linux/hrtimer.h     |  5 -----
+ kernel/time/hrtimer.c       | 32 ++++++++++++++++----------------
+ kernel/time/tick-internal.h |  3 +++
+ 3 files changed, 19 insertions(+), 21 deletions(-)
 
-diff --git a/fs/timerfd.c b/fs/timerfd.c
-index c5509d2..e9c96a0 100644
---- a/fs/timerfd.c
-+++ b/fs/timerfd.c
-@@ -115,6 +115,22 @@ void timerfd_clock_was_set(void)
- 	rcu_read_unlock();
- }
- 
-+static void timerfd_resume_work(struct work_struct *work)
-+{
-+	timerfd_clock_was_set();
-+}
-+
-+static DECLARE_WORK(timerfd_work, timerfd_resume_work);
-+
-+/*
-+ * Invoked from timekeeping_resume(). Defer the actual update to work so
-+ * timerfd_clock_was_set() runs in task context.
-+ */
-+void timerfd_resume(void)
-+{
-+	schedule_work(&timerfd_work);
-+}
-+
- static void __timerfd_remove_cancel(struct timerfd_ctx *ctx)
- {
- 	if (ctx->might_cancel) {
 diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 77295af..253c6e2 100644
+index bb5e7b0..77295af 100644
 --- a/include/linux/hrtimer.h
 +++ b/include/linux/hrtimer.h
-@@ -349,8 +349,10 @@ hrtimer_expires_remaining_adjusted(const struct hrtimer *timer)
+@@ -318,16 +318,12 @@ struct clock_event_device;
  
+ extern void hrtimer_interrupt(struct clock_event_device *dev);
+ 
+-extern void clock_was_set_delayed(void);
+-
+ extern unsigned int hrtimer_resolution;
+ 
+ #else
+ 
+ #define hrtimer_resolution	(unsigned int)LOW_RES_NSEC
+ 
+-static inline void clock_was_set_delayed(void) { }
+-
+ #endif
+ 
+ static inline ktime_t
+@@ -351,7 +347,6 @@ hrtimer_expires_remaining_adjusted(const struct hrtimer *timer)
+ 						    timer->base->get_time());
+ }
+ 
+-extern void clock_was_set(void);
  #ifdef CONFIG_TIMERFD
  extern void timerfd_clock_was_set(void);
-+extern void timerfd_resume(void);
  #else
- static inline void timerfd_clock_was_set(void) { }
-+static inline void timerfd_resume(void) { }
- #endif
- extern void hrtimers_resume(void);
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 5f7c465..7ebf642 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -777,22 +777,6 @@ static void hrtimer_switch_to_hres(void)
+ 	retrigger_next_event(NULL);
+ }
  
+-static void clock_was_set_work(struct work_struct *work)
+-{
+-	clock_was_set();
+-}
+-
+-static DECLARE_WORK(hrtimer_work, clock_was_set_work);
+-
+-/*
+- * Called from timekeeping and resume code to reprogram the hrtimer
+- * interrupt device on all cpus.
+- */
+-void clock_was_set_delayed(void)
+-{
+-	schedule_work(&hrtimer_work);
+-}
+-
+ #else
+ 
+ static inline int hrtimer_is_hres_enabled(void) { return 0; }
+@@ -877,6 +861,22 @@ void clock_was_set(void)
+ 	timerfd_clock_was_set();
+ }
+ 
++static void clock_was_set_work(struct work_struct *work)
++{
++	clock_was_set();
++}
++
++static DECLARE_WORK(hrtimer_work, clock_was_set_work);
++
++/*
++ * Called from timekeeping and resume code to reprogram the hrtimer
++ * interrupt device on all cpus and to notify timerfd.
++ */
++void clock_was_set_delayed(void)
++{
++	schedule_work(&hrtimer_work);
++}
++
+ /*
+  * During resume we might have to reprogram the high resolution timer
+  * interrupt on all online CPUs.  However, all other CPUs will be
+diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
+index 6a742a2..cd610fa 100644
+--- a/kernel/time/tick-internal.h
++++ b/kernel/time/tick-internal.h
+@@ -165,3 +165,6 @@ DECLARE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases);
+ 
+ extern u64 get_next_timer_interrupt(unsigned long basej, u64 basem);
+ void timer_clear_idle(void);
++
++void clock_was_set(void);
++void clock_was_set_delayed(void);
