@@ -2,143 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7A93E5947
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89D63E594F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240248AbhHJLlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 07:41:51 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:12586 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238273AbhHJLlt (ORCPT
+        id S240236AbhHJLoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:44:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33149 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240131AbhHJLoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:41:49 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id C55D1520D32;
-        Tue, 10 Aug 2021 14:41:25 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1628595685;
-        bh=eUL8Cw/3k5FqvIluVwVrx3fPpQfCpj6l3rLBCKcnnN0=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=mFV6pKe4SLvIinyhV7MubM+cfcD6r1atmdi3BFkCZJP+MjUJZaCv2x4vDk4pOG1Ob
-         1qLanFrTJHEoKm/R7adAQlZGiX6J8JkL6XfwTJCExrs/R6NnRM/J9k07tdNxIzRmyr
-         XP+gCOgcaQw8ypRdSZ3N5SD2zEG3AKlK0rW3/cAvr1B33ZWmjN1V9s+ljoDx/1RZ0z
-         aYXE2N9baOV0Ooy8xWUH1sVrvWoFxO3lvipw2snJCAXktwJ/S+E28ARUj/S668Lmlj
-         iLSp2RKacCCV8WESlHKFPbgeQoZC3nMrRZEybuhKdKnVgj/0IpNuFFFCZYd1zfrXsJ
-         644xTHnfJ1+PA==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 76CDD520CB7;
-        Tue, 10 Aug 2021 14:41:25 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.64.121) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 10
- Aug 2021 14:41:24 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
-Subject: [RFC PATCH v2 5/5] vsock_test: update message bounds test for MSG_EOR
-Date:   Tue, 10 Aug 2021 14:41:16 +0300
-Message-ID: <20210810114119.1215014-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210810113901.1214116-1-arseny.krasnov@kaspersky.com>
-References: <20210810113901.1214116-1-arseny.krasnov@kaspersky.com>
+        Tue, 10 Aug 2021 07:44:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628595837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=POv/Coih+TmbH68jiX1oKwFFmrU4E+GCK1cZ8fcdxcY=;
+        b=XEQFiwAr4EgXM4++trMFqrQboXJfLcsTl9qT55+EJFEnf8xJ4vWbTIfHTQFKljuLDKBoJ/
+        ZEwGilAG5891/rT3ywhcEsEseM2s9ULRY05EGtS5PZhzVpg6+eDunHnTpbOl5c53TfDzO4
+        WYp/41DNU8SiJJWDsZwTQPiRVBtNLF8=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-huMv6PIyNSOQ2EN_TnvT3A-1; Tue, 10 Aug 2021 07:43:56 -0400
+X-MC-Unique: huMv6PIyNSOQ2EN_TnvT3A-1
+Received: by mail-lj1-f198.google.com with SMTP id b39-20020a05651c0b27b02901b47664ce3eso1921191ljr.21
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 04:43:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=POv/Coih+TmbH68jiX1oKwFFmrU4E+GCK1cZ8fcdxcY=;
+        b=buKCHYlzVshFw3wLlN7JfpFEZlQJhMsivlDvmHynaAsghxQ/KSzr/kOU+s5jaftAuI
+         AbgFLqCEsBkSvlUX4mhtW0aFGIv5bL3LXGXBdyVlx3P2OYQm521P9pwmzmjVRYt5EQAR
+         WaA8Qwz998ic7AIshUuxgN6g1SERC72xgO/50Nai0xYwRy9LrzwVDy3Ux9jv5meLvHy6
+         0LOAEaQ6o9VBq0OTGRc+Tvpe2OVA3CYcm5GsFl+YpaQS+lqmsI6dPwP4wg/rB7I7AfCh
+         mS42j4Xhy1wMERA2ORg47Cc2LIyzwGFg/mvQ7oY04MMGjbzwWtIZFn/lRnhvsg1w2zxL
+         cwTQ==
+X-Gm-Message-State: AOAM531VD5mArtn+bl9v4lSMnbmbAerhwA2s/U860K31Z3Bxu1ID6NdT
+        d7QHX5cjOIVj54uziUzMjvyozCEInhYBcki8f4wIbTEkmkc1N3+g+iYOAmuzynz1lPHcpVI/Duw
+        ZDnTATTTqh5M1ieP7pCCwHCJmoT456CtPr/MkNcZs
+X-Received: by 2002:ac2:484c:: with SMTP id 12mr21647947lfy.31.1628595833752;
+        Tue, 10 Aug 2021 04:43:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6D50ioyE6X0l+l4mykyWQGf5Yme/N88BVqC8wBZZQd2ykyLax+dJ9lpnUTYCPue0EfVLNwCOb4OfBjPxtsbo=
+X-Received: by 2002:ac2:484c:: with SMTP id 12mr21647932lfy.31.1628595833523;
+ Tue, 10 Aug 2021 04:43:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.64.121]
-X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/10/2021 11:26:08
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165493 [Aug 10 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/10/2021 11:29:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 10.08.2021 6:55:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/08/10 08:09:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/08/10 05:40:00 #17007547
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210810095832.4234-1-hpa@redhat.com> <20210810095832.4234-10-hpa@redhat.com>
+ <YRJPebbK3uQBU9K8@lahna>
+In-Reply-To: <YRJPebbK3uQBU9K8@lahna>
+From:   Kate Hsuan <hpa@redhat.com>
+Date:   Tue, 10 Aug 2021 19:43:42 +0800
+Message-ID: <CAEth8oE5we991RS12AJdFHtfD4kJkzFd4A0wHdEFKkX-i6kmvg@mail.gmail.com>
+Subject: Re: [PATCH 09/20] Move Intel SCU IPC of pdx86 to intel directory to
+ increase readability.
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Sujith Thomas <sujith.thomas@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com,
+        platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set 'MSG_EOR' in one of message sent, check that 'MSG_EOR'
-is visible in corresponding message at receiver.
+Hi Mika,
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
----
- tools/testing/vsock/vsock_test.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Thanks for your suggestion.
+I'll add them to the patches and resend them again.
 
-diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
-index 67766bfe176f..2a3638c0a008 100644
---- a/tools/testing/vsock/vsock_test.c
-+++ b/tools/testing/vsock/vsock_test.c
-@@ -282,6 +282,7 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
- }
- 
- #define MESSAGES_CNT 7
-+#define MSG_EOR_IDX (MESSAGES_CNT / 2)
- static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
- {
- 	int fd;
-@@ -294,7 +295,7 @@ static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
- 
- 	/* Send several messages, one with MSG_EOR flag */
- 	for (int i = 0; i < MESSAGES_CNT; i++)
--		send_byte(fd, 1, 0);
-+		send_byte(fd, 1, (i == MSG_EOR_IDX) ? MSG_EOR : 0);
- 
- 	control_writeln("SENDDONE");
- 	close(fd);
-@@ -324,6 +325,11 @@ static void test_seqpacket_msg_bounds_server(const struct test_opts *opts)
- 			perror("message bound violated");
- 			exit(EXIT_FAILURE);
- 		}
-+
-+		if ((i == MSG_EOR_IDX) ^ !!(msg.msg_flags & MSG_EOR)) {
-+			perror("MSG_EOR");
-+			exit(EXIT_FAILURE);
-+		}
- 	}
- 
- 	close(fd);
--- 
-2.25.1
+Thank you.
+
+BR,
+Kate
+
+Kate Hsuan
+
+PhD
+
+Senior Software Engineer
+
+Red Hat APAC
+
+Rm. 2708, 27F., No.9, Songgao Rd., Xinyi Dist., Taipei City 110
+
+kate.hsuan@redhat.com
+M: +886-919560388
+
+
+
+On Tue, Aug 10, 2021 at 6:06 PM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> Hi,
+>
+> No objections, I think this is good idea but..
+>
+> On Tue, Aug 10, 2021 at 05:58:21PM +0800, Kate Hsuan wrote:
+>
+> .. I suggest to add proper commit message here. Many maintainers ignore
+> patches that don't have one.
+>
+> > Signed-off-by: Kate Hsuan <hpa@redhat.com>
+> > ---
+> >  drivers/platform/x86/Kconfig                  | 47 -----------------
+> >  drivers/platform/x86/Makefile                 |  6 +--
+> >  drivers/platform/x86/intel/Kconfig            |  1 +
+> >  drivers/platform/x86/intel/Makefile           |  5 ++
+> >  drivers/platform/x86/intel/scu/Kconfig        | 52 +++++++++++++++++++
+> >  drivers/platform/x86/intel/scu/Makefile       | 11 ++++
+> >  .../x86/{ => intel/scu}/intel_scu_ipc.c       |  0
+> >  .../x86/{ => intel/scu}/intel_scu_ipcutil.c   |  0
+> >  .../x86/{ => intel/scu}/intel_scu_pcidrv.c    |  0
+> >  .../x86/{ => intel/scu}/intel_scu_pltdrv.c    |  0
+> >  .../x86/{ => intel/scu}/intel_scu_wdt.c       |  0
+> >  11 files changed, 70 insertions(+), 52 deletions(-)
+> >  create mode 100644 drivers/platform/x86/intel/scu/Kconfig
+> >  create mode 100644 drivers/platform/x86/intel/scu/Makefile
+> >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipc.c (100%)
+> >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipcutil.c (100%)
+> >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pcidrv.c (100%)
+> >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pltdrv.c (100%)
+> >  rename drivers/platform/x86/{ => intel/scu}/intel_scu_wdt.c (100%)
+>
 
