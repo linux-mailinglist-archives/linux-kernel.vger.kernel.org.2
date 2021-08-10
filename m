@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F443E8059
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BFA3E7F90
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbhHJRsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51962 "EHLO mail.kernel.org"
+        id S234222AbhHJRlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236497AbhHJRox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:44:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DED2D61158;
-        Tue, 10 Aug 2021 17:39:57 +0000 (UTC)
+        id S235115AbhHJRjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:39:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFEF561107;
+        Tue, 10 Aug 2021 17:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617198;
-        bh=Gkv8usg/hRL6/6cAr9d4ZngDvOLRKk8GTGE5ck5X+dU=;
+        s=korg; t=1628617016;
+        bh=CKykmzahHhMXt9m0NrdblO10om6+KNmQ7qwbpRTb4xQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1oi5S2yAiCwgTGIXhPafgZOq6g9SAlL8DYrpiLJpjmn1HjaPm9kENOxHwkTqHTZ/S
-         LLo1fV/0yKu+QrX1Qw3g7NoQL/081JphnkQpQmgcLzdmkirhXnCSz5ydwqV2Udo620
-         ajxK7rFiFZ/IWxXccTUEF6fAMAn1J9LR5SldKuIs=
+        b=BMTVOep//oSjerI2A7AzU84MztvhJjTUWDqF/ZIxQP4tc9AlzK0zGpCOZ9fnFThfm
+         B3TD2ULkVRPpQLbz0snqizMM7G4dMtua8ebvbOkgt7QD8u2uS8hOLo5jpvLlnds0cy
+         t0Toed6tqO9EMhwmYz1bD31tfcmB2KAG7pEb1y9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com,
-        syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 089/135] staging: rtl8712: error handling refactoring
+        stable@vger.kernel.org, Hui Su <suhui@zeku.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 50/85] scripts/tracing: fix the bug that cant parse raw_trace_func
 Date:   Tue, 10 Aug 2021 19:30:23 +0200
-Message-Id: <20210810172958.783707656@linuxfoundation.org>
+Message-Id: <20210810172949.929498718@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,139 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Hui Su <suhui@zeku.com>
 
-commit e9e6aa51b2735d83a67d9fa0119cf11abef80d99 upstream.
+commit 1c0cec64a7cc545eb49f374a43e9f7190a14defa upstream.
 
-There was strange error handling logic in case of fw load failure. For
-some reason fw loader callback was doing clean up stuff when fw is not
-available. I don't see any reason behind doing this. Since this driver
-doesn't have EEPROM firmware let's just disconnect it in case of fw load
-failure. Doing clean up stuff in 2 different place which can run
-concurently is not good idea and syzbot found 2 bugs related to this
-strange approach.
+Since commit 77271ce4b2c0 ("tracing: Add irq, preempt-count and need resched info
+to default trace output"), the default trace output format has been changed to:
+          <idle>-0       [009] d.h. 22420.068695: _raw_spin_lock_irqsave <-hrtimer_interrupt
+          <idle>-0       [000] ..s. 22420.068695: _nohz_idle_balance <-run_rebalance_domains
+          <idle>-0       [011] d.h. 22420.068695: account_process_tick <-update_process_times
 
-So, in this pacth I deleted all clean up code from fw callback and made
-a call to device_release_driver() under device_lock(parent) in case of fw
-load failure. This approach is more generic and it defend driver from UAF
-bugs, since all clean up code is moved to one place.
+origin trace output format:(before v3.2.0)
+     # tracer: nop
+     #
+     #           TASK-PID    CPU#    TIMESTAMP  FUNCTION
+     #              | |       |          |         |
+          migration/0-6     [000]    50.025810: rcu_note_context_switch <-__schedule
+          migration/0-6     [000]    50.025812: trace_rcu_utilization <-rcu_note_context_switch
+          migration/0-6     [000]    50.025813: rcu_sched_qs <-rcu_note_context_switch
+          migration/0-6     [000]    50.025815: rcu_preempt_qs <-rcu_note_context_switch
+          migration/0-6     [000]    50.025817: trace_rcu_utilization <-rcu_note_context_switch
+          migration/0-6     [000]    50.025818: debug_lockdep_rcu_enabled <-__schedule
+          migration/0-6     [000]    50.025820: debug_lockdep_rcu_enabled <-__schedule
 
-Fixes: e02a3b945816 ("staging: rtl8712: fix memory leak in rtl871x_load_fw_cb")
-Fixes: 8c213fa59199 ("staging: r8712u: Use asynchronous firmware loading")
-Cc: stable <stable@vger.kernel.org>
-Reported-and-tested-by: syzbot+5872a520e0ce0a7c7230@syzkaller.appspotmail.com
-Reported-and-tested-by: syzbot+cc699626e48a6ebaf295@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/d49ecc56e97c4df181d7bd4d240b031f315eacc3.1626895918.git.paskripkin@gmail.com
+The draw_functrace.py(introduced in v2.6.28) can't parse the new version format trace_func,
+So we need modify draw_functrace.py to adapt the new version trace output format.
+
+Link: https://lkml.kernel.org/r/20210611022107.608787-1-suhui@zeku.com
+
+Cc: stable@vger.kernel.org
+Fixes: 77271ce4b2c0 tracing: Add irq, preempt-count and need resched info to default trace output
+Signed-off-by: Hui Su <suhui@zeku.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/rtl8712/hal_init.c |   30 +++++++++++++++--------
- drivers/staging/rtl8712/usb_intf.c |   48 ++++++++++++++++---------------------
- 2 files changed, 41 insertions(+), 37 deletions(-)
+ scripts/tracing/draw_functrace.py |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -29,21 +29,31 @@
- #define FWBUFF_ALIGN_SZ 512
- #define MAX_DUMP_FWSZ (48 * 1024)
+--- a/scripts/tracing/draw_functrace.py
++++ b/scripts/tracing/draw_functrace.py
+@@ -17,7 +17,7 @@ Usage:
+ 	$ cat /sys/kernel/debug/tracing/trace_pipe > ~/raw_trace_func
+ 	Wait some times but not too much, the script is a bit slow.
+ 	Break the pipe (Ctrl + Z)
+-	$ scripts/draw_functrace.py < raw_trace_func > draw_functrace
++	$ scripts/tracing/draw_functrace.py < ~/raw_trace_func > draw_functrace
+ 	Then you have your drawn trace in draw_functrace
+ """
  
-+static void rtl871x_load_fw_fail(struct _adapter *adapter)
-+{
-+	struct usb_device *udev = adapter->dvobjpriv.pusbdev;
-+	struct device *dev = &udev->dev;
-+	struct device *parent = dev->parent;
-+
-+	complete(&adapter->rtl8712_fw_ready);
-+
-+	dev_err(&udev->dev, "r8712u: Firmware request failed\n");
-+
-+	if (parent)
-+		device_lock(parent);
-+
-+	device_release_driver(dev);
-+
-+	if (parent)
-+		device_unlock(parent);
-+}
-+
- static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
- {
- 	struct _adapter *adapter = context;
+@@ -103,10 +103,10 @@ def parseLine(line):
+ 	line = line.strip()
+ 	if line.startswith("#"):
+ 		raise CommentLineException
+-	m = re.match("[^]]+?\\] +([0-9.]+): (\\w+) <-(\\w+)", line)
++	m = re.match("[^]]+?\\] +([a-z.]+) +([0-9.]+): (\\w+) <-(\\w+)", line)
+ 	if m is None:
+ 		raise BrokenLineException
+-	return (m.group(1), m.group(2), m.group(3))
++	return (m.group(2), m.group(3), m.group(4))
  
- 	if (!firmware) {
--		struct usb_device *udev = adapter->dvobjpriv.pusbdev;
--		struct usb_interface *usb_intf = adapter->pusb_intf;
--
--		dev_err(&udev->dev, "r8712u: Firmware request failed\n");
--		usb_put_dev(udev);
--		usb_set_intfdata(usb_intf, NULL);
--		r8712_free_drv_sw(adapter);
--		adapter->dvobj_deinit(adapter);
--		complete(&adapter->rtl8712_fw_ready);
--		free_netdev(adapter->pnetdev);
-+		rtl871x_load_fw_fail(adapter);
- 		return;
- 	}
- 	adapter->fw = firmware;
---- a/drivers/staging/rtl8712/usb_intf.c
-+++ b/drivers/staging/rtl8712/usb_intf.c
-@@ -594,36 +594,30 @@ static void r871xu_dev_remove(struct usb
- {
- 	struct net_device *pnetdev = usb_get_intfdata(pusb_intf);
- 	struct usb_device *udev = interface_to_usbdev(pusb_intf);
-+	struct _adapter *padapter = netdev_priv(pnetdev);
  
--	if (pnetdev) {
--		struct _adapter *padapter = netdev_priv(pnetdev);
-+	/* never exit with a firmware callback pending */
-+	wait_for_completion(&padapter->rtl8712_fw_ready);
-+	usb_set_intfdata(pusb_intf, NULL);
-+	release_firmware(padapter->fw);
-+	if (drvpriv.drv_registered)
-+		padapter->surprise_removed = true;
-+	if (pnetdev->reg_state != NETREG_UNINITIALIZED)
-+		unregister_netdev(pnetdev); /* will call netdev_close() */
-+	r8712_flush_rwctrl_works(padapter);
-+	r8712_flush_led_works(padapter);
-+	udelay(1);
-+	/* Stop driver mlme relation timer */
-+	r8712_stop_drv_timers(padapter);
-+	r871x_dev_unload(padapter);
-+	r8712_free_drv_sw(padapter);
-+	free_netdev(pnetdev);
- 
--		/* never exit with a firmware callback pending */
--		wait_for_completion(&padapter->rtl8712_fw_ready);
--		pnetdev = usb_get_intfdata(pusb_intf);
--		usb_set_intfdata(pusb_intf, NULL);
--		if (!pnetdev)
--			goto firmware_load_fail;
--		release_firmware(padapter->fw);
--		if (drvpriv.drv_registered)
--			padapter->surprise_removed = true;
--		if (pnetdev->reg_state != NETREG_UNINITIALIZED)
--			unregister_netdev(pnetdev); /* will call netdev_close() */
--		r8712_flush_rwctrl_works(padapter);
--		r8712_flush_led_works(padapter);
--		udelay(1);
--		/* Stop driver mlme relation timer */
--		r8712_stop_drv_timers(padapter);
--		r871x_dev_unload(padapter);
--		r8712_free_drv_sw(padapter);
--		free_netdev(pnetdev);
-+	/* decrease the reference count of the usb device structure
-+	 * when disconnect
-+	 */
-+	usb_put_dev(udev);
- 
--		/* decrease the reference count of the usb device structure
--		 * when disconnect
--		 */
--		usb_put_dev(udev);
--	}
--firmware_load_fail:
- 	/* If we didn't unplug usb dongle and remove/insert module, driver
- 	 * fails on sitesurvey for the first time when device is up.
- 	 * Reset usb port for sitesurvey fail issue.
+ def main():
 
 
