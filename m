@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EB43E8065
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06733E7E7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhHJRso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:48:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55284 "EHLO mail.kernel.org"
+        id S232719AbhHJRdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:33:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233281AbhHJRpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:45:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EAF261186;
-        Tue, 10 Aug 2021 17:40:13 +0000 (UTC)
+        id S232161AbhHJRdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA72C60EBD;
+        Tue, 10 Aug 2021 17:32:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617214;
-        bh=/kwpo/cSIaEC2/+z2mB9+r8r9J8AzJ7XqK5n5Wv4JlI=;
+        s=korg; t=1628616764;
+        bh=0oWdoNn44QZtzLfp5PWAsDx3Jinl+hraGHzZFa0gNr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hVQDRjTGH2/bTih4OH/Vuxuc1fD3ZH3Fkg8x95puhdd/M0TkjljGzy6mgJD5sDJUk
-         tDaCPwQXq9nMRZvTwKV09qrWMgVhkzNWJpS2ag7pQNSf/kOZIG6x9dgoPtJKLABMIT
-         VEZ2YTjru/O3QjcM7YBoi5/fVkOQUpUt57wAb9Ms=
+        b=hiSBmaOmi5EE6dqVGTgKU40RA4/jttHC+O7W1EfvPqpH4wxaN4uDmzMp6LMcmah5K
+         0XlLEZbkdvyANk90vQ9MRuKRxEGfLeYelpervJZRv686kQP8iqZAi109i0dNFtyY2F
+         NAQZ2JRlcyUTFy3ObjbKoHZ69qbJKWrVqkYVMHiI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhiyong Tao <zhiyong.tao@mediatek.com>
-Subject: [PATCH 5.10 095/135] serial: 8250_mtk: fix uart corruption issue when rx power off
+        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH 4.19 35/54] optee: Clear stale cache entries during initialization
 Date:   Tue, 10 Aug 2021 19:30:29 +0200
-Message-Id: <20210810172958.989866987@linuxfoundation.org>
+Message-Id: <20210810172945.336794400@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,63 +40,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhiyong Tao <zhiyong.tao@mediatek.com>
+From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit 7c4a509d3815a260c423c0633bd73695250ac26d upstream.
+commit b5c10dd04b7418793517e3286cde5c04759a86de upstream.
 
-Fix uart corruption issue when rx power off.
-Add spin lock in mtk8250_dma_rx_complete function in APDMA mode.
+The shm cache could contain invalid addresses if
+optee_disable_shm_cache() was not called from the .shutdown hook of the
+previous kernel before a kexec. These addresses could be unmapped or
+they could point to mapped but unintended locations in memory.
 
-when uart is used as a communication port with external device(GPS).
-when external device(GPS) power off, the power of rx pin is also from
-1.8v to 0v. Even if there is not any data in rx. But uart rx pin can
-capture the data "0".
-If uart don't receive any data in specified cycle, uart will generates
-BI(Break interrupt) interrupt.
-If external device(GPS) power off, we found that BI interrupt appeared
-continuously and very frequently.
-When uart interrupt type is BI, uart IRQ handler(8250 framwork
-API:serial8250_handle_irq) will push data to tty buffer.
-mtk8250_dma_rx_complete is a task of mtk_uart_apdma_rx_handler.
-mtk8250_dma_rx_complete priority is lower than uart irq
-handler(serial8250_handle_irq).
-if we are in process of mtk8250_dma_rx_complete, uart appear BI
-interrupt:1)serial8250_handle_irq will priority execution.2)it may cause
-write tty buffer conflict in mtk8250_dma_rx_complete.
-So the spin lock protect the rx receive data process is not break.
+Clear the shared memory cache, while being careful to not translate the
+addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
+initialization. Once all pre-cache shm objects are removed, proceed with
+enabling the cache so that we know that we can handle cached shm objects
+with confidence later in the .shutdown hook.
 
-Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210729084640.17613-2-zhiyong.tao@mediatek.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/8250/8250_mtk.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/tee/optee/call.c          |   36 +++++++++++++++++++++++++++++++++---
+ drivers/tee/optee/core.c          |    9 +++++++++
+ drivers/tee/optee/optee_private.h |    1 +
+ 3 files changed, 43 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -93,10 +93,13 @@ static void mtk8250_dma_rx_complete(void
- 	struct dma_tx_state state;
- 	int copied, total, cnt;
- 	unsigned char *ptr;
-+	unsigned long flags;
- 
- 	if (data->rx_status == DMA_RX_SHUTDOWN)
- 		return;
- 
-+	spin_lock_irqsave(&up->port.lock, flags);
-+
- 	dmaengine_tx_status(dma->rxchan, dma->rx_cookie, &state);
- 	total = dma->rx_size - state.residue;
- 	cnt = total;
-@@ -120,6 +123,8 @@ static void mtk8250_dma_rx_complete(void
- 	tty_flip_buffer_push(tty_port);
- 
- 	mtk8250_rx_dma(up);
-+
-+	spin_unlock_irqrestore(&up->port.lock, flags);
+--- a/drivers/tee/optee/call.c
++++ b/drivers/tee/optee/call.c
+@@ -413,11 +413,13 @@ void optee_enable_shm_cache(struct optee
  }
  
- static void mtk8250_rx_dma(struct uart_8250_port *up)
+ /**
+- * optee_disable_shm_cache() - Disables caching of some shared memory allocation
+- *			      in OP-TEE
++ * __optee_disable_shm_cache() - Disables caching of some shared memory
++ *                               allocation in OP-TEE
+  * @optee:	main service struct
++ * @is_mapped:	true if the cached shared memory addresses were mapped by this
++ *		kernel, are safe to dereference, and should be freed
+  */
+-void optee_disable_shm_cache(struct optee *optee)
++static void __optee_disable_shm_cache(struct optee *optee, bool is_mapped)
+ {
+ 	struct optee_call_waiter w;
+ 
+@@ -436,6 +438,13 @@ void optee_disable_shm_cache(struct opte
+ 		if (res.result.status == OPTEE_SMC_RETURN_OK) {
+ 			struct tee_shm *shm;
+ 
++			/*
++			 * Shared memory references that were not mapped by
++			 * this kernel must be ignored to prevent a crash.
++			 */
++			if (!is_mapped)
++				continue;
++
+ 			shm = reg_pair_to_ptr(res.result.shm_upper32,
+ 					      res.result.shm_lower32);
+ 			tee_shm_free(shm);
+@@ -446,6 +455,27 @@ void optee_disable_shm_cache(struct opte
+ 	optee_cq_wait_final(&optee->call_queue, &w);
+ }
+ 
++/**
++ * optee_disable_shm_cache() - Disables caching of mapped shared memory
++ *                             allocations in OP-TEE
++ * @optee:	main service struct
++ */
++void optee_disable_shm_cache(struct optee *optee)
++{
++	return __optee_disable_shm_cache(optee, true);
++}
++
++/**
++ * optee_disable_unmapped_shm_cache() - Disables caching of shared memory
++ *                                      allocations in OP-TEE which are not
++ *                                      currently mapped
++ * @optee:	main service struct
++ */
++void optee_disable_unmapped_shm_cache(struct optee *optee)
++{
++	return __optee_disable_shm_cache(optee, false);
++}
++
+ #define PAGELIST_ENTRIES_PER_PAGE				\
+ 	((OPTEE_MSG_NONCONTIG_PAGE_SIZE / sizeof(u64)) - 1)
+ 
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -619,6 +619,15 @@ static struct optee *optee_probe(struct
+ 	optee->memremaped_shm = memremaped_shm;
+ 	optee->pool = pool;
+ 
++	/*
++	 * Ensure that there are no pre-existing shm objects before enabling
++	 * the shm cache so that there's no chance of receiving an invalid
++	 * address during shutdown. This could occur, for example, if we're
++	 * kexec booting from an older kernel that did not properly cleanup the
++	 * shm cache.
++	 */
++	optee_disable_unmapped_shm_cache(optee);
++
+ 	optee_enable_shm_cache(optee);
+ 
+ 	pr_info("initialized driver\n");
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -160,6 +160,7 @@ int optee_cancel_req(struct tee_context
+ 
+ void optee_enable_shm_cache(struct optee *optee);
+ void optee_disable_shm_cache(struct optee *optee);
++void optee_disable_unmapped_shm_cache(struct optee *optee);
+ 
+ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 		       struct page **pages, size_t num_pages,
 
 
