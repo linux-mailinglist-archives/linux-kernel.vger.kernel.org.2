@@ -2,98 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33D63E5BCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C463E5BD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241538AbhHJNf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S241551AbhHJNgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241540AbhHJNfZ (ORCPT
+        with ESMTP id S238260AbhHJNgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:35:25 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208FBC06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:34:52 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id u13so29109373lje.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:34:52 -0700 (PDT)
+        Tue, 10 Aug 2021 09:36:36 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D1AC061798
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:36:15 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id a4so6243804ilj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=weC7sDSz7PzZbDSqoiKFHyafe+0MyeXAiBAfK1qKcS4=;
-        b=ZkMvWvxM4pvYUqy5fI/4E/yYTR8XZ9e8pydJ6+ayXV+l/hEgGcg9Ypw9CVe+FUTQ2v
-         /houmtJqyVgq02TKQ6a746nHq4/i+0VpeDz9l/1d2CpGOlFO38Q1vpU6i7sO+p2s3tMI
-         DUlynGX/7LZqhwkoGdQ1I52fAp7G+fpqh10/pb1NMYjXvJSVuesWsHOSGtrvkuPxriNc
-         jvVf677JQLZxYssZpEuMQaobwk4MEkUKrGAGiABlPkeOE1bm7qE+ceiIrkU9NvaF3v3R
-         LaSTJbXjQcT785+AN9Ak3xvACeT3zp4mEp3Lyn0uUHq+VwXoC16GbDvi0V6XITOL18RG
-         FEBA==
+        bh=GAUdFxB/nuyD8e37Y4/cSwL2QvDgaa+OvSAdElWuutE=;
+        b=FiZK96vERTuIAuikDBL6Ooey+jHySbQUeXP0EOKfNnW56g/S1noMxovebcwVi9LqwN
+         UzgjVfebf964xNDcNAYat32UQQSCPcH29GksaL3Zu3+e2dnptQyDj1+yCCFbjLt30UEW
+         F+JL2qXk/po7FQaNvm4Bdr+NzFoIF4nnjdP3w7JweA0GmZuqpDcOfRGQC7zTASYZe0w5
+         LBvKNP+bP/me5K99z4dRX0bUTnnaTSPAxDhZrO8kBQbb9kaoKJAOjQlmUKBxfHeGKD4w
+         0U1MOobCPHu+8/7CgqhIwQxQbGSjxk7lo2LhL7uh4tM8GZwykestDrEJMsYPfWLGxhKd
+         5Eew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=weC7sDSz7PzZbDSqoiKFHyafe+0MyeXAiBAfK1qKcS4=;
-        b=Qk9A1wUYaXk6WZrh73nMWoWODnjdic1Jn5Vc9QB7pzjqJSkirQ1c2oYZ3+Qx4E+zgZ
-         CFlIR91bJZYAkGap9MmabEFJUCz1it6cQDEdsDXPGE3yj7mAYqDCX6iP3VVAXAHCc9b6
-         i8+WFMd7uUBSdiXNBQbGkeN26HUNmiZCgGlLz7q4eNdqmO548iLwug+Uk8J7hdSHchqS
-         Tfq4BjvYDML29RgohPcVYrFkxpgM3P+o70IPdrTKfULXaSdeXvb9z2UnKF0javNaniXO
-         Zwu0TxWPDwvfayiO70WurQb+Im7RlKfKFG9EmwsKRKmpogEfv/gLGbOJmhAKbV0YdfBy
-         sVoA==
-X-Gm-Message-State: AOAM531DoWyZX6WEDDjZATnkKC8VtAUe3Yum9RFm/gdlKorLAxDDRPO6
-        wrdvqnzmB09x9MGCKJnKwiz8SNlZLXUH2/4HZVBsRw==
-X-Google-Smtp-Source: ABdhPJxTxTJieZbnaNjRPZUIvrVUDFyycbbX1QvFSIH1cQRHK81GI3c7N6EJyS6zlrZ5d2BhxV7i2qX73NcqQoP17mQ=
-X-Received: by 2002:a2e:888f:: with SMTP id k15mr19671128lji.326.1628602490522;
- Tue, 10 Aug 2021 06:34:50 -0700 (PDT)
+        bh=GAUdFxB/nuyD8e37Y4/cSwL2QvDgaa+OvSAdElWuutE=;
+        b=oII6gdl5YjJRJJOxR4maQWS6ftAAaZdN3H0i9iMfzV9wA6c1ruS/PaOFfjj54HDhcE
+         VWHIFrhFOQm4OX4x5Pou6WhoRqiEZVcsl3ug0ivOqpLhRuTSJeQPXl9LGY7KZDNoNZIn
+         ROiowvX82Vg6Qw3VUL5WeN0QEcInDyn1d5DHGabw/MIvmRUhEqrVck18WjRjvM2B9WWy
+         T+Y81TCgF3wYZLprpQ7MWZ3k7IAvUAgMtfZWk6igbVTfxmwuKZDe1suBK6owf44Mtq71
+         MgZBAPUJXl9e/8Wq5dTUkHjXu/kKD8kzM4roqb3o78nIyEhm5YAaOWONTD7DVhaVsEDN
+         AsAQ==
+X-Gm-Message-State: AOAM530i0FS1sBUpdfD5edOpoNym8sCuBmnWRoNRjfpeGSWkWhqTf/Ku
+        ZW0Ol3UCwRkXelqfKVnjeGUNxcMgRdwu9fJ2UowqVQ==
+X-Google-Smtp-Source: ABdhPJyBPhpZAm9pK9za4X7LfFBGg8KHUTGO1WamLDRCyuqF8oJJ8n1kh+U1CckiFSzq7xCSoeMHJzoKQjEaocRKOfc=
+X-Received: by 2002:a92:c5c8:: with SMTP id s8mr651292ilt.140.1628602574443;
+ Tue, 10 Aug 2021 06:36:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210723075858.376378-1-andrew@aj.id.au> <20210723075858.376378-2-andrew@aj.id.au>
-In-Reply-To: <20210723075858.376378-2-andrew@aj.id.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Aug 2021 15:34:39 +0200
-Message-ID: <CACRpkdZ4A3Lw2U+_jXfbuXJFhpesi3SzNN1Codqxi4sLNu5zPw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/6] pinctrl: Add pinctrl_gpio_as_pin()
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Pavel Machek <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210717234859.351911-1-martin.blumenstingl@googlemail.com>
+ <20210717234859.351911-3-martin.blumenstingl@googlemail.com>
+ <20210728175823.GA2766167@p14s> <CAFBinCB0-bAa7Y+YhscczarGrGuio37F8vRyfW6U2DiiDAvr-g@mail.gmail.com>
+ <20210805161506.GA3205691@p14s> <CAFBinCCkOgkzuxZPby-rJeH7ei-G_khiStkX9Zs3w1u1RAd7_Q@mail.gmail.com>
+In-Reply-To: <CAFBinCCkOgkzuxZPby-rJeH7ei-G_khiStkX9Zs3w1u1RAd7_Q@mail.gmail.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Tue, 10 Aug 2021 07:36:01 -0600
+Message-ID: <CANLsYkyz5h9Qb+ZLFAtegDHYeQoOYeF_6GF7jYo8kxhF-pt66Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
+ AO ARC remote procesor
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 9:59 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-
-> Allow gpiochips to map the GPIO numberspace onto a pin numberspace when
-> the register layout for GPIO control is implemented in terms of the
-> pin numberspace.
+On Sun, 8 Aug 2021 at 14:37, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
 >
-> This requirement sounds kind of strange, but the patch is driven by
-> trying to resolve a bug in the leds-pca955x driver where this mapping is
-> not correctly performed.
+> Hi Mathieu,
 >
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> On Thu, Aug 5, 2021 at 6:15 PM Mathieu Poirier
+> <mathieu.poirier@linaro.org> wrote:
+> >
+> > On Wed, Aug 04, 2021 at 11:03:57PM +0200, Martin Blumenstingl wrote:
+> > > Hi Mathieu,
+> > >
+> > > thanks for taking the time to look into this!
+> > >
+> > > (I will address any of your comments that I am not mentioning in this
+> > > email anymore. Thanks a lot for the suggestions!)
+> > >
+> > > On Wed, Jul 28, 2021 at 7:58 PM Mathieu Poirier
+> > > <mathieu.poirier@linaro.org> wrote:
+> > > [...]
+> > > > > +     writel(FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
+> > > > > +                            priv->sram_pa >> 14),
+> > > > Indentation problem
+> > > The idea here is to align priv->sram_pa with AO_REMAP_REG0... which
+> > > are both arguments to FIELD_PREP
+> >
+> > Right, this is what I would have expected.  When I applied the patch on my side
+> > "priv->sram_pa ..." was aligned wiht the 'M' of "AO_REMAP_ ...".
+> >
+> > > Maybe using something like this will make that easier to read:
+> > >     tmp = FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
+> > >                                      priv->sram_pa >> 14);
+> > >     writel(tmp, priv->remap_base + AO_REMAP_REG0);
+> >
+> > I think the main problem is that
+> > AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU is simply too long.  I
+> > suggest making is shorter and add a comment to describe exactly what it does.
+> AO_CPU_CNTL_AHB_SRAM_BITS_31_20 is used below and when looking at it
+> now I think the alignment is also strange.
+> For the next version I'll go with the tmp variable as I think it
+> improves readability, even with the long(er) macro names.
+>
+> [...]
+> > > > > +     priv->arc_reset = devm_reset_control_get_exclusive(dev, NULL);
+> > > > > +     if (IS_ERR(priv->arc_reset)) {
+> > > >
+> > > > Function __reset_control_get() in __devm_reset_control_get() can return NULL so
+> > > > this should be IS_ERR_OR_NULL().
+> > > The logic in there is: return optional ? NULL : ERR_PTR(-...);
+> >
+> > Ok, so you meant to do that.  And I just checked reset_control_reset() and it does
+> > account for a NULL parameter.  I'm good with this one but add a comment to
+> > make sure future readers don't think you've omitted to properly deal with the
+> > NULL return value.
+> >
+> > > I am requesting a mandatory reset line here, so reset core will never
+> > > return NULL
+> > > See also [0]
+> >
+> > Indeed, I've read that too.  Nonetheless __reset_control_get() can return NULL
+> > by way of __reset_control_get_from_lookup().
+> I could not find where __reset_control_get_from_lookup returns NULL in
+> case optional is false (which it is in this case because
+> devm_reset_control_get_exclusive requests a "mandatory" reset line).
+> Can you please point me to the problematic line(s) as I'd like to send
+> a patch (which fixes this) to the reset subsystem maintainers
+>
 
-(...)
+I am currently traveling - I will get back to you in a week or so.
 
-Hm  this looks a bit strange...
-
-> +int pinctrl_gpio_as_pin(struct pinctrl_dev *pctldev, unsigned int gpio)
-
-This is not a good name for this function. Try to come up with
-a name that says exactly what the function does.
-
-E.g. "apple pear as apple slice" isn't very helpful, the use case for
-this is really hard to understand.
-
-> +EXPORT_SYMBOL_GPL(pinctrl_find_gpio_range_from_pin);
-
-This looks completely wrong.
-
-Yours,
-Linus Walleij
+> $ git grep -A1 devm_reset_control_get_exclusive | grep IS_ERR_OR_NULL
+> drivers/remoteproc/ti_k3_r5_remoteproc.c-       if
+> (IS_ERR_OR_NULL(core->reset)) {
+> $
+>
+> I suspect that this can be simplified then as well.
+>
+>
+> Best regards,
+> Martin
+>
+>
+> [0] https://elixir.bootlin.com/linux/v5.14-rc4/source/include/linux/reset.h#L227
+> [1] https://elixir.bootlin.com/linux/v5.14-rc4/source/drivers/reset/core.c#L932
