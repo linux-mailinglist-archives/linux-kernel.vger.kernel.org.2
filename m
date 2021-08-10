@@ -2,188 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39E23E84AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144843E84C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbhHJUxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233425AbhHJUxK (ORCPT
+        id S234592AbhHJUy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:54:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25114 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234391AbhHJUyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:53:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFFDC0613C1;
-        Tue, 10 Aug 2021 13:52:47 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 20:52:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628628766;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 10 Aug 2021 16:54:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628628831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iqFdIjgtl1V4wrZcegB4vP02DI0oxXS4gcyhsKOffRw=;
-        b=E44gK5iq0L2v+V9GRSP1q+8dUjL0x6vLThCnh9Wq7YhaKLbiW9yigQqbSyfCEq+jdW0YL2
-        qcBb9SVzBVQd/caJeWi7qcdTVn+1pHIkVzjmLsVkF/cQfFNlSpoayRzF1jnh8soV74V6jy
-        VN+tmJBqcxARLr1N14PYdbi2rYdzIBrOt6NDBCf/McC4owBMtyy5QiB2S74dyq1NGg/RPR
-        7fJQM3FRXuCvIVUmgcQMAtRvjOY4v0X1gzs2nBnuySuTFXRPmSET2dv+cxlzmywxtiB4iD
-        qQoq8Tf+fuF8TyACJd6sss4gPHjMZRCwylnQ/lGDHIjj2gxwNCtnlgHFxG5WPg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628628766;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iqFdIjgtl1V4wrZcegB4vP02DI0oxXS4gcyhsKOffRw=;
-        b=8E4wJ3njmv+czCkaObQ7QlulB8oHxuCSTRg0M3hxclAFRA6rDnm6tv2e4qJqqnMKK0KgQt
-        wKcKgJfLBrP9qeBw==
-From:   "tip-bot2 for Tanner Love" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Change force_irqthreads to a static key
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Tanner Love <tannerlove@google.com>,
+        bh=l1uMUDfVN5V3DAKZ7KyBGQOrQQsbp6dRpF5fvgblpwI=;
+        b=LNUdYLU0ji9nhfrWHGBX2VgrUSG+TtHOw+dS5e0cL5nI0iY+r838pyQxLevilKXME4IUYZ
+        krRW/oZ6s8u6POqBGczA9b4SLpuUtvlCJeuaQbp2w2HkmdVXHXIacDHtKUxVvusIbRRHK9
+        rbnxjSM9mECwzSSzf1p4nwk6JJjJrv0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-U0AtSuiyN6OPFZ1e_6pykQ-1; Tue, 10 Aug 2021 16:53:49 -0400
+X-MC-Unique: U0AtSuiyN6OPFZ1e_6pykQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B3B73E743;
+        Tue, 10 Aug 2021 20:53:47 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B5635B4BC;
+        Tue, 10 Aug 2021 20:53:43 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210602180338.3324213-1-tannerlove.kernel@gmail.com>
-References: <20210602180338.3324213-1-tannerlove.kernel@gmail.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v4 11/16] KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in use
+Date:   Tue, 10 Aug 2021 23:52:46 +0300
+Message-Id: <20210810205251.424103-12-mlevitsk@redhat.com>
+In-Reply-To: <20210810205251.424103-1-mlevitsk@redhat.com>
+References: <20210810205251.424103-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Message-ID: <162862876527.395.12764666556805454399.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-Commit-ID:     91cc470e797828d779cd4c1efbe8519bcb358bae
-Gitweb:        https://git.kernel.org/tip/91cc470e797828d779cd4c1efbe8519bcb358bae
-Author:        Tanner Love <tannerlove@google.com>
-AuthorDate:    Wed, 02 Jun 2021 14:03:38 -04:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 22:50:07 +02:00
+APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
+SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
+however, possible to track whether the feature was actually used by the
+guest and only inhibit APICv/AVIC when needed.
 
-genirq: Change force_irqthreads to a static key
+TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
+Windows know that AutoEOI feature should be avoided. While it's up to
+KVM userspace to set the flag, KVM can help a bit by exposing global
+APICv/AVIC enablement.
 
-With CONFIG_IRQ_FORCED_THREADING=y, testing the boolean force_irqthreads
-could incur a cache line miss in invoke_softirq() and other places.
+Maxim:
+   - always set HV_DEPRECATING_AEOI_RECOMMENDED in kvm_get_hv_cpuid,
+     since this feature can be used regardless of AVIC
 
-Replace the test with a static key to avoid the potential cache miss.
+Paolo:
+   - use arch.apicv_update_lock to protect the hv->synic_auto_eoi_used
+     instead of atomic ops
 
-[ tglx: Dropped the IDE part, removed the export and updated blk-mq ]
-
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210602180338.3324213-1-tannerlove.kernel@gmail.com
-
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- block/blk-mq.c            |  2 +-
- include/linux/interrupt.h |  8 +++++---
- kernel/irq/manage.c       | 11 +++++------
- kernel/softirq.c          |  2 +-
- 4 files changed, 12 insertions(+), 11 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  6 ++++++
+ arch/x86/kvm/hyperv.c           | 32 ++++++++++++++++++++++++++------
+ 2 files changed, 32 insertions(+), 6 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 2c4ac51..572d8ab 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -606,7 +606,7 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
- 	 * This is probably worse than completing the request on a different
- 	 * cache domain.
- 	 */
--	if (force_irqthreads)
-+	if (force_irqthreads())
- 		return false;
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 27627e32f362..a0ddff8d13c4 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -982,6 +982,12 @@ struct kvm_hv {
+ 	/* How many vCPUs have VP index != vCPU index */
+ 	atomic_t num_mismatched_vp_indexes;
  
- 	/* same CPU or cache domain?  Complete locally */
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 2ed65b0..1f22a30 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -13,6 +13,7 @@
- #include <linux/hrtimer.h>
- #include <linux/kref.h>
- #include <linux/workqueue.h>
-+#include <linux/jump_label.h>
- 
- #include <linux/atomic.h>
- #include <asm/ptrace.h>
-@@ -474,12 +475,13 @@ extern int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
- 
- #ifdef CONFIG_IRQ_FORCED_THREADING
- # ifdef CONFIG_PREEMPT_RT
--#  define force_irqthreads	(true)
-+#  define force_irqthreads()	(true)
- # else
--extern bool force_irqthreads;
-+DECLARE_STATIC_KEY_FALSE(force_irqthreads_key);
-+#  define force_irqthreads()	(static_branch_unlikely(&force_irqthreads_key))
- # endif
- #else
--#define force_irqthreads	(0)
-+#define force_irqthreads()	(false)
- #endif
- 
- #ifndef local_softirq_pending
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 766468a..34a66c4 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -25,12 +25,11 @@
- #include "internals.h"
- 
- #if defined(CONFIG_IRQ_FORCED_THREADING) && !defined(CONFIG_PREEMPT_RT)
--__read_mostly bool force_irqthreads;
--EXPORT_SYMBOL_GPL(force_irqthreads);
-+DEFINE_STATIC_KEY_FALSE(force_irqthreads_key);
- 
- static int __init setup_forced_irqthreads(char *arg)
++	/*
++	 * How many SynICs use 'AutoEOI' feature
++	 * (protected by arch.apicv_update_lock)
++	 */
++	unsigned int synic_auto_eoi_used;
++
+ 	struct hv_partition_assist_pg *hv_pa_pg;
+ 	struct kvm_hv_syndbg hv_syndbg;
+ };
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index b07592ca92f0..031ea0fb3e2f 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -88,6 +88,10 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
+ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
+ 				int vector)
  {
--	force_irqthreads = true;
-+	static_branch_enable(&force_irqthreads_key);
- 	return 0;
- }
- early_param("threadirqs", setup_forced_irqthreads);
-@@ -1260,8 +1259,8 @@ static int irq_thread(void *data)
- 	irqreturn_t (*handler_fn)(struct irq_desc *desc,
- 			struct irqaction *action);
- 
--	if (force_irqthreads && test_bit(IRQTF_FORCED_THREAD,
--					&action->thread_flags))
-+	if (force_irqthreads() && test_bit(IRQTF_FORCED_THREAD,
-+					   &action->thread_flags))
- 		handler_fn = irq_forced_thread_fn;
- 	else
- 		handler_fn = irq_thread_fn;
-@@ -1322,7 +1321,7 @@ EXPORT_SYMBOL_GPL(irq_wake_thread);
- 
- static int irq_setup_forced_threading(struct irqaction *new)
- {
--	if (!force_irqthreads)
-+	if (!force_irqthreads())
- 		return 0;
- 	if (new->flags & (IRQF_NO_THREAD | IRQF_PERCPU | IRQF_ONESHOT))
- 		return 0;
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index f3a0121..322b65d 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -422,7 +422,7 @@ static inline void invoke_softirq(void)
- 	if (ksoftirqd_running(local_softirq_pending()))
++	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
++	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
++	int auto_eoi_old, auto_eoi_new;
++
+ 	if (vector < HV_SYNIC_FIRST_VALID_VECTOR)
  		return;
  
--	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
-+	if (!force_irqthreads() || !__this_cpu_read(ksoftirqd)) {
- #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
- 		/*
- 		 * We can safely execute softirq on the current stack if
+@@ -96,10 +100,30 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
+ 	else
+ 		__clear_bit(vector, synic->vec_bitmap);
+ 
++	auto_eoi_old = bitmap_weight(synic->auto_eoi_bitmap, 256);
++
+ 	if (synic_has_vector_auto_eoi(synic, vector))
+ 		__set_bit(vector, synic->auto_eoi_bitmap);
+ 	else
+ 		__clear_bit(vector, synic->auto_eoi_bitmap);
++
++	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
++
++	if (!!auto_eoi_old == !!auto_eoi_new)
++		return;
++
++	mutex_lock(&vcpu->kvm->arch.apicv_update_lock);
++
++	if (auto_eoi_new)
++		hv->synic_auto_eoi_used++;
++	else
++		hv->synic_auto_eoi_used--;
++
++	__kvm_request_apicv_update(vcpu->kvm,
++				   !hv->synic_auto_eoi_used,
++				   APICV_INHIBIT_REASON_HYPERV);
++
++	mutex_unlock(&vcpu->kvm->arch.apicv_update_lock);
+ }
+ 
+ static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
+@@ -933,12 +957,6 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
+ 
+ 	synic = to_hv_synic(vcpu);
+ 
+-	/*
+-	 * Hyper-V SynIC auto EOI SINT's are
+-	 * not compatible with APICV, so request
+-	 * to deactivate APICV permanently.
+-	 */
+-	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
+ 	synic->active = true;
+ 	synic->dont_zero_synic_pages = dont_zero_synic_pages;
+ 	synic->control = HV_SYNIC_CONTROL_ENABLE;
+@@ -2466,6 +2484,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+ 				ent->eax |= HV_X64_ENLIGHTENED_VMCS_RECOMMENDED;
+ 			if (!cpu_smt_possible())
+ 				ent->eax |= HV_X64_NO_NONARCH_CORESHARING;
++
++			ent->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
+ 			/*
+ 			 * Default number of spinlock retry attempts, matches
+ 			 * HyperV 2016.
+-- 
+2.26.3
+
