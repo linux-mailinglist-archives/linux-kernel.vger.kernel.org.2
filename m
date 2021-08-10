@@ -2,152 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAF63E5488
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7B53E548B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237010AbhHJHpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhHJHp3 (ORCPT
+        id S237087AbhHJHqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:46:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50999 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231705AbhHJHqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:45:29 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E1FC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:45:07 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id k4so12333243wms.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JMD9lc87gLR9mUn618m2da6Xz9eP1IZPnQ6Y9giCJ60=;
-        b=BSFNkPJACLhV7hLuaLowjcRt/sPZEm0/yQFPGUWVk8jdvEPPtc2D1knHwsLdyMpkou
-         qNsxfp2wr87iUy6Vpi0872VvSZ0HE0BHAHUV8vC1aMkwrY8kVAdMCSFFaa/02CY12fbR
-         jbxunqViKB9ISUtq+whCT38QMukoDYl2bxV8S8xACEv3NXdCiwtZGjz9R0EAUmkoQK7B
-         JyCGcFjXGsrElkQ/RL4Z/QhnCeS4rgeCWpekkSM3AI4usUVZ9D4VLFbb62gW59rAVeMa
-         M7LPKMH4SdT+U0Pl2e9cQhnKxtKOaFx7cJPx7ZnqzlP0T2562RiYH2xfky24+VET0PsC
-         DA2g==
+        Tue, 10 Aug 2021 03:46:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628581577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pet61wCaKM+lsHkOSnoMFXnGFsigaqQV7vnnC0iAqlg=;
+        b=ixdU4KNeTYwMBjamQ7vzW75Ihdir1O1lHWi0vspqhfPU9uunRht+Mfmqfmqu/HA1eZoWiN
+        DYEOChTQDUCbAsiXMFxamGnwiYg5wY8Xdij35q/Q2zjEmkmXUB1YYzrDJTh48ZIDwaD6nU
+        kMS0ZSdjKBDgmXRH4PrlC9WkQ0IX2EE=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446--MSCTiMJO26dY1s9lAy5sg-1; Tue, 10 Aug 2021 03:46:16 -0400
+X-MC-Unique: -MSCTiMJO26dY1s9lAy5sg-1
+Received: by mail-ej1-f71.google.com with SMTP id gg35-20020a17090689a3b0290580ff45a075so5247891ejc.20
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:46:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=JMD9lc87gLR9mUn618m2da6Xz9eP1IZPnQ6Y9giCJ60=;
-        b=SoxV0OQunpmotVbpbqt7mKcCZZeUnhgqbnbHyMGDwjpdzI4xmblqr+JMFJl+LHeJL4
-         FFNf/Mvtkw1D6dWuA/jv/GyzPTZJx4exDKQVzIpj3T7y3nbKknI1dFwx5n0HAtJvekBU
-         6dxzR93Gn7OX/9q2v87Hj3SEPrdd+znd+LfNGSzxOTibYEx2Ed788ppiHJ61PXKxEEQb
-         7hJh52yK9zQdqeLC1SZ0IwAO2afPz+0lLpnFOuMKfL+ydmBYeNjC8dJ2LoG9LkHBOfYA
-         Iz4PhUCFUGBCGhxnKI8oivM3NS5vJScexCfntbFovFQdDGZnX0ZfGgc7mLLQtSRSbKxq
-         ZtzA==
-X-Gm-Message-State: AOAM530e+vEXF1/XUNLSu2k6DokCXlxy7weQGKh8qxgT5Y1MqE/Z6Z4H
-        /+f/IfvGdCxVLxfc7izCn4+egw==
-X-Google-Smtp-Source: ABdhPJzdiSUv999rtG5HAGMcE0/1qlYDTiib5nym8IELAKkgpweMXGgK5t8noa6UEbiHUWkDT+fbhg==
-X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr3093610wmq.26.1628581505690;
-        Tue, 10 Aug 2021 00:45:05 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id y21sm1845450wma.38.2021.08.10.00.45.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 00:45:05 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, arnd@arndb.de
-Subject: [PATCH] staging: r8188eu: remove rtw_ioctl function
-Date:   Tue, 10 Aug 2021 08:45:04 +0100
-Message-Id: <20210810074504.957-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
+        bh=pet61wCaKM+lsHkOSnoMFXnGFsigaqQV7vnnC0iAqlg=;
+        b=Tb65JjP+sOKrBdpCl40c1G/Eec/Hfm26l6GcLXflJCssJsjeV57BaMbwCOT/ZbXm+/
+         iIeRoo1mrdauMoPA7mXqVL/E5W6HG3c2zgn03D/lkqEy0UaCMPY6OTTnsWDlZl6Sh22A
+         3LYmu5iNWbHmwc+fY9zLdH/qMHyyLOdD9hXN7+7u44dvLuzIufoMlqrosW7Qw1ENyv23
+         nfnn36dBYLXPvTMvMgDTVbNA/0aiXQ2vNWLyhYrjuEKI93oRzEo1vIqfz+jfNNBuVtKe
+         0I0TOGB4AK/cf1s8MD3PAxwudGra6Te8PdRFuZ+Aqzx+sZSSCv8N6wOgd8HqlYrl2XHi
+         NsKw==
+X-Gm-Message-State: AOAM531GqRzGUgeOMHGM84+qtg/nFsxZcQENZlvQpla3zB5KfFOsHvFU
+        fi2mBz4vV/KzGjX/3mJMnTSLTbSZ3uRPUaXiqI/dyIZtVEhJMXRTWTUN6g/d0oYaidMBW+wFl9q
+        YlGUG1Te5omIeVcwOHA7G+N8g
+X-Received: by 2002:a17:906:f910:: with SMTP id lc16mr13700149ejb.478.1628581574872;
+        Tue, 10 Aug 2021 00:46:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx54Wk3W3eCyLne4AIxttvR15u3VbfD+qRW+hB9OMtgfCKRAtY9kWCsPEViOmfyLqTGXN97OA==
+X-Received: by 2002:a17:906:f910:: with SMTP id lc16mr13700136ejb.478.1628581574693;
+        Tue, 10 Aug 2021 00:46:14 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id g9sm9241632edl.52.2021.08.10.00.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 00:46:14 -0700 (PDT)
+Subject: Re: [PATCH v3 0/3] Support for ASUS egpu, dpgu disable, panel
+ overdrive
+To:     Luke Jones <luke@ljones.dev>
+Cc:     linux-kernel@vger.kernel.org, mgross@linux.intel.com,
+        pobrn@protonmail.com, corentin.chary@gmail.com
+References: <20210807023656.25020-1-luke@ljones.dev>
+ <aec7b518-0979-7b7e-f776-a2ebb0fc19fc@redhat.com>
+ <FYDLXQ.TA0Y98DS5UW4@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <96aa39fd-119a-f79e-ee74-2db6d117fac3@redhat.com>
+Date:   Tue, 10 Aug 2021 09:46:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <FYDLXQ.TA0Y98DS5UW4@ljones.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove rtw_ioctl function from os_dep/ioctl_linux.c, its declaration
-in include/osdep_intf.h, and finally its inclusion as the value of the
-.ndo_do_ioctl member of struct net_device_ops rtw_netdev_ops in
-os_dep/os_intfs.c.
+<Added platform-driver-x86@vger.kernel.org to the Cc>
 
-The e-mail from Arnd Bergmann at:
-https://lore.kernel.org/linux-next/CAK8P3a0WRMNmBmBDerZ0nWPdFZKALnxrj-uUFBkTP-MOtv48vg@mail.gmail.com
-explains the justification for this approach. Essentially, changes from
-net-next make the existing function and its use of SIOCDEVPRIVATE ioctls
-unworkable without changes.
+On 8/9/21 11:49 PM, Luke Jones wrote:
+> 
+> 
+> On Mon, Aug 9 2021 at 11:18:38 +0200, Hans de Goede <hdegoede@redhat.com> wrote:
+>> Hi Luke,
+>>
+>> On 8/7/21 4:36 AM, Luke D. Jones wrote:
+>>>  This patch series adds support for some functions that are found on newer
+>>>  ASUS gaming laptops:
+>>>
+>>>  - Panel overdrive: Some laptops can drive the LCD matrix slightly faster
+>>>    to eliminate or reduce ghosting artifacts
+>>>
+>>>  - dGPU disable: ASUS added a function in ACPI to disable or enable the dGPU
+>>>    which removes it from the PCI bus. Presumably this was to help prevent
+>>>    Windows apps from using the dGPU when the user didn't want them to but
+>>>    because of how it works it also means that when rebooted to Linux the dGPU
+>>>    no-longer exits. This patch enables a user to echo 0/1 to a WMI path to
+>>>    re-enable it (or disable, but the drivers *must* be unloaded first).
+>>>
+>>>  - eGPU enable: The ASUS x-flow lpatop has an iGPU, a dGPU, and an optional
+>>>    eGPU. This patch enables the user to echo 0/1 to a WMI path to enable or
+>>>    disable the eGPU. In ACPI this also appears to remove the dGPU from the
+>>>    PCI bus.
+>>>
+>>>  All of the above patches have been tested over the course of a few months.
+>>>  There is a small possibility of user error perhaps, where the user tries to
+>>>  enable or disable the dGPU/eGPU while drivers are loaded which would cause
+>>>  a system hang, but it is expected that almost all users would be using the
+>>>  `asusctl` daemon and dbus methods to manage the above which then eliminates
+>>>  these issues.
+>>
+>> Thank you for the new version, all 3 patches look good to me, but I miss
+>> a changelog in this cover-letter.
+>>
+>> Specifically I'm wondering what happened to the following,
+>> which you wrote about in the v1 patch-set thread:
+>>
+>> """
+>> Proper enable of the dGPU again as far as my testing goes works such that:
+>> 1. call the ACPI method
+>> 2. rescan PCI bus to ensure the device is powered
+>> 3. call the ACPI method again to save the setting
+>>
+>> But it appears that recent work in-kernel for many things AMD related has broken this for us...
+>> """
+> 
+> Apologies, I've been a bit too busy to remember some things.
+> 
+> The changes are mostly to satisfy review. The dGPU patch has removed the
+> dual call to the ACPI method, it was not working as expected. I will revisit
+> this when 5.14 kernel is released.
 
-Functions called from rtw_ioctl that are now no longer accessible will
-be cleaned up in further patches. Additionally, once these changes have
-made their way downstream to the staging branch, we can modify and
-reconnect rtw_android_priv_cmd via ndo_siocdevprivate in struct
-net_device_ops.
+Ok, so from my pov these patches are ready for merging now, but since this
+is still somewhat of an open question, I wonder if they are also ready
+for merging from your pov, or if you want to fist sort this out ?
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/r8188eu/include/osdep_intf.h |  2 --
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 28 --------------------
- drivers/staging/r8188eu/os_dep/os_intfs.c    |  1 -
- 3 files changed, 31 deletions(-)
+> I'll be sure to remember the changelog next time I submit a patch, sorry.
 
-diff --git a/drivers/staging/r8188eu/include/osdep_intf.h b/drivers/staging/r8188eu/include/osdep_intf.h
-index 1915c926faac..3ea60feee2db 100644
---- a/drivers/staging/r8188eu/include/osdep_intf.h
-+++ b/drivers/staging/r8188eu/include/osdep_intf.h
-@@ -48,8 +48,6 @@ u32 rtw_start_drv_threads(struct adapter *padapter);
- void rtw_stop_drv_threads (struct adapter *padapter);
- void rtw_cancel_all_timer(struct adapter *padapter);
- 
--int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
--
- int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname);
- struct net_device *rtw_init_netdev(struct adapter *padapter);
- u16 rtw_recv_select_queue(struct sk_buff *skb);
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 34dce01e469c..beabbc84232f 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -8097,31 +8097,3 @@ static int rtw_ioctl_wext_private(struct net_device *dev, union iwreq_data *wrq_
- 	kfree(output);
- 	return err;
- }
--
--#include "../include/rtw_android.h"
--int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
--{
--	struct iwreq *wrq = (struct iwreq *)rq;
--	int ret = 0;
--
--	switch (cmd) {
--	case RTL_IOCTL_WPA_SUPPLICANT:
--		ret = wpa_supplicant_ioctl(dev, &wrq->u.data);
--		break;
--#ifdef CONFIG_88EU_AP_MODE
--	case RTL_IOCTL_HOSTAPD:
--		ret = rtw_hostapd_ioctl(dev, &wrq->u.data);
--		break;
--#endif /*  CONFIG_88EU_AP_MODE */
--	case SIOCDEVPRIVATE:
--		ret = rtw_ioctl_wext_private(dev, &wrq->u);
--		break;
--	case (SIOCDEVPRIVATE+1):
--		ret = rtw_android_priv_cmd(dev, rq, cmd);
--		break;
--	default:
--		ret = -EOPNOTSUPP;
--		break;
--	}
--	return ret;
--}
-diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-index 935e35c82666..7d17c765205c 100644
---- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-+++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-@@ -692,7 +692,6 @@ static const struct net_device_ops rtw_netdev_ops = {
- 	.ndo_select_queue	= rtw_select_queue,
- 	.ndo_set_mac_address = rtw_net_set_mac_address,
- 	.ndo_get_stats = rtw_net_get_stats,
--	.ndo_do_ioctl = rtw_ioctl,
- };
- 
- int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname)
--- 
-2.31.1
+No problem.
+
+Regards,
+
+Hans
+
+
+
+>>>  Luke D. Jones (3):
+>>>    asus-wmi: Add panel overdrive functionality
+>>>    asus-wmi: Add dgpu disable method
+>>>    asus-wmi: Add egpu enable method
+>>>
+>>>   drivers/platform/x86/asus-wmi.c            | 289 +++++++++++++++++++++
+>>>   include/linux/platform_data/x86/asus-wmi.h |   7 +
+>>>   2 files changed, 296 insertions(+)
+>>>
+>>>  --
+>>>  2.31.1
+>>>
+>>
+> 
+> 
 
