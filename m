@@ -2,299 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7A53E86B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50C63E86B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235647AbhHJXvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:51:20 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29803 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235374AbhHJXvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:51:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213164725"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="213164725"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 16:50:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="516087340"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Aug 2021 16:50:49 -0700
-Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id D25E95808D9;
-        Tue, 10 Aug 2021 16:50:44 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 07:50:41 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
+        id S235754AbhHJXv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235579AbhHJXvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 19:51:16 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C07C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:50:51 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id f5so325236wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zmKg5cWLfDtvNzY5XeqvzfTrFB2tK46TS12T4izJ2U4=;
+        b=YU6vMGyzdAW0zY//9R+zdy84wWj2rlcQlmnrxAFGLblTkt/MF/JEpEmhNaBHwuE0Xq
+         bPUDHVdKZEABL2BES6koYjiCeztZ4GuvsbqlVky6Z4SXhU8Cg+RNnfKr6fWbalsv9x+7
+         aNxZnbTxMv8BFPvMT23NhZyD/1VJWWhtMUgoyjwW0MPh6ayrocXwn3geZucThBtkaZiC
+         fcU1nUldaHkGCXVPLKooo7awZWl0Qw1GNg6GelnGFHf2eXuqoQ4QGvwWEdl5aneDdOd2
+         G5WIcM7He1a34d9nrgmnNRY3EQg0n//0+ifBj5xecFgbbUiuT1r+zkvmoY5oEn5xn7AL
+         A0hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zmKg5cWLfDtvNzY5XeqvzfTrFB2tK46TS12T4izJ2U4=;
+        b=M4vd4mPDb3hHuQkSoWFAb85v84Yn9qttvbQUcdwhWpCDqTbL1OSYnsMeAYX7hP7pFq
+         w0bQ6aa0DFiQnitQ5NNr3JK+M4/CJcEFmAqWzxGvkMjgqIXhJaJ5p/rgQl/xLjR7varb
+         SYvaw0e/RbddAc0wexCcDKOOi1M1LN2nyb88qUk5Cs8x9H1cqrNFyYo0oWIiF23N19jG
+         SkmEVRB0a+VoNZrcP5mn/HGHKwr7xqTkCbXrhAUw3qdf3Jgqre/G7HCu/M8A4W1k/eCT
+         UL8kk4n6/VVKhDTV770jMWXG13gqa9UHJXx43SQiySXC1aCug3HnSw9lgjkD4AazsIsh
+         KiZg==
+X-Gm-Message-State: AOAM530IJhx3Ujdh29LbYWfPHjAUHVY6j0M873wN1Qh0dl8dt3XUVm2k
+        nwSeqNV9CZgJufuSYSWfP7BnGA==
+X-Google-Smtp-Source: ABdhPJy++88X6RefFjSFaTiHAugqJQyK54WiO5LmcuQi9pFNoQUK85w8BesRw4NmgX31jfOra6XCYw==
+X-Received: by 2002:a05:6000:1106:: with SMTP id z6mr34105222wrw.296.1628639450642;
+        Tue, 10 Aug 2021 16:50:50 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id p14sm13881220wro.3.2021.08.10.16.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 16:50:50 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: pcs: xpcs: enable skip xPCS soft reset
-Message-ID: <20210810235041.GA30818@linux.intel.com>
-References: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
- <20210809102229.933748-2-vee.khee.wong@linux.intel.com>
- <20210809110626.4kfkegwixiualq2x@skbuf>
+Subject: [PATCH 2/8] staging: r8188eu: remove unused oid_null_function function
+Date:   Wed, 11 Aug 2021 00:50:41 +0100
+Message-Id: <20210810235047.177883-3-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210810235047.177883-1-phil@philpotter.co.uk>
+References: <20210810235047.177883-1-phil@philpotter.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809110626.4kfkegwixiualq2x@skbuf>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 02:06:26PM +0300, Vladimir Oltean wrote:
-> Hi VK,
-> 
-> On Mon, Aug 09, 2021 at 06:22:28PM +0800, Wong Vee Khee wrote:
-> > diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-> > index 63fda3fc40aa..c7a3aa862079 100644
-> > --- a/drivers/net/pcs/pcs-xpcs.c
-> > +++ b/drivers/net/pcs/pcs-xpcs.c
-> > @@ -1081,7 +1081,8 @@ static const struct phylink_pcs_ops xpcs_phylink_ops = {
-> >  };
-> >  
-> >  struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
-> > -			    phy_interface_t interface)
-> > +			    phy_interface_t interface,
-> > +			    bool skip_reset)
-> >  {
-> >  	struct dw_xpcs *xpcs;
-> >  	u32 xpcs_id;
-> > @@ -1113,9 +1114,16 @@ struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
-> >  		xpcs->pcs.ops = &xpcs_phylink_ops;
-> >  		xpcs->pcs.poll = true;
-> >  
-> > -		ret = xpcs_soft_reset(xpcs, compat);
-> > -		if (ret)
-> > -			goto out;
-> > +		if (!skip_reset) {
-> > +			dev_info(&xpcs->mdiodev->dev, "%s: xPCS soft reset\n",
-> > +				 __func__);
-> > +			ret = xpcs_soft_reset(xpcs, compat);
-> > +			if (ret)
-> > +				goto out;
-> > +		} else {
-> > +			dev_info(&xpcs->mdiodev->dev,
-> > +				 "%s: skip xpcs soft reset\n", __func__);
-> > +		}
-> 
-> I don't feel like the prints are really necessary.
+Remove unused oid_null_function function from include/rtw_ioctl.h
 
-Sounds good to me. I'll remove these.
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/r8188eu/include/rtw_ioctl.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> 
-> >  
-> >  		return xpcs;
-> >  	}
-> > diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
-> > index add077a81b21..0c05a63f3446 100644
-> > --- a/include/linux/pcs/pcs-xpcs.h
-> > +++ b/include/linux/pcs/pcs-xpcs.h
-> > @@ -36,7 +36,8 @@ void xpcs_validate(struct dw_xpcs *xpcs, unsigned long *supported,
-> >  int xpcs_config_eee(struct dw_xpcs *xpcs, int mult_fact_100ns,
-> >  		    int enable);
-> >  struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
-> > -			    phy_interface_t interface);
-> > +			    phy_interface_t interface,
-> > +			    bool xpcs_reset);
-> >  void xpcs_destroy(struct dw_xpcs *xpcs);
-> >  
-> 
-> How about exporting the reset functionality as a separate function, and
-> the Intel Alder Lake stmmac shim just won't call it? Like this:
-> 
-> -----------------------------[ cut here ]-----------------------------
-> diff --git a/drivers/net/dsa/sja1105/sja1105_mdio.c b/drivers/net/dsa/sja1105/sja1105_mdio.c
-> index 19aea8fb76f6..5acf6742da4d 100644
-> --- a/drivers/net/dsa/sja1105/sja1105_mdio.c
-> +++ b/drivers/net/dsa/sja1105/sja1105_mdio.c
-> @@ -437,13 +437,17 @@ static int sja1105_mdiobus_pcs_register(struct sja1105_private *priv)
->  			goto out_pcs_free;
->  		}
->  
-> -		xpcs = xpcs_create(mdiodev, priv->phy_mode[port]);
-> +		xpcs = xpcs_create(mdiodev);
->  		if (IS_ERR(xpcs)) {
->  			rc = PTR_ERR(xpcs);
->  			goto out_pcs_free;
->  		}
->  
->  		priv->xpcs[port] = xpcs;
-> +
-> +		rc = xpcs_reset(xpcs, priv->phy_mode[port]);
-> +		if (rc)
-> +			goto out_pcs_free;
->  	}
->  
->  	priv->mdio_pcs = bus;
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> index a5d150c5f3d8..81a145009488 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> @@ -401,12 +401,15 @@ int stmmac_xpcs_setup(struct mii_bus *bus)
->  {
->  	struct net_device *ndev = bus->priv;
->  	struct mdio_device *mdiodev;
-> +	bool skip_xpcs_soft_reset;
->  	struct stmmac_priv *priv;
->  	struct dw_xpcs *xpcs;
->  	int mode, addr;
-> +	int err;
->  
->  	priv = netdev_priv(ndev);
->  	mode = priv->plat->phy_interface;
-> +	skip_xpcs_soft_reset = priv->plat->skip_xpcs_soft_reset;
->  
->  	/* Try to probe the XPCS by scanning all addresses. */
->  	for (addr = 0; addr < PHY_MAX_ADDR; addr++) {
-> @@ -414,12 +417,21 @@ int stmmac_xpcs_setup(struct mii_bus *bus)
->  		if (IS_ERR(mdiodev))
->  			continue;
->  
-> -		xpcs = xpcs_create(mdiodev, mode);
-> +		xpcs = xpcs_create(mdiodev);
->  		if (IS_ERR_OR_NULL(xpcs)) {
->  			mdio_device_free(mdiodev);
->  			continue;
->  		}
->  
-> +		if (!skip_xpcs_soft_reset) {
-> +			err = xpcs_reset(xpcs, mode);
-> +			if (err) {
-> +				xpcs_destroy(xpcs);
-> +				mdio_device_free(mdiodev);
-> +				continue;
-> +			}
-> +		}
-> +
->  		priv->hw->xpcs = xpcs;
->  		break;
->  	}
-> diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-> index 63fda3fc40aa..2e721e57bee4 100644
-> --- a/drivers/net/pcs/pcs-xpcs.c
-> +++ b/drivers/net/pcs/pcs-xpcs.c
-> @@ -248,6 +248,18 @@ static int xpcs_soft_reset(struct dw_xpcs *xpcs,
->  	return xpcs_poll_reset(xpcs, dev);
->  }
->  
-> +int xpcs_reset(struct dw_xpcs *xpcs, phy_interface_t interface)
-> +{
-> +	const struct xpcs_compat *compat;
-> +
-> +	compat = xpcs_find_compat(xpcs->id, interface);
-> +	if (!compat)
-> +		return -ENODEV;
-> +
-> +	return xpcs_soft_reset(xpcs, compat);
-> +}
-> +EXPORT_SYMBOL_GPL(xpcs_reset);
-> +
->  #define xpcs_warn(__xpcs, __state, __args...) \
->  ({ \
->  	if ((__state)->link) \
-> @@ -1080,12 +1092,11 @@ static const struct phylink_pcs_ops xpcs_phylink_ops = {
->  	.pcs_link_up = xpcs_link_up,
->  };
->  
-> -struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
-> -			    phy_interface_t interface)
-> +struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev)
->  {
->  	struct dw_xpcs *xpcs;
->  	u32 xpcs_id;
-> -	int i, ret;
-> +	int i;
->  
->  	xpcs = kzalloc(sizeof(*xpcs), GFP_KERNEL);
->  	if (!xpcs)
-> @@ -1097,35 +1108,18 @@ struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
->  
->  	for (i = 0; i < ARRAY_SIZE(xpcs_id_list); i++) {
->  		const struct xpcs_id *entry = &xpcs_id_list[i];
-> -		const struct xpcs_compat *compat;
->  
->  		if ((xpcs_id & entry->mask) != entry->id)
->  			continue;
->  
->  		xpcs->id = entry;
-> -
-> -		compat = xpcs_find_compat(entry, interface);
-> -		if (!compat) {
-> -			ret = -ENODEV;
-> -			goto out;
-> -		}
-> -
->  		xpcs->pcs.ops = &xpcs_phylink_ops;
->  		xpcs->pcs.poll = true;
->  
-> -		ret = xpcs_soft_reset(xpcs, compat);
-> -		if (ret)
-> -			goto out;
-> -
->  		return xpcs;
->  	}
->  
-> -	ret = -ENODEV;
-> -
-> -out:
-> -	kfree(xpcs);
-> -
-> -	return ERR_PTR(ret);
-> +	return ERR_PTR(-ENODEV);
->  }
->  EXPORT_SYMBOL_GPL(xpcs_create);
->  
-> diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
-> index add077a81b21..d841f55f12cc 100644
-> --- a/include/linux/pcs/pcs-xpcs.h
-> +++ b/include/linux/pcs/pcs-xpcs.h
-> @@ -35,8 +35,8 @@ void xpcs_validate(struct dw_xpcs *xpcs, unsigned long *supported,
->  		   struct phylink_link_state *state);
->  int xpcs_config_eee(struct dw_xpcs *xpcs, int mult_fact_100ns,
->  		    int enable);
-> -struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
-> -			    phy_interface_t interface);
-> +int xpcs_reset(struct dw_xpcs *xpcs, phy_interface_t interface);
-> +struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev);
->  void xpcs_destroy(struct dw_xpcs *xpcs);
->  
->  #endif /* __LINUX_PCS_XPCS_H */
-> diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-> index a6f03b36fc4f..0f901773c5e4 100644
-> --- a/include/linux/stmmac.h
-> +++ b/include/linux/stmmac.h
-> @@ -268,5 +268,6 @@ struct plat_stmmacenet_data {
->  	int msi_rx_base_vec;
->  	int msi_tx_base_vec;
->  	bool use_phy_wol;
-> +	bool skip_xpcs_soft_reset;
->  };
->  #endif
-> -----------------------------[ cut here ]-----------------------------
-> 
-> I also gave this patch a run on sja1105 and it still works.
-
-Thanks for the suggestion. I tested it out on stmmac and it works.
-I will use this as it looks neater. :)
-
-Regards,
- VK
+diff --git a/drivers/staging/r8188eu/include/rtw_ioctl.h b/drivers/staging/r8188eu/include/rtw_ioctl.h
+index 7ebc52f008a0..a36bd7313755 100644
+--- a/drivers/staging/r8188eu/include/rtw_ioctl.h
++++ b/drivers/staging/r8188eu/include/rtw_ioctl.h
+@@ -76,12 +76,6 @@ struct oid_obj_priv {
+ 	int (*oidfuns)(struct oid_par_priv *poid_par_priv);
+ };
+ 
+-#if defined(_RTW_MP_IOCTL_C_)
+-static int oid_null_function(struct oid_par_priv *poid_par_priv) {
+-	return NDIS_STATUS_SUCCESS;
+-}
+-#endif
+-
+ extern struct iw_handler_def  rtw_handlers_def;
+ 
+ int drv_query_info(struct  net_device *miniportadaptercontext, NDIS_OID oid,
+-- 
+2.31.1
 
