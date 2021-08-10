@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8E33E81C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AD73E819D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236388AbhHJSCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:02:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51086 "EHLO mail.kernel.org"
+        id S237304AbhHJSA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236963AbhHJR4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:56:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE9996137D;
-        Tue, 10 Aug 2021 17:45:00 +0000 (UTC)
+        id S237163AbhHJR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:56:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F8F0610FC;
+        Tue, 10 Aug 2021 17:45:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617501;
-        bh=shCdDjnZtYtla1OUNgFX+5xVre4DZppOtg+ux1VdUAg=;
+        s=korg; t=1628617512;
+        bh=sJcqfH1Q4IrnK/z7vHlXFzLXPIrHRa2rRBS6dIPiPA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NrBHayE1ys4xtv28+QHJ1lGO/D702wH7pj7pV5Hnj1UkUx3yRT0y5HDDjJGdd4nG6
-         /ftufBNcyctCz6G9jcMdoiD2XUGglsKpNeeTcIlVxcQam4zcAVu7vWa00xy+cH2lww
-         gVDLYy6cpSSn4rSyJTcIfAGNz0F3D0DWbWoXhkPw=
+        b=mO94tx+Ou0B6cXNbF0lluSz4layUZKbGybdULBKViaEmjoeXo0k5/mdHpZxUI+2cl
+         5I6bJEHGVjE9YWRT/Jpl7sVirqWJHn6SBSagnjHcZgHwPOc5Uk3a78H17SbloMUIMx
+         WCCraXe6/NPQfyqaFY4gLc/L+0YeSUXj2VO3uD4U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 086/175] ALSA: usb-audio: Fix superfluous autosuspend recovery
-Date:   Tue, 10 Aug 2021 19:29:54 +0200
-Message-Id: <20210810173003.775880641@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH 5.13 090/175] usb: dwc3: gadget: Avoid runtime resume if disabling pullup
+Date:   Tue, 10 Aug 2021 19:29:58 +0200
+Message-Id: <20210810173003.905650577@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -38,37 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Wesley Cheng <wcheng@codeaurora.org>
 
-commit 66291b6adb66dd3bc96b0f594d88c2ff1300d95f upstream.
+commit cb10f68ad8150f243964b19391711aaac5e8ff42 upstream.
 
-The change to restore the autosuspend from the disabled state uses a
-wrong check: namely, it should have been the exact comparison of the
-quirk_type instead of the bitwise and (&).  Otherwise it matches
-wrongly with the other quirk types.
+If the device is already in the runtime suspended state, any call to
+the pullup routine will issue a runtime resume on the DWC3 core
+device.  If the USB gadget is disabling the pullup, then avoid having
+to issue a runtime resume, as DWC3 gadget has already been
+halted/stopped.
 
-Although re-enabling the autosuspend for the already enabled device
-shouldn't matter much, it's better to fix the unbalanced call.
+This fixes an issue where the following condition occurs:
 
-Fixes: 9799110825db ("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()")
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/s5hr1flh9ov.wl-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+usb_gadget_remove_driver()
+-->usb_gadget_disconnect()
+ -->dwc3_gadget_pullup(0)
+  -->pm_runtime_get_sync() -> ret = 0
+  -->pm_runtime_put() [async]
+-->usb_gadget_udc_stop()
+ -->dwc3_gadget_stop()
+  -->dwc->gadget_driver = NULL
+...
+
+dwc3_suspend_common()
+-->dwc3_gadget_suspend()
+ -->DWC3 halt/stop routine skipped, driver_data == NULL
+
+This leads to a situation where the DWC3 gadget is not properly
+stopped, as the runtime resume would have re-enabled EP0 and event
+interrupts, and since we avoided the DWC3 gadget suspend, these
+resources were never disabled.
+
+Fixes: 77adb8bdf422 ("usb: dwc3: gadget: Allow runtime suspend if UDC unbinded")
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+Link: https://lore.kernel.org/r/1628058245-30692-1-git-send-email-wcheng@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/card.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc3/gadget.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -907,7 +907,7 @@ static void usb_audio_disconnect(struct
- 		}
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -2257,6 +2257,17 @@ static int dwc3_gadget_pullup(struct usb
  	}
  
--	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
-+	if (chip->quirk_type == QUIRK_SETUP_DISABLE_AUTOSUSPEND)
- 		usb_enable_autosuspend(interface_to_usbdev(intf));
- 
- 	chip->num_interfaces--;
+ 	/*
++	 * Avoid issuing a runtime resume if the device is already in the
++	 * suspended state during gadget disconnect.  DWC3 gadget was already
++	 * halted/stopped during runtime suspend.
++	 */
++	if (!is_on) {
++		pm_runtime_barrier(dwc->dev);
++		if (pm_runtime_suspended(dwc->dev))
++			return 0;
++	}
++
++	/*
+ 	 * Check the return value for successful resume, or error.  For a
+ 	 * successful resume, the DWC3 runtime PM resume routine will handle
+ 	 * the run stop sequence, so avoid duplicate operations here.
 
 
