@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F3B3E5525
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542E13E5526
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238146AbhHJI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:27:30 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:35520 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhHJI13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:27:29 -0400
-Received: by mail-vs1-f53.google.com with SMTP id b138so11840170vsd.2;
-        Tue, 10 Aug 2021 01:27:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vEsirkXQR9XRp+ESI/NxcQBZnW3vhj14fJ6I3VFuv8A=;
-        b=UD91EvcN64Sn5cTlmapZjGWsk6y0y7UxLBoYUCY/5B2dh/9AHGEVGnfg8w2mlTSvpi
-         oKkcKz7XnoZgUBXq1FRabu/PUictdty3Tp0ypOjFJifmZscNy4Oa9+vduuRQZQ7rxdyM
-         xOkedV28ASTRmZNQddXahBCIuMll74ecCm6sKJpNrczMdttjfk8kQ9lDe70+wxa0+G93
-         wcHeSjiIv0of8t4qZ+jOe9H+MjOE//F69awHM2kyy4ReDDSBKsNJYAhfBOsSowKOUxo9
-         4xs3y476RL/MqWTFqNgDjPRYvf6LWORdkQwoRAGpXKi+NGwKV9unIcXyHTp0Qvyqm7AX
-         jcnw==
-X-Gm-Message-State: AOAM531/fbaB2CevqC8dCODysNQPCiwAPe/QbScQ5jd0nFAHm32lqaPN
-        qPGPSgQENLJveDrd5zRPDLpCnejxnFyjNLDtPOM=
-X-Google-Smtp-Source: ABdhPJwyqKTQQpPefbrJQBBtVL0JrZHJed0ystZSCbUas8Yc765XYNut1HHYKt7QAQ0qru2tK8FCEcPeuQXvb7ROTe4=
-X-Received: by 2002:a05:6102:d9:: with SMTP id u25mr11249297vsp.42.1628584026679;
- Tue, 10 Aug 2021 01:27:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210727133022.634-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210727133022.634-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 10 Aug 2021 10:26:55 +0200
-Message-ID: <CAMuHMdU7-AahJmKLabba_ZF2bcPwktU00Q_uBOYm+AdiBVGyTA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] can: rcar_canfd: Add support for RZ/G2L family
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S238141AbhHJI16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:27:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237565AbhHJI14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 04:27:56 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E28860E78;
+        Tue, 10 Aug 2021 08:27:34 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDN6i-0040J0-Jv; Tue, 10 Aug 2021 09:27:32 +0100
+Date:   Tue, 10 Aug 2021 09:27:32 +0100
+Message-ID: <87fsvhbt6z.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 05/13] clocksource/arm_arch_timer: Fix MMIO base address vs callback ordering issue
+In-Reply-To: <CAOQ_QsjATdRRFdiG5kR+Ni7X-_kMaF+V_XQx3uuxivk0t4xt_w@mail.gmail.com>
+References: <20210809152651.2297337-1-maz@kernel.org>
+        <20210809152651.2297337-6-maz@kernel.org>
+        <CAOQ_QsjATdRRFdiG5kR+Ni7X-_kMaF+V_XQx3uuxivk0t4xt_w@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oupton@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Mon, 09 Aug 2021 17:52:00 +0100,
+Oliver Upton <oupton@google.com> wrote:
+> 
+> On Mon, Aug 9, 2021 at 8:27 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > The MMIO timer base address gets published after we have registered
+> > the callbacks and the interrupt handler, which is... a bit dangerous.
+> >
+> > Fix this by moving the base address publication to the point where
+> > we register the timer, and expose a pointer to the timer structure
+> > itself rather than a naked value.
+> >
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> Is this patch stable-worthy? I take it there haven't been any reports
+> of issues, though this seems rather perilous.
 
-On Tue, Jul 27, 2021 at 3:30 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> CANFD block on RZ/G2L SoC is almost identical to one found on
-> R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
-> are split into different sources and the IP doesn't divide (1/2)
-> CANFD clock within the IP.
->
-> This patch adds compatible string for RZ/G2L family and splits
-> the irq handlers to accommodate both RZ/G2L and R-Car Gen3 SoC's.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+It *could* deserve a Cc stable, although I suspect it doesn't easily
+fall over with the current code:
 
-Thanks for your patch!
+- When programming a timer, the driver uses the base contained in
+  struct arch_timer, and derived from the clock_event_device.
+- As long as you don't need to read the counter, you are good (the
+  whole point of using TVAL is that you avoid reading the counter).
 
-I've just noticed a set of silly typos:
+It is only if someone called into the standalone counter accessor that
+there would be a firework, and that's rather unlikely.
 
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
+Thanks,
 
-> +static void rcar_canfd_handle_global_recieve(struct rcar_canfd_global *gpriv, u32 ch)
-
-receive (everywhere)
-
-Gr{oetje,eeting}s,
-
-                        Geert
+	M.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Without deviation from the norm, progress is not possible.
