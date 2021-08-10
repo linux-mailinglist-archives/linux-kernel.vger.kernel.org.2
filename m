@@ -2,204 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A479C3E82C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894BB3E822F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236745AbhHJSRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240140AbhHJSPg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:15:36 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0DCC04A4D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:51:48 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id f6so2168086vso.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ixsYQui2jeYMyfqkYaqyNfXnRwT6Ph0OTuv9xBbWMrk=;
-        b=w7ECOFWudHs/4QrFGC/RhIsfTa9FFhv918ENySOnC1KvEwtP3WDQJvlq2JlCw7zf5q
-         UkXjbUZnALHx0fVp7wxKF+bsO4Mpf3by64V628Wo7thD5MpCc37tqAJi7i63NEIMqdiH
-         ZuU7ULEvm8KwWVYSefyzOvwCRgXw1s1FQT79i5E2FbQW5E/b1RQVNlvXx9szQDy9PbYU
-         5kAy/ERGEivefdVo9SanfXAG0s7kKzyAoZ9vHbSUr7q5Q8ODaV64gZjdWIRZ0SgapaAc
-         /TWFM1eY0lRyu4EsbgKxOAl2bq1R96i8dkgX/0xJ863GMaZAACxj9xt1oxEkB+Esscf0
-         MxOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ixsYQui2jeYMyfqkYaqyNfXnRwT6Ph0OTuv9xBbWMrk=;
-        b=XEMB9DGp+mwNhJTsJvH2jvbQQV9YoABsTXYqt9io+n/M1hBx0xlty4I88ytzXiWxb8
-         MbbXPhcLET6Q6xwEJjjmBvcODdhnKiCVRaYje76y9GjHfkaiTp2sff4/jgdLx3q7C/WR
-         UfxSIA+oDB7iVpAxheLpTFaxYqBSQRpmyBNQo+1/9Bi+uAF9anY+JLdLGSo8TAO5uK2/
-         4Q6J2DwFcLhYbK7E3kD1XyqwmLHCGNJDHl9TaTLKcOGBFTakOCv1h7tj+TSrO4LK9aN0
-         Ddvq2i0eiQbx2FnmUai8dXMGb9h/S34Ag6rm7IsXcCkl0slUcxw33tR/kYxDr9llIfKy
-         CBTQ==
-X-Gm-Message-State: AOAM530355sCyWct5MLnXbmjROl/a2gjx7rrTRbJvuzj/dZGQxtG1DlF
-        1uR9vkQXdNd3yovUvItOI62oYct4uKj9PWiq1BgZBA==
-X-Google-Smtp-Source: ABdhPJzweNNCvyNVtNVRSwEpNxbDMRb8ENoISFvROkEAo2V1XAvxarYlKVZHy7LYOrjcViHw5Qofq2X1sLL8D87aZqI=
-X-Received: by 2002:a67:c414:: with SMTP id c20mr14665309vsk.27.1628617907216;
- Tue, 10 Aug 2021 10:51:47 -0700 (PDT)
+        id S239204AbhHJSFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:05:00 -0400
+Received: from mga04.intel.com ([192.55.52.120]:65508 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235141AbhHJSA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:00:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213102075"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="213102075"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 10:52:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="570864967"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 10 Aug 2021 10:52:01 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 833FBF9; Tue, 10 Aug 2021 20:51:44 +0300 (EEST)
+Date:   Tue, 10 Aug 2021 20:51:44 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
+Message-ID: <20210810175144.uqlddcicyrweqb4j@black.fi.intel.com>
+References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+ <4b80289a-07a4-bf92-9946-b0a8afb27326@intel.com>
+ <20210810151548.4exag5uj73bummsr@black.fi.intel.com>
+ <82b8836f-a467-e5ff-08f3-704a85b9faa0@intel.com>
+ <20210810173124.vzxpluaepdfe5aum@black.fi.intel.com>
+ <51d9168c-ac14-0907-79b3-5d4dd46f92d6@intel.com>
 MIME-Version: 1.0
-References: <20210810093145.26153-1-krzysztof.kozlowski@canonical.com> <20210810093145.26153-2-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210810093145.26153-2-krzysztof.kozlowski@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 10 Aug 2021 20:51:35 +0300
-Message-ID: <CAPLW+4njX-R2e66qcCz=OT_bYKTRLHTH4nFv==EEovJyjN8qAg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] dt-bindings: clock: samsung: convert Exynos5250 to dtschema
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51d9168c-ac14-0907-79b3-5d4dd46f92d6@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 at 12:32, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> Convert Samsung Exynos5250 clock controller bindings to DT schema format
-> using json-schema.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  .../bindings/clock/exynos5250-clock.txt       | 41 ----------------
->  .../bindings/clock/samsung,exynos-clock.yaml  | 48 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  3 files changed, 49 insertions(+), 41 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/clock/exynos5250-clock.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
->
-> diff --git a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt b/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
-> deleted file mode 100644
-> index aff266a12eeb..000000000000
-> --- a/Documentation/devicetree/bindings/clock/exynos5250-clock.txt
-> +++ /dev/null
-> @@ -1,41 +0,0 @@
-> -* Samsung Exynos5250 Clock Controller
-> -
-> -The Exynos5250 clock controller generates and supplies clock to various
-> -controllers within the Exynos5250 SoC.
-> -
-> -Required Properties:
-> -
-> -- compatible: should be one of the following.
-> -  - "samsung,exynos5250-clock" - controller compatible with Exynos5250 SoC.
-> -
-> -- reg: physical base address of the controller and length of memory mapped
-> -  region.
-> -
-> -- #clock-cells: should be 1.
-> -
-> -Each clock is assigned an identifier and client nodes can use this identifier
-> -to specify the clock which they consume.
-> -
-> -All available clocks are defined as preprocessor macros in
-> -dt-bindings/clock/exynos5250.h header and can be used in device
-> -tree sources.
-> -
-> -Example 1: An example of a clock controller node is listed below.
-> -
-> -       clock: clock-controller@10010000 {
-> -               compatible = "samsung,exynos5250-clock";
-> -               reg = <0x10010000 0x30000>;
-> -               #clock-cells = <1>;
-> -       };
-> -
-> -Example 2: UART controller node that consumes the clock generated by the clock
-> -          controller. Refer to the standard clock bindings for information
-> -          about 'clocks' and 'clock-names' property.
-> -
-> -       serial@13820000 {
-> -               compatible = "samsung,exynos4210-uart";
-> -               reg = <0x13820000 0x100>;
-> -               interrupts = <0 54 0>;
-> -               clocks = <&clock CLK_UART2>, <&clock CLK_SCLK_UART2>;
-> -               clock-names = "uart", "clk_uart_baud0";
-> -       };
-> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
-> new file mode 100644
-> index 000000000000..cd6567bd8cc7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos-clock.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/samsung,exynos-clock.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung Exynos SoC clock controller
-> +
-> +maintainers:
-> +  - Chanwoo Choi <cw00.choi@samsung.com>
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
-> +  - Tomasz Figa <tomasz.figa@gmail.com>
-> +
-> +description: |
-> +  All available clocks are defined as preprocessor macros in
-> +  dt-bindings/clock/ headers.
-> +
-> +properties:
-> +  compatible:
-> +    const: samsung,exynos5250-clock
-> +
-> +  assigned-clocks: true
-> +  assigned-clock-parents: true
-> +  assigned-clock-rates: true
-> +  clocks: true
-> +
-> +  "#clock-cells":
-> +    const: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - "#clock-cells"
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/exynos5250.h>
-> +    clock: clock-controller@10010000 {
-> +        compatible = "samsung,exynos5250-clock";
-> +        reg = <0x10010000 0x30000>;
-> +        #clock-cells = <1>;
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 36aee8517ab0..2dbacacac3f5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16491,6 +16491,7 @@ L:      linux-samsung-soc@vger.kernel.org
->  S:     Supported
->  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/snawrocki/clk.git
->  F:     Documentation/devicetree/bindings/clock/exynos*.txt
+On Tue, Aug 10, 2021 at 10:36:21AM -0700, Dave Hansen wrote:
+> > The difference is going to be substantially lower once we get it optimized
+> > properly.
+> 
+> What does this mean?  Is this future work in the kernel or somewhere in
+> the TDX hardware/firmware which will speed things up?
 
-Are there any exynos*.txt bindings actually left after this series? If
-no, maybe it's worth to remove this line while at it.
+Kernel has to be changed to accept memory in 2M and 1G chunks where
+possible. The interface exists and described in spec, but not yet used in
+guest kernel.
 
-> +F:     Documentation/devicetree/bindings/clock/samsung,*.yaml
->  F:     Documentation/devicetree/bindings/clock/samsung,s3c*
->  F:     Documentation/devicetree/bindings/clock/samsung,s5p*
->  F:     drivers/clk/samsung/
-> --
-> 2.30.2
->
+It would cut hypercall overhead dramatically. It makes upfront memory
+accept more bearable and lowers latency of lazy memory accept. So I expect
+the gap being not 20x, but like 3-5x (which is still huge).
+
+-- 
+ Kirill A. Shutemov
