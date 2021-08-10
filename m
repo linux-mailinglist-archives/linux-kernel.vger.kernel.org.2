@@ -2,384 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446FA3E8507
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA893E8509
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234056AbhHJVPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:15:49 -0400
-Received: from smtp2.de.opalstack.com ([139.162.136.213]:38352 "EHLO
-        smtp2.de.opalstack.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234018AbhHJVPq (ORCPT
+        id S234090AbhHJVQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231894AbhHJVQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:15:46 -0400
-Received: from jason.localnet (host-37-191-188-128.lynet.no [37.191.188.128])
-        by smtp2.de.opalstack.com (Postfix) with ESMTPSA id B8ED6127D44;
-        Tue, 10 Aug 2021 21:15:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boddie.org.uk;
-        s=dkim; t=1628630120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7hFFJwU21ENsBkO8LzpFRzh6F0cRYBvrYDtycYF0BS0=;
-        b=PKLd8TFZ9avw8wN7ibfnzjpe7Du5SYhghj++qBLvffTtNgjA0rXAr+XAVqBIXkiBFAoXXO
-        YQMLxg+GgP2NGO1dz4W42MfVRH2xtfy4tTpQdUAWq2fzj2nfmjp3ncxY6QsCgpk+0KCuAd
-        ggb2apw1LtL0bzem3K3ndgsnPVMT+Ag=
-From:   Paul Boddie <paul@boddie.org.uk>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>, list@opendingux.net,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Subject: Re: [Letux-kernel] [PATCH 8/8] drm/ingenic: Attach bridge chain to encoders
-Date:   Tue, 10 Aug 2021 23:15:12 +0200
-Message-ID: <1766447.FbDIzoYTkO@jason>
-In-Reply-To: <OV5MXQ.C3JR71EBG5P51@crapouillou.net>
-References: <20210808134526.119198-1-paul@crapouillou.net> <2242071.3D3ZAXhqrE@jason> <OV5MXQ.C3JR71EBG5P51@crapouillou.net>
+        Tue, 10 Aug 2021 17:16:08 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEF1C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:15:46 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id k2so23042577plk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RGyN6B+oepLK5COlIQIu0Zg6xm5eWTbyTPOp1hx9GWk=;
+        b=qroWg+lyQTF5da3CrND6OLNSNWVz6DyWAF8VgL1fo2SJHuwXB9YWKauFqcX85LOkmy
+         8RVT2SbtEeyj86T+BYpGrorwejhONijGBfF5Um2s5pWADhIRA4Pm7Cg41m/qwitli0Yb
+         1CJHatNT0IhskHx9iJH8qfrmUSheZNF1QUNWk4sTlYDGzVVDSTiCgGRJgWLdeLm3i92y
+         9g+28RHSbvrWvWGLYZoIlrdsc0Yv741/j2sC5seihl0fLGS+xz/csEri2x5YveEoazvl
+         F1ok1vfOagpdqz0MaSXXmBlljyp7n8hHCD9j2Pq5Qk4TM3XqwXa9KZsyP2/kFI0JVCET
+         dv9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RGyN6B+oepLK5COlIQIu0Zg6xm5eWTbyTPOp1hx9GWk=;
+        b=KzvZYJ44I45Z5J40v40sRqZvD4W7asOXTh4GbUEFzDgkNjqL5TyDrPTieiZ/qflGhk
+         rEChPZ+EF/TMM/eP5ENP/yWZwm5Yx9w6pnbqeT/7+/RKq/r1xEMK5FRMZSQy7Ammz3Pu
+         ctc8ogGn9vlM3T5ZBYXm9DLISuMNkD/YE3BFGRKE2KHT0N1vlOY9aowD5JvGG9CMvVj3
+         80Yl5QeA/Z0QyshZ/6KPL45tIuKnzyTzADNDStiwqv0k8alqWm/rn5bES/feuuHv85cO
+         QxiRhBzeFh5PqKFIpSOmZBeKdwMJO0HqpA3LJfh+cQlhCH86VJrOleBs38aWZydpC3yR
+         Lofg==
+X-Gm-Message-State: AOAM533iBMnkVptOElhSG6oTjAEnSx6P8Zwa1OwPqGpFlRKTIj+oXOCJ
+        ZIUt1Fc+0do0XfQLGEf4ulQ=
+X-Google-Smtp-Source: ABdhPJyqemEnliLO65WklVw8TWQK4RO38BF68T6O14/5adEk0Fu0g4RN1erX9WU3VuiDs7YsMlf7KA==
+X-Received: by 2002:a17:90b:609:: with SMTP id gb9mr33751834pjb.156.1628630145855;
+        Tue, 10 Aug 2021 14:15:45 -0700 (PDT)
+Received: from localhost (g195.61-45-49.ppp.wakwak.ne.jp. [61.45.49.195])
+        by smtp.gmail.com with ESMTPSA id j187sm24731451pfb.132.2021.08.10.14.15.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 14:15:45 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 06:15:43 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        kernel test robot <lkp@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v2] openrisc: Fix compiler warnings in setup
+Message-ID: <YRLsf2VyGTQVapuV@antec>
+References: <20210808135437.3640549-1-shorne@gmail.com>
+ <8a830ab7-6b66-1ca9-bd73-fc1551def648@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.55
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a830ab7-6b66-1ca9-bd73-fc1551def648@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 10 August 2021 09:52:36 CEST Paul Cercueil wrote:
->=20
-> Le mar., ao=FBt 10 2021 at 01:17:20 +0200, Paul Boddie <paul@boddie.org.u=
-k> a=20
-=E9crit :
-> >=20
-> > But then the reported error occurs in the DRM driver:
-> >=20
-> > ingenic-drm 13050000.lcdc0: Unable to init connector
-> > ingenic-drm: probe of 13050000.lcdc0 failed with error -22
-> >=20
-> > This originates in a call to drm_bridge_connector_init from
-> > ingenic_drm_bind:
-> >=20
-> > connector =3D drm_bridge_connector_init(drm, encoder);
-> >=20
-> > The invoked function iterates over the registered bridges, one of
-> > which seems to be the HDMI peripheral (it has bridge operations defined
-> > identically to those specified in the Synopsys driver), but the type
-> > member of the drm_bridge structure is set to 0
-> > (DRM_MODE_CONNECTOR_Unknown).
+On Mon, Aug 09, 2021 at 10:51:01AM -0700, Randy Dunlap wrote:
+> On 8/8/21 6:54 AM, Stafford Horne wrote:
+> > This was pointed out with the recent name change of or32_early_setup to
+> > or1k_early_setup.  Investigating the file I found a few other warnings
+> > so cleaning them up here.
+> > 
+> >      arch/openrisc/kernel/setup.c:220:13: warning: no previous prototype for 'or1k_early_setup' [-Wmissing-prototypes]
+> >        220 | void __init or1k_early_setup(void *fdt)
+> > 	  |             ^~~~~~~~~~~~~~~~
+> > 
+> > Fix this the missing or1k_early_setup prototype warning by adding an
+> > asm/setup.h file to define the prototype.
+> > 
+> >      arch/openrisc/kernel/setup.c:246:13: warning: no previous prototype for 'detect_unit_config' [-Wmissing-prototypes]
+> >        246 | void __init detect_unit_config(unsigned long upr, unsigned long mask,
+> > 	  |             ^~~~~~~~~~~~~~~~~~
+> > 
+> > The function detect_unit_config is not used, just remove it.
+> > 
+> >      arch/openrisc/kernel/setup.c:221: warning: Function parameter or member 'fdt' not described in 'or1k_early_setup'
+> > 
+> > Add @fdt docs to the function comment to suppress this warning.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Stafford Horne <shorne@gmail.com>
+> 
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Thanks.
 
-Although I had fancy ideas about finding the connector node in the device t=
-ree=20
-and populating the necessary type details on the bridge, I decided to just =
-add=20
-the following to the Synopsys driver's dw_hdmi_probe function:
+Thank you.
 
-hdmi->bridge.type =3D DRM_MODE_CONNECTOR_HDMIA;
-
-This then lets the above invocation succeed and the Ingenic DRM driver=20
-initialises. However, I get "Input Not Supported" on my display.
-
-Conveniently, when indicating the necessary boot arguments...
-
-env set bootargs ... drm.debug=3D0x3f
-
-=2E..as suggested to me on a previous occasion, the /sys/kernel/debug/dri/0/
-state file indicates the following:
-
-plane[31]: plane-0
-        crtc=3Dcrtc-0
-        fb=3D36  =20
-                allocated by =3D Xorg
-                refcount=3D2
-                format=3DXR24 little-endian (0x34325258)
-                modifier=3D0x0
-                size=3D1280x1024
-                layers:=20
-                        size[0]=3D1280x1024
-                        pitch[0]=3D5120
-                        offset[0]=3D0
-                        obj[0]:=20
-                                name=3D0
-                                refcount=3D3
-                                start=3D00010000
-                                size=3D5242880
-                                imported=3Dno
-                                paddr=3D0x00c00000
-                                vaddr=3D3eb0c080
-        crtc-pos=3D1280x1024+0+0
-        src-pos=3D1280.000000x1024.000000+0.000000+0.000000
-        rotation=3D1
-        normalized-zpos=3D0
-        color-encoding=3DITU-R BT.601 YCbCr
-        color-range=3DYCbCr limited range
-plane[33]: plane-1
-        crtc=3D(null)
-        fb=3D0
-        crtc-pos=3D0x0+0+0
-        src-pos=3D0.000000x0.000000+0.000000+0.000000
-        rotation=3D1
-        normalized-zpos=3D0
-        color-encoding=3DITU-R BT.601 YCbCr
-        color-range=3DYCbCr limited range
-crtc[32]: crtc-0
-        enable=3D1
-        active=3D1
-        self_refresh_active=3D0
-        planes_changed=3D0
-        mode_changed=3D0
-        active_changed=3D0
-        connectors_changed=3D0
-        color_mgmt_changed=3D0
-        plane_mask=3D1
-        connector_mask=3D1
-        encoder_mask=3D1
-        mode: "": 60 108000 1280 1328 1440 1688 1024 1025 1028 1066 0x0 0x5
-connector[35]: HDMI-A-1
-        crtc=3Dcrtc-0
-        self_refresh_aware=3D0
-
-I suspect that we may be dealing with an incompatible bus format again, but=
- I=20
-may be quite wrong about that, too.
-
-Here is the result of running modetest using...
-
-sudo ./modetest -D /dev/dri/card0 -M ingenic-drm
-
-Encoders:
-id      crtc    type    possible crtcs  possible clones
-34      32      DPI     0x00000001      0x00000001
-
-Connectors:
-id      encoder status          name            size (mm)       modes  =20
-encoders
-35      34      connected       HDMI-A-1        340x270         17      34
-  modes:
-        index name refresh (Hz) hdisp hss hse htot vdisp vss vse vtot)
-  #0 1280x1024 60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 flags:=
-=20
-phsync, pvsync; type: preferred, driver
-  #1 1280x1024 75.02 1280 1296 1440 1688 1024 1025 1028 1066 135000 flags:=
-=20
-phsync, pvsync; type: driver
-  #2 1280x960 60.00 1280 1376 1488 1800 960 961 964 1000 108000 flags: phsy=
-nc,=20
-pvsync; type: driver
-  #3 1152x864 75.00 1152 1216 1344 1600 864 865 868 900 108000 flags: phsyn=
-c,=20
-pvsync; type: driver
-  #4 1024x768 75.03 1024 1040 1136 1312 768 769 772 800 78750 flags: phsync=
-,=20
-pvsync; type: driver
-  #5 1024x768 70.07 1024 1048 1184 1328 768 771 777 806 75000 flags: nhsync=
-,=20
-nvsync; type: driver
-  #6 1024x768 60.00 1024 1048 1184 1344 768 771 777 806 65000 flags: nhsync=
-,=20
-nvsync; type: driver
-  #7 832x624 74.55 832 864 928 1152 624 625 628 667 57284 flags: nhsync,=20
-nvsync; type: driver
-  #8 800x600 75.00 800 816 896 1056 600 601 604 625 49500 flags: phsync,=20
-pvsync; type: driver
-  #9 800x600 72.19 800 856 976 1040 600 637 643 666 50000 flags: phsync,=20
-pvsync; type: driver
-  #10 800x600 60.32 800 840 968 1056 600 601 605 628 40000 flags: phsync,=20
-pvsync; type: driver
-  #11 800x600 56.25 800 824 896 1024 600 601 603 625 36000 flags: phsync,=20
-pvsync; type: driver
-  #12 640x480 75.00 640 656 720 840 480 481 484 500 31500 flags: nhsync,=20
-nvsync; type: driver
-  #13 640x480 72.81 640 664 704 832 480 489 492 520 31500 flags: nhsync,=20
-nvsync; type: driver
-  #14 640x480 66.67 640 704 768 864 480 483 486 525 30240 flags: nhsync,=20
-nvsync; type: driver
-  #15 640x480 59.94 640 656 752 800 480 490 492 525 25175 flags: nhsync,=20
-nvsync; type: driver
-  #16 720x400 70.08 720 738 846 900 400 412 414 449 28320 flags: nhsync,=20
-pvsync; type: driver
-  props:
-        1 EDID:=20
-                flags: immutable blob
-                blobs:
-
-                value: =20
-                        00ffffffffffff00047232ad01010101
-                        2d0e010380221b782aaea5a6544c9926
-                        145054bfef0081808140714f01010101
-                        010101010101302a009851002a403070
-                        1300520e1100001e000000ff00343435
-                        3030353444454330300a000000fc0041
-                        4c313731350a202020202020000000fd
-                        00384c1e520e000a2020202020200051
-        2 DPMS:=20
-                flags: enum
-                enums: On=3D0 Standby=3D1 Suspend=3D2 Off=3D3
-                value: 3
-        5 link-status:
-                flags: enum
-                enums: Good=3D0 Bad=3D1
-                value: 0
-        6 non-desktop:
-                flags: immutable range
-                values: 0 1
-                value: 0
-        4 TILE:=20
-                flags: immutable blob
-                blobs:
-
-                value:
-        20 CRTC_ID:
-                flags: object
-                value: 32
-
-CRTCs:
-id      fb      pos     size
-32      36      (0,0)   (1280x1024)
-  #0  60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 flags: phsync,=20
-pvsync; type:
-  props:
-        22 ACTIVE:
-                flags: range
-                values: 0 1
-                value: 0
-        23 MODE_ID:
-                flags: blob
-                blobs:
-
-                value: =20
-                        e0a5010000053005a005980600000004
-                        010404042a0400003c00000005000000
-                        00000000000000000000000000000000
-                        00000000000000000000000000000000
-                        00000000
-        19 OUT_FENCE_PTR:
-                flags: range
-                values: 0 18446744073709551615
-                value: 0
-        24 VRR_ENABLED:
-                flags: range
-                values: 0 1
-                value: 0
-        28 GAMMA_LUT:
-                flags: blob
-                blobs:
-
-                value:
-        29 GAMMA_LUT_SIZE:
-                flags: immutable range
-                values: 0 4294967295
-                value: 256
-
-Planes:
-id      crtc    fb      CRTC x,y        x,y     gamma size      possible cr=
-tcs
-31      32      36      0,0             0,0     0               0x00000001
-  formats: XR15 RG16 RG24 XR24 XR30
-  props:
-        8 type:=20
-                flags: immutable enum
-                enums: Overlay=3D0 Primary=3D1 Cursor=3D2
-                value: 1
-        17 FB_ID:
-                flags: object
-                value: 36
-        18 IN_FENCE_FD:
-                flags: signed range
-                values: -1 2147483647
-                value: -1
-        20 CRTC_ID:
-                flags: object
-                value: 32
-        13 CRTC_X:
-                flags: signed range
-                values: -2147483648 2147483647
-                value: 0
-        14 CRTC_Y:
-                flags: signed range
-                values: -2147483648 2147483647
-                value: 0
-        15 CRTC_W:
-                flags: range
-                values: 0 2147483647
-                value: 1280
-        16 CRTC_H:
-                flags: range
-                values: 0 2147483647
-                value: 1024
-        9 SRC_X:
-                flags: range
-                values: 0 4294967295
-                value: 0
-        10 SRC_Y:
-                flags: range
-                values: 0 4294967295
-                value: 0
-        11 SRC_W:
-                flags: range
-                values: 0 4294967295
-                value: 83886080
-        12 SRC_H:
-                flags: range
-                values: 0 4294967295
-                value: 67108864
-33      0       0       0,0             0,0     0               0x00000001
-  formats: C8   XR15 RG16 RG24 XR24 XR30
-  props:
-        8 type:=20
-                flags: immutable enum
-                enums: Overlay=3D0 Primary=3D1 Cursor=3D2
-                value: 0
-        17 FB_ID:
-                flags: object
-                value: 0
-        18 IN_FENCE_FD:
-                flags: signed range
-                values: -1 2147483647
-                value: -1
-        20 CRTC_ID:
-                flags: object
-                value: 0
-        13 CRTC_X:
-                flags: signed range
-                values: -2147483648 2147483647
-                value: 0
-        14 CRTC_Y:
-                flags: signed range
-                values: -2147483648 2147483647
-                value: 0
-        15 CRTC_W:
-                flags: range
-                values: 0 2147483647
-                value: 0
-        16 CRTC_H:
-                flags: range
-                values: 0 2147483647
-                value: 0
-        9 SRC_X:
-                flags: range
-                values: 0 4294967295
-                value: 0
-        10 SRC_Y:
-                flags: range
-                values: 0 4294967295
-                value: 0
-        11 SRC_W:
-                flags: range
-                values: 0 4294967295
-                value: 0
-        12 SRC_H:
-                flags: range
-                values: 0 4294967295
-                value: 0
-
-=46rame buffers:
-id      size    pitch
-
-Just in case that means anything to anyone.
-
-Paul
-
-
+> > ---
+> > 
+> > Changes since v1:
+> >   - Add #include <linux/init.h> to fix compile failure.  Pointed out by robot and
+> >     randy.
+> > 
+> >   arch/openrisc/include/asm/setup.h | 15 +++++++++++++++
+> >   arch/openrisc/kernel/setup.c      | 16 +---------------
+> >   2 files changed, 16 insertions(+), 15 deletions(-)
+> >   create mode 100644 arch/openrisc/include/asm/setup.h
+> > 
+> > diff --git a/arch/openrisc/include/asm/setup.h b/arch/openrisc/include/asm/setup.h
+> > new file mode 100644
+> > index 000000000000..9acbc5deda69
+> > --- /dev/null
+> > +++ b/arch/openrisc/include/asm/setup.h
+> > @@ -0,0 +1,15 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2021 Stafford Horne
+> > + */
+> > +#ifndef _ASM_OR1K_SETUP_H
+> > +#define _ASM_OR1K_SETUP_H
+> > +
+> > +#include <linux/init.h>
+> > +#include <asm-generic/setup.h>
+> > +
+> > +#ifndef __ASSEMBLY__
+> > +void __init or1k_early_setup(void *fdt);
+> > +#endif
+> > +
+> > +#endif /* _ASM_OR1K_SETUP_H */
+> > diff --git a/arch/openrisc/kernel/setup.c b/arch/openrisc/kernel/setup.c
+> > index 7eddcac0ef2f..0cd04d936a7a 100644
+> > --- a/arch/openrisc/kernel/setup.c
+> > +++ b/arch/openrisc/kernel/setup.c
+> > @@ -210,6 +210,7 @@ void __init setup_cpuinfo(void)
+> >   /**
+> >    * or1k_early_setup
+> > + * @fdt: pointer to the start of the device tree in memory or NULL
+> >    *
+> >    * Handles the pointer to the device tree that this kernel is to use
+> >    * for establishing the available platform devices.
+> > @@ -243,21 +244,6 @@ static inline unsigned long extract_value(unsigned long reg, unsigned long mask)
+> >   	return mask & reg;
+> >   }
+> > -void __init detect_unit_config(unsigned long upr, unsigned long mask,
+> > -			       char *text, void (*func) (void))
+> > -{
+> > -	if (text != NULL)
+> > -		printk("%s", text);
+> > -
+> > -	if (upr & mask) {
+> > -		if (func != NULL)
+> > -			func();
+> > -		else
+> > -			printk("present\n");
+> > -	} else
+> > -		printk("not present\n");
+> > -}
+> > -
+> >   /*
+> >    * calibrate_delay
+> >    *
+> > 
+> 
+> 
+> -- 
+> ~Randy
+> 
