@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80443E549F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9415B3E54A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237651AbhHJHxI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 03:53:08 -0400
-Received: from aposti.net ([89.234.176.197]:41390 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237608AbhHJHxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:53:06 -0400
-Date:   Tue, 10 Aug 2021 09:52:36 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [Letux-kernel] [PATCH 8/8] drm/ingenic: Attach bridge chain to
- encoders
-To:     Paul Boddie <paul@boddie.org.uk>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>, list@opendingux.net,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Message-Id: <OV5MXQ.C3JR71EBG5P51@crapouillou.net>
-In-Reply-To: <2242071.3D3ZAXhqrE@jason>
-References: <20210808134526.119198-1-paul@crapouillou.net>
-        <5DADB00D-1E0E-4B3A-86CE-4E98A5DC04DE@goldelico.com>
-        <0TYKXQ.YAJ6UYG2GTXS1@crapouillou.net> <2242071.3D3ZAXhqrE@jason>
+        id S237680AbhHJHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237608AbhHJHxr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 03:53:47 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26083C061796
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:53:26 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso1271349wms.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=q5Khjq0P5dUoi4+YoKsNSXqU9T/AqXo0eDbT+tyOlOw=;
+        b=LafTDgc2DN3RcqO6tTAoD3+Cq7kpvrALwXF0K+WUYXqjOabk/n1f38wRxaBYOSWQZd
+         sGuQesIt/6/r+zg7ex6u3bDbHOiQALbnxJbne6eSCGtuLWgNTQNk0N7XPoYpqcsn3paB
+         Lc7+Kz3ud4kxkfmI1QVcHW94FZwJNi4n+2uaC/cTXjnfuyJW6f+8bD1bZe2HAeHM1gr4
+         cEUVHFj7TsEiT3Fvg2SyIkkg6nAm9Siz31hy/nRtoIAXQPTybNYo77bh4hJr1bwxTHG2
+         4NrI7PFgJDO4VdE5ops5VuvPf6iCJWeT1qYtN+gJua9K6jgjmB2pQnttEG6YiJ5aA3xt
+         aujg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=q5Khjq0P5dUoi4+YoKsNSXqU9T/AqXo0eDbT+tyOlOw=;
+        b=MpabAl+BwfX1JD2Tj+QbxYrBMzXO960XV82NaDahvsJ7V76V4GNOtpoMnd3wc45l8q
+         bZd4WdAJqzB7u+SqmQLiFIJzstqmab1olchBN84D+b/4v6jh+3sPN8Sn1CCGm7wU8WD+
+         fHAnFD2CNef5Z+bCHd36SzmdhZEx45KbkJBrsYc0zTcgkUw12PWWXjANGzD3g6V4jq0e
+         /jBVrSLY4zjOfD0wj9Nj6hFiixmZ42M6wscEtjZ0S4NMOzSeWXIQBB3Usky4knKBVzxd
+         ph3z6IQuE0GI4rI2Lv+NptxJg1Pe1toJ2dVBrD1ZdX/L0XmAhhpdWx8DTp7f6BRk+ZLx
+         EO/A==
+X-Gm-Message-State: AOAM533gXj4zy62W2P/1yohFH6Fob27q6T+/Mp7Tf8Qnt9f2N9iPs0eC
+        7+BFhpQcTZcvq7bnS6eD+GpsOw==
+X-Google-Smtp-Source: ABdhPJwlgmtCDjJTJh+p90vQ43ECslBWsc4t7nliVX+YUVzINdgdRAl9M4yUdcAej9aVeH6dFgBg4w==
+X-Received: by 2002:a1c:43c1:: with SMTP id q184mr3074006wma.173.1628582004750;
+        Tue, 10 Aug 2021 00:53:24 -0700 (PDT)
+Received: from google.com ([95.146.142.85])
+        by smtp.gmail.com with ESMTPSA id o24sm1826269wmm.37.2021.08.10.00.53.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 00:53:24 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 08:53:21 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v10 02/11] mfd: simple-mfd-i2c: Add a Kconfig name
+Message-ID: <YRIwcXggWWj1+DDf@google.com>
+References: <20210807103940.152-1-alistair@alistair23.me>
+ <20210807103940.152-3-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210807103940.152-3-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Sat, 07 Aug 2021, Alistair Francis wrote:
 
-Le mar., ao˚t 10 2021 at 01:17:20 +0200, Paul Boddie 
-<paul@boddie.org.uk> a Ècrit :
-> On Monday, 9 August 2021 18:22:12 CEST Paul Cercueil wrote:
->> 
->>  Le lun., ao˚t 9 2021 at 13:14:03 +0200, H. Nikolaus Schaller
-> <hns@goldelico.com> a Ècrit :
->>  >
->>  > quick feedback: our HDMI on top compiles fine after fixing 2 merge
->>  > conflicts, but dos not yet work.
->>  > Will need some spare time with access to the CI20 board to 
->> research
->>  > the issue, i.e. can not give feedback immediately.
->> 
->>  Alright, no problem. I'll be back home in about 2 weeks and then I 
->> can
->>  test on my CI20 as well.
-> 
-> Just for reference, I looked into this initialisation failure. The 
-> HDMI
-> peripheral driver gets initialised satisfactorily...
-> 
-> dw-hdmi-ingenic 10180000.hdmi: Detected HDMI TX controller v1.31a 
-> with HDCP
-> (DWC HDMI 3D TX PHY)
-> dw-hdmi-ingenic 10180000.hdmi: registered DesignWare HDMI I2C bus 
-> driver
-> 
-> But then the reported error occurs in the DRM driver:
-> 
-> ingenic-drm 13050000.lcdc0: Unable to init connector
-> ingenic-drm: probe of 13050000.lcdc0 failed with error -22
-> 
-> This originates in a call to drm_bridge_connector_init from 
-> ingenic_drm_bind:
-> 
-> connector = drm_bridge_connector_init(drm, encoder);
-> 
-> The invoked function iterates over the registered bridges, one of 
-> which seems
-> to be the HDMI peripheral (it has bridge operations defined 
-> identically to
-> those specified in the Synopsys driver), but the type member of the 
-> drm_bridge
-> structure is set to 0 (DRM_MODE_CONNECTOR_Unknown).
-> 
-> I might expect the bridge to expose a type acquired from its 
-> connector, but I
-> don't see this propagation occurring in the Synopsys driver: 
-> dw_hdmi_probe
-> sets the bridge operations and other members of the drm_bridge 
-> structure, but
-> it doesn't set the type.
-> 
-> Also, it might be possible that dw_hdmi_connector_detect (exposed as 
-> the
-> detect operation) is not getting called, and this would explain why 
-> the
-> bridge's connector member does not have the connector_type set, 
-> either (since
-> it is also set to 0).
+You need a better commit message.
 
- From what I understand the last bridge in the chained list is supposed 
-to set the connector type. The HDMI driver's probe function should get 
-a pointer to the next bridge in the queue and attach it (see how 
-ite-it66121.c does it). The last bridge in the queue should be 
-"hdmi-connector" (display-connector.c) which will effectively set the 
-connector type.
+What are you doing?
+Why are you doing it?
+What happens if you don't do it?
 
-Cheers,
--Paul
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  drivers/mfd/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
+I guess there's no harm in it.
 
+That does mean you'll need a bespoke defconfig to run your build,
+which is not advisable for generic maintenance and testing purposes.
+What architecture does your H/W operate on?
+
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index 6a3fd2d75f96..09a939f8b7ff 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1176,7 +1176,7 @@ config MFD_SI476X_CORE
+>  	  module will be called si476x-core.
+>  
+>  config MFD_SIMPLE_MFD_I2C
+> -	tristate
+> +	tristate "Simple MFD device"
+
+That's not right.  You're saying:
+
+  "Simple Multi-Functional Device device"
+
+It should be something more like:
+
+  "Simple Multi-Functional Device support (I2C)"
+
+>  	depends on I2C
+>  	select REGMAP_I2C
+>  	help
+
+-- 
+Lee Jones [ÊùéÁêºÊñØ]
+Senior Technical Lead - Developer Services
+Linaro.org ‚îÇ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
