@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8423C3E8010
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60423E7F17
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbhHJRqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:46:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34382 "EHLO mail.kernel.org"
+        id S234317AbhHJRhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234223AbhHJRmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:42:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50D92603E7;
-        Tue, 10 Aug 2021 17:38:41 +0000 (UTC)
+        id S231202AbhHJRf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:35:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93010610F7;
+        Tue, 10 Aug 2021 17:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617121;
-        bh=WQnjjGyEF9yLD7dMbwJsQUl7lQBzi6bSOE3gvj+9dI8=;
+        s=korg; t=1628616904;
+        bh=/8qEP94GP047ql9b9/UYZEt16UIrJCJTHmLMrxxOQtM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NwXlCBkCrAzgvE4FuWnaWfcFe98fNOXz9/zYPJf1Eek/Q6hbC7WCwBd6T2ur9fogx
-         kw5PDtqSmsxaT7iF6C/TnbvIwKLI+T0/1xnFMG3itlpEQeYcP+MpdVRxH+5uAYvdVT
-         yL2au1PAQlk2zqm+jjqXl+ymwEwdXyj8KsZjX7II=
+        b=BsV6UnxJf+/LTbBTFuYCQ0oS6D9lA+NyClDAjRCdXv59Fjd9omd0GV7w/MKcC4vcx
+         tf706Lim1YnQbCCjHYgW8e/WwMmTLq0+A+npuWY4wgEbqpajhzsIQ7OtFDpG4+SiNe
+         FhWqxNR7u0GQqfnwUrbXVX4EACZfr31HEZmbALDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 054/135] USB: serial: ch341: fix character loss at high transfer rates
-Date:   Tue, 10 Aug 2021 19:29:48 +0200
-Message-Id: <20210810172957.529461544@linuxfoundation.org>
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 16/85] spi: imx: mx51-ecspi: Fix low-speed CONFIGREG delay calculation
+Date:   Tue, 10 Aug 2021 19:29:49 +0200
+Message-Id: <20210810172948.751157893@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau <w@1wt.eu>
+From: Marek Vasut <marex@denx.de>
 
-commit 3c18e9baee0ef97510dcda78c82285f52626764b upstream.
+[ Upstream commit 53ca18acbe645656132fb5a329833db711067e54 ]
 
-The chip supports high transfer rates, but with the small default buffers
-(64 bytes read), some entire blocks are regularly lost. This typically
-happens at 1.5 Mbps (which is the default speed on Rockchip devices) when
-used as a console to access U-Boot where the output of the "help" command
-misses many lines and where "printenv" mangles the environment.
+The spi_imx->spi_bus_clk may be uninitialized and thus also zero in
+mx51_ecspi_prepare_message(), which would lead to division by zero
+in kernel. Since bitbang .setup_transfer callback which initializes
+the spi_imx->spi_bus_clk is called after bitbang prepare_message
+callback, iterate over all the transfers in spi_message, find the
+one with lowest bus frequency, and use that bus frequency for the
+delay calculation.
 
-The FTDI driver doesn't suffer at all from this. One difference is that
-it uses 512 bytes rx buffers and 256 bytes tx buffers. Adopting these
-values completely resolved the issue, even the output of "dmesg" is
-reliable. I preferred to leave the Tx value unchanged as it is not
-involved in this issue, while a change could increase the risk of
-triggering the same issue with other devices having too small buffers.
+Note that it is not possible to move this CONFIGREG delay back into
+the .setup_transfer callback, because that is invoked too late, after
+the GPIO chipselects were already configured.
 
-I verified that it backports well (and works) at least to 5.4. It's of
-low importance enough to be dropped where it doesn't trivially apply
-anymore.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/r/20210724152739.18726-1-w@1wt.eu
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 135cbd378eab ("spi: imx: mx51-ecspi: Reinstate low-speed CONFIGREG delay")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210726100102.5188-1-marex@denx.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/ch341.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-imx.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -853,6 +853,7 @@ static struct usb_serial_driver ch341_de
- 		.owner	= THIS_MODULE,
- 		.name	= "ch341-uart",
- 	},
-+	.bulk_in_size      = 512,
- 	.id_table          = id_table,
- 	.num_ports         = 1,
- 	.open              = ch341_open,
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 14cebcda0ccc..474d5a7fa95e 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -497,7 +497,9 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
+ 				      struct spi_message *msg)
+ {
+ 	struct spi_device *spi = msg->spi;
++	struct spi_transfer *xfer;
+ 	u32 ctrl = MX51_ECSPI_CTRL_ENABLE;
++	u32 min_speed_hz = ~0U;
+ 	u32 testreg, delay;
+ 	u32 cfg = readl(spi_imx->base + MX51_ECSPI_CONFIG);
+ 
+@@ -569,8 +571,20 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
+ 	 * be asserted before the SCLK polarity changes, which would disrupt
+ 	 * the SPI communication as the device on the other end would consider
+ 	 * the change of SCLK polarity as a clock tick already.
++	 *
++	 * Because spi_imx->spi_bus_clk is only set in bitbang prepare_message
++	 * callback, iterate over all the transfers in spi_message, find the
++	 * one with lowest bus frequency, and use that bus frequency for the
++	 * delay calculation. In case all transfers have speed_hz == 0, then
++	 * min_speed_hz is ~0 and the resulting delay is zero.
+ 	 */
+-	delay = (2 * 1000000) / spi_imx->spi_bus_clk;
++	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
++		if (!xfer->speed_hz)
++			continue;
++		min_speed_hz = min(xfer->speed_hz, min_speed_hz);
++	}
++
++	delay = (2 * 1000000) / min_speed_hz;
+ 	if (likely(delay < 10))	/* SCLK is faster than 100 kHz */
+ 		udelay(delay);
+ 	else			/* SCLK is _very_ slow */
+-- 
+2.30.2
+
 
 
