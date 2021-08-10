@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799863E865F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418BD3E8660
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhHJXS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
+        id S235367AbhHJXTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235258AbhHJXS1 (ORCPT
+        with ESMTP id S235258AbhHJXTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:18:27 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA04EC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:18:04 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id m3-20020a17090b0683b0290178cb50bc1aso746894pjz.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:18:04 -0700 (PDT)
+        Tue, 10 Aug 2021 19:19:36 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17711C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:19:14 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id t3so133983plg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=E8Aj/fL5iGPfl9iYHtcSD7Ifgdxa0r41M3PNgmyPyak=;
-        b=p/c5xE+4cJjJDX/cyiXUQQUoZPUgIToX7/lcdt/0nChru9fCTjdkOQKWFnEfc89zTy
-         7K5QPv+YdxATjxQmrBaMiRwC7OpCbfFfPqX+tkkOp6CKHA+kQo7jUi1xCJu8zWlDTzCY
-         j1m0sn8wybItzq3EUXjbnbbkJmbEslCtaPv+pWGLIgex3aJti2NzMB4uYj2A1Mo0n1jj
-         1VE5IleS3SOEF7sp684nd2fkMH7gnKe1oBP0qeiPiIMhoou83/SHhkq9Tq8gW1uIQS6O
-         BuA6CYlJma4k0TrNf3WfIWe3hLE7litvV1Se3P+FxnlaXZwMjWkAVNZoJVsAkX3gfaGW
-         l7UA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yCA36GlhulzbAlvlHtt61ilkxjPVScFxCkohpC2ykWk=;
+        b=FTA5YoMorv370+N11Fvss0cbmgz8Dj0PUif6S7Mxwx4JFXKANXI2ABB1FsnT+o0aO7
+         +2dmeWORjkoqKFVsB7/Qw6zRG/TQvMbVNiCXYy0hSkThjr1EZ39RPTNvShGWWI4kIWlw
+         PQ5+QQnfLZVsH+kO/8KgAqDvSSZi0nd73MhtbXiSqDsZV1SW/nAK2uc+p76eAMgF5a2k
+         Bh9h8RSzV0hSHuEA/rD5vjlvsiWxHlfme1acpRBbJeZYXHI831TMqbpR1O34+IhbXfBc
+         naKZQ3GprWfaZMjIFowhjAFkoqnRgjzOPHc3nKdkiX9e0ox6fsr/OSMedr37X0R/wK/R
+         hfVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=E8Aj/fL5iGPfl9iYHtcSD7Ifgdxa0r41M3PNgmyPyak=;
-        b=WQUmP+Q3+NrBrlVlIZWJNM/3vWW2C/CGkui3rtg35w9tp/drTWiOrq9e1LcfzLXIAe
-         9hjrzkfdRB1AUIhABkt1VBlTwwaMRLRPMGTEesp6EbZz+TQjzwP5KZCGzi+ew1wsMmBI
-         /cjQz4PeWyv757ERxj+Dmj2KEhMI7x0A0cl+Pxb5mi48lTflrkjPZ4cwVGlL4dKJirFp
-         686tBPCkaOKC6HSHBLg/3HiNNef3CUtNA1IJxwkB/1VeEBrf/4cU/FLZRS9kr++pmdKP
-         +nUOD+WPiYJQ8j4t3VF0K5iLtyGoflxQwEoRZAmLz5FuaA08lMdZ1ovjGDg18aAG1TJZ
-         M9ng==
-X-Gm-Message-State: AOAM5307QMNs66tzXNxx4m4KgdiqmGe8dmOnCBUKwr+ifd7iTr8G4lBQ
-        kqq1wdmh8Evu9Y1EgzJ/M8RZeVhTog==
-X-Google-Smtp-Source: ABdhPJyb51vgZGJ83rqquzLnLshtObvbPMhnS6d+bkM6fAJDJP8gMjmKZgFb1YsAnccZYEE6WYj9iue2xg==
-X-Received: from adelg-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:d1f])
- (user=adelg job=sendgmr) by 2002:a05:6a00:a94:b029:384:1dc6:7012 with SMTP id
- b20-20020a056a000a94b02903841dc67012mr31128194pfl.53.1628637484118; Tue, 10
- Aug 2021 16:18:04 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 23:17:55 +0000
-Message-Id: <20210810231755.1743524-1-adelg@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH v2] arm64: clean vdso & vdso32 files
-From:   Andrew Delgadillo <adelg@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrew Delgadillo <adelg@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yCA36GlhulzbAlvlHtt61ilkxjPVScFxCkohpC2ykWk=;
+        b=oHqxaHQwceY1yXcn6LGQh/5yLEqcinnRX/Qf5v0clAj2ujPaaIim6fMTGudwpvzBsq
+         /CcDj6scwY4JSH102BAuslVb9AmDWqC+9uYVmOSkrppfdA1u36rgZAiqbtS+boOv8uzm
+         OuZw/rKF7V3Ye50IuLFwn35xmtcBik6z1INhshHPZH8FAUQw/suTmzzdFMhPkM/a1qKb
+         Cj7b5EC/l6q3mvK2bf9HMy3B7YstwvKolyOd+k8RU1BTIJTem4BdPmZmUwjiKlrxINyi
+         Zeuos2KIM41c5IlQLmBwVDclwqT95VnM5Zjc/vNksnZM5e1JbIFgJwBdqFIKR6FpAsih
+         rp7Q==
+X-Gm-Message-State: AOAM5304tffxW2Tn3cdkNvt45AOZvboIaOTNGHDf45h39KW2+Ji+PdPV
+        cAWozSwNuv0BDsjdCpdIX4x7+Dtkdbc=
+X-Google-Smtp-Source: ABdhPJykvF+abU0cmxkNq6XfHYQRr39iVCwiQ1J/YrOLO9x2Pff7iT0stXbHoYKphiplr7M1q3e9wg==
+X-Received: by 2002:a17:90b:3d8:: with SMTP id go24mr7433529pjb.235.1628637553712;
+        Tue, 10 Aug 2021 16:19:13 -0700 (PDT)
+Received: from octofox.metropolis ([172.56.38.87])
+        by smtp.gmail.com with ESMTPSA id dw15sm23117348pjb.42.2021.08.10.16.19.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 16:19:13 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] xtensa: ISS: don't use string pointer before NULL check
+Date:   Tue, 10 Aug 2021 16:19:03 -0700
+Message-Id: <20210810231903.5778-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit a5b8ca97fbf8 ("arm64: do not descend to vdso directories twice")
-changes the cleaning behavior of arm64's vdso files, in that vdso.lds,
-vdso.so, and vdso.so.dbg are not removed upon a 'make clean/mrproper':
+Move strlen call inside the if block that checks string pointer for NULL.
+While at it also fix the following coccicheck warning:
 
-$ make defconfig ARCH=arm64
-$ make ARCH=arm64
-$ make mrproper ARCH=arm64
-$ git clean -nxdf
-Would remove arch/arm64/kernel/vdso/vdso.lds
-Would remove arch/arm64/kernel/vdso/vdso.so
-Would remove arch/arm64/kernel/vdso/vdso.so.dbg
+./arch/xtensa/platforms/iss/console.c:204:10-11: WARNING comparing
+pointer to 0.
 
-To remedy this, manually descend into arch/arm64/kernel/vdso upon
-cleaning.
-
-After this commit:
-$ make defconfig ARCH=arm64
-$ make ARCH=arm64
-$ make mrproper ARCH=arm64
-$ git clean -nxdf
-<empty>
-
-Similar results are obtained for the vdso32 equivalent.
-
-Signed-off-by: Andrew Delgadillo <adelg@google.com>
-Cc: stable@vger.kernel.org
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
-Changelog since v1:
-- Also descend into vdso32 upon archclean
-- Add stable to cc in signoff area
+ arch/xtensa/platforms/iss/console.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- arch/arm64/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index b52481f0605d..02997b253dee 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -181,6 +181,8 @@ archprepare:
- # We use MRPROPER_FILES and CLEAN_FILES now
- archclean:
- 	$(Q)$(MAKE) $(clean)=$(boot)
-+	$(Q)$(MAKE) $(clean)=arch/arm64/kernel/vdso
-+	$(Q)$(MAKE) $(clean)=arch/arm64/kernel/vdso32
+diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
+index a3dda25a4e45..8f41c0088220 100644
+--- a/arch/xtensa/platforms/iss/console.c
++++ b/arch/xtensa/platforms/iss/console.c
+@@ -193,10 +193,10 @@ late_initcall(rs_init);
  
- ifeq ($(KBUILD_EXTMOD),)
- # We need to generate vdso-offsets.h before compiling certain files in kernel/.
+ static void iss_console_write(struct console *co, const char *s, unsigned count)
+ {
+-	int len = strlen(s);
+-
+-	if (s != 0 && *s != 0)
++	if (s && *s != 0) {
++		int len = strlen(s);
+ 		simc_write(1, s, count < len ? count : len);
++	}
+ }
+ 
+ static struct tty_driver* iss_console_device(struct console *c, int *index)
 -- 
-2.32.0.605.g8dce9f2422-goog
+2.20.1
 
