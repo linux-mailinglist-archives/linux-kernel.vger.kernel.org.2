@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC42A3E5BB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297413E5BB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239755AbhHJNca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:32:30 -0400
+        id S239821AbhHJNcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:32:22 -0400
 Received: from m43-7.mailgun.net ([69.72.43.7]:14936 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239802AbhHJNcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:32:24 -0400
+        id S239718AbhHJNcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:32:20 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628602322; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1628602319; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=kBz+D34HB9kqxtqqsou6zmP3Nkvq/e78SneXRnq7NKc=; b=msHoCw2JepsTjPybA2hdhswa9g6b5MrW8yQNLU44ORGkGuWTo2N/FIdRl26zRDB59RsJhKQR
- a4GP2L4zLltpeswDTBlcMlLLl/MqYCwKVy4drixmfcgUeC1LHQM0SjZUB6l1W7lWEJ4B+AjX
- j1gTgmEIOvDPH1JpcBdykrztNw0=
+ bh=KiE+rVQY46cVQ5OE7ZvIdEvKX6VtwKSVL05iVQtQQGg=; b=Pw58eJ8lM04+vg+qmCDekHFQL8Jta87ipQMnzvp0+XZ9dP4KAd5u27E2PMafB+96jQZz0P/G
+ KJGM9S/mgWjMHxI7k4YxCKw59wDn6B4HVWUYQgW8nZt8of9opxjBAIP799rLNSS74QRJ05RX
+ bBiR5hBJ18/5BpVcepN9WsfKJEk=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 61127fbcb14e7e2ecb019b29 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 13:31:40
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 61127fc1f746c298d9ee6c35 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 13:31:45
  GMT
 Sender: luoj=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71D5EC4338A; Tue, 10 Aug 2021 13:31:40 +0000 (UTC)
+        id E219BC4323A; Tue, 10 Aug 2021 13:31:45 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +37,9 @@ Received: from akronite-sh-dev02.qualcomm.com (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31C40C4338A;
-        Tue, 10 Aug 2021 13:31:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31C40C4338A
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E26B5C433D3;
+        Tue, 10 Aug 2021 13:31:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E26B5C433D3
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=luoj@codeaurora.org
 From:   Luo Jie <luoj@codeaurora.org>
@@ -50,9 +50,9 @@ To:     andrew@lunn.ch, agross@kernel.org, bjorn.andersson@linaro.org,
 Cc:     linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         sricharan@codeaurora.org, Luo Jie <luoj@codeaurora.org>
-Subject: [PATCH v2 2/3] MDIO: Kconfig: Specify more IPQ chipset supported
-Date:   Tue, 10 Aug 2021 21:31:15 +0800
-Message-Id: <20210810133116.29463-3-luoj@codeaurora.org>
+Subject: [PATCH v2 3/3] dt-bindings: net: Add the properties for ipq4019 MDIO
+Date:   Tue, 10 Aug 2021 21:31:16 +0800
+Message-Id: <20210810133116.29463-4-luoj@codeaurora.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210810133116.29463-1-luoj@codeaurora.org>
 References: <20210810133116.29463-1-luoj@codeaurora.org>
@@ -60,43 +60,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IPQ MDIO driver currently supports the chipset IPQ40xx, IPQ807x,
-IPQ60xx and IPQ50xx.
-
-Add the compatible 'qcom,ipq5018-mdio' because of ethernet LDO dedicated
-to the IPQ5018 platform.
+The new added properties resource "reg" is for configuring
+ethernet LDO in the IPQ5018 chipset, the property "clocks"
+is for configuring the MDIO clock source frequency.
 
 Signed-off-by: Luo Jie <luoj@codeaurora.org>
 ---
- drivers/net/mdio/Kconfig        | 2 +-
- drivers/net/mdio/mdio-ipq4019.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ .../bindings/net/qcom,ipq4019-mdio.yaml           | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/mdio/Kconfig b/drivers/net/mdio/Kconfig
-index a94d34cc7dc1..6da1fcb25847 100644
---- a/drivers/net/mdio/Kconfig
-+++ b/drivers/net/mdio/Kconfig
-@@ -172,7 +172,7 @@ config MDIO_IPQ4019
- 	depends on COMMON_CLK
- 	help
- 	  This driver supports the MDIO interface found in Qualcomm
--	  IPQ40xx series Soc-s.
-+	  IPQ40xx, IPQ60xx, IPQ807x and IPQ50xx series Soc-s.
+diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+index 0c973310ada0..2af304341772 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+@@ -14,7 +14,9 @@ allOf:
  
- config MDIO_IPQ8064
- 	tristate "Qualcomm IPQ8064 MDIO interface support"
-diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
-index 1c40a953f8c8..f64554091d10 100644
---- a/drivers/net/mdio/mdio-ipq4019.c
-+++ b/drivers/net/mdio/mdio-ipq4019.c
-@@ -262,6 +262,7 @@ static int ipq4019_mdio_remove(struct platform_device *pdev)
+ properties:
+   compatible:
+-    const: qcom,ipq4019-mdio
++    enum:
++      - qcom,ipq4019-mdio
++      - qcom,ipq5018-mdio
  
- static const struct of_device_id ipq4019_mdio_dt_ids[] = {
- 	{ .compatible = "qcom,ipq4019-mdio" },
-+	{ .compatible = "qcom,ipq5018-mdio" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, ipq4019_mdio_dt_ids);
+   "#address-cells":
+     const: 1
+@@ -23,7 +25,18 @@ properties:
+     const: 0
+ 
+   reg:
++    minItems: 1
++    maxItems: 2
++    description:
++      the first Address and length of the register set for the MDIO controller.
++      the second Address and length of the register for ethernet LDO, this second
++      address range is only required by the platform IPQ50xx.
++
++  clocks:
+     maxItems: 1
++    description: |
++      MDIO clock source frequency fixed to 100MHZ, this clock should be specified
++      by the platform IPQ807x, IPQ60xx and IPQ50xx.
+ 
+ required:
+   - compatible
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
