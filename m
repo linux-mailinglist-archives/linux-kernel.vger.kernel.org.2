@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E1C3E844B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6043E844F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhHJU0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229764AbhHJU02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:26:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1C976101D;
-        Tue, 10 Aug 2021 20:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628627165;
-        bh=sZUZNisiNzjIpVajNcqlYYjOt5HpgpxjVbVXTN3qHlc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ElntkXnT18F1lB/MSxCigZ77LaGKeLlezXPLFWKIW5F4LuiDtJwgkSuUmHlgrmXos
-         d5l9ZMqERKREsVdzNQNftjDbp2JnXNyiBmLwWMINgukaytFd24mcouuonNwbpp88wQ
-         b9zG+wtSmUkm6vn23fniLH8JdcEwgrSQFQRUMKOPuC3xffccxR9ODS+Dohmcd/bX4T
-         U2Mgqv+qJQEWSVUJAh0KxecKDtleD36YfXOwoaucAWfuilV1K5xAcWnr1LgbtbHdLb
-         b06MFk4FCdmL42HpHA+mOLw7yWKIX+uNvSbc+J4zmko5lBfCdGG+coajJKY6Hf6JZh
-         bPNxyQeAkwlPA==
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Taniya Das <tdas@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to system pm callbacks
-Date:   Tue, 10 Aug 2021 21:25:55 +0100
-Message-Id: <162860133458.2066705.4766353866731374871.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210810064808.32486-1-saiprakash.ranjan@codeaurora.org>
-References: <20210810064808.32486-1-saiprakash.ranjan@codeaurora.org>
+        id S233044AbhHJU3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:29:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42079 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229764AbhHJU3T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:29:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628627337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GDPhmoVx2vCnSG0qG6Q26w8x0PkAworRMKK+FXNiReY=;
+        b=Rlh2Q1csekykottCDyyVz1JIkvvmQljAKqxu1qymSvYSA20UXsy0JvUpZOe7jEoFAYxRVB
+        sS5jZsD0xokZZfrAI2VAdjKf6EXPGUbxqD+vCTz6oDxttRPnHo0ysYS1WSX2kFFGOKbGF3
+        rz0eAyGmIxDGvPAjkvfi1PeZWWrw8gI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-RdFyykJoNgKDmF-72fLxpQ-1; Tue, 10 Aug 2021 16:28:51 -0400
+X-MC-Unique: RdFyykJoNgKDmF-72fLxpQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B06B5CC626;
+        Tue, 10 Aug 2021 20:28:49 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 89B0627C5F;
+        Tue, 10 Aug 2021 20:28:48 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-46-willy@infradead.org>
+References: <20210715033704.692967-46-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 045/138] mm/memcg: Add folio_memcg_lock() and folio_memcg_unlock()
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1810622.1628627327.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 21:28:47 +0100
+Message-ID: <1810623.1628627327@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 12:18:08 +0530, Sai Prakash Ranjan wrote:
-> Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
-> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
-> such cases, we would need to drop the XO clock vote in unprepare call and
-> this unprepare callback for XO is in RPMh (Resource Power Manager-Hardened)
-> clock driver which controls RPMh managed clock resources for new QTI SoCs.
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+
+> These are the folio equivalents of lock_page_memcg() and
+> unlock_page_memcg().
 > 
-> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
-> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
-> operations like map and unmap can be in atomic context and are in fast
-> path, add this prepare and unprepare call to drop the XO vote only for
-> system pm callbacks since it is not a fast path and we expect the system
-> to enter deep sleep states with system pm as opposed to runtime pm.
+> lock_page_memcg() and unlock_page_memcg() have too many callers to be
+> easily replaced in a single patch, so reimplement them as wrappers for
+> now to be cleaned up later when enough callers have been converted to
+> use folios.
 > 
-> [...]
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Applied to will (for-joerg/arm-smmu/updates), thanks!
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-[1/1] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to system pm callbacks
-      https://git.kernel.org/will/c/afefe67e0893
-
-Cheers,
--- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
