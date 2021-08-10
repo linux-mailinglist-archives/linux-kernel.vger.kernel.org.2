@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FBF3E85D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFAE3E85D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhHJWBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 18:01:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231372AbhHJWBJ (ORCPT
+        id S235072AbhHJWBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 18:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235069AbhHJWBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:01:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628632846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jnm1Zmw19qNhqSQJBRvHbG/m+wn8+38ktsT4aKE9dWo=;
-        b=Q3WPMBJ0byPHSXCxuNHJPYsvVc8womZMu+FdhClmGYgzmRsP+2fKFO88v34Pc28i0zhncz
-        tmpJUhuo7mDEh4859+Cjhacfvp0luoBpEBLmyDRLtNjoip3Q28MmzOxdhIa5zQyMKo1XeR
-        0s9OyJWEPMWwyd2VShE4HBuZ/9+KOiY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-crXEs2ZdOpSi7tyJL34LZw-1; Tue, 10 Aug 2021 18:00:44 -0400
-X-MC-Unique: crXEs2ZdOpSi7tyJL34LZw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9B6A108087A;
-        Tue, 10 Aug 2021 22:00:43 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B60725C1A1;
-        Tue, 10 Aug 2021 22:00:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-88-willy@infradead.org>
-References: <20210715033704.692967-88-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 087/138] mm/filemap: Convert mapping_get_entry to return a folio
+        Tue, 10 Aug 2021 18:01:31 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424FBC061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:01:09 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id k2so23186629plk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:01:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TKI2CnsdvFNjqndaNstsi5v6QE1bxINGXNExmIgLnIk=;
+        b=RQklxLJzaKm5M8XYcoIxx2s+VbZJEnssRgd9fY2NkyKOraI6mAZUM1sUxYZfk1KDOy
+         h0J+BEVcvhbGgefSvBtebh1jgJwBfZifBPxJppyifTFn+V58U1xSvikJhycfXu08UTAp
+         hfky0dx4D3LjAWP8lxEbt3sLJEQ8fodBmasFbE+/vNIaakBKdwT9IajR0vc3fJ0iIDem
+         Ics4fvJ8RWGrZuVuGqvaQNXCs9enGUASo4+cM1OHo1TmHKtwxfO2iwtkomzWk5AG01o/
+         zRUnBmUJogsp55aBu7PIzzTwFhiLXqMxVfi6McoCwfRbJCP8c7vDTZdFotBEI+CC/e2T
+         8b7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TKI2CnsdvFNjqndaNstsi5v6QE1bxINGXNExmIgLnIk=;
+        b=YSN4OnthZnSoWesjhq0Ye6WTDUiUrZItglWfTtDpwBmCAH2LngtjjVsG06Y0xJt2be
+         LgmropBwNuvu+8p+kY2YhsSSwHkP2tQmSuwZAk1VQgjt6QHr+f3BxUHRhexSeUfl40i/
+         sE6BgiXYLuXjM7yBF7WFtqHaBpLNOrT+zx/0T5R0qoQ9KcdaKJrKR7lXtwEx43GfRhew
+         FAL7DjfXgLDgknjBdBK7TFkFRWN50qJq/SNWVYcOa9U7Rozr1ktywLs94tin18ckvX2h
+         CrMep0v0rO45LXwA4kCDwa/HiDILqNPJOb6YEu5LAt+RRvYtiWNarmdKuDtE0cCHVdY8
+         +RhA==
+X-Gm-Message-State: AOAM532a8o3r69GEmB7ekO15rM8mDQS5hWqckHzKdPTLLg7dXtLaKSoa
+        Y1KHsPLSMV0F88WWDnkiNjtrtejd17glWZV/uQgcDy8cHjlmpA==
+X-Google-Smtp-Source: ABdhPJwKvC0mQoP0/mZH8xtTq4gpHY9Occ3XZipu3kp3Ob0XgH2vxRw/2HxOtR43wGejxmnCZiXgNO1R8MB/4BJxtGs=
+X-Received: by 2002:a17:90a:1b0d:: with SMTP id q13mr7125701pjq.217.1628632868528;
+ Tue, 10 Aug 2021 15:01:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1814925.1628632841.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 23:00:41 +0100
-Message-ID: <1814926.1628632841@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210805043503.20252-1-bvanassche@acm.org> <20210805043503.20252-4-bvanassche@acm.org>
+ <20210809145953.GB21234@lst.de>
+In-Reply-To: <20210809145953.GB21234@lst.de>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 10 Aug 2021 15:00:57 -0700
+Message-ID: <CAFd5g46D2KNmsH2qyt_HdWN3peT=HM+We2cgGV5SUzjL2jgSiA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] configfs: Add unit tests
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+On Mon, Aug 9, 2021 at 7:59 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> > text and binary attribute support. This is how I run these tests:
+> >
+> > set -e
+> > if [ -e .config ]; then
+> >     make ARCH=um mrproper
+> > fi
+> > if [ ! -e .kunit/.kunitconfig ]; then
+> >     cat <<EOF >.kunit/.kunitconfig
+> > CONFIG_CONFIGFS_FS=y
+> > CONFIG_CONFIGFS_KUNIT_TEST=y
+> > CONFIG_KUNIT=y
+> > CONFIG_PROVE_LOCKING=y
+> > CONFIG_SYSFS=y
+> > CONFIG_UBSAN=y
+> > EOF
+> >     cp .kunit/.kunitconfig .kunit/.config
+> > fi
+> > ./tools/testing/kunit/kunit.py run
+>
+> This is very useful documentation, but shouldn't it go into a README.kunit
+> or similar instead of a commit message?
 
-> The pagecache only contains folios, so indicate that this is definitely
-> not a tail page.  Shrinks mapping_get_entry() by 56 bytes, but grows
-> pagecache_get_page() by 21 bytes as gcc makes slightly different hot/cold
-> code decisions.  A net reduction of 35 bytes of text.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+You could also put this in a .kunitconfig specific to your subsystem
+like we did for ext4:
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/.kunitconfig
 
+You can then build using this .kunitconfig with something like:
+
+./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4/.kunitconfig
+
+> > +config CONFIGFS_KUNIT_TEST
+> > +     bool "Configfs Kunit test" if !KUNIT_ALL_TESTS
+> > +     depends on CONFIGFS_FS && KUNIT=y
+> > +     default KUNIT_ALL_TESTS
+
+Cheers!
