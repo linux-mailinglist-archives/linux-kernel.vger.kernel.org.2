@@ -2,346 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3663E5A11
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184433E5A0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236886AbhHJMhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240617AbhHJMhP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:37:15 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD2DC0613D3;
-        Tue, 10 Aug 2021 05:36:52 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so5086801pjb.3;
-        Tue, 10 Aug 2021 05:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C+S1OeBaTHdPvRI8Q3o0BpEm1qixIpiZeGXCGP5NrEs=;
-        b=cmIsnA6grRZsy2+jYkXmECMNvEFYuTvxA1TdCx5KNZuHzu5oe7Ex8J26LiLhKkBGRb
-         hCvVr/Nse4AScgrzGSyvu8VI/pxosjicKEIMp1lJZBSeUZ7kBFlv5qL4rZyoLrSMtPfK
-         8tbkD2ItrQUGqQAOHBN6jAhl9Hv9Lyzk9T20rQcBAwF7IVANqcx3McRyOhB3A1Mu3s4a
-         tl0N5bmhmTqiM1LYaHuO2Piu/96HvFIHKjHW+DPq02JtY4veIpjRj+kkvRvnNSulIFVZ
-         /P3WsZFRd+zGgftae3/uqr6d6ck26P76JCpZwhJs5xuFrOsfjSnu/0s0AaEDn3HL1b3k
-         Fikg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C+S1OeBaTHdPvRI8Q3o0BpEm1qixIpiZeGXCGP5NrEs=;
-        b=VF7ciIMXqgRUXiHwoRmWWzxGACqRC942QyvdzJrS+rDsewarxhlJ1/Xalush8tvUvh
-         4iTQ78sVtSbsJhbD1DW0k5Sz/d7XPTbG83XfekMImB9q0k2zhYH/Jv1CTOVtn9JeqpVV
-         Zl8Qa2pwdghT28X664UJSRIbbZYKfAWKkNy8TFXwaq5ZCbYlsPxXHRksVsNompW6nr9Q
-         Gz0t/+sqYF9YvCHN9IhmNmnJLiUhvbZefiAEPOfJYOe+zaEHfCeBKjuvnOPspFyMCi9V
-         1ng+MkSZRCFWvHdyeQWjx3VeshhSXWFn4ZBxrhtyic66Pk177xrO8zyZa1y9TN2lFhuM
-         ARMA==
-X-Gm-Message-State: AOAM5317MJZ+3ZdmnT9fw9w43h/I3D2I88OG8jL1gQmXWSDzqM1Ojewb
-        HcoJVRee72dBuB6lPAcbv5UOYPjDc1PT+Zq25mY=
-X-Google-Smtp-Source: ABdhPJxXDfhMaPSYP96hFVMEUA1XjrrlqGrOdizfjCzgztRUIfsWPwc6Q0RWsecXCjxJEpWzwqPN7wY6Dkhvk7LmQo4=
-X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id
- j11-20020aa7800b0000b0290330455f57a8mr28753021pfi.7.1628599012364; Tue, 10
- Aug 2021 05:36:52 -0700 (PDT)
+        id S240610AbhHJMhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:37:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236886AbhHJMhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:37:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F7E7604DC;
+        Tue, 10 Aug 2021 12:36:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628599008;
+        bh=65wwyZ1PzsTjVVRVB8uytBblEiEgZgMvnsoHRtYi+4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h+LM/Sc5HKau/FXlituogSJez40C0Za87secHQ8Y8xGr/etTL57hF7STihj5eAEW0
+         vWUwYtq5tUkpP/H1I5WeMU55oAeiPWkFGDVXM31alULgQbOZpKXBhkxd3T6Q2/wZbg
+         2F71pgzZ9VKXCO1isfwKcxdmLzQFrEpaWmGQtL3C/ZIj6CU2Yg54lzKMiw8MzaxAql
+         EGWA5SKO4EOac5sQZteftPIKBVaOeP03Abs8CqasWtkaTrSOVOSFq5SYa8BZJndS0P
+         NJcx8D4d2NfiIxOH7VU1V/kwIITuIXNnOoy2DpGy7c+JJqUJqmHzlmzv1o+bFX3Eke
+         BUV0HfJy2xujA==
+Date:   Tue, 10 Aug 2021 15:36:44 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jianbo Liu <jianbol@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-s390@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Ido Schimmel <idosch@idosch.org>
+Subject: Re: [PATCH v2 net] net: switchdev: zero-initialize struct
+ switchdev_notifier_fdb_info emitted by drivers towards the bridge
+Message-ID: <YRJy3F6lXuKNQIpl@unreal>
+References: <20210810115024.1629983-1-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-References: <20210809074512.34757-1-puranjay12@gmail.com> <20210809074512.34757-2-puranjay12@gmail.com>
-In-Reply-To: <20210809074512.34757-2-puranjay12@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 10 Aug 2021 15:36:15 +0300
-Message-ID: <CAHp75VebXai6phWVhBxTPjMz1jBZOZpVBpTEYRr9DiD0oPDfPg@mail.gmail.com>
-Subject: Re: [PATCH v9 1/2] iio: accel: Add driver support for ADXL355
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Michael.Hennerich@analog.com, jic23@kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lars@metafoo.de,
-        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810115024.1629983-1-vladimir.oltean@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 10:46 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
->
-> ADXL355 is 3-axis MEMS Accelerometer. It offers low noise density,
-
-is a 3-axis
-
-> low 0g offset drift, low power with selectable measurement ranges.
-> It also features programmable high-pass and low-pass filters.
-
-...
-
-> +F:     drivers/iio/accel/adxl355.h
-> +F:     drivers/iio/accel/adxl355_core.c
-> +F:     drivers/iio/accel/adxl355_i2c.c
-> +F:     drivers/iio/accel/adxl355_spi.c
-> +F:     Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-
-Have you run checkpatch?
-
-...
-
-> +#ifndef _ADXL355_H_
-> +#define _ADXL355_H_
-> +
-> +#include <linux/regmap.h>
-
-Missed declaration for struct device.
-
-> +extern const struct regmap_access_table adxl355_readable_regs_tbl;
-> +
-
-I think you may drop this blank line.
-
-> +extern const struct regmap_access_table adxl355_writeable_regs_tbl;
-> +
-> +int adxl355_core_probe(struct device *dev, struct regmap *regmap,
-> +                      const char *name);
-
-+ blank line?
-
-> +#endif /* _ADXL355_H_ */
-
-...
-
-> +#include <asm/unaligned.h>
-
-asm/* is less generic, can you move it after linux/*?
-
-> +#include <linux/bitfield.h>
-
-Does this imply bits.h? If not, add the latter.
-
-> +#include <linux/iio/iio.h>
-> +#include <linux/limits.h>
-> +#include <linux/math64.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/regmap.h>
-
-...
-
-> +static const struct regmap_range adxl355_read_reg_range[] = {
-> +       regmap_reg_range(ADXL355_DEVID_AD_REG, ADXL355_FIFO_DATA_REG),
-> +       regmap_reg_range(ADXL355_OFFSET_X_H_REG, ADXL355_SELF_TEST_REG)
-
-Leave commas in non-terminator lines.
-
-> +};
-
-...
-
-> +static const struct regmap_range adxl355_write_reg_range[] = {
-> +       regmap_reg_range(ADXL355_OFFSET_X_H_REG, ADXL355_RESET_REG)
-
-Ditto.
-
-> +};
-
-...
-
-> +enum adxl355_op_mode {
-
-> +       ADXL355_TEMP_OFF
-
-Ditto.
-
-> +};
-> +
-> +enum adxl355_odr {
-
-> +       ADXL355_ODR_3_906HZ
-
-Ditto.
-
-> +};
-> +
-> +enum adxl355_hpf_3db {
-
-> +       ADXL355_HPF_0_0238
-
-Ditto.
-
-> +};
-> +
-> +static const int adxl355_odr_table[][2] = {
-
-> +       [10] = {3, 906000}
-
-Ditto.
-
-> +};
-> +
-> +static const int adxl355_hpf_3db_multipliers[] = {
-
-> +       238
-
-Ditto.
-
-> +};
-> +
-> +enum adxl355_chans {
-> +       chan_x, chan_y, chan_z
-
-Ditto.
-
-> +};
-
-> +static const struct adxl355_chan_info adxl355_chans[] = {
-
-> +       [chan_z] = {
-> +               .data_reg = ADXL355_ZDATA3_REG,
-> +               .offset_reg = ADXL355_OFFSET_Z_H_REG
-> +       }
-
-Ditto.
-
-> +};
-
-To avoid adding extra entries, consider using static_assert():s.
-
-...
-
-> +static void adxl355_fill_3db_frequency_table(struct adxl355_data *data)
-> +{
-> +       int i;
-> +       u64 rem;
-> +       u64 div;
-> +       u32 multiplier;
-
-Reversed xmas tree order?
-
-> +       u64 odr = mul_u64_u32_shr(adxl355_odr_table[data->odr][0], 1000000, 0) +
-> +                                 adxl355_odr_table[data->odr][1];
-
-Split definition and assignment.
-
-> +       for (i = 0; i < ARRAY_SIZE(adxl355_hpf_3db_multipliers); i++) {
-> +               multiplier = adxl355_hpf_3db_multipliers[i];
-> +               div = div64_u64_rem(mul_u64_u32_shr(odr, multiplier, 0),
-> +                                   100000000000000UL, &rem);
-> +
-> +               data->adxl355_hpf_3db_table[i][0] = div;
-> +               data->adxl355_hpf_3db_table[i][1] = div_u64(rem, 100000000);
-> +       }
-
-Do all those power-of-ten constants have a meaning? Shouldn't it be
-better to use named definitions?
-
-> +}
-
-...
-
-> +       /*
-> +        * Perform a software reset to make sure the device is in a consistent
-> +        * state after start up.
-
-start-up
-
-> +        */
-
-...
-
-> +       ret = regmap_bulk_read(data->regmap, addr, data->transf_buf, 3);
-
-ARRAY_SIZE() ?
-
-> +       if (ret < 0)
-> +               return ret;
-
-...
-
-> +               /*
-> +                * The datasheet defines an intercept of 1885 LSB at 25 degC
-> +                * and a slope of -9.05 LSB/C. The following formula can be used
-> +                * to find the temperature:
-> +                * Temp = ((RAW - 1885)/(-9.05)) + 25 but this doesn't follow
-> +                * the format of the IIO which is Temp = (RAW + OFFSET) * SCALE.
-> +                * Hence using some rearranging we get the scale as -110.497238
-> +                * and offset as -2111.25
-
-Missed period.
-
-> +                */
-
-...
-
-> +               /*
-> +                * At +/- 2g with 20-bit resolution, scale is given in datasheet
-> +                * as 3.9ug/LSB = 0.0000039 * 9.80665 = 0.00003824593 m/s^2
-
-Ditto for all multi-line comments.
-
-> +                */
-
-...
-
-> +static const struct regmap_config adxl355_i2c_regmap_config = {
-> +       .reg_bits = 8,
-> +       .val_bits = 8,
-> +       .max_register = 0x2F,
-> +       .rd_table = &adxl355_readable_regs_tbl,
-> +       .wr_table = &adxl355_writeable_regs_tbl
-
-+ comma
-
-> +};
-
-...
-
-> +       regmap = devm_regmap_init_i2c(client, &adxl355_i2c_regmap_config);
-> +       if (IS_ERR(regmap)) {
-> +               dev_err(&client->dev, "Error initializing i2c regmap: %ld\n",
-> +                       PTR_ERR(regmap));
-
-One line?
-
-> +               return PTR_ERR(regmap);
-> +       }
-
-...
-
-> +static const struct i2c_device_id adxl355_i2c_id[] = {
-> +       { "adxl355", 0 },
-> +       { }
-> +};
-
-> +
-
-Redundant blank line.
-
-> +MODULE_DEVICE_TABLE(i2c, adxl355_i2c_id);
-> +
-> +static const struct of_device_id adxl355_of_match[] = {
-> +       { .compatible = "adi,adxl355" },
-> +       { }
-> +};
-
-> +
-
-Ditto.
-
-> +MODULE_DEVICE_TABLE(of, adxl355_of_match);
-> +
-> +static struct i2c_driver adxl355_i2c_driver = {
-> +       .driver = {
-> +               .name   = "adxl355_i2c",
-> +               .of_match_table = adxl355_of_match,
-> +       },
-> +       .probe_new      = adxl355_i2c_probe,
-> +       .id_table       = adxl355_i2c_id,
-> +};
-
-> +
-
-Ditto.
-
-> +module_i2c_driver(adxl355_i2c_driver);
-
-For SPI part the very same bunch of comments.
-
--- 
-With Best Regards,
-Andy Shevchenko
+On Tue, Aug 10, 2021 at 02:50:24PM +0300, Vladimir Oltean wrote:
+> The blamed commit a new field to struct switchdev_notifier_fdb_info, but
+> did not make sure that all call paths set it to something valid. For
+> example, a switchdev driver may emit a SWITCHDEV_FDB_ADD_TO_BRIDGE
+> notifier, and since the 'is_local' flag is not set, it contains junk
+> from the stack, so the bridge might interpret those notifications as
+> being for local FDB entries when that was not intended.
+> 
+> To avoid that now and in the future, zero-initialize all
+> switchdev_notifier_fdb_info structures created by drivers such that all
+> newly added fields to not need to touch drivers again.
+> 
+> Fixes: 2c4eca3ef716 ("net: bridge: switchdev: include local flag in FDB notifications")
+> Reported-by: Ido Schimmel <idosch@idosch.org>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+> Tested-by: Ido Schimmel <idosch@nvidia.com>
+> ---
+> v1->v2: use an empty struct initializer as opposed to memset, as
+>         suggested by Leon Romanovsky
+> 
+>  drivers/net/ethernet/marvell/prestera/prestera_switchdev.c | 4 ++--
+>  drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c       | 2 +-
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c      | 4 ++--
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c   | 2 +-
+>  drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c    | 2 +-
+>  drivers/net/ethernet/rocker/rocker_main.c                  | 2 +-
+>  drivers/net/ethernet/rocker/rocker_ofdpa.c                 | 2 +-
+>  drivers/net/ethernet/ti/am65-cpsw-switchdev.c              | 2 +-
+>  drivers/net/ethernet/ti/cpsw_switchdev.c                   | 2 +-
+>  drivers/s390/net/qeth_l2_main.c                            | 4 ++--
+>  net/dsa/slave.c                                            | 2 +-
+>  11 files changed, 14 insertions(+), 14 deletions(-)
+> 
+
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
