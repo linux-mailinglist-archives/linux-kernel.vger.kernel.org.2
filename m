@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0493E5C4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160473E5C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242056AbhHJNys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240450AbhHJNyq (ORCPT
+        id S242084AbhHJNzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:55:05 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:60795 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242060AbhHJNzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:54:46 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE16C06179A
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:54:23 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id c24so14948972lfi.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:54:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jwWuIJqiBzpe1+2G6GtRorjiBXRmpvLNd3Ic9h54t+Q=;
-        b=W8fomkKIUYVT177erd3QXdCb9N+w4GU7xEHCTq5V+/pLfs4vtKwHrQWVUWoJUa0WKb
-         yROIoySSTQNgzo/gwzIxqRF0R5bfQS+nDpd4VtEzC7ELr7a7smTBhEYmnBQS7iU28eFl
-         6/XmILEUsrPbVSQo2USlm6N8PSX516JZiNcZJXsvUVhtLxfMxR0eLAOF6GrZr45uhpYA
-         i7Yq+yxNWPQ9DzLISfpIM6HOHFoZYWG8HkNOCTHmLhZ4GupDBs4AmopLoCHgMdalRbIB
-         DLdHvCypgf5HJo3jpK3W4lZxDXnfAGL3udivEZnwKrCtcdQJBxxszPhgqQXRt34MHJsX
-         q8WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jwWuIJqiBzpe1+2G6GtRorjiBXRmpvLNd3Ic9h54t+Q=;
-        b=GohmHUIDXAD0VAcO7g2uVTwNhUvyYWKX1KxmccKis+bSEOUwSTD9hJyiZsJeB100Br
-         lBwUc6scDQetaNpsXxQPyTtlJ67QRC1xSnQhkZ7hfkhEeKtT5T0uW5lj2HNuGbJhvVZF
-         aOVEUKlVQKB1J4QQFty18WXZH4N5zQNsBBK6E2ROIRw3hHeYY7fQlOPfrgH17Z14FTiM
-         muNjsnIcLdYeAjB3z4KsJU9+9KNfN5C+NvEiH9y0u34RDEpkBsmJwPbM+xqNhSKROMXw
-         bQNHCDRaVWhr8fjOfbKKCCy6K6bGlFu8gKO2Yc7cktg9CEFm4afi3WbL7FpvRlby5fud
-         CMXQ==
-X-Gm-Message-State: AOAM530rGMn+x87NhxbhNthsNUa50YMNiGJmzRs5CH5RmqjZvof3rDcx
-        fa1oznNoG7viMy+tA46JYwRIls2iF+I1S8LpugCaHA==
-X-Google-Smtp-Source: ABdhPJydL53OBU+42r6QKcJIZe4IlQ/SoqsP/bpkjgaMcCdQZB8nlKWRZ68tmLNyMtyFuqJpiUzbjuD8656QAXWk9KU=
-X-Received: by 2002:ac2:4d0f:: with SMTP id r15mr21366821lfi.649.1628603662266;
- Tue, 10 Aug 2021 06:54:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210723075858.376378-1-andrew@aj.id.au> <20210723075858.376378-5-andrew@aj.id.au>
-In-Reply-To: <20210723075858.376378-5-andrew@aj.id.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Aug 2021 15:54:11 +0200
-Message-ID: <CACRpkdZm9C23aHTWs8DNX1RChSB4A-X0PoyW5wnH2XyQQeviag@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/6] leds: pca955x: Use pinctrl to map GPIOs to pins
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Pavel Machek <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 10 Aug 2021 09:55:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628603682; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=k4nrFBYjkENYXFRZoyAl9snMXCad6DKybTDWMgXjTBE=; b=AJdgbISDLK52KgODdJs7/SO97K2MySktw+b3f58PmObb1BuxFFFp4ZesWLocfoMcw9hq+ItM
+ BVSbo7WAcEXvpAGw+B9BvlSHsob7cFwQhQNsjfRqA6fn+9embfNew/jsVVXIAaJR4/ZN+5aR
+ rp2Dirrl/CaJR4LCgLfsxfv2IT4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 611285137ee6040977480b55 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 13:54:27
+ GMT
+Sender: psodagud=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C8998C4323A; Tue, 10 Aug 2021 13:54:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: psodagud)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DE98C4323A;
+        Tue, 10 Aug 2021 13:54:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DE98C4323A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
+From:   Prasad Sodagudi <psodagud@codeaurora.org>
+To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net
+Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, pavel@ucw.cz, psodagud@codeaurora.org
+Subject: [PATCH v2] PM: sleep: core: Avoid setting power.must_resume to false
+Date:   Tue, 10 Aug 2021 06:54:17 -0700
+Message-Id: <1628603658-261568-1-git-send-email-psodagud@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 9:59 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+This is regarding suspend/resume(s2idle) scenario of devices and difference
+between the LTS kernels 5.4 and 5.10 with respect to devices suspend and
+resume. Observing that devices suspended in suspend_late stage are not
+getting resumed in resume_early stage.
+1) LTS kernel 5.4 kernel do not have this problem but 5.10 kernel
+shows this problem.
+2) 'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
+is skipping the driver early_resume callbacks.
 
-> The leds-pca955x driver currently assumes that the GPIO numberspace and
-> the pin numberspace are the same. This quickly falls apart with a
-> devicetree binding such as the following:
-(...)
+In device_resume_early function dev->power.must_resume is used to skip the
+resume call back. It looks this function is expecting that,
+__device_suspend_noirq() would set dev->power.must_resume = true for the
+devices which does not have DPM_FLAG_MAY_SKIP_RESUME flag set.
 
-Honestly I do not understand this patch. It seems to implement a pin
-controller and using it in nonstandard ways.
+3) Problematic scenario is as follows -  During the device suspend/resume
+scenario all the devices in  the suspend_late stage are successful and some
+device can fail to suspend in suspend_noirq(device_suspend_noirq->
+__device_suspend_noirq) phase.
+As a device failed in dpm_noirq_suspend_devices phase, dpm_resume_noirq is
+getting called to resume devices in dpm_late_early_list in the noirq phase.
 
-If something implements the pin controller driver API it should be
-used as such IMO, externally. This seems to be using it do relay
-calls to itself which seems complicated, just invent something
-locally in the driver in that case? No need to use pin control?
+4) During the Devices_early_resume stage
+dpm_resume_early()-->device_resume_early() functions skipping the devices
+early resume callbacks.
+799         if (dev_pm_skip_resume(dev))
+800                  goto Skip;
 
-Can you explain why this LED driver needs to implement a pin
-controller?
+5) Devices suspended in suspend_late stage are not getting resumed in
+Devices_early_resume stage because of
+'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
+is skipping the driver early_resume callbacks when dev->power.must_resume is false.
 
-Yours,
-Linus Walleij
+
+Changelog:
+v1 -> v2:
+ - Fixed indentation comments.
+ - Commit text updated to include scenario.
+
+Prasad Sodagudi (1):
+  PM: sleep: core: Avoid setting power.must_resume to false
+
+ drivers/base/power/main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
