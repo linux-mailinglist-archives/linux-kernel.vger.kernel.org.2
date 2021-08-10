@@ -2,334 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66C93E866D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BE13E8671
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235319AbhHJXZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        id S235432AbhHJX0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233570AbhHJXZk (ORCPT
+        with ESMTP id S235372AbhHJX0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:25:40 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CE2C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:25:17 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id yk17so359447ejb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:25:17 -0700 (PDT)
+        Tue, 10 Aug 2021 19:26:15 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45914C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:25:53 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id z2so913712iln.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 16:25:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=lghdrSZtTl0kY+s9Tapi7Mnd/ccHoio1Yid/BdW6bxA=;
-        b=qqHlNivY0RYjAbDSQppf902gUAGvosW4KPXXDb7R2q2PmOt51sS7jjilYvsAA2LAo8
-         0UE15xzKY8nFx+uXjg5vFC28xwPwjDP9WVcBYFLi+npnBkLBkjWgB/9FhbxclIkMUj0+
-         PzTOWJ1G7+mMbBxTcIDP4AbF9jmG90cjObXHXpKUzo8xlKFdyxkCkHd4oKT8kOAN1CPD
-         m6AN3kPTONIVauiAZbCFuyWMhyGBhl8zJwUWQw56PPdTb6DaaJfSE0iP3iQciCIGR6mZ
-         sz2uETizaVv9M/D5cqZeZ5JwVPQoZLLkAkXjqeFAXgz54DgMsa/+GECZy0EkSDm4Al77
-         i4uQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bZoaI6O41jzGVQVv3zA5uioisseRRe2gwUb7pdILMzk=;
+        b=J1THLu5eYNZtHM3lMmUt7+OIXk7EVRLducZPFSwhsbu7Wk4lhibTkc9mfy14DXZFVm
+         Ij2B/6k1OdBopiZyqYG5AyQ3vpBHY+5UJvl7PeYTVWvlnJcwN6+I8gSkQSIt0FrKdHOT
+         JY0IbEXZ4pbRdu+WUknNYe11HdUNbaAjxFMyw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=lghdrSZtTl0kY+s9Tapi7Mnd/ccHoio1Yid/BdW6bxA=;
-        b=q+aSpWCAXr8QLnoiHx9gl4Ct+jPD0CuuQs0aD/41waeEu2XZJ3PtgvB4m93Aj/oklr
-         j1gaQy41ayQIpUZSJj7ueUaaQ+XkUj2BXia+9G+e1cV65m2L88tylPEbQEz3/4UpcxIP
-         oiYH+lk41YqMROl8psUylhKCujutJBSTWE6h5LishDm2NFR8OdxHYvXKl7d0wq5/LF9m
-         Cbr1yxiE1aH6WhrkJIxpMnPORsHT/EG3gK9AxygI+263D7hq/spnX6pT9Cc7Zm7WAhGE
-         //oTfPql9XniCT+8VC4Hzs2ZJlcIxxUXSr3QDIJHRzVU4BZ1OCNt9+zPt4svdXfadi4b
-         xtkw==
-X-Gm-Message-State: AOAM533TxF7OkwS33N+z2P5sp6IN6M1/JYtrg+tBkvjQyBbtx/y/qW+P
-        EHZTV8by7JYCpgDPs4GcpVX9gmRviWmi749WJ8PKMA==
-X-Google-Smtp-Source: ABdhPJwu6KcgH6NQprGnF9kZSkdiTifMLo0YFm1ytSkChZ8KoNEaVImCcNn2ffJre9evpdBt5rgy/qjGaFXJ3QMMbpI=
-X-Received: by 2002:a17:906:b0d4:: with SMTP id bk20mr792106ejb.535.1628637915175;
- Tue, 10 Aug 2021 16:25:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bZoaI6O41jzGVQVv3zA5uioisseRRe2gwUb7pdILMzk=;
+        b=YenC4loyMhueQy9ChTITdKT132mK7bViK/BrIVPfJwC6vj72YhCrTs+i2c3Dsq0dke
+         rgnNTWqzfJmpCG2KUl7ajUr9w1z0kXb5L+itApomcPmPPrqHYrNI4leJ/FfhIYVan8oS
+         kVbP89JReJRs/Fauq1+r/9BBJEe3cgbVeQGAB3wzdqMl6Lvo2hjMS5FhnQQ+IqOw4Rm5
+         4WFXWI5p44raM/9j0NVQl1scdXLk0hg3+IovHYtGK5r4CM5azDF5GPIau7Ms5BRUiVWT
+         Oxgm9QcJ0J89YoL1kNEf3WBH9aOUr2rsO0dW07y23e6h3Cm0KqB6Ex735cUGi3ulmTZN
+         YiXA==
+X-Gm-Message-State: AOAM531AbYM1op+xm0lhjEUG83XCc9RKwQ9xx8m6fnzKK4gTtEIjfcfq
+        FceGN8GEt/Dmj+IMJ7TT/ds5ig==
+X-Google-Smtp-Source: ABdhPJxMNwaUBHMUh5ydhrrgGMfKNzKN3s40bG9zf8K8L6avCCj/BcE/ZK9vDoaT7kTDUxa28SRgsg==
+X-Received: by 2002:a92:bf03:: with SMTP id z3mr361512ilh.196.1628637952654;
+        Tue, 10 Aug 2021 16:25:52 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v5sm12552039ilu.19.2021.08.10.16.25.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 16:25:52 -0700 (PDT)
+Subject: Re: [PATCH v2] usbip: give back URBs for unsent unlink requests
+ during cleanup
+To:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-usb@vger.kernel.org,
+        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210806181335.2078-1-mail@anirudhrb.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4aaf420d-e85e-212e-3bc4-a70e016de610@linuxfoundation.org>
+Date:   Tue, 10 Aug 2021 17:25:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-From:   Rae Moar <rmoar@google.com>
-Date:   Tue, 10 Aug 2021 16:25:03 -0700
-Message-ID: <CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com>
-Subject: RFC - kernel test result specification (KTAP)
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, Tim.Bird@sony.com,
-        shuah@kernel.org, Daniel Latypov <dlatypov@google.com>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210806181335.2078-1-mail@anirudhrb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are looking to further standardise the output format used by kernel
-test frameworks like kselftest and KUnit. Thus far we have used the
-TAP (Test Anything Protocol) specification, but it has been extended
-in many different ways, so we would like to agree on a common "Kernel
-TAP" (KTAP) format to resolve these differences. Thus, below is a
-draft of a specification of KTAP. Note that this specification is
-largely based on the current format of test results for KUnit tests.
+On 8/6/21 12:13 PM, Anirudh Rayabharam wrote:
+> In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
+> not given back. This sometimes causes usb_kill_urb to wait indefinitely
+> for that urb to be given back. syzbot has reported a hung task issue [1]
+> for this.
+> 
+> To fix this, give back the urbs corresponding to unsent unlink requests
+> (unlink_tx list) similar to how urbs corresponding to unanswered unlink
+> requests (unlink_rx list) are given back. Since the code is almost the
+> same, extract it into a new function and call it for both unlink_rx and
+> unlink_tx lists.
+> 
 
-Additionally, this specification was heavily inspired by the KTAP
-specification draft by Tim Bird
-(https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/).
-However, there are some notable differences to his specification. One
-such difference is the format of nested tests is more fully specified
-in the following specification. However, they are specified in a way
-which may not be compatible with many kselftest nested tests.
+Let's not do the refactor - let's first fix the problem and then the refactor.
 
-=====================
-Specification of KTAP
-=====================
+> [1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
+> 
+> Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> ---
+> 
+> Changes in v2:
+> Use WARN_ON() instead of BUG() when unlink_list is neither unlink_tx nor
+> unlink_rx.
+> 
+> v1: https://lore.kernel.org/lkml/20210806164015.25263-1-mail@anirudhrb.com/
+> 
+> ---
+>   drivers/usb/usbip/vhci_hcd.c | 45 +++++++++++++++++++++++++-----------
+>   1 file changed, 32 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> index 4ba6bcdaa8e9..67e638f4c455 100644
+> --- a/drivers/usb/usbip/vhci_hcd.c
+> +++ b/drivers/usb/usbip/vhci_hcd.c
+> @@ -945,7 +945,8 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
+>   	return 0;
+>   }
+>   
+> -static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+> +static void __vhci_cleanup_unlink_list(struct vhci_device *vdev,
+> +		struct list_head *unlink_list)
+>   {
+>   	struct vhci_hcd *vhci_hcd = vdev_to_vhci_hcd(vdev);
+>   	struct usb_hcd *hcd = vhci_hcd_to_hcd(vhci_hcd);
+> @@ -953,23 +954,23 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+>   	struct vhci_unlink *unlink, *tmp;
+>   	unsigned long flags;
+>   
+> +	if (WARN(unlink_list != &vdev->unlink_tx
+> +				&& unlink_list != &vdev->unlink_rx,
+> +			"Invalid list passed to __vhci_cleanup_unlink_list\n"))
+> +		return;
+> +
 
-TAP, or the Test Anything Protocol is a format for specifying test
-results used by a number of projects. It's website and specification
-are found at: https://testanything.org/. The Linux Kernel uses TAP
-output for test results. However, KUnit (and other Kernel testing
-frameworks such as kselftest) have some special needs for test results
-which don't gel perfectly with the original TAP specification. Thus, a
-"Kernel TAP" (KTAP) format is specified to extend and alter TAP to
-support these use-cases.
+With this change, this will be only place unlink_rx is used without
+vdev->priv_lock hold? Please explain why this is safe.
 
-KTAP Output consists of 5 major elements (all line-based):
-- The version line
-- Plan lines
-- Test case result lines
-- Diagnostic lines
-- A bail out line
+>   	spin_lock_irqsave(&vhci->lock, flags);
+>   	spin_lock(&vdev->priv_lock);
+>   
+> -	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
+> -		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
+> -		list_del(&unlink->list);
+> -		kfree(unlink);
+> -	}
+> -
+> -	while (!list_empty(&vdev->unlink_rx)) {
+> +	list_for_each_entry_safe(unlink, tmp, unlink_list, list) {
+>   		struct urb *urb;
+>   
+> -		unlink = list_first_entry(&vdev->unlink_rx, struct vhci_unlink,
+> -			list);
+> -
+> -		/* give back URB of unanswered unlink request */
+> -		pr_info("unlink cleanup rx %lu\n", unlink->unlink_seqnum);
+> +		if (unlink_list == &vdev->unlink_tx)
+> +			pr_info("unlink cleanup tx %lu\n",
+> +					unlink->unlink_seqnum);
+> +		else
+> +			pr_info("unlink cleanup rx %lu\n",
+> +					unlink->unlink_seqnum);
+>   
+>   		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
+>   		if (!urb) {
+> @@ -1001,6 +1002,24 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+>   	spin_unlock_irqrestore(&vhci->lock, flags);
+>   }
+>   
+> +static inline void vhci_cleanup_unlink_tx(struct vhci_device *vdev)
+> +{
+> +	__vhci_cleanup_unlink_list(vdev, &vdev->unlink_tx);
 
-An important component in this specification of KTAP is the
-specification of the format of nested tests. This can be found in the
-section on nested tests below.
+With this change, this will be only place unlink_rx is used without
+vdev->priv_lock hold? Please explain why this is safe.
 
-The version line
-----------------
+> +}
+> +
 
-The first line of KTAP output must be the version line. As this
-specification documents the first version of KTAP,  the recommended
-version line is "KTAP version 1". However, since all kernel testing
-frameworks use TAP version lines, "TAP version 14" and "TAP version
-13" are all acceptable version lines. Version lines with other
-versions of TAP or KTAP will not cause the parsing of the test results
-to fail but it will produce an error.
+Is there a need for this layer?
 
-Plan lines
-----------
+> +static inline void vhci_cleanup_unlink_rx(struct vhci_device *vdev)
+> +{
+> +	__vhci_cleanup_unlink_list(vdev, &vdev->unlink_rx);
 
-Plan lines must follow the format of "1..N" where N is the number of
-subtests. The second line of KTAP output must be a plan line, which
-indicates the number of tests at the highest level, such that the
-tests do not have a parent. Also, in the instance of a test having
-subtests, the second line of the test after the subtest header must be
-a plan line which indicates the number of subtests within that test.
+With this change, this will be only place unlink_rx is used without
+vdev->priv_lock hold? Please explain why this is safe.
 
-Test case result lines
-----------------------
+> +}
+> +
+Is there a need for this layer?
 
-Test case result lines must have the format:
+> +static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+> +{
+> +	/* give back URBs of unsent unlink requests */
+> +	vhci_cleanup_unlink_tx(vdev);
+> +	/* give back URBs of unanswered unlink requests */
+> +	vhci_cleanup_unlink_rx(vdev);
+> +}
+> +
+>   /*
+>    * The important thing is that only one context begins cleanup.
+>    * This is why error handling and cleanup become simple.
+> 
 
-    <result> <number> [-] [<description>] [<directive>] [<diagnostic data>]
-
-The result can be either "ok", which indicates the test case passed,
-or "not ok", which indicates that the test case failed.
-
-The number represents the number of the test case or suite being
-performed. The first test case or suite must have the number 1 and the
-number must increase by 1 for each additional test case or result at
-the same level and within the same testing suite.
-
-The "-" character is optional.
-
-The description is a description of the test, generally the name of
-the test, and can be any string of words (can't include #). The
-description is optional.
-
-The directive is used to indicate if a test was skipped. The format
-for the directive is: "# SKIP [<skip_description>]". The
-skip_description is optional and can be any string of words to
-describe why the test was skipped. The result of the test case result
-line can be either "ok" or "not ok" if the skip directive is used.
-Finally, note that TAP 14 specification includes TODO directives but
-these are not supported for KTAP.
-
-Examples of test case result lines:
-
-Test passed:
-
-    ok 1 - test_case_name
-
-Test was skipped:
-
-    not ok 1 - test_case_name # SKIP test_case_name should be skipped
-
-Test failed:
-
-    not_ok 1 - test_case_name
-
-Diagnostic lines
-----------------
-
-Diagnostic lines are used for description of testing operations.
-Diagnostic lines are generally formatted as "#
-<diagnostic_description>", where the description can be any string.
-However, in practice, diagnostic lines are all lines that don't follow
-the format of any other KTAP line format. Diagnostic lines can be
-anywhere in the test output after the first two lines. There are a few
-special diagnostic lines. Diagnostic lines of the format "# Subtest:
-<test_name>" indicate the start of a test with subtests. Also,
-diagnostic lines of the format "# <test_name>: <description>" refer to
-a specific test and tend to occur before the test result line of that
-test but are optional.
-
-Bail out line
--------------
-
-A bail out line can occur anywhere in the KTAP output and will
-indicate that a test has crashed. The format of a bail out line is
-"Bail out! [<description>]",  where the description can give
-information on why the bail out occurred and can be any string.
-
-Nested tests
-------------
-
-The new specification for KTAP will support an arbitrary number of
-nested subtests. Thus, tests can now have subtests and those subtests
-can have subtests. This can be useful to further categorize tests and
-organize test results.
-
-The new required format for a test with subtests consists of: a
-subtest header line, a plan line, all subtests, and a final test
-result line.
-
-The first line of the test must be the subtest header line with the
-format: "# Subtest: <test_name>".
-
-The second line of the test must be the plan line, which is formatted
-as "1..N", where N is the number of subtests.
-
-Following the plan line, all lines pertaining to the subtests will follow.
-
-Finally, the last line of the test is a final test result line with
-the format: "(ok|not ok) <number> [-] [<description>] [<directive>]
-[<diagnostic data>]", which follows the same format as the general
-test result lines described in this section. The result line should
-indicate the result of the subtests. Thus, if one of the subtests
-fail, the test should fail. The description in the final test result
-line should match the name of the test in the subtest header.
-
-An example format:
-
-KTAP version 1
-1..1
-    # Subtest: test_suite
-    1..2
-    ok 1 - test_1
-    ok 2 - test_2
-ok 1 - test_suite
-
-An example format with multiple levels of nested testing:
-
-KTAP version 1
-1..1
-    # Subtest: test_suite
-    1..2
-        # Subtest: sub_test_suite
-        1..2
-        ok 1 - test_1
-        ok 2 test_2
-    ok 1 - sub_test_suite
-    ok 2 - test
-ok 1 - test_suite
-
-In the instance that the plan line is missing, the end of the test
-will be denoted by the final result line containing a description that
-matches the name of the test given in the subtest header. Note that
-thus, if the plan line is missing and one of the subtests have a
-matching name to the test suite this will cause errors.
-
-Lastly, indentation is also recommended for improved readability.
-
-
-Major differences between TAP 14 and KTAP specification
--------------------------------------------------------
-
-Note that the major differences between TAP 14 and KTAP specification:
-- yaml and json are not allowed in diagnostic messages
-- TODO directive not allowed
-- KTAP allows for an arbitrary number of tests to be nested with
-specified nested test format
-
-Example of KTAP
----------------
-
-KTAP version 1
-1..1
-    # Subtest: test_suite
-    1..1
-        # Subtest: sub_test_suite
-        1..2
-        ok 1 - test_1
-        ok 2 test_2
-    ok 1 - sub_test_suite
-ok 1 - test_suite
-
-=========================================
-Note on incompatibilities with kselftests
-=========================================
-
-To my knowledge, the above specification seems to generally accept the
-TAP format of many non-nested test results of kselftests.
-
-An example of a common kselftests TAP format for non-nested test
-results that are accepted by the above specification:
-
-TAP version 13
-1..2
-# selftests: vDSO: vdso_test_gettimeofday
-# The time is 1628024856.096879
-ok 1 selftests: vDSO: vdso_test_gettimeofday
-# selftests: vDSO: vdso_test_getcpu
-# Could not find __vdso_getcpu
-ok 2 selftests: vDSO: vdso_test_getcpu # SKIP
-
-However, one major difference noted with kselftests is the use of more
-directives than the "# SKIP" directive. kselftest also supports XPASS
-and XFAIL directives. Some additional examples found in kselftests:
-
-    not ok 5 selftests: netfilter: nft_concat_range.sh # TIMEOUT 45 seconds
-
-    not ok 45 selftests: kvm: kvm_binary_stats_test # exit=127
-
-Should the specification be expanded to include these directives?
-
-However, the general format for kselftests with nested test results
-seems to differ from the above specification. It seems that a general
-format for nested tests is as follows:
-
-TAP version 13
-1..2
-# selftests: membarrier: membarrier_test_single_thread
-# TAP version 13
-# 1..2
-# ok 1 sys_membarrier available
-# ok 2 sys membarrier invalid command test: command = -1, flags = 0,
-errno = 22. Failed as expected
-ok 1 selftests: membarrier: membarrier_test_single_thread
-# selftests: membarrier: membarrier_test_multi_thread
-# TAP version 13
-# 1..2
-# ok 1 sys_membarrier available
-# ok 2 sys membarrier invalid command test: command = -1, flags = 0,
-errno = 22. Failed as expected
-ok 2 selftests: membarrier: membarrier_test_multi_thread
-
-The major differences here, that do not match the above specification,
-are use of "# " as an indentation and using a TAP version line to
-denote a new test with subtests rather than the subtest header line
-described above. If these are widely utilized formats in kselftests,
-should we include both versions in the specification or should we
-attempt to agree on a single format for nested tests? I personally
-believe we should try to agree on a single format for nested tests.
-This would allow for a cleaner specification of KTAP and would reduce
-possible confusion.
-
-====
-
-So what do people think about the above specification?
-How should we handle the differences with kselftests?
-If this specification is accepted, where should the specification be documented?
+thanks,
+-- Shuah
