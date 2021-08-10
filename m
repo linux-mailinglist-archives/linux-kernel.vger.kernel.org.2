@@ -2,78 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6279C3E7BFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835863E7C06
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242938AbhHJPU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:20:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239937AbhHJPUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:20:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 729D160F13;
-        Tue, 10 Aug 2021 15:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628608828;
-        bh=kU8MFV7YslYW2xJNL20kvQgQdTi2xb/hQWirMa3PqBs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rgYcDxXhoTo3MejFlwZdWMwaKtKkIaT1sACghr0IryQ6KdEMyhmsh6bSz3aNyM6pH
-         7jHUIBmTbIP0hHs342xow7Bh5HgTbx73M/VlnSMT7NvPtuKa3rLjUGOHGL2ueBtoYi
-         Ao3JVCJYyLIsJmAuOxImrxq16qOD+DvsJ18SOO/x6/XhZk58A5wLARyh0YeEtKHLsN
-         m6OZ6q5hijai+2TueBP6esygdWTvvmGp8JkfjEMNXaczYBY9nH2nR3i6qkOwkCt+eu
-         lPvRT7OZJRjZFqb/F6aSPfoDJxoHf2W2VKYqww8CeYcz/VrmoxEbElUG4gj9sCSrMu
-         l1eI9HMq9tSlw==
-From:   Mark Brown <broonie@kernel.org>
-To:     robh@kernel.org, lgirdwood@gmail.com, Jack Yu <jack.yu@realtek.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kent_chen@realtek.com, devicetree@vger.kernel.org, lars@metafoo.de,
-        kenny_chen@realtek.com, shumingf@realtek.com,
-        alsa-devel@alsa-project.org, flove@realtek.com,
-        oder_chiou@realtek.com, derek.fang@realtek.com
-Subject: Re: [PATCH] ASoC: dt-bindings: rt1015p: fix syntax error in dts-binding document
-Date:   Tue, 10 Aug 2021 16:20:02 +0100
-Message-Id: <162860604513.6045.15119662311844913843.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210810020834.32414-1-jack.yu@realtek.com>
-References: <20210810020834.32414-1-jack.yu@realtek.com>
+        id S242833AbhHJPVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239937AbhHJPVd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:21:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258DDC0613C1;
+        Tue, 10 Aug 2021 08:21:11 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628608865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8yjOcV1ZbXoMI3ihNX/ApFO+OW54UPsBBZl6UAIAhwY=;
+        b=4Chk8a2+U/WWTDyk/+PMixeOBzg4lW03Dm0iUXG+6fGvFrMNgdSQ+IJqjY3Ghz1VJQ8vZF
+        cjC2nAJIHj4nAC/yOAalSxryuVca0HXvy6kmBaCY2IXjNbV5KhGIIgpqeirqPM8YBpjDIY
+        1qQd8E8JqNXQIzcjGfJMIowCo4pqDlhmRs/8x8izYyPCTFREtMb1mzZ7LDnjxrcC1+iTkA
+        OAtLgesBc8MWojMsTyQQV436Wbq6dcwGCG4gPQZ2+niO4LTs7gD6X9DODh5JYcLqpABSCZ
+        +jIvaFA09gZVCxConiLNphZK7B6uRnerctgkbrF/DA4oLZiLdFrqSBMvIpGJNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628608865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8yjOcV1ZbXoMI3ihNX/ApFO+OW54UPsBBZl6UAIAhwY=;
+        b=pPQpEwirM7CTsd7+xaOMWrJbqqOYQXwVfNzR4SUFQYPPztovwpBINaMGm6Ps1Obp47g/dL
+        8WAzYRrjPmj2PsCA==
+To:     Hikaru Nishida <hikalium@chromium.org>,
+        linux-kernel@vger.kernel.org, dme@dme.org, mlevitsk@redhat.com
+Cc:     suleiman@google.com, Hikaru Nishida <hikalium@chromium.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [v2 PATCH 3/4] x86/kvm: Add host side support for virtual
+ suspend time injection
+In-Reply-To: <20210806190607.v2.3.Ib0cb8ecae99f0ccd0e2814b310adba00b9e81d94@changeid>
+References: <20210806100710.2425336-1-hikalium@chromium.org>
+ <20210806190607.v2.3.Ib0cb8ecae99f0ccd0e2814b310adba00b9e81d94@changeid>
+Date:   Tue, 10 Aug 2021 17:21:05 +0200
+Message-ID: <87r1f1qqam.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 10:08:34 +0800, Jack Yu wrote:
-> Fix syntax error in dts-binding document.
-> 
-> 
-> 
-> 
+On Fri, Aug 06 2021 at 19:07, Hikaru Nishida wrote:
 
-Applied to
+> This patch implements virtual suspend time injection support for kvm
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+git grep 'This patch' Documentation/process/
 
-Thanks!
+> hosts.
+>
+> If this functionality is enabled and the guest requests it, the host
+> will stop all the clocks observed by the guest during the host's
+> suspension and report the duration of suspend to the guest through
+> struct kvm_host_suspend_time to give a chance to adjust CLOCK_BOOTTIME
+> to the guest. This mechanism can be used to align the guest's clock
+> behavior to the hosts' ones.
+>
+> Signed-off-by: Hikaru Nishida <hikalium@chromium.org>
+> ---
+>
+>  arch/x86/include/asm/kvm_host.h |   5 ++
+>  arch/x86/kvm/Kconfig            |  13 ++++
+>  arch/x86/kvm/cpuid.c            |   4 ++
+>  arch/x86/kvm/x86.c              | 109 +++++++++++++++++++++++++++++++-
+>  include/linux/kvm_host.h        |   8 +++
+>  kernel/time/timekeeping.c       |   3 +
 
-[1/1] ASoC: dt-bindings: rt1015p: fix syntax error in dts-binding document
-      commit: eb7ab747efd600382bc2e9406ea1fc2a867e9804
+Please split this into adding the infrastructure and then implementing
+the x86 side of it.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+>  
+> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING
+> +void kvm_arch_timekeeping_inject_sleeptime(const struct timespec64 *delta);
+ +#else
+ +static inline void kvm_arch_timekeeping_inject_sleeptime(const struct timespec64 *delta){}
+> +#endif /* CONFIG_KVM_VIRT_SUSPEND_TIMING */
+> +
+>  #endif
+> diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+> index 233ceb6cce1f..3ac3fb479981 100644
+> --- a/kernel/time/timekeeping.c
+> +++ b/kernel/time/timekeeping.c
+> @@ -1797,6 +1797,9 @@ void timekeeping_resume(void)
+>  	if (inject_sleeptime) {
+>  		suspend_timing_needed = false;
+>  		__timekeeping_inject_sleeptime(tk, &ts_delta);
+> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING
+> +		kvm_arch_timekeeping_inject_sleeptime(&ts_delta);
+> +#endif
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+which get's rid of these ugly ifdefs.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Also this is the wrong place because sleep time can be injected from
+other places as well. This should be in __timekeeping_inject_sleeptime()
+if at all.
 
 Thanks,
-Mark
+
+        tglx
