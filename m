@@ -2,120 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5223E5515
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F3B3E5525
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237542AbhHJI0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhHJI0x (ORCPT
+        id S238146AbhHJI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:27:30 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:35520 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhHJI13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:26:53 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7433C061796
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:26:31 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id b6so23518669lff.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=djm4DWbOF22GhsSvHwwgQ4MO8NZc/LJRB+Vb97tWuW0=;
-        b=QtQSkDYS9w7avyA8UUAyR1p5yorxliXuFlS5AocLoZh8RLzymJJOhaznYtkRR1WTD5
-         j0niLWf+G96pJbeqX2YyGUDJYSG2qwUgtzbhNIku7WnBVHtO0tXJcICn4+zeXuIcaVXD
-         bENk6TgC1mpKQN/tMKlIEtmY6eWttigESp5KeiPIq2Fu6hrtyzz6vap2z7gtt3Nxzz7R
-         bMlE5Kz4+ywpLvucwqdHorJd2b0uV/PvoQLrI5gSxvGXK1+yiGLSfLDqCpBDEqPSRzWP
-         LtVW+VrAP/RKPjh+yxi0J30EbAP0w113KgYXaAjfM7j5dEo7FS/4XSaamI+59oW6Yc08
-         Expw==
+        Tue, 10 Aug 2021 04:27:29 -0400
+Received: by mail-vs1-f53.google.com with SMTP id b138so11840170vsd.2;
+        Tue, 10 Aug 2021 01:27:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=djm4DWbOF22GhsSvHwwgQ4MO8NZc/LJRB+Vb97tWuW0=;
-        b=ZVnLXEVc5RqNYrnEpQr7DYaZnXtwXq1Dsewo9fGncUFN62R8ilGGjyqOqqd08InwEO
-         MXxdVQbYwa+xRV9BwQYRAD243eig86sfsroHkH26MT9wkx9gy9jo+cV2NeKWm1CYguZG
-         azwpL+8IoAuouMeVCUp3kcxk8xbBHS7a/REZlYk6Ci5Rz98p+MDmXhl/ZMPgElYCHV/c
-         /pRguz42PxOaV0QrgMyac4r02pIqbmk9+Z7V4tD42U7x8tcbo04BF58VRGdSQI1uxPa0
-         NSdYng+mddZC5+RTfQ6ScCrHbl9B0qzuZyFyCwqP6Y0UWVTPxCsMai/2czjQrbs/qPhm
-         dPow==
-X-Gm-Message-State: AOAM530nyeG1udu5q8MQ44/rKrd59135scdUF6UxcW121tyfs7BCfLqY
-        ZrH4nTraVwgsdl2y6MYnHZjas4YctFTSapCD7y21NQ==
-X-Google-Smtp-Source: ABdhPJy+8bv0DEw5D+Cldh+36uB+ypSXDqcR8YNnjehpz758RYuy1Hyme5gswVLwUSfvXz0sBmBXuqjPuDWoFcXT1Lo=
-X-Received: by 2002:a05:6512:1141:: with SMTP id m1mr20542919lfg.492.1628583990192;
- Tue, 10 Aug 2021 01:26:30 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=vEsirkXQR9XRp+ESI/NxcQBZnW3vhj14fJ6I3VFuv8A=;
+        b=UD91EvcN64Sn5cTlmapZjGWsk6y0y7UxLBoYUCY/5B2dh/9AHGEVGnfg8w2mlTSvpi
+         oKkcKz7XnoZgUBXq1FRabu/PUictdty3Tp0ypOjFJifmZscNy4Oa9+vduuRQZQ7rxdyM
+         xOkedV28ASTRmZNQddXahBCIuMll74ecCm6sKJpNrczMdttjfk8kQ9lDe70+wxa0+G93
+         wcHeSjiIv0of8t4qZ+jOe9H+MjOE//F69awHM2kyy4ReDDSBKsNJYAhfBOsSowKOUxo9
+         4xs3y476RL/MqWTFqNgDjPRYvf6LWORdkQwoRAGpXKi+NGwKV9unIcXyHTp0Qvyqm7AX
+         jcnw==
+X-Gm-Message-State: AOAM531/fbaB2CevqC8dCODysNQPCiwAPe/QbScQ5jd0nFAHm32lqaPN
+        qPGPSgQENLJveDrd5zRPDLpCnejxnFyjNLDtPOM=
+X-Google-Smtp-Source: ABdhPJwyqKTQQpPefbrJQBBtVL0JrZHJed0ystZSCbUas8Yc765XYNut1HHYKt7QAQ0qru2tK8FCEcPeuQXvb7ROTe4=
+X-Received: by 2002:a05:6102:d9:: with SMTP id u25mr11249297vsp.42.1628584026679;
+ Tue, 10 Aug 2021 01:27:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210722190747.1986614-1-hridya@google.com> <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
- <CA+wgaPOQmY4H9n302YspKuLk9iq9vBzdWBTu19EUUsiQYTUOzQ@mail.gmail.com>
-In-Reply-To: <CA+wgaPOQmY4H9n302YspKuLk9iq9vBzdWBTu19EUUsiQYTUOzQ@mail.gmail.com>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Tue, 10 Aug 2021 13:56:19 +0530
-Message-ID: <CAO_48GG_=zA39iUzzHD-2b1ktqrTCZ3k8z8V12x48u4SS30_TQ@mail.gmail.com>
-Subject: Re: [PATCH] dma-buf: heaps: Set allocation limit for system heap
-To:     Hridya Valsaraju <hridya@google.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210727133022.634-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210727133022.634-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 10 Aug 2021 10:26:55 +0200
+Message-ID: <CAMuHMdU7-AahJmKLabba_ZF2bcPwktU00Q_uBOYm+AdiBVGyTA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] can: rcar_canfd: Add support for RZ/G2L family
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hridya,
+Hi Prabhakar,
 
-Apologies for the delay in responding;
-
-
-On Wed, 4 Aug 2021 at 03:09, Hridya Valsaraju <hridya@google.com> wrote:
+On Tue, Jul 27, 2021 at 3:30 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> CANFD block on RZ/G2L SoC is almost identical to one found on
+> R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
+> are split into different sources and the IP doesn't divide (1/2)
+> CANFD clock within the IP.
 >
-> On Mon, Aug 2, 2021 at 7:18 PM John Stultz <john.stultz@linaro.org> wrote=
-:
-> >
-> > On Thu, Jul 22, 2021 at 12:07 PM Hridya Valsaraju <hridya@google.com> w=
-rote:
-> > > This patch limits the size of total memory that can be requested in a
-> > > single allocation from the system heap. This would prevent a
-> > > buggy/malicious client from depleting system memory by requesting for=
- an
-> > > extremely large allocation which might destabilize the system.
-> > >
-> > > The limit is set to half the size of the device's total RAM which is =
-the
-> > > same as what was set by the deprecated ION system heap.
-> > >
-> > > Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> >
-> > Seems sane to me, unless folks have better suggestions for allocation l=
-imits.
-> >
-> > Reviewed-by: John Stultz <john.stultz@linaro.org>
+> This patch adds compatible string for RZ/G2L family and splits
+> the irq handlers to accommodate both RZ/G2L and R-Car Gen3 SoC's.
 >
-> Thank you for taking a look John!
-Looks good to me; I will apply it to drm-misc today.
->
-> Regards,
-> Hridya
->
-> >
-> > thanks
-> > -john
-Best,
-Sumit.
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
+Thanks for your patch!
 
---=20
-Thanks and regards,
+I've just noticed a set of silly typos:
 
-Sumit Semwal (he / him)
-Tech Lead - LCG, Vertical Technologies
-Linaro.org =E2=94=82 Open source software for ARM SoCs
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+
+> +static void rcar_canfd_handle_global_recieve(struct rcar_canfd_global *gpriv, u32 ch)
+
+receive (everywhere)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
