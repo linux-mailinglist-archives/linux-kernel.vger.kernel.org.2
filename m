@@ -2,166 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4233E55B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FBE3E55B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhHJIkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbhHJIko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:40:44 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792DAC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:40:22 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id h13so25148415wrp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cKbU9FcikmLQJ8ei5FqM01XsNg7Lhvb/CqBLRSs+e6Y=;
-        b=dyIuT2n2VcPiM/RBZyvglfDmYnDB6Khh/nbdE68r8gYpY/a2NOrDaGfZLTs1W/+53t
-         vXS/cZ/tC1I9/7dqHtnrmgMvWpGq9dGx95D1TIug5tn0JH7x68v/1Ix3ehVQ3mzJinRI
-         GUr9/F01AqBZbk8e0i4kbq2w26FwQ6BX+66Fo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=cKbU9FcikmLQJ8ei5FqM01XsNg7Lhvb/CqBLRSs+e6Y=;
-        b=rupN6doTvmAXoWJj6sQyVZ1lOzbxVJs+8zLuwOxLf5soFvvW8/KXICrQDWyweaqWEG
-         CMSih42tYYpWGF5euY00xM0l9fbfUN0S4E4TBs0eQR/7Gde10VI6n9JHt0WisWKwmmEk
-         LsLYk2zDpHbs8xy/tD8tLZzGwVwQ1iPMeHdx8mJXWHQhWpNkTDe7bjfvZzNptbUrwF6e
-         /DKAvHhCHo55R/395oD+++u4RwGmS2qfxL6p0IIgszTr6e7YsMw1YL1fpUIz26rxB8BN
-         VzUYwBV0V3okVZzlJOfVWVhYZFRnm7OY6Hrmai9VdvVHos2UvXUp41hh2b0N2ZvuPX4r
-         3ctA==
-X-Gm-Message-State: AOAM532Yfnn3z22udJNtWVkevwUI0keAjCDTrcPoUc1JY5mY7hdLZju2
-        bKC5Thk9FmZgA2+XfmtXYKeh8huyI8aTVQ==
-X-Google-Smtp-Source: ABdhPJza6SgqUQMLMWRHmcm7FQ9wXAO72W40L4Idi8UXF8r5IQoBj3uhgCeKhzBt6M/C31Jpx7GRDw==
-X-Received: by 2002:adf:ee4e:: with SMTP id w14mr29754692wro.15.1628584821138;
-        Tue, 10 Aug 2021 01:40:21 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c15sm22801342wrw.93.2021.08.10.01.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 01:40:20 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 10:40:18 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     Hridya Valsaraju <hridya@google.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] dma-buf: heaps: Set allocation limit for system heap
-Message-ID: <YRI7cqWXM545iMzO@phenom.ffwll.local>
-Mail-Followup-To: Sumit Semwal <sumit.semwal@linaro.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>, Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210722190747.1986614-1-hridya@google.com>
- <CALAqxLVLMt7rbJBQtFBw-ikBAjKrVgfS8=Nu6NFQbp_gq1m22Q@mail.gmail.com>
- <CA+wgaPOQmY4H9n302YspKuLk9iq9vBzdWBTu19EUUsiQYTUOzQ@mail.gmail.com>
- <CAO_48GFS5SsdNCwOp6Jb+nmZJ+SdNkQkq628VhxXRGSLVeP0Yg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAO_48GFS5SsdNCwOp6Jb+nmZJ+SdNkQkq628VhxXRGSLVeP0Yg@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+        id S235727AbhHJIlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232964AbhHJIlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 04:41:01 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A03C6056C;
+        Tue, 10 Aug 2021 08:40:39 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDNJN-0040aK-E2; Tue, 10 Aug 2021 09:40:37 +0100
+Date:   Tue, 10 Aug 2021 09:40:37 +0100
+Message-ID: <87eeb1bsl6.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 11/13] clocksource/arm_arch_timer: Fix masking for high freq counters
+In-Reply-To: <CAOQ_Qshfi=RN8fExhXQh1i640LAZaZjQSJApyvdU2Gva9KtFaQ@mail.gmail.com>
+References: <20210809152651.2297337-1-maz@kernel.org>
+        <20210809152651.2297337-12-maz@kernel.org>
+        <CAOQ_Qshfi=RN8fExhXQh1i640LAZaZjQSJApyvdU2Gva9KtFaQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oupton@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 01:54:41PM +0530, Sumit Semwal wrote:
-> Hi Hridya,
+On Mon, 09 Aug 2021 17:45:28 +0100,
+Oliver Upton <oupton@google.com> wrote:
 > 
-> Apologies for the delay in responding.
-> 
-> On Wed, 4 Aug 2021 at 03:09, Hridya Valsaraju <hridya@google.com> wrote:
-> 
-> > On Mon, Aug 2, 2021 at 7:18 PM John Stultz <john.stultz@linaro.org> wrote:
-> > >
-> > > On Thu, Jul 22, 2021 at 12:07 PM Hridya Valsaraju <hridya@google.com>
-> > wrote:
-> > > > This patch limits the size of total memory that can be requested in a
-> > > > single allocation from the system heap. This would prevent a
-> > > > buggy/malicious client from depleting system memory by requesting for
-> > an
-> > > > extremely large allocation which might destabilize the system.
-> > > >
-> > > > The limit is set to half the size of the device's total RAM which is
-> > the
-> > > > same as what was set by the deprecated ION system heap.
-> > > >
-> > > > Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> > >
-> > > Seems sane to me, unless folks have better suggestions for allocation
-> > limits.
-> > >
-> > > Reviewed-by: John Stultz <john.stultz@linaro.org>
+> On Mon, Aug 9, 2021 at 8:48 AM Marc Zyngier <maz@kernel.org> wrote:
 > >
-> > Thank you for taking a look John!
+> > From: Oliver Upton <oupton@google.com>
 > >
-> Looks good to me; I will apply it to drm-misc today.
+> > Unfortunately, the architecture provides no means to determine the bit
+> > width of the system counter. However, we do know the following from the
+> > specification:
+> >
+> >  - the system counter is at least 56 bits wide
+> >  - Roll-over time of not less than 40 years
+> >
+> > To date, the arch timer driver has depended on the first property,
+> > assuming any system counter to be 56 bits wide and masking off the rest.
+> > However, combining a narrow clocksource mask with a high frequency
+> > counter could result in prematurely wrapping the system counter by a
+> > significant margin. For example, a 56 bit wide, 1GHz system counter
+> > would wrap in a mere 2.28 years!
+> >
+> > This is a problem for two reasons: v8.6+ implementations are required to
+> > provide a 64 bit, 1GHz system counter. Furthermore, before v8.6,
+> > implementers may select a counter frequency of their choosing.
+> >
+> > Fix the issue by deriving a valid clock mask based on the second
+> > property from above. Set the floor at 56 bits, since we know no system
+> > counter is narrower than that.
+> >
+> > Suggested-by: Marc Zyngier <maz@kernel.org>
+> > Signed-off-by: Oliver Upton <oupton@google.com>
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > [maz: fixed width computation not to lose the last bit, added
+> >       max delta generation for the timer]
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > Link: https://lore.kernel.org/r/20210807191428.3488948-1-oupton@google.com
+> > ---
+> >  drivers/clocksource/arm_arch_timer.c | 34 ++++++++++++++++++++++++----
+> >  1 file changed, 29 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> > index fa09952b94bf..74eca831d0d9 100644
+> > --- a/drivers/clocksource/arm_arch_timer.c
+> > +++ b/drivers/clocksource/arm_arch_timer.c
+> > @@ -52,6 +52,12 @@
+> >  #define CNTV_CVAL_LO   0x30
+> >  #define CNTV_CTL       0x3c
+> >
+> > +/*
+> > + * The minimum amount of time a generic counter is guaranteed to not roll over
+> > + * (40 years)
+> > + */
+> > +#define MIN_ROLLOVER_SECS      (40ULL * 365 * 24 * 3600)
+> > +
+> >  static unsigned arch_timers_present __initdata;
+> >
+> >  struct arch_timer {
+> > @@ -95,6 +101,22 @@ static int __init early_evtstrm_cfg(char *buf)
+> >  }
+> >  early_param("clocksource.arm_arch_timer.evtstrm", early_evtstrm_cfg);
+> >
+> > +/*
+> > + * Makes an educated guess at a valid counter width based on the Generic Timer
+> > + * specification. Of note:
+> > + *   1) the system counter is at least 56 bits wide
+> > + *   2) a roll-over time of not less than 40 years
+> > + *
+> > + * See 'ARM DDI 0487G.a D11.1.2 ("The system counter")' for more details.
+> > + */
+> > +static int arch_counter_get_width(void)
+> > +{
+> > +       u64 min_cycles = MIN_ROLLOVER_SECS * arch_timer_rate;
+> > +
+> > +       /* guarantee the returned width is within the valid range */
+> > +       return clamp_val(ilog2(min_cycles - 1) + 1, 56, 64);
+> > +}
+> 
+> Reposting thoughts from the original patch:
+> 
+> Reading the ARM ARM
+> D11.1.2 'The system counter', I did not find any language that
+> suggested the counter saturates the register width before rolling
+> over. So, it may be paranoid, but I presumed it to be safer to wrap
+> within the guaranteed interval rather (40 years) than assume the
+> sanity of the system counter implementation.
 
-Please don't, this doesn't really solve anything:
-- it's easy to bypass, just allocate more buffers to get over the limit
-- resource limit plan is cgroups, not hand-rolled limits in every
-  allocator
-- the ttm "max half of system memory" is for pinned memory, to work around
-  locking inversion issues between dma_resv_lock and core mm shrinkers. It
-  does not actually impose an overall allocation limit, you can allocate
-  ttm bo until your entire memory (and swap) are full. Christian König has
-  merged a patch set to lift this by reworking the shrinker interaction,
-  but it had to be reverted again because of some fallout I can't remember
-  offhand. dma_resv_lock vs shrinkers is very tricky.
+I really don't think that would be a likely implementation. The fact
+that the ARM ARM only talks about the width of the counter makes it a
+strong case that there is no 'ceiling' other than the natural
+saturation of the counter, IMO. If a rollover was allowed to occur
+before, it would definitely be mentioned.
 
-So if you want resource limits then you really want cgroups here.
+Think about it: you'd need to implement an extra comparator to drive
+the reset of the counter. It would also make the implementation of
+CVAL stupidly complicated: how do you handle the set of values that
+fit in the counter width, but are out of the counter range?
 
-Cheers, Daniel
+Even though the architecture is not the clearest thing, I'm expecting
+the CPU designers to try and save gates, rather than trying to
+implement a GOTCHA, expensive counter... ;-)
 
-> 
-> 
-> >
-> > Regards,
-> > Hridya
-> >
-> > >
-> > > thanks
-> > > -john
-> >
-> Best,
-> Sumit.
-> 
-> -- 
-> Thanks and regards,
-> 
-> Sumit Semwal (he / him)
-> Tech Lead - LCG, Vertical Technologies
-> Linaro.org │ Open source software for ARM SoCs
+Thanks,
+
+	M.
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Without deviation from the norm, progress is not possible.
