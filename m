@@ -2,257 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4A23E5B73
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DBF3E5B7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241483AbhHJNZ1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 09:25:27 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8392 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241409AbhHJNZP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:25:15 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GkYVZ1GChz813p;
-        Tue, 10 Aug 2021 21:20:54 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 21:24:50 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggema772-chm.china.huawei.com (10.1.198.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 10 Aug 2021 21:24:50 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Tue, 10 Aug 2021 21:24:49 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "yury.norov@gmail.com" <yury.norov@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "sbrivio@redhat.com" <sbrivio@redhat.com>,
-        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        tangchengchang <tangchengchang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>
-Subject: RE: [PATCH v9 1/5] cpumask: introduce
- cpumap_print_list/bitmask_to_buf to support large bitmask and list
-Thread-Topic: [PATCH v9 1/5] cpumask: introduce
- cpumap_print_list/bitmask_to_buf to support large bitmask and list
-Thread-Index: AQHXirK6LfP8uGs3C0uIGivdv2MjYqtl8KiAgADt/kCABd+cAA==
-Date:   Tue, 10 Aug 2021 13:24:49 +0000
-Message-ID: <6e04c09ce1714b35bd740fbf6a9ce654@hisilicon.com>
-References: <20210806110251.560-1-song.bao.hua@hisilicon.com>
- <20210806110251.560-2-song.bao.hua@hisilicon.com>
- <YQ03ixksDJyVwCEv@kroah.com> 
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.37]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S241446AbhHJN0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:26:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:55352 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241448AbhHJNZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:25:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 350041FB;
+        Tue, 10 Aug 2021 06:25:21 -0700 (PDT)
+Received: from [10.57.9.181] (unknown [10.57.9.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8EF013F70D;
+        Tue, 10 Aug 2021 06:25:16 -0700 (PDT)
+Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
+To:     Quentin Perret <qperret@google.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <YRJym+Vn4bbwQzzs@google.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <af06b333-3d8a-807c-9ccb-d491d6a54930@arm.com>
+Date:   Tue, 10 Aug 2021 14:25:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <YRJym+Vn4bbwQzzs@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> -----Original Message-----
-> From: Song Bao Hua (Barry Song)
-> Sent: Saturday, August 7, 2021 7:39 AM
-> To: 'Greg KH' <gregkh@linuxfoundation.org>
-> Cc: andriy.shevchenko@linux.intel.com; yury.norov@gmail.com;
-> linux-kernel@vger.kernel.org; akpm@linux-foundation.org;
-> dave.hansen@intel.com; linux@rasmusvillemoes.dk; rafael@kernel.org;
-> rdunlap@infradead.org; agordeev@linux.ibm.com; sbrivio@redhat.com;
-> jianpeng.ma@intel.com; valentin.schneider@arm.com; peterz@infradead.org;
-> bristot@redhat.com; guodong.xu@linaro.org; tangchengchang
-> <tangchengchang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> yangyicong <yangyicong@huawei.com>; tim.c.chen@linux.intel.com; Linuxarm
-> <linuxarm@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>
-> Subject: RE: [PATCH v9 1/5] cpumask: introduce
-> cpumap_print_list/bitmask_to_buf to support large bitmask and list
+On 8/10/21 1:35 PM, Quentin Perret wrote:
+> On Tuesday 10 Aug 2021 at 13:06:47 (+0530), Viresh Kumar wrote:
+>> Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
+>> with the EM core on their behalf.
 > 
+> Hmm, that's not quite what this does. This asks the cpufreq core to
+> use *PM_OPP* to register an EM, which I think is kinda wrong to do from
+> there IMO. The decision to use PM_OPP or another mechanism to register
+> an EM belongs to platform specific code (drivers), so it is odd for the
+> PM_OPP registration to have its own cpufreq flag but not the other ways.
 > 
+> As mentioned in another thread, the very reason to have PM_EM is to not
+> depend on PM_OPP, so I'm worried about the direction of travel with this
+> series TBH.
 > 
-> > -----Original Message-----
-> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > Sent: Saturday, August 7, 2021 1:22 AM
-> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: andriy.shevchenko@linux.intel.com; yury.norov@gmail.com;
-> > linux-kernel@vger.kernel.org; akpm@linux-foundation.org;
-> > dave.hansen@intel.com; linux@rasmusvillemoes.dk; rafael@kernel.org;
-> > rdunlap@infradead.org; agordeev@linux.ibm.com; sbrivio@redhat.com;
-> > jianpeng.ma@intel.com; valentin.schneider@arm.com; peterz@infradead.org;
-> > bristot@redhat.com; guodong.xu@linaro.org; tangchengchang
-> > <tangchengchang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> > yangyicong <yangyicong@huawei.com>; tim.c.chen@linux.intel.com; Linuxarm
-> > <linuxarm@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Jonathan
-> Cameron
-> > <jonathan.cameron@huawei.com>
-> > Subject: Re: [PATCH v9 1/5] cpumask: introduce
-> > cpumap_print_list/bitmask_to_buf to support large bitmask and list
-> >
-> > On Fri, Aug 06, 2021 at 11:02:47PM +1200, Barry Song wrote:
-> > > From: Tian Tao <tiantao6@hisilicon.com>
-> > >
-> > > The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-> > > drivers to export hexadecimal bitmask and decimal list to userspace by
-> > > sysfs ABI.
-> > >
-> > > Right now, those drivers are using a normal attribute for this kind of
-> > > ABIs. A normal attribute typically has show entry as below:
-> > >
-> > > static ssize_t example_dev_show(struct device *dev,
-> > >                 struct device_attribute *attr, char *buf)
-> > > {
-> > > 	...
-> > > 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-> > > }
-> > > show entry of attribute has no offset and count parameters and this
-> > > means the file is limited to one page only.
-> > >
-> > > cpumap_print_to_pagebuf() API works terribly well for this kind of
-> > > normal attribute with buf parameter and without offset, count:
-> > >
-> > > static inline ssize_t
-> > > cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-> > > {
-> > > 	return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
-> > > 				       nr_cpu_ids);
-> > > }
-> > >
-> > > The problem is once we have many cpus, we have a chance to make bitmask
-> > > or list more than one page. Especially for list, it could be as complex
-> > > as 0,3,5,7,9,...... We have no simple way to know it exact size.
-> > >
-> > > It turns out bin_attribute is a way to break this limit. bin_attribute
-> > > has show entry as below:
-> > > static ssize_t
-> > > example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-> > >              struct bin_attribute *attr, char *buf,
-> > >              loff_t offset, size_t count)
-> > > {
-> > > 	...
-> > > }
-> > >
-> > > With the new offset and count parameters, this makes sysfs ABI be able
-> > > to support file size more than one page. For example, offset could be
-> > > >= 4096.
-> > >
-> > > This patch introduces cpumap_print_bitmask/list_to_buf() and their bitmap
-> > > infrastructure bitmap_print_bitmask/list_to_buf() so that those drivers
-> > > can move to bin_attribute to support large bitmask and list. At the same
-> > > time, we have to pass those corresponding parameters such as offset, count
-> > > from bin_attribute to this new API.
-> > >
-> > > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > > Cc: Stefano Brivio <sbrivio@redhat.com>
-> > > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> > > Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
-> > > Cc: Yury Norov <yury.norov@gmail.com>
-> > > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> > > ---
-> > >  include/linux/bitmap.h  |   6 +++
-> > >  include/linux/cpumask.h |  38 +++++++++++++++
-> > >  lib/bitmap.c            | 103 ++++++++++++++++++++++++++++++++++++++++
-> > >  3 files changed, 147 insertions(+)
-> > >
-> > > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> > > index a36cfcec4e77..37f36dad18bd 100644
-> > > --- a/include/linux/bitmap.h
-> > > +++ b/include/linux/bitmap.h
-> > > @@ -227,6 +227,12 @@ unsigned int bitmap_ord_to_pos(const unsigned long
-> > *bitmap, unsigned int ord, un
-> > >  int bitmap_print_to_pagebuf(bool list, char *buf,
-> > >  				   const unsigned long *maskp, int nmaskbits);
-> > >
-> > > +extern int bitmap_print_bitmask_to_buf(char *buf, const unsigned long
-> > *maskp,
-> > > +				      int nmaskbits, loff_t off, size_t count);
-> > > +
-> > > +extern int bitmap_print_list_to_buf(char *buf, const unsigned long *maskp,
-> > > +				      int nmaskbits, loff_t off, size_t count);
-> > > +
-> >
-> > Why are you adding bitmap_print_list_to_buf() when no one uses it in
-> > this patch series?
-> >
-> > Did I miss it somewhere?
+>> This allows us to get rid of duplicated code
+>> in the drivers and fix the unregistration part as well, which none of the
+>> drivers have done until now.
 > 
-> Yes. It is used in every patch except the last one from Yury
-> which is only extending comment.
+> This series adds more code than it removes, and the unregistration is
+> not a fix as we don't ever remove the EM tables by design, so not sure
+> either of these points are valid arguments.
 > 
-> drivers/base/topology.c:
-> +static ssize_t name##_list_read(struct file *file, struct kobject *kobj,	\
-> +				struct bin_attribute *attr, char *buf,		\
-> +				loff_t off, size_t count)			\
-> +{										\
-> +	struct device *dev = kobj_to_dev(kobj);					\
-> +										\
-> +	return cpumap_print_list_to_buf(buf, topology_##mask(dev->id),		\
-> +					off, count);				\
->  }
+>> This would also make the registration with EM core to happen only after policy
+>> is fully initialized, and the EM core can do other stuff from in there, like
+>> marking frequencies as inefficient (WIP). Though this patchset is useful without
+>> that work being done and should be merged nevertheless.
+>>
+>> This doesn't update scmi cpufreq driver for now as it is a special case and need
+>> to be handled differently. Though we can make it work with this if required.
 > 
-> 
-> drivers/base/node.c:
-> +static inline ssize_t cpulist_read(struct file *file, struct kobject *kobj,
-> +				   struct bin_attribute *attr, char *buf,
-> +				   loff_t off, size_t count)
->  {
-> -	...
-> +	cpumask_and(mask, cpumask_of_node(node_dev->dev.id), cpu_online_mask);
-> +	n = cpumap_print_list_to_buf(buf, mask, off, count);
-> +	free_cpumask_var(mask);
-> 
-> >
-
-And correspondingly, Linux has bitmask and list ABIs for cpus, eg:
-
-root@ubuntu:/sys/devices/system/cpu/cpu0/topology# cat core_siblings
-ff
-root@ubuntu:/sys/devices/system/cpu/cpu0/topology# cat core_siblings_list
-0-7
-
-and for nodes, eg:
-root@ubuntu:/sys/devices/system/node/node0# cat cpumap
-ff
-root@ubuntu:/sys/devices/system/node/node0# cat cpulist
-0-7
-
-
-> > thanks,
-> >
-> > greg k-h
+> Note that we'll have more 'special cases' if other architectures start
+> using PM_EM, which is what we have been trying to allow since the
+> beginning, so that's worth keeping in mind.
 > 
 
-Thanks
-Barry
+The way I see this is that the flag in cpufreq avoids
+mistakes potentially made by driver developer. It will automaticaly
+register the *simple* EM model via dev_pm_opp_of_register_em() on behalf
+of drivers (which is already done manually by drivers). The developer
+would just set the flag similarly to CPUFREQ_IS_COOLING_DEV and be sure
+it will register at the right time. Well tested flag approach should be
+safer, easier to understand, maintain.
 
+If there is a need for *advanced* EM model, driver developer would
+have to care about all these things (order, setup-ready-structures,
+fw channels, freeing, etc) while developing custom registration.
+The developer won't set this flag in such case, so the core won't
+try to auto register the EM for that driver.
+
+I don't see the dependency of PM_EM on PM_OPP in this series.
