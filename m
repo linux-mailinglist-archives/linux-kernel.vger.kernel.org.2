@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD83E3E8318
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631FA3E831B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhHJSll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:41:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
+        id S231202AbhHJSnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:43:33 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43368 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhHJSlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:41:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 604E660231;
-        Tue, 10 Aug 2021 18:41:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628620875;
-        bh=LQmKjNaYxTFmzULlF8n8LkI2UE/YwJDrLt5T3bsXrlU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WGMunM/cVKwC3ZF2KkBLTwQniyzzS9XtOCDuJDXuGF9+RayEHH/0fSmr82u7lPVMF
-         yNbnwZ6pHP3cJYtaTbQLhGWzRNDGkRMPJtZwlPbPgViM9M8NFzovHXA1FcPMYfvrKG
-         98ScIeKkxMKMTELo0KVCHX+Dapf7YePN26Hc4AAwNLTb+ONPf3DoexK2/KTNnkojxq
-         MJEJapHHmGOwMQgT5AeZGiWl7JVp/oKbFLSE5CSbOoJu6cmr0KEgtDtkL59x9rIUMD
-         yhBExOglOjpAAeQ/35FrwLMlErgWaJsk3Kpjc3i8IzEzcVUZrxb9udxwHwr+ilc2A5
-         897agaOuXRQfg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3B98F5C039B; Tue, 10 Aug 2021 11:41:15 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 11:41:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     josh@joshtriplett.org, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        bigeasy@linutronix.de, tglx@linutronix.de, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] rcu: Make rcu_normal_after_boot writable again
-Message-ID: <20210810184115.GJ4126399@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210810084816.155203-1-juri.lelli@redhat.com>
+        id S229480AbhHJSna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:43:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=vuY4CU2wqTh4MiNOaeRz1+bUXIW8uOlvfPoVeU/k6qY=; b=b7DMOqREteJbMkdZnjrSvBb+i/
+        kW+1wtYwdvcdmYrcehORUYKTu3xXLeYgTg0X8imZx2IZvFh4XxZ6h2YmJg75FknEdRWRDS9YN4YXk
+        8ULqbKcKkqG1MwuX8NsAYDVB/BKcIHRaD3kblDoU/nTXfziLorKDDfFu/pjKqghsSUlM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mDWi5-00GxZx-R1; Tue, 10 Aug 2021 20:42:45 +0200
+Date:   Tue, 10 Aug 2021 20:42:45 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH net-next v1] net: phy: nxp-tja11xx: log critical health
+ state
+Message-ID: <YRLIpQIVgieYo1yc@lunn.ch>
+References: <20210810125618.20255-1-o.rempel@pengutronix.de>
+ <YRKV05IoqtJYr6Cj@lunn.ch>
+ <04df44d9-f049-e87b-81de-5a9fe888a49b@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810084816.155203-1-juri.lelli@redhat.com>
+In-Reply-To: <04df44d9-f049-e87b-81de-5a9fe888a49b@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:48:14AM +0200, Juri Lelli wrote:
-> Hi,
+> > I'm not so happy abusing the statistic counters like this. Especially
+> > when we have a better API for temperature and voltage: hwmon.
+> > 
+> > phy_temp_warn maps to hwmon_temp_max_alarm. phy_temp_high maps to
+> > either hwmon_temp_crit_alarm or hwmon_temp_emergency_alarm.
+> > 
+> > The under voltage maps to hwmon_in_lcrit_alarm.
+> > 
 > 
-> v2 of a proposed RCU change to make rcu_normal_after_boot feature usable
-> on PREEMPT_RT as well, as it turns out it's useful on RT as well on
-> NO_HZ_FULL configurations.
-> 
-> v2 gained an additional patch to revise rcu update module parameters
-> permissions (as suggested during v1 review [1]).
+> FWIW, the statistics counters in this driver are already abused
+> (phy_polarity_detect, phy_open_detect, phy_short_detect), so
+> I am not sure if adding more abuse makes a difference (and/or
+> if such abuse is common for phy drivers in general).
 
-Queued and pushed, thank you!
+Hi Guenter
 
-							Thanx, Paul
+Abuse is not common in general. I think this is the only driver
+abusing stats to return flags.  At the time those where added, we did
+not have phy cable test support. Now we do, i would also suggest that
+the driver makes use of that infrastructure to issue a cable test
+report. These 'stats' need to stay, since they are ABI, but we should
+not add more.
 
-> Changes wrt v1:
-> 
->  - Restrict the option to !PREEMPT_RT || NO_HZ_FULL (Paul, Sebastian)
->  - Change module params permissions (Paul) (02/02)
-> 
-> Thanks,
-> Juri
-> 
-> v1 - https://lore.kernel.org/lkml/20210805080123.16320-1-juri.lelli@redhat.com/
-> 
-> Juri Lelli (2):
->   rcu: Make rcu_normal_after_boot writable again
->   rcu: Make rcu update module parameters world-readable
-> 
->  kernel/rcu/tree_exp.h | 1 -
->  kernel/rcu/update.c   | 8 ++++----
->  2 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> -- 
-> 2.31.1
-> 
+That is also why i said "Especially when we have a better API".
+
+     Andrew
+
