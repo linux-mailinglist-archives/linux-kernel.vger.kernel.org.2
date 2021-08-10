@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC0D3E8366
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11193E8368
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhHJTGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:06:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:2425 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbhHJTGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:06:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="195239243"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="195239243"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 12:05:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="515954777"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Aug 2021 12:05:44 -0700
-Subject: Re: [PATCH 5/5] perf tools: Add dlfilter test
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-References: <20210810114813.12951-1-adrian.hunter@intel.com>
- <20210810114813.12951-6-adrian.hunter@intel.com>
- <YRLGTfQdg7pBcf29@kernel.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <e0eba7e7-d9ae-eff4-254c-6fe16809a675@intel.com>
-Date:   Tue, 10 Aug 2021 22:06:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S232045AbhHJTHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhHJTHA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 15:07:00 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803D4C0613C1;
+        Tue, 10 Aug 2021 12:06:38 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t3so22560131plg.9;
+        Tue, 10 Aug 2021 12:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Lv9Kbnrsoc3CJsd1J3pEd+P6FWJYORyGFYJTnBATrls=;
+        b=BrWfZA50uBVToYTNrjxQkjbkc3gkOoAx0a6Mq+epudkH3U7mIQ/m4XSzY6mLdMtmYw
+         dqChATm0PezvZU5B9LGEYiquniYRm1vYkE4NQjfNt5SNrb7n9hEnZZISQNgKdFonvstz
+         6gqH4KnzGzFKwVpC2RkQUc9jE7v+cz6gnc6oBT/wMy3WL7V49+Z/UQI5dJUC/nKA85q7
+         sk9M7iaztISmwYkI5C0ByJJgRPW/aCuOpq1YIWxHQi9/gSNd7PYDAQSMOgttZ7w/uxj6
+         wBtvwmIPBjj8WkIFQcrdYYdLxc4ltMbZ5LbbvOIs11ZnFbtUMVzywkiWoWuJhn/42FVY
+         qYEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Lv9Kbnrsoc3CJsd1J3pEd+P6FWJYORyGFYJTnBATrls=;
+        b=k1vy06XbcJqlMivNNCxFcHHyWbydS2RiGKa3G8JmXYAAByxDpLfZMRf9TOpQG3vs5s
+         S15kt7VaNG0/VXZK3TCuI+OX8W5rvrmJSyYb6XdvNSoHfzNezC0nG3hWONv2dabEOyqj
+         z1IDhxZvsX7K2GqPaE9y9sVVq/dMq6ASK5kIzPEfz2hSQcUg1ENpm+jn9QxhgH6bCffE
+         mdIEi8ulKxR3yCEnA1i4X981WexCFi4cXhDVsnLtkUGhrVWk5ZQAF2nvluWCTpBP48Xb
+         r26jAD9MXijvUaUK64mehHs3miL1Qs9ZZ2VJezbtqT/tYgTgU9PpUfoO0tt20r3ZIvG6
+         8PVg==
+X-Gm-Message-State: AOAM532ILR1aX8Fh2iJr4PhfvHmXALgQgJoR+9KyxW5cuLQi2/Sgohbo
+        +ZcqjuyLt6qFQKojSVrRBjA=
+X-Google-Smtp-Source: ABdhPJz9UPo/Gn5SSIodiFawy9+MMaapuWqFWlTa7yV5t1SFB9v8GLoRg9Rof8ZejnuJerDWgu4aRA==
+X-Received: by 2002:a63:6d3:: with SMTP id 202mr447772pgg.420.1628622397952;
+        Tue, 10 Aug 2021 12:06:37 -0700 (PDT)
+Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.gmail.com with ESMTPSA id q5sm3441292pfu.185.2021.08.10.12.06.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 12:06:37 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 00:36:30 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        willemb@google.com, xie.he.0141@gmail.com, gustavoars@kernel.org,
+        wanghai38@huawei.com, tannerlove@google.com, eyal.birger@gmail.com,
+        rsanger@wand.net.nz, jiapeng.chong@linux.alibaba.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Can a valid vnet header have both csum_start and csum_offset 0?
+Message-ID: <YRLONiYsdqKLeja3@fedora>
 MIME-Version: 1.0
-In-Reply-To: <YRLGTfQdg7pBcf29@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/21 9:32 pm, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Aug 10, 2021 at 02:48:13PM +0300, Adrian Hunter escreveu:
->> Add a perf test to test the dlfilter C API.
->>
->> A perf.data file is synthesized and then processed by perf script with a
->> dlfilter named dlfilter-test-api-v0.so. Also a C file is compiled to
->> provide a dso to match the synthesized perf.data file.
-> 
-> [root@five ~]# perf test dlfilter
-> 72: dlfilter C API                                                  : FAILED!
-> [root@five ~]# perf test -v dlfilter
-> 72: dlfilter C API                                                  :
-> --- start ---
-> test child forked, pid 3358542
-> Checking for gcc
-> Command: gcc --version
-> gcc (GCC) 11.1.1 20210531 (Red Hat 11.1.1-3)
-> Copyright (C) 2021 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.  There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> 
-> dlfilters path: /var/home/acme/libexec/perf-core/dlfilters
-> Command: gcc -g -o /tmp/dlfilter-test-3358542-prog /tmp/dlfilter-test-3358542-prog.c
-> Creating new host machine structure
-> Command: /var/home/acme/bin/perf script -i /tmp/dlfilter-test-3358542-perf-data --dlfilter /var/home/acme/libexec/perf-core/dlfilters/dlfilter-test-api-v0.so --dlarg first --dlarg 1 --dlarg 4198669 --dlarg 4198662 --dlarg 0 --dlarg last
-> Failed with return value 139
-> test child finished with -1
-> ---- end ----
-> dlfilter C API: FAILED!
-> [root@five ~]# cat /etc/redhat-release
-> Fedora release 34 (Thirty Four)
-> [root@five ~]# cat /etc/os-release
-> NAME=Fedora
-> VERSION="34.20210721.0 (Silverblue)"
-> ID=fedora
-> VERSION_ID=34
-> VERSION_CODENAME=""
-> PLATFORM_ID="platform:f34"
-> PRETTY_NAME="Fedora 34.20210721.0 (Silverblue)"
-> ANSI_COLOR="0;38;2;60;110;180"
-> LOGO=fedora-logo-icon
-> CPE_NAME="cpe:/o:fedoraproject:fedora:34"
-> HOME_URL="https://fedoraproject.org/"
-> DOCUMENTATION_URL="https://docs.fedoraproject.org/en-US/fedora-silverblue/"
-> SUPPORT_URL="https://fedoraproject.org/wiki/Communicating_and_getting_help"
-> BUG_REPORT_URL="https://bugzilla.redhat.com/"
-> REDHAT_BUGZILLA_PRODUCT="Fedora"
-> REDHAT_BUGZILLA_PRODUCT_VERSION=34
-> REDHAT_SUPPORT_PRODUCT="Fedora"
-> REDHAT_SUPPORT_PRODUCT_VERSION=34
-> PRIVACY_POLICY_URL="https://fedoraproject.org/wiki/Legal:PrivacyPolicy"
-> VARIANT="Silverblue"
-> VARIANT_ID=silverblue
-> OSTREE_VERSION='34.20210721.0'
-> [root@five ~]#
-> 
-> Trying to figure this out...
+Hi,
 
-What does it give with two 'v''s ?
-i.e.
+When parsing the vnet header in __packet_snd_vnet_parse[1], we do not
+check for if the values of csum_start and csum_offset given in the
+header are both 0.
 
-perf test -vv dlfilter
+Having both these values 0, however, causes a crash[2] further down the
+gre xmit code path. In the function ipgre_xmit, we pull the ip header
+and gre header from skb->data, this results in an invalid
+skb->csum_start which was calculated from the vnet header. The
+skb->csum_start offset in this case turns out to be lower than
+skb->transport_header. This causes us to pass a negative number as an
+argument to csum_partial[3] and eventually to do_csum[4], which then causes
+a kernel oops in the while loop.
+
+I do not understand what should the correct behavior be in this
+scenario, should we consider this vnet header as invalid? (Which I think
+is the most likely solution, however I do not have experience with
+networking.) Or should we rather accomodate for both csum_start
+and csum_offset values to be 0 in ipgre_xmit?
+
+Regards,
+Shreyansh Chouhan
+
+--
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/packet/af_packet.c#n2480
+[2] https://syzkaller.appspot.com/bug?id=c391f74aac26dd8311c45743ae618f9d5e38b674
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/skbuff.h#n4662
+[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/lib/csum-partial_64.c#n35
