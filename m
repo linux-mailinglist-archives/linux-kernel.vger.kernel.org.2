@@ -2,119 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DE83E5E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A279A3E5E18
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241036AbhHJOi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:38:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24101 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240975AbhHJOiy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:38:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628606311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QuleXyR+sNlj9g2DShREE6mi7Rwvdwecde57TVTjsGo=;
-        b=iIXZCdKnmv4iDkGDzlDhzVSwYbmopb4khrjPOXTpD6UZ02s1Ge3NFFnVtAyxoVXqNNM/Mn
-        dVUe0Pc5guOH05yi/Q9Zlls0oWo26Wd/D3CLG/cSy6Ce6l1acnolwMm+VeQhYPywwuoD2n
-        vxctpPUkRC4suO5mTohUmzseJQeh0wI=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-vZt9O7qUMkaR3AdHtIzzSg-1; Tue, 10 Aug 2021 10:35:38 -0400
-X-MC-Unique: vZt9O7qUMkaR3AdHtIzzSg-1
-Received: by mail-lf1-f71.google.com with SMTP id 23-20020ac248370000b02903b63da2052aso7591820lft.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 07:35:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QuleXyR+sNlj9g2DShREE6mi7Rwvdwecde57TVTjsGo=;
-        b=Lde1tHNLzoE5iYoUs9DanbwuR+i5pMGQXpSLdbx6EpogbrAzOJBAhoMv5fod8ZgPlY
-         18fS4Cg01pHO4omA8pTFODe5UK2lRZaEvtkXEXDDhwZ3Ipf/B8E3ZqfAUokjbHJ3II59
-         z2mvkEDHw7/AwX+Swi5ZUKQFlRebQKKpT0ZzchwyBQoqCTv+fdL8qHHT5yrqE+aEMGX8
-         ZFlieaxZq7KGYAMI0Tpy+d67uMnYT3Nd7mZzNO1gnxtJW2/XK9YyUI/sF+zYkvsuhCz4
-         NnbMC4RE7F9Gr3FGiievyrzl6KvI8fW2piI/bwh9bFKcWlWnDk9nd2CnLqAFWLBpn7n4
-         Az6A==
-X-Gm-Message-State: AOAM532qaSI6VYMoEQQLws4Y5TO9tcclHcJBvY1c2VrEataLfi2u8gux
-        OHu47CCtVLjSHSQoXIX06PSY7qFVTxz6c+3hU2lBYxKwNWqRFpPBtr2g+b2GJ3mPuiy3iwgEI5Y
-        lJKJbkjAKATtRfixvClm5TXJk77B5SXIhhO1zZSRu
-X-Received: by 2002:ac2:4a8d:: with SMTP id l13mr22302484lfp.159.1628606125008;
-        Tue, 10 Aug 2021 07:35:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzoIK6TD5A73rHnQ3By+bHVTK4cm690K8FNj2ppWk8aIHf21ATwuNIwUvmEjJMo0DOrYajSveCWTS9mlG393l4=
-X-Received: by 2002:ac2:4a8d:: with SMTP id l13mr22302468lfp.159.1628606124828;
- Tue, 10 Aug 2021 07:35:24 -0700 (PDT)
+        id S240852AbhHJOgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237490AbhHJOgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:36:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 410BB60EB5;
+        Tue, 10 Aug 2021 14:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628606182;
+        bh=ABqs84wKaUA3FByRyPz8v+wtP3BKrfJzJu/RCm8D2Ns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tnMmTlYPtbMjowAzEOmV/NIhYmZfApYgdV5s/JLl5d4j6aQDcoY/FVPk4kTDWjvhe
+         lLFSd1kaqo0joYIwZj/S1k7o/0ihHd8At7bwyS55M/ksf8xofcKco0LSMUSSPOzLyy
+         zP43WWqXDJ2U/y1uRSZnmT84RigA4ULEdOJJxqst//wjsOiDio2IcU/EI1RAsmMZJw
+         QkA4bYBsIIbJIIKcg4CVxaMqOigT904GRlqSe90RwsijWz+X/DWyeCTZdWzYqFYVsu
+         tRncrUBw/vqgZyhaCG5RKslAwIN2dxhMFjaz8D0rLgWZGGGG36GJPGf5zL1waM/sxl
+         BuNFWfiQxBCQA==
+Date:   Tue, 10 Aug 2021 16:36:16 +0200
+From:   Robert Richter <rric@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Len Baker <len.baker@gmx.com>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
+Message-ID: <YRKO4An9UkObVGmB@rric.localdomain>
+References: <20210807155957.10069-1-len.baker@gmx.com>
+ <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
+ <20210808112617.GA1927@titan>
+ <YRD90L6PMoVbbv+9@rric.localdomain>
+ <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
 MIME-Version: 1.0
-References: <YL3LrgAzMNI2hp5i@syu-laptop> <874kbxs80q.ffs@tglx>
-In-Reply-To: <874kbxs80q.ffs@tglx>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Tue, 10 Aug 2021 10:35:13 -0400
-Message-ID: <CAFki+Lmve_AqiTY-Y_6Rv1aqegbVph2hOcODdE9JS5S2m=jpaw@mail.gmail.com>
-Subject: Re: [RFC] genirq: Add effective CPU index retrieving interface
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Shung-Hsi Yu <shung-hsi.yu@suse.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:13 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Mon, Jun 07 2021 at 15:33, Shung-Hsi Yu wrote:
-> > Most driver's IRQ spreading scheme is naive compared to the IRQ spreading
-> > scheme introduced since IRQ subsystem rework, so it better to rely
-> > request_irq() to spread IRQ out.
-> >
-> > However, drivers that care about performance enough also tends to try
-> > allocating memory on the same NUMA node on which the IRQ handler will run.
-> > For such driver to rely on request_irq() for IRQ spreading, we also need to
-> > provide an interface to retrieve the CPU index after calling
-> > request_irq().
->
-> So if you are interested in the resulting NUMA node, then why exposing a
-> random CPU out of the affinity mask instead of exposing a function to
-> retrieve the NUMA node?
+On 09.08.21 10:18:58, Joe Perches wrote:
 
-Agreed, probably it will make more sense for the drivers to pass either the
-local NUMA node index or NULL (in case they don't care about it) as a
-parameter then at the time of allocation, we only find the best-fit CPUs
-from that NUMA?
+> strscpy and scnprintf have different return values and it's simpler
+> and much more common to use scnprintf for appended strings that are
+> limited to a specific buffer length.
 
-or, maybe we should do this by default, and if the local NUMA CPUs run out
-of available vectors then we go to the other NUMA node CPUs.
+Calculating the bytes written from the return value is a oneliner.
 
->
-> > +/**
-> > + * irq_get_effective_cpu - Retrieve the effective CPU index
-> > + * @irq:     Target interrupt to retrieve effective CPU index
-> > + *
-> > + * When the effective affinity cpumask has multiple CPU toggled, it just
-> > + * returns the first CPU in the cpumask.
-> > + */
-> > +int irq_get_effective_cpu(unsigned int irq)
-> > +{
-> > +     struct irq_data *data = irq_get_irq_data(irq);
->
-> This can be NULL.
->
-> > +     struct cpumask *m;
-> > +
-> > +     m = irq_data_get_effective_affinity_mask(data);
-> > +     return cpumask_first(m);
-> > +}
->
-> Thanks,
->
->         tglx
->
-
-
--- 
-Thanks
-Nitesh
-
+-Robert
