@@ -2,115 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB083E5887
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD933E588A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237530AbhHJKqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:46:31 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:45108 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236505AbhHJKqa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:46:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Uiadwy5_1628592365;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Uiadwy5_1628592365)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 10 Aug 2021 18:46:06 +0800
-Subject: Re: [PATCH V2 2/3] KVM: X86: Set the hardware DR6 only when
- KVM_DEBUGREG_WONT_EXIT
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <YRFdq8sNuXYpgemU@google.com>
- <20210809174307.145263-1-jiangshanlai@gmail.com>
- <20210809174307.145263-2-jiangshanlai@gmail.com>
- <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
- <45fef019-8bd9-2acb-bd53-1243a8a07c4e@linux.alibaba.com>
- <f5967e16-3910-5604-7890-9a1741045ce8@redhat.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <7f86316b-5010-5250-4223-5a4d62f942c8@linux.alibaba.com>
-Date:   Tue, 10 Aug 2021 18:46:04 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S239894AbhHJKqh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 06:46:37 -0400
+Received: from aposti.net ([89.234.176.197]:47546 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236505AbhHJKqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:46:35 -0400
+Date:   Tue, 10 Aug 2021 12:46:05 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 3/8] drm/ingenic: Use standard
+ drm_atomic_helper_commit_tail
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     David Airlie <airlied@linux.ie>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
+        Sam Ravnborg <sam@ravnborg.org>, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-Id: <TWDMXQ.LWEW6X38G98J@crapouillou.net>
+In-Reply-To: <YRJS9kZt5jUe5Z3r@phenom.ffwll.local>
+References: <20210808134526.119198-1-paul@crapouillou.net>
+        <20210808134526.119198-4-paul@crapouillou.net>
+        <YRJS9kZt5jUe5Z3r@phenom.ffwll.local>
 MIME-Version: 1.0
-In-Reply-To: <f5967e16-3910-5604-7890-9a1741045ce8@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
-
-On 2021/8/10 18:35, Paolo Bonzini wrote:
-> On 10/08/21 12:30, Lai Jiangshan wrote:
->>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->>> index ae8e62df16dd..21a3ef3012cf 100644
->>> --- a/arch/x86/kvm/vmx/vmx.c
->>> +++ b/arch/x86/kvm/vmx/vmx.c
->>> @@ -6625,6 +6625,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->>>           vmx->loaded_vmcs->host_state.cr4 = cr4;
->>>       }
->>>
->>> +    /* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
->>> +    if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
->>> +        set_debugreg(vcpu->arch.dr6, 6);
->>
->>
->> I also noticed the related code in svm.c, but I refrained myself
->> to add a new branch in vmx_vcpu_run().  But after I see you put
->> the code of resetting dr6 in vmx_sync_dirty_debug_regs(), the whole
->> solution is much clean and better.
->>
->> And if any chance you are also concern about the additional branch,
->> could you add a new callback to set dr6 and call the callback from
->> x86.c when KVM_DEBUGREG_WONT_EXIT.
+Le mar., ao�t 10 2021 at 12:20:38 +0200, Daniel Vetter 
+<daniel@ffwll.ch> a �crit :
+> On Sun, Aug 08, 2021 at 03:45:21PM +0200, Paul Cercueil wrote:
+>>  By making the CRTC's .vblank_enable() function return an error when 
+>> it
+>>  is known that the hardware won't deliver a VBLANK, we can drop the
+>>  ingenic_drm_atomic_helper_commit_tail() function and use the 
+>> standard
+>>  drm_atomic_helper_commit_tail() function instead.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 28 
+>> ++++-------------------
+>>   1 file changed, 4 insertions(+), 24 deletions(-)
+>> 
+>>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
+>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  index bc71ba44ccf4..3ed7c27a8dde 100644
+>>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  @@ -706,29 +706,6 @@ static int 
+>> ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
+>>   	}
+>>   }
+>> 
+>>  -static void ingenic_drm_atomic_helper_commit_tail(struct 
+>> drm_atomic_state *old_state)
+>>  -{
+>>  -	/*
+>>  -	 * Just your regular drm_atomic_helper_commit_tail(), but only 
+>> calls
+>>  -	 * drm_atomic_helper_wait_for_vblanks() if priv->no_vblank.
+>>  -	 */
+>>  -	struct drm_device *dev = old_state->dev;
+>>  -	struct ingenic_drm *priv = drm_device_get_priv(dev);
+>>  -
+>>  -	drm_atomic_helper_commit_modeset_disables(dev, old_state);
+>>  -
+>>  -	drm_atomic_helper_commit_planes(dev, old_state, 0);
+>>  -
+>>  -	drm_atomic_helper_commit_modeset_enables(dev, old_state);
+>>  -
+>>  -	drm_atomic_helper_commit_hw_done(old_state);
+>>  -
+>>  -	if (!priv->no_vblank)
+>>  -		drm_atomic_helper_wait_for_vblanks(dev, old_state);
+>>  -
+>>  -	drm_atomic_helper_cleanup_planes(dev, old_state);
+>>  -}
+>>  -
+>>   static irqreturn_t ingenic_drm_irq_handler(int irq, void *arg)
+>>   {
+>>   	struct ingenic_drm *priv = drm_device_get_priv(arg);
+>>  @@ -749,6 +726,9 @@ static int ingenic_drm_enable_vblank(struct 
+>> drm_crtc *crtc)
+>>   {
+>>   	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
+>> 
+>>  +	if (priv->no_vblank)
+>>  +		return -EWOULDBLOCK;
 > 
-> The extra branch should be well predicted, and the idea you sketched below would cause DR6 to be marked uselessly as 
-> dirty in SVM, so I think this is cleaner.  Let's add an "unlikely" around it too.
+> I think other drivers return EINVAL here. I'm not sure exactly this is
+> specified, but the errno here is visible to userspace.
+> 
+> Maybe would be good to update the kerneldoc for this hook?
+> 
+> Anyway this is great, with the errno fixed:
+> 
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-I'm OK with it. But I don't think the sketched idea would cause DR6 to be marked uselessly as dirty in SVM. It doesn't 
-mark it dirty if the value is unchanged, and the value is always DR6_ACTIVE_LOW except when it just clears 
-KVM_DEBUGREG_WONT_EXIT.
+I thought about it afterwards, that my error code wasn't great. In my 
+mind it was "the driver will hang while waiting for vblank" hence 
+-EWOULDBLOCK ;)
+
+I'll need to v2 anyway so I'll change it to -EINVAL then.
+
+Cheers,
+-Paul
 
 > 
-> Paolo
+>>  +
+>>   	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
+>>   			   JZ_LCD_CTRL_EOF_IRQ, JZ_LCD_CTRL_EOF_IRQ);
+>> 
+>>  @@ -856,7 +836,7 @@ static const struct drm_mode_config_funcs 
+>> ingenic_drm_mode_config_funcs = {
+>>   };
+>> 
+>>   static struct drm_mode_config_helper_funcs 
+>> ingenic_drm_mode_config_helpers = {
+>>  -	.atomic_commit_tail = ingenic_drm_atomic_helper_commit_tail,
+>>  +	.atomic_commit_tail = drm_atomic_helper_commit_tail,
+>>   };
+>> 
+>>   static void ingenic_drm_unbind_all(void *d)
+>>  --
+>>  2.30.2
+>> 
 > 
->> The possible implementation of the callback:
->> for vmx: set_debugreg(vcpu->arch.dr6, 6);
->> for svm: svm_set_dr6(svm, vcpu->arch.dr6);
->>           and always do svm_set_dr6(svm, DR6_ACTIVE_LOW); at the end of the
->>           svm_handle_exit().
->>
->> Thanks
->> Lai
->>
->>> +
->>>       /* When single-stepping over STI and MOV SS, we must clear the
->>>        * corresponding interruptibility bits in the guest state. Otherwise
->>>        * vmentry fails as it then expects bit 14 (BS) in pending debug
->>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>> index a111899ab2b4..fbc536b21585 100644
->>> --- a/arch/x86/kvm/x86.c
->>> +++ b/arch/x86/kvm/x86.c
->>> @@ -9597,7 +9597,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->>>           set_debugreg(vcpu->arch.eff_db[1], 1);
->>>           set_debugreg(vcpu->arch.eff_db[2], 2);
->>>           set_debugreg(vcpu->arch.eff_db[3], 3);
->>> -        set_debugreg(vcpu->arch.dr6, 6);
->>>       } else if (unlikely(hw_breakpoint_active())) {
->>>           set_debugreg(0, 7);
->>>       }
->>>
->>> Paolo
->>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
