@@ -2,185 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C26E3E57FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE4F3E5800
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239727AbhHJKIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:08:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42500 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239709AbhHJKIS (ORCPT
+        id S239733AbhHJKJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:09:49 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:45600
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230039AbhHJKJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:08:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628590075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dEgg1B68UoULU6E/e8M+gSz3xhhWUJATUN4So/YGl3Y=;
-        b=i7cs9mMqi6pNopsmG00nOwopPy39XcgZgKLDYX6ihcnlKr8KtIVmeT6of+QQTbfFHlfYwb
-        e3EjxoLAxWEdurM6SELrgeeVUzwMKFsqs/Jmdw17wcHIEXI2ueFU/F3NZh5FLVeN672ELM
-        LECJpUGZPFzqOctpI5KSS9DSzkx3QCA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-raw_DBI0MESbPvd2GHB3FQ-1; Tue, 10 Aug 2021 06:07:54 -0400
-X-MC-Unique: raw_DBI0MESbPvd2GHB3FQ-1
-Received: by mail-ej1-f70.google.com with SMTP id x5-20020a1709064bc5b02905305454f5d1so5369982ejv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:07:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dEgg1B68UoULU6E/e8M+gSz3xhhWUJATUN4So/YGl3Y=;
-        b=jv1PgHplbBIkZU43V5+AcK6v+3nbh6JS8oXlupf+yQ824QwkigTMEEd+meGjjOnS4G
-         TYwU79O0uuG78Tew//dthxChEmuE43E5cA5bOIPfRMHKPxERO5iiI6fRCvUPEU6lkSNL
-         ExO6XOhQX8iVgt7Ujog3n91P/y6GfIYMGAFo4mI1NwnHH5Qlt5j9wvftJ0qvcD37/W7m
-         8GmItL/LcPfQkLMGmLsaOQDNB5LV61IoyxVEtSDNQ3m7n6BJfV7aaxXPsupq2Tv74Ons
-         6863jha+k/BA4BO90wZG4nzctKzD5s4CAP3aD8NxgZ1LCkIis/lKI/sMCeeakrjd4r/J
-         gBAA==
-X-Gm-Message-State: AOAM533mulzz9nx6heXijGU9XEMS7Om8jIDYrB6vnOrvxAggxt9Z/JaI
-        yInmAe1eVmBM6sDFF61DQhzKcUxZaG0YYstGjBXHPZ7Za5TKpQF9l9AFsysllTK9MQgmeJk05BV
-        +0IhCHHtxQ4iZzH6KVmBhlMOn
-X-Received: by 2002:aa7:d593:: with SMTP id r19mr3945124edq.372.1628590073462;
-        Tue, 10 Aug 2021 03:07:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYqkxr4BqRE4gHuK0TVd5eV864l8peu17Yfal47wvKOtzFRGKt6JOM2SgOQK4q5WbXkMMQuQ==
-X-Received: by 2002:aa7:d593:: with SMTP id r19mr3945098edq.372.1628590073248;
-        Tue, 10 Aug 2021 03:07:53 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id e22sm9278995edu.35.2021.08.10.03.07.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 03:07:52 -0700 (PDT)
-Subject: Re: [PATCH V2 2/3] KVM: X86: Set the hardware DR6 only when
- KVM_DEBUGREG_WONT_EXIT
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <YRFdq8sNuXYpgemU@google.com>
- <20210809174307.145263-1-jiangshanlai@gmail.com>
- <20210809174307.145263-2-jiangshanlai@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
-Date:   Tue, 10 Aug 2021 12:07:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 10 Aug 2021 06:09:48 -0400
+Received: from localhost.localdomain (61-220-137-37.HINET-IP.hinet.net [61.220.137.37])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 831763F107;
+        Tue, 10 Aug 2021 10:09:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628590165;
+        bh=x/Db548JcNjl7vdwhUu8F9KYkZB9HM7NmO3UOKZN8AY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=ruG57TO9RatLz8T7uzz1DsNt2wybJDlCcLk5KYb7ypRiDn1Bd7dagg0GIUEGQPupL
+         stPbMtKYuWoSknUevNiXrXiUaYQBZW9Gs6Jiwn9XZfyZvCCasFm1S/Z2/O1jnAltvr
+         Eph2aWGxeIlYghNVXnQ/gHl21wJk11Xl7FRxjX3uR6U28IIwbRd9L3C07otGMQu8rb
+         svlg0NbYqkqPsttqxUCYV3+tMz3cUZpm/IuVIVvxFd1oaLAcZWOTgZDwcJaabvpCau
+         R4PMOCqGVBzN+uy5QED3XJEVC4x6aFf5eQXAULKmWgWB1dPhwOiCmt/dvKWc3VuYlC
+         Dm7I9Hm421yMg==
+From:   Jeremy Szu <jeremy.szu@canonical.com>
+To:     tiwai@suse.com
+Cc:     Jeremy Szu <jeremy.szu@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        PeiSen Hou <pshou@realtek.com>, Luke D Jones <luke@ljones.dev>,
+        Sami Loone <sami@loone.fi>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 650 G8 Notebook PC
+Date:   Tue, 10 Aug 2021 18:08:45 +0800
+Message-Id: <20210810100846.65844-1-jeremy.szu@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210809174307.145263-2-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/21 19:43, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
-> registers") allows the guest accessing to DRs without exiting when
-> KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
-> on entry to the guest---including DR6 that was not synced before the commit.
-> 
-> But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
-> but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
-> and just leads to a more case which leaks stale DR6 to the host which has
-> to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
-> 
-> We'd better to set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT,
-> so that we can fine-grain control the cases when we need to reset it
-> which is done in later patch.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->   arch/x86/kvm/x86.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ad47a09ce307..d2aa49722064 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9598,7 +9598,9 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->   		set_debugreg(vcpu->arch.eff_db[1], 1);
->   		set_debugreg(vcpu->arch.eff_db[2], 2);
->   		set_debugreg(vcpu->arch.eff_db[3], 3);
-> -		set_debugreg(vcpu->arch.dr6, 6);
-> +		/* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
-> +		if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
-> +			set_debugreg(vcpu->arch.dr6, 6);
->   	} else if (unlikely(hw_breakpoint_active())) {
->   		set_debugreg(0, 7);
->   	}
-> 
+The HP ProBook 650 G8 Notebook PC is using ALC236 codec which is
+using 0x02 to control mute LED and 0x01 to control micmute LED.
+Therefore, add a quirk to make it works.
 
-Even better, this should be moved to vmx.c's vcpu_enter_guest.  This
-matches the handling in svm.c:
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-         /*
-          * Run with all-zero DR6 unless needed, so that we can get the exact cause
-          * of a #DB.
-          */
-         if (unlikely(vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT))
-                 svm_set_dr6(svm, vcpu->arch.dr6);
-         else
-                 svm_set_dr6(svm, DR6_ACTIVE_LOW);
-
-That is,
-
-     KVM: X86: Set the hardware DR6 only when KVM_DEBUGREG_WONT_EXIT
-     
-     Commit c77fb5fe6f03 ("KVM: x86: Allow the guest to run with dirty debug
-     registers") allows the guest accessing to DRs without exiting when
-     KVM_DEBUGREG_WONT_EXIT and we need to ensure that they are synchronized
-     on entry to the guest---including DR6 that was not synced before the commit.
-     
-     But the commit sets the hardware DR6 not only when KVM_DEBUGREG_WONT_EXIT,
-     but also when KVM_DEBUGREG_BP_ENABLED.  The second case is unnecessary
-     and just leads to a more case which leaks stale DR6 to the host which has
-     to be resolved by unconditionally reseting DR6 in kvm_arch_vcpu_put().
-     
-     Even if KVM_DEBUGREG_WONT_EXIT, however, setting the host DR6 only matters
-     on VMX because SVM always uses the DR6 value from the VMCB.  So move this
-     line to vmx.c and make it conditional on KVM_DEBUGREG_WONT_EXIT.
-     
-     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index ae8e62df16dd..21a3ef3012cf 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6625,6 +6625,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
-  		vmx->loaded_vmcs->host_state.cr4 = cr4;
-  	}
-  
-+	/* When KVM_DEBUGREG_WONT_EXIT, dr6 is accessible in guest. */
-+	if (vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)
-+		set_debugreg(vcpu->arch.dr6, 6);
-+
-  	/* When single-stepping over STI and MOV SS, we must clear the
-  	 * corresponding interruptibility bits in the guest state. Otherwise
-  	 * vmentry fails as it then expects bit 14 (BS) in pending debug
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a111899ab2b4..fbc536b21585 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9597,7 +9597,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-  		set_debugreg(vcpu->arch.eff_db[1], 1);
-  		set_debugreg(vcpu->arch.eff_db[2], 2);
-  		set_debugreg(vcpu->arch.eff_db[3], 3);
--		set_debugreg(vcpu->arch.dr6, 6);
-  	} else if (unlikely(hw_breakpoint_active())) {
-  		set_debugreg(0, 7);
-  	}
-
-Paolo
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4043a2362f27..a065260d0d20 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8431,6 +8431,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
++	SND_PCI_QUIRK(0x103c, 0x8805, "HP ProBook 650 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+-- 
+2.25.1
 
