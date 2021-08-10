@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA383E8030
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6123E802C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236196AbhHJRqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:46:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41668 "EHLO mail.kernel.org"
+        id S236510AbhHJRqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235860AbhHJRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234012AbhHJRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 13:43:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4E27610A7;
-        Tue, 10 Aug 2021 17:39:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBFCB606A5;
+        Tue, 10 Aug 2021 17:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617160;
-        bh=ySdgxvltRO98Yof6wxQm2ulBxYe/gQDIxZkggTO7v6o=;
+        s=korg; t=1628617162;
+        bh=XJBcsXSIRcusmHj+x5GP3rBMU2877z0rlhQN0e2SMvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yC9n+4VzciA219pQxn2j4O5af1wdkFu2OJcph1ChPdh2hn4UAszGe8e/2oEbmZ6sq
-         Ox+6f6bJ3bZ08JkYI3dx/KOUlAmfa55Pm4F4XBmANRJHezoa7Pu3OcjvHWLZdo5g7x
-         TOu9YSjZ0xSxUNSmtueB4hOQVivtj/aRc+3A9MrY=
+        b=kBRyyjXudmEr1EQI1vq5OMWB34kltepa6cvcTfqaklhnh7WPsf/HnF6z2HW6km/eQ
+         wZoKIlPV+Egax2i/I1dha0Z3ZhpWHPZ5eI8Dv6LY+wKKXI5ktn42g+mBG0G4KP/IKf
+         gLDuBPESMop+vSzJJf/cV36+HcF9l2t7HdXlTYaI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org, Aharon Landau <aharonl@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 037/135] gpio: tqmx86: really make IRQ optional
-Date:   Tue, 10 Aug 2021 19:29:31 +0200
-Message-Id: <20210810172956.938521606@linuxfoundation.org>
+Subject: [PATCH 5.10 038/135] RDMA/mlx5: Delay emptying a cache entry when a new MR is added to it recently
+Date:   Tue, 10 Aug 2021 19:29:32 +0200
+Message-Id: <20210810172956.979317851@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 References: <20210810172955.660225700@linuxfoundation.org>
@@ -43,50 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+From: Aharon Landau <aharonl@nvidia.com>
 
-[ Upstream commit 9b87f43537acfa24b95c236beba0f45901356eb2 ]
+[ Upstream commit d6793ca97b76642b77629dd0783ec64782a50bdb ]
 
-The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
-causes warnings with newer kernels.
+Fixing a typo that causes a cache entry to shrink immediately after adding
+to it new MRs if the entry size exceeds the high limit.  In doing so, the
+cache misses its purpose to prevent the creation of new mkeys on the
+runtime by using the cached ones.
 
-Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
-missing IRQ properly.
-
-Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fixes: b9358bdbc713 ("RDMA/mlx5: Fix locking in MR cache work queue")
+Link: https://lore.kernel.org/r/fcb546986be346684a016f5ca23a0567399145fa.1627370131.git.leonro@nvidia.com
+Signed-off-by: Aharon Landau <aharonl@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-tqmx86.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/mlx5/mr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-tqmx86.c b/drivers/gpio/gpio-tqmx86.c
-index 5022e0ad0fae..0f5d17f343f1 100644
---- a/drivers/gpio/gpio-tqmx86.c
-+++ b/drivers/gpio/gpio-tqmx86.c
-@@ -238,8 +238,8 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	int ret, irq;
- 
--	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
-+	irq = platform_get_irq_optional(pdev, 0);
-+	if (irq < 0 && irq != -ENXIO)
- 		return irq;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-@@ -278,7 +278,7 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(&pdev->dev);
- 
--	if (irq) {
-+	if (irq > 0) {
- 		struct irq_chip *irq_chip = &gpio->irq_chip;
- 		u8 irq_status;
- 
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 971694e781b6..19346693c1da 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -526,8 +526,8 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
+ 		 */
+ 		spin_unlock_irq(&ent->lock);
+ 		need_delay = need_resched() || someone_adding(cache) ||
+-			     time_after(jiffies,
+-					READ_ONCE(cache->last_add) + 300 * HZ);
++			     !time_after(jiffies,
++					 READ_ONCE(cache->last_add) + 300 * HZ);
+ 		spin_lock_irq(&ent->lock);
+ 		if (ent->disabled)
+ 			goto out;
 -- 
 2.30.2
 
