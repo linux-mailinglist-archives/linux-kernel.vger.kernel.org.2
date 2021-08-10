@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFF23E5346
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4973E5349
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237738AbhHJGMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:12:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhHJGMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:12:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C957160E97;
-        Tue, 10 Aug 2021 06:12:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628575923;
-        bh=Uax4h37HJuuNp3d1U8G/Mg+6ZY5i9zgBWvdL7SyIohk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UyDguacFBDdGqtP5ysPk5KLyePbBA9UW+8HsHymM9LwSnmiCx1SbKwHFdze7QNGf2
-         Ti0W8Rb/o6ySuxmJNJXpjlwMFfkQiSm5AVnLStAuELkT8D6B3RENPpvJ4aTo40vUDQ
-         5MV39P8r2awNaZVC/tj69Z3QXlUIrJnUfzRbOuLc=
-Date:   Tue, 10 Aug 2021 08:12:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/4] ipack: tpci200: fix many double free issues in
- tpci200_pci_probe
-Message-ID: <YRIYsNCMmKrPfRlF@kroah.com>
-References: <20210809143049.3531188-1-mudongliangabcd@gmail.com>
- <YRFKlOvXKKQX9vr6@kroah.com>
- <CAD-N9QXFWr2APy294T6v+16d8SXtUuLEoPvZTw1ZDwfQ+D4kFg@mail.gmail.com>
- <CAD-N9QVgnbwNScKD6anFLUELbJ5tAZ1hWbKhOStwZ+kPwgvVLw@mail.gmail.com>
+        id S237752AbhHJGNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:13:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47368 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhHJGNN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:13:13 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E1FD221F63;
+        Tue, 10 Aug 2021 06:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628575970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gnbnqEeMP7e0hG9FkAzjVGOk25+iLNRR3P6+Il41Yh8=;
+        b=NBcs3v/xewpt444lrThWRD2nd4xiL513xsvBd2QOQn/Te4qLK1E8jhzKnn8R5BJ6p+lFwB
+        SoBDfmWvzHI0NnRfB4Mdi92ifV2n/rOay3QCC0GfcnXNcOkqhIz9NJNRY8NQ6DiOjLDxFw
+        qjgTwONiLUM8UMuA9lbwjgTzMzqB4DM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628575970;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gnbnqEeMP7e0hG9FkAzjVGOk25+iLNRR3P6+Il41Yh8=;
+        b=+iOn1psb2T3Kcc06+JElGtHbl70HRmnfzh7zX829lZ06z92KNlq47LjkoJMCTKxOoP2nst
+        9c4qCaavouztW+Cw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B9583133D0;
+        Tue, 10 Aug 2021 06:12:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id HWHoK+IYEmHZOQAAGKfGzw
+        (envelope-from <hare@suse.de>); Tue, 10 Aug 2021 06:12:50 +0000
+Subject: Re: [PATCH] scsi: aha1542: Remove unneeded semicolon
+To:     Jason Wang <wangborong@cdjrlc.com>, martin.petersen@oracle.com
+Cc:     jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210807105525.192240-1-wangborong@cdjrlc.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <9d4b934e-c04a-720c-fc3b-8161614d4df3@suse.de>
+Date:   Tue, 10 Aug 2021 08:12:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD-N9QVgnbwNScKD6anFLUELbJ5tAZ1hWbKhOStwZ+kPwgvVLw@mail.gmail.com>
+In-Reply-To: <20210807105525.192240-1-wangborong@cdjrlc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 07:41:55AM +0800, Dongliang Mu wrote:
-> On Tue, Aug 10, 2021 at 7:08 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >
-> > On Mon, Aug 9, 2021 at 11:32 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Mon, Aug 09, 2021 at 10:30:26PM +0800, Dongliang Mu wrote:
-> > > > The function tpci200_register called by tpci200_install and
-> > > > tpci200_unregister called by tpci200_uninstall are in pair. However,
-> > > > tpci200_unregister has some cleanup operations not in the
-> > > > tpci200_register. So the error handling code of tpci200_pci_probe has
-> > > > many different double free issues.
-> > > >
-> > > > Fix this problem by moving those cleanup operations out of
-> > > > tpci200_unregister, into tpci200_pci_remove and reverting
-> > > > the previous commit 9272e5d0028d ("ipack/carriers/tpci200:
-> > > > Fix a double free in tpci200_pci_probe").
-> > > >
-> > > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
-> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > ---
-> > > > v1->v2: revise PATCH 2/3, 3/3, not depending on PATCH 1/3; move the
-> > > > location change of tpci_unregister into one separate patch;
-> > >
-> > > Also needs to go to the stable trees, right?
-> >
-> > Yes, this needs to go to the stable trees.
+On 8/7/21 12:55 PM, Jason Wang wrote:
+> The semicolon after a code block bracket is unneeded in C. Thus, we can
+> remove the redundant semicolon from the code safely.
 > 
-> Hi gregkh,
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>   drivers/scsi/aha1542.c | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> Let me clarify more. In my series, PATCH 3/4 4/4 depends on PATCH 1/4
-> and PATCH 2/4. And also PATCH 2/4 depends on PATCH 1/4 as they are
-> closely related.
-> 
-> But from your reply, the last 2 patches should not depend on the first
-> 2 patches. I don't quite understand as I don't send some patch series
-> before. For a patch series, the latter ones should depend on the
-> former ones, right? If I have any misunderstanding, please let me
-> know.
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Yes, they can depend on previous patches, but if some patches are to be
-merged today for 5.14-final, and others later for 5.15-rc1, then ideally
-they will be separate series of changes as those go to two different
-branches in my tree at the moment.
+Cheers,
 
-> BTW, PATCH 3/4 has some compilation issues. I will fix it in the next version.
-
-As you haven't even tested these, I'm really hesitant to take them at
-all.
-
-Please just send the first two patches, fixed up, as a series after you
-have tested them, and then after they are merged into Linus's tree, you
-can send the cleanup patches, as they are just "nice" to have.
-
-thanks,
-
-greg k-h
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
