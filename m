@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4DC3E5031
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 02:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B066A3E5039
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 02:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhHJACW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 20:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHJACU (ORCPT
+        id S237106AbhHJAG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 20:06:57 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:64272 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhHJAGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 20:02:20 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEA5C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 17:01:51 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id w17so32764490ybl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 17:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u/6lDzTST0h+RyT6gU/s2Pzqgb7dbZvl8tVew71+7uA=;
-        b=IXgv+KRKCsBVGj/yvVKxhDgYLPxGDqCg08pFEoQWD78TZ5q04i+NdqMAx4ATfGTjzw
-         4WGCqlwrSPFRgWpVrn/ib1PojT8GhH/z+vSzChsEuY1BT8qfkINf45tByHzSPvTPE/Kb
-         lmO2FQsPz6b2XPf3GWv8n8RcxKrlWUIdh8Ok56CktrS6Kj4WpwpsvSirqvi7QTzgx6dA
-         KeXmPH9pdNz7lJPYPZUDAZvWBlqFohqgIg2+VRL4ZnuNZKFQ/c07903n/OxOSVjnMG+M
-         SLUORF78yEpLGIKTTDGYqHyjyR5g9EgR7T8uJGbnVrOIu+TESiS+rTqcn4HncxJwXEg7
-         mbFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u/6lDzTST0h+RyT6gU/s2Pzqgb7dbZvl8tVew71+7uA=;
-        b=Ifr0f6V+3bAkYpZpLpvb2nevUTwa163jeQbHRxzLjYc9HxlDOYm5loejKHZRoB5uPW
-         rVor3XIxU5AyPA/8IngT0jE06ytNIWiV8XmyzkBCPLtIISUH2jSmsaEBUIiRtxNeEOeg
-         laWM9XGkxmaf+ao29CHZDGxG+OcaJTRMwWuQ4FCnXRihLbJsylkMG+CiYBjoMLimAZTT
-         aYJ6KP3XSNBI6O54U/27pd+YE3Cu93Yhfa+r5uK5pYjb9gZP6fPzIw6wYHlF7RuHP7Ah
-         fOO0UPzjXtlij5GmvV1RiWDwQ2VIG379kejDcc4cIb2H+IyZlDu7DdyuPM7dc6eodqih
-         1w4Q==
-X-Gm-Message-State: AOAM5314xFr4TG5xlY9HvWsZt1L8tHiexcfkRyKwgSA1z7OFJHMrQs68
-        DkL3pIVvPrSDS4iTiXDV9q2/yGw8VP4ZlnbWi5vXyA==
-X-Google-Smtp-Source: ABdhPJwanymbJHXSzhVU3ouc2r4BMfkwlf0QQ5JwTtfL17PzN357+PpyPsNiUZT/wN15PZ4CaB5DKmXx7A8TZqps84M=
-X-Received: by 2002:a25:dcd1:: with SMTP id y200mr33427728ybe.92.1628553710295;
- Mon, 09 Aug 2021 17:01:50 -0700 (PDT)
+        Mon, 9 Aug 2021 20:06:55 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 17A06GrM027165;
+        Tue, 10 Aug 2021 09:06:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 17A06GrM027165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628553977;
+        bh=xHNISeRMlTiEcgni+JyLJx7pYa/VEYClQ3P0qFmQuz8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iFsLPq8Wac7JCZvN6O8cXOq74M4UKNp7aYvSGvN/Or69nTwQtLoFI0PZJp1lhOEm6
+         3EPytVbPWGQtdoIyDS6WqQOSg4+wPOCfQeatCpVyPxap+ABf0Sp2t1ctrTuexCu38n
+         lbjFQqBGQLwXvRwfXrV6Zh0cEDZgXTnFoXF7gzmzSU8nxl+mndfYXJI05ACLil7Lss
+         XzPOHP2pHurtB+ly5Wz5453JXJlVcIm5zYue/JSthFnG73l6mZa/x4zrTKnGMTaR4v
+         /aCL3/UNqZW3Xk/5WC/QRwvd5oYeB8FYj1t5fgLGrRpFhKkTlrUn9VUV1wvMInpa6l
+         VGZu06woRWJWw==
+X-Nifty-SrcIP: [209.85.216.45]
+Received: by mail-pj1-f45.google.com with SMTP id gz13-20020a17090b0ecdb0290178c0e0ce8bso1321612pjb.1;
+        Mon, 09 Aug 2021 17:06:16 -0700 (PDT)
+X-Gm-Message-State: AOAM532hZe9C1Gr0Ztm/FThXyLjei+qqIL6eHGMXIUOMgpeN7jNNBn5i
+        tqqFzNk82eBqAMBHwtsvG64AL8PKbacfYcbRITI=
+X-Google-Smtp-Source: ABdhPJwCCUVvtcdYhxxkbN22dZbAQ1dVfkUUOwJIXgxGyQquPxQC+2RFV8n/Phq1rJho4mk94aueK+S6LfbtMXdFoYs=
+X-Received: by 2002:aa7:8e56:0:b029:3cd:c2ec:6c1c with SMTP id
+ d22-20020aa78e560000b02903cdc2ec6c1cmr1422755pfr.80.1628553976079; Mon, 09
+ Aug 2021 17:06:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210803044607.599629-1-mizhang@google.com> <20210803044607.599629-4-mizhang@google.com>
- <CALMp9eR4AB0O7__VwGNbnm-99Pp7fNssr8XGHpq+6Pwkpo_oAw@mail.gmail.com> <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
-In-Reply-To: <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Mon, 9 Aug 2021 17:01:39 -0700
-Message-ID: <CAL715WLO9+CpNa4ZQX4J2OdyqOBsX0+g0M4bNe+A+6FVxB2OxA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>, peterx@redhat.com
+References: <20210802183910.1802120-1-ndesaulniers@google.com>
+In-Reply-To: <20210802183910.1802120-1-ndesaulniers@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 10 Aug 2021 09:05:39 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQqVNpDkcj4ziyT_nimNHdusp862-t2y068SUtHr2xfaw@mail.gmail.com>
+Message-ID: <CAK7LNAQqVNpDkcj4ziyT_nimNHdusp862-t2y068SUtHr2xfaw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/3] infer --target from SRCARCH for CC=clang
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
-
-I recently looked at the patches queued and I find this patch from
-Peter Xu (Cced), which is also adding 'page stats' information into
-KVM:
-
-https://patchwork.kernel.org/project/kvm/patch/20210625153214.43106-7-peterx@redhat.com/
-
-From a functionality point of view, the above patch seems duplicate
-with mine. But in detail, Peter's approach is using debugfs with
-proper locking to traverse the whole rmap to get the detailed page
-sizes in different granularity.
-
-In comparison, mine is to add extra code in low level SPTE update
-routines and store aggregated data in kvm->kvm_stats. This data could
-be retrieved from Jing's fd based API without any lock required, but
-it does not provide the fine granular information such as the number
-of contiguous 4KG/2MB/1GB pages.
-
-So would you mind giving me some feedback on this patch? I would
-really appreciate it.
-
-Thank you. Regards
--Mingwei
-
--Mingwei
-
-On Mon, Aug 9, 2021 at 4:39 PM Mingwei Zhang <mizhang@google.com> wrote:
+On Tue, Aug 3, 2021 at 3:39 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
 >
-> Hi Jim,
+> We get constant feedback that the command line invocation of make is too
+> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+> target triple, or is an absolute path outside of $PATH, but it's mostly
+> redundant for a given ARCH.
 >
-> No, I don't think 512G is supported. So, I will remove the
-> 'pages_512G' metric in my next version.
+> Instead, let's infer --target from SRCARCH, and move some flag handling into a
+> new file included from the top level Makefile.
+
+
+Series, applied to linux-kbuild.
+Thanks.
+
+
+
+> Changes v5 -> v6:
+> * Use indirection as per Linus.
+> * Change hexagon triple to use -musl rather than -gnu. glibc doesn't
+>   have support for hexagon, and hexagon-linux-musl is the triple we use
+>   in CI.
+>   https://github.com/ClangBuiltLinux/continuous-integration2/blob/d659897d1700894d67feb64fe28e298da399a287/generator.yml#L53
+> * Pick up Fangrui's RB.
+> * Reorder use of Env vars in documentation to use command line
+>   parameters instead, for consistency.
 >
-> Thanks.
-> -Mingwei
+> Changes v4 -> v5:
+> * Include previously missing first patch!
 >
-> On Mon, Aug 9, 2021 at 3:26 PM Jim Mattson <jmattson@google.com> wrote:
-> >
-> > On Mon, Aug 2, 2021 at 9:46 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > >
-> > > Existing KVM code tracks the number of large pages regardless of their
-> > > sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-> > > information becomes less useful because lpages counts a mix of 1G and 2M
-> > > pages.
-> > >
-> > > So remove the lpages since it is easy for user space to aggregate the info.
-> > > Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
-> >
-> > There is no such thing as a 512GiB page, is there? If this is an
-> > attempt at future-proofing, why not go to 256TiB?
+> Changes v3 -> v4:
+> * Remove the requirement that LLVM_IAS=1 be set, as per Masahiro.
+> * Remove the Documentation/ change from patch 2, as per Masahiro and
+>   Nathan.
+> * Add Documentation/ change as patch 3, from Masahiro.
+> * Reword commit message of patch 2, as per Nathan.
+> * Change patch 2 oneline to refer to --target and CC=clang (not
+>   CROSS_COMPILE).
+> * Carry Arnd's and Nathan's AB/RB/TB tags, confirmed ok on IRC+discord.
+>
+> Changes v2 -> v3:
+> * Remove requirement that LLVM=1 be set. Instead, if building with just
+>   CC=clang LLVM_IAS=1 instead of LLVM=1 LLVM_IAS=1, you should use
+>   LD=ld.lld explicitly, or LD=aarch64-linux-gnu-ld. (As per Masahiro)
+>   Example:
+>
+>   $ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=ld.lld OBJCOPY=llvm-objcopy \
+>     STRIP=llvm-strip -j72 defconfig all
+>
+>   (It's still preferable to use LLVM=1 IMO, but this is maximally
+>   flexible.)
+> * Change oneliner from LLVM=1 to CC=clang.
+> * Update Docs slightly.
+>
+> Changes v1 -> v2:
+> * patch 1/2 untouched.
+> * Fix typos in commit message as per Geert and Masahiro.
+> * Use SRCARCH instead of ARCH, simplifying x86 handling, as per
+>   Masahiro. Add his sugguested by tag.
+> * change commit oneline from 'drop' to 'infer.'
+> * Add detail about explicit host --target and relationship of ARCH to
+>   SRCARCH, as per Masahiro.
+>
+> Nick Desaulniers (3):
+>   Makefile: move initial clang flag handling into scripts/Makefile.clang
+>   Makefile: infer --target from ARCH for CC=clang
+>   Documentation/llvm: update CROSS_COMPILE inferencing
+>
+>  Documentation/kbuild/llvm.rst | 19 ++++++++++++++++++-
+>  MAINTAINERS                   |  1 +
+>  Makefile                      | 15 +--------------
+>  scripts/Makefile.clang        | 35 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 55 insertions(+), 15 deletions(-)
+>  create mode 100644 scripts/Makefile.clang
+>
+>
+> base-commit: d7a86429dbc691bf540688fcc8542cc20246a85b
+> --
+> 2.32.0.554.ge1b32706d8-goog
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
