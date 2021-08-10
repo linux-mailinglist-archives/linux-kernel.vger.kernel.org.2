@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66813E56AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07FC3E56AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238929AbhHJJWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238887AbhHJJVB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:21:01 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4BC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:20:40 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d1so20163791pll.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:20:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=brqLZCbNQX023f2oFBB+a/r7LFx6HehzzWG22oXEkSg=;
-        b=JKvzgIiTzcBqwg8ACnj0GipSsgk9xixnD5PD7m2fJsCSnqXajAUG6TDP+uk802rqk4
-         +EDD+8PnheygcYpqQpUoZLMzwqMr6yrFIfmFTvMucW7yiDKmlsLOQU4No9g4CtfndePZ
-         NC5exEpwNbwhTJtB5gzYqDdnsin1f7qESSCe8hvipdRabxjGIvNTDt2d8gxrFhObVXWv
-         j3UhnjFYaYYkEFX5xaDHnSoWV3tHBMQWNmGD6ko2/14NiFjHE+biawe8ZdFJsyv7uFsV
-         PGyGXm7SWsBp/UIK92EpieqKRdMj4i22hOjWn1Yc+L89sYocyhMsCOD8ikpapnJspgdc
-         EVwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=brqLZCbNQX023f2oFBB+a/r7LFx6HehzzWG22oXEkSg=;
-        b=r8+hi3AqCtgkkIu16PMM/OHwHOODAQdq450modEeXeT5p1GWTRR+2a8Uy8TPcXq/8R
-         7AhvFaZ2Kt5W0yQmNfnOYjZKoqebjlyJWYWEUukjz/LoTLcQ78TklX0F/VoMeDEZ+IdC
-         J9z10U97/bXguCITXyyrD2DgDHVFm2QePTetlhc/quOSJ+G9lkH760X1K1Rv1vEe1DWq
-         byUw8sFpPuGvJmmZPG2IX0y2zgbwzP+HdjBH0z286diB3cnZ81kd7fKsAI29Jlf50wVO
-         Zs771N7vL1krJK847ltckzAZzv3Iefe9zKz3NhrC+dRVphVlXLRIKlsompYwWiF2hPWZ
-         ESow==
-X-Gm-Message-State: AOAM5324eTM1s8s0AteEQc6NoQtteh0XRwA9DCAIVOLunWUwFr78L+B5
-        hJ8Re8079MxTzvjtWmdkjOY=
-X-Google-Smtp-Source: ABdhPJzBEbQ2CkfAa8T5PAszGMi9LCPsI0AgIBwtUr+ZQOidrir+eFUOvG1NyFP1en0RzTehqRJkUw==
-X-Received: by 2002:a63:6705:: with SMTP id b5mr56600pgc.69.1628587239810;
-        Tue, 10 Aug 2021 02:20:39 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.40])
-        by smtp.gmail.com with ESMTPSA id k6sm8052139pjj.52.2021.08.10.02.20.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 02:20:39 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        aric.cyr@amd.com, Jun.Lei@amd.com, qingqing.zhuo@amd.com,
-        Rodrigo.Siqueira@amd.com, alvin.lee2@amd.com,
-        vladimir.stempen@amd.com, isabel.zhang@amd.com, sung.lee@amd.com,
-        paul.hsieh@amd.com, wyatt.wood@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] drm/display: fix possible null-pointer dereference in dcn10_set_clock()
-Date:   Tue, 10 Aug 2021 02:20:04 -0700
-Message-Id: <20210810092004.291429-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233690AbhHJJVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:21:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238857AbhHJJU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:20:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3164D60720;
+        Tue, 10 Aug 2021 09:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628587205;
+        bh=atJY3YVgQQOrKO92x90PUN/0/7Wz+VRdq/HRkQ4i9RM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kGG8IRDsqugSk+2T2Vh27yV4ZPNiHBsro+hvtY0Yc8IatqSslchT1E5j7d8YZNiBJ
+         cPvDls7qLzup9VLQjaVE05f5CRiarm+G2z+Azh2TmjhyNpoHF84Vil+e+/kMpaPqwM
+         wOwPBMH6XC7E/yWikaSM3XgKey0cxoOjhNY7uC4lStGZNguygygw+NpfqFBYlPVRxx
+         JXm97JUqyeGXAsTy1/RbLIDtK1dEgupZLH1RswnHyIGbLHhz9McI/rktFql9F4h+ez
+         P5yuLOY0YodL+cqlPlOBtvZ3Lhbq3faAA+ZQMB2n7nN8/04Mlp7Cg6giiSAw08laYF
+         0UQENZWSijfhQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1EA2160A3B;
+        Tue, 10 Aug 2021 09:20:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] samples: bpf: add an explict comment to handle nested vlan
+ tagging.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162858720512.16976.3579658391820845734.git-patchwork-notify@kernel.org>
+Date:   Tue, 10 Aug 2021 09:20:05 +0000
+References: <20210809070046.32142-1-falakreyaz@gmail.com>
+In-Reply-To: <20210809070046.32142-1-falakreyaz@gmail.com>
+To:     Muhammad Falak R Wani <falakreyaz@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, kpsingh@kernel.org,
+        yhs@fb.com, songliubraving@fb.com, kafai@fb.com,
+        john.fastabend@gmail.com, hawk@kernel.org, kuba@kernel.org,
+        davem@davemloft.net, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable dc->clk_mgr is checked in:
-  if (dc->clk_mgr && dc->clk_mgr->funcs->get_clock)
+Hello:
 
-This indicates dc->clk_mgr can be NULL.
-However, it is dereferenced in:
-  if (!dc->clk_mgr->funcs->get_clock)
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-To fix this possible null-pointer dereference, check dc->clk_mgr before
-dereferencing it.
+On Mon,  9 Aug 2021 12:30:46 +0530 you wrote:
+> A codeblock for handling nested vlan trips newbies into thinking it as
+> duplicate code. Explicitly add a comment to clarify.
+> 
+> Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+> ---
+>  samples/bpf/xdp1_kern.c | 2 ++
+>  samples/bpf/xdp2_kern.c | 2 ++
+>  2 files changed, 4 insertions(+)
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the summary with links:
+  - samples: bpf: add an explict comment to handle nested vlan tagging.
+    https://git.kernel.org/bpf/bpf-next/c/d692a637b4c5
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-index c545eddabdcc..3a7c7c7efa68 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-@@ -3635,7 +3635,7 @@ enum dc_status dcn10_set_clock(struct dc *dc,
- 				dc->clk_mgr->funcs->get_clock(dc->clk_mgr,
- 						context, clock_type, &clock_cfg);
- 
--	if (!dc->clk_mgr->funcs->get_clock)
-+	if (dc->clk_mgr && !dc->clk_mgr->funcs->get_clock)
- 		return DC_FAIL_UNSUPPORTED_1;
- 
- 	if (clk_khz > clock_cfg.max_clock_khz)
--- 
-2.25.1
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
