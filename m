@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B893E853C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298F43E8542
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhHJV0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:26:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53194 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233962AbhHJV0i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:26:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628630775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KtDCw+d4IhOJljfaZEvvTjuvZfe2egAuzIik9dCQHdQ=;
-        b=YZpsw5dx2MnqPcdRVX5j/KM69fUkFVp9o0SdOcvje2TYwfELl1PFFi4kXYyLXKraZWhzqS
-        CjqaUTVcPyur+R5HLxVc7r/d0+R0BNI3KeUqvwbknXW0kN5dzxq+xis+V6aWR7I936kfM0
-        ggvHOK1P30IGqmlsxnwjBBBxZTUKYbU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-FOPU7ubIPxiteoG95Z7Mug-1; Tue, 10 Aug 2021 17:26:14 -0400
-X-MC-Unique: FOPU7ubIPxiteoG95Z7Mug-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBBCA101C8A0;
-        Tue, 10 Aug 2021 21:26:12 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D886E4536;
-        Tue, 10 Aug 2021 21:26:11 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-77-willy@infradead.org>
-References: <20210715033704.692967-77-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 076/138] mm/writeback: Add folio_redirty_for_writepage()
+        id S234579AbhHJV2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:28:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233968AbhHJV1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:27:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A87D061019;
+        Tue, 10 Aug 2021 21:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628630846;
+        bh=mjloMTiIdTRuQibK5edGwphq2JrQh540Z20LUrsqdPo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VGuJpX+XfmOQoRt/Z+ROdsbw47SJelREzPoqRjL8ak10G0aAanUW0x4ixMkmgh3LF
+         REkjaE+noiZ2oAGLK3t1Dn/PvsrdIlylne3+omQVNFoexbRLXgs5r5EfpvY1efuUZp
+         swc91rXKmS1s+kOSeo0dB8YjlDd03c8KhP0YymmmjDlaGy6KBCpDal6CYQlUNaQ3gw
+         wRMlrxdaJmxvZi96/3b1sGfClbJbtKt62m3FpDFja7Gh8AqeS9MwvNHzJPHxgr7xqx
+         5zA+PAuRxtBj1ge3DqIM8sSfLiPHsr5VDwkfq/nkUm1qCmMyWQ5TMwUteiomQjr8Xg
+         cxU3UDalnpsJg==
+Date:   Tue, 10 Aug 2021 14:27:24 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+Message-ID: <YRLvPJehAeMiYb2Z@gmail.com>
+References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+ <20210809094408.4iqwsx77u64usfx6@kernel.org>
+ <YRGVcaquAJiuc8bp@gmail.com>
+ <20210810180636.vqwaeftv7alsodgn@kernel.org>
+ <YRLJmaafp941uOdA@gmail.com>
+ <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1813387.1628630770.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 22:26:11 +0100
-Message-ID: <1813388.1628630771@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
-
-> Reimplement redirty_page_for_writepage() as a wrapper around
-> folio_redirty_for_writepage().  Account the number of pages in the
-> folio, add kernel-doc and move the prototype to writeback.h.
+On Wed, Aug 11, 2021 at 12:21:40AM +0300, Jarkko Sakkinen wrote:
+> On Tue, Aug 10, 2021 at 11:46:49AM -0700, Eric Biggers wrote:
+> > On Tue, Aug 10, 2021 at 09:06:36PM +0300, Jarkko Sakkinen wrote:
+> > > > > 
+> > > > > I don't think this is right, or at least it does not follow the pattern
+> > > > > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
+> > > > 
+> > > > What's the benefit of the extra layer of indirection over just using a "trusted"
+> > > > key directly?  The use case for "encrypted" keys is not at all clear to me.
+> > > 
+> > > Because it is more robust to be able to use small amount of trusted keys,
+> > > which are not entirely software based.
+> > > 
+> > > And since it's also a pattern on existing kernel features utilizing trusted
+> > > keys, the pressure here to explain why break the pattern, should be on the
+> > > side of the one who breaks it.
+> > 
+> > This is a new feature, so it's on the person proposing the feature to explain
+> > why it's useful.  The purpose of "encrypted" keys is not at all clear, and the
+> > documentation for them is heavily misleading.  E.g.:
+> > 
+> >     "user space sees, stores, and loads only encrypted blobs"
+> >     (Not necessarily true, as I've explained previously.)
+> > 
+> >     "Encrypted keys do not depend on a trust source" ...  "The main disadvantage
+> >     of encrypted keys is that if they are not rooted in a trusted key"
+> >     (Not necessarily true, and in fact it seems they're only useful when they
+> >     *do* depend on a trust source.  At least that's the use case that is being
+> >     proposed here, IIUC.)
+> > 
+> > I do see a possible use for the layer of indirection that "encrypted" keys are,
+> > which is that it would reduce the overhead of having lots of keys be directly
+> > encrypted by the TPM/TEE/CAAM.  Is this the use case?  If so, it needs to be
+> > explained.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> If trusted keys are used directly, it's an introduction of a bottleneck.
+> If they are used indirectly, you can still choose to have one trusted
+> key per fscrypt key.
+> 
+> Thus, it's obviously a bad idea to use them directly.
+> 
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+So actually explain that in the documentation.  It's not obvious at all.  And
+does this imply that the support for trusted keys in dm-crypt is a mistake?
 
+- Eric
