@@ -2,122 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB6B3E7CA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDB23E7C62
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243393AbhHJPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:44:00 -0400
-Received: from mout.gmx.net ([212.227.17.20]:47579 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242153AbhHJPn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:43:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628610195;
-        bh=f9yoZklWAOjRko5GEHne/rB2HxvyimqQxu/6RVsxWfM=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=gaNLTcUfYmNM6APGQiF0FHtnKBz1zKej6HpnDaAgzlhG4E4nolV22WYw1d9mw+2Ns
-         K4MT7IXSfb7VXEFBMevPZ93nvFZJOqq3FBeug+5SrVpcPSfkZDKKLRaxJJc/VKO03P
-         hI6cHuNhjDVvTJGl2HqqzCULIGUdIq1dWdsNecnU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McpJq-1mlzNZ1L0s-00a0AJ; Tue, 10
- Aug 2021 17:43:15 +0200
-Date:   Tue, 10 Aug 2021 17:43:03 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drivers/iio: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210810154303.GA2508@titan>
-References: <20210807152225.9403-1-len.baker@gmx.com>
- <20210808172503.5187cd24@jic23-huawei>
- <CAHp75VfSX-7UqH9Lbr_GxQRY3dGjGo7H8++kBdrrSds1p6nB1Q@mail.gmail.com>
- <20210809102131.000021eb@Huawei.com>
- <20210809161422.GA2619@titan>
- <CAHp75VfyJ1zSmgenn3V-2tF-X9uZJ1tByyJfJOydXZSV1as3GA@mail.gmail.com>
- <CAHp75VeAf_GYcF--=wXJmJZPr1YHn_gLFAFGHwsMCDX7Mxs5zw@mail.gmail.com>
+        id S243345AbhHJPfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:35:16 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:34968 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243315AbhHJPfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:35:08 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 1111E48A6C;
+        Tue, 10 Aug 2021 15:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1628609683; x=
+        1630424084; bh=Cpz7STHdgDcx3h44+KtoM9BhcJjIzj3viQKNuLSI1cs=; b=X
+        Kb/AQsBBfPD0Pkqdh5iCA3r0zmuSIPy595R9OYg6sBm72D7PkwtMLjefJhqvJWVT
+        rBCcJg3bvxCYc5M9+NrjbWn/JP2TxGaF8w9EK+uzPFKywxo3U9kyYe0e4AoF5/Vl
+        gyCko+Z3ZSAsHvi4MspDWDnO3m8J77nLcggwMYugA8=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QSU6vnUXcWCo; Tue, 10 Aug 2021 18:34:43 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 3771A46796;
+        Tue, 10 Aug 2021 18:34:40 +0300 (MSK)
+Received: from fedora.bbmc.yadro.com (10.199.0.188) by
+ T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Tue, 10 Aug 2021 18:34:39 +0300
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        <linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>
+Subject: [PATCH 0/2] rtc: pch-rtc: add Intel Series PCH built-in read-only RTC
+Date:   Tue, 10 Aug 2021 18:44:34 +0300
+Message-ID: <20210810154436.125678-1-i.mikhaylov@yadro.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeAf_GYcF--=wXJmJZPr1YHn_gLFAFGHwsMCDX7Mxs5zw@mail.gmail.com>
-X-Provags-ID: V03:K1:cRHTKwbL0WqT843vcAOgaEC2gKAhlW/Nz3Siys7qUczMedk2Sbz
- CYN4XnCy+VCfuctiQz9MiYdV5tnke7l4479UWw9mSEI7qzLnwIdoeFbWEj+BKtMZaWPVbkn
- trYBZMDm8S+jM0W5vVjDREqytula4FEoFEuF9qybQUNsUbJquEdW6/QwOOnaRB2rKHsA2vY
- rY+5uB2126WMJm6t9xDQg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VZWlOome2sY=:7hkCJf7Tk4hkI7kJ3dIFPt
- 8tK3bg5/XlCkE+AeqXrX3+HxOLVmNaM3vuMDqj4LOmQhbUdI5OG10C1d5a8IYyu6Ti8TAuQ9D
- ja0T8XxUpLRI8vZDqvMzHXJIbW+lHdCsKhCXD7miGhVSFQL7xAlsLKVVsEmZVfJBRYUOo+TeQ
- qGtjyQJwUVWUkcz366Y0nS9ZWuuXgVUUX3H8GQn5m2CT3uWiAMVtaChiHZXucm/HBS9S/BdKG
- L87yLEBZr7EpTguHVMTtWOZVEbGm5j/L9U/c1CkzWhbwcvoH5RO+YKul+tirAhxWjMVAk60Sf
- 8atQrQSdktM3B0SeDoTIVjFu2WdQo+Pd7xASoCgfXJbzonvTBGcBvB1e12BCF5QusxjPjse3E
- 2EjOHLvaZjaBVqz7WW1Vo827qgK387et7r4e9Ru+DxzoE9q4CQR0b8hepQRXefNN9SVNB8dCF
- g0X6jmJe+Szpmlm34awqWB9ulCH4DGIAqirzrmefkVC+7A+861RExTO7Ux2lD6n1kId2/NyUB
- FtGe16ELqiNdDE20+xndkX3Pg2mL5LsfZ4Pwa3METKwCglQuoecOA8X2gxZw4HwoEcfpzW+Ae
- d18+S4wbAWjuV2X8oZq92I+V3aCLBrZvJnZprjbyZpY7D68U4fFABoJktK7ZbDhrmhBp0gWgJ
- f4uAT3B5vK0xCW2KsTjqeXWFz1OAhfu5hKKZPc3udIJcObwzoznA0T+/75EMzxq/LQujctCbH
- h4z+7Oto8UCefyDxkuQyI2jJTjoyvRCKmtUzsIiMmHMuJYBRhF/pJ6NdALjTTsUuMTcrDpLI+
- L3L4vZQjrXdrsWg0/PhJLdAixhndGMgpJGMwat5GiBEnwnHRsAafTGrOE1sNWO8LqGn8OdOHY
- +PPMCz9IxfTkTwk4xnaPYBKOugp9H7hWPQvF46tyb+wDon3hRVia6F2rGUxfvIkLFRHpIpCef
- YYajSEVtSy3oDeIyqGjdwWPV/ziEkt3X8kUVBksfPDKwKkvJn7aalvw1laAyxytI1kWcL20fE
- q4omv7Dh6htr5og+YV42Dv5kuP4vyGY2IxEEP0XwCh2x+zDACsxFoFAhTVmekBqdw2thwwJZf
- G2R1JA6i5fBOWbUdUbZxVa7HucMs/pFqNOYX6A57Quk9dPKwT5rGBT7LQ==
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.0.188]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy, David and Jonathan
+Add RTC driver with dt binding tree document. Also this driver adds one sysfs
+attribute for host power control which I think is odd for RTC driver.
+Need I cut it off and use I2C_SLAVE_FORCE? I2C_SLAVE_FORCE is not good
+way too from my point of view. Is there any better approach?
 
-First of all thanks you very much for your code snippets ;)
-More below.
+Ivan Mikhaylov (2):
+  rtc: pch-rtc: add RTC driver for Intel Series PCH
+  dt-bindings: rtc: provide RTC PCH device tree binding doc
 
-On Tue, Aug 10, 2021 at 03:11:01PM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 10, 2021 at 3:06 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Aug 9, 2021 at 7:14 PM Len Baker <len.baker@gmx.com> wrote:
->
->
->
-> > Even if we leave the logic as is, this might be better
-> >
-> > if (orient[0] =3D=3D '-')
-> >    str =3D devm_kstrdup(dev, orient + 1, GFP_KERNEL);
->
-> > else if (orient[0] !=3D '0' || orient[1] !=3D '\0')
-> >    str =3D devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
-> > else
-> >    str =3D devm_kstrdup(dev, orient, GFP_KERNEL);
+ .../bindings/rtc/intel,pch-rtc.yaml           |  39 +++++
+ drivers/rtc/Kconfig                           |  10 ++
+ drivers/rtc/Makefile                          |   1 +
+ drivers/rtc/rtc-pch.c                         | 148 ++++++++++++++++++
+ 4 files changed, 198 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/intel,pch-rtc.yaml
+ create mode 100644 drivers/rtc/rtc-pch.c
 
-I think the above snippet is the right one: Is compact and easy
-to understand.
+-- 
+2.31.1
 
->
-> Or these two swapped for better reading
->
->  else if (orient[0] =3D=3D '0' **&& orient[1] =3D=3D '\0')
->     str =3D devm_kstrdup(dev, orient, GFP_KERNEL);
-> else
->     str =3D devm_kasprintf(dev, GFP_KERNEL, "-%s", orient);
->
-> And with a comment added that we negate the result according to the
-> rules: 1) drop leading '-' (minus); 2) leave 0 as is; add leading '-'
-> (minus).
->
-> > if (!str)
-> >    return -ENOMEM;
-
-Also, I think that it is better to leave the logic as is and don't
-try to use always the +/- sign.
-
-Again thanks to all for the feedback.
-
-Regards,
-Len
