@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763EF3E5289
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6F83E5293
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237096AbhHJFGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 01:06:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:47286 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234999AbhHJFGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 01:06:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 698FC6D;
-        Mon,  9 Aug 2021 22:06:00 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.67.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 06A653F40C;
-        Mon,  9 Aug 2021 22:05:56 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-perf-users@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64/perf: Replace '0xf' instances with ID_AA64DFR0_PMUVER_IMP_DEF
-Date:   Tue, 10 Aug 2021 10:36:38 +0530
-Message-Id: <1628571998-13634-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S237513AbhHJFOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 01:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237497AbhHJFOY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 01:14:24 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A0EC061798
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 22:14:03 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id f4so4516587vkb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 22:14:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zbj2YIoq+E9w00zYigZfnEN2+DZS/6bH7EkHmJaJ7+4=;
+        b=W2e6d7tANNuZvnWrmp6EN6PiiHeqThHUisatkH1a/4EL21ldzCzpHeXzGPY/9224BN
+         Z/CiGZ7mZ32SpUG876YtQApfpUprIqF/xqEBvS7noMQ2n7FVPdaNK2oJscvnwdfI8Rui
+         EDb1N2EJDvgQD5KJqrgWTMAVPLLaVNvPnUQHA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zbj2YIoq+E9w00zYigZfnEN2+DZS/6bH7EkHmJaJ7+4=;
+        b=Fyt7HpPoDiP4JnQvSF40+lVKbd4bs/Su3yf014CW6nbMsR5UNX0qGGx2XFyxqCJksB
+         IafX5FENd34UGFA1GpTN5cjgDnTerlRf0rQs0WAO9SAK+h4uqZwezLVjEQCq+McNv7wV
+         Q8SZHfj8vMFvIz6FOPX8EmKYuIfNyrc/i6JmmIIRNlFQ/93tkFamuEtm0d8GscNo39hg
+         91Fjf5BXGuJra2w781fX4OmgM6KXEVoz9lbI1o+YOf9mTR/uMb8OeD/30mSYcrf3GZeR
+         4u4viAYsW4yZQq35zsR+0vW0vDE+0XUj6eZlAkOBGcfeWw/Yih0sItdaINQB3WEErfZe
+         VLnQ==
+X-Gm-Message-State: AOAM532Ms5hVTLl7zcOtUTyXfkAWvAeNoiwQK6KfwBtGCKR1OGsoRgdP
+        eI9prt9D6DqnjNaHwkm5zNDrGB11MlvEFlrhu49YHw==
+X-Google-Smtp-Source: ABdhPJyK6yckKurEBP3/dfOsOeLJXctvCuX/cIs5kTcfm8Je/8pZ6c+cyun3iM9fbLfjpMMG2FXHjhz8Ez7yxBUxsWo=
+X-Received: by 2002:a05:6122:696:: with SMTP id n22mr15132849vkq.19.1628572442200;
+ Mon, 09 Aug 2021 22:14:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <YRFfGk5lHL0W27oU@miu.piliscsaba.redhat.com> <CAHk-=wigKQqEqt9ev_1k5b_DwFGp7JmCdCR1xFSJjOyisEJ61A@mail.gmail.com>
+ <CAHk-=wjhm9CV+sLiA9wWUJS2mQ1ZUcbr1B_jm7Wv8fJdGJbVYA@mail.gmail.com> <YRGtF69Z8kjsaSkb@casper.infradead.org>
+In-Reply-To: <YRGtF69Z8kjsaSkb@casper.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 10 Aug 2021 07:13:51 +0200
+Message-ID: <CAJfpegvD-n-Gb850wiB6J62CqGOtvV9LVWGfkXqqcB_UpJnBeA@mail.gmail.com>
+Subject: Re: [GIT PULL] overlayfs fixes for 5.14-rc6
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ID_AA64DFR0_PMUVER_IMP_DEF which indicate implementation defined PMU, never
-actually gets used although there are '0xf' instances scattered all around.
-Just do the macro replacement to improve readability.
+On Tue, 10 Aug 2021 at 00:34, Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Aug 09, 2021 at 02:26:55PM -0700, Linus Torvalds wrote:
+> > On Mon, Aug 9, 2021 at 2:25 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > I've pulled this,
+> >
+> > Actually, I take that back.
+> >
+> > None of those things have been in linux-next either, and considering
+> > my worries about it, I want to see more actual testing of this.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: linux-perf-users@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: kvmarm@lists.cs.columbia.edu
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on v5.14-rc5
+The denywrite patch has been in -next for three weeks, the others
+less, but also spent some time in there.  The reason the commit
+timestamp is so recent is that the fixes have been pulled to the front
+of the queue.
 
- arch/arm64/include/asm/cpufeature.h | 2 +-
- arch/arm64/kernel/perf_event.c      | 2 +-
- arch/arm64/kvm/perf.c               | 2 +-
- arch/arm64/kvm/pmu-emul.c           | 6 +++---
- 4 files changed, 6 insertions(+), 6 deletions(-)
+But okay, I can drop that patch from this pull request.
 
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 9bb9d11750d7..54474e76ad86 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -552,7 +552,7 @@ cpuid_feature_cap_perfmon_field(u64 features, int field, u64 cap)
- 	u64 mask = GENMASK_ULL(field + 3, field);
- 
- 	/* Treat IMPLEMENTATION DEFINED functionality as unimplemented */
--	if (val == 0xf)
-+	if (val == ID_AA64DFR0_PMUVER_IMP_DEF)
- 		val = 0;
- 
- 	if (val > cap) {
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index d07788dad388..b4044469527e 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -1055,7 +1055,7 @@ static void __armv8pmu_probe_pmu(void *info)
- 	dfr0 = read_sysreg(id_aa64dfr0_el1);
- 	pmuver = cpuid_feature_extract_unsigned_field(dfr0,
- 			ID_AA64DFR0_PMUVER_SHIFT);
--	if (pmuver == 0xf || pmuver == 0)
-+	if (pmuver == ID_AA64DFR0_PMUVER_IMP_DEF || pmuver == 0)
- 		return;
- 
- 	cpu_pmu->pmuver = pmuver;
-diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
-index 151c31fb9860..f9bb3b14130e 100644
---- a/arch/arm64/kvm/perf.c
-+++ b/arch/arm64/kvm/perf.c
-@@ -50,7 +50,7 @@ static struct perf_guest_info_callbacks kvm_guest_cbs = {
- 
- int kvm_perf_init(void)
- {
--	if (kvm_pmu_probe_pmuver() != 0xf && !is_protected_kvm_enabled())
-+	if (kvm_pmu_probe_pmuver() != ID_AA64DFR0_PMUVER_IMP_DEF && !is_protected_kvm_enabled())
- 		static_branch_enable(&kvm_arm_pmu_available);
- 
- 	return perf_register_guest_info_callbacks(&kvm_guest_cbs);
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index f33825c995cb..60f89bdbeebb 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -745,7 +745,7 @@ int kvm_pmu_probe_pmuver(void)
- 	struct perf_event_attr attr = { };
- 	struct perf_event *event;
- 	struct arm_pmu *pmu;
--	int pmuver = 0xf;
-+	int pmuver = ID_AA64DFR0_PMUVER_IMP_DEF;
- 
- 	/*
- 	 * Create a dummy event that only counts user cycles. As we'll never
-@@ -770,7 +770,7 @@ int kvm_pmu_probe_pmuver(void)
- 	if (IS_ERR(event)) {
- 		pr_err_once("kvm: pmu event creation failed %ld\n",
- 			    PTR_ERR(event));
--		return 0xf;
-+		return ID_AA64DFR0_PMUVER_IMP_DEF;
- 	}
- 
- 	if (event->pmu) {
-@@ -923,7 +923,7 @@ int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr)
- 	if (!vcpu->kvm->arch.pmuver)
- 		vcpu->kvm->arch.pmuver = kvm_pmu_probe_pmuver();
- 
--	if (vcpu->kvm->arch.pmuver == 0xf)
-+	if (vcpu->kvm->arch.pmuver == ID_AA64DFR0_PMUVER_IMP_DEF)
- 		return -ENODEV;
- 
- 	switch (attr->attr) {
--- 
-2.20.1
+> Not only that, the changes to fs/namespace.c and mm/util.c haven't been
+> posted to linux-mm or linux-fsdevel, as far as I can tell.
 
+It has been posted to both and got an ACK from an MM person:
+
+ https://lore.kernel.org/linux-mm/YOhTrVWYi1aFY3o0@miu.piliscsaba.redhat.com/
+
+Thanks,
+Miklos
