@@ -2,181 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C203E5754
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03213E575B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238905AbhHJJqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        id S238165AbhHJJqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237640AbhHJJqB (ORCPT
+        with ESMTP id S238986AbhHJJqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:46:01 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBCCC061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:45:39 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id d11so9895330eja.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:45:39 -0700 (PDT)
+        Tue, 10 Aug 2021 05:46:03 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67300C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:45:41 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g21so29351052edb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YSzeULC9eR8XjTHf4MYVMw8+4RRom6m054+GxFl7fzM=;
-        b=Gvk2c7EvsfMjyVCCwp6udYqvmWQeOt0YuKK0J/L5t34naRJyu9vcyxnRkeLVRaK47S
-         50S/APDNyyMa/D0bU1f5IUmK6QeJODO+3qpUYKz+UYYtqMCbuE1TthyAwfy0ejvAYt45
-         ZfXX+GhIggC5O7FaHd+U5Ln4daro82MGshh7q3erPzcD65SUzIoR9yMlvRCg+WM0WHeS
-         rb3Fn0idYpFkgHX5SVXxIuePCfV9aq0ZvrA94inbIuKPHZsq2XeeoCjuUBPWAceazKL3
-         ghBxuHq1CZSJh5T7G2zveqEUZ9GSm/RCfEMZqSz6GW+4nugAU8wh6t/4ZNVtcnZfaasW
-         trmw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ogyvnxy9MiKmDXlkGlmvp5AGKwNfrTFO1X1znrt/jok=;
+        b=qZ4WH31eeRvzQdE3vyXSRkS2OHJWCwe17O7sxqyn57vuGSQL3YvmMLfUGkg0idTkxT
+         tBikBWcCV3fcQBcOWmuhelBpR1oHG2g29LXUk7Pb8KFdapfqqVSjGTdfQaV8AQONTiL4
+         nTRnBhgTdBg86HJliVuM94DkRmxqBvZgYEHtvd4E4iNTJ4S/E2z+iRjEe9gsd4sqg6vS
+         4eBllNE2Qsbznnq/cSUoNJ8zsLaTS9KC0yZpyTFZkFvAGqkU+mm1lejfzCPeto4z1FMS
+         De6EcMaPb8Uo8R69DXm8rAm+9xwLDeIgQONtqkbjXV7NL4Hy4X9Wq85OaawskhaTp3Wn
+         4iDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YSzeULC9eR8XjTHf4MYVMw8+4RRom6m054+GxFl7fzM=;
-        b=UQjGygUZxWhZSithJimiigOs6kbU7ersGnM83TGOKl0LnU0tDTlhZmkYzLTx5Z8We1
-         OYUSN+C1sUM0IzPVwJkBKAvaqu3lVfskgaLZLO47mFwg4JP7mx27R71o7ZdKSoZc0kZL
-         u1WX9KpQDfyhOs/EP5mMXx5J2gIuSHVl6mi3sUG22UFeUiTY6WJTmaAP3he09BrHfQCE
-         +I6gI9tANBdriqrOJGqqmWDw9azAk5HsipFzDj5d8xoec6U/D80UB5h4cBEhCp6TYaoW
-         pNs1pLDO3oTK1/zxG21CDO0e0DIGY5oL6yzr0BeGbHe7mkvw5nBDP3nx2+X5Es53Q6qo
-         0mCA==
-X-Gm-Message-State: AOAM532utWlLtHp2frNOt1aWLaeasMGlP6mEM9l2QLEBUXOBoFa/yGzf
-        hD9NQMzVCE2WYZeYLxn2DbWMQQ/edaTzPRf1U00WQA==
-X-Google-Smtp-Source: ABdhPJwJ8lNgpeva94sdpQYx94BKAEt0XsZZFSTmU6fmtcmnsIK8IraVmUwrN4sLGb3afuNdgbyHOSovFU/kdy6UATs=
-X-Received: by 2002:a17:906:9542:: with SMTP id g2mr1347957ejy.375.1628588737610;
- Tue, 10 Aug 2021 02:45:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ogyvnxy9MiKmDXlkGlmvp5AGKwNfrTFO1X1znrt/jok=;
+        b=KQYFryzX1SdYB2oNTWMRK896GK1ewikd4KkOYMQV0ZFNDBBFIP6+xEGOzM4iia6fdE
+         nnDYqpHgpeojRj33N/NumgJ0gHdKOyCOqryGlSOEn570bSLDl0jZR33j6iS0w96SXO3X
+         uBGmeWRAmz7O7urYvu3JGSGX+7OSHNqI0sV1HcoFcvZXdK/dSIpmtCJ+rpN62MISIWDw
+         OHQIjB7Mox2hj6tIUR4/BmCCxrqlIuIuwAHYFuKs7/0wJP8MtHwfjgllQKGTJzDH6fsy
+         gIT8dXxhPR5ItxPCjBMRW5otRlGfVUpSIFX2bKbE4m02uJgpeZDmJROrS+YIZN9+jfm9
+         oxAw==
+X-Gm-Message-State: AOAM532xfCu6UcFxpxQwULXsxMx/ilbmalZINXX4BrHXhO2MILVqgnHh
+        3lTwyH70Pe5Rjza4NyUCW5s=
+X-Google-Smtp-Source: ABdhPJw9ZqJZ+5HNKiDVvwB53cxTTinyk+anW2nzxXe2SGUrlwu7b3ZgiSEBTUymiGZFDcN4fnW1Bg==
+X-Received: by 2002:a50:ac82:: with SMTP id x2mr617169edc.350.1628588740028;
+        Tue, 10 Aug 2021 02:45:40 -0700 (PDT)
+Received: from localhost.localdomain (host-79-50-26-100.retail.telecomitalia.it. [79.50.26.100])
+        by smtp.gmail.com with ESMTPSA id v24sm6219536edt.41.2021.08.10.02.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 02:45:39 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v3 RESEND] x86/resctrl: Fix kernel-doc in rdtgroup.c
+Date:   Tue, 10 Aug 2021 11:45:33 +0200
+Message-Id: <20210810094533.16806-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <71026122-e9bc-a481-70ab-fde4e89af571@xs4all.nl>
-In-Reply-To: <71026122-e9bc-a481-70ab-fde4e89af571@xs4all.nl>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 10 Aug 2021 15:15:26 +0530
-Message-ID: <CA+G9fYtzp5zE=NEQYcO0fZkwwQSrh9am=HMXmqnSs1OQKaivCg@mail.gmail.com>
-Subject: Re: [GIT PULL FOR v5.15] v2: Various fixes and enhancements
-To:     Robert Foss <robert.foss@linaro.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Irui Wang <irui.wang@mediatek.com>,
-        =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Please ignore this if it is already reported]
-The following kernel crash "Internal error: Oops:" found while booting the arm64
-Dragonboard 845c device.
+Add description of undocumented parameters. Issues detected by
+scripts/kernel-doc.
 
-Our bisect scripts are still running to bisect the first bad commit.
-However, I would like to report on suspecting sub-systems patch set
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+---
 
-On Thu, 5 Aug 2021 at 15:48, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+v2->v3:
+	Change the commit message by adding a "Reviewed-by" and remove a
+	"Suggested-by" tag because its use is incorrect in this specific case.
 
-> Robert Foss (4):
->       media: camss: vfe: Don't read hardware version needlessly
->       media: camss: vfe: Decrease priority of of VFE HW version to 'dbg'
->       media: camss: vfe: Remove vfe_hw_version_read() argument
->       media: camss: vfe: Rework vfe_hw_version_read() function definition
+v1->v2:
+	Change some parameter descriptions according to the suggestions of
+	Reinette Chatre.
 
-[    8.296907] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[    8.305943] Mem abort info:
-[    8.307150] Bluetooth: Core ver 2.22
-[    8.308784]   ESR = 0x96000004
-[    8.308787]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    8.308790]   SET = 0, FnV = 0
-[    8.308792]   EA = 0, S1PTW = 0
-[    8.308794]   FSC = 0x04: level 0 translation fault
-[    8.308796] Data abort info:
-[    8.308798]   ISV = 0, ISS = 0x00000004
-[    8.313982] NET: Registered PF_BLUETOOTH protocol family
-[    8.315502]   CM = 0, WnR = 0
-[    8.320889] Bluetooth: HCI device and connection manager initialized
-[    8.323948] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000107162000
-[    8.323952] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-[    8.323959] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[    8.323963] Modules linked in: gpu_sched(+) bluetooth(+)
-reset_qcom_pdc drm_kms_helper i2c_qcom_geni(+) qcom_camss
-spi_geni_qcom videobuf2_dma_sg venus_core v4l2_fwnode v4l2_async
-v4l2_mem2mem
-[    8.327174] Bluetooth: HCI socket layer initialized
-[    8.332068]  videobuf2_memops videobuf2_v4l2 camcc_sdm845
-videobuf2_common qcom_rng i2c_qcom_cci ath10k_snoc ath10k_core
-xhci_pci ath qcom_q6v5_mss qrtr xhci_pci_renesas mac80211
-qcom_q6v5_pas ns qcom_pil_info qcom_q6v5 slim_qcom_ngd_ctrl
-pdr_interface qcom_sysmon cfg80211 qcom_common display_connector
-qcom_glink_smem icc_osm_l3 rfkill slimbus qcom_wdt qmi_helpers
-mdt_loader socinfo drm rmtfs_mem fuse
-[    8.332103] CPU: 6 PID: 9 Comm: kworker/u16:1 Not tainted
-5.14.0-rc5-next-20210809 #1
-[    8.332107] Hardware name: Thundercomm Dragonboard 845c (DT)
-[    8.332109] Workqueue: events_unbound deferred_probe_work_func
-[    8.332120] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    8.335040] Bluetooth: L2CAP socket layer initialized
-[    8.337046] i2c 10-003b: Fixing up cyclic dependency with hdmi-out
-[    8.342391] pc : vfe_hw_version+0x20/0x80 [qcom_camss]
-[    8.342405] lr : msm_vfe_subdev_init+0x8c/0x4d0 [qcom_camss]
-[    8.342415] sp : ffff80001009ba20
-[    8.342416] x29: ffff80001009ba20 x28: ffff330f84ea6000 x27: 0000000000000004
-[    8.347824] Bluetooth: SCO socket layer initialized
-[    8.350763]
-[    8.350764] x26: 0000000000000003 x25: ffff330f8ea00080 x24: 0000000000000000
-[    8.350767] x23: ffff330f84ea6000 x22: ffff330f80f5b010 x21: ffffd62954d86828
-[    8.350770] x20: ffff330f80f5b000 x19: 0000000000000000 x18: 0000000000000000
-[    8.350773] x17: 0000000000000000 x16: ffffd6298befc0e0 x15: 0000000000000000
-[    8.350776] x14: 0000000000000000 x13: 7367616c665f746e x12: 69617274736e6f63
-[    8.350779] x11: ffff330f80400000 x10: 0000000000000000 x9 : ffffd62954d811b0
-[    8.350782] x8 : 0101010101010101 x7 : ffffd62954d7d814 x6 : ffffd62954d80f80
-[    8.350785] x5 : ffff330f8ea03080 x4 : ffff330f8ea03640 x3 : ffffd62954d7d720
-[    8.557091] x2 : 0000000000000003 x1 : ffffd62954d7dae0 x0 : ffff330f8ea00080
-[    8.564282] Call trace:
-[    8.566749]  vfe_hw_version+0x20/0x80 [qcom_camss]
-[    8.571599]  msm_vfe_subdev_init+0x8c/0x4d0 [qcom_camss]
-[    8.576956]  camss_probe+0x358/0xd60 [qcom_camss]
-[    8.581710]  platform_probe+0x74/0xf0
-[    8.585400]  really_probe+0xc4/0x470
-[    8.589003]  __driver_probe_device+0x11c/0x190
-[    8.593477]  driver_probe_device+0x48/0x110
-[    8.597694]  __device_attach_driver+0xa4/0x140
-[    8.602173]  bus_for_each_drv+0x84/0xe0
-[    8.606038]  __device_attach+0xe4/0x1c0
-[    8.609904]  device_initial_probe+0x20/0x30
-[    8.614118]  bus_probe_device+0xa4/0xb0
-[    8.617979]  deferred_probe_work_func+0xa8/0xfc
-[    8.622543]  process_one_work+0x1dc/0x4a0
-[    8.626587]  worker_thread+0x144/0x470
-[    8.630364]  kthread+0x144/0x160
-[    8.633617]  ret_from_fork+0x10/0x20
-[    8.637227] Code: a9be7bfd 910003fd f9000bf3 f9400813 (b9400273)
-[    8.643362] ---[ end trace 37b6accc93773476 ]---
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-full test log:
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210809/testrun/5410288/suite/ltp-crypto-tests/test/af_alg07/log
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 01fd30e7829d..b51513661469 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -877,6 +877,9 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
+ 
+ /**
+  * rdt_bit_usage_show - Display current usage of resources
++ * @of: pointer to opened "bit_usage" info file
++ * @seq: seq_file used to format output to "bit_usage"
++ * @v: unused pointer to void
+  *
+  * A domain is a shared resource that can now be allocated differently. Here
+  * we display the current regions of the domain as an annotated bitmask.
+@@ -888,6 +891,8 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
+  *   S - currently used and shareable by software only
+  *   E - currently used exclusively by one resource group
+  *   P - currently pseudo-locked by one resource group
++ *
++ * Return: 0
+  */
+ static int rdt_bit_usage_show(struct kernfs_open_file *of,
+ 			      struct seq_file *seq, void *v)
+@@ -1243,6 +1248,7 @@ bool rdtgroup_cbm_overlaps(struct rdt_resource *r, struct rdt_domain *d,
+ 
+ /**
+  * rdtgroup_mode_test_exclusive - Test if this resource group can be exclusive
++ * @rdtgrp: resource group
+  *
+  * An exclusive resource group implies that there should be no sharing of
+  * its allocated resources. At the time this group is considered to be
+@@ -1283,7 +1289,12 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
+ 
+ /**
+  * rdtgroup_mode_write - Modify the resource group's mode
++ * @of: pointer to opened "mode" file of a resource group
++ * @buf: data from user-space
++ * @nbytes: length of input data buffer
++ * @off: unsupported offset to input
+  *
++ * Return: @nbytes on success, <0 on failure
+  */
+ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
+ 				   char *buf, size_t nbytes, loff_t off)
+@@ -1367,6 +1378,8 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
+  *
+  * @cbm is unsigned long, even if only 32 bits are used to make the
+  * bitmap functions work correctly.
++ *
++ * Return: how many bytes of the cache are represented by @cbm.
+  */
+ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
+ 				  struct rdt_domain *d, unsigned long cbm)
+@@ -1389,10 +1402,14 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
+ 
+ /**
+  * rdtgroup_size_show - Display size in bytes of allocated regions
++ * @of: pointer to opened "size" file of a resource group
++ * @s: seq_file used to format output to "size"
++ * @v: unused pointer to void
+  *
+  * The "size" file mirrors the layout of the "schemata" file, printing the
+  * size in bytes of each region instead of the capacity bitmask.
+  *
++ * Return: 0 on success, <0 on failure
+  */
+ static int rdtgroup_size_show(struct kernfs_open_file *of,
+ 			      struct seq_file *s, void *v)
+@@ -2618,6 +2635,8 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
+  * resource group is initialized. The user can follow this with a
+  * modification to the CBM if the default does not satisfy the
+  * requirements.
++ *
++ * Return: A valid CBM, 0 if @_val is only 0 filled
+  */
+ static u32 cbm_ensure_valid(u32 _val, struct rdt_resource *r)
+ {
+-- 
+2.32.0
 
-Reported-by:  Linux Kernel Functional Testing <lkft@linaro.org>
-
-steps to reproduce:
- # It is always reproducible
- # Boot arm64 Dragonboard 845c board with built kernel Image
- # While booting the device you will notice this crash log
-
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git commit: da454ebf578f6c542ba9f5b3ddb98db3ede109c1
-  git describe: next-20210809
-  make_kernelversion: 5.14.0-rc5
-  kernel-config: https://builds.tuxbuild.com/1wURGIfgNW0xkrl16wDktoeATBp/config
-  vmlinux: https://builds.tuxbuild.com/1wURGIfgNW0xkrl16wDktoeATBp/vmlinux.xz
-  System.map: https://builds.tuxbuild.com/1wURGIfgNW0xkrl16wDktoeATBp/System.map
-  Image: https://builds.tuxbuild.com/1wURGIfgNW0xkrl16wDktoeATBp/Image.gz
-  gcc: gcc-11
-
---
-Linaro LKFT
-https://lkft.linaro.org
