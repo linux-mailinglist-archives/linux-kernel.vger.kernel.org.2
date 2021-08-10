@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5A73E862D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136CF3E8694
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbhHJWqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 18:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235192AbhHJWq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:46:26 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68A7C061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:46:02 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id z8-20020a0ce9880000b02903528f1b338aso137186qvn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=eqBNVNpWIIpSq+pfV6uCStvlMjvi00zLA50LkoAPgV0=;
-        b=Dvi7ew9FQNfrSvdH1mhLdjatlydl9KSAldsi6lVVnJHMwiWuvkgF7VWvZIR+MWMDoF
-         30WiHh9yT5l6Seq2QX7gC7XFItIES0zk7MVZIzyS7gs6MjPTbfy218XHcVGoM5WR2zzi
-         8rS3vYrb9B7gViBuNnY5moNk5PCNewG3hxlMOuSl7x8SFgxynELmziyV73QQsJJkHdP5
-         mOUoosIx0LNMfWRRGbT9U10oXAtEpu+jHsgc9omJjPVsVe99uvhJWWaZrznBNEr0Cn9t
-         VWzlhiTefbmk8e8wH8LVqEQ7sWesiP6zcvrK75c3iXVrBrLDwsrfZ4sLRSih9NTyUdNA
-         2/Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=eqBNVNpWIIpSq+pfV6uCStvlMjvi00zLA50LkoAPgV0=;
-        b=kv4FEYx2m0+5ofH2G0hsfQCKjLh7KUyhcFWAl8i8O/yQ6adfVUvQO3k99yLq576VMP
-         obJ+hL7WHk8iQw9FCcbQ9oxkeJV6rEyDcyFdRXSP6VTZfJM2SbiNkNg8eDxoazJDHg5U
-         1X8bWumoJ8QkQWxyPZyeZeaxhoUDf8UTqmvKZ2/rEcQwxJUy6/CeRohnxC27dmE4WQI5
-         HCohKTZl9+Mv9Q+uvTEPcjaToMkqTyLWGC+o8kep9lOT69nAJcvZebbg9BwcYwwA4P0C
-         UN8uZ2AI1YwzPQlbrPioBE1jUF2r3uy0GELBP27doAjjQlwZb614jlOeGRT05rxZ9dtA
-         H6MQ==
-X-Gm-Message-State: AOAM531GJx2U9ChMxNzni/2L9y9OwXycmDgeX8EuCbWL3/tz1se2fA1n
-        IGz7Uv1PiMR2qaBoAXL+4KDR9qalnjY=
-X-Google-Smtp-Source: ABdhPJxLku6SMROxZvTFWQNsc+G3H5PkOpVxGh+EMykrSJBYJIJl2qQiec+kJCkhkVaR3/RUMncogL+Dxs0=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:1c47:622e:7a2a:372d])
- (user=seanjc job=sendgmr) by 2002:a05:6214:10e6:: with SMTP id
- q6mr31789808qvt.11.1628635562042; Tue, 10 Aug 2021 15:46:02 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 10 Aug 2021 15:45:54 -0700
-In-Reply-To: <20210810224554.2978735-1-seanjc@google.com>
-Message-Id: <20210810224554.2978735-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210810224554.2978735-1-seanjc@google.com>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH 2/2] KVM: x86/mmu: Drop 'shared' param from tdp_mmu_link_page()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235488AbhHJXds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 19:33:48 -0400
+Received: from mailout.comhem.se ([82.99.18.63]:44506 "EHLO mailout.comhem.se"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233570AbhHJXdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 19:33:46 -0400
+X-Greylist: delayed 531 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Aug 2021 19:33:46 EDT
+Received: from mail.jni.nu (c188-150-64-249.bredband.tele2.se [188.150.64.249])
+        by mailout.comhem.se (Postfix) with ESMTPS id 51C2644030C
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 23:24:32 +0000 (UTC)
+Received: by mail.jni.nu (Postfix, from userid 1000)
+        id 1181C2D608CC; Wed, 11 Aug 2021 00:46:11 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 00:46:11 +0200
+From:   Jesper Nilsson <jesper@jni.nu>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mete Polat <metepolat2000@gmail.com>,
+        Jesper Nilsson <jesper@jni.nu>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] rbtree: remove unneeded explicit alignment in struct
+ rb_node
+Message-ID: <YRMBs0FhqFZPDuNP@jni.nu>
+References: <20210805133213.700-1-lukas.bulwahn@gmail.com>
+ <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop @shared from tdp_mmu_link_page() and hardcode it to work for
-mmu_lock being held for read.  The helper has exactly one caller and
-in all likelihood will only ever have exactly one caller.  Even if KVM
-adds a path to install translations without an initiating page fault,
-odds are very, very good that the path will just be a wrapper to the
-"page fault" handler (both SNP and TDX RFCs propose patches to do
-exactly that).
+On Thu, Aug 05, 2021 at 04:02:22PM +0200, Arnd Bergmann wrote:
+> On Thu, Aug 5, 2021 at 3:32 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> >
+> > Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
+> > struct rb_node.") adds an explicit alignment to the struct rb_node due to
+> > some speciality of the CRIS architecture.
+> >
+> > The support for the CRIS architecture was removed with commit c690eddc2f3b
+> > ("CRIS: Drop support for the CRIS port")
+> >
+> > So, remove this now unneeded explicit alignment in struct rb_node as well.
+> >
+> > This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
+> > alignment to sizeof(long) for struct rb_node.").
+> >
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Reported-by: Mete Polat <metepolat2000@gmail.com>
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> > applies cleanly on next-20210804, but only x86 compile-checked.
+> >
+> > Michel, Davidlohr, Jesper, David, please ack.
+> >
+> > Mete, you might want to re-run your RBT test suite for this change.
+> >
+> > Andrew, once acked, please pick this minor cleanup into your tree.
+> 
+> Do you know why it needed the extra alignment on cris at the time?
 
-No functional change intended.
+The problem for CRIS was that the architecture always had packed
+structs (there was no way to avoid it in GCC) and CRIS could all data
+on any byte boundary.
 
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+That was ok for normal pointers in structs, all pointers would be allocated
+inside the same page and it didn't matter that they were aligned on odd byte
+addresses for the CPU (except for being a little slower)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index d99e064d366f..c5b901744d15 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -257,26 +257,17 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
-  *
-  * @kvm: kvm instance
-  * @sp: the new page
-- * @shared: This operation may not be running under the exclusive use of
-- *	    the MMU lock and the operation must synchronize with other
-- *	    threads that might be adding or removing pages.
-  * @account_nx: This page replaces a NX large page and should be marked for
-  *		eventual reclaim.
-  */
- static void tdp_mmu_link_page(struct kvm *kvm, struct kvm_mmu_page *sp,
--			      bool shared, bool account_nx)
-+			      bool account_nx)
- {
--	if (shared)
--		spin_lock(&kvm->arch.tdp_mmu_pages_lock);
--	else
--		lockdep_assert_held_write(&kvm->mmu_lock);
--
-+	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
- 	list_add(&sp->link, &kvm->arch.tdp_mmu_pages);
- 	if (account_nx)
- 		account_huge_nx_page(kvm, sp);
--
--	if (shared)
--		spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
-+	spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
- }
- 
- /**
-@@ -1062,7 +1053,7 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 						     !shadow_accessed_mask);
- 
- 			if (tdp_mmu_set_spte_atomic_no_dirty_log(vcpu->kvm, &iter, new_spte)) {
--				tdp_mmu_link_page(vcpu->kvm, sp, true,
-+				tdp_mmu_link_page(vcpu->kvm, sp,
- 						  huge_page_disallowed &&
- 						  req_level >= iter.level);
- 
--- 
-2.32.0.605.g8dce9f2422-goog
+However, when the lowest bits were used as flags, that would clash on CRIS since
+all bits were valid and possible address bits, so any sub-struct in a struct might be
+aligned on an odd address, and using the pointer to the sub-struct would inadvertently
+set the flag bits.
 
+That's why just adding a forced alignment on the sub-struct fixed the problem,
+since the compiler would respect such alignments, and thus leave the lower bits
+free for trickery.
+
+> The revert would appear to change the alignment to 16 bits instead
+> of 32 bits on m68k as well (not 8 bits as on cris), but I don't know if that
+> can cause problems there.
+> 
+>         Arnd
+
+/^JN - Jesper Nilsson
+--
+                  Jesper Nilsson -- jesper_at_jni.nu
