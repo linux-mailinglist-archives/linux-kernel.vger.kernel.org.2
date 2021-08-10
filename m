@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2452B3E7DE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0406F3E7DEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhHJRAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:00:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:59590 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229778AbhHJRAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:00:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F99E6D;
-        Tue, 10 Aug 2021 09:59:50 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 892B03F718;
-        Tue, 10 Aug 2021 09:59:49 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 17:59:43 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v1 1/2] PCI: dwc: Clean up Kconfig dependencies
- (PCIE_DW_HOST)
-Message-ID: <20210810165943.GA18920@lpieralisi>
-References: <20210623140103.47818-1-andriy.shevchenko@linux.intel.com>
- <20210805135234.GA22410@lpieralisi>
- <YQwTWoLys3wX75gY@smile.fi.intel.com>
+        id S230151AbhHJRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229474AbhHJRBx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:01:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1533C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=94EOIQouGlTJAzq6iuzYMmH+XFfcFVkH7sLnkfJnBo0=; b=MTF7TXszk6Upk/7HLlum0qi7WA
+        /74ci0UwiktZW0T1hRkkbXcuOhaJ803PCUHCPjXFYaau1xhgZNLmz7C1CnWwL8QCCfnQZYXiOXB7+
+        hAY1ljzWoXLDvz89Z8B6iZ15KJbk+DEvEosekAlXd+bx6S8GVzp4oqwm0ySEjJFgsDyS4iuxdHTJl
+        HIJM5o1U7Pa6k9rP1YYg9x2gk8LkX6Ezm+oYMfGLDKm9ecHf3dCIKUWVFbnc7cx83apMah5dvgHP6
+        I6q2A/SMzbsOeboooJh+wWLv8RFS8Ek4nMWPCdHyS1fCRZgwMyTH0J8mAUvuIKRR9xkcWuF6NNOcd
+        fHmBuDOg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDV72-00CN9P-4l; Tue, 10 Aug 2021 17:00:33 +0000
+Date:   Tue, 10 Aug 2021 18:00:24 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Maurizio Lombardi <mlombard@redhat.com>
+Cc:     rppt@kernel.org, bp@alien8.de, tglx@linutronix.de, x86@kernel.org,
+        pjones@redhat.com, konrad@kernel.org, george.kennedy@oracle.com,
+        rafael@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory
+ remapping
+Message-ID: <YRKwqAlgWVGVpEJv@infradead.org>
+References: <20210729135250.32212-1-mlombard@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQwTWoLys3wX75gY@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210729135250.32212-1-mlombard@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 07:35:38PM +0300, Andy Shevchenko wrote:
-> On Thu, Aug 05, 2021 at 02:52:34PM +0100, Lorenzo Pieralisi wrote:
-> > On Wed, Jun 23, 2021 at 05:01:02PM +0300, Andy Shevchenko wrote:
-> > > First of all, the "depends on" is no-op in the selectable options.
-> > > Second, no need to repeat menu dependencies (PCI).
-> 
-> > Define which specific "depends on" you are referring to.
-> 
-> I didn't get this because it stands right. It's in general.
+> Fix this bug by saving the address of the physical location
+> of the ibft; later the driver will use isa_bus_to_virt() to get
+> the correct virtual address.
 
-Ok, understood what you meant now - I read it as if you were referring
-to a specific Kconfig entry that this patch is fixing.
-
-Maybe:
-
-"The "depends on" Kconfig construct is a no-op in options that
-are selected and therefore has no effect. Remove it.".
-
-
-> I can be more specific since it's in align with the code,
-> though.
-> 
-> All the rest I agree with.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+That sound rather broken.  Why not save the physical address in
+find_ibft_region and then later ioremap that when a virtual address is
+needed like all other code accessing magic I/O memory?
