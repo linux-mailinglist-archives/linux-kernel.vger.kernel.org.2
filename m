@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BB63E58C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063C83E58C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239992AbhHJLBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 07:01:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:30776 "EHLO mga04.intel.com"
+        id S240001AbhHJLBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:01:55 -0400
+Received: from ozlabs.org ([203.11.71.1]:59453 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237696AbhHJLBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:01:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="213021969"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="213021969"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 04:00:40 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="515756235"
-Received: from yilonggu-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.175.101])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 04:00:35 -0700
-Date:   Tue, 10 Aug 2021 19:00:31 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
- level
-Message-ID: <20210810110031.h7vaqf3nljwm3wym@linux.intel.com>
-References: <20210808192658.2923641-1-wei.huang2@amd.com>
- <20210808192658.2923641-2-wei.huang2@amd.com>
- <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
- <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
- <20210809042703.25gfuuvujicc3vj7@linux.intel.com>
- <73bbaac0-701c-42dd-36da-aae1fed7f1a0@amd.com>
- <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
- <YRFKABg2MOJxcq+y@google.com>
- <20210810074037.mizpggevgyhed6rm@linux.intel.com>
- <0ac41a07-beeb-161e-9e5d-e45477106c01@redhat.com>
+        id S237696AbhHJLBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:01:53 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkVPk1rwtz9sPf;
+        Tue, 10 Aug 2021 21:01:30 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628593290;
+        bh=PV8t0TZ5ql9h4i0Y2UfDgJsM8SqK46a+vA4DaRfsqGQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tFLY2aqcVB6qSI4sdKlOA4xMBveZfY92211pGxur6zkGEsTjOwRqUokQhS+WLaKey
+         wTAeyRLjF7GOBV9BOh9wCrS3RYHeT+Mi99Ip326hwoqs60eX+gbYeXfeDABkofX5Vw
+         l9S/kyUVq/CsZ4ayYyK/fjneN9DOwaHaJSMg19YUlboghOPD9kgqf2FS6i71PpZL7f
+         oVMAIjF5mrCH6zIUaiId+pou5G6RQ/VjBJN/GUS9M8gOp+IrcbvzRKAOqYL3gP35mW
+         NLcQ4LN0e8iY4aFf09ABdveyMcpYFP9ATTKDHOhbna8BwKBcXGhmU6/PyUBmhrLcDM
+         kULWVmN5UCCNA==
+Date:   Tue, 10 Aug 2021 21:01:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the drm tree
+Message-ID: <20210810210129.03b3fba5@canb.auug.org.au>
+In-Reply-To: <YRJaD51xR8rQ2ga+@phenom.ffwll.local>
+References: <20210603193242.1ce99344@canb.auug.org.au>
+        <20210708122048.534c1c4d@canb.auug.org.au>
+        <20210810192636.625220ae@canb.auug.org.au>
+        <YRJRju/zo5YiF1EB@phenom.ffwll.local>
+        <20210810203859.128649fc@canb.auug.org.au>
+        <YRJaD51xR8rQ2ga+@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ac41a07-beeb-161e-9e5d-e45477106c01@redhat.com>
-User-Agent: NeoMutt/20171215
+Content-Type: multipart/signed; boundary="Sig_/8Szv79rulu_bIgTKLQCfYG+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:25:27AM +0200, Paolo Bonzini wrote:
-> On 10/08/21 09:40, Yu Zhang wrote:
-> > About "host can't easily mirror L1's desired paging mode", could you please elaborate?
-> > Thanks!
-> 
-> Shadow pgae tables in KVM will always have 3 levels on 32-bit machines and
-> 4/5 levels on 64-bit machines.  L1 instead might have any number of levels
-> from 2 to 5 (though of course not more than the host has).
+--Sig_/8Szv79rulu_bIgTKLQCfYG+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks Paolo.
+Hi Daniel,
 
-I guess it's because, unlike EPT which are with either 4 or 5 levels, NPT's
-level can range from 2 to 5, depending on the host paging mode...
+On Tue, 10 Aug 2021 12:50:55 +0200 Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> Uh that's not good, I missed that. I'll look into it.
 
-> 
-> Therefore, when shadowing 32-bit NPT page tables, KVM has to add extra fixed
-> levels on top of those that it's shadowing.  See mmu_alloc_direct_roots for
-> the code.
+Thanks.
 
-So when shadowing NPTs(can be 2/3 levels, depending on the paging mode in L1),
-and if L0 Linux is running in 4/5 level mode, extra levels of paging structures
-is needed in the shadow NPT.
+--=20
+Cheers,
+Stephen Rothwell
 
-But shadow EPT does not have such annoyance. Is above understanding correct?
+--Sig_/8Szv79rulu_bIgTKLQCfYG+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-B.R.
-Yu
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESXIkACgkQAVBC80lX
+0GwwAQf+LFFyrulc1CxIApGdjUHFdTPOzQSnEdDZBOnPFAego3E9kEMhqsq7DYZM
+cgkiLKoStliz5dgUXQZkqbKN5SCw36+yjUr2euDQgwkif3LmvoXomn3RlJCQLKbi
+edYJRcTHmoC0CRwTyZt4/w9nLcQyfJVC5rNtQLVWWvt1mHWw6CC/nV4g/SE+rfhb
+UgeJ8Z5zdRQpz25bk5VPxtNsxoyAFkIx6WIDoDc8dOfufzjAB8ezhOokkpY/54xj
+I9cyZvZXJe4GhgFyYb0L48MxYrDJBl+L4AZ61kvzs4Osiok6cJm8zEU+FDZJt9Qg
+1Sf0dXJuwph4nbxCU/0WLYGHg5cBxw==
+=CC8W
+-----END PGP SIGNATURE-----
+
+--Sig_/8Szv79rulu_bIgTKLQCfYG+--
