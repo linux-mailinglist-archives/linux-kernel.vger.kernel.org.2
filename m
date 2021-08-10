@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08743E7C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287893E7C70
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243280AbhHJPgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:36:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49300 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242041AbhHJPgR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:36:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628609755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pQuJr7Ds39z6uYEw+kh5aIvtiC3dxt3i1eb/vtWoNzI=;
-        b=GfWbdR7jyxbMbwKRfWLNJJjJ8mZQZ4V8Kd+V4aicDDxxxoJb1CZ+t++x8y0aHfvvtYxRg3
-        A8hKDbWp2bhoN93HVMwR8NZeN0M+swJxpnKm2yWJQlyL4yPOMUYIxa7ycd3N2nTNPes6+R
-        rg9W6KL0FTzqb6DL4T47eCQynRWTArU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-82-cYEMvEvLNe-WOlg089RZLg-1; Tue, 10 Aug 2021 11:35:51 -0400
-X-MC-Unique: cYEMvEvLNe-WOlg089RZLg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CB37801AE7;
-        Tue, 10 Aug 2021 15:35:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 02E2C60C05;
-        Tue, 10 Aug 2021 15:35:45 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-24-willy@infradead.org>
-References: <20210715033704.692967-24-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v14 023/138] mm/swap: Add folio_rotate_reclaimable()
+        id S243237AbhHJPha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:37:30 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:45668 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242081AbhHJPh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:37:27 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPSA id E6DBA40755F7;
+        Tue, 10 Aug 2021 15:36:59 +0000 (UTC)
+Subject: Re: [PATCH] media: atomisp: Fix error handling in probe
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+References: <20210810115303.9089-1-novikov@ispras.ru>
+ <20210810151427.GY1931@kadam>
+From:   Evgeny Novikov <novikov@ispras.ru>
+Message-ID: <528319d8-59d8-d3fa-3fa4-57bf2c1464e8@ispras.ru>
+Date:   Tue, 10 Aug 2021 18:36:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1796498.1628609745.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 16:35:45 +0100
-Message-ID: <1796499.1628609745@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210810151427.GY1931@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+Hi Dan,
 
-> Convert rotate_reclaimable_page() to folio_rotate_reclaimable().  This
-> eliminates all five of the calls to compound_head() in this function,
-> saving 75 bytes at the cost of adding 15 bytes to its one caller,
-> end_page_writeback().  We also save 36 bytes from pagevec_move_tail_fn()
-> due to using folios there.  Net 96 bytes savings.
-> 
-> Also move its declaration to mm/internal.h as it's only used by filemap.c.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Thank you for these suggestions. I will resend the patch.
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+Best regards,
+Evgeny Novikov
 
+On 10.08.2021 18:14, Dan Carpenter wrote:
+> On Tue, Aug 10, 2021 at 02:53:03PM +0300, Evgeny Novikov wrote:
+>> There were several issues with handling errors in lm3554_probe():
+>> - Probe did not set the error code when v4l2_ctrl_handler_init() failed.
+>> - It intermixed gotos for handling errors of v4l2_ctrl_handler_init()
+>>    and media_entity_pads_init().
+>> - Probe did not free resources in case of failures of
+>>    atomisp_register_i2c_module().
+>>
+>> The patch fixes all these issues.
+>>
+>> Found by Linux Driver Verification project (linuxtesting.org).
+> This patch is good, but two things:
+>
+> 1) Please can you rename all the labels to say what the goto does?
+>
+> err_uninit:
+> 	lm3554_gpio_uninit(client);
+> cleanup_media:
+>   	media_entity_cleanup(&flash->sd.entity);
+> free_handler:
+>   	v4l2_ctrl_handler_free(&flash->ctrl_handler);
+> unregister_subdev:
+>   	v4l2_device_unregister_subdev(&flash->sd);
+>
+> 2) There is a missing error code still:
+>
+> drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+>     858          if (ret) {
+>     859                  dev_err(&client->dev, "error initialize a ctrl_handler.\n");
+>     860                  goto fail3;
+>     861          }
+>     862
+>     863          for (i = 0; i < ARRAY_SIZE(lm3554_controls); i++)
+>     864                  v4l2_ctrl_new_custom(&flash->ctrl_handler, &lm3554_controls[i],
+>     865                                       NULL);
+>     866
+>     867          if (flash->ctrl_handler.error) {
+>     868                  dev_err(&client->dev, "ctrl_handler error.\n");
+>     869                  goto fail3;
+>                          ^^^^^^^^^^
+> 	err = flash->ctrl_handler.error;
+>
+>     870          }
+>     871
+>     872          flash->sd.ctrl_handler = &flash->ctrl_handler;
+>     873          err = media_entity_pads_init(&flash->sd.entity, 0, NULL);
+>     874          if (err) {
+>     875                  dev_err(&client->dev, "error initialize a media entity.\n");
+>     876                  goto fail2;
+>     877          }
+>
+> regards,
+> dan carpenter
+>
