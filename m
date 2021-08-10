@@ -2,85 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DAF3E857A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16B63E8583
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhHJVgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234925AbhHJVgT (ORCPT
+        id S234769AbhHJVhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:37:21 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:57343 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234707AbhHJVhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:36:19 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D361C06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:35:55 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id r17-20020a0568302371b0290504f3f418fbso769738oth.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=+XhXVGH3fkIOnE1t2XNmliygvN33fb2RS+mFgm8hrtU=;
-        b=nssXy17hVHdZO0veyfk+XdCrAZ190q+aijoQHy4Dd8jrwccS37npEBDWKfa3tVRsX/
-         +Fl4rkROGtig5v474uHf01f0pMk20xiMuc0h1oIPnL+D2G1YT6fL3foT9JFhM9c//9dr
-         RsidGeTpYH3eYySbmAdTb06F49h/EbOOXoBT4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=+XhXVGH3fkIOnE1t2XNmliygvN33fb2RS+mFgm8hrtU=;
-        b=fQqTxIfTNtm+cvgaDADopOc6V9m3BZz6wCin5ZLlwrHtRDC3jhdqchkJckxPvKAVnD
-         +HzU5lR5GGlLfo7tqAZcrUZh5UhPw40AlhvuKkbK3uhyJoeORW/Wl3vHRN6KjcPDBj40
-         dAW3v7o3/yjvUSDmJx/6zuXplOZ78+AsL9fq8lMJxCfb6ceU+unLMEEgwQe9z+G8FfyV
-         qs+x2nVNc15OmcyoqqEnJUBhx8wFrq3MWMF7pfm5b1phtD1NHlmqxwPXoK1FMfOJKwVX
-         D0sKK8H+weU+TuoMY5jg6k9uYZtWJy+JLnTQj2+tso5Q9fE5z9dP7966JaSLp4yPU4ZX
-         ySHg==
-X-Gm-Message-State: AOAM531azQA9QUwtKTEn1VnGyyRrw2mNmYcHDdT53kV1K/+/BhzdU8LU
-        wD2Q3QZVKhXFfbVxnYDlruKxZATwarnn9kpXU1vKqA==
-X-Google-Smtp-Source: ABdhPJyiH0XE2MMSHvDD3YnTgiPVuRbdk1llKiBAiTDs/gIGZngoYWW5dJsF6iglEkjwRPIOdlrPTB7kIDitYcTjbyY=
-X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr22748568otq.233.1628631355080;
- Tue, 10 Aug 2021 14:35:55 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 14:35:54 -0700
+        Tue, 10 Aug 2021 17:37:20 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3A68C5C0059;
+        Tue, 10 Aug 2021 17:36:57 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 10 Aug 2021 17:36:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ddL+0p
+        F27T6DBP6hHVxKcsd9AwtrqhNxecAILnXGEBg=; b=R5Gkz6+ipHDEX1S562ROvx
+        od3n1E56TcfFbYnkyKnwM5Onze6VmGEUbde93xgkUxI7WSpAN69NvVvhjSl08UrQ
+        BSlvg7gpzQ6PwAybKVC2baSdGEEbXZcu5EHPIClAX/4vDPupuJqTqAxT4f+M7UUv
+        3FeTQb8jwqsTOb1JckPxeq/Oi0+uUdZyk9C8SFRn/+fGsZAMESDfZpqFyyfXwbX8
+        8DiE4PVYqi8T/WwKi1Y7dNzyO3pUYWHp4sdf98cCeXDlwOUI6bjx3BP/ISi5Ldny
+        5BTlYaiiAQPh5Z99Sq7daSP8g4/PXOdKV3LAFt5vuMXSEYFsNLxk+gOVNUoqRdvQ
+        ==
+X-ME-Sender: <xms:ePESYRCd6bS6Q-yQox-dJrv1kwpqi4sy8f8d2n26rhRQKXe8Pusmkw>
+    <xme:ePESYfhbSt0tez612tQXZFLcgTP56Kn1ItP2HFDEY4gItNj5JVC4iNRJV6oCQVnGG
+    4tF_4Jmlh27mxaoF1k>
+X-ME-Received: <xmr:ePESYclQStfHgZ4aA4S1hGl33l72J36u34f8zidwbN9hP8vYFpgk8lUqM1tPPn0PIPJjuA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeelgdduieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhuffvkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhkvgcu
+    lfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpe
+    fgfeefudffhffgueehgeffffeggeevieefueethfeijefftedugfeuveethedtteenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslh
+    hjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:ePESYbxnaHsx4YOMFBOUmOFD6HiHxaR5ww0XP0GVrJUJNPC5aSglcA>
+    <xmx:ePESYWTXOj5duO9ncwqTSbHLZ3-JklN27gY3-jAZXEVhOKdizYOODA>
+    <xmx:ePESYeYpqCUH3mnHGssbUZ1WeS5TuIYrDC4jgdyeDXWcwYFaM-f7bg>
+    <xmx:efESYRftm4vOOMcRyMkd96ZnF35MNlEvO3zobPho58eI-J0ZqDInnA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Aug 2021 17:36:51 -0400 (EDT)
+Date:   Wed, 11 Aug 2021 09:36:37 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH v3 0/3] Support for ASUS egpu, dpgu disable, panel
+ overdrive
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, mgross@linux.intel.com,
+        pobrn@protonmail.com, corentin.chary@gmail.com
+Message-Id: <118NXQ.7MQ0UL73DWEP1@ljones.dev>
+In-Reply-To: <96aa39fd-119a-f79e-ee74-2db6d117fac3@redhat.com>
+References: <20210807023656.25020-1-luke@ljones.dev>
+        <aec7b518-0979-7b7e-f776-a2ebb0fc19fc@redhat.com>
+        <FYDLXQ.TA0Y98DS5UW4@ljones.dev>
+        <96aa39fd-119a-f79e-ee74-2db6d117fac3@redhat.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-In-Reply-To: <1628196295-7382-7-git-send-email-khsieh@codeaurora.org>
-References: <1628196295-7382-1-git-send-email-khsieh@codeaurora.org> <1628196295-7382-7-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 14:35:54 -0700
-Message-ID: <CAE-0n52n6ypCLrA3mWHekh9Caq8rT5ngV2X5MWdGYA8DJQb92g@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] drm/msm/dp: do not end dp link training until
- video is ready
-To:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-08-05 13:44:55)
-> Initialize both pre-emphasis and voltage swing level to 0 before
-> start link training and do not end link training until video is
-> ready to reduce the period between end of link training and video
-> start to meet Link Layer CTS requirement.  Some dongle main link
-> symbol may become unlocked again if host did not end link training
-> soon enough after completion of link training 2. Host have to re
-> train main link if loss of symbol locked detected before end link
-> training so that the coming video stream can be transmitted to sink
-> properly. This fixes Link Layer CTS cases 4.3.2.1, 4.3.2.2, 4.3.2.3
-> and 4.3.2.4.
->
-> Changes in v3:
-> -- merge retrain link if loss of symbol locked happen into this patch
-> -- replace dp_ctrl_loss_symbol_lock() with dp_ctrl_channel_eq_ok()
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+On Tue, Aug 10 2021 at 09:46:13 +0200, Hans de Goede 
+<hdegoede@redhat.com> wrote:
+> <Added platform-driver-x86@vger.kernel.org to the Cc>
+> 
+> On 8/9/21 11:49 PM, Luke Jones wrote:
+>> 
+>> 
+>>  On Mon, Aug 9 2021 at 11:18:38 +0200, Hans de Goede 
+>> <hdegoede@redhat.com> wrote:
+>>>  Hi Luke,
+>>> 
+>>>  On 8/7/21 4:36 AM, Luke D. Jones wrote:
+>>>>   This patch series adds support for some functions that are found 
+>>>> on newer
+>>>>   ASUS gaming laptops:
+>>>> 
+>>>>   - Panel overdrive: Some laptops can drive the LCD matrix 
+>>>> slightly faster
+>>>>     to eliminate or reduce ghosting artifacts
+>>>> 
+>>>>   - dGPU disable: ASUS added a function in ACPI to disable or 
+>>>> enable the dGPU
+>>>>     which removes it from the PCI bus. Presumably this was to help 
+>>>> prevent
+>>>>     Windows apps from using the dGPU when the user didn't want 
+>>>> them to but
+>>>>     because of how it works it also means that when rebooted to 
+>>>> Linux the dGPU
+>>>>     no-longer exits. This patch enables a user to echo 0/1 to a 
+>>>> WMI path to
+>>>>     re-enable it (or disable, but the drivers *must* be unloaded 
+>>>> first).
+>>>> 
+>>>>   - eGPU enable: The ASUS x-flow lpatop has an iGPU, a dGPU, and 
+>>>> an optional
+>>>>     eGPU. This patch enables the user to echo 0/1 to a WMI path to 
+>>>> enable or
+>>>>     disable the eGPU. In ACPI this also appears to remove the dGPU 
+>>>> from the
+>>>>     PCI bus.
+>>>> 
+>>>>   All of the above patches have been tested over the course of a 
+>>>> few months.
+>>>>   There is a small possibility of user error perhaps, where the 
+>>>> user tries to
+>>>>   enable or disable the dGPU/eGPU while drivers are loaded which 
+>>>> would cause
+>>>>   a system hang, but it is expected that almost all users would be 
+>>>> using the
+>>>>   `asusctl` daemon and dbus methods to manage the above which then 
+>>>> eliminates
+>>>>   these issues.
+>>> 
+>>>  Thank you for the new version, all 3 patches look good to me, but 
+>>> I miss
+>>>  a changelog in this cover-letter.
+>>> 
+>>>  Specifically I'm wondering what happened to the following,
+>>>  which you wrote about in the v1 patch-set thread:
+>>> 
+>>>  """
+>>>  Proper enable of the dGPU again as far as my testing goes works 
+>>> such that:
+>>>  1. call the ACPI method
+>>>  2. rescan PCI bus to ensure the device is powered
+>>>  3. call the ACPI method again to save the setting
+>>> 
+>>>  But it appears that recent work in-kernel for many things AMD 
+>>> related has broken this for us...
+>>>  """
+>> 
+>>  Apologies, I've been a bit too busy to remember some things.
+>> 
+>>  The changes are mostly to satisfy review. The dGPU patch has 
+>> removed the
+>>  dual call to the ACPI method, it was not working as expected. I 
+>> will revisit
+>>  this when 5.14 kernel is released.
+> 
+> Ok, so from my pov these patches are ready for merging now, but since 
+> this
+> is still somewhat of an open question, I wonder if they are also ready
+> for merging from your pov, or if you want to fist sort this out ?
+
+I'm definitely okay with merging now. The dgpu patch can at least 
+provide
+us a hint for the user that the dGPU may have been disabled in Windows 
+and
+recommend that they use Windows + Armoury Crate to enable it again.
+
+The eGPU patch itself appears to work well enough and relies on the dGPU
+patch.
+
+If we're both fine with the patches lets go ahead :)
+
+Many thanks,
+Luke.
+
+> 
+>>  I'll be sure to remember the changelog next time I submit a patch, 
+>> sorry.
+> 
+> No problem.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+>>>>   Luke D. Jones (3):
+>>>>     asus-wmi: Add panel overdrive functionality
+>>>>     asus-wmi: Add dgpu disable method
+>>>>     asus-wmi: Add egpu enable method
+>>>> 
+>>>>    drivers/platform/x86/asus-wmi.c            | 289 
+>>>> +++++++++++++++++++++
+>>>>    include/linux/platform_data/x86/asus-wmi.h |   7 +
+>>>>    2 files changed, 296 insertions(+)
+>>>> 
+>>>>   --
+>>>>   2.31.1
+>>>> 
+>>> 
+>> 
+>> 
+> 
+
+
