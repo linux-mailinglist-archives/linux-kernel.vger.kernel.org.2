@@ -2,64 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629613E7BBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FACE3E7BAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242650AbhHJPIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:08:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:46236 "EHLO mga06.intel.com"
+        id S241433AbhHJPGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:06:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239566AbhHJPID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:08:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="275956713"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="275956713"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:04:16 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="526178724"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:04:13 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 9D9C820345;
-        Tue, 10 Aug 2021 18:04:11 +0300 (EEST)
-Date:   Tue, 10 Aug 2021 18:04:11 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Evgeny Novikov <novikov@ispras.ru>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: Re: [PATCH] media: atomisp: Fix error handling in probe
-Message-ID: <20210810150411.GG3@paasikivi.fi.intel.com>
-References: <20210810115303.9089-1-novikov@ispras.ru>
+        id S231346AbhHJPGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:06:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C423B60FDA;
+        Tue, 10 Aug 2021 15:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628607951;
+        bh=C6ZAVOPqfmZA7ZtDBXi1h4fWPOAurp4igkoiZMj3Rx8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nyM/2X2c2DWj8BU4GZX7bz8cQTZnAjjSfQT0KJH3qE0FINtOLd1k9TzYW3rA/pZor
+         QzrgMxYNV3CC/vysyRI1A0KH3AVaUdhcSiIny1psfELlIWJOR03B8NOqf9l1jtJpO4
+         ibl7w3MUUUecmJcwR1noEWK9vYwYk2qQed/2a99c=
+Date:   Tue, 10 Aug 2021 17:05:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     rjw@rjwysocki.net, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pavel@ucw.cz
+Subject: Re: [PATCH v2] PM: sleep: core: Avoid setting power.must_resume to
+ false
+Message-ID: <YRKVzD9gnigxDjEC@kroah.com>
+References: <1628602932-246733-1-git-send-email-psodagud@codeaurora.org>
+ <1628602932-246733-2-git-send-email-psodagud@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810115303.9089-1-novikov@ispras.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1628602932-246733-2-git-send-email-psodagud@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 02:53:03PM +0300, Evgeny Novikov wrote:
-> There were several issues with handling errors in lm3554_probe():
-> - Probe did not set the error code when v4l2_ctrl_handler_init() failed.
-> - It intermixed gotos for handling errors of v4l2_ctrl_handler_init()
->   and media_entity_pads_init().
-> - Probe did not free resources in case of failures of
->   atomisp_register_i2c_module().
+On Tue, Aug 10, 2021 at 06:42:12AM -0700, Prasad Sodagudi wrote:
+> There are variables(power.may_skip_resume and dev->power.must_resume)
+> and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+> a system wide suspend transition.
 > 
-> The patch fixes all these issues.
+> Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+> its "noirq" and "early" resume callbacks to be skipped if the device
+> can be left in suspend after a system-wide transition into the working
+> state. PM core determines that the driver's "noirq" and "early" resume
+> callbacks should be skipped or not with dev_pm_skip_resume() function by
+> checking power.may_skip_resume variable.
 > 
-> Found by Linux Driver Verification project (linuxtesting.org).
+> power.must_resume variable is getting set to false in __device_suspend()
+> function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
+> dev->power.usage_count variables. In problematic scenario, where
+> all the devices in the suspend_late stage are successful and some
+> device can fail to suspend in suspend_noirq phase. So some devices
+> successfully suspended in suspend_late stage are not getting chance
+> to execute __device_suspend_noirq() to set dev->power.must_resume
+> variable to true and not getting resumed in early_resume phase.
 > 
-> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+> Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+> setting power.must_resume variable in __device_suspend function.
+> 
+> Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> ---
+>  drivers/base/power/main.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index d568772..9ee6987 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -1642,7 +1642,11 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+>  	}
+>  
+>  	dev->power.may_skip_resume = true;
+> -	dev->power.must_resume = false;
+> +	if ((atomic_read(&dev->power.usage_count) <= 1) &&
+> +	     (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
+> +		dev->power.must_resume = false;
+> +	else
+> +		dev->power.must_resume = true;
+>  
+>  	dpm_watchdog_set(&wd, dev);
+>  	device_lock(dev);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
 
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Hi,
 
--- 
-Sakari Ailus
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
