@@ -2,145 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30E03E5785
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153AF3E578A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbhHJJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhHJJwy (ORCPT
+        id S232884AbhHJJxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:53:47 -0400
+Received: from mail-vs1-f42.google.com ([209.85.217.42]:35634 "EHLO
+        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhHJJxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:52:54 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908A2C0613D3;
-        Tue, 10 Aug 2021 02:52:31 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id n7so3186681ljq.0;
-        Tue, 10 Aug 2021 02:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VxKLBzjOyzndQSkwMtQilthdPdFNiRTvzfca7De9zs4=;
-        b=LgS5+341pmKDIZcJiTqLAxhlTc1fpnzWz8agEjGPUuZOFgPdIv5F3A22w1uUmldpVj
-         RfFZf1w/CLKaYaDmNWuhZFqRTj8UqAbA7RXDgcr0hDhfiXt3WaWMey/qfaZXli+jyla5
-         Ka/wMo9xCM/CRPzl4yKk1PdJec9YuhFIHNuFY69PCHDvScjlTxwC+RRr0XWPx6G8ofV3
-         I/ozlE7hNWIul8IEhtoKPaUWBc3GwI7MwgwUYgkmOal4VVx0KPEnpLZYD3Mp07ykgMS0
-         n/4z/47F+gZdLZrQomt8+DYIMQOVcIP8vpKPDPzagVIXJCsfJ9YBTG9ZvJigjmPYPQp5
-         +U2Q==
+        Tue, 10 Aug 2021 05:53:45 -0400
+Received: by mail-vs1-f42.google.com with SMTP id b138so11968848vsd.2;
+        Tue, 10 Aug 2021 02:53:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VxKLBzjOyzndQSkwMtQilthdPdFNiRTvzfca7De9zs4=;
-        b=P0C0eYzkms0ei/6Vr3ovw5UiVZSdgn30kvV7dWjm9I6zshJAQggDtN2DPID5cqBNWO
-         HcBodxoSSeyoY5tILfU9RUqRtNAv6tBFEWR5U4E4yFh0tZAgozXWUm9GSJ9t78tdBYnf
-         wI/oW+Y4YE6CANj1ootYKBVIQpzReiQvoMqEoKZjO+uWv0DQ+A0gx956PRAP+uhC55RW
-         0uKKYm7YUHpne2yke7SmeVsuocvbm31vNhZrb+MT0ZvfyrO8I+3SvB8Kp9y3Ue7Qzj35
-         Oak2tsXE1HQZk/f5P36UnrpnJSVfnXZud1ZmOFRNkgPjlC3j4FqYObqAceKsXSlkggeC
-         vAqg==
-X-Gm-Message-State: AOAM5304bUpAo+broKzx29IecAXZDithinPH9gcsOchMrCnzYvuA1NAK
-        Agsd/5m/pN55Q1V84x9fGhM=
-X-Google-Smtp-Source: ABdhPJwqa3xO06zcgzEnLHW1CMokvDfOYURj44goeGFArf00P9qfl4PCvw88u814T9NobtU74F30IA==
-X-Received: by 2002:a05:651c:1119:: with SMTP id d25mr12859530ljo.129.1628589149962;
-        Tue, 10 Aug 2021 02:52:29 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id v124sm1997031lfa.192.2021.08.10.02.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 02:52:29 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 12:52:27 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     "Srikandan, Nandhini" <nandhini.srikandan@intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "Pan, Kris" <kris.pan@intel.com>,
-        "Demakkanavar, Kenchappa" <kenchappa.demakkanavar@intel.com>,
-        "Zhou, Furong" <furong.zhou@intel.com>,
-        "Sangannavar, Mallikarjunappa" 
-        <mallikarjunappa.sangannavar@intel.com>,
-        "Vaidya, Mahesh R" <mahesh.r.vaidya@intel.com>,
-        "A, Rashmi" <rashmi.a@intel.com>
-Subject: Re: =?utf-8?B?W+KAnFBBVENI?= =?utf-8?B?4oCd?= 0/2] Add support for
- Intel Thunder Bay SPI
-Message-ID: <20210810095227.ixukmo2gnq73bikj@mobilestation>
-References: <20210722053358.29682-1-nandhini.srikandan@intel.com>
- <20210722160919.ccjfodb7pbvu7ul5@mobilestation>
- <BN0PR11MB5727CB650247519314CCC92785F79@BN0PR11MB5727.namprd11.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S2mwLXgLe34hkbYtljXjTjA3I8KCckCNQbP0HcYtm9A=;
+        b=Mjw9MdWQ9n8Ku0vMn4aJ7MyBog0BnIWtNuSyxK+pqf3bNya9KedG3VCGt7VCUc1Q0R
+         YGS5CzbRCJGVk23iS5XD3G/9yZ0jmHcWSaqTY/i8nsHYfX9FlbtuolZbuJYOlW4b1pdg
+         tm7AX7XnuFGbYFvZZSt3GpbHeOYRM/t4MgbrxR9+29lwM5OM6jQS5gOvVh0rp4/2emkc
+         3s0ZmgInG5ooVL52TQ+3zVjfIhzsJ/UnjPBcvf3Eg9kpY5CaGPuza5gMX/gEjuzgcDnL
+         yTolgR6Rsnahcpj9q1NbupyH0T+JsHYDbexkyFkxBlmgVX1147lfHaD00Uj1XuSuhx39
+         s3Og==
+X-Gm-Message-State: AOAM5333h6C9k9GvOLZ6X5hBmRYzWXVJL3oQcti9ACIVMCW/qHJZerC5
+        vCwWku0Jg8bnXWxv5b/wqYIwO4DqOUqLpNlmB7E=
+X-Google-Smtp-Source: ABdhPJw+OOGkNx22bnwbTSGu3XUk55wtMnmGfEefyDALdGanu14MXj52HaBVsKThqaWtgVAjZr46DwVYcpKhfqn+2kw=
+X-Received: by 2002:a67:e2c7:: with SMTP id i7mr20103201vsm.3.1628589202976;
+ Tue, 10 Aug 2021 02:53:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BN0PR11MB5727CB650247519314CCC92785F79@BN0PR11MB5727.namprd11.prod.outlook.com>
+References: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210727133022.634-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210727133022.634-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 10 Aug 2021 11:53:11 +0200
+Message-ID: <CAMuHMdWhi_Zey-031hhRz_G4wHA_guSg5kZTw+LUdtvF9bbQfA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] arm64: dts: renesas: r9a07g044: Add CANFD node
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 09:24:08AM +0000, Srikandan, Nandhini wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Serge Semin <fancer.lancer@gmail.com>
-> > Sent: Thursday, July 22, 2021 9:39 PM
-> > To: Srikandan, Nandhini <nandhini.srikandan@intel.com>
-> > Cc: broonie@kernel.org; robh+dt@kernel.org; linux-spi@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; devicetree@vger.kernel.org;
-> > mgross@linux.intel.com; Pan, Kris <kris.pan@intel.com>; Demakkanavar,
-> > Kenchappa <kenchappa.demakkanavar@intel.com>; Zhou, Furong
-> > <furong.zhou@intel.com>; Sangannavar, Mallikarjunappa
-> > <mallikarjunappa.sangannavar@intel.com>; Vaidya, Mahesh R
-> > <mahesh.r.vaidya@intel.com>; A, Rashmi <rashmi.a@intel.com>
-> > Subject: Re: [“PATCH” 0/2] Add support for Intel Thunder Bay SPI
-> > 
-> > Hello Nandhini
-> > 
-> > On Thu, Jul 22, 2021 at 01:33:56PM +0800, nandhini.srikandan@intel.com
-> > wrote:
-> > > From: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> > >
-> > > Hi,
-> > >
-> > > This patch set enables the support for Designware SPI on the Intel Thunder
-> > Bay SoC.
-> > >
-> > > Patch 1: SPI DT bindings for Intel Thunder Bay SoC Patch 2: Adds
-> > > support for Designware SPI on Intel Thunderbay SoC
-> > >
-> > > Please help to review this patch set.
-> > 
-> > Thanks for the patchset. I'll send you my comments to the corresponding
-> > patches soon.
-> > 
+On Tue, Jul 27, 2021 at 3:30 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add CANFD node to R9A07G044 (RZ/G2L) SoC DTSI.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-> Thank you for your review comments. I am working on it and I will share another patchset shortly. 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.15.
 
-I'd suggest to answer on the review questions first...
+Gr{oetje,eeting}s,
 
--Sergey
+                        Geert
 
-> 
-> Regards,
-> Nandhini
-> 
-> > >
-> > > Thanks & Regards,
-> > > Nandhini
-> > >
-> > > Nandhini Srikandan (2):
-> > >   dt-bindings: spi: Add bindings for Intel Thunder Bay SoC
-> > >   spi: dw: Add support for Intel Thunder Bay SPI
-> > >
-> > >  .../bindings/spi/snps,dw-apb-ssi.yaml         |  2 ++
-> > >  drivers/spi/spi-dw-core.c                     |  6 ++++++
-> > >  drivers/spi/spi-dw-mmio.c                     | 20 +++++++++++++++++++
-> > >  drivers/spi/spi-dw.h                          | 15 ++++++++++++++
-> > >  4 files changed, 43 insertions(+)
-> > >
-> > > --
-> > > 2.17.1
-> > >
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
