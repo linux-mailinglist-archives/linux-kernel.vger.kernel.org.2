@@ -2,144 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA593E7C23
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829B23E7C41
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243060AbhHJP1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243048AbhHJP1k (ORCPT
+        id S243122AbhHJPa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:30:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21028 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243070AbhHJPaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:27:40 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36DCC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:27:18 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id f12so21593836qkh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i/IO9oWNb+i2H/cOJnKsi5t0uzz0lcp3OlV5Jwlr/e0=;
-        b=jh7k7d+rNKkrGDbIfDRpAEZb0pVUBzH1X4uupkMqmO6ZiVpBDlXH39QrJLRXgGeurH
-         PREcp1yE/NqtCAkpETQltOxYcblwSY0BGX5y7TxycLjGE/kHPAETej7aQrGF5cCYpqZ1
-         qWBpTOgKkvKM7d5T1jm7AoJWyJhPoCvUO0TWGSpWiUO/buLXdD/0gnCjARxcjEJN0dqW
-         Mv6ZKbOlIv6UZZO3INwr5cEPDX6G52ADNWgyFEDy4lfIi+bluzAsvjnajBfnNaPmFtkE
-         Fa7Sl1WYS88fyUHXcI7vP4OuhinwhD0XxG1UnfilomcYVmMPXyXcSVGYfhAFiAirEsBb
-         Hwhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i/IO9oWNb+i2H/cOJnKsi5t0uzz0lcp3OlV5Jwlr/e0=;
-        b=ocx+M4hSzKzZ9SwaIEeZpWm+UiG5y6FZeL2t/o/kgIDCiMn4Re0BsUNT2WkzH3EV5t
-         V/29E/+H2YfqVmDnXlUs7Cn3P16atYycMBjdS23Pg5aPelg55Tk/p2ptgQyFbWPE4XFN
-         5J6QLLQ6u2Y3lG2T3dXrwTKujgTLWMNVg6lc7ej30cpeHNc4skJRbOF//z0HsL43Pq/I
-         dKnzqQzYihsZ7dBllqxkVDiV+hKU3Rsoqi5qq2d0ntcxoOX44ME3V+SF9wv1CokDX7DJ
-         7gwwYvfWrRNOpEZ8yAoRODN0ee/Vpy6NBn2GY/4vkPhFI06cmy8uW05zQCZwnTo6ixbs
-         ZnoQ==
-X-Gm-Message-State: AOAM533iwXrTv5m/lejCTFWKhkWunxHaqH6zHQCi8aSx8fHH1n3LcoRB
-        3ltCqUHFY3ImImbzekJhrOTaIA==
-X-Google-Smtp-Source: ABdhPJyoKzeNHUGRc6Y0Fqw2m7K28MQLpkXHJysKiWIuwSbR09ZOTlQwsRsHEPw4UAclJ4vMyIQFBw==
-X-Received: by 2002:a37:9401:: with SMTP id w1mr28916847qkd.166.1628609237211;
-        Tue, 10 Aug 2021 08:27:17 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:6a88])
-        by smtp.gmail.com with ESMTPSA id bm7sm10611557qkb.79.2021.08.10.08.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 08:27:16 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 11:27:15 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nico Pache <npache@redhat.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, aquini@redhat.com,
-        shakeelb@google.com, llong@redhat.com, mhocko@suse.com,
-        hakavlad@inbox.lv
-Subject: Re: [PATCH v3] vm_swappiness=0 should still try to avoid swapping
- anon memory
-Message-ID: <YRKa0yzEDALtvSZO@cmpxchg.org>
-References: <20210809223740.59009-1-npache@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809223740.59009-1-npache@redhat.com>
+        Tue, 10 Aug 2021 11:30:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628609397; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=HgKakaRiW9LgKPRH3JPzKe8BzZrBQ8j/TWIYvdkiy94=; b=NDALaqf0HoSfgZdmtGGNhP/ZsedcTE4GGVxMAytw5rPyr8IxPBuGP3p0Uu5q8gR1e1jZBLhK
+ feRMd0rWAA/hKcJeEDrZaV//RbaTVSci+VsYKD5lt50yzI+1m7uU8B31XjaVFiyPIpgwrkt1
+ 2U8kRhir4kKAz7Q6F2MfZgds2Og=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 61129b5a91487ad520207575 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 15:29:30
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5065EC43144; Tue, 10 Aug 2021 15:29:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C5ABC433F1;
+        Tue, 10 Aug 2021 15:29:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C5ABC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/msm/dp: add drm debug logs to dp_pm_resume/suspend
+Date:   Tue, 10 Aug 2021 08:29:22 -0700
+Message-Id: <1628609362-2109-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nico,
+Changes in V2:
+-- correct Fixes text
+-- drop commit text
 
-On Mon, Aug 09, 2021 at 06:37:40PM -0400, Nico Pache wrote:
-> Since commit 170b04b7ae49 ("mm/workingset: prepare the workingset detection
-> infrastructure for anon LRU") and commit b91ac374346b ("mm: vmscan: enforce
-> inactive:active ratio at the reclaim root") swappiness can start prematurely
+Fixes: 601f0479c583 ("drm/msm/dp: add logs across DP driver for ease of debugging")
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Could clarify what you mean by "prematurely"?
-
-The new balancing algorithm targets the lowest amount of overall
-paging IO performed across the anon and file sets. It doesn't swap
-unless it has an indication that a couple of swap writes are
-outweighed by a reduction of reads on the cache side.
-
-Is this not working for you?
-
-> swapping anon memory. This is due to the assumption that refaulting anon should
-> always allow the shrinker to target anon memory.
-
-This doesn't sound right. Did you mean "refaulting file"?
-
-> Add a check for swappiness being >0 before indiscriminately
-> targeting Anon.
-
-> Before these commits when a user had swappiness=0 anon memory would
-> rarely get swapped; this behavior has remained constant sense
-> RHEL5. This commit keeps that behavior intact and prevents the new
-> workingset refaulting from challenging the anon memory when
-> swappiness=0.
-
-I'm wondering how you're getting anon scans with swappiness=0. If you
-look at get_scan_count(), SCAN_FRACT with swappines=0 should always
-result in ap = fraction[0] = 0, which never yields any anon scan
-targets. So I'm thinking you're running into sc->file_is_tiny
-situations, meaning remaining file pages alone are not enough to
-restore watermarks anymore. Is that possible?
-
-In that case, anon scanning is forced, and always has been. But the
-difference is that before the above-mentioned patches, we'd usually
-force scan just the smaller inactive list, whereas now we disable
-active list protection due to swapins and target the entire anon
-set. I suppose you'd prefer we go back to that, so that more pressure
-remains proportionally on the file set, and just enough anon to get
-above the watermarks again.
-
-One complication I could see with that is that we no longer start anon
-pages on the active list like we used to. We used to say active until
-proven otherwise; now it's inactive until proven otherwise. It's
-possible for the inactive list to contain a much bigger share of the
-total anon set now than before, in which case your patch wouldn't have
-the desired effect of targetting just a small amount of anon pages to
-get over the watermark hump.
-
-We may need a get_scan_count() solution after all, and I agree with
-previous reviews that this is the better location for such an issue...
-
-One thing I think we should do - whether we need more on top or not -
-is allowing file reclaim to continue when sc->file_is_tiny. Yes, we
-also need anon to meet the watermarks, but it's not clear why we
-should stop scanning file pages altogether: it's possible they get us
-there 99% of the way, and somebody clearly wanted us to swap as little
-as possible to end up in a situation like that, so:
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index eeab6611993c..90dac3dc9903 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2477,7 +2477,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	 * If the system is almost out of file pages, force-scan anon.
- 	 */
- 	if (sc->file_is_tiny) {
--		scan_balance = SCAN_ANON;
-+		scan_balance = SCAN_EQUAL;
- 		goto out;
- 	}
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 8a85613..870b926 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -1284,6 +1284,9 @@ static int dp_pm_resume(struct device *dev)
  
+ 	mutex_lock(&dp->event_mutex);
+ 
++	DRM_DEBUG_DP("Before, core_inited=%d power_on=%d\n",
++			dp->core_initialized, dp_display->power_on);
++
+ 	/* start from disconnected state */
+ 	dp->hpd_state = ST_DISCONNECTED;
+ 
+@@ -1315,6 +1318,10 @@ static int dp_pm_resume(struct device *dev)
+ 	else
+ 		dp->dp_display.is_connected = false;
+ 
++	DRM_DEBUG_DP("After, sink_count=%d is_connected=%d core_inited=%d power_on=%d\n",
++			dp->link->sink_count, dp->dp_display.is_connected,
++			dp->core_initialized, dp_display->power_on);
++
+ 	mutex_unlock(&dp->event_mutex);
+ 
+ 	return 0;
+@@ -1330,6 +1337,9 @@ static int dp_pm_suspend(struct device *dev)
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
++	DRM_DEBUG_DP("Before, core_inited=%d power_on=%d\n",
++			dp->core_initialized, dp_display->power_on);
++
+ 	if (dp->core_initialized == true) {
+ 		/* mainlink enabled */
+ 		if (dp_power_clk_status(dp->power, DP_CTRL_PM))
+@@ -1343,6 +1353,9 @@ static int dp_pm_suspend(struct device *dev)
+ 	/* host_init will be called at pm_resume */
+ 	dp->core_initialized = false;
+ 
++	DRM_DEBUG_DP("After, core_inited=%d power_on=%d\n",
++			dp->core_initialized, dp_display->power_on);
++
+ 	mutex_unlock(&dp->event_mutex);
+ 
+ 	return 0;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
