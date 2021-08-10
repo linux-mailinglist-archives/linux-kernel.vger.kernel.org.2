@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD923E81D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959E73E81AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237103AbhHJSCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:02:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32930 "EHLO mail.kernel.org"
+        id S234872AbhHJSBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:01:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236579AbhHJR62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:58:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86E6461107;
-        Tue, 10 Aug 2021 17:45:46 +0000 (UTC)
+        id S233561AbhHJR6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:58:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0303613A5;
+        Tue, 10 Aug 2021 17:45:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617547;
-        bh=29zTOkJV6X7Bh37jEVy/0WRPpnKyUDWHcCCu8bnOrNc=;
+        s=korg; t=1628617549;
+        bh=qyHYpfO6S+3MYiwQ7LxkJNtfn/CQ6Me4JgV38nc+KkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zdj1hIUU8BMxEl3XnNrCnw1FrNJ8UWcUt0ZoWbcORZFqiykN+bol9j1z9R07wHeF1
-         Qq3hfH+ERzfSN7gJYtU9aRP5y+ho+sHUZRF/0jaFfxmmvCEm7TUudj7xs2GV0rYtIg
-         uzSdZWoeUZEf5VzQz/XzABp0TUDWbccfYaj/M6Uw=
+        b=J/oYtnbNDtc52biReV75Unkd49GWYCHdhCangH/Esb5+V49dkgY4W5w0/+U1EHuzb
+         nVaLmC/l3LHBYyvtR74catDnfVtbP3Qg9K7nizrodpF5IQOdaR1C3TM/Z6FaedObfe
+         BVvE3JQIwo7lACIMC7r2bv468alsMBi/sP1qRukI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.13 107/175] tracepoint: Use rcu get state and cond sync for static call updates
-Date:   Tue, 10 Aug 2021 19:30:15 +0200
-Message-Id: <20210810173004.486356038@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
+Subject: [PATCH 5.13 108/175] arm64: stacktrace: avoid tracing arch_stack_walk()
+Date:   Tue, 10 Aug 2021 19:30:16 +0200
+Message-Id: <20210810173004.517693481@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -44,185 +41,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+From: Mark Rutland <mark.rutland@arm.com>
 
-commit 7b40066c97ec66a44e388f82fcf694987451768f upstream.
+commit 0c32706dac1b0a72713184246952ab0f54327c21 upstream.
 
-State transitions from 1->0->1 and N->2->1 callbacks require RCU
-synchronization. Rather than performing the RCU synchronization every
-time the state change occurs, which is quite slow when many tracepoints
-are registered in batch, instead keep a snapshot of the RCU state on the
-most recent transitions which belong to a chain, and conditionally wait
-for a grace period on the last transition of the chain if one g.p. has
-not elapsed since the last snapshot.
+When the function_graph tracer is in use, arch_stack_walk() may unwind
+the stack incorrectly, erroneously reporting itself, missing the final
+entry which is being traced, and reporting all traced entries between
+these off-by-one from where they should be.
 
-This applies to both RCU and SRCU.
+When ftrace hooks a function return, the original return address is
+saved to the fgraph ret_stack, and the return address  in the LR (or the
+function's frame record) is replaced with `return_to_handler`.
 
-This brings the performance regression caused by commit 231264d6927f
-("Fix: tracepoint: static call function vs data state mismatch") back to
-what it was originally.
+When arm64's unwinder encounter frames returning to `return_to_handler`,
+it finds the associated original return address from the fgraph ret
+stack, assuming the most recent `ret_to_hander` entry on the stack
+corresponds to the most recent entry in the fgraph ret stack, and so on.
 
-Before this commit:
+When arch_stack_walk() is used to dump the current task's stack, it
+starts from the caller of arch_stack_walk(). However, arch_stack_walk()
+can be traced, and so may push an entry on to the fgraph ret stack,
+leaving the fgraph ret stack offset by one from the expected position.
 
-  # trace-cmd start -e all
-  # time trace-cmd start -p nop
+This can be seen when dumping the stack via /proc/self/stack, where
+enabling the graph tracer results in an unexpected
+`stack_trace_save_tsk` entry at the start of the trace, and `el0_svc`
+missing form the end of the trace.
 
-  real	0m10.593s
-  user	0m0.017s
-  sys	0m0.259s
+This patch fixes this by marking arch_stack_walk() as notrace, as we do
+for all other functions on the path to ftrace_graph_get_ret_stack().
+While a few helper functions are not marked notrace, their calls/returns
+are balanced, and will have no observable effect when examining the
+fgraph ret stack.
 
-After this commit:
+It is possible for an exeption boundary to cause a similar offset if the
+return address of the interrupted context was in the LR. Fixing those
+cases will require some more substantial rework, and is left for
+subsequent patches.
 
-  # trace-cmd start -e all
-  # time trace-cmd start -p nop
+Before:
 
-  real	0m0.878s
-  user	0m0.000s
-  sys	0m0.103s
+| # cat /proc/self/stack
+| [<0>] proc_pid_stack+0xc4/0x140
+| [<0>] proc_single_show+0x6c/0x120
+| [<0>] seq_read_iter+0x240/0x4e0
+| [<0>] seq_read+0xe8/0x140
+| [<0>] vfs_read+0xb8/0x1e4
+| [<0>] ksys_read+0x74/0x100
+| [<0>] __arm64_sys_read+0x28/0x3c
+| [<0>] invoke_syscall+0x50/0x120
+| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
+| [<0>] do_el0_svc+0x30/0x9c
+| [<0>] el0_svc+0x2c/0x54
+| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
+| [<0>] el0t_64_sync+0x198/0x19c
+| # echo function_graph > /sys/kernel/tracing/current_tracer
+| # cat /proc/self/stack
+| [<0>] stack_trace_save_tsk+0xa4/0x110
+| [<0>] proc_pid_stack+0xc4/0x140
+| [<0>] proc_single_show+0x6c/0x120
+| [<0>] seq_read_iter+0x240/0x4e0
+| [<0>] seq_read+0xe8/0x140
+| [<0>] vfs_read+0xb8/0x1e4
+| [<0>] ksys_read+0x74/0x100
+| [<0>] __arm64_sys_read+0x28/0x3c
+| [<0>] invoke_syscall+0x50/0x120
+| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
+| [<0>] do_el0_svc+0x30/0x9c
+| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
+| [<0>] el0t_64_sync+0x198/0x19c
 
-Link: https://lkml.kernel.org/r/20210805192954.30688-1-mathieu.desnoyers@efficios.com
-Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
+After:
 
-Cc: stable@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Stefan Metzmacher <metze@samba.org>
-Fixes: 231264d6927f ("Fix: tracepoint: static call function vs data state mismatch")
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+| # cat /proc/self/stack
+| [<0>] proc_pid_stack+0xc4/0x140
+| [<0>] proc_single_show+0x6c/0x120
+| [<0>] seq_read_iter+0x240/0x4e0
+| [<0>] seq_read+0xe8/0x140
+| [<0>] vfs_read+0xb8/0x1e4
+| [<0>] ksys_read+0x74/0x100
+| [<0>] __arm64_sys_read+0x28/0x3c
+| [<0>] invoke_syscall+0x50/0x120
+| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
+| [<0>] do_el0_svc+0x30/0x9c
+| [<0>] el0_svc+0x2c/0x54
+| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
+| [<0>] el0t_64_sync+0x198/0x19c
+| # echo function_graph > /sys/kernel/tracing/current_tracer
+| # cat /proc/self/stack
+| [<0>] proc_pid_stack+0xc4/0x140
+| [<0>] proc_single_show+0x6c/0x120
+| [<0>] seq_read_iter+0x240/0x4e0
+| [<0>] seq_read+0xe8/0x140
+| [<0>] vfs_read+0xb8/0x1e4
+| [<0>] ksys_read+0x74/0x100
+| [<0>] __arm64_sys_read+0x28/0x3c
+| [<0>] invoke_syscall+0x50/0x120
+| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
+| [<0>] do_el0_svc+0x30/0x9c
+| [<0>] el0_svc+0x2c/0x54
+| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
+| [<0>] el0t_64_sync+0x198/0x19c
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Reviwed-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210802164845.45506-3-mark.rutland@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/tracepoint.c |   81 +++++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 67 insertions(+), 14 deletions(-)
+ arch/arm64/kernel/stacktrace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -28,6 +28,44 @@ extern tracepoint_ptr_t __stop___tracepo
- DEFINE_SRCU(tracepoint_srcu);
- EXPORT_SYMBOL_GPL(tracepoint_srcu);
+--- a/arch/arm64/kernel/stacktrace.c
++++ b/arch/arm64/kernel/stacktrace.c
+@@ -220,7 +220,7 @@ void show_stack(struct task_struct *tsk,
  
-+enum tp_transition_sync {
-+	TP_TRANSITION_SYNC_1_0_1,
-+	TP_TRANSITION_SYNC_N_2_1,
-+
-+	_NR_TP_TRANSITION_SYNC,
-+};
-+
-+struct tp_transition_snapshot {
-+	unsigned long rcu;
-+	unsigned long srcu;
-+	bool ongoing;
-+};
-+
-+/* Protected by tracepoints_mutex */
-+static struct tp_transition_snapshot tp_transition_snapshot[_NR_TP_TRANSITION_SYNC];
-+
-+static void tp_rcu_get_state(enum tp_transition_sync sync)
-+{
-+	struct tp_transition_snapshot *snapshot = &tp_transition_snapshot[sync];
-+
-+	/* Keep the latest get_state snapshot. */
-+	snapshot->rcu = get_state_synchronize_rcu();
-+	snapshot->srcu = start_poll_synchronize_srcu(&tracepoint_srcu);
-+	snapshot->ongoing = true;
-+}
-+
-+static void tp_rcu_cond_sync(enum tp_transition_sync sync)
-+{
-+	struct tp_transition_snapshot *snapshot = &tp_transition_snapshot[sync];
-+
-+	if (!snapshot->ongoing)
-+		return;
-+	cond_synchronize_rcu(snapshot->rcu);
-+	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu))
-+		synchronize_srcu(&tracepoint_srcu);
-+	snapshot->ongoing = false;
-+}
-+
- /* Set to 1 to enable tracepoint debug output */
- static const int tracepoint_debug;
+ #ifdef CONFIG_STACKTRACE
  
-@@ -311,6 +349,11 @@ static int tracepoint_add_func(struct tr
- 	 */
- 	switch (nr_func_state(tp_funcs)) {
- 	case TP_FUNC_1:		/* 0->1 */
-+		/*
-+		 * Make sure new static func never uses old data after a
-+		 * 1->0->1 transition sequence.
-+		 */
-+		tp_rcu_cond_sync(TP_TRANSITION_SYNC_1_0_1);
- 		/* Set static call to first function */
- 		tracepoint_update_call(tp, tp_funcs);
- 		/* Both iterator and static call handle NULL tp->funcs */
-@@ -325,10 +368,15 @@ static int tracepoint_add_func(struct tr
- 		 * Requires ordering between RCU assign/dereference and
- 		 * static call update/call.
- 		 */
--		rcu_assign_pointer(tp->funcs, tp_funcs);
--		break;
-+		fallthrough;
- 	case TP_FUNC_N:		/* N->N+1 (N>1) */
- 		rcu_assign_pointer(tp->funcs, tp_funcs);
-+		/*
-+		 * Make sure static func never uses incorrect data after a
-+		 * N->...->2->1 (N>1) transition sequence.
-+		 */
-+		if (tp_funcs[0].data != old[0].data)
-+			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
- 		break;
- 	default:
- 		WARN_ON_ONCE(1);
-@@ -372,24 +420,23 @@ static int tracepoint_remove_func(struct
- 		/* Both iterator and static call handle NULL tp->funcs */
- 		rcu_assign_pointer(tp->funcs, NULL);
- 		/*
--		 * Make sure new func never uses old data after a 1->0->1
--		 * transition sequence.
--		 * Considering that transition 0->1 is the common case
--		 * and don't have rcu-sync, issue rcu-sync after
--		 * transition 1->0 to break that sequence by waiting for
--		 * readers to be quiescent.
-+		 * Make sure new static func never uses old data after a
-+		 * 1->0->1 transition sequence.
- 		 */
--		tracepoint_synchronize_unregister();
-+		tp_rcu_get_state(TP_TRANSITION_SYNC_1_0_1);
- 		break;
- 	case TP_FUNC_1:		/* 2->1 */
- 		rcu_assign_pointer(tp->funcs, tp_funcs);
- 		/*
--		 * On 2->1 transition, RCU sync is needed before setting
--		 * static call to first callback, because the observer
--		 * may have loaded any prior tp->funcs after the last one
--		 * associated with an rcu-sync.
-+		 * Make sure static func never uses incorrect data after a
-+		 * N->...->2->1 (N>2) transition sequence. If the first
-+		 * element's data has changed, then force the synchronization
-+		 * to prevent current readers that have loaded the old data
-+		 * from calling the new function.
- 		 */
--		tracepoint_synchronize_unregister();
-+		if (tp_funcs[0].data != old[0].data)
-+			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
-+		tp_rcu_cond_sync(TP_TRANSITION_SYNC_N_2_1);
- 		/* Set static call to first function */
- 		tracepoint_update_call(tp, tp_funcs);
- 		break;
-@@ -397,6 +444,12 @@ static int tracepoint_remove_func(struct
- 		fallthrough;
- 	case TP_FUNC_N:
- 		rcu_assign_pointer(tp->funcs, tp_funcs);
-+		/*
-+		 * Make sure static func never uses incorrect data after a
-+		 * N->...->2->1 (N>2) transition sequence.
-+		 */
-+		if (tp_funcs[0].data != old[0].data)
-+			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
- 		break;
- 	default:
- 		WARN_ON_ONCE(1);
+-noinline void arch_stack_walk(stack_trace_consume_fn consume_entry,
++noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
+ 			      void *cookie, struct task_struct *task,
+ 			      struct pt_regs *regs)
+ {
 
 
