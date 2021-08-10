@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD5E3E8442
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6403E8444
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbhHJUYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:24:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60828 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232824AbhHJUYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:24:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628627036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=apwsP+AC9v1VLvfj7h0q3HUR5973rn4Zs3StHw6qQA0=;
-        b=hYsTIhCcD1nfA3CUXYcyNzCehqcG85wtezWFKYnIznjJvelMmr3PG2JUnkRdaW/t3iUMwL
-        PFVl7Wekw6u2bqndL8UXKl7hnzrha4vrGr/l25VyksacClkDeTQogoK/f9p9sRclhL5ssI
-        Z6bu/bypJ9Vum7foxEsg3xMWPpcRybY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-111-Y9Pj2A6fPtK2pmP7RbjONQ-1; Tue, 10 Aug 2021 16:23:55 -0400
-X-MC-Unique: Y9Pj2A6fPtK2pmP7RbjONQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A00C801B3D;
-        Tue, 10 Aug 2021 20:23:53 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 847F0669ED;
-        Tue, 10 Aug 2021 20:23:52 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-43-willy@infradead.org>
-References: <20210715033704.692967-43-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 042/138] mm/memcg: Convert mem_cgroup_uncharge() to take a folio
+        id S233218AbhHJUY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233151AbhHJUYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:24:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F71560F94;
+        Tue, 10 Aug 2021 20:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628627043;
+        bh=yYKQhPsS+9XZipxTRUgp1k54tHTu9xHb9DIX7R3d+pY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KvIco6IUfRtZjwqogT+o2n99HoFNKdLDyrDW0Q08kPes8b1My8dgPuY833OBukfsI
+         8TtNj1tdLGsca7SFbeKeTUHA+TrVlyUrmkDPwZ2Hz6PeAMR6sHQHakLCScxL/CdxYq
+         nWrKpqetpVB+mKrSnGHPe+zf2VHA0S7H4/xWAr5TfDVreT8KJT+wUPsMuLba9yxHAS
+         pujmXkrNPkXdjDCiH9Dfv7KUn9AOMADELg0i+NLvUgHY4AhCXgcX577SZTPVZyMq6C
+         ldfHb9pLdNXqAqdlJeNaUsyeArfH727Q1T6TCA6CUCR394EhFUrybbZowFVW6FYAIb
+         D0jx8GZzA1VOg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CB47F403F2; Tue, 10 Aug 2021 17:24:00 -0300 (-03)
+Date:   Tue, 10 Aug 2021 17:24:00 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Subject: Re: [RFC PATCH v2 01/10] perf workqueue: threadpool creation and
+ destruction
+Message-ID: <YRLgYDKRUfwLSyHF@kernel.org>
+References: <cover.1627657061.git.rickyman7@gmail.com>
+ <4f0cd6c8e77c0b4f4d4b8d553a7032757b976e61.1627657061.git.rickyman7@gmail.com>
+ <CAM9d7ci0LcdTZyDu5sxGkaS07Z-m4hvr2xU4TDK_aTRAJm7b7A@mail.gmail.com>
+ <25278c08762593a5b0bd1873f6c0745c7ad97016.camel@gmail.com>
+ <CAM9d7chuFG+cYPx34abvmciN0afUDqJ3uWo9Bsh-9jjLtQmWqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1810385.1628627031.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 21:23:51 +0100
-Message-ID: <1810386.1628627031@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chuFG+cYPx34abvmciN0afUDqJ3uWo9Bsh-9jjLtQmWqQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+Em Tue, Aug 10, 2021 at 11:54:19AM -0700, Namhyung Kim escreveu:
+> On Mon, Aug 9, 2021 at 3:30 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > On Fri, 2021-08-06 at 19:24 -0700, Namhyung Kim wrote:
+> > > > +/**
+> > > > + * threadpool__strerror - print message regarding given @err in @pool
+> > > > + *
+> > > > + * Buffer size should be at least THREADPOOL_STRERR_BUFSIZE bytes.
+> > > > + */
+> > > > +int threadpool__strerror(struct threadpool *pool __maybe_unused, int err,
+> > > > char *buf, size_t size)
+> > > > +{
+> > > > +       char sbuf[STRERR_BUFSIZE], *emsg;
+> > > > +
+> > > > +       emsg = str_error_r(err, sbuf, sizeof(sbuf));
+> > > > +       return scnprintf(buf, size, "Error: %s.\n", emsg);
+> > > > +}
+> > > > +
+> > > > +/**
+> > > > + * threadpool__new_strerror - print message regarding @err_ptr
+> > > > + *
+> > > > + * Buffer size should be at least THREADPOOL_STRERR_BUFSIZE bytes.
+> > > > + */
+> > > > +int threadpool__new_strerror(struct threadpool *err_ptr, char *buf, size_t
+> > > > size)
+> > > > +{
+> > > > +       return threadpool__strerror(err_ptr, PTR_ERR(err_ptr), buf, size);
+> > > > +}
 
-> Convert all the callers to call page_folio().  Most of them were already
-> using a head page, but a few of them I can't prove were, so this may
-> actually fix a bug.
+> > > Why two different functions?
+
+> > Since when new fails you don't have a err number, just an err_ptr so it's not
+> > very clear how to call threadpool__strerror. Therefore I made a wrapper to
+> > remove any ambiguity.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> What do you mean by "when new fails"?
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+I think 'new' is 'constructor', i.e. something__new() returns a newly
+created object and this not an error number, so he uses ERR_PTR() and
+then he needs to pass it to the 'strerror' specific to the
+threadpool__new, which will use PTR_ERR() to get an integer, and then
+map that to a proper error string, right?
 
+- Arnaldo
