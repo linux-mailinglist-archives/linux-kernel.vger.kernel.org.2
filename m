@@ -2,63 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADBF3E5C55
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8713E5C58
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242088AbhHJNzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:55:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43542 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240449AbhHJNzS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:55:18 -0400
-Date:   Tue, 10 Aug 2021 15:54:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628603694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LAm8+J0PoLsg3z7wkOQ5GEdMzf4ynZW7cGFbgngHFV0=;
-        b=J8PVTxzmJS5zZvpLsrS4epEgaNpTWyri3l/p4h/m6X7s7jBW1RqzolQ8g+Sy0ilRsu9SIJ
-        wdWRW6Ceq+BfnuSdeIig37kKfbsZErxTVaMB9Oq9diqsc4+iD0nWYAPMOhdpZLY1vg8TVK
-        8c12zS1AGv9hQg9NRKxSig7v4C2tzvVAEYGLtTvNlHzAYpfJTsUF9LFOhUCYgv7iTJfHBD
-        sMKmFtQjmupOBBbduA4yu/7rT2KxkzwThuUqZ/J7B8ipV/D+kWsCO9ABNM/kHk5OpFHJhW
-        BpPj4FA6n5Uk0XKjZQ53sa4PYwn6eAXpb0LtxG+HHwIYgOkAPx71vnPA/80e5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628603694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LAm8+J0PoLsg3z7wkOQ5GEdMzf4ynZW7cGFbgngHFV0=;
-        b=wFRPF9vvb/EoGELIPU2LuoMzg35guhpd2aHt0hFLXhWJ89rAwpmN9VmScw7kUZ50LgfNdi
-        SpBmHVvV46pANIAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [SPLAT 1/3] arm_pmu: Sleeping spinlocks down
- armpmu_alloc_atomic()
-Message-ID: <20210810135453.roczkohgm2lzhg66@linutronix.de>
-References: <20210810134127.1394269-1-valentin.schneider@arm.com>
- <20210810134127.1394269-2-valentin.schneider@arm.com>
+        id S242107AbhHJN4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:56:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233558AbhHJN4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:56:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33AEB61008;
+        Tue, 10 Aug 2021 13:55:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628603746;
+        bh=fZas9mDhDErfOtLmKZvforBNwmzZa6S4b9MrrQS7Vo0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z69p3OrbA2jvpVujt4ajJG2902DLmenfK6bEhO7JbATLSohsG6UOAJ9ArCO9ViH0O
+         ThFenw7cKQFgzx2EnW5161a1acXEQxpywJ//Jn9KiuqXu91oaGi8sZUQ+jQ6m3IU2M
+         3qtd6n+B2xS1n5qwogQPjtx7dtB/VjeZZSbC10xNUcfY0k3stSE9mQUoO5GuGT1A/E
+         XeMMWY8SLdD8ckN8z7iNWgbkv6qr+dxEp9N/k2CwgsrgEY2vCK4X2DHigfNYgXLTAM
+         W3Df5ro+eU5uYVuYlrMqHRfwHJYKWd3czJRmnwZGotVVrpknbzI4vYCpHxLGjpzi9A
+         mKF/BcpZxgvZg==
+Date:   Tue, 10 Aug 2021 16:55:42 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Tuo Li <islituo@gmail.com>
+Cc:     ericvh@gmail.com, lucho@ionkov.net, asmadeus@codewreck.org,
+        davem@davemloft.net, kuba@kernel.org,
+        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: Re: [PATCH] net: 9p: Fix possible null-pointer dereference in
+ p9_cm_event_handler()
+Message-ID: <YRKFXpilGXnKZ2yH@unreal>
+References: <20210810132007.296008-1-islituo@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810134127.1394269-2-valentin.schneider@arm.com>
+In-Reply-To: <20210810132007.296008-1-islituo@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-10 14:41:25 [+0100], Valentin Schneider wrote:
-> [    4.172817] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+On Tue, Aug 10, 2021 at 06:20:07AM -0700, Tuo Li wrote:
+> The variable rdma is checked when event->event is equal to 
+> RDMA_CM_EVENT_DISCONNECTED:
+>   if (rdma)
+> 
+> This indicates that it can be NULL. If so, a null-pointer dereference will 
+> occur when calling complete():
+>   complete(&rdma->cm_done);
+> 
+> To fix this possible null-pointer dereference, calling complete() only 
+> when rdma is not NULL.
 
-Would it work to allocate the memory upfront and invoke the HP callback
-via smp_function_call()? That is implemented via the hp-callback. It is
-invoked after all CPUs are up. There is one "memory allocation" per
-"node". This does not change during runtime, right?
+You need to explain how is it possible and blindly set if () checks.
+I would say first "if (rdma)" is not needed, but don't know for sure.
 
-Sebastian
+> 
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Tuo Li <islituo@gmail.com>
+> ---
+>  net/9p/trans_rdma.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/9p/trans_rdma.c b/net/9p/trans_rdma.c
+> index af0a8a6cd3fd..fb3435dfd071 100644
+> --- a/net/9p/trans_rdma.c
+> +++ b/net/9p/trans_rdma.c
+> @@ -285,7 +285,8 @@ p9_cm_event_handler(struct rdma_cm_id *id, struct rdma_cm_event *event)
+>  	default:
+>  		BUG();
+>  	}
+> -	complete(&rdma->cm_done);
+> +	if (rdma)
+> +		complete(&rdma->cm_done);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
