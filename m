@@ -2,61 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBB03E8322
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CF03E8327
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhHJSpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:45:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6970 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhHJSpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:45:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213112915"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="213112915"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:45:07 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="515946770"
-Received: from pdmuelle-desk2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.166.202])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:45:06 -0700
-Subject: Re: [PATCH 07/11] treewide: Replace the use of mem_encrypt_active()
- with prot_guest_has()
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Will Deacon <will@kernel.org>, Dave Young <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>
-References: <cover.1627424773.git.thomas.lendacky@amd.com>
- <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <166f30d8-9abb-02de-70d8-6e97f44f85df@linux.intel.com>
-Date:   Tue, 10 Aug 2021 11:45:04 -0700
+        id S231609AbhHJSqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:46:06 -0400
+Received: from mail-pj1-f52.google.com ([209.85.216.52]:54178 "EHLO
+        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231406AbhHJSp4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:45:56 -0400
+Received: by mail-pj1-f52.google.com with SMTP id j1so34406710pjv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:45:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d2A7Xr3+kVTUHpfrw1WstvnmHzqShBa9utLCU+wUZZE=;
+        b=jr1krqJNRXo+ZIsiuN6kHE/3WUOBxgnn8H17TOHL3o/OUILmwAoW2IH8dWmniEIKLz
+         eghxw/jkE1ljg18FDiCa6in5tSShKm2YQScuzMki5JU7iYtHHZCZ3MyQgd2nLEybL/hj
+         AXRmxjo4MFz2dkEaSJSKfMJVQl4ztQ+0pMGz2+ywxJYMuhc6Uddm4KOXfb0XrBLxJhq5
+         37Kqy+vTja7jDFvPvipmwjCKim7dOLgVGVYRz6I9+k3wWlLsbJK8ZGnWXGjbtU9s9B4Z
+         I7ukCiRGc6pi36nQcI4mxJEKfkHQYAUPhMjiiT+UGvQkhMd+KJBWAJPZxn33SkEFFOSJ
+         BnHQ==
+X-Gm-Message-State: AOAM5303zWqsxJ2g2ptBln9g0bNert5gHm9lg3pBC41C0ui7KcNsLPyY
+        fhXWQkMi9yI4Ox9LsehvnYY=
+X-Google-Smtp-Source: ABdhPJyR7UyPWMfdByUXgCZn4OKhRsH5EOamwDqCe3woHhQDxACps6Xhh2JnoZE2gLwh0zTdYL2Udw==
+X-Received: by 2002:a62:ea1a:0:b029:329:a95a:fab with SMTP id t26-20020a62ea1a0000b0290329a95a0fabmr25149198pfh.31.1628621134070;
+        Tue, 10 Aug 2021 11:45:34 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:c4:6dc5:1d3:61fa])
+        by smtp.gmail.com with ESMTPSA id h13sm5352434pgh.93.2021.08.10.11.45.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 11:45:33 -0700 (PDT)
+Subject: Re: [PATCH v4 3/3] configfs: Add unit tests
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Yanko Kaneti <yaneti@declera.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210805043503.20252-1-bvanassche@acm.org>
+ <20210805043503.20252-4-bvanassche@acm.org> <20210809145953.GB21234@lst.de>
+ <bcf5fd83-b30a-8887-361e-603821562d9a@acm.org>
+ <20210810165029.GA20722@lst.de>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <9b1e5c35-1d11-0afa-d382-6f5dc0b14a23@acm.org>
+Date:   Tue, 10 Aug 2021 11:45:32 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
+In-Reply-To: <20210810165029.GA20722@lst.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -64,36 +61,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/10/21 9:50 AM, Christoph Hellwig wrote:
+> On Mon, Aug 09, 2021 at 11:31:23AM -0700, Bart Van Assche wrote:
+>>>> +config CONFIGFS_KUNIT_TEST
+>>>> +	bool "Configfs Kunit test" if !KUNIT_ALL_TESTS
+>>>> +	depends on CONFIGFS_FS && KUNIT=y
+>>>> +	default KUNIT_ALL_TESTS
+>>>
+>>> Why does it depend on KUNIT=y?  What is the issue with a modular KUNIT
+>>> build?
+>>
+>> The unit tests calls do_mount(). do_mount() has not been exported and
+>> hence is not available to kernel modules. Hence the exclusion of KUNIT=m.
+> 
+> You should probably document that.  But then again this is another
+> big red flag that this code should live in userspace.
+> 
+>>> To me this sounds like userspace would be a better place for these
+>>> kinds of tests.
+>>
+>> Splitting the code that can only be run from inside the kernel (creation
+>> of configfs attributes) and the code that can be run from user space and
+>> making sure that the two run in a coordinated fashion would involve a
+>> significant amount of work. I prefer to keep the current approach.
+> 
+> But userspace is the right place to do this kind of pathname
+> based file system I/O.
 
+Shuah, as selftest maintainer, can you recommend an approach? How about 
+splitting patch 3/3 from this series into a kernel module (the code that 
+creates the configfs test attributes) and user space code (the code that 
+reads and writes the configfs attributes) and adding the user space code 
+in a subdirectory of tools/testing/selftests/?
 
-On 7/27/21 3:26 PM, Tom Lendacky wrote:
-> diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-> index de01903c3735..cafed6456d45 100644
-> --- a/arch/x86/kernel/head64.c
-> +++ b/arch/x86/kernel/head64.c
-> @@ -19,7 +19,7 @@
->   #include <linux/start_kernel.h>
->   #include <linux/io.h>
->   #include <linux/memblock.h>
-> -#include <linux/mem_encrypt.h>
-> +#include <linux/protected_guest.h>
->   #include <linux/pgtable.h>
->   
->   #include <asm/processor.h>
-> @@ -285,7 +285,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
->   	 * there is no need to zero it after changing the memory encryption
->   	 * attribute.
->   	 */
-> -	if (mem_encrypt_active()) {
-> +	if (prot_guest_has(PATTR_MEM_ENCRYPT)) {
->   		vaddr = (unsigned long)__start_bss_decrypted;
->   		vaddr_end = (unsigned long)__end_bss_decrypted;
+Thanks,
 
-
-Since this change is specific to AMD, can you replace PATTR_MEM_ENCRYPT with
-prot_guest_has(PATTR_SME) || prot_guest_has(PATTR_SEV). It is not used in
-TDX.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Bart.
