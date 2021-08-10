@@ -2,98 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE6C3E85B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818F03E85B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbhHJVwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:52:16 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:53452 "EHLO mail.skyhub.de"
+        id S234747AbhHJVzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:55:05 -0400
+Received: from aposti.net ([89.234.176.197]:36326 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234545AbhHJVwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:52:13 -0400
-Received: from zn.tnic (p200300ec2f0d6500329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6500:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 95C511EC0347;
-        Tue, 10 Aug 2021 23:51:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1628632305;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=bhrvSWnua4QgXGDLToC7m7WROlxA3VPxoYeGWv6d9b4=;
-        b=p7oMu+RhNEK0R7x19i+M996JIz9jAolp9gSi95HKMhewjNccujQhOtGEXBac5xmuyWnoQ8
-        VtNpb/aUb4bne0yLrWo++9p6EawNSD7KAttCXyDPqb0UwUAg1MTrP2eFAOM1Zm3RyuHGj4
-        2kVcVvuDB8EtlmSykCB6fmc5ev+4LKM=
-Date:   Tue, 10 Aug 2021 23:52:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 05/36] x86/sev: Define the Linux specific
- guest termination reasons
-Message-ID: <YRL1GSmdJhoUCXZv@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-6-brijesh.singh@amd.com>
- <YRJkDhcbUi9xQemM@zn.tnic>
- <955b4f50-5a7b-8c60-d31e-864bc29638f5@amd.com>
- <65c53556-94e1-b372-7fb1-64bb78c7ae15@amd.com>
+        id S232367AbhHJVzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:55:04 -0400
+Date:   Tue, 10 Aug 2021 23:54:31 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [Letux-kernel] [PATCH 8/8] drm/ingenic: Attach bridge chain to
+ encoders
+To:     Paul Boddie <paul@boddie.org.uk>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, list@opendingux.net,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Message-Id: <VU8NXQ.G9EDMFM6NILW@crapouillou.net>
+In-Reply-To: <1766447.FbDIzoYTkO@jason>
+References: <20210808134526.119198-1-paul@crapouillou.net>
+        <2242071.3D3ZAXhqrE@jason> <OV5MXQ.C3JR71EBG5P51@crapouillou.net>
+        <1766447.FbDIzoYTkO@jason>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <65c53556-94e1-b372-7fb1-64bb78c7ae15@amd.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 02:30:44PM -0500, Tom Lendacky wrote:
-> IIRC, during the review of the first GHCB version there was discussion
-> about assigning reason sets outside of 0 within the spec and the overall
-> feeling was to not do that as part of the spec.
+Hi Paul,
+[...]
+
+> Encoders:
+> id      crtc    type    possible crtcs  possible clones
+> 34      32      DPI     0x00000001      0x00000001
 > 
-> We can re-open that discussion for the next version of the GHCB document.
+> Connectors:
+> id      encoder status          name            size (mm)       modes
+> encoders
+> 35      34      connected       HDMI-A-1        340x270         17    
+>   34
+>   modes:
+>         index name refresh (Hz) hdisp hss hse htot vdisp vss vse vtot)
+>   #0 1280x1024 60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 
+> flags:
+> phsync, pvsync; type: preferred, driver
+>   #1 1280x1024 75.02 1280 1296 1440 1688 1024 1025 1028 1066 135000 
+> flags:
+> phsync, pvsync; type: driver
+>   #2 1280x960 60.00 1280 1376 1488 1800 960 961 964 1000 108000 
+> flags: phsync,
+> pvsync; type: driver
+>   #3 1152x864 75.00 1152 1216 1344 1600 864 865 868 900 108000 flags: 
+> phsync,
+> pvsync; type: driver
+>   #4 1024x768 75.03 1024 1040 1136 1312 768 769 772 800 78750 flags: 
+> phsync,
+> pvsync; type: driver
+>   #5 1024x768 70.07 1024 1048 1184 1328 768 771 777 806 75000 flags: 
+> nhsync,
+> nvsync; type: driver
+>   #6 1024x768 60.00 1024 1048 1184 1344 768 771 777 806 65000 flags: 
+> nhsync,
+> nvsync; type: driver
+>   #7 832x624 74.55 832 864 928 1152 624 625 628 667 57284 flags: 
+> nhsync,
+> nvsync; type: driver
+>   #8 800x600 75.00 800 816 896 1056 600 601 604 625 49500 flags: 
+> phsync,
+> pvsync; type: driver
+>   #9 800x600 72.19 800 856 976 1040 600 637 643 666 50000 flags: 
+> phsync,
+> pvsync; type: driver
+>   #10 800x600 60.32 800 840 968 1056 600 601 605 628 40000 flags: 
+> phsync,
+> pvsync; type: driver
+>   #11 800x600 56.25 800 824 896 1024 600 601 603 625 36000 flags: 
+> phsync,
+> pvsync; type: driver
+>   #12 640x480 75.00 640 656 720 840 480 481 484 500 31500 flags: 
+> nhsync,
+> nvsync; type: driver
+>   #13 640x480 72.81 640 664 704 832 480 489 492 520 31500 flags: 
+> nhsync,
+> nvsync; type: driver
+>   #14 640x480 66.67 640 704 768 864 480 483 486 525 30240 flags: 
+> nhsync,
+> nvsync; type: driver
+>   #15 640x480 59.94 640 656 752 800 480 490 492 525 25175 flags: 
+> nhsync,
+> nvsync; type: driver
+>   #16 720x400 70.08 720 738 846 900 400 412 414 449 28320 flags: 
+> nhsync,
+> pvsync; type: driver
+>   props:
+>         1 EDID:
+>                 flags: immutable blob
+>                 blobs:
+> 
+>                 value:
+>                         00ffffffffffff00047232ad01010101
+>                         2d0e010380221b782aaea5a6544c9926
+>                         145054bfef0081808140714f01010101
+>                         010101010101302a009851002a403070
+>                         1300520e1100001e000000ff00343435
+>                         3030353444454330300a000000fc0041
+>                         4c313731350a202020202020000000fd
+>                         00384c1e520e000a2020202020200051
+>         2 DPMS:
+>                 flags: enum
+>                 enums: On=0 Standby=1 Suspend=2 Off=3
+>                 value: 3
+>         5 link-status:
+>                 flags: enum
+>                 enums: Good=0 Bad=1
+>                 value: 0
+>         6 non-desktop:
+>                 flags: immutable range
+>                 values: 0 1
+>                 value: 0
+>         4 TILE:
+>                 flags: immutable blob
+>                 blobs:
+> 
+>                 value:
+>         20 CRTC_ID:
+>                 flags: object
+>                 value: 32
+> 
+> CRTCs:
+> id      fb      pos     size
+> 32      36      (0,0)   (1280x1024)
+>   #0  60.02 1280 1328 1440 1688 1024 1025 1028 1066 108000 flags: 
+> phsync,
+> pvsync; type:
+>   props:
+>         22 ACTIVE:
+>                 flags: range
+>                 values: 0 1
+>                 value: 0
+>         23 MODE_ID:
+>                 flags: blob
+>                 blobs:
+> 
+>                 value:
+>                         e0a5010000053005a005980600000004
+>                         010404042a0400003c00000005000000
+>                         00000000000000000000000000000000
+>                         00000000000000000000000000000000
+>                         00000000
+>         19 OUT_FENCE_PTR:
+>                 flags: range
+>                 values: 0 18446744073709551615
+>                 value: 0
+>         24 VRR_ENABLED:
+>                 flags: range
+>                 values: 0 1
+>                 value: 0
+>         28 GAMMA_LUT:
+>                 flags: blob
+>                 blobs:
+> 
+>                 value:
+>         29 GAMMA_LUT_SIZE:
+>                 flags: immutable range
+>                 values: 0 4294967295
+>                 value: 256
+> 
+> Planes:
+> id      crtc    fb      CRTC x,y        x,y     gamma size      
+> possible crtcs
+> 31      32      36      0,0             0,0     0               
+> 0x00000001
+>   formats: XR15 RG16 RG24 XR24 XR30
+>   props:
+>         8 type:
+>                 flags: immutable enum
+>                 enums: Overlay=0 Primary=1 Cursor=2
+>                 value: 1
+>         17 FB_ID:
+>                 flags: object
+>                 value: 36
+>         18 IN_FENCE_FD:
+>                 flags: signed range
+>                 values: -1 2147483647
+>                 value: -1
+>         20 CRTC_ID:
+>                 flags: object
+>                 value: 32
+>         13 CRTC_X:
+>                 flags: signed range
+>                 values: -2147483648 2147483647
+>                 value: 0
+>         14 CRTC_Y:
+>                 flags: signed range
+>                 values: -2147483648 2147483647
+>                 value: 0
+>         15 CRTC_W:
+>                 flags: range
+>                 values: 0 2147483647
+>                 value: 1280
+>         16 CRTC_H:
+>                 flags: range
+>                 values: 0 2147483647
+>                 value: 1024
+>         9 SRC_X:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 0
+>         10 SRC_Y:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 0
+>         11 SRC_W:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 83886080
+>         12 SRC_H:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 67108864
+> 33      0       0       0,0             0,0     0               
+> 0x00000001
+>   formats: C8   XR15 RG16 RG24 XR24 XR30
+>   props:
+>         8 type:
+>                 flags: immutable enum
+>                 enums: Overlay=0 Primary=1 Cursor=2
+>                 value: 0
+>         17 FB_ID:
+>                 flags: object
+>                 value: 0
+>         18 IN_FENCE_FD:
+>                 flags: signed range
+>                 values: -1 2147483647
+>                 value: -1
+>         20 CRTC_ID:
+>                 flags: object
+>                 value: 0
+>         13 CRTC_X:
+>                 flags: signed range
+>                 values: -2147483648 2147483647
+>                 value: 0
+>         14 CRTC_Y:
+>                 flags: signed range
+>                 values: -2147483648 2147483647
+>                 value: 0
+>         15 CRTC_W:
+>                 flags: range
+>                 values: 0 2147483647
+>                 value: 0
+>         16 CRTC_H:
+>                 flags: range
+>                 values: 0 2147483647
+>                 value: 0
+>         9 SRC_X:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 0
+>         10 SRC_Y:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 0
+>         11 SRC_W:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 0
+>         12 SRC_H:
+>                 flags: range
+>                 values: 0 4294967295
+>                 value: 0
+> 
+> Frame buffers:
+> id      size    pitch
+> 
+> Just in case that means anything to anyone.
 
-My worry is that if nothing documents which sets are allocated to which
-vendor, it'll become a mess.
+Everything looks good to me. Maybe add some debug in ingenic-drm to see 
+what bus flags and format it ends up choosing.
 
-Imagine a Linux SNP guest and a windoze one, both running on a KVM
-hypervisor (is that even possible?) and both using the same termination
-reason set with conflicting reason numbers.
+Cheers,
+-Paul
 
-Unneeded confusion.
 
-Unless the spec says, "reason set 1 is allocated to Linux, set 2 to
-windoze, etc"
-
-Then all know which is which.
-
-And so on...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
