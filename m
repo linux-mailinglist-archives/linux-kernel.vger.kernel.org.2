@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2873E5C3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A0B3E5C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241974AbhHJNxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233318AbhHJNxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:53:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8A5C60295;
-        Tue, 10 Aug 2021 13:52:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628603562;
-        bh=0pxQiHwlv5O2WEojRWriWbYYkFrCPIve7BAoLdArVsk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qEEtohrcG1EUKK2c+wB0W2pTvC4aR1XmtTsnjb9xWBkWW74Fk2pW2uSiJaHF+0rN5
-         OSJShqFkjO9TB7gOsQWqAJ2IosfcaoTjlUyZSVKnsdeOmOS98Z93k3RT3pgIbU7OFJ
-         gQwoug16z4QgKF2v1DzrAiu+mCRfXJtQjf4pd34JniFShMTHb3pzt49plBR0nqofZM
-         p0mTyParYgNuvP26wXI4DWQ6Blfue4+TewnBPKxSPG52VEr6d60WbsJlHJlo8pxd8r
-         InsgZRkA4JRAFp/f0KQYl0G+RiXekkHg/Hx0M25lX01RHBFV84m7nrjz+C5OqNo2Y3
-         MawnrvY5x7sTg==
-Date:   Tue, 10 Aug 2021 14:52:36 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Andrew Delgadillo <adelg@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, masahiroy@kernel.org
-Subject: Re: [PATCH] arm64: clean vdso files
-Message-ID: <20210810135236.GA3101@willie-the-truck>
-References: <20210809191414.3572827-1-adelg@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809191414.3572827-1-adelg@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S242005AbhHJNxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:53:17 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:35668 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241985AbhHJNxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:53:16 -0400
+Received: by mail-io1-f44.google.com with SMTP id s184so32376961ios.2;
+        Tue, 10 Aug 2021 06:52:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=n0pQptOPLSLX5QIJ3YjoYTw0YmHkHPJHCW1Ja2cSyMo=;
+        b=V1c4zjkhhnB+pdUELhG0WzBxByYShwBNI66ug+B2Po62RO2Aj/WxQ0CLhHrHxLYzaI
+         O5EqtcCwnZ6v5w8Ml97WOp3c5+lD8GX5L4b2KpjJZ7luUiG0OrHNcJbGwuBF8OL71yft
+         g4c8zqM3DCf8+mJ/BZM55MMi/BXAsjC2mwo2RQcIydSdAvoTm04cmXfAcqjLKL6uWl8G
+         21fY4xpnsM1Rzwe3mfDpQ/143bcrA5uzBQmesc8ZZ6UVc51CHt/xJr8tPR0nlFkmv0TH
+         E2jyyT22Jp2lf8lJxwykHh/Ug+PqKdlf1ZLj2Ffpt2hUfa1S5Q4OR6c7UmngwKYYcYmH
+         QpRg==
+X-Gm-Message-State: AOAM533hN8HS3GNSc+dhbwfsBqxKv2eyOS6C3rI8R6XM6UsRtpZcqu8T
+        nCCJqWdv19iZMCwmErTe0Q==
+X-Google-Smtp-Source: ABdhPJxbfBYGw8RHYSAjad8JbTAHBSwUTqo3bLN+N1qARLZk4PyFRs8m9FCgFlBHdl8i3mVv/aeDHw==
+X-Received: by 2002:a6b:f813:: with SMTP id o19mr315560ioh.49.1628603574396;
+        Tue, 10 Aug 2021 06:52:54 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id e12sm1423228ilc.16.2021.08.10.06.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 06:52:53 -0700 (PDT)
+Received: (nullmailer pid 1500790 invoked by uid 1000);
+        Tue, 10 Aug 2021 13:52:51 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Tomasz Figa <tfiga@google.com>, linux-media@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-mediatek@lists.infradead.org,
+        George Sun <george.sun@mediatek.com>,
+        srv_heupstream@mediatek.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>
+In-Reply-To: <20210810083047.16693-14-yunfei.dong@mediatek.com>
+References: <20210810083047.16693-1-yunfei.dong@mediatek.com> <20210810083047.16693-14-yunfei.dong@mediatek.com>
+Subject: Re: [PATCH v4, 13/15] dt-bindings: media: mtk-vcodec: Adds decoder dt-bindings for mt8192
+Date:   Tue, 10 Aug 2021 07:52:51 -0600
+Message-Id: <1628603571.555258.1500789.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Masahiro]
-
-On Mon, Aug 09, 2021 at 07:14:14PM +0000, Andrew Delgadillo wrote:
-> commit a5b8ca97fbf8 ("arm64: do not descend to vdso directories twice")
-> changes the cleaning behavior of arm64's vdso files, in that vdso.lds,
-> vdso.so, and vdso.so.dbg are not removed upon a 'make clean/mrproper':
+On Tue, 10 Aug 2021 16:30:45 +0800, Yunfei Dong wrote:
+> Adds decoder dt-bindings for mt8192.
 > 
-> $ make defconfig ARCH=arm64
-> $ make ARCH=arm64
-> $ make mrproper ARCH=arm64
-> $ git clean -nxdf
-> Would remove arch/arm64/kernel/vdso/vdso.lds
-> Would remove arch/arm64/kernel/vdso/vdso.so
-> Would remove arch/arm64/kernel/vdso/vdso.so.dbg
-> 
-> To remedy this, manually descend into arch/arm64/kernel/vdso upon
-> cleaning.
-> 
-> After this commit:
-> $ make defconfig ARCH=arm64
-> $ make ARCH=arm64
-> $ make mrproper ARCH=arm64
-> $ git clean -nxdf
-> <empty>
-
-Well spotted!
-
-> Signed-off-by: Andrew Delgadillo <adelg@google.com>
+> Change-Id: I2c482fa6c0a91b5fc4f1950dd563cbc4d6c35da1
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 > ---
->  arch/arm64/Makefile | 1 +
->  1 file changed, 1 insertion(+)
+> v4: fix yaml file check fail
+> ---
+>  .../media/mediatek,vcodec-comp-decoder.yaml   | 172 ++++++++++++++++++
+>  1 file changed, 172 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
 > 
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index b52481f0605d..ef6598cb5a9b 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -181,6 +181,7 @@ archprepare:
->  # We use MRPROPER_FILES and CLEAN_FILES now
->  archclean:
->  	$(Q)$(MAKE) $(clean)=$(boot)
-> +	$(Q)$(MAKE) $(clean)=arch/arm64/kernel/vdso
 
-I think we also need to clean the vdso32 directory here. Please can you
-send a v2 with that added?
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Cheers,
+yamllint warnings/errors:
 
-Will
+dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/media/mediatek,vcodec-comp-decoder.yaml#
+Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.example.dts:22:18: fatal error: dt-bindings/clock/mt8192-clk.h: No such file or directory
+   22 |         #include <dt-bindings/clock/mt8192-clk.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1419: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1515305
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
