@@ -2,132 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CAC3E5382
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B8F3E5381
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237874AbhHJG14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S237859AbhHJG1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235034AbhHJG1z (ORCPT
+        with ESMTP id S236653AbhHJG1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:27:55 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1221C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 23:27:33 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id h9so12596615ejs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 23:27:33 -0700 (PDT)
+        Tue, 10 Aug 2021 02:27:50 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A69C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 23:27:29 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id b13so24743312wrs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 23:27:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Hwnsr93Hzf8aAn89w3QAR5Rj6HoDPYCgjQEsVOi/00=;
-        b=XYk25ezJ0kVIePMD73YyZroWy7jsB4Ysplb+Q0kl5Kbc8svFvAaIH//aFXpGEgMtjm
-         HcrYVeESv0cUZyBRTyLM897TiPB8K9LAD8BmhwkNGI63QQP4iagdpv8E7xouJoIsHXrO
-         APOvdJS0ZQ/pJiy/KPztSdrDxoQnEeqx4VRqrjf2Ad+568JROa34xgjv3o1a8TkOR2Gc
-         csE2R5vhmLz+Ms+FVOrItPPRfz6+/luqfHw/zQrWfYJaIDSFT24Uwhn3uelgfERk4yck
-         93vIi5Mcqwu6v5SeY3WRV6tJyxXBORb+lF7xC3e8CPEbDnQY8aaZok0hNncRjujcLC8z
-         oK6Q==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GiCRq9oiIUoYtaK/RUZid1gDex+gXMLXotTaeNIUmiA=;
+        b=TSLt8sQv3KMNzzPS3fSD/gdF+b63+EbUkwUJzjp0hhlGdZUZ7Rd/AoOvp0uJmLSyth
+         idWsFEWNxLZHMkE7N0Us6P8gpIMwEjBGSYsiiNKmOb86eZDu77SO4PLc1ir83QOgXCk1
+         f5jZQSvinIlEibg/HrnX+nJfX9P07P/P7Zz7k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Hwnsr93Hzf8aAn89w3QAR5Rj6HoDPYCgjQEsVOi/00=;
-        b=Th+9DJggxyuJZyOdTeqAFJVH2YviSctjaSrWGZFa3mb7C9/fKh+LKAHLqHJL6ZIiCL
-         4ae6jGB0TRSGOUSQdYvnze2dyy++oM2vXRb3s1A0yUz7Zi+OPx7ekf/rT5AqOVw2DhLB
-         hN1AbpG2ASk+iRdbI+mKXlkxBJRcM2Jv9S5PxUcxbiRZQODrR/yOQpX4jR0j8FrbuHwO
-         fx+o4yx0NCP5jh3RKcrK373Vnc9N1XYPYkUg8QribjWEbFB1hVQNwXFStjCZg13RqELm
-         vTIVGppmx3Uo3f0C0EaM3o7zpQbNrZ9A0ifX3gt3FxQMW9TvnLtMK6nZe4rxpDsZUXWK
-         Z2/w==
-X-Gm-Message-State: AOAM531KTo6UdFp6ehya/OESLFEW97H4Agcn+SMS59XUKW4eMuQ2jtWo
-        E4/97m1G6fIUHe8LGb1pR/8wftqtgMMPf5quo5A=
-X-Google-Smtp-Source: ABdhPJwOOHN526CNxCm04yzFJWqeR3lM90mFUgXud6C4oGdkm8SXfbo2flYd0ZJRgj/ey1QrqEM0lTWD4NNUsssYYts=
-X-Received: by 2002:a17:906:8493:: with SMTP id m19mr11451997ejx.103.1628576852552;
- Mon, 09 Aug 2021 23:27:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=GiCRq9oiIUoYtaK/RUZid1gDex+gXMLXotTaeNIUmiA=;
+        b=kWNr8oXX48H7NDzUXn+WWos4EHQLE4Fh445Avnl5jtb/mV71C/lwW7KFvPdpn42tRu
+         sVA3WXCF+BqkrmhaUXxuD9R7leHJubZx2j1edf56kZRKuptS0hJJFb6QTfgunpm2W84j
+         UO5/GYcm+KfxCa5wQo0NG2ksUJn7Lf2Fq6lAL9uahU04R9FNAg9rn+IqWlXHCUjcP0Q+
+         L0T2FOMsafr09F+iW0m9UQcNSwhUX/oVFP8A6p35yCLChMLFot0KVZmGRZKv3MP2VuEo
+         JhmcMku84mBvf9FCGArBKmNbCB7veyQ0f7MkvKh47vu8bb6Uogls7cVxHMc0FuxzyOfv
+         Etnw==
+X-Gm-Message-State: AOAM5321AxBEIEOoaNh+Pu/IDLWRzdQVgggIWN5uE3EEEOlyiR/p4cHy
+        Gpmho+0TC8a0XuQd28Hdln575V8vAJvayg==
+X-Google-Smtp-Source: ABdhPJzwYtfos5qmwNgPH3qxN41P8KJZR3M++G+4LLPpLcVuvruDMmm0ZBtRneBZ640axXBl0KJ93g==
+X-Received: by 2002:a5d:6948:: with SMTP id r8mr15347886wrw.136.1628576847772;
+        Mon, 09 Aug 2021 23:27:27 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g16sm26620083wro.63.2021.08.09.23.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 23:27:27 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 08:27:25 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Matt Roper <matthew.d.roper@intel.com>
+Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [Intel-gfx] linux-next: Signed-off-by missing for commit in the
+ drm-intel tree
+Message-ID: <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
+Mail-Followup-To: Matt Roper <matthew.d.roper@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210715141854.1ad4a956@canb.auug.org.au>
+ <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com>
+ <YRE2RwQ6XlUqbgmn@phenom.ffwll.local>
+ <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com>
 MIME-Version: 1.0
-References: <20210809143049.3531188-1-mudongliangabcd@gmail.com>
- <YRFKlOvXKKQX9vr6@kroah.com> <CAD-N9QXFWr2APy294T6v+16d8SXtUuLEoPvZTw1ZDwfQ+D4kFg@mail.gmail.com>
- <CAD-N9QVgnbwNScKD6anFLUELbJ5tAZ1hWbKhOStwZ+kPwgvVLw@mail.gmail.com> <YRIYsNCMmKrPfRlF@kroah.com>
-In-Reply-To: <YRIYsNCMmKrPfRlF@kroah.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 10 Aug 2021 14:27:06 +0800
-Message-ID: <CAD-N9QWoW1i=WsL7jgq3RM6tspyeKr_iuLYePt8JyQy6drao7g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ipack: tpci200: fix many double free issues in tpci200_pci_probe
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 2:12 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Aug 10, 2021 at 07:41:55AM +0800, Dongliang Mu wrote:
-> > On Tue, Aug 10, 2021 at 7:08 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> > >
-> > > On Mon, Aug 9, 2021 at 11:32 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Mon, Aug 09, 2021 at 10:30:26PM +0800, Dongliang Mu wrote:
-> > > > > The function tpci200_register called by tpci200_install and
-> > > > > tpci200_unregister called by tpci200_uninstall are in pair. However,
-> > > > > tpci200_unregister has some cleanup operations not in the
-> > > > > tpci200_register. So the error handling code of tpci200_pci_probe has
-> > > > > many different double free issues.
-> > > > >
-> > > > > Fix this problem by moving those cleanup operations out of
-> > > > > tpci200_unregister, into tpci200_pci_remove and reverting
-> > > > > the previous commit 9272e5d0028d ("ipack/carriers/tpci200:
-> > > > > Fix a double free in tpci200_pci_probe").
-> > > > >
-> > > > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
-> > > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > > ---
-> > > > > v1->v2: revise PATCH 2/3, 3/3, not depending on PATCH 1/3; move the
-> > > > > location change of tpci_unregister into one separate patch;
-> > > >
-> > > > Also needs to go to the stable trees, right?
-> > >
-> > > Yes, this needs to go to the stable trees.
-> >
-> > Hi gregkh,
-> >
-> > Let me clarify more. In my series, PATCH 3/4 4/4 depends on PATCH 1/4
-> > and PATCH 2/4. And also PATCH 2/4 depends on PATCH 1/4 as they are
-> > closely related.
-> >
-> > But from your reply, the last 2 patches should not depend on the first
-> > 2 patches. I don't quite understand as I don't send some patch series
-> > before. For a patch series, the latter ones should depend on the
-> > former ones, right? If I have any misunderstanding, please let me
-> > know.
->
-> Yes, they can depend on previous patches, but if some patches are to be
-> merged today for 5.14-final, and others later for 5.15-rc1, then ideally
-> they will be separate series of changes as those go to two different
-> branches in my tree at the moment.
->
-> > BTW, PATCH 3/4 has some compilation issues. I will fix it in the next version.
->
-> As you haven't even tested these, I'm really hesitant to take them at
-> all.
->
-> Please just send the first two patches, fixed up, as a series after you
-> have tested them, and then after they are merged into Linus's tree, you
-> can send the cleanup patches, as they are just "nice" to have.
->
+On Mon, Aug 09, 2021 at 09:19:39AM -0700, Matt Roper wrote:
+> On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
+> > On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
+> > > Hi Matt,
+> > > 
+> > > Always use the dim tooling when applying patches, it will do the right
+> > > thing with regards to adding the S-o-b.
+> > 
+> > fd.o server rejects any pushes that haven't been done by dim, so how did
+> > this get through?
+> 
+> I definitely used dim for all of these patches, but I'm not sure how I
+> lost my s-o-b on this one.  Maybe when I edited the commit message after
+> 'dim extract-tags' I accidentally deleted an extra line when I removed
+> the extract-tags marker?  It's the only patch where the line is missing,
+> so it's almost certainly human error on my part rather than something
+> dim did wrong.
 
-That's good. I will send the first two patches. After they are merged,
-then I will send the rest patches.
+Yeah that's an expected failure model, and dim is supposed to catch that
+by rechecking for sobs when you push. See dim_push_branch ->
+checkpatch_commit_push_range in dim. So you can hand-edit stuff however
+you want, dim /should/ catch it when pushing. That it didn't is kinda
+confusing and I'd like to know why that slipped through.
 
-> thanks,
->
-> greg k-h
+> > Matt, can you pls figure out and type up the patch to
+> > plug that hole?
+> 
+> Are you referring to a patch for dim here?  The i915 patch has already
+> landed, so we can't change its commit message now.
+
+Yeah dim, not drm-intel, that can't be fixed anymore because it's all
+baked in.
+-Daniel
+
+> 
+> 
+> Matt
+> 
+> > 
+> > Thanks, Daniel
+> > 
+> > > 
+> > > Regards, Joonas
+> > > 
+> > > Quoting Stephen Rothwell (2021-07-15 07:18:54)
+> > > > Hi all,
+> > > > 
+> > > > Commit
+> > > > 
+> > > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
+> > > > 
+> > > > is missing a Signed-off-by from its committer.
+> > > > 
+> > > > -- 
+> > > > Cheers,
+> > > > Stephen Rothwell
+> > 
+> > -- 
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+> 
+> -- 
+> Matt Roper
+> Graphics Software Engineer
+> VTT-OSGC Platform Enablement
+> Intel Corporation
+> (916) 356-2795
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
