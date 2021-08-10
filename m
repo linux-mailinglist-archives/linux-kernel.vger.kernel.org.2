@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84803E7DA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6123E7DA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236129AbhHJQla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:41:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40345 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236059AbhHJQl3 (ORCPT
+        id S235901AbhHJQlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhHJQlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:41:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628613666;
+        Tue, 10 Aug 2021 12:41:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C50C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:40:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628613648;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1IvooYq8Yem5dV4nvC50nzcM/pns/C6jIbPJ9hHA2Q8=;
-        b=c+b/t7zBNoZJ7bT7QZ1e4LoIoweS11RAqEEr9WI3X9uQ0pHTaKQPImyZ43mD6hF20+aPQP
-        9vf2ZLIvoyTy0293iKfbJPGoK2mj23CKRuTdasl7O1Tv5Qiu+nk4vqbZGbAmxL1pbbA8J2
-        +nkuZywBTzsmEL70E4GV571OS94hhZY=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-v_PpvmJ-Ori64KN2mNUPaw-1; Tue, 10 Aug 2021 12:41:05 -0400
-X-MC-Unique: v_PpvmJ-Ori64KN2mNUPaw-1
-Received: by mail-oi1-f197.google.com with SMTP id u77-20020acac4500000b029025c7e6f8b64so7331313oif.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:41:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1IvooYq8Yem5dV4nvC50nzcM/pns/C6jIbPJ9hHA2Q8=;
-        b=Pdlb+OoxrZCOkd8YD/y47pXfmxwMLz2Np737v0XoI3bRBoj8L8yV0XERjMczNrIDAe
-         oyHXViInG6UNZIbJbpIKeBLNSuZewy3735x8X9ZhaRSvAtkcvmGCfCZfBceLw/91VA0y
-         giKsiBRDeOfPILvp6pJ3uSKtBIlgQPSe7rnZcyc/V/Pk2azgQ08d6C5BfXHL6AhBZ9z4
-         FqRj3FiY4KL/jjHtgtz0itnhS2LHBQM7xMF4CrnLGWiwLr/GfihABE3OHIn+WFtp/7fb
-         FfkjLx8OHGZccVM7aTYGim62vuEy2mWOnhai6Na16ggnAPTqkliCyKjwFQpiuFEqUx/9
-         aZIA==
-X-Gm-Message-State: AOAM530avWK2UlPS3iDaZpIYORreCxebVNG5tJuVm/ilPzpNwxJ6Aj0s
-        1e2gLUdQf3IrXKCCL/bxp8Uh92oKoXIttXMS1UfZ4bpZ/nl0trWRtUlldAY2t0QCd2SBPLWzB3R
-        /omFg2RkLvPrYePRz5gi732fq
-X-Received: by 2002:a9d:7f86:: with SMTP id t6mr20468920otp.269.1628613664396;
-        Tue, 10 Aug 2021 09:41:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNsOjdc2qoaUNmR4+l/xdEfnMAyNpy3pbbZwHpE13rTuphdCuMy5G6p2BuPvKZPgmVuIcvOw==
-X-Received: by 2002:a9d:7f86:: with SMTP id t6mr20468906otp.269.1628613664226;
-        Tue, 10 Aug 2021 09:41:04 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u136sm250903oie.44.2021.08.10.09.41.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 09:41:03 -0700 (PDT)
-From:   trix@redhat.com
-To:     mdf@kernel.org, p.pisati@gmail.com, atull@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] fpga: machxo2-spi: return an error on failure
-Date:   Tue, 10 Aug 2021 09:40:36 -0700
-Message-Id: <20210810164036.922830-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LjuSVz6QX3gPZe0/YUhh/KoKRLi5gbcY3wcPk69tkVg=;
+        b=V8KTwRQsUlYISp+Zp/wPa7tYpnkmyIc4lyVRts//+JoUseq78Kpq1IEcFVuIHAL9PC195r
+        isoU0g+fSRgIt0dCQUvmVy8USVkVF6yr44YiBwsaekyt18+xU69+hFYDr+eThvsrTENdGE
+        M60OMRVj5Ls6sngEE8fvgHwQEL9oh/MKBZDphcgvcd0yfD0KjEI+jhznQBYGBzD/3cKZqA
+        bIiK6oQVrBGl8/ZZSJvvRzAbytYhmHN6VE4ZR/46TGZ51GyNf7K5CbSuW0JGM0nZIvUpwF
+        /W6eeMIxZ7OSpNWR58duhYeBjBGVXBX3hVECCzhuRfEcPMb4jT84MHpZADfr7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628613648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LjuSVz6QX3gPZe0/YUhh/KoKRLi5gbcY3wcPk69tkVg=;
+        b=iiDKh7RneDZe6BRbA9d8co1/o4WYj4Z1n+D4dPL/dDxH+nuqml4NM+5dRTRxFVwmUt/rdk
+        VwYfx0xcrhATLOAg==
+To:     Marcelo Tosatti <mtosatti@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch 0/4] extensible prctl task isolation interface and
+ vmstat sync (v2)
+In-Reply-To: <20210730201827.269106165@fuller.cnet>
+References: <20210730201827.269106165@fuller.cnet>
+Date:   Tue, 10 Aug 2021 18:40:48 +0200
+Message-ID: <87czqlqmlr.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Marcelo,
 
-Reported problem
+On Fri, Jul 30 2021 at 17:18, Marcelo Tosatti wrote:
 
-	drivers/fpga/machxo2-spi.c:229 machxo2_write_init()
-	warn: missing error code 'ret'
+can you pretty please:
 
-	drivers/fpga/machxo2-spi.c:316 machxo2_write_complete()
-	warn: missing error code 'ret'
+ 1) Add a version number to your patch series right where it belongs:
 
-Earlier successes leave 'ret' in a non error state, so these errors are
-not reported.  So set ret to -EINVAL before going to the error handler.
+    [patch V2 N/M]
 
-Fixes: 88fb3a002330 ("fpga: lattice machxo2: Add Lattice MachXO2 support")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/machxo2-spi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+    Just having a (v2) at the end of the subject line of 0/M is sloppy
+    at best.
 
-diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
-index 1afb41aa20d71..b4a530a31302f 100644
---- a/drivers/fpga/machxo2-spi.c
-+++ b/drivers/fpga/machxo2-spi.c
-@@ -225,8 +225,10 @@ static int machxo2_write_init(struct fpga_manager *mgr,
- 		goto fail;
- 
- 	get_status(spi, &status);
--	if (test_bit(FAIL, &status))
-+	if (test_bit(FAIL, &status)) {
-+		ret = -EINVAL;
- 		goto fail;
-+	}
- 	dump_status_reg(&status);
- 
- 	spi_message_init(&msg);
-@@ -313,6 +315,7 @@ static int machxo2_write_complete(struct fpga_manager *mgr,
- 	dump_status_reg(&status);
- 	if (!test_bit(DONE, &status)) {
- 		machxo2_cleanup(mgr);
-+		ret = -EINVAL;
- 		goto fail;
- 	}
- 
--- 
-2.26.3
+ 2) Provide a lore link to the previous version
 
+Thanks,
+
+        tglx
