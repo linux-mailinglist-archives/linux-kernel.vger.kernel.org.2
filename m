@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C223E8364
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3953E8361
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbhHJTCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbhHJTCm (ORCPT
+        id S232267AbhHJTCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:02:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22997 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232180AbhHJTCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:02:42 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FE2C0617A0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:02:17 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id z12-20020ac8710c0000b0290291f4eb83d3so2567624qto.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=LD5EM5kZNOu66+iSv1Q9X75TvjKmtvXyw6oUcsk/oJc=;
-        b=hvL77SsKpxUXlNdVpZW+5fBRnSR5XhA5CxfsiXvB56MNTbW1MNRzVDAeXcZfiQRJVR
-         dY7AO7BLxaSEdmjDseD+Uo89DPBg2Z4j5MBkVEntaCa11BWuczlPevVw1SQbqR6cMpgx
-         6un5YRvEgW1gIMhEf4ZZugg/XH3efTTc6tijwzDUvbtO1NPK/XMe9OlgHbVZwb+T82u5
-         oYdNtc/FCiD/uPVUECfzq2XKBGXpKjcO3LXVACivTHucWafUJ21XhDrj5i/kdAPwOf97
-         jQPWl09xkD+BL4C1h/XMEPEabx4Lu1Yi5Nz2ogFLnEPQnyCcu/hXeRJmhbJ7q1HQHK0p
-         /MVA==
+        Tue, 10 Aug 2021 15:02:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628622133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nios0x/SOmEoWSIl8z+EuMVv3qi92+eLAcRIOjO/f+w=;
+        b=LM7a1guaiPcsDnPyyyFEJ9ohdNBeTtzv0+l+UotGZFEKV9k/gtsqtP6Sp/PWwVIrYiScmo
+        pFcuyAdie3jApKhRsuHZXzzhoO0DI0w3ku4GtzcFH6X8yyVIN7Uqg5iZy5FTClDL9xsHhV
+        QmE/8+x5R91sAY1PkHKBdr9WXfMCdMQ=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-b8m4rov_NvaLdLKHOs-ubw-1; Tue, 10 Aug 2021 15:02:12 -0400
+X-MC-Unique: b8m4rov_NvaLdLKHOs-ubw-1
+Received: by mail-qk1-f197.google.com with SMTP id q11-20020a05620a05abb02903ca17a8eef8so14542121qkq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:02:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=LD5EM5kZNOu66+iSv1Q9X75TvjKmtvXyw6oUcsk/oJc=;
-        b=Xcl+lqjYJKce1RudY1QCSRTtY8o0uKa1xZW8TCIkP4sR6qlchSLTF3QhGQlyc1yzg7
-         YpsWG6UBQ0aHqCgIklaAY7/iI+WJA3DNXquqFmiiELmbXdfDw+Ln9RuRweMry5ueRF3d
-         Sdt5D4T9N6tATSZRO2RmzHgBG5wG4wHt6EfZw5JsU4qDgv2cfCrM6g4/LOGq6c7tgLW7
-         khxQjlbmJooPi0nGag5yYzphpAmkHkjgcaCsu/3xCCde9VR0qlkvxkWWkpUxcXofVXaq
-         gyTpqDwf0B5dbZC/DWAQB6VyyxGY/NTEheWrwRizhDQ0WlRMjDw5Dp8ESS8/dGDzHtME
-         6KQw==
-X-Gm-Message-State: AOAM531gvQqugv+27rrNlh/JtSs0jitvjiiLjVUv4BWjBW2vulaOzgaW
-        oW3IEGbMfn+B4RCol6S1NG4IiB1BuOZicgkhjzK/0g==
-X-Google-Smtp-Source: ABdhPJwN/JfoIDzQQZROMIXWX9NZa2WxHaoL9mBdNWSVMu14p6iwqfDC10WbpeTA14yBfGfbP9j5P9NWtmXN7PY5d+DfaA==
-X-Received: from mustash.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:337b])
- (user=richardsonnick job=sendgmr) by 2002:a05:6214:d05:: with SMTP id
- 5mr11741968qvh.54.1628622136748; Tue, 10 Aug 2021 12:02:16 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 19:01:55 +0000
-In-Reply-To: <20210810190159.4103778-1-richardsonnick@google.com>
-Message-Id: <20210810190159.4103778-4-richardsonnick@google.com>
-Mime-Version: 1.0
-References: <20210810190159.4103778-1-richardsonnick@google.com>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH v2 3/3] pktgen: Add output for imix results
-From:   Nicholas Richardson <richardsonnick@google.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     nrrichar@ncsu.edu, promanov@google.com, arunkaly@google.com,
-        Nick Richardson <richardsonnick@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leesoo Ahn <dev@ooseel.net>, Di Zhu <zhudi21@huawei.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Yejune Deng <yejune.deng@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nios0x/SOmEoWSIl8z+EuMVv3qi92+eLAcRIOjO/f+w=;
+        b=cxjm/J9rfDPLmjqV0vT9htCeD8V14LnRJNpSpJMGKz4TKLGZDiwcQEOa/n5s28zaoP
+         IK++6HBZaj//eumdQjECCpYN1sCbxMxiYdZ8wFVnn/Xxo1HHb61tELyPUDPcf+C/Fh8I
+         6HYouOmgZ9heJDS+s8ZGX+JSIifsN6Renq1qzeXhz7k5+jWJj2cwI+utX5lQiXr3Bsxc
+         x47L/42OCUlmhnCgASeX9RNlyONWX4UKILkymInuAdGyrs8ribE0rY8szw7DQ1AwIMvb
+         OmXgwK4arlhRpfwMzd1AF8vrHb0g7GOGMcz88hWwLdl/nJ5A2vHUqRLYkyvtwp3ct4H9
+         q/bQ==
+X-Gm-Message-State: AOAM530OYj7iunEZhX+YnfookwPnCbnRSdSuCszKfXV9B9OuodWkaqOW
+        MEe3YegH4u3tmhBg3weBlutgZxWrCG9TrbXnuoAbIGoCuX3mTZ7zOgjo1j88kd5SNo4iVLSmEQh
+        jUb6PlChbgaH5jaxiqmdqoyAe
+X-Received: by 2002:ad4:4ee5:: with SMTP id dv5mr19515001qvb.3.1628622132276;
+        Tue, 10 Aug 2021 12:02:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqt+5uYfshgiH7+DypABuSliS1cOfcGFcYlN+d70O9IJB9ST177nPLHh0DQzpOAn2Xszyk0Q==
+X-Received: by 2002:ad4:4ee5:: with SMTP id dv5mr19514951qvb.3.1628622131763;
+        Tue, 10 Aug 2021 12:02:11 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
+        by smtp.gmail.com with ESMTPSA id g1sm11333268qkd.89.2021.08.10.12.02.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 12:02:10 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 15:02:10 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
+Message-ID: <YRLNMv3UhwVa8Pd4@t490s>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+ <162818325518.1511194.1243290800645603609.stgit@omen>
+ <YRI+nsVAr3grftB4@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YRI+nsVAr3grftB4@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Richardson <richardsonnick@google.com>
+On Tue, Aug 10, 2021 at 10:53:50AM +0200, Christoph Hellwig wrote:
+> On Thu, Aug 05, 2021 at 11:07:35AM -0600, Alex Williamson wrote:
+> > +static void vfio_pci_zap_bars(struct vfio_pci_device *vdev)
+> >  {
+> > +	vfio_device_unmap_mapping_range(&vdev->vdev,
+> > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
+> > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
+> > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX));
+> 
+> Maybe make this a little more readable by having local variables:
 
-The bps for imix mode is calculated by:
-sum(imix_entry.size) / time_elapsed
+Or just pass in unmap_mapping_range(start=0, len=0)?  As unmap_mapping_range()
+understands len==0 as "to the end of file".  Thanks,
 
-The actual counts of each imix_entry are displayed under the
-"Current:" section of the interface output in the following format:
-imix_size_counts: size_1,count_1 size_2,count_2 ... size_n,count_n
-
-Example (count = 200000):
-imix_weights: 256,1 859,3 205,2
-imix_size_counts: 256,32082 859,99796 205,68122
-Result: OK: 17992362(c17964678+d27684) usec, 200000 (859byte,0frags)
-  11115pps 47Mb/sec (47977140bps) errors: 0
-
-Summary of changes:
-Calculate bps based on imix counters when in IMIX mode.
-Add output for IMIX counters.
-
-Signed-off-by: Nick Richardson <richardsonnick@google.com>
----
- net/core/pktgen.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-index ac1de15000e2..7aca175e749b 100644
---- a/net/core/pktgen.c
-+++ b/net/core/pktgen.c
-@@ -695,6 +695,18 @@ static int pktgen_if_show(struct seq_file *seq, void *v)
- 		   (unsigned long long)pkt_dev->sofar,
- 		   (unsigned long long)pkt_dev->errors);
- 
-+	if (pkt_dev->n_imix_entries > 0) {
-+		int i;
-+
-+		seq_puts(seq, "     imix_size_counts: ");
-+		for (i = 0; i < pkt_dev->n_imix_entries; i++) {
-+			seq_printf(seq, "%llu,%llu ",
-+				   pkt_dev->imix_entries[i].size,
-+				   pkt_dev->imix_entries[i].count_so_far);
-+		}
-+		seq_puts(seq, "\n");
-+	}
-+
- 	seq_printf(seq,
- 		   "     started: %lluus  stopped: %lluus idle: %lluus\n",
- 		   (unsigned long long) ktime_to_us(pkt_dev->started_at),
-@@ -3282,7 +3294,19 @@ static void show_results(struct pktgen_dev *pkt_dev, int nr_frags)
- 	pps = div64_u64(pkt_dev->sofar * NSEC_PER_SEC,
- 			ktime_to_ns(elapsed));
- 
--	bps = pps * 8 * pkt_dev->cur_pkt_size;
-+	if (pkt_dev->n_imix_entries > 0) {
-+		int i;
-+		struct imix_pkt *entry;
-+
-+		bps = 0;
-+		for (i = 0; i < pkt_dev->n_imix_entries; i++) {
-+			entry = &pkt_dev->imix_entries[i];
-+			bps += entry->size * entry->count_so_far;
-+		}
-+		bps = div64_u64(bps * 8 * NSEC_PER_SEC, ktime_to_ns(elapsed));
-+	} else {
-+		bps = pps * 8 * pkt_dev->cur_pkt_size;
-+	}
- 
- 	mbps = bps;
- 	do_div(mbps, 1000000);
 -- 
-2.32.0.605.g8dce9f2422-goog
+Peter Xu
 
