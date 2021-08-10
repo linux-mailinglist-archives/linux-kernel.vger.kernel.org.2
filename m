@@ -2,107 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF85C3E7D0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA9E3E7D0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbhHJQDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        id S229493AbhHJQDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235417AbhHJQCj (ORCPT
+        with ESMTP id S231767AbhHJQCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 12:02:39 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4E1C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:02:17 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id x10so22047092iop.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 09:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1PRnQFLgAZaDD7EbkN4+BWtHqGym0jkd6ykX1SJWWbg=;
-        b=RgaCat+Wj7sgZfBz3lRTE4ZluwhtWbKv7VRgfVdJX5vymBcX2czGapoM2BDWpbdEIX
-         skDkn4uJH176nacMm9IaQoXjxR6JR9cnEnkSkIW0y/s2u/rS2qUvA9k3gP3jsMUxMK6F
-         LGWh1NcUskwLYdxTFSos2FIV6hW9yGkfNmCtauUu7RdckLLE6wey+CcP+Dyl+Z4fTFZU
-         TTTgdxLRnaSXVK1zfT236/gCz8ar73Fgdra3zOOeXtcAU28DYiJeXEuX3rJSCpDTLx0l
-         fNB5M9zPPYBMJOPlsER7dNsQupPlkuQir2bZnHC0Hlkdn+Frk7y9y3wdvGfLOsoBf0hL
-         6kdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1PRnQFLgAZaDD7EbkN4+BWtHqGym0jkd6ykX1SJWWbg=;
-        b=ubKJ8hELL6jzR/yBUnzCziC7xzDhSxhutWuXcA7G/p5o2X11q7A7NhFjZtAJUvdUh9
-         3QxeZzxGy9lbwnMWBEU13ruLgx64bzby8+0s+ZJtYkSnfp63zzMvfyc0svzR2GV6xYYN
-         TD9LkSkU/aBN4mXOODRoRKVgbbJ8Aq5KFaz2c9RtpELnX4wyhgkb8Cyj2SjFKtHqLypm
-         DAbVmC6u7692DHEi1P8E66yj+VZXFueK51v0Jwkj8nT58ZxGOMSZONNAGMu/DnDnM/hX
-         hG1cBfpJlQPDNlN2Q6ahbngBamDyLr67u3e/te+I/jHoCeuqG2Hp5IAKMUmQjTSC3Zu8
-         R0tQ==
-X-Gm-Message-State: AOAM533H8Xzdvgt9tev3c9l0jX006jYmXhp2znTO9oNAhXZmJIMQaqN8
-        T86hIrpJHCX1EL7XiIj7Zjqg7A==
-X-Google-Smtp-Source: ABdhPJwLbvmmEDn/Srer4jrtXyQHYRDsJF5nBQ77YAuwBPv0xQcvbyNmJ6eHC4HvCrLCdlLcPWQMzw==
-X-Received: by 2002:a02:c9c4:: with SMTP id c4mr4735367jap.67.1628611336887;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA37C0613C1;
         Tue, 10 Aug 2021 09:02:16 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id p8sm12765248iol.49.2021.08.10.09.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 09:02:16 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, lkp@intel.com,
-        elder@kernel.org, netdev@vger.kernel.org,
+Date:   Tue, 10 Aug 2021 16:02:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628611335;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WZA0WNmeYMONHKWsLus3V1EUHxpkbYooY2IMzfbt5ck=;
+        b=kXcrVWXBggoCbXblx1hS69OcnvGtaQGdKR0anrcgGZW/fj+HvYmjN93X7g8yq/x/J/jWvt
+        7VNXZ6hAzx2YIGordmv6VtaWkwDIyfpfz8rMUcfcU6gYR8fwWshkgQpZKeLik7/kYkNXdE
+        3NVxrXY0Ap/SnivmGSU/mMT9ML0fTQZxVYtlGW5kZhlWyXOYWda6e3tjl29eL+9DUCa6Gi
+        o3k+urz1ebf7AM+Gau13l4G4jO93XfTDuae4gdZA7C+Uu+snci2+3x/ShE7YcB6z0Nsdip
+        khHxT7/hGxQ70dX6dg2MJrJ/xMCnKNerM2eiMdCRtqrhFnvSe1/mEmYV9zJwaQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628611335;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WZA0WNmeYMONHKWsLus3V1EUHxpkbYooY2IMzfbt5ck=;
+        b=MP4rN9y+wQq+Ve1V6i26raOWAq/gVWZAwHol2hBws/82/METvOy1ZIyQLvcjxcUl4nvV4e
+        leYBS4L63s2bESDQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] timekeeping: Distangle resume and clock-was-set events
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: ipa: always inline ipa_aggr_granularity_val()
-Date:   Tue, 10 Aug 2021 11:02:13 -0500
-Message-Id: <20210810160213.2257424-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210713135158.488853478@linutronix.de>
+References: <20210713135158.488853478@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162861133485.395.9303310350677655795.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It isn't required, but all callers of ipa_aggr_granularity_val()
-pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
-Two of those callers are in ipa_validate_build(), with the result
-being passed to BUILD_BUG_ON().
+The following commit has been merged into the timers/core branch of tip:
 
-Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
-inline ipa_aggr_granularity_val(), so the result of the function is
-not constant at compile time, and that leads to build errors.
+Commit-ID:     a761a67f591a8c7476c30bb20ed0f09fdfb1a704
+Gitweb:        https://git.kernel.org/tip/a761a67f591a8c7476c30bb20ed0f09fdfb1a704
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 13 Jul 2021 15:39:51 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 17:57:23 +02:00
 
-Define the function with the __always_inline attribute to avoid the
-errors.  And given that the function is inline, we can switch the
-WARN_ON() there to be BUILD_BUG_ON().
+timekeeping: Distangle resume and clock-was-set events
 
-Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alex Elder <elder@linaro.org>
+Resuming timekeeping is a clock-was-set event and uses the clock-was-set
+notification mechanism. This is in the way of making the clock-was-set
+update for hrtimers selective so unnecessary IPIs are avoided when a CPU
+base does not have timers queued which are affected by the clock setting.
+
+Distangle it by invoking hrtimer_resume() on each unfreezing CPU and invoke
+the new timerfd_resume() function from timekeeping_resume() which is the
+only place where this is needed.
+
+Rename hrtimer_resume() to hrtimer_resume_local() to reflect the change.
+
+With this the clock_was_set*() functions are not longer required to IPI all
+CPUs unconditionally and can get some smarts to avoid them.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210713135158.488853478@linutronix.de
+
 ---
+ include/linux/hrtimer.h     |  1 -
+ kernel/time/hrtimer.c       | 15 ++++++---------
+ kernel/time/tick-common.c   |  7 +++++++
+ kernel/time/tick-internal.h |  2 ++
+ kernel/time/timekeeping.c   |  4 +++-
+ 5 files changed, 18 insertions(+), 11 deletions(-)
 
-David/Jakub, this fixes a bug in a commit in net-next/master.  -Alex
-
- drivers/net/ipa/ipa_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 25bbb456e0078..f90b3521e266b 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -255,9 +255,9 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
-  * less than the number of timer ticks in the requested period.  0 is not
-  * a valid granularity value.
-  */
--static u32 ipa_aggr_granularity_val(u32 usec)
-+static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
- {
--	WARN_ON(!usec);
-+	BUILD_BUG_ON(!usec);
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index 253c6e2..0ee1401 100644
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -354,7 +354,6 @@ extern void timerfd_resume(void);
+ static inline void timerfd_clock_was_set(void) { }
+ static inline void timerfd_resume(void) { }
+ #endif
+-extern void hrtimers_resume(void);
  
- 	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
+ DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
+ 
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 214fd65..68e56f0 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -900,8 +900,8 @@ static void clock_was_set_work(struct work_struct *work)
+ static DECLARE_WORK(hrtimer_work, clock_was_set_work);
+ 
+ /*
+- * Called from timekeeping and resume code to reprogram the hrtimer
+- * interrupt device on all cpus and to notify timerfd.
++ * Called from timekeeping code to reprogram the hrtimer interrupt device
++ * on all cpus and to notify timerfd.
+  */
+ void clock_was_set_delayed(void)
+ {
+@@ -909,18 +909,15 @@ void clock_was_set_delayed(void)
  }
--- 
-2.27.0
-
+ 
+ /*
+- * During resume we might have to reprogram the high resolution timer
+- * interrupt on all online CPUs.  However, all other CPUs will be
+- * stopped with IRQs interrupts disabled so the clock_was_set() call
+- * must be deferred.
++ * Called during resume either directly from via timekeeping_resume()
++ * or in the case of s2idle from tick_unfreeze() to ensure that the
++ * hrtimers are up to date.
+  */
+-void hrtimers_resume(void)
++void hrtimers_resume_local(void)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 	/* Retrigger on the local CPU */
+ 	retrigger_next_event(NULL);
+-	/* And schedule a retrigger for all others */
+-	clock_was_set_delayed();
+ }
+ 
+ /*
+diff --git a/kernel/time/tick-common.c b/kernel/time/tick-common.c
+index d663249..4678935 100644
+--- a/kernel/time/tick-common.c
++++ b/kernel/time/tick-common.c
+@@ -470,6 +470,13 @@ void tick_resume_local(void)
+ 		else
+ 			tick_resume_oneshot();
+ 	}
++
++	/*
++	 * Ensure that hrtimers are up to date and the clockevents device
++	 * is reprogrammed correctly when high resolution timers are
++	 * enabled.
++	 */
++	hrtimers_resume_local();
+ }
+ 
+ /**
+diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
+index cd610fa..22de98c 100644
+--- a/kernel/time/tick-internal.h
++++ b/kernel/time/tick-internal.h
+@@ -168,3 +168,5 @@ void timer_clear_idle(void);
+ 
+ void clock_was_set(void);
+ void clock_was_set_delayed(void);
++
++void hrtimers_resume_local(void);
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 8a364aa..c8a9b9e 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -1810,8 +1810,10 @@ void timekeeping_resume(void)
+ 
+ 	touch_softlockup_watchdog();
+ 
++	/* Resume the clockevent device(s) and hrtimers */
+ 	tick_resume();
+-	hrtimers_resume();
++	/* Notify timerfd as resume is equivalent to clock_was_set() */
++	timerfd_resume();
+ }
+ 
+ int timekeeping_suspend(void)
