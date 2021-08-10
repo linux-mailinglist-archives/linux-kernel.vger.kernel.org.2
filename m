@@ -2,171 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EADC3E5667
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8583E5609
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235710AbhHJJJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238659AbhHJJIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:08:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7A8C061799;
-        Tue, 10 Aug 2021 02:07:50 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 09:07:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628586468;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNVHi/Mj3IoGqjXax8q9v2Mo/4dcGgd2i9RorAjZbE4=;
-        b=QPQGnqDFHUiT18K6fFa1U8WQ1AOvPXOgN6dAWK1HFjQzkrmSTIuYre8dc3DNVsB4TNauwp
-        bfKtCDvP2A49oIY8BXQkqU41BXqDNMw18UZMNbD6LnrDBpYJ0cq1V/jAfWs0ZCaLom2/3p
-        WmjiVAm0B27NPAMdwp0BP+HaPCxRp9JtpGmY6VO0oHRnR6mLaADZg9APnXLRBwMC4x1cQN
-        8OCsASIEIkBmVhilGs5UcSw+e2hNYI+a/IWwuNT0mdYWJgvcmG+vf0LaQW1GN797ZuGyT8
-        W9D6/QDWStgyrx/hl6c4TtdmVBQCxY3HHZYSdC8bMIAcGqAYvlAN87oB1Wya2g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628586468;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNVHi/Mj3IoGqjXax8q9v2Mo/4dcGgd2i9RorAjZbE4=;
-        b=/K0+iqCQsBM1QWRjNb4N4L0wM6pCarLHjyzR8skT8kIRX236kQOWOk9OGQVMtZutTAl1+L
-        rBzLqzzkwsDlLKCQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] PCI/MSI: Enable and mask MSI-X early
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210729222542.344136412@linutronix.de>
-References: <20210729222542.344136412@linutronix.de>
+        id S237762AbhHJIzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:55:46 -0400
+Received: from mga01.intel.com ([192.55.52.88]:62349 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229991AbhHJIzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 04:55:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="236868329"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="236868329"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 01:55:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="525955215"
+Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Aug 2021 01:55:20 -0700
+Date:   Tue, 10 Aug 2021 17:08:30 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        jmattson@google.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 04/15] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_DEPTH for
+ guest Arch LBR
+Message-ID: <20210810090830.GA3120@intel.com>
+References: <1628235745-26566-1-git-send-email-weijiang.yang@intel.com>
+ <1628235745-26566-5-git-send-email-weijiang.yang@intel.com>
+ <e739722a-b875-6e5b-3e77-38586d799485@gmail.com>
+ <20210810073858.GA2970@intel.com>
+ <0707a301-b6b5-0f54-810f-ef07e4148943@gmail.com>
 MIME-Version: 1.0
-Message-ID: <162858646777.395.4058447464180026703.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0707a301-b6b5-0f54-810f-ef07e4148943@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Tue, Aug 10, 2021 at 03:54:09PM +0800, Like Xu wrote:
+> On 10/8/2021 3:38 pm, Yang Weijiang wrote:
+> >On Mon, Aug 09, 2021 at 09:16:47PM +0800, Like Xu wrote:
+> >>On 6/8/2021 3:42 pm, Yang Weijiang wrote:
+> >>>From: Like Xu <like.xu@linux.intel.com>
+> >>
+> >>...
+> >>
+> >>>
+> >>>The number of Arch LBR entries available is determined by the value
+> >>>in host MSR_ARCH_LBR_DEPTH.DEPTH. The supported LBR depth values are
+> >>>enumerated in CPUID.(EAX=01CH, ECX=0):EAX[7:0]. For each bit "n" set
+> >>>in this field, the MSR_ARCH_LBR_DEPTH.DEPTH value of "8*(n+1)" is
+> >>>supported.
+> >>>
+> >>>On a guest write to MSR_ARCH_LBR_DEPTH, all LBR entries are reset to 0.
+> >>>KVM writes guest requested value to the native ARCH_LBR_DEPTH MSR
+> >>>(this is safe because the two values will be the same) when the Arch LBR
+> >>>records MSRs are pass-through to the guest.
+> >>>
+> >>>Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> >>>Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> >>>---
+> >>>  arch/x86/kvm/vmx/pmu_intel.c | 35 ++++++++++++++++++++++++++++++++++-
+> >>>  1 file changed, 34 insertions(+), 1 deletion(-)
+> >>>
+> >>>diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> >>>index 9efc1a6b8693..a4ef5bbce186 100644
+> >>>--- a/arch/x86/kvm/vmx/pmu_intel.c
+> >>>+++ b/arch/x86/kvm/vmx/pmu_intel.c
+> >>>@@ -211,7 +211,7 @@ static bool intel_pmu_is_valid_lbr_msr(struct kvm_vcpu *vcpu, u32 index)
+> >>>  static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+> >>>  {
+> >>>  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> >>>-	int ret;
+> >>>+	int ret = 0;
+> >>>  	switch (msr) {
+> >>>  	case MSR_CORE_PERF_FIXED_CTR_CTRL:
+> >>>@@ -220,6 +220,10 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+> >>>  	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+> >>>  		ret = pmu->version > 1;
+> >>>  		break;
+> >>>+	case MSR_ARCH_LBR_DEPTH:
+> >>>+		if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+> >>>+			ret = guest_cpuid_has(vcpu, X86_FEATURE_ARCH_LBR);
+> >>>+		break;
+> >>>  	default:
+> >>>  		ret = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0) ||
+> >>>  			get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0) ||
+> >>>@@ -348,10 +352,28 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
+> >>>  	return true;
+> >>>  }
+> >>>+/*
+> >>>+ * Check if the requested depth value the same as that of host.
+> >>>+ * When guest/host depth are different, the handling would be tricky,
+> >>>+ * so now only max depth is supported for both host and guest.
+> >>>+ */
+> >>>+static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
+> >>>+{
+> >>>+	unsigned int eax, ebx, ecx, edx;
+> >>>+
+> >>>+	if (!kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+> >>>+		return false;
+> >>>+
+> >>>+	cpuid_count(0x1c, 0, &eax, &ebx, &ecx, &edx);
+> >>
+> >>I really don't understand why the sanity check of the
+> >>guest lbr depth needs to read the host's cpuid entry and it's pretty slow.
+> >>
+> >This is to address a concern from Jim:
+> >"Does this imply that, when restoring a vCPU, KVM_SET_CPUID2 must be called before
+> >KVM_SET_MSRS, so that arch_lbr_depth_is_valid() knows what to do? Is this documented
+> >anywhere?"
+> 
+> What will KVM do if the #GP behaviour of msr does not match the CPUID it is set to?
+> 
+> For user space host_initiated path, we may check it with the host one but
+> for the guest emulation, it should rely on guest cpuid, just like what we do
+> in the intel_is_valid_msr().
+I think the original consideration is to avoid a mis-match of host/guest depth
+makes the host Arch LBR totally broken since a mis-match will clear all LBR MSRs.
+But I added a check in kvm_vcpu_after_set_cpuid() when user-space KVM_SET_CPUID2 to
+make sure user-space won't set unsupported depth. So maybe I can make
+the check as simple as checking a fixed value.
+> 
+> >anyway, setting depth MSR shouldn't be hot path.
+> 
+> Not at all, it will be used to reset LBR entries
+> and it's as frequent as task switching.
 
-Commit-ID:     438553958ba19296663c6d6583d208dfb6792830
-Gitweb:        https://git.kernel.org/tip/438553958ba19296663c6d6583d208dfb6792830
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 29 Jul 2021 23:51:40 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 10:59:20 +02:00
-
-PCI/MSI: Enable and mask MSI-X early
-
-The ordering of MSI-X enable in hardware is dysfunctional:
-
- 1) MSI-X is disabled in the control register
- 2) Various setup functions
- 3) pci_msi_setup_msi_irqs() is invoked which ends up accessing
-    the MSI-X table entries
- 4) MSI-X is enabled and masked in the control register with the
-    comment that enabling is required for some hardware to access
-    the MSI-X table
-
-Step #4 obviously contradicts #3. The history of this is an issue with the
-NIU hardware. When #4 was introduced the table access actually happened in
-msix_program_entries() which was invoked after enabling and masking MSI-X.
-
-This was changed in commit d71d6432e105 ("PCI/MSI: Kill redundant call of
-irq_set_msi_desc() for MSI-X interrupts") which removed the table write
-from msix_program_entries().
-
-Interestingly enough nobody noticed and either NIU still works or it did
-not get any testing with a kernel 3.19 or later.
-
-Nevertheless this is inconsistent and there is no reason why MSI-X can't be
-enabled and masked in the control register early on, i.e. move step #4
-above to step #1. This preserves the NIU workaround and has no side effects
-on other hardware.
-
-Fixes: d71d6432e105 ("PCI/MSI: Kill redundant call of irq_set_msi_desc() for MSI-X interrupts")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Ashok Raj <ashok.raj@intel.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210729222542.344136412@linutronix.de
-
----
- drivers/pci/msi.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 9232255..5d39ed8 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -772,18 +772,25 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
- 	u16 control;
- 	void __iomem *base;
- 
--	/* Ensure MSI-X is disabled while it is set up */
--	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
-+	/*
-+	 * Some devices require MSI-X to be enabled before the MSI-X
-+	 * registers can be accessed.  Mask all the vectors to prevent
-+	 * interrupts coming in before they're fully set up.
-+	 */
-+	pci_msix_clear_and_set_ctrl(dev, 0, PCI_MSIX_FLAGS_MASKALL |
-+				    PCI_MSIX_FLAGS_ENABLE);
- 
- 	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
- 	/* Request & Map MSI-X table region */
- 	base = msix_map_region(dev, msix_table_size(control));
--	if (!base)
--		return -ENOMEM;
-+	if (!base) {
-+		ret = -ENOMEM;
-+		goto out_disable;
-+	}
- 
- 	ret = msix_setup_entries(dev, base, entries, nvec, affd);
- 	if (ret)
--		return ret;
-+		goto out_disable;
- 
- 	ret = pci_msi_setup_msi_irqs(dev, nvec, PCI_CAP_ID_MSIX);
- 	if (ret)
-@@ -794,14 +801,6 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
- 	if (ret)
- 		goto out_free;
- 
--	/*
--	 * Some devices require MSI-X to be enabled before we can touch the
--	 * MSI-X registers.  We need to mask all the vectors to prevent
--	 * interrupts coming in before they're fully set up.
--	 */
--	pci_msix_clear_and_set_ctrl(dev, 0,
--				PCI_MSIX_FLAGS_MASKALL | PCI_MSIX_FLAGS_ENABLE);
--
- 	msix_program_entries(dev, entries);
- 
- 	ret = populate_msi_sysfs(dev);
-@@ -836,6 +835,9 @@ out_avail:
- out_free:
- 	free_msi_irqs(dev);
- 
-+out_disable:
-+	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
-+
- 	return ret;
- }
- 
+Yes, I saw this, if xsaves is not supported, writing depth msr is used as a short-cut.
+> 
+> >>KVM has reported the maximum host LBR depth as the only supported value.
+> >>
+> >>>+
+> >>>+	return (depth == fls(eax & 0xff) * 8);
+> >>>+}
+> >>>+
+> >>>  static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >>>  {
+> >>>  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> >>>  	struct kvm_pmc *pmc;
+> >>>+	struct lbr_desc *lbr_desc = vcpu_to_lbr_desc(vcpu);
+> >>>  	u32 msr = msr_info->index;
+> >>>  	switch (msr) {
+> >>>@@ -367,6 +389,9 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >>>  	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+> >>>  		msr_info->data = pmu->global_ovf_ctrl;
+> >>>  		return 0;
+> >>>+	case MSR_ARCH_LBR_DEPTH:
+> >>>+		msr_info->data = lbr_desc->records.nr;
+> >>>+		return 0;
+> >>>  	default:
+> >>>  		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+> >>>  		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> >>>@@ -393,6 +418,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >>>  {
+> >>>  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> >>>  	struct kvm_pmc *pmc;
+> >>>+	struct lbr_desc *lbr_desc = vcpu_to_lbr_desc(vcpu);
+> >>>  	u32 msr = msr_info->index;
+> >>>  	u64 data = msr_info->data;
+> >>>@@ -427,6 +453,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >>>  			return 0;
+> >>>  		}
+> >>>  		break;
+> >>>+	case MSR_ARCH_LBR_DEPTH:
+> >>>+		if (!arch_lbr_depth_is_valid(vcpu, data))
+> >>>+			return 1;
+> >>>+		lbr_desc->records.nr = data;
+> >>>+		if (!msr_info->host_initiated)
+> >>>+			wrmsrl(MSR_ARCH_LBR_DEPTH, lbr_desc->records.nr);
+> >>
+> >>Resetting the host msr here is dangerous,
+> >>what if the guest LBR event doesn't exist or isn't scheduled on?
+> >Hmm, should be vmcs_write to the DEPTH field, thanks for pointing this
+> >out!
+> 
+> Seriously?
+My gosh! we don't have the field :-/ Then more sanity checks are
+required.
+> 
+> >>
+> >>>+		return 0;
+> >>>  	default:
+> >>>  		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+> >>>  		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> >>>
