@@ -2,218 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF0C3E502E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 01:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4DC3E5031
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 02:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237090AbhHIX5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 19:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        id S237094AbhHJACW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 20:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHIX5Q (ORCPT
+        with ESMTP id S231127AbhHJACU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 19:57:16 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17ED3C0613D3;
-        Mon,  9 Aug 2021 16:56:55 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id n17so12318304lft.13;
-        Mon, 09 Aug 2021 16:56:55 -0700 (PDT)
+        Mon, 9 Aug 2021 20:02:20 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEA5C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 17:01:51 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id w17so32764490ybl.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 17:01:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wP2bayLmU+3K18X+SE8nuL9RPrBb9v8I/h7ZwghcHyc=;
-        b=jtBA8OX0piq6L6d+cUYv0qXKlJ00wiGPTtae34YO3dHTzchRsCEFwOseq8Y1d7IdEu
-         ivWSUigsp+2RNnEuh9vO1dYGKD28mbADWlLE5HkfznL/9mgglj7MkgwGer/rA6uNBJtG
-         oJ/p2NO+NwWWTgiFcSVE0J2wA0eoCTDbgyraSFkuEI4+KpKl4USYxPsiGvvijQDC9vTv
-         sFp/Z1eTvS0UW5GsCd8hflafQq91rUce8FJeGbnADp2yQT3qRwy+0QtZFdoVsPjhLb/2
-         roXSLb7yqKAEkb8UIx44+8iMsOtbB07YWAt/UpplU4J0x0eY/ejvXo4ras9YCKzvGxWD
-         QXPA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u/6lDzTST0h+RyT6gU/s2Pzqgb7dbZvl8tVew71+7uA=;
+        b=IXgv+KRKCsBVGj/yvVKxhDgYLPxGDqCg08pFEoQWD78TZ5q04i+NdqMAx4ATfGTjzw
+         4WGCqlwrSPFRgWpVrn/ib1PojT8GhH/z+vSzChsEuY1BT8qfkINf45tByHzSPvTPE/Kb
+         lmO2FQsPz6b2XPf3GWv8n8RcxKrlWUIdh8Ok56CktrS6Kj4WpwpsvSirqvi7QTzgx6dA
+         KeXmPH9pdNz7lJPYPZUDAZvWBlqFohqgIg2+VRL4ZnuNZKFQ/c07903n/OxOSVjnMG+M
+         SLUORF78yEpLGIKTTDGYqHyjyR5g9EgR7T8uJGbnVrOIu+TESiS+rTqcn4HncxJwXEg7
+         mbFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wP2bayLmU+3K18X+SE8nuL9RPrBb9v8I/h7ZwghcHyc=;
-        b=nqomB4jprrczmnE1wIPV9WEYSCUz29O4FBSsWsjk/RC2x1jLPEp8dkd0IA/8DZW1Gp
-         T/blx2tczY93Q4jaFZDSGMxcegdFYBtlVT4LIxZ14uc39Bo8Ex4qHDCCK48tKsEBh7nY
-         zHAwkrMPlMD0/ptvRRzvBXUQzHUPZm7msblkr1A/HmCBT6LLHf5sIYon82xoa4oC/VP7
-         04aCk2t/D/3Fr+lWYD5DH2tu+5Z4XaIRua3jQPd/tT6VaBIQuKfr97SCQxZqVDR1TQzl
-         FB7Uxbuv4GlgLHYL7SKK8pP9ywQhs5CHygF2Q2Ms1dEI6V41g5UmvSeL0tp7C49YNHMp
-         gV6A==
-X-Gm-Message-State: AOAM533lWDSD7lahH+faH7phO/aIDUzwneGiF93jBHH3bzs/s8zBlqUa
-        DUvUj5vB8TcJHqVsssuN93OMrA5fDR0=
-X-Google-Smtp-Source: ABdhPJxbznr9B+GvA4Ip6tbIHh9Mks/IMZ0ezhi85KAPmj3cZfiR6/1w6WjYu+I0ZOYSZ3svtawpiw==
-X-Received: by 2002:a19:7017:: with SMTP id h23mr20523075lfc.532.1628553413356;
-        Mon, 09 Aug 2021 16:56:53 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-117-53.dynamic.spd-mgts.ru. [46.138.117.53])
-        by smtp.googlemail.com with ESMTPSA id o8sm951395lft.85.2021.08.09.16.56.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Aug 2021 16:56:52 -0700 (PDT)
-Subject: Re: [PATCH v7 02/37] soc/tegra: pmc: Implement attach_dev() of power
- domain drivers
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <20210701232728.23591-1-digetx@gmail.com>
- <20210701232728.23591-3-digetx@gmail.com>
- <CAPDyKFrtWDYJo_NjS8306Z9ykbg7XZ55jC9hKEBMGkcrx1=4kQ@mail.gmail.com>
- <1034458d-78e0-5036-e278-6fee5d0d75ac@gmail.com>
- <CAPDyKFoafAk72Kw6X7626Niduaii0V5VM4dGSWmq+e3JTh7VRg@mail.gmail.com>
- <a5dfdf59-f5b5-d28e-6b02-b0c860ba8d80@gmail.com>
- <CAPDyKFq+ExjbGrN=yUUXPKfN_fGrwY6EAYn9a6VUFFU_VjhC=g@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6741262b-386b-7635-fd42-ebd4f877fddd@gmail.com>
-Date:   Tue, 10 Aug 2021 02:56:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u/6lDzTST0h+RyT6gU/s2Pzqgb7dbZvl8tVew71+7uA=;
+        b=Ifr0f6V+3bAkYpZpLpvb2nevUTwa163jeQbHRxzLjYc9HxlDOYm5loejKHZRoB5uPW
+         rVor3XIxU5AyPA/8IngT0jE06ytNIWiV8XmyzkBCPLtIISUH2jSmsaEBUIiRtxNeEOeg
+         laWM9XGkxmaf+ao29CHZDGxG+OcaJTRMwWuQ4FCnXRihLbJsylkMG+CiYBjoMLimAZTT
+         aYJ6KP3XSNBI6O54U/27pd+YE3Cu93Yhfa+r5uK5pYjb9gZP6fPzIw6wYHlF7RuHP7Ah
+         fOO0UPzjXtlij5GmvV1RiWDwQ2VIG379kejDcc4cIb2H+IyZlDu7DdyuPM7dc6eodqih
+         1w4Q==
+X-Gm-Message-State: AOAM5314xFr4TG5xlY9HvWsZt1L8tHiexcfkRyKwgSA1z7OFJHMrQs68
+        DkL3pIVvPrSDS4iTiXDV9q2/yGw8VP4ZlnbWi5vXyA==
+X-Google-Smtp-Source: ABdhPJwanymbJHXSzhVU3ouc2r4BMfkwlf0QQ5JwTtfL17PzN357+PpyPsNiUZT/wN15PZ4CaB5DKmXx7A8TZqps84M=
+X-Received: by 2002:a25:dcd1:: with SMTP id y200mr33427728ybe.92.1628553710295;
+ Mon, 09 Aug 2021 17:01:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFq+ExjbGrN=yUUXPKfN_fGrwY6EAYn9a6VUFFU_VjhC=g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210803044607.599629-1-mizhang@google.com> <20210803044607.599629-4-mizhang@google.com>
+ <CALMp9eR4AB0O7__VwGNbnm-99Pp7fNssr8XGHpq+6Pwkpo_oAw@mail.gmail.com> <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
+In-Reply-To: <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 9 Aug 2021 17:01:39 -0700
+Message-ID: <CAL715WLO9+CpNa4ZQX4J2OdyqOBsX0+g0M4bNe+A+6FVxB2OxA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>, peterx@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.08.2021 17:15, Ulf Hansson пишет:
->> We did that in a previous versions of this series where drivers were
->> calling devm_tegra_core_dev_init_opp_table() helper during the probe to
->> initialize performance state of the domain. Moving OPP state
->> initialization into central place made drivers cleaner by removing the
->> boilerplate code.
-> I am not against doing this in a central place, like $subject patch
-> suggests. As a matter of fact, it makes perfect sense to me.
-> 
-> However, what I am concerned about, is that you require to use genpd
-> internal data structures to do it. I think we should try to avoid
-> that.
+Hi Paolo,
 
-Alright, what do you think about this:
+I recently looked at the patches queued and I find this patch from
+Peter Xu (Cced), which is also adding 'page stats' information into
+KVM:
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index a934c679e6ce..5faed62075e9 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2669,12 +2669,37 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
- 	dev->pm_domain->detach = genpd_dev_pm_detach;
- 	dev->pm_domain->sync = genpd_dev_pm_sync;
- 
-+	if (pd->default_performance_state) {
-+		unsigned int default_pstate;
-+
-+		ret = pd->default_performance_state(pd, dev);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to get default performance state for PM domain %s: %d\n",
-+				pd->name, ret);
-+			goto out;
-+		}
-+
-+		default_pstate = ret;
-+
-+		if (power_on) {
-+			ret = dev_pm_genpd_set_performance_state(dev, default_pstate);
-+			if (ret) {
-+				dev_err(dev, "failed to set default performance state %u for PM domain %s: %d\n",
-+					default_pstate, pd->name, ret);
-+				goto out;
-+			}
-+		} else {
-+			dev_gpd_data(dev)->rpm_pstate = default_pstate;
-+		}
-+	}
-+
- 	if (power_on) {
- 		genpd_lock(pd);
- 		ret = genpd_power_on(pd, 0);
- 		genpd_unlock(pd);
- 	}
- 
-+out:
- 	if (ret)
- 		genpd_remove_device(pd, dev);
- 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index 81d1f019fa0c..9efb55f52462 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -518,15 +518,14 @@ static const char * const tegra_emc_compats[] = {
-  * We retrieve clock rate of the attached device and initialize domain's
-  * performance state in accordance to the clock rate.
-  */
--static int tegra_pmc_pd_attach_dev(struct generic_pm_domain *genpd,
--				   struct device *dev)
-+static int tegra_pmc_genpd_default_perf_state(struct generic_pm_domain *genpd,
-+					      struct device *dev)
- {
--	struct generic_pm_domain_data *gpd_data = dev_gpd_data(dev);
- 	struct opp_table *opp_table, *pd_opp_table;
- 	struct generic_pm_domain *core_genpd;
- 	struct dev_pm_opp *opp, *pd_opp;
--	unsigned long rate, state;
- 	struct gpd_link *link;
-+	unsigned long rate;
- 	struct clk *clk;
- 	u32 hw_version;
- 	int ret;
-@@ -633,8 +632,7 @@ static int tegra_pmc_pd_attach_dev(struct generic_pm_domain *genpd,
- 	 * RPM-resume of the device.  This means that drivers don't need to
- 	 * explicitly initialize performance state.
- 	 */
--	state = pm_genpd_opp_to_performance_state(&core_genpd->dev, pd_opp);
--	gpd_data->rpm_pstate = state;
-+	ret = pm_genpd_opp_to_performance_state(&core_genpd->dev, pd_opp);
- 	dev_pm_opp_put(pd_opp);
- 
- put_pd_opp_table:
-@@ -1383,7 +1381,7 @@ static int tegra_powergate_add(struct tegra_pmc *pmc, struct device_node *np)
- 
- 	pg->id = id;
- 	pg->genpd.name = np->name;
--	pg->genpd.attach_dev = tegra_pmc_pd_attach_dev;
-+	pg->genpd.default_performance_state = tegra_pmc_genpd_default_perf_state;
- 	pg->genpd.power_off = tegra_genpd_power_off;
- 	pg->genpd.power_on = tegra_genpd_power_on;
- 	pg->pmc = pmc;
-@@ -1500,7 +1498,7 @@ static int tegra_pmc_core_pd_add(struct tegra_pmc *pmc, struct device_node *np)
- 		return -ENOMEM;
- 
- 	genpd->name = np->name;
--	genpd->attach_dev = tegra_pmc_pd_attach_dev;
-+	genpd->default_performance_state = tegra_pmc_genpd_default_perf_state;
- 	genpd->set_performance_state = tegra_pmc_core_pd_set_performance_state;
- 	genpd->opp_to_performance_state = tegra_pmc_core_pd_opp_to_performance_state;
- 
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 21a0577305ef..cd4867817ca5 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -143,6 +143,8 @@ struct generic_pm_domain {
- 			  struct device *dev);
- 	void (*detach_dev)(struct generic_pm_domain *domain,
- 			   struct device *dev);
-+	int (*default_performance_state)(struct generic_pm_domain *domain,
-+					 struct device *dev);
- 	unsigned int flags;		/* Bit field of configs for genpd */
- 	struct genpd_power_state *states;
- 	void (*free_states)(struct genpd_power_state *states,
+https://patchwork.kernel.org/project/kvm/patch/20210625153214.43106-7-peterx@redhat.com/
 
->> I can revert back to the previous variant, although this variant works
->> well too.
-> I looked at that code and in that path we end up calling
-> dev_pm_opp_set_rate(), after it has initialized the opp table for the
-> device.
-> 
-> Rather than doing the OF parsing above to find out the current state
-> for the device, why can't you just call dev_pm_opp_set_rate() to
-> initialize a proper vote instead?
-> 
+From a functionality point of view, the above patch seems duplicate
+with mine. But in detail, Peter's approach is using debugfs with
+proper locking to traverse the whole rmap to get the detailed page
+sizes in different granularity.
 
-For some devices clock rate is either preset by bootloader, or by clk driver, or by assigned-clocks in a device-tree. And then I don't see what's the difference in comparison to initialization for the current rate.
+In comparison, mine is to add extra code in low level SPTE update
+routines and store aggregated data in kvm->kvm_stats. This data could
+be retrieved from Jing's fd based API without any lock required, but
+it does not provide the fine granular information such as the number
+of contiguous 4KG/2MB/1GB pages.
 
-For some devices, like memory controller, we can't just change the clock rate because it's a complex procedure and some boards will use fixed rate, but the power vote still must be initialized.
+So would you mind giving me some feedback on this patch? I would
+really appreciate it.
+
+Thank you. Regards
+-Mingwei
+
+-Mingwei
+
+On Mon, Aug 9, 2021 at 4:39 PM Mingwei Zhang <mizhang@google.com> wrote:
+>
+> Hi Jim,
+>
+> No, I don't think 512G is supported. So, I will remove the
+> 'pages_512G' metric in my next version.
+>
+> Thanks.
+> -Mingwei
+>
+> On Mon, Aug 9, 2021 at 3:26 PM Jim Mattson <jmattson@google.com> wrote:
+> >
+> > On Mon, Aug 2, 2021 at 9:46 PM Mingwei Zhang <mizhang@google.com> wrote:
+> > >
+> > > Existing KVM code tracks the number of large pages regardless of their
+> > > sizes. Therefore, when large page of 1GB (or larger) is adopted, the
+> > > information becomes less useful because lpages counts a mix of 1G and 2M
+> > > pages.
+> > >
+> > > So remove the lpages since it is easy for user space to aggregate the info.
+> > > Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
+> >
+> > There is no such thing as a 512GiB page, is there? If this is an
+> > attempt at future-proofing, why not go to 256TiB?
