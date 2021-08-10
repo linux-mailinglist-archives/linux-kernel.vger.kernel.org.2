@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC42E3E5A03
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B893E59FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240587AbhHJMf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237391AbhHJMfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:35:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66288C0613D3;
-        Tue, 10 Aug 2021 05:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1Eibxde9ggx54b5TBpNP+oBpZ0ThMzYJ1OQ+F+Hf7IU=; b=r1eXHXnv/xi2nTA4IlUEdZL/gl
-        aiAmEz31byi7ERD4xN/iaW8IozUq8x8hAecNx1Rc73WW430UhZWuAkryy1uMmmqTbW1TnHZuvXrqK
-        FsjVrILygugSexALlOacSKdxYERbCfNYhOM3P5mt8bhYxoZK1aiPM0wDWTIvJ1X9LxQb23wKxYT3v
-        1f5K/5a+LiW0cMjtZrxKrwjFb4TqsLxNVld7nMi4oY06na7TTAATHxj8YgLPexLuF9RvQlYJmdpbJ
-        ay0NuZjJDP/0RIlwLpJiDJFAULErz5D1AKSPwQNyDnaQ+HWVKn5xtvD5h4T+hyhvqM/jTw+5f+KjW
-        lWhn0SGQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDQwi-00C6cz-GN; Tue, 10 Aug 2021 12:33:52 +0000
-Date:   Tue, 10 Aug 2021 13:33:28 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        id S240571AbhHJMeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240555AbhHJMeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:34:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8576D60462;
+        Tue, 10 Aug 2021 12:33:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628598837;
+        bh=fhsz0BxVURPIdp6eG839zOcCbucoqG9Srd3uY0rDGfM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UjQoAzF/KSd7KTwl/9zpnY1yw1HV3jqfcWuzxJlimpM7BlpR4AX2gQ8wVr54kNE5f
+         JzNcNaba5PKiJwigcmNrLnG+VyTBoPZ9gaWiV0ERZ0gF6VqVZ3g8qcEo7p8xFTwA7p
+         vGAAy+Y/MF07RzrrtXyAD3/3hWsSm4Svd/MbPyFjNriivatsjxcNK8fuJTvv9buswM
+         +GdXz9M/jnytv17hHZEDcgvE2RRnDdUqYMTPmvrhbI6UbvsDxGG4rAtiRdJEB6euWf
+         fn/EP/pjZFQp28E0qgnVmz+JIJjR3tf1ltrr9L0busOsNOZN3dTjFnfvA+jcW8P+ty
+         qapslyqaBremg==
+Subject: Re: [v6 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
+ provider
+To:     Odelu Kukatla <okukatla@codeaurora.org>, georgi.djakov@linaro.org,
+        bjorn.andersson@linaro.org, evgreen@google.com,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] Page Cache Allowing Hard Interrupts
-Message-ID: <YRJyGMLAFKoB1qUQ@infradead.org>
-References: <20210730213630.44891-1-vishal.moola@gmail.com>
- <YRI1oLdiueUbBVwb@infradead.org>
- <YRJsiapS/M3BOH9D@casper.infradead.org>
+Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+References: <1628577962-3995-1-git-send-email-okukatla@codeaurora.org>
+ <1628577962-3995-4-git-send-email-okukatla@codeaurora.org>
+From:   Georgi Djakov <djakov@kernel.org>
+Message-ID: <544023fc-f440-53bb-3308-33a1782aac19@kernel.org>
+Date:   Tue, 10 Aug 2021 15:33:52 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRJsiapS/M3BOH9D@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1628577962-3995-4-git-send-email-okukatla@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 01:09:45PM +0100, Matthew Wilcox wrote:
-> On Tue, Aug 10, 2021 at 09:15:28AM +0100, Christoph Hellwig wrote:
-> > Stupid question, but where do we ever do page cache interaction from
-> > soft irq context?
-> 
-> test_clear_page_writeback() happens in _some_ interrupt context (ie
-> the io completion path).  We had been under the impression that it was
-> always actually softirq context, and so this patch was safe.  However,
-> it's now clear that some drivers are calling it from hardirq context.
-> Writeback completions are clearly not latency sensitive and so can
-> be delayed from hardirq to softirq context without any problem, so I
-> think fixing this is just going to be a matter of tagging requests as
-> "complete in softirq context" and ensuring that blk_mq_raise_softirq()
-> is called for them.
-> 
-> Assuming that DIO write completions _are_ latency-sensitive, of course.
-> Maybe all write completions could be run in softirqs.
+Hi Odelu,
 
-I really don't really see any benefit in introducing softirqs into
-the game.  If we want to simplify the locking and do not care too much
-about latency, we should just defer to workqueue/thread context.
-For example XFS already does that for all writeback except for pure
-overwrites.  Those OTOH can be latency critical for O_SYNC writes, but
-you're apparently looking into that already.
+On 10.08.21 9:46, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
+> SoCs.
+> 
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 9 +++++++++
+>   1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 53a21d0..e78f055 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -586,6 +586,15 @@
+>   			qcom,bcm-voters = <&apps_bcm_voter>;
+>   		};
+>   
+> +		epss_l3: interconnect@18590000 {
+
+This DT node should be moved after apps_rsc: rsc@18200000
+and before cpufreq@18591000
+
+> +			compatible = "qcom,sc7280-epss-l3";
+> +			reg = <0 0x18590000 0 1000>, <0 0x18591000 0 0x100>,
+> +				<0 0x18592000 0 0x100>, <0 0x18593000 0 0x100>;
+
+Please align to the open parenthesis, to be consistent with the rest of
+the file.
+
+> +			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
+> +			clock-names = "xo", "alternate";
+> +			#interconnect-cells = <1>;
+> +		};
+> +
+>   		ipa: ipa@1e40000 {
+>   			compatible = "qcom,sc7280-ipa";
+
+Thanks,
+Georgi
+
