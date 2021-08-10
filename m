@@ -2,177 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E983E7E07
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2BD3E7E0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhHJRMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:12:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:25369 "EHLO m43-7.mailgun.net"
+        id S229940AbhHJRO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:14:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhHJRMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:12:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628615529; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=plpxrD4kIxF9fIBxxFmf2PnbVDKTvqRX6FCReVS+x4o=; b=jpfSRFlqcLLxmgC6LGBHRpEIFgcZwRTMKgAYWHlnGwFbl4P8vmR31Pa/cNz95HdUc/5ZlIy7
- FSn2tMSUVIdN1RTG9D1xiqAdAx4rK3Fwx7ZeeWSGuKXGd7A4sgdYWaOWpwiX51eBF0TTthGv
- G/cqb4cEsi5qhxgHBtWlw8tub/M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6112b35991487ad520aa04e1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 17:11:53
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 268D4C43217; Tue, 10 Aug 2021 17:11:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.9] (cpe-75-80-185-151.san.res.rr.com [75.80.185.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2514BC433F1;
-        Tue, 10 Aug 2021 17:11:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2514BC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [RFC][PATCH] dwc3: gadget: Fix losing list items in
- dwc3_gadget_ep_cleanup_completed_requests()
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jack Pham <jackp@codeaurora.org>, Todd Kjos <tkjos@google.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Petri Gynther <pgynther@google.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-References: <CANcMJZCEVxVLyFgLwK98hqBEdc0_n4P0x_K6Gih8zNH3ouzbJQ@mail.gmail.com>
- <20210809223159.2342385-1-john.stultz@linaro.org>
- <4e1bef57-8520-36b9-f5cb-bbc925626a19@synopsys.com>
- <CALAqxLXPGt69ceiXkGT-nDjeP72mmCUgEzDdMpXr=rSNwpespw@mail.gmail.com>
- <0dfa8cd6-99b6-55c7-8099-0f6f1187b7fd@synopsys.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <b025412f-c27a-a59b-cd8f-aec0faa98928@codeaurora.org>
-Date:   Tue, 10 Aug 2021 10:11:51 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229474AbhHJROY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:14:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0D3060EB5;
+        Tue, 10 Aug 2021 17:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628615641;
+        bh=3hvStO5mtP89PZL0SRaa4SH5ftb8hZFRahpmKIwYLSE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MG6Iq0snBaaZQuXZQWLqCyuUmPcDe4ara15oBV0ONmWrge0Q+Z2YRLz0uAfFUqLn6
+         JNuFJ6IlHedZbnOHyhYwxfzrv3Ht0vQsWfcWM4iGoxLB25g7bJh7KxMwBcuN1dwwO+
+         DnqlnKVO6gJSpcbCS1p+qEuLFdp/duHZR0tvouKj6UsVJRu6NCVBMhFveuGYg8m8/h
+         s2L1QeMCEuWYDdqx6gmbguvMntvuI/1WfXYCxsvBEe8NWaKLZH9WsF+blQ8mp/jwPG
+         aUUKjGNFRJO76FOkNGtkN0VZwsugwidKXr71aL4I5Qr4R9u0syiyX5nYpQAGqcfd9R
+         mCTQaeBmt5fsw==
+Received: by mail-qv1-f50.google.com with SMTP id s11so11301319qvz.7;
+        Tue, 10 Aug 2021 10:14:01 -0700 (PDT)
+X-Gm-Message-State: AOAM53259J5DJH18YKMUuppSzER/21/8TfTV/jp3eKd8UXAJWd/Im8Qb
+        cvZO54+4ghM1y75jLrB3J8lDILf270u7E3MEoQ==
+X-Google-Smtp-Source: ABdhPJxbSAKX9C/u3IRL3qRUvllPh6YBt2Y4FFNovGdXa5kdn08O6OM4jS0KgVnhRJGXDDBwRTTm6RSX8iS8weAiloo=
+X-Received: by 2002:a0c:edb0:: with SMTP id h16mr19355640qvr.11.1628615640933;
+ Tue, 10 Aug 2021 10:14:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0dfa8cd6-99b6-55c7-8099-0f6f1187b7fd@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1627965261.git.mchehab+huawei@kernel.org>
+ <CAL_JsqLjw=+szXWJjGe86tMc51NA-5j=jVSXUAWuKeZRuJNJUg@mail.gmail.com>
+ <20210804085045.3dddbb9c@coco.lan> <YQrARd7wgYS1nywt@robh.at.kernel.org>
+ <20210805094612.2bc2c78f@coco.lan> <20210805095848.464cf85c@coco.lan>
+ <CAL_JsqKso=z8LG3ViaggyS1k+1T2F5aAhP3_RNhumQoUUD+bbg@mail.gmail.com>
+ <20210810114211.01df0246@coco.lan> <CAL_JsqKtXoFeJO6_13U+VsSXNGX_1TQvwOyQYRk5JUgBhvQChA@mail.gmail.com>
+ <20210810162054.1aa84b84@coco.lan>
+In-Reply-To: <20210810162054.1aa84b84@coco.lan>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 10 Aug 2021 11:13:48 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL-R=kTugNAC-C1gfSm6Xnb0Nw_iLcRki8aQMNQjcLN6A@mail.gmail.com>
+Message-ID: <CAL_JsqL-R=kTugNAC-C1gfSm6Xnb0Nw_iLcRki8aQMNQjcLN6A@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] DT schema changes for HiKey970 PCIe hardware to work
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thinh,
+On Tue, Aug 10, 2021 at 8:21 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Em Tue, 10 Aug 2021 07:44:50 -0600
+> Rob Herring <robh@kernel.org> escreveu:
+>
+> > On Tue, Aug 10, 2021 at 3:42 AM Mauro Carvalho Chehab
+> > <mchehab+huawei@kernel.org> wrote:
+> > >
+> > > Em Fri, 6 Aug 2021 10:23:35 -0600
+> > > Rob Herring <robh@kernel.org> escreveu:
+> > >
+> > > > On Thu, Aug 5, 2021 at 1:58 AM Mauro Carvalho Chehab
+> > > > <mchehab+huawei@kernel.org> wrote:
+> > > > >
+> > > > > Em Thu, 5 Aug 2021 09:46:12 +0200
+> > > > > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> > > > >
+> > > > > > Em Wed, 4 Aug 2021 10:28:53 -0600
+> > > > > > Rob Herring <robh@kernel.org> escreveu:
+> > > > > >
+> > > > > > > On Wed, Aug 04, 2021 at 08:50:45AM +0200, Mauro Carvalho Chehab wrote:
+> > > > > > > > Em Tue, 3 Aug 2021 16:11:42 -0600
+> > > > > > > > Rob Herring <robh+dt@kernel.org> escreveu:
+> > > > > > > >
+> > > > > > > > > On Mon, Aug 2, 2021 at 10:39 PM Mauro Carvalho Chehab
+> > > > > > > > > <mchehab+huawei@kernel.org> wrote:
+> > > > > > > > > >
+> > > > > > > > > > Hi Rob,
+> > > > > > > > > >
+> > > > > > > > > > That's the third version of the DT bindings for Kirin 970 PCIE and its
+> > > > > > > > > > corresponding PHY.
+> > > > > > > > > >
+> > > > > > > > > > It is identical to v2, except by:
+> > > > > > > > > >         -          pcie@7,0 { // Lane 7: Ethernet
+> > > > > > > > > >         +          pcie@7,0 { // Lane 6: Ethernet
+> > > > > > > > >
+> > > > > > > > > Can you check whether you have DT node links in sysfs for the PCI
+> > > > > > > > > devices? If you don't, then something is wrong still in the topology
+> > > > > > > > > or the PCI core is failing to set the DT node pointer in struct
+> > > > > > > > > device. Though you don't rely on that currently, we want the topology
+> > > > > > > > > to match. It's possible this never worked on arm/arm64 as mainly
+> > > > > > > > > powerpc relied on this.
+> > > > > > > > >
+> > > > > > > > > I'd like some way to validate the DT matches the PCI topology. We
+> > > > > > > > > could have a tool that generates the DT structure based on the PCI
+> > > > > > > > > topology.
+> > > > > > > >
+> > > > > > > > The of_node node link is on those places:
+> > > > > > > >
+> > > > > > > >   $ find /sys/devices/platform/soc/f4000000.pcie/ -name of_node
+> > > > > > > >   /sys/devices/platform/soc/f4000000.pcie/of_node
+> > > > > > > >   /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/of_node
+> > > > > > > >   /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/pci_bus/0000:01/of_node
+> > > > > > > >   /sys/devices/platform/soc/f4000000.pcie/pci0000:00/pci_bus/0000:00/of_node
+> > > > > > >
+> > > > > > > Looks like we're missing some...
+> > > > > > >
+> > > > > > > It's not immediately obvious to me what's wrong here. Only the root
+> > > > > > > bus is getting it's DT node set. The relevant code is pci_scan_device(),
+> > > > > > > pci_set_of_node() and pci_set_bus_of_node(). Give me a few days to try
+> > > > > > > to reproduce and debug it.
+> > > > > >
+> > > > > > I added a printk on both pci_set_*of_node() functions:
+> > > > > >
+> > > > > >       [    4.872991]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f4000000
+> > > > > >       [    4.913806]  (null): pci_set_of_node: of_node: /soc/pcie@f4000000
+> > > > > >       [    4.978102] pci_bus 0000:01: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> > > > > >       [    4.990622]  (null): pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> > > > > >       [    5.052383] pci_bus 0000:02: pci_set_bus_of_node: of_node: (null)
+> > > > > >       [    5.059263]  (null): pci_set_of_node: of_node: (null)
+> > > > > >       [    5.085552]  (null): pci_set_of_node: of_node: (null)
+> > > > > >       [    5.112073]  (null): pci_set_of_node: of_node: (null)
+> > > > > >       [    5.138320]  (null): pci_set_of_node: of_node: (null)
+> > > > > >       [    5.164673]  (null): pci_set_of_node: of_node: (null)
+> > > > > >       [    5.233759] pci_bus 0000:03: pci_set_bus_of_node: of_node: (null)
+> > > > > >       [    5.240539]  (null): pci_set_of_node: of_node: (null)
+> > > > > >       [    5.310545] pci_bus 0000:04: pci_set_bus_of_node: of_node: (null)
+> > > > > >       [    5.324719] pci_bus 0000:05: pci_set_bus_of_node: of_node: (null)
+> > > > > >       [    5.338914] pci_bus 0000:06: pci_set_bus_of_node: of_node: (null)
+> > > > > >       [    5.345516]  (null): pci_set_of_node: of_node: (null)
+> > > > > >       [    5.415795] pci_bus 0000:07: pci_set_bus_of_node: of_node: (null)
+> > > > >
+> > > > > The enclosed patch makes the above a clearer:
+> > > > >
+> > > > >         [    4.800975]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f4000000
+> > > > >         [    4.855983] pci 0000:00:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000
+> > > > >         [    4.879169] pci_bus 0000:01: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> > > > >         [    4.900602] pci 0000:01:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> > > > >         [    4.953086] pci_bus 0000:02: pci_set_bus_of_node: of_node: (null)
+> > > >
+> > > > I believe the issue is we need another bridge node in the DT
+> > > > hierarchy. What we have is:
+> > > >
+> > > > Bus 0 is node /soc/pcie@f4000000
+> > > > Bus 1 is device 0 on bus 0 is node /soc/pcie@f4000000/pcie@0,0
+> > > > Bus 2 is device 0 on bus 1 in node ... whoops, there's no device 0
+> > > > under /soc/pcie@f4000000/pcie@0,0
+> > > >
+> > > > So we need the hierarchy to be: /soc/pcie@f4000000/pcie@0/pcie@0/pcie@{1,5,7}
+> > >
+> > > Adding a child pcie@0 produces the following output from my debug
+> > > patches:
+> >
+> > You removed your changes to the PCI code other than the debug print?
+>
+> Yes.
+>
+> > >
+> > > [    4.984278]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f4000000
+> > > [    5.042992] pci 0000:00:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000
+> > > [    5.083738] pci_bus 0000:01: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> > > [    5.124377] pci 0000:01:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> > > [    5.168395] pci_bus 0000:02: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
+> > > [    5.200719] pci 0000:02:01.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
+> >
+> > This should not happen. The devfn doesn't match.
+> >
+> > > [    5.247777] pci 0000:02:04.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
+> > > [    5.276768] pci 0000:02:05.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
+> > > [    5.305018] pci 0000:02:07.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
+> > > [    5.333093] pci 0000:02:09.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0/pcie@0,0
+> > > [    5.395620] pci_bus 0000:03: pci_set_bus_of_node: of_node: (null)
+> > > [    5.416333] pci 0000:03:00.0: pci_set_of_node: of_node: (null)
+> > > [    5.451353] pci_bus 0000:04: pci_set_bus_of_node: of_node: (null)
+> > > [    5.473970] pci_bus 0000:05: pci_set_bus_of_node: of_node: (null)
+> > > [    5.487765] pci_bus 0000:06: pci_set_bus_of_node: of_node: (null)
+> > > [    5.530219] pci 0000:06:00.0: pci_set_of_node: of_node: (null)
+> > > [    5.560896] pci_bus 0000:07: pci_set_bus_of_node: of_node: (null)
+> > >
+> > > It produces the following sysfs nodes:
+> > >
+> > >         $ find /sys/devices/platform/soc/f4000000.pcie/ -name of_node
+> > >         /sys/devices/platform/soc/f4000000.pcie/of_node
+> > >         /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/of_node
+> > >         /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/of_node
+> > >         /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/pci_bus/0000:02/of_node
+> > >         /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/pci_bus/0000:01/of_node
+> > >         /sys/devices/platform/soc/f4000000.pcie/pci0000:00/pci_bus/0000:00/of_node
+> > >
+> > >
+> > > I'm enclosing the DT schema I'm using.
+> > >
+> > >
+> > >
+> > > Thanks,
+> > > Mauro
+> > >
+> > > ---
+> > >
+> > >                 pcie@f4000000 {
+> > >                         compatible = "hisilicon,kirin970-pcie";
+> > >                         reg = <0x0 0xf4000000 0x0 0x1000000>,
+> > >                               <0x0 0xfc180000 0x0 0x1000>,
+> > >                               <0x0 0xf5000000 0x0 0x2000>;
+> > >                         reg-names = "dbi", "apb", "config";
+> > >                         bus-range = <0x00 0xff>;
+> > >                         #address-cells = <3>;
+> > >                         #size-cells = <2>;
+> > >                         device_type = "pci";
+> > >                         phys = <&pcie_phy>;
+> > >                         ranges = <0x02000000 0x0 0x00000000
+> > >                                   0x0 0xf6000000
+> > >                                   0x0 0x02000000>;
+> > >                         num-lanes = <1>;
+> > >                         #interrupt-cells = <1>;
+> > >                         interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
+> > >                         interrupt-names = "msi";
+> > >                         interrupt-map-mask = <0 0 0 7>;
+> > >                         interrupt-map = <0x0 0 0 1
+> > >                                          &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
+> > >                                         <0x0 0 0 2
+> > >                                          &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
+> > >                                         <0x0 0 0 3
+> > >                                          &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
+> > >                                         <0x0 0 0 4
+> > >                                          &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
+> > >                         reset-gpios = <&gpio7 0 0>;
+> > >                         hisilicon,clken-gpios = <&gpio27 3 0>, <&gpio17 0 0>,
+> > >                                                 <&gpio20 6 0>;
+> > >                         pcie@0,0 { // Lane 0: PCIe switch: Bus 1, Device 0
+> > >                                 reg = <0x80 0 0 0 0>;
+> >
+> > s/0x80/0/
+> >
+> > >                                 compatible = "pciclass,0604";
+> > >                                 device_type = "pci";
+> > >                                 #address-cells = <3>;
+> > >                                 #size-cells = <2>;
+> > >                                 ranges;
+> > >                                 bus-range = <0x01 0xff>;
+> > >                                 msi-parent = <&its_pcie>;
+> > >
+> > >                                 pcie@0,0 { // Lane 0: upstream
+> > >                                         reg = <0x010000 0 0 0 0>;
+> >
+> > While technically correct having the bus# in the address, that doesn't
+> > work for FDT since we don't know the bus assignment. So we should just
+> > use 0.
+>
+> Using 0 causes DTB compilation to produce a warning, due to the
+> bus-range. Without the bus-range, there will be runtime warnings,
+> as this will be assigned as bus 1.
 
-On 8/9/2021 3:57 PM, Thinh Nguyen wrote:
-> John Stultz wrote:
->> On Mon, Aug 9, 2021 at 3:44 PM Thinh Nguyen <Thinh.Nguyen@synopsys.com> wrote:
->>>
->>> John Stultz wrote:
->>>> In commit d25d85061bd8 ("usb: dwc3: gadget: Use
->>>> list_replace_init() before traversing lists"), a local list_head
->>>> was introduced to process the started_list items to avoid races.
->>>>
->>>> However, in dwc3_gadget_ep_cleanup_completed_requests() if
->>>> dwc3_gadget_ep_cleanup_completed_request() fails, we break early,
->>>> causing the items on the local list_head to be lost.
->>>>
->>>> This issue showed up as problems on the db845c/RB3 board, where
->>>> adb connetions would fail, showing the device as "offline".
->>>>
->>>> This patch tries to fix the issue by if we are returning early
->>>> we splice in the local list head back into the started_list
->>>> and return (avoiding an infinite loop, as the started_list is
->>>> now non-null).
->>>>
->>>> Not sure if this is fully correct, but seems to work for me so I
->>>> wanted to share for feedback.
->>>>
->>>> Cc: Wesley Cheng <wcheng@codeaurora.org>
->>>> Cc: Felipe Balbi <balbi@kernel.org>
->>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>> Cc: Alan Stern <stern@rowland.harvard.edu>
->>>> Cc: Jack Pham <jackp@codeaurora.org>
->>>> Cc: Thinh Nguyen <thinh.nguyen@synopsys.com>
->>>> Cc: Todd Kjos <tkjos@google.com>
->>>> Cc: Amit Pundir <amit.pundir@linaro.org>
->>>> Cc: YongQin Liu <yongqin.liu@linaro.org>
->>>> Cc: Sumit Semwal <sumit.semwal@linaro.org>
->>>> Cc: Petri Gynther <pgynther@google.com>
->>>> Cc: linux-usb@vger.kernel.org
->>>> Fixes: d25d85061bd8 ("usb: dwc3: gadget: Use list_replace_init() before traversing lists")
->>>> Signed-off-by: John Stultz <john.stultz@linaro.org>
->>>> ---
->>>>  drivers/usb/dwc3/gadget.c | 6 ++++++
->>>>  1 file changed, 6 insertions(+)
->>>>
->>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->>>> index b8d4b2d327b23..a73ebe8e75024 100644
->>>> --- a/drivers/usb/dwc3/gadget.c
->>>> +++ b/drivers/usb/dwc3/gadget.c
->>>> @@ -2990,6 +2990,12 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
->>>>                       break;
->>>>       }
->>>>
->>>> +     if (!list_empty(&local)) {
->>>> +             list_splice_tail(&local, &dep->started_list);
->>>> +             /* Return so we don't hit the restart case and loop forever */
->>>> +             return;
->>>> +     }
->>>> +
->>>>       if (!list_empty(&dep->started_list))
->>>>               goto restart;
->>>>  }
->>>>
->>>
->>> No, we should revert the change for
->>> dwc3_gadget_ep_cleaup_completed_requests(). As I mentioned previously,
->>> we don't cleanup the entire started_list. If the original problem is due
->>> to disconnection in the middle of request completion, then we can just
->>> check for pullup_connected and exit the loop and let the
->>> dwc3_remove_requests() do the cleanup.
->>
->> Ok, sorry, I didn't read your mail in depth until I had this patch
->> sent out. If a revert of d25d85061bd8 is the better fix, I'm fine with
->> that too.
->>
->> thanks
->> -john
->>
-> 
-> IMO, we should revert this patch for now since it will cause regression.
-> We can review and test a proper fix at a later time.
-> 
-> Thanks,
-> Thinh
-> 
+Okay, that might be something we need to fix.
 
-Another suggestion would just be to replace the loop with a while() loop
-and using list_entry() instead.  That was what was discussed in the
-earlier patch series which also addresses the problem as well.  Issue
-here is the tmp variable still carries a stale request after the dwc3
-giveback is called.  We can avoid that by always fetching the
-list_entry() instead of relying on list_for_each_safe()
 
-https://lore.kernel.org/linux-usb/1620716636-12422-1-git-send-email-wcheng@codeaurora.org/
+> > >                                         compatible = "pciclass,0604";
+> > >                                         device_type = "pci";
+> > >                                         #address-cells = <3>;
+> > >                                         #size-cells = <2>;
+> > >                                         ranges;
+> > >                                 };
+> > >                                 pcie@1,0 { // Lane 4: M.2
+> >
+> > These 3 nodes (1, 5, 7) need to be child nodes of the above node.
 
-Thanks
-Wesley Cheng
+This was the main issue.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Rob
