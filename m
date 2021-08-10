@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E093E8079
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837AE3E7E91
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235494AbhHJRuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:50:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60058 "EHLO mail.kernel.org"
+        id S232689AbhHJReQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:34:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236530AbhHJRqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:46:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57C1F610A8;
-        Tue, 10 Aug 2021 17:40:40 +0000 (UTC)
+        id S232553AbhHJRdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 958BB61008;
+        Tue, 10 Aug 2021 17:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617240;
-        bh=CKykmzahHhMXt9m0NrdblO10om6+KNmQ7qwbpRTb4xQ=;
+        s=korg; t=1628616789;
+        bh=eLRgX+TjaqfiHx7QQMcIUj5KDJja7qFuzIG5aBlApqU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wXNw8n2eKsaQpIvTNE7C5IwoVsbbTscbJqGyEY9zyhhKHjyp6qnFz0OZecXSA9ufE
-         6Lf0QkY8zJM+sB6JHodznXuOHj9WcHScUdSRxYdg0ZKxTexUESwRrlvY5OCrgDqeo0
-         TX4dAaKIEE0N7FFamZBvR2cIEM/GzJq7gGV4BG/M=
+        b=Knfjcc/+ceJaArXLLTJj4JOGsrJjeTLAX+ESWoFsiAlRJy3sanmZD2ZIKS2NS9SMH
+         78ynXWQQl1+cSxpNyy+cQKxr6IFDB4u6gXAQhxI42s60oVnRj7UUoEmtskYce3BFVW
+         c1AoXQzDkcFiawgL3lSK2W5MkD6vpboQy14cPu7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Su <suhui@zeku.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.10 074/135] scripts/tracing: fix the bug that cant parse raw_trace_func
+        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 14/54] mips: Fix non-POSIX regexp
 Date:   Tue, 10 Aug 2021 19:30:08 +0200
-Message-Id: <20210810172958.238901411@linuxfoundation.org>
+Message-Id: <20210810172944.654768328@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Su <suhui@zeku.com>
+From: H. Nikolaus Schaller <hns@goldelico.com>
 
-commit 1c0cec64a7cc545eb49f374a43e9f7190a14defa upstream.
+[ Upstream commit 28bbbb9875a35975904e46f9b06fa689d051b290 ]
 
-Since commit 77271ce4b2c0 ("tracing: Add irq, preempt-count and need resched info
-to default trace output"), the default trace output format has been changed to:
-          <idle>-0       [009] d.h. 22420.068695: _raw_spin_lock_irqsave <-hrtimer_interrupt
-          <idle>-0       [000] ..s. 22420.068695: _nohz_idle_balance <-run_rebalance_domains
-          <idle>-0       [011] d.h. 22420.068695: account_process_tick <-update_process_times
+When cross compiling a MIPS kernel on a BSD based HOSTCC leads
+to errors like
 
-origin trace output format:(before v3.2.0)
-     # tracer: nop
-     #
-     #           TASK-PID    CPU#    TIMESTAMP  FUNCTION
-     #              | |       |          |         |
-          migration/0-6     [000]    50.025810: rcu_note_context_switch <-__schedule
-          migration/0-6     [000]    50.025812: trace_rcu_utilization <-rcu_note_context_switch
-          migration/0-6     [000]    50.025813: rcu_sched_qs <-rcu_note_context_switch
-          migration/0-6     [000]    50.025815: rcu_preempt_qs <-rcu_note_context_switch
-          migration/0-6     [000]    50.025817: trace_rcu_utilization <-rcu_note_context_switch
-          migration/0-6     [000]    50.025818: debug_lockdep_rcu_enabled <-__schedule
-          migration/0-6     [000]    50.025820: debug_lockdep_rcu_enabled <-__schedule
+  SYNC    include/config/auto.conf.cmd - due to: .config
+egrep: empty (sub)expression
+  UPD     include/config/kernel.release
+  HOSTCC  scripts/dtc/dtc.o - due to target missing
 
-The draw_functrace.py(introduced in v2.6.28) can't parse the new version format trace_func,
-So we need modify draw_functrace.py to adapt the new version trace output format.
+It turns out that egrep uses this egrep pattern:
 
-Link: https://lkml.kernel.org/r/20210611022107.608787-1-suhui@zeku.com
+		(|MINOR_|PATCHLEVEL_)
 
-Cc: stable@vger.kernel.org
-Fixes: 77271ce4b2c0 tracing: Add irq, preempt-count and need resched info to default trace output
-Signed-off-by: Hui Su <suhui@zeku.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is not valid syntax or gives undefined results according
+to POSIX 9.5.3 ERE Grammar
+
+	https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
+
+It seems to be silently accepted by the Linux egrep implementation
+while a BSD host complains.
+
+Such patterns can be replaced by a transformation like
+
+	"(|p1|p2)" -> "(p1|p2)?"
+
+Fixes: 48c35b2d245f ("[MIPS] There is no __GNUC_MAJOR__")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/tracing/draw_functrace.py |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/scripts/tracing/draw_functrace.py
-+++ b/scripts/tracing/draw_functrace.py
-@@ -17,7 +17,7 @@ Usage:
- 	$ cat /sys/kernel/debug/tracing/trace_pipe > ~/raw_trace_func
- 	Wait some times but not too much, the script is a bit slow.
- 	Break the pipe (Ctrl + Z)
--	$ scripts/draw_functrace.py < raw_trace_func > draw_functrace
-+	$ scripts/tracing/draw_functrace.py < ~/raw_trace_func > draw_functrace
- 	Then you have your drawn trace in draw_functrace
- """
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 63e2ad43bd6a..8f4e169cde11 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -325,7 +325,7 @@ KBUILD_LDFLAGS		+= -m $(ld-emul)
  
-@@ -103,10 +103,10 @@ def parseLine(line):
- 	line = line.strip()
- 	if line.startswith("#"):
- 		raise CommentLineException
--	m = re.match("[^]]+?\\] +([0-9.]+): (\\w+) <-(\\w+)", line)
-+	m = re.match("[^]]+?\\] +([a-z.]+) +([0-9.]+): (\\w+) <-(\\w+)", line)
- 	if m is None:
- 		raise BrokenLineException
--	return (m.group(1), m.group(2), m.group(3))
-+	return (m.group(2), m.group(3), m.group(4))
+ ifdef CONFIG_MIPS
+ CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
+-	egrep -vw '__GNUC_(|MINOR_|PATCHLEVEL_)_' | \
++	egrep -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
+ 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
+ endif
  
- 
- def main():
+-- 
+2.30.2
+
 
 
