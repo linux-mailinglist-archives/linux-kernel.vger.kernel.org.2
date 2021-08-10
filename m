@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACAD3E55C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D238E3E55CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236299AbhHJIqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
+        id S236689AbhHJIq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233034AbhHJIqo (ORCPT
+        with ESMTP id S233034AbhHJIq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:46:44 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D4BC0613D3;
-        Tue, 10 Aug 2021 01:46:22 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id c9so25136996wri.8;
-        Tue, 10 Aug 2021 01:46:22 -0700 (PDT)
+        Tue, 10 Aug 2021 04:46:57 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C67C0613D3;
+        Tue, 10 Aug 2021 01:46:35 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id m9so27894109ljp.7;
+        Tue, 10 Aug 2021 01:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OB6UtG4zFPtQqAnDfNSTJxFcLRUWyCnisk7BYFNOzqE=;
-        b=MerkW78o00SexssjoYMursF3joCceU4hD/5+wHLYpy7d/PfUX8ryPbMCCupegOkeHB
-         HGd71w077wojxCfKiNmEuEbmFnSB4py22cDyeGkMMiRuAG0g/cRNUrlzUUqYAnpzHMfJ
-         6DmexI6xrZ+TyEwj9kq8PKP25/kJSuE4uaeB4dzTinACNPKTXLziqiAmQnyPji0U4bCn
-         X1BYBwXyEdBkbSYHqnW9AEx6ILBMH5lAJdWPocfstxodvSdKy1MVghgpAB91WXrRjZzF
-         zdLbFsJC7Z/Vi+nMWAhOcM5D5r1vLwdIXHCbMvMri7Bvy6F0FUaWLXnTaoLD7IkMJSqs
-         xuEA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=EwRWG/gC2fE5xGCjSTzADsLHIR4c/x7Q7wLTB3Mw2aw=;
+        b=N5x9Ponuc1QqmsFp4XPQOgs8joInICnknQS3MCZEqQsjjGGEi+lkxJOCpFj3owuo1m
+         ddWmthUpjTgDPzdysdSC9IK6hOHtq/H/OntfnCiC59SeK1WA/oUZ+TjRxik/8ds0ifVB
+         jdVyFNYfjdrrIh00sAGZisV8zX4Ljx5QKtKoOFNOlA0se8cDVZU5n2rPyUiNsOHwdffB
+         sFe5TXVWJi+NC3DYlv8J6Ov8wXIVp5p7Vs0kwqSuLYJS0P/ixpAP/H0fvGZQvgtrqsy+
+         5Q52giUwcPlZLFZ87k5HZGrj8VIQYnDeuepMrs8DgXvVqXZvkB7WDBvc5Wh1QbvscFmz
+         zrDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OB6UtG4zFPtQqAnDfNSTJxFcLRUWyCnisk7BYFNOzqE=;
-        b=MrF6t8Vw/SntcARYito3n/msAsM9IM0HzqWhZn7u8tMiUYTpsgnuhVuEeSV4SL6HJV
-         2+mX1fPThztlmFUyfdvgoyS9VhVVW8oYUcBW2GxXL8bsf66FgpHHRIdvVrhAHIheJsaj
-         vjfnoAiso8TWYOXhgk1OQB0fvuSY9pTH79iE0W6rVS2KUv4A13WoJljezIRFhNhDkkLk
-         YNJw1aKotvwo7iORP0lpJjNKVTqL9KdiX0UBNVh/iqEYYGwS+XiGD7U7a5wcHf9AkbwR
-         sdwaeuqZrkMmyeAD0q2EpjKhaJvADjy83EAWXjYCQbgYw5vIJ1b0SYERGvSF84ocSAwI
-         f/Mw==
-X-Gm-Message-State: AOAM533PkV60QkUK8OVWJE8NQhS40cSyJeMOCLPZgKSogurg82G9nHzl
-        GC4amV0G6AwYnHahKZ/izZs=
-X-Google-Smtp-Source: ABdhPJz97nyY/SNStvhPEdEAKxnpS8lnpteyvnRLKrJfZ8hjlqRCL9wOivECar5o2rREqAcCv2P3eg==
-X-Received: by 2002:adf:80e8:: with SMTP id 95mr29812738wrl.388.1628585181037;
-        Tue, 10 Aug 2021 01:46:21 -0700 (PDT)
-Received: from ziggy.stardust ([207.188.163.204])
-        by smtp.gmail.com with ESMTPSA id j6sm7920180wms.44.2021.08.10.01.46.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 01:46:20 -0700 (PDT)
-Subject: Re: [PATCH v8, 0/2] soc: mediatek: mmsys: add mt8192 mmsys support
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-References: <1627894773-23872-1-git-send-email-yongqiang.niu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <e4afa712-9936-15fc-ad43-576948758f6c@gmail.com>
-Date:   Tue, 10 Aug 2021 10:46:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EwRWG/gC2fE5xGCjSTzADsLHIR4c/x7Q7wLTB3Mw2aw=;
+        b=BMoRqgBspjSdh01b1LZJA7NfKNIQWDrk8iBfHgwonq25yZmVSgvdEuoeZ8wKs8owbX
+         mkRF7/8y8e1pd6Nr/Najl6uwfCXZhL1VvEaDXgQ/afn5q7ukjWGL0ED846BveU9ppEO+
+         qwSLEopEjc6HlfBA+9KKsm2aNyzQKQRoNq8EfgkOY98Dc4WJE2XqCl63pY0hcy1uCqpA
+         DKW8OBkChNOweBM9O80UtU1UOVTm4soZ4WNUdhuXWk/yB+qkVd6LlcHIV1KQUziL9Kfo
+         hgavr7joHiokCxRn8mhCZxo92wwgp+4WQCvp9qDnvq9XvfqR0Ix1LfUwHW187CsUh53s
+         9AGA==
+X-Gm-Message-State: AOAM533/DYcZFkcS5QtaNQ1Fe46lDYAj1vfs4YBLSn/Xa+6Rvtk3gACL
+        CH5wTRjRpxx2ks0QYDKba4U=
+X-Google-Smtp-Source: ABdhPJz6oVxnweXT2dqwWQnEyppFAKlUjrcaw18qilP/WoRKuTtyE+F+lB0uEg4OHT36Sj9Mhd6l0A==
+X-Received: by 2002:a05:651c:983:: with SMTP id b3mr18480409ljq.287.1628585193977;
+        Tue, 10 Aug 2021 01:46:33 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id t17sm1978398lfe.303.2021.08.10.01.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 01:46:33 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 11:46:31 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
+        mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, oleksandr@natalenko.name
+Subject: Re: [PATCH v27 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
+Message-ID: <20210810084631.63cmowvgjs5lj4au@kari-VirtualBox>
 MIME-Version: 1.0
-In-Reply-To: <1627894773-23872-1-git-send-email-yongqiang.niu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210810081955.b5vdsfc2tdaabbgo@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 02/08/2021 10:59, Yongqiang Niu wrote:
-> base v5.14-rc1
+On Tue, Aug 10, 2021 at 10:19:55AM +0200, Pali Rohár wrote:
+> On Tuesday 10 August 2021 10:47:40 Kari Argillander wrote:
+> > On Thu, Jul 29, 2021 at 04:49:41PM +0300, Konstantin Komarov wrote:
+> > > This adds Kconfig, Makefile and doc
+> > > 
+> > > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> > > ---
+> > >  Documentation/filesystems/ntfs3.rst | 107 ++++++++++++++++++++++++++++
+> > 
+> > Still missing Documentation/filesystems/index.rst as I stated before
+> > https://lore.kernel.org/linux-fsdevel/20210103220739.2gkh6gy3iatv4fog@kari-VirtualBox/
+> > 
+> > >  fs/ntfs3/Kconfig                    |  46 ++++++++++++
+> > >  fs/ntfs3/Makefile                   |  36 ++++++++++
+> > >  3 files changed, 189 insertions(+)
+> > >  create mode 100644 Documentation/filesystems/ntfs3.rst
+> > >  create mode 100644 fs/ntfs3/Kconfig
+> > >  create mode 100644 fs/ntfs3/Makefile
+> > > 
+> > > diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
+> > 
+> > 
+> > > +Mount Options
+> > > +=============
+> > > +
+> > > +The list below describes mount options supported by NTFS3 driver in addition to
+> > > +generic ones.
+> > > +
+> > > +===============================================================================
+> > > +
+> > > +nls=name		This option informs the driver how to interpret path
+> > > +			strings and translate them to Unicode and back. If
+> > > +			this option is not set, the default codepage will be
+> > > +			used (CONFIG_NLS_DEFAULT).
+> > > +			Examples:
+> > > +				'nls=utf8'
+> > 
+> > It seems that kernel community will start use iocharset= as default. nls
+> > option can still be alias but will need deprecated message. See message
+> > https://lore.kernel.org/linux-fsdevel/20200102211855.gg62r7jshp742d6i@pali/
+> > 
+> > and current work from Pali
+> > https://lore.kernel.org/linux-fsdevel/20210808162453.1653-1-pali@kernel.org/
+> > 
+> > This is still RFC state so probably no horry, but good to know stuff. I
+> > also added Pali so he also knows.
 > 
-> Yongqiang Niu (2):
->   soc: mediatek: mmsys: add comp OVL_2L2/POSTMASK/RDMA4
->   soc: mediatek: mmsys: Add mt8192 mmsys routing table
+> I was already in loop :-)
+
+Yeah just added To: so that you really know someone mention you.
+
+> Anyway, yes, above RFC patch migrates all drivers to use iocharset=
+> mount option as it is the option which is already used by most fs
+> drivers. So argument is consistency.
 > 
+> But having the preferred mount option name in new fs drivers would
+> decrease work needed to done in that patch series.
 
-Series queued in v5.15-tmp/soc
+Yeah it would be prefered that before this gets Linus tree then this
+will use iocharset. Because this driver will probably replace NTFS
+driver some day I think it is still good idea to make nls= alias. And
+also because Paragon's own customers will might use it and there is
+already many many users who uses ntfs3 because it is included some "must
+have kernel patch lists".
 
-Thanks
-
->  drivers/soc/mediatek/mt8192-mmsys.h    | 67 ++++++++++++++++++++++++++++++++++
->  drivers/soc/mediatek/mtk-mmsys.c       | 11 ++++++
->  include/linux/soc/mediatek/mtk-mmsys.h |  3 ++
->  3 files changed, 81 insertions(+)
->  create mode 100644 drivers/soc/mediatek/mt8192-mmsys.h
-> 
