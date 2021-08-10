@@ -2,242 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437B03E58A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816393E58AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239952AbhHJKx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239934AbhHJKxY (ORCPT
+        id S239961AbhHJK4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:56:37 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:44796 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236095AbhHJK4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:53:24 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF419C061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:53:01 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id r6so3401309wrt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dGr4OpahiJSvodIctRAnZeil+wLyJaWaF52+xI/7opo=;
-        b=TQNEkwJUG6bvxyz6jSRPh4VR9P5PlJvtcvsNVLPdQWwVcNzzfzKquVpL6nvKyQoJe0
-         849AFp0+70bbRQvM5kIc1yr19kZQSkLaLIBhxWRdr3lThQRWDspeC6rGzCCAXigR5Oa2
-         Y40vtMpjL67aYJEpt56yLvLZLYvWf1HpKTgRI=
+        Tue, 10 Aug 2021 06:56:34 -0400
+Received: by mail-wm1-f52.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so2213359wmd.3;
+        Tue, 10 Aug 2021 03:56:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=dGr4OpahiJSvodIctRAnZeil+wLyJaWaF52+xI/7opo=;
-        b=EFm2f5qw+phKQXuqoXDC8aGeOueOeKJtWAr14QkZtW9tb8rIt1wAXr7mi/LBptGlv3
-         cpVSQI03R7tJ/cxpNvXdM6t9IrQ1X4z4g6sqwf2LtFRfXU8PFjsXxzjOnVAMo65U40KQ
-         ML9h1u0+BkBfKNMgZ12AXIvqaqCxtJQRRg1T+FgfkrbEm2SunThNd5GhdgVwJ4gMasQe
-         YMtFWf9XM5Ql1ahoUXjfKszWDT335ZzXQXu70AebyK5ottse1KySzxQnmiRGc2aVUBfc
-         zZIiy8kIxRD7243NFaiuWN5F3zjKsrdVXXOAdml/LF04EDxKkzXCQzygoDNGX0yPAKX6
-         wsTQ==
-X-Gm-Message-State: AOAM532gmi5vUyLyTrmjymIT2HstwRn67CcWm1b8Dxhzmpago8wv/3/8
-        NkUwSIRV8vbY23APpCaPdHP0Fzzk4XSwJA==
-X-Google-Smtp-Source: ABdhPJyIdqQOV6KKDQOqlfqV2bwGRKXRAlFWiXR9867ACpTZLJ4ZCNddVsdLEJ7SwpdVO1aTv9G3zw==
-X-Received: by 2002:a5d:4c91:: with SMTP id z17mr2721224wrs.54.1628592780451;
-        Tue, 10 Aug 2021 03:53:00 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id j2sm2848239wmi.36.2021.08.10.03.52.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M8c678fNnsGLoOeW7UexhiEvWyA8c3/gcsG+wSE2ct8=;
+        b=YCI+qtGD/0L1xixPkuKTCC9Y8GQEW84XhzIUrfCXbiM5lACxef/iVs8OaZUE8vlfWz
+         wb9Q27CJyNtk7GkL9WoCerNfoPpW1jXOkHFFUwggNVxvFMs/0WbeccPAEZshTMpnsHK8
+         2XXUvydEAATjFYZtx4hXnUeKXMHyR7AMBnViRjwy5UVEJiVODi4evvd4u5W7c4ngbSNr
+         6SbbZobe51y/833k1QCUM8izOTg6PPK04cOTm5CwqkQ4Aa4CB3LIEGOLEJNTGGWiukx4
+         HJP+JSHQhsZUxxooZK5jUmoub4YR/rJz4jS5zC84guG0sxcTIqR7+ySXAzsDYBiEckYY
+         +KAA==
+X-Gm-Message-State: AOAM532uc1vxVQawPdccOCemU10J7dvdUsgvNr4g+KFPB+vUNigtNZ6k
+        Njjo1fGMRMwwzASB+USy4NA=
+X-Google-Smtp-Source: ABdhPJz2yF8WcgnnZUSV/YZcts24nqVnzunX66Xx60m+tHd6RHQnGzum63lk7AYwHZ32aACM7/ys3w==
+X-Received: by 2002:a1c:7dd0:: with SMTP id y199mr2862006wmc.23.1628592971259;
+        Tue, 10 Aug 2021 03:56:11 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id x18sm20028730wmc.17.2021.08.10.03.56.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 03:52:59 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 12:52:58 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
-Message-ID: <YRJaitqOK+0vN4jg@phenom.ffwll.local>
-Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        list@opendingux.net, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20210805192110.90302-1-paul@crapouillou.net>
- <20210805192110.90302-3-paul@crapouillou.net>
- <YQw9hjZll4QmYVLX@kroah.com>
- <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
- <YQ0MU/GcLkPLiy5C@kroah.com>
- <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
- <YRJLNHXR0PhykBwL@kroah.com>
- <RNDMXQ.0B7HA1RXU7TB@crapouillou.net>
+        Tue, 10 Aug 2021 03:56:10 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 10:56:09 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+Subject: Re: [PATCH V3 01/13] x86/HV: Initialize GHCB page in Isolation VM
+Message-ID: <20210810105609.soi67eg2us5w7yuq@liuwe-devbox-debian-v2>
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-2-ltykernel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <RNDMXQ.0B7HA1RXU7TB@crapouillou.net>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210809175620.720923-2-ltykernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 12:40:39PM +0200, Paul Cercueil wrote:
-> Hi Greg,
-> 
-> Le mar., août 10 2021 at 11:47:32 +0200, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> a écrit :
-> > On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
-> > >  Hi Greg,
-> > > 
-> > >  Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
-> > >  <gregkh@linuxfoundation.org> a écrit :
-> > >  > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
-> > >  > >  Hi Greg,
-> > >  > >
-> > >  > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
-> > >  > >  <gregkh@linuxfoundation.org> a écrit :
-> > >  > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil
-> > > wrote:
-> > >  > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
-> > >  > > disabled in
-> > >  > >  > > the
-> > >  > >  > >  config, we want the ingenic-drm driver to be able to probe
-> > >  > >  > > nonetheless
-> > >  > >  > >  with the other devices (e.g. internal LCD panel) that are
-> > >  > > enabled.
-> > >  > >  > >
-> > >  > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > >  > >  > >  ---
-> > >  > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12
-> > > ++++++++++++
-> > >  > >  > >   1 file changed, 12 insertions(+)
-> > >  > >  > >
-> > >  > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
-> > >  > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
-> > >  > > device
-> > >  > >  > > *dev, bool has_components)
-> > >  > >  > >   	for (i = 0; ; i++) {
-> > >  > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
-> > >  > > &panel,
-> > >  > >  > > &bridge);
-> > >  > >  > >   		if (ret) {
-> > >  > >  > >  +			/*
-> > >  > >  > >  +			 * Workaround for the case where the drivers for the
-> > >  > >  > >  +			 * remote devices are not enabled. When that happens,
-> > >  > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
-> > >  > >  > >  +			 * endlessly, which prevents the ingenic-drm driver
-> > > from
-> > >  > >  > >  +			 * working at all.
-> > >  > >  > >  +			 */
-> > >  > >  > >  +			if (ret == -EPROBE_DEFER) {
-> > >  > >  > >  +				ret = driver_deferred_probe_check_state(dev);
-> > >  > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
-> > >  > >  > >  +					continue;
-> > >  > >  > >  +			}
-> > >  > >  >
-> > >  > >  > So you are mucking around with devices on other busses
-> > > within this
-> > >  > >  > driver?  What could go wrong?  :(
-> > >  > >
-> > >  > >  I'm doing the same thing as everybody else. This is the DRM
-> > > driver,
-> > >  > > and
-> > >  > >  there is a driver for the external HDMI chip which gives us a
-> > > DRM
-> > >  > > bridge
-> > >  > >  that we can obtain from the device tree.
-> > >  >
-> > >  > But then why do you need to call this function that is there for
-> > > a bus,
-> > >  > not for a driver.
-> > > 
-> > >  The documentation disagrees with you :)
-> > > 
-> > >  And, if that has any weight, this solution was proposed by Rob.
-> > > 
-> > >  > >  > Please use the existing driver core functionality for this
-> > > type of
-> > >  > >  > thing, it is not unique, no need for this function to be
-> > > called.
-> > >  > >
-> > >  > >  I'm not sure you understand what I'm doing here. This driver
-> > > calls
-> > >  > >  drm_of_find_panel_or_bridge(), without guarantee that the
-> > > driver
-> > >  > > for the
-> > >  > >  remote device (connected via DT graph) has been enabled in the
-> > >  > > kernel
-> > >  > >  config. In that case it will always return -EPROBE_DEFER and
-> > > the
-> > >  > > ingenic-drm
-> > >  > >  driver will never probe.
-> > >  > >
-> > >  > >  This patch makes sure that the driver can probe if the HDMI
-> > > driver
-> > >  > > has been
-> > >  > >  disabled in the kernel config, nothing more.
-> > >  >
-> > >  > That should not be an issue as you do not care if the config is
-> > > enabled,
-> > >  > you just want to do something in the future if the driver shows
-> > > up,
-> > >  > right?
-> > > 
-> > >  Well, the DRM subsystem doesn't really seem to handle hotplug of
-> > > hardware.
-> > >  Right now all the drivers for the connected hardware need to probe
-> > > before
-> > >  the main DRM driver. So I need to know that a remote device
-> > > (connected via
-> > >  DT graph) will never probe.
-> > 
-> > But you never really know that.  That is what the recent driver core
-> > changes were all about, to handle this very issue.  Only when the child
-> > device shows up will you need to care about it.
-> > 
-> > >  Give me a of_graph_remote_device_driver_will_never_probe() and I'll
-> > > use
-> > >  that.
-> > > 
-> > >  > Much like the device link code, have you looked at that?
-> > > 
-> > >  I don't see how that would help in any way. The device link code
-> > > would allow
-> > >  me to set a dependency between the remote hardware (HDMI chip,
-> > > provider) and
-> > >  the LCD controller (consumer), but I already have that dependency
-> > > though the
-> > >  DT graph. What I need is a way for the consumer to continue probing
-> > > if the
-> > >  provider is not going to probe.
-> > 
-> > But again, you never know that, probing is async, and could happen in a
-> > few milliseconds, or a few hours, your driver should never care about
-> > this at all.
-> > 
-> > Just knowing if the kernel configuration is something is not the
-> > solution here, please fix this properly like all other driver
-> > interactions are in the kernel tree.
-> 
-> A proper fix means reworking the DRM core so that it supports hot-plugging
-> bridges. Until then there is nothing else I can do.
+On Mon, Aug 09, 2021 at 01:56:05PM -0400, Tianyu Lan wrote:
+[...]
+>  static int hv_cpu_init(unsigned int cpu)
+>  {
+>  	union hv_vp_assist_msr_contents msr = { 0 };
+> @@ -85,6 +111,8 @@ static int hv_cpu_init(unsigned int cpu)
+>  		}
+>  	}
+>  
+> +	hyperv_init_ghcb();
+> +
 
-The conflict is that drm wants to load the entire driver, including any
-bridges.
+Why is the return value not checked here? If that's not required, can
+you leave a comment?
 
-Paul wants to load just the driver parts he wants to put into the image.
-
-This doesn't work well together.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Wei.
