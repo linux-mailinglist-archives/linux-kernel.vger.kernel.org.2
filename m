@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A069D3E7F2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2B73E7F2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhHJRhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:37:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35348 "EHLO mail.kernel.org"
+        id S231344AbhHJRhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232730AbhHJRgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233913AbhHJRgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 13:36:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EA0360EBD;
-        Tue, 10 Aug 2021 17:35:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4F4A610A8;
+        Tue, 10 Aug 2021 17:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616922;
-        bh=B1Huvc6SGYWvTrb/8b7wJgnUZg9jISGPpiuOqfjJgPE=;
+        s=korg; t=1628616924;
+        bh=maE5vA8f1VQ/m/WASMvGb3frROckvtxFxzAswvjIimk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ke4vLxDPWq1+HqY+yWXZdUXk2LVYTY9xObNblFHKoeeJIHzNPydxqUpGDreERDMF
-         aaUxcwpokkf1AeO9tFLUQ43jmOgfeIXtavBVHR4WWUHvfPVYcvyz1e/0T89JbxXxto
-         +UiD92LV7cbrU7LFOHHg1OZ6b/t5S4/r6WqoVevg=
+        b=VDIaMlZYpsZ6Bb4IF6rfvR3rbUo3afwwYHCWBa99eADa5sdrJPqG2SVWu2c1v0J7H
+         q1f1Dk+ma7VFxvzdLVoVYGlxrDXUoQkKEzTtLGUgiboMTw18powYDv5mDL/r8PQYNG
+         YoKPizkaVrUcKmMnPNWO6oWFuldZVPHyjjgp1Ql4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Manyi <limanyi@uniontech.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 17/85] scsi: sr: Return correct event when media event code is 3
-Date:   Tue, 10 Aug 2021 19:29:50 +0200
-Message-Id: <20210810172948.782169058@linuxfoundation.org>
+Subject: [PATCH 5.4 18/85] media: videobuf2-core: dequeue if start_streaming fails
+Date:   Tue, 10 Aug 2021 19:29:51 +0200
+Message-Id: <20210810172948.813288723@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
 References: <20210810172948.192298392@linuxfoundation.org>
@@ -40,44 +42,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Manyi <limanyi@uniontech.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 5c04243a56a7977185b00400e59ca7e108004faf ]
+[ Upstream commit c592b46907adbeb81243f7eb7a468c36692658b8 ]
 
-Media event code 3 is defined in the MMC-6 spec as follows:
+If a vb2_queue sets q->min_buffers_needed then when the number of
+queued buffers reaches q->min_buffers_needed, vb2_core_qbuf() will call
+the start_streaming() callback. If start_streaming() returns an error,
+then that error was just returned by vb2_core_qbuf(), but the buffer
+was still queued. However, userspace expects that if VIDIOC_QBUF fails,
+the buffer is returned dequeued.
 
-  "MediaRemoval: The media has been removed from the specified slot, and
-   the Drive is unable to access the media without user intervention. This
-   applies to media changers only."
+So if start_streaming() fails, then remove the buffer from the queue,
+thus avoiding this unwanted side-effect.
 
-This indicated that treating the condition as an EJECT_REQUEST was
-appropriate. However, doing so had the unfortunate side-effect of causing
-the drive tray to be physically ejected on resume. Instead treat the event
-as a MEDIA_CHANGE request.
-
-Fixes: 7dd753ca59d6 ("scsi: sr: Return appropriate error code when disk is ejected")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=213759
-Link: https://lore.kernel.org/r/20210726114913.6760-1-limanyi@uniontech.com
-Signed-off-by: Li Manyi <limanyi@uniontech.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Tested-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Fixes: b3379c6201bb ("[media] vb2: only call start_streaming if sufficient buffers are queued")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/sr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/common/videobuf2/videobuf2-core.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 2332b245b182..279dea628620 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -219,7 +219,7 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
- 	else if (med->media_event_code == 2)
- 		return DISK_EVENT_MEDIA_CHANGE;
- 	else if (med->media_event_code == 3)
--		return DISK_EVENT_EJECT_REQUEST;
-+		return DISK_EVENT_MEDIA_CHANGE;
- 	return 0;
- }
+diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+index 4489744fbbd9..13602939906f 100644
+--- a/drivers/media/common/videobuf2/videobuf2-core.c
++++ b/drivers/media/common/videobuf2/videobuf2-core.c
+@@ -1512,6 +1512,7 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb,
+ 		  struct media_request *req)
+ {
+ 	struct vb2_buffer *vb;
++	enum vb2_buffer_state orig_state;
+ 	int ret;
  
+ 	if (q->error) {
+@@ -1611,6 +1612,7 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb,
+ 	 * Add to the queued buffers list, a buffer will stay on it until
+ 	 * dequeued in dqbuf.
+ 	 */
++	orig_state = vb->state;
+ 	list_add_tail(&vb->queued_entry, &q->queued_list);
+ 	q->queued_count++;
+ 	q->waiting_for_buffers = false;
+@@ -1641,8 +1643,17 @@ int vb2_core_qbuf(struct vb2_queue *q, unsigned int index, void *pb,
+ 	if (q->streaming && !q->start_streaming_called &&
+ 	    q->queued_count >= q->min_buffers_needed) {
+ 		ret = vb2_start_streaming(q);
+-		if (ret)
++		if (ret) {
++			/*
++			 * Since vb2_core_qbuf will return with an error,
++			 * we should return it to state DEQUEUED since
++			 * the error indicates that the buffer wasn't queued.
++			 */
++			list_del(&vb->queued_entry);
++			q->queued_count--;
++			vb->state = orig_state;
+ 			return ret;
++		}
+ 	}
+ 
+ 	dprintk(2, "qbuf of buffer %d succeeded\n", vb->index);
 -- 
 2.30.2
 
