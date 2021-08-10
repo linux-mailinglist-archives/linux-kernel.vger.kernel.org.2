@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF423E80D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08263E7E9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbhHJRw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43224 "EHLO mail.kernel.org"
+        id S232845AbhHJRed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236737AbhHJRtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:49:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90EF26115C;
-        Tue, 10 Aug 2021 17:41:54 +0000 (UTC)
+        id S229649AbhHJRdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77A8861019;
+        Tue, 10 Aug 2021 17:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617315;
-        bh=AvNYSlBrEKEXQrAUJnoa3zL/BEXfezpG86BC/KMqIg0=;
+        s=korg; t=1628616802;
+        bh=E349f0OlEBh8xcTlEdRFJx9D+TdKNo9hTQiGfDU067Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mh0wv7FQA/PW0b2NYoSUMA03ntPxEjQLBZsEwPHJhLqVDVGz+pDFeM2rFQajP7SYv
-         s55K4aN6Tn/AVbCG7RYgdYPy/9m4lHOmF3g7L+VwTsR23lAzh6wcHmBCSxT23PNVLc
-         6Lj+w0aNSp53qQQbh2o7Sqo/2ZxEjm0VkC5CwclA=
+        b=uFnP/ZdPxOtjPo86b75DV5NWt5f2Sz+DjRnyyG5ZNMKBbmwsaTW+ktWlHFwHGG5J9
+         7OSo+35Xrurp8WfaFolLhvQJz0XQKGZSPuekt8l/h41tunDCP0j/wAftLcx83sn6gL
+         w6U0ABEA6c/zAaGO5hxknwBzbAKhX/LMnqJ3gJiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chanho Park <chanho61.park@samsung.com>
-Subject: [PATCH 5.10 113/135] arm64: vdso: Avoid ISB after reading from cntvct_el0
-Date:   Tue, 10 Aug 2021 19:30:47 +0200
-Message-Id: <20210810172959.632306472@linuxfoundation.org>
+        stable@vger.kernel.org, Anson Huang <Anson.Huang@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 54/54] ARM: imx: add mmdc ipg clock operation for mmdc
+Date:   Tue, 10 Aug 2021 19:30:48 +0200
+Message-Id: <20210810172945.984707951@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,105 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Anson Huang <Anson.Huang@nxp.com>
 
-commit 77ec462536a13d4b428a1eead725c4818a49f0b1 upstream.
+[ Upstream commit 9454a0caff6ac6d2a5ea17dd624dc13387bbfcd3 ]
 
-We can avoid the expensive ISB instruction after reading the counter in
-the vDSO gettime functions by creating a fake address hazard against a
-dummy stack read, just like we do inside the kernel.
+i.MX6 SoCs have MMDC ipg clock for registers access, to make
+sure MMDC registers access successfully, add optional clock
+enable for MMDC driver.
 
-Signed-off-by: Will Deacon <will@kernel.org>
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Link: https://lore.kernel.org/r/20210318170738.7756-5-will@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Chanho Park <chanho61.park@samsung.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/arch_timer.h        |   21 ---------------------
- arch/arm64/include/asm/barrier.h           |   19 +++++++++++++++++++
- arch/arm64/include/asm/vdso/gettimeofday.h |    6 +-----
- 3 files changed, 20 insertions(+), 26 deletions(-)
+ arch/arm/mach-imx/mmdc.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/arch/arm64/include/asm/arch_timer.h
-+++ b/arch/arm64/include/asm/arch_timer.h
-@@ -165,25 +165,6 @@ static inline void arch_timer_set_cntkct
- 	isb();
- }
+diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
+index 1d340fda5e4f..ae0a61c61a6e 100644
+--- a/arch/arm/mach-imx/mmdc.c
++++ b/arch/arm/mach-imx/mmdc.c
+@@ -11,6 +11,7 @@
+  * http://www.gnu.org/copyleft/gpl.html
+  */
  
--/*
-- * Ensure that reads of the counter are treated the same as memory reads
-- * for the purposes of ordering by subsequent memory barriers.
-- *
-- * This insanity brought to you by speculative system register reads,
-- * out-of-order memory accesses, sequence locks and Thomas Gleixner.
-- *
-- * http://lists.infradead.org/pipermail/linux-arm-kernel/2019-February/631195.html
-- */
--#define arch_counter_enforce_ordering(val) do {				\
--	u64 tmp, _val = (val);						\
--									\
--	asm volatile(							\
--	"	eor	%0, %1, %1\n"					\
--	"	add	%0, sp, %0\n"					\
--	"	ldr	xzr, [%0]"					\
--	: "=r" (tmp) : "r" (_val));					\
--} while (0)
--
- static __always_inline u64 __arch_counter_get_cntpct_stable(void)
++#include <linux/clk.h>
+ #include <linux/hrtimer.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+@@ -547,7 +548,20 @@ static int imx_mmdc_probe(struct platform_device *pdev)
  {
- 	u64 cnt;
-@@ -224,8 +205,6 @@ static __always_inline u64 __arch_counte
- 	return cnt;
- }
- 
--#undef arch_counter_enforce_ordering
--
- static inline int arch_timer_arch_init(void)
- {
- 	return 0;
---- a/arch/arm64/include/asm/barrier.h
-+++ b/arch/arm64/include/asm/barrier.h
-@@ -70,6 +70,25 @@ static inline unsigned long array_index_
- 	return mask;
- }
- 
-+/*
-+ * Ensure that reads of the counter are treated the same as memory reads
-+ * for the purposes of ordering by subsequent memory barriers.
-+ *
-+ * This insanity brought to you by speculative system register reads,
-+ * out-of-order memory accesses, sequence locks and Thomas Gleixner.
-+ *
-+ * http://lists.infradead.org/pipermail/linux-arm-kernel/2019-February/631195.html
-+ */
-+#define arch_counter_enforce_ordering(val) do {				\
-+	u64 tmp, _val = (val);						\
-+									\
-+	asm volatile(							\
-+	"	eor	%0, %1, %1\n"					\
-+	"	add	%0, sp, %0\n"					\
-+	"	ldr	xzr, [%0]"					\
-+	: "=r" (tmp) : "r" (_val));					\
-+} while (0)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	void __iomem *mmdc_base, *reg;
++	struct clk *mmdc_ipg_clk;
+ 	u32 val;
++	int err;
 +
- #define __smp_mb()	dmb(ish)
- #define __smp_rmb()	dmb(ishld)
- #define __smp_wmb()	dmb(ishst)
---- a/arch/arm64/include/asm/vdso/gettimeofday.h
-+++ b/arch/arm64/include/asm/vdso/gettimeofday.h
-@@ -83,11 +83,7 @@ static __always_inline u64 __arch_get_hw
- 	 */
- 	isb();
- 	asm volatile("mrs %0, cntvct_el0" : "=r" (res) :: "memory");
--	/*
--	 * This isb() is required to prevent that the seq lock is
--	 * speculated.#
--	 */
--	isb();
-+	arch_counter_enforce_ordering(res);
++	/* the ipg clock is optional */
++	mmdc_ipg_clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(mmdc_ipg_clk))
++		mmdc_ipg_clk = NULL;
++
++	err = clk_prepare_enable(mmdc_ipg_clk);
++	if (err) {
++		dev_err(&pdev->dev, "Unable to enable mmdc ipg clock.\n");
++		return err;
++	}
  
- 	return res;
- }
+ 	mmdc_base = of_iomap(np, 0);
+ 	WARN_ON(!mmdc_base);
+-- 
+2.30.2
+
 
 
