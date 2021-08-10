@@ -2,95 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694713E592C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349A63E592D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238332AbhHJLec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 07:34:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhHJLeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:34:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40E386101E;
-        Tue, 10 Aug 2021 11:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628595249;
-        bh=U4Zld7mAu6v7/9xMDyWvpT/NNYAWTiUJU4He5dD/eL4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lJZtsLaj7jaRkxeJSZpFbApjAOcERUr6k3R9FD36dUPQtws4z6KYPDzXzDfxVdwp+
-         I4Rx380OJYH4+KsXFBVtVm/uNG5+BdcR8Ahwh6jgjxh0K/tABjGp27T2Hg8JZBXE66
-         8vBTJdpdvoQehoE9FCEvW0W8q/WWprPCty3ERtdmGnbv+mapiDKrWvnX8QiMmTnYa2
-         eYoAva5zQNUQpGzDJ8+QTXuMJ98dyx8tkIJ3Dt2Fuj9PHNrLQFBRSE/kIXBj0GOi3Z
-         1go5tRWI2r6aELq/bjZcQ5B37g3vK98ee8qExwrQ3Eb4Nk0uOW3E9PugjHiPxx5cBQ
-         drvvS5gCGI1tg==
-Received: by mail-wr1-f54.google.com with SMTP id i4so8337645wru.0;
-        Tue, 10 Aug 2021 04:34:09 -0700 (PDT)
-X-Gm-Message-State: AOAM5305gi1q9rTqsanlIG5ZRWYeUAyZc58HNcj3DqN4dPj1uy6WfPms
-        1x7VI5hCJVipRmNQey0KM6Dgbqvl+ToDS2hZJIs=
-X-Google-Smtp-Source: ABdhPJyjNp84V0PWdniYskkVm3tgBt8qm+LU5nYRyMlh1QdiRB65+ZJ6dm/n9ev4DK0S0p/m2pg884gI41cWjwdHPfc=
-X-Received: by 2002:adf:a309:: with SMTP id c9mr12971585wrb.99.1628595247894;
- Tue, 10 Aug 2021 04:34:07 -0700 (PDT)
+        id S240124AbhHJLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:35:31 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13260 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhHJLf3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:35:29 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GkW8B3h1Yz1CVMy;
+        Tue, 10 Aug 2021 19:34:50 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 10 Aug 2021 19:35:03 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 10 Aug 2021 19:35:03 +0800
+Subject: Re: [PATCH 1/2] mtd: mtdconcat: Judge callback function existence
+ getting from master for each partition
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>
+References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
+ <20210731023243.3977104-2-chengzhihao1@huawei.com>
+ <20210806212857.240e0c1f@xps13>
+ <27c67e42-f275-fc50-64e5-d80233130f7e@huawei.com>
+ <20210807123243.7661e4e3@xps13>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <9955e32c-615a-f02c-abc3-a7b613bf34ee@huawei.com>
+Date:   Tue, 10 Aug 2021 19:35:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
- <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
- <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
- <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
- <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com> <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
- <a74dfb1f-befd-92ce-4c30-233cb08e04d3@huawei.com> <CAK8P3a3B4FCaPPHhzBdpkv0fsjE0jREwGFCdPeHEDHxxRBEjng@mail.gmail.com>
- <5e8dfbd2-a6c0-6d02-53e9-1f29aebcc44e@huawei.com> <CAK8P3a08Zcyx0J4_LGAfU_AtUyEK+XtQJxYBQ52VXfWu8-o8_w@mail.gmail.com>
- <dd2d49ef-3154-3c87-67b9-c134567ba947@huawei.com>
-In-Reply-To: <dd2d49ef-3154-3c87-67b9-c134567ba947@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 10 Aug 2021 13:33:52 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3KTaa-AwCOjhaASMx63B3DUBZCZe6RKWk-=Qu7xr_ijQ@mail.gmail.com>
-Message-ID: <CAK8P3a3KTaa-AwCOjhaASMx63B3DUBZCZe6RKWk-=Qu7xr_ijQ@mail.gmail.com>
-Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
-To:     John Garry <john.garry@huawei.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210807123243.7661e4e3@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:19 AM John Garry <john.garry@huawei.com> wrote:
-> On 04/08/2021 09:52, Arnd Bergmann wrote:
+在 2021/8/7 18:32, Miquel Raynal 写道:
+Hi Miquel,
+> Hi Zhihao,
 >
-> This seems a reasonable approach. Do you have a plan for this work? Or
-> still waiting for the green light?
-
-I'm rather busy with other work at the moment, so no particular plans
-for any time soon.
-
-> I have noticed the kernel test robot reporting the following to me,
-> which seems to be the same issue which was addressed in this series
-> originally:
+> Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 7 Aug 2021
+> 10:15:46 +0800:
 >
-> config: s390-randconfig-r032-20210802 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project
-> 4f71f59bf3d9914188a11d0c41bedbb339d36ff5)
-> ...
-> All errors (new ones prefixed by >>):
+>> 在 2021/8/7 3:28, Miquel Raynal 写道:
+>> Hi Miquel,
+>>> Hi Zhihao,
+>>>
+>>> Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 31 Jul 2021
+>>> 10:32:42 +0800:
+>>> @@ -721,14 +724,15 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+>>>    				    subdev[i]->flags & MTD_WRITEABLE;
+>>>    		}
+>>>    > +		subdev_master = mtd_get_master(subdev[i]);
+>>>    		concat->mtd.size += subdev[i]->size;
+>>>    		concat->mtd.ecc_stats.badblocks +=
+>>>    			subdev[i]->ecc_stats.badblocks;
+>>>    		if (concat->mtd.writesize   !=  subdev[i]->writesize ||
+>>>    		    concat->mtd.subpage_sft != subdev[i]->subpage_sft ||
+>>>    		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
+>>> -		    !concat->mtd._read_oob  != !subdev[i]->_read_oob ||
+>>> -		    !concat->mtd._write_oob != !subdev[i]->_write_oob) {
+>>> +		    !concat->mtd._read_oob  != !subdev_master->_read_oob ||
+>>> +		    !concat->mtd._write_oob != !subdev_master->_write_oob) {
+>>> Do you really need this change?
+>> I think both "!concat->mtd._read_oob != !subdev[i]->_read_oob" and "!concat->mtd._write_oob != !subdev[i]->_write_oob" need to be modified otherwise concatenating goes failure.
+>>
+>> I thought there exists two problems:
+>>
+>>     1. Wrong callback fetching in mtd partition device
+>>
+>>     2. Warning for existence of _read and _read_oob at the same time
+>>
+>> so I solved them in two steps to make history commit logs a bit clear.
+>>
+>> Though these two patches can be combined to one.
+> No please keep the split.
 >
->     In file included from drivers/block/null_blk/main.c:12:
->     In file included from drivers/block/null_blk/null_blk.h:8:
->     In file included from include/linux/blkdev.h:25:
->     In file included from include/linux/scatterlist.h:9:
->     In file included from arch/s390/include/asm/io.h:75:
->     include/asm-generic/io.h:464:31: warning: performing pointer
-> arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic]
->             val = __raw_readb(PCI_IOBASE + addr);
->
-> So I imagine lots of people are seeing these.
+> What I mean here is that I don't think your fix is valid. Maybe we
+> should propagate these callbacks as well instead of trying to hack into
+> this condition. I don't see why you should check against subdev[i] for
+> half of the callbacks and check for subdev_master for the last two.
 
-Right, this is the original problem that Niklas was trying to solve.
+I have the following understanding of mtd:
 
-If Niklas has time to get this fixed, I can probably find a way to work
-with him on finishing up my proposed patch with the changes you
-suggested.
+1. The existence of mtd partition device's callbacks(what can mtd do, 
+_read, _write, _read_oob, etc.) is decided by mtd master device. All mtd 
+common functions (mtd_read, mtd_read_oob) pass master mtd device rather 
+than partition mtd device as parameter, because nand_chip(initialized as 
+master mtd device) process requests.  So there are two steps in mtd 
+common function: fetch master mtd device; invoke master mtd devices's 
+callback and pass in master mtd device.
 
-       Arnd
+   Propogating callbacks to partition mtd device may bring some 
+imperfections:
+
+   A. No adaptions to mtd common functions: partition mtd device's 
+callbacks will never be invoked, they are only used to judge whether 
+assigin concatenated device's callback while concatenating. Looks weird.
+
+   @@ -86,6 +86,61 @@ static struct mtd_info *allocate_partition(struct 
+mtd_info *parent,
+         child->part.offset = part->offset;
+         INIT_LIST_HEAD(&child->partitions);
+
++       if (parent->_read)
++               child->_read = parent->_read;
++       if (parent->_write)
++               child->_write = parent->_write;
+[...]
++       if (parent->_read_oob)
++               child->_read_oob = parent->_read_oob;
++       if (parent->_write_oob)
+
+
+   B. Re-import removed partition mtd device's callbacks and adapt mtd 
+common functions: Current implemention is simplier than the version 
+before 46b5889cc2c54("mtd: implement proper partition handling"). 
+Adapting mtd common functions is a risky thing, which could effect other 
+modules, should we do that?
+
++static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
++               size_t *retlen, u_char *buf)
++{
++       struct mtd_part *part = mtd_to_part(mtd);
++       struct mtd_ecc_stats stats;
++       int res;
++
++      stats = part->parent->ecc_stats;
++       res = part->parent->_read(part->parent, from + part->offset, len,
++                                 retlen, buf);
++       if (unlikely(mtd_is_eccerr(res)))
++               mtd->ecc_stats.failed +=
++                       part->parent->ecc_stats.failed - stats.failed;
++       else
++               mtd->ecc_stats.corrected +=
++                       part->parent->ecc_stats.corrected - stats.corrected;
++       return res;
++}
+
+  static int mtd_read_oob_std(struct mtd_info *mtd, loff_t from,
+                             struct mtd_oob_ops *ops)
+  {
+-       struct mtd_info *master = mtd_get_master(mtd);
+         int ret;
+
+-       from = mtd_get_master_ofs(mtd, from);
+-       if (master->_read_oob)
+-               ret = master->_read_oob(master, from, ops);
++       if (mtd->_read_oob)
++               ret = mtd->_read_oob(mtd, from, ops);
+         else
+-               ret = master->_read(master, from, ops->len, &ops->retlen,
++               ret = mtd->_read(mtd, from, ops->len, &ops->retlen,
+                                     ops->datbuf);
+
+
+2. Checking against subdev[i] for data members and check against 
+subdev_master for the callbacks looks weird. I modified it based on the 
+assumption that partition mtd device' callbacks inherit from master mtd 
+device but data members(name, size) may not. Maybe I should add some 
+comment to explain why checking against subdev[i] for data members and 
+checking against subdev_master for the callbacks.
+
+
+So, which method is better? Any other method?
+
