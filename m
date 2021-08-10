@@ -2,310 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A63C3E596C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9523E596D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240371AbhHJLs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 07:48:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38214 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240372AbhHJLsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:48:35 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ABWk3G004313;
-        Tue, 10 Aug 2021 07:47:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=ApVcNwceqGXJmfSMdPYdvLweguMTt0ucvPKAQ3SXbFo=;
- b=bBBNzoW/Hd/etl4YCQb3xRCDwvEMYNWcHS0VyytegqmVmfW6m10RVleN8EplcJqGKbMW
- w2orF8Y+kiBi9QW7oRsGbZ4+4w8Z2fzZFHldHtthCXrBabD1LCVHLMvNMzwXuG/1FFIk
- rLprWcHnsGsfAgw8SGzte7YEwMBiuzhR/bO05NYSJsdOP+x6rIevB3iq7ksM6+1ExPnw
- wVgU41MVMWP2lNyUxNVCZwBJy1eO7TZ1Fg9EJazu3QPdrlSN9pIgRYF//yIwFYzO0UwS
- 3tGtIfun0Z6SMMk5lUa+PWd/EQ/52yHxM4lyfjbEOR3MbEeJl9hr7EWss8VYa0dFO/1F Sg== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3abk4ps643-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 07:47:38 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17ABgcjU008433;
-        Tue, 10 Aug 2021 11:47:36 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3a9ht8na1t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 11:47:36 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17ABiL0q58917238
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Aug 2021 11:44:21 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2B554C063;
-        Tue, 10 Aug 2021 11:47:32 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 98B7F4C073;
-        Tue, 10 Aug 2021 11:47:28 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 10 Aug 2021 11:47:28 +0000 (GMT)
-Date:   Tue, 10 Aug 2021 17:17:27 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
+        id S238279AbhHJLs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 07:48:59 -0400
+Received: from mout.gmx.net ([212.227.17.20]:42839 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240317AbhHJLsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:48:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628596065;
+        bh=ncC7o600PU/F6DbooXCSVvIEyJUYp2GOXS0HtlDpoPI=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Qcaj5Frqo83OD8IsKGbZpRp4xOGUfKbUYeQT2+/pOe7teISA+wkRCddz/idqYWMRL
+         vLlkaoyhdsMLulQJFsPq4HObgLGFgRFWXqDRkccaevi+3npmCH2d7vyaJi/drJphnj
+         cUB52Ku0Vdg9PoH3l0UO7UpsTM8IyFjH67vEvLHI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.219.22]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MpDJX-1muAN53rCR-00qi60; Tue, 10
+ Aug 2021 13:47:45 +0200
+Message-ID: <2eb3cf340716c40f03a0a342ab40219b3d1de195.camel@gmx.de>
+Subject: Re: [PATCH v4 29/35] mm: slub: Move flush_cpu_slab() invocations
+ __free_slab() invocations out of IRQ context
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>
-Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for
- non-online nodes
-Message-ID: <20210810114727.GB21942@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
- <20210701041552.112072-2-srikar@linux.vnet.ibm.com>
- <875yxu85wi.mognet@arm.com>
- <20210712124856.GA3836887@linux.vnet.ibm.com>
- <87zguqmay9.mognet@arm.com>
- <20210723143914.GI3836887@linux.vnet.ibm.com>
- <87h7g09bgg.mognet@arm.com>
- <20210809065235.GH4072958@linux.vnet.ibm.com>
- <875yweaig9.mognet@arm.com>
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jann Horn <jannh@google.com>
+Date:   Tue, 10 Aug 2021 13:47:42 +0200
+In-Reply-To: <fbf59e73-8b27-56a8-d863-cfe40457f4df@suse.cz>
+References: <20210805152000.12817-1-vbabka@suse.cz>
+         <20210805152000.12817-30-vbabka@suse.cz>
+         <0b36128c-3e12-77df-85fe-a153a714569b@quicinc.com>
+         <fbf59e73-8b27-56a8-d863-cfe40457f4df@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <875yweaig9.mognet@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: g5tXX57lGmLT7rAbdaAJwiw-rARi1j1C
-X-Proofpoint-GUID: g5tXX57lGmLT7rAbdaAJwiw-rARi1j1C
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-10_05:2021-08-10,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 impostorscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108100073
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HWZJDEBnwH0bYmROkMYUt7RwI2AZIaNU4dDH1VSPJllWJ+QyfvN
+ bnGsnUn1CKEk+wmD2DClIk74WDF1ivBw3A3hSxw/05ZR9jYBpifB3A1FWv9png7KctZwble
+ nGmHMwwQMkFEFdc66oHWlLxCo3rupiJIxi3usy3RfKnWOAN9vQ8rWZRZyAu4ZBIGN0jeriO
+ MtXr+7L3BFTx3nhOpNwCg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:z28raP9QTO4=:h3NBMR9dCRkjwJ6mNnW0Zq
+ 4feJjoW2doezBH/NI/MTEW97urzCDBfkjY+9t4a7fJlIStB11tDeMmQReBIpt2ZLSodQNpljJ
+ FxKXNXIW5HDkCL2UFHgKBnj2sVdWIcf/0E10oN2SBjwH49zdmwq44kpAKr4CISQ+USOZxf7QM
+ qy9eln/KSV9xhIEFgWAHOwMtTIIFlt3UX2YpSuRIKKLRgwicxPXT1RoDXOofyhp7S55jl3y8c
+ ayozWIYt9MqoT54BWoXELgxtuSP/uMfnXnEC3tpvUVUwc6HyFZ297huCIhEbGvntDpbRJOz3k
+ d72sBHT5hOkhf4fo7kDv9PRNOZUTOqTXKggsq+KPb82DlifwSZRlnTdYHwGyxTpijsy0NvvQi
+ /WKo6py71eh76emoe3dBuRzp+kv9UYdCD37vOS0qZ+NF+mqTCyk9RX0DP4S9Ay9ij6Ep/77Pk
+ f5OGCKnXK8WCfrDLag+kYx2p7KTFedvqgSiRRG4kHDZYl2E6Jv2vYPY3kigHSUPX1j645WSo6
+ OBcGdyUen6wACx9yiI4pftRLQ/5Ye/3ELn4eZRLHgBZe/4dV1ydZfBZDt08D5lqbm3mR32a0e
+ WxmvWd7b0z2nuSiMy5Zw3RFRPkYyVv2qDLtBOSYYo8RUCHWLz5njRlp7yjxjFeJcLGqvuvN/W
+ eID9lddiUPc5O/8Aig1KG7C234B5cezhUsuueR3wBGas+o5SEpIQmvqsmBaJ5n1DhMedePlob
+ fxA6r6CXEut1CIvIJU7IhPPTQSdttsB14m68LjlzRSF6Fm65L3eBzO+5+AEmANFnh3DjSa7eP
+ N7U0xhK+HOvDpgj3rSZCK+ocSB8x9RG6s9QpAv9klKADZXeaJZNIbiQrNYm8B/uDvB9Svvtbw
+ XPjVwRO82i+2EMCEEQR3f8+mUZxySV4y9bS5CklOPE4+R+gUw5S8hd85CLPRgm7c5SYeu/JMn
+ GdUZOF08reNLZY4i5Ts1xMQG7rzgRD2DCDO8KTItQO11RNb7gL4IOnM+AdiDOEzzCi6GJkSL2
+ 0xXwMK5aPJCsr+XzfWS3jhrS5ColwPyHcCwFYquLpTxET0auAK8yUFLdEgAixCVpF/R6FCaBz
+ fusum03CzKCxM+oFrRV/hrx/XzFiPy8KApl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Valentin Schneider <valentin.schneider@arm.com> [2021-08-09 13:52:38]:
+On Tue, 2021-08-10 at 11:03 +0200, Vlastimil Babka wrote:
+> On 8/9/21 3:41 PM, Qian Cai wrote:
+> > > =C2=A0
+> > > +static DEFINE_MUTEX(flush_lock);
+> > > +static DEFINE_PER_CPU(struct slub_flush_work, slub_flush);
+> > > +
+> > > =C2=A0static void flush_all(struct kmem_cache *s)
+> > > =C2=A0{
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0on_each_cpu_cond(has_cpu_=
+slab, flush_cpu_slab, s, 1);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct slub_flush_work *s=
+fw;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned int cpu;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&flush_lock);
+> >
+> > Vlastimil, taking the lock here could trigger a warning during memory =
+offline/online due to the locking order:
+> >
+> > slab_mutex -> flush_lock
+> >
+> > [=C2=A0=C2=A0 91.374541] WARNING: possible circular locking dependency=
+ detected
+> > [=C2=A0=C2=A0 91.381411] 5.14.0-rc5-next-20210809+ #84 Not tainted
+> > [=C2=A0=C2=A0 91.387149] ---------------------------------------------=
+---------
+> > [=C2=A0=C2=A0 91.394016] lsbug/1523 is trying to acquire lock:
+> > [=C2=A0=C2=A0 91.399406] ffff800018e76530 (flush_lock){+.+.}-{3:3}, at=
+: flush_all+0x50/0x1c8
+> > [=C2=A0=C2=A0 91.407425]
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 but task is already holding lock:
+> > [=C2=A0=C2=A0 91.414638] ffff800018e48468 (slab_mutex){+.+.}-{3:3}, at=
+: slab_memory_callback+0x44/0x280
+> > [=C2=A0=C2=A0 91.423603]
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 which lock already depends on the new lock.
+> >
+>
+> OK, managed to reproduce in qemu and this fixes it for me on top of
+> next-20210809. Could you test as well, as your testing might be more
+> comprehensive? I will format is as a fixup for the proper patch in the s=
+eries then.
 
-> On 09/08/21 12:22, Srikar Dronamraju wrote:
-> > * Valentin Schneider <valentin.schneider@arm.com> [2021-08-08 16:56:47]:
-> >> Wait, doesn't the distance matrix (without any offline node) say
-> >>
-> >>   distance(0, 3) == 40
-> >>
-> >> ? We should have at the very least:
-> >>
-> >>   node   0   1   2   3
-> >>     0:  10  20  ??  40
-> >>     1:  20  20  ??  40
-> >>     2:  ??  ??  ??  ??
-> >>     3:  40  40  ??  10
-> >>
-> >
-> > Before onlining node 3 and CPU 3 (node/CPU 0 and 1 are already online)
-> > Note: Node 2-7 and CPU 2-7 are still offline.
-> >
-> > node   0   1   2   3
-> >   0:  10  20  40  10
-> >   1:  20  20  40  10
-> >   2:  40  40  10  10
-> >   3:  10  10  10  10
-> >
-> > NODE->mask(0) == 0
-> > NODE->mask(1) == 1
-> > NODE->mask(2) == 0
-> > NODE->mask(3) == 0
-> >
-> > Note: This is with updating Node 2's distance as 40 for figuring out
-> > the number of numa levels. Since we have all possible distances, we
-> > dont update Node 3 distance, so it will be as if its local to node 0.
-> >
-> > Now when Node 3 and CPU 3 are onlined
-> > Note: Node 2, 3-7 and CPU 2, 3-7 are still offline.
-> >
-> > node   0   1   2   3
-> >   0:  10  20  40  40
-> >   1:  20  20  40  40
-> >   2:  40  40  10  40
-> >   3:  40  40  40  10
-> >
-> > NODE->mask(0) == 0
-> > NODE->mask(1) == 1
-> > NODE->mask(2) == 0
-> > NODE->mask(3) == 0,3
-> >
-> > CPU 0 continues to be part of Node->mask(3) because when we online and
-> > we find the right distance, there is no API to reset the numa mask of
-> > 3 to remove CPU 0 from the numa masks.
-> >
-> > If we had an API to clear/set sched_domains_numa_masks[node][] when
-> > the node state changes, we could probably plug-in to clear/set the
-> > node masks whenever node state changes.
-> >
-> 
-> Gotcha, this is now coming back to me...
-> 
-> [...]
-> 
-> >> Ok, so it looks like we really can't do without that part - even if we get
-> >> "sensible" distance values for the online nodes, we can't divine values for
-> >> the offline ones.
-> >>
-> >
-> > Yes
-> >
-> 
-> Argh, while your approach does take care of the masks, it leaves
-> sched_numa_topology_type unchanged. You *can* force an update of it, but
-> yuck :(
-> 
-> I got to the below...
-> 
+As it appeared it should, moving cpu_hotplug_lock outside slab_mutex in
+kmem_cache_destroy() on top of that silenced the cpu offline gripe.
 
-Yes, I completely missed that we should update sched_numa_topology_type.
+=2D--
+ mm/slab_common.c |    2 ++
+ mm/slub.c        |    2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
+=2D-- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -502,6 +502,7 @@ void kmem_cache_destroy(struct kmem_cach
+ 	if (unlikely(!s))
+ 		return;
 
-> ---
-> From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> Date: Thu, 1 Jul 2021 09:45:51 +0530
-> Subject: [PATCH 1/1] sched/topology: Skip updating masks for non-online nodes
-> 
-> The scheduler currently expects NUMA node distances to be stable from init
-> onwards, and as a consequence builds the related data structures
-> once-and-for-all at init (see sched_init_numa()).
-> 
-> Unfortunately, on some architectures node distance is unreliable for
-> offline nodes and may very well change upon onlining.
-> 
-> Skip over offline nodes during sched_init_numa(). Track nodes that have
-> been onlined at least once, and trigger a build of a node's NUMA masks when
-> it is first onlined post-init.
-> 
++	cpus_read_lock();
+ 	mutex_lock(&slab_mutex);
 
-Your version is much much better than mine.
-And I have verified that it works as expected.
+ 	s->refcount--;
+@@ -516,6 +517,7 @@ void kmem_cache_destroy(struct kmem_cach
+ 	}
+ out_unlock:
+ 	mutex_unlock(&slab_mutex);
++	cpus_read_unlock();
+ }
+ EXPORT_SYMBOL(kmem_cache_destroy);
+
+=2D-- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4234,7 +4234,7 @@ int __kmem_cache_shutdown(struct kmem_ca
+ 	int node;
+ 	struct kmem_cache_node *n;
+
+-	flush_all(s);
++	flush_all_cpus_locked(s);
+ 	/* Attempt to free all objects */
+ 	for_each_kmem_cache_node(s, node, n) {
+ 		free_partial(s, n);
 
 
-> Reported-by: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/sched/topology.c | 65 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 65 insertions(+)
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index b77ad49dc14f..cba95793a9b7 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1482,6 +1482,8 @@ int				sched_max_numa_distance;
->  static int			*sched_domains_numa_distance;
->  static struct cpumask		***sched_domains_numa_masks;
->  int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
-> +
-> +static unsigned long __read_mostly *sched_numa_onlined_nodes;
->  #endif
-> 
->  /*
-> @@ -1833,6 +1835,16 @@ void sched_init_numa(void)
->  			sched_domains_numa_masks[i][j] = mask;
-> 
->  			for_each_node(k) {
-> +				/*
-> +				 * Distance information can be unreliable for
-> +				 * offline nodes, defer building the node
-> +				 * masks to its bringup.
-> +				 * This relies on all unique distance values
-> +				 * still being visible at init time.
-> +				 */
-> +				if (!node_online(j))
-> +					continue;
-> +
->  				if (sched_debug() && (node_distance(j, k) != node_distance(k, j)))
->  					sched_numa_warn("Node-distance not symmetric");
-> 
-> @@ -1886,6 +1898,53 @@ void sched_init_numa(void)
->  	sched_max_numa_distance = sched_domains_numa_distance[nr_levels - 1];
-> 
->  	init_numa_topology_type();
-> +
-> +	sched_numa_onlined_nodes = bitmap_alloc(nr_node_ids, GFP_KERNEL);
-> +	if (!sched_numa_onlined_nodes)
-> +		return;
-> +
-> +	bitmap_zero(sched_numa_onlined_nodes, nr_node_ids);
-> +	for_each_online_node(i)
-> +		bitmap_set(sched_numa_onlined_nodes, i, 1);
-> +}
-> +
-> +void __sched_domains_numa_masks_set(unsigned int node)
-> +{
-> +	int i, j;
-> +
-> +	/*
-> +	 * NUMA masks are not built for offline nodes in sched_init_numa().
-> +	 * Thus, when a CPU of a never-onlined-before node gets plugged in,
-> +	 * adding that new CPU to the right NUMA masks is not sufficient: the
-> +	 * masks of that CPU's node must also be updated.
-> +	 */
-> +	if (test_bit(node, sched_numa_onlined_nodes))
-> +		return;
-> +
-> +	bitmap_set(sched_numa_onlined_nodes, node, 1);
-> +
-> +	for (i = 0; i < sched_domains_numa_levels; i++) {
-> +		for (j = 0; j < nr_node_ids; j++) {
-> +			if (!node_online(j) || node == j)
-> +				continue;
-> +
-> +			if (node_distance(j, node) > sched_domains_numa_distance[i])
-> +				continue;
-> +
-> +			/* Add remote nodes in our masks */
-> +			cpumask_or(sched_domains_numa_masks[i][node],
-> +				   sched_domains_numa_masks[i][node],
-> +				   sched_domains_numa_masks[0][j]);
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * A new node has been brought up, potentially changing the topology
-> +	 * classification.
-> +	 *
-> +	 * Note that this is racy vs any use of sched_numa_topology_type :/
-> +	 */
-> +	init_numa_topology_type();
->  }
-> 
->  void sched_domains_numa_masks_set(unsigned int cpu)
-> @@ -1893,8 +1952,14 @@ void sched_domains_numa_masks_set(unsigned int cpu)
->  	int node = cpu_to_node(cpu);
->  	int i, j;
-> 
-> +	__sched_domains_numa_masks_set(node);
-> +
->  	for (i = 0; i < sched_domains_numa_levels; i++) {
->  		for (j = 0; j < nr_node_ids; j++) {
-> +			if (!node_online(j))
-> +				continue;
-> +
-> +			/* Set ourselves in the remote node's masks */
->  			if (node_distance(j, node) <= sched_domains_numa_distance[i])
->  				cpumask_set_cpu(cpu, sched_domains_numa_masks[i][j]);
->  		}
-> -- 
-> 2.25.1
-> 
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+
