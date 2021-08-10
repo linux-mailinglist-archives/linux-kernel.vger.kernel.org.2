@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EE73E7D10
+	by mail.lfdr.de (Postfix) with ESMTP id E4BAA3E7D11
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234739AbhHJQDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235999AbhHJQCm (ORCPT
+        id S233371AbhHJQD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:03:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44440 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235943AbhHJQCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:02:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D1DC06179B;
-        Tue, 10 Aug 2021 09:02:18 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 16:02:16 -0000
+        Tue, 10 Aug 2021 12:02:41 -0400
+Date:   Tue, 10 Aug 2021 16:02:17 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628611336;
+        s=2020; t=1628611338;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O9kEFZ+jRcX/7qIZNqKLHu9rOGw2FPbYv2psZfxG+QU=;
-        b=Q3cNbcjkzUHeNe0lDcUqGyQCsQpBHV9dTw733VZ9wPGculJzf5TsB7bqH8EQ7Jc34ZCGdG
-        W9/daVZ7J6qMUA4oHdplrwdVXQnwqwZ3+XD5fP9AJK3ahIjlec7LCaWB70z194H85ehMM9
-        8IdqcP/Vyu99qCt+B4xwjEXFP+VLPrD82AOU3fREhHqWRp3SCz8btlNPHC+9Jhpk3RLARf
-        GW5QoLWSeGo7gULDcmd1QP/CA8Ea+SGA6HIRN/VrQOgGwO1LiC1lSGYSY8IsnjUx4ClXp4
-        U7ai8UMAgdG+27hFQRCUQjtg8GQRK1Mf8thx8rx9MUhmmxwFdGhh5zFORrk+lQ==
+        bh=XLtM8f1wACaF4P3HiDqtuQf6TysXYDwIFm7YnLmVkPY=;
+        b=rMPMjQJEb14tfEhwoIM4U1O3nsu8cnQsSEF/6i/78K2vnX07t5uw7j/Fkwvtzpxg90XT7L
+        GgvaewHjXKUyCAbu/EuxULggpTWYN+Zfo32eRsu6IJkLWkdj2bjTTLsiQgx3qfoAXS/t9s
+        lScO+1ywK5n4hzK+KgxTc9iwwCvWXxrVC6Ix3BY+2cUReTK/0fB+xNmWAZX45D418TVtNt
+        steNrQcvvRTeF/chBcCMtuFge8WHWByW9XjBU5A5ZAeI2fHUaeYRvmKlzgWlRogCgoGNHp
+        4cvxbCBdmIhloa+tlEMn8mLXbQweuHZzu9YIL2Pd6AS1fB8XaoEmTvPx9QwMPQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628611336;
+        s=2020e; t=1628611338;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O9kEFZ+jRcX/7qIZNqKLHu9rOGw2FPbYv2psZfxG+QU=;
-        b=WbIINEvsWBF/9ip7DqZRGPeg+YdSOALXEdf+EC2Vy+hIC1mA2rHXMEGRIHYz6c507jZ7+K
-        x0AaMgfIj8039VAQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        bh=XLtM8f1wACaF4P3HiDqtuQf6TysXYDwIFm7YnLmVkPY=;
+        b=eQOs0BSCV8rDWLqp9+dsUPZg73heLqESCCxNdqmo13BZXBqUfmNVuf16AhbYyBf7A01xMW
+        kfP+bVz5LLUw4SAg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] hrtimer: Force clock_was_set() handling for the
- HIGHRES=n, NOHZ=y case
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+Subject: [tip: timers/core] hrtimer: Consolidate reprogramming code
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210713135158.288697903@linutronix.de>
-References: <20210713135158.288697903@linutronix.de>
+In-Reply-To: <20210713135158.054424875@linutronix.de>
+References: <20210713135158.054424875@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <162861133625.395.538177983573699889.tip-bot2@tip-bot2>
+Message-ID: <162861133759.395.7795246170325882103.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,150 +58,128 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     e71a4153b7c256ec103e79875398553808aeffd2
-Gitweb:        https://git.kernel.org/tip/e71a4153b7c256ec103e79875398553808aeffd2
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 13 Jul 2021 15:39:49 +02:00
+Commit-ID:     b14bca97c9f5c3e3f133445b01c723e95490d843
+Gitweb:        https://git.kernel.org/tip/b14bca97c9f5c3e3f133445b01c723e95490d843
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 13 Jul 2021 15:39:47 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 10 Aug 2021 17:57:22 +02:00
 
-hrtimer: Force clock_was_set() handling for the HIGHRES=n, NOHZ=y case
+hrtimer: Consolidate reprogramming code
 
-When CONFIG_HIGH_RES_TIMERS is disabled, but NOHZ is enabled then
-clock_was_set() is not doing anything. With HIGHRES=n the kernel relies on
-the periodic tick to update the clock offsets, but when NOHZ is enabled and
-active then CPUs which are in a deep idle sleep do not have a periodic tick
-which means the expiry of timers affected by clock_was_set() can be
-arbitrarily delayed up to the point where the CPUs are brought out of idle
-again.
+This code is mostly duplicated. The redudant store in the force reprogram
+case does no harm and the in hrtimer interrupt condition cannot be true for
+the force reprogram invocations.
 
-Make the clock_was_set() logic unconditionaly available so that idle CPUs
-are kicked out of idle to handle the update.
-
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210713135158.288697903@linutronix.de
+Link: https://lore.kernel.org/r/20210713135158.054424875@linutronix.de
 
 ---
- kernel/time/hrtimer.c | 87 ++++++++++++++++++++++++++++--------------
- 1 file changed, 59 insertions(+), 28 deletions(-)
+ kernel/time/hrtimer.c | 72 ++++++++++++++++--------------------------
+ 1 file changed, 29 insertions(+), 43 deletions(-)
 
 diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 7ebf642..214fd65 100644
+index ba2e0d0..5f7c465 100644
 --- a/kernel/time/hrtimer.c
 +++ b/kernel/time/hrtimer.c
-@@ -739,23 +739,7 @@ static inline int hrtimer_is_hres_enabled(void)
- 	return hrtimer_hres_enabled;
+@@ -652,21 +652,24 @@ static inline int hrtimer_hres_active(void)
+ 	return __hrtimer_hres_active(this_cpu_ptr(&hrtimer_bases));
  }
  
 -/*
-- * Retrigger next event is called after clock was set
-- *
-- * Called with interrupts disabled via on_each_cpu()
+- * Reprogram the event source with checking both queues for the
+- * next event
+- * Called with interrupts disabled and base->lock held
 - */
--static void retrigger_next_event(void *arg)
--{
--	struct hrtimer_cpu_base *base = this_cpu_ptr(&hrtimer_bases);
--
--	if (!__hrtimer_hres_active(base))
+ static void
+-hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
++__hrtimer_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal,
++		    struct hrtimer *next_timer, ktime_t expires_next)
+ {
+-	ktime_t expires_next;
++	/*
++	 * If the hrtimer interrupt is running, then it will reevaluate the
++	 * clock bases and reprogram the clock event device.
++	 */
++	if (cpu_base->in_hrtirq)
++		return;
+ 
+-	expires_next = hrtimer_update_next_event(cpu_base);
++	if (expires_next > cpu_base->expires_next)
++		return;
+ 
+ 	if (skip_equal && expires_next == cpu_base->expires_next)
+ 		return;
+ 
++	cpu_base->next_timer = next_timer;
+ 	cpu_base->expires_next = expires_next;
+ 
+ 	/*
+@@ -689,7 +692,23 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ 	if (!__hrtimer_hres_active(cpu_base) || cpu_base->hang_detected)
+ 		return;
+ 
+-	tick_program_event(cpu_base->expires_next, 1);
++	tick_program_event(expires_next, 1);
++}
++
++/*
++ * Reprogram the event source with checking both queues for the
++ * next event
++ * Called with interrupts disabled and base->lock held
++ */
++static void
++hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
++{
++	ktime_t expires_next;
++
++	expires_next = hrtimer_update_next_event(cpu_base);
++
++	__hrtimer_reprogram(cpu_base, skip_equal, cpu_base->next_timer,
++			    expires_next);
+ }
+ 
+ /* High resolution timer related functions */
+@@ -835,40 +854,7 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ 	if (base->cpu_base != cpu_base)
+ 		return;
+ 
+-	/*
+-	 * If the hrtimer interrupt is running, then it will
+-	 * reevaluate the clock bases and reprogram the clock event
+-	 * device. The callbacks are always executed in hard interrupt
+-	 * context so we don't need an extra check for a running
+-	 * callback.
+-	 */
+-	if (cpu_base->in_hrtirq)
 -		return;
 -
--	raw_spin_lock(&base->lock);
--	hrtimer_update_base(base);
--	hrtimer_force_reprogram(base, 0);
--	raw_spin_unlock(&base->lock);
--}
-+static void retrigger_next_event(void *arg);
- 
- /*
-  * Switch to high resolution mode
-@@ -781,9 +765,50 @@ static void hrtimer_switch_to_hres(void)
- 
- static inline int hrtimer_is_hres_enabled(void) { return 0; }
- static inline void hrtimer_switch_to_hres(void) { }
--static inline void retrigger_next_event(void *arg) { }
- 
- #endif /* CONFIG_HIGH_RES_TIMERS */
-+/*
-+ * Retrigger next event is called after clock was set with interrupts
-+ * disabled through an SMP function call or directly from low level
-+ * resume code.
-+ *
-+ * This is only invoked when:
-+ *	- CONFIG_HIGH_RES_TIMERS is enabled.
-+ *	- CONFIG_NOHZ_COMMON is enabled
-+ *
-+ * For the other cases this function is empty and because the call sites
-+ * are optimized out it vanishes as well, i.e. no need for lots of
-+ * #ifdeffery.
-+ */
-+static void retrigger_next_event(void *arg)
-+{
-+	struct hrtimer_cpu_base *base = this_cpu_ptr(&hrtimer_bases);
-+
-+	/*
-+	 * When high resolution mode or nohz is active, then the offsets of
-+	 * CLOCK_REALTIME/TAI/BOOTTIME have to be updated. Otherwise the
-+	 * next tick will take care of that.
-+	 *
-+	 * If high resolution mode is active then the next expiring timer
-+	 * must be reevaluated and the clock event device reprogrammed if
-+	 * necessary.
-+	 *
-+	 * In the NOHZ case the update of the offset and the reevaluation
-+	 * of the next expiring timer is enough. The return from the SMP
-+	 * function call will take care of the reprogramming in case the
-+	 * CPU was in a NOHZ idle sleep.
-+	 */
-+	if (!__hrtimer_hres_active(base) && !tick_nohz_active)
-+		return;
-+
-+	raw_spin_lock(&base->lock);
-+	hrtimer_update_base(base);
-+	if (__hrtimer_hres_active(base))
-+		hrtimer_force_reprogram(base, 0);
-+	else
-+		hrtimer_update_next_event(base);
-+	raw_spin_unlock(&base->lock);
-+}
- 
- /*
-  * When a timer is enqueued and expires earlier than the already enqueued
-@@ -842,22 +867,28 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+-	if (expires >= cpu_base->expires_next)
+-		return;
+-
+-	/* Update the pointer to the next expiring timer */
+-	cpu_base->next_timer = timer;
+-	cpu_base->expires_next = expires;
+-
+-	/*
+-	 * If hres is not active, hardware does not have to be
+-	 * programmed yet.
+-	 *
+-	 * If a hang was detected in the last timer interrupt then we
+-	 * do not schedule a timer which is earlier than the expiry
+-	 * which we enforced in the hang detection. We want the system
+-	 * to make progress.
+-	 */
+-	if (!__hrtimer_hres_active(cpu_base) || cpu_base->hang_detected)
+-		return;
+-
+-	/*
+-	 * Program the timer hardware. We enforce the expiry for
+-	 * events which are already in the past.
+-	 */
+-	tick_program_event(expires, 1);
++	__hrtimer_reprogram(cpu_base, true, timer, expires);
  }
  
  /*
-- * Clock realtime was set
-- *
-- * Change the offset of the realtime clock vs. the monotonic
-- * clock.
-+ * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
-+ * CLOCK_BOOTTIME (for late sleep time injection).
-  *
-- * We might have to reprogram the high resolution timer interrupt. On
-- * SMP we call the architecture specific code to retrigger _all_ high
-- * resolution timer interrupts. On UP we just disable interrupts and
-- * call the high resolution interrupt code.
-+ * This requires to update the offsets for these clocks
-+ * vs. CLOCK_MONOTONIC. When high resolution timers are enabled, then this
-+ * also requires to eventually reprogram the per CPU clock event devices
-+ * when the change moves an affected timer ahead of the first expiring
-+ * timer on that CPU. Obviously remote per CPU clock event devices cannot
-+ * be reprogrammed. The other reason why an IPI has to be sent is when the
-+ * system is in !HIGH_RES and NOHZ mode. The NOHZ mode updates the offsets
-+ * in the tick, which obviously might be stopped, so this has to bring out
-+ * the remote CPU which might sleep in idle to get this sorted.
-  */
- void clock_was_set(void)
- {
--#ifdef CONFIG_HIGH_RES_TIMERS
-+	if (!hrtimer_hres_active() && !tick_nohz_active)
-+		goto out_timerfd;
-+
- 	/* Retrigger the CPU local events everywhere */
- 	on_each_cpu(retrigger_next_event, NULL, 1);
--#endif
-+
-+out_timerfd:
- 	timerfd_clock_was_set();
- }
- 
