@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451083E7FDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D94A3E8143
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbhHJRnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59558 "EHLO mail.kernel.org"
+        id S232582AbhHJR5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:57:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235717AbhHJRkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51AA0611CA;
-        Tue, 10 Aug 2021 17:37:47 +0000 (UTC)
+        id S236998AbhHJRyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:54:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 746B961371;
+        Tue, 10 Aug 2021 17:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617067;
-        bh=d/aABDZJ/OAKgVrEeVRugrVYFHZ/UYa4dGR04RG59SA=;
+        s=korg; t=1628617448;
+        bh=76zOx8RR5kNg3eS8gh3KAjbFpnzDu9itDLeMLvoYuqo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X7MEeMSMs2h6rRawBykydtcVBOKUeG1yuLbMKphn1Krm25qyPOboTyYeo1nSRqSf/
-         r9Z8Ki0bV5iukWW3jvIzo4OeE1CnYAMatkdTcnQMnEZsyheNs5zd5XjZG5WXipswxB
-         eg+ie7Fva2lcrjytHZ8+JxnxcYKlLwrH03lMz7pE=
+        b=Ysgc7HRKPXBe1uzOVJ0fdIldjMUXJjc98ReahtVaU7f7+8u/CNb8tPPhF1/q/ONm3
+         cVKSx6RQjmOVBdgGViVD6Z6pnOfxLF2gkHbLvjiYyq+BO2UEpZP80MYaJkxL0sbfhH
+         Hgj79gnzn438JfMwK+jrDtqnmLZ1R8jbDf2WM2tU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 003/135] bus: ti-sysc: Fix gpt12 system timer issue with reserved status
-Date:   Tue, 10 Aug 2021 19:28:57 +0200
-Message-Id: <20210810172955.789238213@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 030/175] dmaengine: stm32-dmamux: Fix PM usage counter unbalance in stm32 dmamux ops
+Date:   Tue, 10 Aug 2021 19:28:58 +0200
+Message-Id: <20210810173001.948045507@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
+References: <20210810173000.928681411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 3ff340e24c9dd5cff9fc07d67914c5adf67f80d6 ]
+[ Upstream commit baa16371c9525f24d508508e4d296c031e1de29c ]
 
-Jarkko Nikula <jarkko.nikula@bitmer.com> reported that Beagleboard
-revision c2 stopped booting. Jarkko bisected the issue down to
-commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend
-and resume for am3 and am4").
+pm_runtime_get_sync will increment pm usage counter
+even it failed. Forgetting to putting operation will
+result in reference leak here. We fix it by replacing
+it with pm_runtime_resume_and_get to keep usage counter
+balanced.
 
-Let's fix the issue by tagging system timers as reserved rather than
-ignoring them. And let's not probe any interconnect target module child
-devices for reserved modules.
-
-This allows PM runtime to keep track of clocks and clockdomains for
-the interconnect target module, and prevent the system timer from idling
-as we already have SYSC_QUIRK_NO_IDLE and SYSC_QUIRK_NO_IDLE_ON_INIT
-flags set for system timers.
-
-Fixes: 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and am4")
-Reported-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: 4f3ceca254e0f ("dmaengine: stm32-dmamux: Add PM Runtime support")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20210607064640.121394-3-zhangqilong3@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/ti-sysc.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ drivers/dma/stm32-dmamux.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index 818dc7f54f03..d3d31123a0a4 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -100,6 +100,7 @@ static const char * const clock_names[SYSC_MAX_CLOCKS] = {
-  * @cookie: data used by legacy platform callbacks
-  * @name: name if available
-  * @revision: interconnect target module revision
-+ * @reserved: target module is reserved and already in use
-  * @enabled: sysc runtime enabled status
-  * @needs_resume: runtime resume needed on resume from suspend
-  * @child_needs_resume: runtime resume needed for child on resume from suspend
-@@ -130,6 +131,7 @@ struct sysc {
- 	struct ti_sysc_cookie cookie;
- 	const char *name;
- 	u32 revision;
-+	unsigned int reserved:1;
- 	unsigned int enabled:1;
- 	unsigned int needs_resume:1;
- 	unsigned int child_needs_resume:1;
-@@ -3057,8 +3059,8 @@ static int sysc_probe(struct platform_device *pdev)
- 		return error;
+diff --git a/drivers/dma/stm32-dmamux.c b/drivers/dma/stm32-dmamux.c
+index ef0d0555103d..a42164389ebc 100644
+--- a/drivers/dma/stm32-dmamux.c
++++ b/drivers/dma/stm32-dmamux.c
+@@ -137,7 +137,7 @@ static void *stm32_dmamux_route_allocate(struct of_phandle_args *dma_spec,
  
- 	error = sysc_check_active_timer(ddata);
--	if (error)
--		return error;
-+	if (error == -EBUSY)
-+		ddata->reserved = true;
+ 	/* Set dma request */
+ 	spin_lock_irqsave(&dmamux->lock, flags);
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0) {
+ 		spin_unlock_irqrestore(&dmamux->lock, flags);
+ 		goto error;
+@@ -336,7 +336,7 @@ static int stm32_dmamux_suspend(struct device *dev)
+ 	struct stm32_dmamux_data *stm32_dmamux = platform_get_drvdata(pdev);
+ 	int i, ret;
  
- 	error = sysc_get_clocks(ddata);
- 	if (error)
-@@ -3094,11 +3096,15 @@ static int sysc_probe(struct platform_device *pdev)
- 	sysc_show_registers(ddata);
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0)
+ 		return ret;
  
- 	ddata->dev->type = &sysc_device_type;
--	error = of_platform_populate(ddata->dev->of_node, sysc_match_table,
--				     pdata ? pdata->auxdata : NULL,
--				     ddata->dev);
--	if (error)
--		goto err;
-+
-+	if (!ddata->reserved) {
-+		error = of_platform_populate(ddata->dev->of_node,
-+					     sysc_match_table,
-+					     pdata ? pdata->auxdata : NULL,
-+					     ddata->dev);
-+		if (error)
-+			goto err;
-+	}
+@@ -361,7 +361,7 @@ static int stm32_dmamux_resume(struct device *dev)
+ 	if (ret < 0)
+ 		return ret;
  
- 	INIT_DELAYED_WORK(&ddata->idle_work, ti_sysc_idle);
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0)
+ 		return ret;
  
 -- 
 2.30.2
