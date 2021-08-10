@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AFF3E838B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12EED3E8399
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbhHJTVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:21:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41588 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231152AbhHJTVW (ORCPT
+        id S232260AbhHJTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhHJTX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:21:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628623259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UKz5RODz5prskKuvBZqrHvPYmgz3FaALdg2u0GEXeAk=;
-        b=JCicweRCzxha6Q7q8a7rp0c29YjhSFVTzc7ezJ4NP5QRKRnOwavf9hQm3t7mPWp252LTur
-        ymdIIwtp9mVsbzTqrfjoPfcnQR5k1mYq/lFZ7K0248ky4RiUuyDWam0f7vIJVHQpPNcSHl
-        ntCQUsPMTDtVztqBiRo4PJvOIPuPa0o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604-zMfGCzHEMwWOtYJbUDazOA-1; Tue, 10 Aug 2021 15:20:58 -0400
-X-MC-Unique: zMfGCzHEMwWOtYJbUDazOA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34E05190B2A0;
-        Tue, 10 Aug 2021 19:20:56 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B4905C1A1;
-        Tue, 10 Aug 2021 19:20:54 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     dan.j.williams@intel.com, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>, linux-edac@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [patch] x86/pat: pass correct address to sanitize_phys
-References: <x49tuknmosl.fsf@segfault.boston.devel.redhat.com>
-        <87wnotst1l.ffs@tglx>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Tue, 10 Aug 2021 15:22:19 -0400
-In-Reply-To: <87wnotst1l.ffs@tglx> (Thomas Gleixner's message of "Tue, 10 Aug
-        2021 08:38:46 +0200")
-Message-ID: <x49k0ktm7f8.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 10 Aug 2021 15:23:58 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E075AC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:23:35 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id be20so636581oib.8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=gbNCzQEoZzdqhswDFYAzHfEyUYgfJuQIU33EIgWMMXo=;
+        b=kFL5rzZpadirkAhLE2tGfeO6LjQTce17lnPNSp+BWQyeiRDkxIegGLus53E5JV+x5H
+         TzYRWaiDzQtfy+PKm4IswLi3Bg93FquYoAacozMVz14/wyMVZQ2Qv+gcZX6o2p69dG7A
+         Z5521vOWj+Dl4HA/CVvYlDl40nN6iZ6YgXF8U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=gbNCzQEoZzdqhswDFYAzHfEyUYgfJuQIU33EIgWMMXo=;
+        b=gC12WIySj68RDgS5I0IcXqtB0cesu8qRQg+xx9r3Xt0LJx6Rw/b848qrSgyKofUbHk
+         vWCRl+EsXzoSX20jEH3+kcPhYKT0IjKQWhP4uR56AFQFVIA/ITDQBHvgsOusbzKFKMqK
+         xBTK+5UPIODdCH7DY3/L6sIbgKlKm5TU7nWDLVe9fhsuCoAPzXZCvxie69VZ0PHm5cqU
+         1VsAKHm7AhMJBLpVoK3svefi8zgil6D+bgsdSsWXhFMKVc4qq/1AWPwiVYcySkTFaQO9
+         jBuu7KVpyGWcw5pdl2CgOHVtWZH59Ry/2yOMgwX9Ac0YDTjD2a0hdzdVvdt0Ri+u87AG
+         iLIQ==
+X-Gm-Message-State: AOAM531C+WI2XnGYKlI/TlRByw5ykg3ICoIqCtdIPdZbAr7FdT04siHn
+        +iRKTMLSakV5I5788A2lvFRWNgCP3hyuEu+0nJHl7g==
+X-Google-Smtp-Source: ABdhPJzMsxkOmMEvS4X7L5p033iIi+R8pUAaMXRbTWMCFKsky5WKLkf7f7xLj0/wZhPuKNLFX+3Xvli4+2iPGOdYA5A=
+X-Received: by 2002:a05:6808:984:: with SMTP id a4mr4938223oic.166.1628623415364;
+ Tue, 10 Aug 2021 12:23:35 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 10 Aug 2021 12:23:35 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <abd00c9d395473875c31379ca0288116@codeaurora.org>
+References: <1628609362-2109-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n52a8i-2oNxtqKaS+XGBE0+wcp0Jx05VgL2KnHoQLW-vDQ@mail.gmail.com> <abd00c9d395473875c31379ca0288116@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 10 Aug 2021 12:23:34 -0700
+Message-ID: <CAE-0n51NsjfT62anGiQ7FaBgs=bThVq89j3UMp4rNj9raGkwOw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm/dp: add drm debug logs to dp_pm_resume/suspend
+To:     khsieh@codeaurora.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
-
-> Jeff,
+Quoting khsieh@codeaurora.org (2021-08-10 12:18:02)
+> On 2021-08-10 11:33, Stephen Boyd wrote:
+> > Quoting Kuogee Hsieh (2021-08-10 08:29:22)
+> >> Changes in V2:
+> >> -- correct Fixes text
+> >> -- drop commit text
+> >>
+> >> Fixes: 601f0479c583 ("drm/msm/dp: add logs across DP driver for ease
+> >> of debugging")
+> >> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> >> ---
+> >>  drivers/gpu/drm/msm/dp/dp_display.c | 13 +++++++++++++
+> >>  1 file changed, 13 insertions(+)
+> >
+> > BTW, this conflicts with commit
+> > e8a767e04dbc7b201cb17ab99dca723a3488b6d4
+> > in msm-next. The resolution is trivial but just wanted to mention it.
 >
-> On Wed, Jul 21 2021 at 15:48, Jeff Moyer wrote:
+> I Just fetched msm-next and cherry-pick this patch over, no conflict
+> seen.
+> Is this conflict need to be fixed?
 >
-> Please write function names with brackets, i.e. sanitize_phys().
 
-OK, will do.
-
->> memtype_reserve takes an address range of the form [start, end).  It
->
-> [start, end]
-
-Start is inclusive, end is exclusive, so start <= x < end.  I used the
-notation found here:
-
-  https://en.wikipedia.org/wiki/Interval_(mathematics)
-
-If that's too confusing, I can stick to inclusive vs exclusive verbiage.
-
->> then passes the start and end addresses to sanitize_phys, which is meant
->> to operate on the inclusive addresses.  If end falls at the end of the
->> physical address space, sanitize_phys will return 0.  This can result in
->> drivers failing to load:
->>
->> [   10.000087] mpt3sas_cm0: unable to map adapter memory! or resource not found
->> [   10.000334] mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10597/_scsih_probe()!
->
-> Doesn't this trigger the WARN() right below that offending line?
-
-It does.  I'll include the warning message in the v2 posting.
-
->> Fix this by passing the inclusive end address to sanitize_phys.
->>
->> Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "decoy" addresses")
->> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
->> --
->> It might be worth adding a comment, here.  If there are any suggestions
->> on what a sane wording would be, I'm all ears.
->
-> See below.
->
->> diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
->> index 3112ca7786ed..482557905294 100644
->> --- a/arch/x86/mm/pat/memtype.c
->> +++ b/arch/x86/mm/pat/memtype.c
->> @@ -583,7 +583,7 @@ int memtype_reserve(u64 start, u64 end, enum page_cache_mode req_type,
->>  	int err = 0;
->>  
->>  	start = sanitize_phys(start);
->> -	end = sanitize_phys(end);
->
->         /*
->          * [start, end] is an exclusive address range, but
->          * sanitize_phys() expects an inclusive end address
->          */
-
-That works for me (modulo the interval notation), thanks for the
-suggestion.
-
-Thanks!
-Jeff
-
+Oh sorry, I mean commit afc9b8b6bab8 ("drm/msm/dp: signal audio plugged
+change at dp_pm_resume") which doesn't seem to be in msm-next. Maybe Rob
+will resolve the conflict directly.
