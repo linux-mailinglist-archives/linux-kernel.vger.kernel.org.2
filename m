@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653AD3E8176
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6BC3E8187
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238439AbhHJR7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:59:34 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:50647 "EHLO
+        id S237064AbhHJSAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:00:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:39454 "EHLO
         so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhHJR4R (ORCPT
+        with ESMTP id S237085AbhHJR44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:56:17 -0400
+        Tue, 10 Aug 2021 13:56:56 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628618154; h=References: In-Reply-To: References:
+ s=smtp; t=1628618193; h=References: In-Reply-To: References:
  In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=xY8xKiuTwhDN/Au/cAH2jH4poHHcog+iJvVcU1R6m0s=; b=wUqfosHwk5VUYaieZ7ITNnSCsSl+Vx9jF+PNwCVgdr2of/VpPTaiuCQvCVBhgHQLWBaXNGfh
- 1hAxKwZ1zBk9NSPm8A+Aveo8XKaXr7d9BcPyX5zltChY7BqIMvF0W6hoaFIUQlGZ17hL9BUg
- Juuzvrfovgq+NMpoyAx+cXk3FEU=
+ bh=nZwLC8/2+nLBKjH7ldDqFj6R3W+sRvtGK7QbXrDghZs=; b=tK1bZtQ3UZQnb3pseHa3595w95XnF8fG7CMC1yr+LbCEY6v5mkwK7FM6DkcqUz5BoYJeQdbU
+ qtDboSPkTgTFQO3IiKpbLNWZmHlum7rvpsf7Y6eKkiyRNT+tKXqyw8rzNWUycGzf1y5QELnH
+ tOnbAJchJeGEScGaS5sHvTagr1Q=
 X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
  smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6112bd94b14e7e2ecb93b614 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 17:55:32
+ 6112bdd0b14e7e2ecb94ce5b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 17:56:32
  GMT
 Sender: schowdhu=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 24E8EC43151; Tue, 10 Aug 2021 17:55:32 +0000 (UTC)
+        id 163BBC35973; Tue, 10 Aug 2021 17:56:31 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -38,9 +38,9 @@ Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Out
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3D87C2AC96;
-        Tue, 10 Aug 2021 17:55:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3D87C2AC96
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C9DBC3596D;
+        Tue, 10 Aug 2021 17:56:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9C9DBC3596D
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
 From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
@@ -53,9 +53,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Sibi Sankar <sibis@codeaurora.org>,
         Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
         Souradeep Chowdhury <schowdhu@codeaurora.org>
-Subject: [PATCH V6 1/7] dt-bindings: Added the yaml bindings for DCC
-Date:   Tue, 10 Aug 2021 23:24:37 +0530
-Message-Id: <1765c436635ecc05fc463524c1e7517297660728.1628617260.git.schowdhu@codeaurora.org>
+Subject: [PATCH V6 7/7] arm64: dts: qcom: sdm845: Add Data Capture and Compare(DCC) support node
+Date:   Tue, 10 Aug 2021 23:24:43 +0530
+Message-Id: <db71a289cfceddc2d93f3f63423d67b545992e12.1628617260.git.schowdhu@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1628617260.git.schowdhu@codeaurora.org>
 References: <cover.1628617260.git.schowdhu@codeaurora.org>
@@ -65,65 +65,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation for Data Capture and Compare(DCC) device tree bindings
-in yaml format.
+Add the DCC(Data Capture and Compare) device tree node entry along with
+the address of the register region.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
 ---
- .../devicetree/bindings/arm/msm/qcom,dcc.yaml      | 43 ++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml b/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
-new file mode 100644
-index 0000000..b7a6619
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/msm/qcom,dcc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index ff6bda1..ee13b5f 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -1968,6 +1968,12 @@
+ 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
++		dma@10a2000 {
++			compatible = "qcom,sdm845-dcc", "qcom,dcc";
++			reg = <0x0 0x010a2000 0x0 0x1000>,
++			      <0x0 0x010ae000 0x0 0x2000>;
++		};
 +
-+title: Data Capture and Compare
-+
-+maintainers:
-+  - Souradeep Chowdhury <schowdhu@codeaurora.org>
-+
-+description: |
-+    DCC (Data Capture and Compare) is a DMA engine which is used to save
-+    configuration data or system memory contents during catastrophic failure
-+    or SW trigger. DCC is used to capture and store data for debugging purpose
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - qcom,sm8150-dcc
-+          - qcom,sc7280-dcc
-+          - qcom,sc7180-dcc
-+          - qcom,sdm845-dcc
-+      - const: qcom,dcc
-+
-+  reg:
-+    items:
-+      - description: DCC base register region
-+      - description: DCC RAM base register region
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    dma@10a2000{
-+                compatible = "qcom,sm8150-dcc","qcom,dcc";
-+                reg = <0x010a2000  0x1000>,
-+                      <0x010ad000  0x2000>;
-+    };
+ 		pcie0: pci@1c00000 {
+ 			compatible = "qcom,pcie-sdm845", "snps,dw-pcie";
+ 			reg = <0 0x01c00000 0 0x2000>,
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
 of Code Aurora Forum, hosted by The Linux Foundation
