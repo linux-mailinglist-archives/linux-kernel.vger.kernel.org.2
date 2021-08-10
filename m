@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C582C3E7EF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE253E802F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhHJRgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:36:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37254 "EHLO mail.kernel.org"
+        id S236540AbhHJRqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233163AbhHJRey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:34:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1918E61052;
-        Tue, 10 Aug 2021 17:34:31 +0000 (UTC)
+        id S235858AbhHJRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:43:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75FB46101E;
+        Tue, 10 Aug 2021 17:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616872;
-        bh=vHGvWX4mxTmTmclxM8nuR3T83WBkJ9jD6C9nT6E5PsI=;
+        s=korg; t=1628617157;
+        bh=7JPd5TI+quikPazaZthqblTvGHnfh1lhRrFWrqZR3Sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fL3pwXbAxTxt+dQ1AMMs5bvpIfic9oTB94y8rRSv4Bvtn5FCUR5Cbvear08J+zpa/
-         F0p9mZ9bRc3z5+iRMa+NEpHVlVSSLvh/E2jL/OHJzW2zEQrMjNQhV5qFmhtcH+Qq72
-         tL4xSkbJjJ4/JdjXihSj2tzekAVfTGpnNeTN/wMw=
+        b=h3AipaDcicyn24KJkw8IrI5CtlD5uVHIPbQcH9QfoQNlk0hO/Q+l50o1PGeAN4UrW
+         YiK83XykBVP4SCrVKoYzm+tWQ8282sncb6u1S7tmWCCu06gUnoZ/XAAOC4WNgWtl4y
+         6r4j/AyTco5pERTFsStDB+wDlleK4eY1vR/ap95A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 30/85] bnx2x: fix an error code in bnx2x_nic_load()
+        stable@vger.kernel.org, Maxim Devaev <mdevaev@gmail.com>
+Subject: [PATCH 5.10 069/135] usb: gadget: f_hid: idle uses the highest byte for duration
 Date:   Tue, 10 Aug 2021 19:30:03 +0200
-Message-Id: <20210810172949.222683470@linuxfoundation.org>
+Message-Id: <20210810172958.061635813@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +38,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Maxim Devaev <mdevaev@gmail.com>
 
-[ Upstream commit fb653827c758725b149b5c924a5eb50ab4812750 ]
+commit fa20bada3f934e3b3e4af4c77e5b518cd5a282e5 upstream.
 
-Set the error code if bnx2x_alloc_fw_stats_mem() fails.  The current
-code returns success.
+SET_IDLE value must be shifted 8 bits to the right to get duration.
+This confirmed by USBCV test.
 
-Fixes: ad5afc89365e ("bnx2x: Separate VF and PF logic")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: afcff6dc690e ("usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
+Link: https://lore.kernel.org/r/20210727185800.43796-1-mdevaev@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_hid.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-index d10b421ed1f1..9af8afd7ae89 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-@@ -2666,7 +2666,8 @@ int bnx2x_nic_load(struct bnx2x *bp, int load_mode)
- 	}
+--- a/drivers/usb/gadget/function/f_hid.c
++++ b/drivers/usb/gadget/function/f_hid.c
+@@ -573,7 +573,7 @@ static int hidg_setup(struct usb_functio
+ 		  | HID_REQ_SET_IDLE):
+ 		VDBG(cdev, "set_idle\n");
+ 		length = 0;
+-		hidg->idle = value;
++		hidg->idle = value >> 8;
+ 		goto respond;
+ 		break;
  
- 	/* Allocated memory for FW statistics  */
--	if (bnx2x_alloc_fw_stats_mem(bp))
-+	rc = bnx2x_alloc_fw_stats_mem(bp);
-+	if (rc)
- 		LOAD_ERROR_EXIT(bp, load_error0);
- 
- 	/* request pf to initialize status blocks */
--- 
-2.30.2
-
 
 
