@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC733E7E2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9993E7E3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhHJRZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:25:11 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32424 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhHJRZL (ORCPT
+        id S229812AbhHJRa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhHJRa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:25:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628616288; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=+3yCOOv0STMKM7fB/JrNNxWZsSbOgMZ8PpxGIFa4PSQ=;
- b=ajMqzwNrpmnELVsozFkzJuYu8NZLDs3E61eGPp9REPokwxunqK3Jf/uZqFFcKMBVdQfarCxz
- TxZghN2oUa1Fv498BdZ8DnFe2l6UreXJ+thX9dXweR7j/8XgySXmk9kG0zWBToa85iskKbnB
- CLuNTSHUC1KR5G6idUNQkKSHejo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6112b651454b7a558f5d8e69 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 17:24:33
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6B5B7C43460; Tue, 10 Aug 2021 17:24:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4613C433D3;
-        Tue, 10 Aug 2021 17:24:32 +0000 (UTC)
+        Tue, 10 Aug 2021 13:30:26 -0400
+X-Greylist: delayed 169 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 10 Aug 2021 10:30:04 PDT
+Received: from mail3.marcant.net (mail3.marcant.net [IPv6:2a00:f88:0:3011:217:14:160:188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26ABEC0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:30:04 -0700 (PDT)
+Received: from [192.168.180.1] (port=45942 helo=admins.marcant.net)
+        by mail3.marcant.net with esmtp (Exim 4.94.2)
+        (envelope-from <avalentin@marcant.net>)
+        id 1mDVWt-0002jU-0R; Tue, 10 Aug 2021 19:27:07 +0200
+Received: from vmh.kalnet.hooya.de (unknown [192.168.203.15])
+        by admins.marcant.net (Postfix) with ESMTPA id 5195E2808A2;
+        Tue, 10 Aug 2021 19:27:06 +0200 (CEST)
+Subject: Re: [RFC net-next 2/3] net: dsa: qca8k: enable assisted learning on
+ CPU port
+To:     DENG Qingfang <dqfext@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Jonathan McDowell <noodles@earth.li>,
+        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <vokac.m@gmail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
+        Hannu Nyman <hannu.nyman@iki.fi>,
+        Imran Khan <gururug@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Nick Lowe <nick.lowe@gmail.com>
+References: <20210807120726.1063225-1-dqfext@gmail.com>
+ <20210807120726.1063225-3-dqfext@gmail.com>
+ <20210807222555.y6r7qxhdyy6d3esx@skbuf>
+ <20210808160503.227880-1-dqfext@gmail.com>
+From:   Andre Valentin <avalentin@marcant.net>
+Organization: MarcanT AG
+Message-ID: <0072b721-7520-365d-26ef-a2ad70117ac2@marcant.net>
+Date:   Tue, 10 Aug 2021 19:27:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 10 Aug 2021 22:54:32 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        bjorn.andersson@linaro.org, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V1 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P
- IRQ
-In-Reply-To: <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
-References: <1628180254-758-1-git-send-email-deesin@codeaurora.org>
- <CAE-0n5203g4CkF5WP1fQYU57fntXbdyVBsMsTKU_xPkgvbt+7Q@mail.gmail.com>
- <bf2b00c5-0826-00d2-ca95-b4ae6a030211@codeaurora.org>
- <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
-Message-ID: <8009f5a1458468dbf0b7b20dd166911c@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20210808160503.227880-1-dqfext@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-09 23:28, Stephen Boyd wrote:
-> Quoting Deepak Kumar Singh (2021-08-09 04:05:08)
->> 
->> On 8/6/2021 1:10 AM, Stephen Boyd wrote:
->> > Quoting Deepak Kumar Singh (2021-08-05 09:17:33)
->> >> Some use cases require SMP2P interrupts to wake up the host
->> >> from suspend.
->> > Please elaborate on this point so we understand what sort of scenarios
->> > want to wakeup from suspend.
->> 
->> Once such scenario is where WiFi/modem crashes and notifies crash to
->> local host through smp2p
->> 
->> if local host is in suspend it should wake up to handle the crash and
->> reboot the WiFi/modem.
-> 
-> Does anything go wrong if the firmware crashes during suspend and the
-> local host doesn't handle it until it wakes for some other reason? I'd
-> like to understand if the crash handling can be delayed/combined with
-> another wakeup.
+On Sun, Aug 08, 2021 at 1805, DENG Qingfang wrote:
+> On Sun, Aug 08, 2021 at 01:25:55AM +0300, Vladimir Oltean wrote:
+>> On Sat, Aug 07, 2021 at 08:07:25PM +0800, DENG Qingfang wrote:
+>>> Enable assisted learning on CPU port to fix roaming issues.
+>>
+>> 'roaming issues' implies to me it suffered from blindness to MAC
+>> addresses learned on foreign interfaces, which appears to not be true
+>> since your previous patch removes hardware learning on the CPU port
+>> (=> hardware learning on the CPU port was supported, so there were no
+>> roaming issues)
 
-If the modem firmware crashes
-during suspend, the system comes
-out of xo-shutdown and AFAIK stays
-there until we handle the interrupt.
+The issue is with a wifi AP bridged into dsa and previously learned
+addresses.
 
-> 
->> 
->> >> Mark smp2p interrupt as wakeup capable to abort
->> >> the suspend.
->> >>
->> >> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
->> >> ---
->> >>   drivers/soc/qcom/smp2p.c | 11 +++++++++++
->> >>   1 file changed, 11 insertions(+)
->> >>
->> >> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
->> >> index 2df4883..f8659b0 100644
->> >> --- a/drivers/soc/qcom/smp2p.c
->> >> +++ b/drivers/soc/qcom/smp2p.c
->> >> @@ -18,6 +18,7 @@
->> >>   #include <linux/soc/qcom/smem.h>
->> >>   #include <linux/soc/qcom/smem_state.h>
->> >>   #include <linux/spinlock.h>
->> >> +#include <linux/pm_wakeirq.h>
->> >>
->> >>   /*
->> >>    * The Shared Memory Point to Point (SMP2P) protocol facilitates communication
->> >> @@ -538,9 +539,19 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
->> >>                  goto unwind_interfaces;
->> >>          }
->> >>
->> >> +       ret = device_init_wakeup(&pdev->dev, true);
->> > Is smp2p supposed to wake up the device by default? If not, then this
->> > should be device_set_wakeup_capable() instead so that userspace can
->> > decide if it wants to get the wakeup.
->> yes, we want smp2p to be wake up capable by default.
-> 
-> Why?
+Test setup:
+We have to wifi APs a and b(with qca8k). Client is on AP a.
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+The qca8k switch in AP b sees also the broadcast traffic from the client
+and takes the address into its fdb.
+
+Now the client roams to AP b.
+The client starts DHCP but does not get an IP. With tcpdump, I see the
+packets going through the switch (ap->cpu port->ethernet port) and they
+arrive at the DHCP server. It responds, the response packet reaches the
+ethernet port of the qca8k, and is not forwarded.
+
+After about 3 minutes the fdb entry in the qca8k on AP b is
+"cleaned up" and the client can immediately get its IP from the DHCP server.
+
+I hope this helps understanding the background.
+
