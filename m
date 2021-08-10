@@ -2,204 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B99E3E571C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8838F3E5726
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239146AbhHJJgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234188AbhHJJgJ (ORCPT
+        id S239208AbhHJJhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:37:47 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3621 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238140AbhHJJhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:36:09 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D38C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:35:47 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso1499584wmj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:35:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SnObdE2PiNGsfRPS46ERfps2QDWQ5wa/Co24Nmz1JjU=;
-        b=cp/oeAnU7T0jp0ojUWOu943VdAyYxVRio84CZBhy//vwBoDNwzoSMaYu9qpvOzPrRN
-         W768lgBCaFweAhqZFtdUxwD2igKIKKOTiqmJNS4HOIu4zx1QixY1mtSBuIuEiEIc47Vp
-         gMIUJVsmbIWOwYhvFtUy79MDszZQbwHQYkABY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=SnObdE2PiNGsfRPS46ERfps2QDWQ5wa/Co24Nmz1JjU=;
-        b=rkJ0+B7GFOT7HIWVB+o21+q5GgFfKKQeaLaiG5QdpobfnXPejK6TVD77SS7I0tVuio
-         izQqJJY61iUjBoE4FTbVlN1o2njDhhLj+forvJl46zZ+GwBeiTzOrvTEeH9l9N3+Axnl
-         0Mkti9LdzoIAPTdGbQ2ugrwUA8TEl2mwuajUDq1mBDF25zyBx5f/wAkhuoG3hMrlqLJL
-         TJiE5yho8Vnh5zx5kLRdg4khiOAbN5coJjOWMBerori+RznjcnE/dwjmyiz46ZAEan1A
-         aYlSjAvJsass2A7IPPo0Lc/BXoSJqq9bA8LQzhaSpzg0obrvGeWkDp+TYQmDOnRn1EPL
-         otxw==
-X-Gm-Message-State: AOAM531VRd/pWD8DE7ThgRM0Djod932brp0Srxa8mYojo+lJo69n22DT
-        46473lOeGluOYvi89OONTfRBOA==
-X-Google-Smtp-Source: ABdhPJyvRhUq0NEH1QoEWA28YXT5OY37p60cM+3r20SU+7tVWsNXreGNSoTdzpkn9DfRdlOiMDeq/w==
-X-Received: by 2002:a1c:95:: with SMTP id 143mr21623788wma.29.1628588146347;
-        Tue, 10 Aug 2021 02:35:46 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t8sm23805252wmj.5.2021.08.10.02.35.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 02:35:45 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 11:35:43 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
-Message-ID: <YRJIb8ofHe8r5g1z@phenom.ffwll.local>
-Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        list@opendingux.net, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20210805192110.90302-1-paul@crapouillou.net>
- <20210805192110.90302-3-paul@crapouillou.net>
- <YQw9hjZll4QmYVLX@kroah.com>
- <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
- <YQ0MU/GcLkPLiy5C@kroah.com>
- <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
+        Tue, 10 Aug 2021 05:37:46 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GkSX12Jrkz6C9JD;
+        Tue, 10 Aug 2021 17:36:49 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 10 Aug 2021 11:37:22 +0200
+Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
+ 2021 10:37:21 +0100
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        "Will Deacon" <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <YPklDMng1hL3bQ+v@T590>
+ <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com> <YPlGOOMSdm6Bcyy/@T590>
+ <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com> <YPmUoBk9u+tU2rbS@T590>
+ <0adbe03b-ce26-e4d3-3425-d967bc436ef5@arm.com> <YPqYDY9/VAhfHNfU@T590>
+ <6ceab844-465f-3bf3-1809-5df1f1dbbc5c@huawei.com>
+ <CAFj5m9J+9vO=CK3uPP+va5EoWffZj9ruSRe2fDDLXn+AE971CQ@mail.gmail.com>
+ <ead87bf2-ddfa-eb67-db44-9619c6cdb714@huawei.com> <YQF1AKS6Y14dLU/A@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <dfdd16e8-278f-3bc9-da97-a91264aec909@huawei.com>
+Date:   Tue, 10 Aug 2021 10:36:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <YQF1AKS6Y14dLU/A@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.4]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
-> Hi Greg,
-> 
-> Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> a écrit :
-> > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
-> > >  Hi Greg,
-> > > 
-> > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
-> > >  <gregkh@linuxfoundation.org> a écrit :
-> > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil wrote:
-> > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
-> > > disabled in
-> > >  > > the
-> > >  > >  config, we want the ingenic-drm driver to be able to probe
-> > >  > > nonetheless
-> > >  > >  with the other devices (e.g. internal LCD panel) that are
-> > > enabled.
-> > >  > >
-> > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > >  > >  ---
-> > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 ++++++++++++
-> > >  > >   1 file changed, 12 insertions(+)
-> > >  > >
-> > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
-> > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
-> > > device
-> > >  > > *dev, bool has_components)
-> > >  > >   	for (i = 0; ; i++) {
-> > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
-> > > &panel,
-> > >  > > &bridge);
-> > >  > >   		if (ret) {
-> > >  > >  +			/*
-> > >  > >  +			 * Workaround for the case where the drivers for the
-> > >  > >  +			 * remote devices are not enabled. When that happens,
-> > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
-> > >  > >  +			 * endlessly, which prevents the ingenic-drm driver from
-> > >  > >  +			 * working at all.
-> > >  > >  +			 */
-> > >  > >  +			if (ret == -EPROBE_DEFER) {
-> > >  > >  +				ret = driver_deferred_probe_check_state(dev);
-> > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
-> > >  > >  +					continue;
-> > >  > >  +			}
-> > >  >
-> > >  > So you are mucking around with devices on other busses within this
-> > >  > driver?  What could go wrong?  :(
-> > > 
-> > >  I'm doing the same thing as everybody else. This is the DRM driver,
-> > > and
-> > >  there is a driver for the external HDMI chip which gives us a DRM
-> > > bridge
-> > >  that we can obtain from the device tree.
-> > 
-> > But then why do you need to call this function that is there for a bus,
-> > not for a driver.
-> 
-> The documentation disagrees with you :)
-> 
-> And, if that has any weight, this solution was proposed by Rob.
-> 
-> > >  > Please use the existing driver core functionality for this type of
-> > >  > thing, it is not unique, no need for this function to be called.
-> > > 
-> > >  I'm not sure you understand what I'm doing here. This driver calls
-> > >  drm_of_find_panel_or_bridge(), without guarantee that the driver
-> > > for the
-> > >  remote device (connected via DT graph) has been enabled in the
-> > > kernel
-> > >  config. In that case it will always return -EPROBE_DEFER and the
-> > > ingenic-drm
-> > >  driver will never probe.
-> > > 
-> > >  This patch makes sure that the driver can probe if the HDMI driver
-> > > has been
-> > >  disabled in the kernel config, nothing more.
-> > 
-> > That should not be an issue as you do not care if the config is enabled,
-> > you just want to do something in the future if the driver shows up,
-> > right?
-> 
-> Well, the DRM subsystem doesn't really seem to handle hotplug of hardware.
-> Right now all the drivers for the connected hardware need to probe before
-> the main DRM driver. So I need to know that a remote device (connected via
-> DT graph) will never probe.
-> 
-> Give me a of_graph_remote_device_driver_will_never_probe() and I'll use
-> that.
-> 
-> > Much like the device link code, have you looked at that?
-> 
-> I don't see how that would help in any way. The device link code would allow
-> me to set a dependency between the remote hardware (HDMI chip, provider) and
-> the LCD controller (consumer), but I already have that dependency though the
-> DT graph. What I need is a way for the consumer to continue probing if the
-> provider is not going to probe.
+On 28/07/2021 16:17, Ming Lei wrote:
+>>>> Have you tried turning off the IOMMU to ensure that this is really just
+>>>> an IOMMU problem?
+>>>>
+>>>> You can try setting CONFIG_ARM_SMMU_V3=n in the defconfig or passing
+>>>> cmdline param iommu.passthrough=1 to bypass the the SMMU (equivalent to
+>>>> disabling for kernel drivers).
+>>> Bypassing SMMU via iommu.passthrough=1 basically doesn't make a difference
+>>> on this issue.
+>> A ~90% throughput drop still seems to me to be too high to be a software
+>> issue. More so since I don't see similar on my system. And that throughput
+>> drop does not lead to a total CPU usage drop, from the fio log.
+>>
+>> Do you know if anyone has run memory benchmark tests on this board to find
+>> out NUMA effect? I think lmbench or stream could be used for this.
+> https://lore.kernel.org/lkml/YOhbc5C47IzC893B@T590/
 
-Is this actually a legit use-case?
+Hi Ming,
 
-Like you have hw with a bunch of sub-devices linked, and you decided to
-disable some of them, which makes the driver not load.
+Out of curiosity, did you investigate this topic any further?
 
-Why should we care? Is that hdmi driver really that big that we have to
-support this use-case?
+And you also asked about my results earlier:
 
-I know it's possible to do this, that doesn't mean it's a good idea.
-There's inifinitely more randconfigs that don't boot on my machine here
-for various reasons than the ones that do boot. We don't have "fixes" for
-all of these to make things still work, despite user misconfiguring their
-kernel.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+On 22/07/2021 16:54, Ming Lei wrote:
+ >> [   52.035895] nvme 0000:81:00.0: Adding to iommu group 5
+ >> [   52.047732] nvme nvme0: pci function 0000:81:00.0
+ >> [   52.067216] nvme nvme0: 22/0/2 default/read/poll queues
+ >> [   52.087318]  nvme0n1: p1
+ >>
+ >> So I get these results:
+ >> cpu0 335K
+ >> cpu32 346K
+ >> cpu64 300K
+ >> cpu96 300K
+ >>
+ >> So still not massive changes.
+ > In your last email, the results are the following with irq mode io_uring:
+ >
+ >   cpu0  497K
+ >   cpu4  307K
+ >   cpu32 566K
+ >   cpu64 488K
+ >   cpu96 508K
+ >
+ > So looks you get much worse result with real io_polling?
+ >
+
+Would the expectation be that at least I get the same performance with 
+io_polling here? Anything else to try which you can suggest to 
+investigate this lower performance?
+
+Thanks,
+John
