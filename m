@@ -2,189 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCD43E50D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763CA3E50D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237292AbhHJCCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 22:02:41 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:34052 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237288AbhHJCCg (ORCPT
+        id S237305AbhHJCDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 22:03:22 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:35008 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236688AbhHJCDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 22:02:36 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 17A21qE52028562, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 17A21qE52028562
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 10 Aug 2021 10:01:52 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 10 Aug 2021 10:01:52 +0800
-Received: from localhost (172.21.132.185) by RTEXMBS03.realtek.com.tw
- (172.21.6.96) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 10 Aug
- 2021 10:01:51 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <luiz.dentz@gmail.com>, <matthias.bgg@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Mon, 9 Aug 2021 22:03:21 -0400
+X-UUID: 4f872159f7fe47af935b8076192d21f4-20210810
+X-UUID: 4f872159f7fe47af935b8076192d21f4-20210810
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1785707904; Tue, 10 Aug 2021 10:02:57 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 10 Aug 2021 10:02:56 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas07.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 10 Aug 2021 10:02:55 +0800
+From:   <guangming.cao@mediatek.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
         <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
         <linux-mediatek@lists.infradead.org>
-CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
-        <kidman@realtek.com>, <apusaka@chromium.org>,
-        <abhishekpandit@chromium.org>, <josephsih@chromium.org>,
-        <max.chou@realtek.com>
-Subject: [PATCH v2] Bluetooth: btusb: Remove WAKEUP_DISABLE and add WAKEUP_AUTOSUSPEND for Realtek devices
-Date:   Tue, 10 Aug 2021 10:01:47 +0800
-Message-ID: <20210810020147.14276-1-max.chou@realtek.com>
+CC:     <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH] dma_heap: enable map_attrs when (un)map_attachment
+Date:   Tue, 10 Aug 2021 10:02:54 +0800
+Message-ID: <20210810020254.103134-1-guangming.cao@mediatek.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210721094314.117413-1-guangming.cao@mediatek.com>
+References: <20210721094314.117413-1-guangming.cao@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [172.21.132.185]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS03.realtek.com.tw (172.21.6.96)
-X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/10/2021 01:36:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzgvOSCkVaTIIDEwOjE4OjAw?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/10/2021 01:47:48
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165484 [Aug 10 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: max.chou@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/10/2021 01:51:00
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-For the commit of 9e45524a011107a73bc2cdde8370c61e82e93a4d, wakeup is
-always disabled for Realtek devices. However, there's the capability
-for Realtek devices to apply USB wake-up.
+For dma-heap users, they can't bypass cache sync when (un)map
+iova with dma heap. But they can do it by adding
+DMA_ATTR_SKIP_CPU_SYNC into dma_alloc_attrs.
 
-In this commit, remove WAKEUP_DISABLE feature for Realtek devices.
-If users would switch wake-up, they should access
-"/sys/bus/usb/.../power/wakeup"
+To Keep alignment, add map_attrs support for dma_heap when
+(un)map_attachment.
 
-In this commit, it also adds the feature as WAKEUP_AUTOSUSPEND
-for Realtek devices because it should set do_remote_wakeup on autosuspend.
-
-Signed-off-by: Max Chou <max.chou@realtek.com>
-Tested-by: Hilda Wu <hildawu@realtek.com>
-Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 ---
-Changes in v2:
--fix the compiling error due to the incorrect patch file submited
----
- drivers/bluetooth/btusb.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
+ drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 1876a960b3dc..92919f379331 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -537,7 +537,7 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
- #define BTUSB_OOB_WAKE_ENABLED	11
- #define BTUSB_HW_RESET_ACTIVE	12
- #define BTUSB_TX_WAIT_VND_EVT	13
--#define BTUSB_WAKEUP_DISABLE	14
-+#define BTUSB_WAKEUP_AUTOSUSPEND	14
- 
- struct btusb_data {
- 	struct hci_dev       *hdev;
-@@ -1358,13 +1358,6 @@ static int btusb_open(struct hci_dev *hdev)
- 
- 	data->intf->needs_remote_wakeup = 1;
- 
--	/* Disable device remote wakeup when host is suspended
--	 * For Realtek chips, global suspend without
--	 * SET_FEATURE (DEVICE_REMOTE_WAKEUP) can save more power in device.
--	 */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
--		device_wakeup_disable(&data->udev->dev);
--
- 	if (test_and_set_bit(BTUSB_INTR_RUNNING, &data->flags))
- 		goto done;
- 
-@@ -1431,7 +1424,7 @@ static int btusb_close(struct hci_dev *hdev)
- 	data->intf->needs_remote_wakeup = 0;
- 
- 	/* Enable remote wake up for auto-suspend */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
-+	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags))
- 		data->intf->needs_remote_wakeup = 1;
- 
- 	usb_autopm_put_interface(data->intf);
-@@ -4452,9 +4445,6 @@ static bool btusb_prevent_wake(struct hci_dev *hdev)
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 0c05b79870f9..2c9feb3bfc3e 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -99,9 +99,10 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
  {
- 	struct btusb_data *data = hci_get_drvdata(hdev);
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = &a->table;
++	int attrs = attachment->dma_map_attrs;
+ 	int ret;
  
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
--		return true;
--
- 	return !device_may_wakeup(&data->udev->dev);
+-	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
++	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+ 	if (ret)
+ 		return ERR_PTR(-ENOMEM);
+ 	a->mapped = true;
+@@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				   enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attrs = attachment->dma_map_attrs;
+ 
+ 	a->mapped = false;
+-	dma_unmap_sgtable(attachment->dev, table, direction, 0);
++	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
  }
  
-@@ -4752,11 +4742,8 @@ static int btusb_probe(struct usb_interface *intf,
- 		hdev->shutdown = btrtl_shutdown_realtek;
- 		hdev->cmd_timeout = btusb_rtl_cmd_timeout;
+ static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 23a7e74ef966..fc7b1e02988e 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -130,9 +130,10 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = a->table;
++	int attrs = attachment->dma_map_attrs;
+ 	int ret;
  
--		/* Realtek devices lose their updated firmware over global
--		 * suspend that means host doesn't send SET_FEATURE
--		 * (DEVICE_REMOTE_WAKEUP)
--		 */
--		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
-+		/* Realtek devices need to set remote wakeup on auto-suspend */
-+		set_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags);
- 	}
+-	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
++	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+ 	if (ret)
+ 		return ERR_PTR(ret);
  
- 	if (!reset)
-@@ -4931,12 +4918,15 @@ static int btusb_suspend(struct usb_interface *intf, pm_message_t message)
- 	 * Actually, it depends on whether the usb host sends
- 	 * set feature (enable wakeup) or not.
- 	 */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags)) {
-+	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags)) {
- 		if (PMSG_IS_AUTO(message) &&
- 		    device_can_wakeup(&data->udev->dev))
- 			data->udev->do_remote_wakeup = 1;
--		else if (!PMSG_IS_AUTO(message))
-+		else if (!PMSG_IS_AUTO(message) &&
-+			 !device_may_wakeup(&data->udev->dev)) {
-+			data->udev->do_remote_wakeup = 0;
- 			data->udev->reset_resume = 1;
-+		}
- 	}
+@@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				      enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attrs = attachment->dma_map_attrs;
  
- 	return 0;
+ 	a->mapped = false;
+-	dma_unmap_sgtable(attachment->dev, table, direction, 0);
++	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+ }
+ 
+ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
 -- 
 2.17.1
 
