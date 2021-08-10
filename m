@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05413E5AC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9673E5AC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239389AbhHJNLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237554AbhHJNLR (ORCPT
+        id S240341AbhHJNMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:12:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43324 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236764AbhHJNMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:11:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65A5C0613D3;
-        Tue, 10 Aug 2021 06:10:55 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 13:10:51 -0000
+        Tue, 10 Aug 2021 09:12:35 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628601052;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020; t=1628601132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S6wvZUl7vB3iLjAZJZDQnNL7kyE2nf2rkaAzA0zmbr8=;
-        b=yyTBN0eeuixqPdVd8gV+cVdEWxokZ1p25VbNbpwiJMHiNozJKBlm4TuHwaSlHeyBQQSiMr
-        Hru5fU2mEP7sExGdGuK2w/IohkadZdsvVo/wbprx94G1IQQQA0ycAt6DdmiThtXHdrQwtg
-        S+a1BoQHJiKHg8X1FBPw46r6pKsUBgfQQ593uC/RjS+pik8xoa5j8xfuRHv0YWav5TmE8r
-        DDz6bDijRXYK0+GScDpOcuId6usmnw4xGCMPKDVaNp0XUewhvyBVtDMYMh7UyQakSnknCN
-        2kcbaqCPaS0dZuAScmuAs5EPrG96cWDBLnVForhGZsS65sDFXPrrJnbyp7CZPg==
+        bh=OaBFwRmIkMYJ6nArGCfoxdS9fFU0RJW0EkC34EWy+pY=;
+        b=KadFt9TgeKOmX5hfgraer3970wg4d5deZONKOXsg7AvIqTxkG6d9u4k/CrL2glo7GHMESg
+        FW8VWh/DQKMrn0hCuOuLNC/Pdq/yrX9Lj4m1G6kcRXiKiL6FD+OnB58M0SaZSljK2tdWqQ
+        GpHZ0R721L94rr9Ng/PeP6v0uCIFclfga2mzvZ5Htla4kSJptK/PlLZyMhLx1v0xu8Uck8
+        fogFuqyK8MvDWQ8D+iYesDllCVmbT78TI9uqzcu0+Pt3IrXn+XmPXa8oKdrAfE0W2nDSkm
+        nVobG3/tcCJiIFGfhZtTjq2tbbee3UPLBn7NC0sB664FMrKTaQcqoF0n8f7INQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628601052;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020e; t=1628601132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S6wvZUl7vB3iLjAZJZDQnNL7kyE2nf2rkaAzA0zmbr8=;
-        b=JKln8XsE+6XnCl6UGdQ8NfYryzNBKQa2OEh67/w6IEFDeVYSoOLbdgZNl9kWRnNmYOm2rp
-        RMrKTsv9EnF9kkDQ==
-From:   "tip-bot2 for Joel Savitz" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Clarify documentation for request_threaded_irq()
-Cc:     Joel Savitz <jsavitz@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210731050740.444454-1-jsavitz@redhat.com>
-References: <20210731050740.444454-1-jsavitz@redhat.com>
+        bh=OaBFwRmIkMYJ6nArGCfoxdS9fFU0RJW0EkC34EWy+pY=;
+        b=6pAq73C7GB77pfq+iKRUFQYZRhSBuEqPClqwFBmdKSmpwiAV+a2ELp1IFRbnGK/wgCOaCm
+        r9deQiarsZoTNYDw==
+To:     Mingzhe Yang <cainiao666999@gmail.com>, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, yuxin.wooo@gmail.com,
+        becausehan@gmail.com, huan.xie@suse.com,
+        Mingzhe Yang <cainiao666999@gmail.com>
+Subject: Re: [PATCH] tasklets: simplify code in tasklet_action_common()
+In-Reply-To: <20210430122521.13957-1-cainiao666999@gmail.com>
+References: <20210430122521.13957-1-cainiao666999@gmail.com>
+Date:   Tue, 10 Aug 2021 15:12:11 +0200
+Message-ID: <87czqlsatw.ffs@tglx>
 MIME-Version: 1.0
-Message-ID: <162860105130.395.18111061787171768078.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Fri, Apr 30 2021 at 20:25, Mingzhe Yang wrote:
 
-Commit-ID:     61377ec144574313ebfbf31685895a7b9b9b7a9a
-Gitweb:        https://git.kernel.org/tip/61377ec144574313ebfbf31685895a7b9b9b7a9a
-Author:        Joel Savitz <jsavitz@redhat.com>
-AuthorDate:    Sat, 31 Jul 2021 01:07:40 -04:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 15:06:04 +02:00
+> Use tasklet_is_disabled() to simplify the code in
+> tasklet_action_common.
 
-genirq: Clarify documentation for request_threaded_irq()
+This changelog is not really helpful. Use a new function does not tell
+anything. Neither does it explain why there need to be two new functions
+and worse
+  
+> +static inline bool tasklet_is_enabled(struct tasklet_struct *t)
+> +{
+> +	smp_rmb();
 
-Clarify wording and document commonly used IRQF_ONESHOT flag.
+why there is suddenly a new undocumented SMP barrier in the code.
 
-Signed-off-by: Joel Savitz <jsavitz@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210731050740.444454-1-jsavitz@redhat.com
+> +	return !atomic_read(&t->count);
+> +}
+> +
+> +static inline bool tasklet_is_disabled(struct tasklet_struct *t)
+> +{
+> +	return !tasklet_is_enabled(t);
+> +}
+> +
 
----
- kernel/irq/manage.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Aside of that there is no point in exposing these functions in a global
+header.
 
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index ef30b47..766468a 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -2072,9 +2072,9 @@ const void *free_nmi(unsigned int irq, void *dev_id)
-  *	request_threaded_irq - allocate an interrupt line
-  *	@irq: Interrupt line to allocate
-  *	@handler: Function to be called when the IRQ occurs.
-- *		  Primary handler for threaded interrupts
-- *		  If NULL and thread_fn != NULL the default
-- *		  primary handler is installed
-+ *		  Primary handler for threaded interrupts.
-+ *		  If handler is NULL and thread_fn != NULL
-+ *		  the default primary handler is installed.
-  *	@thread_fn: Function called from the irq handler thread
-  *		    If NULL, no irq thread is created
-  *	@irqflags: Interrupt type flags
-@@ -2108,6 +2108,8 @@ const void *free_nmi(unsigned int irq, void *dev_id)
-  *
-  *	IRQF_SHARED		Interrupt is shared
-  *	IRQF_TRIGGER_*		Specify active edge(s) or level
-+ *	IRQF_ONESHOT		Do not unmask interrupt line until
-+ *				thread_fn returns
-  *
-  */
- int request_threaded_irq(unsigned int irq, irq_handler_t handler,
+Thanks,
+
+        tglx
