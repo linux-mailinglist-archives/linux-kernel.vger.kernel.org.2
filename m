@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32E13E8451
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C0C3E8452
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhHJUaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
+        id S233302AbhHJUaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhHJUaD (ORCPT
+        with ESMTP id S233151AbhHJUaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:30:03 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1A9C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:40 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id oa17so9936761pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:40 -0700 (PDT)
+        Tue, 10 Aug 2021 16:30:04 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A35C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:41 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id k2so22872769plk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:29:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k9wsqN7YVW74vSpW7e/ejgv7USagZP+TqAT+Y6PYQHY=;
-        b=uLhHC4BB4SdqtXeV4nk8oKb2M/EPPK+qS0dWpRp1kk8U+pDB1fzViuhbYBGl3IX04c
-         gtPHvtptqrK6J1ZXgpQh9WH3ir8YRql+k03hsoNTHj1SEAw0C4/6pzKFAeWFP3b1r0GA
-         P0Grgo6j3P7CmVX6kvog4SK9BjzJy0pEMl9TwdeWD3QHp+/kCX1L5kISAFr9zJxC/5xR
-         ajGXf1Iuln/CQyv05+fsCUW35yL/LoLBG07ZDDRHsfjIduPCX9nHQk/USlk03l2caAnE
-         zCjEzY7t7a3Q92c40EfqGSQTy1R+b/fSEiD8i1+J86gYA0ep0cGCCM99NM2RCdXtQgoq
-         1MwQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=g/pTJfigSCEh5kckZ70NaOFpwcYGnuFXZ4+14JoNPQc=;
+        b=dgoxXGQqN4xU6YEPuThXK7v1DTae92iDRcALKgKvLO2p9wvXc8Gby6jXL9xrh8aXpl
+         y+y77nHdKJy4yAOH1UFqMvuh4g9O+NHr4Ht99XWVyBt5f0fwwn6+hZ7jLPbljT3RgYhL
+         tQUHdnnitxR33DRP87VLkRlI0Lp0a2N27Hmz199C9flOLfYc9sAMJpDKzpvthCaLI6ea
+         NEjRwLAqOM76XT/HP8MwrM4IfhXwhfmGBR3b4wSo/RsLaZZDw/2cXUzy1webG25+GVTP
+         8i8tmmlJyoQh0tyB5xBMrZ/gKNn7dpb9uENpx9XDvjaq2UZsGy7jP9wBgwzI34kvqQ5a
+         n4eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k9wsqN7YVW74vSpW7e/ejgv7USagZP+TqAT+Y6PYQHY=;
-        b=ahHT8X9BWgAZsXlITUvHfeiIYSidN+vF2GPyrzQEoJq4I4UsDtc6ihxk/7KD4ThAf6
-         O2Nk8QfivEHUgge28pj0ikQQle+fR69fVHP3rVpxFe5DqZIAF99G87vG0kjcoRHTk/EM
-         wfckh6Rkt1kKZej5GgSg6t+P42cYMt3ttMm3hsDUHLUkM/dGqKHLPYhea4rpBkJ7qR8B
-         U9lz1pW37H+/8iM01y7P5CBWPB4ER9O6f8WQZf7t9jomLvhMCcCyjQkDfQbHpmJw+hYd
-         xDvOQWyxEtyfwIIbpEZfKOTWhxKiT9wXFwDwGyZK8YzH/OWOJx4/w/FGFbAopPCMND/1
-         m7ZQ==
-X-Gm-Message-State: AOAM531DCKnqyu/TdpaZSdgnC7umLmPAcjySKFp4U12CeBukE7PGZMrK
-        AAxxXncK5KaO8nTW4otimWY=
-X-Google-Smtp-Source: ABdhPJwRkFSelQQu1jRuLdTr7MZ+iU84dCdmsYiR/77wsHUICwrhjerxSHAZmBvF1ZtDjbvnPqX6lw==
-X-Received: by 2002:aa7:9254:0:b029:3c9:268e:ae68 with SMTP id 20-20020aa792540000b02903c9268eae68mr19345505pfp.58.1628627379720;
-        Tue, 10 Aug 2021 13:29:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=g/pTJfigSCEh5kckZ70NaOFpwcYGnuFXZ4+14JoNPQc=;
+        b=A7OjDpbZxMQD2mMY9qmUDKEc4cgNNErPuyWYD6DG1mTBRiRdJMBHnPiWoR99tnzsO4
+         T0IpWgfFv8n0jbAeEaBqrMjcw8AZKsKr4C3529NN21BwQHdByGSNgYnKmwixwPRpLbqp
+         r4VNswoDhMLOUR1WBeizhOItBzxZYdqvd9bdDYGTof5Z98YVTYonfglTZnKbSNsOpFQS
+         Nt05jkQCFabUvtJDxmp9ge0OAkYTuKMAPOp8e2tU7D0yOrKv9IPDOgQpTVHi+OKfsRT3
+         ySSBofviLBfDFcYwjbalqXnWxgOHAYk7fiuzh/4EeHYwCfi1LYVt5oqrn/XyBL0NuwA+
+         M+UA==
+X-Gm-Message-State: AOAM533nnzKf1mWqFUop3ea8TCTB/QmSbJmy/WZJopQQ+BedEsG5pUgd
+        ciblwWRW8h/vLqJrmzNxFP0=
+X-Google-Smtp-Source: ABdhPJw3R1cjaI6hRD7+jh7X4bu72Tk12gIFPbsf9htD7SeLAXnKzFekOLSN1lT9i7SmvtzvLMUGlA==
+X-Received: by 2002:a62:87c5:0:b029:3b5:f90f:c2eb with SMTP id i188-20020a6287c50000b02903b5f90fc2ebmr31281252pfe.28.1628627381588;
+        Tue, 10 Aug 2021 13:29:41 -0700 (PDT)
 Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id e12sm24697145pfc.214.2021.08.10.13.29.37
+        by smtp.gmail.com with ESMTPSA id e12sm24697145pfc.214.2021.08.10.13.29.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 13:29:38 -0700 (PDT)
+        Tue, 10 Aug 2021 13:29:40 -0700 (PDT)
 From:   Yang Shi <shy828301@gmail.com>
 To:     hughd@google.com, ying.huang@intel.com, linmiaohe@huawei.com,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     shy828301@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3 linux-next] Revert "mm,shmem: fix a typo in shmem_swapin_page()"
-Date:   Tue, 10 Aug 2021 13:29:34 -0700
-Message-Id: <20210810202936.2672-1-shy828301@gmail.com>
+Subject: [PATCH 2/3] Revert "mm/shmem: fix shmem_swapin() race with swapoff"
+Date:   Tue, 10 Aug 2021 13:29:35 -0700
+Message-Id: <20210810202936.2672-2-shy828301@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210810202936.2672-1-shy828301@gmail.com>
+References: <20210810202936.2672-1-shy828301@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -67,33 +69,63 @@ Due to the change about how block layer detects congestion the
 justification of commit 8fd2e0b505d1 ("mm: swap: check if swap backing device
 is congested or not") doesn't stand anymore, so the commit could be just
 reverted in order to solve the race reported by commit 2efa33fc7f6e ("mm/shmem:
-fix shmem_swapin() race with swapoff"), so the fix commit and this fix's fix
-commit could be reverted as well.
+fix shmem_swapin() race with swapoff"), so the fix commit could be just
+reverted as well.
 
 Suggested-by: Hugh Dickins <hughd@google.com>
 Cc: "Huang, Ying" <ying.huang@intel.com>
 Cc: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: Yang Shi <shy828301@gmail.com>
 ---
-This revert is for linux-next/-mm tree only since this commit has not
-merged into Linus's tree yet.
-
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/shmem.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
 diff --git a/mm/shmem.c b/mm/shmem.c
-index 1bea7f50825b..dcc07d14162e 100644
+index dcc07d14162e..d5427de5bf02 100644
 --- a/mm/shmem.c
 +++ b/mm/shmem.c
-@@ -1711,7 +1711,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 	/* Prevent swapoff from happening to us. */
- 	si = get_swap_device(swap);
- 	if (!si) {
--		error = -EINVAL;
-+		error = EINVAL;
- 		goto failed;
- 	}
+@@ -1699,8 +1699,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	struct address_space *mapping = inode->i_mapping;
+ 	struct shmem_inode_info *info = SHMEM_I(inode);
+ 	struct mm_struct *charge_mm = vma ? vma->vm_mm : NULL;
+-	struct swap_info_struct *si;
+-	struct page *page = NULL;
++	struct page *page;
+ 	swp_entry_t swap;
+ 	int error;
+ 
+@@ -1708,12 +1707,6 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	swap = radix_to_swp_entry(*pagep);
+ 	*pagep = NULL;
+ 
+-	/* Prevent swapoff from happening to us. */
+-	si = get_swap_device(swap);
+-	if (!si) {
+-		error = EINVAL;
+-		goto failed;
+-	}
  	/* Look it up and read it in.. */
+ 	page = lookup_swap_cache(swap, NULL, 0);
+ 	if (!page) {
+@@ -1775,8 +1768,6 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	swap_free(swap);
+ 
+ 	*pagep = page;
+-	if (si)
+-		put_swap_device(si);
+ 	return 0;
+ failed:
+ 	if (!shmem_confirm_swap(mapping, index, swap))
+@@ -1787,9 +1778,6 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 		put_page(page);
+ 	}
+ 
+-	if (si)
+-		put_swap_device(si);
+-
+ 	return error;
+ }
+ 
 -- 
 2.26.2
 
