@@ -2,153 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D873E8481
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76363E8484
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbhHJUnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:43:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55518 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232424AbhHJUm7 (ORCPT
+        id S233387AbhHJUnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233336AbhHJUnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:42:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628628156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hHnrIWkzZ7LkFQAJEORQbPUdKrZ3WDQnEsS9T+9/pd4=;
-        b=I7HLrjMs2JV8RGOGzMuymLZDnghxUE2/X+v0BomNuuzyqDqnRLzelH7XaBIdDtJHs/cu6c
-        O0hYjaDzSEHPFyQH80bks+76v2YLQCaZKKyHoiS8bHVnXIB7EtWQN13SfJUiwOWzQkB+Zo
-        4PSi+srEp/+76PrUcAeEbfZQ8TG6Lt0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-UQBarrSZPcm-SrZF67zyFw-1; Tue, 10 Aug 2021 16:42:35 -0400
-X-MC-Unique: UQBarrSZPcm-SrZF67zyFw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BC76801AE7;
-        Tue, 10 Aug 2021 20:42:33 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C11773AFD;
-        Tue, 10 Aug 2021 20:42:29 +0000 (UTC)
-Message-ID: <bb889453a1082c132846296744706a4e1456f127.camel@redhat.com>
-Subject: Re: KVM's support for non default APIC base
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Date:   Tue, 10 Aug 2021 23:42:28 +0300
-In-Reply-To: <CALMp9eRxthu+5NMRTL4+NtcsAcMyYmLiQs4Get5=UAAH_yqH=w@mail.gmail.com>
-References: <20210713142023.106183-1-mlevitsk@redhat.com>
-         <20210713142023.106183-9-mlevitsk@redhat.com>
-         <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
-         <YPXJQxLaJuoF6aXl@google.com>
-         <564fd4461c73a4ec08d68e2364401db981ecba3a.camel@redhat.com>
-         <YQ2vv7EXGN2jgQBb@google.com>
-         <5f991ac11006ae890961a76d35a63b7c9c56b47c.camel@redhat.com>
-         <CALMp9eRxthu+5NMRTL4+NtcsAcMyYmLiQs4Get5=UAAH_yqH=w@mail.gmail.com>
+        Tue, 10 Aug 2021 16:43:11 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFAFC061799
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:42:49 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id s206-20020a3745d70000b02903b9207abc7bso17835294qka.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=EW6Q5CaUpfH7HbowLAZVGbAcLqxCVj49fYmRM95UtZI=;
+        b=FIdq2p/hy2fZuCOhTU40LIdw6+V8C4Zn7LphQwtkMraZ+YREgFjsQNhhKeXc2aZ1ph
+         sEC9DYlBvyLFigsF/XLYbbfM/aTzogCGKKhs8Qh91gpxIBtPBj2pRQHSJG9wAyuEbQUh
+         6VfYAdCUIf7FCf70fApYLCEgRb0QsyHX+od0pqrPJHWG95AfC7uiKEhI3ixHGoJUgQwO
+         H2Z1lsAQfaQ5HabioMDiYLdOJh9ard8+j0XlNQD+J7RFKA7EcVbgPX7BJqG7OgtLg0jw
+         d3n4uuGA68RhU1SIUarrWQ4l8y1GyJ56/GK5A45AD1djXOWrCpvou0uOzoowguQprFBY
+         gQjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=EW6Q5CaUpfH7HbowLAZVGbAcLqxCVj49fYmRM95UtZI=;
+        b=LLlifZSVFJbICKvek/cq7pU7fU+eiGw5EzknV+XVuW8o3wW7VxtwO3RrnwnPXXX3Hh
+         yFmPpjx8R26WEHXQMll4PksM6/gI43UXBmTjH25rXdQ3v3DY9Oj/+hcNpOZGzE+8MgId
+         6JQHMggy2MA6I0uKeJ+gCfdEcs07edFl2j1CXpvd7ycfBLsGhpqQc4S1BdtZRkbo8KvD
+         5QTAfiP2nR6u8bzfedctfxKi56r9h4no6DPUWy9ljkmymxX/+5pFISi1AJG7vTkGgvj4
+         iVQwqBLgpWIfZViDE27WBESnpsX1yDkPD06mHO4614APyhpwZaM6RM1MgYrhx1Rurlqc
+         3afA==
+X-Gm-Message-State: AOAM533K9jGTL6a9lEEJngBkxt5nDdq43QZuQ8Eg0g4A4BL2ksYkoKTI
+        7O7L0lxMAN+ZDFuGwx/t6l8qxHLymfMVjktAoiE=
+X-Google-Smtp-Source: ABdhPJx7MPrepqoYZzWR+7g0XcmonZnK3MONe2hH+CaLcRGvYSa9JQTBH1JuyJJSB/WuJYI4EFWeTy+IFBnppDUPlQE=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f3a2:624c:cdb9:1ee9])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:ff48:: with SMTP id
+ y8mr19877957qvt.29.1628628168407; Tue, 10 Aug 2021 13:42:48 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 13:42:37 -0700
+Message-Id: <20210810204240.4008685-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH] Makefile: remove stale cc-option checks
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-09 at 09:47 -0700, Jim Mattson wrote:
-> On Mon, Aug 9, 2021 at 2:40 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
-> > On Fri, 2021-08-06 at 21:55 +0000, Sean Christopherson wrote:
-> > > On Thu, Jul 22, 2021, Maxim Levitsky wrote:
-> > > > On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
-> > > > > On Sun, Jul 18, 2021, Maxim Levitsky wrote:
-> > > > -> APIC MMIO area has to be MMIO for 'apic_mmio_write' to be called,
-> > > >    thus must contain no guest memslots.
-> > > >    If the guest relocates the APIC base somewhere where we have a memslot,
-> > > >    memslot will take priority, while on real hardware, LAPIC is likely to
-> > > >    take priority.
-> > > 
-> > > Yep.  The thing that really bites us is that other vCPUs should still be able to
-> > > access the memory defined by the memslot, e.g. to make it work we'd have to run
-> > > the vCPU with a completely different MMU root.
-> > That is something I haven't took in the account.
-> > Complexity of supporting this indeed isn't worth it.
-> > 
-> > > > As far as I know the only good reason to relocate APIC base is to access it
-> > > > from the real mode which is not something that is done these days by modern
-> > > > BIOSes.
-> > > > 
-> > > > I vote to make it read only (#GP on MSR_IA32_APICBASE write when non default
-> > > > base is set and apic enabled) and remove all remains of the support for
-> > > > variable APIC base.
-> > > 
-> > > Making up our own behavior is almost never the right approach.  E.g. _best_ case
-> > > scenario for an unexpected #GP is the guest immediately terminates.  Worst case
-> > > scenario is the guest eats the #GP and continues on, which is basically the status
-> > > quo, except it's guaranteed to now work, whereas todays behavior can at least let
-> > > the guest function, for some definitions of "function".
-> > 
-> > Well, at least the Intel's PRM does state that APIC base relocation is not guaranteed
-> > to work on all CPUs, so giving the guest a #GP is like telling it that current CPU doesn't
-> > support it. In theory, a very well behaving guest can catch the exception and
-> > fail back to the default base.
-> > 
-> > I don't understand what do you mean by 'guaranteed to now work'. If the guest
-> > ignores this #GP and still thinks that APIC base relocation worked, it is its fault.
-> > A well behaving guest should never assume that a msr write that failed with #GP
-> > worked.
-> > 
-> > 
-> > > I think the only viable "solution" is to exit to userspace on the guilty WRMSR.
-> > > Whether or not we can do that without breaking userspace is probably the big
-> > > question.  Fully emulating APIC base relocation would be a tremendous amount of
-> > > effort and complexity for practically zero benefit.
-> > 
-> > I have nothing against this as well although I kind of like the #GP approach a bit more,
-> > and knowing that there are barely any reasons
-> > to relocate the APIC base, and that it doesn't work well, there is a good chance
-> > that no one does it anyway (except our kvm unit tests, but that isn't an issue).
-> > 
-> > > > (we already have a warning when APIC base is set to non default value)
-> > > 
-> > > FWIW, that warning is worthless because it's _once(), i.e. won't help detect a
-> > > misbehaving guest unless it's the first guest to misbehave on a particular
-> > > instantiation of KVM.   _ratelimited() would improve the situation, but not
-> > > completely eliminate the possibility of a misbehaving guest going unnoticed.
-> > > Anything else isn't an option becuase it's obviously guest triggerable.
-> > 
-> > 100% agree.
-> > 
-> > I'll say I would first make it _ratelimited() for few KVM versions, and then
-> > if nobody complains, make it a KVM internal error / #GP, and remove all the leftovers
-> > from the code that pretend that it can work.
-> 
-> Printing things to syslog is not very helpful. Any time that kvm
-> violates the architectural specification, it should provide
-> information about the emulation error to userspace.
-> 
-Paolo, what do you think?
+cc-option, cc-option-yn, and cc-disable-warning all invoke the compiler
+during build time, and can slow down the build when these checks become
+stale for our supported compilers, whose minimally supported versions
+increases over time. See Documentation/process/changes.rst for the
+current supported minimal versions (GCC 4.9+, clang 10.0.1+). Compiler
+version support for these flags may be verified on godbolt.org.
 
-My personal opinion is that we should indeed cause KVM internal error
-on all attempts to change the APIC base.
+The following flags are GCC only and supported since at least GCC 4.9.
+Remove cc-option and cc-disable-warning tests.
+* -fno-tree-loop-im
+* -Wno-maybe-uninitialized
+* -fno-reorder-blocks
+* -fno-ipa-cp-clone
+* -fno-partial-inlining
+* -femit-struct-debug-baseonly
+* -fno-inline-functions-called-once
+* -fconserve-stack
 
-If someone complains, then we can look at their use-case.
+The following flags are supported by all supported versions of GCC and
+Clang. Remove their cc-option, cc-option-yn, and cc-disable-warning tests.
+* -fno-delete-null-pointer-checks
+* -fno-var-tracking
+* -mfentry
+* -Wno-array-bounds
 
-My view is that any half-working feature is bound to bitrot
-and cause harm and confusion.
+The following configs are made dependent on GCC, since they use GCC
+specific flags.
+* READABLE_ASM
+* DEBUG_SECTION_MISMATCH
 
-Best regards,
-	Maxim Levitsky
+--param=allow-store-data-races=0 was renamed to --allow-store-data-races
+in the GCC 10 release.
 
+Also, base RETPOLINE_CFLAGS and RETPOLINE_VDSO_CFLAGS on CONFIC_CC_IS_*
+then remove cc-option tests for Clang.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1436
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Note: It may be preferred to move the test for
+-fno-inline-functions-called-once for DEBUG_SECTION_MISMATCH into
+Kconfig. That one does seem relatively more reasonable to implement in
+Clang.
+
+ Makefile          | 55 ++++++++++++++++++++++++++---------------------
+ lib/Kconfig.debug |  2 ++
+ 2 files changed, 33 insertions(+), 24 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 027fdf2a14fe..3e3fb4affba1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -730,9 +730,10 @@ endif # KBUILD_EXTMOD
+ # Defaults to vmlinux, but the arch makefile usually adds further targets
+ all: vmlinux
+ 
+-CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage \
+-	$(call cc-option,-fno-tree-loop-im) \
+-	$(call cc-disable-warning,maybe-uninitialized,)
++CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage
++ifdef CONFIG_CC_IS_GCC
++CFLAGS_GCOV	+= -fno-tree-loop-im
++endif
+ export CFLAGS_GCOV
+ 
+ # The arch Makefiles can override CC_FLAGS_FTRACE. We may also append it later.
+@@ -740,12 +741,14 @@ ifdef CONFIG_FUNCTION_TRACER
+   CC_FLAGS_FTRACE := -pg
+ endif
+ 
+-RETPOLINE_CFLAGS_GCC := -mindirect-branch=thunk-extern -mindirect-branch-register
+-RETPOLINE_VDSO_CFLAGS_GCC := -mindirect-branch=thunk-inline -mindirect-branch-register
+-RETPOLINE_CFLAGS_CLANG := -mretpoline-external-thunk
+-RETPOLINE_VDSO_CFLAGS_CLANG := -mretpoline
+-RETPOLINE_CFLAGS := $(call cc-option,$(RETPOLINE_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_CFLAGS_CLANG)))
+-RETPOLINE_VDSO_CFLAGS := $(call cc-option,$(RETPOLINE_VDSO_CFLAGS_GCC),$(call cc-option,$(RETPOLINE_VDSO_CFLAGS_CLANG)))
++ifdef CONFIG_CC_IS_GCC
++RETPOLINE_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-extern -mindirect-branch-register)
++RETPOLINE_VDSO_CFLAGS	:= $(call cc-option,-mindirect-branch=thunk-inline -mindirect-branch-register)
++endif
++ifdef CONFIG_CC_IS_CLANG
++RETPOLINE_CFLAGS	:= -mretpoline-external-thunk
++RETPOLINE_VDSO_CFLAGS	:= -mretpoline
++endif
+ export RETPOLINE_CFLAGS
+ export RETPOLINE_VDSO_CFLAGS
+ 
+@@ -798,7 +801,7 @@ include/config/auto.conf:
+ endif # may-sync-config
+ endif # need-config
+ 
+-KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
++KBUILD_CFLAGS	+= -fno-delete-null-pointer-checks
+ KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-truncation)
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
+@@ -844,17 +847,17 @@ KBUILD_RUSTFLAGS += -Copt-level=z
+ endif
+ 
+ # Tell gcc to never replace conditional load with a non-conditional one
+-KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
++ifdef CONFIG_CC_IS_GCC
++KBUILD_CFLAGS	+= $(call cc-option,--allow-store-data-races,--param=allow-store-data-races=0)
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
++endif
+ 
+ ifdef CONFIG_READABLE_ASM
+ # Disable optimizations that make assembler listings hard to read.
+ # reorder blocks reorders the control in the function
+ # ipa clone creates specialized cloned functions
+ # partial inlining inlines only parts of functions
+-KBUILD_CFLAGS += $(call cc-option,-fno-reorder-blocks,) \
+-                 $(call cc-option,-fno-ipa-cp-clone,) \
+-                 $(call cc-option,-fno-partial-inlining)
++KBUILD_CFLAGS += -fno-reorder-blocks -fno-ipa-cp-clone -fno-partial-inlining
+ endif
+ 
+ ifneq ($(CONFIG_FRAME_WARN),0)
+@@ -959,8 +962,10 @@ DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
+ endif
+ 
+ ifdef CONFIG_DEBUG_INFO_REDUCED
+-DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
+-		   $(call cc-option,-fno-var-tracking)
++DEBUG_CFLAGS	+= -fno-var-tracking
++ifdef CONFIG_CC_IS_GCC
++DEBUG_CFLAGS	+= -femit-struct-debug-baseonly
++endif
+ endif
+ 
+ ifdef CONFIG_DEBUG_INFO_COMPRESSED
+@@ -997,10 +1002,8 @@ ifdef CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
+   endif
+ endif
+ ifdef CONFIG_HAVE_FENTRY
+-  ifeq ($(call cc-option-yn, -mfentry),y)
+-    CC_FLAGS_FTRACE	+= -mfentry
+-    CC_FLAGS_USING	+= -DCC_USING_FENTRY
+-  endif
++  CC_FLAGS_FTRACE	+= -mfentry
++  CC_FLAGS_USING	+= -DCC_USING_FENTRY
+ endif
+ export CC_FLAGS_FTRACE
+ KBUILD_CFLAGS	+= $(CC_FLAGS_FTRACE) $(CC_FLAGS_USING)
+@@ -1009,7 +1012,7 @@ endif
+ 
+ # We trigger additional mismatches with less inlining
+ ifdef CONFIG_DEBUG_SECTION_MISMATCH
+-KBUILD_CFLAGS += $(call cc-option, -fno-inline-functions-called-once)
++KBUILD_CFLAGS += -fno-inline-functions-called-once
+ endif
+ 
+ ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+@@ -1088,14 +1091,16 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+ 
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
+-KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
++KBUILD_CFLAGS += -Wno-array-bounds
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+ 
+ # Another good warning that we'll want to enable eventually
+ KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+ 
+ # Enabled with W=2, disabled by default as noisy
+-KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
++ifdef CONFIG_CC_IS_GCC
++KBUILD_CFLAGS += -Wno-maybe-uninitialized
++endif
+ 
+ # disable invalid "can't wrap" optimizations for signed / pointers
+ KBUILD_CFLAGS	+= -fno-strict-overflow
+@@ -1104,7 +1109,9 @@ KBUILD_CFLAGS	+= -fno-strict-overflow
+ KBUILD_CFLAGS  += -fno-stack-check
+ 
+ # conserve stack if available
+-KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
++ifdef CONFIG_CC_IS_GCC
++KBUILD_CFLAGS   += -fconserve-stack
++endif
+ 
+ # Prohibit date/time macros, which would make the build non-deterministic
+ KBUILD_CFLAGS   += -Werror=date-time
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index b6b951b0ed46..a4a431606be2 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -364,6 +364,7 @@ config STRIP_ASM_SYMS
+ config READABLE_ASM
+ 	bool "Generate readable assembler code"
+ 	depends on DEBUG_KERNEL
++	depends on CC_IS_GCC
+ 	help
+ 	  Disable some compiler optimizations that tend to generate human unreadable
+ 	  assembler output. This may make the kernel slightly slower, but it helps
+@@ -382,6 +383,7 @@ config HEADERS_INSTALL
+ 
+ config DEBUG_SECTION_MISMATCH
+ 	bool "Enable full Section mismatch analysis"
++	depends on CC_IS_GCC
+ 	help
+ 	  The section mismatch analysis checks if there are illegal
+ 	  references from one section to another section.
+-- 
+2.32.0.605.g8dce9f2422-goog
 
