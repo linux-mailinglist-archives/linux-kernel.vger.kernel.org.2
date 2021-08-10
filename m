@@ -2,66 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71133E7D74
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10703E7D71
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbhHJQYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:24:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233981AbhHJQYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:24:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB0F360ED8;
-        Tue, 10 Aug 2021 16:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628612654;
-        bh=YVP2aA9Rcgj+1n38xxAGC7IEGedz+70yPRyNqIvJCr8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jp19FBkdMf4JmElg5sQTh1JVQqki/FaL20o92O595x81oEXNJinE84sI59c8L2NEK
-         QldbcPXnVhztQjCf/2cQ9VaU9yKKoAPs1svF3V4yl4xli3H9hnAPsMTs7JlIKZxjRR
-         tr6hRpQbK+ERwT06PhY/YoSBxfiRJt8xmneCfgZY=
-Date:   Tue, 10 Aug 2021 18:24:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>, axboe@kernel.dk,
-        kernelnewbies@kernelnewbies.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, pavel@ucw.cz, pali@kernel.org,
-        hch@lst.de, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
-Message-ID: <YRKoLBigjbOb/iLa@kroah.com>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
- <20210809205633.4300bbea@thinkpad>
- <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com>
- <20210810004331.0f0094a5@thinkpad>
- <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
- <YRIeHH1SLl6tYCeY@kroah.com>
- <20210810153840.42419d06@thinkpad>
- <YRKRpQdLRJmAb5kZ@kroah.com>
- <b8e99efb-7385-0ca2-641c-f93006b20527@gmail.com>
+        id S235235AbhHJQX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:23:58 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.189]:34850 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235001AbhHJQX5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:23:57 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id C0E95103C53
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:23:22 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id DUXCmtY2QrJtZDUXCmTJ3U; Tue, 10 Aug 2021 11:23:22 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=bnDaw1wxkjMKThH+uNl7hV3zzBoyfGurRa+dO+/NGiE=; b=kVDsDhK+t/xS86aAjKzbTRGqxO
+        txWYP/sOTXUepnyM1JGk6umOrtrCUmx51YxNMYLlLcsvKcXHnfvRF3Q5MRNq/6KO6gdgo60L7J1oH
+        WODzq7FHP0dLLnwfkxvS/zsdv48j21fMbYFWONMkEH5ifTSrWev8vZxeGlrll+Q27HY7KwYd6wh6j
+        Ii14xskiXbrYM9qXF5b179XuFpEgEc1Hqw1nWQ2QPRtwlw/4zozIyLFS7fXyKGQd3DthPEzunQfjC
+        kyt31NJghBk/QS8LsWZWK5ncyoO15eqrouOee/J/pEvfnzY3LtrbC/7ul7av4E4I8APlBaie4ilOw
+        ux6F/rDg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:37790 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mDUXC-000oNK-1m; Tue, 10 Aug 2021 11:23:22 -0500
+Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: css: Fix wrong size
+ comparison
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-hardening@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <cover.1627646101.git.gustavoars@kernel.org>
+ <184d96f95d6261b1a91704eb68adbd0a2e1c2cc2.1627646101.git.gustavoars@kernel.org>
+ <20210802060546.GL3@paasikivi.fi.intel.com>
+ <3c9ac43d-09ca-e5d5-83a8-7b6d23928763@embeddedor.com>
+ <20210810151852.GI3@paasikivi.fi.intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <a5e19508-4d7a-ba63-7ac0-ed2e56bc3bc1@embeddedor.com>
+Date:   Tue, 10 Aug 2021 11:26:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8e99efb-7385-0ca2-641c-f93006b20527@gmail.com>
+In-Reply-To: <20210810151852.GI3@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mDUXC-000oNK-1m
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:37790
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:55:33AM -0500, Ian Pilcher wrote:
-> On 8/10/21 9:48 AM, Greg KH wrote:
-> > But what about when the device is removed from the system first?  Be
-> > careful about that...
-> > 
-> > Anyway, sure, try those functions, I really do not know, all I
-> > originally complained about was those exports which did not need to be
-> > exported.
+Hi Sakari,
+
+Please, see my comments below...
+
+On 8/10/21 10:18, Sakari Ailus wrote:
+> Hi Gustavo,
 > 
-> Sounds good.  I'll work something up.  (I'm actually thinking that
-> class_find_device() may be the best way to go, as it grabs a reference
-> to the device.)
+> Apologies for the delay.
+> 
+> On Mon, Aug 02, 2021 at 08:46:20AM -0500, Gustavo A. R. Silva wrote:
+>> Hi Sakari,
+>>
+>> On 8/2/21 01:05, Sakari Ailus wrote:
+>>> Hi Gustavo,
+>>>
+>>> I missed you already had sent v2...
+>>>
+>>> On Fri, Jul 30, 2021 at 07:08:13AM -0500, Gustavo A. R. Silva wrote:
+>>>> There is a wrong comparison of the total size of the loaded firmware
+>>>> css->fw->size with the size of a pointer to struct imgu_fw_header.
+>>>>
+>>>> Fix this by using the right operand 'struct imgu_fw_header' for
+>>>> sizeof, instead of 'struct imgu_fw_header *' and turn binary_header
+>>>> into a flexible-array member. Also, adjust the relational operator
+>>>> to be '<=' instead of '<', as it seems that the intention of the
+>>>> comparison is to determine if the loaded firmware contains any
+>>>> 'struct imgu_fw_info' items in the binary_header[] array than merely
+>>>> the file_header (struct imgu_fw_bi_file_h).
+>>>>
+>>>> The replacement of the one-element array with a flexible-array member
+>>>> also help with the ongoing efforts to globally enable -Warray-bounds
+>>>> and get us closer to being able to tighten the FORTIFY_SOURCE routines
+>>>> on memcpy().
+>>>>
+>>>> Link: https://github.com/KSPP/linux/issues/79
+>>>> Link: https://github.com/KSPP/linux/issues/109
+>>>> Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
+>>>> Cc: stable@vger.kernel.org
+>>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>>> ---
+>>>>
+>>>> It'd be just great if someone that knows this code better can confirm
+>>>> these changes are correct. In particular the adjustment of the
+>>>> relational operator. Thanks!
+>>>>
+>>>> Changes in v2:
+>>>>  - Use flexible array and adjust relational operator, accordingly.
+>>>
+>>> The operator was just correct. The check is just there to see the firmware
+>>> is at least as large as the struct as which it is being accessed.
+>>
+>> I'm a bit confused, so based on your reply to v1 of this series, this patch
+>> is now correct, right?
+>>
+>> The operator in v1 _was_ correct as long as the one-element array wasn't
+>> transformed into a flexible array, right?
+>>
+>> Notice that generally speaking flexible-array members don't occupy space in the
+>> containing structure:
+>>
+>> $ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
+>> struct imgu_fw_header {
+>> 	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
+>> 	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+>> 	struct imgu_fw_info        binary_header[] __attribute__((__aligned__(8))); /*    72     0 */
+>>
+>> 	/* size: 72, cachelines: 2, members: 2 */
+>> 	/* forced alignments: 1 */
+>> 	/* last cacheline: 8 bytes */
+>> } __attribute__((__aligned__(8)));
+>>
+>> $ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
+>> struct imgu_fw_header {
+>> 	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
+>> 	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+>> 	struct imgu_fw_info        binary_header[1] __attribute__((__aligned__(8))); /*    72  1200 */
+>>
+>> 	/* size: 1272, cachelines: 20, members: 2 */
+>> 	/* forced alignments: 1 */
+>> 	/* last cacheline: 56 bytes */
+>> } __attribute__((__aligned__(8)));
+>>
+>> So, now that the flexible array transformation is included in the same patch as the
+>> bugfix, the operator is changed from '<' to '<='
+> 
+> '<' is correct since you only need as much data as the struct you're about
+> to access is large, not a byte more than that. As Dan noted.
+> 
+> I think you could add a check for binary_nr is at least one.
 
-There should not be anything "odd" about block devices here, just do
-whatever all other LED drivers do when referencing a device.
+If we need to check that binary_nr is at least one, then this would be the right
+change:
 
-thanks,
+        css->fwp = (struct imgu_fw_header *)css->fw->data;
+-       if (css->fw->size < sizeof(struct imgu_fw_header *) ||
++       if (css->fw->size < struct_size(css->fwp, binary_header, 1) ||
+            css->fwp->file_header.h_size != sizeof(struct imgu_fw_bi_file_h))
+                goto bad_fw;
 
-greg k-h
+
+--
+Gustavo
