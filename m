@@ -2,141 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696753E7BF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293BC3E7BF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242905AbhHJPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:19:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:17625 "EHLO mga01.intel.com"
+        id S241560AbhHJPTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:19:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:57866 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242914AbhHJPTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:19:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="236937112"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="236937112"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:18:58 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="671802800"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 08:18:55 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 14C6B20345;
-        Tue, 10 Aug 2021 18:18:53 +0300 (EEST)
-Date:   Tue, 10 Aug 2021 18:18:53 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-hardening@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: css: Fix wrong size
- comparison
-Message-ID: <20210810151852.GI3@paasikivi.fi.intel.com>
-References: <cover.1627646101.git.gustavoars@kernel.org>
- <184d96f95d6261b1a91704eb68adbd0a2e1c2cc2.1627646101.git.gustavoars@kernel.org>
- <20210802060546.GL3@paasikivi.fi.intel.com>
- <3c9ac43d-09ca-e5d5-83a8-7b6d23928763@embeddedor.com>
+        id S239937AbhHJPTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:19:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F14001FB;
+        Tue, 10 Aug 2021 08:18:48 -0700 (PDT)
+Received: from [10.163.67.89] (unknown [10.163.67.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA9403F718;
+        Tue, 10 Aug 2021 08:18:45 -0700 (PDT)
+Subject: Re: [PATCH 5/5] KVM: arm64: Define KVM_PHYS_SHIFT_MIN
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
+ <1628578961-29097-6-git-send-email-anshuman.khandual@arm.com>
+ <2dbeb2c329cfeb1ee9a7331683cdbc97@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <43c5ffa3-b3c5-9154-72b5-811eeb9ece8f@arm.com>
+Date:   Tue, 10 Aug 2021 20:49:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c9ac43d-09ca-e5d5-83a8-7b6d23928763@embeddedor.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <2dbeb2c329cfeb1ee9a7331683cdbc97@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
 
-Apologies for the delay.
 
-On Mon, Aug 02, 2021 at 08:46:20AM -0500, Gustavo A. R. Silva wrote:
-> Hi Sakari,
+On 8/10/21 6:59 PM, Marc Zyngier wrote:
+> On 2021-08-10 08:02, Anshuman Khandual wrote:
+>> Drop the hard coded value for the minimum IPA range i.e 32 bit. Instead
+>> define a macro KVM_PHYS_SHIFT_MIN which improves the code readability.
+>>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/arm64/include/asm/kvm_mmu.h | 3 ++-
+>>  arch/arm64/kvm/reset.c           | 2 +-
+>>  2 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+>> index b52c5c4b9a3d..716f999818d9 100644
+>> --- a/arch/arm64/include/asm/kvm_mmu.h
+>> +++ b/arch/arm64/include/asm/kvm_mmu.h
+>> @@ -141,7 +141,8 @@ static __always_inline unsigned long
+>> __kern_hyp_va(unsigned long v)
+>>   * We currently support using a VM-specified IPA size. For backward
+>>   * compatibility, the default IPA size is fixed to 40bits.
+>>   */
+>> -#define KVM_PHYS_SHIFT    (40)
+>> +#define KVM_PHYS_SHIFT        (40)
+>> +#define KVM_PHYS_SHIFT_MIN    (32)
+>>
+>>  #define kvm_phys_shift(kvm)        VTCR_EL2_IPA(kvm->arch.vtcr)
+>>  #define kvm_phys_size(kvm)        (_AC(1, ULL) << kvm_phys_shift(kvm))
+>> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+>> index cba7872d69a8..8dc8b4b9de37 100644
+>> --- a/arch/arm64/kvm/reset.c
+>> +++ b/arch/arm64/kvm/reset.c
+>> @@ -369,7 +369,7 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned
+>> long type)
+>>      phys_shift = KVM_VM_TYPE_ARM_IPA_SIZE(type);
+>>      if (phys_shift) {
+>>          if (phys_shift > kvm_ipa_limit ||
+>> -            phys_shift < 32)
+>> +            phys_shift < KVM_PHYS_SHIFT_MIN)
+>>              return -EINVAL;
+>>      } else {
+>>          phys_shift = KVM_PHYS_SHIFT;
 > 
-> On 8/2/21 01:05, Sakari Ailus wrote:
-> > Hi Gustavo,
-> > 
-> > I missed you already had sent v2...
-> > 
-> > On Fri, Jul 30, 2021 at 07:08:13AM -0500, Gustavo A. R. Silva wrote:
-> >> There is a wrong comparison of the total size of the loaded firmware
-> >> css->fw->size with the size of a pointer to struct imgu_fw_header.
-> >>
-> >> Fix this by using the right operand 'struct imgu_fw_header' for
-> >> sizeof, instead of 'struct imgu_fw_header *' and turn binary_header
-> >> into a flexible-array member. Also, adjust the relational operator
-> >> to be '<=' instead of '<', as it seems that the intention of the
-> >> comparison is to determine if the loaded firmware contains any
-> >> 'struct imgu_fw_info' items in the binary_header[] array than merely
-> >> the file_header (struct imgu_fw_bi_file_h).
-> >>
-> >> The replacement of the one-element array with a flexible-array member
-> >> also help with the ongoing efforts to globally enable -Warray-bounds
-> >> and get us closer to being able to tighten the FORTIFY_SOURCE routines
-> >> on memcpy().
-> >>
-> >> Link: https://github.com/KSPP/linux/issues/79
-> >> Link: https://github.com/KSPP/linux/issues/109
-> >> Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> >> ---
-> >>
-> >> It'd be just great if someone that knows this code better can confirm
-> >> these changes are correct. In particular the adjustment of the
-> >> relational operator. Thanks!
-> >>
-> >> Changes in v2:
-> >>  - Use flexible array and adjust relational operator, accordingly.
-> > 
-> > The operator was just correct. The check is just there to see the firmware
-> > is at least as large as the struct as which it is being accessed.
-> 
-> I'm a bit confused, so based on your reply to v1 of this series, this patch
-> is now correct, right?
-> 
-> The operator in v1 _was_ correct as long as the one-element array wasn't
-> transformed into a flexible array, right?
-> 
-> Notice that generally speaking flexible-array members don't occupy space in the
-> containing structure:
-> 
-> $ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
-> struct imgu_fw_header {
-> 	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
-> 	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-> 	struct imgu_fw_info        binary_header[] __attribute__((__aligned__(8))); /*    72     0 */
-> 
-> 	/* size: 72, cachelines: 2, members: 2 */
-> 	/* forced alignments: 1 */
-> 	/* last cacheline: 8 bytes */
-> } __attribute__((__aligned__(8)));
-> 
-> $ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
-> struct imgu_fw_header {
-> 	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
-> 	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-> 	struct imgu_fw_info        binary_header[1] __attribute__((__aligned__(8))); /*    72  1200 */
-> 
-> 	/* size: 1272, cachelines: 20, members: 2 */
-> 	/* forced alignments: 1 */
-> 	/* last cacheline: 56 bytes */
-> } __attribute__((__aligned__(8)));
-> 
-> So, now that the flexible array transformation is included in the same patch as the
-> bugfix, the operator is changed from '<' to '<='
+> This is not a KVM property, but an architectural one. If you
 
-'<' is correct since you only need as much data as the struct you're about
-to access is large, not a byte more than that. As Dan noted.
+Architectural property which suggest the minimum physical address shift
+supported on a platform, as indicated via ID_AA64MMFR0.PARANGE = 0x0 ?
 
-I think you could add a check for binary_nr is at least one.
+> want to replace it with something more readable, please
+> make it global to the whole of arm64 (ARM64_MIN_PARANGE?).
 
--- 
-Kind regards,
-
-Sakari Ailus
+Sure, will do.
