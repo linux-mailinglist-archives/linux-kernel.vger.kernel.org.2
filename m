@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DA83E5C22
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC14A3E5C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241900AbhHJNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240131AbhHJNs3 (ORCPT
+        id S241920AbhHJNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:49:35 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59218 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240232AbhHJNtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:48:29 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333BEC0613D3;
-        Tue, 10 Aug 2021 06:48:07 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d1so21071872pll.1;
-        Tue, 10 Aug 2021 06:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=CNbvPsnGAfa3fu8fS5mw3q/ySea1UUbi6hadd0bmWeo=;
-        b=hoINABunSBYQ2JkYYVpHWvnqfcKfMeuLsEs5RBPS9/roCQMZMiD8Wxk9YzMTPbAdEd
-         YzUET3flnDrEnas2moHTKPj3eqswt2kl5ojHJntcAq8jcq2IuxIMYACvccw+Lm85ZX7M
-         aTNYTHMibdUa38vFxAe5MBByd9PxmMuhpsXSTHF0c8hmGdN2V/LQfCSpHOUcMdE2n7MT
-         jtyOHqPjjBavBY4g4/yMQVtRbmLKampGH4MPxTklXrluLEYLLNczihZlhKO8zIvnnvZ9
-         iz+y5QDYlyCqWxuviWQBmvC1EeSkgtS6YU61oTcz6Rxw4sxi0GTJYiBp2PZZj+q1mwqw
-         fBNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=CNbvPsnGAfa3fu8fS5mw3q/ySea1UUbi6hadd0bmWeo=;
-        b=N3+0KnM+5IZ4US73trrCGcKJutOc9pjhRFK8mV46n+9gBCxlTzLg/y3VMTA94OqpU2
-         tYJZmWkIv/v1HUmPrjHgcQ6WKPX9b0li+9BwN5vjZBn2gsG95lmRJGunc96Gi2RNxHHu
-         sTdUzvOg5WDKoeduk6+yrskxNvFjxL/y0Tb9GzDPjmnr4iNjmQdBtW5QmmvhUM8f8PwP
-         NuTb1Za89AWjSmPqi8zmXLDYi7k0e3CGMx9C3Qi5ScxSlr0hWW2scn3qzJkZxkWiEwjR
-         DGf3hhdDxi1sMl9vP1jOawtHczFu/bKB0nSQj5TOqGkAUEC3wGuSb8I+WC63QXidTssK
-         XaZg==
-X-Gm-Message-State: AOAM5311Z8iG3aSKOMGDCSYMp1Er7bX38o4ih4+lnpie/E4T7YMsh6G7
-        TxFMyF6mnhV6A+eCVKFKf164oR5K0SB46FZG
-X-Google-Smtp-Source: ABdhPJxDb2+ly1WlR776U/zcEbiEs6orYG1yRVBz/Bbo75OnSuxjbvfHOT0X/0rejyW2zB2iDRDzYQ==
-X-Received: by 2002:a17:902:d890:b029:12d:f2:e8d6 with SMTP id b16-20020a170902d890b029012d00f2e8d6mr7240709plz.42.1628603286547;
-        Tue, 10 Aug 2021 06:48:06 -0700 (PDT)
-Received: from [10.178.0.62] ([85.203.23.37])
-        by smtp.gmail.com with ESMTPSA id x13sm22637326pjh.30.2021.08.10.06.48.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 06:48:06 -0700 (PDT)
-To:     martin.petersen@oracle.com
-Cc:     baijiaju1990@gmail.com, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-From:   Tuo Li <islituo@gmail.com>
-Subject: [BUG] scsi: iscsi: possible null-pointer dereference in
- iscsit_tpg_add_network_portal()
-Message-ID: <89aaa039-2f03-f657-a555-a6a99f38db6d@gmail.com>
-Date:   Tue, 10 Aug 2021 21:48:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 10 Aug 2021 09:49:31 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D67F31C0B77; Tue, 10 Aug 2021 15:49:04 +0200 (CEST)
+Date:   Tue, 10 Aug 2021 15:49:04 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH v2 01/10] docs: Add block device LED trigger
+ documentation
+Message-ID: <20210810134904.GA28089@amd>
+References: <20210809033217.1113444-1-arequipeno@gmail.com>
+ <20210809033217.1113444-2-arequipeno@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
+Content-Disposition: inline
+In-Reply-To: <20210809033217.1113444-2-arequipeno@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-Our static analysis tool finds a possible null-pointer dereference in 
-the iscsi driver in Linux 5.14.0-rc3:
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The variable tpg->tpg_tiqn is checked in:
-496:    if (tpg->tpg_tiqn)
+Hi!
 
-This indicates that it can be NULL. If so, a null-pointer dereference 
-will occur:
-508:    pr_debug("CORE[%s] - Added Network Portal: %pISpc,%hu on %s\n", 
-tpg->tpg_tiqn->tiqn, ...)
+> +++ b/Documentation/ABI/testing/sysfs-block
+> @@ -316,3 +316,19 @@ Description:
+>  		does not complete in this time then the block driver timeout
+>  		handler is invoked. That timeout handler can decide to retry
+>  		the request, to fail it or to start a device recovery strategy.
+> +
+> +What:		/sys/block/<disk>/led
+> +Date:		August 2021
+> +Contact:	Ian Pilcher <arequipeno@gmail.com>
+> +Description:
+> +		Set the LED associated with this block device (or show available
+> +		LEDs and the currently selected LED, if any).
+> +
+> +		Reading the attribute will display the available LEDs (LEDs that
+> +		are associated with the blkdev LED trigger).  The currently
+> +		selected LED is enclosed in square brackets.  To clear the
+> +		device's LED association write 'none' (without the quotes) or
+> +		an empty string/line to the attribute.
+> +
+> +		See Documentation/ABI/testing/sysfs-class-led-trigger-blkdev and
+> +		Documentation/block/blk-ledtrig.rst.)
 
-I am not quite sure whether this possible null-pointer dereference is 
-real and how to fix it if it is real.
-Any feedback would be appreciated, thanks!
+I have to agree with Marek / Pali -- this is very strange interface.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-Best wishes,
-Tuo Li
+--k+w/mQv8wyuph6w0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmESg88ACgkQMOfwapXb+vJV0gCdGqeHkXkz9qAl+6lcbIQnxYAJ
+liUAoIIpKKVWZ9SEjYxGWwA0VjQRZqWk
+=I/wx
+-----END PGP SIGNATURE-----
+
+--k+w/mQv8wyuph6w0--
