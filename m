@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39723E848C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30CB3E8490
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhHJUst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:48:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44240 "EHLO mail.kernel.org"
+        id S233772AbhHJUs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:48:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230181AbhHJUsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231705AbhHJUsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 16:48:47 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4471361058;
+        by mail.kernel.org (Postfix) with ESMTPSA id 54BA16108F;
         Tue, 10 Aug 2021 20:48:25 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mDYfg-003hAH-6e; Tue, 10 Aug 2021 16:48:24 -0400
+        id 1mDYfg-003hAK-7R; Tue, 10 Aug 2021 16:48:24 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5/9] libtracefs: Add API tracefs_list_dup()
-Date:   Tue, 10 Aug 2021 16:48:14 -0400
-Message-Id: <20210810204818.880714-6-rostedt@goodmis.org>
+Subject: [PATCH 6/9] libtracefs: Add APIs tracefs_hist_data_keys/value_names()
+Date:   Tue, 10 Aug 2021 16:48:15 -0400
+Message-Id: <20210810204818.880714-7-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210810204818.880714-1-rostedt@goodmis.org>
 References: <20210810204818.880714-1-rostedt@goodmis.org>
@@ -42,60 +42,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add an API tracefs_list_dup() that will duplicate an existing list.
+Add the APIs
+
+  tracefs_hist_data_key_names()
+  tracefs_hist_data_value_names()
+
+To get the names of the keys and values respectively.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h   |  1 +
- src/tracefs-utils.c | 26 ++++++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ include/tracefs.h       |  3 +++
+ src/tracefs-hist-data.c | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index f1e4ffa0d65f..6fb66c44afc7 100644
+index 6fb66c44afc7..7aa6a3e5673a 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -67,6 +67,7 @@ void tracefs_list_free(char **list);
- char **tracefs_list_add(char **list, const char *string);
- int tracefs_list_size(char **list);
- int tracefs_list_pop(char **list);
-+char **tracefs_list_dup(char **list);
+@@ -428,6 +428,9 @@ struct tracefs_hist_data **tracefs_hist_data_read(struct tracefs_instance *insta
+ void tracefs_hist_data_free(struct tracefs_hist_data *hdata);
+ void tracefs_hist_data_free_list(struct tracefs_hist_data **hdata_list);
  
- /**
-  * tracefs_trace_on_get_fd - Get a file descriptor of "tracing_on" in given instance
-diff --git a/src/tracefs-utils.c b/src/tracefs-utils.c
-index 63bb413298fe..8c92d6c54ab1 100644
---- a/src/tracefs-utils.c
-+++ b/src/tracefs-utils.c
-@@ -489,3 +489,29 @@ int tracefs_list_size(char **list)
- 	list--;
- 	return (int)*(unsigned long *)list;
++char **tracefs_hist_data_key_names(struct tracefs_hist_data *hdata);
++char **tracefs_hist_data_value_names(struct tracefs_hist_data *hdata);
++
+ struct tracefs_synth;
+ 
+ /*
+diff --git a/src/tracefs-hist-data.c b/src/tracefs-hist-data.c
+index ab1ae824f59b..c93c27453255 100644
+--- a/src/tracefs-hist-data.c
++++ b/src/tracefs-hist-data.c
+@@ -1093,3 +1093,33 @@ tracefs_hist_data_read(struct tracefs_instance *instance,
+ 	return NULL;
  }
+ 
++/**
++ * tracefs_hist_data_key_names - return key names
++ * @hdata: The hist data descriptor to get the names from
++ *
++ * Returns a copy of the key names of the keys. The list of keys
++ * will be in the same order as the keys are listed.
++ * Returns NULL on error.
++ *
++ * Must be freed with tracefs_list_free();
++ */
++char **tracefs_hist_data_key_names(struct tracefs_hist_data *hdata)
++{
++	return tracefs_list_dup(hdata->key_names);
++}
 +
 +/**
-+ * tracefs_list_dup - create a duplicate list
-+ * @list: The list to duplicate
++ * tracefs_hist_data_value_names - return value names
++ * @hdata: The hist data descriptor to get the names from
 + *
-+ * Allocates a new list that can be modified and freed separately.
++ * Returns a copy of the value names of the keys. The list of keys
++ * will be in the same order as the values are listed.
++ * Returns NULL on error.
 + *
-+ * Returns a new allocated list that must be freed with
-+ * tracefs_list_free(), or NULL on error.
++ * Must be freed with tracefs_list_free();
 + */
-+char **tracefs_list_dup(char **list)
++char **tracefs_hist_data_value_names(struct tracefs_hist_data *hdata)
 +{
-+	char **new = NULL;
-+	char **tmp;
-+	int i;
-+
-+	for (i = 0; list[i]; i++) {
-+		tmp = tracefs_list_add(new, list[i]);
-+		if (!tmp) {
-+			free(new);
-+			return NULL;
-+		}
-+		new = tmp;
-+	}
-+	return new;
++	return tracefs_list_dup(hdata->value_names);
 +}
++
 -- 
 2.30.2
 
