@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385613E5C87
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F67E3E5C92
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241734AbhHJOIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:08:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238554AbhHJOIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:08:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F87A60F41;
-        Tue, 10 Aug 2021 14:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628604469;
-        bh=fuZaM92NMwEjwHL4v3wyfLCUEczcXE1BVry4drvjgIY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eW02T+ZPCQk0NsOoyktfO5bMfoj75bUx9IhvAD4fzIO8RWh/kaztN3D4L41WrJUt4
-         TdRDBaxbWcRGKFiLdyYSqUHiYtrkdDjZ7fsUpz4g2c761oH3DgPEFNb2zhfwPwpt8Q
-         MtIFwGWvX/gHQv4AS3Rqjr1REqQLT+cPwSff0D6TD/hRq94oRonbEIudTsxkTJekCk
-         IXMQySE/gKtM7NDKIGXnQfifcrIa5b7/cQzT3OvJq4lDVHMD7utSqgUBIbHsVfyOBC
-         misMURDErIbit1Sau0xB1JBvZB97hdJZfHSgSzhvgE/JQ9wjcH3dKpDy30S0OiI1pR
-         CRYqDMlhLdtPQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 75BEC403F2; Tue, 10 Aug 2021 11:07:46 -0300 (-03)
-Date:   Tue, 10 Aug 2021 11:07:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf bench: add benchmark for evlist open/close
- operations
-Message-ID: <YRKIMtH0mgKtFGPH@kernel.org>
-References: <20210809201101.277594-1-rickyman7@gmail.com>
- <YRGOwx3xlPRxNAXM@kernel.org>
- <YRGP3DR8f6ZEvn/P@kernel.org>
- <aa2e93cdaf636b0cd9df05d759661363b2a59d3f.camel@gmail.com>
- <YRKHKiHMSaYZWwQv@kernel.org>
+        id S242128AbhHJOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241805AbhHJOJb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:09:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174E2C0613D3;
+        Tue, 10 Aug 2021 07:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5o2X/hCLV7cpukH2oc7YrdoxcLinZ80KA7F0XExRIIQ=; b=G7JNfDn2E3Yqko3QMw5vmP2NW2
+        ioSwGdje9u+wA6M5Y0AlzbnP1x+YGPiFcjLq8UK0nhfFiuM9R3jdBoVvhn4td7tEUywlRmqE0QwUf
+        5OY2S869MiBiQMcecsZVtd9qtk4sotUTXTbKqw+1xVDaKrrsSOFhLboCKmfaJR8cMyf4/e1JtpkhM
+        by1+c+X6twREHyKgD2J1Lnul+zwZJDAUu1jgiyJhLBh4QyA0Y4SNJ0+G2J3sCjwRyRCnihFH0fq/v
+        KSrWIiphg7cUXidSSULbagNVzERZ9yvY4Kf44hNXeBZkPnadyyFp+LFYTbL99Ncw0QB3eBCC+wXqC
+        VSIWKBDw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDSQX-00CC2G-5a; Tue, 10 Aug 2021 14:08:27 +0000
+Date:   Tue, 10 Aug 2021 15:08:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Vishal Moola <vishal.moola@gmail.com>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] Page Cache Allowing Hard Interrupts
+Message-ID: <YRKIVZIxdirjg7Ih@casper.infradead.org>
+References: <20210730213630.44891-1-vishal.moola@gmail.com>
+ <YRI1oLdiueUbBVwb@infradead.org>
+ <YRJsiapS/M3BOH9D@casper.infradead.org>
+ <YRJyGMLAFKoB1qUQ@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRKHKiHMSaYZWwQv@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YRJyGMLAFKoB1qUQ@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 10, 2021 at 11:03:22AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Aug 10, 2021 at 12:31:55PM +0200, Riccardo Mancini escreveu:
-> > Unrelated to this small issue, I noticed I forgot to check the return of
-> > bench__create_evlist. Would you like me to send a v2 fixing both issues or are
-> > you able to apply this other small change yourself?
- 
-> Nah, as this is the HEAD right now in my local branch, I'll apply it
-> myself, thanks!
+On Tue, Aug 10, 2021 at 01:33:28PM +0100, Christoph Hellwig wrote:
+> On Tue, Aug 10, 2021 at 01:09:45PM +0100, Matthew Wilcox wrote:
+> > On Tue, Aug 10, 2021 at 09:15:28AM +0100, Christoph Hellwig wrote:
+> > > Stupid question, but where do we ever do page cache interaction from
+> > > soft irq context?
+> > 
+> > test_clear_page_writeback() happens in _some_ interrupt context (ie
+> > the io completion path).  We had been under the impression that it was
+> > always actually softirq context, and so this patch was safe.  However,
+> > it's now clear that some drivers are calling it from hardirq context.
+> > Writeback completions are clearly not latency sensitive and so can
+> > be delayed from hardirq to softirq context without any problem, so I
+> > think fixing this is just going to be a matter of tagging requests as
+> > "complete in softirq context" and ensuring that blk_mq_raise_softirq()
+> > is called for them.
+> > 
+> > Assuming that DIO write completions _are_ latency-sensitive, of course.
+> > Maybe all write completions could be run in softirqs.
+> 
+> I really don't really see any benefit in introducing softirqs into
+> the game.
 
-Also you forgot another check for this same function
-(bench__create_evlist()), before that loop. I'm fixing that as well.
- 
-> - Arnaldo
->  
-> > diff --git a/tools/perf/bench/evlist-open-close.c b/tools/perf/bench/evlist-open-close.c
-> > index 40bce06f5ca7bef3..f0b9c330f34f2984 100644
-> > --- a/tools/perf/bench/evlist-open-close.c
-> > +++ b/tools/perf/bench/evlist-open-close.c
-> > @@ -168,7 +168,11 @@ static int bench_evlist_open_close__run(char *evstr)
-> >  
-> >         for (i = 0; i < iterations; i++) {
-> >                 pr_debug("Started iteration %d\n", i);
-> > +
-> >                 evlist = bench__create_evlist(evstr);
-> > +               if (!evlist)
-> > +                       return -ENOMEM;
-> > +
-> >                 gettimeofday(&start, NULL);
-> >                 err = bench__do_evlist_open_close(evlist);
+The benefit is not having to disable interrupts while manipulating
+the page cache, eg delete_from_page_cache_batch().
+
+> If we want to simplify the locking and do not care too much
+> about latency, we should just defer to workqueue/thread context.
+
+It's not a bad idea.  I thought BH would be the better place for it
+because it wouldn't require scheduling in a task.  If we are going to
+schedule in a task though, can we make it the task which submitted the I/O
+(assuming it still exists), or do we not have the infrastructure for that?
+
+> For example XFS already does that for all writeback except for pure
+> overwrites.  Those OTOH can be latency critical for O_SYNC writes, but
+> you're apparently looking into that already.
+
+To my mind if you've asked for O_SYNC, you've asked for bad performance.
+
+The writethrough improvement that I'm working on skips dirtying the page,
+but still marks the page as writeback so that we don't submit overlapping
+writes to the device.  The O_SYNC write will wait for the writeback to
+finish, so it'll still be delayed by one additional scheduling event
+... unless we run the write completion in the context of this task.
