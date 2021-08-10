@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74B43E7E6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3B13E805A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhHJRdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:33:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33646 "EHLO mail.kernel.org"
+        id S234177AbhHJRsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:48:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231851AbhHJRcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54FA260F56;
-        Tue, 10 Aug 2021 17:32:28 +0000 (UTC)
+        id S234811AbhHJRpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:45:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5706461242;
+        Tue, 10 Aug 2021 17:40:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616748;
-        bh=KbIjo1CgdEAh2k2GBQcCXB+34k/yUSrGN+77x1fi/0o=;
+        s=korg; t=1628617202;
+        bh=fKoEumaFyE1JrCXckW1t74vFD5tL6y967iFPZNEBLBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QHKVEumfC9nuf6aIPzZ0B9AHLkTDlaWShFTIIQNRSf1ckobpyOB9tTF8mOQztfS4k
-         JjovqpN8Y/zshb23HexIYEviyCLXZL4MyZerIA3o21HYsm/y+Q60r7/ZR0i8Pwtnmm
-         yJr2DdEGjVYmxa0acUao2KpZgljfM49mMo51Huns=
+        b=ldWQhvuZf8w3Pkfg4FeioCAptfcuzE44raZJfERsVpG2ue5gHcyuuy57LBGwma1Oc
+         wWoo+vK1euUIpXgnoNBlURaImZkwOR6VMpi0cRgNJjNWlwM7rnYPOgrcgZlo4lJVTP
+         Ohkgx9v7TdDmM4Zmnf3RNzB5317v3SCCAqLITbxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Devaev <mdevaev@gmail.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Subject: [PATCH 4.19 29/54] usb: gadget: f_hid: fixed NULL pointer dereference
-Date:   Tue, 10 Aug 2021 19:30:23 +0200
-Message-Id: <20210810172945.137030436@linuxfoundation.org>
+        stable@vger.kernel.org, Filip Schauer <filip@mg6.at>
+Subject: [PATCH 5.10 090/135] drivers core: Fix oops when driver probe fails
+Date:   Tue, 10 Aug 2021 19:30:24 +0200
+Message-Id: <20210810172958.822424579@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,79 +38,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Filip Schauer <filip@mg6.at>
 
-commit 2867652e4766360adf14dfda3832455e04964f2a upstream.
+commit 4d1014c1816c0395eca5d1d480f196a4c63119d0 upstream.
 
-Disconnecting and reconnecting the USB cable can lead to crashes
-and a variety of kernel log spam.
+dma_range_map is freed to early, which might cause an oops when
+a driver probe fails.
+ Call trace:
+  is_free_buddy_page+0xe4/0x1d4
+  __free_pages+0x2c/0x88
+  dma_free_contiguous+0x64/0x80
+  dma_direct_free+0x38/0xb4
+  dma_free_attrs+0x88/0xa0
+  dmam_release+0x28/0x34
+  release_nodes+0x78/0x8c
+  devres_release_all+0xa8/0x110
+  really_probe+0x118/0x2d0
+  __driver_probe_device+0xc8/0xe0
+  driver_probe_device+0x54/0xec
+  __driver_attach+0xe0/0xf0
+  bus_for_each_dev+0x7c/0xc8
+  driver_attach+0x30/0x3c
+  bus_add_driver+0x17c/0x1c4
+  driver_register+0xc0/0xf8
+  __platform_driver_register+0x34/0x40
+  ...
 
-The problem was found and reproduced on the Raspberry Pi [1]
-and the original fix was created in Raspberry's own fork [2].
+This issue is introduced by commit d0243bbd5dd3 ("drivers core:
+Free dma_range_map when driver probe failed"). It frees
+dma_range_map before the call to devres_release_all, which is too
+early. The solution is to free dma_range_map only after
+devres_release_all.
 
-Link: https://github.com/raspberrypi/linux/issues/3870 [1]
-Link: https://github.com/raspberrypi/linux/commit/a6e47d5f4efbd2ea6a0b6565cd2f9b7bb217ded5 [2]
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe failed")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210723155928.210019-1-mdevaev@gmail.com
+Signed-off-by: Filip Schauer <filip@mg6.at>
+Link: https://lore.kernel.org/r/20210727112311.GA7645@DESKTOP-E8BN1B0.localdomain
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_hid.c |   26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ drivers/base/dd.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -345,6 +345,11 @@ static ssize_t f_hidg_write(struct file
- 
- 	spin_lock_irqsave(&hidg->write_spinlock, flags);
- 
-+	if (!hidg->req) {
-+		spin_unlock_irqrestore(&hidg->write_spinlock, flags);
-+		return -ESHUTDOWN;
-+	}
-+
- #define WRITE_COND (!hidg->write_pending)
- try_again:
- 	/* write queue */
-@@ -365,8 +370,14 @@ try_again:
- 	count  = min_t(unsigned, count, hidg->report_length);
- 
- 	spin_unlock_irqrestore(&hidg->write_spinlock, flags);
--	status = copy_from_user(req->buf, buffer, count);
- 
-+	if (!req) {
-+		ERROR(hidg->func.config->cdev, "hidg->req is NULL\n");
-+		status = -ESHUTDOWN;
-+		goto release_write_pending;
-+	}
-+
-+	status = copy_from_user(req->buf, buffer, count);
- 	if (status != 0) {
- 		ERROR(hidg->func.config->cdev,
- 			"copy_from_user error\n");
-@@ -394,14 +405,17 @@ try_again:
- 
- 	spin_unlock_irqrestore(&hidg->write_spinlock, flags);
- 
-+	if (!hidg->in_ep->enabled) {
-+		ERROR(hidg->func.config->cdev, "in_ep is disabled\n");
-+		status = -ESHUTDOWN;
-+		goto release_write_pending;
-+	}
-+
- 	status = usb_ep_queue(hidg->in_ep, req, GFP_ATOMIC);
--	if (status < 0) {
--		ERROR(hidg->func.config->cdev,
--			"usb_ep_queue error on int endpoint %zd\n", status);
-+	if (status < 0)
- 		goto release_write_pending;
--	} else {
-+	else
- 		status = count;
--	}
- 
- 	return status;
- release_write_pending:
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -617,8 +617,6 @@ dev_groups_failed:
+ 	else if (drv->remove)
+ 		drv->remove(dev);
+ probe_failed:
+-	kfree(dev->dma_range_map);
+-	dev->dma_range_map = NULL;
+ 	if (dev->bus)
+ 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
+ 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
+@@ -626,6 +624,8 @@ pinctrl_bind_failed:
+ 	device_links_no_driver(dev);
+ 	devres_release_all(dev);
+ 	arch_teardown_dma_ops(dev);
++	kfree(dev->dma_range_map);
++	dev->dma_range_map = NULL;
+ 	driver_sysfs_remove(dev);
+ 	dev->driver = NULL;
+ 	dev_set_drvdata(dev, NULL);
 
 
