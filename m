@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6003E84E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FFE3E84E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbhHJVAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:00:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55339 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231894AbhHJVAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:00:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628629185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y1Vp/6OiBnakWJeS36BEKgxnmfXJ4RY91EtLxgXSPUk=;
-        b=V2jKgkzkMSR7Sw9LD0JFh5iXvQge3Q/o0bQpEv1uv1C0D9lwio/jXRZ9jaNP/X4baz/p+k
-        Zg5O83s/zWkDJ7bekpXZIOxcw7M+upjaElH44FKrE/VsjzsmbM5GuWdbaf8dpOEL++tcqk
-        cbGm5wGaScN+aWwVgH8lqvvEALYgTcY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-brpgYihDMKqjSicpROKpMA-1; Tue, 10 Aug 2021 16:59:41 -0400
-X-MC-Unique: brpgYihDMKqjSicpROKpMA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEBC587D54B;
-        Tue, 10 Aug 2021 20:59:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C52960C05;
-        Tue, 10 Aug 2021 20:59:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-60-willy@infradead.org>
-References: <20210715033704.692967-60-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 059/138] mm/rmap: Add folio_mkclean()
+        id S233726AbhHJVBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:01:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231894AbhHJVBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:01:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 302BF60724;
+        Tue, 10 Aug 2021 21:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628629247;
+        bh=FdKF9smxg3E0EXaS1euGXqveQmfFkFj6bAwW41jyB7Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fn7i0KGIVCB3YraPlcYneUkXwWqtprEvKtloDXVOcsbGA3gNGWvP/EZ3uRwvFHeH0
+         6Eew/a7jiA+nY6XDazIRXFC9TaCmFoNrbO0Q+0hetU3vM9ceIFZWNw1/wxkV6eEE+S
+         GDNUWY8EvALgnPt4vgWvWs2ynrVFBHBPq25XRHiSpP5LNA4uQJwvSho1enV0Vih+7V
+         HVb76wIOKHCJbkJpR8az7lV/F85yhBB9KQcZs9+DgyvMWk7dEa3n6hKy/L+PLMC3At
+         w1zAfd9BRpbtB3EY52oYwPHIjIS2UgMmTBa53yXPU65kn/hrcUTp0l/sCDRNNAEffd
+         hC/gKaDJ/1CDg==
+Date:   Tue, 10 Aug 2021 23:00:44 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Hu Haowen <src.res@email.cn>
+Cc:     linux-i2c@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: i2c: add i2c-sysfs into index
+Message-ID: <YRLo/PlLmFgW+Doh@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Hu Haowen <src.res@email.cn>, linux-i2c@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210728155346.8941-1-src.res@email.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1812064.1628629178.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 21:59:38 +0100
-Message-ID: <1812065.1628629178@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4VIhR7DobTcl6BkU"
+Content-Disposition: inline
+In-Reply-To: <20210728155346.8941-1-src.res@email.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-> Transform page_mkclean() into folio_mkclean() and add a page_mkclean()
-> wrapper around folio_mkclean().
-> 
-> folio_mkclean is 15 bytes smaller than page_mkclean, but the kernel
-> is enlarged by 33 bytes due to inlining page_folio() into each caller.
-> This will go away once the callers are converted to use folio_mkclean().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+--4VIhR7DobTcl6BkU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+On Wed, Jul 28, 2021 at 11:53:46PM +0800, Hu Haowen wrote:
+> Append i2c-sysfs to toctree in order to get rid of building warnings.
+>=20
+> Signed-off-by: Hu Haowen <src.res@email.cn>
 
+Added Fixes-tag (please provide one next time) and applied to
+for-current, thanks!
+
+
+--4VIhR7DobTcl6BkU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmES6PwACgkQFA3kzBSg
+KbaO2xAAgFMpO9qWG4VvRHOpeBMwJ1r+lhgJhE3TBneQzbC4y8gYBaqBh/FGtK8r
+VD0/PBdwm7BpXpx6zzm0HJIDwNHvB74rh9LV9lbqbzm+7fXYrxa9hB69Yex6kt7p
+xGkZ4yw/j3KRkU0ThEXa6KS818Z5nXa9i6jrBKTZvy/MCqRylY2VEx4MBKgSJ0y3
+R3cKNTMzI71lD+bWBQqO0pf1uurf426AXE+ARqpmbMdDoRYQDlLZD+ApFDHSmy4M
+IEiCSuRC5vxvWzeJngMv658LhCQRQprbjzZFM2Oj+xcZfFTOb0tTfgEkr3GX5KCU
+r3hSTfHTVDGaub6WE7JdlUQy6dViBkB3/1sMB3azUIKgEgSuO194Asg3SqmCZRs8
+aCqys5MbxnfJ2BfeQRJKbN3W1q/wDFpO7UR/KYpugLnEW8Fe4lfM9OIf6uyEfmN1
+yr6Ofq/XBepmF+f1Idb5mxvmegs2GTcYmCpnHBJ8DtALFQIKtk8JzBSSnr8GUVLV
+opQ6aI39scoN5VBmHAwWXP5yjE+PB+136kacbGrA0g4pnqc+W2cWCGOjYJ+MDyb5
+hpRhO4nPXtS0tNYuos6gqo/Af2KKnd8RyuYR0S+bAoZVY+C0pVwSn8SG9WlJ8bmC
+qunAMm26LdtGqFhPLue7FMSeaWQxu7M6cY0VIEvbLhkOKW7I/Ec=
+=ZhaI
+-----END PGP SIGNATURE-----
+
+--4VIhR7DobTcl6BkU--
