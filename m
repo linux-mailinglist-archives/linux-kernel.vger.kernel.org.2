@@ -2,259 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0977C3E5A1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED673E5A21
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240674AbhHJMkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        id S240680AbhHJMkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238837AbhHJMjv (ORCPT
+        with ESMTP id S240681AbhHJMkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:39:51 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E41C0613D3;
-        Tue, 10 Aug 2021 05:39:28 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id b11so9928179wrx.6;
-        Tue, 10 Aug 2021 05:39:28 -0700 (PDT)
+        Tue, 10 Aug 2021 08:40:11 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0CAC061798;
+        Tue, 10 Aug 2021 05:39:49 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d1so20815367pll.1;
+        Tue, 10 Aug 2021 05:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZSRzoSA2t8YRZ5fOx5Fbc4xPbuPuUn7naOlSon+TzSs=;
-        b=lWFwkmvNI3RaxR9qgSL8YegqndgVbubiGzxNg+N1f7nkcNmiJPERvkhcmBcqPpMYjj
-         TtEIaURzPoeg5fvcwsHwujIHtMJipMHSMMpruHESKm2erGSPHcLxV1HPC0B7BMilRop4
-         BQUIFWa1Jm4HZg9YAh7/5tKaHxyk+sdq+Xm7q1MRoA2KB3AVlAIwmvXs1tnwxrd0OXaG
-         7CDfltKti2dnc6oARCe+bejx/fzw9bvvoPKgASTdOhvkSBhGGSNRz6GccR7yPNj/LQ75
-         9J/oN995B/KFgWc2n5R3zSwFc8Mq4cWXWqH7aLdAG1yFMlvodXVPePj+fc7qXwI//dZD
-         UdPg==
+        bh=9I0CnBRBS69h5ISxkRVZTJz/oVJGT//9peAin9G2oR0=;
+        b=a5N2tYoMh+j84y+bIgz6oG01D0K5QDRWLaZg+31ztimX+GfRHjZQ4sQRrB4p6SLitX
+         V14TEE1gTejVfsq+PrL8uLIUrThO8ZrC1MJaRfl4d14PtPvooc6U4SvcOrj3i3Au0kbp
+         2aeH5rSg3XSlATKMIGZv0Ttpeotyjb27motXWF8ldnl2GeHEiX2GQhUGwcztpMX1GjH7
+         kGsQhdNhUXqny360/iN+y4B9/j0m5yvO0Af/32a9i+KthjiHgAlKIe+SHUMArSizkcdD
+         X/2q9P3pI2IqNV8oKdZxNg8mewu7YEDGPwVXuNiqQO6HHSmjWtrZjwwQxOGAxgO50b3F
+         Ojrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZSRzoSA2t8YRZ5fOx5Fbc4xPbuPuUn7naOlSon+TzSs=;
-        b=TilHSuhzYk2EiOFemY/X07c+towgElgP2Eq+foH1qoLz9z3vCmsecbIa9+ls+neNsO
-         yYTBDETNm64ydla+fJaWTC1IT8Ovs8OQSX2/4qc/UvhC1nvqSWTXEfAp71lvawX4iDA7
-         fd22mk/g9ovPvNpdmdWt3GKbKX5fu4z8UFK70ZqYo2VXQ4oTR6tL4ddyDCadlSPfHF7V
-         OKBLtyhSVRDv+r29Dxd2yN/G/KFdZpB2eZTPXlgPH7HGbv4o+52nXl7QcSlNH9FrJfcz
-         GRXlOj/LXkHnx2+61DtTJ/qYLmXB54IVkv76gTu+dqjrZnGvcKryK7GaK8y29zuQMQx7
-         7ckA==
-X-Gm-Message-State: AOAM533S/1gp1aZJneN6ZDA0Go8b2tYQG3GoNpcnLYkrSlGVYGURCfWa
-        +DMoJ5H3dcPSdsx+o8JX8WXirjdAuA4v3UGEPHY=
-X-Google-Smtp-Source: ABdhPJycm2GkV6tG6c/VlZ4zPJikCSjwOWConK+i3Dja3Nyxa1Lzm0qFgRnV2GfpYZi6LSfiBF6TniOly6cBKI8kSUg=
-X-Received: by 2002:adf:ef4b:: with SMTP id c11mr30465219wrp.35.1628599167553;
- Tue, 10 Aug 2021 05:39:27 -0700 (PDT)
+        bh=9I0CnBRBS69h5ISxkRVZTJz/oVJGT//9peAin9G2oR0=;
+        b=pk4GfiEYWIMxyVZAY5/xkc0ln8nSbNOR1m/68jYdt4dkSnKX8QScrTkXgNiPyN7oiZ
+         qEq3L+bu1Jx0Zj+OEUxHQjd1VYMgeEnJXusMxng2oEFXc5b30KxQh1Kq2uVve3ShuG1c
+         qaDD2T0rvaFZucaZrP+8DTF7PAe8JWkf4iOXqmgo0IEuYRxIqeKKQDu5SDB7Q61f6+ji
+         gs0YYk2uO80JU+aXPnCvYYIYYiGWljlt8eOTJw/4ulbLHiBEbIVbRmb9mfR+lb9W5ieh
+         Pyf16XI9Zh/km83PaqEAXPsoBmrzR+hVN/srh++7FJEyUYPf4Bkc8ODmfraaAmdYdwTn
+         4OHw==
+X-Gm-Message-State: AOAM531FAzt2wTxZEBtqQ4o49PVHVvLF7HBLQWmqSy1XTWLcSn55UX1L
+        yh5sKnywobuwUgAYLF/5BKad/epFf4aUVKqkz5M=
+X-Google-Smtp-Source: ABdhPJxknJ/8yapgV7DOjdk/q25wwmvoANXzbC6kDa/PQf+uy3zUoNRhkS3S+e2JHbl0/P9EcODlDqlWmWx5mWKH2ls=
+X-Received: by 2002:a17:90a:604e:: with SMTP id h14mr1710147pjm.181.1628599188576;
+ Tue, 10 Aug 2021 05:39:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <6859503f7e3e6cd706bf01ef06f1cae8c0b0970b.1628449004.git.leonro@nvidia.com>
-In-Reply-To: <6859503f7e3e6cd706bf01ef06f1cae8c0b0970b.1628449004.git.leonro@nvidia.com>
-From:   Prabhakar Kushwaha <prabhakar.pkin@gmail.com>
-Date:   Tue, 10 Aug 2021 18:08:51 +0530
-Message-ID: <CAJ2QiJLJk73RDS_XwQ0FY0ODq9qXbmiEZ2Y8Fkz9vVheK4he8g@mail.gmail.com>
-Subject: Re: [PATCH net-next] devlink: Set device as early as possible
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Linu Cherian <lcherian@marvell.com>,
+References: <20210809080729.57029-1-puranjay12@gmail.com> <20210809080729.57029-3-puranjay12@gmail.com>
+ <20210809205141.193d24dc@jic23-huawei>
+In-Reply-To: <20210809205141.193d24dc@jic23-huawei>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 10 Aug 2021 15:39:11 +0300
+Message-ID: <CAHp75Ve=fnib8YzVH_5LySgQDiWCxNzsJYBBLtB68GrSOCT9SQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v9 2/2] iio: accel: Add driver support for ADXL355
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-omap@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Prabhakar Kushwaha <pkushwaha@marvell.com>,
-        Shai Malin <malin1024@gmail.com>,
-        Shai Malin <smalin@marvell.com>, rtoshniwal@marvell.com,
-        Omkar Kulkarni <okulkarni@marvell.com>
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        Darius <Darius.Berghe@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leon,
+On Mon, Aug 9, 2021 at 11:56 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Mon,  9 Aug 2021 13:37:29 +0530
+> Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> > ADXL355 is 3-axis MEMS Accelerometer. It offers low noise density,
+> > low 0g offset drift, low power with selectable measurement ranges.
+> > It also features programmable high-pass and low-pass filters.
+> >
+> > Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adxl354_adxl355.pdf
+> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>
+> One odd formatting thing below (tab where it should be a space)
+> that I can fix whilst applying if you don't have other reasons to
+> do a v10.
+>
+> Otherwise, looks good to me.
 
-On Mon, Aug 9, 2021 at 12:33 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> All kernel devlink implementations call to devlink_alloc() during
-> initialization routine for specific device which is used later as
-> a parent device for devlink_register().
->
-> Such late device assignment causes to the situation which requires us to
-> call to device_register() before setting other parameters, but that call
-> opens devlink to the world and makes accessible for the netlink users.
->
-> Any attempt to move devlink_register() to be the last call generates the
-> following error due to access to the devlink->dev pointer.
->
-> [    8.758862]  devlink_nl_param_fill+0x2e8/0xe50
-> [    8.760305]  devlink_param_notify+0x6d/0x180
-> [    8.760435]  __devlink_params_register+0x2f1/0x670
-> [    8.760558]  devlink_params_register+0x1e/0x20
->
-> The simple change of API to set devlink device in the devlink_alloc()
-> instead of devlink_register() fixes all this above and ensures that
-> prior to call to devlink_register() everything already set.
->
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  .../net/ethernet/broadcom/bnxt/bnxt_devlink.c |  9 ++++---
->  .../net/ethernet/cavium/liquidio/lio_main.c   |  5 ++--
->  .../freescale/dpaa2/dpaa2-eth-devlink.c       |  5 ++--
->  .../hisilicon/hns3/hns3pf/hclge_devlink.c     |  4 +--
->  .../hisilicon/hns3/hns3vf/hclgevf_devlink.c   |  7 ++---
->  .../net/ethernet/huawei/hinic/hinic_devlink.c |  8 +++---
->  .../net/ethernet/huawei/hinic/hinic_devlink.h |  4 +--
->  .../net/ethernet/huawei/hinic/hinic_hw_dev.c  |  2 +-
->  .../net/ethernet/huawei/hinic/hinic_main.c    |  2 +-
->  drivers/net/ethernet/intel/ice/ice_devlink.c  |  4 +--
->  .../marvell/octeontx2/af/rvu_devlink.c        |  5 ++--
->  .../marvell/prestera/prestera_devlink.c       |  7 ++---
->  .../marvell/prestera/prestera_devlink.h       |  2 +-
->  .../ethernet/marvell/prestera/prestera_main.c |  2 +-
->  drivers/net/ethernet/mellanox/mlx4/main.c     |  4 +--
->  .../net/ethernet/mellanox/mlx5/core/devlink.c |  9 ++++---
->  .../net/ethernet/mellanox/mlx5/core/devlink.h |  4 +--
->  .../net/ethernet/mellanox/mlx5/core/main.c    |  4 +--
->  .../mellanox/mlx5/core/sf/dev/driver.c        |  2 +-
->  drivers/net/ethernet/mellanox/mlxsw/core.c    |  5 ++--
->  drivers/net/ethernet/mscc/ocelot_vsc7514.c    |  5 ++--
->  drivers/net/ethernet/netronome/nfp/nfp_main.c |  2 +-
->  .../net/ethernet/netronome/nfp/nfp_net_main.c |  2 +-
->  .../ethernet/pensando/ionic/ionic_devlink.c   |  4 +--
->  drivers/net/ethernet/qlogic/qed/qed_devlink.c |  5 ++--
->  drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  4 +--
->  drivers/net/ethernet/ti/cpsw_new.c            |  4 +--
->  drivers/net/netdevsim/dev.c                   |  4 +--
->  drivers/ptp/ptp_ocp.c                         | 26 +++----------------
->  drivers/staging/qlge/qlge_main.c              |  5 ++--
->  include/net/devlink.h                         | 10 ++++---
->  net/core/devlink.c                            | 15 +++++------
->  net/dsa/dsa2.c                                |  5 ++--
->  33 files changed, 91 insertions(+), 94 deletions(-)
->
+I just reviewed a previous "v9" and I have quite a few comments I
+think can be addressed.
 
-<snip>
-
->
-> diff --git a/include/net/devlink.h b/include/net/devlink.h
-> index ccbfb3a844aa..0236c77f2fd0 100644
-> --- a/include/net/devlink.h
-> +++ b/include/net/devlink.h
-> @@ -1544,13 +1544,15 @@ struct net *devlink_net(const struct devlink *devlink);
->   * Drivers that operate on real HW must use devlink_alloc() instead.
->   */
->  struct devlink *devlink_alloc_ns(const struct devlink_ops *ops,
-> -                                size_t priv_size, struct net *net);
-> +                                size_t priv_size, struct net *net,
-> +                                struct device *dev);
->  static inline struct devlink *devlink_alloc(const struct devlink_ops *ops,
-> -                                           size_t priv_size)
-> +                                           size_t priv_size,
-> +                                           struct device *dev)
->  {
-> -       return devlink_alloc_ns(ops, priv_size, &init_net);
-> +       return devlink_alloc_ns(ops, priv_size, &init_net, dev);
->  }
-> -int devlink_register(struct devlink *devlink, struct device *dev);
-> +int devlink_register(struct devlink *devlink);
->  void devlink_unregister(struct devlink *devlink);
->  void devlink_reload_enable(struct devlink *devlink);
->  void devlink_reload_disable(struct devlink *devlink);
-> diff --git a/net/core/devlink.c b/net/core/devlink.c
-> index ee95eee8d0ed..d3b16dd9f64e 100644
-> --- a/net/core/devlink.c
-> +++ b/net/core/devlink.c
-> @@ -8768,24 +8768,26 @@ static bool devlink_reload_actions_valid(const struct devlink_ops *ops)
->   *     @ops: ops
->   *     @priv_size: size of user private data
->   *     @net: net namespace
-> + *     @dev: parent device
->   *
->   *     Allocate new devlink instance resources, including devlink index
->   *     and name.
->   */
->  struct devlink *devlink_alloc_ns(const struct devlink_ops *ops,
-> -                                size_t priv_size, struct net *net)
-> +                                size_t priv_size, struct net *net,
-> +                                struct device *dev)
->  {
->         struct devlink *devlink;
->
-> -       if (WARN_ON(!ops))
-> -               return NULL;
-> -
-> +       WARN_ON(!ops || !dev);
->         if (!devlink_reload_actions_valid(ops))
->                 return NULL;
->
->         devlink = kzalloc(sizeof(*devlink) + priv_size, GFP_KERNEL);
->         if (!devlink)
->                 return NULL;
-> +
-> +       devlink->dev = dev;
->         devlink->ops = ops;
->         xa_init_flags(&devlink->snapshot_ids, XA_FLAGS_ALLOC);
->         write_pnet(&devlink->_net, net);
-> @@ -8810,12 +8812,9 @@ EXPORT_SYMBOL_GPL(devlink_alloc_ns);
->   *     devlink_register - Register devlink instance
->   *
->   *     @devlink: devlink
-> - *     @dev: parent device
->   */
-
-This patch is converting devlink_alloc() to devlink_alloc_register().
-
-There are 2 APIs: devlink_alloc() and devlink_register().
-Both APIs can be used in a scenario,
-              Where devlink_alloc() can be done by code written around
-one struct dev and used by another struct dev.
-or
-This scenario is not even a valid scenario?
-
-> -int devlink_register(struct devlink *devlink, struct device *dev)
-> +int devlink_register(struct devlink *devlink)
->  {
-> -       WARN_ON(devlink->dev);
-> -       devlink->dev = dev;
->         mutex_lock(&devlink_mutex);
->         list_add_tail(&devlink->list, &devlink_list);
->         devlink_notify(devlink, DEVLINK_CMD_NEW);
-
-Considering device registration has been moved to devlink_alloc().
-Can the remaining code of devlink_register() be also moved in devlink_alloc()?
-
---pk
+-- 
+With Best Regards,
+Andy Shevchenko
