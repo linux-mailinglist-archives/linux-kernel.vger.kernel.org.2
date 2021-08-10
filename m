@@ -2,154 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCAC3E59E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451FE3E59F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240564AbhHJM0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240271AbhHJMZ6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:25:58 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA82C0613D3;
-        Tue, 10 Aug 2021 05:25:37 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so4045256pjb.3;
-        Tue, 10 Aug 2021 05:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KL/EO4tx0TgX51zBlp9/CRNMvpFlpR97J3ss4EOthZ4=;
-        b=Ku17ZPCf0pl6UbjbC+OHRNn+ACNBAQsVDchdBbllR6na7JEZVKeCa/0V92DnHTF4iu
-         ltIgOtvQG3ChEWFKQGS+ZCmo2X5SwNpdvKDzPZ6w0gyO5dvGz4wCAvWk5byjwwrwUcRC
-         5GXqtBHSfAX3q8Kpy97hYWlFUn1WyjEzTjjzbz4eIMRpPJ/3pBUQT0IeP+6w+Os/n12x
-         G3057aJUPMJ9DEYkyOBYuaABfzqFcCP+cS+hRvjLg1IN1XmahkLLELPX+1i2xq4zJ7oh
-         O3GJi71MYUghn8gllMllI0c3neKMWm0JGzHgfC7goYCwLqZcdx+lapv2oLk7A8os2kge
-         ueiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KL/EO4tx0TgX51zBlp9/CRNMvpFlpR97J3ss4EOthZ4=;
-        b=E0JZUG4q36mSikq5Ex9Cbju8Wb0OSef/1tbuDcBfHD4016KgnE1Elpgbx2k2kuAJok
-         nZ45W5Dn4EfSwngwo/aEx8WXEgJ0LSvf1wYuoNlzlc2dCrSTJ5jx8vt02t6GWFfg6LyT
-         +T4ww2nSo23VXQ05QrG5F2P0+LQ3xF2jMh8sjpaEDixld5RKYfCI1Zn6/spMvSkDujsr
-         ysr8RkpZ3iXAD25zEXvXZgPNzEYHVa1EFpUWZhSomQcgURvnXteqs3nxFxqwWP/aIi+y
-         Da2dyHx76YGd0Z93SW1q9LXduuL9he6Hxs5q213ZCccrSNJblWbTl8eM0ozBTOFuRMpU
-         Ztww==
-X-Gm-Message-State: AOAM5317Ehxq4bjpl4shswiO7XMrA51+ebpja3YVwFQRd+26RO0aPYW/
-        pnW+2OQvrIPGNIpS2keZqxw=
-X-Google-Smtp-Source: ABdhPJxebFlgnG0NPPgyE6OjM0zu1XGnchtqFN1rLMZ/uNLQlKSp1bY7DCu3pvqaqyd/DJ1LphsUcQ==
-X-Received: by 2002:a63:e116:: with SMTP id z22mr254278pgh.361.1628598336671;
-        Tue, 10 Aug 2021 05:25:36 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id c14sm27323452pgv.86.2021.08.10.05.25.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 05:25:35 -0700 (PDT)
-Subject: Re: [PATCH V3 03/13] x86/HV: Add new hvcall guest address host
- visibility support
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        sfr@canb.auug.org.au, saravanand@fb.com,
-        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210809175620.720923-1-ltykernel@gmail.com>
- <20210809175620.720923-4-ltykernel@gmail.com>
- <20210810110359.i4qodw7h36zrsicp@liuwe-devbox-debian-v2>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <3a888810-69cf-fa4d-b374-2053432e1e56@gmail.com>
-Date:   Tue, 10 Aug 2021 20:25:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210810110359.i4qodw7h36zrsicp@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S238649AbhHJMds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:33:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229764AbhHJMdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:33:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30FFC60EFF;
+        Tue, 10 Aug 2021 12:33:24 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDQwc-0043MH-7B; Tue, 10 Aug 2021 13:33:22 +0100
+Date:   Tue, 10 Aug 2021 13:33:21 +0100
+Message-ID: <875ywdbhta.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Tom Joseph <tjoseph@cadence.com>, <linux-omap@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH v2 2/3] PCI: j721e: Add PCI legacy interrupt support for J721E
+In-Reply-To: <7646c75e-29de-1edc-225c-57feeaa80118@ti.com>
+References: <20210804132912.30685-1-kishon@ti.com>
+        <20210804132912.30685-3-kishon@ti.com>
+        <87h7g5w8d8.wl-maz@kernel.org>
+        <c20be7ae-e4a7-c3ba-f1c9-e4ff2aae0a66@ti.com>
+        <87o8a7arew.wl-maz@kernel.org>
+        <7646c75e-29de-1edc-225c-57feeaa80118@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kishon@ti.com, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, tjoseph@cadence.com, linux-omap@vger.kernel.org, linux-pci@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lokeshvutla@ti.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/2021 7:03 PM, Wei Liu wrote:
->> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
->> index 0bb4d9ca7a55..b3683083208a 100644
->> --- a/arch/x86/hyperv/hv_init.c
->> +++ b/arch/x86/hyperv/hv_init.c
->> @@ -607,6 +607,12 @@ EXPORT_SYMBOL_GPL(hv_get_isolation_type);
->>   
->>   bool hv_is_isolation_supported(void)
->>   {
->> +	if (!cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
->> +		return 0;
-> Nit: false instead of 0.
+On Mon, 09 Aug 2021 15:58:38 +0100,
+Kishon Vijay Abraham I <kishon@ti.com> wrote:
 > 
+> Hi Marc,
+> 
+> On 09/08/21 3:09 pm, Marc Zyngier wrote:
+> > On Mon, 09 Aug 2021 05:50:10 +0100,
+> > Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> >>
+> >> Hi Marc,
+> >>
+> >> On 04/08/21 8:43 pm, Marc Zyngier wrote:
+> >>> On Wed, 04 Aug 2021 14:29:11 +0100,
+> >>> Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> >>>>
+> >>>> Add PCI legacy interrupt support for J721E. J721E has a single HW
+> >>>> interrupt line for all the four legacy interrupts INTA/INTB/INTC/INTD.
+> >>>> The HW interrupt line connected to GIC is a pulse interrupt whereas
+> >>>> the legacy interrupts by definition is level interrupt. In order to
+> >>>> provide level interrupt functionality to edge interrupt line, PCIe
+> >>>> in J721E has provided IRQ_EOI register.
+> >>>>
+> >>>> However due to Errata ID #i2094 ([1]), EOI feature is not enabled in HW
+> >>>> and only a single pulse interrupt will be generated for every
+> >>>> ASSERT_INTx/DEASSERT_INTx.
+> >>>
+> >>> So my earlier remark stands. If you get a single edge, how do you
+> >>> handle a level that is still high after having handled the interrupt
+> >>> on hardware that has this bug?
+> >>
+> >> Right, this hardware (J721E) has a bug but was fixed in J7200 (Patch 3/3
+> >> handles that).
+> > 
+> > But how do you make it work with J721E? Is it even worth supporting if
+> > (as I expect) it is unreliable?
+> 
+> I've seen at-least the NVMe devices triggers the interrupts again and
+> the data transfer completes. But I agree, this is unreliable.
 
-OK. Will fix in the next version.
+Then I don't think you should add INTx support for this system. It is
+bound to be a support burden, and will reflect badly on the whole
+platform. Focusing on J7200 is probably the best thing to do.
 
->> +int hv_mark_gpa_visibility(u16 count, const u64 pfn[],
->> +			   enum hv_mem_host_visibility visibility)
->> +{
->> +	struct hv_gpa_range_for_visibility **input_pcpu, *input;
->> +	u16 pages_processed;
->> +	u64 hv_status;
->> +	unsigned long flags;
->> +
->> +	/* no-op if partition isolation is not enabled */
->> +	if (!hv_is_isolation_supported())
->> +		return 0;
->> +
->> +	if (count > HV_MAX_MODIFY_GPA_REP_COUNT) {
->> +		pr_err("Hyper-V: GPA count:%d exceeds supported:%lu\n", count,
->> +			HV_MAX_MODIFY_GPA_REP_COUNT);
->> +		return -EINVAL;
->> +	}
->> +
->> +	local_irq_save(flags);
->> +	input_pcpu = (struct hv_gpa_range_for_visibility **)
->> +			this_cpu_ptr(hyperv_pcpu_input_arg);
->> +	input = *input_pcpu;
->> +	if (unlikely(!input)) {
->> +		local_irq_restore(flags);
->> +		return -EINVAL;
->> +	}
->> +
->> +	input->partition_id = HV_PARTITION_ID_SELF;
->> +	input->host_visibility = visibility;
->> +	input->reserved0 = 0;
->> +	input->reserved1 = 0;
->> +	memcpy((void *)input->gpa_page_list, pfn, count * sizeof(*pfn));
->> +	hv_status = hv_do_rep_hypercall(
->> +			HVCALL_MODIFY_SPARSE_GPA_PAGE_HOST_VISIBILITY, count,
->> +			0, input, &pages_processed);
->> +	local_irq_restore(flags);
->> +
->> +	if (!(hv_status & HV_HYPERCALL_RESULT_MASK))
->> +		return 0;
->> +
->> +	return hv_status & HV_HYPERCALL_RESULT_MASK;
-> Joseph introduced a few helper functions in 753ed9c95c37d. They will
-> make the code simpler.
+Thanks,
 
-OK. Will update in the next version.
+	M.
 
-Thanks.
+-- 
+Without deviation from the norm, progress is not possible.
