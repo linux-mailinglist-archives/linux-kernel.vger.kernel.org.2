@@ -2,82 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2443E5A74
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC483E5A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240957AbhHJMws convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 08:52:48 -0400
-Received: from muru.com ([72.249.23.125]:40850 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240885AbhHJMwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:52:40 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id DD17080CF;
-        Tue, 10 Aug 2021 12:52:37 +0000 (UTC)
-Date:   Tue, 10 Aug 2021 15:52:15 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     sashal@kernel.org, linux-omap@vger.kernel.org,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH] bus: ti-sysc: Fix gpt12 system timer issue with reserved
- status
-Message-ID: <YRJ2fyS6z1i/2W2e@atomide.com>
-References: <20210611060224.36769-1-tony@atomide.com>
- <20210810124006.GA25121@amd>
+        id S240802AbhHJMrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:47:46 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13261 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238711AbhHJMrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:47:40 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GkXlV6G2kz1CVJV;
+        Tue, 10 Aug 2021 20:47:02 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 10 Aug 2021 20:47:16 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
+ 2021 20:47:16 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>
+CC:     <Larry.Finger@lwfinger.net>, <phil@philpotter.co.uk>,
+        <gregkh@linuxfoundation.org>
+Subject: [PATCH -next] staging: r8188eu: Use GFP_ATOMIC under spin lock
+Date:   Tue, 10 Aug 2021 20:53:14 +0800
+Message-ID: <20210810125314.2182112-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210810124006.GA25121@amd>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Pavel Machek <pavel@denx.de> [210810 12:40]:
-> Hi!
-> 
-> I noticed the issue while reviewing stable kernels, as this is being
-> backported.
-> 
-> > Jarkko Nikula <jarkko.nikula@bitmer.com> reported that Beagleboard
-> > revision c2 stopped booting. Jarkko bisected the issue down to
-> > commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend
-> > and resume for am3 and am4").
-> > 
-> > Let's fix the issue by tagging system timers as reserved rather than
-> > ignoring them. And let's not probe any interconnect target module child
-> > devices for reserved modules.
-> 
-> +++ b/drivers/bus/ti-sysc.c
-> > @@ -3093,8 +3095,8 @@ static int sysc_probe(struct platform_device *pdev)
-> >  		return error;
-> >  
-> >  	error = sysc_check_active_timer(ddata);
-> > -	if (error)
-> > -		return error;
-> > +	if (error == -EBUSY)
-> > +		ddata->reserved = true;
-> >  
-> >  	error = sysc_get_clocks(ddata);
-> >  	if (error)
-> 
-> What is going on here? First, we silently ignore errors other than
-> EBUSY. Second, sysc_check_active_timer() can't return -EBUSY: it
-> returns either 0 or -ENXIO. (I checked 5.10-stable, mainline and
-> -next-20210806).
+A spin lock is taken in __nat25_db_network_insert() and
+update_BCNTIM() is called under spin lock so we should
+use GFP_ATOMIC in both place.
 
-Thanks for spotting it, looks like there's now a conflict with commit
-65fb73676112 ("bus: ti-sysc: suppress err msg for timers used as
-clockevent/source"). It seems we should also check for -ENXIO here
-too. And yeah it makes sens to return on other errors for sure.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/staging/r8188eu/core/rtw_ap.c     | 2 +-
+ drivers/staging/r8188eu/core/rtw_br_ext.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Regards,
+diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
+index ad37f1f02ee2..0586e4a4cbcb 100644
+--- a/drivers/staging/r8188eu/core/rtw_ap.c
++++ b/drivers/staging/r8188eu/core/rtw_ap.c
+@@ -98,7 +98,7 @@ static void update_BCNTIM(struct adapter *padapter)
+ 		}
+ 
+ 		if (remainder_ielen > 0) {
+-			pbackup_remainder_ie = kmalloc(remainder_ielen, GFP_KERNEL);
++			pbackup_remainder_ie = kmalloc(remainder_ielen, GFP_ATOMIC);
+ 			if (pbackup_remainder_ie && premainder_ie)
+ 				memcpy(pbackup_remainder_ie, premainder_ie, remainder_ielen);
+ 		}
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index 28f0452d6ccb..e3ff059ce224 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -394,7 +394,7 @@ static void __nat25_db_network_insert(struct adapter *priv,
+ 		}
+ 		db = db->next_hash;
+ 	}
+-	db = kmalloc(sizeof(*db), GFP_KERNEL);
++	db = kmalloc(sizeof(*db), GFP_ATOMIC);
+ 	if (!db) {
+ 		spin_unlock_bh(&priv->br_ext_lock);
+ 		return;
+-- 
+2.25.1
 
-Tony
