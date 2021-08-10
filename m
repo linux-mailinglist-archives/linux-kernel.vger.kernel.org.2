@@ -2,217 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D2A3E5A65
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D653E5A62
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240866AbhHJMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240849AbhHJMuv (ORCPT
+        id S240831AbhHJMuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:50:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24415 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240821AbhHJMuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:50:51 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B80DC0613D3;
-        Tue, 10 Aug 2021 05:50:29 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so4156225pjn.4;
-        Tue, 10 Aug 2021 05:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JJJ/oLxgNHBZEDzCWs8ydO8BoNOUNRkg/djNHlTwyhc=;
-        b=RqbzGJ2EljHTfkynsVwTFsWP+yfheO6qjj+QZRbcjoczrxOg9RjpyuhrAGPzGtxldK
-         ISmCzYtzvg7kSnEBnrAElNCOYoyzDeiyo4B9B0QvBMMp2/9QB/PiKYDzKMdqtfDk2uzY
-         thSb2TfQHmYRpFKn3KRf0e84AhVMg0Am8MMgtsVABnR2+tCBh5JIYgPVdUYSlbfx9y22
-         e9e+r31LgDJ/qB3dPLkWsP/DsLnLEV2ByUuOsvW69n5Ml5ffVch6GMlh/7WdjXM6L46X
-         4RzZt6+fC0KscmhuJiJ/rUgPOS3ImWVgByXyhUn/uOd4PGERKbV4xUUsAFuswSOOt7zi
-         2hAA==
+        Tue, 10 Aug 2021 08:50:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628599800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CrJJsbAkLGNgRBl30mWJDu4C6R0HhYbl466l69qWuNo=;
+        b=fx/xkC8VzAb1I4cFNXVRR77w4zZ6D+Tyq0yMfCPiv6t15C+qh7L/S3/bx07tMahujVr/Ej
+        e/TqYaOD4XMTjibxWGksm9tKhK9RJ8TdGR5KaOP7tmX0KfenMgX4wlXDJIHpqOZ2ehYCgj
+        QWkcNDJzSIC+sAicVaLTrJlxrIslKfU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-SfUCvnaPOyiV9Qt4y7GZyw-1; Tue, 10 Aug 2021 08:49:59 -0400
+X-MC-Unique: SfUCvnaPOyiV9Qt4y7GZyw-1
+Received: by mail-ed1-f70.google.com with SMTP id v20-20020aa7d9d40000b02903be68450bf3so2913769eds.23
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:49:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JJJ/oLxgNHBZEDzCWs8ydO8BoNOUNRkg/djNHlTwyhc=;
-        b=W38T4TB/vlWZhfnFir5rCa0ESFxpy0zCHmNwmofnRxpCMCu7wM/etLHbDOT7T8IWYS
-         xtbq3hRLM2612o2ml3lNF2FVy2LLP6fA/99+O7rEmpajY/HgoR9ZErZhhsDE6ejla4F2
-         xk8pzJxykOUGF7MVkVnGxALLo+MP8kQPdBa8DDTCIZyMyIEo06Zk/dgDHDBJSd/S4BkV
-         noMXqsKLkFChVtjQdrJncrnpKgCjUzSG0vtUvelVC6Rs/WFKe6ziXgVnA2m0JL+7Opes
-         Pr5ue4IdtY8XpbUU5xP1yhy00ByNZRpUhGNH9Ybjc7H19yJaX1rVp5ONgYlEgMw/9b9H
-         bejg==
-X-Gm-Message-State: AOAM532eBGwuSGGzqY77MmKnIHTUhWrOXKSYoqUztJBwrl1gNZ0rAINJ
-        aN89KLrVjdeRAsmd9U0ByvLvvNdPInjNsXwZSfc=
-X-Google-Smtp-Source: ABdhPJyuuMMo1FhyD5wrm8N87cZTcufEtPEUN1sR8i/+DEeTcGemBSlQjNrFRXZ63zQTjAcPKKqvbyiSSuL7ffC3mqM=
-X-Received: by 2002:a17:902:b713:b029:12b:b249:693f with SMTP id
- d19-20020a170902b713b029012bb249693fmr11178496pls.17.1628599828711; Tue, 10
- Aug 2021 05:50:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CrJJsbAkLGNgRBl30mWJDu4C6R0HhYbl466l69qWuNo=;
+        b=otbDRNysRE0GxeB5cy/ASDSh0mLacx6tL23rciHIKe2a8tOS25oXv7p8B1fNB0+EXb
+         bXz+Dlfrx6ADV4oLc9JcIl5yzU27hY1z96MZB3aRbqKzW4jDrOgxpqvLOGcH6S8TwFR+
+         p2fvBxEf5uG1ympb9AD+jDrLx2VkpYlF8TCf4CcYV/Dt7R59r+Oh3HbO4zTUM8ZnlZ9h
+         nInbf3s47mXz5Q/gd0OT/CcBmk1YehtQGiggcP7Ry+/d4kw5c3JIuOI/wHZgVpDWJVcS
+         DbQKcLJeuV67qX6AlBxf8BzWn3HOSf31/lFqYiAU6RCE2TfOjt8+Io26tAHCrCn+4Va9
+         bmsg==
+X-Gm-Message-State: AOAM532VeucIbYRTWJTvGJV4p01r5+43O7c6QOgsczNdkrKLmIdXxki+
+        8CtvChcU8tea1aw7qp0+l1FaRycC+WKHg/alkzncnj/6OqjYcd5jL/GbsQb/AfXP4bBubIqBuPe
+        C4Vu4zeqiAZBS3A9uybuzmQZM
+X-Received: by 2002:a17:906:3fd7:: with SMTP id k23mr10765204ejj.176.1628599797945;
+        Tue, 10 Aug 2021 05:49:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFLHW5kax97qIP8ewfDh6uPQkc89girs1g1d7+ETW92PSAenZdEwjl94gWbyXPERUKhx8NjQ==
+X-Received: by 2002:a17:906:3fd7:: with SMTP id k23mr10765194ejj.176.1628599797728;
+        Tue, 10 Aug 2021 05:49:57 -0700 (PDT)
+Received: from [192.168.10.118] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id cb4sm6818998ejb.72.2021.08.10.05.49.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 05:49:57 -0700 (PDT)
+Subject: Re: [PATCH V2 2/3] KVM: X86: Set the hardware DR6 only when
+ KVM_DEBUGREG_WONT_EXIT
+To:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <YRFdq8sNuXYpgemU@google.com>
+ <20210809174307.145263-1-jiangshanlai@gmail.com>
+ <20210809174307.145263-2-jiangshanlai@gmail.com>
+ <68ed0f5c-40f1-c240-4ad1-b435568cf753@redhat.com>
+ <45fef019-8bd9-2acb-bd53-1243a8a07c4e@linux.alibaba.com>
+ <f5967e16-3910-5604-7890-9a1741045ce8@redhat.com>
+ <7f86316b-5010-5250-4223-5a4d62f942c8@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ffbc18d0-aeca-ce0e-5bb8-612e7f5800d1@redhat.com>
+Date:   Tue, 10 Aug 2021 14:49:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210809075745.160042-1-dmugil2000@gmail.com> <20210809075745.160042-3-dmugil2000@gmail.com>
-In-Reply-To: <20210809075745.160042-3-dmugil2000@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 10 Aug 2021 15:49:52 +0300
-Message-ID: <CAHp75Ve=D1d5wFZgNseP=wGpteEkZHnmAi7j9ykKC+u_NrR5xw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: potentiometer: Add driver support for AD5110
-To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-Cc:     "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        Darius <Darius.Berghe@analog.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Slawomir Stepien <sst@poczta.fm>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <7f86316b-5010-5250-4223-5a4d62f942c8@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 10:59 AM Mugilraj Dhavachelvan
-<dmugil2000@gmail.com> wrote:
->
-> The AD5110/AD5112/AD5114 provide a nonvolatile solution
-> for 128-/64-/32-position adjustment applications, offering
-> guaranteed low resistor tolerance errors of =C2=B18% and up to
-> =C2=B16 mA current density.
+On 10/08/21 12:46, Lai Jiangshan wrote:
+> I'm OK with it. But I don't think the sketched idea would cause DR6 to 
+> be marked uselessly as dirty in SVM. It doesn't mark it dirty if the 
+> value is unchanged, and the value is always DR6_ACTIVE_LOW except when 
+> it just clears KVM_DEBUGREG_WONT_EXIT.
 
-...
+It would be marked dirty if it is not DR6_ACTIVE_LOW, because it would 
+be set first to DR6_ACTIVE_LOW in svm_handle_exit and then set back to 
+the guest value on the next entry.
 
-> +/*
-> + * Analog Devices AD5110 digital potentiometer driver
-> + *
-> + * Copyright (C) 2021 Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-> + *
-> + * Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/AD5110_5112_5114.pdf
+Paolo
 
-> + *
-
-Redundant blank line.
-
-> + */
-
-...
-
-> +#define WIPER_RESISTANCE       70
-
-Missed prefix?
-
-...
-
-> +static const struct iio_chan_spec ad5110_channels[] =3D {
-> +       {
-> +               .type =3D IIO_RESISTANCE,
-> +               .output =3D 1,
-> +               .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_=
-CHAN_INFO_OFFSET) |
-> +                                       BIT(IIO_CHAN_INFO_SCALE) | BIT(II=
-O_CHAN_INFO_ENABLE),
-> +       }
-
-+ comma.
-
-> +};
-
-...
-
-> +       ret =3D i2c_master_send_dmasafe(data->client, data->buf, sizeof(d=
-ata->buf));
-> +       if (ret !=3D sizeof(data->buf)) {
-
-> +               ret =3D -EIO;
-
-Shadowed error code when ret < 0.
-
-> +               goto error;
-> +       }
-
-...
-
-> +       ret =3D i2c_master_send_dmasafe(data->client, data->buf, sizeof(d=
-ata->buf));
-> +       if (ret !=3D sizeof(data->buf))
-> +               ret =3D -EIO;
-
-Ditto.
-
-> +       mutex_unlock(&data->lock);
-> +
-> +       return ret < 0 ? ret : 0;
-> +}
-
-...
-
-> +       data->tol =3D data->cfg->kohms * (val & GENMASK(6, 0)) * 10 / 8;
-> +       if (!(val & BIT(7)))
-> +               data->tol *=3D -1;
-
-Shouldn't you simple use corresponding sign_extend*()?
-
-...
-
-> +       ret =3D ad5110_write(data, AD5110_EEPROM_WR, 0);
-> +       if (ret) {
-> +               dev_err(&data->client->dev, "RDAC to EEPROM write failed\=
-n");
-> +               return ret;
-> +       }
-
-
-> +       msleep(20);
-
-Each long sleeps like this must be explained.
-
-...
-
-> +static IIO_DEVICE_ATTR(store_eeprom, 0644,
-> +                      ad5110_eeprom_read,
-> +                      ad5110_eeprom_write, 0);
-
-IIO_DEVICE_ATTR_RW() ?
-
-...
-
-> +static struct attribute *ad5110_attributes[] =3D {
-> +       &iio_dev_attr_store_eeprom.dev_attr.attr,
-> +       NULL,
-
-No comma for a terminator line.
-
-> +};
-
-...
-
-> +       data->cfg =3D device_get_match_data(dev);
-
-> +       if (!data->cfg)
-> +               data->cfg =3D &ad5110_cfg[i2c_match_id(ad5110_id, client)=
-->driver_data];
-
-Not sure this is not a dead code since you are using ->probe_new().
-
-...
-
-> +static struct i2c_driver ad5110_driver =3D {
-> +       .driver =3D {
-> +               .name   =3D "ad5110",
-> +               .of_match_table =3D ad5110_of_match,
-> +       },
-> +       .probe_new      =3D ad5110_probe,
-> +       .id_table       =3D ad5110_id,
-> +};
-
-> +
-
-Redundant blank line.
-
-> +module_i2c_driver(ad5110_driver);
-
---=20
-With Best Regards,
-Andy Shevchenko
