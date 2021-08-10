@@ -2,215 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5A53E8569
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158E03E8572
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234655AbhHJVfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
+        id S234704AbhHJVgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234652AbhHJVfg (ORCPT
+        with ESMTP id S234705AbhHJVgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:35:36 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB53C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:35:08 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id z9-20020a9d62c90000b0290462f0ab0800so773393otk.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=owlKubz0VCC0V3BG8kdaZ1xrau2d//hIlJnyfzapz+s=;
-        b=AEKpi0uIg7pyzBo4tSSu7frvNA2UyvuApWtvuMkpMkS7yaSyheLEb8zHuLNCITXFla
-         bd9U5QSV+e9gdMv6FTgDM7FASRqfmv5ikOgOz2NmRNNIuRZifJmnnbGTa13+WIvf/h7d
-         R0WP/4+s7/b4QG66dz/cEsSjmT37QecCQMknjaaOMs3ysZbOEEg6vChNkEYJGXmHYY3U
-         j2iPyWAxEZRBkjaO2/loDu/EPj4LRJSXQRZAEV2Vkjc2sESwf+Sxfg/DWPT97dz1PzgO
-         rbLe8Pjrp48llIKFJYzrGYOvnvfiMtQ1UKHtDfokSRUFUpQbNCuHV/swmHhrgqmvtSdz
-         sXZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=owlKubz0VCC0V3BG8kdaZ1xrau2d//hIlJnyfzapz+s=;
-        b=Kozs9xp23LR3Vgfzdem4VneufiWEEIiF4/9h9yk02O9cxP1rINjP4bA3xoG0uYeiyx
-         FAElSOkgsfqShwanykGXwVPIgEgD4CJ+fNj8bvVjiL9eyw6jqrqa+/X1T5bJ7AcKhNXD
-         HJCPavGF7R6LAM/kNY0po3ix+IroQVToLuMe1Kat1I4fNXRgSAy9CN2896aduYcIOn6Z
-         1YHvr/E+QlZ2SGuIDvk7PaQoqJfpHzxtfPLJ6xm41nV7wU+5HjlDyXE31t9VR4NIrBKT
-         hYWPePnfVckR1dL887cBsdgpY8WCJ8cOjuQDJ/MQPKhfH1Ew+zHBXsMFXULLEOkKp+L9
-         EHOA==
-X-Gm-Message-State: AOAM533TLq09J677qlcLtjKN/rJBeylVfi62culu7vDc6YtYb7m94iRZ
-        iNZh6pAP4a+0przvTXj7dWJc/w==
-X-Google-Smtp-Source: ABdhPJwte0HMSxmLKnkcfT0K1AKrEXn4M9+ysfn8DCxnrjGunubgPXOIXjYQCMSgXF5nqAQ8B58iyw==
-X-Received: by 2002:a9d:5d14:: with SMTP id b20mr23125580oti.307.1628631308088;
-        Tue, 10 Aug 2021 14:35:08 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 45sm295805otm.43.2021.08.10.14.35.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 14:35:07 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 14:35:05 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Feng Tang <feng.tang@intel.com>
-cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v7 3/5] mm/hugetlb: add support for mempolicy
- MPOL_PREFERRED_MANY
-In-Reply-To: <20210810085048.GA67328@shbuild999.sh.intel.com>
-Message-ID: <81f33a1-8ff-f2d4-63ff-de6c81d86f3@google.com>
-References: <1627970362-61305-1-git-send-email-feng.tang@intel.com> <1627970362-61305-4-git-send-email-feng.tang@intel.com> <YQ06tNiDEsvl8004@dhcp22.suse.cz> <20210809024430.GA46432@shbuild999.sh.intel.com> <YRDqRMTXVZO9EkoC@dhcp22.suse.cz>
- <20210809123747.GB46432@shbuild999.sh.intel.com> <YRErZFQGZx4aPYuU@dhcp22.suse.cz> <20210810085048.GA67328@shbuild999.sh.intel.com>
+        Tue, 10 Aug 2021 17:36:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE15C061765;
+        Tue, 10 Aug 2021 14:35:44 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 21:35:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628631341;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YGhQVUZqbAzjoyKpP8UUCBukO2Ia9umsHGqPX2ZeiDU=;
+        b=T8VCgLEcIEHKbd6hJ0Sjfl7cRjwW7ForDbzOnV0klBoGLlLO+2nDIO/GHaJrhvO4wVB5mE
+        WQPpHB7cGzLalgoEmjeR+JD5qoyn9jzMbnUDq3S5nNRHjKntZPAerQ/uQlpUC+vHozAsq8
+        xL3zCPh7B3jDsz1/+hG24LcQqryZ+9Cu8N5Y3vlOH5otmBeFbiSCyN51JpeBQsM/dWNkN9
+        fMlDP6Nynopa9Q6Rdz7IKYK65aKsy706X2LDK9Z4hdmqw7qi5HXG7Fr4ab0CugNLkWINWK
+        CZT1GpPLEMMNbyz7WwrhsjqDkAwMDiKuEnI7JUW77cvFXBJR4EPwaboNdiZdeQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628631341;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YGhQVUZqbAzjoyKpP8UUCBukO2Ia9umsHGqPX2ZeiDU=;
+        b=hD+9/wVSy+8aeL/doRjk1XSSjKqn6JXSzUHZZudBNGpppX97U+2KP0cUauHtwyvXiWrYOa
+        IyWBahsf8OtUsEBw==
+From:   "tip-bot2 for Maciej W. Rozycki" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/irq] x86: Fix typo s/ECLR/ELCR/ for the PIC register
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <alpine.DEB.2.21.2107200251080.9461@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2107200251080.9461@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <162863134099.395.10038351399544662720.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021, Feng Tang wrote:
-> On Mon, Aug 09, 2021 at 03:19:32PM +0200, Michal Hocko wrote:
-> [snip]
-> > > > Do you think you can provide same helpers for other policies as well?
-> > > > Maybe we can get rid of some other ifdefery as well.
-> > > 
-> > > Sure. I can make separate patch(es) for that.
-> > > 
-> > > And you mean helper like mpol_is_bind/default/local/preferred? 
-> > > 
-> > > I just run 'git-grep MPOL', and for places using "mode == MPOL_XXX",
-> > > mostly they are in mempolicy.[ch], the only another place is in
-> > > shmem.c, do we need to create all the helpers for it and the
-> > > potential future users? 
-> > 
-> > I would just go with those instances which need to ifdef for NUMA.
-> > Thanks!
-> 
-> Yes, following is a patch to remove one CONFIG_NUMA check, though
-> an bolder idea to extend the patch by removing the CONFIG_TMPFS
-> check in the same line.
-> 
-> Thanks,
-> Feng
-> 
-> ---------8<---------------------------------
-> 
-> From 1a5858721ac8ce99c27c13d310bba2983dc73d97 Mon Sep 17 00:00:00 2001
-> From: Feng Tang <feng.tang@intel.com>
-> Date: Tue, 10 Aug 2021 17:00:59 +0800
-> Subject: [PATCH] mm: shmem: avoid open coded check for mempolicy's mode
-> 
-> Add a mempolicy helper to do the check, which can also remove
-> a CONFIG_NUMA option check.
-> 
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
+The following commit has been merged into the x86/irq branch of tip:
 
-No thanks: this is not an improvement.
+Commit-ID:     34739a2809e1e5d54d41d93cfc6b074e8d781ee2
+Gitweb:        https://git.kernel.org/tip/34739a2809e1e5d54d41d93cfc6b074e8d781ee2
+Author:        Maciej W. Rozycki <macro@orcam.me.uk>
+AuthorDate:    Tue, 20 Jul 2021 05:28:15 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 23:31:44 +02:00
 
-The "#if defined(CONFIG_NUMA) && defined(CONFIG_TMPFS)" is there to
-eliminate dead code that would not be automatically eliminated by the
-optimizer: it's not there just to avoid MPOL_DEFAULT, and it's there
-to cover shmem_get_sbmpol() along with shmem_show_mpol().
+x86: Fix typo s/ECLR/ELCR/ for the PIC register
 
-I know we tend to avoid #ifdefs in .c files, and that's good; and
-I know you could find other code in mm/shmem.c which might also be
-#ifdef'ed to eliminate other dead code in other configs; but unless
-there's a new drive to purge our .c source of all #ifdefs,
-please just leave this as is.
+The proper spelling for the acronym referring to the Edge/Level Control 
+Register is ELCR rather than ECLR.  Adjust references accordingly.  No 
+functional change.
 
-Thanks,
-Hugh
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/alpine.DEB.2.21.2107200251080.9461@angie.orcam.me.uk
 
-> ---
->  include/linux/mempolicy.h | 14 ++++++++++++++
->  mm/shmem.c                |  8 ++++----
->  2 files changed, 18 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-> index 60d5e6c3340c..8fc518ad4f3c 100644
-> --- a/include/linux/mempolicy.h
-> +++ b/include/linux/mempolicy.h
-> @@ -192,6 +192,10 @@ static inline bool mpol_is_preferred_many(struct mempolicy *pol)
->  	return  (pol->mode == MPOL_PREFERRED_MANY);
->  }
->  
-> +static inline bool mpol_is_default(struct mempolicy *pol)
-> +{
-> +	return  (pol->mode == MPOL_DEFAULT);
-> +}
->  
->  #else
->  
-> @@ -287,6 +291,10 @@ static inline int mpol_parse_str(char *str, struct mempolicy **mpol)
->  }
->  #endif
->  
-> +static inline void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
-> +{
-> +}
-> +
->  static inline int mpol_misplaced(struct page *page, struct vm_area_struct *vma,
->  				 unsigned long address)
->  {
-> @@ -309,5 +317,11 @@ static inline bool mpol_is_preferred_many(struct mempolicy *pol)
->  	return  false;
->  }
->  
-> +static inline bool mpol_is_default(struct mempolicy *pol)
-> +{
-> +	return  false;
-> +}
-> +
-> +
->  #endif /* CONFIG_NUMA */
->  #endif
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 96f05f6af8bb..26b195209ef7 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1437,12 +1437,12 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
->  	return 0;
->  }
->  
-> -#if defined(CONFIG_NUMA) && defined(CONFIG_TMPFS)
-> +#ifdef CONFIG_TMPFS
->  static void shmem_show_mpol(struct seq_file *seq, struct mempolicy *mpol)
->  {
->  	char buffer[64];
->  
-> -	if (!mpol || mpol->mode == MPOL_DEFAULT)
-> +	if (!mpol || mpol_is_default(mpol))
->  		return;		/* show nothing */
->  
->  	mpol_to_str(buffer, sizeof(buffer), mpol);
-> @@ -1461,7 +1461,7 @@ static struct mempolicy *shmem_get_sbmpol(struct shmem_sb_info *sbinfo)
->  	}
->  	return mpol;
->  }
-> -#else /* !CONFIG_NUMA || !CONFIG_TMPFS */
-> +#else /* !CONFIG_TMPFS */
->  static inline void shmem_show_mpol(struct seq_file *seq, struct mempolicy *mpol)
->  {
->  }
-> @@ -1469,7 +1469,7 @@ static inline struct mempolicy *shmem_get_sbmpol(struct shmem_sb_info *sbinfo)
->  {
->  	return NULL;
->  }
-> -#endif /* CONFIG_NUMA && CONFIG_TMPFS */
-> +#endif /* CONFIG_TMPFS */
->  #ifndef CONFIG_NUMA
->  #define vm_policy vm_private_data
->  #endif
-> -- 
-> 2.14.1
+---
+ arch/x86/kernel/acpi/boot.c |  6 +++---
+ arch/x86/kvm/i8259.c        | 20 ++++++++++----------
+ arch/x86/kvm/irq.h          |  2 +-
+ 3 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index 7f59f83..14bcd59 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -558,10 +558,10 @@ acpi_parse_nmi_src(union acpi_subtable_headers * header, const unsigned long end
+  * If a PIC-mode SCI is not recognized or gives spurious IRQ7's
+  * it may require Edge Trigger -- use "acpi_sci=edge"
+  *
+- * Port 0x4d0-4d1 are ECLR1 and ECLR2, the Edge/Level Control Registers
++ * Port 0x4d0-4d1 are ELCR1 and ELCR2, the Edge/Level Control Registers
+  * for the 8259 PIC.  bit[n] = 1 means irq[n] is Level, otherwise Edge.
+- * ECLR1 is IRQs 0-7 (IRQ 0, 1, 2 must be 0)
+- * ECLR2 is IRQs 8-15 (IRQ 8, 13 must be 0)
++ * ELCR1 is IRQs 0-7 (IRQ 0, 1, 2 must be 0)
++ * ELCR2 is IRQs 8-15 (IRQ 8, 13 must be 0)
+  */
+ 
+ void __init acpi_pic_sci_set_trigger(unsigned int irq, u16 trigger)
+diff --git a/arch/x86/kvm/i8259.c b/arch/x86/kvm/i8259.c
+index 629a09c..0b80263 100644
+--- a/arch/x86/kvm/i8259.c
++++ b/arch/x86/kvm/i8259.c
+@@ -541,17 +541,17 @@ static int picdev_slave_read(struct kvm_vcpu *vcpu, struct kvm_io_device *dev,
+ 			    addr, len, val);
+ }
+ 
+-static int picdev_eclr_write(struct kvm_vcpu *vcpu, struct kvm_io_device *dev,
++static int picdev_elcr_write(struct kvm_vcpu *vcpu, struct kvm_io_device *dev,
+ 			     gpa_t addr, int len, const void *val)
+ {
+-	return picdev_write(container_of(dev, struct kvm_pic, dev_eclr),
++	return picdev_write(container_of(dev, struct kvm_pic, dev_elcr),
+ 			    addr, len, val);
+ }
+ 
+-static int picdev_eclr_read(struct kvm_vcpu *vcpu, struct kvm_io_device *dev,
++static int picdev_elcr_read(struct kvm_vcpu *vcpu, struct kvm_io_device *dev,
+ 			    gpa_t addr, int len, void *val)
+ {
+-	return picdev_read(container_of(dev, struct kvm_pic, dev_eclr),
++	return picdev_read(container_of(dev, struct kvm_pic, dev_elcr),
+ 			    addr, len, val);
+ }
+ 
+@@ -577,9 +577,9 @@ static const struct kvm_io_device_ops picdev_slave_ops = {
+ 	.write    = picdev_slave_write,
+ };
+ 
+-static const struct kvm_io_device_ops picdev_eclr_ops = {
+-	.read     = picdev_eclr_read,
+-	.write    = picdev_eclr_write,
++static const struct kvm_io_device_ops picdev_elcr_ops = {
++	.read     = picdev_elcr_read,
++	.write    = picdev_elcr_write,
+ };
+ 
+ int kvm_pic_init(struct kvm *kvm)
+@@ -602,7 +602,7 @@ int kvm_pic_init(struct kvm *kvm)
+ 	 */
+ 	kvm_iodevice_init(&s->dev_master, &picdev_master_ops);
+ 	kvm_iodevice_init(&s->dev_slave, &picdev_slave_ops);
+-	kvm_iodevice_init(&s->dev_eclr, &picdev_eclr_ops);
++	kvm_iodevice_init(&s->dev_elcr, &picdev_elcr_ops);
+ 	mutex_lock(&kvm->slots_lock);
+ 	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, 0x20, 2,
+ 				      &s->dev_master);
+@@ -613,7 +613,7 @@ int kvm_pic_init(struct kvm *kvm)
+ 	if (ret < 0)
+ 		goto fail_unreg_2;
+ 
+-	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, 0x4d0, 2, &s->dev_eclr);
++	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, 0x4d0, 2, &s->dev_elcr);
+ 	if (ret < 0)
+ 		goto fail_unreg_1;
+ 
+@@ -647,7 +647,7 @@ void kvm_pic_destroy(struct kvm *kvm)
+ 	mutex_lock(&kvm->slots_lock);
+ 	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_master);
+ 	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_slave);
+-	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_eclr);
++	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_elcr);
+ 	mutex_unlock(&kvm->slots_lock);
+ 
+ 	kvm->arch.vpic = NULL;
+diff --git a/arch/x86/kvm/irq.h b/arch/x86/kvm/irq.h
+index 9b64abf..650642b 100644
+--- a/arch/x86/kvm/irq.h
++++ b/arch/x86/kvm/irq.h
+@@ -55,7 +55,7 @@ struct kvm_pic {
+ 	int output;		/* intr from master PIC */
+ 	struct kvm_io_device dev_master;
+ 	struct kvm_io_device dev_slave;
+-	struct kvm_io_device dev_eclr;
++	struct kvm_io_device dev_elcr;
+ 	void (*ack_notifier)(void *opaque, int irq);
+ 	unsigned long irq_states[PIC_NUM_PINS];
+ };
