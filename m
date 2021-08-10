@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE163E7EF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BE23E803B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233370AbhHJRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41122 "EHLO mail.kernel.org"
+        id S233809AbhHJRrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:47:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233181AbhHJRe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:34:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA3D61076;
-        Tue, 10 Aug 2021 17:34:36 +0000 (UTC)
+        id S236136AbhHJRoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:44:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8140A610A0;
+        Tue, 10 Aug 2021 17:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616877;
-        bh=D9Gsuly4zv0e7LkvpJQJKwFXOYRPw+lmGSMbLCSDW9k=;
+        s=korg; t=1628617176;
+        bh=kZhnoqq0lOs/n/AkRcgA4EmH5PJ3/PgnMkbxD7CHxgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fHlBobypHGwl3HOs0pYr4IK5ZZ0wyUrrUHfQZzjDnme/S4DKzyFEM6I+THsqvjFA+
-         7P7YI1uTj2sCNhOyUeilnXCmAt55KYG1dFeFcZjuqwD0Y1M4shJ+vJw5TTv2Uziqlw
-         W/JxHURAjSOTAezhT/7WYfZcnKJTHSn7cJReXw/A=
+        b=kGGu0jMPUZVDUoRKvMEWRXQXfSIdVjqhNoGXtDGBdpZKxeLFh18WXhb/YAS0uSGyg
+         qyzt+zyfqUmmAIYUVNwvBNAD+qpIx+uS56UY/zhTH1g+ocwnB8Y/JqOuow3Aqx/nBd
+         6s6Jt4fQogfvJIT3N7ev4RNkvmjz3JmIzm6aZL40=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 32/85] net: fec: fix use-after-free in fec_drv_remove
+        stable@vger.kernel.org, Badhri Jagan Sridharan <badhri@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kyle Tso <kyletso@google.com>
+Subject: [PATCH 5.10 071/135] usb: typec: tcpm: Keep other events when receiving FRS and Sourcing_vbus events
 Date:   Tue, 10 Aug 2021 19:30:05 +0200
-Message-Id: <20210810172949.285492024@linuxfoundation.org>
+Message-Id: <20210810172958.141122822@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Kyle Tso <kyletso@google.com>
 
-[ Upstream commit 44712965bf12ae1758cec4de53816ed4b914ca1a ]
+commit 43ad944cd73f2360ec8ff31d29ea44830b3119af upstream.
 
-Smatch says:
-	drivers/net/ethernet/freescale/fec_main.c:3994 fec_drv_remove() error: Using fep after free_{netdev,candev}(ndev);
-	drivers/net/ethernet/freescale/fec_main.c:3995 fec_drv_remove() error: Using fep after free_{netdev,candev}(ndev);
+When receiving FRS and Sourcing_Vbus events from low-level drivers, keep
+other events which come a bit earlier so that they will not be ignored
+in the event handler.
 
-Since fep pointer is netdev private data, accessing it after free_netdev()
-call can cause use-after-free bug. Fix it by moving free_netdev() call at
-the end of the function
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: a31eda65ba21 ("net: fec: fix clock count mis-match")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reviewed-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 8dc4bd073663 ("usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)")
+Cc: stable <stable@vger.kernel.org>
+Cc: Badhri Jagan Sridharan <badhri@google.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Badhri Jagan Sridharan <badhri@google.com>
+Signed-off-by: Kyle Tso <kyletso@google.com>
+Link: https://lore.kernel.org/r/20210803091314.3051302-1-kyletso@google.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/fec_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/typec/tcpm/tcpm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index b1856552ab81..a53c2d637a97 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -3781,13 +3781,13 @@ fec_drv_remove(struct platform_device *pdev)
- 	if (of_phy_is_fixed_link(np))
- 		of_phy_deregister_fixed_link(np);
- 	of_node_put(fep->phy_node);
--	free_netdev(ndev);
- 
- 	clk_disable_unprepare(fep->clk_ahb);
- 	clk_disable_unprepare(fep->clk_ipg);
- 	pm_runtime_put_noidle(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	free_netdev(ndev);
- 	return 0;
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -4314,7 +4314,7 @@ EXPORT_SYMBOL_GPL(tcpm_pd_hard_reset);
+ void tcpm_sink_frs(struct tcpm_port *port)
+ {
+ 	spin_lock(&port->pd_event_lock);
+-	port->pd_events = TCPM_FRS_EVENT;
++	port->pd_events |= TCPM_FRS_EVENT;
+ 	spin_unlock(&port->pd_event_lock);
+ 	kthread_queue_work(port->wq, &port->event_work);
  }
- 
--- 
-2.30.2
-
+@@ -4323,7 +4323,7 @@ EXPORT_SYMBOL_GPL(tcpm_sink_frs);
+ void tcpm_sourcing_vbus(struct tcpm_port *port)
+ {
+ 	spin_lock(&port->pd_event_lock);
+-	port->pd_events = TCPM_SOURCING_VBUS;
++	port->pd_events |= TCPM_SOURCING_VBUS;
+ 	spin_unlock(&port->pd_event_lock);
+ 	kthread_queue_work(port->wq, &port->event_work);
+ }
 
 
