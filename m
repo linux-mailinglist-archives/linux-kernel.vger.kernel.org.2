@@ -2,193 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AB53E53E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B673E53F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbhHJGvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:51:45 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61454 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231482AbhHJGvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:51:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628578283; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=8oRIj7t0naG4PykQRt1+vreUOu6CouCHfSgpFKLfPUw=;
- b=k0iay+CoVAV/I/06fKrqyyyaNb4YDM2j8D7aGmSAaJfxN0ik7ZoWgx5G8yHx5zwn2ylljALI
- LeLPIkoVu7RuRJFDKCRsBhcjQXgcIzVOALobUY/0fXOHsIO2tJZML1ROHkC1pDkPfVCtXef0
- qG8nJQYs0YtyOf55m6UYqC6rMIs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 611221d6b14e7e2ecb509049 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 06:51:02
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 359CCC433F1; Tue, 10 Aug 2021 06:51:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02DB3C433D3;
-        Tue, 10 Aug 2021 06:51:00 +0000 (UTC)
+        id S235392AbhHJGzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231482AbhHJGzj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:55:39 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A605CC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 23:55:17 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso2966007pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 23:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wp6AQyVuidbbmZh4SpEnbdNrLtEBOB0mz0m+17qvH80=;
+        b=Z2PfQTKHT/f2cgdX8JT6mIdT8GrweddGz6wWggyjQOVyZ+5gJzRgclw1kl/MmtOeA4
+         Qg7VnIjiSk4AKyjgE/OrlEul1zGhmLTxFmOH7TmUJsAftiN3geenFmvhUG9GZs+OSzVC
+         8CoQkfDZC1F+GsMXDkpfbUzlMkx13AMVafJaJrkkbqJrw2xacfsfu3Tfk932odh7p6nu
+         JmiXIHH/ZiE1EGR2vO+m5JLo/REnZwSTDRSKI9j0cdMI11KMDtm1py4fPffTZ/Hi295J
+         Gx3meUaiEnhEJc8Iru1Evwk5GC+0OXLFC//a8fn39JhFadc85L2/ZdiLW/ATMwnPcfM1
+         Vbcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wp6AQyVuidbbmZh4SpEnbdNrLtEBOB0mz0m+17qvH80=;
+        b=LuEy2G+pOfel0ELwZjA4GakFnLwcsWjRIPOq4N8MhOdPUEYE37bhZdAdNpQl+HFuNw
+         0uP18XE/4+c5K69zoMhfHXqOasjRKXizGMxSOObhXfG9wkmKb4vJVhinUdwah3tY8Wy4
+         xlbpUfIpNTT5GwMIWhl/++cB9mty8Jb4mZiW1KtJF7s6WbKVFTQq2nbvYNGfHWH3GxH+
+         l1rgIydPCu9AbJp6E6c0YIxGZolQ3ao/LR2VrZiNfnCsYRcruo0a9bYU6HA4Eezlj28i
+         Wjb4ldBQDNJFSIHyvYcqQJxD4Mdr2+jhqUNlXyx/y/Ro2DGVWfRAY/sDiFiN9MhkFIA6
+         9q7w==
+X-Gm-Message-State: AOAM530k/NBNzf3aQIPAjxniQCCUPSITN1wg/yOozwAn7VullW+1IhZ+
+        dUiyrqGq0QdG4bc5v7eVg+U=
+X-Google-Smtp-Source: ABdhPJyA9LmdyqIvPLhi85SmsV6nAGqM8rJ8oFoHSoOwf7HnCEnq9KFc3tFAHT2cBpaSvcSXkCu1zA==
+X-Received: by 2002:a63:36cb:: with SMTP id d194mr8637pga.224.1628578517243;
+        Mon, 09 Aug 2021 23:55:17 -0700 (PDT)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id bk24sm1667496pjb.26.2021.08.09.23.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 23:55:17 -0700 (PDT)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] erofs: directly use wrapper erofs_page_is_managed() when shrinking
+Date:   Tue, 10 Aug 2021 14:54:50 +0800
+Message-Id: <20210810065450.1320-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 10 Aug 2021 12:21:00 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        srimuc <srimuc@codeaurora.org>, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, robdclark@chromium.org
-Subject: Re: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to
- system pm callbacks
-In-Reply-To: <5aefcc8950ec8ced0a67815c92e985df@codeaurora.org>
-References: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
- <20210802161206.GA29168@willie-the-truck>
- <5aefcc8950ec8ced0a67815c92e985df@codeaurora.org>
-Message-ID: <8fd84f2580ea0e67c9143ee97e54dbaa@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-03 11:36, Sai Prakash Ranjan wrote:
-> On 2021-08-02 21:42, Will Deacon wrote:
->> On Tue, Jul 27, 2021 at 03:03:22PM +0530, Sai Prakash Ranjan wrote:
->>> Some clocks for SMMU can have parent as XO such as 
->>> gpu_cc_hub_cx_int_clk
->>> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states 
->>> in
->>> such cases, we would need to drop the XO clock vote in unprepare call 
->>> and
->>> this unprepare callback for XO is in RPMh (Resource Power 
->>> Manager-Hardened)
->>> clock driver which controls RPMh managed clock resources for new QTI 
->>> SoCs
->>> and is a blocking call.
->>> 
->>> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
->>> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
->>> operations like map and unmap can be in atomic context and are in 
->>> fast
->>> path, add this prepare and unprepare call to drop the XO vote only 
->>> for
->>> system pm callbacks since it is not a fast path and we expect the 
->>> system
->>> to enter deep sleep states with system pm as opposed to runtime pm.
->>> 
->>> This is a similar sequence of clock requests (prepare,enable and
->>> disable,unprepare) in arm-smmu probe and remove.
->>> 
->>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->>> Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
->>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->>> ---
->>>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 20 ++++++++++++++++++--
->>>  1 file changed, 18 insertions(+), 2 deletions(-)
->> 
->> [+Rob]
->> 
->> How does this work with that funny GPU which writes to the SMMU 
->> registers
->> directly? Does the SMMU need to remain independently clocked for that 
->> to
->> work or is it all in the same clock domain?
->> 
-> 
-> As Rob mentioned, device link should take care of all the dependencies 
-> between
-> SMMU and its consumers. But not sure how the question relates to this
-> patch as this
-> change is for system pm and not runtime pm, so it is exactly the 
-> sequence of
-> SMMU probe/remove which if works currently for that GPU SMMU, then it
-> should work
-> just fine for system suspend and resume as well.
-> 
->>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
->>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> index d3c6f54110a5..9561ba4c5d39 100644
->>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> @@ -2277,6 +2277,13 @@ static int __maybe_unused 
->>> arm_smmu_runtime_suspend(struct device *dev)
->>> 
->>>  static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
->>>  {
->>> +	int ret;
->>> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
->>> +
->>> +	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>>  	if (pm_runtime_suspended(dev))
->>>  		return 0;
->> 
->> If we subsequently fail to enable the clks in 
->> arm_smmu_runtime_resume()
->> should we unprepare them again?
->> 
-> 
-> If we are unable to turn on the clks then its fatal and we will not
-> live for long.
-> 
+From: Yue Hu <huyue2@yulong.com>
 
-Nonetheless, it won't hurt to unprepare if clk enable fails as that is
-the correct thing anyway, so I have added it and sent a v2.
+We already have the wrapper function to identify managed page.
 
-Thanks,
-Sai
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ fs/erofs/zdata.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> 
->> Will
->> 
->>> @@ -2285,10 +2292,19 @@ static int __maybe_unused 
->>> arm_smmu_pm_resume(struct device *dev)
->>> 
->>>  static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
->>>  {
->>> +	int ret = 0;
->>> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
->>> +
->>>  	if (pm_runtime_suspended(dev))
->>> -		return 0;
->>> +		goto clk_unprepare;
->>> 
->>> -	return arm_smmu_runtime_suspend(dev);
->>> +	ret = arm_smmu_runtime_suspend(dev);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +clk_unprepare:
->>> +	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
->>> +	return ret;
->>>  }
->>> 
->>>  static const struct dev_pm_ops arm_smmu_pm_ops = {
->>> --
->>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->>> member
->>> of Code Aurora Forum, hosted by The Linux Foundation
->>> 
-
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 78e4b59..a809730 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -310,7 +310,6 @@ int erofs_try_to_free_all_cached_pages(struct erofs_sb_info *sbi,
+ {
+ 	struct z_erofs_pcluster *const pcl =
+ 		container_of(grp, struct z_erofs_pcluster, obj);
+-	struct address_space *const mapping = MNGD_MAPPING(sbi);
+ 	int i;
+ 
+ 	/*
+@@ -327,7 +326,7 @@ int erofs_try_to_free_all_cached_pages(struct erofs_sb_info *sbi,
+ 		if (!trylock_page(page))
+ 			return -EBUSY;
+ 
+-		if (page->mapping != mapping)
++		if (!erofs_page_is_managed(sbi, page))
+ 			continue;
+ 
+ 		/* barrier is implied in the following 'unlock_page' */
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+1.9.1
+
