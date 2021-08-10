@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D033E801C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3A23E7F33
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhHJRqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36322 "EHLO mail.kernel.org"
+        id S234701AbhHJRhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:37:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234974AbhHJRmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:42:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44ABB6120A;
-        Tue, 10 Aug 2021 17:38:50 +0000 (UTC)
+        id S233950AbhHJRgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:36:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 442C261052;
+        Tue, 10 Aug 2021 17:35:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617130;
-        bh=kXu17XmRE41++xMi4K3vbwYjOo249Mwqw6Yzvq0JRUc=;
+        s=korg; t=1628616928;
+        bh=yWd0b9CG0wJVBYAfAacTEPvZMFebPqKacP9D8fAa8Uc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m48ktfuYCHbvi+iPvCGfKvMqaFgL44XcpyrgURt41c6R/RPdaiWggCT6pEZZGNhol
-         3rDucAUUMquy+oR4M4fpJb4VXZ0BAH63728ZA+mO1eJXK/2gxe90OFAXx2xYIPof7M
-         2wEDXlSN5zDTg2YFX2T+h5Sk2TH6UCoN3+YDZPww=
+        b=Jkwb5/tCvMr1Yvyt8o3KV6XbeB0D2yS5xWEV2SkeP068lzghSpiICv6SCB/2pHHUs
+         MyngZ7sWfx5XrYhIZDa/t2JkBVmDJn0d7Wni40KFkG4iHwSRMjgkr4tScJzJK5HecO
+         e1FRPHaqIUn91FDmcx9Zg7PyP1ZZQf1F7FZH/FMo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shirish S <shirish.s@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 058/135] drm/amdgpu/display: fix DMUB firmware version info
-Date:   Tue, 10 Aug 2021 19:29:52 +0200
-Message-Id: <20210810172957.657953320@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Forster <aforster@cloudflare.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 20/85] net, gro: Set inner transport header offset in tcp/udp GRO hook
+Date:   Tue, 10 Aug 2021 19:29:53 +0200
+Message-Id: <20210810172948.875614503@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shirish S <shirish.s@amd.com>
+From: Jakub Sitnicki <jakub@cloudflare.com>
 
-commit 0e99e960ce6d5ff586fc0733bc393c087f52c27b upstream.
+[ Upstream commit d51c5907e9809a803b276883d203f45849abd4d6 ]
 
-DMUB firmware info is printed before it gets initialized.
-Correct this order to ensure true value is conveyed.
+GSO expects inner transport header offset to be valid when
+skb->encapsulation flag is set. GSO uses this value to calculate the length
+of an individual segment of a GSO packet in skb_gso_transport_seglen().
 
-Signed-off-by: Shirish S <shirish.s@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However, tcp/udp gro_complete callbacks don't update the
+skb->inner_transport_header when processing an encapsulated TCP/UDP
+segment. As a result a GRO skb has ->inner_transport_header set to a value
+carried over from earlier skb processing.
+
+This can have mild to tragic consequences. From miscalculating the GSO
+segment length to triggering a page fault [1], when trying to read TCP/UDP
+header at an address past the skb->data page.
+
+The latter scenario leads to an oops report like so:
+
+  BUG: unable to handle page fault for address: ffff9fa7ec00d008
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 123f201067 P4D 123f201067 PUD 123f209067 PMD 0
+  Oops: 0000 [#1] SMP NOPTI
+  CPU: 44 PID: 0 Comm: swapper/44 Not tainted 5.4.53-cloudflare-2020.7.21 #1
+  Hardware name: HYVE EDGE-METAL-GEN10/HS-1811DLite1, BIOS V2.15 02/21/2020
+  RIP: 0010:skb_gso_transport_seglen+0x44/0xa0
+  Code: c0 41 83 e0 11 f6 87 81 00 00 00 20 74 30 0f b7 87 aa 00 00 00 0f [...]
+  RSP: 0018:ffffad8640bacbb8 EFLAGS: 00010202
+  RAX: 000000000000feda RBX: ffff9fcc8d31bc00 RCX: ffff9fa7ec00cffc
+  RDX: ffff9fa7ebffdec0 RSI: 000000000000feda RDI: 0000000000000122
+  RBP: 00000000000005c4 R08: 0000000000000001 R09: 0000000000000000
+  R10: ffff9fe588ae3800 R11: ffff9fe011fc92f0 R12: ffff9fcc8d31bc00
+  R13: ffff9fe0119d4300 R14: 00000000000005c4 R15: ffff9fba57d70900
+  FS:  0000000000000000(0000) GS:ffff9fe68df00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: ffff9fa7ec00d008 CR3: 0000003e99b1c000 CR4: 0000000000340ee0
+  Call Trace:
+   <IRQ>
+   skb_gso_validate_network_len+0x11/0x70
+   __ip_finish_output+0x109/0x1c0
+   ip_sublist_rcv_finish+0x57/0x70
+   ip_sublist_rcv+0x2aa/0x2d0
+   ? ip_rcv_finish_core.constprop.0+0x390/0x390
+   ip_list_rcv+0x12b/0x14f
+   __netif_receive_skb_list_core+0x2a9/0x2d0
+   netif_receive_skb_list_internal+0x1b5/0x2e0
+   napi_complete_done+0x93/0x140
+   veth_poll+0xc0/0x19f [veth]
+   ? mlx5e_napi_poll+0x221/0x610 [mlx5_core]
+   net_rx_action+0x1f8/0x790
+   __do_softirq+0xe1/0x2bf
+   irq_exit+0x8e/0xc0
+   do_IRQ+0x58/0xe0
+   common_interrupt+0xf/0xf
+   </IRQ>
+
+The bug can be observed in a simple setup where we send IP/GRE/IP/TCP
+packets into a netns over a veth pair. Inside the netns, packets are
+forwarded to dummy device:
+
+  trafgen -> [veth A]--[veth B] -forward-> [dummy]
+
+For veth B to GRO aggregate packets on receive, it needs to have an XDP
+program attached (for example, a trivial XDP_PASS). Additionally, for UDP,
+we need to enable GSO_UDP_L4 feature on the device:
+
+  ip netns exec A ethtool -K AB rx-udp-gro-forwarding on
+
+The last component is an artificial delay to increase the chances of GRO
+batching happening:
+
+  ip netns exec A tc qdisc add dev AB root \
+     netem delay 200us slot 5ms 10ms packets 2 bytes 64k
+
+With such a setup in place, the bug can be observed by tracing the skb
+outer and inner offsets when GSO skb is transmitted from the dummy device:
+
+tcp:
+
+FUNC              DEV   SKB_LEN  NH  TH ENC INH ITH GSO_SIZE GSO_TYPE
+ip_finish_output  dumB     2830 270 290   1 294 254     1383 (tcpv4,gre,)
+                                                ^^^
+udp:
+
+FUNC              DEV   SKB_LEN  NH  TH ENC INH ITH GSO_SIZE GSO_TYPE
+ip_finish_output  dumB     2818 270 290   1 294 254     1383 (gre,udp_l4,)
+                                                ^^^
+
+Fix it by updating the inner transport header offset in tcp/udp
+gro_complete callbacks, similar to how {inet,ipv6}_gro_complete callbacks
+update the inner network header offset, when skb->encapsulation flag is
+set.
+
+[1] https://lore.kernel.org/netdev/CAKxSbF01cLpZem2GFaUaifh0S-5WYViZemTicAg7FCHOnh6kug@mail.gmail.com/
+
+Fixes: bf296b125b21 ("tcp: Add GRO support")
+Fixes: f993bc25e519 ("net: core: handle encapsulation offloads when computing segment lengths")
+Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+Reported-by: Alex Forster <aforster@cloudflare.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/tcp_offload.c | 3 +++
+ net/ipv4/udp_offload.c | 4 ++++
+ 2 files changed, 7 insertions(+)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1301,6 +1301,7 @@ static int dm_dmub_sw_init(struct amdgpu
- 	}
+diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+index e09147ac9a99..fc61cd3fea65 100644
+--- a/net/ipv4/tcp_offload.c
++++ b/net/ipv4/tcp_offload.c
+@@ -298,6 +298,9 @@ int tcp_gro_complete(struct sk_buff *skb)
+ 	if (th->cwr)
+ 		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ECN;
  
- 	hdr = (const struct dmcub_firmware_header_v1_0 *)adev->dm.dmub_fw->data;
-+	adev->dm.dmcub_fw_version = le32_to_cpu(hdr->header.ucode_version);
++	if (skb->encapsulation)
++		skb->inner_transport_header = skb->transport_header;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(tcp_gro_complete);
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index c463eebdc8fe..487a92d75c70 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -501,6 +501,10 @@ static int udp_gro_complete_segment(struct sk_buff *skb)
  
- 	if (adev->firmware.load_type == AMDGPU_FW_LOAD_PSP) {
- 		adev->firmware.ucode[AMDGPU_UCODE_ID_DMCUB].ucode_id =
-@@ -1314,7 +1315,6 @@ static int dm_dmub_sw_init(struct amdgpu
- 			 adev->dm.dmcub_fw_version);
- 	}
+ 	skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
+ 	skb_shinfo(skb)->gso_type |= SKB_GSO_UDP_L4;
++
++	if (skb->encapsulation)
++		skb->inner_transport_header = skb->transport_header;
++
+ 	return 0;
+ }
  
--	adev->dm.dmcub_fw_version = le32_to_cpu(hdr->header.ucode_version);
- 
- 	adev->dm.dmub_srv = kzalloc(sizeof(*adev->dm.dmub_srv), GFP_KERNEL);
- 	dmub_srv = adev->dm.dmub_srv;
+-- 
+2.30.2
+
 
 
