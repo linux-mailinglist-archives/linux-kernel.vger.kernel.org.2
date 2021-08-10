@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41D93E7E9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF423E80D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhHJRe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33340 "EHLO mail.kernel.org"
+        id S236518AbhHJRw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:52:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232733AbhHJRdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:33:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 453AE61076;
-        Tue, 10 Aug 2021 17:33:20 +0000 (UTC)
+        id S236737AbhHJRtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:49:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90EF26115C;
+        Tue, 10 Aug 2021 17:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616800;
-        bh=GN2Tr7/pBi5qdMqjJjgwJA2k7JHS8uhr6WJxPT49L28=;
+        s=korg; t=1628617315;
+        bh=AvNYSlBrEKEXQrAUJnoa3zL/BEXfezpG86BC/KMqIg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YYiZOtIl5BcxOkVrr1V/IKkPxavFW9NcYhlS4pR+R7wmtV+Lzro86lEx0krTPqLgy
-         TPHbhRMjE+ndyqVSjDSO/QwBeMFbS2dIhxx0uLfy/xWxfLJUEcdficjEXD+KuoH53r
-         f8SKUVTTh7F14+RfQUGIAjvZ9E+mrn0RvXteTdFM=
+        b=mh0wv7FQA/PW0b2NYoSUMA03ntPxEjQLBZsEwPHJhLqVDVGz+pDFeM2rFQajP7SYv
+         s55K4aN6Tn/AVbCG7RYgdYPy/9m4lHOmF3g7L+VwTsR23lAzh6wcHmBCSxT23PNVLc
+         6Lj+w0aNSp53qQQbh2o7Sqo/2ZxEjm0VkC5CwclA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 53/54] net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: [PATCH 5.10 113/135] arm64: vdso: Avoid ISB after reading from cntvct_el0
 Date:   Tue, 10 Aug 2021 19:30:47 +0200
-Message-Id: <20210810172945.953066300@linuxfoundation.org>
+Message-Id: <20210810172959.632306472@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +41,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Letu Ren <fantasquex@gmail.com>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit 92766c4628ea349c8ddab0cd7bd0488f36e5c4ce ]
+commit 77ec462536a13d4b428a1eead725c4818a49f0b1 upstream.
 
-When calling the 'ql_wait_for_drvr_lock' and 'ql_adapter_reset', the driver
-has already acquired the spin lock, so the driver should not call 'ssleep'
-in atomic context.
+We can avoid the expensive ISB instruction after reading the counter in
+the vDSO gettime functions by creating a fake address hazard against a
+dummy stack read, just like we do inside the kernel.
 
-This bug can be fixed by using 'mdelay' instead of 'ssleep'.
-
-Reported-by: Letu Ren <fantasquex@gmail.com>
-Signed-off-by: Letu Ren <fantasquex@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Link: https://lore.kernel.org/r/20210318170738.7756-5-will@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
 ---
- drivers/net/ethernet/qlogic/qla3xxx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/arch_timer.h        |   21 ---------------------
+ arch/arm64/include/asm/barrier.h           |   19 +++++++++++++++++++
+ arch/arm64/include/asm/vdso/gettimeofday.h |    6 +-----
+ 3 files changed, 20 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-index 2d71646640ac..f98e2f417c2e 100644
---- a/drivers/net/ethernet/qlogic/qla3xxx.c
-+++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-@@ -155,7 +155,7 @@ static int ql_wait_for_drvr_lock(struct ql3_adapter *qdev)
- 				      "driver lock acquired\n");
- 			return 1;
- 		}
--		ssleep(1);
-+		mdelay(1000);
- 	} while (++i < 10);
+--- a/arch/arm64/include/asm/arch_timer.h
++++ b/arch/arm64/include/asm/arch_timer.h
+@@ -165,25 +165,6 @@ static inline void arch_timer_set_cntkct
+ 	isb();
+ }
  
- 	netdev_err(qdev->ndev, "Timed out waiting for driver lock...\n");
-@@ -3292,7 +3292,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
- 		if ((value & ISP_CONTROL_SR) == 0)
- 			break;
+-/*
+- * Ensure that reads of the counter are treated the same as memory reads
+- * for the purposes of ordering by subsequent memory barriers.
+- *
+- * This insanity brought to you by speculative system register reads,
+- * out-of-order memory accesses, sequence locks and Thomas Gleixner.
+- *
+- * http://lists.infradead.org/pipermail/linux-arm-kernel/2019-February/631195.html
+- */
+-#define arch_counter_enforce_ordering(val) do {				\
+-	u64 tmp, _val = (val);						\
+-									\
+-	asm volatile(							\
+-	"	eor	%0, %1, %1\n"					\
+-	"	add	%0, sp, %0\n"					\
+-	"	ldr	xzr, [%0]"					\
+-	: "=r" (tmp) : "r" (_val));					\
+-} while (0)
+-
+ static __always_inline u64 __arch_counter_get_cntpct_stable(void)
+ {
+ 	u64 cnt;
+@@ -224,8 +205,6 @@ static __always_inline u64 __arch_counte
+ 	return cnt;
+ }
  
--		ssleep(1);
-+		mdelay(1000);
- 	} while ((--max_wait_time));
+-#undef arch_counter_enforce_ordering
+-
+ static inline int arch_timer_arch_init(void)
+ {
+ 	return 0;
+--- a/arch/arm64/include/asm/barrier.h
++++ b/arch/arm64/include/asm/barrier.h
+@@ -70,6 +70,25 @@ static inline unsigned long array_index_
+ 	return mask;
+ }
  
- 	/*
-@@ -3328,7 +3328,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
- 						   ispControlStatus);
- 			if ((value & ISP_CONTROL_FSR) == 0)
- 				break;
--			ssleep(1);
-+			mdelay(1000);
- 		} while ((--max_wait_time));
- 	}
- 	if (max_wait_time == 0)
--- 
-2.30.2
-
++/*
++ * Ensure that reads of the counter are treated the same as memory reads
++ * for the purposes of ordering by subsequent memory barriers.
++ *
++ * This insanity brought to you by speculative system register reads,
++ * out-of-order memory accesses, sequence locks and Thomas Gleixner.
++ *
++ * http://lists.infradead.org/pipermail/linux-arm-kernel/2019-February/631195.html
++ */
++#define arch_counter_enforce_ordering(val) do {				\
++	u64 tmp, _val = (val);						\
++									\
++	asm volatile(							\
++	"	eor	%0, %1, %1\n"					\
++	"	add	%0, sp, %0\n"					\
++	"	ldr	xzr, [%0]"					\
++	: "=r" (tmp) : "r" (_val));					\
++} while (0)
++
+ #define __smp_mb()	dmb(ish)
+ #define __smp_rmb()	dmb(ishld)
+ #define __smp_wmb()	dmb(ishst)
+--- a/arch/arm64/include/asm/vdso/gettimeofday.h
++++ b/arch/arm64/include/asm/vdso/gettimeofday.h
+@@ -83,11 +83,7 @@ static __always_inline u64 __arch_get_hw
+ 	 */
+ 	isb();
+ 	asm volatile("mrs %0, cntvct_el0" : "=r" (res) :: "memory");
+-	/*
+-	 * This isb() is required to prevent that the seq lock is
+-	 * speculated.#
+-	 */
+-	isb();
++	arch_counter_enforce_ordering(res);
+ 
+ 	return res;
+ }
 
 
