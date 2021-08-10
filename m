@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9435E3E7FCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03423E8124
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhHJRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:43:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
+        id S229492AbhHJR4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:56:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235507AbhHJRjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64BFC61159;
-        Tue, 10 Aug 2021 17:37:29 +0000 (UTC)
+        id S236195AbhHJRws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:52:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F8C6136A;
+        Tue, 10 Aug 2021 17:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617050;
-        bh=LdUCDYNlrBAUJTJF+VyvYmMcIe6h6JGFiBzATAQWyfM=;
+        s=korg; t=1628617415;
+        bh=ySdgxvltRO98Yof6wxQm2ulBxYe/gQDIxZkggTO7v6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WC7YAOVsOGnW+4hJq8RWzvXxIv9MYtNgaO+zfIxGz702mxKjb7qER6ClS09Kt52Iw
-         +kUrqMnaS8muATWth4BE7oCifJt0ENLd4dCdbr/I4QoPR5CZ6gRfOiIbOOi89u3+Io
-         iaHTC79rcEHJgDaRpBUYKJyKNVcXCspRM4LU8pKA=
+        b=mPoirRpuPawjiT6lPpx+WQ9rSXykybUnwg43vl6pPbpyouR0kkS3nivIN37+zxt3d
+         +P6OyoL27PwO/2vUytJAQP+h99Gl1gXyu+2H2oqZB9ku/SKIeARe+y0zJMQN+wuTTJ
+         zlqEL39iKOEoePLkneZiDthFL2bwt1DkIoq6NY3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 022/135] dmaengine: stm32-dmamux: Fix PM usage counter unbalance in stm32 dmamux ops
+        stable@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 048/175] gpio: tqmx86: really make IRQ optional
 Date:   Tue, 10 Aug 2021 19:29:16 +0200
-Message-Id: <20210810172956.420308752@linuxfoundation.org>
+Message-Id: <20210810173002.529271935@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
+References: <20210810173000.928681411@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-[ Upstream commit baa16371c9525f24d508508e4d296c031e1de29c ]
+[ Upstream commit 9b87f43537acfa24b95c236beba0f45901356eb2 ]
 
-pm_runtime_get_sync will increment pm usage counter
-even it failed. Forgetting to putting operation will
-result in reference leak here. We fix it by replacing
-it with pm_runtime_resume_and_get to keep usage counter
-balanced.
+The tqmx86 MFD driver was passing IRQ 0 for "no IRQ" in the past. This
+causes warnings with newer kernels.
 
-Fixes: 4f3ceca254e0f ("dmaengine: stm32-dmamux: Add PM Runtime support")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20210607064640.121394-3-zhangqilong3@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Prepare the gpio-tqmx86 driver for the fixed MFD driver by handling a
+missing IRQ properly.
+
+Fixes: b868db94a6a7 ("gpio: tqmx86: Add GPIO from for this IO controller")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/stm32-dmamux.c | 6 +++---
+ drivers/gpio/gpio-tqmx86.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dma/stm32-dmamux.c b/drivers/dma/stm32-dmamux.c
-index a10ccd964376..bddd3b23f33f 100644
---- a/drivers/dma/stm32-dmamux.c
-+++ b/drivers/dma/stm32-dmamux.c
-@@ -137,7 +137,7 @@ static void *stm32_dmamux_route_allocate(struct of_phandle_args *dma_spec,
+diff --git a/drivers/gpio/gpio-tqmx86.c b/drivers/gpio/gpio-tqmx86.c
+index 5022e0ad0fae..0f5d17f343f1 100644
+--- a/drivers/gpio/gpio-tqmx86.c
++++ b/drivers/gpio/gpio-tqmx86.c
+@@ -238,8 +238,8 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int ret, irq;
  
- 	/* Set dma request */
- 	spin_lock_irqsave(&dmamux->lock, flags);
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0) {
- 		spin_unlock_irqrestore(&dmamux->lock, flags);
- 		goto error;
-@@ -336,7 +336,7 @@ static int stm32_dmamux_suspend(struct device *dev)
- 	struct stm32_dmamux_data *stm32_dmamux = platform_get_drvdata(pdev);
- 	int i, ret;
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
++	irq = platform_get_irq_optional(pdev, 0);
++	if (irq < 0 && irq != -ENXIO)
+ 		return irq;
  
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
+ 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+@@ -278,7 +278,7 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
  
-@@ -361,7 +361,7 @@ static int stm32_dmamux_resume(struct device *dev)
- 	if (ret < 0)
- 		return ret;
+ 	pm_runtime_enable(&pdev->dev);
  
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
+-	if (irq) {
++	if (irq > 0) {
+ 		struct irq_chip *irq_chip = &gpio->irq_chip;
+ 		u8 irq_status;
  
 -- 
 2.30.2
