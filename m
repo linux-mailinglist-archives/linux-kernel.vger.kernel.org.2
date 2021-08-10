@@ -2,137 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D673E82D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11ABC3E82D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbhHJSUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:20:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62717 "EHLO mga17.intel.com"
+        id S233913AbhHJSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:21:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232155AbhHJSUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:20:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="195229824"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="195229824"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:19:33 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="503222409"
-Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 11:19:32 -0700
-Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S232466AbhHJSUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:20:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1FA760724;
+        Tue, 10 Aug 2021 18:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628619616;
+        bh=VNhoF4DKiz90uuvdpHoB+AGd6rm+6fOeCpgR3CD4raw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=p6wm1jwaxLHiOXhkwwzrtYSHMMLlIIYdYL+4bwl/Q7cXF+g6jrM0W+EjTvAFfqIoh
+         PDyT7F8rXu8vPb61jHGjtiFIODAfiUBQ2hM9kt8+SRNBaa5u+NmXbv6yd9bRGzKvhq
+         T+sK1t7CYB6kFuodhAF2AJ41hn3O3C9bJ9QFmppbgir2R7yNnXm67EcxSqdQDaCkGL
+         1vCHY5gAkg7sbdCosbWRTtpXvTRbl68gTJEdWUADmi2ht8MA1KawOYoXhYU0p8Hr9W
+         p0TUgDmysIDsUBp7FY2kp+cWlBDuidZyVLo1lLgTDUeCDMocfzheLvUHCvb1b8APEK
+         v7XnpIjxdGQkg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9F46A5C039B; Tue, 10 Aug 2021 11:20:16 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 11:20:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <4b80289a-07a4-bf92-9946-b0a8afb27326@intel.com>
- <20210810151548.4exag5uj73bummsr@black.fi.intel.com>
- <82b8836f-a467-e5ff-08f3-704a85b9faa0@intel.com>
- <20210810173124.vzxpluaepdfe5aum@black.fi.intel.com>
- <51d9168c-ac14-0907-79b3-5d4dd46f92d6@intel.com>
- <20210810175144.uqlddcicyrweqb4j@black.fi.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <615ac2fc-8add-2dc4-22fa-e82d1bb745e1@intel.com>
-Date:   Tue, 10 Aug 2021 11:19:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 31/38] rcu: Replace deprecated CPU-hotplug functions.
+Message-ID: <20210810182016.GI4126399@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210803141621.780504-1-bigeasy@linutronix.de>
+ <20210803141621.780504-32-bigeasy@linutronix.de>
+ <20210803160021.GR4397@paulmck-ThinkPad-P17-Gen-1>
+ <87fsvhsc7y.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210810175144.uqlddcicyrweqb4j@black.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fsvhsc7y.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 10:51 AM, Kirill A. Shutemov wrote:
-> On Tue, Aug 10, 2021 at 10:36:21AM -0700, Dave Hansen wrote:
->>> The difference is going to be substantially lower once we get it optimized
->>> properly.
->> What does this mean?  Is this future work in the kernel or somewhere in
->> the TDX hardware/firmware which will speed things up?
-> Kernel has to be changed to accept memory in 2M and 1G chunks where
-> possible. The interface exists and described in spec, but not yet used in
-> guest kernel.
+On Tue, Aug 10, 2021 at 02:42:09PM +0200, Thomas Gleixner wrote:
+> On Tue, Aug 03 2021 at 09:00, Paul E. McKenney wrote:
+> > On Tue, Aug 03, 2021 at 04:16:14PM +0200, Sebastian Andrzej Siewior wrote:
+> >> The functions get_online_cpus() and put_online_cpus() have been
+> >> deprecated during the CPU hotplug rework. They map directly to
+> >> cpus_read_lock() and cpus_read_unlock().
+> >> 
+> >> Replace deprecated CPU-hotplug functions with the official version.
+> >> The behavior remains unchanged.
+> >> 
+> > I have queued this one and 35/38 (rcutorture) for v5.16.  If you would
+> > prefer to send them some other route, please let me know and:
+> 
+> 5.15 would be appreciated so we can get rid of the old interface around
+> rc1.
 
-From a quick scan of the spec, I only see:
+Fair enough!  I have rebased to pull those two patches into my v5.15 pile.
 
-> 7.9.3. Page Acceptance by the Guest TD: TDG.MEM.PAGE.ACCEPT ... The guest
-> TD can accept a dynamically added 4KB page using TDG.MEM.PAGE.ACCEPT
-> with the page GPA as an input.
-Is there some other 2M/1G page-acceptance call that I'm missing?
-
-> It would cut hypercall overhead dramatically. It makes upfront memory
-> accept more bearable and lowers latency of lazy memory accept. So I expect
-> the gap being not 20x, but like 3-5x (which is still huge).
-
-It would be nice to be able to judge the benefits of this series based
-on the final form.  I guess we'll take what we can get, though.
-
-Either way, I'd still like to see some *actual* numbers for at least one
-configuration:
-
-	With this series applied, userspace starts to run at X seconds
-	after kernel boot.  Without this series, userspace runs at Y
-	seconds.
+							Thanx, Paul
