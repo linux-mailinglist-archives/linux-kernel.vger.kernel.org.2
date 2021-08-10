@@ -2,117 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703A43E561B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB573E5627
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235532AbhHJI7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        id S238537AbhHJJCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238426AbhHJI7R (ORCPT
+        with ESMTP id S233487AbhHJJCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:59:17 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49B0C0613D3;
-        Tue, 10 Aug 2021 01:58:55 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id o1-20020a05600c5101b02902e676fe1f04so1368381wms.1;
-        Tue, 10 Aug 2021 01:58:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DZGtTjtzuONYDWQ02eZzQw+Y6sEYh4NUv+medlIAmQg=;
-        b=egqehrq7CkJ97r5UIn8xQu8mS1JgYuuTIE88Yr6sIQfBuwd2f3cHYoXKMX5k8AeOXT
-         zcUZLaJ8nM2QHotO5d3amELtbpr5YHHBnRivUmGei8ob2B0yF/kE17hSgB2+UeCPt6bs
-         /XBwAilgaoeOgcZS/M1mzAMCszKBTxDuu7jvE5qEuROo0PihhQjFwWlKxFcDxcAkBClU
-         KgEZC/o1yeHBeQM70+arvJSHFwDSSWfSN9IeCCFzfSo5s+/YISjacxmz6WTxzGtZVAa/
-         ULKKC+SUT3ZMYXSc2AErLxggUjsNYlYgQ4kQoukWF3kc35qWCOX0ClymcFvgI76KgaXI
-         hCaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DZGtTjtzuONYDWQ02eZzQw+Y6sEYh4NUv+medlIAmQg=;
-        b=rChzf6l/Jdgyn/jCd+2IOqGokTK1BWOzyW+b2i0viBbWlz+fWnRcIOIu87dmI1v82a
-         GwpQzN7DLpad3dpdCWLGHKxOrzX32UCBESiQ8fP0hl0LaUY1mWt8j3osMk4TBNMlq624
-         xiM0FvFjqlHOi0wEwpqdGTH6KkWKnluziLbAlKyRCwRP3a5VhPm5iHRvExpbFtWIuWih
-         Uag/B9NT6kpRBdHuiqc0DJJV4uLFhlAKIGZB8lDBKkMwCBGuJ87jlu5rN5cwKwXRNDVX
-         Sph0HGGc5ei38higsyrCEDY6GrMfMjPoDdZUglIiDaD6Dfe/k14AJacxmA2d3Nfhi32w
-         n4PA==
-X-Gm-Message-State: AOAM530I6qdKnp/lDh4KkeWvHcL8Lx60K/nO48AWU7LPQ6/MphOvA3fZ
-        JCTLscPemnv3BPjjgi3H3GE=
-X-Google-Smtp-Source: ABdhPJzPEKr39AcsB3Lagut2U7pslSZe1FaUFeq/Uoj2qWkA8L7OvGIH6bMmf40+xCTrTTMonQ/omQ==
-X-Received: by 2002:a1c:1904:: with SMTP id 4mr15181735wmz.93.1628585934443;
-        Tue, 10 Aug 2021 01:58:54 -0700 (PDT)
-Received: from ziggy.stardust ([207.188.163.204])
-        by smtp.gmail.com with ESMTPSA id o17sm22127178wrw.17.2021.08.10.01.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 01:58:54 -0700 (PDT)
-Subject: Re: Aw: [PATCH v8, 2/2] soc: mediatek: mmsys: Add mt8192 mmsys
- routing table
-To:     Frank Wunderlich <frank-w@public-files.de>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-References: <1627894773-23872-1-git-send-email-yongqiang.niu@mediatek.com>
- <1627894773-23872-3-git-send-email-yongqiang.niu@mediatek.com>
- <trinity-a5eeacb8-1625-4111-b613-19ee1609b902-1628062221917@3c-app-gmx-bap67>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <a09da534-274d-3eaf-6c4d-eb2a4817626b@gmail.com>
-Date:   Tue, 10 Aug 2021 10:58:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 10 Aug 2021 05:02:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2EEC0613D3;
+        Tue, 10 Aug 2021 02:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LWjSXu3ag5kZHehwObZvJyOfxlECQy71l/VsOzHy64g=; b=lOdtPS3Id1gpdVmol+wdQrsfGl
+        SAoE3F7nLroPIqyU6puNVVRcRPlGlVqdktfpysA+cvpw6zCX1PfpaRKEyBWeNKYk3kMkANpYVEj61
+        McYSW5DrtE3/0XRQ89rF8ztTVBTdzXOcmdGG0sBPpHxrd4QzZGwyIKUZxgXz/acY++d2EdtnI2PYl
+        +szib6uDRbZrGseaPx9JIuF030P2yPuWYxaz+rvxMmRyA750KvXSp0+PxZXPk3CIsxM4MYDZyEI3w
+        GIE1C9E+VF0zYCComF0DruSrZevTAnAybSR2uJsG3rfr/g5XFebc0AZ5N+tvw/I2tLkSfvX2Y/mF0
+        N0iL6mXQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDNcL-00BvAw-0p; Tue, 10 Aug 2021 09:00:27 +0000
+Date:   Tue, 10 Aug 2021 10:00:13 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        peterx@redhat.com
+Subject: Re: [PATCH 4/7] vfio,vfio-pci: Add vma to pfn callback
+Message-ID: <YRJAHYh5j6Ni6JCl@infradead.org>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+ <162818326742.1511194.1366505678218237973.stgit@omen>
+ <20210806010146.GE1672295@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <trinity-a5eeacb8-1625-4111-b613-19ee1609b902-1628062221917@3c-app-gmx-bap67>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806010146.GE1672295@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 05, 2021 at 10:01:46PM -0300, Jason Gunthorpe wrote:
+> On Thu, Aug 05, 2021 at 11:07:47AM -0600, Alex Williamson wrote:
+> > diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> > index 1e4fc69fee7d..42ca93be152a 100644
+> > +++ b/drivers/vfio/vfio.c
+> > @@ -875,6 +875,22 @@ struct vfio_device *vfio_device_get_from_dev(struct device *dev)
+> >  }
+> >  EXPORT_SYMBOL_GPL(vfio_device_get_from_dev);
+> >  
+> > +static const struct file_operations vfio_device_fops;
+> > +
+> > +int vfio_device_vma_to_pfn(struct vfio_device *device,
+> > +			   struct vm_area_struct *vma, unsigned long *pfn)
+> 
+> A comment here describing the locking conditions the caller must meet
+> would be a good addition.. It looks like this can only work under the
+> i_mmap_lock and the returned pfn can only be taken outside that lock
+> if it is placed in a VMA
+> 
+> Maybe this is not a great API then? Should it be 'populate vma' and
+> call io_remap_pfn_range under the op?
 
-
-On 04/08/2021 09:30, Frank Wunderlich wrote:
-> Hi
-> 
-> can you please test if your device still work after applying this
-> 
-> https://patchwork.kernel.org/project/linux-mediatek/patch/20210729070549.5514-1-linux@fw-web.de/
-> 
-> and
-> 
-> duplicate value constants in your routes?
-> 
-> e.g. changing
-> 
-> +		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-> +		MT8192_DISP_OVL0_2L_MOUT_EN, MT8192_OVL0_MOUT_EN_DISP_RDMA0,
-> 
-> to
-> 
-> +		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-> +		MT8192_DISP_OVL0_2L_MOUT_EN, MT8192_OVL0_MOUT_EN_DISP_RDMA0,
-> +		MT8192_OVL0_MOUT_EN_DISP_RDMA0
-> 
-> regards Frank
-> 
-
-I did a fixup for that in v5.15-tmp/soc
-
-Yongqiang, please test if this is working on the SoC.
-
-Regards,
-Matthias
+Yes, I think that would be a better API.
