@@ -2,146 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43AF3E5485
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAF63E5488
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236932AbhHJHoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
+        id S237010AbhHJHpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236488AbhHJHoa (ORCPT
+        with ESMTP id S234584AbhHJHp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:44:30 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0524C061799
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:44:08 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id b15so9637810ejg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:44:08 -0700 (PDT)
+        Tue, 10 Aug 2021 03:45:29 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E1FC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:45:07 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id k4so12333243wms.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=elqUT9stw2J3iR2l4RxHnGypplqsV8TkYIJkIMW8hsY=;
-        b=Dw2anpOlrs9rV2RbKN404Zn18rw9HV6mvfkE8M1kGMV2Ah+OI2rfEhpzsA9qdOawIF
-         k8THbB9AABfuNY1MbNdd0AcLrxpPD246ArW/bPUC+pr03hqytJJD7OFvzo3N0q/tpZGO
-         tH48kCvdWiYFfAcIV1f5yS5oQiNePxkq4fi3pXrnB2oNtBTWdXNxRQpFSbu0OmyXCusR
-         +W05Ly+4a2nE2bv8/HwAQbH8fmJcv8+1juWLj995sdhCvh4wbwIAVnm3NRBqnxRlLOyy
-         KEmSTLyK4NbrCSV7j939f/4v7zlRHpFqgOALTvOj2N1xjrfa63r8X64WZ/4zirZ1FwSG
-         ug5Q==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMD9lc87gLR9mUn618m2da6Xz9eP1IZPnQ6Y9giCJ60=;
+        b=BSFNkPJACLhV7hLuaLowjcRt/sPZEm0/yQFPGUWVk8jdvEPPtc2D1knHwsLdyMpkou
+         qNsxfp2wr87iUy6Vpi0872VvSZ0HE0BHAHUV8vC1aMkwrY8kVAdMCSFFaa/02CY12fbR
+         jbxunqViKB9ISUtq+whCT38QMukoDYl2bxV8S8xACEv3NXdCiwtZGjz9R0EAUmkoQK7B
+         JyCGcFjXGsrElkQ/RL4Z/QhnCeS4rgeCWpekkSM3AI4usUVZ9D4VLFbb62gW59rAVeMa
+         M7LPKMH4SdT+U0Pl2e9cQhnKxtKOaFx7cJPx7ZnqzlP0T2562RiYH2xfky24+VET0PsC
+         DA2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=elqUT9stw2J3iR2l4RxHnGypplqsV8TkYIJkIMW8hsY=;
-        b=CFmawEo7+bNl7nPRAJxHjAWWTps1qLh++uSfWIJM3aLmIlu+Cij7v4+IPPIlXtXFeh
-         k+7uCQNc+GUHoTyQUB4pyeGTrHw2aEyDu1vXqNN7QTmYlK97QiOgbCHMe9+qsZO3LMM1
-         PDLH4VS5LUFAy8g7pzR5rxWQA/EW8ZrBBVJnTc/XDPTJpDlLf8wpMfAsnZ8B3zzD58MX
-         G9/5cjT2NaJG6IA1SKdzePFd3g2QA4RzNaTxr7mD1+qk4CWFsj8Nw4U0ImXYB/lON0w0
-         BXysCNdG0e7YvodVh+C356qzYB/3UF/s6HuTeRm/cyGCNRN2kaEUU6wz+XCTEWyFWK0G
-         aMyQ==
-X-Gm-Message-State: AOAM532IqUvrDpWMH/FYviCq26DAuaAKqd6gJ9gz75xlAnWwpQnLioi8
-        PyWBoPmgK4rCDrCPmDdLdenDiAQotgz0C9JiBR5O
-X-Google-Smtp-Source: ABdhPJx/TbMGjhieQzq1YqRjJBN7a9WTaXbFyhJM7EzEX+MXvLMAXR31L8+X5gM3dqLz8GqZFLUy0w3uIoYuvmPOUqE=
-X-Received: by 2002:a17:906:8606:: with SMTP id o6mr26642389ejx.247.1628581447154;
- Tue, 10 Aug 2021 00:44:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMD9lc87gLR9mUn618m2da6Xz9eP1IZPnQ6Y9giCJ60=;
+        b=SoxV0OQunpmotVbpbqt7mKcCZZeUnhgqbnbHyMGDwjpdzI4xmblqr+JMFJl+LHeJL4
+         FFNf/Mvtkw1D6dWuA/jv/GyzPTZJx4exDKQVzIpj3T7y3nbKknI1dFwx5n0HAtJvekBU
+         6dxzR93Gn7OX/9q2v87Hj3SEPrdd+znd+LfNGSzxOTibYEx2Ed788ppiHJ61PXKxEEQb
+         7hJh52yK9zQdqeLC1SZ0IwAO2afPz+0lLpnFOuMKfL+ydmBYeNjC8dJ2LoG9LkHBOfYA
+         Iz4PhUCFUGBCGhxnKI8oivM3NS5vJScexCfntbFovFQdDGZnX0ZfGgc7mLLQtSRSbKxq
+         ZtzA==
+X-Gm-Message-State: AOAM530e+vEXF1/XUNLSu2k6DokCXlxy7weQGKh8qxgT5Y1MqE/Z6Z4H
+        /+f/IfvGdCxVLxfc7izCn4+egw==
+X-Google-Smtp-Source: ABdhPJzdiSUv999rtG5HAGMcE0/1qlYDTiib5nym8IELAKkgpweMXGgK5t8noa6UEbiHUWkDT+fbhg==
+X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr3093610wmq.26.1628581505690;
+        Tue, 10 Aug 2021 00:45:05 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id y21sm1845450wma.38.2021.08.10.00.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 00:45:05 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, arnd@arndb.de
+Subject: [PATCH] staging: r8188eu: remove rtw_ioctl function
+Date:   Tue, 10 Aug 2021 08:45:04 +0100
+Message-Id: <20210810074504.957-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-2-xieyongji@bytedance.com>
- <43d88942-1cd3-c840-6fec-4155fd544d80@redhat.com> <CACycT3vcpwyA3xjD29f1hGnYALyAd=-XcWp8+wJiwSqpqUu00w@mail.gmail.com>
- <6e05e25e-e569-402e-d81b-8ac2cff1c0e8@arm.com> <CACycT3sm2r8NMMUPy1k1PuSZZ3nM9aic-O4AhdmRRCwgmwGj4Q@mail.gmail.com>
- <417ce5af-4deb-5319-78ce-b74fb4dd0582@arm.com> <CACycT3vARzvd4-dkZhDHqUkeYoSxTa2ty0z0ivE1znGti+n1-g@mail.gmail.com>
- <8c381d3d-9bbd-73d6-9733-0f0b15c40820@redhat.com> <CACycT3steXFeg7NRbWpo2J59dpYcumzcvM2zcPJAVe40-EvvEg@mail.gmail.com>
- <b427cf12-2ff6-e5cd-fe6a-3874d8622a29@redhat.com>
-In-Reply-To: <b427cf12-2ff6-e5cd-fe6a-3874d8622a29@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 10 Aug 2021 15:43:56 +0800
-Message-ID: <CACycT3vuBdmWdu4X9wjCO0hm+O0xH2Uf0S2ZTk4O_pL2jX6Y5g@mail.gmail.com>
-Subject: Re: [PATCH v10 01/17] iova: Export alloc_iova_fast() and free_iova_fast()
-To:     Jason Wang <jasowang@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     kvm <kvm@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        songmuchun@bytedance.com, Jens Axboe <axboe@kernel.dk>,
-        He Zhe <zhe.he@windriver.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, bcrl@kvack.org,
-        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:02 AM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/8/9 =E4=B8=8B=E5=8D=881:56, Yongji Xie =E5=86=99=E9=81=93:
-> > On Thu, Aug 5, 2021 at 9:31 PM Jason Wang <jasowang@redhat.com> wrote:
-> >>
-> >> =E5=9C=A8 2021/8/5 =E4=B8=8B=E5=8D=888:34, Yongji Xie =E5=86=99=E9=81=
-=93:
-> >>>> My main point, though, is that if you've already got something else
-> >>>> keeping track of the actual addresses, then the way you're using an
-> >>>> iova_domain appears to be something you could do with a trivial bitm=
-ap
-> >>>> allocator. That's why I don't buy the efficiency argument. The main
-> >>>> design points of the IOVA allocator are to manage large address spac=
-es
-> >>>> while trying to maximise spatial locality to minimise the underlying
-> >>>> pagetable usage, and allocating with a flexible limit to support
-> >>>> multiple devices with different addressing capabilities in the same
-> >>>> address space. If none of those aspects are relevant to the use-case=
- -
-> >>>> which AFAICS appears to be true here - then as a general-purpose
-> >>>> resource allocator it's rubbish and has an unreasonably massive memo=
-ry
-> >>>> overhead and there are many, many better choices.
-> >>>>
-> >>> OK, I get your point. Actually we used the genpool allocator in the
-> >>> early version. Maybe we can fall back to using it.
-> >>
-> >> I think maybe you can share some perf numbers to see how much
-> >> alloc_iova_fast() can help.
-> >>
-> > I did some fio tests[1] with a ram-backend vduse block device[2].
-> >
-> > Following are some performance data:
-> >
-> >                              numjobs=3D1   numjobs=3D2    numjobs=3D4  =
- numjobs=3D8
-> > iova_alloc_fast    145k iops      265k iops      514k iops      758k io=
-ps
-> >
-> > iova_alloc            137k iops     170k iops      128k iops      113k =
-iops
-> >
-> > gen_pool_alloc   143k iops      270k iops      458k iops      521k iops
-> >
-> > The iova_alloc_fast() has the best performance since we always hit the
-> > per-cpu cache. Regardless of the per-cpu cache, the genpool allocator
-> > should be better than the iova allocator.
->
->
-> I think we see convincing numbers for using iova_alloc_fast() than the
-> gen_poll_alloc() (45% improvement on job=3D8).
->
+Remove rtw_ioctl function from os_dep/ioctl_linux.c, its declaration
+in include/osdep_intf.h, and finally its inclusion as the value of the
+.ndo_do_ioctl member of struct net_device_ops rtw_netdev_ops in
+os_dep/os_intfs.c.
 
-Yes, so alloc_iova_fast() still seems to be the best choice based on
-performance considerations.
+The e-mail from Arnd Bergmann at:
+https://lore.kernel.org/linux-next/CAK8P3a0WRMNmBmBDerZ0nWPdFZKALnxrj-uUFBkTP-MOtv48vg@mail.gmail.com
+explains the justification for this approach. Essentially, changes from
+net-next make the existing function and its use of SIOCDEVPRIVATE ioctls
+unworkable without changes.
 
-Hi Robin, any comments?
+Functions called from rtw_ioctl that are now no longer accessible will
+be cleaned up in further patches. Additionally, once these changes have
+made their way downstream to the staging branch, we can modify and
+reconnect rtw_android_priv_cmd via ndo_siocdevprivate in struct
+net_device_ops.
 
-Thanks,
-Yongji
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/r8188eu/include/osdep_intf.h |  2 --
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 28 --------------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c    |  1 -
+ 3 files changed, 31 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/include/osdep_intf.h b/drivers/staging/r8188eu/include/osdep_intf.h
+index 1915c926faac..3ea60feee2db 100644
+--- a/drivers/staging/r8188eu/include/osdep_intf.h
++++ b/drivers/staging/r8188eu/include/osdep_intf.h
+@@ -48,8 +48,6 @@ u32 rtw_start_drv_threads(struct adapter *padapter);
+ void rtw_stop_drv_threads (struct adapter *padapter);
+ void rtw_cancel_all_timer(struct adapter *padapter);
+ 
+-int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
+-
+ int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname);
+ struct net_device *rtw_init_netdev(struct adapter *padapter);
+ u16 rtw_recv_select_queue(struct sk_buff *skb);
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index 34dce01e469c..beabbc84232f 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -8097,31 +8097,3 @@ static int rtw_ioctl_wext_private(struct net_device *dev, union iwreq_data *wrq_
+ 	kfree(output);
+ 	return err;
+ }
+-
+-#include "../include/rtw_android.h"
+-int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+-{
+-	struct iwreq *wrq = (struct iwreq *)rq;
+-	int ret = 0;
+-
+-	switch (cmd) {
+-	case RTL_IOCTL_WPA_SUPPLICANT:
+-		ret = wpa_supplicant_ioctl(dev, &wrq->u.data);
+-		break;
+-#ifdef CONFIG_88EU_AP_MODE
+-	case RTL_IOCTL_HOSTAPD:
+-		ret = rtw_hostapd_ioctl(dev, &wrq->u.data);
+-		break;
+-#endif /*  CONFIG_88EU_AP_MODE */
+-	case SIOCDEVPRIVATE:
+-		ret = rtw_ioctl_wext_private(dev, &wrq->u);
+-		break;
+-	case (SIOCDEVPRIVATE+1):
+-		ret = rtw_android_priv_cmd(dev, rq, cmd);
+-		break;
+-	default:
+-		ret = -EOPNOTSUPP;
+-		break;
+-	}
+-	return ret;
+-}
+diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
+index 935e35c82666..7d17c765205c 100644
+--- a/drivers/staging/r8188eu/os_dep/os_intfs.c
++++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
+@@ -692,7 +692,6 @@ static const struct net_device_ops rtw_netdev_ops = {
+ 	.ndo_select_queue	= rtw_select_queue,
+ 	.ndo_set_mac_address = rtw_net_set_mac_address,
+ 	.ndo_get_stats = rtw_net_get_stats,
+-	.ndo_do_ioctl = rtw_ioctl,
+ };
+ 
+ int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname)
+-- 
+2.31.1
+
