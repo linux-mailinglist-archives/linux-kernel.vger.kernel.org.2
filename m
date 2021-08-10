@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535E63E8024
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456AC3E7EF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236016AbhHJRqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:46:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41108 "EHLO mail.kernel.org"
+        id S230289AbhHJRgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:36:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235802AbhHJRnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:43:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 035D66113C;
-        Tue, 10 Aug 2021 17:39:12 +0000 (UTC)
+        id S233151AbhHJRew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:34:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7D32610A8;
+        Tue, 10 Aug 2021 17:34:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617153;
-        bh=psmonxU4fj2J0uGbPf98ubi8ntmCaxfFa3kfiOLMok4=;
+        s=korg; t=1628616870;
+        bh=hUNZlVuOy/RNHlH250TGXEh9nB8tVl29TK3jqQjXNIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c5RpiRwKugBGksrCbKTJQmhY7wmYWkWn9aizn88Zw9QDiXZ2vlVJIZvhbwxMxjWck
-         QYiDq51rAAuqEIhCFhmrGdpc+RqfkUoznW0Ss6w6/yfQQC/04acY01i6Gp8JBmxoKm
-         OGp3/2R9ZyxMicKU/QCGdlFs7ZjmwCcbDwe1l9HU=
+        b=oNtGTFUKEQIxdu1BcRXRDj5lSFWJmjZ3P/Ez5PDVCMWMwavRa8jyNFy9or++wI6n4
+         MdD+ENwnEQJr3sbjeYVqK60AqCgIWp875c0UmHcw3GJAyGrfHfW45JJ1bFjLZbAxM7
+         Ljn9Ddc63qw4rt8lMbDqdbo0LrbGJj7Rmk6PzoFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Maxim Devaev <mdevaev@gmail.com>
-Subject: [PATCH 5.10 067/135] usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers
-Date:   Tue, 10 Aug 2021 19:30:01 +0200
-Message-Id: <20210810172957.986283610@linuxfoundation.org>
+        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 29/85] mips: Fix non-POSIX regexp
+Date:   Tue, 10 Aug 2021 19:30:02 +0200
+Message-Id: <20210810172949.191453405@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Devaev <mdevaev@gmail.com>
+From: H. Nikolaus Schaller <hns@goldelico.com>
 
-commit afcff6dc690e24d636a41fd4bee6057e7c70eebd upstream.
+[ Upstream commit 28bbbb9875a35975904e46f9b06fa689d051b290 ]
 
-The USB HID standard declares mandatory support for GET_IDLE and SET_IDLE
-requests for Boot Keyboard. Most hosts can handle their absence, but others
-like some old/strange UEFIs and BIOSes consider this a critical error
-and refuse to work with f_hid.
+When cross compiling a MIPS kernel on a BSD based HOSTCC leads
+to errors like
 
-This primitive implementation of saving and returning idle is sufficient
-to meet the requirements of the standard and these devices.
+  SYNC    include/config/auto.conf.cmd - due to: .config
+egrep: empty (sub)expression
+  UPD     include/config/kernel.release
+  HOSTCC  scripts/dtc/dtc.o - due to target missing
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-Link: https://lore.kernel.org/r/20210721180351.129450-1-mdevaev@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It turns out that egrep uses this egrep pattern:
+
+		(|MINOR_|PATCHLEVEL_)
+
+This is not valid syntax or gives undefined results according
+to POSIX 9.5.3 ERE Grammar
+
+	https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
+
+It seems to be silently accepted by the Linux egrep implementation
+while a BSD host complains.
+
+Such patterns can be replaced by a transformation like
+
+	"(|p1|p2)" -> "(p1|p2)?"
+
+Fixes: 48c35b2d245f ("[MIPS] There is no __GNUC_MAJOR__")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_hid.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -41,6 +41,7 @@ struct f_hidg {
- 	unsigned char			bInterfaceSubClass;
- 	unsigned char			bInterfaceProtocol;
- 	unsigned char			protocol;
-+	unsigned char			idle;
- 	unsigned short			report_desc_length;
- 	char				*report_desc;
- 	unsigned short			report_length;
-@@ -523,6 +524,14 @@ static int hidg_setup(struct usb_functio
- 		goto respond;
- 		break;
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 5403a91ce098..9ff2c70763a0 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -320,7 +320,7 @@ KBUILD_LDFLAGS		+= -m $(ld-emul)
  
-+	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
-+		  | HID_REQ_GET_IDLE):
-+		VDBG(cdev, "get_idle\n");
-+		length = min_t(unsigned int, length, 1);
-+		((u8 *) req->buf)[0] = hidg->idle;
-+		goto respond;
-+		break;
-+
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
- 		  | HID_REQ_SET_REPORT):
- 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
-@@ -546,6 +555,14 @@ static int hidg_setup(struct usb_functio
- 		goto stall;
- 		break;
+ ifdef CONFIG_MIPS
+ CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
+-	egrep -vw '__GNUC_(|MINOR_|PATCHLEVEL_)_' | \
++	egrep -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
+ 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
+ endif
  
-+	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
-+		  | HID_REQ_SET_IDLE):
-+		VDBG(cdev, "set_idle\n");
-+		length = 0;
-+		hidg->idle = value;
-+		goto respond;
-+		break;
-+
- 	case ((USB_DIR_IN | USB_TYPE_STANDARD | USB_RECIP_INTERFACE) << 8
- 		  | USB_REQ_GET_DESCRIPTOR):
- 		switch (value >> 8) {
-@@ -773,6 +790,7 @@ static int hidg_bind(struct usb_configur
- 	hidg_interface_desc.bInterfaceSubClass = hidg->bInterfaceSubClass;
- 	hidg_interface_desc.bInterfaceProtocol = hidg->bInterfaceProtocol;
- 	hidg->protocol = HID_REPORT_PROTOCOL;
-+	hidg->idle = 1;
- 	hidg_ss_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
- 	hidg_ss_in_comp_desc.wBytesPerInterval =
- 				cpu_to_le16(hidg->report_length);
+-- 
+2.30.2
+
 
 
