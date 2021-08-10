@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F763E56C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62553E56C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238951AbhHJJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:25:01 -0400
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:36701 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234739AbhHJJY5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:24:57 -0400
-Received: by mail-ua1-f52.google.com with SMTP id v3so8300356uau.3;
-        Tue, 10 Aug 2021 02:24:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ICqADYaP1A14+MyANtx/aXP29/vtA2xTZTvUmJgQydA=;
-        b=qX1PtnwZCIwCfUbDCXChUb0CPdkFiFLNtSVl2zNY5SrQLc4dwYn7dlXYV9uK1fC3td
-         1j4pNAC0ZXFsAJad7ZyrDFjHaJhsKROh02IC7hUhMwD/ylLiyouwEKmbJokVaUp0Sx8F
-         3UXmZZeM3+OOqUDo15igvAaTRJ+yRbWlcorGiSSZK2cpaQ+xX8UxG07Kvvg51lDuw4/Q
-         Zb0nsNyWXDMjcFhGOeNivYaq62eRAKUuckRa8n32WhSwix6IgjHitqmm011qvyUUn1x+
-         GALJJ7Lpzb6xJqRrAUrdAkmMAaGwwcFLO9nW8efdFGSzFjrCfTfomgNp/m/dxGijih5n
-         RE2Q==
-X-Gm-Message-State: AOAM532kfE0CW/qybN+lV015IYZRN28l2h/3LfLSXHc8TKgC04/D3qKV
-        hDD2LJs+dXhmpBsOrhyDafq7tIhQeIegzMhMH5Y=
-X-Google-Smtp-Source: ABdhPJx0+WKs4BIH2VfJ9bQwS28hkA/EVWEvawlX2BcIkosS8SlaxLrvTttwLfx7NXsyDcZcgZofzopA9Ko/fGvHiyM=
-X-Received: by 2002:ab0:1d05:: with SMTP id j5mr5141579uak.2.1628587473228;
- Tue, 10 Aug 2021 02:24:33 -0700 (PDT)
+        id S236758AbhHJJZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:25:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238969AbhHJJZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:25:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC2E60F55;
+        Tue, 10 Aug 2021 09:25:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628587516;
+        bh=eHYXxeeTTCfLZWCr2FPYAisygIo3VzVBmpV01qv1r5s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ib2ODbgk/Zf1XANaJzh0QAgm52Vglsjf94B6af6dkjYhi4ApFLUbImQcwLY9kVl4v
+         6ofhvVCqGPDXnlVa5FPsbhEdlMAkdK6jUmme3JRrpkL7FVMIps8LK9+6/c9i8ktYk3
+         wfovRjMd2mELaooN3MxaB+iFL69zyGx6c+iw0FV7LlKSX10RiD+vOhZskusuVCUb9+
+         +itbbZXfJ5y8E58Mmlasj69Al1Yk8IA5AGeFBwImSy1zfRpL52K7IXl2da4WzQhfX0
+         +eNmZmUOJ4FYlWUY8R8fJVgPPZj2n/oLM8bTLZE13DAPvga3ryNOFbhcPKyNPdLCjY
+         eAqur5Clrqsfg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix crash when unbind multiport slave
+Date:   Tue, 10 Aug 2021 12:25:11 +0300
+Message-Id: <17ec98989b0ba88f7adfbad68eb20bce8d567b44.1628587493.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210727112328.18809-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210727112328.18809-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210727112328.18809-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 10 Aug 2021 11:24:22 +0200
-Message-ID: <CAMuHMdWUr94SrsmJ_Qu8F=YqvWiKhUURpUJ=FHofQWhZBf=N3A@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] arm64: dts: renesas: rzg2l-smarc: Add scif0 pins
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+From: Maor Gottlieb <maorg@nvidia.com>
 
-On Tue, Jul 27, 2021 at 1:23 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add scif0 pins in pinctrl node and update the scif0 node
-> to include pinctrl properties.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Fix the below crash when delete slave from the unaffiliated list
+twice. First time when the slave is bounded to the master and the
+second when the slave is unloaded.
 
-Thanks for your patch!
+Fix it by checking if slave is unaffiliated (doesn't have ib device)
+before removing from the list.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[ 5140.584361] RIP: 0010:mlx5r_mp_remove+0x4e/0xa0 [mlx5_ib]
+[ 5140.595866] Call Trace:
+[ 5140.596213]  auxiliary_bus_remove+0x18/0x30
+[ 5140.596738]  __device_release_driver+0x177/x220
+[ 5140.597304]  device_release_driver+0x24/0x30
+[ 5140.597832]  bus_remove_device+0xd8/0x140
+[ 5140.598339]  device_del+0x18a/0x3e0
+[ 5140.598795]  mlx5_rescan_drivers_locked+0xa9/0x210 [mlx5_core]
+[ 5140.599521]  mlx5_unregister_device+0x34/0x60 [mlx5_core]
+[ 5140.600184]  mlx5_uninit_one+0x32/0x100 [mlx5_core]
+[ 5140.600792]  remove_one+0x6e/0xe0 [mlx5_core]
+[ 5140.601350]  pci_device_remove+0x36/0xa0
+[ 5140.601846]  __device_release_driver+0x177/0x220
+[ 5140.602408]  device_driver_detach+0x3c/0xa0
+[ 5140.602931]  unbind_store+0x113/0x130
+[ 5140.603400]  kernfs_fop_write_iter+0x110/0x1a0
+[ 5140.603942]  new_sync_write+0x116/0x1a0
+[ 5140.604428]  vfs_write+0x1ba/0x260
+[ 5140.604873]  ksys_write+0x5f/0xe0
+[ 5140.605310]  do_syscall_64+0x3d/0x90
+[ 5140.605778]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-As this depends on the pin control driver, which goes in through a
-different path, I think I have to postpone this to v5.16.
+Fixes: 93f8244431ad ("RDMA/mlx5: Convert mlx5_ib to use auxiliary bus")
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 094c976b1eed..2507051f7b89 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -4454,7 +4454,8 @@ static void mlx5r_mp_remove(struct auxiliary_device *adev)
+ 	mutex_lock(&mlx5_ib_multiport_mutex);
+ 	if (mpi->ibdev)
+ 		mlx5_ib_unbind_slave_port(mpi->ibdev, mpi);
+-	list_del(&mpi->list);
++	else
++		list_del(&mpi->list);
+ 	mutex_unlock(&mlx5_ib_multiport_mutex);
+ 	kfree(mpi);
+ }
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
