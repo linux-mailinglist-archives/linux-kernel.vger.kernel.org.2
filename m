@@ -2,129 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E213E5C90
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E453E5C96
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242123AbhHJOJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:09:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:39619 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240286AbhHJOJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:09:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="195175412"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="195175412"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 07:09:02 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="503142093"
-Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 07:09:01 -0700
-Subject: Re: [PATCH 0/5] x86: Impplement support for unaccepted memory
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4b80289a-07a4-bf92-9946-b0a8afb27326@intel.com>
-Date:   Tue, 10 Aug 2021 07:08:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241509AbhHJOLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233046AbhHJOLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:11:24 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EC0C0613D3;
+        Tue, 10 Aug 2021 07:11:01 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id d4so12896100lfk.9;
+        Tue, 10 Aug 2021 07:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Q4ynKSZrlzxY6UgcjVFs5XU8y4Ot1KDO144fUqq/Tac=;
+        b=WHkasInhxybnCNi2BzTg0K/0mK03T6Bj4uam9z5/GOep7FpH/K4xqY7oQZOyLMVVuz
+         JrYl6NIFigl+r/dqpCFY512f1JAi49eIMEBjPDAmQQIhhyIsXWfaNFDHGKO2mHeM4ZS6
+         SLMy9T9TcPlo6SosnTnaR3M7khZtSd0zyZEtKB4zGZKh8um1UxRFrbSQ50SEt/zWYoc5
+         gyHexvD6k6FNmYvrCTl0T0eCth2wDBpc9sAqipC2vZEv6OgwL/H9+WvuCYhsUSTboV0U
+         d4v0mo2CLSPO9csjdafZHEHLNyGERz8WgdrhTw1TMHf1LmYvA4qfUt+L1p+OKQuPNO3r
+         Dt7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Q4ynKSZrlzxY6UgcjVFs5XU8y4Ot1KDO144fUqq/Tac=;
+        b=TU3qR0u5gHmfVEEKGyykzn0uisa3NarwFozcUkMX/ahzlwNNirop2a0MPIQIekt2p6
+         MRBhVpyAxSkVkvfiLn7l1XUR6u59z3RCVWIxRZY5vfSz5iTfkNjMWawZjC4qCPcdJi9A
+         H+BtmW4FPeeE/9nIOdQ3KB5Wz2sZ834VLGNN259NIEJSvM4nsQGmAbGBMyc29j97fewp
+         zI90bk0jFwuqc/BZsBLIVeTewLy0YEbXAskcRdJ5vVXNQX+sfeRZ0LkB64T+FxgejOfv
+         8YlOxDjhDV1u2Nj7wcSWU3HJikLBSmMnJJWb84hCcwdOOjlKUBcyc8wqMNIbCLt5AYXW
+         pYWw==
+X-Gm-Message-State: AOAM53324a1bZ9UAeffjsnhCqYyAZoO4AGSn8CPaxDW7/F9czgJ1bFJL
+        jI7EFjCXAksg9ENYbQWZg4Y=
+X-Google-Smtp-Source: ABdhPJzqsS/2yGBkKpw4N+uQCqgP93F3TlP9ctQLZkS9vGFH7yjMmyd3O9i9iRV6/1t+B6QpdjlOmA==
+X-Received: by 2002:a05:6512:6d3:: with SMTP id u19mr14671130lff.483.1628604658642;
+        Tue, 10 Aug 2021 07:10:58 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id i3sm1470644lfr.217.2021.08.10.07.10.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 07:10:57 -0700 (PDT)
+Subject: Re: [syzbot] general protection fault in udmabuf_create
+To:     syzbot <syzbot+e9cd3122a37c5d6c51e8@syzkaller.appspotmail.com>,
+        christian.koenig@amd.com, dongwon.kim@intel.com,
+        dri-devel@lists.freedesktop.org, kraxel@redhat.com,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, sumit.semwal@linaro.org,
+        syzkaller-bugs@googlegroups.com, vivek.kasireddy@intel.com
+References: <000000000000263db905c934be32@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <d7bd2585-ef80-d2ab-c474-acbe238c54a0@gmail.com>
+Date:   Tue, 10 Aug 2021 17:10:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <000000000000263db905c934be32@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 11:26 PM, Kirill A. Shutemov wrote:
-> UEFI Specification version 2.9 introduces concept of memory acceptance:
-> Some Virtual Machine platforms, such as Intel TDX or AMD SEV-SNP,
-> requiring memory to be accepted before it can be used by the guest.
-> Accepting happens via a protocol specific for the Virtrual Machine
-> platform.
+On 8/10/21 4:47 PM, syzbot wrote:
+> Hello,
 > 
-> Accepting memory is costly and it makes VMM allocate memory for the
-> accepted guest physical address range. We don't want to accept all memory
-> upfront.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    7999516e20bd Add linux-next specific files for 20210806
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10f15f8e300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2f518e910b029c31
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e9cd3122a37c5d6c51e8
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1181099a300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b6fce9300000
+> 
+> The issue was bisected to:
+> 
+> commit 16c243e99d335e1ef3059871897119affc98b493
+> Author: Vivek Kasireddy <vivek.kasireddy@intel.com>
+> Date:   Wed Jun 9 18:29:15 2021 +0000
+> 
+>      udmabuf: Add support for mapping hugepages (v4)
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12f73dc9300000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=11f73dc9300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16f73dc9300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+e9cd3122a37c5d6c51e8@syzkaller.appspotmail.com
+> Fixes: 16c243e99d33 ("udmabuf: Add support for mapping hugepages (v4)")
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+> CPU: 0 PID: 6603 Comm: syz-executor127 Not tainted 5.14.0-rc4-next-20210806-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:_compound_head include/linux/page-flags.h:187 [inline]
+> RIP: 0010:get_page include/linux/mm.h:1203 [inline]
+> RIP: 0010:udmabuf_create+0x664/0x16f0 drivers/dma-buf/udmabuf.c:236
+> Code: 03 48 89 84 24 90 00 00 00 e9 38 01 00 00 e8 23 7a f7 fc 4d 89 f4 49 c1 e4 06 4c 03 24 24 49 8d 7c 24 08 48 89 f8 48 c1 e8 03 <42> 80 3c 38 00 0f 85 d3 0d 00 00 4d 8b 6c 24 08 31 ff 4c 89 eb 83
+> RSP: 0018:ffffc90002d7fc70 EFLAGS: 00010202
+> RAX: 0000000000000001 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff888023f69c80 RSI: ffffffff847e4f3d RDI: 0000000000000008
+> RBP: 0000000000000000 R08: fffffffffffff000 R09: 0000000000000000
+> R10: ffffffff847e50f5 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: dffffc0000000000
+> FS:  0000000000935300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000002000020c CR3: 0000000018d16000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   udmabuf_ioctl_create drivers/dma-buf/udmabuf.c:305 [inline]
 
-This could use a bit more explanation.  Any VM is likely to *eventually*
-touch all its memory, so it's not like a VMM has a long-term advantage
-by delaying this.
+The problem is wrong error handling:
 
-So, it must have to do with resource use at boot.  Is this to help boot
-times?
+	hpage = find_get_page_flags(mapping, pgoff, FGP_ACCESSED);
+	if (IS_ERR(hpage)) {
+		ret = PTR_ERR(hpage);
+		goto err;
+	}
 
-I had expected this series, but I also expected it to be connected to
-CONFIG_DEFERRED_STRUCT_PAGE_INIT somehow.  Could you explain a bit how
-this problem is different and demands a totally orthogonal solution?
+find_get_page_flags() return NULL on failure, so this patch should work:
 
-For instance, what prevents us from declaring: "Memory is accepted at
-the time that its 'struct page' is initialized" ?  Then, we use all the
-infrastructure we already have for DEFERRED_STRUCT_PAGE_INIT.
+diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+index 8df761a10251..c57a609db75b 100644
+--- a/drivers/dma-buf/udmabuf.c
++++ b/drivers/dma-buf/udmabuf.c
+@@ -227,8 +227,8 @@ static long udmabuf_create(struct miscdevice *device,
+  				if (!hpage) {
+  					hpage = find_get_page_flags(mapping, pgoff,
+  								    FGP_ACCESSED);
+-					if (IS_ERR(hpage)) {
+-						ret = PTR_ERR(hpage);
++					if (!hpage) {
++						ret = -EINVAL;
+  						goto err;
+  					}
+  				}
 
-This series isn't too onerous, but I do want to make sure that we're not
-reinventing the wheel.
+I am not sure about ret value in case of failure, so I am looking for 
+any reviews :)
+
+
+>   udmabuf_ioctl+0x152/0x2c0 drivers/dma-buf/udmabuf.c:336
+>   vfs_ioctl fs/ioctl.c:51 [inline]
+>   __do_sys_ioctl fs/ioctl.c:874 [inline]
+>   __se_sys_ioctl fs/ioctl.c:860 [inline]
+>   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+With regards,
+Pavel Skripkin
