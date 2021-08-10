@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637283E8147
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3953A3E815B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237458AbhHJR6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:58:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50388 "EHLO mail.kernel.org"
+        id S236375AbhHJR64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:58:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237016AbhHJRyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:54:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 026CD60EB9;
-        Tue, 10 Aug 2021 17:44:12 +0000 (UTC)
+        id S237378AbhHJRyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:54:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46EEA60EFF;
+        Tue, 10 Aug 2021 17:44:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617453;
-        bh=p5SONKJAIgw2X3m/SsTV8vjDuo5sdHycnoXLKK+CB9k=;
+        s=korg; t=1628617455;
+        bh=aC+Hxy9Qty4662lS3IL6kgFcrw0zACzDGOsjZ3zvdBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JsZV4zegGKlU09COaw5RZryY3YofcmKi9rydvmoTjtl4KXiCHX82qOdrMsxM5AERv
-         iFS4ubO+qhO2ak4K62MJw5nbpRqvUvJJPu+sJUscHGXFmGyL79qtEq8BMT0tm+dj2I
-         XvAM65ZhKXQExd2OyfGk5YoJujyMxnvlKex0/cdU=
+        b=QT808uUjkrVYjcJI32GCeeAHq3yCkWtjQ11naXdtsBLVyPj39soWmga5hM3F+aED8
+         i1TjmkWWBCtVDbWXA9iCg6WY/Pz/DQPRq0Fk2yKplDAmuVLsDL/QETL+GV82j5e1ED
+         FX5vevL5V+Mig+UV/snBBbvgFKxNIX3KlUj6SOfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Edmund Dea <edmund.j.dea@intel.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 032/175] spi: imx: mx51-ecspi: Fix low-speed CONFIGREG delay calculation
-Date:   Tue, 10 Aug 2021 19:29:00 +0200
-Message-Id: <20210810173002.020003538@linuxfoundation.org>
+Subject: [PATCH 5.13 033/175] drm/kmb: Enable LCD DMA for low TVDDCV
+Date:   Tue, 10 Aug 2021 19:29:01 +0200
+Message-Id: <20210810173002.052339003@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -41,69 +41,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Edmund Dea <edmund.j.dea@intel.com>
 
-[ Upstream commit 53ca18acbe645656132fb5a329833db711067e54 ]
+[ Upstream commit 0aab5dce395636eddf4e5f33eba88390328a95b4 ]
 
-The spi_imx->spi_bus_clk may be uninitialized and thus also zero in
-mx51_ecspi_prepare_message(), which would lead to division by zero
-in kernel. Since bitbang .setup_transfer callback which initializes
-the spi_imx->spi_bus_clk is called after bitbang prepare_message
-callback, iterate over all the transfers in spi_message, find the
-one with lowest bus frequency, and use that bus frequency for the
-delay calculation.
+There's an undocumented dependency between LCD layer enable bits [2-5]
+and the AXI pipelined read enable bit [28] in the LCD_CONTROL register.
+The proper order of operation is:
 
-Note that it is not possible to move this CONFIGREG delay back into
-the .setup_transfer callback, because that is invoked too late, after
-the GPIO chipselects were already configured.
+1) Clear AXI pipelined read enable bit
+2) Set LCD layers
+3) Set AXI pipelined read enable bit
 
-Fixes: 135cbd378eab ("spi: imx: mx51-ecspi: Reinstate low-speed CONFIGREG delay")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210726100102.5188-1-marex@denx.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+With this update, LCD can start DMA when TVDDCV is reduced down to 700mV.
+
+Fixes: 7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
+Signed-off-by: Edmund Dea <edmund.j.dea@intel.com>
+Signed-off-by: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210728003126.1425028-1-anitha.chrisanthus@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-imx.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/kmb/kmb_drv.c   | 14 ++++++++++++++
+ drivers/gpu/drm/kmb/kmb_plane.c | 15 +++++++++++++--
+ 2 files changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 4aee3db6d6df..2872993550bd 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -505,7 +505,9 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
- 				      struct spi_message *msg)
- {
- 	struct spi_device *spi = msg->spi;
-+	struct spi_transfer *xfer;
- 	u32 ctrl = MX51_ECSPI_CTRL_ENABLE;
-+	u32 min_speed_hz = ~0U;
- 	u32 testreg, delay;
- 	u32 cfg = readl(spi_imx->base + MX51_ECSPI_CONFIG);
+diff --git a/drivers/gpu/drm/kmb/kmb_drv.c b/drivers/gpu/drm/kmb/kmb_drv.c
+index 96ea1a2c11dd..c0b1c6f99249 100644
+--- a/drivers/gpu/drm/kmb/kmb_drv.c
++++ b/drivers/gpu/drm/kmb/kmb_drv.c
+@@ -203,6 +203,7 @@ static irqreturn_t handle_lcd_irq(struct drm_device *dev)
+ 	unsigned long status, val, val1;
+ 	int plane_id, dma0_state, dma1_state;
+ 	struct kmb_drm_private *kmb = to_kmb(dev);
++	u32 ctrl = 0;
  
-@@ -577,8 +579,20 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
- 	 * be asserted before the SCLK polarity changes, which would disrupt
- 	 * the SPI communication as the device on the other end would consider
- 	 * the change of SCLK polarity as a clock tick already.
-+	 *
-+	 * Because spi_imx->spi_bus_clk is only set in bitbang prepare_message
-+	 * callback, iterate over all the transfers in spi_message, find the
-+	 * one with lowest bus frequency, and use that bus frequency for the
-+	 * delay calculation. In case all transfers have speed_hz == 0, then
-+	 * min_speed_hz is ~0 and the resulting delay is zero.
- 	 */
--	delay = (2 * 1000000) / spi_imx->spi_bus_clk;
-+	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
-+		if (!xfer->speed_hz)
-+			continue;
-+		min_speed_hz = min(xfer->speed_hz, min_speed_hz);
-+	}
+ 	status = kmb_read_lcd(kmb, LCD_INT_STATUS);
+ 
+@@ -227,6 +228,19 @@ static irqreturn_t handle_lcd_irq(struct drm_device *dev)
+ 				kmb_clr_bitmask_lcd(kmb, LCD_CONTROL,
+ 						    kmb->plane_status[plane_id].ctrl);
+ 
++				ctrl = kmb_read_lcd(kmb, LCD_CONTROL);
++				if (!(ctrl & (LCD_CTRL_VL1_ENABLE |
++				    LCD_CTRL_VL2_ENABLE |
++				    LCD_CTRL_GL1_ENABLE |
++				    LCD_CTRL_GL2_ENABLE))) {
++					/* If no LCD layers are using DMA,
++					 * then disable DMA pipelined AXI read
++					 * transactions.
++					 */
++					kmb_clr_bitmask_lcd(kmb, LCD_CONTROL,
++							    LCD_CTRL_PIPELINE_DMA);
++				}
 +
-+	delay = (2 * 1000000) / min_speed_hz;
- 	if (likely(delay < 10))	/* SCLK is faster than 100 kHz */
- 		udelay(delay);
- 	else			/* SCLK is _very_ slow */
+ 				kmb->plane_status[plane_id].disable = false;
+ 			}
+ 		}
+diff --git a/drivers/gpu/drm/kmb/kmb_plane.c b/drivers/gpu/drm/kmb/kmb_plane.c
+index d5b6195856d1..ecee6782612d 100644
+--- a/drivers/gpu/drm/kmb/kmb_plane.c
++++ b/drivers/gpu/drm/kmb/kmb_plane.c
+@@ -427,8 +427,14 @@ static void kmb_plane_atomic_update(struct drm_plane *plane,
+ 
+ 	kmb_set_bitmask_lcd(kmb, LCD_CONTROL, ctrl);
+ 
+-	/* FIXME no doc on how to set output format,these values are
+-	 * taken from the Myriadx tests
++	/* Enable pipeline AXI read transactions for the DMA
++	 * after setting graphics layers. This must be done
++	 * in a separate write cycle.
++	 */
++	kmb_set_bitmask_lcd(kmb, LCD_CONTROL, LCD_CTRL_PIPELINE_DMA);
++
++	/* FIXME no doc on how to set output format, these values are taken
++	 * from the Myriadx tests
+ 	 */
+ 	out_format |= LCD_OUTF_FORMAT_RGB888;
+ 
+@@ -526,6 +532,11 @@ struct kmb_plane *kmb_plane_init(struct drm_device *drm)
+ 		plane->id = i;
+ 	}
+ 
++	/* Disable pipeline AXI read transactions for the DMA
++	 * prior to setting graphics layers
++	 */
++	kmb_clr_bitmask_lcd(kmb, LCD_CONTROL, LCD_CTRL_PIPELINE_DMA);
++
+ 	return primary;
+ cleanup:
+ 	drmm_kfree(drm, plane);
 -- 
 2.30.2
 
