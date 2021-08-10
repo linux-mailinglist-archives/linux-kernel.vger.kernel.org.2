@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E923E7F54
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A883E7EAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhHJRj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:39:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41122 "EHLO mail.kernel.org"
+        id S233109AbhHJRer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234559AbhHJRhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:37:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E751B60EB9;
-        Tue, 10 Aug 2021 17:36:03 +0000 (UTC)
+        id S231893AbhHJReB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:34:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 562B1610CF;
+        Tue, 10 Aug 2021 17:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616964;
-        bh=TYT5NeFwsBQ94lj/QQDt11nY09z/HFuhKLvdT1TQT+g=;
+        s=korg; t=1628616818;
+        bh=//W2AOkZKarKR/m0ISvGsAjaLCFLauuC4u1WBYKVT2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSJ4nhPemrxz0jbQNXUvhRWndALgiYXPzmBeFSKQfhGZRGp/SREMS6WbHsabOY/bF
-         BTENGvvbdA0plCoPSVLRai8NlXp2zXapeHBzLTNVIlkAq2AKzs98+rmzBGkDU8/fBF
-         +UhpvQB9GzNdlpl0Jy58lmL9sPY+xM9UzBI3jX4I=
+        b=P5JWlNWM5q/kyw/0Hwsm+WvMuFp1Z7cSssZER604cD1vOInLQ0dkfgHeKVb0cQR6e
+         X7QfGD49P2M9VVVsyZk1kHB41SNnV+2lWCBjmqUuQrqug0mCvrl2eqYqS9R2ZQbPqe
+         PJtzLR1UjfWMfKxRooocotGjkKKR91gBFTI7N7sw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stas Sergeev <stsp2@yandex.ru>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 70/85] KVM: x86: accept userspace interrupt only if no event is injected
+        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 49/54] libata: fix ata_pio_sector for CONFIG_HIGHMEM
 Date:   Tue, 10 Aug 2021 19:30:43 +0200
-Message-Id: <20210810172950.606721789@linuxfoundation.org>
+Message-Id: <20210810172945.820938473@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +40,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Christoph Hellwig <hch@lst.de>
 
-commit fa7a549d321a4189677b0cea86e58d9db7977f7b upstream.
+[ Upstream commit ecef6a9effe49e8e2635c839020b9833b71e934c ]
 
-Once an exception has been injected, any side effects related to
-the exception (such as setting CR2 or DR6) have been taked place.
-Therefore, once KVM sets the VM-entry interruption information
-field or the AMD EVENTINJ field, the next VM-entry must deliver that
-exception.
+Data transfers are not required to be block aligned in memory, so they
+span two pages.  Fix this by splitting the call to >sff_data_xfer into
+two for that case.
 
-Pending interrupts are processed after injected exceptions, so
-in theory it would not be a problem to use KVM_INTERRUPT when
-an injected exception is present.  However, DOSEMU is using
-run->ready_for_interrupt_injection to detect interrupt windows
-and then using KVM_SET_SREGS/KVM_SET_REGS to inject the
-interrupt manually.  For this to work, the interrupt window
-must be delayed after the completion of the previous event
-injection.
+This has been broken since the initial libata import before the damn
+of git, but was uncovered by the legacy ide driver removal.
 
-Cc: stable@vger.kernel.org
-Reported-by: Stas Sergeev <stsp2@yandex.ru>
-Tested-by: Stas Sergeev <stsp2@yandex.ru>
-Fixes: 71cc849b7093 ("KVM: x86: Fix split-irqchip vs interrupt injection window request")
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210709130237.3730959-1-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/ata/libata-sff.c | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3638,8 +3638,17 @@ static int kvm_cpu_accept_dm_intr(struct
- 
- static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
- {
--	return kvm_arch_interrupt_allowed(vcpu) &&
--		kvm_cpu_accept_dm_intr(vcpu);
-+	/*
-+	 * Do not cause an interrupt window exit if an exception
-+	 * is pending or an event needs reinjection; userspace
-+	 * might want to inject the interrupt manually using KVM_SET_REGS
-+	 * or KVM_SET_SREGS.  For that to work, we must be at an
-+	 * instruction boundary and with no events half-injected.
-+	 */
-+	return (kvm_arch_interrupt_allowed(vcpu) &&
-+		kvm_cpu_accept_dm_intr(vcpu) &&
-+		!kvm_event_needs_reinjection(vcpu) &&
-+		!vcpu->arch.exception.pending);
+diff --git a/drivers/ata/libata-sff.c b/drivers/ata/libata-sff.c
+index 7484ffdabd54..ec62d26c32a9 100644
+--- a/drivers/ata/libata-sff.c
++++ b/drivers/ata/libata-sff.c
+@@ -657,6 +657,20 @@ unsigned int ata_sff_data_xfer32(struct ata_queued_cmd *qc, unsigned char *buf,
  }
+ EXPORT_SYMBOL_GPL(ata_sff_data_xfer32);
  
- static int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu,
++static void ata_pio_xfer(struct ata_queued_cmd *qc, struct page *page,
++		unsigned int offset, size_t xfer_size)
++{
++	bool do_write = (qc->tf.flags & ATA_TFLAG_WRITE);
++	unsigned char *buf;
++
++	buf = kmap_atomic(page);
++	qc->ap->ops->sff_data_xfer(qc, buf + offset, xfer_size, do_write);
++	kunmap_atomic(buf);
++
++	if (!do_write && !PageSlab(page))
++		flush_dcache_page(page);
++}
++
+ /**
+  *	ata_pio_sector - Transfer a sector of data.
+  *	@qc: Command on going
+@@ -668,11 +682,9 @@ EXPORT_SYMBOL_GPL(ata_sff_data_xfer32);
+  */
+ static void ata_pio_sector(struct ata_queued_cmd *qc)
+ {
+-	int do_write = (qc->tf.flags & ATA_TFLAG_WRITE);
+ 	struct ata_port *ap = qc->ap;
+ 	struct page *page;
+ 	unsigned int offset;
+-	unsigned char *buf;
+ 
+ 	if (!qc->cursg) {
+ 		qc->curbytes = qc->nbytes;
+@@ -690,13 +702,20 @@ static void ata_pio_sector(struct ata_queued_cmd *qc)
+ 
+ 	DPRINTK("data %s\n", qc->tf.flags & ATA_TFLAG_WRITE ? "write" : "read");
+ 
+-	/* do the actual data transfer */
+-	buf = kmap_atomic(page);
+-	ap->ops->sff_data_xfer(qc, buf + offset, qc->sect_size, do_write);
+-	kunmap_atomic(buf);
++	/*
++	 * Split the transfer when it splits a page boundary.  Note that the
++	 * split still has to be dword aligned like all ATA data transfers.
++	 */
++	WARN_ON_ONCE(offset % 4);
++	if (offset + qc->sect_size > PAGE_SIZE) {
++		unsigned int split_len = PAGE_SIZE - offset;
+ 
+-	if (!do_write && !PageSlab(page))
+-		flush_dcache_page(page);
++		ata_pio_xfer(qc, page, offset, split_len);
++		ata_pio_xfer(qc, nth_page(page, 1), 0,
++			     qc->sect_size - split_len);
++	} else {
++		ata_pio_xfer(qc, page, offset, qc->sect_size);
++	}
+ 
+ 	qc->curbytes += qc->sect_size;
+ 	qc->cursg_ofs += qc->sect_size;
+-- 
+2.30.2
+
 
 
