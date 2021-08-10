@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B873E7C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5443E7C78
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243354AbhHJPhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:37:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33853 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243270AbhHJPhm (ORCPT
+        id S243322AbhHJPjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:39:06 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:35196 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243169AbhHJPik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:37:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628609839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kBYBVLFUuqcbHN0Vn7qdk9GROPKy6ZMoXPiOiWvTwPA=;
-        b=hxmH2uxpJSafv0dk4im773s+8JyKaKr0uA70BtUwaWai1CL6ggNDvap90sWZc5vcbX4DzR
-        o1ixlymA+6YJxgMTXDQjAswyaoJ6uMDIVzEiuMDFp15785f37eQZWUpkinZi9eagf4tOfa
-        bPNbkWN/NSHFgvtle+dm4JZ8XFMbQeI=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-Fzjvfi-mN46pZkNk3_0guA-1; Tue, 10 Aug 2021 11:37:18 -0400
-X-MC-Unique: Fzjvfi-mN46pZkNk3_0guA-1
-Received: by mail-qv1-f71.google.com with SMTP id t9-20020a0562140c69b029033e8884d712so16006070qvj.18
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:37:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=kBYBVLFUuqcbHN0Vn7qdk9GROPKy6ZMoXPiOiWvTwPA=;
-        b=S7HDHpTUkLPHbRC/DYbfcpPGNp3cWHS2JfqX5XfUX37wTtz+m0bNmQH/qGO1OEsHvo
-         T01kT2ycBg9yhrsNgN4hcgo5JY6zzA7dFk9RRdMgFlK+Er80lnxxLSerho0c7VWauA+P
-         1eUk9uV00kwSLujn41sJppBGSZL833wBH2pDajqmLrYM/8ROfqH5EGhPqYavwQSBCA/s
-         +cDd0I3AIQlEdJ0SUssvGnCi+6xRkvOJL6K4wyZGL9VdFXXjyttQb/vkZNDd/3kuvVU9
-         cyONepHzi0e2khCfo2B53B/sRmd/ubwqfp/Nm4TGwCQp1W1AeULKtQKlWq/gQcHLZz79
-         3FAQ==
-X-Gm-Message-State: AOAM531baDc/an2GbvA6kmn1rZJ3ocqtfU2Ki8koH3YxYxijoT4TvOHx
-        h3vpma+zoh2cMyqF7ilUEKR8RsCpatYlP3Guff5UWaly7zCqz4WQQVyXkbHLsBYhBOeM3kGNbXi
-        y20fflkq6sfd33zakj/vuoVyu
-X-Received: by 2002:a05:6214:f0c:: with SMTP id gw12mr18537904qvb.33.1628609837640;
-        Tue, 10 Aug 2021 08:37:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzOm0EFOKMF7EgqNWVhF6h0Ag5o+ey7u/ZRHLmnbXOgs9I+L3hLZXhW5JKjn8aYN/3AGF2qmw==
-X-Received: by 2002:a05:6214:f0c:: with SMTP id gw12mr18537893qvb.33.1628609837376;
-        Tue, 10 Aug 2021 08:37:17 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id f17sm2970346qkm.107.2021.08.10.08.37.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 08:37:16 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3] vm_swappiness=0 should still try to avoid swapping
- anon memory
-To:     Nico Pache <npache@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     hannes@cmpxchg.org, aquini@redhat.com, shakeelb@google.com,
-        llong@redhat.com, mhocko@suse.com, hakavlad@inbox.lv
-References: <20210809223740.59009-1-npache@redhat.com>
-Message-ID: <88f76721-3786-625f-b867-216f7904e116@redhat.com>
-Date:   Tue, 10 Aug 2021 11:37:15 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 10 Aug 2021 11:38:40 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17A75fJN008310;
+        Tue, 10 Aug 2021 10:38:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=D9Z+B+6Uu9IJFjEF/0fUoIcheo5kTw9lcFbulYgfeS4=;
+ b=Qb/uD1otAloGEiu/ytm6kNF1GVc23JbcFH3AQxk79LF81KkFHATKuI8HVLjOVpLIfp0X
+ v5nSSZHdVyD/2mJKcrXPQ1Q9DBADLHmIn78fTZnsXetW+jKIDWtCClxD7wX+Ey/P+pue
+ 6momBOWuYPwJxJkaBB3HqMJGEjWc7kapQprhYnD0WKyQYOyDSbZPrhjl8HASqJqUOFpO
+ k/j0lUSYdWkZJAhAh7S004Nt31dwNMsL8rnShvAKnIKdN37dJboOqLoCDv6xU8OlGrp4
+ bbdZLRbkmH2A+dSD61HP2I3EeScqU2F1XrbDBQFR74BCpM/OZ1LUrhNF1jsMgwlL2cjX gw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3abmrkgkf6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 10 Aug 2021 10:38:04 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 10 Aug
+ 2021 16:38:02 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Tue, 10 Aug 2021 16:38:02 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.221])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DE39A2A9;
+        Tue, 10 Aug 2021 15:38:01 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 00/12] ASoC: cs42l42: Series of bugfixes and improvements
+Date:   Tue, 10 Aug 2021 16:37:47 +0100
+Message-ID: <20210810153759.24333-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210809223740.59009-1-npache@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 7G79ot0PRhJVHNdHnY4DEPtdj217-NYX
+X-Proofpoint-ORIG-GUID: 7G79ot0PRhJVHNdHnY4DEPtdj217-NYX
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 mlxlogscore=349 mlxscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108100099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 6:37 PM, Nico Pache wrote:
-> Since commit 170b04b7ae49 ("mm/workingset: prepare the workingset detection
-> infrastructure for anon LRU") and commit b91ac374346b ("mm: vmscan: enforce
-> inactive:active ratio at the reclaim root") swappiness can start prematurely
-> swapping anon memory. This is due to the assumption that refaulting anon should
-> always allow the shrinker to target anon memory. Add a check for swappiness
-> being >0 before indiscriminately targeting Anon. Before these commits
-> when a user had swappiness=0 anon memory would rarely get swapped; this
-> behavior has remained constant sense RHEL5. This commit keeps that behavior
-Typo: "sense" -> "since"
-> intact and prevents the new workingset refaulting from challenging the anon
-> memory when swappiness=0.
->
-> Anon can still be swapped to prevent OOM. This does not completely disable
-> swapping, but rather tames the refaulting aspect of the code that allows for
-> the deactivating of anon memory.
->
-> We have two customer workloads that discovered this issue:
-> 1) A VM claiming 95% of the hosts memory followed by file reads (never dirty)
->     which begins to challenge the anon. Refaulting the anon working set will then
->     cause the indiscriminant swapping of the anon.
->
-> 2) A VM running a in-memory DB is being populated from file reads.
->     Swappiness is set to 0 or 1 to defer write I/O as much as possible. Once
->     the customer experienced low memory, swapping anon starts, with
->     little-to-no PageCache being swapped.
+Various bugfixes and improvements to the cs42l42 codec driver.
 
-Pagecache are not swapped. It is discarded under memory pressure and 
-written back if dirty.
+Clocking bugfixes:
+  - Remove any use of MCLK > 12.288 MHz because it isn't possible to switch
+    between the low and high frequency ranges on-the-fly
 
-Other than that, the patch looks good to me.
+  - Prevent the PLL configuration being written while the PLL is running
+  - Correctly set the MCLK for the sample rate converters
 
-Cheers,
-Longman
+ASP bugfixes:
+  - Ensure the TX (capture) ASP is properly configured when recording
+    mono audio.
+
+Other bugfixes:
+  - Prevent NULL pointer deref if there is an interrupt before soc
+    component probe
+
+Code cleanup:
+  - Remove the unused runtime suspend/resume functions.
+  - Remove some code made redundant by an earlier patch
+
+Improvement:
+  - Add ALSA control for HP path attenuation. Previously this was
+    always set to -6dB with no way for the user to configure it.
+
+  - Add ALSA control to disable the soft volume ramp at the start of
+    audio.
+
+Richard Fitzgerald (12):
+  ASoC: cs42l42: Use PLL for SCLK > 12.188MHz
+  ASoC: cs42l42: Don't claim to support 192k
+  ASoC: cs42l42: Always configure both ASP TX channels
+  ASoC: cs42l42: Don't reconfigure the PLL while it is running
+  ASoC: cs42l42: Set correct SRC MCLK
+  ASoC: cs42l42: Mark OSC_SWITCH_STATUS register volatile
+  ASoC: cs42l42: Allow time for HP/ADC to power-up after enable
+  ASoC: cs42l42: Prevent NULL pointer deref in interrupt handler
+  ASoC: cs42l42: Remove runtime_suspend/runtime_resume callbacks
+  ASoC: cs42l42: Remove redundant pll_divout member
+  ASoC: cs42l42: Add HP Volume Scale control
+  ASoC: cs42l42: Add control for audio slow-start switch
+
+ sound/soc/codecs/cs42l42.c | 281 ++++++++++++++++++++++++---------------------
+ sound/soc/codecs/cs42l42.h |   9 +-
+ 2 files changed, 156 insertions(+), 134 deletions(-)
+
+-- 
+2.11.0
 
