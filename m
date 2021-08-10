@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F70C3E50D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196433E50E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237313AbhHJCFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 22:05:11 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13408 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhHJCFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 22:05:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GkGQF3rqLzcmH6;
-        Tue, 10 Aug 2021 10:01:09 +0800 (CST)
-Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 10:04:47 +0800
-Received: from huawei.com (10.67.189.17) by dggpeml500013.china.huawei.com
- (7.185.36.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
- 2021 10:04:47 +0800
-From:   QiuXi <qiuxi1@huawei.com>
-To:     <viro@zeniv.linux.org.uk>, <akpm@linux-foundation.org>,
-        <jannh@google.com>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <xiekunxun@huawei.com>,
-        <young.liuyang@huawei.com>
-Subject: [PATCH 1/1] coredump: fix memleak in dump_vma_snapshot()
-Date:   Tue, 10 Aug 2021 10:04:41 +0800
-Message-ID: <20210810020441.62806-1-qiuxi1@huawei.com>
-X-Mailer: git-send-email 2.12.3
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.189.17]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500013.china.huawei.com (7.185.36.41)
-X-CFilter-Loop: Reflected
+        id S237331AbhHJCHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 22:07:06 -0400
+Received: from mga09.intel.com ([134.134.136.24]:25485 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235167AbhHJCHF (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 9 Aug 2021 22:07:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214804814"
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="214804814"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 19:06:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="444807547"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga007.fm.intel.com with ESMTP; 09 Aug 2021 19:06:41 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        irogers@google.com, Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH 0/6] perf events update for CascadeLake server and SkyLake server
+Date:   Tue, 10 Aug 2021 10:05:02 +0800
+Message-Id: <20210810020508.31261-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dump_vma_snapshot() allocs memory for *vma_meta, when dump_vma_snapshot()
-returns -EFAULT, the memory will be leaked, so we free it correctly.
+- Update JSON core/uncore events and metrics for CascadeLake Server.
+- Update JSON core/uncore events and metrics for SkyLake Server.
 
-Fixes: a07279c9a8cd7 ("binfmt_elf, binfmt_elf_fdpic: use a VMA list snapshot")
-Cc: stable@vger.kernel.org # v5.10
-Signed-off-by: QiuXi <qiuxi1@huawei.com>
----
- fs/coredump.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The patch series can be found at (in case broken by mailing system potentially):
+https://github.com/yaoj/perf-clx-events.git
+branch: perf/core
 
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 07afb5ddb1c4..19fe5312c10f 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -1127,8 +1127,10 @@ int dump_vma_snapshot(struct coredump_params *cprm, int *vma_count,
- 
- 	mmap_write_unlock(mm);
- 
--	if (WARN_ON(i != *vma_count))
-+	if (WARN_ON(i != *vma_count)) {
-+		kvfree(*vma_meta);
- 		return -EFAULT;
-+	}
- 
- 	*vma_data_size_ptr = vma_data_size;
- 	return 0;
+Jin Yao (6):
+  perf vendor events intel: Update core event list for CascadeLake
+    Server
+  perf vendor events intel: Update uncore event list for CascadeLake
+    Server
+  perf vendor events: Update metrics for CascadeLake Server
+  perf vendor events intel: Update core event list for SkyLake Server
+  perf vendor events intel: Update uncore event list for SkyLake Server
+  perf vendor events: Update metrics for SkyLake Server
+
+ .../arch/x86/cascadelakex/cache.json          | 5468 ++++++++---------
+ .../arch/x86/cascadelakex/clx-metrics.json    |  253 +-
+ .../arch/x86/cascadelakex/floating-point.json |   48 +-
+ .../arch/x86/cascadelakex/frontend.json       |  550 +-
+ .../arch/x86/cascadelakex/memory.json         | 5444 ++++++++--------
+ .../arch/x86/cascadelakex/other.json          | 4146 ++++++-------
+ .../arch/x86/cascadelakex/pipeline.json       | 1046 ++--
+ .../arch/x86/cascadelakex/uncore-memory.json  |   21 +-
+ .../arch/x86/cascadelakex/uncore-other.json   |  161 +-
+ .../arch/x86/cascadelakex/virtual-memory.json |  256 +-
+ .../pmu-events/arch/x86/skylakex/cache.json   | 1724 +++---
+ .../arch/x86/skylakex/floating-point.json     |   56 +-
+ .../arch/x86/skylakex/frontend.json           |  580 +-
+ .../pmu-events/arch/x86/skylakex/memory.json  | 1300 ++--
+ .../pmu-events/arch/x86/skylakex/other.json   |  104 +-
+ .../arch/x86/skylakex/pipeline.json           | 1068 ++--
+ .../arch/x86/skylakex/skx-metrics.json        |  247 +-
+ .../arch/x86/skylakex/uncore-memory.json      |    9 -
+ .../arch/x86/skylakex/uncore-other.json       |  171 +-
+ .../arch/x86/skylakex/virtual-memory.json     |  288 +-
+ 20 files changed, 11531 insertions(+), 11409 deletions(-)
+
 -- 
-2.12.3
+2.17.1
 
