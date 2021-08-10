@@ -2,138 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A173E58A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437B03E58A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239931AbhHJKxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        id S239952AbhHJKx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239934AbhHJKxK (ORCPT
+        with ESMTP id S239934AbhHJKxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:53:10 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCF0C061798;
-        Tue, 10 Aug 2021 03:52:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkVCc4Hd6z9sT6;
-        Tue, 10 Aug 2021 20:52:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628592764;
-        bh=vtV72N/6CXOBMdQ8dnyKzP6eHxhfD9bbPPt/kxc714s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xr0XHJojlnUMD9eSnSpyIjYffahV2dZ3E/LJbSw+WRR1bdtreiHXh+I4e2t9gZFmu
-         X5PxiJ2M9n9l/f9+Fx5Sa2IxKTRzBw22PrS3rzqoZmlR3JSBfI6dOr/ydncQKxhBoO
-         zOqEY4L5ZjX48JlbmSEBPx277ikorjlD82AWdqu6Caic1wfHpZVV7COJlaH9yLQPEt
-         Ll/Rm6Oft1EaV2Sevi2mOyANVz8W+hyyd8GKK5sgRxRiIEz/z7WMRklDsz+TjawwR4
-         zaYKi2HRmz+iSyfF0dPDaymtqEPbv4wLIVP1aD8Wf/zzy7rAt4sZnhRHiUOXPgyKcw
-         FfQhwWWoB1I7g==
-Date:   Tue, 10 Aug 2021 20:52:43 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the block tree
-Message-ID: <20210810205243.25dfa994@canb.auug.org.au>
-In-Reply-To: <20210810203135.7eb7b01a@canb.auug.org.au>
-References: <20210810203135.7eb7b01a@canb.auug.org.au>
+        Tue, 10 Aug 2021 06:53:24 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF419C061798
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:53:01 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id r6so3401309wrt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dGr4OpahiJSvodIctRAnZeil+wLyJaWaF52+xI/7opo=;
+        b=TQNEkwJUG6bvxyz6jSRPh4VR9P5PlJvtcvsNVLPdQWwVcNzzfzKquVpL6nvKyQoJe0
+         849AFp0+70bbRQvM5kIc1yr19kZQSkLaLIBhxWRdr3lThQRWDspeC6rGzCCAXigR5Oa2
+         Y40vtMpjL67aYJEpt56yLvLZLYvWf1HpKTgRI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=dGr4OpahiJSvodIctRAnZeil+wLyJaWaF52+xI/7opo=;
+        b=EFm2f5qw+phKQXuqoXDC8aGeOueOeKJtWAr14QkZtW9tb8rIt1wAXr7mi/LBptGlv3
+         cpVSQI03R7tJ/cxpNvXdM6t9IrQ1X4z4g6sqwf2LtFRfXU8PFjsXxzjOnVAMo65U40KQ
+         ML9h1u0+BkBfKNMgZ12AXIvqaqCxtJQRRg1T+FgfkrbEm2SunThNd5GhdgVwJ4gMasQe
+         YMtFWf9XM5Ql1ahoUXjfKszWDT335ZzXQXu70AebyK5ottse1KySzxQnmiRGc2aVUBfc
+         zZIiy8kIxRD7243NFaiuWN5F3zjKsrdVXXOAdml/LF04EDxKkzXCQzygoDNGX0yPAKX6
+         wsTQ==
+X-Gm-Message-State: AOAM532gmi5vUyLyTrmjymIT2HstwRn67CcWm1b8Dxhzmpago8wv/3/8
+        NkUwSIRV8vbY23APpCaPdHP0Fzzk4XSwJA==
+X-Google-Smtp-Source: ABdhPJyIdqQOV6KKDQOqlfqV2bwGRKXRAlFWiXR9867ACpTZLJ4ZCNddVsdLEJ7SwpdVO1aTv9G3zw==
+X-Received: by 2002:a5d:4c91:: with SMTP id z17mr2721224wrs.54.1628592780451;
+        Tue, 10 Aug 2021 03:53:00 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j2sm2848239wmi.36.2021.08.10.03.52.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 03:52:59 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 12:52:58 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
+Message-ID: <YRJaitqOK+0vN4jg@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        list@opendingux.net, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210805192110.90302-1-paul@crapouillou.net>
+ <20210805192110.90302-3-paul@crapouillou.net>
+ <YQw9hjZll4QmYVLX@kroah.com>
+ <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
+ <YQ0MU/GcLkPLiy5C@kroah.com>
+ <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
+ <YRJLNHXR0PhykBwL@kroah.com>
+ <RNDMXQ.0B7HA1RXU7TB@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/IQVe25qW/YHVMv4WEmyNRjS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <RNDMXQ.0B7HA1RXU7TB@crapouillou.net>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/IQVe25qW/YHVMv4WEmyNRjS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 10, 2021 at 12:40:39PM +0200, Paul Cercueil wrote:
+> Hi Greg,
+> 
+> Le mar., août 10 2021 at 11:47:32 +0200, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> a écrit :
+> > On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
+> > >  Hi Greg,
+> > > 
+> > >  Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
+> > >  <gregkh@linuxfoundation.org> a écrit :
+> > >  > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
+> > >  > >  Hi Greg,
+> > >  > >
+> > >  > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
+> > >  > >  <gregkh@linuxfoundation.org> a écrit :
+> > >  > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil
+> > > wrote:
+> > >  > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
+> > >  > > disabled in
+> > >  > >  > > the
+> > >  > >  > >  config, we want the ingenic-drm driver to be able to probe
+> > >  > >  > > nonetheless
+> > >  > >  > >  with the other devices (e.g. internal LCD panel) that are
+> > >  > > enabled.
+> > >  > >  > >
+> > >  > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  > >  > >  ---
+> > >  > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12
+> > > ++++++++++++
+> > >  > >  > >   1 file changed, 12 insertions(+)
+> > >  > >  > >
+> > >  > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
+> > >  > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
+> > >  > > device
+> > >  > >  > > *dev, bool has_components)
+> > >  > >  > >   	for (i = 0; ; i++) {
+> > >  > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
+> > >  > > &panel,
+> > >  > >  > > &bridge);
+> > >  > >  > >   		if (ret) {
+> > >  > >  > >  +			/*
+> > >  > >  > >  +			 * Workaround for the case where the drivers for the
+> > >  > >  > >  +			 * remote devices are not enabled. When that happens,
+> > >  > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
+> > >  > >  > >  +			 * endlessly, which prevents the ingenic-drm driver
+> > > from
+> > >  > >  > >  +			 * working at all.
+> > >  > >  > >  +			 */
+> > >  > >  > >  +			if (ret == -EPROBE_DEFER) {
+> > >  > >  > >  +				ret = driver_deferred_probe_check_state(dev);
+> > >  > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
+> > >  > >  > >  +					continue;
+> > >  > >  > >  +			}
+> > >  > >  >
+> > >  > >  > So you are mucking around with devices on other busses
+> > > within this
+> > >  > >  > driver?  What could go wrong?  :(
+> > >  > >
+> > >  > >  I'm doing the same thing as everybody else. This is the DRM
+> > > driver,
+> > >  > > and
+> > >  > >  there is a driver for the external HDMI chip which gives us a
+> > > DRM
+> > >  > > bridge
+> > >  > >  that we can obtain from the device tree.
+> > >  >
+> > >  > But then why do you need to call this function that is there for
+> > > a bus,
+> > >  > not for a driver.
+> > > 
+> > >  The documentation disagrees with you :)
+> > > 
+> > >  And, if that has any weight, this solution was proposed by Rob.
+> > > 
+> > >  > >  > Please use the existing driver core functionality for this
+> > > type of
+> > >  > >  > thing, it is not unique, no need for this function to be
+> > > called.
+> > >  > >
+> > >  > >  I'm not sure you understand what I'm doing here. This driver
+> > > calls
+> > >  > >  drm_of_find_panel_or_bridge(), without guarantee that the
+> > > driver
+> > >  > > for the
+> > >  > >  remote device (connected via DT graph) has been enabled in the
+> > >  > > kernel
+> > >  > >  config. In that case it will always return -EPROBE_DEFER and
+> > > the
+> > >  > > ingenic-drm
+> > >  > >  driver will never probe.
+> > >  > >
+> > >  > >  This patch makes sure that the driver can probe if the HDMI
+> > > driver
+> > >  > > has been
+> > >  > >  disabled in the kernel config, nothing more.
+> > >  >
+> > >  > That should not be an issue as you do not care if the config is
+> > > enabled,
+> > >  > you just want to do something in the future if the driver shows
+> > > up,
+> > >  > right?
+> > > 
+> > >  Well, the DRM subsystem doesn't really seem to handle hotplug of
+> > > hardware.
+> > >  Right now all the drivers for the connected hardware need to probe
+> > > before
+> > >  the main DRM driver. So I need to know that a remote device
+> > > (connected via
+> > >  DT graph) will never probe.
+> > 
+> > But you never really know that.  That is what the recent driver core
+> > changes were all about, to handle this very issue.  Only when the child
+> > device shows up will you need to care about it.
+> > 
+> > >  Give me a of_graph_remote_device_driver_will_never_probe() and I'll
+> > > use
+> > >  that.
+> > > 
+> > >  > Much like the device link code, have you looked at that?
+> > > 
+> > >  I don't see how that would help in any way. The device link code
+> > > would allow
+> > >  me to set a dependency between the remote hardware (HDMI chip,
+> > > provider) and
+> > >  the LCD controller (consumer), but I already have that dependency
+> > > though the
+> > >  DT graph. What I need is a way for the consumer to continue probing
+> > > if the
+> > >  provider is not going to probe.
+> > 
+> > But again, you never know that, probing is async, and could happen in a
+> > few milliseconds, or a few hours, your driver should never care about
+> > this at all.
+> > 
+> > Just knowing if the kernel configuration is something is not the
+> > solution here, please fix this properly like all other driver
+> > interactions are in the kernel tree.
+> 
+> A proper fix means reworking the DRM core so that it supports hot-plugging
+> bridges. Until then there is nothing else I can do.
 
-Hi all,
+The conflict is that drm wants to load the entire driver, including any
+bridges.
 
-On Tue, 10 Aug 2021 20:31:34 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the block tree, today's linux-next build (or32
-> or1ksim_defconfig) failed like this:
->=20
-> mm/page-writeback.c:2044:6: error: redefinition of 'laptop_sync_completio=
-n'
->  2044 | void laptop_sync_completion(void)
->       |      ^~~~~~~~~~~~~~~~~~~~~~
-> In file included from include/linux/memcontrol.h:22,
->                  from include/linux/swap.h:9,
->                  from mm/page-writeback.c:20:
-> include/linux/writeback.h:345:20: note: previous definition of 'laptop_sy=
-nc_completion' was here
->   345 | static inline void laptop_sync_completion(void) { }
->       |                    ^~~~~~~~~~~~~~~~~~~~~~
->=20
-> Caused by commit
->=20
->   5ed964f8e54e ("mm: hide laptop_mode_wb_timer entirely behind the BDI AP=
-I")
->=20
-> This build does not have CONFIG_BLOCK set.
+Paul wants to load just the driver parts he wants to put into the image.
 
-These as well:
-
-In file included from include/linux/workqueue.h:9,
-                 from include/linux/mm_types.h:16,
-                 from include/linux/mmzone.h:21,
-                 from include/linux/gfp.h:6,
-                 from include/linux/xarray.h:14,
-                 from include/linux/radix-tree.h:19,
-                 from include/linux/fs.h:15,
-                 from include/linux/backing-dev.h:13,
-                 from mm/backing-dev.c:5:
-mm/backing-dev.c: In function 'bdi_alloc':
-mm/backing-dev.c:821:42: error: 'laptop_mode_timer_fn' undeclared (first us=
-e in this function)
-  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
-      |                                          ^~~~~~~~~~~~~~~~~~~~
-include/linux/timer.h:126:28: note: in definition of macro '__init_timer'
-  126 |  init_timer_key((_timer), (_fn), (_flags), NULL, NULL)
-      |                            ^~~
-mm/backing-dev.c:821:2: note: in expansion of macro 'timer_setup'
-  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
-      |  ^~~~~~~~~~~
-mm/backing-dev.c:821:42: note: each undeclared identifier is reported only =
-once for each function it appears in
-  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
-      |                                          ^~~~~~~~~~~~~~~~~~~~
-include/linux/timer.h:126:28: note: in definition of macro '__init_timer'
-  126 |  init_timer_key((_timer), (_fn), (_flags), NULL, NULL)
-      |                            ^~~
-mm/backing-dev.c:821:2: note: in expansion of macro 'timer_setup'
-  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
-      |  ^~~~~~~~~~~
-
---=20
-Cheers,
-Stephen Rothwell
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/IQVe25qW/YHVMv4WEmyNRjS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESWnsACgkQAVBC80lX
-0GzN6gf/R0jYgtK1azA+j9YEOzbEPlFHvwOdYZKLLHJbSv0dLFv+wIAct7BzO7Ql
-BfbYg3yE3o8gfU4jOoQArdREi+aU+WQwjxfHND7M8N0Re6EBsWvaRt94KyO9g/s0
-B7OJ7ykFK1JdyzhkU3mFf3Ym3T7rZWzk4q+44WQN/dX9dM5GA+Zgu7d3Aj3TuuuF
-PqUgSmf6yItJLq8HY1kFQEgnRCxZjwiJNpk9j1DcjnqBqXYT3JyC2QGJpjKuyk3q
-lmxA3ChaOuTnBrH7sElgDAEGRQ2av5BvM6pxQcY6fNNgYosJJkfqSi3teZ77LemN
-dZP9IkRd4vl23xElgNfB7lcFrY0cKQ==
-=wr1A
------END PGP SIGNATURE-----
-
---Sig_/IQVe25qW/YHVMv4WEmyNRjS--
+This doesn't work well together.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
