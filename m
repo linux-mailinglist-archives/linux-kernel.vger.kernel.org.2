@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1303E800F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565D03E8015
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234957AbhHJRqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:46:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34420 "EHLO mail.kernel.org"
+        id S235831AbhHJRqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235287AbhHJRmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:42:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89FD461139;
-        Tue, 10 Aug 2021 17:38:43 +0000 (UTC)
+        id S235332AbhHJRmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF81D61213;
+        Tue, 10 Aug 2021 17:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617124;
-        bh=W8NlvFR/LFRA+J81U64OIbg5JgaHepadmXcuitAwP1c=;
+        s=korg; t=1628617126;
+        bh=BtGVrxVu9r2tER2gpA+k54WqsWJjhE2da9bywTuqZY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LV0z61kSHkRp901DcrDmxqs1Zxoq/+LY/f0zOkqAlQwn452WLjg7J3QpzgfpG3VIB
-         DY4fjMEiUSmAz/GP67f5Cge3Zgl1eCvailm7VJQ9q8rE75w4dV3Ljrn3gk+hVkQeBE
-         0oPbBreIakHQfUwr5ljznF8nC4mae0yOc4RZLVEk=
+        b=mQxX2saRblpROcTAuDVpPm0eRfFqr7Xh5FHLUNHPhb5uINL/82q1Ar6I/uChyF1J8
+         kJeywUjaAghIvzfMT6EvHeZCufXTWfXSlnWSCwB8U4PxM7Ds3WulWYy4MoRZoX9Ah8
+         Vrr7ItsGkiLAOjDs6Mi1fQzd52bJjv5UCh/JWNkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Bauer <mail@david-bauer.net>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 055/135] USB: serial: ftdi_sio: add device ID for Auto-M3 OP-COM v2
-Date:   Tue, 10 Aug 2021 19:29:49 +0200
-Message-Id: <20210810172957.559285249@linuxfoundation.org>
+        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Anirudh Rayabharam <mail@anirudhrb.com>
+Subject: [PATCH 5.10 056/135] firmware_loader: use -ETIMEDOUT instead of -EAGAIN in fw_load_sysfs_fallback
+Date:   Tue, 10 Aug 2021 19:29:50 +0200
+Message-Id: <20210810172957.592508718@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 References: <20210810172955.660225700@linuxfoundation.org>
@@ -39,43 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Bauer <mail@david-bauer.net>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit 8da0e55c7988ef9f08a708c38e5c75ecd8862cf8 upstream.
+commit 0d6434e10b5377a006f6dd995c8fc5e2d82acddc upstream.
 
-The Auto-M3 OP-COM v2 is a OBD diagnostic device using a FTD232 for the
-USB connection.
+The only motivation for using -EAGAIN in commit 0542ad88fbdd81bb
+("firmware loader: Fix _request_firmware_load() return val for fw load
+abort") was to distinguish the error from -ENOMEM, and so there is no
+real reason in keeping it. -EAGAIN is typically used to tell the
+userspace to try something again and in this case re-using the sysfs
+loading interface cannot be retried when a timeout happens, so the
+return value is also bogus.
 
-Signed-off-by: David Bauer <mail@david-bauer.net>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+-ETIMEDOUT is received when the wait times out and returning that
+is much more telling of what the reason for the failure was. So, just
+propagate that instead of returning -EAGAIN.
+
+Suggested-by: Luis Chamberlain <mcgrof@kernel.org>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210728085107.4141-2-mail@anirudhrb.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/ftdi_sio.c     |    1 +
- drivers/usb/serial/ftdi_sio_ids.h |    3 +++
- 2 files changed, 4 insertions(+)
+ drivers/base/firmware_loader/fallback.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -219,6 +219,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(FTDI_VID, FTDI_MTXORB_6_PID) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_R2000KU_TRUE_RNG) },
- 	{ USB_DEVICE(FTDI_VID, FTDI_VARDAAN_PID) },
-+	{ USB_DEVICE(FTDI_VID, FTDI_AUTO_M3_OP_COM_V2_PID) },
- 	{ USB_DEVICE(MTXORB_VID, MTXORB_FTDI_RANGE_0100_PID) },
- 	{ USB_DEVICE(MTXORB_VID, MTXORB_FTDI_RANGE_0101_PID) },
- 	{ USB_DEVICE(MTXORB_VID, MTXORB_FTDI_RANGE_0102_PID) },
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -159,6 +159,9 @@
- /* Vardaan Enterprises Serial Interface VEUSB422R3 */
- #define FTDI_VARDAAN_PID	0xF070
+--- a/drivers/base/firmware_loader/fallback.c
++++ b/drivers/base/firmware_loader/fallback.c
+@@ -535,8 +535,6 @@ static int fw_load_sysfs_fallback(struct
+ 	if (fw_state_is_aborted(fw_priv)) {
+ 		if (retval == -ERESTARTSYS)
+ 			retval = -EINTR;
+-		else
+-			retval = -EAGAIN;
+ 	} else if (fw_priv->is_paged_buf && !fw_priv->data)
+ 		retval = -ENOMEM;
  
-+/* Auto-M3 Ltd. - OP-COM USB V2 - OBD interface Adapter */
-+#define FTDI_AUTO_M3_OP_COM_V2_PID	0x4f50
-+
- /*
-  * Xsens Technologies BV products (http://www.xsens.com).
-  */
 
 
