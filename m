@@ -2,225 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E6B3E547D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43AF3E5485
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236492AbhHJHlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
+        id S236932AbhHJHoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbhHJHls (ORCPT
+        with ESMTP id S236488AbhHJHoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:41:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD0AC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:41:26 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mDMO4-0005bc-BD; Tue, 10 Aug 2021 09:41:24 +0200
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <YRGdBiJQ3xqZAT4w@gmail.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <2bc19003-82a1-0d2d-4548-3315686d77b4@pengutronix.de>
-Date:   Tue, 10 Aug 2021 09:41:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 10 Aug 2021 03:44:30 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0524C061799
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:44:08 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id b15so9637810ejg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=elqUT9stw2J3iR2l4RxHnGypplqsV8TkYIJkIMW8hsY=;
+        b=Dw2anpOlrs9rV2RbKN404Zn18rw9HV6mvfkE8M1kGMV2Ah+OI2rfEhpzsA9qdOawIF
+         k8THbB9AABfuNY1MbNdd0AcLrxpPD246ArW/bPUC+pr03hqytJJD7OFvzo3N0q/tpZGO
+         tH48kCvdWiYFfAcIV1f5yS5oQiNePxkq4fi3pXrnB2oNtBTWdXNxRQpFSbu0OmyXCusR
+         +W05Ly+4a2nE2bv8/HwAQbH8fmJcv8+1juWLj995sdhCvh4wbwIAVnm3NRBqnxRlLOyy
+         KEmSTLyK4NbrCSV7j939f/4v7zlRHpFqgOALTvOj2N1xjrfa63r8X64WZ/4zirZ1FwSG
+         ug5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=elqUT9stw2J3iR2l4RxHnGypplqsV8TkYIJkIMW8hsY=;
+        b=CFmawEo7+bNl7nPRAJxHjAWWTps1qLh++uSfWIJM3aLmIlu+Cij7v4+IPPIlXtXFeh
+         k+7uCQNc+GUHoTyQUB4pyeGTrHw2aEyDu1vXqNN7QTmYlK97QiOgbCHMe9+qsZO3LMM1
+         PDLH4VS5LUFAy8g7pzR5rxWQA/EW8ZrBBVJnTc/XDPTJpDlLf8wpMfAsnZ8B3zzD58MX
+         G9/5cjT2NaJG6IA1SKdzePFd3g2QA4RzNaTxr7mD1+qk4CWFsj8Nw4U0ImXYB/lON0w0
+         BXysCNdG0e7YvodVh+C356qzYB/3UF/s6HuTeRm/cyGCNRN2kaEUU6wz+XCTEWyFWK0G
+         aMyQ==
+X-Gm-Message-State: AOAM532IqUvrDpWMH/FYviCq26DAuaAKqd6gJ9gz75xlAnWwpQnLioi8
+        PyWBoPmgK4rCDrCPmDdLdenDiAQotgz0C9JiBR5O
+X-Google-Smtp-Source: ABdhPJx/TbMGjhieQzq1YqRjJBN7a9WTaXbFyhJM7EzEX+MXvLMAXR31L8+X5gM3dqLz8GqZFLUy0w3uIoYuvmPOUqE=
+X-Received: by 2002:a17:906:8606:: with SMTP id o6mr26642389ejx.247.1628581447154;
+ Tue, 10 Aug 2021 00:44:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YRGdBiJQ3xqZAT4w@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-2-xieyongji@bytedance.com>
+ <43d88942-1cd3-c840-6fec-4155fd544d80@redhat.com> <CACycT3vcpwyA3xjD29f1hGnYALyAd=-XcWp8+wJiwSqpqUu00w@mail.gmail.com>
+ <6e05e25e-e569-402e-d81b-8ac2cff1c0e8@arm.com> <CACycT3sm2r8NMMUPy1k1PuSZZ3nM9aic-O4AhdmRRCwgmwGj4Q@mail.gmail.com>
+ <417ce5af-4deb-5319-78ce-b74fb4dd0582@arm.com> <CACycT3vARzvd4-dkZhDHqUkeYoSxTa2ty0z0ivE1znGti+n1-g@mail.gmail.com>
+ <8c381d3d-9bbd-73d6-9733-0f0b15c40820@redhat.com> <CACycT3steXFeg7NRbWpo2J59dpYcumzcvM2zcPJAVe40-EvvEg@mail.gmail.com>
+ <b427cf12-2ff6-e5cd-fe6a-3874d8622a29@redhat.com>
+In-Reply-To: <b427cf12-2ff6-e5cd-fe6a-3874d8622a29@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 10 Aug 2021 15:43:56 +0800
+Message-ID: <CACycT3vuBdmWdu4X9wjCO0hm+O0xH2Uf0S2ZTk4O_pL2jX6Y5g@mail.gmail.com>
+Subject: Re: [PATCH v10 01/17] iova: Export alloc_iova_fast() and free_iova_fast()
+To:     Jason Wang <jasowang@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     kvm <kvm@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        songmuchun@bytedance.com, Jens Axboe <axboe@kernel.dk>,
+        He Zhe <zhe.he@windriver.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, bcrl@kvack.org,
+        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Eric,
+On Tue, Aug 10, 2021 at 11:02 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/8/9 =E4=B8=8B=E5=8D=881:56, Yongji Xie =E5=86=99=E9=81=93:
+> > On Thu, Aug 5, 2021 at 9:31 PM Jason Wang <jasowang@redhat.com> wrote:
+> >>
+> >> =E5=9C=A8 2021/8/5 =E4=B8=8B=E5=8D=888:34, Yongji Xie =E5=86=99=E9=81=
+=93:
+> >>>> My main point, though, is that if you've already got something else
+> >>>> keeping track of the actual addresses, then the way you're using an
+> >>>> iova_domain appears to be something you could do with a trivial bitm=
+ap
+> >>>> allocator. That's why I don't buy the efficiency argument. The main
+> >>>> design points of the IOVA allocator are to manage large address spac=
+es
+> >>>> while trying to maximise spatial locality to minimise the underlying
+> >>>> pagetable usage, and allocating with a flexible limit to support
+> >>>> multiple devices with different addressing capabilities in the same
+> >>>> address space. If none of those aspects are relevant to the use-case=
+ -
+> >>>> which AFAICS appears to be true here - then as a general-purpose
+> >>>> resource allocator it's rubbish and has an unreasonably massive memo=
+ry
+> >>>> overhead and there are many, many better choices.
+> >>>>
+> >>> OK, I get your point. Actually we used the genpool allocator in the
+> >>> early version. Maybe we can fall back to using it.
+> >>
+> >> I think maybe you can share some perf numbers to see how much
+> >> alloc_iova_fast() can help.
+> >>
+> > I did some fio tests[1] with a ram-backend vduse block device[2].
+> >
+> > Following are some performance data:
+> >
+> >                              numjobs=3D1   numjobs=3D2    numjobs=3D4  =
+ numjobs=3D8
+> > iova_alloc_fast    145k iops      265k iops      514k iops      758k io=
+ps
+> >
+> > iova_alloc            137k iops     170k iops      128k iops      113k =
+iops
+> >
+> > gen_pool_alloc   143k iops      270k iops      458k iops      521k iops
+> >
+> > The iova_alloc_fast() has the best performance since we always hit the
+> > per-cpu cache. Regardless of the per-cpu cache, the genpool allocator
+> > should be better than the iova allocator.
+>
+>
+> I think we see convincing numbers for using iova_alloc_fast() than the
+> gen_poll_alloc() (45% improvement on job=3D8).
+>
 
-On 09.08.21 23:24, Eric Biggers wrote:
-> Hi Ahmad,
-> 
-> This generally looks okay, but I have some comments below.
-> 
-> On Fri, Aug 06, 2021 at 05:09:28PM +0200, Ahmad Fatoum wrote:
->> Kernel trusted keys don't require userspace knowledge of the raw key
->> material and instead export a sealed blob, which can be persisted to
->> unencrypted storage. Userspace can then load this blob into the kernel,
->> where it's unsealed and from there on usable for kernel crypto.
-> 
-> Please be explicit about where and how the keys get generated in this case.
+Yes, so alloc_iova_fast() still seems to be the best choice based on
+performance considerations.
 
-I intentionally avoided talking about this. You see, the trusted key documentation[1]
-phrases it as "all keys are created in the kernel", but you consider
-"'The key material is generated
- within the kernel' [a] misleading claim'. [2]
+Hi Robin, any comments?
 
-Also, I hope patches to force kernel RNG and CAAM support (using kernel RNG as
-default) will soon be accepted, which would invalidate any further claims in the
-commit message without a means to correct them.
-
-I thus restricted my commit message to the necessary bit that are needed to
-understand the patch, which is: userspace knowledge of the key material is
-not required. If you disagree, could you provide me the text you'd prefer?
-
->> This is incompatible with fscrypt, where userspace is supposed to supply
->> the raw key material. For TPMs, a work around is to do key unsealing in
->> userspace, but this may not be feasible for other trusted key backends.
-> 
-> As far as I can see, "Key unsealing in userspace" actually is the preferred way
-> to implement TPM-bound encryption.  So it doesn't seem fair to call it a "work
-> around".
-
-In the context of *kernel trusted keys*, direct interaction with the TPM
-outside the kernel to decrypt a kernel-encrypted blob is surely not the
-preferred way.
-
-For TPM-bound encryption completely in userspace? Maybe. But that's not
-what this patch is about. It's about kernel trusted keys and offloading
-part of its functionality to userspace to _work around_ lack of kernel-side
-integration is exactly that: a _work around_.
-
->> +  Most users leave this 0 and specify the raw key directly.
->> +  "trusted" keys are useful to leverage kernel support for sealing
->> +  and unsealing key material. Sealed keys can be persisted to
->> +  unencrypted storage and later be used to decrypt the file system
->> +  without requiring userspace to have knowledge of the raw key
->> +  material.
->> +  "fscrypt-provisioning" key support is intended mainly to allow
->> +  re-adding keys after a filesystem is unmounted and re-mounted,
->>    without having to store the raw keys in userspace memory.
->>  
->>  - ``raw`` is a variable-length field which must contain the actual
->>    key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
->>    nonzero, then this field is unused.
->>  
->> +.. note::
->> +
->> +   Users should take care not to reuse the fscrypt key material with
->> +   different ciphers or in multiple contexts as this may make it
->> +   easier to deduce the key.
->> +   This also applies when the key material is supplied indirectly
->> +   via a kernel trusted key. In this case, the trusted key should
->> +   perferably be used only in a single context.
-> 
-> Again, please be explicit about key generation.  Note that key generation is
-> already discussed in a different section, "Master Keys".  There should be a
-> mention of trusted keys there.  The above note about not reusing keys probably
-> belongs there too.  (The section you're editing here is
-> "FS_IOC_ADD_ENCRYPTION_KEY", which is primarily intended to just document the
-> ioctl, so it's not necessarily the best place for this type of information.)
-
-Yes. The content of the note is more appropriate there.
-
->> @@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
->>  	key_ref_t ref;
->>  	struct key *key;
->>  	const struct fscrypt_provisioning_key_payload *payload;
->> -	int err;
->> +	int err = 0;
->>  
->>  	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
->>  	if (IS_ERR(ref))
->>  		return PTR_ERR(ref);
->>  	key = key_ref_to_ptr(ref);
->>  
->> -	if (key->type != &key_type_fscrypt_provisioning)
->> -		goto bad_key;
->> -	payload = key->payload.data[0];
->> +	if (key->type == &key_type_fscrypt_provisioning) {
-> 
-> This function is getting long; it probably should be broken this up into several
-> functions.  E.g.:
-
-Will do for v3.
-
-> static int get_keyring_key(u32 key_id, u32 type,
->                            struct fscrypt_master_key_secret *secret)
-> {
->         key_ref_t ref;
->         struct key *key;
->         int err;
-> 
->         ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
->         if (IS_ERR(ref))
->                 return PTR_ERR(ref);
->         key = key_ref_to_ptr(ref);
-> 
->         if (key->type == &key_type_fscrypt_provisioning) {
->                 err = fscrypt_get_provisioning_key(key, type, secret);
->         } else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) &&
->                    key->type == &key_type_trusted) {
->                 err = fscrypt_get_trusted_key(key, secret);
->         } else {
->                 err = -EKEYREJECTED;
->         }
->         key_ref_put(ref);
->         return err;
-> }
-> 
->> +		/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
-> 
-> Please avoid overly-long lines.
-
-For v3 with helper functions, there will be one indentation level less,
-so this will be less 79 again instead of 87.
-
-> 
->> +		tkp = key->payload.data[0];
->> +		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
->> +		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
->> +			up_read(&key->sem);
->> +			err = -EINVAL;
->> +			goto out_put;
->> +		}
-> 
-> What does the !tkp case mean?  For "user" and "logon" keys it means "key
-> revoked", but the "trusted" key type doesn't implement revoke.  Is this included
-> just to be safe?
-
-Oh, good point. I think I cargo-culted it off encrypted key support for
-eCryptfs and dm-crypt. Encrypted keys don't support revoke either..
-
-That might be reasonable, but perhaps the error code in that
-> case (but not the invalid length cases) should be -EKEYREVOKED instead?
-
-Yes. It was like this for v1, but I missed it when dropping the
-dependency on the key_extract_material patch. Will fix for v3.
-
-[1]: https://www.kernel.org/doc/html/v5.14-rc5/security/keys/trusted-encrypted.html
-[2]: https://lore.kernel.org/linux-fscrypt/YQLzOwnPF1434kUk@gmail.com/
-
-
-Cheers and thanks for the review,
-Ahmad
-
-
-> 
-> - Eric
-> 
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks,
+Yongji
