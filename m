@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8CB3E56B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4FC3E56BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238921AbhHJJX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:23:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233409AbhHJJX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 454FA60F56;
-        Tue, 10 Aug 2021 09:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628587384;
-        bh=1RkLB+u/H9JR5P1WMGquk3Gbsype+3hT6sbZfS9eSGg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DTXugz17ja/UXlBXHHr+rPukWED9s6c+ssFeNlgkl3XyCMtiy3kflXg/ZaHLLC4zN
-         H8oihG4to7NHE24NREy6OTunWzOZWHVoPn6rv8h8cCGfC5kZOfVOJ1U2CRl9yhfX7a
-         swPavBHNIfCARzGb3GH2yDKvbz2xAZJvPbw3NnebMMoX7yFj1cYdg2AY9zrg3oEidF
-         cqVpj6iwHvaZFaOS9Dq1D1jT8tcptqeE0JSwVWVcGDxYhpdmAJV4ee9aAwy7zz4noY
-         Rozix22r8oWgb5U4iGGEV8WpjqqySAmgvPybSMQgDyLYf6obj3G7UhUc77F9SPnhSR
-         TjATbyxfREBVw==
-Date:   Tue, 10 Aug 2021 11:22:59 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] docs: sphinx-requirements: Move sphinx_rtd_theme to
- top
-Message-ID: <20210810112259.6af4651d@coco.lan>
-In-Reply-To: <75f14c88-6091-1072-41cb-16b886aee5a0@gmail.com>
-References: <974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com>
-        <75f14c88-6091-1072-41cb-16b886aee5a0@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S238877AbhHJJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:24:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44690 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238937AbhHJJYQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:24:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628587433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A/TaMuDq9rc/wgUkDC5taSVgSHRGlTMP2mW3Lj4nlK0=;
+        b=TdBxhdKYuxVzJ2lFemXsp7u3EwUNVkBn8w/4PUGtxwr3gI3CM3OPP9kMIHVV0+VOW+2AJT
+        1wmSZR6pdj48mOUD65I5hoKbBL3piCoDjAUTqcfC589TeGyPy4Oh5dxTB9YcQzhCBc+x3U
+        YdPeOnItKMIU0D/qmm2SRALjJuKKnYs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-ljapZCT4PYqBaRUmphwR-Q-1; Tue, 10 Aug 2021 05:23:52 -0400
+X-MC-Unique: ljapZCT4PYqBaRUmphwR-Q-1
+Received: by mail-ed1-f70.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so10489318edq.17
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:23:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A/TaMuDq9rc/wgUkDC5taSVgSHRGlTMP2mW3Lj4nlK0=;
+        b=QuUlScQ5473ysgcaTvMkyzzbxmDHuXi1VHXSsoWHO00jxSgrcJQmI/eX3F4MNWApA6
+         BjRaMLe8Ki9C/22TCwy0lR87OdrXiR2ilI9h5O4+GIbZXx2iYQXmv+3uwR8fouUFvl7N
+         NPnbm4ccAUUG6JuvF1qWgP2U46cvuWJrvPNHy6mntfGbvNmi1toASz5jmhv/0bW88FpP
+         8cxAPctaIVoNF5qu1IAA2KX9gpGXwnIEYJq4adS0rtwwo1Rkc53lhKflClK8a8GJj5dT
+         mvdoKNBu8v23YHZRDlve43q//++DlJxRoe7v0oLCJN60hOCWIahdx1Qsv2All61Guhzb
+         MOYA==
+X-Gm-Message-State: AOAM530EtBo7cLtUnuRRCiPO0K3ifkHu2KTa6GK3XsjFEjE5yXj10Q2V
+        +vcSY20RgpO7ouIshKYIoD2moT8in0eWvZaGkAz8VoYM0Mz86Om0R1pzaUL8P7CtwlaYkwgK7/l
+        WoeGSXfHNbJoN+WSb6H88/m8r
+X-Received: by 2002:a05:6402:452:: with SMTP id p18mr3795473edw.34.1628587430912;
+        Tue, 10 Aug 2021 02:23:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8PXtMO2e19p2OPoYOrnLEV4qDAC/gOcR888De9nrRlKF6wNXdDkTjBvD0jcpOd8sYsOWqHA==
+X-Received: by 2002:a05:6402:452:: with SMTP id p18mr3795455edw.34.1628587430750;
+        Tue, 10 Aug 2021 02:23:50 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id u23sm4545368edr.42.2021.08.10.02.23.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 02:23:50 -0700 (PDT)
+To:     Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
+References: <20210808192658.2923641-1-wei.huang2@amd.com>
+ <20210808192658.2923641-2-wei.huang2@amd.com>
+ <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
+ <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
+ <20210809042703.25gfuuvujicc3vj7@linux.intel.com>
+ <73bbaac0-701c-42dd-36da-aae1fed7f1a0@amd.com>
+ <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
+ <YRFKABg2MOJxcq+y@google.com>
+ <CALMp9eRfuntBFz=gnsvEuTXAXZorWJFAPq0ZdwZePxxQYGzdQA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
+ level
+Message-ID: <400f8ca7-8f82-308b-3427-b644144cfa5c@redhat.com>
+Date:   Tue, 10 Aug 2021 11:23:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CALMp9eRfuntBFz=gnsvEuTXAXZorWJFAPq0ZdwZePxxQYGzdQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 10 Aug 2021 18:16:32 +0900
-Akira Yokosawa <akiyks@gmail.com> escreveu:
+On 09/08/21 23:49, Jim Mattson wrote:
+> Doesn't this break legacy type 2 hypervisors that don't know anything
+> about 5-level NPT and don't have any control over whether or not the
+> host uses 5-level paging?
 
-> sphinx_rtd_theme 0.5.2 has "docutils<0.17" in its requirements.
-> docutils 0.17 released this April caused regression in
-> sphinx_rtd_theme 0.5.1 [1].
-> 
-> By removing docutils and moving sphinx_rtd_theme before Sphinx in
-> requirements.txt, the requirement of "docutils<0.17" can be met
-> naturally.
-> 
-> [1]: https://github.com/readthedocs/sphinx_rtd_theme/issues/1112
-> 
-> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Yes, where "legacy" probably means "all released versions of all of 
+them", including KVM.  Host support for LA57 was merged in 4.13, while 
+KVM started supporting 5-level page tables in EPT in 4.14 and even then 
+just returned PT64_ROOT_LEVEL (i.e. 4) for the maximum NPT level.
 
-This was needed when the minimal version was 1.x, but I guess
-we can just get rid of docutils explicit dependency nowadays.
+So all Linux versions up to 5.13, which has "KVM: x86: Prevent KVM SVM 
+from loading on kernels with 5-level paging", will break horribly. 
+Better backport that patch to stable...
 
-Acked-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Paolo
 
-> ---
-> Hi,
-> 
-> It is better to keep requirements as minimal as possible.
-> Let's leave the dependency to the sphinx_rtd_theme package.
-> 
-> Changes in v1 [2] -> v2:
-> 
->     o Remove docutils entry.
->     o Move sphinx_rtd_theme to top.
->     o Adjust patch title.
-> 
-> [2]: https://lore.kernel.org/linux-doc/974babfe-540f-40e4-38b3-ab294ba70ccc@gmail.com/
-> 
->         Thanks, Akira
-> --
->  Documentation/sphinx/requirements.txt | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
-> index 489f6626de67..9a35f50798a6 100644
-> --- a/Documentation/sphinx/requirements.txt
-> +++ b/Documentation/sphinx/requirements.txt
-> @@ -1,3 +1,2 @@
-> -docutils
-> -Sphinx==2.4.4
->  sphinx_rtd_theme
-> +Sphinx==2.4.4
-
-
-
-Thanks,
-Mauro
