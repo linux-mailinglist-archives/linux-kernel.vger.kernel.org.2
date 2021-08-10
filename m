@@ -2,64 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B85E3E53D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E403E53DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237952AbhHJGrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:47:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43548 "EHLO mail.kernel.org"
+        id S237919AbhHJGtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:49:10 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45885 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235165AbhHJGrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:47:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2660F6105A;
-        Tue, 10 Aug 2021 06:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628578039;
-        bh=6ot/s562xQeM2tG8qfWeEJTm5lPjP93NPcOCwW/B0fo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h6YzNvKCZ2R5HU5d8HFsbkF3axb7z+L6gVvBQfAh/fNXGfgPSxdxwo1H+xsfiEEIU
-         H1p1LMda1NLDyn/X8nlggqP2EVO9OKE5fKMyYvkWiGeBveK0wfmTyOB4SUOdA5IdJc
-         7nAFnmzApNL3ln07aQIFI658lUjjb1T876DVQrBPCW6PC8qXLglBvDlb/NghT+1tT8
-         30jKUnUrlMxCsxS6wuWordEH0ouKw+jFCOhq4nubXxacrPDzfBfysH2ZRcBlGMLI7l
-         xdATOPzHFxY6SCnVuDL9fiJimH1Fqk+KzlUyyh3AKKYPf3eEvFPPThzvWROFtZSuAm
-         LjJ0mw/UxpS5w==
-Date:   Tue, 10 Aug 2021 09:47:16 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jonathan Toppins <jtoppins@redhat.com>
-Cc:     netdev@vger.kernel.org, joe@perches.com,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] bonding: combine netlink and console
- error messages
-Message-ID: <YRIg9IRmBpaZghKf@unreal>
-References: <a36c7639a13963883f49c272ed7993c9625a712a.1628306392.git.jtoppins@redhat.com>
- <f39027d1a23fb744212bd502d426a44512be4897.1628576943.git.jtoppins@redhat.com>
+        id S235627AbhHJGtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:49:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628578127; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=rY9lZ62jXAuPNEI3pRZHDQQkULdfwiTLhfApWfVkKvo=; b=NwhMcwxbqfanO4JeYdS3Aw9uJh04f/myPPT5eMpnJgPUweiRWlY/A53T3f99sOrzP2Ya1EEM
+ RqfxLXwG2SfdNw8mq96aNCsf9mAG+WHSRO6WCPXBDzKJqHFnNdHMnTxF60F1a3JPfOH+o6ur
+ DErIRjnagfB6l1xBIKk+e9vB8GI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6112213a7ee6040977f8d882 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 06:48:26
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BF35AC43217; Tue, 10 Aug 2021 06:48:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D245C4338A;
+        Tue, 10 Aug 2021 06:48:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D245C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCHv2] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to system pm callbacks
+Date:   Tue, 10 Aug 2021 12:18:08 +0530
+Message-Id: <20210810064808.32486-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f39027d1a23fb744212bd502d426a44512be4897.1628576943.git.jtoppins@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 02:40:31AM -0400, Jonathan Toppins wrote:
-> There seems to be no reason to have different error messages between
-> netlink and printk. It also cleans up the function slightly.
-> 
-> v2:
->  - changed the printks to reduce object code slightly
->  - emit a single error message based on if netlink or sysfs is
->    attempting to enslave
-> 
-> Signed-off-by: Jonathan Toppins <jtoppins@redhat.com>
-> ---
->  drivers/net/bonding/bond_main.c | 49 +++++++++++++++++++--------------
->  1 file changed, 29 insertions(+), 20 deletions(-)
+Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
+of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
+such cases, we would need to drop the XO clock vote in unprepare call and
+this unprepare callback for XO is in RPMh (Resource Power Manager-Hardened)
+clock driver which controls RPMh managed clock resources for new QTI SoCs.
 
-Can you please resubmit whole series and not as a reply and put your changelog under ---?
-We don't want to see chengelog in final commit message.
+Given we cannot have a sleeping calls such as clk_bulk_prepare() and
+clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
+operations like map and unmap can be in atomic context and are in fast
+path, add this prepare and unprepare call to drop the XO vote only for
+system pm callbacks since it is not a fast path and we expect the system
+to enter deep sleep states with system pm as opposed to runtime pm.
 
-Thanks
+This is a similar sequence of clock requests (prepare,enable and
+disable,unprepare) in arm-smmu probe and remove.
+
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+---
+
+Changes in v2:
+ * Add clk unprepare when clk enable fails in resume (Will)
+
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index d3c6f54110a5..da8ef9d82d79 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -2277,18 +2277,38 @@ static int __maybe_unused arm_smmu_runtime_suspend(struct device *dev)
+ 
+ static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
+ {
++	int ret;
++	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
++
++	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
++	if (ret)
++		return ret;
++
+ 	if (pm_runtime_suspended(dev))
+ 		return 0;
+ 
+-	return arm_smmu_runtime_resume(dev);
++	ret = arm_smmu_runtime_resume(dev);
++	if (ret)
++		clk_bulk_unprepare(smmu->num_clks, smmu->clks);
++
++	return ret;
+ }
+ 
+ static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
+ {
++	int ret = 0;
++	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
++
+ 	if (pm_runtime_suspended(dev))
+-		return 0;
++		goto clk_unprepare;
+ 
+-	return arm_smmu_runtime_suspend(dev);
++	ret = arm_smmu_runtime_suspend(dev);
++	if (ret)
++		return ret;
++
++clk_unprepare:
++	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
++	return ret;
+ }
+ 
+ static const struct dev_pm_ops arm_smmu_pm_ops = {
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
