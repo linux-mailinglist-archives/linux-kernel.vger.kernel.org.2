@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B558A3E5A6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B4D3E5A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240919AbhHJMwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
+        id S240930AbhHJMwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240883AbhHJMw0 (ORCPT
+        with ESMTP id S240887AbhHJMw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:52:26 -0400
-Received: from mail-lf1-x14a.google.com (mail-lf1-x14a.google.com [IPv6:2a00:1450:4864:20::14a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60EB9C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:52:04 -0700 (PDT)
-Received: by mail-lf1-x14a.google.com with SMTP id s1-20020a0565122141b02903bf02f21443so6515815lfr.17
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=l2S3+Q0TSpzQjgS1IAlz45uFtK7NW5/mPHoPH0IioQk=;
-        b=KXQ/QUEEOSS6EHsdr/Xd/9sImhJkV3kgmL5PkQKU9pSnj+3Y3r9ti617iMQhx0atgq
-         eISZp/pNNIDCbpEEOHMltrtb+s/Qf4AuV0+zlnaVD1aukES3dsC9vV3Tn4R305E0V29X
-         9ZVAZLBIsbVNcBFqyOhlV7/ccvIIuk/2bUlXQrNf7cHFJyYnni/kkk9uBDz1A6q1aA7p
-         3VYdgxU88ns/7pYhFq79AWNSs/JH73+ZiaLVIbjplqIS8hWp59kRO34GdpZ8X9YUfCxe
-         hy6TZJG0m+qzRigpBqHmDdAiBSv67qhUiUrrbEPKVNT93fh/z9g8EC98d6V4Pzw/BZHy
-         MU2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=l2S3+Q0TSpzQjgS1IAlz45uFtK7NW5/mPHoPH0IioQk=;
-        b=RVvPjA+7xZ0L6q2C8ODZYnc/pKfLTgEJ85ZyQEWvYpjqJV33O/Q2TLzXgzS/453V+/
-         2EUcniZ5jUEB9rk6fiadsCQ1gWND9h06oMUksor/zCV+tE+KBGagL9fS0KfVqbVip9RY
-         0YWEqASb/KnSEZwYVbBpzwQ4btu5IsDPN2F0igupJDnwaV1lMDvuqT0LdsqJtuwgQOji
-         6KPVe6NHf2P/8BnNyBzQyOsxIDTWauxsZ9QJs4bfl9Lz8nG9f79XvqOvu8uN0oUnQWXb
-         Y/K5Ti3HMc/LfxzfKGLqNJ4MvQ0jKxDG5wWiUL/RFHncqC2XUNtEGe0bMLoYBIQXTB7i
-         JiJg==
-X-Gm-Message-State: AOAM5314H1t5oBqx1CEh0zkM+oetfz8ymco3ze/d8E1Ijq6MUevpuczL
-        YHOAN91Th0v9F9p5mOQgYGtUe4zr7jnQ
-X-Google-Smtp-Source: ABdhPJxjeZzYLXDfdWf1yd3iW87LcCXxOt1DH+tO/jyun0GNzCxilgO6cNkkYhyC3Mm+SmKHnkjgoLRECOX9
-X-Received: from wiktorg.zrh.corp.google.com ([2a00:79e0:1b:201:9951:392d:1aa7:5313])
- (user=wiktorg job=sendgmr) by 2002:ac2:5fe3:: with SMTP id
- s3mr21252242lfg.319.1628599922529; Tue, 10 Aug 2021 05:52:02 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 14:51:58 +0200
-Message-Id: <20210810125158.329849-1-wiktorg@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH] seccomp: Fix setting number of loaded filters
-From:   Wiktor Garbacz <wiktorg@google.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Wiktor Garbacz <wiktorg@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 10 Aug 2021 08:52:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B21C061798;
+        Tue, 10 Aug 2021 05:52:06 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 12:52:00 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628599921;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e8+ZNcEG78K1K+/wb9L2GpsrYYHI6RslCSun31vmXgY=;
+        b=ID5hBlOfGmFK5EcLj7jWnGo06DYr26HyMvLAP/p7M9Cp4NeOz6Tdo1W6vRS0rVu6SF1zpl
+        8WKFN9Bt19FO679EukvjaIs9mZQ7KEC24zHlk69ntH5ooC2wmkCZYVhtZxaK9Ywq2ow1KK
+        zwVS1kkGKD62KYKbM5RuFKcUq+vl0MK6KLUKP8CRT1DlEVyHvmMno97nwGsNayOWAOOpkR
+        Oxbcj8gRRW101RenNpSkxsargc5NXJG3xe6nOhRvvFfPZ6yY9IrA+DvRZ2EUAIfRaSFd0R
+        OvJP9oeKIUpNjrD/0z9p9cDonNt0Rw0Gn8IqiI6jrpxXW9EA55rFEdEO2H3S8A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628599921;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e8+ZNcEG78K1K+/wb9L2GpsrYYHI6RslCSun31vmXgY=;
+        b=rIXrg/TGw94Onu0jIAd1HP01bX0+47vGjI0Y9/zs013Y63t8T8Id2dNbd3QieGvxpPWJg3
+        3ZA0uq9YLn8RDVCw==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/mce/inject: Replace deprecated CPU-hotplug functions.
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210803141621.780504-10-bigeasy@linutronix.de>
+References: <20210803141621.780504-10-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Message-ID: <162859992037.395.6889909632575616379.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value is only reported through procfs so this
-is purely cosmetic.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Signed-off-by: Wiktor Garbacz <wiktorg@google.com>
+Commit-ID:     8ae9e3f63865bc067c144817da9df025dbb667f2
+Gitweb:        https://git.kernel.org/tip/8ae9e3f63865bc067c144817da9df025dbb667f2
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Tue, 03 Aug 2021 16:15:52 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 14:46:27 +02:00
+
+x86/mce/inject: Replace deprecated CPU-hotplug functions.
+
+The functions get_online_cpus() and put_online_cpus() have been
+deprecated during the CPU hotplug rework. They map directly to
+cpus_read_lock() and cpus_read_unlock().
+
+Replace deprecated CPU-hotplug functions with the official version.
+The behavior remains unchanged.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210803141621.780504-10-bigeasy@linutronix.de
+
 ---
- kernel/seccomp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/mce/inject.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 057e17f3215d..6469eca8078c 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -602,7 +602,7 @@ static inline void seccomp_sync_threads(unsigned long flags)
- 		smp_store_release(&thread->seccomp.filter,
- 				  caller->seccomp.filter);
- 		atomic_set(&thread->seccomp.filter_count,
--			   atomic_read(&thread->seccomp.filter_count));
-+			   atomic_read(&caller->seccomp.filter_count));
+diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
+index 4e86d97..0bfc140 100644
+--- a/arch/x86/kernel/cpu/mce/inject.c
++++ b/arch/x86/kernel/cpu/mce/inject.c
+@@ -235,7 +235,7 @@ static void __maybe_unused raise_mce(struct mce *m)
+ 		unsigned long start;
+ 		int cpu;
  
- 		/*
- 		 * Don't let an unprivileged task work around
--- 
-2.32.0.605.g8dce9f2422-goog
-
+-		get_online_cpus();
++		cpus_read_lock();
+ 		cpumask_copy(mce_inject_cpumask, cpu_online_mask);
+ 		cpumask_clear_cpu(get_cpu(), mce_inject_cpumask);
+ 		for_each_online_cpu(cpu) {
+@@ -269,7 +269,7 @@ static void __maybe_unused raise_mce(struct mce *m)
+ 		}
+ 		raise_local();
+ 		put_cpu();
+-		put_online_cpus();
++		cpus_read_unlock();
+ 	} else {
+ 		preempt_disable();
+ 		raise_local();
+@@ -529,7 +529,7 @@ static void do_inject(void)
+ 		cpu = get_nbc_for_node(topology_die_id(cpu));
+ 	}
+ 
+-	get_online_cpus();
++	cpus_read_lock();
+ 	if (!cpu_online(cpu))
+ 		goto err;
+ 
+@@ -553,7 +553,7 @@ static void do_inject(void)
+ 	}
+ 
+ err:
+-	put_online_cpus();
++	cpus_read_unlock();
+ 
+ }
+ 
