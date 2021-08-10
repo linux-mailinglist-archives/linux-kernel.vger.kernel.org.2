@@ -2,274 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE3E3E8613
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6523E8616
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbhHJWcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 18:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhHJWci (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:32:38 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18D7C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:32:15 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d9so424746qty.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:32:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IVKwhyg5AzTrj5Xr1hZ4KWRmZdbFFP1eiKArCMM9pzQ=;
-        b=kMzKvyM7Loc2Seu+yjDAggIqexhPusiNdPDi3KNaP5dOf7ubrKXspzTLZd8K1mte7D
-         /CUWDSp+885bU3phswxEX/evd3x6xZi39AFKORpapSvXqn+pi1L5NJEuN33YQzsHTgm6
-         UW+ihkZWY5fzTHGNTPWqTwCOTfqzA2dVwHVAg84yaCXL7gH+DPiHD1RuQwV7cm9dcaSc
-         a1QkPfVgIdXkcjl6okTBRVixkHzaqGyC0p9wiZRzjWquIj9keJNvzakWpFYzurB5g5vz
-         cniCMJmFeDODPNVctJpV1YMDDNvDaOpB0aFMJSxfXFzajnejgP2FtTHs4wLhJjZkGaKI
-         9xvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IVKwhyg5AzTrj5Xr1hZ4KWRmZdbFFP1eiKArCMM9pzQ=;
-        b=UAHAKZdtEQBYsVFe0uuqMKEMmxQ4GRJyvCmRG939oGKD6P5F436fTwGan8m0S6/tBv
-         rkM3pDrsxjGV/UPX145hk5WynoWWwRXlX94TzWKX4lo1iJuq+CO5AkcIQtymJLRC4VR1
-         6SBxqbzd/xzd9v6/gnQRnxA9kWly4ldvIAmFrqfz843j5U4j2numnI3mVzIDZGRmm9Zg
-         1+RdXxfvAfZJtAhzS/jBF92teXPjJffT68NgUN4p1zerddoFCNU8+KcG1eQTctaGjggl
-         0SKh4VVS14rGdBqZJ4maWtgxSBts/g9fNT1JcW88nWLCNKrO+akDcVStDKALisRN55Y8
-         6VlA==
-X-Gm-Message-State: AOAM5308mWNiS2qIpduuOxSLXTW9kN2kswIikC9+Di5CXmIaamDyWYh9
-        dsLaERjA2AE/JL5wnXTzRc4=
-X-Google-Smtp-Source: ABdhPJy1JiDO1hiht2G6W9aRmXkmQFgXz6D6Em1RbxlWD8JKIAMWOsTeeZ0U2Yd5wjw45pQGJz3+Iw==
-X-Received: by 2002:a05:622a:1350:: with SMTP id w16mr17133150qtk.295.1628634734818;
-        Tue, 10 Aug 2021 15:32:14 -0700 (PDT)
-Received: from master-laptop.sparksnet ([2601:153:980:85b1:e0b4:e07a:5fc6:c67f])
-        by smtp.gmail.com with ESMTPSA id b1sm8804662qtq.12.2021.08.10.15.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 15:32:14 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Sandy Huang <hjc@rock-chips.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Peter Geis <pgwipeout@gmail.com>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: [BUG] dw-mipi-dsi-rockchip display corruption with dsi panel
-Date:   Tue, 10 Aug 2021 18:31:24 -0400
-Message-Id: <20210810223123.2174596-1-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S235107AbhHJWdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 18:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231380AbhHJWdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 18:33:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD2960F94;
+        Tue, 10 Aug 2021 22:32:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628634767;
+        bh=jBhUSswXbu7eqOIoOTNA6LTai3QKt3yxiCxd0AsaSVM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=UlmwruyWNcVqCzdrGmJPwoT3zO+oq3c4bN4e1EG0j8Ii782GwufWkNoeuTDL0xflB
+         ibTEtBFLr0igVxyV7HL8hPn+SCaP1x3th5gqtBsam28jRK9tdNeL2wovy8u/qrpKWL
+         +3ON1m8q99OGqedxcga0dnuz8NVYmecq+yg2bUs024Ngg71HgXSIe9W4JRi++hh349
+         SIt0uQxYWMXOgIAKY+5YfI8XqoxtksF9hr0fyuWl6G698LuWhGbGg24ZrDtltwIF1q
+         ryYvHMuiPy/tBFJDq/n+5m6kmjByrUKxp9FT2Oz6rL/iywuYUqYIv5Nhwdvs3r7oD4
+         GosihRIA4TfYw==
+Date:   Tue, 10 Aug 2021 17:32:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     tsbogend@alpha.franken.de, bhelgaas@google.com,
+        matthias.bgg@gmail.com, gregkh@linuxfoundation.org,
+        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-staging@lists.linux.dev, neil@brown.name,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] PCI: of: avoid 'devm_pci_remap_iospace' if
+ PCI_IOBASE is not defined
+Message-ID: <20210810223245.GA2311409@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210807072409.9018-3-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Evening,
+On Sat, Aug 07, 2021 at 09:24:08AM +0200, Sergio Paracuellos wrote:
+> Defining PCI_IOBASE for MIPS ralink in expected addresses results in PCI IO
+> resources being assigned but the addresses generated for IO accesses are wrong
+> since the ioremap in the PCI core function 'pci_parse_request_of_pci_ranges'
+> tries to remap to a fixed virtual address (PC_IOBASE) which can't work for KSEG1
+> addresses. To get it working this way, we would need to put PCI_IOBASE somewhere
+> into KSEG2 which will result in creating TLB entries for IO addresses, which most
+> of the time isn't needed on MIPS because of access via KSEG1. To allow MIPS PCI
+> drivers to properly use the PCI generic core we need to increase IO_SPACE_LIMIT
+> since IO addresses are in addresses higher that 0xffff. We also need to avoid
+> the call 'devm_pci_remap_iospace' when 'pci_parse_request_of_pci_ranges' is
+> called to avoid the following problem:
 
-I've been attempting to light off the feiyang fy07024di26a30d panel on
-the rockpro64. This is the official panel from the Pine64 store.
-I've confirmed it works with the downstream kernel on both the rk3399
-and rk3566, but on the mainline driver the display is partially
-corrupted (see attached photo: [1]).
+Rewrap to fit in ~75 columns.
 
-As you can see, the left half of the display is fine, but the right half
-of the display is corrupted with the pixels smearing horizontally.
+This is a generic change so the commit log needs to be generic as
+well.  The MIPS/KSEG1/KSEG2 information is not really useful here
+because most readers won't understand it (and I don't :)).
 
-I saw when the panel was added, some additional code was added to
-handle burst mode in the sun6_mipi_dsi driver [2].
-I've seen that the dw-mipi-dsi driver appears to already support burst
-mode and I can't find anything out of place there.
-I also haven't had much success finding anything obviously different in
-the downstream driver vs the upstream driver that would explain this.
+devm_pci_remap_iospace() calls pci_remap_iospace(), which already
+contains #ifdef PCI_IOBASE.  When PCI_IOBASE is not defined (as on 
+MIPS ralink), it emits the warning below and returns failure.
 
-Attached below is the in-progress dts changes for an example of how the
-panel is plugged in.
+This patch avoids that failure, but it still leaves
+devm_pci_remap_iospace() and pci_remap_iospace() broken on MIPS
+ralink.  It's true that on MIPS ralink, they are currently only called
+via pci_parse_request_of_pci_ranges(), but I think it would be better
+if we could fix pci_remap_iospace() to handle this case so all these
+interfaces work consistently.
 
-I admit, I have little understanding of the mipi-dsi internal workings,
-so I'm reaching out to the experts on how to correct this.
+This patch doesn't do anything with IO_SPACE_LIMIT, so I don't know
+what that part of the commit log is telling me.
 
-Thank you for your time,
-Peter Geis
-
-[1] https://photos.app.goo.gl/LBA9M2WcweGaEb4cA
-[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20181116163916.29621-1-jagan@amarulasolutions.com/
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-index 687a5afa5d2c..af55a30297ae 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-@@ -20,6 +20,13 @@ chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
- 
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm0 0 1000000 0>;
-+		brightness-levels = <0 4 8 16 32 64 128 255>;
-+		default-brightness-level = <128>;
-+	};
-+
- 	clkin_gmac: external-gmac-clock {
- 		compatible = "fixed-clock";
- 		clock-frequency = <125000000>;
-@@ -69,7 +76,7 @@ diy_led: led-1 {
- 
- 	fan: pwm-fan {
- 		compatible = "pwm-fan";
--		cooling-levels = <0 150 200 255>;
-+		cooling-levels = <0 100 150 255>;
- 		#cooling-cells = <2>;
- 		fan-supply = <&vcc12v_dcin>;
- 		pwms = <&pwm1 0 50000 0>;
-@@ -220,6 +227,16 @@ vdd_log: vdd-log {
- 		regulator-max-microvolt = <1700000>;
- 		vin-supply = <&vcc5v0_sys>;
- 	};
-+
-+	avdd: avdd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "avdd";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <11000000>;
-+		regulator-max-microvolt = <11000000>;
-+		vin-supply = <&vcc3v3_s0>;
-+	};
- };
- 
- &cpu_l0 {
-@@ -428,8 +445,8 @@ regulator-state-mem {
- 
- 			vcc3v0_touch: LDO_REG2 {
- 				regulator-name = "vcc3v0_touch";
--				regulator-always-on;
--				regulator-boot-on;
-+//				regulator-always-on;
-+//				regulator-boot-on;
- 				regulator-min-microvolt = <3000000>;
- 				regulator-max-microvolt = <3000000>;
- 				regulator-state-mem {
-@@ -518,8 +535,8 @@ regulator-state-mem {
- 
- 			vcc3v3_s0: SWITCH_REG2 {
- 				regulator-name = "vcc3v3_s0";
--				regulator-always-on;
--				regulator-boot-on;
-+//				regulator-always-on;
-+//				regulator-boot-on;
- 				regulator-state-mem {
- 					regulator-off-in-suspend;
- 				};
-@@ -593,6 +610,19 @@ fusb0: typec-portc@22 {
- 		vbus-supply = <&vcc5v0_typec>;
- 		status = "okay";
- 	};
-+
-+	touch: touchscreen@5d {
-+		compatible = "goodix,gt911";
-+		reg = <0x5d>;
-+		AVDD28-supply = <&vcc3v0_touch>;
-+		VDDIO-supply = <&vcc3v0_touch>;
-+		interrupt-parent = <&gpio4>;
-+		interrupts = <RK_PD5 IRQ_TYPE_EDGE_FALLING>;
-+		irq-gpios = <&gpio4 RK_PD5 GPIO_ACTIVE_HIGH>;
-+		reset-gpios = <&gpio4 RK_PD6 GPIO_ACTIVE_HIGH>;
-+//		touchscreen-inverted-x;
-+//		touchscreen-inverted-y;
-+	};
- };
- 
- &i2s0 {
-@@ -628,6 +658,88 @@ &io_domains {
- 	gpio1830-supply = <&vcc_3v0>;
- };
- 
-+&mipi_dsi {
-+	status = "okay";
-+	clock-master;
-+
-+	ports {
-+		mipi_out: port@1 {
-+			reg = <1>;
-+
-+			mipi_out_panel: endpoint {
-+				remote-endpoint = <&mipi_in_panel>;
-+			};
-+		};
-+	};
-+
-+	mipi_panel: panel@0 {
-+		compatible = "feiyang,fy07024di26a30d";
-+		reg = <0>;
-+		backlight = <&backlight>;
-+		reset-gpios = <&gpio4 25 GPIO_ACTIVE_HIGH>;
-+//		enable-gpios = <&gpio4 25 GPIO_ACTIVE_HIGH>;
-+		width-mm = <154>;
-+		height-mm = <86>;
-+		rotation = <0>;
-+		avdd-supply = <&avdd>;
-+		dvdd-supply = <&vcc3v3_s0>;
-+
-+		display-timings {
-+			native-mode = <&timing0>;
-+			timing0: timing0 {
-+				clock-frequency = <50000000>;
-+				hactive = <1024>;
-+				vactive = <600>;
-+				hfront-porch = <160>;
-+				hback-porch = <160>;
-+				hsync-len = <10>;
-+				vback-porch = <23>;
-+				vfront-porch = <12>;
-+				vsync-len = <1>;
-+				hsync-active = <0>;
-+				vsync-active = <0>;
-+				pixelclk-active = <0>;
-+				de-active = <0>;
-+			};
-+		};
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				mipi_in_panel: endpoint {
-+					remote-endpoint = <&mipi_out_panel>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+
-+				mipi1_in_panel: endpoint@1 {
-+					remote-endpoint = <&mipi1_out_panel>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&mipi_dsi1 {
-+	status = "okay";
-+
-+	ports {
-+		mipi1_out: port@1 {
-+			reg = <1>;
-+
-+			mipi1_out_panel: endpoint {
-+				remote-endpoint = <&mipi1_in_panel>;
-+			};
-+		};
-+	};
-+};
-+
- &pcie0 {
- 	ep-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
- 	num-lanes = <4>;
+> ------------[ cut here ]------------
+> WARNING: CPU: 2 PID: 1 at ../drivers/pci/pci.c:4066 pci_remap_iospace+0x3c/0x54
+> This architecture does not support memory mapped I/O
+> Modules linked in:
+> CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.10.1+ #1228
+> Stack : 00000000 00000000 807fa974 00000000 827ffa80 80066b48 80710000 0000000b
+>         00000000 00000000 81c59aac 7d06ddec 80850000 00000001 81c59a40 7d06ddec
+>         00000000 00000000 807c909c 81c598f0 00000001 81c59904 00000000 0000000a
+>         203a6d6d 80708880 0000000f 70617773 80850000 00000000 00000000 807d0000
+>         807ffecc 1e160000 00000001 00000200 00000000 8054e920 00000008 815e0008
+>         ...
+> Call Trace:
+> [<80008efc>] show_stack+0x8c/0x130
+> [<806e1674>] dump_stack+0x9c/0xc8
+> [<80024a3c>] __warn+0xc0/0xe8
+> [<80024ad0>] warn_slowpath_fmt+0x6c/0xbc
+> [<80410ca8>] pci_remap_iospace+0x3c/0x54
+> [<80410d20>] devm_pci_remap_iospace+0x58/0xa4
+> [<8042019c>] devm_of_pci_bridge_init+0x4dc/0x55c
+> [<80408de8>] devm_pci_alloc_host_bridge+0x78/0x88
+> [<80424e44>] mt7621_pci_probe+0x68/0x9a4
+> [<80464804>] platform_drv_probe+0x40/0x7c
+> [<804628bc>] really_probe+0x2fc/0x4e4
+> [<80463214>] device_driver_attach+0x4c/0x74
+> [<80463384>] __driver_attach+0x148/0x150
+> [<8046047c>] bus_for_each_dev+0x6c/0xb0
+> [<804614dc>] bus_add_driver+0x1b4/0x1fc
+> [<80463aa0>] driver_register+0xd0/0x110
+> [<80001714>] do_one_initcall+0x84/0x1c0
+> [<808e7fd0>] kernel_init_freeable+0x214/0x24c
+> [<806e4164>] kernel_init+0x14/0x118
+> [<80003358>] ret_from_kernel_thread+0x14/0x1c
+> 
+> ---[ end trace 1c9d4412bd51b53c ]---
+> mt7621-pci 1e140000.pcie: error -19: failed to map resource [io  0x1e160000-0x1e16ffff]
+> 
+> Hence don't call 'devm_pci_remap_iospace' if PCI_IOBASE is not defined to get
+> a working PCI core APIs for MIPS ralink platforms.
+> 
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  drivers/pci/of.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index a143b02b2dcd..657aef39bf63 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -564,12 +564,14 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+>  
+>  		switch (resource_type(res)) {
+>  		case IORESOURCE_IO:
+> +#ifdef PCI_IOBASE
+>  			err = devm_pci_remap_iospace(dev, res, iobase);
+>  			if (err) {
+>  				dev_warn(dev, "error %d: failed to map resource %pR\n",
+>  					 err, res);
+>  				resource_list_destroy_entry(win);
+>  			}
+> +#endif
+>  			break;
+>  		case IORESOURCE_MEM:
+>  			res_valid |= !(res->flags & IORESOURCE_PREFETCH);
+> -- 
+> 2.25.1
+> 
