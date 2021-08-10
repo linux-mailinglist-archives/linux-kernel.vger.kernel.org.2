@@ -2,185 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8651A3E5814
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2F43E5812
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239791AbhHJKPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:15:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48325 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239780AbhHJKPE (ORCPT
+        id S239784AbhHJKPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239774AbhHJKPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 06:15:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628590482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A42WvvsgdwjkwZlZk69nEpIcOnUU9ZyOs8J0bgwxJg8=;
-        b=Ss4fy/PLexcOVUleBPG0nv+WatgqfFkYJYOXspN9Unv0MHnJsnWCukCd+7D/wf5oqxUAHq
-        QQnxF6pNKHdR6PPtzjOtVQtsqpWSjghEcDVRlL7JWEpJUrt6DO9aabyT84jujnErzHBoQk
-        n8uMlnSPpWNjQJTAlRb0J6SKzoPCCeY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-3dN3pw3KNQyeTjHYzb6OUw-1; Tue, 10 Aug 2021 06:14:40 -0400
-X-MC-Unique: 3dN3pw3KNQyeTjHYzb6OUw-1
-Received: by mail-ed1-f69.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso10491049edh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:40 -0700 (PDT)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BCCC061798
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:42 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id q11so7309333wrr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 03:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y3QS1FCrYdlmaqXiG1OJXl7lfED7PyktVQVwB2bvr8I=;
+        b=BmXmFejb/qK7hA260JrWvlGX/gLQXJ9JOd6a76DvoRbbGZE0g593TmqcZzU/wU5IIu
+         YLakd4oCkkwGHF+AJfseqjQvDUEvI/IrRrxhJ8/jk+3PQX9Ve3nSU7FqsEQ/W7p29IU2
+         Ei5X9ir+BQAqfPiHDoU+SrQot7rpZB1ioEGL0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A42WvvsgdwjkwZlZk69nEpIcOnUU9ZyOs8J0bgwxJg8=;
-        b=OAt5Z4hWKR3srk0rzgM5f9y/K6ZfScTWc4Q6MhHMbSO8cBltt+bJCtKwdckRexDJuN
-         8FBed1CHtkpxy1fcJBzMwIvm+lEJJ//QkMSrmFI5xgEg0mFgZKDiOasN/CUO4lALZiuy
-         vf+qusw4LjmdeFdvG+TlqTbhWE52AgLBTUyfjZAYHHe5gEtyHxtoc1HfyIP2Mg5+UIjH
-         PIemQUID3hyETD3vulywLbMC3Ni/wTL5edIYILN/Ewsd9hTagm3PZkrEMY7fnR0njzw3
-         11vp8YKdgoJlFjbX7kYZnSuHcMHyf3K66Ac3bPIryY2qC9t4PSsilpe/mLBA1DdeGLeh
-         LwLw==
-X-Gm-Message-State: AOAM531EXhy2E19QxNS05FeKq1XAB1XQJP0YQYEQDtiFkXcP3GD34/UK
-        0p4/sl5f5s4x2sl1c1gE9sW4P5bgRwZL6i6wAsOF4QiaON0LxUc5aYzEQmcEfKK1EW+YwcPViJx
-        1HXT17VysoDL6ULBl1+1Nenyc
-X-Received: by 2002:a17:906:410c:: with SMTP id j12mr4943738ejk.553.1628590479574;
-        Tue, 10 Aug 2021 03:14:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPsmFryraUujm14vlfLq082aKn28Q0FPYdy2YVFyu0Ghw/NOtkyi4/HcVIa689iLhOoNqCng==
-X-Received: by 2002:a17:906:410c:: with SMTP id j12mr4943712ejk.553.1628590479302;
-        Tue, 10 Aug 2021 03:14:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id bm1sm6713471ejb.38.2021.08.10.03.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 03:14:38 -0700 (PDT)
-Subject: Re: [PATCH V2 3/3] KVM: X86: Reset DR6 only when
- KVM_DEBUGREG_WONT_EXIT
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <YRFdq8sNuXYpgemU@google.com>
- <20210809174307.145263-1-jiangshanlai@gmail.com>
- <20210809174307.145263-3-jiangshanlai@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f07b99f1-5a25-a246-9ef9-2b875d960675@redhat.com>
-Date:   Tue, 10 Aug 2021 12:14:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Y3QS1FCrYdlmaqXiG1OJXl7lfED7PyktVQVwB2bvr8I=;
+        b=nuO1giNniL0rInSliK9wnjQFA9L8l6OnxGnaX3zentDhLlBJzdwgByYaDlbi8i8aA2
+         ckwYZon/EmcArVaj68R0ZrsCcuaG+HoFa7SiS0aNwUXXYfyxvmfxdrHSaryYCa+cCXzB
+         dkBTn1BVqIbr7G/QmYVwCEYaOnngyJTSTdtdE9niI4w0vmChFu3MNvehry4g3T6cA9aE
+         23hVY/nPUeZyWNsQ+TPY4ckIK8Lt7BvxeMxoBmiN5b9ItjLlWNGG8nD7D6q/FiqXvZF+
+         dcZrwpl8pE8WhhmK2R7HM7N/jnX0cIDbw/0ervFKdFClyVMkpHCnL6EOGj5sCEVuXZpL
+         fYjQ==
+X-Gm-Message-State: AOAM530jK9oBdVuEvPd2MPslVszxYB0c/Zv6k8AQUOgxmeNr/dsj3g0X
+        Ekno5TXU0Q1UDB95QYWI4mNA8A==
+X-Google-Smtp-Source: ABdhPJxvdfIs0xvibG7SFc6t4/K9jAdA0Rjh5XE53jIDVKUe4LIjSEvpazKK2sTVLHBfF9e8ZU0rQg==
+X-Received: by 2002:a05:6000:18a5:: with SMTP id b5mr29599858wri.184.1628590480822;
+        Tue, 10 Aug 2021 03:14:40 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 140sm21738829wmb.43.2021.08.10.03.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 03:14:40 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 12:14:38 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the drm tree
+Message-ID: <YRJRju/zo5YiF1EB@phenom.ffwll.local>
+Mail-Followup-To: Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210603193242.1ce99344@canb.auug.org.au>
+ <20210708122048.534c1c4d@canb.auug.org.au>
+ <20210810192636.625220ae@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210809174307.145263-3-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810192636.625220ae@canb.auug.org.au>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/21 19:43, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Tue, Aug 10, 2021 at 07:26:36PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> The commit efdab992813fb ("KVM: x86: fix escape of guest dr6 to the host")
-> fixed a bug by reseting DR6 unconditionally when the vcpu being scheduled out.
+> On Thu, 8 Jul 2021 12:20:48 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > On Thu, 3 Jun 2021 19:32:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > After merging the drm tree, today's linux-next build (htmldocs) produced
+> > > these warnings:
+> > > 
+> > > Documentation/gpu/driver-uapi.rst:2412: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:1393.
+> > > Declaration is '.. c:enum:: drm_i915_gem_memory_class'.
+> > > Documentation/gpu/driver-uapi.rst:2484: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:2484.
+> > > Declaration is '.. c:struct:: drm_i915_gem_memory_class_instance'.
+> > > Documentation/gpu/driver-uapi.rst:7: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:7.
+> > > Declaration is '.. c:struct:: drm_i915_memory_region_info'.
+> > > Documentation/gpu/driver-uapi.rst:2531: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:2531.
+> > > Declaration is '.. c:struct:: drm_i915_query_memory_regions'.
+> > > Documentation/gpu/driver-uapi.rst:2595: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:1393.
+> > > Declaration is '.. c:struct:: drm_i915_gem_create_ext'.
+> > > Documentation/gpu/driver-uapi.rst:2615: WARNING: Duplicate C declaration, also defined at gpu/rfc/i915_gem_lmem:1393.
+> > > Declaration is '.. c:struct:: drm_i915_gem_create_ext_memory_regions'.
+> > > 
+> > > Introduced by (one or more of) commits
+> > > 
+> > >   0c1a77cbdafb ("drm/doc: add section for driver uAPI")
+> > >   2bc9c04ea702 ("drm/doc/rfc: i915 DG1 uAPI")
+> > >   727ecd99a4c9 ("drm/doc/rfc: drop the i915_gem_lmem.h header")  
+> > 
+> > I am still getting these warning.
 > 
-> But writing to debug registers is slow, and it can be shown in perf results
-> sometimes even neither the host nor the guest activate breakpoints.
-> 
-> It'd be better to reset it conditionally and this patch moves the code of
-> reseting DR6 to the path of VM-exit and only reset it when
-> KVM_DEBUGREG_WONT_EXIT which is the only case that DR6 is guest value.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->   arch/x86/kvm/x86.c | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d2aa49722064..f40cdd7687d8 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4309,12 +4309,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
->   
->   	static_call(kvm_x86_vcpu_put)(vcpu);
->   	vcpu->arch.last_host_tsc = rdtsc();
-> -	/*
-> -	 * If userspace has set any breakpoints or watchpoints, dr6 is restored
-> -	 * on every vmexit, but if not, we might have a stale dr6 from the
-> -	 * guest. do_debug expects dr6 to be cleared after it runs, do the same.
-> -	 */
-> -	set_debugreg(0, 6);
->   }
->   
->   static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
-> @@ -9630,6 +9624,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->   		static_call(kvm_x86_sync_dirty_debug_regs)(vcpu);
->   		kvm_update_dr0123(vcpu);
->   		kvm_update_dr7(vcpu);
-> +		/* Reset Dr6 which is guest value. */
-> +		set_debugreg(DR6_RESERVED, 6);
->   	}
->   
->   	/*
-> 
+> Still getting them ...
 
-... and this should also be done exclusively for VMX, in vmx_sync_dirty_debug_regs:
-
-     KVM: VMX: Reset DR6 only when KVM_DEBUGREG_WONT_EXIT
-     
-     The commit efdab992813fb ("KVM: x86: fix escape of guest dr6 to the host")
-     fixed a bug by resetting DR6 unconditionally when the vcpu being scheduled out.
-     
-     But writing to debug registers is slow, and it can be visible in perf results
-     sometimes, even if neither the host nor the guest activate breakpoints.
-     
-     Since KVM_DEBUGREG_WONT_EXIT on Intel processors is the only case
-     where DR6 gets the guest value, and it never happens at all on SVM,
-     the register can be cleared in vmx.c right after reading it.
-     
-     Reported-by: Lai Jiangshan <laijs@linux.alibaba.com>
-     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 21a3ef3012cf..3a91302d05c0 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5110,6 +5110,12 @@ static void vmx_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
-  
-  	vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_WONT_EXIT;
-  	exec_controls_setbit(to_vmx(vcpu), CPU_BASED_MOV_DR_EXITING);
-+
-+	/*
-+	 * do_debug expects dr6 to be cleared after it runs, avoid that it sees
-+	 * a stale dr6 from the guest.
-+	 */
-+	set_debugreg(DR6_RESERVED, 6);
-  }
-  
-  static void vmx_set_dr7(struct kvm_vcpu *vcpu, unsigned long val)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index fbc536b21585..04c393551fb0 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4313,12 +4313,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
-  
-  	static_call(kvm_x86_vcpu_put)(vcpu);
-  	vcpu->arch.last_host_tsc = rdtsc();
--	/*
--	 * If userspace has set any breakpoints or watchpoints, dr6 is restored
--	 * on every vmexit, but if not, we might have a stale dr6 from the
--	 * guest. do_debug expects dr6 to be cleared after it runs, do the same.
--	 */
--	set_debugreg(0, 6);
-  }
-  
-  static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
-
-
-Paolo
-
+Matt Auld is on vacation, and the other issue is that the tree where this
+is from isn't in linux-next. So will take a bit to get sorted in
+linux-next.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
