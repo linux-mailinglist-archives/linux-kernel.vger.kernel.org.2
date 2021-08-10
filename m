@@ -2,58 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A279A3E5E18
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DD13E5E19
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240852AbhHJOgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237490AbhHJOgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:36:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 410BB60EB5;
-        Tue, 10 Aug 2021 14:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628606182;
-        bh=ABqs84wKaUA3FByRyPz8v+wtP3BKrfJzJu/RCm8D2Ns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tnMmTlYPtbMjowAzEOmV/NIhYmZfApYgdV5s/JLl5d4j6aQDcoY/FVPk4kTDWjvhe
-         lLFSd1kaqo0joYIwZj/S1k7o/0ihHd8At7bwyS55M/ksf8xofcKco0LSMUSSPOzLyy
-         zP43WWqXDJ2U/y1uRSZnmT84RigA4ULEdOJJxqst//wjsOiDio2IcU/EI1RAsmMZJw
-         QkA4bYBsIIbJIIKcg4CVxaMqOigT904GRlqSe90RwsijWz+X/DWyeCTZdWzYqFYVsu
-         tRncrUBw/vqgZyhaCG5RKslAwIN2dxhMFjaz8D0rLgWZGGGG36GJPGf5zL1waM/sxl
-         BuNFWfiQxBCQA==
-Date:   Tue, 10 Aug 2021 16:36:16 +0200
-From:   Robert Richter <rric@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Len Baker <len.baker@gmx.com>, Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-Message-ID: <YRKO4An9UkObVGmB@rric.localdomain>
-References: <20210807155957.10069-1-len.baker@gmx.com>
- <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
- <20210808112617.GA1927@titan>
- <YRD90L6PMoVbbv+9@rric.localdomain>
- <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
+        id S240911AbhHJOhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:37:13 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38990 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhHJOhL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:37:11 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DB951200BD;
+        Tue, 10 Aug 2021 14:36:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628606208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r702r2VlK81m943SLYqvWTnil/8N305KMGlpfwHE4VM=;
+        b=dLtMD1dpiF82Ww/Sw4QraCABMD3HumuxUGIc7S3rJ8MyoWaU4FGqCneieVDrPwsJdoE1+T
+        XY7ZcfW5SxQEJV//mGCladDamIbA6leypSqs8QS/kIIyGkidWL+xyxqaAajXa1DcxsLy/h
+        kIDRoRqGJn0GDIEZ0wsq5eC/U/9BwS4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628606208;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r702r2VlK81m943SLYqvWTnil/8N305KMGlpfwHE4VM=;
+        b=EMSFwzkx47Rmg/Cwk+qrraqqh3RCgMgiyOWd7qkbDSQziAMcPj/wAAS1vP3x8envrj0K/1
+        FZjBByk8JEz6tqBw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id ABD08133D0;
+        Tue, 10 Aug 2021 14:36:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id ce9BKQCPEmHINgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Tue, 10 Aug 2021 14:36:48 +0000
+Subject: Re: [PATCH v4 00/35] SLUB: reduce irq disabled scope and make it RT
+ compatible
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mike Galbraith <efault@gmx.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jann Horn <jannh@google.com>
+References: <20210805152000.12817-1-vbabka@suse.cz>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <db5a59ba-4c16-1292-a3e4-bd9f7ceb3bcb@suse.cz>
+Date:   Tue, 10 Aug 2021 16:36:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
+In-Reply-To: <20210805152000.12817-1-vbabka@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.08.21 10:18:58, Joe Perches wrote:
+On 8/5/21 5:19 PM, Vlastimil Babka wrote:
+> Series is based on 5.14-rc4 and also available as a git branch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-local-lock-v4r0
 
-> strscpy and scnprintf have different return values and it's simpler
-> and much more common to use scnprintf for appended strings that are
-> limited to a specific buffer length.
+New branch with fixed up locking orders in patch 29/35:
 
-Calculating the bytes written from the return value is a oneliner.
-
--Robert
+https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-local-lock-v4r1
