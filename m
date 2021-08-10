@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972083E7FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9013E7FEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235054AbhHJRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:44:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59866 "EHLO mail.kernel.org"
+        id S235955AbhHJRoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231786AbhHJRkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:40:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06A8761184;
-        Tue, 10 Aug 2021 17:38:02 +0000 (UTC)
+        id S234075AbhHJRka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:40:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49B1E61208;
+        Tue, 10 Aug 2021 17:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617083;
-        bh=Fag6D66siujgCk6NxA1m/fyPbXy77UlF9MvHbsDywGg=;
+        s=korg; t=1628617085;
+        bh=k1UfleYK6ZyH70sxwYQ1fNFWMPFNki4NENz3b3VVt6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rlzLYkmYdIy1e+HaOEeR8vZD9yMcsjDnP6OCHgzfQguZ40UiY4MdOdgRKIi7afOgg
-         Q25/Dql6bUES06n9Dpxe8klNvJxsDfAbgjEwjLs+wXjeuXE6kTZvuG4B/+D/x4Vnq3
-         s2YMMXkkpzzx3wBDO0WSnT3YqbnoJbEvezEgUUSk=
+        b=FZSv+/flQfYjaRjyosLLZHNsMakYbya5v2UuGyyfs04OLJJQxMrCx0QmdGfr8V4/V
+         5gcmqY4m3CMqCEKc+fDoo0NM4hajzW6JIIlYKcfWo1rfkU7m85l5KKTNwNNOxWjMZL
+         zkNmNkR3kOvALeB4McF1ZckJ0TIPCNrngWYgo4rA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
+        stable@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        =?UTF-8?q?Herv=C3=A9=20Codina?= <herve.codina@bootlin.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 007/135] ARM: imx: add missing clk_disable_unprepare()
-Date:   Tue, 10 Aug 2021 19:29:01 +0200
-Message-Id: <20210810172955.919300067@linuxfoundation.org>
+Subject: [PATCH 5.10 008/135] ARM: dts: imx6qdl-sr-som: Increase the PHY reset duration to 10ms
+Date:   Tue, 10 Aug 2021 19:29:02 +0200
+Message-Id: <20210810172955.954869486@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 References: <20210810172955.660225700@linuxfoundation.org>
@@ -42,73 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
 
-[ Upstream commit f07ec85365807b3939f32d0094a6dd5ce065d1b9 ]
+[ Upstream commit fd8e83884fdd7b5fc411f201a58d8d01890198a2 ]
 
-clock source is prepared and enabled by clk_prepare_enable()
-in probe function, but no disable or unprepare in remove and
-error path.
+The AR803x PHY used on this modules seems to require the reset line to
+be asserted for around 10ms in order to avoid rare cases where the PHY
+gets stuck in an incoherent state that prevents it to function
+correctly.
 
-Fixes: 9454a0caff6a ("ARM: imx: add mmdc ipg clock operation for mmdc")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+The previous value of 2ms was found to be problematic on some setups,
+causing intermittent issues where the PHY would be unresponsive
+every once in a while on some sytems, with a low occurrence (it typically
+took around 30 consecutive reboots to encounter the issue).
+
+Bumping the delay to the 10ms makes the issue dissapear, with more than
+2500 consecutive reboots performed without the issue showing-up.
+
+Fixes: 208d7baf8085 ("ARM: imx: initial SolidRun HummingBoard support")
+Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Tested-by: Hervé Codina <herve.codina@bootlin.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-imx/mmdc.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/imx6qdl-sr-som.dtsi | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-index 8e57691aafe2..4a6f1359e1e9 100644
---- a/arch/arm/mach-imx/mmdc.c
-+++ b/arch/arm/mach-imx/mmdc.c
-@@ -103,6 +103,7 @@ struct mmdc_pmu {
- 	struct perf_event *mmdc_events[MMDC_NUM_COUNTERS];
- 	struct hlist_node node;
- 	struct fsl_mmdc_devtype_data *devtype_data;
-+	struct clk *mmdc_ipg_clk;
- };
+diff --git a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
+index 7e4e5fd0143a..c56337b63c3b 100644
+--- a/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-sr-som.dtsi
+@@ -54,7 +54,13 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_microsom_enet_ar8035>;
+ 	phy-mode = "rgmii-id";
+-	phy-reset-duration = <2>;
++
++	/*
++	 * The PHY seems to require a long-enough reset duration to avoid
++	 * some rare issues where the PHY gets stuck in an inconsistent and
++	 * non-functional state at boot-up. 10ms proved to be fine .
++	 */
++	phy-reset-duration = <10>;
+ 	phy-reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
  
- /*
-@@ -463,11 +464,13 @@ static int imx_mmdc_remove(struct platform_device *pdev)
- 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
- 	perf_pmu_unregister(&pmu_mmdc->pmu);
- 	iounmap(pmu_mmdc->mmdc_base);
-+	clk_disable_unprepare(pmu_mmdc->mmdc_ipg_clk);
- 	kfree(pmu_mmdc);
- 	return 0;
- }
- 
--static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_base)
-+static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_base,
-+			      struct clk *mmdc_ipg_clk)
- {
- 	struct mmdc_pmu *pmu_mmdc;
- 	char *name;
-@@ -495,6 +498,7 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
- 	}
- 
- 	mmdc_num = mmdc_pmu_init(pmu_mmdc, mmdc_base, &pdev->dev);
-+	pmu_mmdc->mmdc_ipg_clk = mmdc_ipg_clk;
- 	if (mmdc_num == 0)
- 		name = "mmdc";
- 	else
-@@ -568,9 +572,11 @@ static int imx_mmdc_probe(struct platform_device *pdev)
- 	val &= ~(1 << BP_MMDC_MAPSR_PSD);
- 	writel_relaxed(val, reg);
- 
--	err = imx_mmdc_perf_init(pdev, mmdc_base);
--	if (err)
-+	err = imx_mmdc_perf_init(pdev, mmdc_base, mmdc_ipg_clk);
-+	if (err) {
- 		iounmap(mmdc_base);
-+		clk_disable_unprepare(mmdc_ipg_clk);
-+	}
- 
- 	return err;
- }
 -- 
 2.30.2
 
