@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724663E7C61
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F017E3E7C69
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243232AbhHJPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:35:12 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:51140 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243239AbhHJPfA (ORCPT
+        id S243548AbhHJPgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:36:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60545 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243387AbhHJPfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:35:00 -0400
-Received: by mail-io1-f69.google.com with SMTP id e18-20020a5d92520000b029057d0eab404aso14699940iol.17
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:34:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ezvPuPtMzOuRLqecX2VTZ2ztz0IyxYGYWNq3bM8LvCs=;
-        b=h3NOMWNHq0OERyxxt80FWD4xoaAf62VakM+LKfOxSKpQct9zaVRMA4sk/6j4kGMf3b
-         ahcMlmwtZbIX24OgZd8o6EL4UtDUojEQNQ1OhSTsskjGlYMdRPJqI9WqusfRphDQ3+Ks
-         76y4LxcDiqQ1jYM5IfX9T/Mwhq5HkuI5H1yZzb3x92gX5niMp8FJIRGPLtylgjCPg8Wy
-         NSeVG65LNN9rFQGbNFU/pB33ZGqC6RNqxxiV7mHV3EbrwCemLhBnXoAqGbde5nKRJlLj
-         f4Dc34xAa0eBAlgUzm0sRdKJct9eACbgYGbTTO/0nErPEQjuP0riHD4v3kNlOC/zot7p
-         Rc6Q==
-X-Gm-Message-State: AOAM530CFN5yNRbr8jTbrmS9ZWV2yWJVn0KGBxbcKbc1tSaHjhRimq88
-        ldCXIGhDcMSc7dFAR/i+lSVSxETZYRHcDc6XrLD7aDvZ6Kcs
-X-Google-Smtp-Source: ABdhPJxUNwqzmK5BP4xy5zYm2dHKjVhr9kXAul5tmQWBzbKn7f/vtTtKsjuaPj76egcfQsjLcONIB+8s6JEZ9u6yEHxs1CkpszEd
+        Tue, 10 Aug 2021 11:35:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628609702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RQ/0SiinduV3LbfrDNpCgNc852w6KVFq2vg6uA6nZMY=;
+        b=b/BEBggs1mh6gjLGN/7bNCM2jTd0z7txwNj/wh+aYv4oYgcluHAxRsk50xmb4tVKFs0ZXR
+        THAszCCW9HXddZtESSV3li0OpfH2MZkFYNETT7kzMLtIdsNnclG/J8H6PC7VqGsEfQo/T+
+        QVHlqEEsL60exeoCVooXDcBCCFqObUI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-SQn8TOELMhaaUUu2SlN4DQ-1; Tue, 10 Aug 2021 11:34:59 -0400
+X-MC-Unique: SQn8TOELMhaaUUu2SlN4DQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 677571026200;
+        Tue, 10 Aug 2021 15:34:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D8386620DE;
+        Tue, 10 Aug 2021 15:34:55 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-23-willy@infradead.org>
+References: <20210715033704.692967-23-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v14 022/138] mm/filemap: Add __folio_lock_or_retry()
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9ac1:: with SMTP id x1mr16641ion.191.1628609652476;
- Tue, 10 Aug 2021 08:34:12 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 08:34:12 -0700
-In-Reply-To: <0000000000007faf7505c91bb19d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d04e9b05c9363bf1@google.com>
-Subject: Re: [syzbot] general protection fault in hwsim_new_edge_nl
-From:   syzbot <syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, alex.aring@gmail.com, bp@alien8.de,
-        davem@davemloft.net, frederic@kernel.org, hpa@zytor.com,
-        jmattson@google.com, joro@8bytes.org, kuba@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wpan@vger.kernel.org, mark.rutland@arm.com,
-        masahiroy@kernel.org, mingo@redhat.com, mudongliangabcd@gmail.com,
-        netdev@vger.kernel.org, npiggin@gmail.com, pbonzini@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rostedt@goodmis.org, seanjc@google.com, sedat.dilek@gmail.com,
-        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vitor@massaru.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, will@kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1796456.1628609695.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 16:34:55 +0100
+Message-ID: <1796457.1628609695@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
+> Convert __lock_page_or_retry() to __folio_lock_or_retry().  This actually
+> saves 4 bytes in the only caller of lock_page_or_retry() (due to better
+> register allocation) and saves the 14 byte cost of calling page_folio()
+> in __folio_lock_or_retry() for a total saving of 18 bytes.  Also use
+> a bool for the return type.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
 
-    lockdep: report broken irq restoration
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13927981300000
-start commit:   d09c548dbf3b net: sched: act_mirred: Reset ct info when mi..
-git tree:       net
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10527981300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17927981300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=343fd21f6f4da2d6
-dashboard link: https://syzkaller.appspot.com/bug?extid=fafb46da3f65fdbacd16
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152ee39e300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15946ff1300000
-
-Reported-by: syzbot+fafb46da3f65fdbacd16@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
