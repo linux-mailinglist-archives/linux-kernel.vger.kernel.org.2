@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3009B3E7EC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2F43E8037
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233304AbhHJRfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:35:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33340 "EHLO mail.kernel.org"
+        id S235691AbhHJRrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:47:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232123AbhHJReR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:34:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58BF96108C;
-        Tue, 10 Aug 2021 17:33:54 +0000 (UTC)
+        id S235974AbhHJRoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:44:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED0A161078;
+        Tue, 10 Aug 2021 17:39:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616834;
-        bh=FfXHP7cUmnlDTXqLMrTXsprmJ00OVsWAgbgMHCiyXAQ=;
+        s=korg; t=1628617171;
+        bh=RxHK1u20b/F8+DvhuvxB1aZdwvVr2uSLvIftHo8/y8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z2P41GFcBUIkpBXwTTmyhX9u0CLv6LCsJUN4WuYiIAZCNfe2RUaXFhYrvbf15dA5K
-         Lm3opBZ61izMEAY6c6mNdY46kxSSZTYW/YKAh//P4ShiWkXzVN5eTjDydw8WGRwM8v
-         nHiWCfco5VtAReJwrhUanxfajAnfMVisuvagFW5E=
+        b=qZLIe5/1YKmd6k5a0hGp+J0cvl2+ysaTm+Zc/yVwB6qshCMyCYbCqC4sVltItU/x/
+         AdoRTTDe/4BMQX/vne0m37v+VhV69jC4reRnOb+Y7QBzTZdio9KtZRb87z53g/jqHr
+         LqhwTkT8h3lYyCjueYkYV7XxExZosG/dRbZ9U/YE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        folkert <folkert@vanheusden.com>
-Subject: [PATCH 5.4 02/85] ALSA: seq: Fix racy deletion of subscriber
-Date:   Tue, 10 Aug 2021 19:29:35 +0200
-Message-Id: <20210810172948.276659721@linuxfoundation.org>
+        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 042/135] net: dsa: qca: ar9331: reorder MDIO write sequence
+Date:   Tue, 10 Aug 2021 19:29:36 +0200
+Message-Id: <20210810172957.113381223@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,116 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-commit 97367c97226aab8b298ada954ce12659ee3ad2a4 upstream.
+[ Upstream commit d1a58c013a5837451e3213e7a426d350fa524ead ]
 
-It turned out that the current implementation of the port subscription
-is racy.  The subscription contains two linked lists, and we have to
-add to or delete from both lists.  Since both connection and
-disconnection procedures perform the same order for those two lists
-(i.e. src list, then dest list), when a deletion happens during a
-connection procedure, the src list may be deleted before the dest list
-addition completes, and this may lead to a use-after-free or an Oops,
-even though the access to both lists are protected via mutex.
+In case of this switch we work with 32bit registers on top of 16bit
+bus. Some registers (for example access to forwarding database) have
+trigger bit on the first 16bit half of request and the result +
+configuration of request in the second half. Without this patch, we would
+trigger database operation and overwrite result in one run.
 
-The simple workaround for this race is to change the access order for
-the disconnection, namely, dest list, then src list.  This assures
-that the connection has been established when disconnecting, and also
-the concurrent deletion can be avoided.
+To make it work properly, we should do the second part of transfer
+before the first one is done.
 
-Reported-and-tested-by: folkert <folkert@vanheusden.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210801182754.GP890690@belle.intranet.vanheusden.com
-Link: https://lore.kernel.org/r/20210803114312.2536-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+So far, this rule seems to work for all registers on this switch.
+
+Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Link: https://lore.kernel.org/r/20210803063746.3600-1-o.rempel@pengutronix.de
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/seq_ports.c |   39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ drivers/net/dsa/qca/ar9331.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/sound/core/seq/seq_ports.c
-+++ b/sound/core/seq/seq_ports.c
-@@ -514,10 +514,11 @@ static int check_and_subscribe_port(stru
- 	return err;
- }
- 
--static void delete_and_unsubscribe_port(struct snd_seq_client *client,
--					struct snd_seq_client_port *port,
--					struct snd_seq_subscribers *subs,
--					bool is_src, bool ack)
-+/* called with grp->list_mutex held */
-+static void __delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					  struct snd_seq_client_port *port,
-+					  struct snd_seq_subscribers *subs,
-+					  bool is_src, bool ack)
- {
- 	struct snd_seq_port_subs_info *grp;
- 	struct list_head *list;
-@@ -525,7 +526,6 @@ static void delete_and_unsubscribe_port(
- 
- 	grp = is_src ? &port->c_src : &port->c_dest;
- 	list = is_src ? &subs->src_list : &subs->dest_list;
--	down_write(&grp->list_mutex);
- 	write_lock_irq(&grp->list_lock);
- 	empty = list_empty(list);
- 	if (!empty)
-@@ -535,6 +535,18 @@ static void delete_and_unsubscribe_port(
- 
- 	if (!empty)
- 		unsubscribe_port(client, port, grp, &subs->info, ack);
-+}
-+
-+static void delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					struct snd_seq_client_port *port,
-+					struct snd_seq_subscribers *subs,
-+					bool is_src, bool ack)
-+{
-+	struct snd_seq_port_subs_info *grp;
-+
-+	grp = is_src ? &port->c_src : &port->c_dest;
-+	down_write(&grp->list_mutex);
-+	__delete_and_unsubscribe_port(client, port, subs, is_src, ack);
- 	up_write(&grp->list_mutex);
- }
- 
-@@ -590,27 +602,30 @@ int snd_seq_port_disconnect(struct snd_s
- 			    struct snd_seq_client_port *dest_port,
- 			    struct snd_seq_port_subscribe *info)
- {
--	struct snd_seq_port_subs_info *src = &src_port->c_src;
-+	struct snd_seq_port_subs_info *dest = &dest_port->c_dest;
- 	struct snd_seq_subscribers *subs;
- 	int err = -ENOENT;
- 
--	down_write(&src->list_mutex);
-+	/* always start from deleting the dest port for avoiding concurrent
-+	 * deletions
-+	 */
-+	down_write(&dest->list_mutex);
- 	/* look for the connection */
--	list_for_each_entry(subs, &src->list_head, src_list) {
-+	list_for_each_entry(subs, &dest->list_head, dest_list) {
- 		if (match_subs_info(info, &subs->info)) {
--			atomic_dec(&subs->ref_count); /* mark as not ready */
-+			__delete_and_unsubscribe_port(dest_client, dest_port,
-+						      subs, false,
-+						      connector->number != dest_client->number);
- 			err = 0;
- 			break;
- 		}
+diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+index 4d49c5f2b790..661745932a53 100644
+--- a/drivers/net/dsa/qca/ar9331.c
++++ b/drivers/net/dsa/qca/ar9331.c
+@@ -689,16 +689,24 @@ static int ar9331_mdio_write(void *ctx, u32 reg, u32 val)
+ 		return 0;
  	}
--	up_write(&src->list_mutex);
-+	up_write(&dest->list_mutex);
- 	if (err < 0)
- 		return err;
  
- 	delete_and_unsubscribe_port(src_client, src_port, subs, true,
- 				    connector->number != src_client->number);
--	delete_and_unsubscribe_port(dest_client, dest_port, subs, false,
--				    connector->number != dest_client->number);
- 	kfree(subs);
+-	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg, val);
++	/* In case of this switch we work with 32bit registers on top of 16bit
++	 * bus. Some registers (for example access to forwarding database) have
++	 * trigger bit on the first 16bit half of request, the result and
++	 * configuration of request in the second half.
++	 * To make it work properly, we should do the second part of transfer
++	 * before the first one is done.
++	 */
++	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg + 2,
++				  val >> 16);
+ 	if (ret < 0)
+ 		goto error;
+ 
+-	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg + 2,
+-				  val >> 16);
++	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg, val);
+ 	if (ret < 0)
+ 		goto error;
+ 
  	return 0;
- }
++
+ error:
+ 	dev_err_ratelimited(&sbus->dev, "Bus error. Failed to write register.\n");
+ 	return ret;
+-- 
+2.30.2
+
 
 
