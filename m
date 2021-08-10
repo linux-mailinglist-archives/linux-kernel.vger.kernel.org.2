@@ -2,67 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E9D3E8436
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD813E843A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhHJUTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:19:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22249 "EHLO
+        id S233062AbhHJUUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:20:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41603 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231398AbhHJUTS (ORCPT
+        by vger.kernel.org with ESMTP id S232851AbhHJUUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:19:18 -0400
+        Tue, 10 Aug 2021 16:20:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628626735;
+        s=mimecast20190719; t=1628626815;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+5WCWcsiWohm6koFEPwxChqvnN4T/a8zTVPw86eJGag=;
-        b=CXaSI7WP13G8G9NDhczn5MTU64F/hp19Y2LhngEfG9mWE4xEhplqk4MV/E8F5OGSnWf0jN
-        ibjz5cLBA8/JcgIpY8NtpKvyNxFNZ6AgLKflmZJh5+XMLOHt8QP6tMxdCEBMbdX5f6O3SI
-        u6uXJxKmzTja99xKcvMTqDJPjpD1cic=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-Q9r5JzJUNAeoYlM-3-_vPg-1; Tue, 10 Aug 2021 16:18:52 -0400
-X-MC-Unique: Q9r5JzJUNAeoYlM-3-_vPg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64430CC622;
-        Tue, 10 Aug 2021 20:18:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F40245C1A1;
-        Tue, 10 Aug 2021 20:18:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-40-willy@infradead.org>
-References: <20210715033704.692967-40-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v14 039/138] mm/memcg: Convert commit_charge() to take a folio
+        bh=gr9ydGicGYYIpIdPqhG9R+Yfix/AQszzOwnKSS/8chs=;
+        b=QqbzQWmfoJWI/tFHZsoJArzdb1nN3ZAMyoctqwaLC1vUJEHlzcvon4RgGSBhw0YTv5tlL/
+        P9+lBUSQAc8R6FQsSjIsj568rDAjYUUM8bLTfUTR4BnceXDbubeRgsPuaDyIWN70m3LV1d
+        PScyrFhTZSYjO4LrHsKnlO5DpkMbOUw=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-la4MyYNuPc2UrOlaBrwVyg-1; Tue, 10 Aug 2021 16:20:14 -0400
+X-MC-Unique: la4MyYNuPc2UrOlaBrwVyg-1
+Received: by mail-qk1-f197.google.com with SMTP id q11-20020a05620a05abb02903ca17a8eef8so14723266qkq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:20:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gr9ydGicGYYIpIdPqhG9R+Yfix/AQszzOwnKSS/8chs=;
+        b=dTlyYRKOkJu7guxw6lME4iA5t0l+GdFWaqwFZ4xCDfwo3AvlZGGmJBQJKRJcB35EW0
+         8BDDq1XCMv6viJ8TaAUBXhAMq2QX686mBh+aE0GQVVrRbH+5+9Z1EjSReVKqylG5EKq9
+         9M99PUDgBMZHPFi/IgjFJ/hiPR678p1LWMjLCRhUYSNPhp04LeAcTEekYxugw55Y6xT4
+         1cezsp+GpFWX7jPB151xT6xJx+lNpicr4A8L3dwRgQhP9a7Eaot9iU3Hx9RwZB+FkSqS
+         eyvFUYTpbZTnUsMwK1GZ53Eoiw6S0lo/eElZaQysXrz3qncUeymzp46Y6fcI6ssFdAnn
+         4TnQ==
+X-Gm-Message-State: AOAM533VHoLGQex3EMyXYK2M8kLBN/8V7x1Ri9Ly50XxQgCLSSh3wqmI
+        keyb7jbmWRqXg4FljS9rnWBIkGyDof8KH2+WaoLrtCvzqRqsTYy7j/YLoQkay8+Ji2MbDj9woIA
+        t13EWR+kbtHhFI4NTQbXYeEN3
+X-Received: by 2002:a37:a7d2:: with SMTP id q201mr30795009qke.158.1628626814048;
+        Tue, 10 Aug 2021 13:20:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxD/SBX1bvWaqNT+p/rP4m0OLiPIsi3i5KBCXy2l6Fk5Kcju97nlz7lIXDz3fxmxzfZ8fQHSA==
+X-Received: by 2002:a37:a7d2:: with SMTP id q201mr30794980qke.158.1628626813765;
+        Tue, 10 Aug 2021 13:20:13 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
+        by smtp.gmail.com with ESMTPSA id a18sm11026048qkg.62.2021.08.10.13.20.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 13:20:13 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 16:20:12 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
+Message-ID: <YRLffH221xvfABvf@t490s>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+ <162818325518.1511194.1243290800645603609.stgit@omen>
+ <YRLJ/wdiY/fnGj2d@t490s>
+ <20210810135932.6825833b.alex.williamson@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1810157.1628626729.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 21:18:49 +0100
-Message-ID: <1810158.1628626729@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210810135932.6825833b.alex.williamson@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
-
-> The memcg_data is only set on the head page, so enforce that by
-> typing it as a folio.
+On Tue, Aug 10, 2021 at 01:59:32PM -0600, Alex Williamson wrote:
+> On Tue, 10 Aug 2021 14:48:31 -0400
+> Peter Xu <peterx@redhat.com> wrote:
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Michal Hocko <mhocko@suse.com>
+> > On Thu, Aug 05, 2021 at 11:07:35AM -0600, Alex Williamson wrote:
+> > > @@ -1690,7 +1554,7 @@ static int vfio_pci_mmap(struct vfio_device *core_vdev, struct vm_area_struct *v
+> > >  
+> > >  	vma->vm_private_data = vdev;
+> > >  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> > > -	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
+> > > +	vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);  
+> > 
+> > This addition seems to be an accident. :) Thanks,
+> 
+> Nope, Jason noted on a previous version that io_remap_pfn_range() is
+> essentially:
+> 
+>   remap_pfn_range(vma, addr, pfn, size, pgprot_decrypted(prot));
+> 
+> So since we switched to vmf_insert_pfn() I added this page protection
+> flag to the vma instead, then it gets removed later when we switch back
+> to io_remap_pfn_range().  Thanks,
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+I see, I read it wrongly as pgprot_noncached() previously.  Yes, it makes sense
+to do so.  Thanks,
+
+-- 
+Peter Xu
 
