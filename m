@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5BF3E51CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436033E51CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbhHJEKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 00:10:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:18205 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236967AbhHJEJ6 (ORCPT
+        id S235513AbhHJELZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 00:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234670AbhHJELN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 00:09:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628568577; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=jj+EJdpyqlbmbnLzE53tILclU1PuLXIfSdqbeDfZAlU=; b=Rvd+mnn3MiwyEfE/JjIm0UPOHosGrOKvXLIvXMr2aOhjhD1/tk+wTL3THQ+QaPoRs1WG75nz
- yTp1mhtGgzJ6CyALJ01SkWBaQ7H8MDW3gzdoxW1Ow7kK9BA+5CDGYgzZUOvvQeELDG06q9IY
- YfN3udGy1fGTt8r+O/lKNBFfbwE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6111fbf2b3873958f576d967 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 04:09:22
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2D37FC43217; Tue, 10 Aug 2021 04:09:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83618C433D3;
-        Tue, 10 Aug 2021 04:09:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 83618C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pmaliset@codeaurora.org
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        Prasad Malisetty <pmaliset@codeaurora.org>
-Subject: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
-Date:   Tue, 10 Aug 2021 09:38:36 +0530
-Message-Id: <1628568516-24155-5-git-send-email-pmaliset@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
-References: <1628568516-24155-1-git-send-email-pmaliset@codeaurora.org>
+        Tue, 10 Aug 2021 00:11:13 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECB1C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 21:10:52 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id d22so30473514ioy.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 21:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Np0f18ZFlXmVe8dVpMu2fWUn3OdUUMnRBlt9eEUVc9Q=;
+        b=FDo82R3+gzErO0YtuHji4oPRmykg+aMaEAbpRX3sfZ+CtijaZIq6cFmI3nEWa1CLkC
+         aLTcILu+RnmFNIalWVJt+DIOqPpx7BEZ6j4sTvR35w7Fu0mqEogBIlsVEwcPGFF1xKpZ
+         uFPAVHDVYdFrtpHh+HnUg5OMXXP+NuywtVu0w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Np0f18ZFlXmVe8dVpMu2fWUn3OdUUMnRBlt9eEUVc9Q=;
+        b=hjFiicJ+X+nVTOdl33ky2StgWdfFFzYkPrIlqVHeTCSCurwPPBpXMoG9WyrPrwer/h
+         RidLeplzDbpyfyQ+Sx+prCSBALfsMt6uygFBgUQJjCnoTdxRKbZ/V3ebdtP8QOObkCv5
+         Dld67Gbz5xLX3PgyR+B34t1pez0ikCtwptpvXegnLp71GFOKDzlWsscmiMHjT3bxE2OC
+         JT70mNLj0h8FL8IOTWtBWs5W6U/PB6iNyqEkZ2eiq4/BOzWlt9RYo7w+fDyD5LObntmX
+         GrKnBhAIt9W3OyruV7tbsJv5bTp5+WvbKKV9sPLe5Yswd8ojp3UCGRVshdDkN8xSO/x9
+         RKEQ==
+X-Gm-Message-State: AOAM532sSd0y7VW7mhi/TqD+Oqqe14Ay0unm+qhkCZ12AOsmsEaItpFn
+        sMuOkF9/17vRcR/isj1hv2pFfefj3cepG+X/ngMt3A==
+X-Google-Smtp-Source: ABdhPJzYf1vzSJMUvVEiRjXqWv755BGtmDOWeEqcFFW1Hkb6cR15tyNXtYbCSlAXc4WwGaHefqQGTWIZ7YlVY7tGORw=
+X-Received: by 2002:a5d:938a:: with SMTP id c10mr114512iol.0.1628568651827;
+ Mon, 09 Aug 2021 21:10:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210809174358.163525-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210809174358.163525-1-kai.heng.feng@canonical.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Tue, 10 Aug 2021 12:10:26 +0800
+Message-ID: <CAJMQK-gNk8LmguOQ+iDxGtJCwCUcM3rPQ0CJs=kRZzv81nso4g@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: Move shutdown callback before flushing tx and
+ rx queue
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the SC7280, By default the clock source for pcie_1_pipe is
-TCXO for gdsc enable. But after the PHY is initialized, the clock
-source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+On Tue, Aug 10, 2021 at 1:44 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
+> are flushed or cancelled") introduced a regression that makes mtkbtsdio
+> driver stops working:
+> [   36.593956] Bluetooth: hci0: Firmware already downloaded
+> [   46.814613] Bluetooth: hci0: Execution of wmt command timed out
+> [   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
+>
+> The shutdown callback depends on the result of hdev->rx_work, so we
+> should call it before flushing rx_work:
+> -> btmtksdio_shutdown()
+>  -> mtk_hci_wmt_sync()
+>   -> __hci_cmd_send()
+>    -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
+>
+> -> btmtksdio_recv_event()
+>  -> hci_recv_frame()
+>   -> queue_work(hdev->workqueue, &hdev->rx_work)
+>    -> clears BTMTKSDIO_TX_WAIT_VND_EVT
+>
+> So move the shutdown callback before flushing TX/RX queue to resolve the
+> issue.
+>
+> Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Hello,
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 8a7a300..39e3b21 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
- 	struct regulator_bulk_data supplies[2];
- 	struct reset_control *pci_reset;
- 	struct clk *pipe_clk;
-+	struct clk *gcc_pcie_1_pipe_clk_src;
-+	struct clk *phy_pipe_clk;
- };
- 
- union qcom_pcie_resources {
-@@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
- 	if (ret < 0)
- 		return ret;
- 
-+	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
-+		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
-+		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
-+			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
-+
-+		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
-+		if (IS_ERR(res->phy_pipe_clk))
-+			return PTR_ERR(res->phy_pipe_clk);
-+	}
-+
- 	res->pipe_clk = devm_clk_get(dev, "pipe");
- 	return PTR_ERR_OR_ZERO(res->pipe_clk);
- }
-@@ -1255,6 +1267,12 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
- static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
- {
- 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-+	struct dw_pcie *pci = pcie->pci;
-+	struct device *dev = pci->dev;
-+	struct device_node *node = dev->of_node;
-+
-+	if (of_property_read_bool(node, "pipe-clk-source-switch"))
-+		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
- 
- 	return clk_prepare_enable(res->pipe_clk);
- }
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Sorry for confusion, but the version I tested is this one:
+https://lkml.org/lkml/2021/8/4/486 (shutdown is prior to the
+test_and_clear HCI_UP)
+I tested this version and still see the error I've seen before.
 
+
+
+
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  net/bluetooth/hci_core.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index cb2e9e513907..8da04c899197 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -1735,6 +1735,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>
+>         hci_leds_update_powered(hdev, false);
+>
+> +       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> +           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> +           test_bit(HCI_UP, &hdev->flags)) {
+> +               /* Execute vendor specific shutdown routine */
+> +               if (hdev->shutdown)
+> +                       hdev->shutdown(hdev);
+> +       }
+> +
+>         /* Flush RX and TX works */
+>         flush_work(&hdev->tx_work);
+>         flush_work(&hdev->rx_work);
+> @@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>                 clear_bit(HCI_INIT, &hdev->flags);
+>         }
+>
+> -       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> -           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> -           test_bit(HCI_UP, &hdev->flags)) {
+> -               /* Execute vendor specific shutdown routine */
+> -               if (hdev->shutdown)
+> -                       hdev->shutdown(hdev);
+> -       }
+> -
+>         /* flush cmd  work */
+>         flush_work(&hdev->cmd_work);
+>
+> --
+> 2.31.1
+>
