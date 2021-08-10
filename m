@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727093E7F99
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41D93E7E9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhHJRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:41:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43398 "EHLO mail.kernel.org"
+        id S230175AbhHJRe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:34:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234639AbhHJRhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:37:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5E0B60FC4;
-        Tue, 10 Aug 2021 17:36:12 +0000 (UTC)
+        id S232733AbhHJRdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 453AE61076;
+        Tue, 10 Aug 2021 17:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616973;
-        bh=Jha8fhg1mL/utIyZdziZC4Sv7ThFgnNodpeJY1iJvf4=;
+        s=korg; t=1628616800;
+        bh=GN2Tr7/pBi5qdMqjJjgwJA2k7JHS8uhr6WJxPT49L28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0AN2tPJlZfc88fiJehEU5Q3BF7yO4yEiJYRVuWIwoG4jFagsgsshjsOAPVZJUgBdw
-         McOOzJ4bm+KMtyMyRtkoIAcNL/BOXcqQBvdmjzxH8KmsDMUaY4PpNrads2P7yDJT0/
-         GPv+gzMSbZyccQ8+nWJLmCo9TyjZrxg3NmRi8/A0=
+        b=YYiZOtIl5BcxOkVrr1V/IKkPxavFW9NcYhlS4pR+R7wmtV+Lzro86lEx0krTPqLgy
+         TPHbhRMjE+ndyqVSjDSO/QwBeMFbS2dIhxx0uLfy/xWxfLJUEcdficjEXD+KuoH53r
+         f8SKUVTTh7F14+RfQUGIAjvZ9E+mrn0RvXteTdFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 5.4 74/85] soc: ixp4xx: fix printing resources
+        stable@vger.kernel.org, Letu Ren <fantasquex@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 53/54] net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
 Date:   Tue, 10 Aug 2021 19:30:47 +0200
-Message-Id: <20210810172950.734146354@linuxfoundation.org>
+Message-Id: <20210810172945.953066300@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
-References: <20210810172948.192298392@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,57 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Letu Ren <fantasquex@gmail.com>
 
-commit 8861452b2097bb0b5d0081a1c137fb3870b0a31f upstream.
+[ Upstream commit 92766c4628ea349c8ddab0cd7bd0488f36e5c4ce ]
 
-When compile-testing with 64-bit resource_size_t, gcc reports an invalid
-printk format string:
+When calling the 'ql_wait_for_drvr_lock' and 'ql_adapter_reset', the driver
+has already acquired the spin lock, so the driver should not call 'ssleep'
+in atomic context.
 
-In file included from include/linux/dma-mapping.h:7,
-                 from drivers/soc/ixp4xx/ixp4xx-npe.c:15:
-drivers/soc/ixp4xx/ixp4xx-npe.c: In function 'ixp4xx_npe_probe':
-drivers/soc/ixp4xx/ixp4xx-npe.c:694:18: error: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Werror=format=]
-    dev_info(dev, "NPE%d at 0x%08x-0x%08x not available\n",
+This bug can be fixed by using 'mdelay' instead of 'ssleep'.
 
-Use the special %pR format string to print the resources.
-
-Fixes: 0b458d7b10f8 ("soc: ixp4xx: npe: Pass addresses as resources")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Letu Ren <fantasquex@gmail.com>
+Signed-off-by: Letu Ren <fantasquex@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/ixp4xx/ixp4xx-npe.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/qlogic/qla3xxx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/soc/ixp4xx/ixp4xx-npe.c
-+++ b/drivers/soc/ixp4xx/ixp4xx-npe.c
-@@ -690,8 +690,8 @@ static int ixp4xx_npe_probe(struct platf
- 
- 		if (!(ixp4xx_read_feature_bits() &
- 		      (IXP4XX_FEATURE_RESET_NPEA << i))) {
--			dev_info(dev, "NPE%d at 0x%08x-0x%08x not available\n",
--				 i, res->start, res->end);
-+			dev_info(dev, "NPE%d at %pR not available\n",
-+				 i, res);
- 			continue; /* NPE already disabled or not present */
+diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
+index 2d71646640ac..f98e2f417c2e 100644
+--- a/drivers/net/ethernet/qlogic/qla3xxx.c
++++ b/drivers/net/ethernet/qlogic/qla3xxx.c
+@@ -155,7 +155,7 @@ static int ql_wait_for_drvr_lock(struct ql3_adapter *qdev)
+ 				      "driver lock acquired\n");
+ 			return 1;
  		}
- 		npe->regs = devm_ioremap_resource(dev, res);
-@@ -699,13 +699,12 @@ static int ixp4xx_npe_probe(struct platf
- 			return PTR_ERR(npe->regs);
+-		ssleep(1);
++		mdelay(1000);
+ 	} while (++i < 10);
  
- 		if (npe_reset(npe)) {
--			dev_info(dev, "NPE%d at 0x%08x-0x%08x does not reset\n",
--				 i, res->start, res->end);
-+			dev_info(dev, "NPE%d at %pR does not reset\n",
-+				 i, res);
- 			continue;
- 		}
- 		npe->valid = 1;
--		dev_info(dev, "NPE%d at 0x%08x-0x%08x registered\n",
--			 i, res->start, res->end);
-+		dev_info(dev, "NPE%d at %pR registered\n", i, res);
- 		found++;
+ 	netdev_err(qdev->ndev, "Timed out waiting for driver lock...\n");
+@@ -3292,7 +3292,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
+ 		if ((value & ISP_CONTROL_SR) == 0)
+ 			break;
+ 
+-		ssleep(1);
++		mdelay(1000);
+ 	} while ((--max_wait_time));
+ 
+ 	/*
+@@ -3328,7 +3328,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
+ 						   ispControlStatus);
+ 			if ((value & ISP_CONTROL_FSR) == 0)
+ 				break;
+-			ssleep(1);
++			mdelay(1000);
+ 		} while ((--max_wait_time));
  	}
- 
+ 	if (max_wait_time == 0)
+-- 
+2.30.2
+
 
 
