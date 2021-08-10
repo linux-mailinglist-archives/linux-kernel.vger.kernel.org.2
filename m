@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3663E5498
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80443E549F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237489AbhHJHuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45166 "EHLO mail.kernel.org"
+        id S237651AbhHJHxI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 03:53:08 -0400
+Received: from aposti.net ([89.234.176.197]:41390 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231905AbhHJHuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:50:01 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1998760C51;
-        Tue, 10 Aug 2021 07:49:40 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mDMW2-003zrA-2G; Tue, 10 Aug 2021 08:49:38 +0100
+        id S237608AbhHJHxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 03:53:06 -0400
+Date:   Tue, 10 Aug 2021 09:52:36 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [Letux-kernel] [PATCH 8/8] drm/ingenic: Attach bridge chain to
+ encoders
+To:     Paul Boddie <paul@boddie.org.uk>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, list@opendingux.net,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Message-Id: <OV5MXQ.C3JR71EBG5P51@crapouillou.net>
+In-Reply-To: <2242071.3D3ZAXhqrE@jason>
+References: <20210808134526.119198-1-paul@crapouillou.net>
+        <5DADB00D-1E0E-4B3A-86CE-4E98A5DC04DE@goldelico.com>
+        <0TYKXQ.YAJ6UYG2GTXS1@crapouillou.net> <2242071.3D3ZAXhqrE@jason>
 MIME-Version: 1.0
-Date:   Tue, 10 Aug 2021 08:49:37 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-s390@vger.kernel.org,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [patch V2 00/19] PCI/MSI, x86: Cure a couple of inconsistencies
-In-Reply-To: <20210729215139.889204656@linutronix.de>
-References: <20210729215139.889204656@linutronix.de>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <411f1a9b861f45c3366c63369b42fcc0@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, ashok.raj@intel.com, davem@davemloft.net, bhelgaas@google.com, linux-pci@vger.kernel.org, kevin.tian@intel.com, mingo@kernel.org, x86@kernel.org, linux-s390@vger.kernel.org, schnelle@linux.ibm.com, gerald.schaefer@linux.ibm.com, hca@linux.ibm.com, borntraeger@de.ibm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-29 22:51, Thomas Gleixner wrote:
-> A recent discussion about the PCI/MSI management for virtio unearthed a
-> violation of the MSI-X specification vs. writing the MSI-X message: 
-> under
-> certain circumstances the entry is written without being masked.
+Hi Paul,
+
+Le mar., août 10 2021 at 01:17:20 +0200, Paul Boddie 
+<paul@boddie.org.uk> a écrit :
+> On Monday, 9 August 2021 18:22:12 CEST Paul Cercueil wrote:
+>> 
+>>  Le lun., août 9 2021 at 13:14:03 +0200, H. Nikolaus Schaller
+> <hns@goldelico.com> a écrit :
+>>  >
+>>  > quick feedback: our HDMI on top compiles fine after fixing 2 merge
+>>  > conflicts, but dos not yet work.
+>>  > Will need some spare time with access to the CI20 board to 
+>> research
+>>  > the issue, i.e. can not give feedback immediately.
+>> 
+>>  Alright, no problem. I'll be back home in about 2 weeks and then I 
+>> can
+>>  test on my CI20 as well.
 > 
-> While looking at that and the related violation of the x86 non-remapped
-> interrupt affinity mechanism a few other issues were discovered by
-> inspection.
+> Just for reference, I looked into this initialisation failure. The 
+> HDMI
+> peripheral driver gets initialised satisfactorily...
 > 
-> The following series addresses these.
+> dw-hdmi-ingenic 10180000.hdmi: Detected HDMI TX controller v1.31a 
+> with HDCP
+> (DWC HDMI 3D TX PHY)
+> dw-hdmi-ingenic 10180000.hdmi: registered DesignWare HDMI I2C bus 
+> driver
 > 
-> Note this does not fix the virtio issue, but while staring at the above
-> problems I came up with a plan to address this. I'm still trying to
-> convince myself that I can get away without sprinkling locking all over 
+> But then the reported error occurs in the DRM driver:
+> 
+> ingenic-drm 13050000.lcdc0: Unable to init connector
+> ingenic-drm: probe of 13050000.lcdc0 failed with error -22
+> 
+> This originates in a call to drm_bridge_connector_init from 
+> ingenic_drm_bind:
+> 
+> connector = drm_bridge_connector_init(drm, encoder);
+> 
+> The invoked function iterates over the registered bridges, one of 
+> which seems
+> to be the HDMI peripheral (it has bridge operations defined 
+> identically to
+> those specified in the Synopsys driver), but the type member of the 
+> drm_bridge
+> structure is set to 0 (DRM_MODE_CONNECTOR_Unknown).
+> 
+> I might expect the bridge to expose a type acquired from its 
+> connector, but I
+> don't see this propagation occurring in the Synopsys driver: 
+> dw_hdmi_probe
+> sets the bridge operations and other members of the drm_bridge 
+> structure, but
+> it doesn't set the type.
+> 
+> Also, it might be possible that dw_hdmi_connector_detect (exposed as 
 > the
-> place, so don't hold your breath that this will materialize tomorrow.
+> detect operation) is not getting called, and this would explain why 
+> the
+> bridge's connector member does not have the connector_type set, 
+> either (since
+> it is also set to 0).
 
-For the patches I haven't acked yet, and with the fix on patch 18:
+ From what I understand the last bridge in the chained list is supposed 
+to set the connector type. The HDMI driver's probe function should get 
+a pointer to the next bridge in the queue and attach it (see how 
+ite-it66121.c does it). The last bridge in the queue should be 
+"hdmi-connector" (display-connector.c) which will effectively set the 
+connector type.
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Tested-by: Marc Zyngier <maz@kernel.org>
+Cheers,
+-Paul
 
-Thanks,
 
-         M.
