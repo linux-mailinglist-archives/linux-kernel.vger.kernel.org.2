@@ -2,121 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20543E7D1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF51A3E7D25
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232159AbhHJQGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:06:32 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21702 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229474AbhHJQGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:06:30 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17AG4YdS114311;
-        Tue, 10 Aug 2021 12:05:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=K5k6END1W3qwJlF2N3XDgRvOvSEtCNrlBqDC+kWyl8Q=;
- b=UCKYaaFgTDpH/HlcQuuMXHZIm40es6tA5L+d2ne0Mo0e33fI1S0aE7winQGURpVyj/Fk
- ZxYh20eFMEeBrVQKacBg/30JO2r42T6Rno+aca4OJohIO37sHQz2O4g2fjiN/JxRYSWd
- Al9MNiTZEW7CZIHNBOxn6sgC4bXgemcmfJehkCoB2+NO1w5WWwVRvLn6YM+NVks2Zh7G
- qdpF4kWZQY/EGkYDcuWHZwRl8WTlxjOJ61AL5+7h0dKnlctvkYRKgIA0uqqc1LXTYAe8
- NAALhCvhdsxqYoPnrUsSHXocixr2IcBoHUv/s1sSWmSwOwNlFx3my02tkc5ux4IhsT5i Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab8kkfrr1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 12:05:45 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17AG53oS116848;
-        Tue, 10 Aug 2021 12:05:45 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab8kkfrnx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 12:05:44 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17AG2QSF016591;
-        Tue, 10 Aug 2021 16:05:42 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 3a9ht8wquu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Aug 2021 16:05:42 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17AG5cA754133014
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Aug 2021 16:05:38 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9DCD8A405B;
-        Tue, 10 Aug 2021 16:05:38 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5671A406D;
-        Tue, 10 Aug 2021 16:05:37 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.16.74])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 10 Aug 2021 16:05:37 +0000 (GMT)
-Date:   Tue, 10 Aug 2021 18:05:35 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        anshuman.khandual@arm.com, aneesh.kumar@linux.ibm.com,
-        christophe.leroy@csgroup.eu, cai@lca.pw, catalin.marinas@arm.com,
-        will@kernel.org, vgupta@synopsys.com, akpm@linux-foundation.org,
-        chuhu@redhat.com, shan.gavin@gmail.com
-Subject: Re: [PATCH v6 00/12] mm/debug_vm_pgtable: Enhancements
-Message-ID: <20210810180535.08ecc800@thinkpad>
-In-Reply-To: <20210809092631.1888748-1-gshan@redhat.com>
-References: <20210809092631.1888748-1-gshan@redhat.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232816AbhHJQHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:07:36 -0400
+Received: from mga04.intel.com ([192.55.52.120]:56511 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhHJQHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:07:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213080330"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="213080330"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 09:06:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="675056678"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Aug 2021 09:06:53 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 10 Aug 2021 09:06:53 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 10 Aug 2021 09:06:52 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Tue, 10 Aug 2021 09:06:52 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Tue, 10 Aug 2021 09:06:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bzPFfUUOK56riao2+ZXIj9h1qwVoGVpC9FyB4squ7JkCsp5+Bjo4HuAQeAQDCmcAkodUYm946MMe8Hyfy3uNSVQ8vJx+a8cJWFqKLoB0W7f1AJGS8b1iNheadPc0COKiryvkr/C8pbTazn0vIMED5buYgK6+ydfL0nnxDZyNXRRXY7OgJizR5+fQNC8US1gKxp1IIDCvh+WhoZ3ySKfuBT8pab8dQaCfKC1W0WhmGYcEPyiuc8x83pY48qxt8nWPDBKJ22Jg6DVARqkw4hHXS7KkO1d35kTghlCdhfXOlnZK8YtEZZwWlOHcyCSaHklHA0B1Ad9gsA0jcyB1B0eC1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R/Dvys3PvD0MmdYAb2hgAu65qo91FyDUSTzDDjuzUz0=;
+ b=mdo9bLe8kdv5cZ3VcH9qIQsHHLnUZnocxDWHbAwCshXPdIjpWFtKpgnrgw34hROcli23CBJ75i8RAVTVtbA3QfFbrKCanhDPs58PcUKOpshtLu0xliNUMupzRTnxOWiAwt84V+DTRMRd2PEOk3CTQBriHu7yi2Hga3dhSYtWHIgigmsZi+Y7Pp/B3KFtLQTMONoxCDlTpUnt9TzjcwTwDOfSO3Z5+hMvvZPx4N0TOnJ3sOmPGD/TET4hqTiH0PRClSZ5fSkQxSLB/hrq0wazrhuwWPVuY5NvNHvj0WTR/AlJaF9gSgMCIEjeGCDLxudza86+w5W+WpX9XhVkd7glwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R/Dvys3PvD0MmdYAb2hgAu65qo91FyDUSTzDDjuzUz0=;
+ b=llwn9tCHRSwXXQyk7RS76nYY82bK6oNbj6L63zkqa9TTrk9QVL/4vqOAlnWGnWNnJGP/QsrCLfm0E1Z1ORKmj8XD5dgir3kN+90BBbHeHt0p8vlpkYAi/+lA3rEbuN+Mvj9KlUd1HBLvA5felKuW2pEsKPRxGf4f1TmwMWLaEN0=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+Received: from DM8PR11MB5736.namprd11.prod.outlook.com (2603:10b6:8:11::11) by
+ DM6PR11MB3593.namprd11.prod.outlook.com (2603:10b6:5:138::27) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4394.21; Tue, 10 Aug 2021 16:06:47 +0000
+Received: from DM8PR11MB5736.namprd11.prod.outlook.com
+ ([fe80::2920:8181:ca3f:8666]) by DM8PR11MB5736.namprd11.prod.outlook.com
+ ([fe80::2920:8181:ca3f:8666%3]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
+ 16:06:47 +0000
+Subject: Re: [PATCH v28 06/32] x86/cet: Add control-protection fault handler
+To:     Borislav Petkov <bp@alien8.de>
+CC:     <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eugene Syromiatnikov" <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
+ <20210722205219.7934-7-yu-cheng.yu@intel.com> <YRFrECvCESC4Irlk@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <5fd82507-a67a-4420-d3f2-92a0a6cc355a@intel.com>
+Date:   Tue, 10 Aug 2021 09:06:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
+In-Reply-To: <YRFrECvCESC4Irlk@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zWF7Qhj4HWT4pW8UtNdggW5Hu3RrQYgZ
-X-Proofpoint-ORIG-GUID: a6ZPyDn27JGKN-_qpm6GlZDsPXK3rMZL
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-10_07:2021-08-10,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- clxscore=1011 lowpriorityscore=0 suspectscore=0 phishscore=0 spamscore=0
- mlxscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108100103
+X-ClientProxiedBy: SJ0PR03CA0225.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::20) To DM8PR11MB5736.namprd11.prod.outlook.com
+ (2603:10b6:8:11::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.18] (98.33.34.38) by SJ0PR03CA0225.namprd03.prod.outlook.com (2603:10b6:a03:39f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Tue, 10 Aug 2021 16:06:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45b2e169-26ee-4acc-19c1-08d95c18daaa
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3593:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR11MB3593A0E2A0882526000B7F4CABF79@DM6PR11MB3593.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zUwp7YZOfN78PsAgExKPPrp1BCC9K2aO26wBhqV4fEB1TKEtBdzerdlug2He1TbENs0pbFUMAR/IVw+O9JSSRV3xpw3sesxN1X6/uccvjcOyQrsTJ7Mr+7NtvFvsG/XO/xkegNCQqOYxPDqtklt+yOH3uGOFZG6O5T7sC9Os/WnP09tG7eYUKUpKYINL5fNkI9CNf8B9lTdmW6imUkE9ixy5JJH4yNPePlXX8G2RULACj7fGsc/svmkN1LsSsljFIevDb8gWWi4bMzDJTsANxHwcSEjewFOETUyjjKY0bGdERKVhqvZ9dMEfZSNlnt/5bt/Par20CpddvMJO+9B/Uf5rbErOXzJ56PBi0uyLRGicLqq77ICt3HjpGmFvxtZHvtyBF3j+aS9v0WCxXX1AzOy2+yO0LYTJmBTXXoqPDrP6Svt4Ge5TFlhcxg/DoT8BYx2HdPgQkdk0KquoWOEdtYw/BGY+ke9PCUaJk/jLSzJQ9F5cSIIjrwr1oLgyrwPApwWEOavrypyfZfwZkZzaVMz+Fluj1isP1h7N69afU92TS2n8+tX2/qlOvm5iEabOoAUzLYAxsAB213uGbp9dSPf+6/E37lEvBZTzhL+boGDxnuJnbtYXAkXZDj3s7r1LHCkaLtA2Gtmq9Mf2QtbGsEUad+z3eOqibMdiz23kBXbu7xojtXlTfxbiuTPbvBeuJmSxNjObvz56aFDPAN8pHZmgPN+Cop0YjQiDIOC3+1zR0OIqfxIbuVBq6XfyqCeJEWV7m/q2WmbBjCwd721qhmoAwTdkomPbcrzFtSZ+MziDYk1RkAclh5dtd1VQXouB22cyfNQPouSGszU+oOtL2Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5736.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(136003)(39860400002)(346002)(186003)(2906002)(2616005)(956004)(31696002)(6916009)(26005)(66946007)(66476007)(16576012)(38100700002)(66556008)(54906003)(966005)(478600001)(5660300002)(316002)(53546011)(36756003)(8936002)(6486002)(31686004)(4744005)(8676002)(4326008)(86362001)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V0xpSVIwSWRsZ3ExNmZKSXdsZDVUaTdsb3MxTVNhWGZUUHVKc0hxUHJJWXQ5?=
+ =?utf-8?B?ZzFYVjdlT050ZUdLaDZ1bzlQa1RNMkNYK2hBRTZBK1IvNllsekMxYU1NNmdP?=
+ =?utf-8?B?NkIwOWM2QVdEbGxGcHF2WTJFYVNKczRINm1vRnRYWC9VZ0doZDU4UFNpamQz?=
+ =?utf-8?B?cEJtU0ZlQ0NHbVYrc0ZSNU1hMC85bE1xMXZ0ODFYOG42eEpML1BYbnE2ZTRw?=
+ =?utf-8?B?SVpLdnV6V2NEN0dCZUovVnR6STRoUFdpb1BGUC9JY3NJckJMYUlzMVdxaUYv?=
+ =?utf-8?B?Q2dJajJKMW4rNFp3VUMzYzh6aFM0TkVFdG5BcVUvTFI4R1g2YVh3U1hzMmEx?=
+ =?utf-8?B?RkNNeGIrNkJXd0ZJbERCRWlTUk9pekpaRXo4cVNOQW5iUHRERTRqdU5ETHg3?=
+ =?utf-8?B?Lzlxek9LV2xNM1YrSTNmc0tjSTJab0wyOFRvdDNmTU1zN28zZ21Td1NIMHM3?=
+ =?utf-8?B?anRQeis1QmlSNGd5YzQvbllDdmZ2L2tXMDRlUmFVSUI0Z3UvNXFGdFhHTjRF?=
+ =?utf-8?B?YVI4a1dVL2ZQR2ZuV21UYjFXUVZ1NVVxYWVDOEU2MUE0YlpwL3lzMlZybnNy?=
+ =?utf-8?B?RENId1V6R1k1TkpmL0c4ZzV4dS91dEY2Rklkb3BiYTdJcmdqV2tIazdnQzNO?=
+ =?utf-8?B?SGl1bEViQVRqb0hxcWp2WjFNcnNXZkllZGRKM25HTzh2RTBMQVR2bkJvaWQ1?=
+ =?utf-8?B?N2NDSzY1RWtnWEFnc2xxNDB0ODJET1VVN1UzYWF1aTZPQkRFZjh2YXRySDJx?=
+ =?utf-8?B?NnMyOERzZG9EVFY0SWIwRjhITm8za2NPcDBOWktsOHI4WlBZVmU5eFg4azB3?=
+ =?utf-8?B?VWlLQWFFVzczb01QVGMyUDJ0N0dlNE9oeFNKNjlzRGRJR2pxa3I5bDBBOFla?=
+ =?utf-8?B?anZCOExVTUJpVmtWZ3NwS2o3UGliU0hOVndBZHN1YndGQWwyYnVxTlQxUWNM?=
+ =?utf-8?B?YUVJc1RDdHlGc3FYUU9CTnVpNjRwWVgzYlhwL25IZjJXcmZOejA0UGt6SU50?=
+ =?utf-8?B?MThoUkN6TE4yR0R6UlNsU2JKQ2tCWFAxaHFJMUM5Y0NGYS9aRTBMdU5QcWw2?=
+ =?utf-8?B?SS8wb0lwMXRLTXZYY0lqTlFMMVNvL2ZydlBoS1pzbEJLUVlxS29LU3UzL00w?=
+ =?utf-8?B?OVRIUVVkdWFvZnR0S0hGRStnU1VCYkpGVGUwaktpaitseHViVG5hRTFTdVB2?=
+ =?utf-8?B?TlQ2ZUtiWWs3SjFpNUF5QjA0WElzMlRtbmVXa3QzL0tNanRISGJ6QnNyMmtm?=
+ =?utf-8?B?UHp4ZkZTR2ptd0Z0QVFpd3pDNmI5TXVNbDNjMXRsVkE3MEN4ZFFIckVMWUVS?=
+ =?utf-8?B?a2d4NFZFVjRJVzNKT1hvbEZLZTJNMStHc29iYWZSMVVIOHEwZ3ZzaGZ5MTNq?=
+ =?utf-8?B?T2RNblFYOHBhNHdMblJtWUF6RkdxY05IWHR2dmp5ZkdXSWpGeStGdENBQ05O?=
+ =?utf-8?B?dmEyRzE4YVA0NkFuR05JV0h1VEM3ci9iTUVaYWt2UTI4UzZQU3EwU0NVeWs5?=
+ =?utf-8?B?TGd3VUt0VC9XUDhWZG1VRlBRQXo5dDExc2d3SmRNaVIvSGVlaC9aUURFdzln?=
+ =?utf-8?B?VjJQR05qSkw2dWE1R2xuVGE3eExtVnpZeFdTSitRbUl5dlFSNzRnSzAyKzRO?=
+ =?utf-8?B?czkramJmaFRPamhxbS9DOUkwRm1ld0RQTys3dDNHbnBoYndaR0VkTU94ZEVn?=
+ =?utf-8?B?b3gzMTZCN3pTL21mMVhmYTYrc2dnZStlTkdhbDJVWkV2eEZFVldRd29TTk9l?=
+ =?utf-8?Q?lKZsi4ChZh2i8R9GEkkvW99lbVQqtAz0D8/8xDY?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45b2e169-26ee-4acc-19c1-08d95c18daaa
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5736.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 16:06:46.9347
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CdHRCZrbq5GLmkD9zPkZU7keYCEsK3h/Bj0JK7fu8wQkcQP63JgOFvF1vOQRu+SRF1sa1U0XiJnLcTE0mrB0Pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3593
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  9 Aug 2021 17:26:19 +0800
-Gavin Shan <gshan@redhat.com> wrote:
+On 8/9/2021 10:51 AM, Borislav Petkov wrote:
+> On Thu, Jul 22, 2021 at 01:51:53PM -0700, Yu-cheng Yu wrote:
+[...]
+>> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+>> index 5a3c221f4c9d..a1a153ea3cc3 100644
+>> --- a/include/uapi/asm-generic/siginfo.h
+>> +++ b/include/uapi/asm-generic/siginfo.h
+>> @@ -235,7 +235,8 @@ typedef struct siginfo {
+>>   #define SEGV_ADIPERR	7	/* Precise MCD exception */
+>>   #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
+>>   #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
+>> -#define NSIGSEGV	9
+>> +#define SEGV_CPERR	10	/* Control protection fault */
+>> +#define NSIGSEGV	10
+>>   
+>>   /*
+>>    * SIGBUS si_codes
+>> -- 
+> 
+> Was there a manpage patch for the user-visible bits?
+> 
+> I seem to remember something flying by very vaguely ...
+> 
 
-> There are couple of issues with current implementations and this series
-> tries to resolve the issues:
-> 
->   (a) All needed information are scattered in variables, passed to various
->       test functions. The code is organized in pretty much relaxed fashion.
-> 
->   (b) The page isn't allocated from buddy during page table entry modifying
->       tests. The page can be invalid, conflicting to the implementations
->       of set_xxx_at() on ARM64. The target page is accessed so that the
->       iCache can be flushed when execution permission is given on ARM64.
->       Besides, the target page can be unmapped and accessing to it causes
->       kernel crash.
-> 
-> "struct pgtable_debug_args" is introduced to address issue (a). For issue
-> (b), the used page is allocated from buddy in page table entry modifying
-> tests. The corresponding tets will be skipped if we fail to allocate the
-> (huge) page. For other test cases, the original page around to kernel
-> symbol (@start_kernel) is still used.
-> 
-> The patches are organized as below. PATCH[2-10] could be combined to one
-> patch, but it will make the review harder:
-> 
->   PATCH[1] introduces "struct pgtable_debug_args" as place holder of all
->            needed information. With it, the old and new implementation
->            can coexist.
->   PATCH[2-10] uses "struct pgtable_debug_args" in various test functions.
->   PATCH[11] removes the unused code for old implementation.
->   PATCH[12] fixes the issue of corrupted page flag for ARM64
+Yes, man page patches:
 
-Tested on s390, all seems to work fine.
-
-Gerald
+https://lore.kernel.org/linux-man/20210226172634.26905-1-yu-cheng.yu@intel.com/
