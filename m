@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7A03E7E41
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A873E803E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhHJRcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:32:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59072 "EHLO mail.kernel.org"
+        id S234413AbhHJRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhHJRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:32:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B2A60E09;
-        Tue, 10 Aug 2021 17:31:42 +0000 (UTC)
+        id S233895AbhHJRnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:43:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C30260F11;
+        Tue, 10 Aug 2021 17:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616703;
-        bh=EFJhGl4j17dSbDx5yR+3T/oEosXLQSue43tuVXBDXrU=;
+        s=korg; t=1628617139;
+        bh=shCdDjnZtYtla1OUNgFX+5xVre4DZppOtg+ux1VdUAg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfT2w5lPvxIuXNAyNjg8aqovWFGPL8iZsj93wjmGL/atJJ3IGeVaqzDkPeRwAXH26
-         8mlb/aarP1L0VdiH+ouNURXl3M8gAjnJfRe1tXlwVdcIj5clnWeD+k6x6luQ1Vx4JA
-         MRHBbzvTw5KvC7dhtBvA1RqXVXw4RLvjIbWz+2J4=
+        b=SHiGav7+enZaXXkOcl7pcM2xKMI1CVBJOawG6Vfe+y9HjjBuRgVWmgnSkJNDlGORb
+         UMtX+3nOW/JtlsYasZZCxpsDE0svcB3F6AZeT/yKlULY1f2JjuywLUA3aV/NzDqURp
+         qvrirTZ71XD8gv5zO6Jyi92+cwS6w5g73ux5vLy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        folkert <folkert@vanheusden.com>
-Subject: [PATCH 4.19 02/54] ALSA: seq: Fix racy deletion of subscriber
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 062/135] ALSA: usb-audio: Fix superfluous autosuspend recovery
 Date:   Tue, 10 Aug 2021 19:29:56 +0200
-Message-Id: <20210810172944.259587337@linuxfoundation.org>
+Message-Id: <20210810172957.798353741@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,114 +40,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit 97367c97226aab8b298ada954ce12659ee3ad2a4 upstream.
+commit 66291b6adb66dd3bc96b0f594d88c2ff1300d95f upstream.
 
-It turned out that the current implementation of the port subscription
-is racy.  The subscription contains two linked lists, and we have to
-add to or delete from both lists.  Since both connection and
-disconnection procedures perform the same order for those two lists
-(i.e. src list, then dest list), when a deletion happens during a
-connection procedure, the src list may be deleted before the dest list
-addition completes, and this may lead to a use-after-free or an Oops,
-even though the access to both lists are protected via mutex.
+The change to restore the autosuspend from the disabled state uses a
+wrong check: namely, it should have been the exact comparison of the
+quirk_type instead of the bitwise and (&).  Otherwise it matches
+wrongly with the other quirk types.
 
-The simple workaround for this race is to change the access order for
-the disconnection, namely, dest list, then src list.  This assures
-that the connection has been established when disconnecting, and also
-the concurrent deletion can be avoided.
+Although re-enabling the autosuspend for the already enabled device
+shouldn't matter much, it's better to fix the unbalanced call.
 
-Reported-and-tested-by: folkert <folkert@vanheusden.com>
+Fixes: 9799110825db ("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()")
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210801182754.GP890690@belle.intranet.vanheusden.com
-Link: https://lore.kernel.org/r/20210803114312.2536-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/s5hr1flh9ov.wl-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/seq/seq_ports.c |   39 +++++++++++++++++++++++++++------------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+ sound/usb/card.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/core/seq/seq_ports.c
-+++ b/sound/core/seq/seq_ports.c
-@@ -532,10 +532,11 @@ static int check_and_subscribe_port(stru
- 	return err;
- }
- 
--static void delete_and_unsubscribe_port(struct snd_seq_client *client,
--					struct snd_seq_client_port *port,
--					struct snd_seq_subscribers *subs,
--					bool is_src, bool ack)
-+/* called with grp->list_mutex held */
-+static void __delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					  struct snd_seq_client_port *port,
-+					  struct snd_seq_subscribers *subs,
-+					  bool is_src, bool ack)
- {
- 	struct snd_seq_port_subs_info *grp;
- 	struct list_head *list;
-@@ -543,7 +544,6 @@ static void delete_and_unsubscribe_port(
- 
- 	grp = is_src ? &port->c_src : &port->c_dest;
- 	list = is_src ? &subs->src_list : &subs->dest_list;
--	down_write(&grp->list_mutex);
- 	write_lock_irq(&grp->list_lock);
- 	empty = list_empty(list);
- 	if (!empty)
-@@ -553,6 +553,18 @@ static void delete_and_unsubscribe_port(
- 
- 	if (!empty)
- 		unsubscribe_port(client, port, grp, &subs->info, ack);
-+}
-+
-+static void delete_and_unsubscribe_port(struct snd_seq_client *client,
-+					struct snd_seq_client_port *port,
-+					struct snd_seq_subscribers *subs,
-+					bool is_src, bool ack)
-+{
-+	struct snd_seq_port_subs_info *grp;
-+
-+	grp = is_src ? &port->c_src : &port->c_dest;
-+	down_write(&grp->list_mutex);
-+	__delete_and_unsubscribe_port(client, port, subs, is_src, ack);
- 	up_write(&grp->list_mutex);
- }
- 
-@@ -608,27 +620,30 @@ int snd_seq_port_disconnect(struct snd_s
- 			    struct snd_seq_client_port *dest_port,
- 			    struct snd_seq_port_subscribe *info)
- {
--	struct snd_seq_port_subs_info *src = &src_port->c_src;
-+	struct snd_seq_port_subs_info *dest = &dest_port->c_dest;
- 	struct snd_seq_subscribers *subs;
- 	int err = -ENOENT;
- 
--	down_write(&src->list_mutex);
-+	/* always start from deleting the dest port for avoiding concurrent
-+	 * deletions
-+	 */
-+	down_write(&dest->list_mutex);
- 	/* look for the connection */
--	list_for_each_entry(subs, &src->list_head, src_list) {
-+	list_for_each_entry(subs, &dest->list_head, dest_list) {
- 		if (match_subs_info(info, &subs->info)) {
--			atomic_dec(&subs->ref_count); /* mark as not ready */
-+			__delete_and_unsubscribe_port(dest_client, dest_port,
-+						      subs, false,
-+						      connector->number != dest_client->number);
- 			err = 0;
- 			break;
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -907,7 +907,7 @@ static void usb_audio_disconnect(struct
  		}
  	}
--	up_write(&src->list_mutex);
-+	up_write(&dest->list_mutex);
- 	if (err < 0)
- 		return err;
  
- 	delete_and_unsubscribe_port(src_client, src_port, subs, true,
- 				    connector->number != src_client->number);
--	delete_and_unsubscribe_port(dest_client, dest_port, subs, false,
--				    connector->number != dest_client->number);
- 	kfree(subs);
- 	return 0;
- }
+-	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
++	if (chip->quirk_type == QUIRK_SETUP_DISABLE_AUTOSUSPEND)
+ 		usb_enable_autosuspend(interface_to_usbdev(intf));
+ 
+ 	chip->num_interfaces--;
 
 
