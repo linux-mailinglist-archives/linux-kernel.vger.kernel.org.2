@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA1B3E85A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125B43E85AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhHJVuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234531AbhHJVuD (ORCPT
+        id S234966AbhHJVv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:51:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23049 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234852AbhHJVvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:50:03 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD20C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:49:40 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so891212otl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=+HYiu1hW88Bpj8WftJ5CqOz/LeBLWxJEO+HNgAITcxU=;
-        b=f/xWfkbKitmRmGG+Ekhc7MQBa3QgQs/6Zk8sKw0qdYl62Xwpi3CX4mYHsahRMBxy5f
-         Ik1Q9sJy77ceI/3yp+qhALsMcAcLPD3NleInGIoO8w0rtylP7FsxDgC5kWN4LrhjNToV
-         HGyfInuryvPdOPn/iUR7AO21+najA4fciE/lE=
+        Tue, 10 Aug 2021 17:51:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628632261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oH36/9wH82mNkALKpSBwfhqJr/0cHRA60oHpFS8duTI=;
+        b=DAp0ugyrAOwGImwkGYC7NThWgRlljVL68YYInh+fZhUMU4CmSeM4ttc2Ap9Y5roMbJSd/f
+        6pxyVPXYKnUYuqEf05rYygTeVCaTOrfcC5Cn+UE4vKGnI4ucLofwTMV8EgI4tggPmIy53O
+        tZMCZYAA5GAiARH8pN1pxz5kFkCgcNU=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-aBPDBkatN2K37mphjgpN_w-1; Tue, 10 Aug 2021 17:51:00 -0400
+X-MC-Unique: aBPDBkatN2K37mphjgpN_w-1
+Received: by mail-ot1-f70.google.com with SMTP id s44-20020a05683043acb02904f41dddb2beso259164otv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:51:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=+HYiu1hW88Bpj8WftJ5CqOz/LeBLWxJEO+HNgAITcxU=;
-        b=YIjnNTJHZjOwnhBuDz1W/1pMrzSVY9NhZ1/zNbMJK/bVA0X1PjsFnPvIrGkrAO7dk5
-         UOkdSYca5OapckxrFuwA1L+vvVheQY36tWYBSRLEVOJyvaz//BOTQ3Q45wMNoudfFbfB
-         C8vjNk8Q5s0S1L9NNAJCdsiG5/miyVVgTMitTxqHvBsMyV5HFf6G8BwMk8zviOkg2bdp
-         zevvJpQOps7y0IJPdBoXurRgNkIz860y0dmc+43h9dl+b0q7w2szLpNPx3D/RuT9lbNQ
-         sbYy1g5q1+3+PaHo6ZFUAQmHXNTZhMdZ+XQLM4watwkZ+nNiTPPC/C+F8wEAXyf/7mJ6
-         zEBQ==
-X-Gm-Message-State: AOAM532FpiNXIhbgoU1lNXWn65LfPQpXMkEcnqECdN4UjVrBg/Pcig0n
-        ssOKmdlyYX3Fky0pQYNGx1V9hSf8c6UPu77hbJ32BQ==
-X-Google-Smtp-Source: ABdhPJwWB0tX5GDFBeHZ1LiAt30TiVNcHXV5DfsWQz9Zp1GM9/8CHg1+g2E6eAgybkGTqrk8/i3G9uSY7xs2fWzT30k=
-X-Received: by 2002:a05:6830:44a7:: with SMTP id r39mr22563794otv.25.1628632179611;
- Tue, 10 Aug 2021 14:49:39 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 14:49:39 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oH36/9wH82mNkALKpSBwfhqJr/0cHRA60oHpFS8duTI=;
+        b=TzTlWAKr+Oplnj0xH1vy1gvsinEYcV98w+eC15l0kFq54665/RfO5vYNVQXbSa0drT
+         0Y/K0+QHwVaIFiw8cbz0qi8XNN1DQOROw1utZx889uO5zLJjAe5LWRo+gYiVWEBzFk4O
+         uw7zTuNBtbLYlUIsCBuO9OGbroVAAWC4528wW1PUFa4C5x2C3XE77KTnmUcebjKVa7+w
+         uNK4F66BJ65IjyF87wxgVUiDSl9OrNx7B/sQhT8qAzBRqT8cBA4U0OIo5xT/QpHKECfu
+         pbY3yEQcUIL4I+rU0qAlPIuVi8lo8kg7CL3ntUDEHXXRz2RUQey6c3QilKOR1Jh5QJ4h
+         LWUQ==
+X-Gm-Message-State: AOAM530sl01sQSbGU6gU+iCOruqXA0QoUHZrqcGDD0foEQ4IE9CXz+G9
+        ZpSOsU/3pmvqAnI0kKXWYBdpvoUZwVadzJtECIZvZDfgPmdBQQGkf47d1ODJPKSkpncL65f0K7a
+        ZKpO3XNdIiCxfEf2iqA9KnW3W
+X-Received: by 2002:aca:1911:: with SMTP id l17mr7944507oii.160.1628632260033;
+        Tue, 10 Aug 2021 14:51:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0YdnMUdm+pqFd5LmIbRWI/f3AmnZFLtHNMH7iPqJDMGpCMBi118Y1XtZ+GSFLbmgWeFotoA==
+X-Received: by 2002:aca:1911:: with SMTP id l17mr7944498oii.160.1628632259915;
+        Tue, 10 Aug 2021 14:50:59 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id e20sm655457otj.4.2021.08.10.14.50.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 14:50:59 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 15:50:58 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, peterx@redhat.com
+Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
+Message-ID: <20210810155058.4199a86b.alex.williamson@redhat.com>
+In-Reply-To: <YRJ3JD7gyi11x5Hw@infradead.org>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+        <162818325518.1511194.1243290800645603609.stgit@omen>
+        <20210806010418.GF1672295@nvidia.com>
+        <20210806141745.1d8c3e0a.alex.williamson@redhat.com>
+        <YRI9+7CCSq++pYfM@infradead.org>
+        <20210810115722.GA5158@nvidia.com>
+        <YRJ3JD7gyi11x5Hw@infradead.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1628196295-7382-1-git-send-email-khsieh@codeaurora.org>
-References: <1628196295-7382-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 14:49:39 -0700
-Message-ID: <CAE-0n506f7yb3g7bGj0Xk43qL1Xw2Qzo5nRw76sdAYZz3NhO9w@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] add fixes to pass DP Link Layer compliance test cases
-To:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-08-05 13:44:49)
-> add fixes to pass DP Link Layer compliance test cases
->
-> Kuogee Hsieh (6):
->   drm/msm/dp: use dp_ctrl_off_link_stream during PHY compliance test run
->   drm/msm/dp: reduce link rate if failed at link training 1
->   drm/msm/dp: reset aux controller after dp_aux_cmd_fifo_tx() failed.
->   drm/msm/dp: replug event is converted into an unplug followed by an
->     plug events
->   drm/msm/dp: return correct edid checksum after corrupted edid checksum
->     read
->   drm/msm/dp: do not end dp link training until video is ready
+On Tue, 10 Aug 2021 13:55:00 +0100
+Christoph Hellwig <hch@infradead.org> wrote:
 
-I'm still able to use my Apple dongle with these patches so
+> On Tue, Aug 10, 2021 at 08:57:22AM -0300, Jason Gunthorpe wrote:
+> > I'm not sure there is a real performance win to chase here? Doesn't
+> > this only protect mmap against reset? The mmap isn't performance
+> > sensitive, right?
+> > 
+> > If this really needs extra optimization adding a rwsem to the devset
+> > and using that across the whole set would surely be sufficient.  
+> 
+> Every mmio read or write takes memory_lock.
 
-Tested-by: Stephen Boyd <swboyd@chromium.org>
+Exactly.  Ideally we're not using that path often, but I don't think
+that's a good excuse to introduce memory access serialization, or even
+dependencies between devices.  Thanks,
+
+Alex
+
