@@ -2,213 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EA33E5A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDAC3E5A54
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240790AbhHJMpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:45:51 -0400
-Received: from mail-dm3nam07on2083.outbound.protection.outlook.com ([40.107.95.83]:55840
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240752AbhHJMpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:45:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l6y5vfMbFQLaF2HDxvmSyJp3sc8fs034Gb7EbIcktIqKxujokHTD2Hq7lcLylEgm3PT5KKAgA2lTYQVCyZGj2h/HGNav4uXBaL6Ws2FdvexMpxkVIub979g3HN+IeXOaSB84k5AuEvDJ+iArYMeT0Frh9v1Funz2CKyO9Z0WyHvGMQDdEg/i7L7q/fPjhgphHlZV2S6E3/aMa8HnYQSEUKJMXM9R3VOs4U0G9ZSBV7fGU+1B0SWxIkcbSfJS9ltcUwB3A4ojOwRobHXB1pgrzM7zFl8E9w3xoTyo9LBMcHEhUTMpEJ+L3p8qjRAnv9jWEQGRt+ey/WjsD6rMAvNwig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mY4kOpHj79YbgJaDrCBlm6wAWu95U7J8fy5nUSKOlT0=;
- b=jpywbgqOyJGttc7mPZxG1x4CzJ07yBb3Ngkx3iHa4Fqdkv4LvT8Zfq/h/HP4FGzn4ulU9yw/il9fPQrsj+aFVXxmHX2O000h3GSbSohGIc7CfRSsAsFA0VfILEGn29b0eIslHw0BOmgz0OX1tCAoaVtCERCPZIP5/R1JVelB9Upwn1di8NS15NZ0EwldO6NuE8YRYv/3H0Sk6XGWD0PM+LCOAMZfytkmIVNpy2jYT1VHlUbephp3iFl80eMa9VRaF9JCM8oZU72iODwwb7VJYsPhWhzcREvOk9NWp9bcWFu/aljn9QgQyPd0JFh9LPXEc1whi+B2LOrY1RXs0X6XBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mY4kOpHj79YbgJaDrCBlm6wAWu95U7J8fy5nUSKOlT0=;
- b=YB16PKN4RAMrzgsMsYNsDRgW79RdJuBge4nh0hD3PIeMD7BJRJQym+XhLzG7JDuVoCs1Z8wLuyNNAcGivvQoDRCKJbuH/xHrEdDSmPWf99Rv4eVeF6MVilLp96sCNj2aTRVQdtbcyyaQe/lY7RmXVIE0/HQQ/zmL2IB/e2RdZ44=
-Received: from BL1PR12MB5286.namprd12.prod.outlook.com (2603:10b6:208:31d::6)
- by BL1PR12MB5061.namprd12.prod.outlook.com (2603:10b6:208:310::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Tue, 10 Aug
- 2021 12:45:22 +0000
-Received: from BL1PR12MB5286.namprd12.prod.outlook.com
- ([fe80::38e0:44fb:fbfb:c8d2]) by BL1PR12MB5286.namprd12.prod.outlook.com
- ([fe80::38e0:44fb:fbfb:c8d2%9]) with mapi id 15.20.4415.014; Tue, 10 Aug 2021
- 12:45:22 +0000
-From:   "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>
-To:     "Ghannam, Yazen" <Yazen.Ghannam@amd.com>
-CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>
-Subject: RE: [PATCH 4/7] EDAC/mce_amd: extract node id from InstanceHi in IPID
-Thread-Topic: [PATCH 4/7] EDAC/mce_amd: extract node id from InstanceHi in
- IPID
-Thread-Index: AQHXbb9UT9Tpw1TDtUar5E92vFMCPataUzmAgBKbmXA=
-Date:   Tue, 10 Aug 2021 12:45:22 +0000
-Message-ID: <BL1PR12MB52866A0EDF20FC659EA6979CE8F79@BL1PR12MB5286.namprd12.prod.outlook.com>
-References: <20210630152828.162659-1-nchatrad@amd.com>
- <20210630152828.162659-5-nchatrad@amd.com>
- <20210729163245.GA4318@aus-x-yghannam.amd.com>
-In-Reply-To: <20210729163245.GA4318@aus-x-yghannam.amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;
- MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2021-08-10T12:43:29Z;
- MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;
- MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP 2.0;
- MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=a8994e13-9daa-407e-a815-520861499c8d;
- MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=1
-authentication-results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3e0a6b94-a6b0-4edd-7643-08d95bfcb7f5
-x-ms-traffictypediagnostic: BL1PR12MB5061:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL1PR12MB5061F003F60532DCFF58BDDAE8F79@BL1PR12MB5061.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kmGsC/eVO0wRZa73iokmvuBwUuBz57FFhyYCiR97Z7HTQScWUa1TnpV7gri9XZMC5iRJ67LEodnJZC2jzO8YtClvYXWE2EvLRPD4Cm/1B/yD/4w2msGQpnuBpZetbQ/FllI4gL2hvXr8zqjw16o8SYCrXo9InlKTeLagrDamvIl8W5kPpkgUg8tt7alH2hwhkoqGY6RB8yvtvO+0Wdy5T8/4qw3Bs843Muaal/cKs8Ie1qOPaVGycjmBHD9UMFTIT8Xc4kTd2YGCHh2PB8WmCdYLNy9/sL/hjOr0eoApHwtPLKwwiCtSXcfQ8xqOfFTb8Z+DmhcFB9ds5+OxXIiSMWwJMH7TXdJ+qB0EWVxwgCIV5jCm4lod/FJ7w/IAb4JLxguwxEUJRVNcyfrL8EYJx98pUy/sFs4lSKyGEE1EofkXzcfvcYB0nnxJ9UrUG14UNvj6bNFf9SEQ8N0fUqv7Zeq5HnNayMwJTI40Mw0mv9PpIffDnT5ktzHmRUitA/MPBAkjdKq7gcIm8NHp6uAj3Ov+J9r151m9V3I9EG9hS/XbnVBNrnkYEbVNRc7xPbLMGLfL9sjj9bA99DcWqO6+EJBP9sMGz6Gh9KcloaDeiA825t0sA+AsORMlZ8jQEGlrVvSVPKFJEEOH5vyD1gjTwSiaYgCGU/pJ2DuUWbpTb05aWWjZ1cVb+0UJ/hP2PAw7fb6V8g8/4jf7pQzW7PHaX4hVIBueAkzgj3ye/A7Sr5o=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5286.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(8936002)(76116006)(316002)(478600001)(186003)(8676002)(54906003)(71200400001)(66446008)(9686003)(55016002)(66556008)(66946007)(66476007)(64756008)(5660300002)(7696005)(122000001)(6506007)(38100700002)(86362001)(2906002)(53546011)(6862004)(38070700005)(33656002)(4326008)(6636002)(26005)(52536014)(83380400001)(21314003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?F1kAhO+b3KSkYBrh56rPpd8n5NrU6CezpFDcvKEJAryGo+d/qDlPQLUPHWSn?=
- =?us-ascii?Q?tfHQX6IA8Hj2u8166tTk65FQyUPcbVyLa1fqY7KNPUDGF3J8vpY2QuJFK1Ko?=
- =?us-ascii?Q?oVZpzD73Nd56KNjHuwt5QyMhf1+M1MOOF5X5TB05TxMU4t4Pq1VfQXKMtGOW?=
- =?us-ascii?Q?pqljSa87YeGY82WrNSyTC1eVjU15IZ314RJUkGFfE00a3nRXnLADFuzBBs4l?=
- =?us-ascii?Q?6C1ns4NwImWgqEHqsqEYknNTrqTTgyijBxloP2Ap9F3b5NBP54vGvtVUwjV2?=
- =?us-ascii?Q?FDAcqkOZLLy4GbUrUWxP5BmP1ewRgssUQgo3py7i29z2cDerQyGuGug6q0Gm?=
- =?us-ascii?Q?s5lolXy6PoELEAgfQLS77ZkNmWsazjqSlzMom37KQD1yLlNfLAh41+EyF3B+?=
- =?us-ascii?Q?MZPFH9QJW/Mt4nWeV9jjXEHghIay+5UMSIhaY+tm2LYvEdBY2VscQGHCt+Wz?=
- =?us-ascii?Q?/Xx5PBTdOFCLuXg4E8qOXhVs8IyiMzAZzQqBESYVmBG5SQ1JaM2xiWA1sI0T?=
- =?us-ascii?Q?LnNMvm2XsMbv2czjek0qmG/y8ksTKySrbakWE8U5XgAhLs31bfwg5SFcMC90?=
- =?us-ascii?Q?JoKQN6YmV1dl4TYGQgkoPPDkfCLX65tDuVnZeQQsakioX3Af5QoaDrj4dSvc?=
- =?us-ascii?Q?MpPiN4GK960F9qkzp63KeEgFbt/doS0xItISOmHMRzlAENQGa8Cbb10WaSEb?=
- =?us-ascii?Q?gJoPMlmsi7u98igeXYnGL3SsD19KOf+Q8yqWHxkia6K7nSX/9KQzWzMGFvnU?=
- =?us-ascii?Q?gWo5TYwcCKiIKe8cdwl6PXEQGaZnPwk+KMKfAvuLQKBUlsM5YPbMDafBBdZq?=
- =?us-ascii?Q?msFdYa5f8bqqbr6wxLgnp9w1iZ1CltxCYfNC6PKsmVdNX8oFKz0vZzrOGb2k?=
- =?us-ascii?Q?qCi7/lcnA4IdZdGroiiTQpKy6KtmVVsnk4l04+7GU3H8kMWtbM/jylDhqQtS?=
- =?us-ascii?Q?y4pcR+VP3gYObC5q7VNOq2Dhxz4gRr+7xC1/Yl2bNfU7f3UNcxn9a9iZ5I/2?=
- =?us-ascii?Q?VSN0pI6qNuzYY0VONxMBB8jVOamk1r5rqPhWyhcM+hzgBoYrrFahamONlrqj?=
- =?us-ascii?Q?+B0Vk/tMr7UsoC3HmPfqF/5edlR2P3PuA8tThS0CP2/6sxVHaJV8CT/1dRWN?=
- =?us-ascii?Q?Nz627oA+5jT6Aly2/ptSrTdzO/214BJzxZyRdhcEuvO9t3UUkO+ubNrCeqf6?=
- =?us-ascii?Q?2lWyYVtFyx9HmAk2xFlTWx3g19XdlfDdgTmD8X3bc2NyNlUln1vbgVEp7Gv1?=
- =?us-ascii?Q?lUV33nVinMXTDSfT0fgwc6+W3HJE6tOCG3UvTv4FasTZuyPr61+2MDzNgjE9?=
- =?us-ascii?Q?Z57pCyyqaEhkeD9yW68mS4rK?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S240788AbhHJMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238768AbhHJMqi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 08:46:38 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD4DC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:46:16 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id x7so15181376ilh.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 05:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZKt7SArs/iNOcmhmux0PvAgC04ew3//VWO8NyWkdDl0=;
+        b=GuFEzky/GCD0hN1Tan0ujZfCcWVxPMx65fy2SXCvekCM/+ERb8iC6Ti6VGGEDPjr8Q
+         rZ2LgjbAN1TJrG9ePSgAEfqUh5y7bwlkeXhrhIrVBljsob4si7oYfwquMHvlMPuWAb9w
+         bqm5ocWoG5hbwk2QOlNujyj77qiU/MGwBcOB/oGg2GTw42iAsbcETi/EwDBxMkHmDG7f
+         FIexoBnmasMUPocfzKBgXMOqUW+soheUDgKCa+PCeAvlzEYqzUhCOCc4Tj5+FrAqB6pO
+         QFbGvyI9SKhJSkltZ8DUdEyno7dhYB+BEv1xet5b6HNjy/xDgiD9alVbTWP9Lz46t3Ip
+         TafQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZKt7SArs/iNOcmhmux0PvAgC04ew3//VWO8NyWkdDl0=;
+        b=qXX0sqh0X1FF/tVtg1fON7/m+v1NuYvRGmAcCMZ8taC46iXuHEGmeAmRkvtFPazTH4
+         Bj2b96DFqDiLoORZa61twgNrXY9U77muXQTWAvLhhvIdCeC/gdQKc9zTrYJWwPqEcQGV
+         u7SJQaTtPIot55wrashJ6aiw8bx1aRxERsM2iYmNC2zLRtibREsLf0+S10X5x9K0FvOF
+         QI54+uCOT2KwYS3TLZqVEfXjCRzyGiCz4VrzjjxmGUv2NS4c6BrjqoRYcQzfeQwyBEj0
+         mcWoKvl8jgq84e1KLmR0ZwMkbO/N05Zmg7iG9+AnqyxC3cfi/rIzeIVpDIof3r+nsLjt
+         9NDQ==
+X-Gm-Message-State: AOAM532jf31f9r7x9H3cZiVbXTbJtn3+ca6IygvSImZSGQBFa+mjsK68
+        EbwbXVviICXHQ36nRTwHR+v/eA==
+X-Google-Smtp-Source: ABdhPJxnaVo8I1vb2eZhb04YoumJhrALjIqn2a8inaOnRQBJhWntxYqNa6v1sUVvoj2phheL7xdjhg==
+X-Received: by 2002:a92:a30a:: with SMTP id a10mr7883ili.219.1628599575923;
+        Tue, 10 Aug 2021 05:46:15 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id s16sm3992750iln.5.2021.08.10.05.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 05:46:15 -0700 (PDT)
+Subject: Re: [v6 2/3] interconnect: qcom: Add EPSS L3 support on SC7280
+To:     Odelu Kukatla <okukatla@codeaurora.org>, georgi.djakov@linaro.org,
+        bjorn.andersson@linaro.org, evgreen@google.com,
+        Andy Gross <agross@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com,
+        linux-arm-msm-owner@vger.kernel.org
+References: <1628577962-3995-1-git-send-email-okukatla@codeaurora.org>
+ <1628577962-3995-3-git-send-email-okukatla@codeaurora.org>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <8c046ac4-27c8-d858-941b-80f1509dbb61@linaro.org>
+Date:   Tue, 10 Aug 2021 07:46:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5286.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e0a6b94-a6b0-4edd-7643-08d95bfcb7f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2021 12:45:22.4136
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aZr8x2bX1/WORyVBxMAjMI5T0HzPwQVMtUWjls/GkAzrGmo0GI1AbDLbJKGKhRKvr2A9AYiN9WahvwCN7b3p/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5061
+In-Reply-To: <1628577962-3995-3-git-send-email-okukatla@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Public]
+On 8/10/21 1:46 AM, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider support on
+> SC7280 SoCs.
+> 
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
 
-Hi Yazen
+I don't have much to say about what this is doing but I
+have a few suggestions.
 
------Original Message-----
-From: Ghannam, Yazen <Yazen.Ghannam@amd.com>=20
-Sent: Thursday, July 29, 2021 10:03 PM
-To: Chatradhi, Naveen Krishna <NaveenKrishna.Chatradhi@amd.com>
-Cc: linux-edac@vger.kernel.org; x86@kernel.org; linux-kernel@vger.kernel.or=
-g; bp@alien8.de; mingo@redhat.com; mchehab@kernel.org
-Subject: Re: [PATCH 4/7] EDAC/mce_amd: extract node id from InstanceHi in I=
-PID
+					-Alex
 
-On Wed, Jun 30, 2021 at 08:58:25PM +0530, Naveen Krishna Chatradhi wrote:
-> On AMD systems with SMCA banks on NONCPU nodes, the node id=20
-> information is available in the InstanceHI[47:44] of the IPID register.
-
-The doesn't read well to me. I saw this as saying "bits 47:44 of the Instan=
-ceHi register". Also, the name of the field is "InstanceIdHi" in the docume=
-ntation.
-
-I think it'd be more clear to say "available in MCA_IPID[47:44] (InstanceId=
-Hi)" or something similar.=20
-[naveenk:] Modified the commit message
-
->=20
-> Signed-off-by: Muralidhara M K <muralimk@amd.com>
-> Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
 > ---
->  drivers/edac/mce_amd.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c index=20
-> 27d56920b469..364dfb6e359d 100644
-> --- a/drivers/edac/mce_amd.c
-> +++ b/drivers/edac/mce_amd.c
-> @@ -1049,6 +1049,7 @@ static void decode_smca_error(struct mce *m)
->  	enum smca_bank_types bank_type;
->  	const char *ip_name;
->  	u8 xec =3D XEC(m->status, xec_mask);
-> +	u32 node_id =3D 0;
+>   drivers/interconnect/qcom/osm-l3.c | 136 +++++++++++++++++++++++++++++++------
+>   drivers/interconnect/qcom/sc7280.h |  10 +++
+>   2 files changed, 125 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
+> index c7af143..3b16e73 100644
+> --- a/drivers/interconnect/qcom/osm-l3.c
+> +++ b/drivers/interconnect/qcom/osm-l3.c
+> @@ -9,12 +9,14 @@
+>   #include <linux/io.h>
+>   #include <linux/kernel.h>
+>   #include <linux/module.h>
+> +#include <linux/of_address.h>
+>   #include <linux/of_device.h>
+>   #include <linux/platform_device.h>
+>   
+>   #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>   
+>   #include "sc7180.h"
+> +#include "sc7280.h"
+>   #include "sc8180x.h"
+>   #include "sdm845.h"
+>   #include "sm8150.h"
+> @@ -33,17 +35,33 @@
+>   
+>   /* EPSS Register offsets */
+>   #define EPSS_LUT_ROW_SIZE		4
+> +#define EPSS_REG_L3_VOTE		0x90
+>   #define EPSS_REG_FREQ_LUT		0x100
+>   #define EPSS_REG_PERF_STATE		0x320
+> +#define EPSS_CORE_OFFSET		0x4
+> +#define EPSS_L3_VOTE_REG(base, cpu)\
+> +			(((base) + EPSS_REG_L3_VOTE) +\
+> +			((cpu) * EPSS_CORE_OFFSET))
+>   
+> -#define OSM_L3_MAX_LINKS		1
+> +#define L3_DOMAIN_CNT		4
+> +#define L3_MAX_LINKS		9
 
-Why u32? Why not u16 to match topology_die_id() or int to match decode_dram=
-_ecc()?
-[naveenk:] Done, used int.
+It may not matter much, but if you specified the
+qcom_osm_l3_node->links[] field as the last field
+in the structure, I think it could be a flexible
+array and you wouldn't have to specify the maximum
+number of links.  (You are already using the actual
+array size to set ->num_links in __DEFINE_QNODE().)
 
-> =20
->  	if (m->bank >=3D ARRAY_SIZE(smca_banks))
->  		return;
-> @@ -1072,8 +1073,18 @@ static void decode_smca_error(struct mce *m)
->  	if (xec < smca_mce_descs[bank_type].num_descs)
->  		pr_cont(", %s.\n", smca_mce_descs[bank_type].descs[xec]);
-> =20
-> -	if (bank_type =3D=3D SMCA_UMC && xec =3D=3D 0 && decode_dram_ecc)
-> -		decode_dram_ecc(topology_die_id(m->extcpu), m);
-> +	/*
-> +	 * SMCA_UMC_V2 is used on the noncpu nodes, extract the node id
-> +	 * from the InstanceHI[47:44] of the IPID register.
-> +	 */
-> +	if (bank_type =3D=3D SMCA_UMC_V2 && xec =3D=3D 0)
-> +		node_id =3D ((m->ipid >> 44) & 0xF);
+>   #define to_osm_l3_provider(_provider) \
+>   	container_of(_provider, struct qcom_osm_l3_icc_provider, provider)
+>   
+> +/**
+> + * @domain_base: an array of base address for each clock domain
+> + * @max_state: max supported frequency level
+> + * @per_core_dcvs: flag used to indicate whether the frequency scaling
+> + * for each core is enabled
+> + * @reg_perf_state: requested frequency level
+> + * @lut_tables: an array of supported frequency levels
+> + * @provider: interconnect provider of this node
+> + */
+
+Run this to check your kernel doc validity:
+     scripts/kernel-doc -none <file> [<file>...]
+
+>   struct qcom_osm_l3_icc_provider {
+> -	void __iomem *base;
+> +	void __iomem *domain_base[L3_DOMAIN_CNT];
+>   	unsigned int max_state;
+> +	bool per_core_dcvs;
+>   	unsigned int reg_perf_state;
+>   	unsigned long lut_tables[LUT_MAX_ENTRIES];
+>   	struct icc_provider provider;
+
+. . .
+
+> @@ -235,12 +322,17 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
+>   	if (!qp)
+>   		return -ENOMEM;
+>   
+> -	qp->base = devm_platform_ioremap_resource(pdev, 0);
+> -	if (IS_ERR(qp->base))
+> -		return PTR_ERR(qp->base);
+> +	while (of_get_address(pdev->dev.of_node, i++, NULL, NULL))
+> +		nr_domain_bases++;
+
+Maybe you could combine these two loops by counting as you go.
+I.e.:
+
+     i = 0;
+     while (true) {
+	void __iomem *base;
+
+	if (of_get_address(pdev->dev.of_node, i, NULL, NULL))
+		break;
+	base = devm_platform_ioremap_resource(pdev, i);
+	if (IS_ERR(base))
+	    return PTR_ERR(base);
+	qp->domain_base[i++] = base
+     }
+     nr_domain_bases = i;
+
 > +
-> +	if (bank_type =3D=3D SMCA_UMC && xec =3D=3D 0)
-> +		node_id =3D topology_die_id(m->extcpu);
-> +
-> +	if (decode_dram_ecc)
-> +		decode_dram_ecc(node_id, m);
+> +	for (i = 0; i < nr_domain_bases ; i++) {
+> +		qp->domain_base[i] = devm_platform_ioremap_resource(pdev, i);
+> +		if (IS_ERR(qp->domain_base[i]))
+> +			return PTR_ERR(qp->domain_base[i]);
+> +	}
+>   
+>   	/* HW should be in enabled state to proceed */
+> -	if (!(readl_relaxed(qp->base + REG_ENABLE) & 0x1)) {
+> +	if (!(readl_relaxed(qp->domain_base[0] + REG_ENABLE) & 0x1)) {
+>   		dev_err(&pdev->dev, "error hardware not enabled\n");
+>   		return -ENODEV;
+>   	}
+> @@ -252,7 +344,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
+>   	qp->reg_perf_state = desc->reg_perf_state;
+>   
+>   	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
+> -		info = readl_relaxed(qp->base + desc->reg_freq_lut +
+> +		info = readl_relaxed(qp->domain_base[0] + desc->reg_freq_lut +
+>   				     i * desc->lut_row_size);
 
-If decode_dram_ecc() is set, then this will call it on every MCA error that=
- comes in. Rather we only want to call it on DRAM ECC errors.
+Maybe you could define a macro to encapsulate computing this
+register offset, along the lines of EPSS_L3_VOTE_REG().  (Here
+and elsewhere.)
 
-You could do something like this:
+>   		src = FIELD_GET(LUT_SRC, info);
+>   		lval = FIELD_GET(LUT_L_VAL, info);
+> @@ -271,6 +363,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
+>   		prev_freq = freq;
+>   	}
+>   	qp->max_state = i;
+> +	qp->per_core_dcvs = desc->per_core_dcvs;
+>   
+>   	qnodes = desc->nodes;
+>   	num_nodes = desc->num_nodes;
+> @@ -326,6 +419,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
+>   
+>   static const struct of_device_id osm_l3_of_match[] = {
+>   	{ .compatible = "qcom,sc7180-osm-l3", .data = &sc7180_icc_osm_l3 },
+> +	{ .compatible = "qcom,sc7280-epss-l3", .data = &sc7280_icc_epss_l3 },
+>   	{ .compatible = "qcom,sdm845-osm-l3", .data = &sdm845_icc_osm_l3 },
+>   	{ .compatible = "qcom,sm8150-osm-l3", .data = &sm8150_icc_osm_l3 },
+>   	{ .compatible = "qcom,sc8180x-osm-l3", .data = &sc8180x_icc_osm_l3 },
+> diff --git a/drivers/interconnect/qcom/sc7280.h b/drivers/interconnect/qcom/sc7280.h
+> index 175e400..5df7600 100644
+> --- a/drivers/interconnect/qcom/sc7280.h
+> +++ b/drivers/interconnect/qcom/sc7280.h
+> @@ -150,5 +150,15 @@
+>   #define SC7280_SLAVE_PCIE_1			139
+>   #define SC7280_SLAVE_QDSS_STM			140
+>   #define SC7280_SLAVE_TCU			141
+> +#define SC7280_MASTER_EPSS_L3_APPS			142
+> +#define SC7280_SLAVE_EPSS_L3_SHARED			143
+> +#define SC7280_SLAVE_EPSS_L3_CPU0			144
+> +#define SC7280_SLAVE_EPSS_L3_CPU1			145
+> +#define SC7280_SLAVE_EPSS_L3_CPU2			146
+> +#define SC7280_SLAVE_EPSS_L3_CPU3			147
+> +#define SC7280_SLAVE_EPSS_L3_CPU4			148
+> +#define SC7280_SLAVE_EPSS_L3_CPU5			149
+> +#define SC7280_SLAVE_EPSS_L3_CPU6			150
+> +#define SC7280_SLAVE_EPSS_L3_CPU7			151
+>   
+>   #endif
+> 
 
-	if (decode_dram_ecc && xec =3D=3D 0) {
-		u32 node_id =3D 0;
-
-		if (bank_type =3D=3D SMCA_UMC)
-			node_id =3D XXX;
-		else if (bank_type =3D=3D SMCA_UMC_V2)
-			node_id =3D YYY;
-		else
-			return;
-
-		decode_dram_ecc(node_id, m);
-	}
-
-This is just an example. Maybe you can save an indentation level by negatin=
-g those conditions and returning early, etc.
-[naveenk:] modified the ladder.
-
-Thanks,
-Yazen
-[naveenk:] Thank you.
