@@ -2,99 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA19A3E8471
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893443E8475
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhHJUi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:38:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45796 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhHJUiy (ORCPT
+        id S231738AbhHJUkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:40:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58670 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229480AbhHJUkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:38:54 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628627911;
+        Tue, 10 Aug 2021 16:40:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628627984;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PkVtjYm3BfNCg+SbthLRj+WEbFU9jkunNTtXTBea3V4=;
-        b=Y/oBbb4FW3u8yktuwVCeGFD164Laq+BYDynM0nVW9KRLRPJHvV+2m60JsEMFm79ERanvev
-        NuZZywbDhDV07G86qQbwXG1MTBxysxW2i1tuOOnIyqMWSmQT8r7luxCCu1H1mb+nZij9VE
-        vhh4fTNg+wwXQKyWJ+P2DnERF/NxuRaBuoIO8TvpQaq/GmV+i3Oy1WLXnaJ3ZU+MGCBWMb
-        tDh9tjfCDjeZ1hBdhHjBzp2dyDKJlYZGbjMPksgQOBGGNWkzrN46QNqmkoaPMHOSGmZ1ZX
-        P6NEByuvsNbEJH38ly92/JvRbogZRZk/a2KxlFgcQwVzVdVmiBCMGipnKxFnfA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628627911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PkVtjYm3BfNCg+SbthLRj+WEbFU9jkunNTtXTBea3V4=;
-        b=Yf3Ht3y3955z1yV0IKDS3aUnunEjBXY+XP4xTvfitS/jfvKJUs50PBQ7WVqbXS5KyhOEFt
-        CLyWve4MQ+5GxrCw==
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Clark Williams <williams@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH PREEMPT_RT] kcov:  fix locking splat from
- kcov_remote_start()
-In-Reply-To: <20210810095032.epdhivjifjlmbhp5@linutronix.de>
-References: <20210809155909.333073de@theseus.lan>
- <20210810095032.epdhivjifjlmbhp5@linutronix.de>
-Date:   Tue, 10 Aug 2021 22:38:30 +0200
-Message-ID: <87sfzhox15.ffs@tglx>
+        bh=8hN9X0coZ/dZkZpRS5vtT+uzi+4IbErPaehQsrg5q0U=;
+        b=cV4BC9FvFP559dLnPKQ2djxDyxMfYCEzKNKzxIJUrEn2Jwcdxqhh59hV+AIKeACUmC4/8p
+        RkvlEQC+xJSXY/LdADqtDJPpnYB0Mo7ztBzpEDB1qQYurrQBEGGmRwq9JniwXOF1EkZPJ3
+        ICtukUlbOgc9zpqcQl+ywol8/AnAqa8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-524-65fBjrNeMviyqPfbF--8uw-1; Tue, 10 Aug 2021 16:39:42 -0400
+X-MC-Unique: 65fBjrNeMviyqPfbF--8uw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7749D101C8A0;
+        Tue, 10 Aug 2021 20:39:41 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 530D05C1A1;
+        Tue, 10 Aug 2021 20:39:40 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-51-willy@infradead.org>
+References: <20210715033704.692967-51-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 050/138] mm/workingset: Convert workingset_activation to take a folio
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1811129.1628627979.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 21:39:39 +0100
+Message-ID: <1811130.1628627979@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10 2021 at 11:50, Sebastian Andrzej Siewior wrote:
-> On 2021-08-09 15:59:09 [-0500], Clark Williams wrote:
->> Saw the following splat on 5.14-rc4-rt5 with:
-> =E2=80=A6
->> Change kcov_remote_lock from regular spinlock_t to raw_spinlock_t so that
->> we don't get "sleeping function called from invalid context" on PREEMPT_=
-RT kernel.
->
-> I'm not entirely happy with that:
-> - kcov_remote_start() decouples spin_lock_irq() and does local_irq_save()
->   + spin_lock() which shouldn't be done as per
->       Documentation/locking/locktypes.rst
->   I would prefer to see the local_irq_save() replaced by
->   local_lock_irqsave() so we get a context on what is going on.
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-Which does not make it raw unless we create a raw_local_lock.
+> This function already assumed it was being passed a head page.  No real
+> change here, except that thp_nr_pages() compiles away on kernels with
+> THP compiled out while folio_nr_pages() is always present.  Also convert
+> page_memcg_rcu() to folio_memcg_rcu().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-> - kcov_remote_reset() has a kfree() with that irq-off lock acquired.
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-That free needs to move out obviously
-
-> - kcov_remote_add() has a kmalloc() and is invoked with that irq-off
->   lock acquired.
-
-So does the kmalloc.
-
-> - kcov_remote_area_put() uses INIT_LIST_HEAD() for no reason (just
->   happen to notice).
->
-> - kcov_remote_stop() does local_irq_save() + spin_lock(&kcov->lock);.
->   This should also create a splat.
->
-> - With lock kcov_remote_lock acquired there is a possible
->   hash_for_each_safe() and list_for_each() iteration. I don't know what
->   the limits are here but with a raw_spinlock_t it will contribute to
->   the maximal latency.=20
-
-And that matters because? kcov has a massive overhead and with that
-enabled you care as much about latencies as you do when running with
-lockdep enabled.
-
-Thanks,
-
-        tglx
