@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE823E577A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC393E577B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239328AbhHJJuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:50:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58709 "EHLO
+        id S239326AbhHJJu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:50:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32557 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239318AbhHJJtb (ORCPT
+        by vger.kernel.org with ESMTP id S239321AbhHJJtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Aug 2021 05:49:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628588945;
+        s=mimecast20190719; t=1628588948;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=XzR6lWp82u27j51uOwaAZXbU9KDrDW0NXcWuJSzfma4=;
-        b=FumeNwqjXfyTSsXnAsGtbUQQsGPdiEwtcCPd/MTaa6aNTf1hzFaxokUv6lKKaOxaxkSgTT
-        zU6s7wWozF+mxO89LvTDDLg57AoXoBFltDC1b3uAcURSnDcJsjC3GqWlsQy6O/IniRk+VX
-        Zbh9eUW8VfiUwhdIEXK3cFqe22+8S6k=
+        bh=/aC5i+VtNgDwxqN/egwfoCAzlz9LaELVpAqdunfQbhM=;
+        b=cAYDHNW6b5+KRKgZYf/JE5MEjSg7IlUmizla1J/iYANyAgiJ12PWN5K/nyMwI9yaZBkHWh
+        0pYyPKUZsS1e3rK9fRJ7pBEWfHTEr9v9woZSPtTYSUUWaJAWU6XcVoJDzgODC6BhY4dXIH
+        nsEB+J4YDuxmJf4EFfoqdiTrXJS/B+w=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-GKyu86l7Mde9uXBLYsrEWw-1; Tue, 10 Aug 2021 05:49:02 -0400
-X-MC-Unique: GKyu86l7Mde9uXBLYsrEWw-1
+ us-mta-265-Bg5aFaClPqeApzLR3tQNPg-1; Tue, 10 Aug 2021 05:49:07 -0400
+X-MC-Unique: Bg5aFaClPqeApzLR3tQNPg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42EB6107ACF5;
-        Tue, 10 Aug 2021 09:49:00 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89C53875048;
+        Tue, 10 Aug 2021 09:49:05 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-79.pek2.redhat.com [10.72.12.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B2D8D10013C1;
-        Tue, 10 Aug 2021 09:48:55 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D07AB1000186;
+        Tue, 10 Aug 2021 09:49:00 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hch@lst.de,
         robin.murphy@arm.com, cl@linux.com, penberg@kernel.org,
         rientjes@google.com, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
         m.szyprowski@samsung.com, rppt@linux.ibm.com,
-        Baoquan He <bhe@redhat.com>
-Subject: [RFC PATCH v2 3/5] mm_zone: add function to check if managed dma zone exists
-Date:   Tue, 10 Aug 2021 17:48:33 +0800
-Message-Id: <20210810094835.13402-4-bhe@redhat.com>
+        Baoquan He <bhe@redhat.com>, iommu@lists.linux-foundation.org
+Subject: [RFC PATCH v2 4/5] dma/pool: create dma atomic pool only if dma zone has mamaged pages
+Date:   Tue, 10 Aug 2021 17:48:34 +0800
+Message-Id: <20210810094835.13402-5-bhe@redhat.com>
 In-Reply-To: <20210810094835.13402-1-bhe@redhat.com>
 References: <20210810094835.13402-1-bhe@redhat.com>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
@@ -49,89 +49,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some places of the current kernel, it assumes that dma zone must have
-managed pages if CONFIG_ZONE_DMA is enabled. While this is not always true.
-E.g in kdump kernel of x86_64, only low 1M is presented and locked down
-at very early stage of boot, so that there's no managed pages at all in
-DMA zone. This exception will always cause page allocation failure if page
-is requested from DMA zone.
+Currently three dma atomic pools are initialized as long as the relevant
+kernel codes are built in. While in kdump kernel of x86_64, this is not
+right when trying to create atomic_pool_dma, because there's no managed
+pages in DMA zone. In the case, DMA zone only has low 1M memory presented
+and locked down by memblock allocator. So no pages are added into buddy
+of DMA zone. Please check commit f1d4d47c5851 ("x86/setup: Always reserve
+the first 1M of RAM").
 
-Here add function has_managed_dma() and the relevant helper functions to
-check if there's DMA zone with managed pages. It will be used in later
-patches.
+Then in kdump kernel of x86_64, it always prints below failure message:
+
+ DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+ swapper/0: page allocation failure: order:5, mode:0xcc1(GFP_KERNEL|GFP_DMA), nodemask=(null),cpuset=/,mems_allowed=0
+ CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-0.rc5.20210611git929d931f2b40.42.fc35.x86_64 #1
+ Hardware name: Dell Inc. PowerEdge R910/0P658H, BIOS 2.12.0 06/04/2018
+ Call Trace:
+  dump_stack+0x7f/0xa1
+  warn_alloc.cold+0x72/0xd6
+  ? _raw_spin_unlock_irq+0x24/0x40
+  ? __alloc_pages_direct_compact+0x90/0x1b0
+  __alloc_pages_slowpath.constprop.0+0xf29/0xf50
+  ? __cond_resched+0x16/0x50
+  ? prepare_alloc_pages.constprop.0+0x19d/0x1b0
+  __alloc_pages+0x24d/0x2c0
+  ? __dma_atomic_pool_init+0x93/0x93
+  alloc_page_interleave+0x13/0xb0
+  atomic_pool_expand+0x118/0x210
+  ? __dma_atomic_pool_init+0x93/0x93
+  __dma_atomic_pool_init+0x45/0x93
+  dma_atomic_pool_init+0xdb/0x176
+  do_one_initcall+0x67/0x320
+  ? rcu_read_lock_sched_held+0x3f/0x80
+  kernel_init_freeable+0x290/0x2dc
+  ? rest_init+0x24f/0x24f
+  kernel_init+0xa/0x111
+  ret_from_fork+0x22/0x30
+ Mem-Info:
+ ......
+ DMA: failed to allocate 128 KiB GFP_KERNEL|GFP_DMA pool for atomic allocation
+ DMA: preallocated 128 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+
+Here, let's check if DMA zone has managed pages, then create atomic_pool_dma
+if yes. Otherwise just skip it.
 
 Signed-off-by: Baoquan He <bhe@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: iommu@lists.linux-foundation.org
 ---
- include/linux/mmzone.h | 21 +++++++++++++++++++++
- mm/page_alloc.c        | 11 +++++++++++
- 2 files changed, 32 insertions(+)
+ kernel/dma/pool.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index fcb535560028..e3cd23fc5f64 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -975,6 +975,18 @@ static inline bool zone_is_zone_device(struct zone *zone)
- }
- #endif
- 
-+#ifdef CONFIG_ZONE_DMA
-+static inline bool zone_is_dma(struct zone *zone)
-+{
-+	return zone_idx(zone) == ZONE_DMA;
-+}
-+#else
-+static inline bool zone_is_dma(struct zone *zone)
-+{
-+	return false;
-+}
-+#endif
-+
- /*
-  * Returns true if a zone has pages managed by the buddy allocator.
-  * All the reclaim decisions have to use this function rather than
-@@ -1023,6 +1035,7 @@ static inline int is_highmem_idx(enum zone_type idx)
- #endif
- }
- 
-+bool has_managed_dma(void);
- /**
-  * is_highmem - helper function to quickly check if a struct zone is a
-  *              highmem zone or not.  This is an attempt to keep references
-@@ -1108,6 +1121,14 @@ extern struct zone *next_zone(struct zone *zone);
- 			; /* do nothing */		\
- 		else
- 
-+#define for_each_managed_zone(zone)		        \
-+	for (zone = (first_online_pgdat())->node_zones; \
-+	     zone;					\
-+	     zone = next_zone(zone))			\
-+		if (!managed_zone(zone))		\
-+			; /* do nothing */		\
-+		else
-+
- static inline struct zone *zonelist_zone(struct zoneref *zoneref)
- {
- 	return zoneref->zone;
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3e97e68aef7a..45dd1295416a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -9441,4 +9441,15 @@ bool take_page_off_buddy(struct page *page)
- 	spin_unlock_irqrestore(&zone->lock, flags);
- 	return ret;
- }
-+
-+bool has_managed_dma(void)
-+{
-+	struct zone *zone;
-+
-+	for_each_managed_zone(zone) {
-+		if (zone_is_dma(zone))
-+			return true;
-+	}
-+	return false;
-+}
- #endif
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index 5a85804b5beb..00df3edd6c5d 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -206,7 +206,7 @@ static int __init dma_atomic_pool_init(void)
+ 						    GFP_KERNEL);
+ 	if (!atomic_pool_kernel)
+ 		ret = -ENOMEM;
+-	if (IS_ENABLED(CONFIG_ZONE_DMA)) {
++	if (has_managed_dma()) {
+ 		atomic_pool_dma = __dma_atomic_pool_init(atomic_pool_size,
+ 						GFP_KERNEL | GFP_DMA);
+ 		if (!atomic_pool_dma)
+@@ -229,7 +229,7 @@ static inline struct gen_pool *dma_guess_pool(struct gen_pool *prev, gfp_t gfp)
+ 	if (prev == NULL) {
+ 		if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp & GFP_DMA32))
+ 			return atomic_pool_dma32;
+-		if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp & GFP_DMA))
++		if (atomic_pool_dma && (gfp & GFP_DMA))
+ 			return atomic_pool_dma;
+ 		return atomic_pool_kernel;
+ 	}
 -- 
 2.17.2
 
