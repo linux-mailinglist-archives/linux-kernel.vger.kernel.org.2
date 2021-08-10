@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AA73E5CA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014293E5CA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242180AbhHJONi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
+        id S242190AbhHJON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240474AbhHJONh (ORCPT
+        with ESMTP id S240474AbhHJON5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:13:37 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8EBC0613C1;
-        Tue, 10 Aug 2021 07:13:15 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x27so19139309lfu.5;
-        Tue, 10 Aug 2021 07:13:15 -0700 (PDT)
+        Tue, 10 Aug 2021 10:13:57 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E351C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 07:13:35 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id d10-20020a9d4f0a0000b02904f51c5004e3so17739734otl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 07:13:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tQ9djM8Tzt2DqRTr0Ac9cV4rkPFXLMY1XtXmewIg/CM=;
-        b=pm5OtXw3zU2t/eI3uwo88dLJRmQSC5LPfztxKtRQ4lAZn1PTaztvFcIlMDQ399PoUM
-         3v76ZG0lY0LgoD3rsEJsRpwKD4nqP17ofL+SZHJJHPYeZ2Z2/xtKRzPU1scoZ+iVxE5j
-         nX8XgnP0vT+Dg2Fn5usNbfjL9HCiG7RpUzy3DDpo0SVdwFMgh5si2bwiMrG5nFqotEEE
-         uYxvT2TlijQ6qAurDm55aBPiCVcpMgZPkbYvYVuP+Kz/EILRs4Z3BYcYjzL2AZx89eJs
-         mR5EQhSP0rLCHaTIeOGcFZ1IkZxa7aT+lDI27nyMynl9MX9XUQn2JKXpQCNd77WrgbCx
-         1Cow==
+         :cc;
+        bh=WBj9jDzdrpkQARXB3cjFr72FO41wqr8C2m6gqeyQkOM=;
+        b=G5H3i1qJW9zU2sRnzNTDSWEAviRi5xYzX3sXOLng8kmOXC8SlYtH/pO83+FQFamtev
+         mQWemttbtv/NZqWhr57X2ZML7YQStNfVc35CW862oeR7Zj6FXZkLLMr3LFMXIQx1uYQB
+         ApIWDHC5af8fq77CUZyP2c+10o3dADueNjrProCLo1N1WCW8J+1G3ReM/5PT1frtnOY/
+         QQJuE66EI6nDjs9A1rk8H5Y2iJMIKvqip2p1YdBzEZxdvBRU1hSocjOFfs21Hd+9XBiZ
+         xF01NEYDgwJipsvicygnP92Cu8zA4UUtPcE0A/HCSUN4lIktwTT+R+8CJl6p0R2EHOEs
+         SB3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tQ9djM8Tzt2DqRTr0Ac9cV4rkPFXLMY1XtXmewIg/CM=;
-        b=erqC52FAP+FgtGmoU1Ld/XkORENodoI4cGvb1gu8elWNeMgukCxYeXOMmSe+qFYq3P
-         q2yHZ71CfX9Wy80+6KcZo3cmPFv2o9XLR5ECD3vJwK69l5nBWBXF86J+eoiFWjELnY0T
-         1CCItOmAKkK7iZTukq1Rg2xR80PfaAhkKEFYYN4mnntkYqh+R6h7CofHE5FTY0dupIaY
-         9OUmqMsMGQvVNoC0C1eUHWCRrijaCw2SJpZ3oJOuus95UIiDV0xj1/T8KjplTIimwjFO
-         6CCRnqMn22HJKtFnl7JYVAPGjb4Ab/jpzG6KfcI/Vn2fCUi4NCI66BUDYnjDYQdiD0Oq
-         KDOA==
-X-Gm-Message-State: AOAM533wD1umB6ViMkOCNblVrH7ABP8bFi6topan9CojZCY2zLg0OiXy
-        tYQZsg/BUJTu18F3m7h2ds93sW8Nu0z1o5b9AC0=
-X-Google-Smtp-Source: ABdhPJx24iFkm7YOe7nV7SVgDlikcarRRpk+Zs+LpMZRYMJLqAsoiV7nt+GMbA3+axaX+DFRpqeMyPBKfowApoBOw1k=
-X-Received: by 2002:a05:6512:3b07:: with SMTP id f7mr23846052lfv.398.1628604793544;
- Tue, 10 Aug 2021 07:13:13 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=WBj9jDzdrpkQARXB3cjFr72FO41wqr8C2m6gqeyQkOM=;
+        b=d+uKDQ9Vn7ZLTwBwAKAuyaTsh2TeLhThgHaehE7Lrc6xzL/lngFCYIX+jvDZRGDgvO
+         XSryKWzHPJSG447UdTxtbVRmyHBvvo02awd6/Sl6yqZCDHuFi92FDD3lohRsuVaS2LQx
+         T+mtZwg/7NcAmHqjKmZP6A58DFLw34REKZdGvvYjw7TnQ0CC9xcxS0O280BfRPP09U6W
+         1/BGQncNbZE2qSm8/n2ktCV+r+Ik8v07SxaUPZgtJ3fPpEgcKudlHyV22N6SvC6W0byn
+         hgbQ6AG/3mnSeKMypCQrxbXEBxxn4rHLbqfpv55bAYgYIIVMNPMjAIiNG1RbsORiJ+gy
+         6CLw==
+X-Gm-Message-State: AOAM530JFGNcS28V0e868WDV4x/QvMkHfcb8yLeBpoLcIqgdBlCr92Fv
+        vb+dBrDOliJWRuDGycYgc62BO95eI+acVIO9QK4=
+X-Google-Smtp-Source: ABdhPJw8TFkDGPU6iSWLNfA+6DeUCxWqVIOLSY1qvG9Gk5q54+qoCpUI8ReRElJ32Ux40vKe6zWz3g6RHiRmbJ20X/0=
+X-Received: by 2002:a05:6830:1e78:: with SMTP id m24mr15296402otr.23.1628604815033;
+ Tue, 10 Aug 2021 07:13:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHhAz+jKREfXERKj7XB7U3Wh1g4STO2Dt0qnMkcPV5nXB3_bwg@mail.gmail.com>
- <8923f2b8-0be0-ffbf-70a4-c03c9a02d58a@suse.com>
-In-Reply-To: <8923f2b8-0be0-ffbf-70a4-c03c9a02d58a@suse.com>
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Tue, 10 Aug 2021 19:43:02 +0530
-Message-ID: <CAHhAz+i5YeQdJnBH6BvMJ-B0DtoBu9ER4Z79CPOfX5NuFvO=bA@mail.gmail.com>
-Subject: Re: read() via USB bus
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210810012304.28068-1-zhaoxiao@uniontech.com>
+In-Reply-To: <20210810012304.28068-1-zhaoxiao@uniontech.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Aug 2021 10:13:24 -0400
+Message-ID: <CADnq5_M1pon2TxnjU8pLfjGdo9w1iuc6KX6ff2a+7B4cTza79w@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: remove variable backlight
+To:     zhaoxiao <zhaoxiao@uniontech.com>
+Cc:     Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 1:45 PM Oliver Neukum <oneukum@suse.com> wrote:
+On Mon, Aug 9, 2021 at 9:24 PM zhaoxiao <zhaoxiao@uniontech.com> wrote:
 >
->
-> On 09.08.21 09:58, Muni Sekhar wrote:
-> > Hi all,
-> >
-> > PCIe memory mapped registers can be read via readb(), readw(), readl()
-> > kernel API's. Similarly what are the kernel API to read the device
-> > registers via USB bus
-> >
->
-> Hi,
->
-> I am afraid this is based on a fundamental misunderstanding on how
-> USB works. It is based on passing messages, not reading and writing
-> registers.
+> The variable backlight is being initialized with a value that
+> is never read, it is being re-assigned immediately afterwards.
 
-I am referring to the code mentioned in
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1534464348-8227-3-=
-git-send-email-pheragu@codeaurora.org/
+I don't think this comment really matches the code.  I think you can drop it.
 
-As per this driver gets access to the Qcomm=E2=80=99s USB h/w device regist=
-ers
-via devm_extcon_dev_allocate(), devm_extcon_dev_register(),
-platform_get_resource() and devm_ioremap_resource API=E2=80=99s.
+Alex
 
-What does the USB external connector EXTCON_USB \ EXTCON_USB_HOST
-devices means? Are these different from normal USB devices?
-
-
+> Clean up the code by removing the need for variable backlight.
 >
-> USB devices are primarily based on endpoints, not registers. A literal
-> answer to your question would point you to the clear/set/get_feature
-> standard requests of chapter 9 of the specification, but that really
-> will not help you, as you are making assumption that fundamentally
-> do not apply.
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce/dce_abm.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 >
-> I hope this list stays friendly to newcomers and we will answer
-> specific questions, but at this point I must advise you to first
-> read an introductory book.
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_abm.c b/drivers/gpu/drm/amd/display/dc/dce/dce_abm.c
+> index 874b132fe1d7..0808433185f8 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_abm.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_abm.c
+> @@ -177,23 +177,21 @@ static void dce_abm_init(struct abm *abm, uint32_t backlight)
+>  static unsigned int dce_abm_get_current_backlight(struct abm *abm)
+>  {
+>         struct dce_abm *abm_dce = TO_DCE_ABM(abm);
+> -       unsigned int backlight = REG_READ(BL1_PWM_CURRENT_ABM_LEVEL);
 >
->     HTH
->         Oliver
+>         /* return backlight in hardware format which is unsigned 17 bits, with
+>          * 1 bit integer and 16 bit fractional
+>          */
+> -       return backlight;
+> +       return REG_READ(BL1_PWM_CURRENT_ABM_LEVEL);
+>  }
+>
+>  static unsigned int dce_abm_get_target_backlight(struct abm *abm)
+>  {
+>         struct dce_abm *abm_dce = TO_DCE_ABM(abm);
+> -       unsigned int backlight = REG_READ(BL1_PWM_TARGET_ABM_LEVEL);
+>
+>         /* return backlight in hardware format which is unsigned 17 bits, with
+>          * 1 bit integer and 16 bit fractional
+>          */
+> -       return backlight;
+> +       return REG_READ(BL1_PWM_TARGET_ABM_LEVEL);
+>  }
+>
+>  static bool dce_abm_set_level(struct abm *abm, uint32_t level)
+> --
+> 2.20.1
 >
 >
-
-
---=20
-Thanks,
-Sekhar
+>
