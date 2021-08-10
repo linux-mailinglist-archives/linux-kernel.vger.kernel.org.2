@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926843E8531
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EA13E8535
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhHJVWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhHJVWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:22:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1587A60F55;
-        Tue, 10 Aug 2021 21:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628630502;
-        bh=iVvg4eXWATfBowatoEqO01nKR8TgnDFtwpnbkcC33Vw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pWOoSAptpa5ZeDPi61Kt+iATARj1dzr2RHRhwaYyZJd2xxiVKnzUqIpysX6Y+ohbB
-         /kPXbPI5MYne5Y8jhGfZDpQF/KfDWptAN4JHIMFPqHwX50XJSmycZr4K9/dcDBBU0D
-         XXqwrZvcHmnqpwd3tOOvVZiWGJJ0Hy1her2Z2olFLcsS6twf8q56RA5oZL6TTF33O/
-         bhtzAGPzKigsTVemQMSto6es93NVV1finGwW4K5saCFUA2NOUI1sxdQ2NnRyzhZXJB
-         vw5p0CsVWMxVgbHL4zM09tUDMbq/y9azZYzlAPRFcgINpqEeQRegMrTGUjL2lsD+Lb
-         65tBJl5dHl2Tg==
-Date:   Wed, 11 Aug 2021 00:21:40 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-Message-ID: <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
- <20210809094408.4iqwsx77u64usfx6@kernel.org>
- <YRGVcaquAJiuc8bp@gmail.com>
- <20210810180636.vqwaeftv7alsodgn@kernel.org>
- <YRLJmaafp941uOdA@gmail.com>
+        id S234661AbhHJVWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:22:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23645 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229582AbhHJVWp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:22:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628630542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jk2IhlnlOCt1ZKtSeYx6ofnITIH2EWYZO/2dRAfdcPU=;
+        b=D3YrG+XC5QhRb6pDXLO4y3rItCvQtOQJXOztVnDTs016B+9yvm0I+Ox0Jum+L43/yM5lYi
+        U3xBilWDjkkf2MaxwZwUsXG/sVFAFdei4FMVls/QWolXGdvILi5/g9CCVACieYaZ7OZFeK
+        Icw58hKMbaeq9tgVLxCY2P+LeGCBAuM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242--Ht1JF46PyORuJLBuAinOA-1; Tue, 10 Aug 2021 17:22:20 -0400
+X-MC-Unique: -Ht1JF46PyORuJLBuAinOA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D20B0185302E;
+        Tue, 10 Aug 2021 21:22:19 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AF4EE60BF1;
+        Tue, 10 Aug 2021 21:22:18 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-73-willy@infradead.org>
+References: <20210715033704.692967-73-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 072/138] mm/writeback: Add folio_account_cleaned()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YRLJmaafp941uOdA@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1813184.1628630537.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 22:22:17 +0100
+Message-ID: <1813185.1628630537@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:46:49AM -0700, Eric Biggers wrote:
-> On Tue, Aug 10, 2021 at 09:06:36PM +0300, Jarkko Sakkinen wrote:
-> > > > 
-> > > > I don't think this is right, or at least it does not follow the pattern
-> > > > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
-> > > 
-> > > What's the benefit of the extra layer of indirection over just using a "trusted"
-> > > key directly?  The use case for "encrypted" keys is not at all clear to me.
-> > 
-> > Because it is more robust to be able to use small amount of trusted keys,
-> > which are not entirely software based.
-> > 
-> > And since it's also a pattern on existing kernel features utilizing trusted
-> > keys, the pressure here to explain why break the pattern, should be on the
-> > side of the one who breaks it.
-> 
-> This is a new feature, so it's on the person proposing the feature to explain
-> why it's useful.  The purpose of "encrypted" keys is not at all clear, and the
-> documentation for them is heavily misleading.  E.g.:
-> 
->     "user space sees, stores, and loads only encrypted blobs"
->     (Not necessarily true, as I've explained previously.)
-> 
->     "Encrypted keys do not depend on a trust source" ...  "The main disadvantage
->     of encrypted keys is that if they are not rooted in a trusted key"
->     (Not necessarily true, and in fact it seems they're only useful when they
->     *do* depend on a trust source.  At least that's the use case that is being
->     proposed here, IIUC.)
-> 
-> I do see a possible use for the layer of indirection that "encrypted" keys are,
-> which is that it would reduce the overhead of having lots of keys be directly
-> encrypted by the TPM/TEE/CAAM.  Is this the use case?  If so, it needs to be
-> explained.
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
-If trusted keys are used directly, it's an introduction of a bottleneck.
-If they are used indirectly, you can still choose to have one trusted
-key per fscrypt key.
+> Get the statistics right; compound pages were being accounted as a
+> single page.  This didn't matter before now as no filesystem which
+> supported compound pages did writeback.  Also move the declaration
+> to filemap.h since this is part of the page cache.  Add a wrapper for
+> account_page_cleaned().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Thus, it's obviously a bad idea to use them directly.
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-/Jarkko
