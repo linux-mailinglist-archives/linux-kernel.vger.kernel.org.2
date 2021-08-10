@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DA33E8048
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9907A3E7F19
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235189AbhHJRrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
+        id S232835AbhHJRhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:37:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236183AbhHJRof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:44:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D0F461101;
-        Tue, 10 Aug 2021 17:39:42 +0000 (UTC)
+        id S233632AbhHJRfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:35:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC3F2610CC;
+        Tue, 10 Aug 2021 17:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617182;
-        bh=A+ZmOuKwtpvP7/Z98qWtfl5PW+bujj7O8LS/Hqb3aoE=;
+        s=korg; t=1628616906;
+        bh=A2bczzZKTvesHcKN+5UKs+PdkRxIxJHu4Mn6KoXB/OA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a8W8slFzXzlnBTS55laRl5zbmJfgBY8JmKHW56NkIzZs/XTqUlEG/9na5LDCjpxiq
-         N6nOspOhFNeqKNmK6sSdHzy9yqmk2dNuD82q7+kSoILlzSWJEQK90YTaGcWG/43DRN
-         9GESciNv4z7xwf3PfwsSMgEmuz1za3UyoUlLwEgI=
+        b=VWkLs4RaKJDM9d0TYG4eMAJYCC/O+Eki+VA1VIms2U1TC7lfo9l2Mm830I6SapSmd
+         lkc7t4pEHFRmvYFGjKf5kfaUbubi3Br45PCvu5R1z0FFNv0nMiAWNJ5iKusgrDhi67
+         5OmfHyVnDhvQS4NthDAPmzxqur8JlWTp1qK7Z+Lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 5.10 082/135] tee: add tee_shm_alloc_kernel_buf()
+        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 43/85] ALSA: usb-audio: Add registration quirk for JBL Quantum 600
 Date:   Tue, 10 Aug 2021 19:30:16 +0200
-Message-Id: <20210810172958.531581012@linuxfoundation.org>
+Message-Id: <20210810172949.690954562@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Wiklander <jens.wiklander@linaro.org>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-commit dc7019b7d0e188d4093b34bd0747ed0d668c63bf upstream.
+commit 4b0556b96e1fe7723629bd40e3813a30cd632faf upstream.
 
-Adds a new function tee_shm_alloc_kernel_buf() to allocate shared memory
-from a kernel driver. This function can later be made more lightweight
-by unnecessary dma-buf export.
+Apparently JBL Quantum 600 has multiple hardware revisions. Apply
+registration quirk to another device id as well.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210727093326.1153366-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tee/tee_shm.c   |   18 ++++++++++++++++++
- include/linux/tee_drv.h |    1 +
- 2 files changed, 19 insertions(+)
+ sound/usb/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/tee/tee_shm.c
-+++ b/drivers/tee/tee_shm.c
-@@ -193,6 +193,24 @@ err_dev_put:
- }
- EXPORT_SYMBOL_GPL(tee_shm_alloc);
- 
-+/**
-+ * tee_shm_alloc_kernel_buf() - Allocate shared memory for kernel buffer
-+ * @ctx:	Context that allocates the shared memory
-+ * @size:	Requested size of shared memory
-+ *
-+ * The returned memory registered in secure world and is suitable to be
-+ * passed as a memory buffer in parameter argument to
-+ * tee_client_invoke_func(). The memory allocated is later freed with a
-+ * call to tee_shm_free().
-+ *
-+ * @returns a pointer to 'struct tee_shm'
-+ */
-+struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
-+{
-+	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+}
-+EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
-+
- struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
- 				 size_t length, u32 flags)
- {
---- a/include/linux/tee_drv.h
-+++ b/include/linux/tee_drv.h
-@@ -332,6 +332,7 @@ void *tee_get_drvdata(struct tee_device
-  * @returns a pointer to 'struct tee_shm'
-  */
- struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags);
-+struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size);
- 
- /**
-  * tee_shm_register() - Register shared memory buffer
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1842,6 +1842,7 @@ static const struct registration_quirk r
+ 	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
++	REG_QUIRK_ENTRY(0x0ecb, 0x203c, 2),	/* JBL Quantum 600 */
+ 	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
+ 	{ 0 }					/* terminator */
+ };
 
 
