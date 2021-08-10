@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A962B3E7FFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30E33E8099
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhHJRpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:45:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55655 "EHLO
+        id S234522AbhHJRu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:50:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29473 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234811AbhHJRlI (ORCPT
+        by vger.kernel.org with ESMTP id S235701AbhHJRsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:41:08 -0400
+        Tue, 10 Aug 2021 13:48:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628617244;
+        s=mimecast20190719; t=1628617662;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JwFw0vQ/b0YrNjyPB8CLRbPWCk9k3NQcOgojHIc/fik=;
-        b=RtrNn/G2PT/Ptcnv8YyZuVlbZvspzDoJuBKfr3eeGdrZ4CEBw5uwO2xuNtOdC2IRQwqutP
-        FrWCfjXTEfzx5kLy0gZy+/ZLoOv6iuLfbmmX7kQIZ6AqSPyXh6GEh33aAL96AtmFB9rCBH
-        2tJEHFyGd6o4rGrHBjIThtIdbqiyb0s=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-iiXZtw2sOXSFZKb_WnlRzA-1; Tue, 10 Aug 2021 13:40:43 -0400
-X-MC-Unique: iiXZtw2sOXSFZKb_WnlRzA-1
-Received: by mail-ed1-f71.google.com with SMTP id a23-20020a50ff170000b02903b85a16b672so11110401edu.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:40:43 -0700 (PDT)
+        bh=eKwZewLNwIKw9eTm9yw5mCeEiy999huF3GYCsztRI6w=;
+        b=aScngYrW3uIQlgyW1uohcOP03MeK8wREY44wxNrm13zzVH0iyz7Gqwu74ThqRdPRMlYnVB
+        xceG7usPYhoPCSNq4LMQt6dqZO91VgarcDg5O0+SXY3bk5ENO/HWjGJ192/g+TryK02rkZ
+        NKr/2McC9tBNqGeGEF/fx+W+RBWvVCM=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-8Mnv2OenOAyQzPfvb5t74A-1; Tue, 10 Aug 2021 13:47:41 -0400
+X-MC-Unique: 8Mnv2OenOAyQzPfvb5t74A-1
+Received: by mail-ej1-f72.google.com with SMTP id qf6-20020a1709077f06b029057e66b6665aso5925198ejc.18
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 10:47:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=JwFw0vQ/b0YrNjyPB8CLRbPWCk9k3NQcOgojHIc/fik=;
-        b=UPMET1rTPDSmvr0CLTqc5qcXv/qd0xaCswH7LztqCpZr24cgB3Wfb87y3kjWJCC+2H
-         yiROnK1VgcdUBOq6Bz4DWCQwaw+pbi7lXEEJ/pqB8tJaDQXNh1ia00vkP8ujn1ZGjrLA
-         5hdRiuK2GcElpDR7T0Rz5AsmDIPoP5/g3mbPwDWjsZcQY/UPkC8tWJFzPV6kS/Xz6X/+
-         HvIhklkm0UNaFOv2WvX7GduH1zdfUozMNEnieIN1QSvpJzVaSAY0oUpcGoxg7HDEV7eE
-         OyZhQwuqyU4f8hE578JV+xn1j/jHZmvrRnzzIrGTe3YateuKWjobpQOAEvnsk33iu+OD
-         cUPA==
-X-Gm-Message-State: AOAM532KtPh+xzQ3+okV9vibCEQTFzi/MP82IaEJ1NaEu7kjpvOWL9ez
-        uwUFdfBYorscHH8WVqcy73OG/bf3HNAKUu6va0STr+LJdk1JyFsk7dQwCHcbDQ6CSqosRinNag+
-        edNSKK2D0xGm0yxvmCudTnxdY
-X-Received: by 2002:a05:6402:4d:: with SMTP id f13mr6282181edu.275.1628617242093;
-        Tue, 10 Aug 2021 10:40:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvsP/2Cpzsl+zrd39MLw+z0LxH32zxL8FL2Q1YVhE5zvDuswGyYn1nUJpMgkIWmikWh933Kw==
-X-Received: by 2002:a05:6402:4d:: with SMTP id f13mr6282156edu.275.1628617241946;
-        Tue, 10 Aug 2021 10:40:41 -0700 (PDT)
+        bh=eKwZewLNwIKw9eTm9yw5mCeEiy999huF3GYCsztRI6w=;
+        b=YICK8byAhFguA0A/5+uATE3Hhg7RUCagBMu2sgQCfBACzlOmdwPqvoRUB1nkpRcT0D
+         cEGtn2Ud+Zs9+zrjjmqdPObfM3Dw8MGMEGnoldjNQzCL8N831cfk7jNIBrrfDniAg2w3
+         EOa5LWmMhsgkle7X8HRGx/8WDIZBPBBsXyqq63abKXeFXuqyFUPzTT1inC1vWg25bPw+
+         VOAMdfgnLOo0U8wH190HjlzSVSDkEfPjN9wBd3FsFGOMvxtOhcu+1ukQgTdGP9Gxsk4w
+         vGPY6L1lH2vOIiJ4rJHd7yaGKQpGH9jS38bZT9dL/reryTyQT16n6syMFRVUgZQc7Cce
+         ASng==
+X-Gm-Message-State: AOAM532DrOOfY54oCEHYZOfyEIHgQ12KWDApjv6x67eZJBRkljX7kugh
+        yvOOJZtxidCoLEpYrfFY2/gSM+CNaydleu64kcOi6efo007sz/rbcSvv/4oSYe26xDb2gCQljbA
+        0Ejv5vR4qM4FIBncB/ffqPlnThqRjnhkmhdwm2k9WGxirVSDD0mS5+i7RaibSAy7jN8IjAGmeH9
+        BM
+X-Received: by 2002:a05:6402:3128:: with SMTP id dd8mr6456937edb.40.1628617659951;
+        Tue, 10 Aug 2021 10:47:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+ES4XSZWUizraO18WCMcWHJOOU0rhg3kEBHAyUa+hl1Ftwln9z4N1I5esSDtKj6taDpZdMQ==
+X-Received: by 2002:a05:6402:3128:: with SMTP id dd8mr6456908edb.40.1628617659705;
+        Tue, 10 Aug 2021 10:47:39 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id f12sm7132598ejz.99.2021.08.10.10.40.39
+        by smtp.gmail.com with ESMTPSA id n13sm7133872ejk.97.2021.08.10.10.47.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 10:40:41 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] KVM: x86: Purge __ex() and __kvm_spurious_fault()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Tue, 10 Aug 2021 10:47:38 -0700 (PDT)
+Subject: Re: [PATCH 2/5] KVM: x86: Clean up redundant CC macro definition
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>,
-        Like Xu <like.xu.linux@gmail.com>
-References: <20210809173955.1710866-1-seanjc@google.com>
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210809093410.59304-1-likexu@tencent.com>
+ <20210809093410.59304-3-likexu@tencent.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <43409f31-1462-d046-4a1d-ee016970b050@redhat.com>
-Date:   Tue, 10 Aug 2021 19:40:38 +0200
+Message-ID: <26603f6e-f215-af19-1cf3-2e0022c20750@redhat.com>
+Date:   Tue, 10 Aug 2021 19:47:37 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210809173955.1710866-1-seanjc@google.com>
+In-Reply-To: <20210809093410.59304-3-likexu@tencent.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,30 +77,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/21 19:39, Sean Christopherson wrote:
-> Two patches to remove __ex() and __kvm_spurious_fault(), and hide
-> kvm_spurious_fault() in x86.h.  These were part of a larger series that
-> received the magic "Queued, thanks", but got lost at some point.
+On 09/08/21 11:34, Like Xu wrote:
+> From: Like Xu <likexu@tencent.com>
 > 
-> v1: https://lore.kernel.org/kvm/20201231002702.2223707-1-seanjc@google.com/
+> With the exception of drivers/dma/pl330.c, the CC macro is defined and used
+> in {svm, vmx}/nested.c, and the KVM_NESTED_VMENTER_CONSISTENCY_CHECK
+> macro it refers to is defined in x86.h, so it's safe to move it into x86.h
+> without intended functional changes.
 > 
-> Sean Christopherson (1):
->    KVM: x86: Kill off __ex() and __kvm_handle_fault_on_reboot()
-> 
-> Uros Bizjak (1):
->    KVM: x86: Move declaration of kvm_spurious_fault() to x86.h
-> 
->   arch/x86/include/asm/kvm_host.h | 25 -------------------------
->   arch/x86/kvm/svm/sev.c          |  2 --
->   arch/x86/kvm/svm/svm.c          |  2 --
->   arch/x86/kvm/svm/svm_ops.h      |  2 +-
->   arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
->   arch/x86/kvm/x86.c              |  9 ++++++++-
->   arch/x86/kvm/x86.h              |  2 ++
->   7 files changed, 12 insertions(+), 34 deletions(-)
-> 
+> Signed-off-by: Like Xu <likexu@tencent.com>
 
-Queued, thanks.
+This one is just a shortcut that should not available outside nested.c, 
+so I am not applying it.
 
 Paolo
+
+> ---
+>   arch/x86/kvm/svm/nested.c | 2 --
+>   arch/x86/kvm/vmx/nested.c | 2 --
+>   arch/x86/kvm/x86.h        | 2 ++
+>   3 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 5e13357da21e..57c288ba6ef0 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -29,8 +29,6 @@
+>   #include "lapic.h"
+>   #include "svm.h"
+>   
+> -#define CC KVM_NESTED_VMENTER_CONSISTENCY_CHECK
+> -
+>   static void nested_svm_inject_npf_exit(struct kvm_vcpu *vcpu,
+>   				       struct x86_exception *fault)
+>   {
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 0d0dd6580cfd..404db7c854d2 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -22,8 +22,6 @@ module_param_named(enable_shadow_vmcs, enable_shadow_vmcs, bool, S_IRUGO);
+>   static bool __read_mostly nested_early_check = 0;
+>   module_param(nested_early_check, bool, S_IRUGO);
+>   
+> -#define CC KVM_NESTED_VMENTER_CONSISTENCY_CHECK
+> -
+>   /*
+>    * Hyper-V requires all of these, so mark them as supported even though
+>    * they are just treated the same as all-context.
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 6aac4a901b65..b8a024b0f91c 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -67,6 +67,8 @@ static __always_inline void kvm_guest_exit_irqoff(void)
+>   	failed;								\
+>   })
+>   
+> +#define CC KVM_NESTED_VMENTER_CONSISTENCY_CHECK
+> +
+>   #define KVM_DEFAULT_PLE_GAP		128
+>   #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
+>   #define KVM_DEFAULT_PLE_WINDOW_GROW	2
+> 
 
