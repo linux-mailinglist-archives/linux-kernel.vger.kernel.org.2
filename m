@@ -2,134 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1A43E59B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F103E59BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240509AbhHJMNl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 08:13:41 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:36591 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240385AbhHJMNk (ORCPT
+        id S240519AbhHJMQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240385AbhHJMQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:13:40 -0400
-Received: by mail-ua1-f53.google.com with SMTP id v3so8463509uau.3;
-        Tue, 10 Aug 2021 05:13:18 -0700 (PDT)
+        Tue, 10 Aug 2021 08:16:35 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC9AC0613D3;
+        Tue, 10 Aug 2021 05:16:13 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d17so20692922plr.12;
+        Tue, 10 Aug 2021 05:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R2SAom+K3xjq+elR9A4m6RnGt39/xLthbnTdTanpHn4=;
+        b=MO4y78cwlP3HlTDYWsUl7zPYe6e3Y6MG4yHvEC2GfpNcCvN98gbxYivkNSCmv95blc
+         NRfhMMej7c79A9+1Tsnj7Gs1Uweo1zemDFsFUVob5lAX84yE381jnRBRySTw2WCB94Gw
+         i3vFUs1yUEl0Bcl8oa5b+8Zrod09eJnIo41FFtF3GUi36GK22ryvDeEXVKCplBQFpA+X
+         SRWuhJTH0b6LIrR7GchlM/3tKQyxkPM/rDpZ1BcVHa0Tgq8XPwGm2sZtOd1dn6nhB4Fr
+         Md2IF+FOQ+s3aqO/ZLb0j+h2OGpKWS133JGMvLorhP8zD6kQ+PejR7dL/ammFW/f9ZOX
+         iurQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fLj82slZXz/iYkfqnFTc5Yp76dViJebG6AniQ5dEgiU=;
-        b=h9nOzXeoFaONdDj0YPPP2GHqwDbaPZSWRKJzAD7RCFlimtT7Up2jlJsmsoozAhuHJ8
-         pEod5I2BEXgRFeM/3aHajXwmlFvaTDxrCnZrE6Eybz1Hkrc+TQW8D4zeL5zGYHRJ1yx2
-         cLOeoHvliw/dmF+VUbbGJ69bzPIP8cEf3DMqNp7UuqMknhbGxFVoPdEy6HYDMbZALV8B
-         T82yvF58hrNTsTw76fvqNTi0XpKx6AcZSKN9ptKdTP2GbMeEvrAXGnYZ1HT5/DvNa82B
-         NY+J+ZRH9Al8Be50PkY5EFnmMtWwZnXvlmcZM/x3iQYoq86jeank7KVpAgVLOgIzcmTH
-         Jiuw==
-X-Gm-Message-State: AOAM5318SfV0MM7Mx26d8BN1H9DEak0RAxEkq0B68W2sya5w8AjE3zaK
-        VO3cSjFEcjemQq6kNoeCemVvopq2CxdLqInWvWRF0PkILJP0/A==
-X-Google-Smtp-Source: ABdhPJyQFTass/VoSbVTqzkWApbaXk9OOVu3k1ggWU0/EnRo0tdvOkP+djRBqu26XX64MRXe4AnkujkFVBV5MuxWZJ4=
-X-Received: by 2002:a9f:31ad:: with SMTP id v42mr7648477uad.58.1628597597982;
- Tue, 10 Aug 2021 05:13:17 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=R2SAom+K3xjq+elR9A4m6RnGt39/xLthbnTdTanpHn4=;
+        b=gea2woMrEdvJr4Im///ZcxiLfnHjUxly/WZ/RlFTQXbDgJnmro6mpmW70tE+IQpTdu
+         ioeICDbFi6l8aT5f/+YcaYv0JHFdfwNZBN2tave3VaZesj4BZrszf80XE+/kEgztdS55
+         nR0iIeTgnZM5OUZqY1dYt5XT+5AZlb+4NR5wcyqm255FL5KxJuDaW9b+QlkDhZ7hcUrH
+         vKlcVrH9HlsGwWqR/GozAFFF3PlIDL/duV1+GgVcY2pM1g6NpcpEwAvoMSkgGY8nN7eq
+         Mvn+tNMlHcIt1+s74uaLvRylHugliP55kZN7ujs8jtv74w5swNaiR+qklMPbxqoetji9
+         FQYw==
+X-Gm-Message-State: AOAM531FtRAIvVYgmbR8vzmHvRwaVs65rW8wfJ8nDQxamRN0oidvh2w3
+        NtojJ6atlPoY4RmUsKLRAGgbcteN/a0eRaRqAe8=
+X-Google-Smtp-Source: ABdhPJziQkMUi2pJ8MxSHmab5wsEcIv1K6XRsXT+/7zhdllwdZnOe5vGfcUG4Cf+MUVglMCiAuuIvloG6RkqDbJDi9M=
+X-Received: by 2002:aa7:868c:0:b029:3bc:e2ca:4e2f with SMTP id
+ d12-20020aa7868c0000b02903bce2ca4e2fmr29256171pfo.73.1628597772939; Tue, 10
+ Aug 2021 05:16:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210723150944.528c10af@canb.auug.org.au> <20210723053418.fizdbfnu4if2hs5x@pengutronix.de>
-In-Reply-To: <20210723053418.fizdbfnu4if2hs5x@pengutronix.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 10 Aug 2021 14:13:06 +0200
-Message-ID: <CAMuHMdUCWdys_Xgh0wSuUX9coNFEics6rwnRWrx8f=OW0AYHEA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the driver-core tree
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Greg KH <greg@kroah.com>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210808015659.2955443-1-liambeguin@gmail.com>
+ <20210808015659.2955443-4-liambeguin@gmail.com> <20210808173630.5c384a4b@jic23-huawei>
+ <CDEHT583QT0A.2QAXX9AC2FMLO@shaak>
+In-Reply-To: <CDEHT583QT0A.2QAXX9AC2FMLO@shaak>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 10 Aug 2021 15:15:36 +0300
+Message-ID: <CAHp75Vc3o-RrHD_wt_CfJY3P8hoRhJkdiRRySFS_O_7VdtJTQA@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] iio: adc: ad7949: add support for internal vref
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>, lars@metafoo.de,
+        Michael.Hennerich@analog.com, charles-antoine.couret@essensium.com,
+        Nuno.Sa@analog.com, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 7:35 AM Uwe Kleine-König
-<u.kleine-koenig@pengutronix.de> wrote:
-> On Fri, Jul 23, 2021 at 03:09:44PM +1000, Stephen Rothwell wrote:
-> > After merging the driver-core tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >
-> > drivers/gpu/drm/drm_dp_aux_bus.c:106:13: error: initialization of 'void (*)(struct device *)' from incompatible pointer type 'int (*)(struct device *)' [-Werror=incompatible-pointer-types]
-> >   106 |  .remove  = dp_aux_ep_remove,
-> >       |             ^~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/drm_dp_aux_bus.c:106:13: note: (near initialization for 'dp_aux_bus_type.remove')
-> >
-> > Caused by commit
-> >
-> >   aeb33699fc2c ("drm: Introduce the DP AUX bus")
-> >
-> > from the drm tree interacting with commit
-> >
-> >   fc7a6209d571 ("bus: Make remove callback return void")
-> >
-> > from the driver-core tree.
-> >
-> > I applied the following merge fix patch.
-> >
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Fri, 23 Jul 2021 14:58:25 +1000
-> > Subject: [PATCH] fix for "drm: Introduce the DP AUX bus"
-> >
-> > interaction with "bus: Make remove callback return void"
-> >
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > ---
-> >  drivers/gpu/drm/drm_dp_aux_bus.c | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/drm_dp_aux_bus.c b/drivers/gpu/drm/drm_dp_aux_bus.c
-> > index e49a70f3691b..298ea7a49591 100644
-> > --- a/drivers/gpu/drm/drm_dp_aux_bus.c
-> > +++ b/drivers/gpu/drm/drm_dp_aux_bus.c
-> > @@ -67,9 +67,8 @@ static int dp_aux_ep_probe(struct device *dev)
-> >   *
-> >   * Calls through to the endpoint driver remove.
-> >   *
-> > - * Return: 0 if no error or negative error code.
-> >   */
-> > -static int dp_aux_ep_remove(struct device *dev)
-> > +static void dp_aux_ep_remove(struct device *dev)
-> >  {
-> >       struct dp_aux_ep_driver *aux_ep_drv = to_dp_aux_ep_drv(dev->driver);
-> >       struct dp_aux_ep_device *aux_ep = to_dp_aux_ep_dev(dev);
-> > @@ -77,8 +76,6 @@ static int dp_aux_ep_remove(struct device *dev)
-> >       if (aux_ep_drv->remove)
-> >               aux_ep_drv->remove(aux_ep);
-> >       dev_pm_domain_detach(dev, true);
-> > -
-> > -     return 0;
-> >  }
->
-> This looks right.
->
-> Greg provided a tag containing fc7a6209d571 ("bus: Make remove callback
-> return void") at
->
->         git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/bus_remove_return_void-5.15
->
-> (see https://lore.kernel.org/lkml/YPkwQwf0dUKnGA7L@kroah.com).
->
-> It would be great if this could be merged into the drm tree with the
-> above diff squashed into the merge commit.
+On Mon, Aug 9, 2021 at 1:50 AM Liam Beguin <liambeguin@gmail.com> wrote:
+> On Sun Aug 8, 2021 at 12:36 PM EDT, Jonathan Cameron wrote:
+> > On Sat, 7 Aug 2021 21:56:57 -0400
+>         ret = fwnode_property_read_u32(child, "adi,internal-ref-microvolt", &tmp);
+>         if (ret == -EINVAL && mode & AD7949_CFG_VAL_REF_EXTERNAL) {
+>                 continue;
 
-+1.
+>         } else if (ret < 0) {
 
-Gr{oetje,eeting}s,
+Side note, redundant 'else'
 
-                        Geert
+>                 dev_err(dev, "invalid voltage reference in %pfw\n", child);
+>                 fwnode_handle_put(child);
+>                 return ret;
+>         }
+
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+With Best Regards,
+Andy Shevchenko
