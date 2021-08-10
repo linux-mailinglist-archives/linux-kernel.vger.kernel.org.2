@@ -2,101 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6EA3E860F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE3E3E8613
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235056AbhHJW34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 18:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
+        id S235095AbhHJWcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 18:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhHJW3u (ORCPT
+        with ESMTP id S231380AbhHJWci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:29:50 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44D7C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:29:27 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y34so1114845lfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:29:27 -0700 (PDT)
+        Tue, 10 Aug 2021 18:32:38 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18D7C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:32:15 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d9so424746qty.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 15:32:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+K5d5HFyEYJUKP3ivTYllnbYiCqitEoC85CfSmt0e+g=;
-        b=Hrkw2qxUqyJCW5cBuNERF6g+b4JZjOVA1u+VyG71fRRV7WqN5ov8/VW+YCRmYwHuuw
-         8FGTkP9fYWuOXANDzYiHEeqatNY0c4cdIvHXddm4TK+RM/GcKKp0NS09Erjl0Mwhqsb1
-         9w8KE1kmFttP0LX0Dg8sr7ciV1Xzt36HpKjNdKMxFFBwWLNRbLuKjiMSQEKHuRAJ8klE
-         Am8A7ZtE02cBTO1ZuWBcos7+HlJbt+1GoB33qiDp0mEiGQE7v3yWO7YoS5h4rEqMTqGL
-         DU/u0FUzt1Q0JXSJwfIST9jSNsNyFnTKtKmaOW1NRNdDuTHLtb0RozO5d/leKTHfpjFw
-         mLIA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IVKwhyg5AzTrj5Xr1hZ4KWRmZdbFFP1eiKArCMM9pzQ=;
+        b=kMzKvyM7Loc2Seu+yjDAggIqexhPusiNdPDi3KNaP5dOf7ubrKXspzTLZd8K1mte7D
+         /CUWDSp+885bU3phswxEX/evd3x6xZi39AFKORpapSvXqn+pi1L5NJEuN33YQzsHTgm6
+         UW+ihkZWY5fzTHGNTPWqTwCOTfqzA2dVwHVAg84yaCXL7gH+DPiHD1RuQwV7cm9dcaSc
+         a1QkPfVgIdXkcjl6okTBRVixkHzaqGyC0p9wiZRzjWquIj9keJNvzakWpFYzurB5g5vz
+         cniCMJmFeDODPNVctJpV1YMDDNvDaOpB0aFMJSxfXFzajnejgP2FtTHs4wLhJjZkGaKI
+         9xvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+K5d5HFyEYJUKP3ivTYllnbYiCqitEoC85CfSmt0e+g=;
-        b=P/Evz9xPXMzAEgpGUKd1PENOe0BSNfdqo7wpFm6+7bRibhOtUvq19l5ZvVOb+Fb0Eo
-         LJuppg3ha9sSQcncR4t1QzKJQm/TKePRNsiXEMvKILPoNHylzuySNF1kKddt0pn3qLlL
-         /UcbXzt8GTm+bHV55H1YvSy1ocF7dX5vaWtJNJXdtgBoYiCE7Fhs7eIgL7OOLGQPYY5T
-         jx/wuvQu76eCTnSl/6SXi8pmiyOm0FUXk6HCHtaqlTjAt0TDVgsGQdCJESLTrcaiRUKu
-         Z1R7PHuk2S8Ecm3uSWfHR0In8DzKwe3hHA9wyacgzNYNJQaoEzm+y4B4AaDqqlS747Ic
-         SN+A==
-X-Gm-Message-State: AOAM533JlyONWIaGyEFZIuS2Sm9tnksvXVT1JYhT4S5BGV2MjdDFiZfg
-        53WFXlIOTm8aEnWr9QX7wR4KwyuOxBhlz7QFtjRr296h1C8=
-X-Google-Smtp-Source: ABdhPJxEdd4qm9lFRsHWJHo2uxKG9ACbOKSLQxG77UFzYaKlRqEdcsmumzb+ow5L0g9WnEXvheA/o6HIwbmhKcin0rM=
-X-Received: by 2002:a05:6512:10d4:: with SMTP id k20mr12684545lfg.299.1628634566029;
- Tue, 10 Aug 2021 15:29:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IVKwhyg5AzTrj5Xr1hZ4KWRmZdbFFP1eiKArCMM9pzQ=;
+        b=UAHAKZdtEQBYsVFe0uuqMKEMmxQ4GRJyvCmRG939oGKD6P5F436fTwGan8m0S6/tBv
+         rkM3pDrsxjGV/UPX145hk5WynoWWwRXlX94TzWKX4lo1iJuq+CO5AkcIQtymJLRC4VR1
+         6SBxqbzd/xzd9v6/gnQRnxA9kWly4ldvIAmFrqfz843j5U4j2numnI3mVzIDZGRmm9Zg
+         1+RdXxfvAfZJtAhzS/jBF92teXPjJffT68NgUN4p1zerddoFCNU8+KcG1eQTctaGjggl
+         0SKh4VVS14rGdBqZJ4maWtgxSBts/g9fNT1JcW88nWLCNKrO+akDcVStDKALisRN55Y8
+         6VlA==
+X-Gm-Message-State: AOAM5308mWNiS2qIpduuOxSLXTW9kN2kswIikC9+Di5CXmIaamDyWYh9
+        dsLaERjA2AE/JL5wnXTzRc4=
+X-Google-Smtp-Source: ABdhPJy1JiDO1hiht2G6W9aRmXkmQFgXz6D6Em1RbxlWD8JKIAMWOsTeeZ0U2Yd5wjw45pQGJz3+Iw==
+X-Received: by 2002:a05:622a:1350:: with SMTP id w16mr17133150qtk.295.1628634734818;
+        Tue, 10 Aug 2021 15:32:14 -0700 (PDT)
+Received: from master-laptop.sparksnet ([2601:153:980:85b1:e0b4:e07a:5fc6:c67f])
+        by smtp.gmail.com with ESMTPSA id b1sm8804662qtq.12.2021.08.10.15.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 15:32:14 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Peter Geis <pgwipeout@gmail.com>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [BUG] dw-mipi-dsi-rockchip display corruption with dsi panel
+Date:   Tue, 10 Aug 2021 18:31:24 -0400
+Message-Id: <20210810223123.2174596-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210809223740.59009-1-npache@redhat.com> <YRKa0yzEDALtvSZO@cmpxchg.org>
- <a7afc485-9036-8f09-e582-f2eb45620670@redhat.com> <CALvZod5L+cyON5qRX3eSdHbo+-H7VDQeFuYYNqpK5diCcv9OMw@mail.gmail.com>
- <cbdbeae9-010e-ca11-eeab-44fa7d78c83a@redhat.com>
-In-Reply-To: <cbdbeae9-010e-ca11-eeab-44fa7d78c83a@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 10 Aug 2021 15:29:14 -0700
-Message-ID: <CALvZod44ge5Ny8y5xpW4YUjUSAvnU0rR=b+xyMFjAt_oOUtkBg@mail.gmail.com>
-Subject: Re: [PATCH v3] vm_swappiness=0 should still try to avoid swapping
- anon memory
-To:     Nico Pache <npache@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Waiman Long <llong@redhat.com>, Michal Hocko <mhocko@suse.com>,
-        hakavlad@inbox.lv
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 3:16 PM Nico Pache <npache@redhat.com> wrote:
->
->
->
-> On 8/10/21 5:17 PM, Shakeel Butt wrote:
-> > On Tue, Aug 10, 2021 at 12:24 PM Nico Pache <npache@redhat.com> wrote:
-> >>
-> >>
-> > [...]
-> >>>
-> >>> I'm wondering how you're getting anon scans with swappiness=0. If you
-> >>> look at get_scan_count(), SCAN_FRACT with swappines=0 should always
-> >>> result in ap = fraction[0] = 0, which never yields any anon scan
-> >>> targets. So I'm thinking you're running into sc->file_is_tiny
-> >>> situations, meaning remaining file pages alone are not enough to
-> >>> restore watermarks anymore. Is that possible?
-> >>
-> >> Yes DEACTIVATE_ANON is enabling the file_is_tiny case in shrink_node(). That is what im trying to prevent in the swappiness=0 case.
-> >>
-> >
-> > Can you please explain how DEACTIVATE_ANON is enabling the file_is_tiny case?
->
->
-> You're right. Just did a second pass... I misinterpreted the assignment to
-> file_is_tiny. This is not the case that is causing the issue. So back to the
-> SCAN_FRACT case. From my testing the refaulting still seems to be causing the
-> issue; however, to your point in earlier discussions, if swappiness=0 then the
-> get_scan_count *should* be 0.
-> So my patch does solve the issue by preventing the shrink_list from deactivating
-> the anon, but it may be hiding some other issue that is the ultimate cause.
->
+Good Evening,
 
-Yes, I am suspecting the same. BTW which kernel version are you testing with?
+I've been attempting to light off the feiyang fy07024di26a30d panel on
+the rockpro64. This is the official panel from the Pine64 store.
+I've confirmed it works with the downstream kernel on both the rk3399
+and rk3566, but on the mainline driver the display is partially
+corrupted (see attached photo: [1]).
+
+As you can see, the left half of the display is fine, but the right half
+of the display is corrupted with the pixels smearing horizontally.
+
+I saw when the panel was added, some additional code was added to
+handle burst mode in the sun6_mipi_dsi driver [2].
+I've seen that the dw-mipi-dsi driver appears to already support burst
+mode and I can't find anything out of place there.
+I also haven't had much success finding anything obviously different in
+the downstream driver vs the upstream driver that would explain this.
+
+Attached below is the in-progress dts changes for an example of how the
+panel is plugged in.
+
+I admit, I have little understanding of the mipi-dsi internal workings,
+so I'm reaching out to the experts on how to correct this.
+
+Thank you for your time,
+Peter Geis
+
+[1] https://photos.app.goo.gl/LBA9M2WcweGaEb4cA
+[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20181116163916.29621-1-jagan@amarulasolutions.com/
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+index 687a5afa5d2c..af55a30297ae 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+@@ -20,6 +20,13 @@ chosen {
+ 		stdout-path = "serial2:1500000n8";
+ 	};
+ 
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm0 0 1000000 0>;
++		brightness-levels = <0 4 8 16 32 64 128 255>;
++		default-brightness-level = <128>;
++	};
++
+ 	clkin_gmac: external-gmac-clock {
+ 		compatible = "fixed-clock";
+ 		clock-frequency = <125000000>;
+@@ -69,7 +76,7 @@ diy_led: led-1 {
+ 
+ 	fan: pwm-fan {
+ 		compatible = "pwm-fan";
+-		cooling-levels = <0 150 200 255>;
++		cooling-levels = <0 100 150 255>;
+ 		#cooling-cells = <2>;
+ 		fan-supply = <&vcc12v_dcin>;
+ 		pwms = <&pwm1 0 50000 0>;
+@@ -220,6 +227,16 @@ vdd_log: vdd-log {
+ 		regulator-max-microvolt = <1700000>;
+ 		vin-supply = <&vcc5v0_sys>;
+ 	};
++
++	avdd: avdd {
++		compatible = "regulator-fixed";
++		regulator-name = "avdd";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <11000000>;
++		regulator-max-microvolt = <11000000>;
++		vin-supply = <&vcc3v3_s0>;
++	};
+ };
+ 
+ &cpu_l0 {
+@@ -428,8 +445,8 @@ regulator-state-mem {
+ 
+ 			vcc3v0_touch: LDO_REG2 {
+ 				regulator-name = "vcc3v0_touch";
+-				regulator-always-on;
+-				regulator-boot-on;
++//				regulator-always-on;
++//				regulator-boot-on;
+ 				regulator-min-microvolt = <3000000>;
+ 				regulator-max-microvolt = <3000000>;
+ 				regulator-state-mem {
+@@ -518,8 +535,8 @@ regulator-state-mem {
+ 
+ 			vcc3v3_s0: SWITCH_REG2 {
+ 				regulator-name = "vcc3v3_s0";
+-				regulator-always-on;
+-				regulator-boot-on;
++//				regulator-always-on;
++//				regulator-boot-on;
+ 				regulator-state-mem {
+ 					regulator-off-in-suspend;
+ 				};
+@@ -593,6 +610,19 @@ fusb0: typec-portc@22 {
+ 		vbus-supply = <&vcc5v0_typec>;
+ 		status = "okay";
+ 	};
++
++	touch: touchscreen@5d {
++		compatible = "goodix,gt911";
++		reg = <0x5d>;
++		AVDD28-supply = <&vcc3v0_touch>;
++		VDDIO-supply = <&vcc3v0_touch>;
++		interrupt-parent = <&gpio4>;
++		interrupts = <RK_PD5 IRQ_TYPE_EDGE_FALLING>;
++		irq-gpios = <&gpio4 RK_PD5 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio4 RK_PD6 GPIO_ACTIVE_HIGH>;
++//		touchscreen-inverted-x;
++//		touchscreen-inverted-y;
++	};
+ };
+ 
+ &i2s0 {
+@@ -628,6 +658,88 @@ &io_domains {
+ 	gpio1830-supply = <&vcc_3v0>;
+ };
+ 
++&mipi_dsi {
++	status = "okay";
++	clock-master;
++
++	ports {
++		mipi_out: port@1 {
++			reg = <1>;
++
++			mipi_out_panel: endpoint {
++				remote-endpoint = <&mipi_in_panel>;
++			};
++		};
++	};
++
++	mipi_panel: panel@0 {
++		compatible = "feiyang,fy07024di26a30d";
++		reg = <0>;
++		backlight = <&backlight>;
++		reset-gpios = <&gpio4 25 GPIO_ACTIVE_HIGH>;
++//		enable-gpios = <&gpio4 25 GPIO_ACTIVE_HIGH>;
++		width-mm = <154>;
++		height-mm = <86>;
++		rotation = <0>;
++		avdd-supply = <&avdd>;
++		dvdd-supply = <&vcc3v3_s0>;
++
++		display-timings {
++			native-mode = <&timing0>;
++			timing0: timing0 {
++				clock-frequency = <50000000>;
++				hactive = <1024>;
++				vactive = <600>;
++				hfront-porch = <160>;
++				hback-porch = <160>;
++				hsync-len = <10>;
++				vback-porch = <23>;
++				vfront-porch = <12>;
++				vsync-len = <1>;
++				hsync-active = <0>;
++				vsync-active = <0>;
++				pixelclk-active = <0>;
++				de-active = <0>;
++			};
++		};
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++
++				mipi_in_panel: endpoint {
++					remote-endpoint = <&mipi_out_panel>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++
++				mipi1_in_panel: endpoint@1 {
++					remote-endpoint = <&mipi1_out_panel>;
++				};
++			};
++		};
++	};
++};
++
++&mipi_dsi1 {
++	status = "okay";
++
++	ports {
++		mipi1_out: port@1 {
++			reg = <1>;
++
++			mipi1_out_panel: endpoint {
++				remote-endpoint = <&mipi1_in_panel>;
++			};
++		};
++	};
++};
++
+ &pcie0 {
+ 	ep-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
+ 	num-lanes = <4>;
