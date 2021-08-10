@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062FA3E54B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4BF3E54B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237832AbhHJH6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
+        id S237981AbhHJH73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234327AbhHJH6k (ORCPT
+        with ESMTP id S237732AbhHJH7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:58:40 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16AEC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:18 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id h13so24999074wrp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:18 -0700 (PDT)
+        Tue, 10 Aug 2021 03:59:08 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8896EC061796
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:46 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id c9so24968185wri.8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Vy1q2TxaPPh8VuhM7PWbw+oYxzHvSHzhjKECTf8T59c=;
-        b=qxTYWxirw6u8gFBYajAfd3ku9NgbKaEO2fOvsmj69Arm0I30frcoDfwoZGJjOSXRUl
-         CIGAe5G43eBs1kK6cLUpseTXOW5DGaTFGH4wc5GZol5pEvZC7dSte57fiszy5SlPjxvd
-         v2ShhTU0HOs+H6CEBw5/T3599G3EVMm2zRfEKS88LkswiYvZnFhlYigCg/wkZLBX5R6O
-         6rLbDH1apoqRaIe1XjziwTlavR4D3HgsNdO0MMfzvSBoZFsWJLTcWiYF0BKfvTb6sIPf
-         cOHhRiJ/8nT/4mhwuhBzO9T8QkK+DgkNgPTolNyZlK0GHXM41er+4prcJFDZvIm1cb/w
-         JSWg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8vOzxNlu5NfLvXqdFSx19sPlss9NRbVfvd1D3cx6Wlo=;
+        b=hCUQnUYlqyla8ODWNsANP5xwr5ntXLwRwywWNiKydMuoOL0e2F3Cm0hqWTXd2V7zGW
+         dTRfn5vTX5cMZrElr+63h2Yvbj0H6vMbSeM7WMwUPEaigXYi08ZQxnvNgfIzR/CuMDu2
+         HcTuWCplm7yot7wO9dqvfDjQu3KTSZpm2/JDlH2TraZCJ4N2POkwTWYp2PHmjI9VMF4T
+         wjTNGuZ1oLtdl3D37DNAHngAVw5b9qskMeLefCqPz9Rp9m4d/q1jXBasNnKpnTYlkJeO
+         iWmhhDMVNsHzoi5cxAqDnh5DogF6ryDrORqpDBUgGnTf55HhVErXOxjVX5s1tvxy+SxB
+         CPyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Vy1q2TxaPPh8VuhM7PWbw+oYxzHvSHzhjKECTf8T59c=;
-        b=B3syEaBhlkFHqeaProQHdRm6Ux0LpX9c/wYW6PbLG5MbPo95fGQM5eirvnKsMRLy1q
-         gdybvRXzwKyQZK4N3zuUSOBHFVV+IbLkXGAHIShi19PoXMIjm0e/TvHYi34MhusDNnGS
-         Li/ti2RWJzXOFlCrfOmLBZy4FG7uUWe6DDPZxW5y95YHvkr+Fn52RAiFlN2vZAl+/UsT
-         0OwCgafhwsXc204CTspe1y/Z44Ecxz2x/wFyLjb5W5RIsp83UhIlqSn7t4Hw4OhTKZkP
-         7v49nzpOCRscl5MWYquKLxY46DrEpYFHPTJ4hxipkgUXPo9+11+G+0nWz5s6s0RSlqE5
-         7Mvg==
-X-Gm-Message-State: AOAM530oHw257fmy1f+4j62exILfbT+A+S8cL/Y5j/nlM/Hi9xgwg2lW
-        dEMLA4GS5xA7gB1DppeVaCW0/tDBC9trPw==
-X-Google-Smtp-Source: ABdhPJzHofmXuHhcOk6Ah+VqehLGqVx28KfPrTazcWj37JDIDjmObNHRqLwq4+mUHmZMUcGndMktkQ==
-X-Received: by 2002:a05:6000:186f:: with SMTP id d15mr28578189wri.89.1628582297379;
-        Tue, 10 Aug 2021 00:58:17 -0700 (PDT)
-Received: from google.com ([95.146.142.85])
-        by smtp.gmail.com with ESMTPSA id c15sm22257789wrx.70.2021.08.10.00.58.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8vOzxNlu5NfLvXqdFSx19sPlss9NRbVfvd1D3cx6Wlo=;
+        b=VPXMCwIvJ+wkxyT6iGmAaovg4KmYrIuFnussiTluGF9cbRaN/56Al8pnA44vp2whTv
+         dYYlVnoOBufnyIAg5rusfeluNb1Z4C4pjDDaLwygG8xIk3+IROKZKysq75CcQ2GSRfEn
+         9Gyl3yPw82Q5PRVFMcKKcgCFAlr6d60PUyZ6+tPNKpN34pYX5tCNNievpqk9bF16BfcK
+         fUpB+IENhNzzXHVHaxnPlVePWmxYVfA1/ryLba7qmTgivO4LjQ3pS/2yvlK7kYKGS7m5
+         B+b3k5MRRRKmRUdxzMGGRVntOuuMrKdb/yGDtiJnBYVOQtnKyefuWNgH0QN+rn9sapot
+         Htpg==
+X-Gm-Message-State: AOAM531FfbaXPeOBcguHr3JN2GToQx/qXBGm0zGJhREL69T/AgwqwDUA
+        DQ3l32CMutMo65R/3jXf6UtZHg==
+X-Google-Smtp-Source: ABdhPJz1UdCSUcy7AiFkdb/onnCvFYJbCuqHXA45ykrkxib/zGQ+1SGggLyKGKHSaSIyEZ7STNj34g==
+X-Received: by 2002:a5d:64ce:: with SMTP id f14mr29390738wri.17.1628582325021;
+        Tue, 10 Aug 2021 00:58:45 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:b710:2b6e:27aa:f0a0])
+        by smtp.gmail.com with ESMTPSA id d5sm22175380wre.77.2021.08.10.00.58.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 00:58:16 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 08:58:14 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
- be called from modules
-Message-ID: <YRIxluiYdZo9OOAn@google.com>
-References: <20210803155452.435812-1-lee.jones@linaro.org>
- <20210803155452.435812-2-lee.jones@linaro.org>
- <CAMuHMdXpYV+pbiOwiCjZ+aZYR-xPDGkeANfLt0fwhg4zevAKgg@mail.gmail.com>
+        Tue, 10 Aug 2021 00:58:44 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     linux-amlogic@lists.infradead.org,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH] arm64: dts: meson: add audio playback to nexbox-a1
+Date:   Tue, 10 Aug 2021 09:58:34 +0200
+Message-Id: <162858223387.1486110.3448385617438726477.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210804140029.4445-1-christianshewitt@gmail.com>
+References: <20210804140029.4445-1-christianshewitt@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXpYV+pbiOwiCjZ+aZYR-xPDGkeANfLt0fwhg4zevAKgg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Aug 2021, Geert Uytterhoeven wrote:
+Hi,
 
-> On Tue, Aug 3, 2021 at 5:56 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > A recent attempt to convert the Power Reset Restart driver to tristate
-> > failed because of the following compile error (reported once merged by
-> > Stephen Rothwell via Linux Next):
-> >
-> >   ERROR: "machine_restart" [drivers/power/reset/restart-poweroff.ko] undefined!
-> >
-> > This error occurs since some of the machine_restart() instances are
-> > not currently exported for use in modules.  This patch aims to rectify
-> > that.
-> >
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> > NB: If it's safe to omit some of these, let me know and I'll revise the patch.
-> 
-> How do you plan to handle that? Isn't this an all-or-nothing export?
+On Wed, 4 Aug 2021 14:00:29 +0000, Christian Hewitt wrote:
+> Add initial support limited to HDMI i2s and SPDIF (LPCM).
 
-That's the way I see it, but I don't have an in-depth knowledge of all
-of the architectures.  There may be a method there that isn't part of
-the core API.  If that's the case, I can drop the export.
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.15/dt64)
 
-> >  arch/m68k/kernel/process.c         | 1 +
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Thanks Geert.
-
-I'll pick this up when I do the re-spin shortly.
+[1/1] arm64: dts: meson: add audio playback to nexbox-a1
+      https://git.kernel.org/amlogic/c/c7f5675b345224f212a0006c73a643182e953a5f
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Neil
