@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48C73E8307
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0E93E830A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbhHJScW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234169AbhHJScU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 14:32:20 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B993C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:31:58 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id t128so473908oig.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 11:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=bRoFoIrgb6DbxUcPZ4qNbvdQX1dffX7W/rihsgTb2z4=;
-        b=QWJyaYLaSvyDInTM/b9ve7OmtT4fI/gbefn4OkqqYoJoS7qSL4WjCukVdCd2aFJn2+
-         zgWtJrsWMWdriv+2tJAI0RqmwdkA/XtnmcxTNQ7J1bav4E8LazOhIbDE7cG92Wk9e7aA
-         uptQrHkXkrQlnroBRb7ExPIZiqo7aqnrrjCRM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=bRoFoIrgb6DbxUcPZ4qNbvdQX1dffX7W/rihsgTb2z4=;
-        b=MzHno8s9cHJeDQx7BgvHRSevX3HbwE/Tg1F7z8/TYJlex7Xjc3/ks2fQADS/jF297B
-         GLMAHXNmmRSt4UTxF4LdEhAI4CeuT5MsCNi0WQvvuFQZuVzlRZKOSLBsaEg2Edsirid/
-         lu6oBguWaQf2czcNHNg3hxtm32HFRsViNGZSWzEFinQHbCbQUrKnEG/RQ2IudaetwJwd
-         9hdeihc4TR2cqGW/Mf5ml5wAwP3Th/WXdh+ztKvzuyziHBeDFMEVu5ysUPUUR6C8k3sE
-         1C3KQ0GeqrEr91h+r92dpTVWd9M5MTETMn6lsO0a66IbkujZ7ydlDJ7jS/DG5m63Pjqn
-         hCog==
-X-Gm-Message-State: AOAM5306qbO1tHumrI2mqk4cAppWKQnSCVsnmEOt3ahAiM183wMVcMoz
-        DfRoCYscLEtTlj/ZpKN/1fh6O+dETVK+n6kqB/iv8w==
-X-Google-Smtp-Source: ABdhPJzuO8bdHRY8YfA6qtIShSohbIviDAruhTY93vX+OuVbguE9JaTNgfjrPkPDvsy+kBJf3jR5BGgDV0t7AZoC898=
-X-Received: by 2002:a54:468d:: with SMTP id k13mr4595160oic.125.1628620317662;
- Tue, 10 Aug 2021 11:31:57 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 11:31:57 -0700
+        id S233736AbhHJSdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:33:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232947AbhHJSdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 14:33:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 889EA60E76;
+        Tue, 10 Aug 2021 18:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628620368;
+        bh=/LrJ/rq0CvD6CnWWZdSl3uTazUfjxuJdjIxBNxC87dU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u+tmwFMs2N9nEyK4gKnC0EsVmu25b7Ocym1jsuYFRE+HJ06DOIogQTgdFtTShl67H
+         8/vwyCPCQm/3Xe++aZaLK8JAkLHOpBialnn+2P5j0jb9LHd5Dm/8jeg+ONAGJ/LmUk
+         1FlOaOj3nqAB8Fbkv9VHHRTkJIdr8ydcEUT55tccDubh9iVrS9sJikPZeYc6SpJ2g7
+         ks4wO86J1SR+qD8zjpxFF1eqV36J16tlrBuH+/bQDSyuOgOFs1iszDFEfiupTriV8F
+         4k7oeGfbIHBXuIpPOdaJq8vqqdxHOJC2PDa8Dy/+N55rqfiKKRwCB4tXMBQRWbe/aT
+         +F9Wcbv3x5gDA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2C196403F2; Tue, 10 Aug 2021 15:32:45 -0300 (-03)
+Date:   Tue, 10 Aug 2021 15:32:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] perf tools: Add dlfilter test
+Message-ID: <YRLGTfQdg7pBcf29@kernel.org>
+References: <20210810114813.12951-1-adrian.hunter@intel.com>
+ <20210810114813.12951-6-adrian.hunter@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1628609362-2109-1-git-send-email-khsieh@codeaurora.org>
-References: <1628609362-2109-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 11:31:57 -0700
-Message-ID: <CAE-0n51wQMmL-TYshTugGbR7JNnVeTq257OQMMQ6LSTcB30w5g@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dp: add drm debug logs to dp_pm_resume/suspend
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810114813.12951-6-adrian.hunter@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-08-10 08:29:22)
-> Changes in V2:
-> -- correct Fixes text
-> -- drop commit text
->
-> Fixes: 601f0479c583 ("drm/msm/dp: add logs across DP driver for ease of debugging")
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+Em Tue, Aug 10, 2021 at 02:48:13PM +0300, Adrian Hunter escreveu:
+> Add a perf test to test the dlfilter C API.
+> 
+> A perf.data file is synthesized and then processed by perf script with a
+> dlfilter named dlfilter-test-api-v0.so. Also a C file is compiled to
+> provide a dso to match the synthesized perf.data file.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+[root@five ~]# perf test dlfilter
+72: dlfilter C API                                                  : FAILED!
+[root@five ~]# perf test -v dlfilter
+72: dlfilter C API                                                  :
+--- start ---
+test child forked, pid 3358542
+Checking for gcc
+Command: gcc --version
+gcc (GCC) 11.1.1 20210531 (Red Hat 11.1.1-3)
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+dlfilters path: /var/home/acme/libexec/perf-core/dlfilters
+Command: gcc -g -o /tmp/dlfilter-test-3358542-prog /tmp/dlfilter-test-3358542-prog.c
+Creating new host machine structure
+Command: /var/home/acme/bin/perf script -i /tmp/dlfilter-test-3358542-perf-data --dlfilter /var/home/acme/libexec/perf-core/dlfilters/dlfilter-test-api-v0.so --dlarg first --dlarg 1 --dlarg 4198669 --dlarg 4198662 --dlarg 0 --dlarg last
+Failed with return value 139
+test child finished with -1
+---- end ----
+dlfilter C API: FAILED!
+[root@five ~]# cat /etc/redhat-release
+Fedora release 34 (Thirty Four)
+[root@five ~]# cat /etc/os-release
+NAME=Fedora
+VERSION="34.20210721.0 (Silverblue)"
+ID=fedora
+VERSION_ID=34
+VERSION_CODENAME=""
+PLATFORM_ID="platform:f34"
+PRETTY_NAME="Fedora 34.20210721.0 (Silverblue)"
+ANSI_COLOR="0;38;2;60;110;180"
+LOGO=fedora-logo-icon
+CPE_NAME="cpe:/o:fedoraproject:fedora:34"
+HOME_URL="https://fedoraproject.org/"
+DOCUMENTATION_URL="https://docs.fedoraproject.org/en-US/fedora-silverblue/"
+SUPPORT_URL="https://fedoraproject.org/wiki/Communicating_and_getting_help"
+BUG_REPORT_URL="https://bugzilla.redhat.com/"
+REDHAT_BUGZILLA_PRODUCT="Fedora"
+REDHAT_BUGZILLA_PRODUCT_VERSION=34
+REDHAT_SUPPORT_PRODUCT="Fedora"
+REDHAT_SUPPORT_PRODUCT_VERSION=34
+PRIVACY_POLICY_URL="https://fedoraproject.org/wiki/Legal:PrivacyPolicy"
+VARIANT="Silverblue"
+VARIANT_ID=silverblue
+OSTREE_VERSION='34.20210721.0'
+[root@five ~]#
+
+Trying to figure this out...
+
+- Arnaldo
