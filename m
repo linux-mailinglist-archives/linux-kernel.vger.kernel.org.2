@@ -2,237 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C9C3E537C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CAC3E5382
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237890AbhHJG1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S237874AbhHJG14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237817AbhHJG0u (ORCPT
+        with ESMTP id S235034AbhHJG1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:26:50 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BEDC06179A
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 23:26:28 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id m18so16137756ljo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 23:26:28 -0700 (PDT)
+        Tue, 10 Aug 2021 02:27:55 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1221C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 23:27:33 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id h9so12596615ejs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 23:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BWJUZP0dbskrNbtaJwK/Tbp+8mAAWASI6DAzHFq/lFg=;
-        b=aVjEJN6SQwrYycsPycBz2KNKkeTGZwuzwnHT1R1uplQFzzkx3iDN7NBneR19HXIwuF
-         NXIv8lWfs6zpG/K7Sux3uy9JSAPf3V7yVMRaZZZLrzrEHPvrJapDmNr3vVx2FOgj82De
-         rZe/gFeTDL/bZ2kqUJ067TKudI5KVLZJz9gKXoDS9TYMqIjIqWXgsmguHUYEsfndZeJK
-         JvbzHkO0CUCxjrS+0iXhg6+S5oFl8YWCh1zURsxV+nAHwhlfDyYkwLd/ZkilLCWXkunw
-         6NATuUgbbguSRL1DrDkg0ne2oRm459dbrn1hVjiOP3qDLvzeCpJq6Y1/2EQqTbh9iGtk
-         ySDA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Hwnsr93Hzf8aAn89w3QAR5Rj6HoDPYCgjQEsVOi/00=;
+        b=XYk25ezJ0kVIePMD73YyZroWy7jsB4Ysplb+Q0kl5Kbc8svFvAaIH//aFXpGEgMtjm
+         HcrYVeESv0cUZyBRTyLM897TiPB8K9LAD8BmhwkNGI63QQP4iagdpv8E7xouJoIsHXrO
+         APOvdJS0ZQ/pJiy/KPztSdrDxoQnEeqx4VRqrjf2Ad+568JROa34xgjv3o1a8TkOR2Gc
+         csE2R5vhmLz+Ms+FVOrItPPRfz6+/luqfHw/zQrWfYJaIDSFT24Uwhn3uelgfERk4yck
+         93vIi5Mcqwu6v5SeY3WRV6tJyxXBORb+lF7xC3e8CPEbDnQY8aaZok0hNncRjujcLC8z
+         oK6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BWJUZP0dbskrNbtaJwK/Tbp+8mAAWASI6DAzHFq/lFg=;
-        b=AjqkBDqBq9bGmCvLQORT4CDX7/Pz6b761/J7KEosJUL/x3QKwVD1n/MXldSXdcamBP
-         vOZAwimnXJN/1aWO7i3uK3SH88wWBfEMA5LqFJl2+q2xMMormNdpUT86PR8IKeC31Bya
-         hCqlAc0FF+916Ck0eY4JyDSaEdicsDeofD8LrdMi+hwmOsRIYDWepSNY6a2+b9kFoH20
-         b6fOupRQ9TBemMLjFWgIHcXuryKc9mLYfFGJnmAVhnE07MnXYnWHXD97B4twokSbjPbi
-         b10TUnnjoaVzF4D9zTABUfOCXsQE0ESVOewOQqVFVQAjSN6tuCNs6e9XPtKz/KAJg1PT
-         MskQ==
-X-Gm-Message-State: AOAM532KfccYIuIJERnVV6GrzSsI7mBr+SkST5k+Hh8Xua9a4QXNPEJO
-        qOKXppC8q6uF3RLWuNY23hRiAg==
-X-Google-Smtp-Source: ABdhPJxFXIZNu8BRH3d+/+nzJFBbH2eGlX5f7qfMtPHplWcg+ebB0Wn91QuSk/T4ncwIyHb4y7E2Tw==
-X-Received: by 2002:a2e:d1a:: with SMTP id 26mr18928460ljn.360.1628576786905;
-        Mon, 09 Aug 2021 23:26:26 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u3sm1600860lfu.151.2021.08.09.23.26.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 23:26:26 -0700 (PDT)
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Received: by box.localdomain (Postfix, from userid 1000)
-        id B7058102BDC; Tue, 10 Aug 2021 09:26:34 +0300 (+03)
-To:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 5/5] x86/tdx: Unaccepted memory support
-Date:   Tue, 10 Aug 2021 09:26:26 +0300
-Message-Id: <20210810062626.1012-6-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Hwnsr93Hzf8aAn89w3QAR5Rj6HoDPYCgjQEsVOi/00=;
+        b=Th+9DJggxyuJZyOdTeqAFJVH2YviSctjaSrWGZFa3mb7C9/fKh+LKAHLqHJL6ZIiCL
+         4ae6jGB0TRSGOUSQdYvnze2dyy++oM2vXRb3s1A0yUz7Zi+OPx7ekf/rT5AqOVw2DhLB
+         hN1AbpG2ASk+iRdbI+mKXlkxBJRcM2Jv9S5PxUcxbiRZQODrR/yOQpX4jR0j8FrbuHwO
+         fx+o4yx0NCP5jh3RKcrK373Vnc9N1XYPYkUg8QribjWEbFB1hVQNwXFStjCZg13RqELm
+         vTIVGppmx3Uo3f0C0EaM3o7zpQbNrZ9A0ifX3gt3FxQMW9TvnLtMK6nZe4rxpDsZUXWK
+         Z2/w==
+X-Gm-Message-State: AOAM531KTo6UdFp6ehya/OESLFEW97H4Agcn+SMS59XUKW4eMuQ2jtWo
+        E4/97m1G6fIUHe8LGb1pR/8wftqtgMMPf5quo5A=
+X-Google-Smtp-Source: ABdhPJwOOHN526CNxCm04yzFJWqeR3lM90mFUgXud6C4oGdkm8SXfbo2flYd0ZJRgj/ey1QrqEM0lTWD4NNUsssYYts=
+X-Received: by 2002:a17:906:8493:: with SMTP id m19mr11451997ejx.103.1628576852552;
+ Mon, 09 Aug 2021 23:27:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210809143049.3531188-1-mudongliangabcd@gmail.com>
+ <YRFKlOvXKKQX9vr6@kroah.com> <CAD-N9QXFWr2APy294T6v+16d8SXtUuLEoPvZTw1ZDwfQ+D4kFg@mail.gmail.com>
+ <CAD-N9QVgnbwNScKD6anFLUELbJ5tAZ1hWbKhOStwZ+kPwgvVLw@mail.gmail.com> <YRIYsNCMmKrPfRlF@kroah.com>
+In-Reply-To: <YRIYsNCMmKrPfRlF@kroah.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Tue, 10 Aug 2021 14:27:06 +0800
+Message-ID: <CAD-N9QWoW1i=WsL7jgq3RM6tspyeKr_iuLYePt8JyQy6drao7g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] ipack: tpci200: fix many double free issues in tpci200_pci_probe
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        industrypack-devel@lists.sourceforge.net,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All preparation is complete. Hookup TDX-specific code to accept memory.
+On Tue, Aug 10, 2021 at 2:12 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Aug 10, 2021 at 07:41:55AM +0800, Dongliang Mu wrote:
+> > On Tue, Aug 10, 2021 at 7:08 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > >
+> > > On Mon, Aug 9, 2021 at 11:32 PM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Mon, Aug 09, 2021 at 10:30:26PM +0800, Dongliang Mu wrote:
+> > > > > The function tpci200_register called by tpci200_install and
+> > > > > tpci200_unregister called by tpci200_uninstall are in pair. However,
+> > > > > tpci200_unregister has some cleanup operations not in the
+> > > > > tpci200_register. So the error handling code of tpci200_pci_probe has
+> > > > > many different double free issues.
+> > > > >
+> > > > > Fix this problem by moving those cleanup operations out of
+> > > > > tpci200_unregister, into tpci200_pci_remove and reverting
+> > > > > the previous commit 9272e5d0028d ("ipack/carriers/tpci200:
+> > > > > Fix a double free in tpci200_pci_probe").
+> > > > >
+> > > > > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > > Fixes: 9272e5d0028d ("ipack/carriers/tpci200: Fix a double free in tpci200_pci_probe")
+> > > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > > ---
+> > > > > v1->v2: revise PATCH 2/3, 3/3, not depending on PATCH 1/3; move the
+> > > > > location change of tpci_unregister into one separate patch;
+> > > >
+> > > > Also needs to go to the stable trees, right?
+> > >
+> > > Yes, this needs to go to the stable trees.
+> >
+> > Hi gregkh,
+> >
+> > Let me clarify more. In my series, PATCH 3/4 4/4 depends on PATCH 1/4
+> > and PATCH 2/4. And also PATCH 2/4 depends on PATCH 1/4 as they are
+> > closely related.
+> >
+> > But from your reply, the last 2 patches should not depend on the first
+> > 2 patches. I don't quite understand as I don't send some patch series
+> > before. For a patch series, the latter ones should depend on the
+> > former ones, right? If I have any misunderstanding, please let me
+> > know.
+>
+> Yes, they can depend on previous patches, but if some patches are to be
+> merged today for 5.14-final, and others later for 5.15-rc1, then ideally
+> they will be separate series of changes as those go to two different
+> branches in my tree at the moment.
+>
+> > BTW, PATCH 3/4 has some compilation issues. I will fix it in the next version.
+>
+> As you haven't even tested these, I'm really hesitant to take them at
+> all.
+>
+> Please just send the first two patches, fixed up, as a series after you
+> have tested them, and then after they are merged into Linus's tree, you
+> can send the cleanup patches, as they are just "nice" to have.
+>
 
-There are two tdg_accept_memory() implementations: one in main kernel
-and one in the decompresser.
+That's good. I will send the first two patches. After they are merged,
+then I will send the rest patches.
 
-The implementation in core kernel uses tdx_hcall_gpa_intent(). The
-helper is not available in the decompresser, self-contained
-implementation added there instead.
-
-Note that tdx_hcall_gpa_intent() is going to be more complex once we
-teach it to accept in 1G and 2M chunks.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- arch/x86/Kconfig                             |  1 +
- arch/x86/boot/compressed/tdx.c               | 29 ++++++++++++++++++++
- arch/x86/boot/compressed/unaccepted_memory.c |  5 +++-
- arch/x86/include/asm/tdx.h                   |  2 ++
- arch/x86/kernel/tdx.c                        |  8 ++++++
- arch/x86/mm/unaccepted_memory.c              |  6 +++-
- 6 files changed, 49 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index c0261cc72449..5b1b3dc84c7d 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -874,6 +874,7 @@ config INTEL_TDX_GUEST
- 	select ARCH_HAS_PROTECTED_GUEST
- 	select X86_MEM_ENCRYPT_COMMON
- 	select ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
-+	select UNACCEPTED_MEMORY
- 	help
- 	  Provide support for running in a trusted domain on Intel processors
- 	  equipped with Trusted Domain eXtensions. TDX is a new Intel
-diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
-index 88ed6465405b..6f13bdaf327f 100644
---- a/arch/x86/boot/compressed/tdx.c
-+++ b/arch/x86/boot/compressed/tdx.c
-@@ -5,6 +5,10 @@
- 
- #include "../cpuflags.h"
- #include "../string.h"
-+#include "error.h"
-+
-+#include <asm/page_types.h>
-+#include <asm/tdx.h>
- 
- #define TDX_CPUID_LEAF_ID                       0x21
- 
-@@ -32,3 +36,28 @@ bool early_is_tdx_guest(void)
- 
- 	return !!tdx_guest;
- }
-+
-+#define TDACCEPTPAGE		6
-+#define TDVMCALL_MAP_GPA	0x10001
-+
-+void tdg_accept_memory(phys_addr_t start, phys_addr_t end)
-+{
-+	struct tdx_hypercall_output outl = {0};
-+	int i;
-+
-+	if (__tdx_hypercall(TDX_HYPERCALL_STANDARD, TDVMCALL_MAP_GPA,
-+			    start, end, 0, 0, &outl)) {
-+		error("Cannot accept memory: MapGPA failed\n");
-+	}
-+
-+	/*
-+	 * For shared->private conversion, accept the page using TDACCEPTPAGE
-+	 * TDX module call.
-+	 */
-+	for (i = 0; i < (end - start) / PAGE_SIZE; i++) {
-+		if (__tdx_module_call(TDACCEPTPAGE, start + i * PAGE_SIZE,
-+				      0, 0, 0, NULL)) {
-+			error("Cannot accept memory: page accept failed\n");
-+		}
-+	}
-+}
-diff --git a/arch/x86/boot/compressed/unaccepted_memory.c b/arch/x86/boot/compressed/unaccepted_memory.c
-index 818d32169eef..146a3a6968a8 100644
---- a/arch/x86/boot/compressed/unaccepted_memory.c
-+++ b/arch/x86/boot/compressed/unaccepted_memory.c
-@@ -4,7 +4,10 @@
- static inline void __accept_memory(phys_addr_t start, phys_addr_t end)
- {
- 	/* Platform-specific memory-acceptance call goes here */
--	error("Cannot accept memory");
-+	if (early_is_tdx_guest())
-+		tdg_accept_memory(start, end);
-+	else
-+		error("Cannot accept memory");
- }
- 
- void mark_unaccepted(struct boot_params *params, u64 start, u64 num)
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index af6e4cd8078d..f74b6cfde205 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -97,6 +97,8 @@ extern phys_addr_t tdg_shared_mask(void);
- extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
- 				enum tdx_map_type map_type);
- 
-+extern void tdg_accept_memory(phys_addr_t start, phys_addr_t end);
-+
- int tdx_mcall_tdreport(u64 data, u64 reportdata);
- 
- int tdx_mcall_rtmr_extend(u64 data, u64 rmtr);
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index dc6d9441f3be..75f3804f86da 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -372,6 +372,14 @@ int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
- 	return 0;
- }
- 
-+void tdg_accept_memory(phys_addr_t start, phys_addr_t end)
-+{
-+	if (tdx_hcall_gpa_intent(start, (end - start) / PAGE_SIZE,
-+				 TDX_MAP_PRIVATE)) {
-+		panic("Accepting memory failed\n");
-+	}
-+}
-+
- static __cpuidle void tdg_halt(void)
- {
- 	u64 ret;
-diff --git a/arch/x86/mm/unaccepted_memory.c b/arch/x86/mm/unaccepted_memory.c
-index e11933f62ead..19e0309e128b 100644
---- a/arch/x86/mm/unaccepted_memory.c
-+++ b/arch/x86/mm/unaccepted_memory.c
-@@ -5,6 +5,7 @@
- 
- #include <asm/io.h>
- #include <asm/setup.h>
-+#include <asm/tdx.h>
- #include <asm/unaccepted_memory.h>
- 
- static DEFINE_SPINLOCK(unaccepted_memory_lock);
-@@ -21,7 +22,10 @@ static void __accept_memory(phys_addr_t start, phys_addr_t end)
- 				   start / PMD_SIZE,
- 				   DIV_ROUND_UP(end, PMD_SIZE)) {
- 		/* Platform-specific memory-acceptance call goes here */
--		panic("Cannot accept memory");
-+		if (prot_guest_has(PATTR_GUEST_TDX))
-+			tdg_accept_memory(rs * PMD_SIZE, re * PMD_SIZE);
-+		else
-+			panic("Cannot accept memory");
- 		bitmap_clear(unaccepted_memory, rs, re - rs);
- 	}
- }
--- 
-2.31.1
-
+> thanks,
+>
+> greg k-h
