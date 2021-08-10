@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94DE3E840D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EE93E8413
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhHJUDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:03:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34673 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230019AbhHJUDG (ORCPT
+        id S232755AbhHJUGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:06:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18999 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231671AbhHJUGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:03:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628625764;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tP9KR03y9jO0pY7rOoxFwa8EoNvcGlojedWxVEx2WzA=;
-        b=B0vs9sjzESDEa/RobzSMbh+BR+yGQ0BDXR0VPqDxwKJcOblVdnPfsQjc7x+LUDiSltQaxt
-        5w3bMM1FvuW4B9BqQvGfKbFG/JhU8hNtHHg/m5g98N+Lp+bOB8JEacofnrijUBaFN9IgZX
-        Zuz3RbyseAHhxCrCVzFpmlP9jnHH50w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22-n5QRzA43N3qI08TA4HOSOw-1; Tue, 10 Aug 2021 16:02:43 -0400
-X-MC-Unique: n5QRzA43N3qI08TA4HOSOw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 10 Aug 2021 16:06:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628625962; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=6bfmi8AzrJv9+nPqsBRGQGrcOB34hjItme5M0oX8YAo=; b=mfpge3EmRo854xjRloit3VLT9WpnPvqsAIUq7okXYVulE/dr7FOaAaeOM55cIZxCtdy9BiXm
+ FOJHF8Icz0ftIfH9mppxns6RzdmruMBuBmIW0Es89Zl+wVeBI8tBXN5V2yxiHqXQB3mZ8ucn
+ uvIiUy4734M73EUqfmPrsT0NDIM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6112dc1db14e7e2ecb3c966c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Aug 2021 20:05:49
+ GMT
+Sender: psodagud=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 76167C4323A; Tue, 10 Aug 2021 20:05:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 761781009600;
-        Tue, 10 Aug 2021 20:02:41 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C86AD60BF1;
-        Tue, 10 Aug 2021 20:02:38 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-35-willy@infradead.org>
-References: <20210715033704.692967-35-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH v14 034/138] mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics()
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1809400.1628625757.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 21:02:37 +0100
-Message-ID: <1809401.1628625757@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        (Authenticated sender: psodagud)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 386FEC433F1;
+        Tue, 10 Aug 2021 20:05:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 386FEC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
+From:   Prasad Sodagudi <psodagud@codeaurora.org>
+To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net
+Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, pavel@ucw.cz, psodagud@codeaurora.org
+Subject: [PATCH v3] PM: sleep: core: Avoid setting power.must_resume to false
+Date:   Tue, 10 Aug 2021 13:05:38 -0700
+Message-Id: <1628625938-149376-1-git-send-email-psodagud@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+There are variables(power.may_skip_resume and dev->power.must_resume)
+and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+a system wide suspend transition.
 
-> The last use of 'page' was removed by commit 468c398233da ("mm:
-> memcontrol: switch to native NR_ANON_THPS counter"), so we can now remove
-> the parameter from the function.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+its "noirq" and "early" resume callbacks to be skipped if the device
+can be left in suspend after a system-wide transition into the working
+state. PM core determines that the driver's "noirq" and "early" resume
+callbacks should be skipped or not with dev_pm_skip_resume() function by
+checking power.may_skip_resume variable.
 
-Reviewed-by: David Howells <dhowells@redhat.com>
+power.must_resume variable is getting set to false in __device_suspend()
+function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
+dev->power.usage_count variables. In problematic scenario, where
+all the devices in the suspend_late stage are successful and some
+device can fail to suspend in suspend_noirq phase. So some devices
+successfully suspended in suspend_late stage are not getting chance
+to execute __device_suspend_noirq() to set dev->power.must_resume
+variable to true and not getting resumed in early_resume phase.
+
+Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+setting power.must_resume variable in __device_suspend function.
+
+Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+---
+ V2 -> V3: Format issues patch posting
+ V1 -> V2: Fixed indentation and commit text to include scenario
+ drivers/base/power/main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index d568772..9ee6987 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1642,7 +1642,11 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+ 	}
+ 
+ 	dev->power.may_skip_resume = true;
+-	dev->power.must_resume = false;
++	if ((atomic_read(&dev->power.usage_count) <= 1) &&
++	     (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
++		dev->power.must_resume = false;
++	else
++		dev->power.must_resume = true;
+ 
+ 	dpm_watchdog_set(&wd, dev);
+ 	device_lock(dev);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
