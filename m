@@ -2,102 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619ED3E83BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD83F3E83C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhHJTax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhHJTaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:30:52 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7816FC0613C1;
-        Tue, 10 Aug 2021 12:30:30 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id u16so22686938ple.2;
-        Tue, 10 Aug 2021 12:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w33uFdck5RcJX68cJm7DF6DgXYSeGQPNlroZpWjMPdg=;
-        b=Mt7jOMvJ8KhKvna7YJU5UpYTCdSg8COeycRVtaVDqVBRLXJFS0Nry6bmaPEb5EMR7D
-         Mj9oYz/5DTovkjn+FTFYwaZWedj4dU69eDgDx0gVsoS4yl1w6KC0S0ueU4ORCy250wh9
-         g1sYEEuhpTVyI4SZeSwLL0gpcZTPlqb9d4SoCUhBrsvcGgqBmd7DWbL4ZNP69nQsYNdQ
-         KcQb6Zm956ycZpqC0PKa3SsDdV07ikhPtwYsoxnXNKd+1RlBXoV9wnpG6wYsAQ2H63sL
-         m6WyYZQgWjEIgWE9bKQFGF8NJTvWz/oq5CN/IuI4+hLBvWgZYD71CREam1DIdMdiKhr1
-         d55g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w33uFdck5RcJX68cJm7DF6DgXYSeGQPNlroZpWjMPdg=;
-        b=QNyqwmfTitXK0nJT5QrxbbZMKr1yhOXswPR59XbqoCDHfvNqll3F8Swfo9kmOwdt1I
-         NDzuR5PpE13CkuEHWKqg1rjdyQ2C5RaN8m3ExbofY9vT3PshvvcluCg3n3VmtaFRX+i6
-         dI/t5BnRWHO4wlCHS8l8/O9ErG4Nw1PcWtzrJty6liH28aV0t57hEO7RkOi3gj+YfBt+
-         el+9QzvkwGUo9YbR0ei9aOnHlosPViN7CZEfkNbBTBLKyFWF/ibfLbbvAUWIv9SXy756
-         cYzekg4hkUKYDRuKyh5Go6IBY3cg6lFpLkZjTByKywlPRv/wSdhGYexdEiqS7LWhZpIe
-         EWmQ==
-X-Gm-Message-State: AOAM532iAWNTxtaTJUaVuHhwkM+WeedZb7TQbtx5o6h4WBmNkx8j76K+
-        etYEeaEEdHQzvtK2Al+TykU=
-X-Google-Smtp-Source: ABdhPJxaLZ78gZAfuwIt1mmpNrhDC0M/DNLevy+vYOlJQIbOr6nqCMWVidL93ULMql2iRLqs0K+zaw==
-X-Received: by 2002:a63:8ac2:: with SMTP id y185mr45975pgd.179.1628623830094;
-        Tue, 10 Aug 2021 12:30:30 -0700 (PDT)
-Received: from [192.168.1.71] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
-        by smtp.gmail.com with ESMTPSA id q13sm3881455pjq.10.2021.08.10.12.30.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 12:30:29 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, Alejandro Colomar <alx.manpages@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: Questions re the new mount_setattr(2) manual page
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-References: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
- <b23122c0-893a-c1b4-0b2d-3a332af4151f@gmail.com>
- <20210810141125.nxmvnwpyjxajvxl4@wittgenstein>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <40d5616a-7404-850e-bc73-09d0b513b94b@gmail.com>
-Date:   Tue, 10 Aug 2021 21:30:23 +0200
+        id S232604AbhHJTbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:31:14 -0400
+Received: from mail-bn8nam12on2085.outbound.protection.outlook.com ([40.107.237.85]:30720
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231143AbhHJTbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 15:31:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LrBVr4Dfk7xdOaBcdMzTsucfUZEwjNar2FApXMbOki289lvbtSW7QLXWU/k1IXHQ0PMcJ/nv6xg5zvFXvqklOusoEhj48KMmiIazkej9unv55EZHAAikP0DDM/fxNQHEkFcd+xxxnBZJz/MvbIq10djTpWArY+COyjnMJfsFSsn7QXvlAWDCr1QyqJ9fuoPtJbqUJV0bEq6FzQeJa0vHRmYz1+d1AIr3Uw/COnjQV79hHFuL39XIz7Tj774asYHucejpukSjfNtnPpbi6IiNA9umGxibTeCXwvNKfGjXKE2ibMV+nKQMVgahMnkEqVJ37CXQ0AR7IvbhKtPqVPXpKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0/vwKdo7nCnvZ3Sigjv3Oe8WfrMUkLmaHShADKEGHNI=;
+ b=Opr+AdQAqWXZORtI/Ynl7At41H+VXOLteFGA1PILK2VUQD1WKxg+cQPQPi+j71clIkZLU7H78Lo36pUyGTGy0P0kR9Fc2w7cJzrtYazb+sJZ0Bk5thlr13csDVP6YEuInH8Ub0iwJ5mV31sg3GjohTL5RfkHHYufet0C+FkU56iCFQrhP861lUg5s1KM1AUOqKeQmGZO2XRq+4rb80Hea1DudGdxMCFySBPHD+i4sw9nOQiFQS6iPf5q/amjPe5hqagRAuPOI4uxpNHDVZNy8ob0OtyeUhj/jX9VP0iq4ABXSytQ6xglMuqMXNz4fCrkDageSjwWRD0RtQXBlgrt3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0/vwKdo7nCnvZ3Sigjv3Oe8WfrMUkLmaHShADKEGHNI=;
+ b=Mow5tRojVWp2Ey1cWPIRhlriW4A4uPq0PsMA3JAIPxytbgS59RdXoVeMT4VrWO788XlpF3NSsdlNeuQADmSHR8qv1uvIJ4NKSCpQKIYWYgKwK1BbJTTeEmJ2D90B6OKhhgWkVlySUMZ9uuFO7Gh7gZFsDMNqBuB+Hs1z6Kc/tHM=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM4PR12MB5215.namprd12.prod.outlook.com (2603:10b6:5:397::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Tue, 10 Aug
+ 2021 19:30:48 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::73:2581:970b:3208]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::73:2581:970b:3208%3]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
+ 19:30:48 +0000
+Subject: Re: [PATCH Part1 RFC v4 05/36] x86/sev: Define the Linux specific
+ guest termination reasons
+To:     Brijesh Singh <brijesh.singh@amd.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        brijesh.ksingh@gmail.com
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-6-brijesh.singh@amd.com> <YRJkDhcbUi9xQemM@zn.tnic>
+ <955b4f50-5a7b-8c60-d31e-864bc29638f5@amd.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <65c53556-94e1-b372-7fb1-64bb78c7ae15@amd.com>
+Date:   Tue, 10 Aug 2021 14:30:44 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210810141125.nxmvnwpyjxajvxl4@wittgenstein>
+In-Reply-To: <955b4f50-5a7b-8c60-d31e-864bc29638f5@amd.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SN7PR04CA0187.namprd04.prod.outlook.com
+ (2603:10b6:806:126::12) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.241] (165.204.77.1) by SN7PR04CA0187.namprd04.prod.outlook.com (2603:10b6:806:126::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Tue, 10 Aug 2021 19:30:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5a5b3df5-c635-4cf4-b4bf-08d95c355adf
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5215:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5215551D1B342E17626837AEECF79@DM4PR12MB5215.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EJDBEl1zdL6D0eKFCgs7IFWXtDaMHYAauz6YJItuMPJ5h8at/Ybkk35b47tF7NretVcDhA7NgJHsIRbX/MuiJdacSOO1RMNwpKq7PFCUlM1PEQjYlEFD04BY7Pcm8MAWABwL+7ll1okDYIJ+hzNC5ZkNak6vL8GGEtsmJB6M5WTJ5vRypi5+rC2DBbAX8Fr//b98j6uMFX7aeGS4BOqziNDpvJ5dTZXHLU4mWGWgfOGvNlp0AyUvVsRTeqgfzsOcXwq70Vc0eLu3XFqOwDnGnKx41yY79bsLgUTs8nMJOgmghow+0ypdAhjJTyfgyjJonZ1k4iW0FjgeLxQKGnHi4CiOUhgWE70Fg+NLFJ25qiamxBnNlMs/rX/ZUGpR9ZWb7sHAbgnw6RCth2hEjYGtN6VGuWAjvK+JRg+nIwmPO/Hq7i3SkEBPc2+6kiD+FTbfO+5eApONzZl3o/mhqYfFOpAtvmSHTWE5YIPTQ4JK8V5S/R001zq8rYX8qUsx7ex7MWyXV3dKimOUJJfQu4F8C7RNVKLpQslTltMUJl3DyaOsFm2L5qNXpWOTGLsvCuJuakFEoayfAhxAYco/elsfkWH+x5uobma3ZtWwDZqqntD1H1qywdPmgIdBe8m2gFD17Qx6igxfguypUtMrCYllEDWieqSQZGwGvfFOAO62vLF13/1taqUnQgjjGrszeTCu5p2P6A2aRZFilvG4yzZC3mLkP6VmkhC31R15ChDWXA0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(31686004)(8676002)(956004)(6486002)(5660300002)(36756003)(7406005)(7416002)(53546011)(66556008)(110136005)(66476007)(66946007)(16576012)(4744005)(38100700002)(2906002)(54906003)(508600001)(86362001)(31696002)(316002)(8936002)(2616005)(83380400001)(186003)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NElpMDFvM0ZqYXVjVEhUWEN6RmpBUy8yMURQaWlyN3M3UzlhbGNvVk5GSHJl?=
+ =?utf-8?B?TEdQYWFBa05nRWhiazBiKzlZQktZODU2VzdWNlhWTnBhMUZVQU54bWdXZlYw?=
+ =?utf-8?B?TytFczZxaHNsRU9ZVFB4VVVrUWlISjBQRUFHS24wRk05ck1NOFFEWW9nN2Ur?=
+ =?utf-8?B?SnM0eDFENVVKRDdxSDVablZIb2FyL3BBZ09vSjEzcXRnN3VzRG4wNFdhcEh6?=
+ =?utf-8?B?WURZbURDZHd1WHEzODhrUEU3bjRzZ0kxY0dycUR6TS9qRkNRVDU5OUJxemRW?=
+ =?utf-8?B?bytLRkVMYTRIUno1NEFGSFlHL2lYbFFmcTZQSVlHVmEyY21SajZaQWxmZFdm?=
+ =?utf-8?B?Q3Q1Y1ZUODRUS3kvTThuN3R0c0dHeUxKOG9VZjJPVzg3R0IvSXNZSG8zVkRR?=
+ =?utf-8?B?akU4MlZZdll5TG9kZUYxUStUZjhrT1VBM3FGclJhdDRuUTdsN1Q1aEt5QkhK?=
+ =?utf-8?B?SXpTa0tJdHh5S0hNNE42NGdOL2pLVEE2OVR3NjI2d0RjQ2lXTWJsMXNjMFpp?=
+ =?utf-8?B?aTBVR2EvUVFGMkR4Y294SzhHNWxXd2lVaS80RVQzQXljM1o1bzA0TTBZU2dW?=
+ =?utf-8?B?T3hrNDduWlVRVVhXY3FMZlRod2NwU2J3YkltbGNSalVKZVh1bWQ3ZFFwMmNm?=
+ =?utf-8?B?VUoreUYyejJCaTQvRTVObDNWbkxMdXYzWW9jVGh6RWFxak5nUkFyeVhJMUZU?=
+ =?utf-8?B?N2tRNCtoYThoV0pobnA4U1V4UVFpbEJmTEtDZExubDNYbG5HVzVCbU1qeElN?=
+ =?utf-8?B?WGNLclZndGlsTUhRaklHcDNWaFdicU8yVURERW1EQUw1eHdLVGo4MnhYU0o1?=
+ =?utf-8?B?K2s0U3lRV3NpbUZ4SU9uTHBlWnc1YjB1MDh4TEpNM3ZIZ2krMHRTb2QwSHhN?=
+ =?utf-8?B?NEFCWWZTUkhCU3E1MnE2UkN5WEgzSVhPY1JyMVJ3UVpzMkhaOFFhL2dDMlN0?=
+ =?utf-8?B?OFNMY3VkcmJTcWZCbmVGTnYvMkpzSnRhSlMxb084VFRqQ3BuVCtpM1VNanF4?=
+ =?utf-8?B?T2t4RGdSZExCNS8xZWx5VWIwMDJlQzlWemlRL0dvRmNJRDRnKzRmNFg2UnM2?=
+ =?utf-8?B?T01yRkNzRmN5cVVEN3ROamEwb0wvUXBNZ040eE93ZmhaVGdYaThxRmNiNE5u?=
+ =?utf-8?B?QysxSEo2WUFJbUt1dms5UDVIVXIxc2U5U1FpMHdIMUVwdnJWS2puV2MrOWMy?=
+ =?utf-8?B?K2V0Z1BrUmtmMjVGczFNeUdhR1JIUjVBUHcyVkNZTkk2NDR4QzFIMktHOUxO?=
+ =?utf-8?B?ZFBWRkNEZERjZU1XcnRYVWZQa1ltaGI1d0RvQ01Ta21DS0twU1lWbW5reEVi?=
+ =?utf-8?B?VVp0S21SQ3RYSTFKcmtJTFFqVnMrd3pxSGttaXhRYTNlbk94OTBKd2RkUUFR?=
+ =?utf-8?B?a2drVjlXRUdwSUxaRmJJTCtLMHo3VnNqOG1NQU1zL1FmUm4zR3NZKzQ2MDJP?=
+ =?utf-8?B?czE1Yml1aUM1TEpSRy9JYThvMVhoYjhpMnFCNlo0T3BDR1dScHJ6cGY2SWFm?=
+ =?utf-8?B?VHBDVFRDQnl4WHJuTUlyMVpJVVVEdnErOWx2RTZDTldvL2tDTmZBK3gzYVYx?=
+ =?utf-8?B?OGFIelNudktvRjg3dXV6NWRHcHMwenFGdUpUSHNxSVFCaW04QnpXbVBqbmpu?=
+ =?utf-8?B?SXNTcEhNNjNCeDk0UGZvcGtqT0p3SWFWSFNtaTV5dk5qeC9nWHhrTlBTQVc1?=
+ =?utf-8?B?TFdVQ1NvaTEwTm1GelZsYU9MbXVXbkdYNVk5L1EvdUlNNFlTdFpXcG1qK1Z2?=
+ =?utf-8?Q?bfO73/QHCvuF3lDPi3ZH5/C31aWsPTjfrC6yuSR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a5b3df5-c635-4cf4-b4bf-08d95c355adf
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 19:30:47.9826
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BonaRp1Fh0b7MweUGFaHqjVf8cUTEOiXIbeGxmrdIPHOEvhj7hniwniSXYb3FWqi0mNx3xLrMS7BJQGXOjOhdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 4:11 PM, Christian Brauner wrote:
-> On Tue, Aug 10, 2021 at 09:12:14AM +0200, Michael Kerrisk (man-pages) wrote:
->> Hi Christian,
+On 8/10/21 9:59 AM, Brijesh Singh wrote:
+> On 8/10/21 6:33 AM, Borislav Petkov wrote:
+>> On Wed, Jul 07, 2021 at 01:14:35PM -0500, Brijesh Singh wrote:
+
+>>> +#define SEV_TERM_SET_LINUX        1
 >>
->> One more question...
+>> GHCB doc says:
 >>
->>>>       The propagation field is used to specify the propagation typ
->>>>       of the mount or mount tree.  Mount propagation options are
->>>>       mutually exclusive; that is, the propagation values behave
->>>>       like an enum.  The supported mount propagation types are:
+>> "This document defines and owns reason code set 0x0"
 >>
->> The manual page text doesn't actually say it, but if the 'propagation'
->> field is 0, then this means leave the propagation type unchanged, 
->> right? This of course should be mentioned in the manual page.
+>> Should it also say, reason code set 1 is allocated for Linux guest use?
+>> I don't see why not...
+>>  > Tom?
+>>
 > 
-> Yes, if none of the documented values is set the propagation is unchanged.
+> If Tom is okay with it then maybe in next version of the GHCB doc can add
+> this text.
 
-Thanks for the confirmation.
+IIRC, during the review of the first GHCB version there was discussion
+about assigning reason sets outside of 0 within the spec and the overall
+feeling was to not do that as part of the spec.
 
-Cheers,
+We can re-open that discussion for the next version of the GHCB document.
 
-Michael
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Thanks,
+Tom
