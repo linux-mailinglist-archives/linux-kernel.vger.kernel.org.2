@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD233E859F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2013E85A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbhHJVrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:47:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46170 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbhHJVrX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:47:23 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628632019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFQAuv/zjgDxJjY7yj4WJ9eE1IDO0qkHFcavLsZ9e9s=;
-        b=EXMuLwK+4OznvW1qwmBSVG5DAIVouGDZM7/Xr5kagTgh8t7bsZMIZfiUGJZIYbVMTIs4O5
-        yCqG72bTUaYcNU6wXLonvNW7Czdm99TLtQ2HwAKf2kpPrJAGYkPp2fjy/osKOJXL9iOaDt
-        /W0FWcItdyOuTDFGEuRSOisxJ7gqT61O6I+QTTiibw2OKTjTHAPa0juBs80iDK5e5jqEfx
-        l1n+JulxS4Qr5Z4JW8unOCl7ifktJxXjL5LOPm+YOjBwQw9SaBaawj596esMelAYWHY7LW
-        Ap5s5zWP0EmwAAB6GtbYCXOwdle793VWInrry7zLmMasqRpuwK0BlRvic4iVcQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628632019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFQAuv/zjgDxJjY7yj4WJ9eE1IDO0qkHFcavLsZ9e9s=;
-        b=hPmwHXXHsN/7wSjC4Ox1I7BgYpHydVtygtgtgiCx81i8OFP0+bS9I2cRTXZsLzC3ZLBkKn
-        C+jkoUaBIz8zwrDA==
-To:     Joe Perches <joe@perches.com>
-Cc:     Craig Gallek <kraig@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] genirq/irqdesc: Use sysfs_emit in the <foo>_show functions
-In-Reply-To: <5a7cf87075177ab374c55e15f677eac167ac767a.camel@perches.com>
-References: <5a7cf87075177ab374c55e15f677eac167ac767a.camel@perches.com>
-Date:   Tue, 10 Aug 2021 23:46:59 +0200
-Message-ID: <87im0dotv0.ffs@tglx>
+        id S233968AbhHJVtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:49:41 -0400
+Received: from ozlabs.org ([203.11.71.1]:52985 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233555AbhHJVtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:49:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gkmn65ZWTz9sCD;
+        Wed, 11 Aug 2021 07:49:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628632154;
+        bh=Jot/mNfUg1oqahi9OGSBbSIjW4z0xFOCMjQ6BWNFSFM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mDzNld9onKZTAD1P+lPDFe5oUn/uoYCWm61qJH/OBxsAL1kCGTZy13yhEpQGlDhvk
+         wpnCgN6RrA2WuGWq0hobaSNV0EALndScNuRpXMN7a435lfHmSV6v84KR3AykHzRy2A
+         uKh3UsFfH87wgF4IwGPAItyuSomx3QwWqanWUxgEUil+eruW8ap2198EGA2iNOMPOz
+         xc8XSOdmq2DQZChDltvxnhAHtN3epnt+wXbDiS6IzCosSWnsPHHjDgmBhf7eXSMSFr
+         EEV5bH4/gc0V/E5XAI+hGYAtDRRFzOP+udtRuTI1FJoFlB+5ZyotbwUsCdolNeT0qo
+         TPnobaYXGRysg==
+Date:   Wed, 11 Aug 2021 07:49:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the xfs tree
+Message-ID: <20210811074913.48605817@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/dUdzsoZRBY.BwB3HuWpTv6x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe!
+--Sig_/dUdzsoZRBY.BwB3HuWpTv6x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 10 2021 at 10:55, Joe Perches wrote:
-> Convert the nominally unbounded sprintf output to use sysfs_emit and the
-> scnprintf uses to sysfs_emit_at.
+Hi all,
 
-Please use function_name() not function_name as that makes it clear what
-this is about.
+Commits
 
-> Miscellanea:
+  0f3901673631 ("xfs: Rename __xfs_attr_rmtval_remove")
+  da8ca45da62e ("xfs: add attr state machine tracepoints")
 
-The point is?
+are missing a Signed-off-by from their committer.
 
-> o sysfs_emit: Use the more common int len not ssize_t ret
+--=20
+Cheers,
+Stephen Rothwell
 
-You're not changing sysfs_emit(). You change the variables in the irq
-functions.
+--Sig_/dUdzsoZRBY.BwB3HuWpTv6x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> o hwirq_show: Add a minimum newline output when irq_data.domain is not set
->   and remove an unnecessary cast of an unsigned long to int ("%d" ->
->   "%lu)
+-----BEGIN PGP SIGNATURE-----
 
-That's a separate change and has nothing to do with $subject
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmES9FkACgkQAVBC80lX
+0Gz4+gf+IkfFu5UawSW8+7o+jivyVS9zWJrBogXXPsHQWtwygkjLrW3A0nfjcT7a
+qKQW21p8b1xhxnbLPH758BAFiQOYwvnmyjXy5zJDTHIZlAEoLOMLn92uSTg6EYUx
+4r5TmQh9LtXcgJyPdTmZVu+HxgvrhoIrAh63brQ6R1gN2VywhbhLL5FjQr/W1JsB
+510MRRrB0ZOsGJoL58p7uy5U7nJl6TNMT2i4/mcDw9zanZ1rlgnmf472Qven08y+
+alm0RbEjfLyaLyytLZmjsie07sATtMbI78YfqWgkJg9L0trwMsncnLT95FRflVnz
+B51Bu8NEWSHl0FaPkZnncUl3L7Vm3Q==
+=ihqQ
+-----END PGP SIGNATURE-----
 
-> o name_show: Add a minimum newline output when desc->name is not set
-
-Ditto.
-
-> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-> index fadb937660202..8d47b8667c989 100644
-> --- a/kernel/irq/irqdesc.c
-> +++ b/kernel/irq/irqdesc.c
-> @@ -147,19 +147,20 @@ static ssize_t per_cpu_count_show(struct kobject *kobj,
->  				  struct kobj_attribute *attr, char *buf)
->  {
->  	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
-> -	ssize_t ret = 0;
-> -	char *p = "";
-> +	int len = 0;
-> +	const char *p = "";
->  	int cpu;
-
-Please keep reverse fir tree ordering and stick the two int variables
-into one line, i.e. 
-
-  	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
-	const char *p = "";
-	int cpu, len = 0;
-
-Please rework against
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip irq/core
-
-Thanks,
-
-        tglx
+--Sig_/dUdzsoZRBY.BwB3HuWpTv6x--
