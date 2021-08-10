@@ -2,174 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F47C3E7CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08033E7CC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242105AbhHJPsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242096AbhHJPs0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:48:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771E6C0613C1;
-        Tue, 10 Aug 2021 08:48:04 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628610483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T74u7wivCD+70aSSFcjrY7qzEdPjRIB3i17jgj6Jj7M=;
-        b=GQsP4ydZdaizjI7aDD8jal0K4ynFGpb8UgdDtWJ8QCjeKElBVTmFd+w7RcJqsRpZLUGOBM
-        uoBElAi/ZAxWJlUNd6UZyFTSLfVn/jNIRVfCwrvbfr+18wYSaGGfWRBhd1FmG8ZrKNq4Bh
-        QdNu3/mpxlwba21pm69poQeA1LdON2lLFv6ZYEhwVBDkAlLWEqcuvGWONXHfFROHuryjos
-        x6iExbEuT1YUYzbuBgGPm+3bV351Ktg/aFn4CwngkqyCiI6NlghyqmWyRcKHKyAZTPd8ve
-        zKLCDIMzlamwgyH77NaHEAVOoGPMoh6PclcFPWAgGch1kn5FBMg1xTlzu08eng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628610483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T74u7wivCD+70aSSFcjrY7qzEdPjRIB3i17jgj6Jj7M=;
-        b=XJbcS3rj56HrvStKFW2KEnB/xuskVXpnKbjLsNZtj7rhOXWN6zirJbWraym7MHLHJNCHuK
-        hUNnaw9IPLWcutCA==
-To:     Hikaru Nishida <hikalium@chromium.org>,
-        linux-kernel@vger.kernel.org, dme@dme.org, mlevitsk@redhat.com
-Cc:     suleiman@google.com, Hikaru Nishida <hikalium@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Juergen Gross <jgross@suse.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [v2 PATCH 4/4] x86/kvm: Add guest side support for virtual
- suspend time injection
-In-Reply-To: <20210806190607.v2.4.I2cbcd43256eacc3c92274adff6d0458b6a9c15ee@changeid>
-References: <20210806100710.2425336-1-hikalium@chromium.org>
- <20210806190607.v2.4.I2cbcd43256eacc3c92274adff6d0458b6a9c15ee@changeid>
-Date:   Tue, 10 Aug 2021 17:48:02 +0200
-Message-ID: <87lf59qp1p.ffs@tglx>
+        id S238758AbhHJPul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232968AbhHJPuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C84E60E9B;
+        Tue, 10 Aug 2021 15:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628610618;
+        bh=5VQb2yLmOxBNX2UvrvQB5Gb7/UfJYuDB49AivOuWzhw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YwysiIRXoAEshLo/nSGcG+owFCSv0ldyJLQFtIPDBGaWmoL3+vO6wgzxZ0IWLnQci
+         HIlWsTS7qaDWnAYdHuho1b1RZx2Sn4U04PAd6RvlrzMqrUy23gVqFtiLc4L6VtSBjF
+         /tzGuKRTszAScQmJK+hqV4Uq02LQIYuza8/q2qRdEJXp6L3GepZraKeAiOcRNb1aP+
+         GShTkwUKf2KWrpLS82gHaQJa4KkEuwsGAMAfyID+KWNceb6JmqpfqshdST14onqibZ
+         C21DQ7Q2dV6rZNG63mmcon64+5AF3f89HQux9suExu3jpiDnGehoEn71xehoaT45RW
+         gsK6R4q9qfb2w==
+Date:   Tue, 10 Aug 2021 16:49:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/12] ASoC: cs42l42: Don't reconfigure the PLL while it
+ is running
+Message-ID: <20210810154959.GD4704@sirena.org.uk>
+References: <20210810153759.24333-1-rf@opensource.cirrus.com>
+ <20210810153759.24333-5-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6Nae48J/T25AfBN4"
+Content-Disposition: inline
+In-Reply-To: <20210810153759.24333-5-rf@opensource.cirrus.com>
+X-Cookie: Who is John Galt?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06 2021 at 19:07, Hikaru Nishida wrote:
->  arch/x86/Kconfig                    | 13 ++++++++++
->  arch/x86/include/asm/idtentry.h     |  4 +++
->  arch/x86/include/asm/kvm_para.h     |  9 +++++++
->  arch/x86/kernel/kvmclock.c          | 40 +++++++++++++++++++++++++++++
->  include/linux/timekeeper_internal.h |  4 +++
->  kernel/time/timekeeping.c           | 33 ++++++++++++++++++++++++
 
-Again, this wants to be split into infrastructure and usage.
+--6Nae48J/T25AfBN4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> --- a/include/linux/timekeeper_internal.h
-> +++ b/include/linux/timekeeper_internal.h
-> @@ -124,6 +124,10 @@ struct timekeeper {
-> 	u32			ntp_err_mult;
-> 	/* Flag used to avoid updating NTP twice with same second */
-> 	u32			skip_second_overflow;
-> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-> +	/* suspend_time_injected keeps the duration injected through kvm */
-> +	u64			suspend_time_injected;
+On Tue, Aug 10, 2021 at 04:37:51PM +0100, Richard Fitzgerald wrote:
+> cs42l42_pcm_hw_params() must only configure the PLL if this is the first
+> stream to become active, otherwise it will be overwriting the registers
+> while the PLL is running.
 
-This is KVM only, so please can we have a name for that struct member
-which reflects this?
+Shouldn't the PLL code be noticing problematic attempts to reconfigure
+the PLL while it's active rather than the individual callers?
 
-> +#endif
->  #ifdef CONFIG_DEBUG_TIMEKEEPING
-> 	long			last_warning;
-> 	/*
+--6Nae48J/T25AfBN4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-> index 3ac3fb479981..424c61d38646 100644
-> --- a/kernel/time/timekeeping.c
-> +++ b/kernel/time/timekeeping.c
-> @@ -2125,6 +2125,39 @@ static u64 logarithmic_accumulation(struct timekeeper *tk, u64 offset,
->  	return offset;
->  }
->  
-> +#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-> +/*
-> + * timekeeping_inject_virtual_suspend_time - Inject virtual suspend time
-> + * when requested by the kvm host.
+-----BEGIN PGP SIGNATURE-----
 
-If this is an attempt to provide a kernel-doc comment for this function,
-then it's clearly a failed attempt and aside of that malformatted.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmESoCYACgkQJNaLcl1U
+h9DL6Af/VMKIUFo2FG9w/3/TvL2WcUgeppJcWnFc3mwnYf/caE1XfD8tjYFDUrzN
+rrn79TJDa0URpk2+OyFf9CpHr9ojcoTHn+gI1jkTcW8sBPXy0V/OC0MxdXiZoCjj
+tgv2rSjj0HSLns9deX8SEQxS17nxPogW2rwAM+kXhGiDi0TI0tkltIo8+V/ryDGw
+cM16opc5sMUys66LJQeNwgWIPhrg+ZS1uTGUPaymM2ZronJ2uJhJxxjAeoLehNGX
+szEnxRXKfMYr/FoJ7aZnrVo0IbjJxsfl2j9gDD/8sTJUqKoSYnjE7/yI6K+UummP
+V41vVqSdJRFtKnYlasDfVe7pKhByrQ==
+=ldD5
+-----END PGP SIGNATURE-----
 
-> + * This function should be called under irq context.
-
-Why? There is no reason for being called from interrupt context and
-nothing inforces it.
-
-> + */
-> +void timekeeping_inject_virtual_suspend_time(void)
-> +{
-> +	/*
-> +	 * Only updates shadow_timekeeper so the change will be reflected
-> +	 * on the next call of timekeeping_advance().
-
-No. That's broken.
-
-    timekeeping_inject_virtual_suspend_time();
-
-    do_settimeofday() or do_adjtimex()
-
-       timekeeping_update(tk, TK_MIRROR...);
-
-and your change to the shadow timekeeper is gone.
-
-Of course there is also no justification for this approach. What's wrong
-with updating it right away?
-
-> +	 */
-> +	struct timekeeper *tk = &shadow_timekeeper;
-> +	unsigned long flags;
-> +	struct timespec64 delta;
-> +	u64 suspend_time;
-
-Please sort variables in reverse fir tree order and not randomly as you
-see fit.
-
-> +
-> +	raw_spin_lock_irqsave(&timekeeper_lock, flags);
-> +	suspend_time = kvm_get_suspend_time();
-> +	if (suspend_time > tk->suspend_time_injected) {
-> +		/*
-> +		 * Do injection only if the time is not injected yet.
-> +		 * suspend_time and tk->suspend_time_injected values are
-> +		 * cummrative, so take a diff and inject the duration.
-
-cummrative?
-
-> +		 */
-> +		delta = ns_to_timespec64(suspend_time - tk->suspend_time_injected);
-> +		__timekeeping_inject_sleeptime(tk, &delta);
-> +		tk->suspend_time_injected = suspend_time;
-
-It's absolutely unclear how this storage and diff magic works and the
-comment is not helping someone not familiar with the implementation of
-kvm_get_suspend_time() and the related code at all. Please explain
-non-obvious logic properly.
-
-Thanks,
-
-        tglx
-
-
-
-
+--6Nae48J/T25AfBN4--
