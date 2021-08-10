@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793813E7E96
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9151E3E7F44
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhHJReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:34:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36356 "EHLO mail.kernel.org"
+        id S235101AbhHJRjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:39:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232707AbhHJRdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:33:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22E1F60EBD;
-        Tue, 10 Aug 2021 17:33:12 +0000 (UTC)
+        id S233578AbhHJRg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:36:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F11561103;
+        Tue, 10 Aug 2021 17:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616793;
+        s=korg; t=1628616948;
         bh=6UZ8UDbE+gtZ419+958w1Ct+az9EJtjv+tl1F1V8R0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WcZAdyyy4d6ZeuDdv2mCQsTgO+Gq4Ywpm/7DLGuaoCwMxSCDnpbzfOsqD1aTwUxcu
-         uUoIhHxjQgqK7HNgnMKq1RkkCLaY/IiNEvQ2TQOBVTIH9/8dF3onJ8nOelrMUXizl/
-         6qMOFlnzEhWMJ0Wi7YfBgI5VqgWs4ezQOHybcOsE=
+        b=xrvOO9Z7hHYfTXU9V38fQ8A4Xe85Mf6Bca5LyUvKEBoIBrWcl3Re+s37qISRh9eMG
+         lQ4wO1WEFpjqLNzBs/l27zdVBhKMUyvh3fVBXGB34SLZL3xz0GJbPPevMCEQ0XXj6l
+         ZCtLqEFajm/ZcyhBbR08Fgmk3HaEaZHwtntVVtCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
         "Maciej W. Rozycki" <macro@orcam.me.uk>
-Subject: [PATCH 4.19 42/54] MIPS: Malta: Do not byte-swap accesses to the CBUS UART
-Date:   Tue, 10 Aug 2021 19:30:36 +0200
-Message-Id: <20210810172945.574815329@linuxfoundation.org>
+Subject: [PATCH 5.4 64/85] MIPS: Malta: Do not byte-swap accesses to the CBUS UART
+Date:   Tue, 10 Aug 2021 19:30:37 +0200
+Message-Id: <20210810172950.408706071@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
