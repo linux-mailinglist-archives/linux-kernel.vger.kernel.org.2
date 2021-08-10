@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D823E569F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9ED53E56A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238843AbhHJJSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237320AbhHJJSp (ORCPT
+        id S238860AbhHJJU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:20:27 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3620 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238880AbhHJJUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:18:45 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DFBC061799;
-        Tue, 10 Aug 2021 02:18:24 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id u16so20151068ple.2;
-        Tue, 10 Aug 2021 02:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w+XOmb9EKTUysSLlZUkv3LmEhzI+OrIVJ3S44VA1yDo=;
-        b=corIsdxSFyN7QcwU9IowkhXaEYzWaCYQjd/rt+eGl7DB/oby6g5Tk6+IEW+amdTKf/
-         7ev3yYjnd1m6WgPzbZr13U1M2J8sv4xlQJ5RHuOGeu4XJzas7SbTcGY1vbyApklVl8Tt
-         I7gxzpvYi++OMmtAMf3HhycHVUbcjXeTBPF2XADmn+JynjVbrxDrKzWMHdQZdgNqIiNO
-         YN5C9CCOETRD+JGjsCgsteP4M+knjMNQHi1iPTXVhcqwzzD1NpmryFcWf2McEBbf8QpK
-         UzN3kdrRGaCBjAk3zDnIYVNCItikepEcBz3Iibgx3CVog2iw26cN66kCOLTeKe4QYARI
-         hrMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w+XOmb9EKTUysSLlZUkv3LmEhzI+OrIVJ3S44VA1yDo=;
-        b=WYi+Q73ZFCdeNsxZ0OoGBNIaiulxX3gsbgs/b4iPleJ5RZEbdYhzNlcV4T6e+DyoNA
-         kuu0EYoNyhnZdcg21EPSsoCD9SWbI6iCEqgQ2YAu1ueYXm2p0ojCOZsTJN01r931OJ5l
-         IIcRQHqWWb7VwYmg/l9sRcGSCn6zD1u7ksVjHD0xxk/wVSRGsTCg9dqDjW2Hs0BZb4jP
-         +tXr3wTaCvxZZixIEdezBCqv61ZqlIQBOgaHHXB1YU9dI/1Vm1jCZQO3U4yM85gVXTWR
-         wG+GGlDUAZIe89W18TCA8OnQO6KXNhvZzIGhrrBF9MpXj+x7JTIEdBY9TNtpwaezy3CG
-         Dy6g==
-X-Gm-Message-State: AOAM531b8r5Bfax1LrGfoAXmYwyZ0SCyzrOGH+lRgAdvH9iERSWCqQ1t
-        mAQzPODsqj2fW8gp0Q/X6EM=
-X-Google-Smtp-Source: ABdhPJznUQMbjUf5j9hsDN3vDvvQ9YB0D2WEhdHvBC4TfnelnS19szODZs9Te4i0BiGtx0L8QFXU1w==
-X-Received: by 2002:a17:90b:296:: with SMTP id az22mr3854614pjb.79.1628587103929;
-        Tue, 10 Aug 2021 02:18:23 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.40])
-        by smtp.gmail.com with ESMTPSA id k6sm2252089pjl.55.2021.08.10.02.18.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 02:18:23 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     sridhar.samudrala@intel.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] net: core: Fix possible null-pointer dereference in failover_slave_register()
-Date:   Tue, 10 Aug 2021 02:18:00 -0700
-Message-Id: <20210810091800.291272-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 10 Aug 2021 05:20:14 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GkS7l1GDLz6C9Kv;
+        Tue, 10 Aug 2021 17:19:15 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 10 Aug 2021 11:19:47 +0200
+Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
+ 2021 10:19:47 +0100
+Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+ <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
+ <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
+ <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
+ <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
+ <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
+ <a74dfb1f-befd-92ce-4c30-233cb08e04d3@huawei.com>
+ <CAK8P3a3B4FCaPPHhzBdpkv0fsjE0jREwGFCdPeHEDHxxRBEjng@mail.gmail.com>
+ <5e8dfbd2-a6c0-6d02-53e9-1f29aebcc44e@huawei.com>
+ <CAK8P3a08Zcyx0J4_LGAfU_AtUyEK+XtQJxYBQ52VXfWu8-o8_w@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <dd2d49ef-3154-3c87-67b9-c134567ba947@huawei.com>
+Date:   Tue, 10 Aug 2021 10:19:12 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a08Zcyx0J4_LGAfU_AtUyEK+XtQJxYBQ52VXfWu8-o8_w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.4]
+X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable fops is checked in:
-  if (fops && fops->slave_pre_register &&
-    fops->slave_pre_register(slave_dev, failover_dev))
+On 04/08/2021 09:52, Arnd Bergmann wrote:
+>>>> On another point, I noticed SCSI driver AHA152x depends on ISA, but is
+>>>> not an isa driver - however it does use port IO. Would such dependencies
+>>>> need to be changed to depend on HAS_IOPORT?
+>>> I'm not sure what you mean here. As far as I can tell, AHA152x is an ISA
+>>> driver in the sense that it is a driver for ISA add-on cards. However, it
+>>> is not a 'struct isa_driver' in the sense that AHA1542 is, AHA152x  is even
+>>> older and uses the linux-2.4 style initialization using a module_init()
+>>> function that does the probing.
+>> ok, fine. So I just wonder what the ISA kconfig dependency gets us for
+>> aha152x. I experimented by removing the kconfig dependency and enabling
+>> for the arm64 (which does not have CONFIG_ISA) std defconfig and it
+>> built fine.
+> The point of CONFIG_ISA is to only build drivers for ISA add-on cards
+> on architectures that can have such slots. For ISA drivers in particular,
+> we don't want them to be loaded on machines that don't have them
+> because of the various ways this can cause trouble with hardwired
+> port and irq numbers.
+> 
+>>>> Yeah, that sounds the same as what I was thinking. Maybe IOPORT_NATIVE
+>>>> could work as a name. I would think that only x86/ia64 would define it.
+>>>> A concern though is that someone could argue that is a functional
+>>>> dependency, rather than just a build dependency.
+>>> You can have those on a number of platforms, such as early
+>>> PowerPC CHRP or pSeries systems, a number of MIPS workstations
+>>> including recent Loongson machines, and many Alpha platforms.
+>>>
+>> hmmm... if some machines under an arch support "native" port IO and some
+>> don't, then if we use a common multi-platform defconfig which defines
+>> HARDCODED_IOPORT, then we still build for platforms without "native"
+>> port IO, which is not ideal.
+> Correct, but that's not a problem I'm trying to solve at this point. The
+> machines that have those are extremely rare, so almost all configurations
+> that one would encounter in practice do not suffer from it, and solving it
+> reliably would be really hard.
 
-This indicates that it can be NULL.
-However, it is dereferenced when calling netdev_rx_handler_register():
-  err = netdev_rx_handler_register(slave_dev, fops->slave_handle_frame,
-                    failover_dev);
+Hi Arnd,
 
-To fix this possible null-pointer dereference, check fops first, and if 
-it is NULL, assign -EINVAL to err.
+This seems a reasonable approach. Do you have a plan for this work? Or 
+still waiting for the green light?
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- net/core/failover.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I have noticed the kernel test robot reporting the following to me, 
+which seems to be the same issue which was addressed in this series 
+originally:
 
-diff --git a/net/core/failover.c b/net/core/failover.c
-index b5cd3c727285..113a4dacdf48 100644
---- a/net/core/failover.c
-+++ b/net/core/failover.c
-@@ -63,8 +63,11 @@ static int failover_slave_register(struct net_device *slave_dev)
- 	    fops->slave_pre_register(slave_dev, failover_dev))
- 		goto done;
- 
--	err = netdev_rx_handler_register(slave_dev, fops->slave_handle_frame,
-+	if (fops)
-+		err = netdev_rx_handler_register(slave_dev, fops->slave_handle_frame,
- 					 failover_dev);
-+	else
-+		err = -EINVAL;
- 	if (err) {
- 		netdev_err(slave_dev, "can not register failover rx handler (err = %d)\n",
- 			   err);
--- 
-2.25.1
+config: s390-randconfig-r032-20210802 (attached as .config)
+compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 
+4f71f59bf3d9914188a11d0c41bedbb339d36ff5)
+...
+All errors (new ones prefixed by >>):
 
+    In file included from drivers/block/null_blk/main.c:12:
+    In file included from drivers/block/null_blk/null_blk.h:8:
+    In file included from include/linux/blkdev.h:25:
+    In file included from include/linux/scatterlist.h:9:
+    In file included from arch/s390/include/asm/io.h:75:
+    include/asm-generic/io.h:464:31: warning: performing pointer 
+arithmetic on a null pointer has undefined behavior 
+[-Wnull-pointer-arithmetic]
+            val = __raw_readb(PCI_IOBASE + addr);
+
+So I imagine lots of people are seeing these.
+
+Thanks,
+john
