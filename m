@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6804F3E7D7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484F33E7D7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbhHJQ2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:28:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhHJQ2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:28:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 622D960C3F;
-        Tue, 10 Aug 2021 16:27:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628612863;
-        bh=0vuRK1rdXKIGmAoghMbAKyM3vxwhMVyIV9VcRK/rxmY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=R5Ko47VI6mTnkHo3fF8YHh6LClSWxs3K1lLq9bPuL8TQ4DCtCmaJfokaXNyUUSgyP
-         hRef33FnHcPuPAOgfN9o/R7hmMiSp/t9QXYvCqpoHxnLLNWaJe7dm8XbMUWq5z5apL
-         wKMlqCfklYKnZ3j/t2q39uCTlb8vlvMz6UQWfo8Mr8JR/rC+u2cgfVPel6q9OB3xW+
-         9qH9Z6NqYCaYGbp3CUk8iAMhjTeFdtT74Tv0dDPeBrc6v7HGkamOM6H+0HeI9UmCoX
-         +wNvIF1vpNqETggu8cQlrTVk8o4uYq0ALJtD8O+q6xtNvV1eoiMVX6SsaXWsgUuTF6
-         yCM1B0uM8lQ2g==
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: sm8350: fix IPA interconnects
-To:     Alex Elder <elder@linaro.org>, bjorn.andersson@linaro.org,
-        agross@kernel.org
-Cc:     robh+dt@kernel.org, elder@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210804210214.1891755-1-elder@linaro.org>
- <20210804210214.1891755-5-elder@linaro.org>
-From:   Georgi Djakov <djakov@kernel.org>
-Message-ID: <7a199975-d41a-0716-57d1-7a03af2eb6a4@kernel.org>
-Date:   Tue, 10 Aug 2021 19:27:39 +0300
+        id S235407AbhHJQ2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:28:16 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:8310 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229527AbhHJQ2P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:28:15 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17A75pbw008816;
+        Tue, 10 Aug 2021 11:27:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=O2npQgkHekRfIhp5RFEYceNfy+XR4ftl/wEb/k2M9F8=;
+ b=MLRBCrXSkAZ9muYcN3HKkl2qedgasHrXl6WGjOPL6DXkJ3MKMdhCcF+rYAIxOU09nMmH
+ tu6tnpM6Ff1aDWTw0SbUN9PzvA9dkUPfac7KznYbzHFbme4p8FWfAyzXKebzPUJ97rn6
+ dJipgXazaZ/c3QhmS6Nh+tlmZjbiBbKRlz2AOMXWo9hRSGth+RDqDeQMO9ooR7+U0Ed8
+ qirlk40I2MxnchmBNHm3yrHdqYosjftrC6gvzE5wXkLAJUHv73LhGaYRQ1cnObaRnkno
+ o74Y6qbIUq/jAPSdoMWtoSWaOiupfglFyH0iZQospvydRQHSgG4LHjpkKKkgIi5gd343 cA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3abmrkgnuu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 10 Aug 2021 11:27:48 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 10 Aug
+ 2021 17:27:46 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Tue, 10 Aug 2021 17:27:46 +0100
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.221])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4416445D;
+        Tue, 10 Aug 2021 16:27:46 +0000 (UTC)
+Subject: Re: [PATCH 04/12] ASoC: cs42l42: Don't reconfigure the PLL while it
+ is running
+To:     Mark Brown <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20210810153759.24333-1-rf@opensource.cirrus.com>
+ <20210810153759.24333-5-rf@opensource.cirrus.com>
+ <20210810154959.GD4704@sirena.org.uk>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <c194004a-2a22-5354-9042-3ce811236319@opensource.cirrus.com>
+Date:   Tue, 10 Aug 2021 17:27:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210804210214.1891755-5-elder@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210810154959.GD4704@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: HEeDPNb_IMMg2JwbJqjEPOrF_mHE8xfr
+X-Proofpoint-ORIG-GUID: HEeDPNb_IMMg2JwbJqjEPOrF_mHE8xfr
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 mlxlogscore=937 mlxscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108100105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5.08.21 0:02, Alex Elder wrote:
-> There should only be two interconnects defined for IPA on the
-> QUalcomm SM8350 SoC.  The names should also match those specified by
-> the IPA Device Tree binding.
+On 10/08/2021 16:49, Mark Brown wrote:
+> On Tue, Aug 10, 2021 at 04:37:51PM +0100, Richard Fitzgerald wrote:
+>> cs42l42_pcm_hw_params() must only configure the PLL if this is the first
+>> stream to become active, otherwise it will be overwriting the registers
+>> while the PLL is running.
 > 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-
-Acked-by: Georgi Djakov <djakov@kernel.org>
-
-> ---
->   arch/arm64/boot/dts/qcom/sm8350.dtsi | 8 +++-----
->   1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> index a631d58166b1c..01f60a3bd1c14 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> @@ -666,12 +666,10 @@ ipa: ipa@1e40000 {
->   			clocks = <&rpmhcc RPMH_IPA_CLK>;
->   			clock-names = "core";
->   
-> -			interconnects = <&aggre2_noc MASTER_IPA &gem_noc SLAVE_LLCC>,
-> -					<&mc_virt MASTER_LLCC &mc_virt SLAVE_EBI1>,
-> +			interconnects = <&aggre2_noc MASTER_IPA &mc_virt SLAVE_EBI1>,
->   					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_IPA_CFG>;
-> -			interconnect-names = "ipa_to_llcc",
-> -					     "llcc_to_ebi1",
-> -					     "appss_to_ipa";
-> +			interconnect-names = "memory",
-> +					     "config";
->   
->   			qcom,smem-states = <&ipa_smp2p_out 0>,
->   					   <&ipa_smp2p_out 1>;
+> Shouldn't the PLL code be noticing problematic attempts to reconfigure
+> the PLL while it's active rather than the individual callers?
 > 
 
+It's wrong for a hw_params() for one stream to try to configure the PLL
+when the other stream has already called hw_params(), configured the PLL
+and started it. E.g. if you started a PLAYBACK, configured and
+started everything, then got another hw_params() for the CAPTURE.
+
+cs42l42_pll_config() could check whether it is already running and skip
+configuration in that case, but that seems to me a rather opaque
+implementation. In my opinion this doesn't really fall into the case of
+ignoring-bad-stuff-to-be-helpful (like free() accepting a NULL).
+
+hw_params() deals with both playback and capture streams so it makes
+sense to me that it should contain logic to ensure it isn't stomping on
+the other stream it already set up, rather than have everything it calls
+figure out whether it shouldn't have done that.
