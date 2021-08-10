@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060DA3E7CD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDB53E7CE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242366AbhHJPw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:52:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242368AbhHJPw0 (ORCPT
+        id S242825AbhHJPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242563AbhHJPzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:52:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628610723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8+QhO5R75wolOCQVyYM50mwRqjZzXTj65snO0lyfuGM=;
-        b=XeTvcnjf62Dk0PKHvZ9Rkza9zgc49X1LFjp8wssPN58mrJOj1F/FIneHo9trSOKtzNJwUs
-        IvtZMskw80w9ALEQRcE86X3CS09RPmYSrmZRUkSl4JbWTBcxacZHeIpxHlncyt7povF6Qb
-        smcEv9tdtz6+GOiMCyRZwNE9V1lVJb8=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-5zEW9Y2AOmi1a2u7t67z1Q-1; Tue, 10 Aug 2021 11:52:02 -0400
-X-MC-Unique: 5zEW9Y2AOmi1a2u7t67z1Q-1
-Received: by mail-ej1-f71.google.com with SMTP id zp23-20020a17090684f7b02905a13980d522so5762069ejb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:52:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=8+QhO5R75wolOCQVyYM50mwRqjZzXTj65snO0lyfuGM=;
-        b=IIFyZOL6JCBfz6KD8tVYRzkQWT079MK4aRUE7d8knssYfU4VWP9J9JIVPWqMW8kY91
-         wjpHIDnfIUnWpfJZV5g4RzEEkMo+Z72+6cvlMeh1q6HmVv4bZO2B94WmQL4m84yiELqh
-         8PBBq4n3XWooeS+zKDkdhoNNEz5yFXjDnKtZ8jdq/IHcvnmWojrVWXBo35xgRFwcVUwm
-         N1plj7VIpVxmeGr6dFM2ZsBhIOgQNZHd6G9miP8raH7h8u2OkktcsIoa/Hu+ikRmqyDY
-         uQOVsZmrgNQjcjKD3Z54yookinqrUTi5f/vS8rx3wJ+qKEII6SANxNKNFSMyqQlIkGSl
-         jZAw==
-X-Gm-Message-State: AOAM530Fapw6w3oTlfKkrLmMta0b2dIoXQqeNg5veLul1KmfghHzzcwZ
-        bds5GIyx0G9BGngBHZpsqXaVah6WnOOWB7DFMtOFXStT+e0IPz7fcMdgMt5T24fs+eCXll5AFKe
-        nkzAwfSNjGRoieQcE/LDqbFh1
-X-Received: by 2002:a17:907:b07:: with SMTP id h7mr2927084ejl.406.1628610721213;
-        Tue, 10 Aug 2021 08:52:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNMQpCTpDI7d7U6IVVwQrHpVV6R8mc5voCRACa9wB697FdRlvx9PgzsEjavckRkg+rdDttEA==
-X-Received: by 2002:a17:907:b07:: with SMTP id h7mr2927063ejl.406.1628610721000;
-        Tue, 10 Aug 2021 08:52:01 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id w6sm9689190edq.58.2021.08.10.08.52.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 08:52:00 -0700 (PDT)
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] platform-drivers-x86 for 5.14-3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
-Message-ID: <22dd7348-7f62-a99c-9f3b-3fdd00bb3772@redhat.com>
-Date:   Tue, 10 Aug 2021 17:52:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 10 Aug 2021 11:55:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00EDC0613C1;
+        Tue, 10 Aug 2021 08:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=2mp+fhmrxTKK78q3PfQ3USMLfLfKsq+0eOarN5I74/8=; b=nXyWLbWSA3Cov+BOZYkeIY4/2n
+        ZcDr3xqLJM5nJTNc/X2phuJV5tRwcZ03KnbLKm/LcjZHEdbXdVRx4dSM0G6s10JmwartXRjZoW5td
+        hRSMwUBUYuDLEKA/WTXBojIZflH6T98IuNmtX7iMJ8kfg66Qdibj+Rqy1hxH9Zq2V0jY5DCtw5qHK
+        EctdN8mETAa7hlWmcyMNpqrY7GFsFwr01MPrWAtdflmCTVNkdSVluyAWiaHtpd99v+vADTMoe32do
+        U/xcZBmGgE9ejLFi54TfSY/SK6wP+h5QuzdVpFlmr3v+sHWCoQxcu0nPVg3hdcDxrhqSN7dqdPLQv
+        xkKT9l5g==;
+Received: from 089144200071.atnat0009.highway.a1.net ([89.144.200.71] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDU5Q-00CJ3Q-I5; Tue, 10 Aug 2021 15:54:49 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: tegra: stop using seq_get_buf
+Date:   Tue, 10 Aug 2021 17:54:39 +0200
+Message-Id: <20210810155439.1813109-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Opencode a copy of mrq_debug_read in bpmp_debug_show so that it
+can use seq_write directly instead of poking holes into the seq_file
+abstractions using seq_get_buf.
 
-Here is a small set of bug-fixes for 5.14, 2 patches for dealing with
-360 degree/ yoga-style 2-in-1s with 2 accelerometers and one other
-trivial patch.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/firmware/tegra/bpmp-debugfs.c | 58 ++++++++++++++++++++++-----
+ 1 file changed, 47 insertions(+), 11 deletions(-)
 
-Regards,
-
-Hans
-
-
-The following changes since commit 2b2c66f607d00d17f879c0d946d44340bfbdc501:
-
-  platform/x86: gigabyte-wmi: add support for B550 Aorus Elite V2 (2021-07-28 12:05:33 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.14-3
-
-for you to fetch changes up to 9d7b132e62e41b7d49bf157aeaf9147c27492e0f:
-
-  platform/x86: pcengines-apuv2: Add missing terminating entries to gpio-lookup tables (2021-08-06 14:04:43 +0200)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v5.14-3
-
-Second (small) set of pdx86 fixes for 5.14.
-
-The following is an automated git shortlog grouped by driver:
-
-Add and use a dual_accel_detect() helper:
- - Add and use a dual_accel_detect() helper
-
-Make dual_accel_detect() KIOX010A + KIOX020A detect more robust:
- - Make dual_accel_detect() KIOX010A + KIOX020A detect more robust
-
-pcengines-apuv2:
- -  Add missing terminating entries to gpio-lookup tables
-
-----------------------------------------------------------------
-Hans de Goede (3):
-      platform/x86: Add and use a dual_accel_detect() helper
-      platform/x86: Make dual_accel_detect() KIOX010A + KIOX020A detect more robust
-      platform/x86: pcengines-apuv2: Add missing terminating entries to gpio-lookup tables
-
- drivers/platform/x86/Kconfig             |  3 ++
- drivers/platform/x86/dual_accel_detect.h | 76 ++++++++++++++++++++++++++++++++
- drivers/platform/x86/intel-hid.c         | 21 +++------
- drivers/platform/x86/intel-vbtn.c        | 18 ++++++--
- drivers/platform/x86/pcengines-apuv2.c   |  2 +
- drivers/platform/x86/thinkpad_acpi.c     |  3 +-
- 6 files changed, 104 insertions(+), 19 deletions(-)
- create mode 100644 drivers/platform/x86/dual_accel_detect.h
+diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
+index 440d99c63638..3e9fa4b54358 100644
+--- a/drivers/firmware/tegra/bpmp-debugfs.c
++++ b/drivers/firmware/tegra/bpmp-debugfs.c
+@@ -296,25 +296,61 @@ static int bpmp_debug_show(struct seq_file *m, void *p)
+ 	struct file *file = m->private;
+ 	struct inode *inode = file_inode(file);
+ 	struct tegra_bpmp *bpmp = inode->i_private;
+-	char *databuf = NULL;
+ 	char fnamebuf[256];
+ 	const char *filename;
+-	uint32_t nbytes = 0;
+-	size_t len;
+-	int err;
+-
+-	len = seq_get_buf(m, &databuf);
+-	if (!databuf)
+-		return -ENOMEM;
++	struct mrq_debug_request req = {
++		.cmd = cpu_to_le32(CMD_DEBUG_READ),
++	};
++	struct mrq_debug_response resp;
++	struct tegra_bpmp_message msg = {
++		.mrq = MRQ_DEBUG,
++		.tx = {
++			.data = &req,
++			.size = sizeof(req),
++		},
++		.rx = {
++			.data = &resp,
++			.size = sizeof(resp),
++		},
++	};
++	uint32_t fd = 0, len = 0;
++	int remaining, err;
+ 
+ 	filename = get_filename(bpmp, file, fnamebuf, sizeof(fnamebuf));
+ 	if (!filename)
+ 		return -ENOENT;
+ 
+-	err = mrq_debug_read(bpmp, filename, databuf, len, &nbytes);
+-	if (!err)
+-		seq_commit(m, nbytes);
++	mutex_lock(&bpmp_debug_lock);
++	err = mrq_debug_open(bpmp, filename, &fd, &len, 0);
++	if (err)
++		goto out;
++
++	req.frd.fd = fd;
++	remaining = len;
++
++	while (remaining > 0) {
++		err = tegra_bpmp_transfer(bpmp, &msg);
++		if (err < 0) {
++			goto close;
++		} else if (msg.rx.ret < 0) {
++			err = -EINVAL;
++			goto close;
++		}
+ 
++		if (resp.frd.readlen > remaining) {
++			pr_err("%s: read data length invalid\n", __func__);
++			err = -EINVAL;
++			goto close;
++		}
++
++		seq_write(m, resp.frd.data, resp.frd.readlen);
++		remaining -= resp.frd.readlen;
++	}
++
++close:
++	err = mrq_debug_close(bpmp, fd);
++out:
++	mutex_unlock(&bpmp_debug_lock);
+ 	return err;
+ }
+ 
+-- 
+2.30.2
 
