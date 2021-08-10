@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6231C3E56CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E473B3E56D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbhHJJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
+        id S239023AbhHJJ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239007AbhHJJ1E (ORCPT
+        with ESMTP id S239015AbhHJJ13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:27:04 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9E5C0613D3;
-        Tue, 10 Aug 2021 02:26:40 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkSJG0sQKz9sT6;
-        Tue, 10 Aug 2021 19:26:37 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628587598;
-        bh=ujxBT6JOzhQsnjHTTGJrV5DnVKi8jPWIZ+grZbTmO34=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YDXp3moxuPwwVAV440zscERSPPjtkIRQ6ltbaBAUp9iU6rtb3raxDt2JUaFiGKiIm
-         DPqgooaOlGBh61fThk8btufWzy4wxkwZfxobVitddkbHwRTfDylg/6mcrqTRLbK110
-         DlK0klQ9Yz5h/2EOcvy2vjeu/sxQLk3/e5W3hDqQKzkqNAq1ktQcB+3AjFQ+VP6SkC
-         me3ujyeyIwHdoz+6ZgGWfOK6bxmRVWLdt2ilVMwjzxcqfY5gMXG0LQC08sEFMNhDJh
-         r2wm2FfW0NCF6nysJWV3Vr8gEz/X3MEcrkHXMtGetHUkZPQiFkdLkXmtmccCmaWVlp
-         YRvzD1Aeu456w==
-Date:   Tue, 10 Aug 2021 19:26:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Matthew Auld <matthew.auld@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the drm tree
-Message-ID: <20210810192636.625220ae@canb.auug.org.au>
-In-Reply-To: <20210708122048.534c1c4d@canb.auug.org.au>
-References: <20210603193242.1ce99344@canb.auug.org.au>
-        <20210708122048.534c1c4d@canb.auug.org.au>
+        Tue, 10 Aug 2021 05:27:29 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED97C06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:27:08 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id w14so1644296pjh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NRaO485jOXyVF0oustzhSd8qBSdNJyzH3A7Z5Nbm+es=;
+        b=EN4FC+Zy6qPz5ONRrMSzGs7f2d5IFWEHB+CKaGTlrSFl71+MmJb6AWQ7efO8d+ClIb
+         pnmBW2qV3uz+YogPMJIOxazI0Bvoj1dCt91i+6XBfI4J8/HogjbdB3HsDTzg2BkBekw6
+         8D0q7W44BuFzkyreb4V+5EVY8FveQYOjxevTlXLNu+I9rWg37oGRNiI9dnTyVA9wEaDy
+         3ElJHf+wXX8SN/vvMyi3ziXGw8gJw6iFl6YHA0ajvLilryl5EKx6myt1uXEbG5leYYw6
+         E8W2P8Ia8sL2uhsbmaxIi/vfz8yL3Oso9PVdHL+61zufIGdpF/RQ9nmb7wV0dxlDjdmJ
+         vqZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NRaO485jOXyVF0oustzhSd8qBSdNJyzH3A7Z5Nbm+es=;
+        b=CmHM6VUySGi5M+i9gZJW53KDj7HzzyN9vx/+y+IAsiTCpoZKJgo7SlnlCwWtrFTJkp
+         c4gDe7jbLQxhVJmn/YCwk0hsgzmZkJadviYNs+nPhQJ7sXtlZTFBjZN9Uqpi/u9ftfmz
+         Lf4w/8rvqNMOhTB/ebWGD9ZWk0Sh060WSmxNJAyehEezzyPasj+hkF0oeANMfFDTs5sn
+         QqKZ+GVdbCXw5ODpWnCfwF7Yrlqy1NRB0bHWJCioJJRbj/oaNa0HCmaJtINFhznFnlp/
+         nqzuHd3h25a2JrxdHe8UsLUOfLl97ru4NLKyg9NoC8zdhX7BntQewe1eYRVhtUOINSYL
+         R/WQ==
+X-Gm-Message-State: AOAM530VRiFJvpX9BHgne7w0vXvC/WF8LjvWjtrANedwICTD20T0Kt1v
+        vso+asFyD5SgBW+ddp8nfMCBcA==
+X-Google-Smtp-Source: ABdhPJwxm9hbh/Alhve/g69Hlo8k1hc9s21FDYyYaBSZ0qimtlMyyJ1Zt5kIHCYm6CocEfwRNK9uGw==
+X-Received: by 2002:a62:1e83:0:b029:3c8:ac32:3b41 with SMTP id e125-20020a621e830000b02903c8ac323b41mr19067962pfe.0.1628587627673;
+        Tue, 10 Aug 2021 02:27:07 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id d9sm21966486pfv.161.2021.08.10.02.27.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 02:27:07 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 14:57:05 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Andy Gross <agross@kernel.org>, Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
+Message-ID: <20210810092705.ctf43hwhzdepmcrv@vireshk-i7>
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <6449a61f-a5fc-0b81-65b2-7bf77b8a71aa@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PdFYQG0PzTCvSx0s5gcPuCo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6449a61f-a5fc-0b81-65b2-7bf77b8a71aa@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PdFYQG0PzTCvSx0s5gcPuCo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10-08-21, 10:17, Lukasz Luba wrote:
+> Hi Viresh,
+> 
+> I like the idea, only small comments here in the cover letter.
+> 
+> On 8/10/21 8:36 AM, Viresh Kumar wrote:
+> > Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
+> > with the EM core on their behalf. This allows us to get rid of duplicated code
+> > in the drivers and fix the unregistration part as well, which none of the
+> > drivers have done until now.
+> 
+> The EM is never freed for CPUs by design. The unregister function was
+> introduced for devfreq devices.
 
-Hi all,
+I see. So if a cpufreq driver unregisters and registers again, it will
+be required to use the entries created by the registration itself,
+right ? Technically speaking, it is better to unregister and free any
+related resources and parse everything again.
 
-On Thu, 8 Jul 2021 12:20:48 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> On Thu, 3 Jun 2021 19:32:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote:
-> >
-> > After merging the drm tree, today's linux-next build (htmldocs) produced
-> > these warnings:
-> >=20
-> > Documentation/gpu/driver-uapi.rst:2412: WARNING: Duplicate C declaratio=
-n, also defined at gpu/rfc/i915_gem_lmem:1393.
-> > Declaration is '.. c:enum:: drm_i915_gem_memory_class'.
-> > Documentation/gpu/driver-uapi.rst:2484: WARNING: Duplicate C declaratio=
-n, also defined at gpu/rfc/i915_gem_lmem:2484.
-> > Declaration is '.. c:struct:: drm_i915_gem_memory_class_instance'.
-> > Documentation/gpu/driver-uapi.rst:7: WARNING: Duplicate C declaration, =
-also defined at gpu/rfc/i915_gem_lmem:7.
-> > Declaration is '.. c:struct:: drm_i915_memory_region_info'.
-> > Documentation/gpu/driver-uapi.rst:2531: WARNING: Duplicate C declaratio=
-n, also defined at gpu/rfc/i915_gem_lmem:2531.
-> > Declaration is '.. c:struct:: drm_i915_query_memory_regions'.
-> > Documentation/gpu/driver-uapi.rst:2595: WARNING: Duplicate C declaratio=
-n, also defined at gpu/rfc/i915_gem_lmem:1393.
-> > Declaration is '.. c:struct:: drm_i915_gem_create_ext'.
-> > Documentation/gpu/driver-uapi.rst:2615: WARNING: Duplicate C declaratio=
-n, also defined at gpu/rfc/i915_gem_lmem:1393.
-> > Declaration is '.. c:struct:: drm_i915_gem_create_ext_memory_regions'.
-> >=20
-> > Introduced by (one or more of) commits
-> >=20
-> >   0c1a77cbdafb ("drm/doc: add section for driver uAPI")
-> >   2bc9c04ea702 ("drm/doc/rfc: i915 DG1 uAPI")
-> >   727ecd99a4c9 ("drm/doc/rfc: drop the i915_gem_lmem.h header") =20
->=20
-> I am still getting these warning.
+Lets say, just for fun, I want to test two copies of a cpufreq driver
+(providing different set of freq-tables). I build both of them as
+modules, insert the first version, remove it, insert the second one.
+Ideally, this should just work as expected. But I don't think it will
+in this case as you never parse the EM stuff again.
 
-Still getting them ...
+Again, since the routine is there already, I think it is better/fine
+to just use it.
 
---=20
-Cheers,
-Stephen Rothwell
+> > This would also make the registration with EM core to happen only after policy
+> > is fully initialized, and the EM core can do other stuff from in there, like
+> > marking frequencies as inefficient (WIP). Though this patchset is useful without
+> > that work being done and should be merged nevertheless.
+> > 
+> > This doesn't update scmi cpufreq driver for now as it is a special case and need
+> > to be handled differently. Though we can make it work with this if required.
+> 
+> The scmi cpufreq driver uses direct EM API, which provides flexibility
+> and should stay as is.
 
---Sig_/PdFYQG0PzTCvSx0s5gcPuCo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Right, so I left it as is for now.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESRkwACgkQAVBC80lX
-0Gwu0Qf7BXVjF6CjiHSUhDtdaw/dtje+vQ8f84zqbdnWnbZHD7nOhIY/KfRmrYBe
-PbzQpbbdTfyJA8a9af8K4HK7SOhnjQa4kabi4RtfQGhRip9Hgb+9Y2yGH4yzddFI
-YnunPgO5yPm+PY/nLJZXNBZoJ6S0/yxxkcT9Q8BQD08JzzKSHKMBwbWv5R52sh88
-UCWzU297m4gD+eGdIZKvWY80xG6z+MWZZLvvZ2FU66MRxtLyuOImrvVGJ8bQoGWo
-5QZTtJ+SjJf/NUKlxZ0ZY3pXr8S7jSvssHiOQP85UrrHdcMUxa2AmK0I+sIaCeNZ
-oZCU81MNFfsxvrJMZCSo+h7lKrh87A==
-=Q0bJ
------END PGP SIGNATURE-----
-
---Sig_/PdFYQG0PzTCvSx0s5gcPuCo--
+-- 
+viresh
