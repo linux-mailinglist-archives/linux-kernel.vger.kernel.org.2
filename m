@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BEF3E7FE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD573E7FE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhHJRoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34420 "EHLO mail.kernel.org"
+        id S234996AbhHJRoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:44:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233715AbhHJRkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 772A261019;
-        Tue, 10 Aug 2021 17:37:58 +0000 (UTC)
+        id S232755AbhHJRkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:40:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B840660F41;
+        Tue, 10 Aug 2021 17:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617078;
-        bh=O8J9V4VnQHX0jq0+mNkaZg3S+QXVY27tkx3Bagbnzs0=;
+        s=korg; t=1628617081;
+        bh=/qj3ROmv9sS7iWFoTfgK8dGOGy/KKWHecO55OPEVgds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jykcKNRMy7jCATapOteBldanMY8nUbHdr/gQN90jqBIyFTNl8Lv6JwGP9w0RbYSFx
-         efZTp4pciR7rYyReny1grLkX4Elx8xbp3Duh4B0gMFh/magLOEh6NPUEkRzeHGd4BO
-         u2B260KrLuG4WM0b0vFy8/YamkpGJkNHjWw4bmJ0=
+        b=INNhdtc01Udy7IUz+Yl0G+pOGg7VMjOB1IuRNWtz29HsF6sYCiOp4kb30FmU94KwE
+         WMhTvpoAIur6jLdW2FQf5P9WUw1jPriu3/QNp1cUMDn/CLmhLJKH6/NGeoUYPXcn37
+         2QYil1J0yf/fgxN+qhQaAmDUYRSMpWSz7TOe70fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 005/135] arm64: dts: ls1028a: fix node name for the sysclk
-Date:   Tue, 10 Aug 2021 19:28:59 +0200
-Message-Id: <20210810172955.858626834@linuxfoundation.org>
+Subject: [PATCH 5.10 006/135] ARM: imx: add missing iounmap()
+Date:   Tue, 10 Aug 2021 19:29:00 +0200
+Message-Id: <20210810172955.889629130@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 References: <20210810172955.660225700@linuxfoundation.org>
@@ -40,55 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 7e71b85473f863a29eb1c69265ef025389b4091d ]
+[ Upstream commit f9613aa07f16d6042e74208d1b40a6104d72964a ]
 
-U-Boot attempts to fix up the "clock-frequency" property of the "/sysclk" node:
-https://elixir.bootlin.com/u-boot/v2021.04/source/arch/arm/cpu/armv8/fsl-layerscape/fdt.c#L512
+Commit e76bdfd7403a ("ARM: imx: Added perf functionality to mmdc driver")
+introduced imx_mmdc_remove(), the mmdc_base need be unmapped in it if
+config PERF_EVENTS is enabled.
 
-but fails to do so:
+If imx_mmdc_perf_init() fails, the mmdc_base also need be unmapped.
 
-  ## Booting kernel from Legacy Image at a1000000 ...
-     Image Name:
-     Created:      2021-06-08  10:31:38 UTC
-     Image Type:   AArch64 Linux Kernel Image (gzip compressed)
-     Data Size:    15431370 Bytes = 14.7 MiB
-     Load Address: 80080000
-     Entry Point:  80080000
-     Verifying Checksum ... OK
-  ## Flattened Device Tree blob at a0000000
-     Booting using the fdt blob at 0xa0000000
-     Uncompressing Kernel Image
-     Loading Device Tree to 00000000fbb19000, end 00000000fbb22717 ... OK
-  Unable to update property /sysclk:clock-frequency, err=FDT_ERR_NOTFOUND
-
-  Starting kernel ...
-
-All Layerscape SoCs except LS1028A use "sysclk" as the node name, and
-not "clock-sysclk". So change the node name of LS1028A accordingly.
-
-Fixes: 8897f3255c9c ("arm64: dts: Add support for NXP LS1028A SoC")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Fixes: e76bdfd7403a ("ARM: imx: Added perf functionality to mmdc driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-imx/mmdc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index f3b58bb9b840..5f42904d53ab 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -69,7 +69,7 @@
- 		};
- 	};
+diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
+index 0dfd0ae7a63d..8e57691aafe2 100644
+--- a/arch/arm/mach-imx/mmdc.c
++++ b/arch/arm/mach-imx/mmdc.c
+@@ -462,6 +462,7 @@ static int imx_mmdc_remove(struct platform_device *pdev)
  
--	sysclk: clock-sysclk {
-+	sysclk: sysclk {
- 		compatible = "fixed-clock";
- 		#clock-cells = <0>;
- 		clock-frequency = <100000000>;
+ 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
+ 	perf_pmu_unregister(&pmu_mmdc->pmu);
++	iounmap(pmu_mmdc->mmdc_base);
+ 	kfree(pmu_mmdc);
+ 	return 0;
+ }
+@@ -567,7 +568,11 @@ static int imx_mmdc_probe(struct platform_device *pdev)
+ 	val &= ~(1 << BP_MMDC_MAPSR_PSD);
+ 	writel_relaxed(val, reg);
+ 
+-	return imx_mmdc_perf_init(pdev, mmdc_base);
++	err = imx_mmdc_perf_init(pdev, mmdc_base);
++	if (err)
++		iounmap(mmdc_base);
++
++	return err;
+ }
+ 
+ int imx_mmdc_get_ddr_type(void)
 -- 
 2.30.2
 
