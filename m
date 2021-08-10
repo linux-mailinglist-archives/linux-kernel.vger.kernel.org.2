@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E473B3E56D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDCF3E56D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239023AbhHJJ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        id S239033AbhHJJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239015AbhHJJ13 (ORCPT
+        with ESMTP id S239027AbhHJJ2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:27:29 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED97C06179A
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:27:08 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id w14so1644296pjh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:27:08 -0700 (PDT)
+        Tue, 10 Aug 2021 05:28:37 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF7DC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:28:15 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id j1so32190395pjv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:28:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NRaO485jOXyVF0oustzhSd8qBSdNJyzH3A7Z5Nbm+es=;
-        b=EN4FC+Zy6qPz5ONRrMSzGs7f2d5IFWEHB+CKaGTlrSFl71+MmJb6AWQ7efO8d+ClIb
-         pnmBW2qV3uz+YogPMJIOxazI0Bvoj1dCt91i+6XBfI4J8/HogjbdB3HsDTzg2BkBekw6
-         8D0q7W44BuFzkyreb4V+5EVY8FveQYOjxevTlXLNu+I9rWg37oGRNiI9dnTyVA9wEaDy
-         3ElJHf+wXX8SN/vvMyi3ziXGw8gJw6iFl6YHA0ajvLilryl5EKx6myt1uXEbG5leYYw6
-         E8W2P8Ia8sL2uhsbmaxIi/vfz8yL3Oso9PVdHL+61zufIGdpF/RQ9nmb7wV0dxlDjdmJ
-         vqZg==
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=X77WBIfldn7rqm2+21Ngl7e086LBbBLmUU8LtON+/iY=;
+        b=tPR88JiHmVARTkdlHzXNVmRayC8gz4m3WoxjQ3pzPQNnx/fUDaTBoFz7klr57I09m5
+         Ip6/DsMfswcRt3y17XO2Gzzj1aJl1thFKcc/RuOBZMSTQZDM/ZoYlPvoAn+lb2T3/Vwk
+         eH+EUAGDmQCt8qynwNxh4V4seneoVTEyTJjt0FYj0shNM3rBmxnPMNba8vwOYKXucjnB
+         /MUIkjskKx78RMgDBFWMw4tcJE6/OjQkjzA0YB9JorpP/uy0Fim3qBW4fv1DAZtBdmAQ
+         v2AjvrzBDMvz+fpPeiuXvsy3RcRRd+1bfB1ShRTSC3zq+yAYt/CDeuU/7pBlxdxbFKvP
+         Jcjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NRaO485jOXyVF0oustzhSd8qBSdNJyzH3A7Z5Nbm+es=;
-        b=CmHM6VUySGi5M+i9gZJW53KDj7HzzyN9vx/+y+IAsiTCpoZKJgo7SlnlCwWtrFTJkp
-         c4gDe7jbLQxhVJmn/YCwk0hsgzmZkJadviYNs+nPhQJ7sXtlZTFBjZN9Uqpi/u9ftfmz
-         Lf4w/8rvqNMOhTB/ebWGD9ZWk0Sh060WSmxNJAyehEezzyPasj+hkF0oeANMfFDTs5sn
-         QqKZ+GVdbCXw5ODpWnCfwF7Yrlqy1NRB0bHWJCioJJRbj/oaNa0HCmaJtINFhznFnlp/
-         nqzuHd3h25a2JrxdHe8UsLUOfLl97ru4NLKyg9NoC8zdhX7BntQewe1eYRVhtUOINSYL
-         R/WQ==
-X-Gm-Message-State: AOAM530VRiFJvpX9BHgne7w0vXvC/WF8LjvWjtrANedwICTD20T0Kt1v
-        vso+asFyD5SgBW+ddp8nfMCBcA==
-X-Google-Smtp-Source: ABdhPJwxm9hbh/Alhve/g69Hlo8k1hc9s21FDYyYaBSZ0qimtlMyyJ1Zt5kIHCYm6CocEfwRNK9uGw==
-X-Received: by 2002:a62:1e83:0:b029:3c8:ac32:3b41 with SMTP id e125-20020a621e830000b02903c8ac323b41mr19067962pfe.0.1628587627673;
-        Tue, 10 Aug 2021 02:27:07 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id d9sm21966486pfv.161.2021.08.10.02.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 02:27:07 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 14:57:05 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Andy Gross <agross@kernel.org>, Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
-Message-ID: <20210810092705.ctf43hwhzdepmcrv@vireshk-i7>
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <6449a61f-a5fc-0b81-65b2-7bf77b8a71aa@arm.com>
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=X77WBIfldn7rqm2+21Ngl7e086LBbBLmUU8LtON+/iY=;
+        b=mIns8H6ceBCSSA6T3B78hrS4DhlyytaSgIGNXqfSQI408BOueW6C/0mGCt58S2qRR3
+         gL3hnPlnrBkOiRVB1Cdn4/IcwYjzJsTXyebfZpsRJsrwCYCiUn4UsPevp/70hB3X1iEK
+         6P1vEMBxMhkL5wTdoMb1xIZSn0MgRq/t4gHzq2znulxw8Pj/DIMXawAPWX85ZNZoC9dg
+         rRuwFwWzoEXWiv1pRX4pb3p8/qJEaewDYGFF4jyKILKsXNO2hQEC2KsDt0gH6o8oDvoK
+         KNP7uO+4oXVzQEUoriGVZoaFkLs2X/BFfqL85VGZMLNS+93+l2pGtWKoec4npOwFO0+6
+         RoNA==
+X-Gm-Message-State: AOAM531YFK8LKU+fqZX7AFvpzrF8U/ynjpqeoFVHXTHlNdH8zNlgkepb
+        oZLKwcsV2lSNk8iVAQomgw8=
+X-Google-Smtp-Source: ABdhPJx7FxoxDiTKwaYLzT3evYK5osmhZk91QOFiVQx3BHBVDIWdO7RuM6gWEmb8BAGZLzVq1K+9AQ==
+X-Received: by 2002:a63:e643:: with SMTP id p3mr838997pgj.213.1628587694956;
+        Tue, 10 Aug 2021 02:28:14 -0700 (PDT)
+Received: from [10.94.0.22] ([85.203.23.36])
+        by smtp.gmail.com with ESMTPSA id z15sm27039499pgc.13.2021.08.10.02.28.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 02:28:14 -0700 (PDT)
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        evan.quan@amd.com, luben.tuikov@amd.com, tzimmermann@suse.de,
+        lee.jones@linaro.org, mh12gx2825@gmail.com,
+        sakari.ailus@linux.intel.com, zhangqilong3@huawei.com,
+        pmladek@suse.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
+From:   Tuo Li <islituo@gmail.com>
+Subject: [BUG] drm/amdgpu: possible null-pointer dereference in
+ dce_vXX_0_afmt_setmode()
+Message-ID: <650a9f72-712c-c5a3-dc4c-1251fb3bb6cd@gmail.com>
+Date:   Tue, 10 Aug 2021 17:28:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6449a61f-a5fc-0b81-65b2-7bf77b8a71aa@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-08-21, 10:17, Lukasz Luba wrote:
-> Hi Viresh,
-> 
-> I like the idea, only small comments here in the cover letter.
-> 
-> On 8/10/21 8:36 AM, Viresh Kumar wrote:
-> > Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
-> > with the EM core on their behalf. This allows us to get rid of duplicated code
-> > in the drivers and fix the unregistration part as well, which none of the
-> > drivers have done until now.
-> 
-> The EM is never freed for CPUs by design. The unregister function was
-> introduced for devfreq devices.
+Hello,
 
-I see. So if a cpufreq driver unregisters and registers again, it will
-be required to use the entries created by the registration itself,
-right ? Technically speaking, it is better to unregister and free any
-related resources and parse everything again.
+Our static analysis tool finds some possible null-pointer dereferences 
+in the amdgpu driver in Linux 5.14.0-rc3:
 
-Lets say, just for fun, I want to test two copies of a cpufreq driver
-(providing different set of freq-tables). I build both of them as
-modules, insert the first version, remove it, insert the second one.
-Ideally, this should just work as expected. But I don't think it will
-in this case as you never parse the EM stuff again.
+In dce_v10_0.c:
+The variable encoder->crtc is checked in:
+1591:    if (encoder->crtc)
 
-Again, since the routine is there already, I think it is better/fine
-to just use it.
+This indicates that encoder->crtc can be NULL.
+Then the function dce_v10_0_audio_set_dto() is called with the argument 
+encoder:
+1600:    ce_v10_0_audio_set_dto(encoder, mode->clock);
 
-> > This would also make the registration with EM core to happen only after policy
-> > is fully initialized, and the EM core can do other stuff from in there, like
-> > marking frequencies as inefficient (WIP). Though this patchset is useful without
-> > that work being done and should be merged nevertheless.
-> > 
-> > This doesn't update scmi cpufreq driver for now as it is a special case and need
-> > to be handled differently. Though we can make it work with this if required.
-> 
-> The scmi cpufreq driver uses direct EM API, which provides flexibility
-> and should stay as is.
+However, encoder->crtc is dereferenced in this function:
+1545:    struct amdgpu_crtc *amdgpu_crtc = to_amdgpu_crtc(encoder->crtc);
+1559:    tmp = REG_SET_FIELD(tmp, DCCG_AUDIO_DTO_SOURCE, 
+DCCG_AUDIO_DTO0_SOURCE_SEL, amdgpu_crtc->crtc_id);
 
-Right, so I left it as is for now.
+In dce_v11_0.c and dce_v8_0.c, situations are the same.
 
--- 
-viresh
+I am not quite sure whether these possible null-pointer dereferences are 
+real and how to fix them if they are real.
+Any feedback would be appreciated, thanks!
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+Best wishes,
+Tuo Li
