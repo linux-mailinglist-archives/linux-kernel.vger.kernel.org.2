@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F763E57F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D28F3E57F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238080AbhHJKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:05:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:52810 "EHLO foss.arm.com"
+        id S239680AbhHJKGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:06:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:59569 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232974AbhHJKFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:05:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CFFC6D;
-        Tue, 10 Aug 2021 03:05:03 -0700 (PDT)
-Received: from [10.57.9.181] (unknown [10.57.9.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE0B83F70D;
-        Tue, 10 Aug 2021 03:05:01 -0700 (PDT)
-Subject: Re: [PATCH 8/8] cpufreq: vexpress: Use auto-registration for energy
- model
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d3629cc7-d9db-0e54-94e9-278e308b7e8e@arm.com>
-Date:   Tue, 10 Aug 2021 11:05:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S239669AbhHJKGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:06:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="278619487"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="278619487"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 03:05:53 -0700
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="638755375"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 03:05:48 -0700
+Received: by lahna (sSMTP sendmail emulation); Tue, 10 Aug 2021 13:05:45 +0300
+Date:   Tue, 10 Aug 2021 13:05:45 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Kate Hsuan <hpa@redhat.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Sujith Thomas <sujith.thomas@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, Dell.Client.Kernel@dell.com,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 09/20] Move Intel SCU IPC of pdx86 to intel directory to
+ increase readability.
+Message-ID: <YRJPebbK3uQBU9K8@lahna>
+References: <20210810095832.4234-1-hpa@redhat.com>
+ <20210810095832.4234-10-hpa@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <87fecd84e3f6ff6f153be14b0d53de93c0b04ae6.1628579170.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810095832.4234-10-hpa@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+No objections, I think this is good idea but..
 
-On 8/10/21 8:36 AM, Viresh Kumar wrote:
-> Use the CPUFREQ_REGISTER_WITH_EM flag to allow cpufreq core to
-> automatically register with the energy model.
-> 
-> This allows removal of boiler plate code from the driver and fixes the
-> unregistration part as well.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Tue, Aug 10, 2021 at 05:58:21PM +0800, Kate Hsuan wrote:
+
+.. I suggest to add proper commit message here. Many maintainers ignore
+patches that don't have one.
+
+> Signed-off-by: Kate Hsuan <hpa@redhat.com>
 > ---
->   drivers/cpufreq/vexpress-spc-cpufreq.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/vexpress-spc-cpufreq.c b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> index 51dfa9ae6cf5..28c4c3254337 100644
-> --- a/drivers/cpufreq/vexpress-spc-cpufreq.c
-> +++ b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> @@ -442,8 +442,6 @@ static int ve_spc_cpufreq_init(struct cpufreq_policy *policy)
->   	policy->freq_table = freq_table[cur_cluster];
->   	policy->cpuinfo.transition_latency = 1000000; /* 1 ms */
->   
-> -	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
-> -
->   	if (is_bL_switching_enabled())
->   		per_cpu(cpu_last_req_freq, policy->cpu) =
->   						clk_get_cpu_rate(policy->cpu);
-> @@ -487,7 +485,8 @@ static void ve_spc_cpufreq_ready(struct cpufreq_policy *policy)
->   static struct cpufreq_driver ve_spc_cpufreq_driver = {
->   	.name			= "vexpress-spc",
->   	.flags			= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
-> -					CPUFREQ_NEED_INITIAL_FREQ_CHECK,
-> +				  CPUFREQ_NEED_INITIAL_FREQ_CHECK |
-> +				  CPUFREQ_REGISTER_WITH_EM,
->   	.verify			= cpufreq_generic_frequency_table_verify,
->   	.target_index		= ve_spc_cpufreq_set_target,
->   	.get			= ve_spc_cpufreq_get_rate,
-> 
-
-I can see that this driver calls explicitly the
-of_cpufreq_cooling_register()
-It does this in the cpufreq_driver->ready() callback
-implementation: ve_spc_cpufreq_ready()
-
-With that in mind, the new code in the patch 1/8, which
-registers the EM, should be called even earlier, above:
----------------------8<---------------------------------
-/* Callback for handling stuff after policy is ready */
-	if (cpufreq_driver->ready)
-		cpufreq_driver->ready(policy);
-------------------->8----------------------------------
-
-This also triggered a question:
-If this new flag can be set in the cpufreq driver which hasn't set
-CPUFREQ_IS_COOLING_DEV
-?
-I can only see one driver (this one in the patch) which has such
-configuration.
-
+>  drivers/platform/x86/Kconfig                  | 47 -----------------
+>  drivers/platform/x86/Makefile                 |  6 +--
+>  drivers/platform/x86/intel/Kconfig            |  1 +
+>  drivers/platform/x86/intel/Makefile           |  5 ++
+>  drivers/platform/x86/intel/scu/Kconfig        | 52 +++++++++++++++++++
+>  drivers/platform/x86/intel/scu/Makefile       | 11 ++++
+>  .../x86/{ => intel/scu}/intel_scu_ipc.c       |  0
+>  .../x86/{ => intel/scu}/intel_scu_ipcutil.c   |  0
+>  .../x86/{ => intel/scu}/intel_scu_pcidrv.c    |  0
+>  .../x86/{ => intel/scu}/intel_scu_pltdrv.c    |  0
+>  .../x86/{ => intel/scu}/intel_scu_wdt.c       |  0
+>  11 files changed, 70 insertions(+), 52 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/scu/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/scu/Makefile
+>  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipc.c (100%)
+>  rename drivers/platform/x86/{ => intel/scu}/intel_scu_ipcutil.c (100%)
+>  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pcidrv.c (100%)
+>  rename drivers/platform/x86/{ => intel/scu}/intel_scu_pltdrv.c (100%)
+>  rename drivers/platform/x86/{ => intel/scu}/intel_scu_wdt.c (100%)
