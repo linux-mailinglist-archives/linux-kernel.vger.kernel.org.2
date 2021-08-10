@@ -2,132 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763CA3E50D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F70C3E50D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 04:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237305AbhHJCDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 22:03:22 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:35008 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236688AbhHJCDV (ORCPT
+        id S237313AbhHJCFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Aug 2021 22:05:11 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:13408 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231716AbhHJCFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 22:03:21 -0400
-X-UUID: 4f872159f7fe47af935b8076192d21f4-20210810
-X-UUID: 4f872159f7fe47af935b8076192d21f4-20210810
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1785707904; Tue, 10 Aug 2021 10:02:57 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Aug 2021 10:02:56 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas07.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 10 Aug 2021 10:02:55 +0800
-From:   <guangming.cao@mediatek.com>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
-        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-CC:     <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: [PATCH] dma_heap: enable map_attrs when (un)map_attachment
-Date:   Tue, 10 Aug 2021 10:02:54 +0800
-Message-ID: <20210810020254.103134-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210721094314.117413-1-guangming.cao@mediatek.com>
-References: <20210721094314.117413-1-guangming.cao@mediatek.com>
+        Mon, 9 Aug 2021 22:05:10 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GkGQF3rqLzcmH6;
+        Tue, 10 Aug 2021 10:01:09 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 10 Aug 2021 10:04:47 +0800
+Received: from huawei.com (10.67.189.17) by dggpeml500013.china.huawei.com
+ (7.185.36.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
+ 2021 10:04:47 +0800
+From:   QiuXi <qiuxi1@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <akpm@linux-foundation.org>,
+        <jannh@google.com>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <xiekunxun@huawei.com>,
+        <young.liuyang@huawei.com>
+Subject: [PATCH 1/1] coredump: fix memleak in dump_vma_snapshot()
+Date:   Tue, 10 Aug 2021 10:04:41 +0800
+Message-ID: <20210810020441.62806-1-qiuxi1@huawei.com>
+X-Mailer: git-send-email 2.12.3
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
+X-Originating-IP: [10.67.189.17]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+dump_vma_snapshot() allocs memory for *vma_meta, when dump_vma_snapshot()
+returns -EFAULT, the memory will be leaked, so we free it correctly.
 
-For dma-heap users, they can't bypass cache sync when (un)map
-iova with dma heap. But they can do it by adding
-DMA_ATTR_SKIP_CPU_SYNC into dma_alloc_attrs.
-
-To Keep alignment, add map_attrs support for dma_heap when
-(un)map_attachment.
-
-Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+Fixes: a07279c9a8cd7 ("binfmt_elf, binfmt_elf_fdpic: use a VMA list snapshot")
+Cc: stable@vger.kernel.org # v5.10
+Signed-off-by: QiuXi <qiuxi1@huawei.com>
 ---
- drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
- drivers/dma-buf/heaps/system_heap.c | 6 ++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ fs/coredump.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 0c05b79870f9..2c9feb3bfc3e 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -99,9 +99,10 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
- {
- 	struct dma_heap_attachment *a = attachment->priv;
- 	struct sg_table *table = &a->table;
-+	int attrs = attachment->dma_map_attrs;
- 	int ret;
+diff --git a/fs/coredump.c b/fs/coredump.c
+index 07afb5ddb1c4..19fe5312c10f 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -1127,8 +1127,10 @@ int dump_vma_snapshot(struct coredump_params *cprm, int *vma_count,
  
--	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-+	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
- 	if (ret)
- 		return ERR_PTR(-ENOMEM);
- 	a->mapped = true;
-@@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				   enum dma_data_direction direction)
- {
- 	struct dma_heap_attachment *a = attachment->priv;
-+	int attrs = attachment->dma_map_attrs;
+ 	mmap_write_unlock(mm);
  
- 	a->mapped = false;
--	dma_unmap_sgtable(attachment->dev, table, direction, 0);
-+	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
- }
+-	if (WARN_ON(i != *vma_count))
++	if (WARN_ON(i != *vma_count)) {
++		kvfree(*vma_meta);
+ 		return -EFAULT;
++	}
  
- static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 23a7e74ef966..fc7b1e02988e 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -130,9 +130,10 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
- {
- 	struct dma_heap_attachment *a = attachment->priv;
- 	struct sg_table *table = a->table;
-+	int attrs = attachment->dma_map_attrs;
- 	int ret;
- 
--	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-+	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-@@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				      enum dma_data_direction direction)
- {
- 	struct dma_heap_attachment *a = attachment->priv;
-+	int attrs = attachment->dma_map_attrs;
- 
- 	a->mapped = false;
--	dma_unmap_sgtable(attachment->dev, table, direction, 0);
-+	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
- }
- 
- static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+ 	*vma_data_size_ptr = vma_data_size;
+ 	return 0;
 -- 
-2.17.1
+2.12.3
 
