@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BE03E560F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66693E5601
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238466AbhHJI5S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 04:57:18 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20136 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238335AbhHJI5Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:57:16 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-234-w1_GZZkGMW-hVo-Y0c_N0g-1; Tue, 10 Aug 2021 09:56:52 +0100
-X-MC-Unique: w1_GZZkGMW-hVo-Y0c_N0g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Tue, 10 Aug 2021 09:56:52 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Tue, 10 Aug 2021 09:56:52 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>, Robert Richter <rric@kernel.org>,
-        "Len Baker" <len.baker@gmx.com>
-CC:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-Thread-Topic: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-Thread-Index: AQHXjUKovGKiu304s0CSrAMXVBAc3KtsbpXQ
-Date:   Tue, 10 Aug 2021 08:56:51 +0000
-Message-ID: <c24330a3d7464ed3951d513bb1559258@AcuMS.aculab.com>
-References: <20210807155957.10069-1-len.baker@gmx.com>
-         <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
-         <20210808112617.GA1927@titan> <YRD90L6PMoVbbv+9@rric.localdomain>
- <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
-In-Reply-To: <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S238438AbhHJIxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:53:20 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50893 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238379AbhHJIxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 04:53:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214848951"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="214848951"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 01:52:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="674839874"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Aug 2021 01:52:45 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id 1EE15580922;
+        Tue, 10 Aug 2021 01:52:42 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Jose Abreu <Jose.Abreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH net-next 1/1] net: pcs: xpcs: fix error handling on failed to allocate memory
+Date:   Tue, 10 Aug 2021 16:58:12 +0800
+Message-Id: <20210810085812.1808466-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 09 August 2021 18:19
-> 
-> On Mon, 2021-08-09 at 12:05 +0200, Robert Richter wrote:
-> > On 08.08.21 13:26:17, Len Baker wrote:
-> >
-> > > > Perhaps this should use scnprintf rather than strscpy
-> > > > Something like:
-> > > > 			n += scnprintf(buf + n, len - n, "%s",
-> > > > 				       p == e->label ? dim->label : OTHER_LABEL);
-> > > >
-> > > In the first version [1] the scnprintf was used but Robert Richter don't
-> > > see any benefit compared with the current implementation.
-> > >
-> > > [1] https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gmx.com/
-> >
-> > Reason is that there is the assumption that p must always point at the
-> > end of the string and its trailing zero byte. I am not opposed using
-> > the string function's return code instead of strlen() to get the
-> > length. But why using formated output if strscpy() can be used?
-> 
-> strscpy and scnprintf have different return values and it's simpler
-> and much more common to use scnprintf for appended strings that are
-> limited to a specific buffer length.
+Drivers such as sja1105 and stmmac that call xpcs_create() expects an
+error returned by the pcs-xpcs module, but this was not the case on
+failed to allocate memory.
 
-scnprintf() will be a lot slower, but has a much better return value
-than most of the strxxxcpy() functions.
+Fixed this by returning an -ENOMEM instead of a NULL pointer.
 
-The only slight problem is that you can't differentiate overflow
-from a max-length output.
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ drivers/net/pcs/pcs-xpcs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Trouble is fixing that adds 'yet another set of functions'.
-Clearly we need the yellow with purple stripe ones :-)
-Probably:
-	offset = xxx(buf, len, offset, ......)
-where offset == len on truncation.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index 63fda3fc40aa..4bd61339823c 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -1089,7 +1089,7 @@ struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
+ 
+ 	xpcs = kzalloc(sizeof(*xpcs), GFP_KERNEL);
+ 	if (!xpcs)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	xpcs->mdiodev = mdiodev;
+ 
+-- 
+2.25.1
 
