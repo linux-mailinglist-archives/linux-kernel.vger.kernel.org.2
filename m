@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5573E5B0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAAE3E5AFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241243AbhHJNVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238234AbhHJNVL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:21:11 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB200C0613D3;
-        Tue, 10 Aug 2021 06:20:49 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id t3so20923475plg.9;
-        Tue, 10 Aug 2021 06:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SX74JVl12Ur/MSUH0EdL9xrO+WJ2AVt5+Tteuxj1iUE=;
-        b=ZhPaZuwFIGrAHCxFjgMdx8S9KUmp6xSb6B0FbPA/mWapTqlnPJMTh6DehZh5D/JDQY
-         2UCY8yhkpFC3QaZXwKOSyB36+p5WlZM8+3iIvBakUdOYDCR2P3XDPSuRA79NpbwLFwkR
-         egAhSwRa8UnENnklifmNtWWec7Us8sFTihiJ6CW53D1tk8GVKn9uuiVUfN9oJOgokMFB
-         DEKBgLD9W3ECSRaiVkBX1YsDweATsShalR1ws4wOfGh2UKqTx1a2UvxJ/N9K/LGVNTqA
-         Mi72SnOhfwmqqAEIOcfPTGZfzhjTzsQP6dLXrgXHFDQolUrKgvfU1u1TIme93aXan1bV
-         4C4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SX74JVl12Ur/MSUH0EdL9xrO+WJ2AVt5+Tteuxj1iUE=;
-        b=ImdnCEn9+jpOj0AffxB8jvLxR9q0JjuDOd/+zwFFvZ9asFUw65T7uamO2QD9U1yiCh
-         t5kvcfoviSUZdxZQT3e+o5a2+IyksW7yScMsEAgZhqBYwGr460H8kLc4FTUaiwUWiHde
-         3X2Si60j5aFO1j5b364HDb+jyqAEj+Ia32lK2Ucrsde7jEABH0AStcusiHSKLUCPBwVZ
-         3ACjWNB9HfCka/4v55wMtb0BnurwVj6k7IBf9/pGcMQvDWknHB4JnYjuhfwUKoJQLYXg
-         DMBdzh+2hRApi9hYDTDWr+bpzjWbjfiD5SqsrwVvWtBeZ+mJ3wAn/cwacjd4mzdxH0hg
-         KYkg==
-X-Gm-Message-State: AOAM532ltx9Y29rFnwKKPJVvLEqeslOqzN3oGRN2sxwfKrqsZO+SZWTP
-        iQ8S1TH04F7E8klMTe8PEi0=
-X-Google-Smtp-Source: ABdhPJx/6lEyuHm6rBEtovKxgRhP6PBxVM7h8vp0TYEaBFVR627ybgDFXrKOrR3RClXkvqTksDYjSw==
-X-Received: by 2002:a17:902:dcd5:b029:12d:219f:6c04 with SMTP id t21-20020a170902dcd5b029012d219f6c04mr10190091pll.7.1628601649245;
-        Tue, 10 Aug 2021 06:20:49 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.40])
-        by smtp.gmail.com with ESMTPSA id c23sm24208897pfn.140.2021.08.10.06.20.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 06:20:48 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     ericvh@gmail.com, lucho@ionkov.net, asmadeus@codewreck.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] net: 9p: Fix possible null-pointer dereference in p9_cm_event_handler()
-Date:   Tue, 10 Aug 2021 06:20:07 -0700
-Message-Id: <20210810132007.296008-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S241188AbhHJNUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:20:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241185AbhHJNUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:20:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE91E60F38;
+        Tue, 10 Aug 2021 13:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628601622;
+        bh=i8aV5+sUyxbK8b8J3GdV5Q1yGwzOp1R2o33rDjK+wH4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dqSO0i7ySLnw7yIc8Eok1mNOrrXvrLrw/T559Lgl4LtbGnapFY3pDfSn3sWrxWoc0
+         MFs6WyE3ASeGm7FdHxYFUdsaF6wxBgNMNNTs3cwI09DeRnPD70u5I13jEKoTyrRrKw
+         2tOZbqULGJeDQua64XNnYlfSdBdaCY3q9QctVcWC+Sn/pYyAnE6HlP6/66L5H7D1GP
+         Oop4mI7/SHPceddDvkb5f4tgb1O83AZ/z5EZvJYbkreZJHcsBBERTgwUEdLDK/tL22
+         n/xzkteQewS12TQIff0Lqb7ypLAhv0RqAS1bZap3SR/LeKQP9aT8FOHFhYmo/ROfXl
+         nRwvjdhREOenw==
+Date:   Tue, 10 Aug 2021 14:20:15 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] KVM: arm64: Drop direct PAGE_[SHIFT|SIZE] usage as
+ page size
+Message-ID: <20210810132015.GA2946@willie-the-truck>
+References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
+ <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable rdma is checked when event->event is equal to 
-RDMA_CM_EVENT_DISCONNECTED:
-  if (rdma)
+On Tue, Aug 10, 2021 at 12:32:37PM +0530, Anshuman Khandual wrote:
+> All instances here could just directly test against CONFIG_ARM64_XXK_PAGES
+> instead of evaluating via PAGE_SHIFT or PAGE_SIZE. With this change, there
+> will be no such usage left.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: kvmarm@lists.cs.columbia.edu
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm64/kvm/hyp/pgtable.c | 6 +++---
+>  arch/arm64/mm/mmu.c          | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
 
-This indicates that it can be NULL. If so, a null-pointer dereference will 
-occur when calling complete():
-  complete(&rdma->cm_done);
+Why is this better?
 
-To fix this possible null-pointer dereference, calling complete() only 
-when rdma is not NULL.
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- net/9p/trans_rdma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/9p/trans_rdma.c b/net/9p/trans_rdma.c
-index af0a8a6cd3fd..fb3435dfd071 100644
---- a/net/9p/trans_rdma.c
-+++ b/net/9p/trans_rdma.c
-@@ -285,7 +285,8 @@ p9_cm_event_handler(struct rdma_cm_id *id, struct rdma_cm_event *event)
- 	default:
- 		BUG();
- 	}
--	complete(&rdma->cm_done);
-+	if (rdma)
-+		complete(&rdma->cm_done);
- 	return 0;
- }
- 
--- 
-2.25.1
-
+WIll
