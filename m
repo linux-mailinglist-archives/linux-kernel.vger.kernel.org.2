@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E4F3E807E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F9E3E7E8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236530AbhHJRub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54476 "EHLO mail.kernel.org"
+        id S232408AbhHJReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234353AbhHJRrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:47:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D555A61261;
-        Tue, 10 Aug 2021 17:40:53 +0000 (UTC)
+        id S232126AbhHJRdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:33:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3AF860F13;
+        Tue, 10 Aug 2021 17:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617254;
-        bh=RDMc6f6+oHGp9OQZkfFNST22NUvsvoZ6295xLgFaI/8=;
+        s=korg; t=1628616782;
+        bh=nrCmIb4AruyukeULlliE3orbEI85qOJB3L9iiqPuQ4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pEvUqV3MRyZ1UO9UPQlGwFzwiyJJhNQe/lSpij02LLvt5BEc4cPwLePaMRcwwcHJw
-         hFHASQUrk2af8JMbN8GnFO3zG8iNQiql3TETBymuZJ21eRIuPVoF5VhU0OINWVHNV9
-         hxJebPnuTR2hAkzLaPuNxxTXfCFSqwSGJIjF4POM=
+        b=sAlA0Gk/3MPjTPt96porWn7twO2hMuNXkOZuevPSbUuX3TmigAnKi5norqD2uAhRl
+         53LbSyOCA2qqFpp0Z5y7+EB7KBleUQdUmDTw+VPImvLxZvR2O0yJ3EvdFHPD12GiMt
+         WMcWVai31m4ewabgVbvl9u03cImLrbkM+2lX7j+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 5.10 070/135] usb: host: ohci-at91: suspend/resume ports after/before OHCI accesses
-Date:   Tue, 10 Aug 2021 19:30:04 +0200
-Message-Id: <20210810172958.101008340@linuxfoundation.org>
+        stable@vger.kernel.org, Ying Xu <yinxu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 11/54] sctp: move the active_key update after sh_keys is added
+Date:   Tue, 10 Aug 2021 19:30:05 +0200
+Message-Id: <20210810172944.557219837@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 00de6a572f30ee93cad7e0704ec4232e5e72bda8 upstream.
+[ Upstream commit ae954bbc451d267f7d60d7b49db811d5a68ebd7b ]
 
-On SAMA7G5 suspending ports will cut the access to OHCI registers and
-any subsequent access to them will lead to CPU being blocked trying to
-access that memory. Same thing happens on resume: if OHCI memory is
-accessed before resuming ports the CPU will block on that access. The
-OCHI memory is accessed on suspend/resume though
-ohci_suspend()/ohci_resume().
+In commit 58acd1009226 ("sctp: update active_key for asoc when old key is
+being replaced"), sctp_auth_asoc_init_active_key() is called to update
+the active_key right after the old key is deleted and before the new key
+is added, and it caused that the active_key could be found with the key_id.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210721132905.1970713-1-claudiu.beznea@microchip.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In Ying Xu's testing, the BUG_ON in sctp_auth_asoc_init_active_key() was
+triggered:
+
+  [ ] kernel BUG at net/sctp/auth.c:416!
+  [ ] RIP: 0010:sctp_auth_asoc_init_active_key.part.8+0xe7/0xf0 [sctp]
+  [ ] Call Trace:
+  [ ]  sctp_auth_set_key+0x16d/0x1b0 [sctp]
+  [ ]  sctp_setsockopt.part.33+0x1ba9/0x2bd0 [sctp]
+  [ ]  __sys_setsockopt+0xd6/0x1d0
+  [ ]  __x64_sys_setsockopt+0x20/0x30
+  [ ]  do_syscall_64+0x5b/0x1a0
+
+So fix it by moving the active_key update after sh_keys is added.
+
+Fixes: 58acd1009226 ("sctp: update active_key for asoc when old key is being replaced")
+Reported-by: Ying Xu <yinxu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-at91.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ net/sctp/auth.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/host/ohci-at91.c
-+++ b/drivers/usb/host/ohci-at91.c
-@@ -606,8 +606,6 @@ ohci_hcd_at91_drv_suspend(struct device
- 	if (ohci_at91->wakeup)
- 		enable_irq_wake(hcd->irq);
+diff --git a/net/sctp/auth.c b/net/sctp/auth.c
+index b2ca66c4a21d..9e0c98df20da 100644
+--- a/net/sctp/auth.c
++++ b/net/sctp/auth.c
+@@ -880,14 +880,18 @@ int sctp_auth_set_key(struct sctp_endpoint *ep,
+ 	memcpy(key->data, &auth_key->sca_key[0], auth_key->sca_keylength);
+ 	cur_key->key = key;
  
--	ohci_at91_port_suspend(ohci_at91->sfr_regmap, 1);
--
- 	ret = ohci_suspend(hcd, ohci_at91->wakeup);
- 	if (ret) {
- 		if (ohci_at91->wakeup)
-@@ -627,7 +625,10 @@ ohci_hcd_at91_drv_suspend(struct device
- 		/* flush the writes */
- 		(void) ohci_readl (ohci, &ohci->regs->control);
- 		msleep(1);
-+		ohci_at91_port_suspend(ohci_at91->sfr_regmap, 1);
- 		at91_stop_clock(ohci_at91);
-+	} else {
-+		ohci_at91_port_suspend(ohci_at91->sfr_regmap, 1);
+-	if (replace) {
+-		list_del_init(&shkey->key_list);
+-		sctp_auth_shkey_release(shkey);
+-		if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
+-			sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
++	if (!replace) {
++		list_add(&cur_key->key_list, sh_keys);
++		return 0;
  	}
- 
- 	return ret;
-@@ -639,6 +640,8 @@ ohci_hcd_at91_drv_resume(struct device *
- 	struct usb_hcd	*hcd = dev_get_drvdata(dev);
- 	struct ohci_at91_priv *ohci_at91 = hcd_to_ohci_at91_priv(hcd);
- 
-+	ohci_at91_port_suspend(ohci_at91->sfr_regmap, 0);
 +
- 	if (ohci_at91->wakeup)
- 		disable_irq_wake(hcd->irq);
- 	else
-@@ -646,8 +649,6 @@ ohci_hcd_at91_drv_resume(struct device *
++	list_del_init(&shkey->key_list);
++	sctp_auth_shkey_release(shkey);
+ 	list_add(&cur_key->key_list, sh_keys);
  
- 	ohci_resume(hcd, false);
- 
--	ohci_at91_port_suspend(ohci_at91->sfr_regmap, 0);
--
++	if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
++		sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
++
  	return 0;
  }
  
+-- 
+2.30.2
+
 
 
