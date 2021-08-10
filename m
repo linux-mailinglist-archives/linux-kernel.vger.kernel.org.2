@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050353E8512
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5E03E8513
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234257AbhHJVRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:17:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51256 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232739AbhHJVR1 (ORCPT
+        id S234273AbhHJVSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhHJVS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:17:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628630224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M07184jKAvMxpfzMZ1dKXh+WpGAO8RO24s56vHQzw+s=;
-        b=FabLCabPC3jdzHwrvOpe+0FQ1ALzf0RkAOca8K1ZHZskItg9Q1iV/WAgCYLKgOpFJDEquk
-        apEsvDUPIkJkthX8vyW3UWfZtsV/jCPVGBKvYkocKD/Ptu0oQOQDa510x3kZCXLl0Wp9p/
-        l5LN8a4RqAekvsq+6SxPE7JVYy4LBks=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-7po_AAuOPrmO7ZYwl-BnwA-1; Tue, 10 Aug 2021 17:17:03 -0400
-X-MC-Unique: 7po_AAuOPrmO7ZYwl-BnwA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27503593C5;
-        Tue, 10 Aug 2021 21:17:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 042E85D9C6;
-        Tue, 10 Aug 2021 21:17:00 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-68-willy@infradead.org>
-References: <20210715033704.692967-68-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 067/138] mm/writeback: Add folio_start_writeback()
+        Tue, 10 Aug 2021 17:18:26 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92F2C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:18:03 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id w20so723241lfu.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 14:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O2QGnhDG5CSFWe5z6crf4E+5alhrIaUs/gP83zlfZBI=;
+        b=tmtzT47381evbjLQpTnvmFQRXXJoB0NJyL05u/jg9ydoMZmqZfePU27QxbY2NHMkGQ
+         BmkLyxl3a17yBIMTkZ3LibcLX3p2A1P12Zo+OfdjNFNjmV6TfTEMAeHFD/DYo9JMx0p4
+         8X8miZg5EpID649V56KR7uqqin/BJBd9lXkLY9LvT2MRXekvFfRcNuafav08Kf/nzRBr
+         MKt+Co7QjoJs3v88DUtKg9TRg68c2ztvNeQQLu7PNcCg/cRU7mdChqxSZTGFkDRqNmtz
+         PrGpq3lRIg2jGO/S2B0+Q0aHrtdeQ5Wy/+OHlwrMxQF/PYnsqyjrAAskVkGPyQFWD/Ix
+         JwCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O2QGnhDG5CSFWe5z6crf4E+5alhrIaUs/gP83zlfZBI=;
+        b=uaAhZ05pvJJRJIY221Tk0LLdgac+3DtsuOQC1x1JIwL8bGb7dOzvdGMX8xu5dPB+mA
+         pyopocy+FkqC7rh5S+liUy3pgWwyRgQyjMXcWISRisEgwCah18axHOb37afG7nmlnqfJ
+         THxPNASB+BGw0Ywr0aDyLpaKjacXxN5xYQzVXC1et6UorcRgamWudvMKhxHaGeezZ2az
+         OK6+rOVHGRYE3L3Xf44UEpugkwWxH4tZ/tD5i/bboroyMOnEixgKahKU51384OvNZBfT
+         w8wXk+Q3fwelUlzU4PJvz4n/gJrPjhH8xtrZPLq9k5yyPusmR8NKdo61kLsPgr0JGTYt
+         CyVw==
+X-Gm-Message-State: AOAM532iRorQYOod5VK+asR0Sm00OHSHaUQQDNhs5WlD+c+n+79lESoT
+        KZLfjDJI732AecYj1qX7oq+/w/Fp4z4jxgXlFMij+A==
+X-Google-Smtp-Source: ABdhPJwSjT1TOy4jCVN4TEDzLsf9wTHNWPDJhQA1WEafUY3JEYUClPK0FKoIycqvFSxxCvh4e3tHkWoLmG9QtQ/EgPg=
+X-Received: by 2002:a05:6512:23a7:: with SMTP id c39mr23004537lfv.358.1628630282092;
+ Tue, 10 Aug 2021 14:18:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1812884.1628630220.1@warthog.procyon.org.uk>
-Date:   Tue, 10 Aug 2021 22:17:00 +0100
-Message-ID: <1812885.1628630220@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210809223740.59009-1-npache@redhat.com> <YRKa0yzEDALtvSZO@cmpxchg.org>
+ <a7afc485-9036-8f09-e582-f2eb45620670@redhat.com>
+In-Reply-To: <a7afc485-9036-8f09-e582-f2eb45620670@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 10 Aug 2021 14:17:50 -0700
+Message-ID: <CALvZod5L+cyON5qRX3eSdHbo+-H7VDQeFuYYNqpK5diCcv9OMw@mail.gmail.com>
+Subject: Re: [PATCH v3] vm_swappiness=0 should still try to avoid swapping
+ anon memory
+To:     Nico Pache <npache@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Waiman Long <llong@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        hakavlad@inbox.lv
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+On Tue, Aug 10, 2021 at 12:24 PM Nico Pache <npache@redhat.com> wrote:
+>
+>
+[...]
+> >
+> > I'm wondering how you're getting anon scans with swappiness=0. If you
+> > look at get_scan_count(), SCAN_FRACT with swappines=0 should always
+> > result in ap = fraction[0] = 0, which never yields any anon scan
+> > targets. So I'm thinking you're running into sc->file_is_tiny
+> > situations, meaning remaining file pages alone are not enough to
+> > restore watermarks anymore. Is that possible?
+>
+> Yes DEACTIVATE_ANON is enabling the file_is_tiny case in shrink_node(). That is what im trying to prevent in the swappiness=0 case.
+>
 
-> Rename set_page_writeback() to folio_start_writeback() to match
-> folio_end_writeback().  Do not bother with wrappers that return void;
-> callers are perfectly capable of ignoring return values.
-> 
-> Add wrappers for set_page_writeback(), set_page_writeback_keepwrite() and
-> test_set_page_writeback() for compatibililty with existing filesystems.
-> The main advantage of this patch is getting the statistics right,
-> although it does eliminate a couple of calls to compound_head().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-
-Reviewed-by: David Howells <dhowells@redhat.com>
-
+Can you please explain how DEACTIVATE_ANON is enabling the file_is_tiny case?
