@@ -2,158 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6714A3E5500
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1C93E5510
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237014AbhHJIUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:20:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhHJIUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:20:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0703B60FD8;
-        Tue, 10 Aug 2021 08:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628583598;
-        bh=PJDJ6GCZzc0E0w7Naf8M+hrNPtronJmpF/C1OGxHItg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sercihlmX75ZdaIziA1OAVZE1A9UxhSDXt0z7cTiHimPjJRnvLvlBxQ7rpcDeJpXA
-         RXbQAbgq04P8L36uY5rwwk0yJzpjisrIpiPADx7pVBBWB9ofeeJpTbZbJMANkOU4rS
-         QnuYW/+vH+HIDiUdqM9zk3sEjYJIYgFqskiTRWakDG26f7V2zxH+oq2TNVi0er1Eyw
-         NJD0RNzbeWvQib6P7b3+i6pD1x3a9rEH3j9VLXds4p2nRS8jwUy4Yu+64pHWFa9MbX
-         JF0eh5UUeW4Lms5CDB0hOf7/2ZFOWvMPxfef3OpEhlQXqxr2D+cnFBMG0txscIHUgX
-         tWY9sK3kvEfKg==
-Received: by pali.im (Postfix)
-        id 654B482D; Tue, 10 Aug 2021 10:19:55 +0200 (CEST)
-Date:   Tue, 10 Aug 2021 10:19:55 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, dsterba@suse.cz, aaptel@suse.com,
-        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, oleksandr@natalenko.name
-Subject: Re: [PATCH v27 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-Message-ID: <20210810081955.b5vdsfc2tdaabbgo@pali>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729134943.778917-9-almaz.alexandrovich@paragon-software.com>
- <20210810074740.mkjcow2inyjaakch@kari-VirtualBox>
+        id S238077AbhHJIZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:25:53 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:53861 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237533AbhHJIZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 04:25:49 -0400
+Received: by mail-il1-f199.google.com with SMTP id y14-20020a056e02128eb0290222f480bab8so1085400ilq.20
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:25:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=DTBo3khEZOU+h0oQTiTa1/X9B14yYY7SYQPoR8l9cKU=;
+        b=cYekqnVlmq2bGSghYCnDrjaZf2ozBxSC9FKwogX4214R/Em8Jifd6TNeiFV52nrNHl
+         WxjfTi6mLA94zKLlor1XWdx2KYZLHRDsZ0O9O+lsZD3H3B3vI/VX0DxYDw55v+SYk2Sj
+         apPXo+yhsVYdQsmtKdNGbEGi+UlB37BacTLBBvrBG9usC3weLyph9bAp9jTT7eayjoOo
+         A4Xr+6ka4SwaM3ecqNFHdm+p0tJYI/Vda0oodqsZaymLrCpwopiqOb63jrx9gEx52V/q
+         BaqBjy6XjYKAeYdCQ4a0g/kCVkkaFHZ+uoeLcnQd5KlWShTbyre+1jHt3dsjc6fHPzAW
+         WT2A==
+X-Gm-Message-State: AOAM533DO9wTom7ert0Uvt/4syeVz1eBHJ0jijKiNskpMjX1UTCaHxXW
+        QYcn8GkK09n6M8WfzHe72ZFme2IpyHj2NW5vSlC9fp91kgIn
+X-Google-Smtp-Source: ABdhPJxSL822WJcCgEbOO8zBDc7ubIaooAsY9ZVzeKi/C7SZFs4XhU60TfzMZrMZfxNgN2jJJwohzAP36i8gzJ6IZ9/CkOYBTXw2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810074740.mkjcow2inyjaakch@kari-VirtualBox>
-User-Agent: NeoMutt/20180716
+X-Received: by 2002:a05:6e02:b43:: with SMTP id f3mr409047ilu.94.1628583926914;
+ Tue, 10 Aug 2021 01:25:26 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 01:25:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007365d805c9303e63@google.com>
+Subject: [syzbot] KMSAN: uninit-value in crc_ccitt
+From:   syzbot <syzbot+6d38e380afc486ec44a1@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, glider@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 10 August 2021 10:47:40 Kari Argillander wrote:
-> On Thu, Jul 29, 2021 at 04:49:41PM +0300, Konstantin Komarov wrote:
-> > This adds Kconfig, Makefile and doc
-> > 
-> > Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> > ---
-> >  Documentation/filesystems/ntfs3.rst | 107 ++++++++++++++++++++++++++++
-> 
-> Still missing Documentation/filesystems/index.rst as I stated before
-> https://lore.kernel.org/linux-fsdevel/20210103220739.2gkh6gy3iatv4fog@kari-VirtualBox/
-> 
-> >  fs/ntfs3/Kconfig                    |  46 ++++++++++++
-> >  fs/ntfs3/Makefile                   |  36 ++++++++++
-> >  3 files changed, 189 insertions(+)
-> >  create mode 100644 Documentation/filesystems/ntfs3.rst
-> >  create mode 100644 fs/ntfs3/Kconfig
-> >  create mode 100644 fs/ntfs3/Makefile
-> > 
-> > diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
-> 
-> 
-> > +Mount Options
-> > +=============
-> > +
-> > +The list below describes mount options supported by NTFS3 driver in addition to
-> > +generic ones.
-> > +
-> > +===============================================================================
-> > +
-> > +nls=name		This option informs the driver how to interpret path
-> > +			strings and translate them to Unicode and back. If
-> > +			this option is not set, the default codepage will be
-> > +			used (CONFIG_NLS_DEFAULT).
-> > +			Examples:
-> > +				'nls=utf8'
-> 
-> It seems that kernel community will start use iocharset= as default. nls
-> option can still be alias but will need deprecated message. See message
-> https://lore.kernel.org/linux-fsdevel/20200102211855.gg62r7jshp742d6i@pali/
-> 
-> and current work from Pali
-> https://lore.kernel.org/linux-fsdevel/20210808162453.1653-1-pali@kernel.org/
-> 
-> This is still RFC state so probably no horry, but good to know stuff. I
-> also added Pali so he also knows.
+Hello,
 
-I was already in loop :-)
+syzbot found the following issue on:
 
-Anyway, yes, above RFC patch migrates all drivers to use iocharset=
-mount option as it is the option which is already used by most fs
-drivers. So argument is consistency.
+HEAD commit:    ee9407ea37bf kmsan: core: massage include/linux/sched.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1656babe300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=92983a87b2ce6cdb
+dashboard link: https://syzkaller.appspot.com/bug?extid=6d38e380afc486ec44a1
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: i386
 
-But having the preferred mount option name in new fs drivers would
-decrease work needed to done in that patch series.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> > diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-> > new file mode 100644
-> > index 000000000..279701b62
-> > --- /dev/null
-> > +++ b/fs/ntfs3/Makefile
-> > @@ -0,0 +1,36 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +#
-> > +# Makefile for the ntfs3 filesystem support.
-> > +#
-> > +
-> > +# to check robot warnings
-> > +ccflags-y += -Wint-to-pointer-cast \
-> > +	$(call cc-option,-Wunused-but-set-variable,-Wunused-const-variable) \
-> > +	$(call cc-option,-Wold-style-declaration,-Wout-of-line-declaration)
-> 
-> It is good idea to include this url in commit message.
-> https://lore.kernel.org/linux-fsdevel/212218590.13874.1621431781547@office.mailbox.org/
-> 
-> And also add that signed off tag from Tor Vic.
-> 
-> > +
-> > +obj-$(CONFIG_NTFS3_FS) += ntfs3.o
-> > +
-> > +ntfs3-y :=	attrib.o \
-> > +		attrlist.o \
-> > +		bitfunc.o \
-> > +		bitmap.o \
-> > +		dir.o \
-> > +		fsntfs.o \
-> > +		frecord.o \
-> > +		file.o \
-> > +		fslog.o \
-> > +		inode.o \
-> > +		index.o \
-> > +		lznt.o \
-> > +		namei.o \
-> > +		record.o \
-> > +		run.o \
-> > +		super.o \
-> > +		upcase.o \
-> > +		xattr.o
-> > +
-> > +ntfs3-$(CONFIG_NTFS3_LZX_XPRESS) += $(addprefix lib/,\
-> > +		decompress_common.o \
-> > +		lzx_decompress.o \
-> > +		xpress_decompress.o \
-> > +		)
-> > \ No newline at end of file
-> > -- 
-> > 2.25.4
-> > 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6d38e380afc486ec44a1@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in crc_ccitt_byte include/linux/crc-ccitt.h:15 [inline]
+BUG: KMSAN: uninit-value in crc_ccitt+0x364/0x3f0 lib/crc-ccitt.c:102
+CPU: 1 PID: 9742 Comm: syz-executor.4 Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/report.c:121
+ __msan_warning+0xd7/0x160 mm/kmsan/instrumentation.c:201
+ crc_ccitt_byte include/linux/crc-ccitt.h:15 [inline]
+ crc_ccitt+0x364/0x3f0 lib/crc-ccitt.c:102
+ ieee802154_tx+0x300/0x800 net/mac802154/tx.c:72
+ ieee802154_subif_start_xmit+0x16a/0x250 net/mac802154/tx.c:132
+ __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4958 [inline]
+ xmit_one+0x2b6/0x760 net/core/dev.c:3654
+ dev_hard_start_xmit+0x196/0x420 net/core/dev.c:3670
+ sch_direct_xmit+0x554/0x1b90 net/sched/sch_generic.c:336
+ qdisc_restart net/sched/sch_generic.c:401 [inline]
+ __qdisc_run+0x35b/0x490 net/sched/sch_generic.c:409
+ qdisc_run include/net/pkt_sched.h:131 [inline]
+ __dev_xmit_skb net/core/dev.c:3857 [inline]
+ __dev_queue_xmit+0x1e3f/0x5440 net/core/dev.c:4214
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4279
+ dgram_sendmsg+0x1142/0x15d0 net/ieee802154/socket.c:682
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2337
+ ___sys_sendmsg net/socket.c:2391 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2420
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg net/compat.c:351 [inline]
+ __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:84 [inline]
+ __do_fast_syscall_32+0x132/0x1b0 arch/x86/entry/common.c:149
+ do_fast_syscall_32+0x77/0xd0 arch/x86/entry/common.c:179
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:222
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fa3549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f559d5fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000880
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/core.c:106 [inline]
+ kmsan_internal_chain_origin+0xab/0x120 mm/kmsan/core.c:244
+ kmsan_memmove_metadata+0x23b/0x2c0 mm/kmsan/core.c:192
+ __msan_memcpy+0x5e/0x90 mm/kmsan/instrumentation.c:111
+ ieee802154_hdr_push+0xcd7/0xdd0 net/ieee802154/header_ops.c:117
+ ieee802154_header_create+0xd07/0x1070 net/mac802154/iface.c:404
+ wpan_dev_hard_header include/net/cfg802154.h:374 [inline]
+ dgram_sendmsg+0xf4b/0x15d0 net/ieee802154/socket.c:670
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2337
+ ___sys_sendmsg net/socket.c:2391 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2420
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg net/compat.c:351 [inline]
+ __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:84 [inline]
+ __do_fast_syscall_32+0x132/0x1b0 arch/x86/entry/common.c:149
+ do_fast_syscall_32+0x77/0xd0 arch/x86/entry/common.c:179
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:222
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/core.c:106 [inline]
+ kmsan_internal_chain_origin+0xab/0x120 mm/kmsan/core.c:244
+ kmsan_memmove_metadata+0x23b/0x2c0 mm/kmsan/core.c:192
+ __msan_memcpy+0x5e/0x90 mm/kmsan/instrumentation.c:111
+ ieee802154_hdr_push_addr net/ieee802154/header_ops.c:35 [inline]
+ ieee802154_hdr_push+0x2b0/0xdd0 net/ieee802154/header_ops.c:89
+ ieee802154_header_create+0xd07/0x1070 net/mac802154/iface.c:404
+ wpan_dev_hard_header include/net/cfg802154.h:374 [inline]
+ dgram_sendmsg+0xf4b/0x15d0 net/ieee802154/socket.c:670
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2337
+ ___sys_sendmsg net/socket.c:2391 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2420
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg net/compat.c:351 [inline]
+ __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:84 [inline]
+ __do_fast_syscall_32+0x132/0x1b0 arch/x86/entry/common.c:149
+ do_fast_syscall_32+0x77/0xd0 arch/x86/entry/common.c:179
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:222
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/core.c:106 [inline]
+ kmsan_internal_chain_origin+0xab/0x120 mm/kmsan/core.c:244
+ kmsan_memmove_metadata+0x23b/0x2c0 mm/kmsan/core.c:192
+ __msan_memcpy+0x5e/0x90 mm/kmsan/instrumentation.c:111
+ ieee802154_header_create+0xcd1/0x1070 net/mac802154/iface.c:402
+ wpan_dev_hard_header include/net/cfg802154.h:374 [inline]
+ dgram_sendmsg+0xf4b/0x15d0 net/ieee802154/socket.c:670
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2337
+ ___sys_sendmsg net/socket.c:2391 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2420
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg net/compat.c:351 [inline]
+ __ia32_compat_sys_sendmsg+0xed/0x130 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:84 [inline]
+ __do_fast_syscall_32+0x132/0x1b0 arch/x86/entry/common.c:149
+ do_fast_syscall_32+0x77/0xd0 arch/x86/entry/common.c:179
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:222
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+Local variable ----dst_addr@dgram_sendmsg created at:
+ dgram_sendmsg+0x8a/0x15d0 net/ieee802154/socket.c:607
+ dgram_sendmsg+0x8a/0x15d0 net/ieee802154/socket.c:607
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
