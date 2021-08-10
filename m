@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71253E808D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFF93E7FAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbhHJRuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:50:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
+        id S235229AbhHJRmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:42:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235258AbhHJRr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:47:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88E1961075;
-        Tue, 10 Aug 2021 17:41:09 +0000 (UTC)
+        id S234925AbhHJRib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:38:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4305E610FC;
+        Tue, 10 Aug 2021 17:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617270;
-        bh=fQOstmbRlspXSogWLL7VNXQJHjnMFUIAHB4Xgmwa3yQ=;
+        s=korg; t=1628616995;
+        bh=SWzNVkkJN/YQ3UperAk+X4Zg45n7gU01oc91TaBOFXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NCVFbZsCnYGyvy/aZITicyGNIYPh7ZdXJsDqicvGMsR67S/PG2a+nvsFd3ezJRsue
-         bGZ1KmRlfitrbMj7k2rCddSAnXfDjYVxHQ/S+QuuEqyNqV4t1Pp0Eott7SmRPd18cE
-         0vltOOkZP5SQ6jWrkwVXhQt+BRCHh/KGB9zDDqrM=
+        b=funaZwca8/dcF8sa+EWBb2iQUgy62v2igYSGE2JvRLlg9JbW5ol2FgeQutKRK7uAP
+         k1gNmlSdaT+YAaoi+jrVBO4ya/sqIrL8LdsUW1IJpTNsyt5pOx0sr0cJRiAiXfvUWJ
+         +igYasGaYCmbODZQC/nX6oG16R8jHft/zRVGo6Wk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.10 121/135] drm/i915: Correct SFC_DONE register offset
-Date:   Tue, 10 Aug 2021 19:30:55 +0200
-Message-Id: <20210810172959.904639631@linuxfoundation.org>
+        stable@vger.kernel.org, Prarit Bhargava <prarit@redhat.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 83/85] alpha: Send stop IPI to send to online CPUs
+Date:   Tue, 10 Aug 2021 19:30:56 +0200
+Message-Id: <20210810172951.040721062@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172948.192298392@linuxfoundation.org>
+References: <20210810172948.192298392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Roper <matthew.d.roper@intel.com>
+From: Prarit Bhargava <prarit@redhat.com>
 
-commit 9c9c6d0ab08acfe41c9f7efa72c4ad3f133a266b upstream.
+[ Upstream commit caace6ca4e06f09413fb8f8a63319594cfb7d47d ]
 
-The register offset for SFC_DONE was missing a '0' at the end, causing
-us to read from a non-existent register address.  We only use this
-register in error state dumps so the mistake hasn't caused any real
-problems, but fixing it will hopefully make the error state dumps a bit
-more useful for debugging.
+This issue was noticed while debugging a shutdown issue where some
+secondary CPUs are not being shutdown correctly.  A fix for that [1] requires
+that secondary cpus be offlined using the cpu_online_mask so that the
+stop operation is a no-op if CPU HOTPLUG is disabled.  I, like the author in
+[1] looked at the architectures and found that alpha is one of two
+architectures that executes smp_send_stop() on all possible CPUs.
 
-Fixes: e50dbdbfd9fb ("drm/i915/tgl: Add SFC instdone to error state")
-Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210728233411.2365788-1-matthew.d.roper@intel.com
-Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-(cherry picked from commit 82929a2140eb99f1f1d21855f3f580e70d7abdd8)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On alpha, smp_send_stop() sends an IPI to all possible CPUs but only needs
+to send them to online CPUs.
+
+Send the stop IPI to only the online CPUs.
+
+[1] https://lkml.org/lkml/2020/1/10/250
+
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Signed-off-by: Matt Turner <mattst88@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/i915_reg.h |    2 +-
+ arch/alpha/kernel/smp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/i915_reg.h
-+++ b/drivers/gpu/drm/i915/i915_reg.h
-@@ -413,7 +413,7 @@ static inline bool i915_mmio_reg_valid(i
- #define GEN11_VECS_SFC_USAGE(engine)		_MMIO((engine)->mmio_base + 0x2014)
- #define   GEN11_VECS_SFC_USAGE_BIT		(1 << 0)
- 
--#define GEN12_SFC_DONE(n)		_MMIO(0x1cc00 + (n) * 0x100)
-+#define GEN12_SFC_DONE(n)		_MMIO(0x1cc000 + (n) * 0x1000)
- #define GEN12_SFC_DONE_MAX		4
- 
- #define RING_PP_DIR_BASE(base)		_MMIO((base) + 0x228)
+diff --git a/arch/alpha/kernel/smp.c b/arch/alpha/kernel/smp.c
+index 5f90df30be20..06fd42417aa9 100644
+--- a/arch/alpha/kernel/smp.c
++++ b/arch/alpha/kernel/smp.c
+@@ -585,7 +585,7 @@ void
+ smp_send_stop(void)
+ {
+ 	cpumask_t to_whom;
+-	cpumask_copy(&to_whom, cpu_possible_mask);
++	cpumask_copy(&to_whom, cpu_online_mask);
+ 	cpumask_clear_cpu(smp_processor_id(), &to_whom);
+ #ifdef DEBUG_IPI_MSG
+ 	if (hard_smp_processor_id() != boot_cpu_id)
+-- 
+2.30.2
+
 
 
