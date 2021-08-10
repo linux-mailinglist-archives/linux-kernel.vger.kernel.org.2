@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502A13E7E80
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F4B3E806A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhHJRdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:33:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34712 "EHLO mail.kernel.org"
+        id S236124AbhHJRsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:48:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhHJRdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:33:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F0E60F35;
-        Tue, 10 Aug 2021 17:32:50 +0000 (UTC)
+        id S235704AbhHJRqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:46:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3610161247;
+        Tue, 10 Aug 2021 17:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616771;
-        bh=ZxBTzNRCYWOy37PUIjrXP8rUkmJzh/1RLYGp7oVvQGg=;
+        s=korg; t=1628617220;
+        bh=ckeo+XSfRypBSHdnCzFP2tkKjgTwwxNzrwrjQIeZC8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ISUOYHW7lbhp7HQ8Vxd/meKkOj+cU9yhxJ3Vqt4jRVJSP78nI8a0X7FGlxPnYG/08
-         LW6TLPNUjL+qhGhEy5YnNfN/qNl5a18aV6SG3wa2DkOEhQoSxSpg+A25rvLBuDuycb
-         8YaCPEReT80vcmyD6A1EJu1vGnDNvUk5WzkDk8XU=
+        b=T2IE8j7hrGoRKGRKvBo/la2K22FmFNKUckStrGhpOmvsQtYm8e4u6rIFBxdQBvMtc
+         k0VaiwzSByfdGpwQAIq6gex8nBkCURDhyhR1+v4qQIdqJng8ppsISrzpSKOfazg/Ix
+         9e3gpvyxfZM101emkGOL4HkGbdSfPEnBtQFTWQ7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com,
-        Eero Lehtinen <debiangamer2@gmail.com>,
-        Antti Palosaari <crope@iki.fi>,
-        Johan Hovold <johan@kernel.org>, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 38/54] media: rtl28xxu: fix zero-length control request
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 5.10 098/135] serial: 8250_pci: Enumerate Elkhart Lake UARTs via dedicated driver
 Date:   Tue, 10 Aug 2021 19:30:32 +0200
-Message-Id: <20210810172945.440686848@linuxfoundation.org>
+Message-Id: <20210810172959.093363149@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
-References: <20210810172944.179901509@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 76f22c93b209c811bd489950f17f8839adb31901 upstream.
+commit 7f0909db761535aefafa77031062603a71557267 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+Elkhart Lake UARTs are PCI enumerated Synopsys DesignWare v4.0+ UART
+integrated with Intel iDMA 32-bit DMA controller. There is a specific
+driver to handle them, i.e. 8250_lpss. Hence, disable 8250_pci
+enumeration for these UARTs.
 
-Control transfers without a data stage are treated as OUT requests by
-the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-will now trigger a warning.
-
-The driver uses a zero-length i2c-read request for type detection so
-update the control-request code to use usb_sndctrlpipe() in this case.
-
-Note that actually trying to read the i2c register in question does not
-work as the register might not exist (e.g. depending on the demodulator)
-as reported by Eero Lehtinen <debiangamer2@gmail.com>.
-
-Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
-Reported-by: Eero Lehtinen <debiangamer2@gmail.com>
-Tested-by: Eero Lehtinen <debiangamer2@gmail.com>
-Fixes: d0f232e823af ("[media] rtl28xxu: add heuristic to detect chip type")
-Cc: stable@vger.kernel.org      # 4.0
-Cc: Antti Palosaari <crope@iki.fi>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 1b91d97c66ef ("serial: 8250_lpss: Add ->setup() for Elkhart Lake ports")
+Fixes: 4f912b898dc2 ("serial: 8250_lpss: Enable HS UART on Elkhart Lake")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210713101739.36962-1-andriy.shevchenko@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/dvb-usb-v2/rtl28xxu.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_pci.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-+++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-@@ -50,7 +50,16 @@ static int rtl28xxu_ctrl_msg(struct dvb_
- 	} else {
- 		/* read */
- 		requesttype = (USB_TYPE_VENDOR | USB_DIR_IN);
--		pipe = usb_rcvctrlpipe(d->udev, 0);
-+
-+		/*
-+		 * Zero-length transfers must use usb_sndctrlpipe() and
-+		 * rtl28xxu_identify_state() uses a zero-length i2c read
-+		 * command to determine the chip type.
-+		 */
-+		if (req->size)
-+			pipe = usb_rcvctrlpipe(d->udev, 0);
-+		else
-+			pipe = usb_sndctrlpipe(d->udev, 0);
- 	}
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -3804,6 +3804,12 @@ static const struct pci_device_id blackl
+ 	{ PCI_VDEVICE(INTEL, 0x0f0c), },
+ 	{ PCI_VDEVICE(INTEL, 0x228a), },
+ 	{ PCI_VDEVICE(INTEL, 0x228c), },
++	{ PCI_VDEVICE(INTEL, 0x4b96), },
++	{ PCI_VDEVICE(INTEL, 0x4b97), },
++	{ PCI_VDEVICE(INTEL, 0x4b98), },
++	{ PCI_VDEVICE(INTEL, 0x4b99), },
++	{ PCI_VDEVICE(INTEL, 0x4b9a), },
++	{ PCI_VDEVICE(INTEL, 0x4b9b), },
+ 	{ PCI_VDEVICE(INTEL, 0x9ce3), },
+ 	{ PCI_VDEVICE(INTEL, 0x9ce4), },
  
- 	ret = usb_control_msg(d->udev, pipe, 0, requesttype, req->value,
 
 
