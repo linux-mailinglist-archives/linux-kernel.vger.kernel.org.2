@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78BD3E5AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0223B3E5AB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241109AbhHJNFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:05:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43276 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241100AbhHJNFJ (ORCPT
+        id S241008AbhHJNIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238793AbhHJNIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:05:09 -0400
-Date:   Tue, 10 Aug 2021 13:04:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628600685;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpS7rLHiJW9ZgDds10K0Lwh5W/14sKn9OfhMZ6BmEzQ=;
-        b=DNTE+8mGuGqNpz/oJSET/ruBaR+2XNuUevI7huBI/53O6aOC8gbpDGYHrQLHUw7xKKVenJ
-        0WQOwLPv9ayfM07MRm/8E2Qoflca/cBpJJwABRGytWVVI/p5j218dd33jZ9sXHMiuXiN7l
-        Pmsyl+cmzgY35VuLGfvGg8aBpw/lV/EmmXrXKWG/cRbNo1cA8zdE0CziLO9C9bOW9b5VIw
-        uazO+nrS3ibTq8Abqu1kz+r4mk2sFq25xvfspeKZ6HDRN9z0lweZIjlzcW7doKPcGdyyvF
-        kMYBp4HeCoVbPGM6skwC4BlQ9w+laIwjNIE5X/ufoQP2yS5HiIILcH2dlBnOcQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628600685;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpS7rLHiJW9ZgDds10K0Lwh5W/14sKn9OfhMZ6BmEzQ=;
-        b=JVLFuooB8iBV1RKIXlf2ljI8LF7PZDXwqmxnAhBdza9OkgERqVT3wEOfxPuEYYNLd8Y0np
-        iGbvfkDhT+OvgAAw==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: smp/core] smpboot: Replace deprecated CPU-hotplug functions.
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210803141621.780504-34-bigeasy@linutronix.de>
-References: <20210803141621.780504-34-bigeasy@linutronix.de>
+        Tue, 10 Aug 2021 09:08:48 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B935AC0613D3;
+        Tue, 10 Aug 2021 06:08:26 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id e19so35299192ejs.9;
+        Tue, 10 Aug 2021 06:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xs/+O7rAz0hyKzsctUcio2WQZUKn46iac13X1YxyLOs=;
+        b=HCCl7rgFmcy3zKwIxkaZ/SBUd8zqPrb094075z1tmOI4VPtPFJxydk1aoQ4B2mcRJ2
+         cQbJUQDbzcm1dkhCvmLco8Me5ubngY8nbgtYF0sJ4eL85zbQyFqLGyp/ySVX1oMF/iSG
+         vbjIbxMCaeikvl+bgs/I6KvQSlwON8h6QIJ/y4JkTJzU3UePnUxBhQOh1L7I7o6lC6Va
+         ajSBOfrGIA0UG06ic10DngwwBxhWDA2POkbpQH93j60p7JEWn4jt32GvxfG2iNSy4hfj
+         yyCxV6P1vKnmRiuGGEdWGMZQPJ5OaIGrTF36KT7jCgkXxKcljAlP0sCWBR/x3nM56IYM
+         tq6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xs/+O7rAz0hyKzsctUcio2WQZUKn46iac13X1YxyLOs=;
+        b=H3uO4uX3kTzkyDqsI6ddJbwdtQ5lQL+5yR9AaGTABOvQqiWqC6881CxtuyfW90vwKg
+         Pd0xAdu9HKfusKypLX2RTIba4WeYUe3t8Z62/85XeXxQzvHm6Jz6TIpJacgJD1ajaIAt
+         F/pHvixOkWZS0d1D+Pcn0dgDKh81sB1l7hkGe1ayWUjhgQbX5CaTGSmurI4epFQ8iSXb
+         JjD/cvQgJuA5MG991EpQBD2WYeA/9egyxS3e4R4Ze/SCuTWlYBg4RI07ZWdteNON15Il
+         rDMQwPiBRqIIK85oTQ2uY//atSLvBBxT677/Sg9TGtMdapQSnuO+hHj0h/a3q+EAFkwI
+         nltA==
+X-Gm-Message-State: AOAM531SegdyiacFQIUb8leS8bsyYS9U3zWeZTbi8FvEUBrZSiM/Rwxk
+        cb3VbqIMO/h8EQl1SNToMLE=
+X-Google-Smtp-Source: ABdhPJwUr/73rEkMhaIveh98iMIskFOJfJbfcePSx7fWzOrGY6Gd0FewqY2WalFFgiQ4kd1+ecE4PA==
+X-Received: by 2002:a17:906:dfe5:: with SMTP id lc5mr27153744ejc.20.1628600905375;
+        Tue, 10 Aug 2021 06:08:25 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id b25sm9645288edv.9.2021.08.10.06.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 06:08:24 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 16:08:21 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jianbo Liu <jianbol@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-s390@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Ido Schimmel <idosch@idosch.org>
+Subject: Re: [PATCH v2 net] net: switchdev: zero-initialize struct
+ switchdev_notifier_fdb_info emitted by drivers towards the bridge
+Message-ID: <20210810130821.7gdngordzzxkpws3@skbuf>
+References: <20210810115024.1629983-1-vladimir.oltean@nxp.com>
+ <dfa98bf7-cab4-4076-ef5f-880a8baa89ee@linux.ibm.com>
 MIME-Version: 1.0
-Message-ID: <162860068498.395.18082735088526071078.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dfa98bf7-cab4-4076-ef5f-880a8baa89ee@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the smp/core branch of tip:
+On Tue, Aug 10, 2021 at 02:41:48PM +0200, Karsten Graul wrote:
+> On 10/08/2021 13:50, Vladimir Oltean wrote:
+> > The blamed commit a new field to struct switchdev_notifier_fdb_info, but
+>                   ^^^ added?
 
-Commit-ID:     844d87871b6e0ac3ceb177535dcdf6e6a9f1fd4b
-Gitweb:        https://git.kernel.org/tip/844d87871b6e0ac3ceb177535dcdf6e6a9f1fd4b
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Tue, 03 Aug 2021 16:16:16 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 10 Aug 2021 14:57:42 +02:00
-
-smpboot: Replace deprecated CPU-hotplug functions.
-
-The functions get_online_cpus() and put_online_cpus() have been
-deprecated during the CPU hotplug rework. They map directly to
-cpus_read_lock() and cpus_read_unlock().
-
-Replace deprecated CPU-hotplug functions with the official version.
-The behavior remains unchanged.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210803141621.780504-34-bigeasy@linutronix.de
-
----
- kernel/smpboot.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-index cf6acab..f6bc0bc 100644
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -291,7 +291,7 @@ int smpboot_register_percpu_thread(struct smp_hotplug_thread *plug_thread)
- 	unsigned int cpu;
- 	int ret = 0;
- 
--	get_online_cpus();
-+	cpus_read_lock();
- 	mutex_lock(&smpboot_threads_lock);
- 	for_each_online_cpu(cpu) {
- 		ret = __smpboot_create_thread(plug_thread, cpu);
-@@ -304,7 +304,7 @@ int smpboot_register_percpu_thread(struct smp_hotplug_thread *plug_thread)
- 	list_add(&plug_thread->list, &hotplug_threads);
- out:
- 	mutex_unlock(&smpboot_threads_lock);
--	put_online_cpus();
-+	cpus_read_unlock();
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(smpboot_register_percpu_thread);
-@@ -317,12 +317,12 @@ EXPORT_SYMBOL_GPL(smpboot_register_percpu_thread);
-  */
- void smpboot_unregister_percpu_thread(struct smp_hotplug_thread *plug_thread)
- {
--	get_online_cpus();
-+	cpus_read_lock();
- 	mutex_lock(&smpboot_threads_lock);
- 	list_del(&plug_thread->list);
- 	smpboot_destroy_threads(plug_thread);
- 	mutex_unlock(&smpboot_threads_lock);
--	put_online_cpus();
-+	cpus_read_unlock();
- }
- EXPORT_SYMBOL_GPL(smpboot_unregister_percpu_thread);
- 
+yes. but I won't send a v3 just for that. thanks for noticing.
