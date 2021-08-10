@@ -2,190 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D489C3E589B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A173E58A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239916AbhHJKwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:52:38 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:46634 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbhHJKwf (ORCPT
+        id S239931AbhHJKxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239934AbhHJKxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:52:35 -0400
-Received: by mail-wr1-f52.google.com with SMTP id f5so9860873wrm.13;
-        Tue, 10 Aug 2021 03:52:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KeSmCevLwIJ8fZ+xxo6RcyEVfCZToPuvdtR55Ou6S5w=;
-        b=pG73GTs2FPZ5oFdcknQqbPOPYWPMd9Q7eD3BH7qDNjx9KVfOY6wRUk7aZEaNxcA0Ij
-         GpwUxQjbFnMsAq9FO1iP9zyRxovviELbi0ld4P/zEcLpbbpK62zkqZw7sHdaoMoEEnZ0
-         Wjtk6M7OocJMcEmEQ4cQKFAwkl3EaFBcK2B+4mPpYy8Xe0Rs/UgAeN1ebP3lZ1HmSw5M
-         krLQNFhbkx5nZKzKV4MYHoZz6equuRPRmbgApbRIG3vDax1FOmYi5/vcUPPIoWWve7Cz
-         w5NIWzDdnFOahkh37qo9r/6xYJk7Ua4pQtqKCqhbR1lRaSiq+J1PufeTGNXv2eAEvEgt
-         POGw==
-X-Gm-Message-State: AOAM532AL7yOOOVwkKtzdglkT5cSyItfhPENq+3qMiteNK0QzM9t2S9E
-        AlxHy011cfWNZg8bGkkOgzg=
-X-Google-Smtp-Source: ABdhPJxQsW2yUnnHWcCEx6iGI7RTyyMiHTt1WFk7VlM1GJbQ8l1cMinnUMZ0cbsUDRVU35cq3iaibA==
-X-Received: by 2002:a5d:4b8c:: with SMTP id b12mr29771414wrt.39.1628592733148;
-        Tue, 10 Aug 2021 03:52:13 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id y21sm2425423wma.38.2021.08.10.03.52.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 03:52:12 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 10:52:11 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        pasha.tatashin@soleen.com, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: Re: [RFC v1 8/8] mshv: add vfio bridge device
-Message-ID: <20210810105211.zzaamjqmcq3jecmn@liuwe-devbox-debian-v2>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-9-wei.liu@kernel.org>
- <b400d536-632e-9212-a06d-6e41af8a6fe5@linux.microsoft.com>
+        Tue, 10 Aug 2021 06:53:10 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCF0C061798;
+        Tue, 10 Aug 2021 03:52:48 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkVCc4Hd6z9sT6;
+        Tue, 10 Aug 2021 20:52:44 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628592764;
+        bh=vtV72N/6CXOBMdQ8dnyKzP6eHxhfD9bbPPt/kxc714s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Xr0XHJojlnUMD9eSnSpyIjYffahV2dZ3E/LJbSw+WRR1bdtreiHXh+I4e2t9gZFmu
+         X5PxiJ2M9n9l/f9+Fx5Sa2IxKTRzBw22PrS3rzqoZmlR3JSBfI6dOr/ydncQKxhBoO
+         zOqEY4L5ZjX48JlbmSEBPx277ikorjlD82AWdqu6Caic1wfHpZVV7COJlaH9yLQPEt
+         Ll/Rm6Oft1EaV2Sevi2mOyANVz8W+hyyd8GKK5sgRxRiIEz/z7WMRklDsz+TjawwR4
+         zaYKi2HRmz+iSyfF0dPDaymtqEPbv4wLIVP1aD8Wf/zzy7rAt4sZnhRHiUOXPgyKcw
+         FfQhwWWoB1I7g==
+Date:   Tue, 10 Aug 2021 20:52:43 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the block tree
+Message-ID: <20210810205243.25dfa994@canb.auug.org.au>
+In-Reply-To: <20210810203135.7eb7b01a@canb.auug.org.au>
+References: <20210810203135.7eb7b01a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b400d536-632e-9212-a06d-6e41af8a6fe5@linux.microsoft.com>
+Content-Type: multipart/signed; boundary="Sig_/IQVe25qW/YHVMv4WEmyNRjS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 12:57:03AM +0530, Praveen Kumar wrote:
-> On 09-07-2021 17:13, Wei Liu wrote:
-> > +
-> > +static int mshv_vfio_set_group(struct mshv_device *dev, long attr, u64 arg)
-> > +{
-> > +	struct mshv_vfio *mv = dev->private;
-> > +	struct vfio_group *vfio_group;
-> > +	struct mshv_vfio_group *mvg;
-> > +	int32_t __user *argp = (int32_t __user *)(unsigned long)arg;
-> > +	struct fd f;
-> > +	int32_t fd;
-> > +	int ret;
-> > +
-> > +	switch (attr) {
-> > +	case MSHV_DEV_VFIO_GROUP_ADD:
-> > +		if (get_user(fd, argp))
-> > +			return -EFAULT;
-> > +
-> > +		f = fdget(fd);
-> > +		if (!f.file)
-> > +			return -EBADF;
-> > +
-> > +		vfio_group = mshv_vfio_group_get_external_user(f.file);
-> > +		fdput(f);
-> > +
-> > +		if (IS_ERR(vfio_group))
-> > +			return PTR_ERR(vfio_group);
-> > +
-> > +		mutex_lock(&mv->lock);
-> > +
-> > +		list_for_each_entry(mvg, &mv->group_list, node) {
-> > +			if (mvg->vfio_group == vfio_group) {
-> > +				mutex_unlock(&mv->lock);
-> > +				mshv_vfio_group_put_external_user(vfio_group);
-> > +				return -EEXIST;
-> > +			}
-> > +		}
-> > +
-> > +		mvg = kzalloc(sizeof(*mvg), GFP_KERNEL_ACCOUNT);
-> > +		if (!mvg) {
-> > +			mutex_unlock(&mv->lock);
-> > +			mshv_vfio_group_put_external_user(vfio_group);
-> > +			return -ENOMEM;
-> > +		}
-> > +
-> > +		list_add_tail(&mvg->node, &mv->group_list);
-> > +		mvg->vfio_group = vfio_group;
-> > +
-> > +		mutex_unlock(&mv->lock);
-> > +
-> > +		return 0;
-> > +
-> > +	case MSHV_DEV_VFIO_GROUP_DEL:
-> > +		if (get_user(fd, argp))
-> > +			return -EFAULT;
-> > +
-> > +		f = fdget(fd);
-> > +		if (!f.file)
-> > +			return -EBADF;
-> 
-> Can we move these both checks above switch statement and do fdput
-> accordingly under both case statement accordingly?
+--Sig_/IQVe25qW/YHVMv4WEmyNRjS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fair point. This can be done, albeit at the cost of having a rather
-different code structure.
+Hi all,
 
-I was waiting to see if we should somehow merge this with KVM's
-implementation so the code was deliberately kept close. If there is no
-further comment I can of course make the change you suggested.
+On Tue, 10 Aug 2021 20:31:34 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the block tree, today's linux-next build (or32
+> or1ksim_defconfig) failed like this:
+>=20
+> mm/page-writeback.c:2044:6: error: redefinition of 'laptop_sync_completio=
+n'
+>  2044 | void laptop_sync_completion(void)
+>       |      ^~~~~~~~~~~~~~~~~~~~~~
+> In file included from include/linux/memcontrol.h:22,
+>                  from include/linux/swap.h:9,
+>                  from mm/page-writeback.c:20:
+> include/linux/writeback.h:345:20: note: previous definition of 'laptop_sy=
+nc_completion' was here
+>   345 | static inline void laptop_sync_completion(void) { }
+>       |                    ^~~~~~~~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   5ed964f8e54e ("mm: hide laptop_mode_wb_timer entirely behind the BDI AP=
+I")
+>=20
+> This build does not have CONFIG_BLOCK set.
 
-> 
-> > +
-> > +		ret = -ENOENT;
-> > +
-> > +		mutex_lock(&mv->lock);
-> > +
-> > +		list_for_each_entry(mvg, &mv->group_list, node) {
-> > +			if (!mshv_vfio_external_group_match_file(mvg->vfio_group,
-> > +								 f.file))
-> > +				continue;
-> > +
-> > +			list_del(&mvg->node);
-> > +			mshv_vfio_group_put_external_user(mvg->vfio_group);
-> > +			kfree(mvg);
-> > +			ret = 0;
-> > +			break;
-> > +		}
-> > +
-> > +		mutex_unlock(&mv->lock);
-> > +
-> > +		fdput(f);
-> > +
-> > +		return ret;
-> > +	}
-> > +
-> > +	return -ENXIO;
-> > +}
-> > +
-> > +static int mshv_vfio_set_attr(struct mshv_device *dev,
-> > +			      struct mshv_device_attr *attr)
-> > +{
-> > +	switch (attr->group) {
-> > +	case MSHV_DEV_VFIO_GROUP:
-> > +		return mshv_vfio_set_group(dev, attr->attr, attr->addr);
-> > +	}
-> > +
-> > +	return -ENXIO;
-> > +}
-> > +
-> > +static int mshv_vfio_has_attr(struct mshv_device *dev,
-> > +			      struct mshv_device_attr *attr)
-> > +{
-> > +	switch (attr->group) {
-> > +	case MSHV_DEV_VFIO_GROUP:
-> > +		switch (attr->attr) {
-> > +		case MSHV_DEV_VFIO_GROUP_ADD:
-> > +		case MSHV_DEV_VFIO_GROUP_DEL:
-> > +			return 0;
-> > +		}
-> > +
-> > +		break;
-> 
-> do we need this break statement ? If not, lets remove it.
+These as well:
 
-Will do.
+In file included from include/linux/workqueue.h:9,
+                 from include/linux/mm_types.h:16,
+                 from include/linux/mmzone.h:21,
+                 from include/linux/gfp.h:6,
+                 from include/linux/xarray.h:14,
+                 from include/linux/radix-tree.h:19,
+                 from include/linux/fs.h:15,
+                 from include/linux/backing-dev.h:13,
+                 from mm/backing-dev.c:5:
+mm/backing-dev.c: In function 'bdi_alloc':
+mm/backing-dev.c:821:42: error: 'laptop_mode_timer_fn' undeclared (first us=
+e in this function)
+  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
+      |                                          ^~~~~~~~~~~~~~~~~~~~
+include/linux/timer.h:126:28: note: in definition of macro '__init_timer'
+  126 |  init_timer_key((_timer), (_fn), (_flags), NULL, NULL)
+      |                            ^~~
+mm/backing-dev.c:821:2: note: in expansion of macro 'timer_setup'
+  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
+      |  ^~~~~~~~~~~
+mm/backing-dev.c:821:42: note: each undeclared identifier is reported only =
+once for each function it appears in
+  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
+      |                                          ^~~~~~~~~~~~~~~~~~~~
+include/linux/timer.h:126:28: note: in definition of macro '__init_timer'
+  126 |  init_timer_key((_timer), (_fn), (_flags), NULL, NULL)
+      |                            ^~~
+mm/backing-dev.c:821:2: note: in expansion of macro 'timer_setup'
+  821 |  timer_setup(&bdi->laptop_mode_wb_timer, laptop_mode_timer_fn, 0);
+      |  ^~~~~~~~~~~
 
-Wei.
+--=20
+Cheers,
+Stephen Rothwell
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/IQVe25qW/YHVMv4WEmyNRjS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESWnsACgkQAVBC80lX
+0GzN6gf/R0jYgtK1azA+j9YEOzbEPlFHvwOdYZKLLHJbSv0dLFv+wIAct7BzO7Ql
+BfbYg3yE3o8gfU4jOoQArdREi+aU+WQwjxfHND7M8N0Re6EBsWvaRt94KyO9g/s0
+B7OJ7ykFK1JdyzhkU3mFf3Ym3T7rZWzk4q+44WQN/dX9dM5GA+Zgu7d3Aj3TuuuF
+PqUgSmf6yItJLq8HY1kFQEgnRCxZjwiJNpk9j1DcjnqBqXYT3JyC2QGJpjKuyk3q
+lmxA3ChaOuTnBrH7sElgDAEGRQ2av5BvM6pxQcY6fNNgYosJJkfqSi3teZ77LemN
+dZP9IkRd4vl23xElgNfB7lcFrY0cKQ==
+=wr1A
+-----END PGP SIGNATURE-----
+
+--Sig_/IQVe25qW/YHVMv4WEmyNRjS--
