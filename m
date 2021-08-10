@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C2E3E546F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853283E5470
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhHJHht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:37:49 -0400
+        id S236448AbhHJHhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:37:52 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbhHJHhp (ORCPT
+        with ESMTP id S236162AbhHJHhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:37:45 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCBDC06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:37:23 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id a8so31827593pjk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:37:23 -0700 (PDT)
+        Tue, 10 Aug 2021 03:37:48 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9E5C06179B
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:37:26 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id u16so19832748ple.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tPg7HlHiNHIgMXq3ifzrutSGoJ3kBhUfJVLyMOqT33Y=;
-        b=aNHkIE5ncBMIBjIjJvsC//j+DCdVWU0P4mzCLIQHFyneAmv1sc641l9Q+BDeuVkMJd
-         PNmGFG0IJoM/1JPjohriJqPUme/cxg10EBbwPzE19jElRJFRedJFYBrpS9EiCnkJPzHr
-         GLtZfw09928BFmsHu+W98ZpncTYDBeubpxHs7U7AUpTwy4DiNNHHBEW21Jwb/jKTctRy
-         0+dUm0n4ZOtUcmaYgKSn/jqluJVRsegnjQ2BCqTdVZpMK/1A1NxOY6IOjlWIU2ra9dj5
-         hdFCmsxmnfliD8GFswr/gVl+pA67f40FeLQqe3ecQZ8qxvkdGs5Bk1VBb3oBH+D7c8FO
-         1RDw==
+        bh=L1wUGUmm+RM+WFeAm1m0YDv4o3hsF8ZYP495ftWlyX8=;
+        b=fk5tOWy2yIUEWF2V3Hv2HPVQoMpXxyOfrZoZs5z9PCvwXNRxlF3y2dGoDt0fdKZps4
+         IbMw4UJUArG/kcdJj/hQW+gC6Fjc7Uy7Q7eXxGsHSKRS58gzOIq3mtjk+r1BP8frQ+hj
+         XeJESYYtha+eG0XHEMuLWJVYKlLqw2C6DH3U0NEX8+CzlLWeqGbA89xPaGxK3NP6FPal
+         VRk9tRzQSZNXBmH7YfJnPt25AUAe3B9Rnk41CoEwyyYTyz1QPVbLxvft0t1W/HyfLMMO
+         5SOEcRbNNj2U4+4IkR860KlCkU06v04ruyoOd6jqP7hmoIYdvDN1z6+rgLomaQPLmzGq
+         SDBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tPg7HlHiNHIgMXq3ifzrutSGoJ3kBhUfJVLyMOqT33Y=;
-        b=MS8xlzY+ub/J3c087u2A4fmEK2y0DZ9HILGnL4ihxCzRC9Kr1DyDb+BNRWyB8jxQXy
-         4wKVIR5Lj9P7xQvFac4/k88AMVjKneVc0G1W5JW+LBmMHb6DpC4C+rsmI435NRViSMjH
-         1HvMgoTaquBF/dOMSjpGUj8oF77hZ6rjOkCXtD2UUlvadwJyaz8OUTMDaDFSfQrcnKhk
-         snis4AVGFZGcFPLbPN9UGXFHlwckpGl4LhLNjRykkQ0LWDppj0wBmmxqFfCsIE9yXPGz
-         QcY+Lhf8eMFBUaGKw248prNwVHSFwWZQhwkf6YXwQO6z28l9uPHMAIOVenewL6vcS92i
-         dDkg==
-X-Gm-Message-State: AOAM5334Lie8QDfS/64vN6Ub3RQtr7T3wUOzLScQnSGXJSAIvD2MfC4c
-        i2Xj/WqleNkpi5N0EU+apkSgpg==
-X-Google-Smtp-Source: ABdhPJyTO5GMgPuRNnOnzkkbkb1baPrMwLauh2rJ+0LCJzrMnp1aed3qvV8XUmjK+2xMPk9BOub1iA==
-X-Received: by 2002:a17:90b:1102:: with SMTP id gi2mr29168901pjb.43.1628581043191;
-        Tue, 10 Aug 2021 00:37:23 -0700 (PDT)
+        bh=L1wUGUmm+RM+WFeAm1m0YDv4o3hsF8ZYP495ftWlyX8=;
+        b=LwG5+bgVGyAKCX14SLdMOMAXfl9LtBFUiGo287F8/4J8UqqPuvlE5HODkMP+Vl7YAZ
+         2PpKX2aE77jFOWhd6Vszee4r3C0Z2YmrTH1PvYfLWVOFxu+iMRirh2z5KfdjvXWCVZQI
+         1wBMLqI9g8PxN3vMoo4sYtL0TggWdl8wcti0yqYnv7hvqMwuSakqOtMwoJoRzWXQ38bu
+         eWwv0RGcnfZ43KQOlHaUVXiVnG6ww44HaUmcJJ9DDGWS8GZuQbF8+ODNwES4ZRo8Vxi0
+         wSqguFSe1D/G9VeRw+rlgdFWOGLJdgLS8lSG2nc5Celm5WFx+6a3jPtLmaVlfkTBIU/5
+         py6Q==
+X-Gm-Message-State: AOAM5304iXW/6TZ4I+oHadU+AKoVKot4bAJCtdRZXnRA8vWUemUuw5Rv
+        FpR2Mvc+m58ONh0nezRyTigGXQ==
+X-Google-Smtp-Source: ABdhPJy6odAoxRJWsRTHspaa3DWkY51nCBGS9TeOq5tf4FZvJblg2UxP5w6LQHDhzkx3BjexLyTSuQ==
+X-Received: by 2002:a17:902:e746:b029:12d:1cb0:9649 with SMTP id p6-20020a170902e746b029012d1cb09649mr9705017plf.21.1628581045913;
+        Tue, 10 Aug 2021 00:37:25 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id 6sm1927629pjk.1.2021.08.10.00.37.22
+        by smtp.gmail.com with ESMTPSA id fh19sm1879612pjb.27.2021.08.10.00.37.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 00:37:22 -0700 (PDT)
+        Tue, 10 Aug 2021 00:37:25 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Rafael Wysocki <rjw@rjwysocki.net>,
         Vincent Donnefort <vincent.donnefort@arm.com>,
-        lukasz.luba@arm.com, Kevin Hilman <khilman@kernel.org>,
+        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/8] cpufreq: omap: Use auto-registration for energy model
-Date:   Tue, 10 Aug 2021 13:06:52 +0530
-Message-Id: <a17b0f64c3a4cd84a126b3315539c13b15b4738c.1628579170.git.viresh.kumar@linaro.org>
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 6/8] cpufreq: qcom-cpufreq-hw: Use auto-registration for energy model
+Date:   Tue, 10 Aug 2021 13:06:53 +0530
+Message-Id: <0b0d533988c3a4318b9fdc5e10c857348e203132.1628579170.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 In-Reply-To: <cover.1628579170.git.viresh.kumar@linaro.org>
 References: <cover.1628579170.git.viresh.kumar@linaro.org>
@@ -76,31 +77,32 @@ unregistration part as well.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/cpufreq/omap-cpufreq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/cpufreq/qcom-cpufreq-hw.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/omap-cpufreq.c b/drivers/cpufreq/omap-cpufreq.c
-index e035ee216b0f..303136f97773 100644
---- a/drivers/cpufreq/omap-cpufreq.c
-+++ b/drivers/cpufreq/omap-cpufreq.c
-@@ -131,7 +131,6 @@ static int omap_cpu_init(struct cpufreq_policy *policy)
+diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+index f86859bf76f1..221433c6dcb0 100644
+--- a/drivers/cpufreq/qcom-cpufreq-hw.c
++++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+@@ -362,8 +362,6 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+ 		goto error;
+ 	}
  
- 	/* FIXME: what's the actual transition time? */
- 	cpufreq_generic_init(policy, freq_table, 300 * 1000);
--	dev_pm_opp_of_register_em(mpu_dev, policy->cpus);
- 
- 	return 0;
- }
-@@ -144,7 +143,8 @@ static int omap_cpu_exit(struct cpufreq_policy *policy)
- }
- 
- static struct cpufreq_driver omap_driver = {
--	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
-+	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+-	dev_pm_opp_of_register_em(cpu_dev, policy->cpus);
+-
+ 	if (policy_has_boost_freq(policy)) {
+ 		ret = cpufreq_enable_boost_support();
+ 		if (ret)
+@@ -406,7 +404,8 @@ static struct freq_attr *qcom_cpufreq_hw_attr[] = {
+ static struct cpufreq_driver cpufreq_qcom_hw_driver = {
+ 	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 			  CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+-			  CPUFREQ_IS_COOLING_DEV,
++			  CPUFREQ_IS_COOLING_DEV |
 +			  CPUFREQ_REGISTER_WITH_EM,
  	.verify		= cpufreq_generic_frequency_table_verify,
- 	.target_index	= omap_target,
- 	.get		= cpufreq_generic_get,
+ 	.target_index	= qcom_cpufreq_hw_target_index,
+ 	.get		= qcom_cpufreq_hw_get,
 -- 
 2.31.1.272.g89b43f80a514
 
