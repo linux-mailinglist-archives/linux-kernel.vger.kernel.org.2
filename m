@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F103E59BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37843E59C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 14:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240519AbhHJMQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 08:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        id S240547AbhHJMST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 08:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240385AbhHJMQf (ORCPT
+        with ESMTP id S231678AbhHJMSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:16:35 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC9AC0613D3;
-        Tue, 10 Aug 2021 05:16:13 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d17so20692922plr.12;
-        Tue, 10 Aug 2021 05:16:13 -0700 (PDT)
+        Tue, 10 Aug 2021 08:18:17 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B8FC0613D3;
+        Tue, 10 Aug 2021 05:17:56 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so1813658pje.0;
+        Tue, 10 Aug 2021 05:17:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R2SAom+K3xjq+elR9A4m6RnGt39/xLthbnTdTanpHn4=;
-        b=MO4y78cwlP3HlTDYWsUl7zPYe6e3Y6MG4yHvEC2GfpNcCvN98gbxYivkNSCmv95blc
-         NRfhMMej7c79A9+1Tsnj7Gs1Uweo1zemDFsFUVob5lAX84yE381jnRBRySTw2WCB94Gw
-         i3vFUs1yUEl0Bcl8oa5b+8Zrod09eJnIo41FFtF3GUi36GK22ryvDeEXVKCplBQFpA+X
-         SRWuhJTH0b6LIrR7GchlM/3tKQyxkPM/rDpZ1BcVHa0Tgq8XPwGm2sZtOd1dn6nhB4Fr
-         Md2IF+FOQ+s3aqO/ZLb0j+h2OGpKWS133JGMvLorhP8zD6kQ+PejR7dL/ammFW/f9ZOX
-         iurQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nvD6+M9t7qTrvrmcvKckt/OKOvl8Bvz01WtaH3hiQrw=;
+        b=W8VJHgJYz2WQSwNj+l2V4hKZLutN1MT1dVCGeD6amKZrIf5ru9mj7Kr5RPC5btWdWX
+         RcBrITr2iOAHNEFyRwZNQK2DWBs/jeslabKlgJrh6HL+/vTklPVAPdNaLnbz89wRnuqp
+         vInDusDjinU1k1tXuSrvNl+arW4OUoLjK4+N1kssywggZW7Jvt3yFTBcvkkKO5md3u7e
+         bBYY198+1xHTBLt8BAqooipJ4q/UaotaCIigVxqnzz3L1RWNDBQzAY5XUbKRG2hYDfQr
+         DyJeQjfUNmnEVrq8buf0/t08+AhEw6uB7PdFS6dLDgmOJUh/gxis1n7pHXyKAOel03W2
+         Aoig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R2SAom+K3xjq+elR9A4m6RnGt39/xLthbnTdTanpHn4=;
-        b=gea2woMrEdvJr4Im///ZcxiLfnHjUxly/WZ/RlFTQXbDgJnmro6mpmW70tE+IQpTdu
-         ioeICDbFi6l8aT5f/+YcaYv0JHFdfwNZBN2tave3VaZesj4BZrszf80XE+/kEgztdS55
-         nR0iIeTgnZM5OUZqY1dYt5XT+5AZlb+4NR5wcyqm255FL5KxJuDaW9b+QlkDhZ7hcUrH
-         vKlcVrH9HlsGwWqR/GozAFFF3PlIDL/duV1+GgVcY2pM1g6NpcpEwAvoMSkgGY8nN7eq
-         Mvn+tNMlHcIt1+s74uaLvRylHugliP55kZN7ujs8jtv74w5swNaiR+qklMPbxqoetji9
-         FQYw==
-X-Gm-Message-State: AOAM531FtRAIvVYgmbR8vzmHvRwaVs65rW8wfJ8nDQxamRN0oidvh2w3
-        NtojJ6atlPoY4RmUsKLRAGgbcteN/a0eRaRqAe8=
-X-Google-Smtp-Source: ABdhPJziQkMUi2pJ8MxSHmab5wsEcIv1K6XRsXT+/7zhdllwdZnOe5vGfcUG4Cf+MUVglMCiAuuIvloG6RkqDbJDi9M=
-X-Received: by 2002:aa7:868c:0:b029:3bc:e2ca:4e2f with SMTP id
- d12-20020aa7868c0000b02903bce2ca4e2fmr29256171pfo.73.1628597772939; Tue, 10
- Aug 2021 05:16:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nvD6+M9t7qTrvrmcvKckt/OKOvl8Bvz01WtaH3hiQrw=;
+        b=KQHI85++P3+Hd88kMibAbhjpS1u2RRdz4qSSW37f3YsveDJX8wMjyJ+y6nnalLExUC
+         +C3TIZKwC4KA737inxc9TnLI5qm9XJjzrUel3oY4RKWgZcmMQEUJtslU4fnDaUxcs7cX
+         BHWlQKCct8lBzL/jZit9TwPIhYPfpgbRizh22kJtCQnLvGKxxNNXoR7hd1DhADs3eWBZ
+         ZuaRhgBOKqzCzr/dihLpdZ3JhhVIx1Rx14hevhdLk8nqVBAXgvJJfNY24Nka0VgYjjrP
+         4tstNjr8KlgfeQrhkH5upkXDnZk+6Kny2XLbBjfFSOU1UcJ3w0nibtfGgk3heRVzgalO
+         jZhg==
+X-Gm-Message-State: AOAM530J9Wij/AxcvY2OXwxdVZNaPu9GsyII1ziYBaYJ2PGFOxbNfKd6
+        6gARKUHrlzKfD80UksVfk1E=
+X-Google-Smtp-Source: ABdhPJzf0LwxUC1SEDmEJ4+woyBt3uEtabjBKjNM9eN5IQM2eh4nYHReWO5vIVqWyXP8Bs1frIDsoA==
+X-Received: by 2002:a63:131f:: with SMTP id i31mr348459pgl.207.1628597875367;
+        Tue, 10 Aug 2021 05:17:55 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:18:efec::4b1])
+        by smtp.gmail.com with ESMTPSA id ls16sm22103844pjb.49.2021.08.10.05.17.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 05:17:54 -0700 (PDT)
+Subject: Re: [PATCH V3 01/13] x86/HV: Initialize GHCB page in Isolation VM
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-2-ltykernel@gmail.com>
+ <20210810105609.soi67eg2us5w7yuq@liuwe-devbox-debian-v2>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <93f3b1c6-feec-9c3b-c2d0-6fceffd00ae9@gmail.com>
+Date:   Tue, 10 Aug 2021 20:17:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210808015659.2955443-1-liambeguin@gmail.com>
- <20210808015659.2955443-4-liambeguin@gmail.com> <20210808173630.5c384a4b@jic23-huawei>
- <CDEHT583QT0A.2QAXX9AC2FMLO@shaak>
-In-Reply-To: <CDEHT583QT0A.2QAXX9AC2FMLO@shaak>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 10 Aug 2021 15:15:36 +0300
-Message-ID: <CAHp75Vc3o-RrHD_wt_CfJY3P8hoRhJkdiRRySFS_O_7VdtJTQA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] iio: adc: ad7949: add support for internal vref
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>, lars@metafoo.de,
-        Michael.Hennerich@analog.com, charles-antoine.couret@essensium.com,
-        Nuno.Sa@analog.com, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210810105609.soi67eg2us5w7yuq@liuwe-devbox-debian-v2>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 1:50 AM Liam Beguin <liambeguin@gmail.com> wrote:
-> On Sun Aug 8, 2021 at 12:36 PM EDT, Jonathan Cameron wrote:
-> > On Sat, 7 Aug 2021 21:56:57 -0400
->         ret = fwnode_property_read_u32(child, "adi,internal-ref-microvolt", &tmp);
->         if (ret == -EINVAL && mode & AD7949_CFG_VAL_REF_EXTERNAL) {
->                 continue;
+Hi Wei:
+       Thanks for review.
 
->         } else if (ret < 0) {
+On 8/10/2021 6:56 PM, Wei Liu wrote:
+> On Mon, Aug 09, 2021 at 01:56:05PM -0400, Tianyu Lan wrote:
+> [...]
+>>   static int hv_cpu_init(unsigned int cpu)
+>>   {
+>>   	union hv_vp_assist_msr_contents msr = { 0 };
+>> @@ -85,6 +111,8 @@ static int hv_cpu_init(unsigned int cpu)
+>>   		}
+>>   	}
+>>   
+>> +	hyperv_init_ghcb();
+>> +
+> 
+> Why is the return value not checked here? If that's not required, can
+> you leave a comment?
+> 
 
-Side note, redundant 'else'
+The check is necessary here. Will update in the next version.
 
->                 dev_err(dev, "invalid voltage reference in %pfw\n", child);
->                 fwnode_handle_put(child);
->                 return ret;
->         }
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks.
