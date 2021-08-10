@@ -2,136 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C673E5243
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0B63E5244
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 06:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236531AbhHJEh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 00:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235432AbhHJEh1 (ORCPT
+        id S237075AbhHJEiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 00:38:09 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51262
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236047AbhHJEiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 00:37:27 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAD7C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Aug 2021 21:37:05 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id d10-20020a9d4f0a0000b02904f51c5004e3so16283458otl.9
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 21:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iuMMsEGLKerJ5lRGm/ABGvekt+HABMuilZ78dGDMJFI=;
-        b=ioEjI7POv1cOzJm+7aGtRJgUkHGN5G04oOdKw4Y5sPhvuQCMRhHIrbibStOLzToRRe
-         dsgBt7ZtUDzC32C9wLFzsphd41QuTZOyW5GGh8u9N9U/YlvctKES0KYQNjK+Ifj6bbQL
-         aXmwqH522XxzHPUTBLvNZAKG5azpSHKie775cWKhwwvBsIolmsvyvriYf/uJKG5oo6u+
-         4V+N8uD5TAsA17K4PlcM0N1UpExhSWcY5XZDxYOyIRGNIfS71srC2VHAAaJp9bx7Yuah
-         DHaWUC7tyXgI6EOeuzbOCtdEo50TLaq8/j7Lnn0CCcAstLoLg+qO08WcLw2v1x1apqre
-         Obrg==
+        Tue, 10 Aug 2021 00:38:07 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id E94D03F22F
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 04:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628570254;
+        bh=8UxNrUeLSStMldoAcFeW2Lw3XcfaO3qq0rvI+4obbHY=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=txpVeGXxE2HzkqnAVq18fD6kOdKypVbQKbelYe472IO7pUNOyaSBZsBypxKOU5wK/
+         nv1nBaRaFz6+r5/PBu1YHnGdYXug+SeLjjmVwQUtOsjnIDlzflycVb3CUFGo4MzK0z
+         Vc00OhzSi5fVuqepwOnE155stbequDrgWwEeu3WYFQ2DuhVhSRsAOL1uatrSfU9eCE
+         0zS/eMqcKYbRtPUUznhXLCrxfCYwmvDNWACXWUy2I5ZgIbR2pGoqXU5N2FO6k6QrhG
+         27YqRrYr4gA4vSJGxGD+KM3bmFj10c41wHulmqcvI9sBGah2IaUdGYf4FkmWJ5ZKjL
+         Dh1CCw+emxzDg==
+Received: by mail-ed1-f71.google.com with SMTP id d12-20020a50fe8c0000b02903a4b519b413so10122480edt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Aug 2021 21:37:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iuMMsEGLKerJ5lRGm/ABGvekt+HABMuilZ78dGDMJFI=;
-        b=PBOeieR4DKUR7luyy93fBhZNoZGIMjjFrpkKjK8UaOchI8tnQ5cRDsTDORX5m3gF2T
-         Js0gGEmLK34IODYHeciW7tWzfYRNIsaHOhGKCL4bmkdx8+W8b2sqOn5CXfDYghtNo2Pg
-         zzG+FCO9yyqdIMrt4kVMdyfj+uWQqbhfFqCkYqiKlVoMzQrZ58lcAFey6vSGJuW2sec6
-         7948NTcB3srZDHlUljJ3HZHwf43cvZNDmmmbfPTZGAVlXCtOXg3j8wTDzoCPApVq18pd
-         TU9kCZgxaLvZoGWBYORhb4mZ081LQMMiyRNoyVyuLMzMGESXMn7a6NedlAfO3kSUh3rL
-         pskg==
-X-Gm-Message-State: AOAM531L9YpNXO2en9qD3906geC8vCFdgMLuuUDAmT+sg+YfUqcx0kVB
-        Nhwa9rpZPRzRJAGepLu+kM/V6ddd86fmNdCVXcYV4w==
-X-Google-Smtp-Source: ABdhPJxh1ebQPLukCRAzo162yMxeyI9EjHD2CefBzJPEaYqBoaxTTKzCRsMUssS39EaR+fX2grAPznuKU9j+qgdfN6w=
-X-Received: by 2002:a05:6830:1095:: with SMTP id y21mr9439797oto.144.1628570224785;
- Mon, 09 Aug 2021 21:37:04 -0700 (PDT)
+        bh=8UxNrUeLSStMldoAcFeW2Lw3XcfaO3qq0rvI+4obbHY=;
+        b=Vb9KXvc5ClTZK/16Q0fbH8AqjBc5PA/1CHNm7NH2Tdn8phLsyjlaYTyZgNDWkgBUvz
+         SqH3jjSasTHJCHEJqVHFAKUcOiAMVvPwfyfa1hxhHnOebSpo2vCU2vCIAhX2Yuplwddw
+         2zxRhFyFwYU5SoAy+VZ4KZY5c5gOKcsBigOjnf3ta2CkFAaHW+posdZ4HH37JM3QkFFM
+         cML3ydwht0F71uZVnt3DooVOLH0NuIqXrBgWhYpY1yhjbC2o9rIAfXh6cl6iGCu9qkAr
+         EVIshYqi3WoRlNwElWvj4p8J23RV6o/59Ww2ZYmD2gFwD2ZRaylT8/HjyyLcjuiivU/z
+         9RLA==
+X-Gm-Message-State: AOAM531VUj2L3kELlM40LLhnB9lLA1gn4iAWhrdHrAUSmcq2DrAY23/b
+        cfcSAAo3s8/iTziJJLbMZD6pdmGWuqPmr7hWaRYrluD59gE5ufwCmHcVi1IpgvWixw+6aQ3OKhq
+        4XWcTHRCJs2AA5XGB3TOghl+EQY/skZLLaiMO6o/9vnMrseLbD9Z2oIGHLA==
+X-Received: by 2002:aa7:d14b:: with SMTP id r11mr2544055edo.259.1628570254394;
+        Mon, 09 Aug 2021 21:37:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXpRpqG2cNYzvU/k8PphD5FhvLU0fkLgntOuFcGb0LqjPXaDLngJqdPiYstnPz3rkAxqMs87SH/fbW9Bj+VPY=
+X-Received: by 2002:aa7:d14b:: with SMTP id r11mr2544039edo.259.1628570254182;
+ Mon, 09 Aug 2021 21:37:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210809152448.1810400-1-qperret@google.com> <20210809152448.1810400-14-qperret@google.com>
-In-Reply-To: <20210809152448.1810400-14-qperret@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Tue, 10 Aug 2021 06:36:27 +0200
-Message-ID: <CA+EHjTyb2Ge1QBXyRaTmXfjB=2uy2y-EDxag-Oyy03paAt4tvg@mail.gmail.com>
-Subject: Re: [PATCH v4 13/21] KVM: arm64: Expose host stage-2 manipulation helpers
-To:     Quentin Perret <qperret@google.com>
-Cc:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com
+References: <20210809174358.163525-1-kai.heng.feng@canonical.com> <CAJMQK-gNk8LmguOQ+iDxGtJCwCUcM3rPQ0CJs=kRZzv81nso4g@mail.gmail.com>
+In-Reply-To: <CAJMQK-gNk8LmguOQ+iDxGtJCwCUcM3rPQ0CJs=kRZzv81nso4g@mail.gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 10 Aug 2021 12:37:22 +0800
+Message-ID: <CAAd53p712ndn=DHGNwHZQ97GkUC--XG1wjc1DqSWBm85QxkFgA@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: Move shutdown callback before flushing tx and
+ rx queue
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+On Tue, Aug 10, 2021 at 12:10 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> On Tue, Aug 10, 2021 at 1:44 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
+> > are flushed or cancelled") introduced a regression that makes mtkbtsdio
+> > driver stops working:
+> > [   36.593956] Bluetooth: hci0: Firmware already downloaded
+> > [   46.814613] Bluetooth: hci0: Execution of wmt command timed out
+> > [   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
+> >
+> > The shutdown callback depends on the result of hdev->rx_work, so we
+> > should call it before flushing rx_work:
+> > -> btmtksdio_shutdown()
+> >  -> mtk_hci_wmt_sync()
+> >   -> __hci_cmd_send()
+> >    -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
+> >
+> > -> btmtksdio_recv_event()
+> >  -> hci_recv_frame()
+> >   -> queue_work(hdev->workqueue, &hdev->rx_work)
+> >    -> clears BTMTKSDIO_TX_WAIT_VND_EVT
+> >
+> > So move the shutdown callback before flushing TX/RX queue to resolve the
+> > issue.
+> >
+> > Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> > Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>
+> Hello,
+>
+> Sorry for confusion, but the version I tested is this one:
+> https://lkml.org/lkml/2021/8/4/486 (shutdown is prior to the
+> test_and_clear HCI_UP)
+> I tested this version and still see the error I've seen before.
 
+Ah, sorry for causing your trouble, I am the one who got confused :(
+HCI_UP is obviously required for hci_req_sync() to work.
 
-On Mon, Aug 9, 2021 at 5:25 PM Quentin Perret <qperret@google.com> wrote:
->
-> We will need to manipulate the host stage-2 page-table from outside
-> mem_protect.c soon. Introduce two functions allowing this, and make
-> them usable to users of mem_protect.h.
->
-> Signed-off-by: Quentin Perret <qperret@google.com>
+Let me resend one, and sorry again!
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
+Kai-Heng
 
-Thanks,
-/fuad
-
-> ---
->  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  2 ++
->  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 18 +++++++++++++++++-
->  2 files changed, 19 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-> index 87b1690c439f..0849ee8fa260 100644
-> --- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-> +++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-> @@ -49,6 +49,8 @@ extern struct host_kvm host_kvm;
->  int __pkvm_prot_finalize(void);
->  int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
 >
-> +int host_stage2_idmap_locked(phys_addr_t addr, u64 size, enum kvm_pgtable_prot prot);
-> +int host_stage2_set_owner_locked(phys_addr_t addr, u64 size, u8 owner_id);
->  int kvm_host_prepare_stage2(void *pgt_pool_base);
->  void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt);
 >
-> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> index 6fed6772c673..f95a5a4aa09c 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-> @@ -273,6 +273,22 @@ static int host_stage2_adjust_range(u64 addr, struct kvm_mem_range *range)
->         return 0;
->  }
 >
-> +int host_stage2_idmap_locked(phys_addr_t addr, u64 size,
-> +                            enum kvm_pgtable_prot prot)
-> +{
-> +       hyp_assert_lock_held(&host_kvm.lock);
-> +
-> +       return host_stage2_try(__host_stage2_idmap, addr, addr + size, prot);
-> +}
-> +
-> +int host_stage2_set_owner_locked(phys_addr_t addr, u64 size, u8 owner_id)
-> +{
-> +       hyp_assert_lock_held(&host_kvm.lock);
-> +
-> +       return host_stage2_try(kvm_pgtable_stage2_set_owner, &host_kvm.pgt,
-> +                              addr, size, &host_s2_pool, owner_id);
-> +}
-> +
->  static bool host_stage2_force_pte_cb(u64 addr, u64 end, enum kvm_pgtable_prot prot)
->  {
->         /*
-> @@ -309,7 +325,7 @@ static int host_stage2_idmap(u64 addr)
->         if (ret)
->                 goto unlock;
->
-> -       ret = host_stage2_try(__host_stage2_idmap, range.start, range.end, prot);
-> +       ret = host_stage2_idmap_locked(range.start, range.end - range.start, prot);
->  unlock:
->         hyp_spin_unlock(&host_kvm.lock);
->
-> --
-> 2.32.0.605.g8dce9f2422-goog
->
+> > Cc: Guenter Roeck <linux@roeck-us.net>
+> > Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >  net/bluetooth/hci_core.c | 16 ++++++++--------
+> >  1 file changed, 8 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> > index cb2e9e513907..8da04c899197 100644
+> > --- a/net/bluetooth/hci_core.c
+> > +++ b/net/bluetooth/hci_core.c
+> > @@ -1735,6 +1735,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> >
+> >         hci_leds_update_powered(hdev, false);
+> >
+> > +       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> > +           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> > +           test_bit(HCI_UP, &hdev->flags)) {
+> > +               /* Execute vendor specific shutdown routine */
+> > +               if (hdev->shutdown)
+> > +                       hdev->shutdown(hdev);
+> > +       }
+> > +
+> >         /* Flush RX and TX works */
+> >         flush_work(&hdev->tx_work);
+> >         flush_work(&hdev->rx_work);
+> > @@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> >                 clear_bit(HCI_INIT, &hdev->flags);
+> >         }
+> >
+> > -       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> > -           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> > -           test_bit(HCI_UP, &hdev->flags)) {
+> > -               /* Execute vendor specific shutdown routine */
+> > -               if (hdev->shutdown)
+> > -                       hdev->shutdown(hdev);
+> > -       }
+> > -
+> >         /* flush cmd  work */
+> >         flush_work(&hdev->cmd_work);
+> >
+> > --
+> > 2.31.1
+> >
