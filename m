@@ -2,80 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FFE3E84E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D833E84E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbhHJVBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:01:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231894AbhHJVBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:01:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 302BF60724;
-        Tue, 10 Aug 2021 21:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628629247;
-        bh=FdKF9smxg3E0EXaS1euGXqveQmfFkFj6bAwW41jyB7Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fn7i0KGIVCB3YraPlcYneUkXwWqtprEvKtloDXVOcsbGA3gNGWvP/EZ3uRwvFHeH0
-         6Eew/a7jiA+nY6XDazIRXFC9TaCmFoNrbO0Q+0hetU3vM9ceIFZWNw1/wxkV6eEE+S
-         GDNUWY8EvALgnPt4vgWvWs2ynrVFBHBPq25XRHiSpP5LNA4uQJwvSho1enV0Vih+7V
-         HVb76wIOKHCJbkJpR8az7lV/F85yhBB9KQcZs9+DgyvMWk7dEa3n6hKy/L+PLMC3At
-         w1zAfd9BRpbtB3EY52oYwPHIjIS2UgMmTBa53yXPU65kn/hrcUTp0l/sCDRNNAEffd
-         hC/gKaDJ/1CDg==
-Date:   Tue, 10 Aug 2021 23:00:44 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Hu Haowen <src.res@email.cn>
-Cc:     linux-i2c@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: i2c: add i2c-sysfs into index
-Message-ID: <YRLo/PlLmFgW+Doh@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Hu Haowen <src.res@email.cn>, linux-i2c@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210728155346.8941-1-src.res@email.cn>
+        id S233556AbhHJVEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231894AbhHJVED (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:04:03 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41E0C0613C1;
+        Tue, 10 Aug 2021 14:03:40 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id nt11so6478pjb.2;
+        Tue, 10 Aug 2021 14:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fz0iEsmbP+UovNHnMjy0vvTC6LaoMPc9ZqWQw5ZZu2U=;
+        b=doBa1shVFvbzNc/vedDkWmubrx/3avl+zKtIt42eDsdkVr/HBmO1nJtjzO9kIPDaSO
+         y5cfp6It+ZLCVLU0Bb1ouUzSggifKkB81Ag7IQWfk2/1igiTJ+6GPvSpMHeZFpgLRQGT
+         y13ETRZ3DYVSSr7f/0miwSx2uQ9FxmdzV06GspPmw9Bx44kS0ty9ZIyUtVU0RO0+1x4r
+         DQ5pqZsS3f8keEjcY8P7vHh6DoqLjOGdBPKVIMiNb3WkZ3AZ/nmohbUydXFNIkQF40+i
+         WEPVsxT5iTAs4m32S+0OOGjEN1g7Q8pz+Jk2R2KHBjrBG4v0G/0NzHKFA52lah8h/6uz
+         pqPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fz0iEsmbP+UovNHnMjy0vvTC6LaoMPc9ZqWQw5ZZu2U=;
+        b=fWPOL73Gvbm+h/2h8jSA/IrMzC6qbcr536yOQeVpJwY+ADkjR1XNJZn/XvQ4NGIENm
+         WDCQ6YZZdpWvSw7Sc4K8P3kkmES+L3HPUiqz21c8b5KCnwBGrK7WlsHTat4447nkjxg0
+         fNAsYgegP/CVIYgEBkx+D2uBsMYpt/46/Xx3Swtb+IFrVJTKaigpW51EkIVBG4NkVD9a
+         7/+OwvGRAUgFxuGsz554zRu+bKcnChC1eyd0ZCHp3Vc3mStFk0LnEgotVG3gCtajgsbp
+         ymlmBPOz1N13lFQ19oFr+hVekm3zrjNp/3YBEiw7/DEj2FnzC4QmpuiAlEtSjKmFyA/j
+         oA9Q==
+X-Gm-Message-State: AOAM531x5TeAso9UggrMQMFkytG6V032ckj0NeMprAqjIU88bIqTevAC
+        vqZi6buq2KYr6Sxg1/ip9gk=
+X-Google-Smtp-Source: ABdhPJwKIsFbAVRd2p+wbNEr3iIWoS3caIae6UcmBjLy1lldjtBBHNrODO35yCaeGptP6P6OzXUp1A==
+X-Received: by 2002:a17:90a:5a4c:: with SMTP id m12mr7097453pji.15.1628629420520;
+        Tue, 10 Aug 2021 14:03:40 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.173])
+        by smtp.gmail.com with ESMTPSA id a4sm1868333pfk.0.2021.08.10.14.03.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 14:03:39 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com, paulmck@kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH][RFC] lockdep: improve comments in wait-type checks
+Date:   Wed, 11 Aug 2021 05:03:19 +0800
+Message-Id: <20210810210319.6564-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4VIhR7DobTcl6BkU"
-Content-Disposition: inline
-In-Reply-To: <20210728155346.8941-1-src.res@email.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter,
+  I think comments in wait-type checks may benifit from some comments
+improvement.
+  I recklessly add Paul to signed-off-by, because I asked his opinion
+about comment in rcu_read_lock_bh part.
 
---4VIhR7DobTcl6BkU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks a lot
+Zhouyi
 
-On Wed, Jul 28, 2021 at 11:53:46PM +0800, Hu Haowen wrote:
-> Append i2c-sysfs to toctree in order to get rid of building warnings.
->=20
-> Signed-off-by: Hu Haowen <src.res@email.cn>
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/lockdep_types.h | 2 +-
+ kernel/locking/lockdep.c      | 2 +-
+ kernel/rcu/update.c           | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Added Fixes-tag (please provide one next time) and applied to
-for-current, thanks!
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index 3e726ace5c62..d22430840b53 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -21,7 +21,7 @@ enum lockdep_wait_type {
+ 	LD_WAIT_SPIN,		/* spin loops, raw_spinlock_t etc.. */
+ 
+ #ifdef CONFIG_PROVE_RAW_LOCK_NESTING
+-	LD_WAIT_CONFIG,		/* CONFIG_PREEMPT_LOCK, spinlock_t etc.. */
++	LD_WAIT_CONFIG,		/* preemptible in PREEMPT_RT, spinlock_t etc.. */
+ #else
+ 	LD_WAIT_CONFIG = LD_WAIT_SPIN,
+ #endif
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index bf1c00c881e4..952d0ccf8776 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4671,7 +4671,7 @@ print_lock_invalid_wait_context(struct task_struct *curr,
+ /*
+  * Verify the wait_type context.
+  *
+- * This check validates we takes locks in the right wait-type order; that is it
++ * This check validates we take locks in the right wait-type order; that is it
+  * ensures that we do not take mutexes inside spinlocks and do not attempt to
+  * acquire spinlocks inside raw_spinlocks and the sort.
+  *
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index c21b38cc25e9..690b0cec7459 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -247,7 +247,7 @@ struct lockdep_map rcu_lock_map = {
+ 	.name = "rcu_read_lock",
+ 	.key = &rcu_lock_key,
+ 	.wait_type_outer = LD_WAIT_FREE,
+-	.wait_type_inner = LD_WAIT_CONFIG, /* XXX PREEMPT_RCU ? */
++	.wait_type_inner = LD_WAIT_CONFIG, /* PREEMPT_RT implies PREEMPT_RCU */
+ };
+ EXPORT_SYMBOL_GPL(rcu_lock_map);
+ 
+@@ -256,7 +256,7 @@ struct lockdep_map rcu_bh_lock_map = {
+ 	.name = "rcu_read_lock_bh",
+ 	.key = &rcu_bh_lock_key,
+ 	.wait_type_outer = LD_WAIT_FREE,
+-	.wait_type_inner = LD_WAIT_CONFIG, /* PREEMPT_LOCK also makes BH preemptible */
++	.wait_type_inner = LD_WAIT_CONFIG, /* PREEMPT_RT makes BH preemptible. */
+ };
+ EXPORT_SYMBOL_GPL(rcu_bh_lock_map);
+ 
+-- 
+2.25.1
 
-
---4VIhR7DobTcl6BkU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmES6PwACgkQFA3kzBSg
-KbaO2xAAgFMpO9qWG4VvRHOpeBMwJ1r+lhgJhE3TBneQzbC4y8gYBaqBh/FGtK8r
-VD0/PBdwm7BpXpx6zzm0HJIDwNHvB74rh9LV9lbqbzm+7fXYrxa9hB69Yex6kt7p
-xGkZ4yw/j3KRkU0ThEXa6KS818Z5nXa9i6jrBKTZvy/MCqRylY2VEx4MBKgSJ0y3
-R3cKNTMzI71lD+bWBQqO0pf1uurf426AXE+ARqpmbMdDoRYQDlLZD+ApFDHSmy4M
-IEiCSuRC5vxvWzeJngMv658LhCQRQprbjzZFM2Oj+xcZfFTOb0tTfgEkr3GX5KCU
-r3hSTfHTVDGaub6WE7JdlUQy6dViBkB3/1sMB3azUIKgEgSuO194Asg3SqmCZRs8
-aCqys5MbxnfJ2BfeQRJKbN3W1q/wDFpO7UR/KYpugLnEW8Fe4lfM9OIf6uyEfmN1
-yr6Ofq/XBepmF+f1Idb5mxvmegs2GTcYmCpnHBJ8DtALFQIKtk8JzBSSnr8GUVLV
-opQ6aI39scoN5VBmHAwWXP5yjE+PB+136kacbGrA0g4pnqc+W2cWCGOjYJ+MDyb5
-hpRhO4nPXtS0tNYuos6gqo/Af2KKnd8RyuYR0S+bAoZVY+C0pVwSn8SG9WlJ8bmC
-qunAMm26LdtGqFhPLue7FMSeaWQxu7M6cY0VIEvbLhkOKW7I/Ec=
-=ZhaI
------END PGP SIGNATURE-----
-
---4VIhR7DobTcl6BkU--
