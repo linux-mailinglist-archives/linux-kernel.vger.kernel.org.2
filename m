@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D3A3E5395
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B842E3E538A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhHJGff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41574 "EHLO mail.kernel.org"
+        id S236685AbhHJGaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:30:12 -0400
+Received: from mga11.intel.com ([192.55.52.93]:31713 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhHJGfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:35:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C56D60E9B;
-        Tue, 10 Aug 2021 06:35:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628577311;
-        bh=0MlOsZpdt27CjZT8u0hLWNXRbC0r9HoIooJxLpXDo1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=113n+ktMggo1IETMY0vsNHitek+/+TYudU02iK5w/C0huVvKWgBCRyKlvjrhR1zsB
-         ajT/vNC4ZJdnjQJG9Pdc+r7VnSHcR19ZKVM3+IYtn+uby0c266j8kcYOcrYUewTDqU
-         05b4BrPq1nL6X4ZFSXQRYWifSbZAHUXbVFiB8erc=
-Date:   Tue, 10 Aug 2021 08:35:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>, hch@lst.de,
-        axboe@kernel.dk, kernelnewbies@kernelnewbies.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        pavel@ucw.cz, pali@kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
-Message-ID: <YRIeHH1SLl6tYCeY@kroah.com>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
- <20210809205633.4300bbea@thinkpad>
- <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com>
- <20210810004331.0f0094a5@thinkpad>
- <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
+        id S234701AbhHJGaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:30:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="211738411"
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="211738411"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 23:29:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
+   d="scan'208";a="671561223"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Aug 2021 23:29:46 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.69])
+        by linux.intel.com (Postfix) with ESMTP id 66BD558090A;
+        Mon,  9 Aug 2021 23:29:44 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH net 1/1] net: dsa: sja1105: fix error handling on NULL returned by xpcs_create()
+Date:   Tue, 10 Aug 2021 14:35:13 +0800
+Message-Id: <20210810063513.1757614-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
-> On 8/9/21 5:43 PM, Marek Behún wrote:
-> > I confess that I am not very familiar with internal blkdev API.
-> 
-> It's mainly a matter of symbol visibility.  See this thread from a few
-> months ago:
-> 
->   https://www.spinics.net/lists/linux-leds/msg18244.html
-> 
-> Now ... my code currently lives in block/, so there isn't actually
-> anything technically preventing it from iterating through the block
-> devices.
-> 
-> The reactions to Enzo's patch (which you can see in that thread) make me
-> think that anything that iterates through all block devices is likely to
-> be rejected, but maybe I'm reading too much into it.
-> 
-> 
-> Greg / Christoph -
-> 
-> (As you were the people who expressed disapproval of Enzo's patch to
-> export block_class and disk_type ...)
-> 
-> Can you weigh in on the acceptability of iterating through the block
-> devices (searching by name) from LED trigger code within the block
-> subsystem (i.e. no new symbols would need to be exported)?
-> 
-> This would allow the trigger to implement the sysfs API that Marek and
-> Pavel want.
+There is a possibility xpcs_create() returned a NULL and this is not
+handled properly in the sja1105 driver.
 
-No idea, let's see the change first, we can never promise anything :)
+Fixed this by using IS_ERR_ON_NULL() instead of IS_ERR().
 
-thanks,
+Fixes: 3ad1d171548e ("net: dsa: sja1105: migrate to xpcs for SGMII")
+Cc: Vladimir Olten <vladimir.oltean@nxp.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ drivers/net/dsa/sja1105/sja1105_mdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/net/dsa/sja1105/sja1105_mdio.c b/drivers/net/dsa/sja1105/sja1105_mdio.c
+index 19aea8fb76f6..2c69a759ce6e 100644
+--- a/drivers/net/dsa/sja1105/sja1105_mdio.c
++++ b/drivers/net/dsa/sja1105/sja1105_mdio.c
+@@ -438,7 +438,7 @@ static int sja1105_mdiobus_pcs_register(struct sja1105_private *priv)
+ 		}
+ 
+ 		xpcs = xpcs_create(mdiodev, priv->phy_mode[port]);
+-		if (IS_ERR(xpcs)) {
++		if (IS_ERR_OR_NULL(xpcs)) {
+ 			rc = PTR_ERR(xpcs);
+ 			goto out_pcs_free;
+ 		}
+-- 
+2.25.1
+
