@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AF93E5322
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2563E5324
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 07:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237288AbhHJFzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 01:55:16 -0400
-Received: from ozlabs.org ([203.11.71.1]:33627 "EHLO ozlabs.org"
+        id S237316AbhHJF5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 01:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231716AbhHJFzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 01:55:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkMbw3bz4z9sWS;
-        Tue, 10 Aug 2021 15:54:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628574892;
-        bh=f8R9NvkDos6wec/SrfyapK1cFZj2Sr2PK+CmVlje5tc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ezi0H6Hb6FXtxuHpg0Ts7uEBiStWkzcjVA87xiqF65uVBbG6TlTAaLDRm1iSXOJq4
-         zRuZZYojwWMArdOu2ihTL4C+Cb4rDRCgQown+eUBDA3XVw12vQc5nRjVTASzt4YDsk
-         7Gea0xwEu19MITL3Py7fkHg/o26QkZDwg8TxHe0RZFB3Yum8I7M2YLkhTy319ziOgN
-         7m5Qgh7MtMBnYMit/vkDi0/FVPRAwX8J++xZne9weRuQHTtQ9/tKfM6utIXPueRvQ1
-         d+AbanCIvc3RYSS89Z8IpU1729+xYqdyc14X2z1MwpVJMGe8cpBCXVZeXH+dS3T/mL
-         1tvpn5ZrCh1jw==
-Date:   Tue, 10 Aug 2021 15:54:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Cassio Neri <cassio.neri@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the rtc tree
-Message-ID: <20210810155449.289326c3@canb.auug.org.au>
+        id S231716AbhHJF5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 01:57:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F2E660F55;
+        Tue, 10 Aug 2021 05:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628575048;
+        bh=X79xfSz4SuVY9S2KTYtnaTY3IgoH5MwOklojFs0LVhQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fs2rfBdYc6BE7/qyh3y3cGp6/WEvB5vdLEarlaIamyPGtZzhn+eMDG+FkO42r6Qs8
+         4bk4wbLLaJid0g90E4Lt95umEAzHiAVnp9DHk0KoYOIeHgxYgShYc7yK7ND7v1MvA+
+         8+5gAtY+ALnKBVp4rONQ9e2ACCDZNgQyXGZLK+hs=
+Date:   Tue, 10 Aug 2021 07:57:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andrew Delgadillo <adelg@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] arm64: clean vdso files
+Message-ID: <YRIVRgxhvGJxfXYs@kroah.com>
+References: <20210809191414.3572827-1-adelg@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/z=6wINnU2pXimQ_qceP4Tjd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809191414.3572827-1-adelg@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/z=6wINnU2pXimQ_qceP4Tjd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 09, 2021 at 07:14:14PM +0000, Andrew Delgadillo wrote:
+> commit a5b8ca97fbf8 ("arm64: do not descend to vdso directories twice")
+> changes the cleaning behavior of arm64's vdso files, in that vdso.lds,
+> vdso.so, and vdso.so.dbg are not removed upon a 'make clean/mrproper':
+> 
+> $ make defconfig ARCH=arm64
+> $ make ARCH=arm64
+> $ make mrproper ARCH=arm64
+> $ git clean -nxdf
+> Would remove arch/arm64/kernel/vdso/vdso.lds
+> Would remove arch/arm64/kernel/vdso/vdso.so
+> Would remove arch/arm64/kernel/vdso/vdso.so.dbg
+> 
+> To remedy this, manually descend into arch/arm64/kernel/vdso upon
+> cleaning.
+> 
+> After this commit:
+> $ make defconfig ARCH=arm64
+> $ make ARCH=arm64
+> $ make mrproper ARCH=arm64
+> $ git clean -nxdf
+> <empty>
+> 
+> Signed-off-by: Andrew Delgadillo <adelg@google.com>
+> ---
+>  arch/arm64/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Hi all,
+<formletter>
 
-After merging the rtc tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-ERROR: modpost: missing MODULE_LICENSE() in drivers/rtc/lib_test.o
-
-Caused by commit
-
-  1d1bb12a8b18 ("rtc: Improve performance of rtc_time64_to_tm(). Add tests.=
-")
-
-I have used the rtc tree from next-20210809 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/z=6wINnU2pXimQ_qceP4Tjd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmESFKkACgkQAVBC80lX
-0GzAuAf+JR6YOBbVbunvb1pcgM6ghy6PBS8uzDzWjZ0XAlv/tlffeButlL1dLvHQ
-FDl+JMWb9RlJYvC9SXeNYchfSRPchSTWq+AjT31junBvtpp8YQ8YZDm2X7m/gHGQ
-AjhPjGaPMdetMyCB3jCIrLYHFBNkJ82mgFMhR9v/8br3tIJVvAR3XDb+zZx+LqGB
-QbNe5PCWKmWosSgfbTsQhAJ4cndnrRvJkXLKjNu7pWpT1ha45vKAcSbAfR5tZ8G6
-f/cMfmlBhIV+xvWzQPh5cmk3lvUusMKVZZ5nWsmuPXi8HFxWDnr7Z0rWsKbl5znO
-MebI0KaLke0HdVuEg5nUQpOSLAVbpQ==
-=aBKr
------END PGP SIGNATURE-----
-
---Sig_/z=6wINnU2pXimQ_qceP4Tjd--
+</formletter>
