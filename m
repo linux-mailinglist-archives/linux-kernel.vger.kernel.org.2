@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2B13E803D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD433E7E58
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhHJRrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:47:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50908 "EHLO mail.kernel.org"
+        id S231676AbhHJRcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:32:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236144AbhHJRoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:44:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7F8A6113D;
-        Tue, 10 Aug 2021 17:39:37 +0000 (UTC)
+        id S229760AbhHJRc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:32:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13D9060EE7;
+        Tue, 10 Aug 2021 17:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617178;
-        bh=yNfy5sIQIBEiJGj6vws9CR/WP3ngWh9+PdmMUiRtloI=;
+        s=korg; t=1628616725;
+        bh=1MXz44Vcn+u5JsDU6ccx0yHCYH2R77gjABTz4hvJHR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YLfQWaRucSCR1Jjmw1hX+iRuCbrcC5XUybja4Ap7IvD4xFM7luf9eG0Wv6chgFcnN
-         G9YSgYlz9irvxtUV7llFOKrIHec+EDp5GSGCjnLfzSCFdOVaL/t3367KpfF7rBnyoG
-         TM35K798kQRI61FYyOyAb59itsZOu69CmvrkwQfA=
+        b=acqQzbXsubry0SebgtVNHokBX7alYSjQOC78541xv5cASCDJTk0+WMBsY//wffvry
+         yD+n5eB5nvq47NOUtCz/VQZo1U8j6G54n9brHwlLYVN5mO8XaV7SP7ocQsdaF0jDCw
+         icyVY+U1fiKqtxY3x71XZsK3ceD3cuPu1nIPhUEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 080/135] arm64: stacktrace: avoid tracing arch_stack_walk()
+        stable@vger.kernel.org,
+        syzbot <syzbot+a5df189917e79d5e59c9@syzkaller.appspotmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 20/54] Bluetooth: defer cleanup of resources in hci_unregister_dev()
 Date:   Tue, 10 Aug 2021 19:30:14 +0200
-Message-Id: <20210810172958.462287930@linuxfoundation.org>
+Message-Id: <20210810172944.842148853@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-References: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+References: <20210810172944.179901509@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,133 +43,244 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-commit 0c32706dac1b0a72713184246952ab0f54327c21 upstream.
+[ Upstream commit e04480920d1eec9c061841399aa6f35b6f987d8b ]
 
-When the function_graph tracer is in use, arch_stack_walk() may unwind
-the stack incorrectly, erroneously reporting itself, missing the final
-entry which is being traced, and reporting all traced entries between
-these off-by-one from where they should be.
+syzbot is hitting might_sleep() warning at hci_sock_dev_event() due to
+calling lock_sock() with rw spinlock held [1].
 
-When ftrace hooks a function return, the original return address is
-saved to the fgraph ret_stack, and the return address  in the LR (or the
-function's frame record) is replaced with `return_to_handler`.
+It seems that history of this locking problem is a trial and error.
 
-When arm64's unwinder encounter frames returning to `return_to_handler`,
-it finds the associated original return address from the fgraph ret
-stack, assuming the most recent `ret_to_hander` entry on the stack
-corresponds to the most recent entry in the fgraph ret stack, and so on.
+Commit b40df5743ee8 ("[PATCH] bluetooth: fix socket locking in
+hci_sock_dev_event()") in 2.6.21-rc4 changed bh_lock_sock() to
+lock_sock() as an attempt to fix lockdep warning.
 
-When arch_stack_walk() is used to dump the current task's stack, it
-starts from the caller of arch_stack_walk(). However, arch_stack_walk()
-can be traced, and so may push an entry on to the fgraph ret stack,
-leaving the fgraph ret stack offset by one from the expected position.
+Then, commit 4ce61d1c7a8e ("[BLUETOOTH]: Fix locking in
+hci_sock_dev_event().") in 2.6.22-rc2 changed lock_sock() to
+local_bh_disable() + bh_lock_sock_nested() as an attempt to fix the
+sleep in atomic context warning.
 
-This can be seen when dumping the stack via /proc/self/stack, where
-enabling the graph tracer results in an unexpected
-`stack_trace_save_tsk` entry at the start of the trace, and `el0_svc`
-missing form the end of the trace.
+Then, commit 4b5dd696f81b ("Bluetooth: Remove local_bh_disable() from
+hci_sock.c") in 3.3-rc1 removed local_bh_disable().
 
-This patch fixes this by marking arch_stack_walk() as notrace, as we do
-for all other functions on the path to ftrace_graph_get_ret_stack().
-While a few helper functions are not marked notrace, their calls/returns
-are balanced, and will have no observable effect when examining the
-fgraph ret stack.
+Then, commit e305509e678b ("Bluetooth: use correct lock to prevent UAF
+of hdev object") in 5.13-rc5 again changed bh_lock_sock_nested() to
+lock_sock() as an attempt to fix CVE-2021-3573.
 
-It is possible for an exeption boundary to cause a similar offset if the
-return address of the interrupted context was in the LR. Fixing those
-cases will require some more substantial rework, and is left for
-subsequent patches.
+This difficulty comes from current implementation that
+hci_sock_dev_event(HCI_DEV_UNREG) is responsible for dropping all
+references from sockets because hci_unregister_dev() immediately
+reclaims resources as soon as returning from
+hci_sock_dev_event(HCI_DEV_UNREG).
 
-Before:
+But the history suggests that hci_sock_dev_event(HCI_DEV_UNREG) was not
+doing what it should do.
 
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
-| # echo function_graph > /sys/kernel/tracing/current_tracer
-| # cat /proc/self/stack
-| [<0>] stack_trace_save_tsk+0xa4/0x110
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
+Therefore, instead of trying to detach sockets from device, let's accept
+not detaching sockets from device at hci_sock_dev_event(HCI_DEV_UNREG),
+by moving actual cleanup of resources from hci_unregister_dev() to
+hci_cleanup_dev() which is called by bt_host_release() when all
+references to this unregistered device (which is a kobject) are gone.
 
-After:
+Since hci_sock_dev_event(HCI_DEV_UNREG) no longer resets
+hci_pi(sk)->hdev, we need to check whether this device was unregistered
+and return an error based on HCI_UNREGISTER flag.  There might be subtle
+behavioral difference in "monitor the hdev" functionality; please report
+if you found something went wrong due to this patch.
 
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
-| # echo function_graph > /sys/kernel/tracing/current_tracer
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xc4/0x140
-| [<0>] proc_single_show+0x6c/0x120
-| [<0>] seq_read_iter+0x240/0x4e0
-| [<0>] seq_read+0xe8/0x140
-| [<0>] vfs_read+0xb8/0x1e4
-| [<0>] ksys_read+0x74/0x100
-| [<0>] __arm64_sys_read+0x28/0x3c
-| [<0>] invoke_syscall+0x50/0x120
-| [<0>] el0_svc_common.constprop.0+0xc4/0xd4
-| [<0>] do_el0_svc+0x30/0x9c
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0t_64_sync_handler+0x1a8/0x1b0
-| [<0>] el0t_64_sync+0x198/0x19c
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Reviwed-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210802164845.45506-3-mark.rutland@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://syzkaller.appspot.com/bug?extid=a5df189917e79d5e59c9 [1]
+Reported-by: syzbot <syzbot+a5df189917e79d5e59c9@syzkaller.appspotmail.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: e305509e678b ("Bluetooth: use correct lock to prevent UAF of hdev object")
+Acked-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/stacktrace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/bluetooth/hci_core.h |  1 +
+ net/bluetooth/hci_core.c         | 16 +++++------
+ net/bluetooth/hci_sock.c         | 49 +++++++++++++++++++++-----------
+ net/bluetooth/hci_sysfs.c        |  3 ++
+ 4 files changed, 45 insertions(+), 24 deletions(-)
 
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -199,7 +199,7 @@ void show_stack(struct task_struct *tsk,
- 
- #ifdef CONFIG_STACKTRACE
- 
--noinline void arch_stack_walk(stack_trace_consume_fn consume_entry,
-+noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
- 			      void *cookie, struct task_struct *task,
- 			      struct pt_regs *regs)
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 6a61faf0cc79..75d892dc7796 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1042,6 +1042,7 @@ struct hci_dev *hci_alloc_dev(void);
+ void hci_free_dev(struct hci_dev *hdev);
+ int hci_register_dev(struct hci_dev *hdev);
+ void hci_unregister_dev(struct hci_dev *hdev);
++void hci_cleanup_dev(struct hci_dev *hdev);
+ int hci_suspend_dev(struct hci_dev *hdev);
+ int hci_resume_dev(struct hci_dev *hdev);
+ int hci_reset_dev(struct hci_dev *hdev);
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 219cdbb476fb..7a85f215da45 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3261,14 +3261,10 @@ EXPORT_SYMBOL(hci_register_dev);
+ /* Unregister HCI device */
+ void hci_unregister_dev(struct hci_dev *hdev)
  {
+-	int id;
+-
+ 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
+ 
+ 	hci_dev_set_flag(hdev, HCI_UNREGISTER);
+ 
+-	id = hdev->id;
+-
+ 	write_lock(&hci_dev_list_lock);
+ 	list_del(&hdev->list);
+ 	write_unlock(&hci_dev_list_lock);
+@@ -3297,7 +3293,14 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 	}
+ 
+ 	device_del(&hdev->dev);
++	/* Actual cleanup is deferred until hci_cleanup_dev(). */
++	hci_dev_put(hdev);
++}
++EXPORT_SYMBOL(hci_unregister_dev);
+ 
++/* Cleanup HCI device */
++void hci_cleanup_dev(struct hci_dev *hdev)
++{
+ 	debugfs_remove_recursive(hdev->debugfs);
+ 	kfree_const(hdev->hw_info);
+ 	kfree_const(hdev->fw_info);
+@@ -3320,11 +3323,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 	hci_discovery_filter_clear(hdev);
+ 	hci_dev_unlock(hdev);
+ 
+-	hci_dev_put(hdev);
+-
+-	ida_simple_remove(&hci_index_ida, id);
++	ida_simple_remove(&hci_index_ida, hdev->id);
+ }
+-EXPORT_SYMBOL(hci_unregister_dev);
+ 
+ /* Suspend HCI device */
+ int hci_suspend_dev(struct hci_dev *hdev)
+diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
+index 06156de24c50..3ba0c6df73ce 100644
+--- a/net/bluetooth/hci_sock.c
++++ b/net/bluetooth/hci_sock.c
+@@ -59,6 +59,17 @@ struct hci_pinfo {
+ 	char              comm[TASK_COMM_LEN];
+ };
+ 
++static struct hci_dev *hci_hdev_from_sock(struct sock *sk)
++{
++	struct hci_dev *hdev = hci_pi(sk)->hdev;
++
++	if (!hdev)
++		return ERR_PTR(-EBADFD);
++	if (hci_dev_test_flag(hdev, HCI_UNREGISTER))
++		return ERR_PTR(-EPIPE);
++	return hdev;
++}
++
+ void hci_sock_set_flag(struct sock *sk, int nr)
+ {
+ 	set_bit(nr, &hci_pi(sk)->flags);
+@@ -752,19 +763,13 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
+ 	if (event == HCI_DEV_UNREG) {
+ 		struct sock *sk;
+ 
+-		/* Detach sockets from device */
++		/* Wake up sockets using this dead device */
+ 		read_lock(&hci_sk_list.lock);
+ 		sk_for_each(sk, &hci_sk_list.head) {
+-			lock_sock(sk);
+ 			if (hci_pi(sk)->hdev == hdev) {
+-				hci_pi(sk)->hdev = NULL;
+ 				sk->sk_err = EPIPE;
+-				sk->sk_state = BT_OPEN;
+ 				sk->sk_state_change(sk);
+-
+-				hci_dev_put(hdev);
+ 			}
+-			release_sock(sk);
+ 		}
+ 		read_unlock(&hci_sk_list.lock);
+ 	}
+@@ -923,10 +928,10 @@ static int hci_sock_blacklist_del(struct hci_dev *hdev, void __user *arg)
+ static int hci_sock_bound_ioctl(struct sock *sk, unsigned int cmd,
+ 				unsigned long arg)
+ {
+-	struct hci_dev *hdev = hci_pi(sk)->hdev;
++	struct hci_dev *hdev = hci_hdev_from_sock(sk);
+ 
+-	if (!hdev)
+-		return -EBADFD;
++	if (IS_ERR(hdev))
++		return PTR_ERR(hdev);
+ 
+ 	if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL))
+ 		return -EBUSY;
+@@ -1080,6 +1085,18 @@ static int hci_sock_bind(struct socket *sock, struct sockaddr *addr,
+ 
+ 	lock_sock(sk);
+ 
++	/* Allow detaching from dead device and attaching to alive device, if
++	 * the caller wants to re-bind (instead of close) this socket in
++	 * response to hci_sock_dev_event(HCI_DEV_UNREG) notification.
++	 */
++	hdev = hci_pi(sk)->hdev;
++	if (hdev && hci_dev_test_flag(hdev, HCI_UNREGISTER)) {
++		hci_pi(sk)->hdev = NULL;
++		sk->sk_state = BT_OPEN;
++		hci_dev_put(hdev);
++	}
++	hdev = NULL;
++
+ 	if (sk->sk_state == BT_BOUND) {
+ 		err = -EALREADY;
+ 		goto done;
+@@ -1356,9 +1373,9 @@ static int hci_sock_getname(struct socket *sock, struct sockaddr *addr,
+ 
+ 	lock_sock(sk);
+ 
+-	hdev = hci_pi(sk)->hdev;
+-	if (!hdev) {
+-		err = -EBADFD;
++	hdev = hci_hdev_from_sock(sk);
++	if (IS_ERR(hdev)) {
++		err = PTR_ERR(hdev);
+ 		goto done;
+ 	}
+ 
+@@ -1718,9 +1735,9 @@ static int hci_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 		goto done;
+ 	}
+ 
+-	hdev = hci_pi(sk)->hdev;
+-	if (!hdev) {
+-		err = -EBADFD;
++	hdev = hci_hdev_from_sock(sk);
++	if (IS_ERR(hdev)) {
++		err = PTR_ERR(hdev);
+ 		goto done;
+ 	}
+ 
+diff --git a/net/bluetooth/hci_sysfs.c b/net/bluetooth/hci_sysfs.c
+index 9874844a95a9..b69d88b88d2e 100644
+--- a/net/bluetooth/hci_sysfs.c
++++ b/net/bluetooth/hci_sysfs.c
+@@ -83,6 +83,9 @@ void hci_conn_del_sysfs(struct hci_conn *conn)
+ static void bt_host_release(struct device *dev)
+ {
+ 	struct hci_dev *hdev = to_hci_dev(dev);
++
++	if (hci_dev_test_flag(hdev, HCI_UNREGISTER))
++		hci_cleanup_dev(hdev);
+ 	kfree(hdev);
+ 	module_put(THIS_MODULE);
+ }
+-- 
+2.30.2
+
 
 
