@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949013E84F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28613E84FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 23:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbhHJVJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 17:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhHJVJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 17:09:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A55C160F55;
-        Tue, 10 Aug 2021 21:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628629751;
-        bh=N+y0Ib3nB0HIOVlUv1cNjmOALpuYktMVSuK4FCr+TFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SdPv7xnpU/amHpU4nx0K1W+22Jh042xkVEUQtzCNvvizK/Zcsb2Xox3jl7tLDGfDa
-         2WqBv5i8wqHqv1azoWhd6YhkUGCUj6cN288/8dSRiUvGvSw3iB+dAnxbNzZ+9VEbkB
-         As8ekGisX+jBnKehC2N67u1a2Q11iGx8TTBdKoiuNpyMP6gQzdKzNwFZfscybVLBQQ
-         WpMKsxYkPt2cYYr+bt2Mf/ykFNFhbvEZLh2Z7/TQfd60+WMYcFlmLsdtzN4dCULcGi
-         96IMn9NeD9HsGVQUtNyRHNP5/O1VtO4cvWil3LA5NtyF42bSemA3OC3sfW0q9kRX5t
-         RT1/UgUAZoF/A==
-Date:   Tue, 10 Aug 2021 23:09:08 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     codrin.ciubotariu@microchip.com, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: at91: remove #define CONFIG_PM
-Message-ID: <YRLq9ClCMZlApNqr@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        codrin.ciubotariu@microchip.com, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210705121516.622326-1-claudiu.beznea@microchip.com>
+        id S234150AbhHJVJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 17:09:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42399 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234065AbhHJVJx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 17:09:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628629770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nstjUO9S2JedgX/X63vf3JasoXS0I2O2tfkyfoDt5+M=;
+        b=BCVOJiT/M/+ClTMIlp0HIqo2+VbnaRO9//WTrHX81P16en1+VW5HAdcTjuho31LCWOko6r
+        WluZH288fmN1Dji2qxdIDV1tKgDMdpifzC33gZxA7JsIfiuID5X5d39/sBKu8Otr9rIfvW
+        PxpgKdRHCgdS7fa2LGzBrnoP1+0NDhM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-kfEsoJj9Pa2UDihLNckHpg-1; Tue, 10 Aug 2021 17:09:28 -0400
+X-MC-Unique: kfEsoJj9Pa2UDihLNckHpg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A868C34820;
+        Tue, 10 Aug 2021 21:09:27 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AC20E5C1A1;
+        Tue, 10 Aug 2021 21:09:26 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210715033704.692967-62-willy@infradead.org>
+References: <20210715033704.692967-62-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v14 061/138] mm/migrate: Add folio_migrate_flags()
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yMdhhDsa+5QlKnsv"
-Content-Disposition: inline
-In-Reply-To: <20210705121516.622326-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1812508.1628629765.1@warthog.procyon.org.uk>
+Date:   Tue, 10 Aug 2021 22:09:25 +0100
+Message-ID: <1812509.1628629765@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 
---yMdhhDsa+5QlKnsv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +	if (folio_test_error(folio))
+> +		folio_set_error(newfolio);
+> +	if (folio_test_referenced(folio))
+> +		folio_set_referenced(newfolio);
+> +	if (folio_test_uptodate(folio))
+> +		folio_mark_uptodate(newfolio);
+> +	if (folio_test_clear_active(folio)) {
+> +		VM_BUG_ON_FOLIO(folio_test_unevictable(folio), folio);
+> +		folio_set_active(newfolio);
+> +	} else if (folio_test_clear_unevictable(folio))
+> +		folio_set_unevictable(newfolio);
+> +	if (folio_test_workingset(folio))
+> +		folio_set_workingset(newfolio);
+> +	if (folio_test_checked(folio))
+> +		folio_set_checked(newfolio);
+> +	if (folio_test_mappedtodisk(folio))
+> +		folio_set_mappedtodisk(newfolio);
 
-On Mon, Jul 05, 2021 at 03:15:16PM +0300, Claudiu Beznea wrote:
-> Remove #define CONFIG_PM and use __maybe_unused for PM functions and
-> pm_ptr() for PM ops.
->=20
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Since a bunch of these are bits in folio->flags and newfolio->flags, I wonder
+if it's better to do use a cmpxchg() loop or LL/SC construct to transfer all
+the relevant flags in one go.
 
-Applied to for-next, thanks!
+Apart from that:
 
+Reviewed-by: David Howells <dhowells@redhat.com>
 
---yMdhhDsa+5QlKnsv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmES6vQACgkQFA3kzBSg
-KbaUCg//a2wHKLl0xDRcJB2lIIRRoz9h9yZymQd0SRR/KnPfV4c7NyC6u1q8PYCu
-26ZueLJNrkZScENDmxH3NWDDE7zin24FTBRn63GbxwI5w6eHjHhsezJiMEVULqL1
-bZSfB4oUuiJqd/32AuKJJ2e2ug1X8qSaZA0QPu/AWyLb7v/cq27cOrOI2zj89cNm
-PsAijmiCrl6hfg03suCAZA+dqLHd+TMwDWKRHitDYbYeUwp4h44OAd1gYjAaC6R6
-LtaFN1S8y8kp1CYkbB7k+O4K1I40rZKoWqOL+o5A8s71vV5RTpwIU2H+yhWT2N8E
-SQwutt4Buyj6hMdKhcpIgHTbnluGNlJ9mmYdG8MAg6PGoyrL9xaZe/Rw0t+J6bSG
-59/fK2B+CwZSA8UpeAN9MiDDG4ZhXgaNtMc83sRMWdR71Ns1K+WXxlLMPLi5bXYQ
-ucxNuGkjKJocRRTz3WQUDwQSROKm1QmILOFhzsDZP1y5gfRie++yPUr0/pqL1YPR
-zBVz420zDxNkpJrkOusknGdd0zEN8r94I8Iyph9ixRgPyqD57YOwh6aD/fWIpksM
-Rzi5E7ZJLmulvcn+bEFvJi7vYcT6udmziUueklc8lMdfeoKA3zZ5c45Sj5VYXd4B
-UUNusyAawGPdBkdBecCJm/EtmV2W2eJK8zTOGcrsvhKO/EtcrjU=
-=YqL6
------END PGP SIGNATURE-----
-
---yMdhhDsa+5QlKnsv--
