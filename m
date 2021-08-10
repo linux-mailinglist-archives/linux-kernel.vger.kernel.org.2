@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5083E816B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3D13E8001
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237831AbhHJR7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:59:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
+        id S235544AbhHJRpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237569AbhHJRyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:54:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82CDE60EB7;
-        Tue, 10 Aug 2021 17:44:26 +0000 (UTC)
+        id S234009AbhHJRlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:41:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A6B86120D;
+        Tue, 10 Aug 2021 17:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617467;
-        bh=Lw+74Gj3kID0KRiShxi8a0HyLBFVscSu8HmSEZ4Z5DI=;
+        s=korg; t=1628617101;
+        bh=D3vvCFp/rZwWniXsWQktlYgr/FRH5Z/L3Rmkokq0q7Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P5VquYFPpBSHTa1u/xAmCd+8O1BUCLSP+JgKyG+rGoWxiHzcBAHNsaMz474RFK+aL
-         OokZvy0+DFDGFDwX60pIBYaeucGDmPhk9JAIczUZxdOqVSiYKB8XA0qGls6CFbZjCd
-         D3Ezo5+syAUrruC4v5dnCquVlYEtl/DqmwSA2UaI=
+        b=DkXuU/8tCoaCDrb2Bi3MJomT0wWfWJXjatLo+P1lNYyqBp18wcB17gvW5e+9KYzN9
+         65akVcWvOxKwejH+tuIOZlqFZVkL1vkWbtEkHfCix9kU0QNX1AKDTY6obb+RKBhEZn
+         V6fNhNrZq+NP/gMV63zwfFNcdix7tktddoFtUUGs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hao Xu <haoxu@linux.alibaba.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 072/175] io-wq: fix lack of acct->nr_workers < acct->max_workers judgement
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 046/135] bnx2x: fix an error code in bnx2x_nic_load()
 Date:   Tue, 10 Aug 2021 19:29:40 +0200
-Message-Id: <20210810173003.309630971@linuxfoundation.org>
+Message-Id: <20210810172957.251780939@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
-References: <20210810173000.928681411@linuxfoundation.org>
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+References: <20210810172955.660225700@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Xu <haoxu@linux.alibaba.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 21698274da5b6fc724b005bc7ec3e6b9fbcfaa06 ]
+[ Upstream commit fb653827c758725b149b5c924a5eb50ab4812750 ]
 
-There should be this judgement before we create an io-worker
+Set the error code if bnx2x_alloc_fw_stats_mem() fails.  The current
+code returns success.
 
-Fixes: 685fe7feedb9 ("io-wq: eliminate the need for a manager thread")
-Signed-off-by: Hao Xu <haoxu@linux.alibaba.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: ad5afc89365e ("bnx2x: Separate VF and PF logic")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io-wq.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index e00ac0969470..400fba839734 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -281,9 +281,17 @@ static void create_worker_cb(struct callback_head *cb)
- {
- 	struct create_worker_data *cwd;
- 	struct io_wq *wq;
-+	struct io_wqe *wqe;
-+	struct io_wqe_acct *acct;
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+index 1a6ec1a12d53..b5d954cb409a 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+@@ -2669,7 +2669,8 @@ int bnx2x_nic_load(struct bnx2x *bp, int load_mode)
+ 	}
  
- 	cwd = container_of(cb, struct create_worker_data, work);
--	wq = cwd->wqe->wq;
-+	wqe = cwd->wqe;
-+	wq = wqe->wq;
-+	acct = &wqe->acct[cwd->index];
-+	raw_spin_lock_irq(&wqe->lock);
-+	if (acct->nr_workers < acct->max_workers)
-+		acct->nr_workers++;
-+	raw_spin_unlock_irq(&wqe->lock);
- 	create_io_worker(wq, cwd->wqe, cwd->index);
- 	kfree(cwd);
- }
+ 	/* Allocated memory for FW statistics  */
+-	if (bnx2x_alloc_fw_stats_mem(bp))
++	rc = bnx2x_alloc_fw_stats_mem(bp);
++	if (rc)
+ 		LOAD_ERROR_EXIT(bp, load_error0);
+ 
+ 	/* request pf to initialize status blocks */
 -- 
 2.30.2
 
