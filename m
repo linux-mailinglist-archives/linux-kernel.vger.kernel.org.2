@@ -2,102 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B0A3E547A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1303E547B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235086AbhHJHlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:41:08 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56797 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhHJHlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:41:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="236858554"
-X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
-   d="scan'208";a="236858554"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 00:40:45 -0700
-X-IronPort-AV: E=Sophos;i="5.84,309,1620716400"; 
-   d="scan'208";a="515665387"
-Received: from yilonggu-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.175.101])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 00:40:41 -0700
-Date:   Tue, 10 Aug 2021 15:40:37 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Subject: Re: [PATCH v2 1/3] KVM: x86: Allow CPU to force vendor-specific TDP
- level
-Message-ID: <20210810074037.mizpggevgyhed6rm@linux.intel.com>
-References: <20210808192658.2923641-1-wei.huang2@amd.com>
- <20210808192658.2923641-2-wei.huang2@amd.com>
- <20210809035806.5cqdqm5vkexvngda@linux.intel.com>
- <c6324362-1439-ef94-789b-5934c0e1cdb8@amd.com>
- <20210809042703.25gfuuvujicc3vj7@linux.intel.com>
- <73bbaac0-701c-42dd-36da-aae1fed7f1a0@amd.com>
- <20210809064224.ctu3zxknn7s56gk3@linux.intel.com>
- <YRFKABg2MOJxcq+y@google.com>
+        id S236428AbhHJHlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:41:20 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41380 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235037AbhHJHlT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 03:41:19 -0400
+Date:   Tue, 10 Aug 2021 09:40:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628581256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yCBDh1Ms6q0qVn26oKGgyybf19fVGPHHnw6ajA7SOes=;
+        b=JxvG3zF7N6EpGfBi3yiEQkkd1M1K26rCBFKIJwjqdU9Q0XfILiNHFQYg8xI7v69Aj4MMCJ
+        JrHcYINFC92COfbyBMI6pOoyn/0yKfMedNNf4dU3ja/fddDRn4xN4zYnIiOh8yAoTKY3Km
+        wHblwrDsa0ROrAUkzfQROrwvo3Fk0xxj21sbh4zlQlzC6IMqYuwFHHlEW2kcpX5OGMLQlG
+        1BxFqFWZmVhtov4IUD0V9l1770vjheILK6Z3B4ACabAzQSSb8bFbYHDjUjsL8XQLIbUfUA
+        i7Y9bJN0W28aMCdnMVlv/Agzx52JmhezxwWnGEsgHOc9El/EFbCp9988ybrG3w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628581256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yCBDh1Ms6q0qVn26oKGgyybf19fVGPHHnw6ajA7SOes=;
+        b=Cb7thcKvRmb4jsOQ6A0Gje1ldvTlo0LNT3HrI/1zaq+tDueLQHkM0TrMHlDAjyxSKSgyJ6
+        qx2jFo7oCElNIJAQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <wagi@monom.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org
+Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
+Message-ID: <20210810074054.mll3snv7vqfhef6i@linutronix.de>
+References: <20210804153308.oasahcxjmcw7vivo@linutronix.de>
+ <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
+ <20210804154743.niogqvnladdkfgi2@linutronix.de>
+ <7c946918-ae0d-6195-6a78-b019f9bc1fd3@kernel.dk>
+ <20210804155747.cwayhjsdjc4zaubd@linutronix.de>
+ <c3fa07d1-a3c4-6775-f419-4875eb41bc88@kernel.dk>
+ <20210804122029.6c5c837a@oasis.local.home>
+ <4ffb8f7c-085c-f6cc-e308-3f75b24b8e47@kernel.dk>
+ <20210804164735.sq6sjejusa37abkw@linutronix.de>
+ <71d37a7d-af53-945e-0c49-3cb902487df4@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YRFKABg2MOJxcq+y@google.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <71d37a7d-af53-945e-0c49-3cb902487df4@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 03:30:08PM +0000, Sean Christopherson wrote:
-> On Mon, Aug 09, 2021, Yu Zhang wrote:
-> > On Sun, Aug 08, 2021 at 11:33:44PM -0500, Wei Huang wrote:
-> > > 
-> > > On 8/8/21 11:27 PM, Yu Zhang wrote:
-> > > > On Sun, Aug 08, 2021 at 11:11:40PM -0500, Wei Huang wrote:
-> > > > > 
-> > > > > 
-> > > > > On 8/8/21 10:58 PM, Yu Zhang wrote:
-> > > > > > On Sun, Aug 08, 2021 at 02:26:56PM -0500, Wei Huang wrote:
-> > > > > > > AMD future CPUs will require a 5-level NPT if host CR4.LA57 is set.
-> > > > > > 
-> > > > > > Sorry, but why? NPT is not indexed by HVA.
-> > > > > 
-> > > > > NPT is not indexed by HVA - it is always indexed by GPA. What I meant is NPT
-> > > > > page table level has to be the same as the host OS page table: if 5-level
-> > > > > page table is enabled in host OS (CR4.LA57=1), guest NPT has to 5-level too.
-> > > > 
-> > > > I know what you meant. But may I ask why?
-> > > 
-> > > I don't have a good answer for it. From what I know, VMCB doesn't have a
-> > > field to indicate guest page table level. As a result, hardware relies on
-> > > host CR4 to infer NPT level.
-> > 
-> > I guess you mean not even in the N_CR3 field of VMCB? 
+On 2021-08-04 10:57:11 [-0600], Jens Axboe wrote:
 > 
-> Correct, nCR3 is a basically a pure representation of a regular CR3.
-> 
-> > Then it's not a broken design - it's a limitation of SVM. :)
-> 
-> That's just a polite way of saying it's a broken design ;-)
-> 
-> Joking aside, NPT opted for a semblance of backwards compatibility at the cost of
-> having to carry all the baggage that comes with a legacy design.  Keeping the core
-> functionality from IA32 paging presumably miminizes design and hardware costs, and
-> required minimal enabling in hypervisors.  The downside is that it's less flexible
-> than EPT and has a few warts, e.g. shadowing NPT is gross because the host can't
-> easily mirror L1's desired paging mode.
+> 1 out of 2 is better than 0 ;-)
 
-Thanks for your explaination, Sean. Everything has a cost, and now it's time to pay
-the price. :)
+The patch at the end of the email is what I ended up after rebasing to
+-rc5. Also after testing I figured out that tools/io_uring/io_uring-cp.c
+is no longer working. The resulting file has a size of either 0 or 4KiB.
+Then, tglx pointed out that the example in liburing shares the same file
+name and is actually working.
 
-As to the max level, it is calculated in kvm_init(). Though I do not see any chance
-that host paging mode will be changed after kvm_init(), or any case that Linux uses
-different paging levels in different pCPUs, I am wondering, should we do something,
-e.g., to document this as an open?
+From: Jens Axboe <axboe@kernel.dk>
+Date: Wed, 4 Aug 2021 08:43:43 -0600
+Subject: [PATCH] io-wq: remove GFP_ATOMIC allocation off schedule out path
 
-About "host can't easily mirror L1's desired paging mode", could you please elaborate?
-Thanks!
+Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
+stress-ng:
 
-B.R.
-Yu
+| [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+| [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
+| [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
+| [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+| [   90.202561] Call Trace:
+| [   90.202577]  dump_stack_lvl+0x34/0x44
+| [   90.202584]  ___might_sleep.cold+0x87/0x94
+| [   90.202588]  rt_spin_lock+0x19/0x70
+| [   90.202593]  ___slab_alloc+0xcb/0x7d0
+| [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
+| [   90.202603]  ? dequeue_entity+0xc3/0x290
+| [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202610]  ? pick_next_task_fair+0xb9/0x330
+| [   90.202612]  ? __schedule+0x670/0x1410
+| [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
+| [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202625]  io_wq_worker_sleeping+0x37/0x50
+| [   90.202628]  schedule+0x30/0xd0
+| [   90.202630]  schedule_timeout+0x8f/0x1a0
+| [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
+| [   90.202637]  io_wqe_worker+0xfd/0x320
+| [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
+| [   90.202644]  ? io_worker_handle_work+0x670/0x670
+| [   90.202646]  ? io_worker_handle_work+0x670/0x670
+| [   90.202649]  ret_from_fork+0x22/0x30
 
+which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
+a raw spinlock. Besides that not working on RT, doing any kind of
+allocation from inside schedule() is kind of nasty and should be avoided
+if at all possible.
+
+This particular path happens when an io-wq worker goes to sleep, and we
+need a new worker to handle pending work. We currently allocate a small
+data item to hold the information we need to create a new worker, but we
+can instead include this data in the io_worker struct itself and just
+protect it with a single bit lock. We only really need one per worker
+anyway, as we will have run pending work between to sleep cycles.
+
+https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
+
+Reported-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Tested-by: Daniel Wagner <dwagner@suse.de>
+Link: https://lore.kernel.org/r/a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ fs/io-wq.c |   75 ++++++++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 42 insertions(+), 33 deletions(-)
+
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -51,6 +51,10 @@ struct io_worker {
+ 
+ 	struct completion ref_done;
+ 
++	unsigned long create_state;
++	struct callback_head create_work;
++	int create_index;
++
+ 	struct rcu_head rcu;
+ };
+ 
+@@ -270,50 +274,54 @@ static void io_wqe_inc_running(struct io
+ 	atomic_inc(&acct->nr_running);
+ }
+ 
+-struct create_worker_data {
+-	struct callback_head work;
+-	struct io_wqe *wqe;
+-	int index;
+-};
+-
+ static void create_worker_cb(struct callback_head *cb)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 	struct io_wq *wq;
+ 	struct io_wqe *wqe;
+ 	struct io_wqe_acct *acct;
+ 
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	wqe = cwd->wqe;
+-	wq = wqe->wq;
+-	acct = &wqe->acct[cwd->index];
++	worker = container_of(cb, struct io_worker, create_work);
++	wqe = worker->wqe;
++	wq = worker->wq;
++	acct = &wqe->acct[worker->create_index];
+ 	raw_spin_lock_irq(&wqe->lock);
+ 	if (acct->nr_workers < acct->max_workers)
+ 		acct->nr_workers++;
+ 	raw_spin_unlock_irq(&wqe->lock);
+-	create_io_worker(wq, cwd->wqe, cwd->index);
+-	kfree(cwd);
++	create_io_worker(wq, wqe, worker->create_index);
++	clear_bit_unlock(0, &worker->create_state);
++	io_worker_release(worker);
+ }
+ 
+-static void io_queue_worker_create(struct io_wqe *wqe, struct io_wqe_acct *acct)
++static void io_queue_worker_create(struct io_wqe *wqe, struct io_worker
++				   *worker, struct io_wqe_acct *acct)
+ {
+-	struct create_worker_data *cwd;
+ 	struct io_wq *wq = wqe->wq;
+ 
+ 	/* raced with exit, just ignore create call */
+ 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state))
+ 		goto fail;
++	if (!io_worker_get(worker))
++		goto fail;
++	/*
++	 * create_state manages ownership of create_work/index. We should
++	 * only need one entry per worker, as the worker going to sleep
++	 * will trigger the condition, and waking will clear it once it
++	 * runs the task_work.
++	 */
++	if (test_bit(0, &worker->create_state) ||
++	    test_and_set_bit_lock(0, &worker->create_state))
++		goto fail_release;
++
++	init_task_work(&worker->create_work, create_worker_cb);
++	worker->create_index = acct->index;
++	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
++		return;
+ 
+-	cwd = kmalloc(sizeof(*cwd), GFP_ATOMIC);
+-	if (cwd) {
+-		init_task_work(&cwd->work, create_worker_cb);
+-		cwd->wqe = wqe;
+-		cwd->index = acct->index;
+-		if (!task_work_add(wq->task, &cwd->work, TWA_SIGNAL))
+-			return;
+-
+-		kfree(cwd);
+-	}
++	clear_bit_unlock(0, &worker->create_state);
++fail_release:
++	io_worker_release(worker);
+ fail:
+ 	atomic_dec(&acct->nr_running);
+ 	io_worker_ref_put(wq);
+@@ -331,7 +339,7 @@ static void io_wqe_dec_running(struct io
+ 	if (atomic_dec_and_test(&acct->nr_running) && io_wqe_run_queue(wqe)) {
+ 		atomic_inc(&acct->nr_running);
+ 		atomic_inc(&wqe->wq->worker_refs);
+-		io_queue_worker_create(wqe, acct);
++		io_queue_worker_create(wqe, worker, acct);
+ 	}
+ }
+ 
+@@ -992,12 +1000,12 @@ struct io_wq *io_wq_create(unsigned boun
+ 
+ static bool io_task_work_match(struct callback_head *cb, void *data)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 
+ 	if (cb->func != create_worker_cb)
+ 		return false;
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	return cwd->wqe->wq == data;
++	worker = container_of(cb, struct io_worker, create_work);
++	return worker->wqe->wq == data;
+ }
+ 
+ void io_wq_exit_start(struct io_wq *wq)
+@@ -1014,12 +1022,13 @@ static void io_wq_exit_workers(struct io
+ 		return;
+ 
+ 	while ((cb = task_work_cancel_match(wq->task, io_task_work_match, wq)) != NULL) {
+-		struct create_worker_data *cwd;
++		struct io_worker *worker;
+ 
+-		cwd = container_of(cb, struct create_worker_data, work);
+-		atomic_dec(&cwd->wqe->acct[cwd->index].nr_running);
++		worker = container_of(cb, struct io_worker, create_work);
++		atomic_dec(&worker->wqe->acct[worker->create_index].nr_running);
+ 		io_worker_ref_put(wq);
+-		kfree(cwd);
++		clear_bit_unlock(0, &worker->create_state);
++		io_worker_release(worker);
+ 	}
+ 
+ 	rcu_read_lock();
+
+Sebastian
