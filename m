@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD553E8045
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A933E8047
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbhHJRrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60974 "EHLO mail.kernel.org"
+        id S233784AbhHJRrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234121AbhHJRnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:43:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 523D961051;
-        Tue, 10 Aug 2021 17:39:06 +0000 (UTC)
+        id S235770AbhHJRnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:43:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 933C860FC4;
+        Tue, 10 Aug 2021 17:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617146;
-        bh=WV751QS8Dg6MMKACD3XyQMswo5KtMnoOyo0FyT28e4Y=;
+        s=korg; t=1628617149;
+        bh=2Y3Qp3G5mENTpc2REOidP74dQvh1947DMC9bw/PxA+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=onAjnEBg8S4vxxRm07YvLWloE/Gk86yLPLvs+YDDA44BWLlYUY87za2HTNz/057/7
-         rcFsCisqatfBSfX36Zxlj6cr9emrHWObDCx5fhFYy3f5BNAbK0pwF/0p2fZ9qBSQs2
-         9dPMjfhtSeooEhVHu/kxm+66FTzyB++i7KDVapz4=
+        b=IUn+tZW7CxcMH5bGR8wQfqGbyTa2o2yVUS06DkuyY7WixTRMFmdCS6Qh/nyao91h/
+         T5gJo0oy8VqPCqZ7vYR0+s4FcgedQksNir61wBcV2z3Gbqo/LpLO/hNNm1994GNwYR
+         LKBuvVh6Ut7mIREAzYKWkCvHj05MlSSm4ihulT58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 5.10 064/135] usb: dwc3: gadget: Avoid runtime resume if disabling pullup
-Date:   Tue, 10 Aug 2021 19:29:58 +0200
-Message-Id: <20210810172957.870428170@linuxfoundation.org>
+        Zhang Qilong <zhangqilong3@huawei.com>
+Subject: [PATCH 5.10 065/135] usb: gadget: remove leaked entry from udc driver list
+Date:   Tue, 10 Aug 2021 19:29:59 +0200
+Message-Id: <20210810172957.908475868@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 References: <20210810172955.660225700@linuxfoundation.org>
@@ -39,66 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit cb10f68ad8150f243964b19391711aaac5e8ff42 upstream.
+commit fa4a8dcfd51b911f101ebc461dfe22230b74dd64 upstream.
 
-If the device is already in the runtime suspended state, any call to
-the pullup routine will issue a runtime resume on the DWC3 core
-device.  If the USB gadget is disabling the pullup, then avoid having
-to issue a runtime resume, as DWC3 gadget has already been
-halted/stopped.
+The usb_add_gadget_udc will add a new gadget to the udc class
+driver list. Not calling usb_del_gadget_udc in error branch
+will result in residual gadget entry in the udc driver list.
+We fix it by calling usb_del_gadget_udc to clean it when error
+return.
 
-This fixes an issue where the following condition occurs:
-
-usb_gadget_remove_driver()
--->usb_gadget_disconnect()
- -->dwc3_gadget_pullup(0)
-  -->pm_runtime_get_sync() -> ret = 0
-  -->pm_runtime_put() [async]
--->usb_gadget_udc_stop()
- -->dwc3_gadget_stop()
-  -->dwc->gadget_driver = NULL
-...
-
-dwc3_suspend_common()
--->dwc3_gadget_suspend()
- -->DWC3 halt/stop routine skipped, driver_data == NULL
-
-This leads to a situation where the DWC3 gadget is not properly
-stopped, as the runtime resume would have re-enabled EP0 and event
-interrupts, and since we avoided the DWC3 gadget suspend, these
-resources were never disabled.
-
-Fixes: 77adb8bdf422 ("usb: dwc3: gadget: Allow runtime suspend if UDC unbinded")
-Cc: stable <stable@vger.kernel.org>
+Fixes: 48ba02b2e2b1 ("usb: gadget: add udc driver for max3420")
 Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Link: https://lore.kernel.org/r/1628058245-30692-1-git-send-email-wcheng@codeaurora.org
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20210727073142.84666-1-zhangqilong3@huawei.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/gadget.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/usb/gadget/udc/max3420_udc.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2132,6 +2132,17 @@ static int dwc3_gadget_pullup(struct usb
+--- a/drivers/usb/gadget/udc/max3420_udc.c
++++ b/drivers/usb/gadget/udc/max3420_udc.c
+@@ -1260,12 +1260,14 @@ static int max3420_probe(struct spi_devi
+ 	err = devm_request_irq(&spi->dev, irq, max3420_irq_handler, 0,
+ 			       "max3420", udc);
+ 	if (err < 0)
+-		return err;
++		goto del_gadget;
+ 
+ 	udc->thread_task = kthread_create(max3420_thread, udc,
+ 					  "max3420-thread");
+-	if (IS_ERR(udc->thread_task))
+-		return PTR_ERR(udc->thread_task);
++	if (IS_ERR(udc->thread_task)) {
++		err = PTR_ERR(udc->thread_task);
++		goto del_gadget;
++	}
+ 
+ 	irq = of_irq_get_byname(spi->dev.of_node, "vbus");
+ 	if (irq <= 0) { /* no vbus irq implies self-powered design */
+@@ -1285,10 +1287,14 @@ static int max3420_probe(struct spi_devi
+ 		err = devm_request_irq(&spi->dev, irq,
+ 				       max3420_vbus_handler, 0, "vbus", udc);
+ 		if (err < 0)
+-			return err;
++			goto del_gadget;
  	}
  
- 	/*
-+	 * Avoid issuing a runtime resume if the device is already in the
-+	 * suspended state during gadget disconnect.  DWC3 gadget was already
-+	 * halted/stopped during runtime suspend.
-+	 */
-+	if (!is_on) {
-+		pm_runtime_barrier(dwc->dev);
-+		if (pm_runtime_suspended(dwc->dev))
-+			return 0;
-+	}
+ 	return 0;
 +
-+	/*
- 	 * Check the return value for successful resume, or error.  For a
- 	 * successful resume, the DWC3 runtime PM resume routine will handle
- 	 * the run stop sequence, so avoid duplicate operations here.
++del_gadget:
++	usb_del_gadget_udc(&udc->gadget);
++	return err;
+ }
+ 
+ static int max3420_remove(struct spi_device *spi)
 
 
