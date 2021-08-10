@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837AE3E7E91
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BD03E7E4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhHJReQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:34:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
+        id S231335AbhHJRcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:32:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232553AbhHJRdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:33:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 958BB61008;
-        Tue, 10 Aug 2021 17:33:08 +0000 (UTC)
+        id S230295AbhHJRcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:32:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFDEE61052;
+        Tue, 10 Aug 2021 17:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616789;
-        bh=eLRgX+TjaqfiHx7QQMcIUj5KDJja7qFuzIG5aBlApqU=;
+        s=korg; t=1628616714;
+        bh=FYT/3Ix4m4ywqlYlcQHDsUk7ihSW3PR4wiskT1f4rP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Knfjcc/+ceJaArXLLTJj4JOGsrJjeTLAX+ESWoFsiAlRJy3sanmZD2ZIKS2NS9SMH
-         78ynXWQQl1+cSxpNyy+cQKxr6IFDB4u6gXAQhxI42s60oVnRj7UUoEmtskYce3BFVW
-         c1AoXQzDkcFiawgL3lSK2W5MkD6vpboQy14cPu7Y=
+        b=P3CAhA/2olhPnDT8H6Ynn83XSwJ7SvrzYiVyim/uy3VmYkHhN4Juc5Xoy1fcqeNim
+         XETzFVlTFG/4/JSGylQfPHbK/O8aWI1wK0kYs9rs8EkeiK3kWmoZXxLaT0RnV1qK32
+         6BTIOg8s3A5EytqaNLXeEwya8lUvthFHp2s+gk2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 14/54] mips: Fix non-POSIX regexp
-Date:   Tue, 10 Aug 2021 19:30:08 +0200
-Message-Id: <20210810172944.654768328@linuxfoundation.org>
+Subject: [PATCH 4.19 15/54] bnx2x: fix an error code in bnx2x_nic_load()
+Date:   Tue, 10 Aug 2021 19:30:09 +0200
+Message-Id: <20210810172944.686394419@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
 References: <20210810172944.179901509@linuxfoundation.org>
@@ -40,55 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: H. Nikolaus Schaller <hns@goldelico.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 28bbbb9875a35975904e46f9b06fa689d051b290 ]
+[ Upstream commit fb653827c758725b149b5c924a5eb50ab4812750 ]
 
-When cross compiling a MIPS kernel on a BSD based HOSTCC leads
-to errors like
+Set the error code if bnx2x_alloc_fw_stats_mem() fails.  The current
+code returns success.
 
-  SYNC    include/config/auto.conf.cmd - due to: .config
-egrep: empty (sub)expression
-  UPD     include/config/kernel.release
-  HOSTCC  scripts/dtc/dtc.o - due to target missing
-
-It turns out that egrep uses this egrep pattern:
-
-		(|MINOR_|PATCHLEVEL_)
-
-This is not valid syntax or gives undefined results according
-to POSIX 9.5.3 ERE Grammar
-
-	https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
-
-It seems to be silently accepted by the Linux egrep implementation
-while a BSD host complains.
-
-Such patterns can be replaced by a transformation like
-
-	"(|p1|p2)" -> "(p1|p2)?"
-
-Fixes: 48c35b2d245f ("[MIPS] There is no __GNUC_MAJOR__")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: ad5afc89365e ("bnx2x: Separate VF and PF logic")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 63e2ad43bd6a..8f4e169cde11 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -325,7 +325,7 @@ KBUILD_LDFLAGS		+= -m $(ld-emul)
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+index cf01e73d1bcc..2610acf9ac36 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+@@ -2668,7 +2668,8 @@ int bnx2x_nic_load(struct bnx2x *bp, int load_mode)
+ 	}
  
- ifdef CONFIG_MIPS
- CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
--	egrep -vw '__GNUC_(|MINOR_|PATCHLEVEL_)_' | \
-+	egrep -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
- 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
- endif
+ 	/* Allocated memory for FW statistics  */
+-	if (bnx2x_alloc_fw_stats_mem(bp))
++	rc = bnx2x_alloc_fw_stats_mem(bp);
++	if (rc)
+ 		LOAD_ERROR_EXIT(bp, load_error0);
  
+ 	/* request pf to initialize status blocks */
 -- 
 2.30.2
 
