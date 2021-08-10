@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66FA3E5BD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430F03E5BD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241558AbhHJNha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:37:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47886 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237223AbhHJNh1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:37:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628602625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2LDlPss9QRTaBr474xlXhjE3rgK4GGCgbW9ZnFPF4VA=;
-        b=Wnq1QCh5gHGKKekL/hvFPHiVmg3zyicHZrN/pX8y0Fu0LP9I2thhpAL8WoX/dphEqkHKTP
-        ApFPEjjcsnKzknZQAtVuMCOroq69X8sTW5K6tYJFXVA6Mlf7v2AZlZRV4AVY2lJGE17q7g
-        iadaLBQcaS90DNfgxfM8ppG7BL0YVmo=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-DHu_JRabNtWV-7h44uxBDw-1; Tue, 10 Aug 2021 09:37:04 -0400
-X-MC-Unique: DHu_JRabNtWV-7h44uxBDw-1
-Received: by mail-qv1-f70.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so15383296qvt.20
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 06:37:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2LDlPss9QRTaBr474xlXhjE3rgK4GGCgbW9ZnFPF4VA=;
-        b=Cp+GwRczCkdLhQv0HzMv6x7TWiYXWVU4lhvKZLAmHTLPYomcCOsiAta1WT5frg4eKg
-         bslQQO0C2Cg/lD18ek6VtZLupdeXHSxkxKY8izPOfrd+dyl73JNgTLnq9mHTB8xYTwcd
-         Qz1GsMn/WEn1Rn7Cf6G3maR+UmwDM1kxzTvgkrHmpffKXbsyk/RmuwbjcogLys8T4xPA
-         WUh4cLmuRNdIKoA+E6KsoY8sgQh92/C6nAQHQ0gya/lyzPrDAUBlqBhqLl8B02SBLGfR
-         mgGl1N6H8/MeeUHk2GCSlgUjsJqYuL1KTxFJwoVX7nQK3f28hWoORvVYjYOCVPUX5QJa
-         UTVQ==
-X-Gm-Message-State: AOAM530AeLBZFss6s5cjhA/INNLTCdFUxHmvqkZC7/ARZgWP8UJUr+uK
-        S5QuqD9nFGlQvxmENH51DnaPQ8MR1Kzn+oULRh9K6AwwpeBGU9ui4To/VQUQPkvmTO76nPB+owX
-        ZKB04ysw4toPieFTja4FQsVFX
-X-Received: by 2002:ac8:665a:: with SMTP id j26mr8267053qtp.173.1628602623923;
-        Tue, 10 Aug 2021 06:37:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweRWFo+H68Fj3T4T7Iatetn7HaR/6adb+j5+Nf6P0/km/pU4GuQrXekeo83c8dya9bo80j0A==
-X-Received: by 2002:ac8:665a:: with SMTP id j26mr8267031qtp.173.1628602623592;
-        Tue, 10 Aug 2021 06:37:03 -0700 (PDT)
-Received: from crecklin.bos.csb (c-24-60-53-55.hsd1.nh.comcast.net. [24.60.53.55])
-        by smtp.gmail.com with ESMTPSA id z12sm7894678qtw.90.2021.08.10.06.37.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 06:37:03 -0700 (PDT)
-Subject: Re: [PATCH] fix UBSAN splat in test_scanf
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     pmladek@suse.com, rostedt@goodmis.org, senozhatsky@chromium.org,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org
-References: <20210809102013.525671-1-crecklin@redhat.com>
- <YRJ/tTuj7r4jppv4@smile.fi.intel.com>
-From:   Christoph von Recklinghausen <crecklin@redhat.com>
-Message-ID: <1f4aa937-8e5d-33db-6479-e9b2011be147@redhat.com>
-Date:   Tue, 10 Aug 2021 09:37:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241586AbhHJNiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239995AbhHJNiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:38:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B1A760EE7;
+        Tue, 10 Aug 2021 13:37:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628602660;
+        bh=HWvZTnnrllbHGHUXGdqF6NSoDHL8HLBiKeeVTy8+v34=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uAJa/yG49KKMj3g9dPc1nCVeL1+ngogqOjicad0oEhTpte9d+L7mdXfoJ4XSMfWeb
+         kuIukZm1aM5cz8TDJB8+Nahr7xXQW9+X/Jo74R09CWGWGYjkr3nqZRZ0dFVkgp0oO4
+         pgenQ5Y/UXiCVZAnyHMAEs+KWU/dIGox7kFsmUAJ2ICQFLXkSM9U8AExqDrkxrnA8D
+         UXyy8nF+sfZcOaiiZVB7Gx3nGxDPyXBTYY7vK/uhgtvKAVdMsCqgz5BDQhf21XiOHI
+         XT7u9K60wRGE/cfVI5j05iRlARxJF7vNHFWULPj64diwhswkvhZQWYbP/lGIbku+ja
+         4gBW72s1lPmsA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Yufeng Mo <moyufeng@huawei.com>
+Subject: [PATCH net-next 0/5] Move devlink_register to be near devlink_reload_enable
+Date:   Tue, 10 Aug 2021 16:37:30 +0300
+Message-Id: <cover.1628599239.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YRJ/tTuj7r4jppv4@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-On 8/10/21 9:31 AM, Andy Shevchenko wrote:
-> On Mon, Aug 09, 2021 at 06:20:13AM -0400, Chris von Recklinghausen wrote:
->
-> Thanks for the report and fix!
->
-> First of all, have you seen this:
-> https://lore.kernel.org/lkml/20210727150132.28920-1-andriy.shevchenko@linux.intel.com/T/#u
-> ?
+Hi Dave and Jakub,
 
+This series prepares code to remove devlink_reload_enable/_disable API
+and in order to do, we move all devlink_register() calls to be right
+before devlink_reload_enable().
 
-No I hadn't seen it. I'll defer to this fix then.
+The best place for such a call should be right before exiting from
+the probe().
 
-Thanks,
+This is done because devlink_register() opens devlink netlink to the
+users and gives them a venue to issue commands before initialization
+is finished.
 
-Chris
+1. Some drivers were aware of such "functionality" and tried to protect
+themselves with extra locks, state machines and devlink_reload_enable().
+Let's assume that it worked for them, but I'm personally skeptical about
+it.
 
+2. Some drivers copied that pattern, but without locks and state
+machines. That protected them from reload flows, but not from any _set_
+routines.
 
->
->> On a system with CONFIG_UBSAN_SHIFT=y, the following splat was observed:
->> [  104.676826] test_scanf: loaded.
->> [  104.680862] ================================================================================
->> [  104.690304] UBSAN: shift-out-of-bounds in lib/test_scanf.c:274:51
->> [  104.697144] shift exponent 32 is too large for 32-bit type 'unsigned int'
-> As you may see in the above the rule of thumb is to include only meaningful
-> parts of the oops.
->
+3. And all other drivers simply didn't understand the implications of early
+devlink_register() and can be seen as "broken".
+
+In this series, we focus on items #1 and #2.
+
+Please share your opinion if I should change ALL other drivers to make
+sure that devlink_register() is the last command or leave them in an
+as-is state.
+
+Thanks
+
+Leon Romanovsky (5):
+  net: hns3: remove always exist devlink pointer check
+  net/mlx4: Move devlink_register to be the last initialization command
+  mlxsw: core: Refactor code to publish devlink ops when device is ready
+  net/mlx5: Accept devlink user input after driver initialization
+    complete
+  netdevsim: Delay user access till probe is finished
+
+ .../hisilicon/hns3/hns3pf/hclge_devlink.c     |  8 +---
+ .../hisilicon/hns3/hns3vf/hclgevf_devlink.c   |  8 +---
+ drivers/net/ethernet/mellanox/mlx4/main.c     | 38 +++++++++++++------
+ .../net/ethernet/mellanox/mlx5/core/devlink.c | 10 +----
+ .../net/ethernet/mellanox/mlx5/core/main.c    | 13 ++++++-
+ .../mellanox/mlx5/core/sf/dev/driver.c        | 12 +++++-
+ drivers/net/ethernet/mellanox/mlxsw/core.c    | 27 +++++++------
+ drivers/net/netdevsim/dev.c                   | 19 +++++-----
+ 8 files changed, 76 insertions(+), 59 deletions(-)
+
+-- 
+2.31.1
 
