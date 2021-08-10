@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766D03E81D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46E93E81B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhHJSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:02:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33268 "EHLO mail.kernel.org"
+        id S237698AbhHJSBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:01:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236938AbhHJR6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:58:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB81960232;
-        Tue, 10 Aug 2021 17:45:57 +0000 (UTC)
+        id S234428AbhHJR6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:58:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D731D6109E;
+        Tue, 10 Aug 2021 17:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617558;
-        bh=3HWgEpHO1H/OjXzW+I7G7UbO0iV4VwBsAsyBPZBRDkE=;
+        s=korg; t=1628617560;
+        bh=OK1lbszpzHAL0zQ7PVkci79wU+TeslVIa+LxOjcUW+s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G0ukZ+xhIAk/oMe2JdoWGxzBIayN68Z07/v/X21akAs6KVKt7Mb0zsc4kLWsj1/6y
-         EOre16Yb+4L5uo7cYK3VIx/zSw7W1OjgYsn6PqCZbG8XXJcm8hmf6nPq5BvRt40BW3
-         nbIfz/h8bCYVJOjRBX5fzXUa7EXua3oT6uqBpMR4=
+        b=s++eWm/Nhb6Qp0OBNAWWLyWDgpItQbMab3dV1kFIbmuYJHvLTsS/VfFxqN1Fu5oyb
+         wWWPiivbRm1YlA2gpS2O5LMdR9ntIqte+vQsCJMLe3sVPB97Sv31K9pr6STI4NqMeC
+         eC0u6gjDxQ/7tqHXTIEzYMMehgrhRMCa5OjzQxAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Tyler Hicks <tyhicks@linux.microsoft.com>,
         Jens Wiklander <jens.wiklander@linaro.org>,
         Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH 5.13 112/175] optee: Fix memory leak when failing to register shm pages
-Date:   Tue, 10 Aug 2021 19:30:20 +0200
-Message-Id: <20210810173004.643976018@linuxfoundation.org>
+Subject: [PATCH 5.13 113/175] optee: Refuse to load the driver under the kdump kernel
+Date:   Tue, 10 Aug 2021 19:30:21 +0200
+Message-Id: <20210810173004.676680209@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -42,13 +42,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tyler Hicks <tyhicks@linux.microsoft.com>
 
-commit ec185dd3ab257dc2a60953fdf1b6622f524cc5b7 upstream.
+commit adf752af454e91e123e85e3784972d166837af73 upstream.
 
-Free the previously allocated pages when we encounter an error condition
-while attempting to register the pages with the secure world.
+Fix a hung task issue, seen when booting the kdump kernel, that is
+caused by all of the secure world threads being in a permanent suspended
+state:
 
-Fixes: a249dd200d03 ("tee: optee: Fix dynamic shm pool allocations")
-Fixes: 5a769f6ff439 ("optee: Fix multi page dynamic shm pool alloc")
+ INFO: task swapper/0:1 blocked for more than 120 seconds.
+       Not tainted 5.4.83 #1
+ "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+ swapper/0       D    0     1      0 0x00000028
+ Call trace:
+  __switch_to+0xc8/0x118
+  __schedule+0x2e0/0x700
+  schedule+0x38/0xb8
+  schedule_timeout+0x258/0x388
+  wait_for_completion+0x16c/0x4b8
+  optee_cq_wait_for_completion+0x28/0xa8
+  optee_disable_shm_cache+0xb8/0xf8
+  optee_probe+0x560/0x61c
+  platform_drv_probe+0x58/0xa8
+  really_probe+0xe0/0x338
+  driver_probe_device+0x5c/0xf0
+  device_driver_attach+0x74/0x80
+  __driver_attach+0x64/0xe0
+  bus_for_each_dev+0x84/0xd8
+  driver_attach+0x30/0x40
+  bus_add_driver+0x188/0x1e8
+  driver_register+0x64/0x110
+  __platform_driver_register+0x54/0x60
+  optee_driver_init+0x20/0x28
+  do_one_initcall+0x54/0x24c
+  kernel_init_freeable+0x1e8/0x2c0
+  kernel_init+0x18/0x118
+  ret_from_fork+0x10/0x18
+
+The invoke_fn hook returned OPTEE_SMC_RETURN_ETHREAD_LIMIT, indicating
+that the secure world threads were all in a suspended state at the time
+of the kernel crash. This intermittently prevented the kdump kernel from
+booting, resulting in a failure to collect the kernel dump.
+
+Make kernel dump collection more reliable on systems utilizing OP-TEE by
+refusing to load the driver under the kdump kernel.
+
 Cc: stable@vger.kernel.org
 Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
@@ -56,38 +92,35 @@ Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tee/optee/shm_pool.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/tee/optee/core.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/tee/optee/shm_pool.c
-+++ b/drivers/tee/optee/shm_pool.c
-@@ -36,8 +36,10 @@ static int pool_op_alloc(struct tee_shm_
- 		struct page **pages;
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -6,6 +6,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
- 		pages = kcalloc(nr_pages, sizeof(pages), GFP_KERNEL);
--		if (!pages)
--			return -ENOMEM;
-+		if (!pages) {
-+			rc = -ENOMEM;
-+			goto err;
-+		}
+ #include <linux/arm-smccc.h>
++#include <linux/crash_dump.h>
+ #include <linux/errno.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+@@ -613,6 +614,16 @@ static int optee_probe(struct platform_d
+ 	u32 sec_caps;
+ 	int rc;
  
- 		for (i = 0; i < nr_pages; i++) {
- 			pages[i] = page;
-@@ -48,8 +50,14 @@ static int pool_op_alloc(struct tee_shm_
- 		rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
- 					(unsigned long)shm->kaddr);
- 		kfree(pages);
-+		if (rc)
-+			goto err;
- 	}
- 
-+	return 0;
++	/*
++	 * The kernel may have crashed at the same time that all available
++	 * secure world threads were suspended and we cannot reschedule the
++	 * suspended threads without access to the crashed kernel's wait_queue.
++	 * Therefore, we cannot reliably initialize the OP-TEE driver in the
++	 * kdump kernel.
++	 */
++	if (is_kdump_kernel())
++		return -ENODEV;
 +
-+err:
-+	__free_pages(page, order);
- 	return rc;
- }
- 
+ 	invoke_fn = get_invoke_func(&pdev->dev);
+ 	if (IS_ERR(invoke_fn))
+ 		return PTR_ERR(invoke_fn);
 
 
