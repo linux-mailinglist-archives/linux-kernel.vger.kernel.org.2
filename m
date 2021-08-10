@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293BC3E7BF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCDD3E7C0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241560AbhHJPTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:19:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:57866 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239937AbhHJPTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:19:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F14001FB;
-        Tue, 10 Aug 2021 08:18:48 -0700 (PDT)
-Received: from [10.163.67.89] (unknown [10.163.67.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA9403F718;
-        Tue, 10 Aug 2021 08:18:45 -0700 (PDT)
-Subject: Re: [PATCH 5/5] KVM: arm64: Define KVM_PHYS_SHIFT_MIN
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
- <1628578961-29097-6-git-send-email-anshuman.khandual@arm.com>
- <2dbeb2c329cfeb1ee9a7331683cdbc97@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <43c5ffa3-b3c5-9154-72b5-811eeb9ece8f@arm.com>
-Date:   Tue, 10 Aug 2021 20:49:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S242895AbhHJPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242957AbhHJPWQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:22:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A38C0613D3;
+        Tue, 10 Aug 2021 08:21:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=i2aSZmavKDHCT/DkTtD/CFUJjsvlzBlnTR8HFnC7uGg=; b=QdWOp7kddD8VY/dPEPXkD65/P7
+        jP8EkIH5P+WKYuySxO2hYK6pfFNcPtxKEqWMJ5MYO1AD3jT2hqonPM9k1DhrY5DnodAfEg3x6NM3K
+        VHa8+yDP22iGrsh9VJeB4cCz9DKyVqZ0Jc9cnhkux5medMVl0m+hygDixdAnBLQmUijC/ZuhPBZlA
+        82f7FpWkFwq/QGdEVEsMqnYF2JQMz0WlcEhKy2BLN6WM1GmwbsWyK+SXsYi8OQooUp/JBg6pWliov
+        HRV+N9zUtwb5iU76wXc0wutBKysCXnicIE5yNPQnrkSRS+Pw4/sYk9ejl9f3Iye8nFhWCT+nTiJ5B
+        CrGxDf6A==;
+Received: from 089144200071.atnat0009.highway.a1.net ([89.144.200.71] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDTXe-00CHDz-Pl; Tue, 10 Aug 2021 15:20:31 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] proc: stop using seq_get_buf in proc_task_name
+Date:   Tue, 10 Aug 2021 17:19:45 +0200
+Message-Id: <20210810151945.1795567-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <2dbeb2c329cfeb1ee9a7331683cdbc97@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use seq_escape_str and seq_printf instead of poking holes into the
+seq_file abstraction.
 
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/proc/array.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
 
-On 8/10/21 6:59 PM, Marc Zyngier wrote:
-> On 2021-08-10 08:02, Anshuman Khandual wrote:
->> Drop the hard coded value for the minimum IPA range i.e 32 bit. Instead
->> define a macro KVM_PHYS_SHIFT_MIN which improves the code readability.
->>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: kvmarm@lists.cs.columbia.edu
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/include/asm/kvm_mmu.h | 3 ++-
->>  arch/arm64/kvm/reset.c           | 2 +-
->>  2 files changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
->> index b52c5c4b9a3d..716f999818d9 100644
->> --- a/arch/arm64/include/asm/kvm_mmu.h
->> +++ b/arch/arm64/include/asm/kvm_mmu.h
->> @@ -141,7 +141,8 @@ static __always_inline unsigned long
->> __kern_hyp_va(unsigned long v)
->>   * We currently support using a VM-specified IPA size. For backward
->>   * compatibility, the default IPA size is fixed to 40bits.
->>   */
->> -#define KVM_PHYS_SHIFT    (40)
->> +#define KVM_PHYS_SHIFT        (40)
->> +#define KVM_PHYS_SHIFT_MIN    (32)
->>
->>  #define kvm_phys_shift(kvm)        VTCR_EL2_IPA(kvm->arch.vtcr)
->>  #define kvm_phys_size(kvm)        (_AC(1, ULL) << kvm_phys_shift(kvm))
->> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
->> index cba7872d69a8..8dc8b4b9de37 100644
->> --- a/arch/arm64/kvm/reset.c
->> +++ b/arch/arm64/kvm/reset.c
->> @@ -369,7 +369,7 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned
->> long type)
->>      phys_shift = KVM_VM_TYPE_ARM_IPA_SIZE(type);
->>      if (phys_shift) {
->>          if (phys_shift > kvm_ipa_limit ||
->> -            phys_shift < 32)
->> +            phys_shift < KVM_PHYS_SHIFT_MIN)
->>              return -EINVAL;
->>      } else {
->>          phys_shift = KVM_PHYS_SHIFT;
-> 
-> This is not a KVM property, but an architectural one. If you
+diff --git a/fs/proc/array.c b/fs/proc/array.c
+index ee0ce8cecc4a..49be8c8ef555 100644
+--- a/fs/proc/array.c
++++ b/fs/proc/array.c
+@@ -98,27 +98,17 @@
+ 
+ void proc_task_name(struct seq_file *m, struct task_struct *p, bool escape)
+ {
+-	char *buf;
+-	size_t size;
+ 	char tcomm[64];
+-	int ret;
+ 
+ 	if (p->flags & PF_WQ_WORKER)
+ 		wq_worker_comm(tcomm, sizeof(tcomm), p);
+ 	else
+ 		__get_task_comm(tcomm, sizeof(tcomm), p);
+ 
+-	size = seq_get_buf(m, &buf);
+-	if (escape) {
+-		ret = string_escape_str(tcomm, buf, size,
+-					ESCAPE_SPACE | ESCAPE_SPECIAL, "\n\\");
+-		if (ret >= size)
+-			ret = -1;
+-	} else {
+-		ret = strscpy(buf, tcomm, size);
+-	}
+-
+-	seq_commit(m, ret);
++	if (escape)
++		seq_escape_str(m, tcomm, ESCAPE_SPACE | ESCAPE_SPECIAL, "\n\\");
++	else
++		seq_printf(m, "%.64s", tcomm);
+ }
+ 
+ /*
+-- 
+2.30.2
 
-Architectural property which suggest the minimum physical address shift
-supported on a platform, as indicated via ID_AA64MMFR0.PARANGE = 0x0 ?
-
-> want to replace it with something more readable, please
-> make it global to the whole of arm64 (ARM64_MIN_PARANGE?).
-
-Sure, will do.
