@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136CF3E8694
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 01:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D713E8631
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 00:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235488AbhHJXds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 19:33:48 -0400
-Received: from mailout.comhem.se ([82.99.18.63]:44506 "EHLO mailout.comhem.se"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233570AbhHJXdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:33:46 -0400
-X-Greylist: delayed 531 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Aug 2021 19:33:46 EDT
-Received: from mail.jni.nu (c188-150-64-249.bredband.tele2.se [188.150.64.249])
-        by mailout.comhem.se (Postfix) with ESMTPS id 51C2644030C
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 23:24:32 +0000 (UTC)
-Received: by mail.jni.nu (Postfix, from userid 1000)
-        id 1181C2D608CC; Wed, 11 Aug 2021 00:46:11 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 00:46:11 +0200
-From:   Jesper Nilsson <jesper@jni.nu>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mete Polat <metepolat2000@gmail.com>,
-        Jesper Nilsson <jesper@jni.nu>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] rbtree: remove unneeded explicit alignment in struct
- rb_node
-Message-ID: <YRMBs0FhqFZPDuNP@jni.nu>
-References: <20210805133213.700-1-lukas.bulwahn@gmail.com>
- <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
+        id S235248AbhHJWro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 18:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231380AbhHJWrn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 18:47:43 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03151C061765;
+        Tue, 10 Aug 2021 15:47:21 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso6571272pjb.2;
+        Tue, 10 Aug 2021 15:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yIH0KUnZv7CbUNuLVwKk6Yjj2btfYGCd33gAi0qy9lk=;
+        b=ocbTw3+op+JN/IWY/wUmffxiA+QAfcrR9mImsaFZDuNkDLCwp+PxLcwflgxgjz3wst
+         ckQs+f9MjZuAzdFfR2VLgZ9+lgaITXcI66cBDksKJWBpJXQMUX4n9TPIaa/cdcPAKnOg
+         URRXWcuppxAnjw88ww3w7VnoRRrNWKDlrVb+9lRBe5NlySmaZq7x5SeYQgkDNHTEv/kH
+         XbISyjnk2ZcWk0jRK++PeGVZbGWzK/+B4gKpkfrcCi1Bjbatfeyqr73THSUUXjg+wr32
+         kCkFWKX8VbpzhZ7iLVQgxviwRSXY7AVu2bUTc4L4sLNmGnRZIUzOlk3GsxLayj2svRPP
+         msXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yIH0KUnZv7CbUNuLVwKk6Yjj2btfYGCd33gAi0qy9lk=;
+        b=Yj1d/vjexaciN+AMlT27hv/0SeMCVBTkh6CSjwn55p4P6xXO5pZwmlTtoSpYzviBmv
+         p3fMMDInBTI/0GqWpXu+sZ7do5+9SxZ0AxpEUBI4hk3PbonqLcGD6Au5/rJ+YuC1nx6U
+         RQ8X6WhstXs3hoNI6vdDbfq4+ujazpOgHHF6i5jurusJNk+wzeFji2Zv54TXkEo7AwRv
+         hZSwpYE6c3HrxdjPrWPoQYk4z048kSpunBixbg6+sgE9LTD3j7gPiyrvxjGOTyksSAgg
+         Hj7UAubCtLgR0vHoToAIbdlLhCZe/O3PTrYakFeXYwP7kP651RmaE13ZlL4zVwO1W0xn
+         gM7Q==
+X-Gm-Message-State: AOAM531BdonvfkDfKIqzMJdtDzE1+StfOtl8DVJK1KYqNu88/7AogGjG
+        v6Tyst2b5D1AhvJ7RQ45Vqg=
+X-Google-Smtp-Source: ABdhPJwUU92PjtwHfiGs9aAvP9MCKxajQoXjy2XBtLRBugTZJRlm3qbIOI131sqrg4GwWhjhqmA6vw==
+X-Received: by 2002:aa7:8387:0:b029:395:a683:a0e6 with SMTP id u7-20020aa783870000b0290395a683a0e6mr31367561pfm.12.1628635640525;
+        Tue, 10 Aug 2021 15:47:20 -0700 (PDT)
+Received: from [192.168.1.71] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
+        by smtp.gmail.com with ESMTPSA id a20sm4208799pjh.46.2021.08.10.15.47.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 15:47:19 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: Questions re the new mount_setattr(2) manual page
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+References: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <d5a8061a-3d8a-6353-5158-8feee0156c6b@gmail.com>
+Date:   Wed, 11 Aug 2021 00:47:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
+In-Reply-To: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 04:02:22PM +0200, Arnd Bergmann wrote:
-> On Thu, Aug 5, 2021 at 3:32 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> >
-> > Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
-> > struct rb_node.") adds an explicit alignment to the struct rb_node due to
-> > some speciality of the CRIS architecture.
-> >
-> > The support for the CRIS architecture was removed with commit c690eddc2f3b
-> > ("CRIS: Drop support for the CRIS port")
-> >
-> > So, remove this now unneeded explicit alignment in struct rb_node as well.
-> >
-> > This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
-> > alignment to sizeof(long) for struct rb_node.").
-> >
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Reported-by: Mete Polat <metepolat2000@gmail.com>
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> > applies cleanly on next-20210804, but only x86 compile-checked.
-> >
-> > Michel, Davidlohr, Jesper, David, please ack.
-> >
-> > Mete, you might want to re-run your RBT test suite for this change.
-> >
-> > Andrew, once acked, please pick this minor cleanup into your tree.
-> 
-> Do you know why it needed the extra alignment on cris at the time?
+Hi Christian,
 
-The problem for CRIS was that the architecture always had packed
-structs (there was no way to avoid it in GCC) and CRIS could all data
-on any byte boundary.
+Some further questions...
 
-That was ok for normal pointers in structs, all pointers would be allocated
-inside the same page and it didn't matter that they were aligned on odd byte
-addresses for the CPU (except for being a little slower)
+In ERRORS there is:
 
-However, when the lowest bits were used as flags, that would clash on CRIS since
-all bits were valid and possible address bits, so any sub-struct in a struct might be
-aligned on an odd address, and using the pointer to the sub-struct would inadvertently
-set the flag bits.
+       EINVAL The underlying filesystem is mounted in a user namespace.
 
-That's why just adding a forced alignment on the sub-struct fixed the problem,
-since the compiler would respect such alignments, and thus leave the lower bits
-free for trickery.
+I don't understand this. What does it mean?
 
-> The revert would appear to change the alignment to 16 bits instead
-> of 32 bits on m68k as well (not 8 bits as on cris), but I don't know if that
-> can cause problems there.
-> 
->         Arnd
+Also, there is this:
 
-/^JN - Jesper Nilsson
---
-                  Jesper Nilsson -- jesper_at_jni.nu
+       ENOMEM When  changing  mount  propagation to MS_SHARED, a new peer
+              group ID needs to be allocated for  all  mounts  without  a
+              peer  group  ID  set.  Allocation of this peer group ID has
+              failed.
+
+       ENOSPC When changing mount propagation to MS_SHARED,  a  new  peer
+              group  ID  needs  to  be allocated for all mounts without a
+              peer group ID set.  Allocation of this peer  group  ID  can
+              fail.  Note that technically further error codes are possi‐
+              ble that are specific to the ID  allocation  implementation
+              used.
+
+What is the difference between these two error cases? (That is, in what 
+circumstances will one get ENOMEM vs ENOSPC and vice versa?)
+
+And then:
+
+       EPERM  One  of  the mounts had at least one of MOUNT_ATTR_NOATIME,
+              MOUNT_ATTR_NODEV, MOUNT_ATTR_NODIRATIME, MOUNT_ATTR_NOEXEC,
+              MOUNT_ATTR_NOSUID, or MOUNT_ATTR_RDONLY set and the flag is
+              locked.  Mount attributes become locked on a mount if:
+
+              •  A new mount or mount tree is created causing mount prop‐
+                 agation  across  user  namespaces.  The kernel will lock
+
+Propagation is done across mont points, not user namespaces.
+should "across user namespaces" be "to a mount namespace owned 
+by a different user namespace"? Or something else?
+
+                 the aforementioned  flags  to  protect  these  sensitive
+                 properties from being altered.
+
+              •  A  new  mount  and user namespace pair is created.  This
+                 happens for  example  when  specifying  CLONE_NEWUSER  |
+                 CLONE_NEWNS  in unshare(2), clone(2), or clone3(2).  The
+                 aforementioned flags become locked to protect user name‐
+                 spaces from altering sensitive mount properties.
+
+Again, this seems imprecise. Should it say something like:
+"... to prevent changes to sensitive mount properties in the new 
+mount namespace" ? Or perhaps you have a better wording.
+
+Thanks,
+
+Michael
