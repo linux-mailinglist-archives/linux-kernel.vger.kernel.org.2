@@ -2,72 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB1A3E582F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF243E5835
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 12:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239824AbhHJKV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 06:21:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50865 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238932AbhHJKV6 (ORCPT
+        id S239726AbhHJKWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 06:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239740AbhHJKWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:21:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628590896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UoOPav9mt5YOVdwvQ7MavZDm5DJmX9UQzZ8YeI9L690=;
-        b=Z5gqo5ItEiokNOg17GSlgOnUvF3yamW6t964ZiLyoU3xrKqp8ONLTA7YSP3X3PAg6Rheq2
-        QtIrqmS3xYbk2YRS3BdZkHC6GuWn6hsxR64HDnS/vMZykDJ+zawDZQcDMGlrZSECGh/jxB
-        1+Zk/fYNLgMigDEn8fqCSoFDpeQBVRY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-iqfl7gTKMauT6qazEkfrjw-1; Tue, 10 Aug 2021 06:21:35 -0400
-X-MC-Unique: iqfl7gTKMauT6qazEkfrjw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 790868799E0;
-        Tue, 10 Aug 2021 10:21:34 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3875C60BF1;
-        Tue, 10 Aug 2021 10:21:34 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: stats: remove dead stores
-Date:   Tue, 10 Aug 2021 06:21:33 -0400
-Message-Id: <20210810102133.3316768-1-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 10 Aug 2021 06:22:19 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8DAC061799;
+        Tue, 10 Aug 2021 03:21:57 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id o1-20020a05600c5101b02902e676fe1f04so1507355wms.1;
+        Tue, 10 Aug 2021 03:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=G4hGiHeL1Mjmf6XVUKk8wOt6GojnDm02h8vLJYY4Fd0=;
+        b=rWJ40QSJhVrhVqniCLhn/XVYrbsG2c3cV72MpBzNtUT2yDnAjn22+LmUkDMgghJT68
+         KuPZzpCq+EsTOW5VWvvMrHkl63Pvc0ypjzc1ukacRSYl6PufHckXKtuuO463SvF8JZHh
+         T4k/y/Q98QEmQcH8CJahNxiggnRtdI+Ydt11X6pmMZdlOkgJRr4z/oNOROIBHCjc14aI
+         Y3zlR7GBh03Q3TV3YWm6T6EgjZLfzxMQevSjCaRehtoYsOYfzgHPaej5MP3cXEGZQreH
+         SIZugvLhvRPhp76+aV9384V+eMIoyvzaejmvYh3EvaF49UoIdh3UzAdl/pQstx5lFe0m
+         XuEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=G4hGiHeL1Mjmf6XVUKk8wOt6GojnDm02h8vLJYY4Fd0=;
+        b=mM18ejxNcIqDF3so/AGppN0MpwagmikEf/6hcy5W6SM+jh/WQbOJVONnNXr8/lb2vd
+         8p9M6oRDQuvI8j4pdH1KSY3y4Kb1c1oRiniEOaXR8F/R3sIa3vKJ7+rE4N5vVNFgZr2/
+         abZLI3p+OeRFyjhRjrzUD9LR7l1Ez7UHxoIUXhzfm3LAMT2HgpELoYThLBqIFIwTVNrU
+         reAjWWi2BvnuM9g8NWTK0LplH+KJHBUxz0pHupUe6aBYLakrMSTgl1hVC525BPOV9YwX
+         zAbDkCkFtwQOiCujIjrPpf/5lvUxdlBsU+uQQL5UDFzeVfH2O86NvRzHy0D3wXU7NalM
+         vhqQ==
+X-Gm-Message-State: AOAM531YSixKplZ3iqOYZMyik4uvQ61GHIi6Z3u0g2oWLBY26djyErH4
+        uLOJh3vl0uEgSej62y7ptqI=
+X-Google-Smtp-Source: ABdhPJy4aqHtiIzr8sf+y8kG2cOnuDi1EPmaYZzoqMCJfwDzZLlEKsA9mlIVacEWKdNzdW4BqEM1ug==
+X-Received: by 2002:a1c:19c1:: with SMTP id 184mr3906865wmz.98.1628590915828;
+        Tue, 10 Aug 2021 03:21:55 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2dbc:4b00:a54f:e1ea:825d:f9b3])
+        by smtp.gmail.com with ESMTPSA id 104sm23294018wrc.4.2021.08.10.03.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 03:21:55 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Dario Pagani <dario.pagani.146@gmail.com>,
+        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] HID: thrustmaster: clean up Makefile and adapt quirks
+Date:   Tue, 10 Aug 2021 12:21:48 +0200
+Message-Id: <20210810102148.9764-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These stores are copied and pasted from the "if" statements above.
-They are dead and while they are not really a bug, they can be
-confusing to anyone reading the code as well.  Remove them.
+Commit c49c33637802 ("HID: support for initialization of some Thrustmaster
+wheels") messed up the Makefile and quirks during the refactoring of this
+commit.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+
+HID_TMINIT
+Referencing files: drivers/hid/Makefile, drivers/hid/hid-quirks.c
+
+Following the discussion (see Link), CONFIG_HID_THRUSTMASTER is the
+intended config for CONFIG_HID_TMINIT and the file hid-tminit.c was
+actually added as hid-thrustmaster.c.
+
+So, clean up Makefile and adapt quirks to that refactoring.
+
+Fixes: c49c33637802 ("HID: support for initialization of some Thrustmaster wheels")
+Link: https://lore.kernel.org/linux-input/CAKXUXMx6dByO03f3dX0X5zjvQp0j2AhJBg0vQFDmhZUhtKxRxw@mail.gmail.com/
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- virt/kvm/binary_stats.c | 2 --
- 1 file changed, 2 deletions(-)
+Dario, Kim, please review, test and ack.
+Jiri, Benjamin, please pick this quick fix-up patch.
 
-diff --git a/virt/kvm/binary_stats.c b/virt/kvm/binary_stats.c
-index e609d428811a..eefca6c69f51 100644
---- a/virt/kvm/binary_stats.c
-+++ b/virt/kvm/binary_stats.c
-@@ -136,9 +136,7 @@ ssize_t kvm_stats_read(char *id, const struct kvm_stats_header *header,
- 		src = stats + pos - header->data_offset;
- 		if (copy_to_user(dest, src, copylen))
- 			return -EFAULT;
--		remain -= copylen;
- 		pos += copylen;
--		dest += copylen;
- 	}
- 
- 	*offset = pos;
+ drivers/hid/Makefile     | 1 -
+ drivers/hid/hid-quirks.c | 2 --
+ 2 files changed, 3 deletions(-)
+
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 1ea1a7c0b20f..e29efcb1c040 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -115,7 +115,6 @@ obj-$(CONFIG_HID_STEELSERIES)	+= hid-steelseries.o
+ obj-$(CONFIG_HID_SUNPLUS)	+= hid-sunplus.o
+ obj-$(CONFIG_HID_GREENASIA)	+= hid-gaff.o
+ obj-$(CONFIG_HID_THRUSTMASTER)	+= hid-tmff.o hid-thrustmaster.o
+-obj-$(CONFIG_HID_TMINIT)	+= hid-tminit.o
+ obj-$(CONFIG_HID_TIVO)		+= hid-tivo.o
+ obj-$(CONFIG_HID_TOPSEED)	+= hid-topseed.o
+ obj-$(CONFIG_HID_TWINHAN)	+= hid-twinhan.o
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 51b39bda9a9d..2e104682c22b 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -662,8 +662,6 @@ static const struct hid_device_id hid_have_special_driver[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb653) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb654) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65a) },
+-#endif
+-#if IS_ENABLED(CONFIG_HID_TMINIT)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_THRUSTMASTER, 0xb65d) },
+ #endif
+ #if IS_ENABLED(CONFIG_HID_TIVO)
 -- 
-2.27.0
+2.17.1
 
