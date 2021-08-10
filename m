@@ -2,153 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B0E3E849B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537243E84A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhHJUvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:51:25 -0400
-Received: from mga07.intel.com ([134.134.136.100]:47284 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233412AbhHJUvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:51:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="278739050"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="278739050"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 13:51:00 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="503261274"
-Received: from chdubay-mobl1.amr.corp.intel.com (HELO [10.212.234.193]) ([10.212.234.193])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 13:51:00 -0700
-Subject: Re: [PATCH 1/5] mm: Add support for unaccepted memory
-From:   Dave Hansen <dave.hansen@intel.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210810062626.1012-1-kirill.shutemov@linux.intel.com>
- <20210810062626.1012-2-kirill.shutemov@linux.intel.com>
- <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f7667988-4d6c-461e-901d-a6c3612b2f0f@intel.com>
-Date:   Tue, 10 Aug 2021 13:50:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233598AbhHJUvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:51:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32464 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233412AbhHJUvr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:51:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628628684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BRAP3UcLgpqf8XsYQHiUMWSMjCOCoU43rTaFEkutFE4=;
+        b=VQ5V6RZT+eXQvel8/CD/v9/r/nUWZxKSSF6+mhzVRCAKQu5rocml+KXkqml22mvnVUSImg
+        obWtLVqQQMxZ7NcWIXpnuJbB9bs8wZ56zcFgfqkBMSkY75/XOZwI2+tjZotKGrCAByR2i8
+        3VMMlpfMQwZNBBqLrPNNO5MWPP0UysE=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-6tnHwVbFMoeK6s2X0eA8fg-1; Tue, 10 Aug 2021 16:51:23 -0400
+X-MC-Unique: 6tnHwVbFMoeK6s2X0eA8fg-1
+Received: by mail-ot1-f70.google.com with SMTP id s44-20020a05683043acb02904f41dddb2beso202050otv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BRAP3UcLgpqf8XsYQHiUMWSMjCOCoU43rTaFEkutFE4=;
+        b=iwtkKA6vFLmuP1V2bk6P0pE68rzAMfN2h8euWBCi7LPcjivU/66bnt9Wej2nd1Aeko
+         igHlsEx1+JZkoUTVuJP+mRLitYzF7w9YinZTMTGvQr7sOML+WCATRgQNIt64lDwYkmht
+         sURy2Qz05V7K45Jjla8p7vZMC2MrKlvLdbH/sigArVNaM/bbvRCWE1VyEfNpvWWDFllx
+         Up/nJIaP2EmhbYt/tCL6r8dm/+BN9crLiNJDujuDC+FyE1mllu7FAHPw+UVN7msxhQOB
+         TjulgPqQHE207vJuv0wbtVI9KrP+Vx14dgJtObVO+6gVuuITqWvlNJwoP7b1rnbqlUPX
+         JtMw==
+X-Gm-Message-State: AOAM531kgTSs5zjeO0pV4ZMDO3n4QD2LAxUjns+tnlIW88GwkuQsY4Cn
+        J1Ffg4GLBrJ+VEFRJlBFSxUmnzoS3ItdW+CHHqe/u3vvzZqnECkJydSNc5poxdCm4585d2mQeSe
+        ZWeUPPw+9owC88EhLwPBuj7xG
+X-Received: by 2002:aca:4554:: with SMTP id s81mr5073410oia.41.1628628682453;
+        Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy78YX4WsIPZVstJJSezqWHWGPHEZO0W2taQXaEHV3PPUALBc3Bl+022KgyUSRnEeR2u7YVTQ==
+X-Received: by 2002:aca:4554:: with SMTP id s81mr5073400oia.41.1628628682265;
+        Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id e20sm621635otj.4.2021.08.10.13.51.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 13:51:22 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 14:51:20 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
+Message-ID: <20210810145120.28759d65.alex.williamson@redhat.com>
+In-Reply-To: <YRLNMv3UhwVa8Pd4@t490s>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+        <162818325518.1511194.1243290800645603609.stgit@omen>
+        <YRI+nsVAr3grftB4@infradead.org>
+        <YRLNMv3UhwVa8Pd4@t490s>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <d091b333-9ef8-ac32-58c5-c325d29f26d7@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 11:13 AM, Dave Hansen wrote:
->> @@ -1001,6 +1004,9 @@ static inline void del_page_from_free_list(struct page *page, struct zone *zone,
->>  	if (page_reported(page))
->>  		__ClearPageReported(page);
->>  
->> +	if (PageOffline(page))
->> +		clear_page_offline(page, order);
->> +
->>  	list_del(&page->lru);
->>  	__ClearPageBuddy(page);
->>  	set_page_private(page, 0);
-> So, this is right in the fast path of the page allocator.  It's a
-> one-time thing per 2M page, so it's not permanent.
+On Tue, 10 Aug 2021 15:02:10 -0400
+Peter Xu <peterx@redhat.com> wrote:
+
+> On Tue, Aug 10, 2021 at 10:53:50AM +0200, Christoph Hellwig wrote:
+> > On Thu, Aug 05, 2021 at 11:07:35AM -0600, Alex Williamson wrote:  
+> > > +static void vfio_pci_zap_bars(struct vfio_pci_device *vdev)
+> > >  {
+> > > +	vfio_device_unmap_mapping_range(&vdev->vdev,
+> > > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
+> > > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
+> > > +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX));  
+> > 
+> > Maybe make this a little more readable by having local variables:  
 > 
-> *But* there's both a global spinlock and a firmware call hidden in
-> clear_page_offline().  That's *GOT* to hurt if you were, for instance,
-> running a benchmark while this code path is being tickled.  Not just to
-> 
-> That could be just downright catastrophic for scalability, albeit
-> temporarily.
+> Or just pass in unmap_mapping_range(start=0, len=0)?  As unmap_mapping_range()
+> understands len==0 as "to the end of file".  Thanks,
 
-One more thing...
+But we're not actually trying to unmap the entire device fd, we're only
+targeting the ranges of it that correspond to standard MMIO resources
+of the device.  Our vma-to-pfn function for vfio-pci also only knows
+how to lookup vmas in this range.  If there were mmap'able regions
+outside of this, for example provided by vendor specific extensions, we
+a) don't generically know if they're related to the device itself or
+some supporting information managed in software (ex. IGD OpRegion) and
+b) don't know how to lookup the pfn to remap them when MMIO is
+re-enabled.
 
-How long are these calls?  You have to make at least 512 calls into the
-SEAM module.  Assuming they're syscall-ish, so ~1,000 cycles each,
-that's ~500,000 cycles, even if we ignore the actual time it takes to
-zero that 2MB worth of memory and all other overhead within the SEAM module.
+I don't think we have any such extensions today, but we might with
+vfio-pci-core and we'd need to figure out how to include those regions
+in some future work.  Thanks,
 
-So, we're sitting on one CPU with interrupts off, blocking all the other
-CPUs from doing page allocation in this zone.  Then, we're holding a
-global lock which prevents any other NUMA nodes from accepting pages.
-If the other node happens to *try* to do an accept, it will sit with its
-zone lock held waiting for this one.
+Alex
 
-Maybe nobody will ever notice.  But, it seems like an awfully big risk
-to me.  I'd at least *try* do these calls outside of the zone lock.
-Then the collateral damage will at least be limited to things doing
-accepts rather than all zone->lock users.
-
-Couldn't we delay the acceptance to, say the place where we've dropped
-the zone->lock and do the __GFP_ZERO memset() like at prep_new_page()?
-Or is there some concern that the page has been split at that point?
-
-I guess that makes it more complicated because you might have a 4k page
-but you need to go accept a 2M page.  You might end up having to check
-the bitmap 511 more times because you might see 511 more PageOffline()
-pages come through.
-
-You shouldn't even need the bitmap lock to read since it's a one-way
-trip from unaccepted->accepted.
