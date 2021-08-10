@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30CB3E8490
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAA63E8494
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 22:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbhHJUs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 16:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44272 "EHLO mail.kernel.org"
+        id S233970AbhHJUtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 16:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231705AbhHJUsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 16:48:47 -0400
+        id S232453AbhHJUss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 16:48:48 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54BA16108F;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5494161078;
         Tue, 10 Aug 2021 20:48:25 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1mDYfg-003hAK-7R; Tue, 10 Aug 2021 16:48:24 -0400
+        id 1mDYfg-003hAN-8L; Tue, 10 Aug 2021 16:48:24 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 6/9] libtracefs: Add APIs tracefs_hist_data_keys/value_names()
-Date:   Tue, 10 Aug 2021 16:48:15 -0400
-Message-Id: <20210810204818.880714-7-rostedt@goodmis.org>
+Subject: [PATCH 7/9] libtracefs: Add API tracefs_hist_data_keys/values() and next_bucket()
+Date:   Tue, 10 Aug 2021 16:48:16 -0400
+Message-Id: <20210810204818.880714-8-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210810204818.880714-1-rostedt@goodmis.org>
 References: <20210810204818.880714-1-rostedt@goodmis.org>
@@ -42,71 +42,202 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add the APIs
+Add APIs:
 
-  tracefs_hist_data_key_names()
-  tracefs_hist_data_value_names()
-
-To get the names of the keys and values respectively.
+	tracefs_hist_data_keys()
+	tracefs_hist_data_values()
+	tracefs_hist_data_next_bucket()
+	tracefs_hist_data_first_bucket()
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/tracefs.h       |  3 +++
- src/tracefs-hist-data.c | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+)
+ include/tracefs.h       |  36 ++++++++++++++
+ src/tracefs-hist-data.c | 107 +++++++++++++++++++++++++++++-----------
+ 2 files changed, 113 insertions(+), 30 deletions(-)
 
 diff --git a/include/tracefs.h b/include/tracefs.h
-index 6fb66c44afc7..7aa6a3e5673a 100644
+index 7aa6a3e5673a..db0a1d73f091 100644
 --- a/include/tracefs.h
 +++ b/include/tracefs.h
-@@ -428,6 +428,9 @@ struct tracefs_hist_data **tracefs_hist_data_read(struct tracefs_instance *insta
- void tracefs_hist_data_free(struct tracefs_hist_data *hdata);
- void tracefs_hist_data_free_list(struct tracefs_hist_data **hdata_list);
+@@ -431,6 +431,42 @@ void tracefs_hist_data_free_list(struct tracefs_hist_data **hdata_list);
+ char **tracefs_hist_data_key_names(struct tracefs_hist_data *hdata);
+ char **tracefs_hist_data_value_names(struct tracefs_hist_data *hdata);
  
-+char **tracefs_hist_data_key_names(struct tracefs_hist_data *hdata);
-+char **tracefs_hist_data_value_names(struct tracefs_hist_data *hdata);
++enum tracefs_bucket_key_flags {
++	TRACEFS_BUCKET_KEY_FL_UNDEF	= (1 << 29),
++	TRACEFS_BUCKET_KEY_FL_SINGLE	= (1 << 30),
++	TRACEFS_BUCKET_KEY_FL_RANGE	= (1 << 31),
++};
++
++struct tracefs_hist_bucket_key_single {
++	long long		val;
++	char			*sym;
++};
++
++struct tracefs_hist_bucket_key_range {
++	long long		start;
++	long long		end;
++};
++
++struct tracefs_hist_bucket_key {
++	struct tracefs_hist_bucket_key	*next;
++	unsigned int			flags;
++	union {
++		struct tracefs_hist_bucket_key_single	single;
++		struct tracefs_hist_bucket_key_range	range;
++	};
++};
++
++struct tracefs_hist_bucket_val {
++	struct tracefs_hist_bucket_val		*next;
++	long long				val;
++};
++
++const struct tracefs_hist_bucket_key *tracefs_hist_data_keys(struct tracefs_hist_data *hdata);
++const struct tracefs_hist_bucket_val *tracefs_hist_data_values(struct tracefs_hist_data *hdata);
++
++int tracefs_hist_data_next_bucket(struct tracefs_hist_data *hdata);
++int tracefs_hist_data_first_bucket(struct tracefs_hist_data *hdata);
 +
  struct tracefs_synth;
  
  /*
 diff --git a/src/tracefs-hist-data.c b/src/tracefs-hist-data.c
-index ab1ae824f59b..c93c27453255 100644
+index c93c27453255..0f811d6e3154 100644
 --- a/src/tracefs-hist-data.c
 +++ b/src/tracefs-hist-data.c
-@@ -1093,3 +1093,33 @@ tracefs_hist_data_read(struct tracefs_instance *instance,
+@@ -113,36 +113,6 @@ static char *name_token(enum yytokentype type)
  	return NULL;
  }
  
+-enum tracefs_bucket_key_flags {
+-	TRACEFS_BUCKET_KEY_FL_UNDEF	= (1 << 29),
+-	TRACEFS_BUCKET_KEY_FL_SINGLE	= (1 << 30),
+-	TRACEFS_BUCKET_KEY_FL_RANGE	= (1 << 31),
+-};
+-
+-struct tracefs_hist_bucket_key_single {
+-	long long		val;
+-	char			*sym;
+-};
+-
+-struct tracefs_hist_bucket_key_range {
+-	long long		start;
+-	long long		end;
+-};
+-
+-struct tracefs_hist_bucket_key {
+-	struct tracefs_hist_bucket_key	*next;
+-	unsigned int			flags;
+-	union {
+-		struct tracefs_hist_bucket_key_single	single;
+-		struct tracefs_hist_bucket_key_range	range;
+-	};
+-};
+-
+-struct tracefs_hist_bucket_val {
+-	struct tracefs_hist_bucket_val		*next;
+-	long long				val;
+-};
+-
+ struct tracefs_hist_bucket {
+ 	struct tracefs_hist_bucket		*next;
+ 	struct tracefs_hist_bucket_key		*keys;
+@@ -165,6 +135,7 @@ struct tracefs_hist_data {
+ 	struct key_types		*current_key_type;
+ 	struct tracefs_hist_bucket	*buckets;
+ 	struct tracefs_hist_bucket	**next_bucket;
++	struct tracefs_hist_bucket	*current_bucket;
+ 	unsigned long long		hits;
+ 	unsigned long long		entries;
+ 	unsigned long long		dropped;
+@@ -1029,6 +1000,9 @@ tracefs_hist_data_parse(const char *buffer, const char **next_buffer, char **err
+ 	hist_lex_destroy(data.scanner);
+ 	free(data.text);
+ 
++	/* Set to read the first bucket after creation */
++	tracefs_hist_data_first_bucket(hdata);
++
+ 	return hdata;
+  error:
+ 	print_error(&data, err, state, type);
+@@ -1123,3 +1097,76 @@ char **tracefs_hist_data_value_names(struct tracefs_hist_data *hdata)
+ 	return tracefs_list_dup(hdata->value_names);
+ }
+ 
 +/**
-+ * tracefs_hist_data_key_names - return key names
-+ * @hdata: The hist data descriptor to get the names from
++ * tracefs_hist_data_keys - Return the content of the keys
++ * @hdata: The hist data descriptor of the keys
 + *
-+ * Returns a copy of the key names of the keys. The list of keys
-+ * will be in the same order as the keys are listed.
-+ * Returns NULL on error.
-+ *
-+ * Must be freed with tracefs_list_free();
++ * Returns the actual pointer to the key data list in the @hdata descriptor.
++ * It must not be modified or freed.
 + */
-+char **tracefs_hist_data_key_names(struct tracefs_hist_data *hdata)
++const struct tracefs_hist_bucket_key *
++tracefs_hist_data_keys(struct tracefs_hist_data *hdata)
 +{
-+	return tracefs_list_dup(hdata->key_names);
++	if (!hdata || !hdata->current_bucket)
++		return NULL;
++
++	return hdata->current_bucket->keys;
 +}
 +
 +/**
-+ * tracefs_hist_data_value_names - return value names
-+ * @hdata: The hist data descriptor to get the names from
++ * tracefs_hist_data_values - Return the content of the values
++ * @hdata: The hist data descriptor of the values
 + *
-+ * Returns a copy of the value names of the keys. The list of keys
-+ * will be in the same order as the values are listed.
-+ * Returns NULL on error.
-+ *
-+ * Must be freed with tracefs_list_free();
++ * Returns the actual pointer to the value data list in the @hdata descriptor.
++ * It must not be modified or freed.
 + */
-+char **tracefs_hist_data_value_names(struct tracefs_hist_data *hdata)
++const struct tracefs_hist_bucket_val *
++tracefs_hist_data_values(struct tracefs_hist_data *hdata)
 +{
-+	return tracefs_list_dup(hdata->value_names);
++	if (!hdata || !hdata->current_bucket)
++		return NULL;
++
++	return hdata->current_bucket->vals;
 +}
 +
++/**
++ * tracefs_hist_data_next_bucket - Move to the next bucket with content
++ * @hdata: The hist data desrciptor
++ *
++ * Move the "cursor" of the bucket that tracefs_hist_data_keys()
++ * and tracefs_hist_data_values() will return their data from.
++ *
++ * Returns -1 if @hdata is NULL or already hit the last bucket.
++ * Returns 0 if there's still data after going to the next bucket
++ * Returns 1 if there's no more data left.
++ */
++int tracefs_hist_data_next_bucket(struct tracefs_hist_data *hdata)
++{
++	if (!hdata || !hdata->current_bucket)
++		return -1;
++
++	hdata->current_bucket = hdata->current_bucket->next;
++
++	return !hdata->current_bucket;
++}
++
++/**
++ * tracefs_hist_data_first_bucket - Reset to the first bucket
++ * @hdata: The hist data desrciptor
++ *
++ * Move the "cursor" of the bucket that tracefs_hist_data_keys()
++ * and tracefs_hist_data_values() will return their data from
++ * to the first bucket in the @hlist.
++ *
++ * Returns -1 if @hdata is NULL or already hit the last bucket.
++ * Returns 0 if there's still data after going to the next bucket
++ * Returns 1 if there's no more data left.
++ */
++int tracefs_hist_data_first_bucket(struct tracefs_hist_data *hdata)
++{
++	if (!hdata || !hdata->buckets)
++		return -1;
++
++	hdata->current_bucket = hdata->buckets;
++	return !hdata->current_bucket;
++}
 -- 
 2.30.2
 
