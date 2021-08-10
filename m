@@ -2,210 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C793E55E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AEF3E55DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237943AbhHJItl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237561AbhHJIth (ORCPT
+        id S237905AbhHJItj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 04:49:39 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39720
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236991AbhHJItg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:49:37 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0093EC061798
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:49:16 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so21226627oti.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mJvqFMrFyC5HN29/1laUi8N0RvWoYgo0Ab1qvuvHTEE=;
-        b=x7m0XTiGBYRi6EVx7ZndV6sWn8CwnRMBsgAqcmc4SWsqPUYcRyK1bdItpxlHgoorA3
-         detcIqL0uZB8zLYz217UYDQlQNmOfzmVyxL9yJI1kyGB4gY5Q/5pBqiNE1DECMiBg5BR
-         8VUI8QAjC8t2D0mmkVHzmOkmmB2PI4vwPWfJag+BNmprGnu5pXEEfeFkeCin32qb/e0d
-         F9wQOOUk2gY36MwWS4ECXYvxeEOfX2+xtjppLlcwWA87CmnTMvTrSh4ig8hfPMwA73lk
-         Lw13s01rLWtQodpnBKzUMTRKYqkARAj3hjBYNJVU8+NqU1Lr1/WwSmitXo2MUY9cwBd1
-         lqew==
+        Tue, 10 Aug 2021 04:49:36 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 2FF6A3F367
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 08:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628585353;
+        bh=CAgpG6WrguxqP2IRH8Bsd0WkckHriXozJ08neyhr3cI=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=JWFi+ZDbq6bwz22bOA5b8cCyluHW+ZCYfAO7G58QBs8Td2VTaJBP9toRBhgY5lCt5
+         o/vxQrYu1Q4MPKoA4xOVpyGrX57l+JbsMX0Yl/tOedtoLBwr/kzCu1G6twLohsFVtw
+         XOHICZRCvtBOZ6KW3ouHSBVMoxkbE0NupFlmxZQijff2wUvwEiimmvUTZw80BWcBCq
+         ZzuUXnR7ZkFO4c0AbCwbDjzta+aDkYKoYZBVTOVPdaQFrO6pw6wV/ObL7JW3mqnopu
+         lF0C6mzv8spP0uq15DUooi8WWsb+9fG7zzE91hbwwJGWuQcVFf6+HMh2/RdknMUtZh
+         RL5kMFIQgveaw==
+Received: by mail-ed1-f72.google.com with SMTP id dh21-20020a0564021d35b02903be0aa37025so8188631edb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 01:49:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mJvqFMrFyC5HN29/1laUi8N0RvWoYgo0Ab1qvuvHTEE=;
-        b=c4+HLrkeoiXEsfUdG4XnTd6+PB1CoLYXQd3XSvjUskBsXCmpOP5pVN9wGaAaw5pEpE
-         p6TCSNBFhh6R5xhn/cj2wiSSF6dqYNdxZDm6+nnFCdo4bJYtbqWp5xcyMDmhwF47ujgR
-         A+5g5gU2Xio0QVcnuoJZ33KUDLS4NPeXOaGY7zXNN3owqAHu1+YpjqSFBCz2vfNnkU5k
-         lrv8jLtSqr4fYDObHT///QnZ+3wfKkCXDId2Fv7D1FC1B8bSuyoq3vLzpYMUTxykjyme
-         D1rlSTCoeOPIYpFeXDzIIq4n9fd9Kd5wJVKgLGg4jp0xYBgQot+H5tY2bjZUzOQLg3X3
-         LDYw==
-X-Gm-Message-State: AOAM530FxfwxOfTY1jEOD9mcwZu1wGsuv54LYKSqME+1l7u4vnZc4MCu
-        PD35JI2zCtvxvd9wEym3PtyuL/cR1jbd6FqjNGcXZg==
-X-Google-Smtp-Source: ABdhPJypice4yN7OjjE+e0d3Oneqm+CAC/I0NkEJK16FX9j2XlM6PS8mJ3yq+sodXeKPm4zxn7YuFjieRnFMdk2n/Gw=
-X-Received: by 2002:a9d:38f:: with SMTP id f15mr18504480otf.253.1628585355309;
- Tue, 10 Aug 2021 01:49:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CAgpG6WrguxqP2IRH8Bsd0WkckHriXozJ08neyhr3cI=;
+        b=iDhGr191iaP/RRm7cnDA+LM7uw51dbtHdOmgpg8i4fYIYhhCIPt6gYsOwSf3cZBjpG
+         t5i55E2flOiWysHUOkH1ZzIz7TgcydgiKUKaI63Tw13VzoBuJvnxVAh8EAlaF9SvKYFi
+         MWMjLzF73cXxbKS1I1RmoVwkW0+FRP3lkDoy/yRrv2Lcw2b3PfFCJ1Z0rXBi8tGJo3cx
+         CVpJeHJPGeDrYRkSkCPSf+D1y8/wad9Gwbgl0dusyLIic8sn3OEbo02AU5NMgHorGs+o
+         dAmwxtA7E5K63Lc12Yb3k4tXYIZD6MGrZ+8HD7onhebdM6CXGz2m/VKfqDav2OMKwNwn
+         oQ/w==
+X-Gm-Message-State: AOAM531eQKLJpFiC2Z0tUTbYX50NXFp5grt1M90qLH/mgHILmIwL5Dag
+        rSwlh8jxcSPXHM5y2AhbiI5ZqfjS6zPv8d6JA1RyQgTDB/iAkMGCji6X/2XUjoGf4YaE++xGNmH
+        E/NET+2EH6/yTw5sL0xCWz21ACOePtQuZ5oTCx/iqBQ==
+X-Received: by 2002:aa7:d815:: with SMTP id v21mr3613324edq.262.1628585352915;
+        Tue, 10 Aug 2021 01:49:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz77fy9fLXSFWJs9Es0lAOffB7mrFKyLwbEVB/OFWy0HcQWY8xncNUb2Z+7ZIpeUXJe0xIKOA==
+X-Received: by 2002:aa7:d815:: with SMTP id v21mr3613305edq.262.1628585352799;
+        Tue, 10 Aug 2021 01:49:12 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id ee11sm6556872edb.26.2021.08.10.01.49.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 01:49:12 -0700 (PDT)
+Subject: Re: [PATCH] thermal: exynos: Fix an error code in exynos_tmu_probe()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Abhilash Kesavan <a.kesavan@samsung.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Lukasz Majewski <l.majewski@samsung.com>,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20210810084413.GA23810@kili>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <dfa9cdf6-5dc6-586f-9db3-300d4232acf0@canonical.com>
+Date:   Tue, 10 Aug 2021 10:49:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
- <20210707123402.13999-1-borntraeger@de.ibm.com> <20210707123402.13999-2-borntraeger@de.ibm.com>
- <20210723093523.GX3809@techsingularity.net> <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
- <20210723162137.GY3809@techsingularity.net> <1acd7520-bd4b-d43d-302a-8dcacf6defa5@de.ibm.com>
- <xm2635rza8l2.fsf@google.com> <d9543747-c75f-28c2-6af3-8d9a134717a6@de.ibm.com>
-In-Reply-To: <d9543747-c75f-28c2-6af3-8d9a134717a6@de.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 10 Aug 2021 10:49:03 +0200
-Message-ID: <CAKfTPtCwP9cV0AQCuwUDAMPvXYdR9Bi0QMbbonCtVbFRpUv0XQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Josh Don <joshdon@google.com>,
-        Juri Lelli <juri.lelli@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-s390@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210810084413.GA23810@kili>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 at 18:24, Christian Borntraeger
-<borntraeger@de.ibm.com> wrote:
->
->
->
-> On 27.07.21 20:57, Benjamin Segall wrote:
-> > Christian Borntraeger <borntraeger@de.ibm.com> writes:
-> >
-> >> On 23.07.21 18:21, Mel Gorman wrote:
-> >>> On Fri, Jul 23, 2021 at 02:36:21PM +0200, Christian Borntraeger wrote:
-> >>>>> sched: Do not select highest priority task to run if it should be skipped
-> >>>>>
-> >>>>> <SNIP>
-> >>>>>
-> >>>>> index 44c452072a1b..ddc0212d520f 100644
-> >>>>> --- a/kernel/sched/fair.c
-> >>>>> +++ b/kernel/sched/fair.c
-> >>>>> @@ -4522,7 +4522,8 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
-> >>>>>                           se = second;
-> >>>>>           }
-> >>>>> - if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-> >>>>> + if (cfs_rq->next &&
-> >>>>> +     (cfs_rq->skip == left || wakeup_preempt_entity(cfs_rq->next, left) < 1)) {
-> >>>>>                   /*
-> >>>>>                    * Someone really wants this to run. If it's not unfair, run it.
-> >>>>>                    */
-> >>>>>
-> >>>>
-> >>>> I do see a reduction in ignored yields, but from a performance aspect for my
-> >>>> testcases this patch does not provide a benefit, while the the simple
-> >>>>    curr->vruntime += sysctl_sched_min_granularity;
-> >>>> does.
-> >>> I'm still not a fan because vruntime gets distorted. From the docs
-> >>>      Small detail: on "ideal" hardware, at any time all tasks would have the
-> >>> same
-> >>>      p->se.vruntime value --- i.e., tasks would execute simultaneously and no task
-> >>>      would ever get "out of balance" from the "ideal" share of CPU time
-> >>> If yield_to impacts this "ideal share" then it could have other
-> >>> consequences.
-> >>> I think your patch may be performing better in your test case because every
-> >>> "wrong" task selected that is not the yield_to target gets penalised and
-> >>> so the yield_to target gets pushed up the list.
-> >>>
-> >>>> I still think that your approach is probably the cleaner one, any chance to improve this
-> >>>> somehow?
-> >>>>
-> >>> Potentially. The patch was a bit off because while it noticed that skip
-> >>> was not being obeyed, the fix was clumsy and isolated. The current flow is
-> >>> 1. pick se == left as the candidate
-> >>> 2. try pick a different se if the "ideal" candidate is a skip candidate
-> >>> 3. Ignore the se update if next or last are set
-> >>> Step 3 looks off because it ignores skip if next or last buddies are set
-> >>> and I don't think that was intended. Can you try this?
-> >>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> >>> index 44c452072a1b..d56f7772a607 100644
-> >>> --- a/kernel/sched/fair.c
-> >>> +++ b/kernel/sched/fair.c
-> >>> @@ -4522,12 +4522,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
-> >>>                     se = second;
-> >>>     }
-> >>>    -        if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-> >>> +   if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, se) < 1) {
-> >>>             /*
-> >>>              * Someone really wants this to run. If it's not unfair, run it.
-> >>>              */
-> >>>             se = cfs_rq->next;
-> >>> -   } else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
-> >>> +   } else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, se) < 1) {
-> >>>             /*
-> >>>              * Prefer last buddy, try to return the CPU to a preempted task.
-> >>>              */
-> >>>
-> >>
-> >> This one alone does not seem to make a difference. Neither in ignored yield, nor
-> >> in performance.
-> >>
-> >> Your first patch does really help in terms of ignored yields when
-> >> all threads are pinned to one host CPU. After that we do have no ignored yield
-> >> it seems. But it does not affect the performance of my testcase.
-> >> I did some more experiments and I removed the wakeup_preempt_entity checks in
-> >> pick_next_entity - assuming that this will result in source always being stopped
-> >> and target always being picked. But still, no performance difference.
-> >> As soon as I play with vruntime I do see a difference (but only without the cpu cgroup
-> >> controller). I will try to better understand the scheduler logic and do some more
-> >> testing. If you have anything that I should test, let me know.
-> >>
-> >> Christian
-> >
-> > If both yielder and target are in the same cpu cgroup or the cpu cgroup
-> > is disabled (ie, if cfs_rq_of(p->se) matches), you could try
-> >
-> > if (p->se.vruntime > rq->curr->se.vruntime)
-> >       swap(p->se.vruntime, rq->curr->se.vruntime)
->
-> I tried that and it does not show the performance benefit. I then played with my
-> patch (uses different values to add) and the benefit seems to be depending on the
-> size that is being added, maybe when swapping it was just not large enough.
->
-> I have to say that this is all a bit unclear what and why performance improves.
-> It just seems that the cpu cgroup controller has a fair share of the performance
-> problems.
->
-> I also asked the performance people to run some measurements and the numbers of
-> some transactional workload under KVM was
-> baseline: 11813
-> with much smaller sched_latency_ns and sched_migration_cost_ns: 16419
+On 10/08/2021 10:44, Dan Carpenter wrote:
+> This error path return success but it should propagate the negative
+> error code from devm_clk_get().
+> 
+> Fixes: 6c247393cfdd ("thermal: exynos: Add TMU support for Exynos7 SoC")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/thermal/samsung/exynos_tmu.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Have you also tried to increase sched_wakeup_granularity which is used
-to decide whether we can preempt curr ?
+Thanks, good catch!
 
-> with cpu controller disabled: 15962
-> with cpu controller disabled + my patch: 16782
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Your patch modifies the vruntime of the task but cgroup sched_entity
-stays unchanged. Scheduler starts to compare the vruntime of the
-sched_entity of the group before reaching your task. That's probably
-why your patch doesn't help with cgroup and will be difficult to
-extend to cgroup because the yield of the task should not impact the
-other entities in the group.
 
->
-> I will be travelling the next 2 weeks, so I can continue with more debugging
-> after that.
->
-> Thanks for all the ideas and help so far.
->
-> Christian
->
-> > as well as the existing buddy flags, as an entirely fair vruntime boost
-> > to the target.
-> >
-> > For when they aren't direct siblings, you /could/ use find_matching_se,
-> > but it's much less clear that's desirable, since it would yield vruntime
-> > for the entire hierarchy to the target's hierarchy.
-> >
+Best regards,
+Krzysztof
