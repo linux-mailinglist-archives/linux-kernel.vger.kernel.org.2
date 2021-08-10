@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957F63E7BB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0631E3E7BB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 17:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241888AbhHJPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 11:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231346AbhHJPGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:06:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF5A960EE7;
-        Tue, 10 Aug 2021 15:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628607968;
-        bh=dqo+NJskWQkpj9z6N8xQUfDVCUEgPwqRUPQ6njYYZIU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ioa/h9et+21lof64iWcP5IEezko5Fo8Nqs6H05OAupK1dLhs3GN9D51vWnWrbqE5n
-         wT1Wy+cJFuzI5alZMPTwRpfA0mB9YMF/Od757RFP+NeKLfRVrWhgHSe0MNpC5BWscQ
-         BqH5kEV/rpZYKkl8BIlTBkXMHmBLcbnkTqXnC1ck=
-Date:   Tue, 10 Aug 2021 17:06:05 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prasad Sodagudi <psodagud@codeaurora.org>
-Cc:     rjw@rjwysocki.net, len.brown@intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        pavel@ucw.cz
-Subject: Re: [PATCH v2] PM: sleep: core: Avoid setting power.must_resume to
- false
-Message-ID: <YRKV3aYPvQhkL/9m@kroah.com>
-References: <1628602932-246733-1-git-send-email-psodagud@codeaurora.org>
+        id S241917AbhHJPHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 11:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239566AbhHJPHi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 11:07:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6418EC0613C1;
+        Tue, 10 Aug 2021 08:07:16 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 15:07:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628608032;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f+fTR/VomdRPkol+f9vCD1GWoe1qBK+UFzpSF4GLZYI=;
+        b=M1C5mLSr0bq9IuK5Iu3y9eaXf74pYnOXwkK3cyL7lXl1xLz3iTVvRxTKrx0r8SNVA7W8fa
+        /j2f1ZpYxH2R0UNTpwkHj5oPtH9oeGnjmdJlaxDvfIB5s1j/Jjo0F6iDakJHK0egb3HEpT
+        E12QF6nbvegfqDt1djDjlU2v7CTwJYSZpb7ttOCS+3R+OeKsd6oHmH3d0J3Lq/zPNkMICh
+        2QQK3J357ywqzJ0I6wNScPpz64lOz/Pa+drS31v210vgUThoyPj5TcPO3gVTeCe53oK1/P
+        Jtss2rsqioR2Rox6/76FxTQJUIfa09dHpfPeA3ue5pVHSkl3Ws7ltrCl2kPwSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628608032;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f+fTR/VomdRPkol+f9vCD1GWoe1qBK+UFzpSF4GLZYI=;
+        b=v9ZdkJeshKo6CEL1ZhuaULf+0Rcn3JS1GGZcIIKPbAWHaTyMMn76QtMsstZtZNK/vbfGkh
+        u0+DnbA2gtksRuCQ==
+From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] posix-timers: Remove redundant initialization of
+ variable ret
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210721120147.109570-1-colin.king@canonical.com>
+References: <20210721120147.109570-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1628602932-246733-1-git-send-email-psodagud@codeaurora.org>
+Message-ID: <162860803112.395.6863520672522344835.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 06:42:11AM -0700, Prasad Sodagudi wrote:
-> This is regarding suspend/resume(s2idle) scenario of devices and difference
-> between the LTS kernels 5.4 and 5.10 with respect to devices suspend and
-> resume. Observing that devices suspended in suspend_late stage are not
-> getting resumed in resume_early stage.
-> 1) LTS kernel 5.4 kernel do not have this problem but 5.10 kernel
-> shows this problem.
-> 2) 'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
-> is skipping the driver early_resume callbacks.
-> 
-> In device_resume_early function dev->power.must_resume is used to skip the
-> resume call back. It looks this function is expecting that,
-> __device_suspend_noirq() would set dev->power.must_resume = true for the
-> devices which does not have DPM_FLAG_MAY_SKIP_RESUME flag set.
-> 
-> 3) Problematic scenario is as follows -  During the device suspend/resume
-> scenario all the devices in  the suspend_late stage are successful and some
-> device can fail to suspend in suspend_noirq(device_suspend_noirq->
-> __device_suspend_noirq) phase.
-> As a device failed in dpm_noirq_suspend_devices phase, dpm_resume_noirq is
-> getting called to resume devices in dpm_late_early_list in the noirq phase.
-> 
-> 4) During the Devices_early_resume stage
-> dpm_resume_early()-->device_resume_early() functions skipping the devices
-> early resume callbacks.
-> 799         if (dev_pm_skip_resume(dev))
-> 800                  goto Skip;
-> 
-> 5) Devices suspended in suspend_late stage are not getting resumed in
-> Devices_early_resume stage because of
-> 'commit 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")'
-> is skipping the driver early_resume callbacks when dev->power.must_resume is false.
-> 
-> 
-> Changelog:
-> v1 -> v2:
->  - Fixed indentation comments.
->  - Commit text updated to include scenario.
-> 
-> Prasad Sodagudi (1):
->   PM: sleep: core: Avoid setting power.must_resume to false
-> 
->  drivers/base/power/main.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+The following commit has been merged into the timers/core branch of tip:
 
-I do not see a patch here, what happened?
+Commit-ID:     1dae37c7e41d9a75a615ba7b0480acc2e04094d4
+Gitweb:        https://git.kernel.org/tip/1dae37c7e41d9a75a615ba7b0480acc2e04094d4
+Author:        Colin Ian King <colin.king@canonical.com>
+AuthorDate:    Wed, 21 Jul 2021 13:01:47 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 17:02:11 +02:00
 
-:(
+posix-timers: Remove redundant initialization of variable ret
+
+The variable ret is being initialized with a value that is never read, it
+is being updated later on. The assignment is redundant and can be removed.
+
+Addresses-Coverity: ("Unused value")
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210721120147.109570-1-colin.king@canonical.com
+
+---
+ kernel/time/posix-timers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index dd5697d..3913222 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -336,7 +336,7 @@ void posixtimer_rearm(struct kernel_siginfo *info)
+ int posix_timer_event(struct k_itimer *timr, int si_private)
+ {
+ 	enum pid_type type;
+-	int ret = -1;
++	int ret;
+ 	/*
+ 	 * FIXME: if ->sigq is queued we can race with
+ 	 * dequeue_signal()->posixtimer_rearm().
