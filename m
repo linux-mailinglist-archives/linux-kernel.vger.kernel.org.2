@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB4E3E5616
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BE03E560F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 10:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238483AbhHJI65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 04:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232978AbhHJI6z (ORCPT
+        id S238466AbhHJI5S convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 04:57:18 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20136 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238335AbhHJI5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 04:58:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17A1C0613D3;
-        Tue, 10 Aug 2021 01:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YfNUq8j0o8x5Ev25xgxcLwcxadhP66TZ8HAtjvpqGXo=; b=DbOQ9I1cInRZCy9Qao/Zvg5JXY
-        CCqvUrxaQlyUgHxAvixgBciEUpu5/SMvrbUf3a8ri67hTFWuJhQI65XGuXcnEXhsUwYCJe9o7DfSH
-        /BgnS/0bMREH3eGhVNi70o3oMCSw2l5NBed8MKbNxPvL6amwLh+mu1xt0SHoUfgoIk4KRBX8Eo0fI
-        QtyI9eNLyWe1t/U4uxa4y6rLj8IJqRHJz5DAR1x5FyTO6HUlML9SpiAtpcrEIYJ8gQLFjVC2Q8D09
-        HHSL9KceU0UOGzycz9lJJKZxXGkjbxEPjcYrMOCDM1FBrFchIF1QB+mJPJN2QZN4M2Re18f6C6Bqp
-        OsPbNE5Q==;
-Received: from [2001:4bb8:184:6215:a004:cea2:5ea9:6eca] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDNWB-00BuuO-4w; Tue, 10 Aug 2021 08:55:11 +0000
-Date:   Tue, 10 Aug 2021 10:53:50 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, peterx@redhat.com
-Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
-Message-ID: <YRI+nsVAr3grftB4@infradead.org>
-References: <162818167535.1511194.6614962507750594786.stgit@omen>
- <162818325518.1511194.1243290800645603609.stgit@omen>
+        Tue, 10 Aug 2021 04:57:16 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-234-w1_GZZkGMW-hVo-Y0c_N0g-1; Tue, 10 Aug 2021 09:56:52 +0100
+X-MC-Unique: w1_GZZkGMW-hVo-Y0c_N0g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Tue, 10 Aug 2021 09:56:52 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Tue, 10 Aug 2021 09:56:52 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>, Robert Richter <rric@kernel.org>,
+        "Len Baker" <len.baker@gmx.com>
+CC:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
+Thread-Topic: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
+Thread-Index: AQHXjUKovGKiu304s0CSrAMXVBAc3KtsbpXQ
+Date:   Tue, 10 Aug 2021 08:56:51 +0000
+Message-ID: <c24330a3d7464ed3951d513bb1559258@AcuMS.aculab.com>
+References: <20210807155957.10069-1-len.baker@gmx.com>
+         <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
+         <20210808112617.GA1927@titan> <YRD90L6PMoVbbv+9@rric.localdomain>
+ <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
+In-Reply-To: <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162818325518.1511194.1243290800645603609.stgit@omen>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:07:35AM -0600, Alex Williamson wrote:
-> +static void vfio_pci_zap_bars(struct vfio_pci_device *vdev)
->  {
-> +	vfio_device_unmap_mapping_range(&vdev->vdev,
-> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
-> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
-> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX));
+From: Joe Perches
+> Sent: 09 August 2021 18:19
+> 
+> On Mon, 2021-08-09 at 12:05 +0200, Robert Richter wrote:
+> > On 08.08.21 13:26:17, Len Baker wrote:
+> >
+> > > > Perhaps this should use scnprintf rather than strscpy
+> > > > Something like:
+> > > > 			n += scnprintf(buf + n, len - n, "%s",
+> > > > 				       p == e->label ? dim->label : OTHER_LABEL);
+> > > >
+> > > In the first version [1] the scnprintf was used but Robert Richter don't
+> > > see any benefit compared with the current implementation.
+> > >
+> > > [1] https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gmx.com/
+> >
+> > Reason is that there is the assumption that p must always point at the
+> > end of the string and its trailing zero byte. I am not opposed using
+> > the string function's return code instead of strlen() to get the
+> > length. But why using formated output if strscpy() can be used?
+> 
+> strscpy and scnprintf have different return values and it's simpler
+> and much more common to use scnprintf for appended strings that are
+> limited to a specific buffer length.
 
-Maybe make this a little more readable by having local variables:
+scnprintf() will be a lot slower, but has a much better return value
+than most of the strxxxcpy() functions.
 
-> +static int vfio_pci_bar_vma_to_pfn(struct vm_area_struct *vma,
-> +				   unsigned long *pfn)
->  {
-> +	struct vfio_pci_device *vdev = vma->vm_private_data;
-> +	struct pci_dev *pdev = vdev->pdev;
-> +	int index;
-> +	u64 pgoff;
->  
-> +	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT);
+The only slight problem is that you can't differentiate overflow
+from a max-length output.
 
-Nit: initialization at declaration time would be nice.
+Trouble is fixing that adds 'yet another set of functions'.
+Clearly we need the yellow with purple stripe ones :-)
+Probably:
+	offset = xxx(buf, len, offset, ......)
+where offset == len on truncation.
 
->  static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
->  {
->  	struct vm_area_struct *vma = vmf->vma;
->  	struct vfio_pci_device *vdev = vma->vm_private_data;
-> +	unsigned long vaddr, pfn;
-> +	vm_fault_t ret = VM_FAULT_SIGBUS;
->  
-> +	if (vfio_pci_bar_vma_to_pfn(vma, &pfn))
-> +		return ret;
->  
-> +	down_read(&vdev->memory_lock);
->  
-> +	if (__vfio_pci_memory_enabled(vdev)) {
-> +		for (vaddr = vma->vm_start;
-> +		     vaddr < vma->vm_end; vaddr += PAGE_SIZE, pfn++) {
-> +			ret = vmf_insert_pfn(vma, vaddr, pfn);
-> +			if (ret != VM_FAULT_NOPAGE) {
-> +				zap_vma_ptes(vma, vma->vm_start,
-> +					     vaddr - vma->vm_start);
-> +				break;
-> +			}
-> +		}
+	David
 
-Unwinding this with a goto for the not enabled case would be a little easier
-to read.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
