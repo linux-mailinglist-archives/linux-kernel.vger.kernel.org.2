@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC6B3E81D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416B93E81C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 20:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236177AbhHJSDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 14:03:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49726 "EHLO mail.kernel.org"
+        id S238752AbhHJSB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 14:01:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233429AbhHJRzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:55:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC7B1606A5;
-        Tue, 10 Aug 2021 17:44:46 +0000 (UTC)
+        id S236861AbhHJRzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:55:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1492D6101E;
+        Tue, 10 Aug 2021 17:44:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628617487;
-        bh=7g0CTkYofwdUZ+1LCRdsKh3gf928e+M4a3SsSRynu/c=;
+        s=korg; t=1628617489;
+        bh=U87jz2yLDcnwlfFLRwK6RNCPjxBmNIr2x/Ym20ZB4+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e7RPNVXL9akk9GUMWyRRIMFU6WnZPFhfzW6nAN6qsVGif1FytYEf9JDmFK6zsrfMI
-         LDEAQ5tUr4RP7xqvhcfLOGyHjLwuHyFBZ0/G1X4XoePxfg9qrKmhFY2vZDGEu5iMXK
-         Oxa+7X2OGri+7xXKLvWg6cVr+Rp22o7okGZBl7lQ=
+        b=hpdBici9wKHC7aK6LzQAvZvq/fRvh5KmuQVR6ngcRgsjKj6jsIADV909tVrAaOd/o
+         EksA77uf0V3RAlw1/hp0pk19PZ9K7qbS4YBaJ7xbMn/KDVb/wd103q0bw179MeO6he
+         gXr6T4VTGP9HV1n26ojLuQksuAYakHwG9YoI59cU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>
-Subject: [PATCH 5.13 080/175] firmware_loader: fix use-after-free in firmware_fallback_sysfs
-Date:   Tue, 10 Aug 2021 19:29:48 +0200
-Message-Id: <20210810173003.576792872@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-next@vger.kernel.org
+Subject: [PATCH 5.13 081/175] drm/amdgpu: fix checking pmops when PM_SLEEP is not enabled
+Date:   Tue, 10 Aug 2021 19:29:49 +0200
+Message-Id: <20210810173003.613302353@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
 References: <20210810173000.928681411@linuxfoundation.org>
@@ -42,122 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 75d95e2e39b27f733f21e6668af1c9893a97de5e upstream.
+commit 5706cb3c910cc8283f344bc37a889a8d523a2c6d upstream.
 
-This use-after-free happens when a fw_priv object has been freed but
-hasn't been removed from the pending list (pending_fw_head). The next
-time fw_load_sysfs_fallback tries to insert into the list, it ends up
-accessing the pending_list member of the previously freed fw_priv.
+'pm_suspend_target_state' is only available when CONFIG_PM_SLEEP
+is set/enabled. OTOH, when both SUSPEND and HIBERNATION are not set,
+PM_SLEEP is not set, so this variable cannot be used.
 
-The root cause here is that all code paths that abort the fw load
-don't delete it from the pending list. For example:
+../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c: In function ‘amdgpu_acpi_is_s0ix_active’:
+../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c:1046:11: error: ‘pm_suspend_target_state’ undeclared (first use in this function); did you mean ‘__KSYM_pm_suspend_target_state’?
+    return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
+           ^~~~~~~~~~~~~~~~~~~~~~~
+           __KSYM_pm_suspend_target_state
 
-        _request_firmware()
-          -> fw_abort_batch_reqs()
-              -> fw_state_aborted()
+Also use shorter IS_ENABLED(CONFIG_foo) notation for checking the
+2 config symbols.
 
-To fix this, delete the fw_priv from the list in __fw_set_state() if
-the new state is DONE or ABORTED. This way, all aborts will remove
-the fw_priv from the list. Accordingly, remove calls to list_del_init
-that were being made before calling fw_state_(aborted|done).
-
-Also, in fw_load_sysfs_fallback, don't add the fw_priv to the pending
-list if it is already aborted. Instead, just jump out and return early.
-
-Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-Cc: stable <stable@vger.kernel.org>
-Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Link: https://lore.kernel.org/r/20210728085107.4141-3-mail@anirudhrb.com
+Fixes: 91e273712ab8dd ("drm/amdgpu: Check pmops for desired suspend state")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-next@vger.kernel.org
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/firmware_loader/fallback.c |   12 ++++++++----
- drivers/base/firmware_loader/firmware.h |   10 +++++++++-
- drivers/base/firmware_loader/main.c     |    2 ++
- 3 files changed, 19 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/base/firmware_loader/fallback.c
-+++ b/drivers/base/firmware_loader/fallback.c
-@@ -89,12 +89,11 @@ static void __fw_load_abort(struct fw_pr
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+@@ -904,7 +904,7 @@ void amdgpu_acpi_fini(struct amdgpu_devi
+  */
+ bool amdgpu_acpi_is_s0ix_supported(struct amdgpu_device *adev)
  {
- 	/*
- 	 * There is a small window in which user can write to 'loading'
--	 * between loading done and disappearance of 'loading'
-+	 * between loading done/aborted and disappearance of 'loading'
- 	 */
--	if (fw_sysfs_done(fw_priv))
-+	if (fw_state_is_aborted(fw_priv) || fw_sysfs_done(fw_priv))
- 		return;
- 
--	list_del_init(&fw_priv->pending_list);
- 	fw_state_aborted(fw_priv);
- }
- 
-@@ -280,7 +279,6 @@ static ssize_t firmware_loading_store(st
- 			 * Same logic as fw_load_abort, only the DONE bit
- 			 * is ignored and we set ABORT only on failure.
- 			 */
--			list_del_init(&fw_priv->pending_list);
- 			if (rc) {
- 				fw_state_aborted(fw_priv);
- 				written = rc;
-@@ -513,6 +511,11 @@ static int fw_load_sysfs_fallback(struct
- 	}
- 
- 	mutex_lock(&fw_lock);
-+	if (fw_state_is_aborted(fw_priv)) {
-+		mutex_unlock(&fw_lock);
-+		retval = -EINTR;
-+		goto out;
-+	}
- 	list_add(&fw_priv->pending_list, &pending_fw_head);
- 	mutex_unlock(&fw_lock);
- 
-@@ -538,6 +541,7 @@ static int fw_load_sysfs_fallback(struct
- 	} else if (fw_priv->is_paged_buf && !fw_priv->data)
- 		retval = -ENOMEM;
- 
-+out:
- 	device_del(f_dev);
- err_put_dev:
- 	put_device(f_dev);
---- a/drivers/base/firmware_loader/firmware.h
-+++ b/drivers/base/firmware_loader/firmware.h
-@@ -117,8 +117,16 @@ static inline void __fw_state_set(struct
- 
- 	WRITE_ONCE(fw_st->status, status);
- 
--	if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED)
-+	if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED) {
-+#ifdef CONFIG_FW_LOADER_USER_HELPER
-+		/*
-+		 * Doing this here ensures that the fw_priv is deleted from
-+		 * the pending list in all abort/done paths.
-+		 */
-+		list_del_init(&fw_priv->pending_list);
-+#endif
- 		complete_all(&fw_st->completion);
-+	}
- }
- 
- static inline void fw_state_aborted(struct fw_priv *fw_priv)
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -783,8 +783,10 @@ static void fw_abort_batch_reqs(struct f
- 		return;
- 
- 	fw_priv = fw->priv;
-+	mutex_lock(&fw_lock);
- 	if (!fw_state_is_aborted(fw_priv))
- 		fw_state_aborted(fw_priv);
-+	mutex_unlock(&fw_lock);
- }
- 
- /* called from request_firmware() and request_firmware_work_func() */
+-#if defined(CONFIG_AMD_PMC) || defined(CONFIG_AMD_PMC_MODULE)
++#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_PM_SLEEP)
+ 	if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
+ 		if (adev->flags & AMD_IS_APU)
+ 			return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
 
 
