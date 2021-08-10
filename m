@@ -2,60 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433883E5C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1333E5C7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 16:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240476AbhHJOCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 10:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39574 "EHLO mail.kernel.org"
+        id S240535AbhHJODt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 10:03:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236686AbhHJOCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:02:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E06D9600CD;
-        Tue, 10 Aug 2021 14:01:59 +0000 (UTC)
+        id S236686AbhHJODr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:03:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F371960E52;
+        Tue, 10 Aug 2021 14:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628604121;
-        bh=2X2FfQTItSOe1HgmV1lGWAz1F4CFriJWOSrHqlK+mdg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XrXAXflx3roisEZL9HRH0ZjFfJReCyJ1mEylsRBb5EJqwOEBQDikCNPcsR5mxsOCR
-         Z47lulbBJj+XDVCuJaI9QrsFNzqzcNO5TexLkzH+f8Hv0fP7OlbbPPId9KxbRIEnRc
-         JTOmfpZ5VscAPld2LX7GWP6w6PvsEX9itLX2nHzPjMhxohrrD/Ttsh+T8V/pGdm08R
-         GItYpvJYF1d73ZnKs2kIhhzdL331y14aLm0U0Qmp1NCSHvczDqMuaB0qGGD+hBZemq
-         hjacoUh8k0IsxNXqoDPpxu6+ect+9hqaRbytC/i2KcA11U9SSDSjbPPYS/8D0MNDyZ
-         4A2Pd7YuAO9ig==
-Date:   Tue, 10 Aug 2021 07:01:59 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <alexander.duyck@gmail.com>,
-        <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <linuxarm@openeuler.org>, <yisen.zhuang@huawei.com>,
-        <salil.mehta@huawei.com>, <thomas.petazzoni@bootlin.com>,
-        <hawk@kernel.org>, <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>
-Subject: Re: [PATCH net-next v2 0/4] add frag page support in page pool
-Message-ID: <20210810070159.367e680e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
-References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
+        s=k20201202; t=1628604205;
+        bh=Td8E4SnrU0EwYxqbg86EgADaAZSpTbgyuIW0jEf6cek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WnPHh11oY7YFlpTdsCAQ+09LermdZbMkyjzjjyr8yoJ09r80n5nE1bMblfcW9dSfw
+         599+S1R1XP5jQQj9v9ad4/S/ML13MNGvIae/qztxO2dU3eWHmsJQ2RN19Bf+EEMSNQ
+         2JSrTCBOnh5l1Za9wWMI09xdHXKEohmeX8ly+5bzfV+XgCAw3qmAqS4qTFDloePGGu
+         u/uUIeb73MiqOobayU/ipgqc7D5bl4m3uoA49xfE9foxqCd8HF1jqIfcN42dVdjO3A
+         hBJPhL5I5FlFtCeZrrsNA8E7jDikFCdBrN5FXpZ9oHXxnfwmfjLjGBXf5BzK2ZSqMX
+         PTkkviwJCIkUA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6FFC8403F2; Tue, 10 Aug 2021 11:03:22 -0300 (-03)
+Date:   Tue, 10 Aug 2021 11:03:22 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf bench: add benchmark for evlist open/close
+ operations
+Message-ID: <YRKHKiHMSaYZWwQv@kernel.org>
+References: <20210809201101.277594-1-rickyman7@gmail.com>
+ <YRGOwx3xlPRxNAXM@kernel.org>
+ <YRGP3DR8f6ZEvn/P@kernel.org>
+ <aa2e93cdaf636b0cd9df05d759661363b2a59d3f.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aa2e93cdaf636b0cd9df05d759661363b2a59d3f.camel@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 10:46:18 +0800 Yunsheng Lin wrote:
-> enable skb's page frag recycling based on page pool in
-> hns3 drvier.
+Em Tue, Aug 10, 2021 at 12:31:55PM +0200, Riccardo Mancini escreveu:
+> Hi Arnaldo,
+> 
+> On Mon, 2021-08-09 at 17:28 -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Mon, Aug 09, 2021 at 05:23:31PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Mon, Aug 09, 2021 at 10:11:02PM +0200, Riccardo Mancini escreveu:
+> > > > +static struct evlist *bench__create_evlist(char *evstr)
+> > > > +{
+> > > > +       struct evlist *evlist;
+> > > > +       struct parse_events_error err;
+> > > > +       int ret;
+> > 
+> > > > +       evlist = evlist__new();
+> > > > +       if (!evlist) {
+> > > > +               pr_err("Not enough memory to create evlist\n");
+> > > > +               return NULL;
+> > > > +       }
+> > 
+> > > > +       bzero(&err, sizeof(err));
+> > 
+> > > man bzero
+> > > 
+> > >        The bzero() function is deprecated (marked as LEGACY in POSIX.1-2001);
+> > > use memset(3) in new programs.  POSIX.1-2008 removes the specification of
+> > > bzero().  The bzero() function first appeared in 4.3BSD.
+> 
+> Oops, I didn't know, but I saw it is being used in some parts in perf, maybe we
+> should get rid of them:
+> $ rg -c bzero
+> builtin-lock.c:1
+> arch/powerpc/util/kvm-stat.c:1
+> builtin-stat.c:1
+> builtin-trace.c:2
+> bench/evlist-open-close.c:1
+> bench/numa.c:5
+> tests/parse-events.c:1
+> tests/backward-ring-buffer.c:1
+> tests/bpf.c:2
+> util/metricgroup.c:1
+> util/parse-events.c:1
 
-Applied, thanks!
+Yeah, patches are welcome, but at least lets not add new ones :-)
+ 
+> > > I'm replacing it with a memset().
+> > 
+> > This one is also equivalent:
+> > 
+> > tools/perf/tests/pmu-events.c:  struct parse_events_error error = { .idx = 0, };
+> > 
+> > https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
+> > 
+> > That text is a bit roundabout, as it says that the members that are not
+> > explicitely initialized will be initialized as variables with static
+> > storage duration, i.e. zeroed.
+> 
+> Would it be the same doing the shorter {0}. It would be a general solution for
+> these init-to-zero cases.
+
+I'd have to do some extra research to remember why that is also not
+optimal, IIRC the '= { .a = 0, };' is the optimal one.
+ 
+> Unrelated to this small issue, I noticed I forgot to check the return of
+> bench__create_evlist. Would you like me to send a v2 fixing both issues or are
+> you able to apply this other small change yourself?
+
+Nah, as this is the HEAD right now in my local branch, I'll apply it
+myself, thanks!
+
+- Arnaldo
+ 
+> diff --git a/tools/perf/bench/evlist-open-close.c b/tools/perf/bench/evlist-open-close.c
+> index 40bce06f5ca7bef3..f0b9c330f34f2984 100644
+> --- a/tools/perf/bench/evlist-open-close.c
+> +++ b/tools/perf/bench/evlist-open-close.c
+> @@ -168,7 +168,11 @@ static int bench_evlist_open_close__run(char *evstr)
+>  
+>         for (i = 0; i < iterations; i++) {
+>                 pr_debug("Started iteration %d\n", i);
+> +
+>                 evlist = bench__create_evlist(evstr);
+> +               if (!evlist)
+> +                       return -ENOMEM;
+> +
+>                 gettimeofday(&start, NULL);
+>                 err = bench__do_evlist_open_close(evlist);
+>                 if (err) {
+> 
+> Thanks,
+> Riccardo
+> 
+> > 
+> > - Arnaldo
+> 
+> 
+
+-- 
+
+- Arnaldo
