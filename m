@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A283E7E95
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B9B3E7E4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 19:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhHJReW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 13:34:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33850 "EHLO mail.kernel.org"
+        id S231229AbhHJRcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 13:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232684AbhHJRdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:33:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5F5F60E09;
-        Tue, 10 Aug 2021 17:33:10 +0000 (UTC)
+        id S230064AbhHJRcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:32:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 944B060E09;
+        Tue, 10 Aug 2021 17:31:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628616791;
-        bh=c5QJr91Cq9hegu54/BXqVv6t7dfayG9sHQMZGabEY/0=;
+        s=korg; t=1628616712;
+        bh=7cN6JxXR7MAzSg5RK7Yhmrr6zef6rU1dCBeoBfaTzBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LNCOF/KBLlub4zupFQ7g4cPw4MtNDWVhWtIVE5eHarHMphtCWvZ/SFieqAbWJDNgA
-         39pdoWm+ckbkvVkNv2l0rJWqBuzMygvSPIqwTXJQTm1sH+ZAG1YNvloZfymAKmimMK
-         A5JzXWmFjtpJweKnhi9gL+qNkd8MfeLPgZMqRnLQ=
+        b=cF/QfKpdFmqad1ft/42uRV8e4nwpdp73dZkOttnugpXCifNvjLTsjDTretUwvtj3y
+         h4GSBLAHtlJa3r30S/LgmEbt89V2pb4ZUrYNfKk/Gvfluh/D2IeIZJOynxkHpGPuJj
+         uHnlEfbQ23sy5Q+UdkfTFJ/u62/8RKuGBJsb3jZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "chihhao.chen" <chihhao.chen@mediatek.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 05/54] ALSA: usb-audio: fix incorrect clock source setting
-Date:   Tue, 10 Aug 2021 19:29:59 +0200
-Message-Id: <20210810172944.361060265@linuxfoundation.org>
+        stable@vger.kernel.org, Dario Binacchi <dariobin@libero.it>,
+        Gabriel Fernandez <gabriel.fernandez@st.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 06/54] clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
+Date:   Tue, 10 Aug 2021 19:30:00 +0200
+Message-Id: <20210810172944.393009103@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
 References: <20210810172944.179901509@linuxfoundation.org>
@@ -39,60 +41,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chihhao.chen <chihhao.chen@mediatek.com>
+From: Dario Binacchi <dariobin@libero.it>
 
-[ Upstream commit 4511781f95da0a3b2bad34f3f5e3967e80cd2d18 ]
+[ Upstream commit 24b5b1978cd5a80db58e2a19db2f9c36fe8d4f7a ]
 
-The following scenario describes an echo test for
-Samsung USBC Headset (AKG) with VID/PID (0x04e8/0xa051).
+Enabling the framebuffer leads to a system hang. Running, as a debug
+hack, the store_pan() function in drivers/video/fbdev/core/fbsysfs.c
+without taking the console_lock, allows to see the crash backtrace on
+the serial line.
 
-We first start a capture stream(USB IN transfer) in 96Khz/24bit/1ch mode.
-In clock find source function, we get value 0x2 for clock selector
-and 0x1 for clock source.
+~ # echo 0 0 > /sys/class/graphics/fb0/pan
 
-Kernel-4.14 behavior
-Since clock source is valid so clock selector was not set again.
-We pass through this function and start a playback stream(USB OUT transfer)
-in 48Khz/32bit/2ch mode. This time we get value 0x1 for clock selector
-and 0x1 for clock source. Finally clock id with this setting is 0x9.
+[    9.719414] Unhandled exception: IPSR = 00000005 LR = fffffff1
+[    9.726937] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+[    9.733008] Hardware name: STM32 (Device Tree Support)
+[    9.738296] PC is at clk_gate_is_enabled+0x0/0x28
+[    9.743426] LR is at stm32f4_pll_div_set_rate+0xf/0x38
+[    9.748857] pc : [<0011e4be>]    lr : [<0011f9e3>]    psr: 0100000b
+[    9.755373] sp : 00bc7be0  ip : 00000000  fp : 001f3ac4
+[    9.760812] r10: 002610d0  r9 : 01efe920  r8 : 00540560
+[    9.766269] r7 : 02e7ddb0  r6 : 0173eed8  r5 : 00000000  r4 : 004027c0
+[    9.773081] r3 : 0011e4bf  r2 : 02e7ddb0  r1 : 0173eed8  r0 : 1d3267b8
+[    9.779911] xPSR: 0100000b
+[    9.782719] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+[    9.788791] Hardware name: STM32 (Device Tree Support)
+[    9.794120] [<0000afa1>] (unwind_backtrace) from [<0000a33f>] (show_stack+0xb/0xc)
+[    9.802421] [<0000a33f>] (show_stack) from [<0000a8df>] (__invalid_entry+0x4b/0x4c)
 
-Kernel-5.10 behavior
-Clock selector was always set one more time even it is valid.
-When we start a playback stream, we will get 0x2 for clock selector
-and 0x1 for clock source. In this case clock id becomes 0xA.
-This is an incorrect clock source setting and results in severe noises.
-We see wrong data rate in USB IN transfer.
-(From 288 bytes/ms becomes 144 bytes/ms) It should keep in 288 bytes/ms.
+The `pll_num' field in the post_div_data configuration contained a wrong
+value which also referenced an uninitialized hardware clock when
+clk_register_pll_div() was called.
 
-This earphone works fine on older kernel version load because
-this is a newly-added behavior.
-
-Fixes: d2e8f641257d ("ALSA: usb-audio: Explicitly set up the clock selector")
-Signed-off-by: chihhao.chen <chihhao.chen@mediatek.com>
-Link: https://lore.kernel.org/r/1627100621-19225-1-git-send-email-chihhao.chen@mediatek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 517633ef630e ("clk: stm32f4: Add post divisor for I2S & SAI PLLs")
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+Reviewed-by: Gabriel Fernandez <gabriel.fernandez@st.com>
+Link: https://lore.kernel.org/r/20210725160725.10788-1-dariobin@libero.it
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/clock.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/clk/clk-stm32f4.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 863ac42076e5..d1455fb2c6fc 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -296,6 +296,12 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
- 					      selector->baCSourceID[ret - 1],
- 					      visited, validate);
- 		if (ret > 0) {
-+			/*
-+			 * For Samsung USBC Headset (AKG), setting clock selector again
-+			 * will result in incorrect default clock setting problems
-+			 */
-+			if (chip->usb_id == USB_ID(0x04e8, 0xa051))
-+				return ret;
- 			err = uac_clock_selector_set_val(chip, entity_id, cur);
- 			if (err < 0)
- 				return err;
+diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+index 294850bdc195..61de486dec41 100644
+--- a/drivers/clk/clk-stm32f4.c
++++ b/drivers/clk/clk-stm32f4.c
+@@ -454,7 +454,7 @@ struct stm32f4_pll {
+ 
+ struct stm32f4_pll_post_div_data {
+ 	int idx;
+-	u8 pll_num;
++	int pll_idx;
+ 	const char *name;
+ 	const char *parent;
+ 	u8 flag;
+@@ -485,13 +485,13 @@ static const struct clk_div_table post_divr_table[] = {
+ 
+ #define MAX_POST_DIV 3
+ static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
+-	{ CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
++	{ CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
+ 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
+ 
+-	{ CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
++	{ CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
+ 		CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
+ 
+-	{ NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
++	{ NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
+ 		STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
+ };
+ 
+@@ -1499,7 +1499,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
+ 				post_div->width,
+ 				post_div->flag_div,
+ 				post_div->div_table,
+-				clks[post_div->pll_num],
++				clks[post_div->pll_idx],
+ 				&stm32f4_clk_lock);
+ 
+ 		if (post_div->idx != NO_IDX)
 -- 
 2.30.2
 
