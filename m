@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8838F3E5726
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6FA3E5721
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239208AbhHJJhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:37:47 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3621 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238140AbhHJJhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:37:46 -0400
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GkSX12Jrkz6C9JD;
-        Tue, 10 Aug 2021 17:36:49 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 10 Aug 2021 11:37:22 +0200
-Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 10 Aug
- 2021 10:37:21 +0100
-Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
- from remote numa node
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <YPklDMng1hL3bQ+v@T590>
- <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com> <YPlGOOMSdm6Bcyy/@T590>
- <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com> <YPmUoBk9u+tU2rbS@T590>
- <0adbe03b-ce26-e4d3-3425-d967bc436ef5@arm.com> <YPqYDY9/VAhfHNfU@T590>
- <6ceab844-465f-3bf3-1809-5df1f1dbbc5c@huawei.com>
- <CAFj5m9J+9vO=CK3uPP+va5EoWffZj9ruSRe2fDDLXn+AE971CQ@mail.gmail.com>
- <ead87bf2-ddfa-eb67-db44-9619c6cdb714@huawei.com> <YQF1AKS6Y14dLU/A@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <dfdd16e8-278f-3bc9-da97-a91264aec909@huawei.com>
-Date:   Tue, 10 Aug 2021 10:36:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S239127AbhHJJhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:37:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:52142 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229447AbhHJJhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:37:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0DD11063;
+        Tue, 10 Aug 2021 02:36:59 -0700 (PDT)
+Received: from [10.57.9.181] (unknown [10.57.9.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51F413F718;
+        Tue, 10 Aug 2021 02:36:58 -0700 (PDT)
+Subject: Re: [PATCH 1/8] cpufreq: Auto-register with energy model if asked
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <b48e2c944db072c220a1b0ae0c3d94eb1c4da7ab.1628579170.git.viresh.kumar@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <f96f852f-0d73-7ad2-d7a9-eab6a5b7f454@arm.com>
+Date:   Tue, 10 Aug 2021 10:36:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <YQF1AKS6Y14dLU/A@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <b48e2c944db072c220a1b0ae0c3d94eb1c4da7ab.1628579170.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.4]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2021 16:17, Ming Lei wrote:
->>>> Have you tried turning off the IOMMU to ensure that this is really just
->>>> an IOMMU problem?
->>>>
->>>> You can try setting CONFIG_ARM_SMMU_V3=n in the defconfig or passing
->>>> cmdline param iommu.passthrough=1 to bypass the the SMMU (equivalent to
->>>> disabling for kernel drivers).
->>> Bypassing SMMU via iommu.passthrough=1 basically doesn't make a difference
->>> on this issue.
->> A ~90% throughput drop still seems to me to be too high to be a software
->> issue. More so since I don't see similar on my system. And that throughput
->> drop does not lead to a total CPU usage drop, from the fio log.
->>
->> Do you know if anyone has run memory benchmark tests on this board to find
->> out NUMA effect? I think lmbench or stream could be used for this.
-> https://lore.kernel.org/lkml/YOhbc5C47IzC893B@T590/
 
-Hi Ming,
 
-Out of curiosity, did you investigate this topic any further?
+On 8/10/21 8:36 AM, Viresh Kumar wrote:
+> Many cpufreq drivers register with the energy model for each policy and
+> do exactly the same thing. Follow the footsteps of thermal-cooling, to
+> get it done from the cpufreq core itself.
+> 
+> Provide a cpufreq driver flag so drivers can ask the cpufreq core to
+> register with the EM core on their behalf. This allows us to get rid of
+> duplicated code in the drivers.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>   drivers/cpufreq/cpufreq.c | 9 +++++++++
+>   include/linux/cpufreq.h   | 6 ++++++
+>   2 files changed, 15 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 06c526d66dd3..a060dc2aa2f2 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -23,6 +23,7 @@
+>   #include <linux/kernel_stat.h>
+>   #include <linux/module.h>
+>   #include <linux/mutex.h>
+> +#include <linux/pm_opp.h>
+>   #include <linux/pm_qos.h>
+>   #include <linux/slab.h>
+>   #include <linux/suspend.h>
+> @@ -1511,6 +1512,11 @@ static int cpufreq_online(unsigned int cpu)
+>   	if (cpufreq_thermal_control_enabled(cpufreq_driver))
+>   		policy->cdev = of_cpufreq_cooling_register(policy);
 
-And you also asked about my results earlier:
+The of_cpufreq_cooling_register() should be called after the EM
+is present for the CPU device. When you check that function,
+you will see that we call
+em_cpu_get(policy->cpu)
+to get the EM pointer. Otherwise IPA might fail.
 
-On 22/07/2021 16:54, Ming Lei wrote:
- >> [   52.035895] nvme 0000:81:00.0: Adding to iommu group 5
- >> [   52.047732] nvme nvme0: pci function 0000:81:00.0
- >> [   52.067216] nvme nvme0: 22/0/2 default/read/poll queues
- >> [   52.087318]  nvme0n1: p1
- >>
- >> So I get these results:
- >> cpu0 335K
- >> cpu32 346K
- >> cpu64 300K
- >> cpu96 300K
- >>
- >> So still not massive changes.
- > In your last email, the results are the following with irq mode io_uring:
- >
- >   cpu0  497K
- >   cpu4  307K
- >   cpu32 566K
- >   cpu64 488K
- >   cpu96 508K
- >
- > So looks you get much worse result with real io_polling?
- >
+>   
+> +	if (cpufreq_driver->flags & CPUFREQ_REGISTER_WITH_EM) {
+> +		dev_pm_opp_of_register_em(get_cpu_device(policy->cpu),
+> +					  policy->related_cpus);
+> +	}
+> +
 
-Would the expectation be that at least I get the same performance with 
-io_polling here? Anything else to try which you can suggest to 
-investigate this lower performance?
+So please move these new code above the thermal registration few lines
+above.
 
-Thanks,
-John
+>   	pr_debug("initialization complete\n");
+>   
+>   	return 0;
+> @@ -1602,6 +1608,9 @@ static int cpufreq_offline(unsigned int cpu)
+>   		goto unlock;
+>   	}
+>   
+> +	if (cpufreq_driver->flags & CPUFREQ_REGISTER_WITH_EM)
+> +		dev_pm_opp_of_unregister_em(get_cpu_device(cpu));
+> +
+
+Here is similar situation. Move the EM unregister after the thermal is
+done. For consistency it's OK, the real EM struct won't be freed
+for CPUs (due to scheduler reasons), though.
+
+>   	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
+>   		cpufreq_cooling_unregister(policy->cdev);
+>   		policy->cdev = NULL;
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index 9fd719475fcd..f11723cd4cca 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -424,6 +424,12 @@ struct cpufreq_driver {
+>    */
+>   #define CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING	BIT(6)
+>   
+> +/*
+> + * Set by drivers that want the core to automatically register the CPU device
+> + * with Energy Model.
+> + */
+> +#define CPUFREQ_REGISTER_WITH_EM		BIT(7)
+> +
+>   int cpufreq_register_driver(struct cpufreq_driver *driver_data);
+>   int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
+>   
+> 
