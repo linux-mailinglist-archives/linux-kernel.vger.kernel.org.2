@@ -2,159 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3C43E7D83
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08093E7D8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 18:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235661AbhHJQbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 12:31:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52989 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229997AbhHJQa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:30:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="195206802"
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="195206802"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 09:30:36 -0700
-X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
-   d="scan'208";a="638856731"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 09:30:33 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id EF95B20345;
-        Tue, 10 Aug 2021 19:30:30 +0300 (EEST)
-Date:   Tue, 10 Aug 2021 19:30:30 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-hardening@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2 1/2] media: staging/intel-ipu3: css: Fix wrong size
- comparison
-Message-ID: <20210810163030.GJ3@paasikivi.fi.intel.com>
-References: <cover.1627646101.git.gustavoars@kernel.org>
- <184d96f95d6261b1a91704eb68adbd0a2e1c2cc2.1627646101.git.gustavoars@kernel.org>
- <20210802060546.GL3@paasikivi.fi.intel.com>
- <3c9ac43d-09ca-e5d5-83a8-7b6d23928763@embeddedor.com>
- <20210810151852.GI3@paasikivi.fi.intel.com>
- <a5e19508-4d7a-ba63-7ac0-ed2e56bc3bc1@embeddedor.com>
+        id S235878AbhHJQdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 12:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhHJQdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:33:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F618C0613C1;
+        Tue, 10 Aug 2021 09:33:09 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 16:33:06 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628613187;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P5j31cs9i6lVMQeFWSZeqlFmezsgc9fp7i45IBW/pqc=;
+        b=Nt6VMD0WyggXyH/o/qgjzRtoAkUJ4siBogBtTtahfIl+se28fA11x8yFOh02Q3+DLT73lG
+        CCHeRHzjnwz2aq8s11oSf4aZXTkyMXAUsQSdg01YugiRe6vt87MvM15ySBIijdWli6pIAU
+        eJJS7FtT33UvGOPlFS/vU/Kb5CtZ8sRSOpSYRwXBKgRlPTkvHQV7oSJGo73mFyFg75azxo
+        q5n/naIV8cDYZr+6zCIUi3h3P84w2H4YKzkWjZBgwsGLT9tOJTm3O6WV3J6woPrJGqPZtm
+        apmfOwsOfIuOnaQgGRX9N/+mCltN1B41KhJrLtRwZpQBlPcCForFzSuHdmOJ7A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628613187;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P5j31cs9i6lVMQeFWSZeqlFmezsgc9fp7i45IBW/pqc=;
+        b=vg/zCRK+TbDedFjlyhWEF/4ggk3v1wFVad1PRgMbcJfnTD+WL7NHvqwyiRDlFEnKfoGvEd
+        8HHXorXMw8YaAMDg==
+From:   "tip-bot2 for Dongli Zhang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: smp/core] cpu/hotplug: Add debug printks for hotplug callback failures
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Qais Yousef <qais.yousef@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210409055316.1709-1-dongli.zhang@oracle.com>
+References: <20210409055316.1709-1-dongli.zhang@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5e19508-4d7a-ba63-7ac0-ed2e56bc3bc1@embeddedor.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <162861318629.395.16160423295474407641.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:26:14AM -0500, Gustavo A. R. Silva wrote:
-> Hi Sakari,
-> 
-> Please, see my comments below...
-> 
-> On 8/10/21 10:18, Sakari Ailus wrote:
-> > Hi Gustavo,
-> > 
-> > Apologies for the delay.
-> > 
-> > On Mon, Aug 02, 2021 at 08:46:20AM -0500, Gustavo A. R. Silva wrote:
-> >> Hi Sakari,
-> >>
-> >> On 8/2/21 01:05, Sakari Ailus wrote:
-> >>> Hi Gustavo,
-> >>>
-> >>> I missed you already had sent v2...
-> >>>
-> >>> On Fri, Jul 30, 2021 at 07:08:13AM -0500, Gustavo A. R. Silva wrote:
-> >>>> There is a wrong comparison of the total size of the loaded firmware
-> >>>> css->fw->size with the size of a pointer to struct imgu_fw_header.
-> >>>>
-> >>>> Fix this by using the right operand 'struct imgu_fw_header' for
-> >>>> sizeof, instead of 'struct imgu_fw_header *' and turn binary_header
-> >>>> into a flexible-array member. Also, adjust the relational operator
-> >>>> to be '<=' instead of '<', as it seems that the intention of the
-> >>>> comparison is to determine if the loaded firmware contains any
-> >>>> 'struct imgu_fw_info' items in the binary_header[] array than merely
-> >>>> the file_header (struct imgu_fw_bi_file_h).
-> >>>>
-> >>>> The replacement of the one-element array with a flexible-array member
-> >>>> also help with the ongoing efforts to globally enable -Warray-bounds
-> >>>> and get us closer to being able to tighten the FORTIFY_SOURCE routines
-> >>>> on memcpy().
-> >>>>
-> >>>> Link: https://github.com/KSPP/linux/issues/79
-> >>>> Link: https://github.com/KSPP/linux/issues/109
-> >>>> Fixes: 09d290f0ba21 ("media: staging/intel-ipu3: css: Add support for firmware management")
-> >>>> Cc: stable@vger.kernel.org
-> >>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> >>>> ---
-> >>>>
-> >>>> It'd be just great if someone that knows this code better can confirm
-> >>>> these changes are correct. In particular the adjustment of the
-> >>>> relational operator. Thanks!
-> >>>>
-> >>>> Changes in v2:
-> >>>>  - Use flexible array and adjust relational operator, accordingly.
-> >>>
-> >>> The operator was just correct. The check is just there to see the firmware
-> >>> is at least as large as the struct as which it is being accessed.
-> >>
-> >> I'm a bit confused, so based on your reply to v1 of this series, this patch
-> >> is now correct, right?
-> >>
-> >> The operator in v1 _was_ correct as long as the one-element array wasn't
-> >> transformed into a flexible array, right?
-> >>
-> >> Notice that generally speaking flexible-array members don't occupy space in the
-> >> containing structure:
-> >>
-> >> $ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
-> >> struct imgu_fw_header {
-> >> 	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
-> >> 	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-> >> 	struct imgu_fw_info        binary_header[] __attribute__((__aligned__(8))); /*    72     0 */
-> >>
-> >> 	/* size: 72, cachelines: 2, members: 2 */
-> >> 	/* forced alignments: 1 */
-> >> 	/* last cacheline: 8 bytes */
-> >> } __attribute__((__aligned__(8)));
-> >>
-> >> $ pahole -C imgu_fw_header drivers/staging/media/ipu3/ipu3-css-fw.o
-> >> struct imgu_fw_header {
-> >> 	struct imgu_fw_bi_file_h   file_header;          /*     0    72 */
-> >> 	/* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
-> >> 	struct imgu_fw_info        binary_header[1] __attribute__((__aligned__(8))); /*    72  1200 */
-> >>
-> >> 	/* size: 1272, cachelines: 20, members: 2 */
-> >> 	/* forced alignments: 1 */
-> >> 	/* last cacheline: 56 bytes */
-> >> } __attribute__((__aligned__(8)));
-> >>
-> >> So, now that the flexible array transformation is included in the same patch as the
-> >> bugfix, the operator is changed from '<' to '<='
-> > 
-> > '<' is correct since you only need as much data as the struct you're about
-> > to access is large, not a byte more than that. As Dan noted.
-> > 
-> > I think you could add a check for binary_nr is at least one.
-> 
-> If we need to check that binary_nr is at least one, then this would be the right
-> change:
-> 
->         css->fwp = (struct imgu_fw_header *)css->fw->data;
-> -       if (css->fw->size < sizeof(struct imgu_fw_header *) ||
-> +       if (css->fw->size < struct_size(css->fwp, binary_header, 1) ||
->             css->fwp->file_header.h_size != sizeof(struct imgu_fw_bi_file_h))
->                 goto bad_fw;
+The following commit has been merged into the smp/core branch of tip:
 
-There's already a check the space required for the array of binary_nr is
-there. But not the number itself.
+Commit-ID:     ebca71a8c96f0af2ba482489ecc64d88979cd825
+Gitweb:        https://git.kernel.org/tip/ebca71a8c96f0af2ba482489ecc64d88979cd825
+Author:        Dongli Zhang <dongli.zhang@oracle.com>
+AuthorDate:    Thu, 08 Apr 2021 22:53:16 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 10 Aug 2021 18:31:32 +02:00
 
--- 
-Sakari Ailus
+cpu/hotplug: Add debug printks for hotplug callback failures
+
+CPU hotplug callbacks can fail and cause a rollback to the previous
+state. These failures are silent and therefore hard to debug.
+
+Add pr_debug() to the up and down paths which provide information about the
+error code, the CPU and the failed state. The debug printks can be enabled
+via kernel command line or sysfs.
+
+[ tglx: Adopt to current mainline, massage printk and changelog ]
+
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+Link: https://lore.kernel.org/r/20210409055316.1709-1-dongli.zhang@oracle.com
+
+---
+ kernel/cpu.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 7ef28e1..192e43a 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -692,6 +692,10 @@ static int cpuhp_up_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
+ 
+ 	ret = cpuhp_invoke_callback_range(true, cpu, st, target);
+ 	if (ret) {
++		pr_debug("CPU UP failed (%d) CPU %u state %s (%d)\n",
++			 ret, cpu, cpuhp_get_step(st->state)->name,
++			 st->state);
++
+ 		cpuhp_reset_state(st, prev_state);
+ 		if (can_rollback_cpu(st))
+ 			WARN_ON(cpuhp_invoke_callback_range(false, cpu, st,
+@@ -1091,6 +1095,9 @@ static int cpuhp_down_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
+ 
+ 	ret = cpuhp_invoke_callback_range(false, cpu, st, target);
+ 	if (ret) {
++		pr_debug("CPU DOWN failed (%d) CPU %u state %s (%d)\n",
++			 ret, cpu, cpuhp_get_step(st->state)->name,
++			 st->state);
+ 
+ 		cpuhp_reset_state(st, prev_state);
+ 
