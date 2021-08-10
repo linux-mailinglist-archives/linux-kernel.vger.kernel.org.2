@@ -2,79 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194123E53D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B85E3E53D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 08:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236959AbhHJGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 02:47:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
+        id S237952AbhHJGrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 02:47:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234331AbhHJGra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:47:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D3461058;
-        Tue, 10 Aug 2021 06:47:08 +0000 (UTC)
+        id S235165AbhHJGrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:47:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2660F6105A;
+        Tue, 10 Aug 2021 06:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628578028;
-        bh=EwApVal98GJfGLrb0/RTF40PF/lUG0GVeGxLHsgKH7I=;
+        s=k20201202; t=1628578039;
+        bh=6ot/s562xQeM2tG8qfWeEJTm5lPjP93NPcOCwW/B0fo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CVN757FRS1gi/Y3lvE4P4YibmF7yaIUlKzDvclQOpm16d8lBEmubBUx/RUUJELrpd
-         c+4sBjWHP9L4zatRbHZ43X2HalE8LN7679dg7k2h+yvqB/ekIlG2uQmHk9YAe3X1eS
-         Jhc0/do/eA5qmKQTw98eSsVkTYCjC+Fgl2QxptfVikZHvOcmYHW7xexhTL9kl02OBG
-         siGyHbhKAYYp67V0JHdxZRTGE/dXngEldBcHRGLuCSe5CVNXhKRfEefpxN4O7hPJtX
-         2oucPH6NRTnh3QTIXgBVdWsi8jVk/B6sZ4tWmNWszdSmOz0Wga+k2HqfMtmCKDcoJ7
-         D9ZXpWC15mJcg==
-Date:   Mon, 9 Aug 2021 23:47:08 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, oleksandr@natalenko.name
-Subject: Re: [PATCH v27 00/10] NTFS read-write driver GPL implementation by
- Paragon Software
-Message-ID: <20210810064708.GI3601405@magnolia>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210810054637.aap4zuiiparfl2gq@kari-VirtualBox>
+        b=h6YzNvKCZ2R5HU5d8HFsbkF3axb7z+L6gVvBQfAh/fNXGfgPSxdxwo1H+xsfiEEIU
+         H1p1LMda1NLDyn/X8nlggqP2EVO9OKE5fKMyYvkWiGeBveK0wfmTyOB4SUOdA5IdJc
+         7nAFnmzApNL3ln07aQIFI658lUjjb1T876DVQrBPCW6PC8qXLglBvDlb/NghT+1tT8
+         30jKUnUrlMxCsxS6wuWordEH0ouKw+jFCOhq4nubXxacrPDzfBfysH2ZRcBlGMLI7l
+         xdATOPzHFxY6SCnVuDL9fiJimH1Fqk+KzlUyyh3AKKYPf3eEvFPPThzvWROFtZSuAm
+         LjJ0mw/UxpS5w==
+Date:   Tue, 10 Aug 2021 09:47:16 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jonathan Toppins <jtoppins@redhat.com>
+Cc:     netdev@vger.kernel.org, joe@perches.com,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/2] bonding: combine netlink and console
+ error messages
+Message-ID: <YRIg9IRmBpaZghKf@unreal>
+References: <a36c7639a13963883f49c272ed7993c9625a712a.1628306392.git.jtoppins@redhat.com>
+ <f39027d1a23fb744212bd502d426a44512be4897.1628576943.git.jtoppins@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810054637.aap4zuiiparfl2gq@kari-VirtualBox>
+In-Reply-To: <f39027d1a23fb744212bd502d426a44512be4897.1628576943.git.jtoppins@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 08:46:37AM +0300, Kari Argillander wrote:
-> On Thu, Jul 29, 2021 at 04:49:33PM +0300, Konstantin Komarov wrote:
-> > This patch adds NTFS Read-Write driver to fs/ntfs3.
-> > 
-> > Having decades of expertise in commercial file systems development and huge
-> > test coverage, we at Paragon Software GmbH want to make our contribution to
-> > the Open Source Community by providing implementation of NTFS Read-Write
-> > driver for the Linux Kernel.
-> > 
-> > This is fully functional NTFS Read-Write driver. Current version works with
-> > NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
-> > 
-> > We plan to support this version after the codebase once merged, and add new
-> > features and fix bugs. For example, full journaling support over JBD will be
-> > added in later updates.
+On Tue, Aug 10, 2021 at 02:40:31AM -0400, Jonathan Toppins wrote:
+> There seems to be no reason to have different error messages between
+> netlink and printk. It also cleans up the function slightly.
 > 
-> I'm not expert but I have try to review this series best I can and have
-> not found any major mistakes which prevents merging. Yeah there are
-> couple bugs but because this is not going to replace NTFS driver just
-> yet then IMO it is best that merge will happend sooner so development
-> fot others get easier. I will also try to review future patches (from
-> Paragon and others), test patches and make contribution at my own for this
-> driver. So please use
+> v2:
+>  - changed the printks to reduce object code slightly
+>  - emit a single error message based on if netlink or sysfs is
+>    attempting to enslave
 > 
-> Reviewed by: Kari Argillander <kari.argillander@gmail.com>
+> Signed-off-by: Jonathan Toppins <jtoppins@redhat.com>
+> ---
+>  drivers/net/bonding/bond_main.c | 49 +++++++++++++++++++--------------
+>  1 file changed, 29 insertions(+), 20 deletions(-)
 
-Nit: there's supposed to be a dash between 'Reviewed' and 'by'.
+Can you please resubmit whole series and not as a reply and put your changelog under ---?
+We don't want to see chengelog in final commit message.
 
-That said, thanks for putting your name out there! :)
-
---D
+Thanks
