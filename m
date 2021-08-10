@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43053E56A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66813E56AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238891AbhHJJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47566 "EHLO
+        id S238929AbhHJJWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237811AbhHJJUA (ORCPT
+        with ESMTP id S238887AbhHJJVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:20:00 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B116C0613D3;
-        Tue, 10 Aug 2021 02:19:38 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso1466353wmj.0;
-        Tue, 10 Aug 2021 02:19:38 -0700 (PDT)
+        Tue, 10 Aug 2021 05:21:01 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4BC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:20:40 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d1so20163791pll.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mdkQluT1YKU8TSn2hpDxZUIUuX8zWsmkIMNtHoK0wRc=;
-        b=qVM7w2WOseqIEw+mvNsvmGJXAzYFNM8Mie/v2wzH0JqGmrG5fOKwNtYQ8W776vTCdU
-         aI+EPC0cVyNFCqV9Pxwtyaq+TOWm+rDGAuXaDNaXxnkonVhbOPW4yjeJSNRHr6czJ4uh
-         UmsblVZLlNTN93SIn+UcgPT8+NqQFtC4/mFuw7uYCpEdrVpp2U+fLbEKG8D1fdIkBsmR
-         mv5iGBAj/+syo8LT+/Krol9wJ0y7KWaBCfVtZM789SpGQoz8EZTtVPW6pg0wD3tflb+u
-         68u10QojnFTJ3GrdNQkxfeCmR3DJruqsr/Oy/FiP83cgikNtyE0EFAjpQAQiFYyqsP4m
-         qcsQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=brqLZCbNQX023f2oFBB+a/r7LFx6HehzzWG22oXEkSg=;
+        b=JKvzgIiTzcBqwg8ACnj0GipSsgk9xixnD5PD7m2fJsCSnqXajAUG6TDP+uk802rqk4
+         +EDD+8PnheygcYpqQpUoZLMzwqMr6yrFIfmFTvMucW7yiDKmlsLOQU4No9g4CtfndePZ
+         NC5exEpwNbwhTJtB5gzYqDdnsin1f7qESSCe8hvipdRabxjGIvNTDt2d8gxrFhObVXWv
+         j3UhnjFYaYYkEFX5xaDHnSoWV3tHBMQWNmGD6ko2/14NiFjHE+biawe8ZdFJsyv7uFsV
+         PGyGXm7SWsBp/UIK92EpieqKRdMj4i22hOjWn1Yc+L89sYocyhMsCOD8ikpapnJspgdc
+         EVwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mdkQluT1YKU8TSn2hpDxZUIUuX8zWsmkIMNtHoK0wRc=;
-        b=Tnmx1g+5+MM5GXuyeQBBqCnyEVYgOr6jExbEBRwbnVNnuXaN5i3bVdndGBwYIGy2eJ
-         47db55mmTtL4VAV0cp4SGCQylngB8/yfp077sPCwKLbOEcTWeoX49FejiGnkGj0rsnpw
-         SyX0jA49MtMdwHhQ6ZMdrqmLOSeEw21RZHsKX7DKhxq/sNm8WXCv27Ier/Hpwgx1W2MI
-         Zix/MC3QIVrpsF2m7X04lZQ39uuB6kNBbSkkwpoKtwauigJ3GpdBrpo/ROekD81pMOEV
-         tMrnPyRkZdBTVjzw9gjOwmnqdSXyA3DXh34iHGO95J9A1o2mvuRZH87oQI2XFSk+jEiY
-         rUcQ==
-X-Gm-Message-State: AOAM533tDEm7FqZ/9z+Yi0ugfaUzIKzM8O21oOqhGcGxuHY8T/ca5Ehi
-        BI34LN07g90naDapRiUU+t8=
-X-Google-Smtp-Source: ABdhPJy/+b23lIB1oxOeE0LvJTOKe0visUMdYUMrEVAA4hRnBpkcBWogNS+intxWX6QIQc1UiCUiKw==
-X-Received: by 2002:a05:600c:213:: with SMTP id 19mr3636088wmi.2.1628587177196;
-        Tue, 10 Aug 2021 02:19:37 -0700 (PDT)
-Received: from [10.0.0.18] ([37.165.16.90])
-        by smtp.gmail.com with ESMTPSA id v5sm23513837wrd.74.2021.08.10.02.19.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 02:19:36 -0700 (PDT)
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
- _copy_to_iter
-To:     Shoaib Rao <rao.shoaib@oracle.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        jamorris@linux.microsoft.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Yonghong Song <yhs@fb.com>
-References: <0000000000006bd0b305c914c3dc@google.com>
- <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
- <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
- <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
- <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
- <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com>
- <CANn89iKcSvJ5U37q1Jz2gVYxVS=_ydNmDuTRZuAW=YvB+jGChg@mail.gmail.com>
- <CANn89iKqv4Ca8A1DmQsjvOqKvgay3-5j9gKPJKwRkwtUkmETYg@mail.gmail.com>
- <ca6a188a-6ce4-782b-9700-9ae4ac03f83e@oracle.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <66417ce5-a0f0-9012-6c2e-7c8f1b161cff@gmail.com>
-Date:   Tue, 10 Aug 2021 11:19:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=brqLZCbNQX023f2oFBB+a/r7LFx6HehzzWG22oXEkSg=;
+        b=r8+hi3AqCtgkkIu16PMM/OHwHOODAQdq450modEeXeT5p1GWTRR+2a8Uy8TPcXq/8R
+         7AhvFaZ2Kt5W0yQmNfnOYjZKoqebjlyJWYWEUukjz/LoTLcQ78TklX0F/VoMeDEZ+IdC
+         J9z10U97/bXguCITXyyrD2DgDHVFm2QePTetlhc/quOSJ+G9lkH760X1K1Rv1vEe1DWq
+         byUw8sFpPuGvJmmZPG2IX0y2zgbwzP+HdjBH0z286diB3cnZ81kd7fKsAI29Jlf50wVO
+         Zs771N7vL1krJK847ltckzAZzv3Iefe9zKz3NhrC+dRVphVlXLRIKlsompYwWiF2hPWZ
+         ESow==
+X-Gm-Message-State: AOAM5324eTM1s8s0AteEQc6NoQtteh0XRwA9DCAIVOLunWUwFr78L+B5
+        hJ8Re8079MxTzvjtWmdkjOY=
+X-Google-Smtp-Source: ABdhPJzBEbQ2CkfAa8T5PAszGMi9LCPsI0AgIBwtUr+ZQOidrir+eFUOvG1NyFP1en0RzTehqRJkUw==
+X-Received: by 2002:a63:6705:: with SMTP id b5mr56600pgc.69.1628587239810;
+        Tue, 10 Aug 2021 02:20:39 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.40])
+        by smtp.gmail.com with ESMTPSA id k6sm8052139pjj.52.2021.08.10.02.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 02:20:39 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        aric.cyr@amd.com, Jun.Lei@amd.com, qingqing.zhuo@amd.com,
+        Rodrigo.Siqueira@amd.com, alvin.lee2@amd.com,
+        vladimir.stempen@amd.com, isabel.zhang@amd.com, sung.lee@amd.com,
+        paul.hsieh@amd.com, wyatt.wood@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] drm/display: fix possible null-pointer dereference in dcn10_set_clock()
+Date:   Tue, 10 Aug 2021 02:20:04 -0700
+Message-Id: <20210810092004.291429-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <ca6a188a-6ce4-782b-9700-9ae4ac03f83e@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The variable dc->clk_mgr is checked in:
+  if (dc->clk_mgr && dc->clk_mgr->funcs->get_clock)
 
+This indicates dc->clk_mgr can be NULL.
+However, it is dereferenced in:
+  if (!dc->clk_mgr->funcs->get_clock)
 
-On 8/9/21 10:31 PM, Shoaib Rao wrote:
-> 
-> On 8/9/21 1:09 PM, Eric Dumazet wrote:
+To fix this possible null-pointer dereference, check dc->clk_mgr before
+dereferencing it.
 
->> I am guessing that even your test would trigger the warning,
->> if you make sure to include CONFIG_DEBUG_ATOMIC_SLEEP=y in your kernel build.
-> 
-> Eric,
-> 
-> Thanks for the pointer, have you ever over looked at something when coding?
-> 
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I _think_ I was trying to help, not shaming you in any way.
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index c545eddabdcc..3a7c7c7efa68 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -3635,7 +3635,7 @@ enum dc_status dcn10_set_clock(struct dc *dc,
+ 				dc->clk_mgr->funcs->get_clock(dc->clk_mgr,
+ 						context, clock_type, &clock_cfg);
+ 
+-	if (!dc->clk_mgr->funcs->get_clock)
++	if (dc->clk_mgr && !dc->clk_mgr->funcs->get_clock)
+ 		return DC_FAIL_UNSUPPORTED_1;
+ 
+ 	if (clk_khz > clock_cfg.max_clock_khz)
+-- 
+2.25.1
 
-My question about spinlock/mutex was not sarcastic, you authored
-6 official linux patches, there is no evidence for linux kernel expertise.
