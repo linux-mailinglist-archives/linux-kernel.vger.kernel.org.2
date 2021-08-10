@@ -2,137 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520F03E5BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D22E3E5BC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 15:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241455AbhHJNdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 09:33:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235623AbhHJNdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:33:41 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDFE960FDA;
-        Tue, 10 Aug 2021 13:33:19 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        id S241466AbhHJNdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 09:33:55 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:37724 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231905AbhHJNdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:33:54 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:54438 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mDRsb-0044Ei-UE; Tue, 10 Aug 2021 14:33:18 +0100
+        (envelope-from <olivier@trillion01.com>)
+        id 1mDRsp-0000Hg-6k; Tue, 10 Aug 2021 09:33:31 -0400
+Message-ID: <a65c7dc0e836b90fa0dd67e26ed2f14f6831c262.camel@trillion01.com>
+Subject: Re: [PATCH 1/2] io_uring: clear TIF_NOTIFY_SIGNAL when running task
+ work
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Date:   Tue, 10 Aug 2021 09:33:30 -0400
+In-Reply-To: <A4DC14BA-74CA-41DB-BE08-D7B693C11AE0@gmail.com>
+References: <20210808001342.964634-1-namit@vmware.com>
+         <20210808001342.964634-2-namit@vmware.com>
+         <fdd54421f4d4e825152192e327c838d035352945.camel@trillion01.com>
+         <A4DC14BA-74CA-41DB-BE08-D7B693C11AE0@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-Date:   Tue, 10 Aug 2021 14:33:17 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] KVM: arm64: Drop direct PAGE_[SHIFT|SIZE] usage as
- page size
-In-Reply-To: <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
-References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
- <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <25ee7799069492f2501003faec7f9732@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-10 08:02, Anshuman Khandual wrote:
-> All instances here could just directly test against 
-> CONFIG_ARM64_XXK_PAGES
-> instead of evaluating via PAGE_SHIFT or PAGE_SIZE. With this change, 
-> there
-> will be no such usage left.
+On Tue, 2021-08-10 at 01:28 -0700, Nadav Amit wrote:
 > 
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: kvmarm@lists.cs.columbia.edu
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/kvm/hyp/pgtable.c | 6 +++---
->  arch/arm64/mm/mmu.c          | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> Happy it could help.
 > 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c 
-> b/arch/arm64/kvm/hyp/pgtable.c
-> index 05321f4165e3..a6112b6d6ef6 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -85,7 +85,7 @@ static bool kvm_level_supports_block_mapping(u32 
-> level)
->  	 * Reject invalid block mappings and don't bother with 4TB mappings 
-> for
->  	 * 52-bit PAs.
->  	 */
-> -	return !(level == 0 || (PAGE_SIZE != SZ_4K && level == 1));
-> +	return !(level == 0 || (!IS_ENABLED(CONFIG_ARM64_4K_PAGES) && level 
-> == 1));
->  }
+> Unfortunately, there seems to be yet another issue (unless my code
+> somehow caused it). It seems that when SQPOLL is used, there are
+> cases
+> in which we get stuck in io_uring_cancel_sqpoll() when
+> tctx_inflight()
+> never goes down to zero.
 > 
->  static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, 
-> u32 level)
-> @@ -155,7 +155,7 @@ static u64 kvm_pte_to_phys(kvm_pte_t pte)
->  {
->  	u64 pa = pte & KVM_PTE_ADDR_MASK;
-> 
-> -	if (PAGE_SHIFT == 16)
-> +	if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
->  		pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
-> 
->  	return pa;
-> @@ -165,7 +165,7 @@ static kvm_pte_t kvm_phys_to_pte(u64 pa)
->  {
->  	kvm_pte_t pte = pa & KVM_PTE_ADDR_MASK;
-> 
-> -	if (PAGE_SHIFT == 16)
-> +	if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
->  		pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
-> 
->  	return pte;
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 9ff0de1b2b93..8fdfca179815 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -296,7 +296,7 @@ static void alloc_init_cont_pmd(pud_t *pudp,
-> unsigned long addr,
->  static inline bool use_1G_block(unsigned long addr, unsigned long 
-> next,
->  			unsigned long phys)
->  {
-> -	if (PAGE_SHIFT != 12)
-> +	if (!IS_ENABLED(CONFIG_ARM64_4K_PAGES))
->  		return false;
-> 
->  	if (((addr | next | phys) & ~PUD_MASK) != 0)
+> Debugging... (while also trying to make some progress with my code)
 
-I personally find it a lot less readable.
+You are on something. io_uring starts to be very solid but it isn't
+100% flawless yet.
 
-Also, there is no evaluation whatsoever. All the code guarded
-by a PAGE_SIZE/PAGE_SHIFT that doesn't match the configuration
-is dropped at compile time.
+I am a heavy user of SQPOLL which now run flawlessly for me with 5.13.9
+(Was running flawlessly since 5.12 minus few patches I did submit
+recently) with my simple use-case (my SQPOLL thread isn't spawning any
+threads like in your use-case).
 
-Thanks,
+The best is yet to come. I'm salivating by seeing all the performance
+optimizations that Jens and Pavel are putting in place lately...
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+
