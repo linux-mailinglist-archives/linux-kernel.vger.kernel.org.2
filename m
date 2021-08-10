@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3273E54B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062FA3E54B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 09:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237967AbhHJH6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 03:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
+        id S237832AbhHJH6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 03:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237931AbhHJH6q (ORCPT
+        with ESMTP id S234327AbhHJH6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 03:58:46 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAFEC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:24 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id y4so14441040ilp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:24 -0700 (PDT)
+        Tue, 10 Aug 2021 03:58:40 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16AEC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:18 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id h13so24999074wrp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 00:58:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7mVZPY0yEuCZiQ/XlSPysqwgMRwGoFuxw2FRcr2Upjw=;
-        b=n87+ADn6REp26HOZSbgheW02IxMmJA8AAkDFK6Q/uYlhjzlGTRkR0IAiO73oTPy5fD
-         rZF+QUT4Q10j9gDx0pEIdthmY+ZZbvtAi1UPYm3aiVIMxwpsCJQAD4rV3eDVGBRM+Q/w
-         XDZqhHNKWsqmjb0OHHZZgJZV0Jc7UItPnncoI=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Vy1q2TxaPPh8VuhM7PWbw+oYxzHvSHzhjKECTf8T59c=;
+        b=qxTYWxirw6u8gFBYajAfd3ku9NgbKaEO2fOvsmj69Arm0I30frcoDfwoZGJjOSXRUl
+         CIGAe5G43eBs1kK6cLUpseTXOW5DGaTFGH4wc5GZol5pEvZC7dSte57fiszy5SlPjxvd
+         v2ShhTU0HOs+H6CEBw5/T3599G3EVMm2zRfEKS88LkswiYvZnFhlYigCg/wkZLBX5R6O
+         6rLbDH1apoqRaIe1XjziwTlavR4D3HgsNdO0MMfzvSBoZFsWJLTcWiYF0BKfvTb6sIPf
+         cOHhRiJ/8nT/4mhwuhBzO9T8QkK+DgkNgPTolNyZlK0GHXM41er+4prcJFDZvIm1cb/w
+         JSWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7mVZPY0yEuCZiQ/XlSPysqwgMRwGoFuxw2FRcr2Upjw=;
-        b=ISlDpwiG9fOPC/6t3q1a/I86M92lVTjWTWdgYDsOgTp6A7/2jTXFqhPNOa7GFChKHh
-         qyh0Imse5LkLb/VjaGUaJcV03xhxg+iavTKsDsNjQmTI511H5ILpXu4x6eQ7ud0kRisH
-         hSZ6gJZqY5HDTnKzl1OHS/gxvyJhUI4eIP2l6BnqSZqkC47OI1bO3NXa7WhvePh/DmBx
-         i1aKsaIDZnEofmNLTntZbq7bwRCYJMItqzBj+HZW5RlxTi4kTvU9+jEH84+8QeFv2CKX
-         0o8VfOSMhEcTinCp7sKOeuGvoTSJLp5FmNe1ri35XiZcmzGZi3MwSdugzkFUkxi87c68
-         pOTg==
-X-Gm-Message-State: AOAM5324XlQFUyu/h0nbTMcvlHqk0OIg72wdrLN36Pd1WvQxu2o5pepK
-        Lb/YpuC4AthMF9vlxylbslNzXmovj/C3ayIjJhSzvw==
-X-Google-Smtp-Source: ABdhPJwouKs9MwjKH8QkjNK9MKYf33eJcgU78hqkYm2mQqdDRvL2nmAMyQpE+9sZLxPMGr7FsbpDt8gM2iMNa4f3a5s=
-X-Received: by 2002:a05:6e02:1a83:: with SMTP id k3mr347831ilv.150.1628582303722;
- Tue, 10 Aug 2021 00:58:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Vy1q2TxaPPh8VuhM7PWbw+oYxzHvSHzhjKECTf8T59c=;
+        b=B3syEaBhlkFHqeaProQHdRm6Ux0LpX9c/wYW6PbLG5MbPo95fGQM5eirvnKsMRLy1q
+         gdybvRXzwKyQZK4N3zuUSOBHFVV+IbLkXGAHIShi19PoXMIjm0e/TvHYi34MhusDNnGS
+         Li/ti2RWJzXOFlCrfOmLBZy4FG7uUWe6DDPZxW5y95YHvkr+Fn52RAiFlN2vZAl+/UsT
+         0OwCgafhwsXc204CTspe1y/Z44Ecxz2x/wFyLjb5W5RIsp83UhIlqSn7t4Hw4OhTKZkP
+         7v49nzpOCRscl5MWYquKLxY46DrEpYFHPTJ4hxipkgUXPo9+11+G+0nWz5s6s0RSlqE5
+         7Mvg==
+X-Gm-Message-State: AOAM530oHw257fmy1f+4j62exILfbT+A+S8cL/Y5j/nlM/Hi9xgwg2lW
+        dEMLA4GS5xA7gB1DppeVaCW0/tDBC9trPw==
+X-Google-Smtp-Source: ABdhPJzHofmXuHhcOk6Ah+VqehLGqVx28KfPrTazcWj37JDIDjmObNHRqLwq4+mUHmZMUcGndMktkQ==
+X-Received: by 2002:a05:6000:186f:: with SMTP id d15mr28578189wri.89.1628582297379;
+        Tue, 10 Aug 2021 00:58:17 -0700 (PDT)
+Received: from google.com ([95.146.142.85])
+        by smtp.gmail.com with ESMTPSA id c15sm22257789wrx.70.2021.08.10.00.58.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 00:58:16 -0700 (PDT)
+Date:   Tue, 10 Aug 2021 08:58:14 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
+ be called from modules
+Message-ID: <YRIxluiYdZo9OOAn@google.com>
+References: <20210803155452.435812-1-lee.jones@linaro.org>
+ <20210803155452.435812-2-lee.jones@linaro.org>
+ <CAMuHMdXpYV+pbiOwiCjZ+aZYR-xPDGkeANfLt0fwhg4zevAKgg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210706100136.1205047-1-kansho@chromium.org>
-In-Reply-To: <20210706100136.1205047-1-kansho@chromium.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 10 Aug 2021 15:57:57 +0800
-Message-ID: <CAJMQK-jDNcDYcMY8tTxyVhbEP0g8z5E+cWc3Cu_gqr4fQaUmoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] arm64: dts: mt8183: Add kukui platform audio node
- to the device tree
-To:     Kansho Nishida <kansho@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Shunli Wang <shunli.wang@mediatek.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXpYV+pbiOwiCjZ+aZYR-xPDGkeANfLt0fwhg4zevAKgg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 6:01 PM Kansho Nishida <kansho@chromium.org> wrote:
->
->
-> Hi Matthias,
->
-> This patchset is the v3 patch!
->
-> Regards,
-> Kansho
->
+On Mon, 09 Aug 2021, Geert Uytterhoeven wrote:
 
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> On Tue, Aug 3, 2021 at 5:56 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > A recent attempt to convert the Power Reset Restart driver to tristate
+> > failed because of the following compile error (reported once merged by
+> > Stephen Rothwell via Linux Next):
+> >
+> >   ERROR: "machine_restart" [drivers/power/reset/restart-poweroff.ko] undefined!
+> >
+> > This error occurs since some of the machine_restart() instances are
+> > not currently exported for use in modules.  This patch aims to rectify
+> > that.
+> >
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> > NB: If it's safe to omit some of these, let me know and I'll revise the patch.
+> 
+> How do you plan to handle that? Isn't this an all-or-nothing export?
 
-Tested on several mt8183 models
+That's the way I see it, but I don't have an in-depth knowledge of all
+of the architectures.  There may be a method there that isn't part of
+the core API.  If that's the case, I can drop the export.
 
->
-> Changes in v3:
-> - Use audio-controller as the audio node instead.
->
-> Changes in v2:
-> - Changed to the dual license GPL + MIT.
->
-> Kansho Nishida (2):
->   arm64: dts: mt8183: add audio node
->   arm64: dts: mt8183: add kukui platform audio node
->
->  arch/arm64/boot/dts/mediatek/mt6358.dtsi      |  1 +
->  .../mt8183-kukui-audio-da7219-max98357a.dtsi  | 13 +++
->  .../mt8183-kukui-audio-da7219-rt1015p.dtsi    | 13 +++
->  .../mediatek/mt8183-kukui-audio-da7219.dtsi   | 54 +++++++++++
->  .../mt8183-kukui-audio-max98357a.dtsi         | 13 +++
->  .../mediatek/mt8183-kukui-audio-rt1015p.dtsi  | 13 +++
->  ...mt8183-kukui-audio-ts3a227e-max98357a.dtsi | 13 +++
->  .../mt8183-kukui-audio-ts3a227e-rt1015p.dtsi  | 13 +++
->  .../mediatek/mt8183-kukui-audio-ts3a227e.dtsi | 32 +++++++
->  .../mediatek/mt8183-kukui-jacuzzi-burnet.dts  |  1 +
->  .../mediatek/mt8183-kukui-jacuzzi-damu.dts    |  1 +
->  .../mediatek/mt8183-kukui-jacuzzi-fennel.dtsi |  1 +
->  .../mt8183-kukui-jacuzzi-juniper-sku16.dts    |  1 +
->  .../mediatek/mt8183-kukui-jacuzzi-kappa.dts   |  1 +
->  .../mediatek/mt8183-kukui-jacuzzi-kenzo.dts   |  1 +
->  .../mt8183-kukui-jacuzzi-willow-sku0.dts      |  1 +
->  .../mt8183-kukui-jacuzzi-willow-sku1.dts      |  1 +
->  .../boot/dts/mediatek/mt8183-kukui-kakadu.dts |  1 +
->  .../dts/mediatek/mt8183-kukui-kodama.dtsi     |  1 +
->  .../boot/dts/mediatek/mt8183-kukui-krane.dtsi |  5 +
->  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 67 ++++++++++++-
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 94 ++++++++++++++++++-
->  22 files changed, 336 insertions(+), 5 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-da7219-max98357a.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-da7219-rt1015p.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-da7219.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-max98357a.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-rt1015p.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-ts3a227e-max98357a.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-ts3a227e-rt1015p.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-audio-ts3a227e.dtsi
->
-> --
-> 2.32.0.93.g670b81a890-goog
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> >  arch/m68k/kernel/process.c         | 1 +
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Thanks Geert.
+
+I'll pick this up when I do the re-spin shortly.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
