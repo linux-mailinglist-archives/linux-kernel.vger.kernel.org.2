@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB233E590F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A283E591C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 13:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238238AbhHJL2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 07:28:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhHJL2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:28:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18E5E60C51;
-        Tue, 10 Aug 2021 11:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628594866;
-        bh=YD3mk7wVBKr+345hMQBi3IBiMgz7hrlLy6ovY3z2l7M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aTELFQUPYx5v/4wwaaSZGFLAIyYKIQuZp8UwWzyJ2eEkUUdBsp7j5BL+iX8f47USr
-         HIAdWYcKQugtIeOHcBJxTYrcW7DENtDmswzMjuGKzZmG3EpNLEo3WgUkW6b73aE+IF
-         ChLULpt/2/QMvBT9ODrH2K9jMKkGiaaNuOdPgoSE=
-Date:   Tue, 10 Aug 2021 13:27:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     akpm@linux-foundation.org, shuah@kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mm-commits@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH] selftests/damon/debugfs_attrs: Add missing execute
- permission
-Message-ID: <YRJisBs9AunccCD4@kroah.com>
-References: <20210806004226.47nyd%akpm@linux-foundation.org>
- <20210810112050.22225-1-sj38.park@gmail.com>
+        id S240123AbhHJL3i convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Aug 2021 07:29:38 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:40431 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240110AbhHJL3h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:29:37 -0400
+Date:   Tue, 10 Aug 2021 11:28:25 +0000
+Authentication-Results: mail-4316.protonmail.ch; dkim=none
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+From:   David Gstir <david@sigma-star.at>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Richard Weinberger <richard@nod.at>,
+        James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        linux-integrity@vger.kernel.org,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Reply-To: David Gstir <david@sigma-star.at>
+Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
+Message-ID: <74737543-4A73-49F8-92F7-F7FFE64A00DB@sigma-star.at>
+In-Reply-To: <8321cac9-350b-1325-4b7e-390f4f292070@pengutronix.de>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de> <b9e44f8e-84a0-90be-6cfc-d3a0bde12178@pengutronix.de> <20210809093519.er32rmspuvkrww45@kernel.org> <8321cac9-350b-1325-4b7e-390f4f292070@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810112050.22225-1-sj38.park@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.0 required=10.0 tests=ALL_TRUSTED shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:20:50AM +0000, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Commit 04edafbc0c07 ("mm/damon: add user space selftests") of
-> linux-mm[1] gives no execute permission to 'debugfs_attrs.sh' file.
-> This results in a DAMON selftest failure as below:
-> 
->     $ make -C tools/testing/selftests/damon run_tests
->     make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
->     TAP version 13
->     1..1
->     # selftests: damon: debugfs_attrs.sh
->     # Warning: file debugfs_attrs.sh is not executable, correct this.
->     not ok 1 selftests: damon: debugfs_attrs.sh
->     make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
-> 
-> To solve the problem, this commit adds the execute permission for
-> 'debugfs_attrs.sh' file.
-> 
-> [1] https://github.com/hnaz/linux-mm/commit/04edafbc0c07
-> 
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->  tools/testing/selftests/damon/debugfs_attrs.sh | 0
->  1 file changed, 0 insertions(+), 0 deletions(-)
->  mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_attrs.sh
-> 
-> diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
-> old mode 100644
-> new mode 100755
-> -- 
-> 2.17.1
-> 
+Hi Ahmad,
 
-Why not fix the tools to execute the file properly as changing the mode
-of a file does not work well with all tools that we use (i.e. patch
-files.)
+> On 09.08.2021, at 12:16, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-thanks,
+[...]
 
-greg k-h
+> If it interests you, I described[2] my CAAM+ubifs+fscrypt use case in the
+> discussion thread on my fscrypt-trusted-keys v1. Jan, a colleague of mine, held a
+> talk[3] on the different solutions for authenticated and encrypted storage, which
+> you may want to check out.
+>
+> I'd really appreciate feedback here on the the CAAM parts of this series, so this can
+> eventually go mainline.
+
+Since you mention the fscrypt trusted-keys use case:
+
+I noticed that the key length for trusted-keys is limited to
+256 - 1024bit keys. fscrypt does however also support keys
+with e.g. 128bit keys (AES-128-CBC-ESSIV, AES-128-CTS-CBC).
+AFAIK, CAAM and TEE key blobs would also support key lengths outside the 256 - 1024bit range.
+
+Wouldn’t it make sense to align the supported key lengths?
+I.e. extend the range of supported key lengths for trusted keys.
+Or is there a specific reason why key lengths below 256bit are
+not supported by trusted-keys?
+
+Cheers,
+David
+
+
