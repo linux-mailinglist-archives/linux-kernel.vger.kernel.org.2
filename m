@@ -2,165 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03213E575B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC3A3E575A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 11:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238165AbhHJJqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 05:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238986AbhHJJqD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:46:03 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67300C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:45:41 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g21so29351052edb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 02:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ogyvnxy9MiKmDXlkGlmvp5AGKwNfrTFO1X1znrt/jok=;
-        b=qZ4WH31eeRvzQdE3vyXSRkS2OHJWCwe17O7sxqyn57vuGSQL3YvmMLfUGkg0idTkxT
-         tBikBWcCV3fcQBcOWmuhelBpR1oHG2g29LXUk7Pb8KFdapfqqVSjGTdfQaV8AQONTiL4
-         nTRnBhgTdBg86HJliVuM94DkRmxqBvZgYEHtvd4E4iNTJ4S/E2z+iRjEe9gsd4sqg6vS
-         4eBllNE2Qsbznnq/cSUoNJ8zsLaTS9KC0yZpyTFZkFvAGqkU+mm1lejfzCPeto4z1FMS
-         De6EcMaPb8Uo8R69DXm8rAm+9xwLDeIgQONtqkbjXV7NL4Hy4X9Wq85OaawskhaTp3Wn
-         4iDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ogyvnxy9MiKmDXlkGlmvp5AGKwNfrTFO1X1znrt/jok=;
-        b=KQYFryzX1SdYB2oNTWMRK896GK1ewikd4KkOYMQV0ZFNDBBFIP6+xEGOzM4iia6fdE
-         nnDYqpHgpeojRj33N/NumgJ0gHdKOyCOqryGlSOEn570bSLDl0jZR33j6iS0w96SXO3X
-         uBGmeWRAmz7O7urYvu3JGSGX+7OSHNqI0sV1HcoFcvZXdK/dSIpmtCJ+rpN62MISIWDw
-         OHQIjB7Mox2hj6tIUR4/BmCCxrqlIuIuwAHYFuKs7/0wJP8MtHwfjgllQKGTJzDH6fsy
-         gIT8dXxhPR5ItxPCjBMRW5otRlGfVUpSIFX2bKbE4m02uJgpeZDmJROrS+YIZN9+jfm9
-         oxAw==
-X-Gm-Message-State: AOAM532xfCu6UcFxpxQwULXsxMx/ilbmalZINXX4BrHXhO2MILVqgnHh
-        3lTwyH70Pe5Rjza4NyUCW5s=
-X-Google-Smtp-Source: ABdhPJw9ZqJZ+5HNKiDVvwB53cxTTinyk+anW2nzxXe2SGUrlwu7b3ZgiSEBTUymiGZFDcN4fnW1Bg==
-X-Received: by 2002:a50:ac82:: with SMTP id x2mr617169edc.350.1628588740028;
-        Tue, 10 Aug 2021 02:45:40 -0700 (PDT)
-Received: from localhost.localdomain (host-79-50-26-100.retail.telecomitalia.it. [79.50.26.100])
-        by smtp.gmail.com with ESMTPSA id v24sm6219536edt.41.2021.08.10.02.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 02:45:39 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v3 RESEND] x86/resctrl: Fix kernel-doc in rdtgroup.c
-Date:   Tue, 10 Aug 2021 11:45:33 +0200
-Message-Id: <20210810094533.16806-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S239247AbhHJJr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 05:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237358AbhHJJr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 05:47:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B20A60200;
+        Tue, 10 Aug 2021 09:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628588855;
+        bh=e03BlMVYHl8jLdQdL13/8a0pZ7iHK6pfRSDI9mf2oRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dcdr1tQhGEpaf6pyU509b+kONQMNNedh785mipfKnXxvTtm9Dq5wZaPcbo+nxag/n
+         KnVYKpNRvte6JcvZpYty+nSglBJYgtLePLs5goq5HfJnR774pePfaZBHjUb98fsbDq
+         c3Qc2kkU122F8nTxjLXCFiLHJeiD/LXMX0qSDQTw=
+Date:   Tue, 10 Aug 2021 11:47:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
+Message-ID: <YRJLNHXR0PhykBwL@kroah.com>
+References: <20210805192110.90302-1-paul@crapouillou.net>
+ <20210805192110.90302-3-paul@crapouillou.net>
+ <YQw9hjZll4QmYVLX@kroah.com>
+ <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
+ <YQ0MU/GcLkPLiy5C@kroah.com>
+ <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <LYZEXQ.9UWPIAZCVXIK@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description of undocumented parameters. Issues detected by
-scripts/kernel-doc.
+On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
+> Hi Greg,
+> 
+> Le ven., août 6 2021 at 12:17:55 +0200, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> a écrit :
+> > On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
+> > >  Hi Greg,
+> > > 
+> > >  Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
+> > >  <gregkh@linuxfoundation.org> a écrit :
+> > >  > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil wrote:
+> > >  > >  When the drivers of remote devices (e.g. HDMI chip) are
+> > > disabled in
+> > >  > > the
+> > >  > >  config, we want the ingenic-drm driver to be able to probe
+> > >  > > nonetheless
+> > >  > >  with the other devices (e.g. internal LCD panel) that are
+> > > enabled.
+> > >  > >
+> > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  > >  ---
+> > >  > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 ++++++++++++
+> > >  > >   1 file changed, 12 insertions(+)
+> > >  > >
+> > >  > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  index d261f7a03b18..5e1fdbb0ba6b 100644
+> > >  > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct
+> > > device
+> > >  > > *dev, bool has_components)
+> > >  > >   	for (i = 0; ; i++) {
+> > >  > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i,
+> > > &panel,
+> > >  > > &bridge);
+> > >  > >   		if (ret) {
+> > >  > >  +			/*
+> > >  > >  +			 * Workaround for the case where the drivers for the
+> > >  > >  +			 * remote devices are not enabled. When that happens,
+> > >  > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
+> > >  > >  +			 * endlessly, which prevents the ingenic-drm driver from
+> > >  > >  +			 * working at all.
+> > >  > >  +			 */
+> > >  > >  +			if (ret == -EPROBE_DEFER) {
+> > >  > >  +				ret = driver_deferred_probe_check_state(dev);
+> > >  > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
+> > >  > >  +					continue;
+> > >  > >  +			}
+> > >  >
+> > >  > So you are mucking around with devices on other busses within this
+> > >  > driver?  What could go wrong?  :(
+> > > 
+> > >  I'm doing the same thing as everybody else. This is the DRM driver,
+> > > and
+> > >  there is a driver for the external HDMI chip which gives us a DRM
+> > > bridge
+> > >  that we can obtain from the device tree.
+> > 
+> > But then why do you need to call this function that is there for a bus,
+> > not for a driver.
+> 
+> The documentation disagrees with you :)
+> 
+> And, if that has any weight, this solution was proposed by Rob.
+> 
+> > >  > Please use the existing driver core functionality for this type of
+> > >  > thing, it is not unique, no need for this function to be called.
+> > > 
+> > >  I'm not sure you understand what I'm doing here. This driver calls
+> > >  drm_of_find_panel_or_bridge(), without guarantee that the driver
+> > > for the
+> > >  remote device (connected via DT graph) has been enabled in the
+> > > kernel
+> > >  config. In that case it will always return -EPROBE_DEFER and the
+> > > ingenic-drm
+> > >  driver will never probe.
+> > > 
+> > >  This patch makes sure that the driver can probe if the HDMI driver
+> > > has been
+> > >  disabled in the kernel config, nothing more.
+> > 
+> > That should not be an issue as you do not care if the config is enabled,
+> > you just want to do something in the future if the driver shows up,
+> > right?
+> 
+> Well, the DRM subsystem doesn't really seem to handle hotplug of hardware.
+> Right now all the drivers for the connected hardware need to probe before
+> the main DRM driver. So I need to know that a remote device (connected via
+> DT graph) will never probe.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
+But you never really know that.  That is what the recent driver core
+changes were all about, to handle this very issue.  Only when the child
+device shows up will you need to care about it.
 
-v2->v3:
-	Change the commit message by adding a "Reviewed-by" and remove a
-	"Suggested-by" tag because its use is incorrect in this specific case.
+> Give me a of_graph_remote_device_driver_will_never_probe() and I'll use
+> that.
+> 
+> > Much like the device link code, have you looked at that?
+> 
+> I don't see how that would help in any way. The device link code would allow
+> me to set a dependency between the remote hardware (HDMI chip, provider) and
+> the LCD controller (consumer), but I already have that dependency though the
+> DT graph. What I need is a way for the consumer to continue probing if the
+> provider is not going to probe.
 
-v1->v2:
-	Change some parameter descriptions according to the suggestions of
-	Reinette Chatre.
+But again, you never know that, probing is async, and could happen in a
+few milliseconds, or a few hours, your driver should never care about
+this at all.
 
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Just knowing if the kernel configuration is something is not the
+solution here, please fix this properly like all other driver
+interactions are in the kernel tree.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 01fd30e7829d..b51513661469 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -877,6 +877,9 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
- 
- /**
-  * rdt_bit_usage_show - Display current usage of resources
-+ * @of: pointer to opened "bit_usage" info file
-+ * @seq: seq_file used to format output to "bit_usage"
-+ * @v: unused pointer to void
-  *
-  * A domain is a shared resource that can now be allocated differently. Here
-  * we display the current regions of the domain as an annotated bitmask.
-@@ -888,6 +891,8 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
-  *   S - currently used and shareable by software only
-  *   E - currently used exclusively by one resource group
-  *   P - currently pseudo-locked by one resource group
-+ *
-+ * Return: 0
-  */
- static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 			      struct seq_file *seq, void *v)
-@@ -1243,6 +1248,7 @@ bool rdtgroup_cbm_overlaps(struct rdt_resource *r, struct rdt_domain *d,
- 
- /**
-  * rdtgroup_mode_test_exclusive - Test if this resource group can be exclusive
-+ * @rdtgrp: resource group
-  *
-  * An exclusive resource group implies that there should be no sharing of
-  * its allocated resources. At the time this group is considered to be
-@@ -1283,7 +1289,12 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
- 
- /**
-  * rdtgroup_mode_write - Modify the resource group's mode
-+ * @of: pointer to opened "mode" file of a resource group
-+ * @buf: data from user-space
-+ * @nbytes: length of input data buffer
-+ * @off: unsupported offset to input
-  *
-+ * Return: @nbytes on success, <0 on failure
-  */
- static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 				   char *buf, size_t nbytes, loff_t off)
-@@ -1367,6 +1378,8 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
-  *
-  * @cbm is unsigned long, even if only 32 bits are used to make the
-  * bitmap functions work correctly.
-+ *
-+ * Return: how many bytes of the cache are represented by @cbm.
-  */
- unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
- 				  struct rdt_domain *d, unsigned long cbm)
-@@ -1389,10 +1402,14 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
- 
- /**
-  * rdtgroup_size_show - Display size in bytes of allocated regions
-+ * @of: pointer to opened "size" file of a resource group
-+ * @s: seq_file used to format output to "size"
-+ * @v: unused pointer to void
-  *
-  * The "size" file mirrors the layout of the "schemata" file, printing the
-  * size in bytes of each region instead of the capacity bitmask.
-  *
-+ * Return: 0 on success, <0 on failure
-  */
- static int rdtgroup_size_show(struct kernfs_open_file *of,
- 			      struct seq_file *s, void *v)
-@@ -2618,6 +2635,8 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
-  * resource group is initialized. The user can follow this with a
-  * modification to the CBM if the default does not satisfy the
-  * requirements.
-+ *
-+ * Return: A valid CBM, 0 if @_val is only 0 filled
-  */
- static u32 cbm_ensure_valid(u32 _val, struct rdt_resource *r)
- {
--- 
-2.32.0
+thanks,
 
+greg k-h
