@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465783E83A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE853E83A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Aug 2021 21:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhHJT1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 15:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49192 "EHLO
+        id S232887AbhHJT1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 15:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbhHJT1b (ORCPT
+        with ESMTP id S229655AbhHJT1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 15:27:31 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52860C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:27:09 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id y3so181622ilm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:27:09 -0700 (PDT)
+        Tue, 10 Aug 2021 15:27:32 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5F2C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:27:10 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id x7so157045ilh.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 12:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=m7UrH6Lu6RFgMKSZzNICn6qFCfAM54XgBDQbFAy1V9I=;
-        b=JcWF5d4X2TO9r2glvm1MaRyb5qrHOgteLdlcnODRFO7ny4Csz4byiwmj31ZxdP5yjR
-         OaGCxcbDskh/2mzO9XgYFJ8KolBgMN7OEteMG3BtLd5oRYBvKnvyjGDoI65jrHmAyjWF
-         6cGzp5YHYhyAH/aSe0+dN9R9NgtFMKsDUltsbFKLHh+utYivxfiG/WwRTGSiVxPrRqky
-         Td2w18FXE9o6i8DiPVw4N5LYBQp9wbzt1LnybCAXXA5peeptF3MQk5LZFqPTed/Bg7ru
-         POEZ0pHiZMARWAza/YAf471xlONGyxzQDjoW6H15FhubVhd7OYBhsHpBDbGXI3AGInmm
-         Uu8g==
+        bh=3RvnSI6p4fqV0uNcU76eKlSqoZMzH9RvMg7i8uWOHwQ=;
+        b=OHumJWb4OpI6AuHu6FIXwC/YBm/ASJZ0cq2NnUihC0w98GhSEvXddr1zrsbYO+bf26
+         51tkuH4xzgOrerfYqHAgs4N7S95ZRHe72bfG3sJcUqAdo/27j2ioSwneMywYZpQw4oId
+         UqJ6s1LwItJXSaq3+QXbht524Z7zV+i7YbGecHAaWs1ee2u+ZxgQrS9mnuGJhCGuTWHD
+         xjQSnHeoZ4wcmvPrToSck26n5j4u0zdw4ofstqPXuffj51jKeJXnMOPcKQzk5u+2I7Fa
+         00z03HdGC3YrRVVHo+9KfRYpJmvSAw3VB/Pdew8YXrhmzXyTaInaAF34k+gyZ2vOZRQp
+         rY6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=m7UrH6Lu6RFgMKSZzNICn6qFCfAM54XgBDQbFAy1V9I=;
-        b=tJsRPjBJnqJv8bfYBZOd7W/yyDF7LF32kYdN928ZIO3wSFypm6UN13l6n9eJF6m0k1
-         DRmk3Ux9uLQFizDZ768fpKOC93bwUnUuGmDFAc4yH7umYRNLmtN+8b81+hMucApcJhEi
-         9cHAtPsii0UBxPxi4dmlKe/sx1NxLAWJv9BhYtUWwLABrDORw6Zk1IH3GwuTnV0/itt5
-         TZBXkFLNIDixELBsC39OKpA+ZqoNuTv9C/+yNoLfeV9MQFVI5V33wYXQO2nYD/SMZf+3
-         lPSdfknglmg8gen3JuyrZfBXeQJGQiZdvDpdwAL1O7qCb0igbNaoMTbCG3mqTP2fOUSi
-         GQ5Q==
-X-Gm-Message-State: AOAM53246IZPW5b8fIonsHsb68m1qMFb5qXvURI+OMmMtaFgFuPMFQqw
-        Nzm7omv3GPf0IREvpTp//pPz7A==
-X-Google-Smtp-Source: ABdhPJz/q3V9sMameNIE4YmRtJY8eUmqsve6zNgWyVDBbU+ikYexkCLfAewakimWwMPIXM4ofSsLFw==
-X-Received: by 2002:a92:c912:: with SMTP id t18mr360333ilp.152.1628623628748;
-        Tue, 10 Aug 2021 12:27:08 -0700 (PDT)
+        bh=3RvnSI6p4fqV0uNcU76eKlSqoZMzH9RvMg7i8uWOHwQ=;
+        b=gjPdQczyJ/2W6LdfCrW9Qa9z1YNbbb+mkaTJvBAehuAr7jB5FbzUPi6aWxphswQqxh
+         aYOh994ASI+QKlNNYc1tVdjNE6SaZmv5G6ZV7lH0rGaqTmt+Q7ZHtimvR8xFAOYJH7m+
+         VWBWtHINfkbescldcptXRS7y6TdMq+HIObshfvTGG3lem7hlfLTE7yGfCl4bKMCHfZHB
+         4Q6gdAiHUCkXwRE/+cgeWf044qhu114kZnPUNLlV2fnlF2VkREPL4Krf2jMMtUTUC2C1
+         PQaDCMquu5sl0WJ4SCgBr9SoGEk/wPEklmhKBKmxOj1aUBBBWApxqGRs8ke9wAeiJK5B
+         11mw==
+X-Gm-Message-State: AOAM531EWgaT+Js3+CV6kIMYZ+xm2IbhobUEIWLT3HYXsF35j8fmGd62
+        RH+scXgofzDfMrWGgOIHXLCZtA==
+X-Google-Smtp-Source: ABdhPJzCO4mg8Z2/4Xik0whUmCZbIwVQ9ooj4xA3VtJp7eqfS0pAI1AjJr5/PEI6XW2hRYSPLRcmhA==
+X-Received: by 2002:a92:b112:: with SMTP id t18mr324207ilh.36.1628623629517;
+        Tue, 10 Aug 2021 12:27:09 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id c5sm3025356ioz.25.2021.08.10.12.27.07
+        by smtp.gmail.com with ESMTPSA id c5sm3025356ioz.25.2021.08.10.12.27.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 12:27:08 -0700 (PDT)
+        Tue, 10 Aug 2021 12:27:09 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/7] net: ipa: disable clock in suspend
-Date:   Tue, 10 Aug 2021 14:26:59 -0500
-Message-Id: <20210810192704.2476461-3-elder@linaro.org>
+Subject: [PATCH net-next 3/7] net: ipa: resume in ipa_clock_get()
+Date:   Tue, 10 Aug 2021 14:27:00 -0500
+Message-Id: <20210810192704.2476461-4-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210810192704.2476461-1-elder@linaro.org>
 References: <20210810192704.2476461-1-elder@linaro.org>
@@ -65,48 +65,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable the IPA clock rather than dropping a reference to it in the
-system suspend callback.  This forces the suspend to occur without
-affecting existing references.
+Introduce ipa_runtime_suspend() and ipa_runtime_resume(), which
+encapsulate the activities necessary for suspending and resuming
+the IPA hardware.  Call these functions from ipa_clock_get() and
+ipa_clock_put() when the first reference is taken or last one is
+dropped.
 
-Similarly, enable the clock rather than taking a reference in
-ipa_resume(), forcing a resume without changing the reference count.
+When the very first clock reference is taken (for ipa_config()),
+setup isn't complete yet, so (as before) only the core clock gets
+enabled.
+
+When the last clock reference is dropped (after ipa_deconfig()),
+ipa_teardown() will have made the setup_complete flag false, so
+there too, the core clock will be stopped without affecting GSI
+or the endpoints.
+
+Otherwise these new functions will perform the desired suspend and
+resume actions once setup is complete.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_clock.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ drivers/net/ipa/ipa_clock.c | 63 ++++++++++++++++++++++---------------
+ 1 file changed, 37 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
-index d5a8b45ee59d1..864991f7ba4b5 100644
+index 864991f7ba4b5..c0a8fdf0777f4 100644
 --- a/drivers/net/ipa/ipa_clock.c
 +++ b/drivers/net/ipa/ipa_clock.c
-@@ -414,7 +414,7 @@ static int ipa_suspend(struct device *dev)
- 		gsi_suspend(&ipa->gsi);
+@@ -10,6 +10,7 @@
+ #include <linux/device.h>
+ #include <linux/interconnect.h>
+ #include <linux/pm.h>
++#include <linux/pm_runtime.h>
+ #include <linux/bitops.h>
+ 
+ #include "ipa.h"
+@@ -230,6 +231,38 @@ static int ipa_clock_disable(struct ipa *ipa)
+ 	return ipa_interconnect_disable(ipa);
+ }
+ 
++static int ipa_runtime_suspend(struct device *dev)
++{
++	struct ipa *ipa = dev_get_drvdata(dev);
++
++	/* Endpoints aren't usable until setup is complete */
++	if (ipa->setup_complete) {
++		__clear_bit(IPA_POWER_FLAG_RESUMED, ipa->clock->flags);
++		ipa_endpoint_suspend(ipa);
++		gsi_suspend(&ipa->gsi);
++	}
++
++	return ipa_clock_disable(ipa);
++}
++
++static int ipa_runtime_resume(struct device *dev)
++{
++	struct ipa *ipa = dev_get_drvdata(dev);
++	int ret;
++
++	ret = ipa_clock_enable(ipa);
++	if (WARN_ON(ret < 0))
++		return ret;
++
++	/* Endpoints aren't usable until setup is complete */
++	if (ipa->setup_complete) {
++		gsi_resume(&ipa->gsi);
++		ipa_endpoint_resume(ipa);
++	}
++
++	return 0;
++}
++
+ /* Get an IPA clock reference, but only if the reference count is
+  * already non-zero.  Returns true if the additional reference was
+  * added successfully, or false otherwise.
+@@ -265,7 +298,7 @@ int ipa_clock_get(struct ipa *ipa)
+ 		goto out_mutex_unlock;
  	}
  
--	return ipa_clock_put(ipa);
-+	return ipa_clock_disable(ipa);
+-	ret = ipa_clock_enable(ipa);
++	ret = ipa_runtime_resume(&ipa->pdev->dev);
+ 
+ 	refcount_set(&clock->count, 1);
+ 
+@@ -287,7 +320,7 @@ int ipa_clock_put(struct ipa *ipa)
+ 	if (!refcount_dec_and_mutex_lock(&clock->count, &clock->mutex))
+ 		return 0;
+ 
+-	ret = ipa_clock_disable(ipa);
++	ret = ipa_runtime_suspend(&ipa->pdev->dev);
+ 
+ 	mutex_unlock(&clock->mutex);
+ 
+@@ -405,16 +438,7 @@ void ipa_clock_exit(struct ipa_clock *clock)
+  */
+ static int ipa_suspend(struct device *dev)
+ {
+-	struct ipa *ipa = dev_get_drvdata(dev);
+-
+-	/* Endpoints aren't usable until setup is complete */
+-	if (ipa->setup_complete) {
+-		__clear_bit(IPA_POWER_FLAG_RESUMED, ipa->clock->flags);
+-		ipa_endpoint_suspend(ipa);
+-		gsi_suspend(&ipa->gsi);
+-	}
+-
+-	return ipa_clock_disable(ipa);
++	return ipa_runtime_suspend(dev);
  }
  
  /**
-@@ -432,14 +432,9 @@ static int ipa_resume(struct device *dev)
- 	struct ipa *ipa = dev_get_drvdata(dev);
- 	int ret;
- 
--	/* This clock reference will keep the IPA out of suspend
--	 * until we get a power management suspend request.
--	 */
--	ret = ipa_clock_get(ipa);
--	if (WARN_ON(ret < 0)) {
--		(void)ipa_clock_put(ipa);
-+	ret = ipa_clock_enable(ipa);
-+	if (WARN_ON(ret < 0))
- 		return ret;
+@@ -429,20 +453,7 @@ static int ipa_suspend(struct device *dev)
+  */
+ static int ipa_resume(struct device *dev)
+ {
+-	struct ipa *ipa = dev_get_drvdata(dev);
+-	int ret;
+-
+-	ret = ipa_clock_enable(ipa);
+-	if (WARN_ON(ret < 0))
+-		return ret;
+-
+-	/* Endpoints aren't usable until setup is complete */
+-	if (ipa->setup_complete) {
+-		gsi_resume(&ipa->gsi);
+-		ipa_endpoint_resume(ipa);
 -	}
+-
+-	return 0;
++	return ipa_runtime_resume(dev);
+ }
  
- 	/* Endpoints aren't usable until setup is complete */
- 	if (ipa->setup_complete) {
+ const struct dev_pm_ops ipa_pm_ops = {
 -- 
 2.27.0
 
