@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C46D3E930A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121F53E9308
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhHKNuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:50:24 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45337 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231176AbhHKNuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:50:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="300713730"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="300713730"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:49:58 -0700
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="445932257"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:49:55 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mDoc8-007wPH-L7; Wed, 11 Aug 2021 16:49:48 +0300
-Date:   Wed, 11 Aug 2021 16:49:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <jroedel@suse.de>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v1 1/2] iommu/vt-d: Move intel_iommu_ops to header file
-Message-ID: <YRPVfES0aTbfaHES@smile.fi.intel.com>
-References: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
- <3c7663db-5b1e-3e00-3ff1-381c7a107ac9@linux.intel.com>
- <YQOyzka9VDJU3NhU@smile.fi.intel.com>
- <17a2b3f2-747d-2798-7fea-5846eec0b1fe@linux.intel.com>
+        id S232164AbhHKNuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:50:21 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60382 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231176AbhHKNuU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:50:20 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 22F631FED5;
+        Wed, 11 Aug 2021 13:49:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628689796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o1RwMkH/G5AGGvy1Dh9XSu4PN1WkDLHpM6h1JDnu2JY=;
+        b=uloM6ZRycUFRyFceks2pPLD/WgBWOkTU+T+gYe0I6bPq0/0FxZCzvZTrJBt74miB87Mf4i
+        Qg9Y8qer8SVdJXuw42HbVICgygwW3MOcxIahdTAfzuxAaQSn92EW1LOBx8ofqDAczFat9E
+        X3xFJe214Iv27pUI7jVexeJuSmiD7aM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628689796;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o1RwMkH/G5AGGvy1Dh9XSu4PN1WkDLHpM6h1JDnu2JY=;
+        b=s0+6c/cnKA7HOyKSM79bQzXkIzrYgerN95dCC8jgnx/Di82uvMwwCnbTy9APK+lOmZeKaj
+        hNqIl2mDAqVXqRBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 04ACC13969;
+        Wed, 11 Aug 2021 13:49:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id SnhuO4PVE2HgQAAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 13:49:55 +0000
+Subject: Re: [PATCH v14 050/138] mm/workingset: Convert workingset_activation
+ to take a folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-51-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <8c733e7d-15cc-64a9-c049-869437e55b41@suse.cz>
+Date:   Wed, 11 Aug 2021 15:49:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17a2b3f2-747d-2798-7fea-5846eec0b1fe@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210715033704.692967-51-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 09:01:41PM +0800, Lu Baolu wrote:
-> On 2021/7/30 16:05, Andy Shevchenko wrote:
-> > On Fri, Jul 30, 2021 at 10:20:08AM +0800, Lu Baolu wrote:
-> > > On 7/30/21 12:35 AM, Andy Shevchenko wrote:
-> > > > Compiler is not happy about hidden declaration of intel_iommu_ops.
-> > > > 
-> > > > .../drivers/iommu/intel/iommu.c:414:24: warning: symbol 'intel_iommu_ops' was not declared. Should it be static?
-> > > > 
-> > > > Move declaration to header file to make compiler happy.
-> > > 
-> > > Thanks for the cleanup. Sharing data structures between different files
-> > > doesn't seem to be a good design. How about adding a helper so that the
-> > > intel_iommu_ops could be a static one?
-> > 
-> > Whatever suits the purpose.
-> > Can you apply patch 2 of this series, please?
-> > 
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> This function already assumed it was being passed a head page.  No real
+> change here, except that thp_nr_pages() compiles away on kernels with
+> THP compiled out while folio_nr_pages() is always present.  Also convert
+> page_memcg_rcu() to folio_memcg_rcu().
 > 
-> Yes, I will. Thanks!
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Gentle reminder.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
