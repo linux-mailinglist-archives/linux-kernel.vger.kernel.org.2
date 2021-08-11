@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53AE3E9745
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0763E974C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhHKSGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S230253AbhHKSHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhHKSGW (ORCPT
+        with ESMTP id S229554AbhHKSHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:06:22 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DACC061765;
-        Wed, 11 Aug 2021 11:05:58 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id t128so5892121oig.1;
-        Wed, 11 Aug 2021 11:05:58 -0700 (PDT)
+        Wed, 11 Aug 2021 14:07:48 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5876C061765;
+        Wed, 11 Aug 2021 11:07:24 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id bo19so5030688edb.9;
+        Wed, 11 Aug 2021 11:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HxY/WUTgeQY0+6YEwdFvZK8RANC+Nq5/hbFGvTroIBM=;
-        b=p81Yc26djxFQaFJ7NCFX+EPjY/jGcWPm7G7gzBeo8h2Quj/TIkPrGw+tCco45s5uGo
-         8GE7rTun/3e5fHaqqTXPhObCbK/GLHMUabdwENh1i6TMXc0SATjhRCgOpoIod4kBEyq9
-         f4gPXpOGlQM/BnIDHDhWzVIWx2h9xLTcbTdIo2gK2Rt2EnNKDPExVAJx8NKLeKD9eNuP
-         MLWNFOc7ODFeFkGxIsU7NcbbNXUsaDxQpKgTNMxv7+YmT8ynmhRTK3OgXlFxpscdsNrg
-         nBXvFHNOPMJMceHBKUdbd8cc/HofHj7MSrlV24pSxRftwLeqapLuSbf2EmCWeJ5R0ziX
-         KVZg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xb03FgVtSdL/eKVadSdipMPboOiS/FGTVbT0hN2/lu8=;
+        b=aGw9my41iuUPHtiwgx1d0wHLxfBuvqFMS8xth7k++QITMb41ohjRKXBeWTJB5DPvY7
+         A+KpI1OL3/uhcAF+IBEnM6Z/NGNe7SCfUfEN80MQq3HdUtZiK0OIhpvxWIgXX2gv4woH
+         Q7H9SzsZXRGklULXUKMjNqt997rwqMPHRZjD/lp6myVQawfQ2FFKtipTLYHhLb2W9MXq
+         hSrzP/OTOdArdo/iLdSwI46VKebLp7Z4+gs8gcAWLuWJAzUF0BqWAIjvPgjIkXf3+8MZ
+         F7iCi/VdB5zFc2rndLznU2AGugoThkPHPobpKfTS4YwF+JVcvJF/5jXoYLTcMyuhqtfI
+         grhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HxY/WUTgeQY0+6YEwdFvZK8RANC+Nq5/hbFGvTroIBM=;
-        b=k62esMWrrsNwySrloanYrQeIxoKR7WqSLzz/PLzuxS8InMc40wKbwLCQ3N2zVR4LGr
-         YcWmBp9wMNbCgeCdVuZAz7MYlU9F9GjBUkRfGt+ZWvFS3cSYyD9MdMAVZLC47vWY92KV
-         DeE/3fnvg1lrk64mHjzb0cKlFqSQ7eU4x7T8RfgRLi83KmrKEex+OxYcRtjq3PuwBUyj
-         Cm9Cixel8KEzkBkvfnB2FeFblys49k9V9JgAuioNeq3vc0mGn7FdHupuC2XVhHBOXLRs
-         oS8y7GoSsuOqb/xBkOMrAE1MbMuG+Z8k83b4TzzfLswgpsOF7gNQ4yyerTdguIRjbpml
-         Gkiw==
-X-Gm-Message-State: AOAM530kHGGrhElzloi+lyVF08ElKPId8F+7rpmdPsBSYGM6jnhcZ4VI
-        RZA/9prYKawlXcUJCVjqIa0=
-X-Google-Smtp-Source: ABdhPJy/5AUXtuljNkc5tzk/CAVNEAidUYBLMgUS5IwUQjZNN0/xFCqRkgygQxR5lzENJkC/vuG+tA==
-X-Received: by 2002:a05:6808:905:: with SMTP id w5mr5155632oih.27.1628705157682;
-        Wed, 11 Aug 2021 11:05:57 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.45])
-        by smtp.googlemail.com with ESMTPSA id e10sm2790673oig.42.2021.08.11.11.05.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 11:05:57 -0700 (PDT)
-Subject: Re: [PATCH net-next v3] ipv6: add IFLA_INET6_RA_MTU to expose mtu
- value in the RA message
-From:   David Ahern <dsahern@gmail.com>
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, rocco.yue@gmail.com,
-        chao.song@mediatek.com, zhuoliang.zhang@mediatek.com
-References: <c0a6f817-0225-c863-722c-19c798daaa4b@gmail.com>
- <20210810123327.15998-1-rocco.yue@mediatek.com>
- <25dcf6e8-cdd6-6339-f499-5c3100a7d8c4@gmail.com>
-Message-ID: <4624cc10-1fc8-12cd-e9e1-9585f5b496a0@gmail.com>
-Date:   Wed, 11 Aug 2021 12:05:54 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        bh=xb03FgVtSdL/eKVadSdipMPboOiS/FGTVbT0hN2/lu8=;
+        b=pSK2tFWtx79LgMLjeK3jVSHBm6Hf8uHTjAQ2jBsyghUm8mRM26Pa7E8y0MEctBd733
+         YBZLp5sn9tdQYlBrWDVFUnqoxRRqGpuq+yO2SzZpN8QOFVY+R5KTG9DKsJ4s4jqIkK7O
+         /1EnhMrA5+VaGayjr497eARN1qzY5VPhA1yXi28hPzuyswDoctjDJUDPp0nKws0w/Rga
+         gyhqrv/pxvjP9qCYmCqALk+NY3TPAzAzAftLfq3us8jcXjc1jydVExDI7OzqbMNA5BK/
+         U7G7hJY2WdaqEE2CBptKVaC0yZ5GrikUlxNFP8GTN/Law9mCYXm9ktZhZXF8gAxTOgw0
+         OBIg==
+X-Gm-Message-State: AOAM530jKrz+GJVrbpNI2dc5mhXUCto/ETSvqIzEsyR8zWM2ThA+arbC
+        GHyhpRP9kxpfl3+F51pDvr4=
+X-Google-Smtp-Source: ABdhPJytTZONblhK1d1l7L9yPJIgNeuA6t/4wfBiKbR/PvleJdikJvT6EqRfoo/qC7fh/wumVkoSzA==
+X-Received: by 2002:a05:6402:48e:: with SMTP id k14mr200546edv.212.1628705243247;
+        Wed, 11 Aug 2021 11:07:23 -0700 (PDT)
+Received: from honeypot.. ([5.179.189.16])
+        by smtp.googlemail.com with ESMTPSA id g23sm51588ejm.26.2021.08.11.11.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 11:07:22 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [PATCH] perf test: make --skip work on shell tests
+Date:   Wed, 11 Aug 2021 20:06:26 +0200
+Message-Id: <20210811180625.160944-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <25dcf6e8-cdd6-6339-f499-5c3100a7d8c4@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/21 7:56 AM, David Ahern wrote:
-> On 8/10/21 6:33 AM, Rocco Yue wrote:
->> On Mon, 2021-08-09 at 16:43 -0600, David Ahern wrote:
->>> On 8/9/21 8:01 AM, Rocco Yue wrote:
->>
->>> +
->>>>  #ifdef CONFIG_SYSCTL
->>>>  
->>>>  static int addrconf_sysctl_forward(struct ctl_table *ctl, int write,
->>>> diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
->>>> index c467c6419893..a04164cbd77f 100644
->>>> --- a/net/ipv6/ndisc.c
->>>> +++ b/net/ipv6/ndisc.c
->>>> @@ -1496,6 +1496,12 @@ static void ndisc_router_discovery(struct sk_buff *skb)
->>>>  		memcpy(&n, ((u8 *)(ndopts.nd_opts_mtu+1))+2, sizeof(mtu));
->>>>  		mtu = ntohl(n);
->>>>  
->>>> +		if (in6_dev->ra_mtu != mtu) {
->>>> +			in6_dev->ra_mtu = mtu;
->>>> +			inet6_iframtu_notify(in6_dev);
->>>> +			ND_PRINTK(2, info, "update ra_mtu to %d\n", in6_dev->ra_mtu);
->>>> +		}
->>>> +
->>>>  		if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu) {
->>>>  			ND_PRINTK(2, warn, "RA: invalid mtu: %d\n", mtu);
->>>>  		} else if (in6_dev->cnf.mtu6 != mtu) {
->>>
->>> Since this MTU is getting reported via af_info infrastructure,
->>> rtmsg_ifinfo should be sufficient.
->>>
->>> From there use 'ip monitor' to make sure you are not generating multiple
->>> notifications; you may only need this on the error path.
->>
->> Hi David,
->>
->> To avoid generating multiple notifications, I added a separate ramtu notify
->> function in this patch, and I added RTNLGRP_IPV6_IFINFO nl_mgrp to the ipmonitor.c
->> to verify this patch was as expected.
->>
->> I look at the rtmsg_ifinfo code, it should be appropriate and I will use it and
->> verify it.
->>
->> But there's one thing, I'm sorry I didn't fully understand the meaning of this
->> sentence "you may only need this on the error path". Honestly, I'm not sure what
->> the error patch refers to, do you mean "if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu)" ?
->>
-> 
-> looks like nothing under:
->     if (ndopts.nd_opts_mtu && in6_dev->cnf.accept_ra_mtu) {
-> 
->     }
-> 
-> is going to send a link notification so you can just replace
-> inet6_iframtu_notify with rtmsg_ifinfo in your proposed change.
-> 
+perf-test has the option --skip to provide a list of tests to skip.
+However, this option does not work with shell scripts.
 
-Taking a deeper dive on the code, you do not need to call rtmsg_ifinfo.
-Instead, the existing:
+This patch passes the skiplist to run_shell_tests, so that also shell
+scripts could be skipped using --skip.
 
-        /*
-         *      Send a notify if RA changed managed/otherconf flags or
-timer settings
-         */
-        if (send_ifinfo_notify)
-                inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/tests/builtin-test.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-is called too early. For one the RA can change the MTU and that is done
-after this notify.
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index 5e6242576236325c..fb4a75cc8fa9530e 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -594,7 +594,8 @@ static int shell_test__run(struct test *test, int subdir __maybe_unused)
+ 	return WEXITSTATUS(err) == 2 ? TEST_SKIP : TEST_FAIL;
+ }
+ 
+-static int run_shell_tests(int argc, const char *argv[], int i, int width)
++static int run_shell_tests(int argc, const char *argv[], int i, int width,
++				struct intlist *skiplist)
+ {
+ 	struct dirent **entlist;
+ 	struct dirent *ent;
+@@ -628,6 +629,12 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+ 
+ 		st.file = ent->d_name;
+ 		pr_info("%2d: %-*s:", i, width, test.desc);
++
++		if (intlist__find(skiplist, i)) {
++			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (user override)\n");
++			continue;
++		}
++
+ 		test_and_print(&test, false, -1);
+ 	}
+ 
+@@ -727,7 +734,7 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+ 		}
+ 	}
+ 
+-	return run_shell_tests(argc, argv, i, width);
++	return run_shell_tests(argc, argv, i, width, skiplist);
+ }
+ 
+ static int perf_test__list_shell(int argc, const char **argv, int i)
+-- 
+2.31.1
 
-I think if you moved this down to the out:
-
-out:
-        /*
-         *      Send a notify if RA changed managed/otherconf flags or
-timer settings
-         */
-        if (send_ifinfo_notify)
-                inet6_ifinfo_notify(RTM_NEWLINK, in6_dev);
-
-and then set send_ifinfo_notify when the mtu is *changed* by the RA you
-should be good.
