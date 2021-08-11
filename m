@@ -2,160 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB3B3E8E7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B55A3E8E81
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237138AbhHKKX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:23:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:59293 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236870AbhHKKX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:23:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="276132661"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="276132661"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 03:23:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="675974706"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2021 03:23:33 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDlOW-000LXU-Rm; Wed, 11 Aug 2021 10:23:32 +0000
-Date:   Wed, 11 Aug 2021 18:23:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/irq] BUILD SUCCESS
- 34739a2809e1e5d54d41d93cfc6b074e8d781ee2
-Message-ID: <6113a511.B/kF8jIqotJnYu8X%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S237152AbhHKKY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:24:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34959 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236870AbhHKKYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:24:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628677440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=02M9SPT/tVkQe2EZC3upUifeAeMGBAPUwTh4S8nOgjc=;
+        b=eOYaIDwy43rXOFajv/RyroBZvwMIf2fK1/I93MEbI2m0xyRczM5V6BvlvTsxn0IkEA7lmV
+        wPCOgFEFtttmQa3fWHAQitsy8ohSuBFj9X2qB7TyekCZ6NtNpqfavcdjJEsy3HKL92KI+/
+        LpSd0XFO7tFD/tqmLxGPgET+aUJKPXQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-BqK6L89KMEmE5_KO-_jsUA-1; Wed, 11 Aug 2021 06:23:59 -0400
+X-MC-Unique: BqK6L89KMEmE5_KO-_jsUA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B0CE801B3C;
+        Wed, 11 Aug 2021 10:23:58 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F09265D9C6;
+        Wed, 11 Aug 2021 10:23:57 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, mtosatti@redhat.com
+Subject: [PATCH 0/2] KVM: x86: abstract locking around pvclock_update_vm_gtod_copy
+Date:   Wed, 11 Aug 2021 06:23:54 -0400
+Message-Id: <20210811102356.3406687-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/irq
-branch HEAD: 34739a2809e1e5d54d41d93cfc6b074e8d781ee2  x86: Fix typo s/ECLR/ELCR/ for the PIC register
+Two cleanup patches that factor out the handling of
+KVM_REQ_MASTERCLOCK_UPDATE and KVM_REQ_MCLOCK_INPROGRESS.  I have another
+patch actually to remove KVM_REQ_MCLOCK_INPROGRESS, but I don't have time
+to finish testing it right now; so here are only the cleanups leading
+to it.
 
-elapsed time: 722m
+Paolo Bonzini (2):
+  KVM: KVM-on-hyperv: shorten no-entry section on reenlightenment
+  kvm: x86: abstract locking around pvclock_update_vm_gtod_copy
 
-configs tested: 102
-configs skipped: 3
+ arch/x86/include/asm/kvm_host.h |  1 -
+ arch/x86/kvm/x86.c              | 67 +++++++++++++--------------------
+ 2 files changed, 27 insertions(+), 41 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-- 
+2.27.0
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210811
-sh                               j2_defconfig
-mips                          rb532_defconfig
-sh                        dreamcast_defconfig
-m68k                            q40_defconfig
-arm                            mmp2_defconfig
-csky                             alldefconfig
-mips                       bmips_be_defconfig
-powerpc                 canyonlands_defconfig
-mips                      loongson3_defconfig
-powerpc                     powernv_defconfig
-ia64                                defconfig
-m68k                       m5249evb_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                      walnut_defconfig
-arm                           h3600_defconfig
-arm                          lpd270_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                     mpc83xx_defconfig
-microblaze                      mmu_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-i386                 randconfig-a004-20210811
-i386                 randconfig-a001-20210811
-i386                 randconfig-a002-20210811
-i386                 randconfig-a003-20210811
-i386                 randconfig-a006-20210811
-i386                 randconfig-a005-20210811
-x86_64               randconfig-a016-20210808
-x86_64               randconfig-a012-20210808
-x86_64               randconfig-a013-20210808
-x86_64               randconfig-a011-20210808
-x86_64               randconfig-a014-20210808
-x86_64               randconfig-a015-20210808
-i386                 randconfig-a011-20210810
-i386                 randconfig-a015-20210810
-i386                 randconfig-a013-20210810
-i386                 randconfig-a014-20210810
-i386                 randconfig-a016-20210810
-i386                 randconfig-a012-20210810
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c001-20210810
-x86_64               randconfig-a013-20210810
-x86_64               randconfig-a011-20210810
-x86_64               randconfig-a012-20210810
-x86_64               randconfig-a016-20210810
-x86_64               randconfig-a014-20210810
-x86_64               randconfig-a015-20210810
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
