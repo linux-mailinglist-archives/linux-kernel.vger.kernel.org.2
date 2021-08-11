@@ -2,77 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAEF3E9163
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBFD3E917C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhHKMcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:32:53 -0400
-Received: from ozlabs.org ([203.11.71.1]:48503 "EHLO ozlabs.org"
+        id S229806AbhHKMdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhHKMci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:32:38 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gl8Mv6T3kz9t4b;
-        Wed, 11 Aug 2021 22:32:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628685132;
-        bh=mhfcVNXgc/0h5v6pYrwHF5DvzDi1bz16dnsFeCrBswA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gh4AVYzWFi/xJyU2lZVn42moYQV4DKDtQFV322+31kzvWJt31DwdDSZwV+qS6kCm3
-         PN+sVr8jXQ5XrTpEQRAI/VT75kIiMT+r8R0PsMQDWmtIdoIY3w5RFZyks07B7yCjRf
-         ivp8Q0gmEV3Zhs1eBPmovCqJWs+OCOBYZN4ZsrMnJjSkebVnYU9oCLecHm9YPXwHeK
-         5A7exmn8SBYM9EkWo8oOz6dScTtOQ5UyMqZ1vdAmvwhaa+1zjv8udeb5+63L0ZyojE
-         oMR6+2PwJ3tG0soV7hhPJVlZinI+nFjibF4sqW3Iz9k7Nuv52CclaL0cdegkAjN96c
-         nJod4DTEp2PnA==
-Date:   Wed, 11 Aug 2021 22:32:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the kvm-arm tree
-Message-ID: <20210811223210.19067d99@canb.auug.org.au>
+        id S229576AbhHKMdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:33:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 976B760FE6;
+        Wed, 11 Aug 2021 12:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628685209;
+        bh=WrrtTzWS6ytK2LSjg1r0kgi2+JYBKELWE5CJX5IvZSs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L8Gzzs68USWYTWgGOFNWeF0L1Xy9p4uwMSY5B3/S7krSnS5FR65ndLPFK+b8NlpIC
+         IbieZImoA0Tbj0Mjj3eb+zrwupgPgCJKwFkJ6PJ/OpT/jrg0wGkJxvSZovXb7Lzezy
+         YhZuKo84VCitpeDMbzxRjmGY+3oU4aqks54TnZRVmYsjdFNB/LA1m+C070lHfLB1Vk
+         OWOagFXE/ZWjy7PoERTM9rp5CR2XtBeYHcxvWJkPSMg0H89Ao7I7ekHv5IzubBZAef
+         +pg+9a0PfweOU10abE9/vmQLHToqH+lUBkr3Ooo5MkXW3D1wJoqXOrjrTtJavxVgmA
+         HJKTN1w6RIKYw==
+Date:   Wed, 11 Aug 2021 15:33:25 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next] RDMA/core/sa_query: Remove unused function
+Message-ID: <YRPDlTHjagRUqtOS@unreal>
+References: <1628684831-26981-1-git-send-email-haakon.bugge@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/g6GHqUEyAD/ArJorHQTVGnJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1628684831-26981-1-git-send-email-haakon.bugge@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/g6GHqUEyAD/ArJorHQTVGnJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 11, 2021 at 02:27:11PM +0200, Håkon Bugge wrote:
+> ib_sa_service_rec_query() was introduced in kernel v2.6.13 by commit
+> cbae32c56314 ("[PATCH] IB: Add Service Record support to SA client")
+> in 2005. It was not used then and have never been used since.
+> 
+> Removing it.
+> 
+> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> ---
+>  drivers/infiniband/core/sa_query.c | 101 -------------------------------------
+>  include/rdma/ib_sa.h               |  10 ----
+>  2 files changed, 111 deletions(-)
 
-Hi all,
+You shouldn't stop there and remove ib_sa_service_rec_callback,
+ib_sa_service_rec_release, ib_sa_service_query and probably
+ib_sa_service_rec.
 
-Commit
-
-  676ffd34807e ("KVM: arm64: perf: Replace '0xf' instances with ID_AA64DFR0=
-_PMUVER_IMP_DEF")
-
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/g6GHqUEyAD/ArJorHQTVGnJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmETw0oACgkQAVBC80lX
-0GzyYQgAmIknOVPopsjY4BdV9iTuqL1Uq/XCqaFPbL1K4Kog3p+BY0EBvqk37dNK
-qXtvMlWrKxn/qITcqy5ZWE4ACOawK/TyqRoCvWfp7095dDdYTblccz0VTnMtJJ/V
-pyRGDpJ2JQ0dvWco2x8GxU0dspeUL2kkN5Bh+jiNnUUY2HcttEBnfhg5Nh2DrwUd
-cwJrE7E2cryqZTuYnoziQj/b2xU1eAcJHBP/65aDbR8255YFsbKyHwq6Je7u3wCf
-h9Vc8nnwnEfJUnOoWCbEjg8bZbhh77CX6UCHlB/ue98b8Q7rOJ/eQEHWqiIV52/w
-0wjLPQaVpnro5fphycmVeGNsT+9clg==
-=O74f
------END PGP SIGNATURE-----
-
---Sig_/g6GHqUEyAD/ArJorHQTVGnJ--
+Thanks
