@@ -2,158 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F37C3E8A8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1968D3E8A99
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235357AbhHKGs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 02:48:58 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8397 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235337AbhHKGss (ORCPT
+        id S234914AbhHKGy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 02:54:56 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:36366 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234760AbhHKGyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 02:48:48 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gl0fd4DyVz86Hg;
-        Wed, 11 Aug 2021 14:44:25 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 14:48:22 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 14:48:22 +0800
-Subject: Re: [PATCH v2] powerpc/kprobes: Fix kprobe Oops happens in booke
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-CC:     <mpe@ellerman.id.au>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <zhangjinhao2@huawei.com>,
-        <naveen.n.rao@linux.vnet.ibm.com>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <mhiramat@kernel.org>, <peterz@infradead.org>,
-        <npiggin@gmail.com>, <ruscur@russell.cc>
-References: <20210809023658.218915-1-pulehui@huawei.com>
- <df17030e-484c-ebd4-0225-6923e2982282@huawei.com>
- <9c6cdb3f-37ac-9a8c-2c75-3a939ed76ab4@csgroup.eu>
-From:   Pu Lehui <pulehui@huawei.com>
-Message-ID: <c00161c6-878d-523a-0f04-7ee79b86d5fe@huawei.com>
-Date:   Wed, 11 Aug 2021 14:48:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 11 Aug 2021 02:54:55 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 485ED1C0B76; Wed, 11 Aug 2021 08:54:31 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 08:54:30 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 003/135] bus: ti-sysc: Fix gpt12 system timer issue
+ with reserved status
+Message-ID: <20210811065430.GA1270@duo.ucw.cz>
+References: <20210810172955.660225700@linuxfoundation.org>
+ <20210810172955.789238213@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <9c6cdb3f-37ac-9a8c-2c75-3a939ed76ab4@csgroup.eu>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
+In-Reply-To: <20210810172955.789238213@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/8/11 13:31, Christophe Leroy wrote:
-> 
-> 
-> Le 11/08/2021 à 04:53, Pu Lehui a écrit :
->> Ping, serious problem here. All booke ppc will trigger Oops when
->> perform kprobes related operations.
-> 
-> As far as I can see it is in the fixes branch: 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/log/?h=fixes 
-> 
-> 
-Thanks.
->>
->> On 2021/8/9 10:36, Pu Lehui wrote:
->>> When using kprobe on powerpc booke series processor, Oops happens
->>> as show bellow:
->>>
->>> / # echo "p:myprobe do_nanosleep" > 
->>> /sys/kernel/debug/tracing/kprobe_events
->>> / # echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
->>> / # sleep 1
->>> [   50.076730] Oops: Exception in kernel mode, sig: 5 [#1]
->>> [   50.077017] BE PAGE_SIZE=4K SMP NR_CPUS=24 QEMU e500
->>> [   50.077221] Modules linked in:
->>> [   50.077462] CPU: 0 PID: 77 Comm: sleep Not tainted 
->>> 5.14.0-rc4-00022-g251a1524293d #21
->>> [   50.077887] NIP:  c0b9c4e0 LR: c00ebecc CTR: 00000000
->>> [   50.078067] REGS: c3883de0 TRAP: 0700   Not tainted 
->>> (5.14.0-rc4-00022-g251a1524293d)
->>> [   50.078349] MSR:  00029000 <CE,EE,ME>  CR: 24000228  XER: 20000000
->>> [   50.078675]
->>> [   50.078675] GPR00: c00ebdf0 c3883e90 c313e300 c3883ea0 00000001 
->>> 00000000 c3883ecc 00000001
->>> [   50.078675] GPR08: c100598c c00ea250 00000004 00000000 24000222 
->>> 102490c2 bff4180c 101e60d4
->>> [   50.078675] GPR16: 00000000 102454ac 00000040 10240000 10241100 
->>> 102410f8 10240000 00500000
->>> [   50.078675] GPR24: 00000002 00000000 c3883ea0 00000001 00000000 
->>> 0000c350 3b9b8d50 00000000
->>> [   50.080151] NIP [c0b9c4e0] do_nanosleep+0x0/0x190
->>> [   50.080352] LR [c00ebecc] hrtimer_nanosleep+0x14c/0x1e0
->>> [   50.080638] Call Trace:
->>> [   50.080801] [c3883e90] [c00ebdf0] hrtimer_nanosleep+0x70/0x1e0 
->>> (unreliable)
->>> [   50.081110] [c3883f00] [c00ec004] sys_nanosleep_time32+0xa4/0x110
->>> [   50.081336] [c3883f40] [c001509c] ret_from_syscall+0x0/0x28
->>> [   50.081541] --- interrupt: c00 at 0x100a4d08
->>> [   50.081749] NIP:  100a4d08 LR: 101b5234 CTR: 00000003
->>> [   50.081931] REGS: c3883f50 TRAP: 0c00   Not tainted 
->>> (5.14.0-rc4-00022-g251a1524293d)
->>> [   50.082183] MSR:  0002f902 <CE,EE,PR,FP,ME>  CR: 24000222  XER: 
->>> 00000000
->>> [   50.082457]
->>> [   50.082457] GPR00: 000000a2 bf980040 1024b4d0 bf980084 bf980084 
->>> 64000000 00555345 fefefeff
->>> [   50.082457] GPR08: 7f7f7f7f 101e0000 00000069 00000003 28000422 
->>> 102490c2 bff4180c 101e60d4
->>> [   50.082457] GPR16: 00000000 102454ac 00000040 10240000 10241100 
->>> 102410f8 10240000 00500000
->>> [   50.082457] GPR24: 00000002 bf9803f4 10240000 00000000 00000000 
->>> 100039e0 00000000 102444e8
->>> [   50.083789] NIP [100a4d08] 0x100a4d08
->>> [   50.083917] LR [101b5234] 0x101b5234
->>> [   50.084042] --- interrupt: c00
->>> [   50.084238] Instruction dump:
->>> [   50.084483] 4bfffc40 60000000 60000000 60000000 9421fff0 39400402 
->>> 914200c0 38210010
->>> [   50.084841] 4bfffc20 00000000 00000000 00000000 <7fe00008> 
->>> 7c0802a6 7c892378 93c10048
->>> [   50.085487] ---[ end trace f6fffe98e2fa8f3e ]---
->>> [   50.085678]
->>> Trace/breakpoint trap
->>>
->>> There is no real mode for booke arch and the MMU translation is
->>> always on. The corresponding MSR_IS/MSR_DS bit in booke is used
->>> to switch the address space, but not for real mode judgment.
->>>
->>> Fixes: 21f8b2fa3ca5 ("powerpc/kprobes: Ignore traps that happened in 
->>> real mode")
->>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>> ---
->>> v1->v2:
->>> - use IS_ENABLED(CONFIG_BOOKE) as suggested by Michael Ellerman and
->>>    Christophe Leroy
->>> - update Oops log to make problem clear
->>>
->>>   arch/powerpc/kernel/kprobes.c | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/powerpc/kernel/kprobes.c 
->>> b/arch/powerpc/kernel/kprobes.c
->>> index cbc28d1a2e1b..7a7cd6bda53e 100644
->>> --- a/arch/powerpc/kernel/kprobes.c
->>> +++ b/arch/powerpc/kernel/kprobes.c
->>> @@ -292,7 +292,8 @@ int kprobe_handler(struct pt_regs *regs)
->>>       if (user_mode(regs))
->>>           return 0;
->>> -    if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
->>> +    if (!IS_ENABLED(CONFIG_BOOKE) &&
->>> +        (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR)))
->>>           return 0;
->>>       /*
->>>
-> .
+Hi!
+
+> Jarkko Nikula <jarkko.nikula@bitmer.com> reported that Beagleboard
+> revision c2 stopped booting. Jarkko bisected the issue down to
+> commit 6cfcd5563b4f ("clocksource/drivers/timer-ti-dm: Fix suspend
+> and resume for am3 and am4").
+>=20
+> Let's fix the issue by tagging system timers as reserved rather than
+> ignoring them. And let's not probe any interconnect target module child
+> devices for reserved modules.
+>=20
+> This allows PM runtime to keep track of clocks and clockdomains for
+> the interconnect target module, and prevent the system timer from idling
+> as we already have SYSC_QUIRK_NO_IDLE and SYSC_QUIRK_NO_IDLE_ON_INIT
+> flags set for system timers.
+
+There was interaction between two patches, and result is that this one
+does not do anything useful, see:
+
+https://lore.kernel.org/linux-omap/20210811061053.32081-1-tony@atomide.com/=
+T/#u
+
+I believe it should be dropped for now.
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRN0JgAKCRAw5/Bqldv6
+8rq2AJ4xIqJhNRjne/PYgKDBJU5rnYaFcgCeOLpv0+81eA+pnvTqEEr6OfCymJ0=
+=6rZQ
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
