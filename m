@@ -2,63 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FBA3E873D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED24D3E874F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhHKA2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:28:46 -0400
-Received: from mga01.intel.com ([192.55.52.88]:62834 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235680AbhHKA2p (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:28:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="237040982"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="237040982"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 17:28:19 -0700
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="516097324"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 17:28:17 -0700
-Subject: Re: [PATCH 0/6] perf events update for CascadeLake server and SkyLake
- server
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com
-References: <20210810020508.31261-1-yao.jin@linux.intel.com>
- <YRLAWhHWX3oa0iyt@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <8cfa516c-af3c-49d8-90ad-1e922567a24e@linux.intel.com>
-Date:   Wed, 11 Aug 2021 08:28:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235770AbhHKAl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231423AbhHKAl5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:41:57 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810FAC061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 17:41:34 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id d11so690330eja.8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 17:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+IKe5IV7lT/U5uUeCk8dwVAQVUVWQi0SX4MD0PFARrk=;
+        b=VpErF9BeqvJ1lvp3C6qQVShFP+IPiAWshgdKLp0P6z5k1tr0AEcTxGz7UXnNvecgkT
+         YT99OYu7LRWl/Fy8NL6FIcxXcEsQLWAxQyNk05Zd8sc8Qx8x7XwvaM2sLY8/poHHrPu/
+         DyjfK5DuBXeRhweChIlCA1+mwEa406UsmTGdff6uEJHY9SaVQJnQwoVW60I0hdrHNxvT
+         B7PAjoDqxdm+RkuigKCXFaq8jWVK9FfgEfezb2NHeiW/Q1qHn1shnvOneg5hIHS3xcg3
+         YHRkeLwJ1ju+oYqRCy4vCIsyP4fSsn+uZS9kDF6Io8A5TEIZ4DCoY+wVtUa1vrnoYB34
+         k4Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+IKe5IV7lT/U5uUeCk8dwVAQVUVWQi0SX4MD0PFARrk=;
+        b=J/fTj8tqb6Vdf6DAOd9zXX0GReQmJP9GPPR46gCQX4/Tg7bRf8wbfAQlVcTXU9f067
+         FhW2hN8gM9eUkeCRX7zuV9TY4oy1Smb42PnM337kYo77VBTG1O7xCZWUXd1DvIpBQr/k
+         8bctohRqaw4dLO+PD9fNj/9aH5x7TUkRJlwDLl25qXTcojqJAfjeQrccQ0pU2R8E657j
+         igZiyXusRosv4lAi0kMikguztPp9/YLBlzs7tuSL/JHMgGHLFRXaGS3JxUhjpiFSu8z0
+         UDeKILw9PcuLv2hEnnbFE9ayN2o3Q7AS9T5SX42Ji8qqga1Xf752Ka6+yRHlIWbeLvDf
+         MdSA==
+X-Gm-Message-State: AOAM533IvfSmFeixrRxsh43yKXne5GtFVgBO4B7iem5SDaKWVQMzllvK
+        n55UgpqKM89QnPRIG0d/Cals9KPJnsiJRdpl6eM=
+X-Google-Smtp-Source: ABdhPJzhKYKVAFCRyomt10DfXYeqMxabU4psPm98irB3JQRDdIK4pz5dLQpzfGjYi+Bm/E+rvMoR2ThLD7k0wAPtJa0=
+X-Received: by 2002:a17:906:d147:: with SMTP id br7mr1138362ejb.126.1628642493014;
+ Tue, 10 Aug 2021 17:41:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YRLAWhHWX3oa0iyt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <ef00ee9e0cf2b8fbcdf639d5038c373b69c0e1e1.1628639145.git.andreyknvl@gmail.com>
+ <CALvZod6d=Ri1K-cZMi_6MXuDnoRPdz5mCPN6DXRB8YyotV6d2w@mail.gmail.com>
+In-Reply-To: <CALvZod6d=Ri1K-cZMi_6MXuDnoRPdz5mCPN6DXRB8YyotV6d2w@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Wed, 11 Aug 2021 02:41:22 +0200
+Message-ID: <CA+fCnZcQEEkpe+OtCYfWZb1nzov0FChQgTF3yuK6=M5bN_YLWA@mail.gmail.com>
+Subject: Re: [PATCH] mm/slub, kasan: fix checking page_alloc allocations on free
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     andrey.konovalov@linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Wed, Aug 11, 2021 at 2:18 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Tue, Aug 10, 2021 at 4:47 PM <andrey.konovalov@linux.dev> wrote:
+> >
+> > From: Andrey Konovalov <andreyknvl@gmail.com>
+> >
+> > A fix for stat counters f227f0faf63b ("slub: fix unreclaimable slab stat
+> > for bulk free") used page_address(page) as kfree_hook() argument instead
+> > of object. While the change is technically correct, it breaks KASAN's
+> > ability to detect improper (unaligned) pointers passed to kfree() and
+> > causes the kmalloc_pagealloc_invalid_free test to fail.
+> >
+> > This patch changes free_nonslab_page() to pass object to kfree_hook()
+> > instead of page_address(page) as it was before the fix.
+> >
+> > Fixed: f227f0faf63b ("slub: fix unreclaimable slab stat for bulk free")
+> > Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
+>
+> The fix is already in the mm tree:
+> https://lkml.kernel.org/r/20210802180819.1110165-1-shakeelb@google.com
 
-On 8/11/2021 2:07 AM, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Aug 10, 2021 at 10:05:02AM +0800, Jin Yao escreveu:
->> - Update JSON core/uncore events and metrics for CascadeLake Server.
->> - Update JSON core/uncore events and metrics for SkyLake Server.
->>
->> The patch series can be found at (in case broken by mailing system potentially):
->> https://github.com/yaoj/perf-clx-events.git
->> branch: perf/core
-> Hey, can you keep just one repository and then create branches?
-> 
+Ah, I missed this.
 
-Oh, yes, creating too many repos. :(
+Please CC kasan-dev for KASAN-related fixes.
 
-I will keep just one repo and create branches for future event updates.
-
-Thanks
-Jin Yao
+Thanks!
