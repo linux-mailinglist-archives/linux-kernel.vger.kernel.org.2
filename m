@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0DF3E8D49
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BE53E8D46
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236606AbhHKJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:35:15 -0400
-Received: from m12-12.163.com ([220.181.12.12]:56982 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236320AbhHKJfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:35:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Wbsn2
-        O/J6vFmAj3DGGFuogIXi2AVx6ruHiH1V6mPGMk=; b=mupELqWa8QDZuSQTK1/9h
-        eVwrby7tqv0uOCLao7iDjrTz22QNbNkbAay0bgkc88Fslpnfausg7N3jxA6zvgiT
-        oRBusb8R1W7LMgliZuKiznA2BomQ2+tDpSK42HjmzRvw69p7c/uAJzb/+zcKpsf4
-        dVcLztd50wQlCDfrjTF9Ok=
-Received: from localhost.localdomain (unknown [223.104.68.7])
-        by smtp8 (Coremail) with SMTP id DMCowABHuySZmRNhgrW4TQ--.1768S2;
-        Wed, 11 Aug 2021 17:34:21 +0800 (CST)
-From:   Slark Xiao <slark_xiao@163.com>
-To:     hmh@hmh.eng.br, hdegoede@redhat.com
-Cc:     ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Slark Xiao <slark_xiao@163.com>
-Subject: [PATCH] [v2,1/1] Fix WWAN device disabled issue after S3 deep
-Date:   Wed, 11 Aug 2021 17:34:07 +0800
-Message-Id: <20210811093407.5583-1-slark_xiao@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S236539AbhHKJem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236056AbhHKJel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 05:34:41 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936CFC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:34:17 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso3925250wmq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vnsVN4bcM0E0y8yL+4jX4NPKN0s5XVfHXg6t0sA+kKU=;
+        b=u8FXx8PbqKg72yRV7K6aX2nwg+RaUIMIKfNSyZDi54QHZNgrnmHHhpQ3uW6MNefq+t
+         X/92op1mryh95Wm/AH8EEK6FZ9dY6WHyWJJ6gWW9CV/snKBi8+dpGzZiAUW4j3bT+sQA
+         kEkRFMvY/K+F2WRBhUU/Aw+ZhvCvgDYP07VdNhurn9IQQUMuRJhYvRvsUghUHu0Cd7lm
+         2HxjMjXHAezdkF4PXpqZnFGn0GCPqevGzJ4qOY7sM7q2tRu5scxmVsHV2bkXeB5xOZay
+         Vb/qjRNLocExEd0jwIXNuWn1dpNVgbP5WBCp0KJvYay/+69ktW+ZNYmVv3DQXiNSoqSs
+         F/Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vnsVN4bcM0E0y8yL+4jX4NPKN0s5XVfHXg6t0sA+kKU=;
+        b=suShG128A8GEI8tJbhP08+b2zUkeaZkbLXf1eRqtDuyswF2hG6H5sqCL1BnCPCSocV
+         NANRoEy+mvmMn6klsATbP3LF5qNLiut1weJPZK+A5LEx6O4GxSzs1C4Y0EdHWbuJosnA
+         9L340f4SxMNPJXu8Iz82N2BERiE3tzeoYzR62CbritlXFW1KlipcRta08EkuuAPoRg3E
+         eZumlfEH8JCLM1TeGqf9uy2gZzjpvo8k6/OsSW8lbK/TG3MM+tyW9pLZO83P6IWpqk5z
+         pVBRKpStOMMuUGHnfKS7d4sofx/mwScmLs+ZoGcLa1PLcGDJPzp5mKNaRwBHSxTyagK9
+         reZw==
+X-Gm-Message-State: AOAM533ki6SYhFtBvcnKFoU0K+B/Z7O0f1hRa8B3gfzKvTtE0+axpXpi
+        P4rI+0P4rbTctg8dVGhhLRVUIw==
+X-Google-Smtp-Source: ABdhPJwkwReehafMcUbIlZNd433otHjSQ1cTcW/iaeTfVVwqL8nOZJoLVmtkJ6iZwqwM5f+LD1MLMA==
+X-Received: by 2002:a7b:cd83:: with SMTP id y3mr26353421wmj.126.1628674455789;
+        Wed, 11 Aug 2021 02:34:15 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:43fd:e634:73d9:e10e])
+        by smtp.gmail.com with ESMTPSA id i14sm20670426wmq.40.2021.08.11.02.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 02:34:15 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 10:34:09 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
+Message-ID: <YROZkbMEMAeXMt1W@google.com>
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <YRJym+Vn4bbwQzzs@google.com>
+ <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
+ <YROMZFHCor3pbhMr@google.com>
+ <20210811091321.xtb776q4t6cwyanx@vireshk-i7>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowABHuySZmRNhgrW4TQ--.1768S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7AryUuF17Gr1rJFWxury7trb_yoW8tr4xpr
-        Z0yFW0yFW7K3yYg3WxAw4UWay5Cr98C3yxKFZFkw109FWqgFyrJ3yxtFWSqF43Gry8Ja12
-        va1kXr48Aa1UZ3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaa0PUUUUU=
-X-Originating-IP: [223.104.68.7]
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbivx3rZFWBvNSAzgAAsf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811091321.xtb776q4t6cwyanx@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When WWAN device wake from S3 deep, under thinkpad platform,
-WWAN would be disabled. This disable status could be checked
- by command 'nmcli r wwan' or 'rfkill list'.
-Issue analysis as below:
-  When host resume from S3 deep, thinkpad_acpi driver would
-call hotkey_resume() function. Finnaly, it will use
-wan_get_status to check the current status of WWAN device.
-During this resume progress, wan_get_status would always
-return off even WWAN boot up completely.
-  If wan_get_status() return off, rfkill_set_sw_state() would set WWAN's
-status as disabled.
-  This may be a fault of LENOVO BIOS.
-  Workaround is add a WWAN device check before rfkill_set_sw_state().
-If it's a Foxconn WWAN device, then we will ignore to do a status update.
+On Wednesday 11 Aug 2021 at 14:43:21 (+0530), Viresh Kumar wrote:
+> On 11-08-21, 09:37, Quentin Perret wrote:
+> > On Wednesday 11 Aug 2021 at 10:48:59 (+0530), Viresh Kumar wrote:
+> > > I had to use the pm-opp version, since almost everyone was using that.
+> > > 
+> > > On the other hand, there isn't a lot of OPP specific stuff in
+> > > dev_pm_opp_of_register_em(). It just uses dev_pm_opp_get_opp_count(),
+> > > that's all. This ended up in the OPP core, nothing else. Maybe we can
+> > > now move it back to the EM core and name it differently ?
+> > 
+> > Well it also uses dev_pm_opp_find_freq_ceil() and
+> > dev_pm_opp_get_voltage(), so not sure how easy it will be to move, but
+> > if it is possible no objection from me.
+> 
+> What uses these routines ? dev_pm_opp_of_register_em() ? I am not able
+> to see that at least :(
 
-Signed-off-by: Slark Xiao <slark_xiao@163.com>
----
- drivers/platform/x86/thinkpad_acpi.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+Yep, it's not immediately obvious, but see how it sets the struct
+em_data_callback to point at _get_power() where the actual energy
+calculation is done. So strictly speaking _get_power() is what uses
+these routines, but it goes in hand with dev_pm_opp_of_register_em() so
+I guess the same reasoning applies.
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 603156a6e3ed..e3b7bc0e7a33 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -1159,6 +1159,13 @@ struct tpacpi_rfk_ops {
- 
- static struct tpacpi_rfk *tpacpi_rfkill_switches[TPACPI_RFK_SW_MAX];
- 
-+/*Foxconn SDX55 T77W175 products. All available device ID*/
-+static const struct pci_device_id foxconn_device_ids[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0AB) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0AF) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0B4) },
-+	{}
-+};
- /* Query FW and update rfkill sw state for a given rfkill switch */
- static int tpacpi_rfk_update_swstate(const struct tpacpi_rfk *tp_rfk)
- {
-@@ -1182,8 +1189,13 @@ static void tpacpi_rfk_update_swstate_all(void)
- {
- 	unsigned int i;
- 
--	for (i = 0; i < TPACPI_RFK_SW_MAX; i++)
--		tpacpi_rfk_update_swstate(tpacpi_rfkill_switches[i]);
-+	for (i = 0; i < TPACPI_RFK_SW_MAX; i++) {
-+		if (pci_dev_present(foxconn_device_ids) && i == 1)
-+			pr_info("Find Foxconn wwan device, ignore to update rfkill switch status\n");
-+		else
-+			tpacpi_rfk_update_swstate(tpacpi_rfkill_switches[i]);
-+
-+	}
- }
- 
- /*
--- 
-2.25.1
+> > Right but the EM is a description of the hardware, so it seemed fair
+> > to assume this wouldn't change across the lifetime of the OS, similar
+> > to the DT which we can't reload at run-time. Yes it can be a little odd
+> > if you load/unload your driver module, but note that you generally can't
+> > load two completely different drivers on a single system. You'll just
+> > load the same one again and the hardware hasn't changed in the meantime,
+> > so the previously loaded EM will still be correct.
+> 
+> Yeah, it will be the same driver but a different version of it, which
+> may have updated the freq table. For me the EM is attached to the
+> freq-table, and the freq-table is not available anymore after the
+> driver is gone.
+> 
+> Anyway, I will leave that for you guys to decide :)
 
-
+IIUC Lukasz is working on something that should allow changing the EM at
+run-time, so hopefully it'll enable this use-case as well, but we'll see :)
