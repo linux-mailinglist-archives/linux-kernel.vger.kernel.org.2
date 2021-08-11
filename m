@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308473E8D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639443E8D5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236709AbhHKJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:37:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236432AbhHKJhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:37:03 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S236737AbhHKJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:37:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40982 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236707AbhHKJhg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 05:37:36 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43B8E60F11;
-        Wed, 11 Aug 2021 09:36:40 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mDkf8-004HVI-5u; Wed, 11 Aug 2021 10:36:38 +0100
-Date:   Wed, 11 Aug 2021 10:36:37 +0100
-Message-ID: <87v94c9vbu.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1DA842216B;
+        Wed, 11 Aug 2021 09:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628674632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oztmLtuICT2IcFqFQvVL636C+wIDTuWJpaM9f5ZQmqk=;
+        b=tmiq9qvhwgTXYYZnvnaSIxsg0080TOI5DY19EdXEcyPVyKRvlLO4OBY+2SchQjmo0PzfVO
+        zlZ9erIV/2ibLI99Bpn59hWqoVz8naUfP60ln3OAyHEutXr2rA1aesXBcybZyynHLZsBuX
+        E3tHpwLkogWx+mFk4MwGkl6evJCaukY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628674632;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oztmLtuICT2IcFqFQvVL636C+wIDTuWJpaM9f5ZQmqk=;
+        b=/rKQsLcr/EBM5ESYsZiuxRFtkApWDIU9g50whbbHHtMIKWMyl+gMT/d3twpwpiRoghBqu4
+        c1bnHPiE2KhnP9AQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id F0B18136D9;
+        Wed, 11 Aug 2021 09:37:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id Cs55N0eaE2HlAgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 09:37:11 +0000
+Subject: Re: [PATCH v14 033/138] mm: Add folio_nid()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Restrict IPA size to maximum 48 bits on 4K and 16K page size
-In-Reply-To: <1628657549-27584-1-git-send-email-anshuman.khandual@arm.com>
-References: <1628657549-27584-1-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-34-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <6a31a92c-0de7-bd96-f179-537f3a68b67b@suse.cz>
+Date:   Wed, 11 Aug 2021 11:37:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210715033704.692967-34-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 05:52:29 +0100,
-Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> This is the folio equivalent of page_to_nid().
 > 
-> Even though ID_AA64MMFR0.PARANGE reports 52 bit PA size support, it cannot
-> be enabled as guest IPA size on 4K or 16K page size configurations. Hence
-> kvm_ipa_limit must be restricted to 48 bits. This change achieves required
-> IPA capping.
-> 
-> Before the commit c9b69a0cf0b4 ("KVM: arm64: Don't constrain maximum IPA
-> size based on host configuration"), the problem here would have been just
-> latent via PHYS_MASK_SHIFT (which earlier in turn capped kvm_ipa_limit),
-> which remains capped at 48 bits on 4K and 16K configs.
-> 
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: kvmarm@lists.cs.columbia.edu
-> Cc: linux-kernel@vger.kernel.org
-> Fixes: c9b69a0cf0b4 ("KVM: arm64: Don't constrain maximum IPA size based on host configuration")
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
 > ---
-> This applies on v5.14-rc5
+>  include/linux/mm.h | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
->  arch/arm64/kvm/reset.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-> index 20588220fe66..e66974c4b9d3 100644
-> --- a/arch/arm64/kvm/reset.c
-> +++ b/arch/arm64/kvm/reset.c
-> @@ -337,6 +337,15 @@ int kvm_set_ipa_limit(void)
->  		return -EINVAL;
->  	}
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 8b79d9dfa6cb..c6e2a1682a6d 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1428,6 +1428,11 @@ static inline int page_to_nid(const struct page *page)
+>  }
+>  #endif
 >  
-> +	/*
-> +	 * IPA size beyond 48 bits could not be supported
-> +	 * on either 4K or 16K page size. Hence let's cap
-> +	 * it to 48 bits, in case it's reported as larger
-> +	 * on the system.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_ARM64_64K_PAGES))
-
-As per our earlier discussion, please use (PAGE_SIZE != SZ_64K)
-instead. This is in keeping with the rest of the file.
-
-> +		parange = min(parange, (unsigned int)ID_AA64MMFR0_PARANGE_48);
+> +static inline int folio_nid(const struct folio *folio)
+> +{
+> +	return page_to_nid(&folio->page);
+> +}
 > +
+>  #ifdef CONFIG_NUMA_BALANCING
+>  static inline int cpu_pid_to_cpupid(int cpu, int pid)
+>  {
+> 
 
-Also, please move it next to the point where we assign parange.
-
->  	kvm_ipa_limit = id_aa64mmfr0_parange_to_phys_shift(parange);
->  	kvm_info("IPA Size Limit: %d bits%s\n", kvm_ipa_limit,
->  		 ((kvm_ipa_limit < KVM_PHYS_SHIFT) ?
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
