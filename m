@@ -2,271 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EA63E9733
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7DE3E9735
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhHKSAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:00:02 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35812 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHKSAB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:00:01 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 67DDFEE;
-        Wed, 11 Aug 2021 19:59:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1628704775;
-        bh=BMsdi7My1VYTMrplXoEmSnQucwP+J/DbPd0dzrnNBsM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IHxA1AMILWKIHji8vmE4Bnzr2zmoUHodN+zQtrlMsQXc2KnZ8/0jXPdvhcRyMK9Y0
-         biqdsyNn4CTwpBw/Wf+8yaT/O4PgR/8Akw0izPsfspboLK84s9qqEGgnTlP3HzMB7o
-         2CsHjgO66+Hz0AV3k68PC9sB+etZaCQAptgb114Q=
-Date:   Wed, 11 Aug 2021 20:59:32 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        George Sun <george.sun@mediatek.com>
-Subject: Re: [PATCH v5, 13/15] dt-bindings: media: mtk-vcodec: Adds decoder
- dt-bindings for mt8192
-Message-ID: <YRQQBL8AN0925zj9@pendragon.ideasonboard.com>
-References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
- <20210811025801.21597-14-yunfei.dong@mediatek.com>
+        id S229988AbhHKSAP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Aug 2021 14:00:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:55588 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229473AbhHKSAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 14:00:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D346106F;
+        Wed, 11 Aug 2021 10:59:50 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FE7B3F40C;
+        Wed, 11 Aug 2021 10:59:49 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH v2] cpu_pm: Make notifier chain use a raw spinlock
+In-Reply-To: <20210811135240.7zyywd47lpttuuj4@linutronix.de>
+References: <20210811131405.1731576-1-valentin.schneider@arm.com> <20210811135240.7zyywd47lpttuuj4@linutronix.de>
+Date:   Wed, 11 Aug 2021 18:59:43 +0100
+Message-ID: <87bl63981c.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210811025801.21597-14-yunfei.dong@mediatek.com>
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunfei,
+On 11/08/21 15:52, Sebastian Andrzej Siewior wrote:
+> On 2021-08-11 14:14:05 [+0100], Valentin Schneider wrote:
+>> Booting a recent PREEMPT_RT kernel (v5.14-rc5-rt8 with the previous version
+>> of this fix reverted) on my arm4 Juno leads to the idle task blocking on a
+>> sleeping spinlock down some notifier path:
+>> 
+>> [    5.163034] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+[...]
+>> [    5.163294] __secondary_switched (arch/arm64/kernel/head.S:661)
+>
+> I would shrink that part above. The important part is that the CPU-idle
+> code runs with disabled interrupts. Then cpu_pm_notify_robust() invokes
+> the notifier which requires to acquire the spinlock_t. On PREEMPT_RT the
+> spinlock_t becomes a sleeping spinlock and must not be acquired with
+> disabled interrupts.
 
-Thank you for the patch.
+Noted, I'll pluck the warning out.
 
-On Wed, Aug 11, 2021 at 10:57:59AM +0800, Yunfei Dong wrote:
-> Adds decoder dt-bindings for mt8192.
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
-> v5: no changes
-> 
-> This patch depends on "Mediatek MT8192 clock support"[1].
-> 
-> The definition of decoder clocks are in mt8192-clk.h, need to include them in case of build fail [1].
-> 
-> [1]https://patchwork.kernel.org/project/linux-mediatek/list/?series=511175
-> ---
->  .../media/mediatek,vcodec-comp-decoder.yaml   | 172 ++++++++++++++++++
->  1 file changed, 172 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
-> new file mode 100644
-> index 000000000000..083c89933917
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
-> @@ -0,0 +1,172 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iommu/mediatek,vcodec-comp-decoder.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek Video Decode Accelerator With Component
-> +
-> +maintainers:
-> +  - Yunfei Dong <yunfei.dong@mediatek.com>
-> +
-> +description: |+
-> +  Mediatek Video Decode is the video decode hardware present in Mediatek
-> +  SoCs which supports high resolution decoding functionalities. Required
-> +  master and component node.
+>> +/*
+>> + * atomic_notifiers use a regular spinlock, but notifications for this chain
+>> + * will be issued by the idle task which cannot block.
+>
+> Maybe + a few details and make it more explicit
+>
+>  * atomic_notifiers use a spinlock_t, but notifications for this chain
+>  * will be issued by the idle task with disabled interrupts which cannot
+>  * block on PREEMPT_RT.
+>
+> ?
+>
 
-This should explain how the three IP cores relate to each other.
+More generally I'd say the idle task is never preemptible (as in
+preempt_count > 0 at all times), so any notification issued by the idle
+task itself cannot block. The fact those are also issued in an IRQ-off
+region just further cements that.
 
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - mediatek,mt8192-vcodec-dec  # for lat hardware
-> +          - mediatek,mtk-vcodec-lat     # for core hardware
-> +          - mediatek,mtk-vcodec-core
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 5
-> +
-> +  clock-names:
-> +    items:
-> +      - const: vdec-sel
-> +      - const: vdec-soc-vdec
-> +      - const: vdec-soc-lat
-> +      - const: vdec-vdec
-> +      - const: vdec-top
-> +
-> +  assigned-clocks: true
-> +
-> +  assigned-clock-parents: true
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  iommus:
-> +    minItems: 1
-> +    maxItems: 32
-> +    description: |
-> +      List of the hardware port in respective IOMMU block for current Socs.
-> +      Refer to bindings/iommu/mediatek,iommu.yaml.
-> +
-> +  dma-ranges:
-> +    maxItems: 1
-> +    description: |
-> +      Describes the physical address space of IOMMU maps to memory.
-> +
-> +  mediatek,scp:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
-> +    description:
-> +      Describes point to scp.
-> +
-> +required:
-> +      - compatible
-> +      - reg
-> +      - iommus
-> +      - dma-ranges
-> +
-> +allOf:
-> +  - if: #master node
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - mediatek,mt8192-vcodec-dec  # for lat hardware
-> +
-> +    then:
-> +      required:
-> +        - mediatek,scp
-> +
-> +  - if: #component node
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - mediatek,mtk-vcodec-lat     # for core hardware
-> +              - mediatek,mtk-vcodec-core
-> +
-> +    then:
-> +      required:
-> +        - interrupts
-> +        - clocks
-> +        - clock-names
-> +        - assigned-clocks
-> +        - assigned-clock-parents
-> +        - power-domains
-> +
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/memory/mt8192-larb-port.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/clock/mt8192-clk.h>
-> +    #include <dt-bindings/power/mt8192-power.h>
-> +
-> +    vcodec_dec: vcodec_dec@16000000 {
-> +        compatible = "mediatek,mt8192-vcodec-dec";
-> +        reg = <0 0x16000000 0 0x1000>;		/* VDEC_SYS */
-> +        mediatek,scp = <&scp>;
-> +        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>;
-> +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
-> +    };
-> +
-> +    vcodec_lat: vcodec_lat@0x16010000 {
-> +        compatible = "mediatek,mtk-vcodec-lat";
-> +        reg = <0 0x16010000 0 0x800>;		/* VDEC_MISC */
-> +        interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        iommus = <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD_EXT>,
-> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD2_EXT>,
-> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_AVC_MV_EXT>,
-> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_PRED_RD_EXT>,
-> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_TILE_EXT>,
-> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_WDMA_EXT>,
-> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_RG_CTRL_DMA_EXT>,
-> +             <&iommu0 M4U_PORT_L5_VDEC_UFO_ENC_EXT>;
-> +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
-> +        clocks = <&topckgen CLK_TOP_VDEC_SEL>,
-> +             <&vdecsys_soc CLK_VDEC_SOC_VDEC>,
-> +             <&vdecsys_soc CLK_VDEC_SOC_LAT>,
-> +             <&vdecsys_soc CLK_VDEC_SOC_LARB1>,
-> +             <&topckgen CLK_TOP_MAINPLL_D4>;
-> +        clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
-> +              "vdec-vdec", "vdec-top";
-> +        assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
-> +        assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
-> +        power-domains = <&spm MT8192_POWER_DOMAIN_VDEC>;
-> +    };
-> +
-> +    vcodec_core: vcodec_core@0x16025000 {
-> +        compatible = "mediatek,mtk-vcodec-core";
-> +        reg = <0 0x16025000 0 0x1000>;		/* VDEC_CORE_MISC */
-> +        interrupts = <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_UFO_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_PP_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_PRED_RD_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_PRED_WR_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_PPWRAP_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_TILE_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_VLD_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_VLD2_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_AVC_MV_EXT>,
-> +             <&iommu0 M4U_PORT_L4_VDEC_RG_CTRL_DMA_EXT>;
-> +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
-> +        clocks = <&topckgen CLK_TOP_VDEC_SEL>,
-> +             <&vdecsys CLK_VDEC_VDEC>,
-> +             <&vdecsys CLK_VDEC_LAT>,
-> +             <&vdecsys CLK_VDEC_LARB1>,
-> +             <&topckgen CLK_TOP_MAINPLL_D4>;
-> +        clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
-> +              "vdec-vdec", "vdec-top";
-> +        assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
-> +        assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
-> +        power-domains = <&spm MT8192_POWER_DOMAIN_VDEC2>;
-> +    };
+> …
+>> @@ -33,10 +45,13 @@ static int cpu_pm_notify(enum cpu_pm_event event)
+>>  
+>>  static int cpu_pm_notify_robust(enum cpu_pm_event event_up, enum cpu_pm_event event_down)
+>>  {
+>> +	unsigned long flags;
+>>  	int ret;
+>>  
+>>  	rcu_irq_enter_irqson();
+>> -	ret = atomic_notifier_call_chain_robust(&cpu_pm_notifier_chain, event_up, event_down, NULL);
+>
+> could we get rid of atomic_notifier_call_chain_robust() now that we have
+> zero users?
+>
 
-I'm a bit late in the game, reviewing v5 only, but I'm wondering if
-those IP cores need to be modelled in separate nodes. It would be much
-easier, from a software point of view, to have a single node, with
-multiple register ranges.
+No objections from my end, I'll add that in v3 and see if anyone complains.
 
-Are some of those IP cores used in different SoCs, combined in different
-ways, that make a modular design better ?
-
--- 
-Regards,
-
-Laurent Pinchart
+>> +	raw_spin_lock_irqsave(&cpu_pm_notifier.lock, flags);
+>> +	ret = raw_notifier_call_chain_robust(&cpu_pm_notifier.chain, event_up, event_down, NULL);
+>> +	raw_spin_unlock_irqrestore(&cpu_pm_notifier.lock, flags);
+>>  	rcu_irq_exit_irqson();
+>>  
+>>  	return notifier_to_errno(ret);
+>
+> Sebastian
