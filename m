@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5AC3E8D6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9503E8D72
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236684AbhHKJqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:46:10 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57751 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236605AbhHKJqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:46:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628675145; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=uSt79frfisEnQoSy8AUSjOVYQKhD134iVOQ+hRTplH0=; b=TKtmcL0fJ0aaEdiBialfeHpc7hxUd/MMtBMDu2hCnCwdF/JPnP1rZONo0oBKvy/3QCrv9xhh
- bqY7FfplYGIG2PDT1Was7YJi3fkxIolfqsM97xENEQMm8zj6Ab8UhgbUKVEzHDqMWIGEuwRd
- U1xAfhEWvaf3CcMA6xiccEE39QM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 61139c4866ff107904a6b1bb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 09:45:44
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3CE94C43143; Wed, 11 Aug 2021 09:45:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.220.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 515AAC4338A;
-        Wed, 11 Aug 2021 09:45:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 515AAC4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-To:     Dmitry Osipenko <digetx@gmail.com>, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net
-References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
- <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
- <f58e631d-67a7-4981-ce59-6a4772b44564@gmail.com>
- <c43ddc6b-32ca-433d-76f2-901cb594eaf1@gmail.com>
- <9588f01d-1cb6-7ca3-eb41-74259f1678f6@gmail.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <5f676dbe-6b8a-d302-cd81-2d12fe089e5a@codeaurora.org>
-Date:   Wed, 11 Aug 2021 15:15:37 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S236702AbhHKJqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236661AbhHKJqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 05:46:21 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCD1C061765;
+        Wed, 11 Aug 2021 02:45:57 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so3956484wms.2;
+        Wed, 11 Aug 2021 02:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hX0QC6ADmJgwmbuQbtv5ah8ttBQN8g/jsVWTYEdT7BM=;
+        b=Jg7ZiRHgtkqfCa1f+COa3hTMW5HGOHK6Hsnt8V5gvRE7L52loyU3dNO2s1qzbXyZQP
+         wZ5ymZYOinBjh9rsQhzl852tMp5/g2X0qrAp8McMlLBVu+TszY6aXH4+q0CEDhJ9gj0k
+         ahc7hRq5SHq/uaTyqriE18jXW61DZMAfDbbuaWPdi9kbbIsUX9klRw+zEtiQ6R+4utk6
+         0r12nd6Yj77GQPs/3jGrLlaIpUTxbf5+VA63ez8JOz+u/k8uKCEWNy3pl8pNnV13UH2C
+         fbM45EtPHKl3lBoqI5coyjHIt0pL5InLaSOggSXY4kKDY0mc3AWk132b2fidRvJccua7
+         w38w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hX0QC6ADmJgwmbuQbtv5ah8ttBQN8g/jsVWTYEdT7BM=;
+        b=gf8rZuwZ+W2xOOwDG2EKoXxF93HuiXFRnJ2+nwBfBdl1YLpug5cNb36vL7Iz+PAeeF
+         MDFJwodqsN3EdmYj1asFPy4CpN5TO/qmDvWva85ASBzIg4GQM8J/1m87HoBUNVJtvkeO
+         7/MkapeMrbMRKBP5yjFSlZiMGEoHmiq/xTPD3v2U5aUThW/W5ZGCDYNCBHoQEeZ6C5MP
+         L2D2bPse9zCD8G2ZXbDxcYAQFQ2hm+VrnPfW/ftvcK0zxpeQ9anifsyavrf1elVM47b/
+         hppJeKLOwM1VQ8wnHGFdZkQ5NCaBUQmfu/4y9020vuvGkK/B61k0lyTAr5DBW7VO2ZDW
+         Sk3g==
+X-Gm-Message-State: AOAM531AV6q8p5UbhBxKUzKs17h3g+jRZE6QjK0ccHbdjI+wVGK7c8Wb
+        S7peO8nY6MQ6TAPQivgRji4=
+X-Google-Smtp-Source: ABdhPJyhqBSFq6dY9qZIn3Q3kR8zRI975pXyBOfDHwZTOJwJ3OKarvZwiuu1i5StWgxqaVWzBGjsPA==
+X-Received: by 2002:a05:600c:154b:: with SMTP id f11mr8992188wmg.116.1628675156520;
+        Wed, 11 Aug 2021 02:45:56 -0700 (PDT)
+Received: from debian ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id i14sm20696100wmq.40.2021.08.11.02.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 02:45:56 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 10:45:54 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/135] 5.10.58-rc1 review
+Message-ID: <YROcUma6anxbHTjh@debian>
+References: <20210810172955.660225700@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <9588f01d-1cb6-7ca3-eb41-74259f1678f6@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
-On 8/10/2021 5:16 AM, Dmitry Osipenko wrote:
-> 10.08.2021 01:44, Dmitry Osipenko пишет:
->> 10.08.2021 01:26, Dmitry Osipenko пишет:
->>> 04.08.2021 13:58, Rajendra Nayak пишет:
->>>> @@ -2637,6 +2643,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>>>   {
->>>>   	struct of_phandle_args pd_args;
->>>>   	struct generic_pm_domain *pd;
->>>> +	struct device_node *np;
->>>> +	int pstate;
->>>>   	int ret;
->>>>   
->>>>   	ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
->>>> @@ -2675,10 +2683,26 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->>>>   		genpd_unlock(pd);
->>>>   	}
->>>>   
->>>> -	if (ret)
->>>> +	if (ret) {
->>>>   		genpd_remove_device(pd, dev);
->>>> +		return -EPROBE_DEFER;
->>>> +	}
->>>> +
->>>> +	/* Set the default performance state */
->>>> +	np = dev->of_node;
->>>> +	if (of_parse_phandle(np, "required-opps", index)) {
+On Tue, Aug 10, 2021 at 07:28:54PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.58 release.
+> There are 135 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> The OF node returned by of_parse_phandle() must be put.
+> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
+> Anything received after that time might be too late.
 
-Thanks for spotting that, I will fix it, though I might just drop
-the use of of_parse_phandle() and call of_get_required_opp_performance_state()
-unconditionally as suggested by Ulf.
+Build test:
+mips (gcc version 11.1.1 20210723): 63 configs -> no failure
+arm (gcc version 11.1.1 20210723): 105 configs -> no new failure
+arm64 (gcc version 11.1.1 20210723): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
-> 
->>>> +		pstate = of_get_required_opp_performance_state(np, index);
-> 
-> If you have more than one power domain, then this will override the
-> pstate which was set for a previous domain. This code doesn't feel solid
-> to me, at least a clarifying comment is needed about how it's supposed
-> to work.
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+arm64: Booted on rpi4b (4GB model). No regression. [2]
 
-I don't quite understand the concern here, this should work with devices
-having multiple power-domains as well. __genpd_dev_pm_attach gets called
-once per power-domain, and we use the index above to identify the power-domain.
-  
->>>> +		if (pstate < 0) {
->>>> +			ret = pstate;
->>>> +			dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
->>>> +				pd->name, ret);
->>>> +		} else {
->>>> +			dev_pm_genpd_set_performance_state(dev, pstate);
->>
->> Where is error handling?
+[1]. https://openqa.qa.codethink.co.uk/tests/20
+[2]. https://openqa.qa.codethink.co.uk/tests/23
 
-Sure, I'll fix that.
 
->>
->>>> +			dev_gpd_data(dev)->default_pstate = pstate;
->>>> +		}
->>>> +	}
->>>
->>> Why performance state is set after genpd_power_on()?
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-The requirement is that the domain is operating at a given performance
-state before the device becomes operational. The driver should ideally wait
-for the attach to complete before expecting the device to be functional.
-So the order here should really not matter, or rather the small amount of time
-while the power-domain is on but not at the right performance state should
-not matter if that's the concern.
+--
+Regards
+Sudip
 
-> 
-> Should set_performance_state() be invoked when power_on=false?
-> 
-> I assume it should be:
-> 
-> if (power_on) {
-> 	dev_pm_genpd_set_performance_state(dev, pstate);
-> 	dev_gpd_data(dev)->default_pstate = pstate;
-> } else {
-> 	dev_gpd_data(dev)->rpm_pstate = pstate;
-> }
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
