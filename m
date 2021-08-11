@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9503E8D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893E73E8D77
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236702AbhHKJqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236661AbhHKJqV (ORCPT
+        id S236598AbhHKJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:47:43 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48910
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236056AbhHKJrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:46:21 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCD1C061765;
-        Wed, 11 Aug 2021 02:45:57 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so3956484wms.2;
-        Wed, 11 Aug 2021 02:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hX0QC6ADmJgwmbuQbtv5ah8ttBQN8g/jsVWTYEdT7BM=;
-        b=Jg7ZiRHgtkqfCa1f+COa3hTMW5HGOHK6Hsnt8V5gvRE7L52loyU3dNO2s1qzbXyZQP
-         wZ5ymZYOinBjh9rsQhzl852tMp5/g2X0qrAp8McMlLBVu+TszY6aXH4+q0CEDhJ9gj0k
-         ahc7hRq5SHq/uaTyqriE18jXW61DZMAfDbbuaWPdi9kbbIsUX9klRw+zEtiQ6R+4utk6
-         0r12nd6Yj77GQPs/3jGrLlaIpUTxbf5+VA63ez8JOz+u/k8uKCEWNy3pl8pNnV13UH2C
-         fbM45EtPHKl3lBoqI5coyjHIt0pL5InLaSOggSXY4kKDY0mc3AWk132b2fidRvJccua7
-         w38w==
+        Wed, 11 Aug 2021 05:47:42 -0400
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5DCD63F346
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628675238;
+        bh=PS8yHIKypIU7zjLPbMN2+vMgzErZMgMuY8iIETH4G0E=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Q9xR+QkUrIo7CU1N8tqHSaysSSzlfIHPcDEuGPsB4Oy3AJNXQVTqTYH0KINBdSDZH
+         k8Qhrotyq6S/NGxatX3xfaaUARwtcOFJGYuUWhF/F6DdKxMVhXtK8rn7bcuN+KMwjD
+         dI6lX92u5uxtJYOeNYOo3PtLAqq3/UygZ5kyHA1NdZQ62vve8yKNUmhk6dEh3GY6XM
+         O/OB6MZKFSTsxV0PrRt695MVki1mmb4Yxm1knQikaJDk+aiIVkyECdu+N82vCy2GSs
+         7ZG1dTPxvfCtuSt4id2hbMxOF4HvlAnLbRT5Y9XR/VvfLfBnkoTVjU9yzmN8Lni6NM
+         +tmfSuPri8esQ==
+Received: by mail-ej1-f71.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso450830ejc.22
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:47:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hX0QC6ADmJgwmbuQbtv5ah8ttBQN8g/jsVWTYEdT7BM=;
-        b=gf8rZuwZ+W2xOOwDG2EKoXxF93HuiXFRnJ2+nwBfBdl1YLpug5cNb36vL7Iz+PAeeF
-         MDFJwodqsN3EdmYj1asFPy4CpN5TO/qmDvWva85ASBzIg4GQM8J/1m87HoBUNVJtvkeO
-         7/MkapeMrbMRKBP5yjFSlZiMGEoHmiq/xTPD3v2U5aUThW/W5ZGCDYNCBHoQEeZ6C5MP
-         L2D2bPse9zCD8G2ZXbDxcYAQFQ2hm+VrnPfW/ftvcK0zxpeQ9anifsyavrf1elVM47b/
-         hppJeKLOwM1VQ8wnHGFdZkQ5NCaBUQmfu/4y9020vuvGkK/B61k0lyTAr5DBW7VO2ZDW
-         Sk3g==
-X-Gm-Message-State: AOAM531AV6q8p5UbhBxKUzKs17h3g+jRZE6QjK0ccHbdjI+wVGK7c8Wb
-        S7peO8nY6MQ6TAPQivgRji4=
-X-Google-Smtp-Source: ABdhPJyhqBSFq6dY9qZIn3Q3kR8zRI975pXyBOfDHwZTOJwJ3OKarvZwiuu1i5StWgxqaVWzBGjsPA==
-X-Received: by 2002:a05:600c:154b:: with SMTP id f11mr8992188wmg.116.1628675156520;
-        Wed, 11 Aug 2021 02:45:56 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id i14sm20696100wmq.40.2021.08.11.02.45.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 02:45:56 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 10:45:54 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/135] 5.10.58-rc1 review
-Message-ID: <YROcUma6anxbHTjh@debian>
-References: <20210810172955.660225700@linuxfoundation.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PS8yHIKypIU7zjLPbMN2+vMgzErZMgMuY8iIETH4G0E=;
+        b=bV0MD+kbmKVSj/3wsgVs2fT1aSJsvOnZ/f0jMkijCb5NqONzMMyc9mG89h2f9So6Fg
+         8gPA0/RikYq8MaQx0CHcH90QZgMIbawBwGqTmE7UYA8hSb53A4JiDgTdYVUQRB4CVsvK
+         0YXN8hIOaek2Ugn8cP/Pla0zmXVTeQo+AGLgrhUlOBN3kE4/6KoHG/9123d7Uw5Q/Ed5
+         v3L554gh9bOpWxMDa3uu0rAhHRkGUs7308b4IRV1/niDoDGYOhGxUOjvism5YluVxIlO
+         bHqrMQxsqu+HzghDKh7sl5t+YYJro6DcaunuHeVDkSYQm+dDZXHS2AlvvFYR/Z4HrHjG
+         wR1Q==
+X-Gm-Message-State: AOAM531H2Qqsy5gddgdUvQjJJ/8wHrFGKAR0wEOF94KfW3p/U0FtPl1U
+        YKNFSRNy48yBmjXvlkdCeFU0tlrL29NbsBTEXcVA7BkT2e9CfIXu27bm2AsozN8+QZDfVsTT6ju
+        0obuJtOdf68jMSZG7KYV2U9bww/jg422y0FhNwaArRg==
+X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr10558289edc.379.1628675238029;
+        Wed, 11 Aug 2021 02:47:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKnLgxSqQnEduvT026FRmXeeMndTcAU4cAxXY0ufzsJkkLI7k6aLcWk+14ITfo34bPu2r46w==
+X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr10558262edc.379.1628675237812;
+        Wed, 11 Aug 2021 02:47:17 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id c6sm7906447eje.105.2021.08.11.02.47.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 02:47:17 -0700 (PDT)
+Subject: Re: [PATCH 3/3] gpiolib: of: constify few local device_node variables
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <20210728144229.323611-1-krzysztof.kozlowski@canonical.com>
+ <20210728144229.323611-4-krzysztof.kozlowski@canonical.com>
+ <CACRpkdabg6vDKSRL6_AJUOMm6L_zUFCxf9nBz-MbfA5rLGcHng@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <f830c295-03d1-831c-8561-248d54cd782e@canonical.com>
+Date:   Wed, 11 Aug 2021 11:47:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
+In-Reply-To: <CACRpkdabg6vDKSRL6_AJUOMm6L_zUFCxf9nBz-MbfA5rLGcHng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Tue, Aug 10, 2021 at 07:28:54PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.58 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 11/08/2021 11:00, Linus Walleij wrote:
+> On Wed, Jul 28, 2021 at 4:42 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
 > 
-> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
-> Anything received after that time might be too late.
+>> gpiolib does not modify struct device_node, so few local pointers can
+>> point to a const data.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> LGTM
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> I guess this needs to be merged with the other two patches?
+> I suppose in Rob Herrings DT tree?
 
-Build test:
-mips (gcc version 11.1.1 20210723): 63 configs -> no failure
-arm (gcc version 11.1.1 20210723): 105 configs -> no new failure
-arm64 (gcc version 11.1.1 20210723): 3 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/20
-[2]. https://openqa.qa.codethink.co.uk/tests/23
+Bartosz replied he merged it:
+https://lore.kernel.org/lkml/CAMpxmJVtxy-GBWmFLp-tMAOf03Fr7fg8RZ2ndMbvAu_M3qEkHQ@mail.gmail.com/
 
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
---
-Regards
-Sudip
-
+Best regards,
+Krzysztof
