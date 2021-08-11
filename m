@@ -2,89 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAD33E93F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388DE3E93F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232688AbhHKOtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232645AbhHKOtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:49:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EC8760F21;
-        Wed, 11 Aug 2021 14:49:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628693360;
-        bh=/CJw5b1pCyhSz3381YQio2pIOiSBPkA2bxUUE6V75UU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kcd3zIPatJD26UVvgsyOAlZ+d5BQYO/JhIefq4R4XHioN/NtEE8zRXBAnnHCQZWp0
-         VyEKJiO8A3O3mS7z7RBV46n6z8lEQZMWgRiqWes2Gm0YEYY54jJCG567KdDHcJ/QKq
-         3KMPdoXuOMVZRGBxxIUNXO9+45lXijXAbs0AZeKIGTpRzgoZdJuZ1gRbDilhBcb3pG
-         s3es1PMjpXCM/5HA6/1cygfcBfW5M3VlfXG3Yw3UPDLxzhpkUVq/1MAMXP/adYPdoK
-         Q9c0PId3AcZtI+G03p3Dr6frTFfaks83fg2jGdF3x1ROoE7Pt91PDU0zw6v1Zu/cln
-         /HPcj+ZBOnqbw==
-Date:   Wed, 11 Aug 2021 16:49:17 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] i2c: dev: Use sysfs_emit() in "show" functions
-Message-ID: <YRPjbXUjsKJw25fR@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210712142323.23118-1-andriy.shevchenko@linux.intel.com>
- <20210712142323.23118-2-andriy.shevchenko@linux.intel.com>
+        id S232745AbhHKOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:51:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41722 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232504AbhHKOvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:51:00 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 086131FED1;
+        Wed, 11 Aug 2021 14:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628693436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwtrtkUl9113t4lr7UC064OuObRR9nzlwURX6E47Ejk=;
+        b=lvigIX8mFaSzgQuTDf0WzrdIDjb8Cmi4SKNrV6/WkKbalfeccyELkgcKHM2ZB9Uqrt7J5Z
+        w83az5wJua6gMQlodw2DHWjn48na0c7F9iHd+bpSP0gK03V+5D6qClnVEIAtEGFLhA8bwc
+        Nj3WbCS4zoDn+bdfCyo/FtW6IqmzRK0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628693436;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwtrtkUl9113t4lr7UC064OuObRR9nzlwURX6E47Ejk=;
+        b=00aZUMGe8DAXnaS2BDapK+Mr+Eoi/fjwnUnCICeIbY1nJYfQxYL6MFYkzuuzpHiInaB0jj
+        RiUDnj24eQG6sPBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E931B136D9;
+        Wed, 11 Aug 2021 14:50:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id ULIfOLvjE2GcUQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 14:50:35 +0000
+Subject: Re: [PATCH v14 058/138] mm/swap: Add folio_mark_accessed()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-59-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <114cd25f-8c75-9a7a-f46d-60c31685a055@suse.cz>
+Date:   Wed, 11 Aug 2021 16:50:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iwPD7j4h5wJmQNtx"
-Content-Disposition: inline
-In-Reply-To: <20210712142323.23118-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210715033704.692967-59-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> Convert mark_page_accessed() to folio_mark_accessed().  It already
+> operated on the entire compound page, but now we can avoid calling
+> compound_head quite so many times.  Shrinks the function from 424 bytes
+> to 295 bytes (shrinking by 129 bytes).  The compatibility wrapper is 30
+> bytes, plus the 8 bytes for the exported symbol means the kernel shrinks
+> by 91 bytes.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
---iwPD7j4h5wJmQNtx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-On Mon, Jul 12, 2021 at 05:23:23PM +0300, Andy Shevchenko wrote:
-> The sysfs_emit() function was introduced to make it less ambiguous
-> which function is preferred when writing to the output buffer in
-> a "show" callback [1].
->=20
-> Convert the I=C2=B2C device sysfs interface from sprintf() to sysfs_emit()
-> accordingly, as the latter is aware of the PAGE_SIZE buffer and correctly
-> returns the number of bytes written into the buffer.
->=20
-> No functional change intended.
->=20
-> [1] Documentation/filesystems/sysfs.rst
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Question below:
 
-Applied to for-next, thanks!
+> @@ -430,36 +430,34 @@ static void __lru_cache_activate_page(struct page *page)
+>   * When a newly allocated page is not yet visible, so safe for non-atomic ops,
+>   * __SetPageReferenced(page) may be substituted for mark_page_accessed(page).
+>   */
 
+The other patches converting whole functions rewrote also comments to be about
+folios, but not this one?
 
---iwPD7j4h5wJmQNtx
-Content-Type: application/pgp-signature; name="signature.asc"
+> -void mark_page_accessed(struct page *page)
+> +void folio_mark_accessed(struct folio *folio)
+>  {
+> -	page = compound_head(page);
+> -
+> -	if (!PageReferenced(page)) {
+> -		SetPageReferenced(page);
+> -	} else if (PageUnevictable(page)) {
+> +	if (!folio_test_referenced(folio)) {
+> +		folio_set_referenced(folio);
+> +	} else if (folio_test_unevictable(folio)) {
+>  		/*
+>  		 * Unevictable pages are on the "LRU_UNEVICTABLE" list. But,
+>  		 * this list is never rotated or maintained, so marking an
+>  		 * evictable page accessed has no effect.
+>  		 */
 
------BEGIN PGP SIGNATURE-----
+These comments too?
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmET420ACgkQFA3kzBSg
-KbYK3RAAs52saJpMK0qhpmSyHMA+Pmo9wlQZatuzSpCPekk1PPV8Rrh0bl5FM9hA
-Q9Vn4yY5mGjWVYGXm9U0MVNpXtRMrLp3j9XZI4WRHyqF9Lgrex4iwCUhFKuW4GKD
-SSHTa14xc4pShp0CDHz0sZ516MfWJtrz1j+RJDPQ+4jN9/kk5v6b23yMxzuIlxJu
-U3TufpO9dMqZK4kclXrnjaSPYujK6gOxQU1L97J8aQaBUW4e2JVsDpqMbT7r4fcx
-wqO+3sOh8KWlsFJLlyHTx7PLJ9ytx2HAs09ETw2EpSaiLY8KBJNd8I38QkiOGYeQ
-NwwCmoeT3ICk7nWSWD8JzS5vrulsLN6SgqRaODnii3A+6Xss/+W5T4yFxFrEHr9M
-RT3ad2z95bFsueLJ6OC8qdWLbTep3Y6MgZUbhPxnVYmJAs+ZkZasxOCb76DzwFMe
-lj6WmqBLp2tJPEjHL9f74bhHr/0dO8vbP6/tY2vhkWGH08sSrJS7NcTkoNy1w8Kj
-vMdo8pFnTLb/BSSgIWHpfnaIeAYCPVkBNjM8gCXw4SYJNioEqHPJEPO0gHxBMQvR
-vITnsRnP0//zTRsQnE6VfHEajDISyiKKl0FNfa2Qu/xJc7ezn0pzapvPLVx0t+Dv
-s2cY8hJ08MWqj4Ou2O5/Zq1Jn5SxAosCWFAjHyUnfAhYUcg497g=
-=AQ8e
------END PGP SIGNATURE-----
+> -	} else if (!PageActive(page)) {
+> +	} else if (!folio_test_active(folio)) {
+>  		/*
+>  		 * If the page is on the LRU, queue it for activation via
+>  		 * lru_pvecs.activate_page. Otherwise, assume the page is on a
+>  		 * pagevec, mark it active and it'll be moved to the active
+>  		 * LRU on the next drain.
+>  		 */
+> -		if (PageLRU(page))
+> -			folio_activate(page_folio(page));
+> +		if (folio_test_lru(folio))
+> +			folio_activate(folio);
+>  		else
+> -			__lru_cache_activate_page(page);
+> -		ClearPageReferenced(page);
+> -		workingset_activation(page_folio(page));
+> +			__lru_cache_activate_folio(folio);
+> +		folio_clear_referenced(folio);
+> +		workingset_activation(folio);
+>  	}
+> -	if (page_is_idle(page))
+> -		clear_page_idle(page);
+> +	if (folio_test_idle(folio))
+> +		folio_clear_idle(folio);
+>  }
+> -EXPORT_SYMBOL(mark_page_accessed);
+> +EXPORT_SYMBOL(folio_mark_accessed);
+>  
+>  /**
+>   * lru_cache_add - add a page to a page list
+> 
 
---iwPD7j4h5wJmQNtx--
