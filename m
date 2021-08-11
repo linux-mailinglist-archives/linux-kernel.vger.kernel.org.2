@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0343E942A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9AE3E9425
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhHKPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:00:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45304 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232855AbhHKPA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:00:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=7bQV05XnMWhdDuuxH7FMFpb9864KxRDn5zp0OhtPXvw=; b=kH
-        zTplGIEv9C7x/ovp/yn1HMn6dH3E1cwlN77Me/7Y3zrALRYHqiqHk3jNxgY99o/p57/VUj47jh0Wq
-        LMy8isa1wTtGmuSRh367mEsjqm5h6x4IcoaN7jyIiGcYUdO51ljenhlUUvAi2Mlpc3kPH/tYZs2B7
-        ham3wL0W8myUpVg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mDphw-00H8Ni-3h; Wed, 11 Aug 2021 16:59:52 +0200
-Date:   Wed, 11 Aug 2021 16:59:52 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH net-next v2 1/1] net: phy: nxp-tja11xx: log critical
- health state
-Message-ID: <YRPl6NVyxU9q98AS@lunn.ch>
-References: <20210811063712.19695-1-o.rempel@pengutronix.de>
+        id S232849AbhHKPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:00:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60904 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232753AbhHKPAY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 11:00:24 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A22F9221BF;
+        Wed, 11 Aug 2021 14:59:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628693999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MciToW3SFUh+Fm8yPjWHXnDJfhQxrSPXbDGjkDcJjIU=;
+        b=T2jopGmElVX5HHcg6MVQqGTHem4aEPi/TYzg0HO9JBSCcTpDMJugMz52Voctr68lF4/zFN
+        21JGiJqaz/Jk8tfyt6TmAww+DrNuYOwOSeGJZCY6VMOHnglvNu4ukUjrxiFdYORRNnzwiZ
+        IajSUbamGFAY+slF8Nsdasx652it0B0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628693999;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MciToW3SFUh+Fm8yPjWHXnDJfhQxrSPXbDGjkDcJjIU=;
+        b=ob/f2cK6yraH9NykvMqpK+NziI5y0mr5Xcr9z3otBhLXhhuiA3xml/n7G/w+Jq6LF0RKSj
+        nIviqPxNoozVYoBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 82949136D9;
+        Wed, 11 Aug 2021 14:59:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id SzKSHu/lE2HeUwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 14:59:59 +0000
+Subject: Re: [PATCH v14 060/138] mm/migrate: Add folio_migrate_mapping()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-61-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <0c1cfbd5-9e1c-b801-642b-1eb313533252@suse.cz>
+Date:   Wed, 11 Aug 2021 16:59:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210811063712.19695-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210715033704.692967-61-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 08:37:12AM +0200, Oleksij Rempel wrote:
-> TJA1102 provides interrupt notification for the critical health states
-> like overtemperature and undervoltage.
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> Reimplement migrate_page_move_mapping() as a wrapper around
+> folio_migrate_mapping().  Saves 193 bytes of kernel text.
 > 
-> The overtemperature bit is set if package temperature is beyond 155C°.
-> This functionality was tested by heating the package up to 200C°
-> 
-> The undervoltage bit is set if supply voltage drops beyond some critical
-> threshold. Currently not tested.
-> 
-> In a typical use case, both of this events should be logged and stored
-> (or send to some remote system) for further investigations.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
