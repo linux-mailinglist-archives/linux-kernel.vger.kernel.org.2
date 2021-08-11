@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7903E9003
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0785E3E9005
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbhHKMDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:03:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48484 "EHLO mail.kernel.org"
+        id S237344AbhHKMEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:04:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232160AbhHKMDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:03:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A7D760E93;
-        Wed, 11 Aug 2021 12:02:41 +0000 (UTC)
+        id S232160AbhHKMEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:04:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6127D60F55;
+        Wed, 11 Aug 2021 12:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628683362;
-        bh=XHoR5BqMPxzKlhQzjnPDWel87OITrOE6CsKd1mWHcHM=;
+        s=k20201202; t=1628683466;
+        bh=1/ul8lTpnB4T++xzDF3kRFrA2xyEls7zKujxDteqWws=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kBMycUB5uB8gsx/uR3qd4MCTSpXUqPaTVF1DVryhH69XBG1S0CDhvpCTt3HjIP70+
-         t/gza7u4P1GIGyomnOblxMEz0321w6+5Sp8fR3McPnZf4KtiqyVhm9Ykphqo30xH+s
-         1M/evu3lE1719F0TI++92Sx1B86/6Y5xF04w/BP6D7cGq3q/QUuZDqIe3HaDi28mvn
-         eQUi8PpcsmIKSodxh38vbDk5P9oPefb9mDaItwGBOL/qo/6wcL2/Ewe5b8af14dONp
-         gw2cHlTeWOJoMBIuPg4aZYZnGmAXJoIdSxNVAD1v7HJmF1znvi8D1yVvkpzo0G3qke
-         3ifLdeo0qnlIA==
-Date:   Wed, 11 Aug 2021 15:02:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, lkp@intel.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: ipa: always inline
- ipa_aggr_granularity_val()
-Message-ID: <YRO8Xtd9+RRMqw1J@unreal>
-References: <20210810160213.2257424-1-elder@linaro.org>
+        b=EVoRi/drbZA10GqMWQqMmCoGAgW4Royyy0CA+6YNMUfjh0ivQaLCh9tX9suVJWJhQ
+         DHwrdzBb+C3sDOcDa7hs/wGTbPlX7jTnhKThl1cLojTXdv/nywsx5dinAFS8ml7Qpe
+         6M548VZLJmoJwx1UJlLzoKqbPE0VldIiADMotoUf986q2t8pTy8S6ntOBUqtTWyPHQ
+         4TfSQ2U4+U9Bevg+AIfxFDiOW3awR2RdFk65K/GAoYfjcDynTwnD9x+mjr5wb3uKdx
+         rmWZZ+roqwqo8cE+AlXBnZ1jNmJwsqt5XH6EaPIFkg1uGUBH6QAfRro3yE0VetTfKT
+         v/W01nfpUVP8A==
+Date:   Wed, 11 Aug 2021 15:04:21 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH 06/18] ARC: mm: Enable STRICT_MM_TYPECHECKS
+Message-ID: <YRO8xUlAtMeJnDbe@kernel.org>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+ <20210811004258.138075-7-vgupta@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810160213.2257424-1-elder@linaro.org>
+In-Reply-To: <20210811004258.138075-7-vgupta@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:02:13AM -0500, Alex Elder wrote:
-> It isn't required, but all callers of ipa_aggr_granularity_val()
-> pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
-> Two of those callers are in ipa_validate_build(), with the result
-> being passed to BUILD_BUG_ON().
+On Tue, Aug 10, 2021 at 05:42:46PM -0700, Vineet Gupta wrote:
+> In the past I've refrained from doing this (atleast 2 times) due to the
+
+                                            ^ at least
+
+> slight code bloat due to ABI implications of pte_t etc becoming sttuct
+
+                                                                 ^ struct
 > 
-> Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
-> inline ipa_aggr_granularity_val(), so the result of the function is
-> not constant at compile time, and that leads to build errors.
+> Per ARC ABI, functions return struct via memory and not through register
+> r0, even if the struct would fits in register(s)
+
+                              ^ fit
 > 
-> Define the function with the __always_inline attribute to avoid the
-> errors.  And given that the function is inline, we can switch the
-> WARN_ON() there to be BUILD_BUG_ON().
+>  - caller allocates space on stack and passes the address as first arg
+>    (r0), shifting rest of args by one
 > 
-> Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Alex Elder <elder@linaro.org>
+>  - callee creates return struct in memory (referenced via r0)
+> 
+> This time around the code actually shrunk slightly (due to subtle
+> inlining heuristic effects), but still slightly inefficient due to
+> return values passed through memory. That however seems like a small
+
+Out of curiosity, is this actually measurable on real world applications?
+
+> cost compared to maintenance burden given the impending new mmu support
+> for page walk etc
+> 
+> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 > ---
+>  arch/arc/include/asm/page.h | 26 --------------------------
+>  arch/arc/mm/ioremap.c       |  2 +-
+>  2 files changed, 1 insertion(+), 27 deletions(-)
 > 
-> David/Jakub, this fixes a bug in a commit in net-next/master.  -Alex
-> 
->  drivers/net/ipa/ipa_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-> index 25bbb456e0078..f90b3521e266b 100644
-> --- a/drivers/net/ipa/ipa_main.c
-> +++ b/drivers/net/ipa/ipa_main.c
-> @@ -255,9 +255,9 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
->   * less than the number of timer ticks in the requested period.  0 is not
->   * a valid granularity value.
->   */
-> -static u32 ipa_aggr_granularity_val(u32 usec)
-> +static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
->  {
-> -	WARN_ON(!usec);
-> +	BUILD_BUG_ON(!usec);
-
-So what exactly are you checking here if all callers pass same value?
-It is in-kernel API, declared as static inside one module. There is no
-need to protect from itself.
-
-Thanks
-
+> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+> index 4a9d33372fe2..c4ac827379cd 100644
+> --- a/arch/arc/include/asm/page.h
+> +++ b/arch/arc/include/asm/page.h
+> @@ -34,12 +34,6 @@ void copy_user_highpage(struct page *to, struct page *from,
+>  			unsigned long u_vaddr, struct vm_area_struct *vma);
+>  void clear_user_page(void *to, unsigned long u_vaddr, struct page *page);
 >  
->  	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
+> -#undef STRICT_MM_TYPECHECKS
+> -
+> -#ifdef STRICT_MM_TYPECHECKS
+> -/*
+> - * These are used to make use of C type-checking..
+> - */
+>  typedef struct {
+>  #ifdef CONFIG_ARC_HAS_PAE40
+>  	unsigned long long pte;
+> @@ -64,26 +58,6 @@ typedef struct {
+>  
+>  #define pte_pgprot(x) __pgprot(pte_val(x))
+>  
+> -#else /* !STRICT_MM_TYPECHECKS */
+> -
+> -#ifdef CONFIG_ARC_HAS_PAE40
+> -typedef unsigned long long pte_t;
+> -#else
+> -typedef unsigned long pte_t;
+> -#endif
+> -typedef unsigned long pgd_t;
+> -typedef unsigned long pgprot_t;
+> -
+> -#define pte_val(x)	(x)
+> -#define pgd_val(x)	(x)
+> -#define pgprot_val(x)	(x)
+> -#define __pte(x)	(x)
+> -#define __pgd(x)	(x)
+> -#define __pgprot(x)	(x)
+> -#define pte_pgprot(x)	(x)
+> -
+> -#endif
+> -
+>  typedef pte_t * pgtable_t;
+>  
+>  /*
+> diff --git a/arch/arc/mm/ioremap.c b/arch/arc/mm/ioremap.c
+> index 95c649fbc95a..052bbd8b1e5f 100644
+> --- a/arch/arc/mm/ioremap.c
+> +++ b/arch/arc/mm/ioremap.c
+> @@ -39,7 +39,7 @@ void __iomem *ioremap(phys_addr_t paddr, unsigned long size)
+>  	if (arc_uncached_addr_space(paddr))
+>  		return (void __iomem *)(u32)paddr;
+>  
+> -	return ioremap_prot(paddr, size, PAGE_KERNEL_NO_CACHE);
+> +	return ioremap_prot(paddr, size, pgprot_val(PAGE_KERNEL_NO_CACHE));
 >  }
+>  EXPORT_SYMBOL(ioremap);
+>  
 > -- 
-> 2.27.0
+> 2.25.1
 > 
+> 
+
+-- 
+Sincerely yours,
+Mike.
