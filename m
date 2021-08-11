@@ -2,142 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D21D3E9469
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C840E3E946C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhHKPSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbhHKPSo (ORCPT
+        id S232910AbhHKPUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:20:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31848 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232635AbhHKPUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:18:44 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD52C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:18:20 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id a5so3136297plh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ygxUpyRX9wOtF8ZOqKu/KuzaLXR5hL1hZ6xZFoZuCD4=;
-        b=CpiIzIOhMYLbVZHyvo6F+/4fLJHxng97OOxY6LZyn8+rJFWiHXYtRIt1jYgPz3yXcy
-         5u3a7v/iHytl5YWjA+3VnvTejeZEGumLYoT5g250NMttmMUFe+dVQ9NQowYJlR8q3O/+
-         U3TYeQsC+9f8eOPweI4vaw0LoPWeCNXIZlpq8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ygxUpyRX9wOtF8ZOqKu/KuzaLXR5hL1hZ6xZFoZuCD4=;
-        b=pLcL5xpKO5VGtow1URU6ug4kiw/qNx0rVL3CdUeze12V3ek6N5i1U7gnOtpAyQm0eT
-         txrPjLchlD1by18cuNhWPzMKerOdMSLECWiDlsNZ8r7XGF7l76n2FASYLteiE4WeNBQ/
-         HFY7A9HRLIntCqd1fR4ZqmR64I3IkSOl/fbgFl+dPMBjqR734yzahjkootLUAtDGvYvQ
-         jbunuLmBBuD4lRunl8Q3Y9rcR3rPBTrDtjluoUHFJhaYuix85Up1Ovn+g/5VlHsbyZ6L
-         Q0GaVnuCKdiLPGqcQ0l+arcwaGtkvaKOrXmfDFfD2CLJwW+t4sKeQ7q6161stqhJqNUJ
-         NX0g==
-X-Gm-Message-State: AOAM531oVzu5brG93VRpDDqeo6IeGZ5kZBTREv7yPoLtNUajifnu7lg8
-        KWIIRIDZHN98p+q9YH2SXJlhBA==
-X-Google-Smtp-Source: ABdhPJxuQ9F1OGZdSAD5Ml4b3eKOeX4HHmdbExxTwfq7eiGklUYibxeF6HOax62CXeDESYQJwvVEkQ==
-X-Received: by 2002:a17:902:8c83:b029:11b:3f49:f88c with SMTP id t3-20020a1709028c83b029011b3f49f88cmr4563235plo.63.1628695099936;
-        Wed, 11 Aug 2021 08:18:19 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:2800:b98b:b4d4:10f9])
-        by smtp.gmail.com with ESMTPSA id 22sm30083544pgn.88.2021.08.11.08.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 08:18:19 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Oder Chiou <oder_chiou@realtek.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bard Liao <bardliao@realtek.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: rt5682: Properly turn off regulators if wrong device ID
-Date:   Wed, 11 Aug 2021 08:17:56 -0700
-Message-Id: <20210811081751.v2.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+        Wed, 11 Aug 2021 11:20:04 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BF2jn0054591;
+        Wed, 11 Aug 2021 11:19:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : message-id : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=3WzDokDLJexQHoOQsmrorWkTcqNQXXScQWMzbJ2FIPw=;
+ b=gC87rhPOrIUJme04pTDgV2Vg/KW4T6SODO13OjQGaYZwHYl/nIL2N2IoWQMkwt9oFXFg
+ i2QJU1balrJIrlOUJ4EiHlpGXn1ZNA576sV4eiR43YDZJfVHjIhKpoJdcCENuMSD9196
+ QTKQBskJmmTcemvJqRFuT8GxytWpmT83eTsN7JUqCcxDDWJB4s+ZI/j38m6Ki06Fg7hU
+ giwqwqDJiwkAfAw8vn9KCaoj5opGpyxa/BJAt1uCwdWJK6BfvGHNhnSmM+vvpI6e13NI
+ sNQK0Vl8Xde0ad5Uec45ztWPMImhn5iGVNnf3nJiRWMwIJ6lwADbWj6htxWBz0VoqYuo iA== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab8kmdhmx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 11:19:39 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BFCpDb022376;
+        Wed, 11 Aug 2021 15:19:37 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 3acfpg838y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 15:19:37 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BFJYon52036048
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 15:19:34 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C2544A4053;
+        Wed, 11 Aug 2021 15:19:34 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7840AA4040;
+        Wed, 11 Aug 2021 15:19:34 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Aug 2021 15:19:34 +0000 (GMT)
+Received: from [9.206.147.74] (unknown [9.206.147.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 489CB60152;
+        Thu, 12 Aug 2021 01:19:33 +1000 (AEST)
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+Subject: [ANNOUNCE] [CFP] linux.conf.au Online 2022 Kernel Miniconf
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     lwn@lwn.net
+Message-ID: <e7e0d0c0-799f-28b7-2a2e-418afe809f24@linux.ibm.com>
+Date:   Thu, 12 Aug 2021 01:19:23 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: IitmhZlCi8J0xzqWXanC6e3vCy6S1rtf
+X-Proofpoint-ORIG-GUID: IitmhZlCi8J0xzqWXanC6e3vCy6S1rtf
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-11_05:2021-08-11,2021-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ clxscore=1011 lowpriorityscore=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=852 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108110102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I booted up on a board that had a slightly different codec
-stuffed on it, I got this message at bootup:
+LCA2022 Kernel Miniconf - Online - 2022-01-14
+---------------------------------------------
 
-  rt5682 9-001a: Device with ID register 6749 is not rt5682
+The linux.conf.au 2022 Kernel Miniconf Call for Proposals is now open. 
+Start working on your talks!
 
-That's normal/expected, but what wasn't normal was the splat that I
-got after:
+Date: 2022-01-14
+Location: The Internet (again)
+Submissions close: 2021-09-05, 23:59 AoE/UTC-12
+Submissions: https://linux.conf.au/proposals/submit/kernel-miniconf/
+More info: https://lca-kernel.ozlabs.org/2022-cfp.html
 
-  WARNING: CPU: 7 PID: 176 at drivers/regulator/core.c:2151 _regulator_put+0x150/0x158
-  pc : _regulator_put+0x150/0x158
-  ...
-  Call trace:
-   _regulator_put+0x150/0x158
-   regulator_bulk_free+0x48/0x70
-   devm_regulator_bulk_release+0x20/0x2c
-   release_nodes+0x1cc/0x244
-   devres_release_all+0x44/0x60
-   really_probe+0x17c/0x378
-   ...
+Significant changes from last year:
+- All miniconf speakers are guaranteed a free ticket
+- All talks will be 30 minutes long
+- CFP is now being run at the same time as main conference CFP process: 
+if your talk is of broader interest consider submitting to the main 
+conference as well
 
-This is because the error paths don't turn off the regulator. Let's
-fix that.
+***************************************************************************
 
-Fixes: 0ddce71c21f0 ("ASoC: rt5682: add rt5682 codec driver")
-Fixes: 87b42abae99d ("ASoC: rt5682: Implement remove callback")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
+linux.conf.au 2022 will be held from 14-16 January 2022.
 
-Changes in v2:
-- Add a blank line.
+Due to the ongoing COVID-19-related restrictions on events and travel, 
+LCA2022 will once again be held online. (Silver lining is you can speak 
+or attend from wherever you are without flying here!)
 
- sound/soc/codecs/rt5682-i2c.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+The Kernel Miniconf is a single-day miniconf track, held on Friday 14 
+January, about everything related to the kernel and low-level systems 
+programming.
 
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 4a56a52adab5..e559b965a0a6 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -117,6 +117,13 @@ static struct snd_soc_dai_driver rt5682_dai[] = {
- 	},
- };
- 
-+static void rt5682_i2c_disable_regulators(void *data)
-+{
-+	struct rt5682_priv *rt5682 = data;
-+
-+	regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
-+}
-+
- static int rt5682_i2c_probe(struct i2c_client *i2c,
- 		const struct i2c_device_id *id)
- {
-@@ -157,6 +164,11 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	ret = devm_add_action_or_reset(&i2c->dev, rt5682_i2c_disable_regulators,
-+				       rt5682);
-+	if (ret)
-+		return ret;
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(rt5682->supplies),
- 				    rt5682->supplies);
- 	if (ret) {
-@@ -285,7 +297,6 @@ static int rt5682_i2c_remove(struct i2c_client *client)
- 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
- 
- 	rt5682_i2c_shutdown(client);
--	regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
- 
- 	return 0;
- }
+The Kernel Miniconf invites talks about up-and-coming kernel 
+developments, the future direction of the kernel, and kernel development 
+community and process matters. Past Kernel Miniconfs have covered topics 
+such as memory management, RCU, scheduling, testing/CI and filesystems, 
+as well as community and process topics such as licensing, developer 
+workflows, safety critical processes, and so on.
+
+We invite submissions on anything related to kernel and low-level 
+systems programming. We welcome submissions from developers of all 
+levels of experience, and from anyone connected with the kernel whether 
+you are an upstream kernel developer, distro maintainer, academic 
+researcher or a developer who works further downstream. The focus of the 
+miniconf will primarily be on Linux, however non-Linux talks of 
+sufficient interest to a primarily Linux audience will be considered.
+
 -- 
-2.32.0.605.g8dce9f2422-goog
-
+Andrew Donnellan              OzLabs, ADL Canberra
+ajd@linux.ibm.com             IBM Australia Limited
