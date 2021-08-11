@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F17D3E8E96
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3B83E8E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237150AbhHKK0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:26:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50720 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236894AbhHKK0R (ORCPT
+        id S237278AbhHKK2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237259AbhHKK1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:26:17 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C49081FE29;
-        Wed, 11 Aug 2021 10:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628677553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dIVroiF9CWXaHpVcigCtxn4G9TJ5tno4t7MoqivtmBE=;
-        b=b+SuKVfs3TEK9nrziOok74mNZMgUtiymJF99t0VR8N6PbJOj4rqd7s7kiJeR5uwkFJE3V1
-        qUuRkJhU8f8/CcC6xfB8bQ3ZpF2d4GnhJg1XqaXKt8Voxto9QGaBYOa1VSDjUz72YRjtih
-        Dfku/ugQMlkKEyOeoAWGJMbPyGnXvFE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628677553;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dIVroiF9CWXaHpVcigCtxn4G9TJ5tno4t7MoqivtmBE=;
-        b=88LED16uP9Jki6B+ocpzbFNhVd5PaojtVuvOjAht+8CLWYWTDGJ9K3HcZ5vgvumzwoISXg
-        sp9gxICXsIV91YAQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id ABDC8131F5;
-        Wed, 11 Aug 2021 10:25:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id MS2KKbGlE2GbDgAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Wed, 11 Aug 2021 10:25:53 +0000
-Date:   Wed, 11 Aug 2021 12:25:53 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Keith Busch <kbusch@kernel.org>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>
-Subject: Re: [PATCH v4 2/8] nvme-tcp: Update number of hardware queues before
- using them
-Message-ID: <20210811102553.auradulozluc5ond@carbon.lan>
-References: <20210802112658.75875-1-dwagner@suse.de>
- <20210802112658.75875-3-dwagner@suse.de>
- <8373c07f-f5df-1ec6-9fda-d0262fc1b377@grimberg.me>
- <20210809085250.xguvx5qiv2gxcoqk@carbon>
- <01d7878c-e396-1d6b-c383-8739ca0b3d11@grimberg.me>
- <20210811010718.GA3135947@dhcp-10-100-145-180.wdc.com>
- <079108ce-6ca0-800e-e3df-29d015a4530c@grimberg.me>
+        Wed, 11 Aug 2021 06:27:50 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B7AC0617BD;
+        Wed, 11 Aug 2021 03:27:02 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id x21so963125uau.0;
+        Wed, 11 Aug 2021 03:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p1Ky2vPG07eH4lgjI7fl813x1tcTIOy41jGBLt6fr3c=;
+        b=cJDiynRL3h9JNsYQgjXb+qaX8bVmqJeOr+v3pikqaCw7O5V7pDRaEPf47RURbPp+tS
+         U13qUbQ9Se7vvon1Bu6ddsIDQ5H3ZvdryoESfynad2mDVXQikAT1tOf8Lna9CrSDo6oJ
+         pfbnhIo5o/PyXHgEyKrONGEMMyhhCr+WUxgpC+pPs/Ht11pVoO6T1JIxRTekU/ktAcXB
+         yE4AHrWgdIUpuQ8XIbQ58uZ6mOTGze72FvIM3oPGrZ+2ic6+LRfvRz3hFKK6doPrKYXx
+         zBdHwgbA9OE3mLlHx+Hy8CODLiVcVjRpJB0aDGldyGxGJQ+OMkva9PrUpamN8x5cbB/J
+         jupQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p1Ky2vPG07eH4lgjI7fl813x1tcTIOy41jGBLt6fr3c=;
+        b=NwxQdCjrQfOPa5usI3c7Ump+ZA3qDKHl9TTJkfGVpn01G5VaZGv+R5a2QOrM7VY8Oj
+         PYWY6VXymcmvk5Y9zhhfvAz7O0uQ76zKGGIfZ5JDgY3quAvMAXPF1cWZIY6Y48gJN7lQ
+         XJ0QIATUeVFG2shVYCVV4Al3qjGeqj4Tk2867Q9e4hfZSVl0Mlf5DSQneKL2n160qaW/
+         eGnt22Ne7+Yywda6lHHjX+rcgi/aQQgQ6QlOZTmmIf98+kFaRbZQ8pJPJXCfW0dZhNoc
+         CTdRTQ9Ee7/CPH5iOBTXIq/zcWD3d0MRqKWvsImA0p57hS66a36hOqpwo9uiHPqTg95p
+         Hbqw==
+X-Gm-Message-State: AOAM531GZWfcgzquLCe40RnfnsCHRKk/MlOeSs39jHHpgOQ6TgSYMf6F
+        37w1MP1En82I2Mu/4HXEDS45GI7vYsi6+dpbKaA=
+X-Google-Smtp-Source: ABdhPJyHF4jG0uFnPkKsmItTX7DmGBWg49hVMAVsoycngSPyWscu+aTXXTNLHWoDfBKKtJwGolHxuSMNK7q7YlY2KDM=
+X-Received: by 2002:ab0:771a:: with SMTP id z26mr1184058uaq.0.1628677621550;
+ Wed, 11 Aug 2021 03:27:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <079108ce-6ca0-800e-e3df-29d015a4530c@grimberg.me>
+References: <20210728041253.15382-1-sergio.paracuellos@gmail.com>
+ <CAMpxmJUnXpOhvaQuNPbFt3TY363vrsEWV1KXxhyBm7cJ-PWvwQ@mail.gmail.com> <CACRpkdbHzdCnHB8358Wi6zojMhfi5urhdm2XOiPmhph7q_L1ew@mail.gmail.com>
+In-Reply-To: <CACRpkdbHzdCnHB8358Wi6zojMhfi5urhdm2XOiPmhph7q_L1ew@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 11 Aug 2021 12:26:50 +0200
+Message-ID: <CAMhs-H-+yiWitOkMCwmqrMAh6sLPViT0VRXz=YV_F4-vRQH6sw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] gpiolib: convert 'devprop_gpiochip_set_names' to
+ support multiple gpiochip banks per device
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        NeilBrown <neil@brown.name>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:57:58PM -0700, Sagi Grimberg wrote:
-> > > I think we should always wait for the freeze to complete.
-> > 
-> > Don't the queues need to be started in order for the freeze to complete?
-> > Any enqueued requests on the quiesced queues will never complete this
-> > way, so the wait_freeze() will be stuck, right? If so, I think the
-> > nvme_start_queues() was in the correct place already.
-> 
-> Exactly what I was trying to point out (poorly though)
+Hi Linus,
 
-Thanks for explaining. I think I got the general idea what the different
-states are doing and what the transitions are now. (famous last words).
+On Wed, Aug 11, 2021 at 11:03 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Thu, Jul 29, 2021 at 7:43 PM Bartosz Golaszewski
+> <bgolaszewski@baylibre.com> wrote:
+> > On Wed, Jul 28, 2021 at 6:12 AM Sergio Paracuellos
+> > <sergio.paracuellos@gmail.com> wrote:
+>
+> > Patches queued for next. Thanks!
+>
+> Thanks to all for fixing this hairy situation with composite
+> GPIO controllers. I think there are some more controllers
+> that need this actually.
 
-Anyway, the first three patches are the result of debugging the case of
-'prior_ioq_cnt != nr_io_queues'. Starting the queues before updating the
-number of queues lookes strange.
+I was searching for clear patterns that were using a similar approach
+to this new stuff inside the gpio folder and I was not able to
+properly be sure which other drivers can get the same change that I
+did for mt7621 and broadcom applied... If you point me out to which
+drivers can also use this, I am ok in sending patches for all of them
+when I come back from a little rest time on August 23th.
 
-I suppose in the case 'prior_ioq_cnt > nr_io_queues',
-nvme_tcp_start_io_queues() should be successful and we do the
-blk_mq_update_nr_hw_queues(). In the other case we should land in the
-error recovery.
-
-Wouldn't it make sense to always exercise the error recovery path if we
-detect 'prior_ioq_cnt != nr_io_queues' and reduce the number of things
-which can go wrong?
-
-Daniel
+Thanks,
+    Sergio Paracuellos
+>
+> Yours,
+> Linus Walleij
