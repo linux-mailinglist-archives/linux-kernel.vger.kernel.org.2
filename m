@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EC13E88CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9903E88C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhHKD1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 23:27:33 -0400
-Received: from smtprelay0157.hostedemail.com ([216.40.44.157]:48640 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232795AbhHKD13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:27:29 -0400
-Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id A12421802B564;
-        Wed, 11 Aug 2021 03:27:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 3358D2550F6;
-        Wed, 11 Aug 2021 03:27:02 +0000 (UTC)
-Message-ID: <d5e1aada694465fd62f57695e264259815e60746.camel@perches.com>
-Subject: Re: [PATCH net-next v2 2/2] bonding: combine netlink and console
- error messages
-From:   Joe Perches <joe@perches.com>
-To:     Jonathan Toppins <jtoppins@redhat.com>, netdev@vger.kernel.org,
-        leon@kernel.org
-Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Tue, 10 Aug 2021 20:27:01 -0700
-In-Reply-To: <e6b78ce8f5904a5411a809cf4205d745f8af98cb.1628650079.git.jtoppins@redhat.com>
-References: <cover.1628650079.git.jtoppins@redhat.com>
-         <e6b78ce8f5904a5411a809cf4205d745f8af98cb.1628650079.git.jtoppins@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.21
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 3358D2550F6
-X-Stat-Signature: 75qa5r47bkii4bat47q8hn5j747o34s3
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/2GfxExur2gZjwWpoFAdVLKZaN4FmBi38=
-X-HE-Tag: 1628652422-415181
+        id S232747AbhHKD0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 23:26:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:41300 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232498AbhHKD0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 23:26:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BB8D6D;
+        Tue, 10 Aug 2021 20:26:27 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.67.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7D7C83F40C;
+        Tue, 10 Aug 2021 20:26:24 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-perf-users@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] KVM: arm64: perf: Replace '0xf' instances with ID_AA64DFR0_PMUVER_IMP_DEF
+Date:   Wed, 11 Aug 2021 08:57:06 +0530
+Message-Id: <1628652427-24695-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-10 at 22:53 -0400, Jonathan Toppins wrote:
-> There seems to be no reason to have different error messages between
-> netlink and printk. It also cleans up the function slightly.
-> 
-> Signed-off-by: Jonathan Toppins <jtoppins@redhat.com>
-> ---
-> 
-> Notes:
->     v2:
->      - changed the printks to reduce object code slightly
->      - emit a single error message based on if netlink or sysfs is
->        attempting to enslave
->      - rebase on top of net-next/master and convert additional
->        instances added by XDP additions
-> 
->  drivers/net/bonding/bond_main.c | 69 ++++++++++++++++++---------------
->  1 file changed, 37 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-[]
-> @@ -1725,6 +1725,20 @@ void bond_lower_state_changed(struct slave *slave)
->  	netdev_lower_state_changed(slave->dev, &info);
->  }
-> 
-> +#define BOND_NL_ERR(bond_dev, extack, errmsg) do {		\
-> +	if (extack)						\
-> +		NL_SET_ERR_MSG(extack, errmsg);			\
-> +	else							\
-> +		netdev_err(bond_dev, "Error: %s\n", errmsg);	\
-> +} while (0)
-> +
-> +#define SLAVE_NL_ERR(bond_dev, slave_dev, extack, errmsg) do {		\
-> +	if (extack)							\
-> +		NL_SET_ERR_MSG(extack, errmsg);				\
-> +	else								\
-> +		slave_err(bond_dev, slave_dev, "Error: %s\n", errmsg);	\
-> +} while (0)
+ID_AA64DFR0_PMUVER_IMP_DEF which indicate implementation defined PMU, never
+actually gets used although there are '0xf' instances scattered all around.
+Just do the macro replacement to improve readability.
 
-Ideally both of these would be static functions and not macros.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: linux-perf-users@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: kvmarm@lists.cs.columbia.edu
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v5.14-rc5
 
+Changes in V2:
+
+- Split out the KVM part
+
+Changes in V1:
+
+https://lore.kernel.org/linux-perf-users/1628571998-13634-1-git-send-email-anshuman.khandual@arm.com/
+
+ arch/arm64/kvm/perf.c     | 2 +-
+ arch/arm64/kvm/pmu-emul.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
+index 151c31fb9860..f9bb3b14130e 100644
+--- a/arch/arm64/kvm/perf.c
++++ b/arch/arm64/kvm/perf.c
+@@ -50,7 +50,7 @@ static struct perf_guest_info_callbacks kvm_guest_cbs = {
+ 
+ int kvm_perf_init(void)
+ {
+-	if (kvm_pmu_probe_pmuver() != 0xf && !is_protected_kvm_enabled())
++	if (kvm_pmu_probe_pmuver() != ID_AA64DFR0_PMUVER_IMP_DEF && !is_protected_kvm_enabled())
+ 		static_branch_enable(&kvm_arm_pmu_available);
+ 
+ 	return perf_register_guest_info_callbacks(&kvm_guest_cbs);
+diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+index f33825c995cb..60f89bdbeebb 100644
+--- a/arch/arm64/kvm/pmu-emul.c
++++ b/arch/arm64/kvm/pmu-emul.c
+@@ -745,7 +745,7 @@ int kvm_pmu_probe_pmuver(void)
+ 	struct perf_event_attr attr = { };
+ 	struct perf_event *event;
+ 	struct arm_pmu *pmu;
+-	int pmuver = 0xf;
++	int pmuver = ID_AA64DFR0_PMUVER_IMP_DEF;
+ 
+ 	/*
+ 	 * Create a dummy event that only counts user cycles. As we'll never
+@@ -770,7 +770,7 @@ int kvm_pmu_probe_pmuver(void)
+ 	if (IS_ERR(event)) {
+ 		pr_err_once("kvm: pmu event creation failed %ld\n",
+ 			    PTR_ERR(event));
+-		return 0xf;
++		return ID_AA64DFR0_PMUVER_IMP_DEF;
+ 	}
+ 
+ 	if (event->pmu) {
+@@ -923,7 +923,7 @@ int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr)
+ 	if (!vcpu->kvm->arch.pmuver)
+ 		vcpu->kvm->arch.pmuver = kvm_pmu_probe_pmuver();
+ 
+-	if (vcpu->kvm->arch.pmuver == 0xf)
++	if (vcpu->kvm->arch.pmuver == ID_AA64DFR0_PMUVER_IMP_DEF)
+ 		return -ENODEV;
+ 
+ 	switch (attr->attr) {
+-- 
+2.20.1
 
