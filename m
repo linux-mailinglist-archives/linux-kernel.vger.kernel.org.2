@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704803E92FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F8B3E9301
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhHKNr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:47:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59942 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbhHKNrG (ORCPT
+        id S231771AbhHKNr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:47:57 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:64270 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhHKNr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:47:06 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CEF8D2017F;
-        Wed, 11 Aug 2021 13:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628689600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T+8kMtwkoX2RUV1prsupDlEHsO0YaxbVunuW77SL5tQ=;
-        b=JFRsdkF3hFEAuLmP4Eo43wYpEZug3Svo9PNjDFrA+G2xXbqkelKnC52ZdyOH+axqsWaSfG
-        jygAQu5RMuMsVvHgCuFbL/qq/qVhObt6fjaS3kk6Hyw5hrrrdH+h7IO75HIXcA0kPD4C54
-        7yVF3JDmQsM1UI8+xjvG4flqlxi+ddg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628689600;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T+8kMtwkoX2RUV1prsupDlEHsO0YaxbVunuW77SL5tQ=;
-        b=4ax9CSpxvgp66lvXwGfHH2BMx2s2yiPaDx7sDqJM/hCJ+88X8Lc3xb06Ut7YIl9/knVuL8
-        uYvs/NdJ91uFimAw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B7BC213969;
-        Wed, 11 Aug 2021 13:46:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id Td4wLMDUE2EGQAAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 13:46:40 +0000
-Subject: Re: [PATCH v14 049/138] mm/memcg: Add folio_lruvec_relock_irq() and
- folio_lruvec_relock_irqsave()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-50-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1456b407-7174-e69a-42ee-dfb4fc0ab246@suse.cz>
-Date:   Wed, 11 Aug 2021 15:46:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 09:47:56 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb6113d4db165-65096; Wed, 11 Aug 2021 21:47:09 +0800 (CST)
+X-RM-TRANSID: 2eeb6113d4db165-65096
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.26.114] (unknown[10.42.68.12])
+        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee26113d4dc0dd-43701;
+        Wed, 11 Aug 2021 21:47:09 +0800 (CST)
+X-RM-TRANSID: 2ee26113d4dc0dd-43701
+Subject: Re: [PATCH] ARM/smp_twd: Cleanup the unnecessary cast
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210811131512.940-1-tangbin@cmss.chinamobile.com>
+ <20210811133121.GV22278@shell.armlinux.org.uk>
+From:   tangbin <tangbin@cmss.chinamobile.com>
+Message-ID: <54505b20-a9c6-9ade-dced-cb4c24df0770@cmss.chinamobile.com>
+Date:   Wed, 11 Aug 2021 21:47:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-50-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210811133121.GV22278@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> These are the folio equivalents of relock_page_lruvec_irq() and
-> folio_lruvec_relock_irqsave().  Also convert page_matches_lruvec()
-> to folio_matches_lruvec().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+Hi Russell:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On 2021/8/11 21:31, Russell King (Oracle) wrote:
+> On Wed, Aug 11, 2021 at 09:15:12PM +0800, Tang Bin wrote:
+>> It's not necessary to specify 'int' castingfor 'PTR_ERR(twd_clk)'.
+>>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>> ---
+>>   arch/arm/kernel/smp_twd.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm/kernel/smp_twd.c b/arch/arm/kernel/smp_twd.c
+>> index 9a14f721a..423e9079d 100644
+>> --- a/arch/arm/kernel/smp_twd.c
+>> +++ b/arch/arm/kernel/smp_twd.c
+>> @@ -199,7 +199,7 @@ static void twd_get_clock(struct device_node *np)
+>>   		twd_clk = clk_get_sys("smp_twd", NULL);
+>>   
+>>   	if (IS_ERR(twd_clk)) {
+>> -		pr_err("smp_twd: clock not found %d\n", (int) PTR_ERR(twd_clk));
+>> +		pr_err("smp_twd: clock not found %d\n", PTR_ERR(twd_clk));
+> Sorry, NAK.
+>
+> This change _will_ produce a compiler warning. "%d" expects an argument
+> of type "int", but PTR_ERR() returns a type of "long". Sorry, but the
+> cast is entirely necessary.
+>
+> A better solution today would be to get rid of the PTR_ERR() entirely
+> and use %pe, which will get us a textual description of the error when
+> the appropriate kernel configuration option is enabled.
+>
+Got it, Thanks.
+>
+
+
