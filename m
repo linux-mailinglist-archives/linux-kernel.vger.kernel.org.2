@@ -2,176 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A976C3E971C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDFB3E971E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhHKRzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        id S230105AbhHKRz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhHKRzm (ORCPT
+        with ESMTP id S230056AbhHKRzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:55:42 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC22C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:55:17 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id z2so7564241lft.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:55:17 -0700 (PDT)
+        Wed, 11 Aug 2021 13:55:55 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD85C061765;
+        Wed, 11 Aug 2021 10:55:31 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id q3so918090edt.5;
+        Wed, 11 Aug 2021 10:55:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rUQ8qsIKb0jmCsRmsVCtriK4A1g1bFbYlRoFYCo5voI=;
-        b=tB+KQZXOO/VH5k3iAwjO8zaROvEBWLxhaHcvF8J4B6HMrT5mcLQpfeUn7rFKhP6lXx
-         ABM692/sdKIwnqLA/uEEgEnXR+tOFI2w/3881DfTJzLkkUCI26k03ZwtMKGZ+JGFLrHz
-         Ko3FtGy6dP3iv8mPDngC0kTs6tdUolYWHbNF7fxYIY31v92IPXhTnHUsLkLlGL2OAVEX
-         tZ+mgPOO35Vn1xKgA0c+cP4u/cMuX4r2aiWTfyV/URnd7KulJPMykio09WEW5s9Cn6n5
-         lZ1431DDXbaQR6h7zYECFo8VOqWeIa58nPTfxPsXbd8rjMk/GyWyW47cflLc0SKidBFY
-         Xdlw==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=C06n6gHg6YJWBZfHbRSueQw+91Fo4dmr2ttTA5pTkj0=;
+        b=p+0G66gS4a8BosocdUTmtDslCZmCFHfvGnZwUTE2dmuP5+EFGK+VA7QbGpsGXTCeje
+         3A5zpYABjAeR9+ToVAa05A26vEpT7RVzmn5Wy0C5bgDfUMBUQm65tEWeT6zHpM+YfCKQ
+         BYFwJ/mc8u7LC9ulgfry0tT9kqKv/9VfPQOU+UkibmSCl18+4OYJ++yLuLTZvUtE1K4+
+         6iNwx/jaHJsej2fR3XfVuVnRhPw/5Pi7qNvzvFHvJuJQJTIc2qgYMhfEAkQ9Q0xm4SCV
+         0YHdvbGOOw6zl4+mF9YGtYJRXLyyeAiZWVqSx+6FtNc4j11/PcF+50qruX3ck3VTUdKy
+         j0rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rUQ8qsIKb0jmCsRmsVCtriK4A1g1bFbYlRoFYCo5voI=;
-        b=j+k6YSJBE+B77C3/NRxNzoVqndASwRGsh6TZqAg1nLU8r1LZ+buQJxKQJ3bArTu6NT
-         HNXtBp6bdv4+LPEJvkoGb1Q/LTGOeCfkdN6J9Av0G66mQcXgo1Q++Z1bqD8Lmo5p0tVb
-         Ljq5FrJlkkgyEsYg/AlU1igb6dOnTXuP5oBE+VTK+jTYesvO2NdxrcJuhJvLC8BDevZv
-         FA/7biYas01e1cLZ4zXLNtVJuJwjrOwkj/jjrXMI9kEokYZ7QqjXEu5Zx2tL6Dr722i3
-         igkj3cQD1XvsCloA3MweXYYfZsu1EhzV77VBPPGiUCeNCP1vAqPwNfK4BcGCPCZQpxIr
-         RPIQ==
-X-Gm-Message-State: AOAM532n6viN551ID30vBFu9SJEIjs1Txn8Zu2Xt5zWlixmvtBEtsWDH
-        X1aMnTf708SudKeddsSGjLFkNcdVUHWMP29/3YmjrA==
-X-Google-Smtp-Source: ABdhPJz4sn6z0hn6iEjFcj8jNAMZoZDN1Uqdg5ZO3o3HkdepqXhwm3XmqEoL1r6GVFLrdLDhckiTkFGeYyC9ZO39ydc=
-X-Received: by 2002:ac2:5324:: with SMTP id f4mr37199lfh.106.1628704515892;
- Wed, 11 Aug 2021 10:55:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210811165346.3110715-1-seanjc@google.com>
-In-Reply-To: <20210811165346.3110715-1-seanjc@google.com>
-From:   Jing Zhang <jingzhangos@google.com>
-Date:   Wed, 11 Aug 2021 10:55:05 -0700
-Message-ID: <CAAdAUti5N=AZgrhTvtwvX=q9ci2bgJqqya8tuM1+vD8YkhFtMw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: Move binary stats helpers to header to effectively
- export them
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=C06n6gHg6YJWBZfHbRSueQw+91Fo4dmr2ttTA5pTkj0=;
+        b=UVbbZ9hFamNzDvegGrGzNUUWsgrFfOFERgUL3mHEpj8iJCKM2Zy6E3ethfTu/a+Dkd
+         Dnz/676VAkuf7OqU/TW4+VMrpW4di4j+rQWNRiEmha+6zfIGSqt763aB70qZsMR3cP8T
+         6hBsfitLMCV2m6BrK3LnOnDH02I+yqXE7SNUl7d8PordYyldO9aq1qbZTkhCPDpyzKr+
+         i9aukf1Ddxu/LQXC0nlYL7mVwk9zNB6Lme07YuXQSLRo0GN8RsXACugSuLRue8IogpbJ
+         MvMfMPRCINEQ7ar0xdzg5P3SZomI/1aCQleou1F1ZScedmijo1D3vFmXoH6IXi6jIuDl
+         PrQQ==
+X-Gm-Message-State: AOAM530B6oe4D1xgx+S8h7Q+mtxt3kECnOrR+fHnWopa9/auKlvW2u8B
+        FiXOzCrBkABAZcs0XXLzZgE=
+X-Google-Smtp-Source: ABdhPJy/8EXE+UItm/1fWxAOhRuoGvVr/4810qekCrPve43Ly3fOnPEzw3MLXJZ+4KQMv4ZKVBTAJA==
+X-Received: by 2002:a05:6402:11c6:: with SMTP id j6mr76774edw.349.1628704530193;
+        Wed, 11 Aug 2021 10:55:30 -0700 (PDT)
+Received: from [172.16.0.82] (nat-allievi.sssup.it. [193.205.81.9])
+        by smtp.gmail.com with ESMTPSA id g26sm40239ejr.48.2021.08.11.10.55.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 10:55:29 -0700 (PDT)
+Message-ID: <4941e4a6d898a4545ff319b6b74442e18ca8025a.camel@gmail.com>
+Subject: Re: [RFC PATCH v2 01/10] perf workqueue: threadpool creation and
+ destruction
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Date:   Wed, 11 Aug 2021 19:55:27 +0200
+In-Reply-To: <YRLgYDKRUfwLSyHF@kernel.org>
+References: <cover.1627657061.git.rickyman7@gmail.com>
+         <4f0cd6c8e77c0b4f4d4b8d553a7032757b976e61.1627657061.git.rickyman7@gmail.com>
+         <CAM9d7ci0LcdTZyDu5sxGkaS07Z-m4hvr2xU4TDK_aTRAJm7b7A@mail.gmail.com>
+         <25278c08762593a5b0bd1873f6c0745c7ad97016.camel@gmail.com>
+         <CAM9d7chuFG+cYPx34abvmciN0afUDqJ3uWo9Bsh-9jjLtQmWqQ@mail.gmail.com>
+         <YRLgYDKRUfwLSyHF@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 9:53 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Move kvm_stats_linear_hist_update() and kvm_stats_log_hist_update() to
-> kvm_host.h as static inline helpers to resolve a linker error on PPC,
-> which references the latter from module code.  This also fixes a goof
-> where the functions are tagged as "inline", despite being externs and
-> thus not inline-friendy.
->
->   ERROR: modpost: ".kvm_stats_log_hist_update" [arch/powerpc/kvm/kvm-hv.ko] undefined!
->
-> Fixes: c8ba95948182 ("KVM: stats: Support linear and logarithmic histogram statistics")
-> Cc: Jing Zhang <jingzhangos@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  include/linux/kvm_host.h | 38 +++++++++++++++++++++++++++++++++++---
->  virt/kvm/binary_stats.c  | 34 ----------------------------------
->  2 files changed, 35 insertions(+), 37 deletions(-)
->
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index d447b21cdd73..e4d712e9f760 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1467,9 +1467,41 @@ ssize_t kvm_stats_read(char *id, const struct kvm_stats_header *header,
->                        const struct _kvm_stats_desc *desc,
->                        void *stats, size_t size_stats,
->                        char __user *user_buffer, size_t size, loff_t *offset);
-> -inline void kvm_stats_linear_hist_update(u64 *data, size_t size,
-> -                                 u64 value, size_t bucket_size);
-> -inline void kvm_stats_log_hist_update(u64 *data, size_t size, u64 value);
-> +
-> +/**
-> + * kvm_stats_linear_hist_update() - Update bucket value for linear histogram
-> + * statistics data.
-> + *
-> + * @data: start address of the stats data
-> + * @size: the number of bucket of the stats data
-> + * @value: the new value used to update the linear histogram's bucket
-> + * @bucket_size: the size (width) of a bucket
-> + */
-> +static inline void kvm_stats_linear_hist_update(u64 *data, size_t size,
-> +                                               u64 value, size_t bucket_size)
-> +{
-> +       size_t index = div64_u64(value, bucket_size);
-> +
-> +       index = min(index, size - 1);
-> +       ++data[index];
-> +}
-> +
-> +/**
-> + * kvm_stats_log_hist_update() - Update bucket value for logarithmic histogram
-> + * statistics data.
-> + *
-> + * @data: start address of the stats data
-> + * @size: the number of bucket of the stats data
-> + * @value: the new value used to update the logarithmic histogram's bucket
-> + */
-> +static inline void kvm_stats_log_hist_update(u64 *data, size_t size, u64 value)
-> +{
-> +       size_t index = fls64(value);
-> +
-> +       index = min(index, size - 1);
-> +       ++data[index];
-> +}
-> +
->  #define KVM_STATS_LINEAR_HIST_UPDATE(array, value, bsize)                     \
->         kvm_stats_linear_hist_update(array, ARRAY_SIZE(array), value, bsize)
->  #define KVM_STATS_LOG_HIST_UPDATE(array, value)                                       \
-> diff --git a/virt/kvm/binary_stats.c b/virt/kvm/binary_stats.c
-> index 9bd595c92d3a..eefca6c69f51 100644
-> --- a/virt/kvm/binary_stats.c
-> +++ b/virt/kvm/binary_stats.c
-> @@ -142,37 +142,3 @@ ssize_t kvm_stats_read(char *id, const struct kvm_stats_header *header,
->         *offset = pos;
->         return len;
->  }
-> -
-> -/**
-> - * kvm_stats_linear_hist_update() - Update bucket value for linear histogram
-> - * statistics data.
-> - *
-> - * @data: start address of the stats data
-> - * @size: the number of bucket of the stats data
-> - * @value: the new value used to update the linear histogram's bucket
-> - * @bucket_size: the size (width) of a bucket
-> - */
-> -inline void kvm_stats_linear_hist_update(u64 *data, size_t size,
-> -                                 u64 value, size_t bucket_size)
-> -{
-> -       size_t index = div64_u64(value, bucket_size);
-> -
-> -       index = min(index, size - 1);
-> -       ++data[index];
-> -}
-> -
-> -/**
-> - * kvm_stats_log_hist_update() - Update bucket value for logarithmic histogram
-> - * statistics data.
-> - *
-> - * @data: start address of the stats data
-> - * @size: the number of bucket of the stats data
-> - * @value: the new value used to update the logarithmic histogram's bucket
-> - */
-> -inline void kvm_stats_log_hist_update(u64 *data, size_t size, u64 value)
-> -{
-> -       size_t index = fls64(value);
-> -
-> -       index = min(index, size - 1);
-> -       ++data[index];
-> -}
-> --
-> 2.32.0.605.g8dce9f2422-goog
->
-Thanks for fixing it, Sean!
+On Tue, 2021-08-10 at 17:24 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Aug 10, 2021 at 11:54:19AM -0700, Namhyung Kim escreveu:
+> > On Mon, Aug 9, 2021 at 3:30 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > > On Fri, 2021-08-06 at 19:24 -0700, Namhyung Kim wrote:
+> > > > > +/**
+> > > > > + * threadpool__strerror - print message regarding given @err in @pool
+> > > > > + *
+> > > > > + * Buffer size should be at least THREADPOOL_STRERR_BUFSIZE bytes.
+> > > > > + */
+> > > > > +int threadpool__strerror(struct threadpool *pool __maybe_unused, int
+> > > > > err,
+> > > > > char *buf, size_t size)
+> > > > > +{
+> > > > > +       char sbuf[STRERR_BUFSIZE], *emsg;
+> > > > > +
+> > > > > +       emsg = str_error_r(err, sbuf, sizeof(sbuf));
+> > > > > +       return scnprintf(buf, size, "Error: %s.\n", emsg);
+> > > > > +}
+> > > > > +
+> > > > > +/**
+> > > > > + * threadpool__new_strerror - print message regarding @err_ptr
+> > > > > + *
+> > > > > + * Buffer size should be at least THREADPOOL_STRERR_BUFSIZE bytes.
+> > > > > + */
+> > > > > +int threadpool__new_strerror(struct threadpool *err_ptr, char *buf,
+> > > > > size_t
+> > > > > size)
+> > > > > +{
+> > > > > +       return threadpool__strerror(err_ptr, PTR_ERR(err_ptr), buf,
+> > > > > size);
+> > > > > +}
+> 
+> > > > Why two different functions?
+> 
+> > > Since when new fails you don't have a err number, just an err_ptr so it's
+> > > not
+> > > very clear how to call threadpool__strerror. Therefore I made a wrapper to
+> > > remove any ambiguity.
+> > 
+> > What do you mean by "when new fails"?
+> 
+> I think 'new' is 'constructor', i.e. something__new() returns a newly
+> created object and this not an error number, so he uses ERR_PTR() and
+> then he needs to pass it to the 'strerror' specific to the
+> threadpool__new, which will use PTR_ERR() to get an integer, and then
+> map that to a proper error string, right?
 
-Reviewed-by: Jing Zhang <jingzhangos@google.com>
+Correct. 
+threadpool__new_strerror is not really needed since one could use
+threadpool__strerror directly, but then I would need to handle all possible ways
+it could be called (e.g. (NULL, PTR_ERR(err_ptr)), (err_ptr, 0), (err_ptr,
+PTR_ERR(err_ptr)), so I thought it was better to just provide a strerror that
+only took the err_ptr.
+Maybe I can provide it as an inline in the header, or as a macro.
+
+Riccardo
+
+> 
+> - Arnaldo
+
+
