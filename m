@@ -2,183 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96D83E920A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFE03E920D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhHKM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:58:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:38868 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhHKM6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:58:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214848584"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="214848584"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:58:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="676062619"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2021 05:58:17 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDnoH-000LeX-2n; Wed, 11 Aug 2021 12:58:17 +0000
-Date:   Wed, 11 Aug 2021 20:58:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 7f331fc57eafebe07e77a828741084db8d3b1dfe
-Message-ID: <6113c959.pioJz2TFckcg5d/s%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231204AbhHKNA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhHKNAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:00:25 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BB8C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:00:01 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id u13so4426130lje.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9raAqstWOInQ9wyq7hxk8+0JIk+Aqi4dpxjqntVgY9s=;
+        b=hSt4vFrly2JM0QO77mUcjMzkwID5HUv9zx2/fnjGZpyM5NU5ocYo3MiAvNMAneOy5P
+         9fF5ttXF7kO4BUFNtiD9aLc0q1fnZTSROd/MrBd8KHalQsmgjOt1NrImFI7Nv3PEPaOY
+         l9TvpD7+X4OqMEMWbwvWmV2jUJ6Wbd1dACgStSNGjwebuJaGfSmcBkUfWPksQWcxURLp
+         bfcTl0wo6llDCRyS0C8seQ9CsDRHz/ramTZS78J12PritcrY0Evmd1t17StEFFoATj8t
+         4ayNtje9TR1YNPCb1/ay0r7QH7ME5i9rYhskX1ufGxq2cz1gdHrU0nJDO5REzEtejZ2g
+         hOvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9raAqstWOInQ9wyq7hxk8+0JIk+Aqi4dpxjqntVgY9s=;
+        b=gnGfSagYvrqR0+FWfAJYiRmHruIYlDeM5EaErUhlgPxx3TLr8weQVfY30ZEOe+PaNz
+         pwRH6f5lpKQigcn0XUtOQR1fD+kAgPmbPLqhzWJZ6I8uFY+4RdBtNzq6Y39tzKee4HbT
+         UHYZZy5rLLPTDS2Mu44DD3IY8eTQQUnOieQ8cvdqlE4M7vNFlsaovMpicgICHr2BjSCB
+         cycA6MciXNmAFFfzfeBqzQwjKoL6r6ZxRtegxjNGzMhbL1AWpSAfBUJWBjNxVe7cysJ7
+         hvTtaht8b+LuJ7Xe29NJKsS6w+W6s1FR3tdB9zQv/r559t47pDXhscJdnr7Hrmh1AX9q
+         CfaQ==
+X-Gm-Message-State: AOAM532ssZDMkTtE8NW8q6LEYkRbv+Zv8Ke1Sz0U0IkvK6ruQiA/RkGC
+        ux1i+r+hLrnW5fTEMhN4A3drsIP/OIRdLrmJAk0Hvw==
+X-Google-Smtp-Source: ABdhPJwV/uG/04abyCsQhn5zh7oybmy1PdQiJD1sQ3DMsjOyJF2lWHqAFGDKKUKrSqetQFxhFJMg7BK+lIkMfq08R5M=
+X-Received: by 2002:a05:651c:327:: with SMTP id b7mr23677504ljp.74.1628686799738;
+ Wed, 11 Aug 2021 05:59:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210805174219.3000667-1-piyush.mehta@xilinx.com> <20210805174219.3000667-4-piyush.mehta@xilinx.com>
+In-Reply-To: <20210805174219.3000667-4-piyush.mehta@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 14:59:48 +0200
+Message-ID: <CACRpkdZ=WRhTTQOvQcDEQhbf5Fone0GHopZfJhsQfsS-NRQUUw@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] gpio: modepin: Add driver support for modepin GPIO controller
+To:     Piyush Mehta <piyush.mehta@xilinx.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Michal Simek <michal.simek@xilinx.com>, wendy.liang@xilinx.com,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, rajan.vaja@xilinx.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, git <git@xilinx.com>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 7f331fc57eafebe07e77a828741084db8d3b1dfe  rcutorture: Don't cpuhp_remove_state() if cpuhp_setup_state() failed
+Hi Piyush,
 
-elapsed time: 723m
+thanks for your patch!
 
-configs tested: 125
-configs skipped: 3
+Can you explain one thing to me: since this is now a GPIO driver
+that means "General Purpos Input/Output", then these bits are
+accessed like this:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+On Thu, Aug 5, 2021 at 7:43 PM Piyush Mehta <piyush.mehta@xilinx.com> wrote:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210811
-um                           x86_64_defconfig
-sh                               j2_defconfig
-mips                          rb532_defconfig
-sh                        dreamcast_defconfig
-xtensa                         virt_defconfig
-sh                           se7722_defconfig
-m68k                        m5307c3_defconfig
-arc                         haps_hs_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                      acadia_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                      makalu_defconfig
-arm                          imote2_defconfig
-s390                          debug_defconfig
-powerpc                 mpc834x_itx_defconfig
-nds32                               defconfig
-mips                           jazz_defconfig
-mips                           rs90_defconfig
-powerpc                           allnoconfig
-m68k                             alldefconfig
-powerpc                    adder875_defconfig
-mips                      bmips_stb_defconfig
-sh                           se7712_defconfig
-mips                        qi_lb60_defconfig
-powerpc                     pseries_defconfig
-sh                           se7724_defconfig
-arm64                            alldefconfig
-powerpc                        cell_defconfig
-riscv                          rv32_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                       aspeed_g4_defconfig
-mips                         bigsur_defconfig
-sh                          sdk7786_defconfig
-sh                            hp6xx_defconfig
-nds32                             allnoconfig
-powerpc                     mpc83xx_defconfig
-mips                      loongson3_defconfig
-microblaze                      mmu_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-i386                 randconfig-a004-20210810
-i386                 randconfig-a002-20210810
-i386                 randconfig-a001-20210810
-i386                 randconfig-a003-20210810
-i386                 randconfig-a006-20210810
-i386                 randconfig-a005-20210810
-i386                 randconfig-a004-20210811
-i386                 randconfig-a001-20210811
-i386                 randconfig-a002-20210811
-i386                 randconfig-a003-20210811
-i386                 randconfig-a006-20210811
-i386                 randconfig-a005-20210811
-i386                 randconfig-a011-20210810
-i386                 randconfig-a015-20210810
-i386                 randconfig-a013-20210810
-i386                 randconfig-a014-20210810
-i386                 randconfig-a016-20210810
-i386                 randconfig-a012-20210810
-i386                 randconfig-a012-20210809
-i386                 randconfig-a015-20210809
-i386                 randconfig-a011-20210809
-i386                 randconfig-a013-20210809
-i386                 randconfig-a014-20210809
-i386                 randconfig-a016-20210809
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> +       ret = zynqmp_pm_bootmode_read(&bootpin_val);
 
-clang tested configs:
-x86_64               randconfig-c001-20210811
-x86_64               randconfig-c001-20210810
-x86_64               randconfig-a013-20210810
-x86_64               randconfig-a011-20210810
-x86_64               randconfig-a012-20210810
-x86_64               randconfig-a016-20210810
-x86_64               randconfig-a014-20210810
-x86_64               randconfig-a015-20210810
+This does not look very general purpose. These seem to be all about
+boot mode, right?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+So can you explain why this should be a GPIO driver at all?
+
+I understand it is sometimes convenient to describe stuff as GPIO even
+if it is not (for example to get a convenient userspace interface) but
+as maintainers
+we really need to make sure that the subsystem is not being abused
+for things not GPIO.
+
+Yours,
+Linus Walleij
