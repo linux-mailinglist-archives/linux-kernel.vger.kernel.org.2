@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8563E8932
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712843E8933
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233499AbhHKEW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 00:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S233578AbhHKEYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 00:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhHKEWy (ORCPT
+        with ESMTP id S229586AbhHKEYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 00:22:54 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D853CC061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:22:30 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so1910103otq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:22:30 -0700 (PDT)
+        Wed, 11 Aug 2021 00:24:46 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8D3C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:24:22 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id bi32so2755431oib.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=M+Fy0eR1+iop2G2YtVgpRm77F8HTctO7zKKFznc4zBo=;
-        b=Fo9g5LijgBrQLPT6MYDEQNxX6viodg54hr7z4FkxTTA21xFg3ZrnNnIuV5eOFU6HpM
-         HeXLgv/LwnWd2M9n9fm3NUb6HDbfUx4E4CtwuAH2Q51QtqvgmaESGr+NmF0AXxHRXs5n
-         ewFZnhcT5+bJ+kMcpEX9LWMIvBWWSLrSYEXws=
+        bh=4+a6akEpZU2Rl1zSGbSNGtRGCQXtOnzuxporXN9r8kw=;
+        b=jxMCTvQXPanclZeeolIVPBZrNb2967Z1Vp2PMXijVJmWvLi/cbZqfziutKJ4IyjCrJ
+         nO2uQc0OKlVaO9WhXLQe3GJsSpfEOrev5/i/FeojQKagbej9L6LA1JPam9PX75WCLWcA
+         SbbfYEJY5aHpmmLGnMIUfVO+m5ApnGwCwp5dc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=M+Fy0eR1+iop2G2YtVgpRm77F8HTctO7zKKFznc4zBo=;
-        b=eWrbu97SGFimbSOoT4VxH2wCwbU/gBWdKC2M9tr1CwTZdZzUMjwlkRRH2ynIyC6pG8
-         8axmjjusvBXMykwUtb1wSrcNsKumo1ySEL+6ke1OLI1GottyWfS56gYU0vLbaqDmX9wI
-         M8OCqsbml+grDI20sbk6XRUaSN8AkeTwbKkmAcbaEuFPJMap+ssiuzUlP+LWM5d9uckR
-         DQBvYp9QGSnwhe+8GSJkeaCY0bk0bhKbgyqF7zv5jCXV3AD6Z5qJStDBze6UG1r66KIc
-         ZUprhKvXhl3o0xJ5KpadwZRWBfJSPLdTbFAKXMUBTzXYCl6DWLNvEA74aUtgMntAZEbY
-         XCUQ==
-X-Gm-Message-State: AOAM531cKxHknj8Vh7SixiarYgU4QO8iXA+PprzJr+qhhEK+YJ5ZLtV+
-        yqIXFeWK7f5IK9X2IS3forfdt/Dv2WBNgZS3mYwJvA==
-X-Google-Smtp-Source: ABdhPJwFN1LHRL2LcpvpMcDdnpPoGURPoblDU8DwG8F5DDcdYAcQghp0zgONfhmA3uMvE4qsiAJCUK817GUSoi+F0hI=
-X-Received: by 2002:a05:6830:44a7:: with SMTP id r39mr23466057otv.25.1628655750208;
- Tue, 10 Aug 2021 21:22:30 -0700 (PDT)
+        bh=4+a6akEpZU2Rl1zSGbSNGtRGCQXtOnzuxporXN9r8kw=;
+        b=mbY1L7IpO2NwuVLGuy8TG5PqYS+x1xdHrcVVpF7NT+/FyVp1JzEwK5xomDzz1qWSzr
+         skXRGc78rKZ61DM0f/l3jUiFPR8XVS1/bOddKmBTbaH0NjcbXdrxVVc5WklXG/ZmryPH
+         9/hgZFmLg8EJ0KSiEeJQ6PJ18Ao0HQM897ykhzOdM39EeUMRj1zJ20ppTyAKY1ZX4gbJ
+         bnUr+WO2sa7DinJamE5+Ayd74A1hfqfZSYLUT4yOrAvygEyF4dUc1slFXQBia54HHLo8
+         vpArmSP66xUHRHvgVeWomjDBzUCVNR43ro4ckB0tMTBBpT4fqDEHxo3Dxl8LxTJFpfE3
+         XPIg==
+X-Gm-Message-State: AOAM533UwaeLNVHhNJeqSZHX1lYvNPUaLuoAw9kIZAkNg/cH3RZISHtC
+        mT4dSOaK+VhkYZqbu7lRsyf8TuvKAqTQsYsB26S2/g==
+X-Google-Smtp-Source: ABdhPJxhuBLsVb23ZNxG/JRW3v8sQ+/Xa1+LNCkfc0G3wJkAgaq2+FaAG51xDk5Ag9SJd5Qlf9jHNaCGwd6V1n67aQc=
+X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr8782072oiu.19.1628655862338;
+ Tue, 10 Aug 2021 21:24:22 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 21:22:29 -0700
+ HTTPREST; Tue, 10 Aug 2021 21:24:21 -0700
 MIME-Version: 1.0
-In-Reply-To: <YRMXOlA5a98BwT3i@builder.lan>
-References: <20210721175432.2119-1-mdtipton@codeaurora.org>
- <20210721175432.2119-5-mdtipton@codeaurora.org> <CAE-0n52iVgX0JjjnYi=NDg49xP961p=+W5R2bmO+2xwRceFhfA@mail.gmail.com>
- <YRMXOlA5a98BwT3i@builder.lan>
+In-Reply-To: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
+References: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 21:22:29 -0700
-Message-ID: <CAE-0n53L_muNfpcunPmAWh-dG1h_y8xVqUG-es2CY8jdbnM8mg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] interconnect: qcom: icc-rpmh: Add BCMs to commit
- list in pre_aggregate
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Mike Tipton <mdtipton@codeaurora.org>, djakov@kernel.org,
-        agross@kernel.org, saravanak@google.com, okukatla@codeaurora.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Alex Elder <elder@linaro.org>
+Date:   Tue, 10 Aug 2021 21:24:21 -0700
+Message-ID: <CAE-0n50K+gAa0U9-kswTCdt+UAkxhuJ8BMg-D4sQayP1xqWTyQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: rt5682: Properly turn off regulators if wrong
+ device ID
+To:     Douglas Anderson <dianders@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Oder Chiou <oder_chiou@realtek.com>
+Cc:     Bard Liao <bardliao@realtek.com>, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-08-10 17:18:02)
-> On Tue 10 Aug 18:31 CDT 2021, Stephen Boyd wrote:
+Quoting Douglas Anderson (2021-08-10 16:59:15)
+> When I booted up on a board that had a slightly different codec
+> stuffed on it, I got this message at bootup:
 >
-> > Quoting Mike Tipton (2021-07-21 10:54:32)
-> > > We're only adding BCMs to the commit list in aggregate(), but there are
-> > > cases where pre_aggregate() is called without subsequently calling
-> > > aggregate(). In particular, in icc_sync_state() when a node with initial
-> > > BW has zero requests. Since BCMs aren't added to the commit list in
-> > > these cases, we don't actually send the zero BW request to HW. So the
-> > > resources remain on unnecessarily.
-> > >
-> > > Add BCMs to the commit list in pre_aggregate() instead, which is always
-> > > called even when there are no requests.
-> > >
-> > > Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-> > > Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
-> > > ---
-> >
-> > This patch breaks reboot for me on sc7180 Lazor
-> >
+>   rt5682 9-001a: Device with ID register 6749 is not rt5682
 >
-> FWIW, it prevents at least SM8150 from booting (need to check my other
-> boards as well), because its no longer okay to have the interconnect
-> providers defined without having all client paths specified.
+> That's normal/expected, but what wasn't normal was the splat that I
+> got after:
+>
+>   WARNING: CPU: 7 PID: 176 at drivers/regulator/core.c:2151 _regulator_put+0x150/0x158
+>   pc : _regulator_put+0x150/0x158
+>   ...
+>   Call trace:
+>    _regulator_put+0x150/0x158
+>    regulator_bulk_free+0x48/0x70
+>    devm_regulator_bulk_release+0x20/0x2c
+>    release_nodes+0x1cc/0x244
+>    devres_release_all+0x44/0x60
+>    really_probe+0x17c/0x378
+>    ...
+>
+> This is because the error paths don't turn off the regulator. Let's
+> fix that.
+>
+> Fixes: 0ddce71c21f0 ("ASoC: rt5682: add rt5682 codec driver")
+> Fixes: 87b42abae99d ("ASoC: rt5682: Implement remove callback")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-So maybe the best course of action is to revert this patch from Linus'
-tree? It's not a super huge deal as "can't boot", but certainly makes
-reboot annoying on sc7180.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+>
+>  sound/soc/codecs/rt5682-i2c.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+> index 4a56a52adab5..1cc07812b5ac 100644
+> --- a/sound/soc/codecs/rt5682-i2c.c
+> +++ b/sound/soc/codecs/rt5682-i2c.c
+> @@ -117,6 +117,13 @@ static struct snd_soc_dai_driver rt5682_dai[] = {
+>         },
+>  };
+>
+> +static void rt5682_i2c_disable_regulators(void *data)
+> +{
+> +       struct rt5682_priv *rt5682 = data;
+> +
+> +       regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
+> +}
+> +
+>  static int rt5682_i2c_probe(struct i2c_client *i2c,
+>                 const struct i2c_device_id *id)
+>  {
+> @@ -156,6 +163,10 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+>                 dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
+>                 return ret;
+>         }
+
+Nit: Add newline here.
+
+> +       ret = devm_add_action_or_reset(&i2c->dev, rt5682_i2c_disable_regulators,
+> +                                      rt5682);
+> +       if (ret)
+> +               return ret;
+>
+>         ret = regulator_bulk_enable(ARRAY_SIZE(rt5682->supplies),
+>                                     rt5682->supplies);
+> @@ -285,7 +296,6 @@ static int rt5682_i2c_remove(struct i2c_client *client)
+>         struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
+>
+>         rt5682_i2c_shutdown(client);
+> -       regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
+>
+>         return 0;
+>  }
