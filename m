@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6903E91C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A433E91C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhHKMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:43:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:55684 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229483AbhHKMnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:43:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="215140498"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="215140498"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:42:36 -0700
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="484877800"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:42:33 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mDnYx-007pAn-1L; Wed, 11 Aug 2021 15:42:27 +0300
-Date:   Wed, 11 Aug 2021 15:42:27 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 1/4] gpio: dwapb: Unify ACPI enumeration checks in
- get_irq() and configure_irqs()
-Message-ID: <YRPFs7qoACdN+bEw@smile.fi.intel.com>
-References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
+        id S230012AbhHKMox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhHKMow (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:44:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6801C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:44:27 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628685866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0CbAMqQCWiLWsnnOg23BGyvXm0vqekQj3qxYNb5O8TY=;
+        b=TNz5X6ea1EQ4h4TjKiuLmBMtvODtyyOmU/kqMymIOje+oSD8GBdpH026nXuXfhT8DbQOnz
+        1O9XmpFV34lmbcRwGfuxqegTKHHLFR08ZMGQmoxxNlZjG2MY2G2Yz55x/Zgg2mDHN/fgLC
+        6cEoz1hfqN7MDZHiJqrG+p9p+UOwiuYkumBTayJh3FwavRBjFVFtu9YNjz2z7cmHW0nGlA
+        CXuLbx0IDl3SP+y46ipEtSU9o9VZTaatNcuBsjLH/qs22upQNIPtAb7SWNCImex1B+fdEZ
+        LeIBhsDwfO/7s7yeKVWuqnHNSBZmFbTrT+SdZyeAHlgA5/N00CwBL7IkZJl87g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628685866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0CbAMqQCWiLWsnnOg23BGyvXm0vqekQj3qxYNb5O8TY=;
+        b=CZNb1dCDjjXRaDqzGskVESskJe27nlaliJw6nuaXTWrRPY/hipv3Eb3eAzKd73fkG+oUqD
+        KbXSBHGuLfdFphDg==
+To:     brookxu <brookxu.cn@gmail.com>, john.stultz@linaro.org,
+        sboyd@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] clocksource: skip check while watchdog hung up or
+ unstable
+In-Reply-To: <63064a758eb087febce3eff5b2c736a5449b3dd2.1628675461.git.brookxu@tencent.com>
+References: <63064a758eb087febce3eff5b2c736a5449b3dd2.1628675461.git.brookxu@tencent.com>
+Date:   Wed, 11 Aug 2021 14:44:26 +0200
+Message-ID: <877dgsp2vp.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 07:00:16PM +0300, Andy Shevchenko wrote:
-> Shared IRQ is only enabled for ACPI enumeration, there is no need
-> to have a special flag for that, since we simple can test if device
-> has been enumerated by ACPI. This unifies the checks in dwapb_get_irq()
-> and dwapb_configure_irqs().
+On Wed, Aug 11 2021 at 17:55, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
+>
+> After patch 1f45f1f3 (clocksource: Make clocksource validation work
+> for all clocksources), md_nsec may be 0 in some scenarios, such as
+> the watchdog is delayed for a long time or the watchdog has a
+> time-warp.
 
-Bart, are you okay with the series? Can it be applied, please?
+Maybe 0? There is exactly one single possibility for it to be zero:
 
--- 
-With Best Regards,
-Andy Shevchenko
+  cs->wd_last == wdnow, i.e. delta = 0 -> wd_nsec = 0
 
+So how does that condition solve any long delay or wrap around of the
+watchdog? It's more than unlikely to hit exactly this case where the
+readout is identical to the previous readout unless the watchdog stopped
+counting.
 
+> We found a problem when testing nvme disks with fio, when multiple
+> queue interrupts of a disk were mapped to a single CPU. IO interrupt
+> processing will cause the watchdog to be delayed for a long time
+> (155 seconds), the system reports TSC unstable and switches the clock
+
+If you hold off the softirq from running for 155 seconds then the TSC
+watchdog is the least of your problems.
+
+Thanks,
+
+        tglx
