@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7B43E8B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D233E8B25
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235483AbhHKHib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233182AbhHKHia (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:38:30 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33A8C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 00:38:06 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id w10so1353076qtj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 00:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KY+zRy9hKXyNf5Kmtc6yl/ru0cuaPUULXfigVpYJwxQ=;
-        b=sGY/P6NtAnbm69Lm7vXOE9Jk/dGMYwJgcyYfv0WSY5iC0Q9bkFcLqQcYBDwR9v+C3Z
-         ee+eEFLvK0ppuCf3J9hBRv1S3lsmUuxTVGCxmvb1EFA7yrX0Gby+gFFT7V0xHKfRlDSg
-         JaiHjzgFMaY2k40bT5RLsOq6wdALAOyM5HICs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KY+zRy9hKXyNf5Kmtc6yl/ru0cuaPUULXfigVpYJwxQ=;
-        b=UMZjSZFuLTapNtCCZBjYhyqmIf7zC4k6JJGOrCVk3/l5SvglMRam09D44XUgyVISdu
-         58np5K1LBfM8gl08FI1nXAvlIo179Gq9Mt8Ll4J716XpK1SEbUo9QCr+gpMgfbhCEQGW
-         ++WipYd0GSXREMt/4SHWlRUn45eq1hVCxzFaDdF5KyvB3qkbzn2SG2qrmqgoskkxprUz
-         hLYUvdG/FJ1qwkOvpSSWcfZpenKxMRHb8w5tOc3CKvomdoqDJiD1UHsGyURf8n7A5d4A
-         vYQqqJORIyloQXcVG4cfnLC/abiLv0+fmfaOTw6kjnEGRoSaw1vfLIovRD7Mdh1CM061
-         ovtg==
-X-Gm-Message-State: AOAM533/MW5RrQsQE9aMDShGSnnT5ZsXH6uKdjCSjHjij8KjvsyDYks4
-        Jih3VNr+/hxc8XdejAMQJwfWA1WYC9+Um3GTLNN7/0ujiaY=
-X-Google-Smtp-Source: ABdhPJwCp4Yz8cVkAjE0jO5SUaGG6LJ3u5iOqFeWzK7H8MEZL9sBdH3FnPiiqXuHFhES8IHwtDyVYn52RaJp6BZfV64=
-X-Received: by 2002:a05:622a:387:: with SMTP id j7mr29561897qtx.132.1628667485754;
- Wed, 11 Aug 2021 00:38:05 -0700 (PDT)
+        id S235594AbhHKHjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:39:01 -0400
+Received: from www.zeus03.de ([194.117.254.33]:33634 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235526AbhHKHi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:38:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=cJhLM0w8xelHNY+NtuK+XG86hCLr
+        bVL6hhxw6Nkx4uA=; b=N9ZslsZ2frHvx9+9dXFJnWBf3ERHXM+2CMH6CSsTfFPI
+        MqEczSaGo6epHPe+HBpHZT7vQeGWQnjb0m/8zyEECLIMqsKN49oi7XOz9g9HpVAf
+        9Z5rLmspL51SDCPKtZFFxThAaomVH1ftXoBhWtVUeUWaQLYZcXo8rm0HbZvWe7A=
+Received: (qmail 2561430 invoked from network); 11 Aug 2021 09:38:33 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 11 Aug 2021 09:38:33 +0200
+X-UD-Smtp-Session: l3s3148p1@8EFytEPJPMYgAwDPXwY8AL9PxqFiRnVq
+Date:   Wed, 11 Aug 2021 09:38:30 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-mmc@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tejun Heo <tj@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dennis Zhou <dennis@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/4] bitmap: unify find_bit operations
+Message-ID: <YRN+dmd0lKtYNe5N@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-mmc@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tejun Heo <tj@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dennis Zhou <dennis@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210719021755.883182-1-yury.norov@gmail.com>
+ <20210719021755.883182-3-yury.norov@gmail.com>
 MIME-Version: 1.0
-References: <20210617110842.2358461-1-daniel@0x0f.com> <20210806220242.4b83237d@xps13>
-In-Reply-To: <20210806220242.4b83237d@xps13>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Wed, 11 Aug 2021 16:37:55 +0900
-Message-ID: <CAFr9PXm4FTw5U9pFNoqptZ28M21czDHrbipCOVRcn7uABkEKSQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] mtd: spinand: core: Properly fill the OOB area.
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     richard@nod.at, linux-mtd@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/b49F6uIw+J2vpAL"
+Content-Disposition: inline
+In-Reply-To: <20210719021755.883182-3-yury.norov@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
 
-On Sat, 7 Aug 2021 at 05:02, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> This change looks fine, I'll use spinand->oobbuf instead of databuf +
-> offset (will update when applying).
+--/b49F6uIw+J2vpAL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for looking at this for me. One thing I was worried about is
-why the SPI NAND subsystem worked before this change with winbond etc
-parts.
+On Sun, Jul 18, 2021 at 07:17:53PM -0700, Yury Norov wrote:
+> bitmap_for_each_{set,clear}_region() are similar to for_each_bit()
+> macros in include/linux/find.h, but interface and implementation
+> of them are different.
+>=20
+> This patch adds for_each_bitrange() macros and drops unused
+> bitmap_*_region() API in sake of unification.
+>=20
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
-You probably don't remember now but I sent a patch to include support
-for the longsys foresee parts that have the weird quirk of having no
-ECC
-data in the OOB so it's all usable by the user except for the bad
-block marker and the ECC status bits being next to useless.
-I found this issue while trying to validate ubi + my ECC status
-decoding worked. [0]
+I fetched your bitmap-20210716 branch and tested it on a Renesas
+Salvator-XS board with an R-Car M3-N SoC with some debug output added.
+Still works and values make sense, so:
 
-The SPI NAND subsystem in u-boot worked fine as it could create the
-ubi formatting on the flash and that would survive reboots but any
-blocks written by Linux would be bad on reboot.
-When Linux created the ubi format it would work until a reboot as the
-correct data was cached in memory then u-boot would complain because
-all of the blocks were marked bad.
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-But winbond parts mounted on the same board, same code etc worked just fine.
-I guess the OOB is getting fixed somewhere else for other parts. Maybe
-it only happens on the longsys parts because there is no ECC in OOB?
 
-Anyhow I was worried my fix hid some other issue/broke other parts.
+--/b49F6uIw+J2vpAL
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cheers,
+-----BEGIN PGP SIGNATURE-----
 
-Daniel
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmETfnIACgkQFA3kzBSg
+KbaFWQ//RcyowROGCgtdqiVotoOwSBpocOqGVQAqLCl7wsSMcikuIt/D0NiQu37v
+Cv0iGNjYcarcn3AL33EDywMyKAJS8LYXIyW75pH7Gc9tHmPeEZeJXEriKi+gT53Q
+mJWlvngNQhIsPmtt1JMik7b2Qdl1R+S4AkS+lUVY7abj2pF9e7/IOPQ2hWKcaIK/
+wzTfi5415Z4a7bB+JcHefmpkifGzMGu5DCSsaap/jEVVAgzO7WqFD4x9Oueh9ZtT
+d1lHSB6CMMG6Iwb6ftDaG9OtLtmq0flmRqsqIMAhdJ/N7V6sEneNA/y0St6zTrx/
+bE4v4OftO01EsLTqqvT//Gwq/GxEdl8/VoD7uH40phiOmu/w6UIQh3CHStRzbjpw
+B/3jHXUO3llJso0MXr45C6/qHrKTNCZ27HDxcME7BO0LqnC4+nYOyNlGnQsax3Df
+ACHAYTEaq/4VPrH3FKccsx+va0EaK3gdgvv2xTTbnUfOXp+FNaLqKHfC9Yj8duNE
+GiVN9j01H0qNj1uTzgnkOav9xWNo9bErCPC2z6u/zCh44pXUhcOEMtuyxyLH1zgH
+Lif9wOkhyOiCwT3I6wUepOPVfjcusa34Q1gKUOQjt3vpuSvOAK2P8WDDufSbeGMz
+nhHNkASrn0+4ZGPHfqaFZBbPY37z3uiNRPbgyKFEP4UFqWSNR2Q=
+=x/C1
+-----END PGP SIGNATURE-----
 
-0 - https://lore.kernel.org/lkml/20210408174922.55c1149f@xps13/
+--/b49F6uIw+J2vpAL--
