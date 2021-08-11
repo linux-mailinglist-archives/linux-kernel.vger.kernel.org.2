@@ -2,153 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA303E8F7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6983E8F82
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237354AbhHKLaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:30:15 -0400
-Received: from mail-bn7nam10on2088.outbound.protection.outlook.com ([40.107.92.88]:11905
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237273AbhHKLaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:30:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ha9gCi4H7vn+hfVEk9VqBqMaiJe3+UHHMuppbSGPVMORnl3FsbjaARuKsoVlxLrS+hSdsBVksbSjn0CB66d8qMLuJdiAki8IvLJ36vtnVUBs48zM9xkyRjmYy65S5VnJrH9STPUEyWBHobHP00VlugLmIFQwBglauyCHOGVas9qyXZQnJCJlMaziIdulW+DURPw2JggeKfzCkazDwhRozdIgCPh3IG79xkYzHlS+IUNsT8RgflpIW+kj0hpA3sE7rASr7XoUOEV9ZjzIXxx2ci8jONUZ5GAXhDwhOpTdQxZgv1zeDevUkNOxbtaqXgg3X7rfXhBFqSQpEZAknov0DA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ylz1gvsICTAJxhLd4PmjSGvBYNm7fcfxaqevBIkWEYM=;
- b=VAwNjdCEAO1Rfp1DDZ2hGqjdm6MUUibjhsvMqgwgO9iS3xX/Wd7KVeJHuD79qq147vdlkhKMEgkyQ8RVJaz/qscgF0APhP9cyL4C76U5ZsO6RXl7mP5snEtg1wc/mfgKR+hfsf8ym6DAc1Qbo4bdxUmKCaY39p9DVXRrlQ7NKm60WEvq9+XUPImGR+Qc0d8OSzu3aSedoCV0vJ5BW9ca/qyhU7eADHNMbqAj//vck16WEHFqxV6s0VUWxERhxjcV48QISVmSA7QpGiNPDKtkWE9NqJXWff2Ypck5EhacEksx9qCvY4NxgJcd8TQTcp9PytFG4/UgjJ4VgwsIGOT6bQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=pengutronix.de smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ylz1gvsICTAJxhLd4PmjSGvBYNm7fcfxaqevBIkWEYM=;
- b=M6AfgapaLPGQUaTEVEoiZc6X4Rc3V/sjlQ4hmKhIpJ7vWs80mx/XZ4BvC0JfjFMD8ESeEbYSZikZtsKEXzKD/MxAwkTJJPLxPcQ4lAHa/aZWvUo4UlaW4PvEWoaNL0frTJ2W1jHSFgDHFcTvEr5MiLoYFvlbfJ5aRgVfsgzvtS8=
-Received: from DS7PR03CA0081.namprd03.prod.outlook.com (2603:10b6:5:3bb::26)
- by DM6PR02MB5819.namprd02.prod.outlook.com (2603:10b6:5:17d::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Wed, 11 Aug
- 2021 11:29:47 +0000
-Received: from DM3NAM02FT025.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:3bb:cafe::91) by DS7PR03CA0081.outlook.office365.com
- (2603:10b6:5:3bb::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend
- Transport; Wed, 11 Aug 2021 11:29:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT025.mail.protection.outlook.com (10.13.4.112) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4415.16 via Frontend Transport; Wed, 11 Aug 2021 11:29:47 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 04:29:43 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 11 Aug 2021 04:29:43 -0700
-Envelope-to: git@xilinx.com,
- kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org,
- p.zabel@pengutronix.de,
- monstr@monstr.eu,
- linux-kernel@vger.kernel.org,
- m.tretter@pengutronix.de
-Received: from [172.30.17.109] (port=41350)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1mDmQY-0002Dj-OW; Wed, 11 Aug 2021 04:29:42 -0700
-Subject: Re: [PATCH] reset: reset-zynqmp: Fixed the argument data type
-To:     Michael Tretter <m.tretter@pengutronix.de>,
-        Michal Simek <michal.simek@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
-        <git@xilinx.com>,
-        "Sai Krishna Potthuri" <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>, <kernel@pengutronix.de>
-References: <925cebbe4eb73c7d0a536da204748d33c7100d8c.1624448778.git.michal.simek@xilinx.com>
- <20210811103621.GA23827@pengutronix.de>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <d3bdc4c8-1e31-e1ac-e192-c7bff74eb4af@xilinx.com>
-Date:   Wed, 11 Aug 2021 13:29:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210811103621.GA23827@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+        id S237377AbhHKLfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:35:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8898 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237323AbhHKLfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 07:35:10 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BBWsh8128241;
+        Wed, 11 Aug 2021 07:34:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=WKV0mifP9mdv8ecyMfTa0U/d4OeeOKmNT+j0H4eQvJk=;
+ b=hH9bPsD7c2pVAMfOhj4RRDHnxRRv2Bzx7DYgxiHRupsbbeBh6W+vBmIYsXxk1TG7Bhid
+ 8rKKHR+Y3VJgFF8pCXs0D9awrfRW5aNEnOyWZkZ8UJBOmkeeO1Yc8cQB0kb8YeVe2TcN
+ /FQVZtjPg+pAZleKOsrmjttH4PpR5qfi0LGJZ6eYAGJFgkhSJAcml1QQVcwvQfnEM+wQ
+ InpRu/GmkR/GPCSqGcxORgZ84oGIAeys2hvhsZKAEr+H8tOGJuWrg+DAaz5P8Rj0PdzY
+ AN5c28/RHpjrmcH1h7E0ys0KBnfFQ1p0G5M/PD+fcb6yMfjPKYZhLZLJEbbJbk23AYrv wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3acbt3jyg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 07:34:28 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17BBYR1v138486;
+        Wed, 11 Aug 2021 07:34:28 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3acbt3jyeq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 07:34:27 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BBXGG5011004;
+        Wed, 11 Aug 2021 11:34:25 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3a9ht8yxs0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 11:34:24 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BBYMo128377392
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 11:34:22 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 73D28A4059;
+        Wed, 11 Aug 2021 11:34:22 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39878A404D;
+        Wed, 11 Aug 2021 11:34:19 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.27.84])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Aug 2021 11:34:19 +0000 (GMT)
+Message-ID: <d4f5c2593380c82ceebae2c8782a1c440b35f165.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 11 Aug 2021 07:34:18 -0400
+In-Reply-To: <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
+References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+         <20210809094408.4iqwsx77u64usfx6@kernel.org> <YRGVcaquAJiuc8bp@gmail.com>
+         <20210810180636.vqwaeftv7alsodgn@kernel.org> <YRLJmaafp941uOdA@gmail.com>
+         <20210810212140.sdq5dq2wy5uaj7h7@kernel.org> <YRLvPJehAeMiYb2Z@gmail.com>
+         <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9ed0918f-658c-468d-c8a7-08d95cbb5305
-X-MS-TrafficTypeDiagnostic: DM6PR02MB5819:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB581949D885390673C02E222CC6F89@DM6PR02MB5819.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bzFHpTPuTSmmAGuPenc8Fftmb88c1uCUzsAZwx0Z3Aus54t7xQ1qu7lZKvcvphwdAeyrlEaFK/3ZoRcyE4C+iMEdqCvfECfapLFmmGDs8M1IB751Fe4OBeRZbJRMVQU/rs/qemB0fMyzZ3/Vwi6qT9c8SKolHechhJSa93/iO7NRZbciyDsSRrupNwtZf9OiF/+P2YSrVUjwYUmIKjDcxZh541nhToxqIRLLd967f4RAt7ADJZ3XQipwlp9F7j/oFjSTDeCsJuBBvLx3Tw6+sp4Vor4NQiX0/mLp1wrJbveFQhsnPMP3riZ/WAM0VVnYBN61oDvQT3cb63hUw7ZMbNYoL4UTRGfdYrjb3s2gNCaaKzvxIUQMdKk+4QCylT8zEiiUdWqdnrz2Pw6C5e0BeQSTyzyAJf4N9s3+vIdq5WgfLr3gJ78QmY8ys+3m32rrVp4zW4ybUKFhwT1i5r1x4PofRv+t6/H1YfI8yO+sFdRD1vlQWl/n4IRqPgNmIhVGPm3OlOjLHzvgy2uAa78ArGdSwDTP4vK83MAljB5Ng1TpzqEXOAyaeZGVUD0564z0jW3Mi++Nn5Ovt49HcjjkJ3WceYUUmZbZEFUmKPX6D+4Fe13jLK2xJ/eaCtuXFGnQC5n4SjvsPS6AufB9rdDx10FiXOXc+JUtQ3Fda/kuHT6iKFcDOlQtBNa/vdUUPqjjVYy6PMt+Ntx1aYppIKg7w27JC11g+2qRjo1tMVa3MJXYpx7fmbRte5EXgFaFkxjokPGt25quDmi9rBD+ATTxlg==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(39850400004)(46966006)(36840700001)(26005)(8676002)(31696002)(31686004)(426003)(186003)(70206006)(70586007)(336012)(47076005)(44832011)(110136005)(54906003)(53546011)(316002)(8936002)(2616005)(478600001)(356005)(9786002)(82740400003)(36756003)(2906002)(82310400003)(7636003)(4326008)(36860700001)(5660300002)(36906005)(83380400001)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 11:29:47.0244
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ed0918f-658c-468d-c8a7-08d95cbb5305
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT025.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5819
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: r6-4IUomzcvJFMnp_seKefxgZMrV5TsK
+X-Proofpoint-ORIG-GUID: 9YaVVr2iQJOX9DHzgWTnnrzbsVhn8PWv
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-11_04:2021-08-11,2021-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ mlxlogscore=751 adultscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 clxscore=1011
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2108110073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/11/21 12:36 PM, Michael Tretter wrote:
-> On Wed, 23 Jun 2021 13:46:20 +0200, Michal Simek wrote:
->> From: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
->>
->> This patch changes the data type of the variable 'val' from
->> int to u32.
->>
->> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
->> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
->> Addresses-Coverity: argument of type "int *" is incompatible with parameter of type "u32 *"
->> ---
->>
->>  drivers/reset/reset-zynqmp.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
->> index daa425e74c96..59dc0ff9af9e 100644
->> --- a/drivers/reset/reset-zynqmp.c
->> +++ b/drivers/reset/reset-zynqmp.c
->> @@ -53,7 +53,8 @@ static int zynqmp_reset_status(struct reset_controller_dev *rcdev,
->>  			       unsigned long id)
->>  {
->>  	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
->> -	int val, err;
->> +	int err;
->> +	u32 val;
+On Wed, 2021-08-11 at 03:17 +0300, Jarkko Sakkinen wrote:
+> On Tue, Aug 10, 2021 at 02:27:24PM -0700, Eric Biggers wrote:
+> > On Wed, Aug 11, 2021 at 12:21:40AM +0300, Jarkko Sakkinen wrote:
+> > > On Tue, Aug 10, 2021 at 11:46:49AM -0700, Eric Biggers wrote:
+> > > > On Tue, Aug 10, 2021 at 09:06:36PM +0300, Jarkko Sakkinen wrote:
+> > > > > > > 
+> > > > > > > I don't think this is right, or at least it does not follow the pattern
+> > > > > > > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
+> > > > > > 
+> > > > > > What's the benefit of the extra layer of indirection over just using a "trusted"
+> > > > > > key directly?  The use case for "encrypted" keys is not at all clear to me.
+> > > > > 
+> > > > > Because it is more robust to be able to use small amount of trusted keys,
+> > > > > which are not entirely software based.
+> > > > > 
+> > > > > And since it's also a pattern on existing kernel features utilizing trusted
+> > > > > keys, the pressure here to explain why break the pattern, should be on the
+> > > > > side of the one who breaks it.
+> > > > 
+> > > > This is a new feature, so it's on the person proposing the feature to explain
+> > > > why it's useful.  The purpose of "encrypted" keys is not at all clear, and the
+> > > > documentation for them is heavily misleading.  E.g.:
+> > > > 
+> > > >     "user space sees, stores, and loads only encrypted blobs"
+> > > >     (Not necessarily true, as I've explained previously.)
+> > > > 
+> > > >     "Encrypted keys do not depend on a trust source" ...  "The main disadvantage
+> > > >     of encrypted keys is that if they are not rooted in a trusted key"
+> > > >     (Not necessarily true, and in fact it seems they're only useful when they
+> > > >     *do* depend on a trust source.  At least that's the use case that is being
+> > > >     proposed here, IIUC.)
+> > > > 
+> > > > I do see a possible use for the layer of indirection that "encrypted" keys are,
+> > > > which is that it would reduce the overhead of having lots of keys be directly
+> > > > encrypted by the TPM/TEE/CAAM.  Is this the use case?  If so, it needs to be
+> > > > explained.
+> > > 
+> > > If trusted keys are used directly, it's an introduction of a bottleneck.
+> > > If they are used indirectly, you can still choose to have one trusted
+> > > key per fscrypt key.
+> > > 
+> > > Thus, it's obviously a bad idea to use them directly.
+> > 
+> > So actually explain that in the documentation.  It's not obvious at all.  And
+> > does this imply that the support for trusted keys in dm-crypt is a mistake?
 > 
-> The function returns val as int instead of u32. While this shouldn't be a
-> problem in this case, maybe there should be an additional check just to be
-> sure?
+> Looking at dm-crypt implementation, you can choose to use 'encrypted' key
+> type, which you can seal with a trusted key.
+> 
+> Note: I have not been involved when the feature was added to dm-crypt.
 
-As far as I can tell coverity is not reporting any issue around it.
-And when I look at internal of that function in firmware this function
-in case of success returns only 0 or 1 that's why I don't think we need
-to do anything with it.
+At least for TPM 1.2,  "trusted" keys may be sealed to a PCR and then
+extended to prevent subsequent usage.  For example, in the initramfs
+all of the "encrypted" keys could be decrypted by a single "trusted"
+key, before extending the PCR.
 
-Thanks,
-Michal
+Mimi
+
