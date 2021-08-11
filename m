@@ -2,50 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A184D3E8851
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664DA3E8840
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhHKC4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 22:56:55 -0400
-Received: from mail-m17656.qiye.163.com ([59.111.176.56]:53122 "EHLO
-        mail-m17656.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbhHKC4y (ORCPT
+        id S232421AbhHKCwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 22:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232169AbhHKCwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 22:56:54 -0400
-X-Greylist: delayed 455 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Aug 2021 22:56:53 EDT
-Received: from [172.25.45.51] (unknown [58.251.74.232])
-        by mail-m17656.qiye.163.com (Hmail) with ESMTPA id 7AAC3C402E6;
-        Wed, 11 Aug 2021 10:48:53 +0800 (CST)
-From:   Wu Bo <bo.wu@vivo.com>
-Subject: f2fs do DIO write make file corruption
-To:     bo.wu@vivo.com, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Message-ID: <5b68208b-fd94-bf4e-fc4b-d79d13abf1c6@vivo.com>
-Date:   Wed, 11 Aug 2021 10:48:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 10 Aug 2021 22:52:05 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3F9C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:51:43 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so2392549pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e85ojSaiIVjal3bsYM8q4OvF6ZBVlMxFadBj2rR3fC4=;
+        b=Xu+/TdqHz31WewRv1l+fWI6IyV875qMMYe/KKjOFnsoCQYcDCjTq8AARwhSxnBKyjs
+         gr9zuOKarlPTDzdyhp7rMQUuWEkolAf/cMVEwNKv2OBaFTwuNbiMVdOWZni+O6po5cXs
+         66mxR1z2UJi4Gi9TLIo2Stv1vZthXryfj3lfB/gS7kVOq2GylLcrMQi0bn/5GGiTepV8
+         TPyOhWzA74UkEKY5zLY1VWeL06UNOr6cLMRqLE6Oq+e2RZ6cXWgdprr03Ntfxisqfwtw
+         4suCC1vHpsFTB+UgO/afatN4eIWVJWj2EpzhijwsCuAFpRzkiYkWiPMJUYdIqhVlxfJ9
+         BxUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e85ojSaiIVjal3bsYM8q4OvF6ZBVlMxFadBj2rR3fC4=;
+        b=bbwAgWMlRFtJoaExn3nJ7vQVQVgRdQhihBUlROWsd5ER2niC1SgTT9JX7ogzoh9nGD
+         UP0uBQT5Q+6NqXZxfTLANSX0m3xV3d3ausZjKwfcugjl+iPegqJt8koL1czulEXZkufy
+         1ZSmBngtlY3jz1PZc4eU+SbZwKzgIpmk++xt6NfZm717AkFEXNu4A9N0OWCFwHui6OsI
+         4wtqhrgtR5+USzVO3rf/RxsNFt8kaBncQm0fMCg0Q95m0JldIPKqFOnqLKpubb0WioDR
+         44mDphClTqgxj6MR8UxP3GsB6bD05bPzyRQOD3xvHzLo1z/vrMe3K8+qWBsb+Z1BzSfv
+         SyiA==
+X-Gm-Message-State: AOAM5337TGqVyB3pHsi8iQvueqHd2spQVSXfsG46QiHEw1LUbcqBYdrU
+        JskJoKMg/A5LvUim6ULnGiJd6klRDjh6eYCe
+X-Google-Smtp-Source: ABdhPJw+pVVEfLT34l9VMSNNvfM/Tbsyd96wg+stykewjsN1RffQMZclL9K9Jhc2VmbVY7Pcr2OG9w==
+X-Received: by 2002:a65:5c89:: with SMTP id a9mr318004pgt.433.1628650302278;
+        Tue, 10 Aug 2021 19:51:42 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id on15sm4390666pjb.19.2021.08.10.19.51.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 19:51:41 -0700 (PDT)
+Subject: Re: [PATCH 1/2] io_uring: clear TIF_NOTIFY_SIGNAL when running task
+ work
+To:     Nadav Amit <nadav.amit@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Olivier Langlois <olivier@trillion01.com>,
+        io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210808001342.964634-1-namit@vmware.com>
+ <20210808001342.964634-2-namit@vmware.com>
+ <fdd54421f4d4e825152192e327c838d035352945.camel@trillion01.com>
+ <A4DC14BA-74CA-41DB-BE08-D7B693C11AE0@gmail.com>
+ <bbd25a42-eac0-a8f9-0e54-3c8c8e9894fd@gmail.com>
+ <FD8FD9BD-1E94-4A84-88EB-3A1531BCF556@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1bf56100-e904-65b5-bbb8-fa313d85b01a@kernel.dk>
+Date:   Tue, 10 Aug 2021 20:51:40 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUJKQkxWQ0hLHklCTUJIGh
-        1DVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MAg6HTo6OT9IAyw3HUpPQxxM
-        ERhPC0JVSlVKTUlDTU5LSkhPTklOVTMWGhIXVRkUVQwOOw0SDRRVGBQWRVlXWRILWUFZTkNVSU5K
-        VUxPVUlISVlXWQgBWUFKSEtCNwY+
-X-HM-Tid: 0a7b331cd85eda02kuws7aac3c402e6
+In-Reply-To: <FD8FD9BD-1E94-4A84-88EB-3A1531BCF556@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I use the following command to create a file, the file may got corruption:
-	f2fs_io write 2 0 512 inc_num dio $path
+On 8/10/21 8:33 PM, Nadav Amit wrote:
+> 
+> 
+>> On Aug 10, 2021, at 2:32 PM, Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 8/10/21 9:28 AM, Nadav Amit wrote:
+>>>
+>>> Unfortunately, there seems to be yet another issue (unless my code
+>>> somehow caused it). It seems that when SQPOLL is used, there are cases
+>>> in which we get stuck in io_uring_cancel_sqpoll() when tctx_inflight()
+>>> never goes down to zero.
+>>>
+>>> Debugging... (while also trying to make some progress with my code)
+>>
+>> It's most likely because a request has been lost (mis-refcounted).
+>> Let us know if you need any help. Would be great to solve it for 5.14.
+>> quick tips: 
+>>
+>> 1) if not already, try out Jens' 5.14 branch
+>> git://git.kernel.dk/linux-block io_uring-5.14
+>>
+>> 2) try to characterise the io_uring use pattern. Poll requests?
+>> Read/write requests? Send/recv? Filesystem vs bdev vs sockets?
+>>
+>> If easily reproducible, you can match io_alloc_req() with it
+>> getting into io_dismantle_req();
+> 
+> So actually the problem is more of a missing IO-uring functionality
+> that I need. When an I/O is queued for async completion (i.e., after
+> returning -EIOCBQUEUED), there should be a way for io-uring to cancel
+> these I/Os if needed.
 
-And when I use bio or to set the chunk size to 1 block, the file is 
-normal. The commands as following:
-	f2fs_io write 2 0 512 inc_num buffered $path
-	f2fs_io write 1 0 512 inc_num dio $path
+There's no way to cancel file/bdev related IO, and there likely never
+will be. That's basically the only exception, everything else can get
+canceled pretty easily. Many things can be written on why that is the
+case, and they have (myself included), but it boils down to proper
+hardware support which we'll likely never have as it's not a well tested
+path. For other kind of async IO, we're either waiting in poll (which is
+trivially cancellable) or in an async thread (which is also easily
+cancellable). For DMA+irq driven block storage, we'd need to be able to
+reliably cancel on the hardware side, to prevent errant DMA after the
+fact.
 
-I find this bug on old kernel version 4.14.117, and not find on version 
-4.19.152. So this bug is fixed. Can anyone can tell me which patch fixed 
-this bug?
+None of this is really io_uring specific, io_uring just suffers from the
+same limitations as others would (or are).
+
+> Otherwise they might potentially never complete, as happens in my
+> use-case.
+
+If you see that, that is most certainly a bug. While bdev/reg file IO
+can't really be canceled, they all have the property that they complete
+in finite time. Either the IO completes normally in a "short" amount of
+time, or a timeout will cancel it and complete it in error. There are no
+unbounded execution times for uncancellable IO.
+
+> AIO has ki_cancel() for this matter. So I presume the proper solution
+> would be to move ki_cancel() from aio_kiocb to kiocb so it can be used
+> by both io-uring and aio. And then - to use this infrastructure.
+
+There is no infrastructure, I'm fraid. ki_cancel() is just a random hook
+that nobody (outside of USB gadget??) ever implemented or used.
+
+> But it is messy. There is already a bug in the (few) uses of
+> kiocb_set_cancel_fn() that blindly assume AIO is used and not
+> IO-uring. Then, I am not sure about some things in the AIO code. Oh
+> boy. I’ll work on an RFC.
+
+ki_cancel is a non-starter, it doesn't even work for the single case
+that it's intended for, and I'm actually surprised it hasn't been
+removed yet. It's one of those things that someone added a hook for, but
+never really grew into something that is useful.
+
+-- 
+Jens Axboe
+
