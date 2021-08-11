@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B673E8906
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F153E890D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233459AbhHKDyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 23:54:43 -0400
-Received: from mx-lax3-2.ucr.edu ([169.235.156.37]:19595 "EHLO
-        mx-lax3-2.ucr.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232905AbhHKDyl (ORCPT
+        id S233497AbhHKD6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 23:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232905AbhHKD6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:54:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1628654059; x=1660190059;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=+r6J+pkHEbVFSGHQElxJnDO6jFts9TCA3QpIXRznslM=;
-  b=qS2Qg/T9bs1E5OqJAYnxBh3q1eGCCZzGcVakfxMFdm8ubDyYxm2KjIUA
-   FM2mTVi7ZpcJv2AEpxknor8NIkWaZTbo/kJyYhNJg0AXpuSekgl/VURtK
-   mbI8t8ThnQ7UBgFCAeyoHD72R4vnpOidw8rEJ3Al2wg7mOrWTG3vzqIno
-   NkrBlqAu9l38ud5CzcKrLqWM18JKsk2IyRkPmG3hZUl87Xao4AvDZ1mWX
-   aGovB+Y7U67NM9JbKdSFL9pPqLOni2NJt5iiKHZn4+lCLT0fWAR7IMCJl
-   kOsIfPpBHpPfc8Es80iUQugsBoE8Uu/yOal4Wkta8nszZHVPOCG1WqSzz
-   g==;
-IronPort-SDR: mNPBNFDsdAQDfF2yd1IHtU8f0PLKB/WpHzHvQFdedHupzOBJFXFJos6lHPyWjFUN2hsgxXlHUG
- sOUWi72BodCfUQeelMHvooINs4dv0nSz8NJXrwCsiiQjgHeq5NZ8Wqtm4Cz5AVHu79+4iVlrzf
- 8W/gqGTeiFxUdTihPLxGyArzaAVtZDhMfLy8P1J/NGipDm5G0GpAehfWEYICxNNSkzLCadjs1Q
- AD1BYBIyJPSy7ddPitPHZ0bJad8DPIcKH2dX+jelUfNli/DNGA6ZVu3jdQCoC4Kc9QtPdMKxZ3
- 31T1kmjWs8PRHZkZIZvnon5c
-X-IPAS-Result: =?us-ascii?q?A2EiCQCjSBNhhsXWVdFaHAEBATwBAQQEAQECAQEHAQGBb?=
- =?us-ascii?q?gKDd1UWjUyIaoplgRqGfIhogXwCCQEBAQ0BARITHAQBAYRYAoJkAiU0CQ4BA?=
- =?us-ascii?q?gQBAQEBAwIDAQEBAQEBAwEBBgEBAQEBAQUEAQECEAEBAQGBIAtZC2OBT4F5B?=
- =?us-ascii?q?gQ9gjUpg2UJAgEDEhVSECAxNAEFARwZIjmCFgGDB50dgQQ9jDEygQGIFgEJD?=
- =?us-ascii?q?YFjCQEIgSgBiH2EcSeCKYJQgTN1h2+CUASDW3sTgimBUAEBAZA6G4MGAYtRg?=
- =?us-ascii?q?SabcQEGAoMOHJ4xRZVFkSq7KgIKBwYQI4E9ghUzGiWBbAqBQU0BAgECAQwCA?=
- =?us-ascii?q?QIBAgECAQIIAQECjjWOViEyOAIGCwEBAwmIeAE?=
-IronPort-PHdr: A9a23:5+QGbhFxVuRxer/16YT9L51Gf+pMhN3EVzX9CrIZgr5DOp6u447ld
- BSGo6k31BmZBc6FurptsKn/i+jYQ2sO4JKM4jgpUadncFs7s/gQhBEqG8WfCEf2f7bAZi0+G
- 9leBhc+pynoeUdaF9zjaFLMv3a88SAdGgnlNQpyO+/5BpPeg9642uys55HfeQZFiCaybb5zK
- Bi9sBncuNQRjYZ+MKg61wHHomFPe+RYxGNoIUyckhPh7cqu/5Bt7jpdtes5+8FPTav1caI4T
- adFDDs9KGA6+NfrtRjYQgSR4HYXT3gbnQBJAwjB6xH6Q4vxvy7nvedzxCWWIcv7Rq0vVD+88
- 6lkVgPniCYfNz447m7XjNBwjLlGqx6lvhBz3pLYbJ2QOPd4e6PdfMgaRXFAXsZXWCxKH52yY
- ZISBOoPPOZXsY39qEYTphe6CwSgGObjxzlPiXLq06A2z/ktHRja0AA9AtkCtGnYodXwOKoUT
- Ou7zrTHzS/bYv1Wxznz9YbGfBMmr/6OU7J9atbdxVU1Gg/ZlFictZDpMjWI3eoNqWib6O9gW
- PqthG4mqgBxoiWvxsAxgYbKhoIa0FHE/jh+zYc1JNy4SFR0Yd+4HJdMuSyXLJZ2Td84Q21yp
- ik116AGtIe9cSMXx5sp2wTRZOabc4iU/B3jTuCRLC9kiH9hZb6xiAi+/0i9xuHhWce63lhHo
- yRFn9XQuH4AywDf58aIR/Zz/Eqs2TeC2Q/P5u9LI005i6vWJZEhz7A+kJcYrEfNHjfulUnok
- KObcl8o9+uo5uj9fLnqu5CRO5Vphgz6MKkigtGzDOU8PwQUQWSW9+Sx2Kf98UD7WrlGkOM6n
- 6ffvZvHP8oUvLS5DBVQ0os77ha/CCqp38oAkHkcKVJFZAqHj4/0O1HSOPz4Demwg1CrkDpzw
- vDJJLzhApHUInjblLftYK9x60BBxAc3z91T/Z1UCrYGIPL8Xk/+qsbUAQM+Mwyx2+rnCdN92
- Z0CWW+XHKOVLKffvUWL6+8vOeWAepIZtTnnJ/Q44/Pjj2c1mVoHcqmo2ZsXZmq4HvNjI0iBY
- Xvtg9cBHn0LvgYiUODnhkaPUSNPaHaoRa4z+Cw0CJ++AYfZWo+tmKCB3Du8HpBOYmBGC1aME
- WrndomdWPcDdjiSIsl/nTwATrWhVYAh2g+0tAPgyLpoMPDU+isGupLnztR14PfTlR5hvRJuC
- MHI4mCfT3xz1lEITj5+iLFtoUV8kg/Y+bVzmbpVGcEFtKABaRszKZOJl78yMNv1QA+UO4rUI
- Gs=
-IronPort-HdrOrdr: A9a23:Zbb0qa0qtgGvZYwMWuniRQqjBIkkLtp133Aq2lEZdPWaSL3gqy
- nOpoVi6faaskd1ZJhNo6HjBEDEewK+yXcX2+gs1NWZLW3bUQKTRekI0WKh+V3d8kbFh4lgPM
- lbAs5D4R7LYGSST/yR3OB1KbkdKRC8nM6Vuds=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="59655351"
-Received: from mail-pl1-f197.google.com ([209.85.214.197])
-  by smtp-lax3-2.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 10 Aug 2021 20:54:17 -0700
-Received: by mail-pl1-f197.google.com with SMTP id p7-20020a170902b087b029012c2879a885so545699plr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:54:17 -0700 (PDT)
+        Tue, 10 Aug 2021 23:58:14 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79272C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:57:51 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d17so918815plr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VZDnzigX3SjnNXSD0ePWkP9LgJSp4fG8kgmss+VG9ns=;
+        b=L+R0++YNmnfCTMKhjKqOcKL4r/U7m81vQz3IrrH9KLDy//XrRshbenoNZmZvx+VIlg
+         Mq8Qc1IS2nkv1owuCTwuT/xVfJPoRLA9MwiztzGevawbNsG1jIpq1dWtcDKZEA6nFakz
+         6jW0uebiyXkhFAsTrvf8b28PT/Jm8ziY8l5R1B3utIIDLeuPh0i7j5b6WfYy1UU5wn2m
+         AV6QkLUi3fj0zsNyzUivEkcm0Yp5HUaCv1pluWDmaAcHjoAPdT3MzdvrvLTgKh69M+GY
+         5PXaWt5ahBrp/AkNB6otUyLPKOr2S9C60dve5Nwty8fLYrClkI8I/nytnDHs+c6xXBNR
+         d86w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lSccYX79bCga8PfiO71I5eGOlFYRkHyS4P+krasVmlI=;
-        b=oRUClnIQNvelOLO39KT3aPsNycQydA387tXUozyKguwHYHvtyBYcLkopMyNZH3MlR+
-         0WzAdnpIes/lLP2T4M3QFiI2UQRMCZOcSDy08HGWHqaObDk5j+vZjICSgqMSLW7ldrrY
-         u01SBjYPWUErviwiTYzf1DE8jn8qodQ1MhmT+MtIY03JPZxFFE3e8dahy4qbatALlheg
-         NiFcx4L0BQjHS6KddSTokXHkii84VsNF5Z4gLRsaZ5q915EXdYIyfiXCAAEzcXER9LD0
-         gllrqthjTuuwvOC4CB0oky+zsAsjGngl7SReCYIt5xtRmvlxNhDLWiGEVEDZkNnwARNe
-         3fLQ==
-X-Gm-Message-State: AOAM530pCphY8D0KSBYvYgC78PVtac6o7Bp3E1FRIGZ/eXgacVDKfLir
-        5rVZNeAmbxuqmN5hd6/YWCTBmrCmnDyg5r4C7wcHPvtRd6c1xBJRn/VDk1JgAQgX84Qq5HNAWXW
-        wGE0s9IxE+B18yYAltlgi+MOnHg==
-X-Received: by 2002:a17:90b:f17:: with SMTP id br23mr8156311pjb.60.1628654057100;
-        Tue, 10 Aug 2021 20:54:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqbNjbWkU4ar3037qpQVx+m8hnhLSTWWK+YqOhqq7Z85m2c+hqh7j8OGYm44oN3HtAPxORMg==
-X-Received: by 2002:a17:90b:f17:: with SMTP id br23mr8156299pjb.60.1628654056896;
-        Tue, 10 Aug 2021 20:54:16 -0700 (PDT)
-Received: from kq.cs.ucr.edu (kq.cs.ucr.edu. [169.235.27.223])
-        by smtp.googlemail.com with ESMTPSA id 143sm21100364pfx.1.2021.08.10.20.54.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VZDnzigX3SjnNXSD0ePWkP9LgJSp4fG8kgmss+VG9ns=;
+        b=p79UCQDAdf7J5ozcSoF5pyFUkiAMAWwVASpfN4jBJNPVGyj1InHvSPygE7Q+7ku7uY
+         5r9QI3dGoSF5yOj4bfszksytNQUUjp34qygtwQsdA9ROY3yT10QiehRVvjkFYDx9YCFX
+         7tED51eqhDKcM+xqz2C+dT778gz6o67UeCE/lwO8vUcq5vJhlm7CymLuj5Sr/MivViwM
+         oLN/gxOHOVmW3jDJph+oULOwACryL9q2y5Q5ESsyrR10FT8WNUUAbz7rkTWor8lWGtXp
+         /7Rg0xUPB5j+DUjQVqCMkV8Xs3jmJ1f/vse8vmGfogFtPLue0AOMjnU8pBK/jgcGwRgh
+         bDDw==
+X-Gm-Message-State: AOAM531IVJfZS/AJDoU8rGtzBajes/mvv3rTEmGPuDK1gmnioDq5iifU
+        KZO+T85uenKk1ZBymP+LlZVTbw==
+X-Google-Smtp-Source: ABdhPJx/pJbsP0m97XQVCkEHJBz1/qpfTU3xLCXt7Z7OMeaFjN14Huy9YQ+gFbHc8StZrL0P+eTQrA==
+X-Received: by 2002:a17:90a:d702:: with SMTP id y2mr13633559pju.127.1628654270782;
+        Tue, 10 Aug 2021 20:57:50 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id fv2sm4492265pjb.53.2021.08.10.20.57.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 20:54:16 -0700 (PDT)
-From:   Yizhuo Zhai <yzhai003@ucr.edu>
-Cc:     Yizhuo <yzhai003@ucr.edu>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] media: atomisp: fix the uninitialized use and rename "retvalue"
-Date:   Tue, 10 Aug 2021 20:54:03 -0700
-Message-Id: <20210811035405.17382-1-yzhai003@ucr.edu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210723003607.64179-1-yzhai003@ucr.edu>
-References: <20210723003607.64179-1-yzhai003@ucr.edu>
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 10 Aug 2021 20:57:50 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 09:27:45 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Taniya Das <tdas@codeaurora.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: Re: [PATCH v1] cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu
+ cpufreq driver flag
+Message-ID: <20210811035745.j6jbufrd2pdrnqdp@vireshk-i7>
+References: <1628645918-12890-1-git-send-email-tdas@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628645918-12890-1-git-send-email-tdas@codeaurora.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yizhuo <yzhai003@ucr.edu>
+On 11-08-21, 07:08, Taniya Das wrote:
+> As remote cpufreq updates are supported on QCOM platforms, set
+> dvfs_possible_from_any_cpu cpufreq driver flag.
+> 
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index f86859b..20455aa 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -161,6 +161,7 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+>  		return ret;
+>  	} else {
+>  		policy->fast_switch_possible = true;
+> +		policy->dvfs_possible_from_any_cpu = true;
+>  		icc_scaling_enabled = false;
+>  	}
 
-Inside function mt9m114_detect(), variable "retvalue" could
-be uninitialized if mt9m114_read_reg() returns error, however, it
-is used in the later if statement, which is potentially unsafe.
+Why don't you set it always ?
 
-The local variable "retvalue" is renamed to "model" to avoid
-confusion.
+> 
+> --
+> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+> of the Code Aurora Forum, hosted by the  Linux Foundation.
 
-Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
-Signed-off-by: Yizhuo Zhai<yzhai003@ucr.edu>
----
- drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-index f5de81132177..77293579a134 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-@@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
- static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
- {
- 	struct i2c_adapter *adapter = client->adapter;
--	u32 retvalue;
-+	u32 model;
-+	int ret;
- 
- 	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
- 		dev_err(&client->dev, "%s: i2c error", __func__);
- 		return -ENODEV;
- 	}
--	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
--	dev->real_model_id = retvalue;
-+	ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
-+	if (ret)
-+		return ret;
-+	dev->real_model_id = model;
- 
--	if (retvalue != MT9M114_MOD_ID) {
-+	if (model != MT9M114_MOD_ID) {
- 		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
- 			__func__, client->addr);
- 		return -ENODEV;
 -- 
-2.17.1
-
+viresh
