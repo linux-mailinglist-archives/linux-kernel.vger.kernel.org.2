@@ -2,98 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639443E8D5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5825C3E8D57
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbhHKJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:37:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40982 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236707AbhHKJhg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:37:36 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1DA842216B;
-        Wed, 11 Aug 2021 09:37:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628674632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oztmLtuICT2IcFqFQvVL636C+wIDTuWJpaM9f5ZQmqk=;
-        b=tmiq9qvhwgTXYYZnvnaSIxsg0080TOI5DY19EdXEcyPVyKRvlLO4OBY+2SchQjmo0PzfVO
-        zlZ9erIV/2ibLI99Bpn59hWqoVz8naUfP60ln3OAyHEutXr2rA1aesXBcybZyynHLZsBuX
-        E3tHpwLkogWx+mFk4MwGkl6evJCaukY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628674632;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oztmLtuICT2IcFqFQvVL636C+wIDTuWJpaM9f5ZQmqk=;
-        b=/rKQsLcr/EBM5ESYsZiuxRFtkApWDIU9g50whbbHHtMIKWMyl+gMT/d3twpwpiRoghBqu4
-        c1bnHPiE2KhnP9AQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id F0B18136D9;
-        Wed, 11 Aug 2021 09:37:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id Cs55N0eaE2HlAgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 09:37:11 +0000
-Subject: Re: [PATCH v14 033/138] mm: Add folio_nid()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        id S236727AbhHKJhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:37:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:46128 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236705AbhHKJhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 05:37:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D657D113E;
+        Wed, 11 Aug 2021 02:36:46 -0700 (PDT)
+Received: from [10.163.67.241] (unknown [10.163.67.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 736E53F70D;
+        Wed, 11 Aug 2021 02:36:44 -0700 (PDT)
+Subject: Re: [PATCH 1/5] KVM: arm64: Drop direct PAGE_[SHIFT|SIZE] usage as
+ page size
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-34-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <6a31a92c-0de7-bd96-f179-537f3a68b67b@suse.cz>
-Date:   Wed, 11 Aug 2021 11:37:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
+ <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
+ <25ee7799069492f2501003faec7f9732@kernel.org>
+ <0b47c654-7e9b-a7ca-bdf4-f9607062200e@arm.com> <87zgto9z9i.wl-maz@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <4a4d320e-f09c-5198-d3cb-397d837190b1@arm.com>
+Date:   Wed, 11 Aug 2021 15:07:36 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-34-willy@infradead.org>
+In-Reply-To: <87zgto9z9i.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> This is the folio equivalent of page_to_nid().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-> ---
->  include/linux/mm.h | 5 +++++
->  1 file changed, 5 insertions(+)
+On 8/11/21 1:41 PM, Marc Zyngier wrote:
+> On Wed, 11 Aug 2021 06:34:46 +0100,
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+>>
+>>
+>>
+>> On 8/10/21 7:03 PM, Marc Zyngier wrote:
+>>> On 2021-08-10 08:02, Anshuman Khandual wrote:
+>>>> All instances here could just directly test against CONFIG_ARM64_XXK_PAGES
+>>>> instead of evaluating via PAGE_SHIFT or PAGE_SIZE. With this change, there
+>>>> will be no such usage left.
+>>>>
+>>>> Cc: Marc Zyngier <maz@kernel.org>
+>>>> Cc: James Morse <james.morse@arm.com>
+>>>> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>> Cc: Will Deacon <will@kernel.org>
+>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>> Cc: kvmarm@lists.cs.columbia.edu
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>>  arch/arm64/kvm/hyp/pgtable.c | 6 +++---
+>>>>  arch/arm64/mm/mmu.c          | 2 +-
+>>>>  2 files changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>>>> index 05321f4165e3..a6112b6d6ef6 100644
+>>>> --- a/arch/arm64/kvm/hyp/pgtable.c
+>>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
+>>>> @@ -85,7 +85,7 @@ static bool kvm_level_supports_block_mapping(u32 level)
+>>>>       * Reject invalid block mappings and don't bother with 4TB mappings for
+>>>>       * 52-bit PAs.
+>>>>       */
+>>>> -    return !(level == 0 || (PAGE_SIZE != SZ_4K && level == 1));
+>>>> +    return !(level == 0 || (!IS_ENABLED(CONFIG_ARM64_4K_PAGES) && level == 1));
+>>>>  }
+>>>>
+>>>>  static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, u32 level)
+>>>> @@ -155,7 +155,7 @@ static u64 kvm_pte_to_phys(kvm_pte_t pte)
+>>>>  {
+>>>>      u64 pa = pte & KVM_PTE_ADDR_MASK;
+>>>>
+>>>> -    if (PAGE_SHIFT == 16)
+>>>> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
+>>>>          pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
+>>>>
+>>>>      return pa;
+>>>> @@ -165,7 +165,7 @@ static kvm_pte_t kvm_phys_to_pte(u64 pa)
+>>>>  {
+>>>>      kvm_pte_t pte = pa & KVM_PTE_ADDR_MASK;
+>>>>
+>>>> -    if (PAGE_SHIFT == 16)
+>>>> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
+>>>>          pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
+>>>>
+>>>>      return pte;
+>>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>>>> index 9ff0de1b2b93..8fdfca179815 100644
+>>>> --- a/arch/arm64/mm/mmu.c
+>>>> +++ b/arch/arm64/mm/mmu.c
+>>>> @@ -296,7 +296,7 @@ static void alloc_init_cont_pmd(pud_t *pudp,
+>>>> unsigned long addr,
+>>>>  static inline bool use_1G_block(unsigned long addr, unsigned long next,
+>>>>              unsigned long phys)
+>>>>  {
+>>>> -    if (PAGE_SHIFT != 12)
+>>>> +    if (!IS_ENABLED(CONFIG_ARM64_4K_PAGES))
+>>>>          return false;
+>>>>
+>>>>      if (((addr | next | phys) & ~PUD_MASK) != 0)
+>>>
+>>> I personally find it a lot less readable.
+>>>
+>>> Also, there is no evaluation whatsoever. All the code guarded
+>>> by a PAGE_SIZE/PAGE_SHIFT that doesn't match the configuration
+>>> is dropped at compile time.
+>>
+>> The primary idea here is to unify around IS_ENABLED(CONFIG_ARM64_XXK_PAGES)
+>> usage in arm64, rather than having multiple methods to test page size when
+>> ever required.
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 8b79d9dfa6cb..c6e2a1682a6d 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1428,6 +1428,11 @@ static inline int page_to_nid(const struct page *page)
->  }
->  #endif
->  
-> +static inline int folio_nid(const struct folio *folio)
-> +{
-> +	return page_to_nid(&folio->page);
-> +}
-> +
->  #ifdef CONFIG_NUMA_BALANCING
->  static inline int cpu_pid_to_cpupid(int cpu, int pid)
->  {
-> 
+> I'm sorry, but I find the idiom extremely painful to parse. If you are
 
+Okay, it was not explained very well. My bad.
+
+> annoyed with the 'PAGE_SHIFT == 12/14/16', consider replacing it with
+> 'PAGE_SIZE == SZ_4/16/64K' instead.
+
+Sure, understood. But the problem here is not with PAGE_SHIFT/PAGE_SIZE
+based tests but rather having multiple ways of doing the same thing in
+arm64 tree. Please find further explanation below.
+
+> 
+> IS_ENABLED(CONFIG_ARM64_XXK_PAGES) also gives the wrong impression
+> that *multiple* page sizes can be selected at any given time. That's
+> obviously not the case, which actually makes PAGE_SIZE a much better
+> choice.
+
+PAGE_SHIFT and PAGE_SIZE are derived from CONFIG_ARM64_XXK_PAGES. Hence
+why not just directly use the original user selected config option that
+eventually decides PAGE_SHIFT and PAGE_SIZE.
+
+config ARM64_PAGE_SHIFT
+        int
+        default 16 if ARM64_64K_PAGES
+        default 14 if ARM64_16K_PAGES
+        default 12
+
+arch/arm64/include/asm/page-def.h:#define PAGE_SHIFT	CONFIG_ARM64_PAGE_SHIFT
+arch/arm64/include/asm/page-def.h:#define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
+
+Also there are already similar IS_ENABLED() instances which do not
+create much confusion. The point here being, to have just a single
+method that checks compiled page size support, instead of three
+different ways of doing the same thing.
+
+- IS_ENABLED(CONFIG_ARM64_XXK_PAGES)
+- if (PAGE_SHIFT == XX)
+- if (PAGE_SIZE == XX)
+
+$git grep IS_ENABLED arch/arm64/ | grep PAGES
+
+arch/arm64/include/asm/vmalloc.h:	return IS_ENABLED(CONFIG_ARM64_4K_PAGES) &&
+arch/arm64/mm/mmu.c:		BUG_ON(!IS_ENABLED(CONFIG_ARM64_16K_PAGES));
+arch/arm64/mm/mmu.c:		BUG_ON(!IS_ENABLED(CONFIG_ARM64_16K_PAGES));
+
+> 
+> As things stand, I don't plan to take such a patch.
+
+Sure, will drop it from the series if the above explanation and
+the rationale for the patch still does not convince you.
+
+> 
+> Thanks,
+> 
+> 	M.
+> 
