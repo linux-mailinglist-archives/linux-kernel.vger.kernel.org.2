@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF4C3E93D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4F83E93D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbhHKOoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:44:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231872AbhHKOoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:44:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AB560E93;
-        Wed, 11 Aug 2021 14:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628693025;
-        bh=A4sH3E2KfyLdhCZNMa6bajIYD//xy6/126wVil10EmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fMKD9jHSTsGoJ7/M9qyzF9VUMwo+yqYhQSkzJ73z8l+Kr+EB6Xn6s56daPVg0z6+u
-         kv4ZPQnOTr5NkLfQaVQJ6MkxsHGKg3+2jeuSAb/Jv/OEK4/QHA9m8qXheEVlsnuJ4X
-         F65m3OfiNtOB4qKENXSt2sM6gpxcAsK/Mgm5+1N43PFsei+TcDHqPW4HL1owG8LVI4
-         IDLKnjPI6B0ZKkxwMWybTVqaIc/ykpejz+o1b09xct7IKv3Fj56L1El59oECL45dX3
-         Bsm5QsmHCj9TTzfQk7mqWqIiQmT8QcJfa3VnD52WZo1uLp3YOteq18Lezo1hNP62xZ
-         yZpRekj+rC3mQ==
-Date:   Wed, 11 Aug 2021 07:43:45 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        Dave Chinner <dchinner@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the folio tree with the xfs tree
-Message-ID: <20210811144345.GC3601443@magnolia>
-References: <20210811174231.688566de@canb.auug.org.au>
+        id S232634AbhHKOoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:44:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40842 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232589AbhHKOoQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:44:16 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 617671FED8;
+        Wed, 11 Aug 2021 14:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628693032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPspfE+FbIYzctxtQFGxp/gtyU/q6a3ORCDMirvwdek=;
+        b=McZ71LHMYKhjMdSNnS874Px/WT6TLXR1FS1IzwUABAxiPgAT1robaDjLqioD2BNev9AB5K
+        uIeNUnpGefmQDDBe87KoD/uvew6YKmyAu1V5O6nJ83Tr1PfV1xHgyEtCVmOn298nBRbVv7
+        hDCmbbp1IH5EaEzWUWtMPEwajDcgwHE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628693032;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPspfE+FbIYzctxtQFGxp/gtyU/q6a3ORCDMirvwdek=;
+        b=WqJvWAK2vZN8mhPYZRNJcF2BmOh2tJLUaowPnU3yhZNE9VRDL0H4XV5VKs40cU+Gcw3ZTF
+        rv8jRYO6c3/zlNAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 38FC6136D9;
+        Wed, 11 Aug 2021 14:43:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id FFUKDCjiE2HfTwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 14:43:52 +0000
+Subject: Re: [PATCH v14 057/138] mm/swap: Add folio_activate()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-58-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <ec410527-6dda-5ea0-de3a-d66767748f45@suse.cz>
+Date:   Wed, 11 Aug 2021 16:43:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811174231.688566de@canb.auug.org.au>
+In-Reply-To: <20210715033704.692967-58-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 05:42:31PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> This replaces activate_page() and eliminates lots of calls to
+> compound_head().  Saves net 118 bytes of kernel text.  There are still
+> some redundant calls to page_folio() here which will be removed when
+> pagevec_lru_move_fn() is converted to use folios.
 > 
-> Today's linux-next merge of the folio tree got a conflict in:
-> 
->   mm/util.c
-> 
-> between commit:
-> 
->   de2860f46362 ("mm: Add kvrealloc()")
-> 
-> from the xfs tree and commit:
-> 
->   3bc0556bade4 ("mm: Add folio_raw_mapping()")
-> 
-> from the folio tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Hmmm.  Seeing as krealloc lives in mm/slab_common.c anyway, I might just
-move this function there, and (hopefully) avoid this conflict.
-
---D
-
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc mm/util.c
-> index d06e48b28eec,e8fa30e48447..000000000000
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@@ -660,31 -635,6 +660,21 @@@ void kvfree_sensitive(const void *addr
->   }
->   EXPORT_SYMBOL(kvfree_sensitive);
->   
->  +void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
->  +{
->  +	void *newp;
->  +
->  +	if (oldsize >= newsize)
->  +		return (void *)p;
->  +	newp = kvmalloc(newsize, flags);
->  +	if (!newp)
->  +		return NULL;
->  +	memcpy(newp, p, oldsize);
->  +	kvfree(p);
->  +	return newp;
->  +}
->  +EXPORT_SYMBOL(kvrealloc);
->  +
-> - static inline void *__page_rmapping(struct page *page)
-> - {
-> - 	unsigned long mapping;
-> - 
-> - 	mapping = (unsigned long)page->mapping;
-> - 	mapping &= ~PAGE_MAPPING_FLAGS;
-> - 
-> - 	return (void *)mapping;
-> - }
-> - 
->   /* Neutral page->mapping pointer to address_space or anon_vma or other */
->   void *page_rmapping(struct page *page)
->   {
-
-
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
