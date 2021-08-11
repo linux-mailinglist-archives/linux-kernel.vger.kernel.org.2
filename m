@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB053E8B93
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123813E8B92
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235928AbhHKIML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:12:11 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:45756 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235094AbhHKIMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:12:09 -0400
-Received: by mail-vs1-f51.google.com with SMTP id a1so947704vsd.12;
-        Wed, 11 Aug 2021 01:11:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tz0+jEgIobQjuTow/ARUuugSs1kLubTzwy0T9ZLI9hU=;
-        b=fe+PFcMlNn5jjkw3HuZIgBmrfHqI3ogLbui4oymkdMtgrd6H7NXENRIIRJpNL0BINs
-         MeinDJ8afMnFXErb3oRlLcT5ah2lnm1EcsNrrOQI9CXqlZe96a8Cl0mdqaxiiNkUHGXn
-         /prN/GZI1kwZQFQtOX9IlSGCukMi8gAmCI6XyT6g9YII12U3h5QB6Ikbm8rBru2mY6LA
-         rJAEJ7k/tNIq6lVBudpDcAK48QeCRCXf7X/SnbUFCCEvM2k3RocPQsgQel/m4E+cFRmH
-         29yJhnMuYIxGmZt2hK8EnWCIp246of5TqYVM6IumYUaHy8YdUI7tlqwmWhZAhaAcn9TS
-         Rqog==
-X-Gm-Message-State: AOAM532WqA4lOw63DZFKP1SgRnXUWhUjOHvV+2GwuqIwTLXZhyXktU16
-        hsWM8hoshuVhTHjhmqRz7feYA4BRMeDjUX7prd0=
-X-Google-Smtp-Source: ABdhPJyQYdEzQ87d4q8Gjh5OGWc3XIzYeTLsfNGD+TMt1AWgMT8WjUJws7odP2IIw+RmtCkRDyil2IHyZbu6KAbZAGY=
-X-Received: by 2002:a67:ca1c:: with SMTP id z28mr17470575vsk.40.1628669506037;
- Wed, 11 Aug 2021 01:11:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1626266516.git.geert+renesas@glider.be> <04c4d231fb03a3810d72a45c8a5bc2272c5975f3.1626266516.git.geert+renesas@glider.be>
- <20210714135101.GB2441138@robh.at.kernel.org>
-In-Reply-To: <20210714135101.GB2441138@robh.at.kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 11 Aug 2021 10:11:34 +0200
-Message-ID: <CAMuHMdVRPpHudj2svs_TYP9=GYkWFtJrG_+BHA7A+TVPdQ92aQ@mail.gmail.com>
-Subject: Re: [PATCH v4 02/10] memblock: Add variables for usable memory limitation
-To:     Rob Herring <robh@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        id S235837AbhHKIMF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Aug 2021 04:12:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231178AbhHKIMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 04:12:03 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D436F60EB5;
+        Wed, 11 Aug 2021 08:11:39 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDjKr-004GBi-IT; Wed, 11 Aug 2021 09:11:37 +0100
+Date:   Wed, 11 Aug 2021 09:11:37 +0100
+Message-ID: <87zgto9z9i.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org, Linux MM <linux-mm@kvack.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] KVM: arm64: Drop direct PAGE_[SHIFT|SIZE] usage as page size
+In-Reply-To: <0b47c654-7e9b-a7ca-bdf4-f9607062200e@arm.com>
+References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
+        <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
+        <25ee7799069492f2501003faec7f9732@kernel.org>
+        <0b47c654-7e9b-a7ca-bdf4-f9607062200e@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 3:51 PM Rob Herring <robh@kernel.org> wrote:
-> On Wed, Jul 14, 2021 at 02:50:12PM +0200, Geert Uytterhoeven wrote:
-> > Add two global variables (cap_mem_addr and cap_mem_size) for storing a
-> > base address and size, describing a limited region in which memory may
-> > be considered available for use by the kernel.  If enabled, memory
-> > outside of this range is not available for use.
-> >
-> > These variables can by filled by firmware-specific code, and used in
-> > calls to memblock_cap_memory_range() by architecture-specific code.
-> > An example user is the parser of the "linux,usable-memory-range"
-> > property in the DT "/chosen" node.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> > This is similar to how the initial ramdisk (phys_initrd_{start,size})
-> > and ELF core headers (elfcorehdr_{addr,size})) are handled.
-> >
-> > Does there exist a suitable place in the common memblock code to call
-> > "memblock_cap_memory_range(cap_mem_addr, cap_mem_size)", or does this
-> > have to be done in architecture-specific code?
->
-> Can't you just call it from early_init_dt_scan_usablemem? If the
-> property is present, you want to call it. If the property is not
-> present, nothing happens.
+On Wed, 11 Aug 2021 06:34:46 +0100,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+> 
+> 
+> On 8/10/21 7:03 PM, Marc Zyngier wrote:
+> > On 2021-08-10 08:02, Anshuman Khandual wrote:
+> >> All instances here could just directly test against CONFIG_ARM64_XXK_PAGES
+> >> instead of evaluating via PAGE_SHIFT or PAGE_SIZE. With this change, there
+> >> will be no such usage left.
+> >>
+> >> Cc: Marc Zyngier <maz@kernel.org>
+> >> Cc: James Morse <james.morse@arm.com>
+> >> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+> >> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Cc: linux-arm-kernel@lists.infradead.org
+> >> Cc: kvmarm@lists.cs.columbia.edu
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> >> ---
+> >>  arch/arm64/kvm/hyp/pgtable.c | 6 +++---
+> >>  arch/arm64/mm/mmu.c          | 2 +-
+> >>  2 files changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> >> index 05321f4165e3..a6112b6d6ef6 100644
+> >> --- a/arch/arm64/kvm/hyp/pgtable.c
+> >> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> >> @@ -85,7 +85,7 @@ static bool kvm_level_supports_block_mapping(u32 level)
+> >>       * Reject invalid block mappings and don't bother with 4TB mappings for
+> >>       * 52-bit PAs.
+> >>       */
+> >> -    return !(level == 0 || (PAGE_SIZE != SZ_4K && level == 1));
+> >> +    return !(level == 0 || (!IS_ENABLED(CONFIG_ARM64_4K_PAGES) && level == 1));
+> >>  }
+> >>
+> >>  static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, u32 level)
+> >> @@ -155,7 +155,7 @@ static u64 kvm_pte_to_phys(kvm_pte_t pte)
+> >>  {
+> >>      u64 pa = pte & KVM_PTE_ADDR_MASK;
+> >>
+> >> -    if (PAGE_SHIFT == 16)
+> >> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
+> >>          pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
+> >>
+> >>      return pa;
+> >> @@ -165,7 +165,7 @@ static kvm_pte_t kvm_phys_to_pte(u64 pa)
+> >>  {
+> >>      kvm_pte_t pte = pa & KVM_PTE_ADDR_MASK;
+> >>
+> >> -    if (PAGE_SHIFT == 16)
+> >> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
+> >>          pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
+> >>
+> >>      return pte;
+> >> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> >> index 9ff0de1b2b93..8fdfca179815 100644
+> >> --- a/arch/arm64/mm/mmu.c
+> >> +++ b/arch/arm64/mm/mmu.c
+> >> @@ -296,7 +296,7 @@ static void alloc_init_cont_pmd(pud_t *pudp,
+> >> unsigned long addr,
+> >>  static inline bool use_1G_block(unsigned long addr, unsigned long next,
+> >>              unsigned long phys)
+> >>  {
+> >> -    if (PAGE_SHIFT != 12)
+> >> +    if (!IS_ENABLED(CONFIG_ARM64_4K_PAGES))
+> >>          return false;
+> >>
+> >>      if (((addr | next | phys) & ~PUD_MASK) != 0)
+> > 
+> > I personally find it a lot less readable.
+> > 
+> > Also, there is no evaluation whatsoever. All the code guarded
+> > by a PAGE_SIZE/PAGE_SHIFT that doesn't match the configuration
+> > is dropped at compile time.
+> 
+> The primary idea here is to unify around IS_ENABLED(CONFIG_ARM64_XXK_PAGES)
+> usage in arm64, rather than having multiple methods to test page size when
+> ever required.
 
-Seems to work fine when called from early_init_dt_scan_nodes().
-Hence v5 will no longer need to touch memblock.
+I'm sorry, but I find the idiom extremely painful to parse. If you are
+annoyed with the 'PAGE_SHIFT == 12/14/16', consider replacing it with
+'PAGE_SIZE == SZ_4/16/64K' instead.
 
-Gr{oetje,eeting}s,
+IS_ENABLED(CONFIG_ARM64_XXK_PAGES) also gives the wrong impression
+that *multiple* page sizes can be selected at any given time. That's
+obviously not the case, which actually makes PAGE_SIZE a much better
+choice.
 
-                        Geert
+As things stand, I don't plan to take such a patch.
+
+Thanks,
+
+	M.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Without deviation from the norm, progress is not possible.
