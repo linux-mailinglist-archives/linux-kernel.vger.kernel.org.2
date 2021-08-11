@@ -2,59 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CF33E9235
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCE53E9237
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhHKNHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:07:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59036 "EHLO mail.kernel.org"
+        id S230490AbhHKNHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:07:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230030AbhHKNHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:07:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51BCE60C3E;
-        Wed, 11 Aug 2021 13:06:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628687201;
-        bh=fUdCaZhvGvtDwxEeWOdI/KcN6FC3y269PQqOnHZl3TY=;
+        id S230030AbhHKNHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:07:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7F560D07;
+        Wed, 11 Aug 2021 13:06:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628687216;
+        bh=qcTlRMTdng/DbA+1wbB5n4EdMMJWgDMlUQ9bV3LywUU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MQAisoLx/fo1hl4kc2JFXTkyx9v7c/vCodrtecfFN4CAB93vjWPyhEmwDRUt8M7Mc
-         pmCeLqpZXP8x5T+uvbEs8ivM79gqkLYSQ9EOhdXFrUu0CJpJQEkvofeqsiJ1mXFFGz
-         u2g4TzL5u1cJPFFggsbGEZAhJtw6/xhrwWdL0N8bNu7CP7v7QguarFud0otPoIFFS1
-         rnnguFpt8Z9jXHCcswcXDTp3olUB2fjCdpgmGrjg97G8t+Arwv2u5EDl7OMB6JuDvK
-         ThwCsvaOOqkz61YxXi2ibIV+FlJzlNdKKei6k/AldAGf4xSZzbX4ST4mlOhP9CH4n0
-         xRvfZAuFbY+hw==
-Date:   Wed, 11 Aug 2021 16:06:36 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memblock: Check memory add/cap ordering
-Message-ID: <YRPLXFZxLVUjE5pr@kernel.org>
-References: <aabc5bad008d49f07d542815c6c8d28ec90bb09e.1628672091.git.geert+renesas@glider.be>
+        b=pD8ogjIbgcl+s78ScsxVFt6sFVlPZqalp8R+XFdW0kWFDBcfgY6S/ZlxkieoDVV4o
+         wvIRSd8GxyOxlhtvDsi2/gvKNPYswwlw4kM6T9ejIkb7GXOr1qyHyc9V4wPxve6iK6
+         xVagAwh3GRd537LMzD93Y9JfkD9SjNBHgD+O++2o=
+Date:   Wed, 11 Aug 2021 15:06:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        jason@jlekstrand.net, Jonathan Gray <jsg@jsg.id.au>
+Subject: Re: [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in
+ eb_parse()
+Message-ID: <YRPLbV+Dq2xTnv2e@kroah.com>
+References: <20210810172955.660225700@linuxfoundation.org>
+ <20210810173000.050147269@linuxfoundation.org>
+ <20210811072843.GC10829@duo.ucw.cz>
+ <YROARN2fMPzhFMNg@kroah.com>
+ <20210811122702.GA8045@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aabc5bad008d49f07d542815c6c8d28ec90bb09e.1628672091.git.geert+renesas@glider.be>
+In-Reply-To: <20210811122702.GA8045@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:55:18AM +0200, Geert Uytterhoeven wrote:
-> For memblock_cap_memory_range() to work properly, it should be called
-> after memory is detected and added to memblock with memblock_add() or
-> memblock_add_node().  If memblock_cap_memory_range() would be called
-> before memory is registered, we may silently corrupt memory later
-> because the crash kernel will see all memory as available.
+On Wed, Aug 11, 2021 at 02:27:02PM +0200, Pavel Machek wrote:
+> On Wed 2021-08-11 09:46:12, Greg Kroah-Hartman wrote:
+> > On Wed, Aug 11, 2021 at 09:28:43AM +0200, Pavel Machek wrote:
+> > > Hi!
+> > > 
+> > > > From: Jonathan Gray <jsg@jsg.id.au>
+> > > > 
+> > > > The backport of c9d9fdbc108af8915d3f497bbdf3898bf8f321b8 to 5.10 in
+> > > > 6976f3cf34a1a8b791c048bbaa411ebfe48666b1 removed more than it should
+> > > > have leading to 'batch' being used uninitialised.  The 5.13 backport and
+> > > > the mainline commit did not remove the portion this patch adds back.
+> > > 
+> > > This patch has no upstream equivalent, right?
+> > > 
+> > > Which is okay -- it explains it in plain english, but it shows that
+> > > scripts should not simply search for anything that looks like SHA and
+> > > treat it as upsteam commit it.
+> > 
+> > Sounds like you have a broken script if you do it that way.
 > 
-> Print a warning and bail out if ordering is not satisfied.
+> That is what you told me to do!
 > 
-> Suggested-by: Mike Rapoport <rppt@kernel.org>
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> https://lore.kernel.org/stable/YQEvUay+1Rzp04SO@kroah.com/
 
-Applied for 5.15,
-Thanks!
+Yes, which is fine for matching sha1 values.
 
--- 
-Sincerely yours,
-Mike.
+> I would happily adapt my script, but there's no
+> good/documented/working way to determine upstream commit given -stable
+> commit.
+> 
+> If we could agree on
+> 
+> Commit: (SHA)
+> 
+> in the beggining of body, that would be great.
+> 
+> Upstream: (SHA)
+> 
+> in sign-off area would be even better.
+
+What exactly are you trying to do when you find a sha1?  For some reason
+my scripts work just fine with a semi-free-form way that we currently
+have been doing this for the past 17+ years.  What are you attempting to
+do that requires such a fixed format?
+
+thanks,
+
+greg k-h
