@@ -2,145 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6F53E993D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839843E9940
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhHKTyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhHKTyN (ORCPT
+        id S231655AbhHKTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:55:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60859 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229991AbhHKTzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:54:13 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DCBC061765;
-        Wed, 11 Aug 2021 12:53:49 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id e15so3102790qtx.1;
-        Wed, 11 Aug 2021 12:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7Rj3jowo4rLKTb5DL/a/sgrAp1nwTAibErIjLWBeFZM=;
-        b=gBrqComJtE/krGIQfEmDF6IG7fhP+pnMLgmJfkWv/TcSv09Pl+014rGDGTCT6Mp1GR
-         NbMmQdiR0ue4BZDMNzE+ElVX5GJZGxeEBonVQ/m8/t09QhCF/1BPymL356VL9qGp+yS8
-         sQUhRK7m6BzlU7rbZH4QKdiGJ5wxCy+VRazapd+wT1/zNAuu/SRy5pkFbhcHUw5FoTfr
-         O3H7+2e3xCq8TZk4oWylKIC2Zxz7IR4j5DGnriBOb3dUZMNATtn2/pGFLqp5GbGrHEtC
-         3Timawg7v+zSncVtMq8GsS1lLKZ0iQg8wcx6KYwnQD+ShRj1cLoL9rOMC6dzdRBF66YQ
-         HhUg==
+        Wed, 11 Aug 2021 15:55:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628711695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jdVd8k5URnX6lBMFB7udQq0EhcO+kahsChnmRwo3jM=;
+        b=hQrLflbTZe+5vl6KExRD1cMYoErr4bhGA1m1Mes+8s7qyyGKVEGPpWE3vYo4tmu9YlwPvt
+        daNTFDfnd33pKhS/jJihIhr1WKsgwsZSoxhjmrKtGHdh0yJeYLQqNriNAzl51syfVrB+RZ
+        mGUKa6hRfe4gm1+3xf2S2Pjevb61yP4=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-T2Arx8LAMwqGwZ3nkNHUHw-1; Wed, 11 Aug 2021 15:54:54 -0400
+X-MC-Unique: T2Arx8LAMwqGwZ3nkNHUHw-1
+Received: by mail-qv1-f69.google.com with SMTP id f10-20020a0ccc8a0000b02903521ac3b9d7so1909199qvl.15
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:54:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7Rj3jowo4rLKTb5DL/a/sgrAp1nwTAibErIjLWBeFZM=;
-        b=NEcXLszGL69T4HZXNCe5KG9/8+k3BgMStBunOajU88WXLWSRKWrCJ7D7qrhgH90N3G
-         MhdfkJQRcZFKVKFP0Ajoo/Tho5iodnMlFp3FTG2aKdoNiwnDy5OMCZvQuXb0EpEfzprU
-         bgwHsux3MQfuzDlfO+zlLdXXxYXZ/HhZo6T0bscgLpHyTTM7ekLpakxTODYADndRXy4d
-         ObdnkTIktRfQiRZPDvhWnRDgNXGJRuWVz/+0MaWJSHnAI4EiIUIM+ict1FPPrkXIOGUM
-         DtZ5DRvTNQEEGe23BTas7rCGyNrYbqlm0YDuD/lJFRZV9iNT+F3fRwRTMUsofbqC+dUk
-         1HtQ==
-X-Gm-Message-State: AOAM531jJcfpN+oWVL2+YwgdopGDF3w5DnIIgqoEyaa6V7PXV88Qivc6
-        gwH9HGVQ6hINEbuL/aLaVMI=
-X-Google-Smtp-Source: ABdhPJzv3si9poBiguRuyMRL0g21rM7yQcqGtXv5Hm/jQnebhhsTvuQGmnp1hsEA2vyCbVTmcZ4Org==
-X-Received: by 2002:a05:622a:170f:: with SMTP id h15mr398490qtk.378.1628711628482;
-        Wed, 11 Aug 2021 12:53:48 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z5sm100619qkj.16.2021.08.11.12.53.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5jdVd8k5URnX6lBMFB7udQq0EhcO+kahsChnmRwo3jM=;
+        b=VTOP1viBO+waJykNBiEBQa8xjsTiutaz9ekHYwhI5a4FzvOA/k14Q+Ktc1ptpKZN2+
+         IECrNp2NM+bE0JkShwxipUT6qPHK33yQO4ft/mZ/RLyZyzUS55qne2XaQHjSQuqY0nlG
+         EmQCa05jfoUKCt3N6DIvYFM2YNR/EX84m2tkorZ3MOZTiexIjLp2O5lYx2vWBA7w3bSA
+         y3GLzCSKvpEHcyJnaWqYOyuaofaFNYmaejEukGsyfOZht8jPBbMqtyNJYsao51ws08IB
+         qkhrvE4VOoY6N4mQmrEVj5M261jYoLF0TM19ko4yHsPw/6cGZkx4TQ4lvlFtHAPCTj+w
+         k+PQ==
+X-Gm-Message-State: AOAM531RfLdKu5dCjcWbE2fDRBwTowJPbGuWtUgW2/qzMTHYK29p1wZn
+        eBmFJxRFAk1Xt92QHP525f/id5V6d37BTsHEccCGrNavzb2YCnCBE8Gb6xQVIvDuHP/WDYNzSZy
+        gD8KXV5EZCU6itrcvAFSDEx65
+X-Received: by 2002:a0c:e609:: with SMTP id z9mr289680qvm.37.1628711693736;
+        Wed, 11 Aug 2021 12:54:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrS8Y6Pwjp17TuAO8ZT0PQJJipBxId/xjwfHs5hk6mFcayR6+uxDkQYm7yRWfcjlx45/5mjg==
+X-Received: by 2002:a0c:e609:: with SMTP id z9mr289660qvm.37.1628711693481;
+        Wed, 11 Aug 2021 12:54:53 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
+        by smtp.gmail.com with ESMTPSA id n8sm113423qtp.52.2021.08.11.12.54.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 12:53:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 11 Aug 2021 12:53:46 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwmon: (pmbus/bpa-rs600) Remove duplicate
- defininitions
-Message-ID: <20210811195346.GA966404@roeck-us.net>
-References: <20210811041738.15061-1-chris.packham@alliedtelesis.co.nz>
- <20210811041738.15061-2-chris.packham@alliedtelesis.co.nz>
+        Wed, 11 Aug 2021 12:54:52 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 15:54:50 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        christian.brauner@ubuntu.com, ebiederm@xmission.com,
+        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
+        vincenzo.frascino@arm.com, catalin.marinas@arm.com,
+        peterz@infradead.org, chinwen.chang@mediatek.com,
+        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
+        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
+        jonathan.davies@nutanix.com, Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 0/1] pagemap: swap location for shared pages
+Message-ID: <YRQrCrOCbVkJJ6Ph@t490s>
+References: <20210730160826.63785-1-tiberiu.georgescu@nutanix.com>
+ <YQrdY5zQOVgQJ1BI@t490s>
+ <839e82f7-2c54-d1ef-8371-0a332a4cb447@redhat.com>
+ <YQrn33pOlpdl662i@t490s>
+ <0beb1386-d670-aab1-6291-5c3cb0d661e0@redhat.com>
+ <YRQWMIBwkdBK12Z3@t490s>
+ <253e7067-1c62-19bd-d395-d5c0495610d7@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210811041738.15061-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <253e7067-1c62-19bd-d395-d5c0495610d7@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 04:17:37PM +1200, Chris Packham wrote:
-> Commit 787c095edaa9 ("hwmon: (pmbus/core) Add support for rated
-> attributes") added definitions for MFR_VIN_MIN etc so we can remove the
-> local definitions of these from the bpa-rs600 driver.
+On Wed, Aug 11, 2021 at 08:41:32PM +0200, David Hildenbrand wrote:
+> On 11.08.21 20:25, Peter Xu wrote:
+> > On Wed, Aug 11, 2021 at 06:15:37PM +0200, David Hildenbrand wrote:
+> > > On 04.08.21 21:17, Peter Xu wrote:
+> > > > On Wed, Aug 04, 2021 at 08:49:14PM +0200, David Hildenbrand wrote:
+> > > > > TBH, I tend to really dislike the PTE marker idea. IMHO, we shouldn't store
+> > > > > any state information regarding shared memory in per-process page tables: it
+> > > > > just doesn't make too much sense.
+> > > > > 
+> > > > > And this is similar to SOFTDIRTY or UFFD_WP bits: this information actually
+> > > > > belongs to the shared file ("did *someone* write to this page", "is
+> > > > > *someone* interested into changes to that page", "is there something"). I
+> > > > > know, that screams for a completely different design in respect to these
+> > > > > features.
+> > > > > 
+> > > > > I guess we start learning the hard way that shared memory is just different
+> > > > > and requires different interfaces than per-process page table interfaces we
+> > > > > have (pagemap, userfaultfd).
+> > > > > 
+> > > > > I didn't have time to explore any alternatives yet, but I wonder if tracking
+> > > > > such stuff per an actual fd/memfd and not via process page tables is
+> > > > > actually the right and clean approach. There are certainly many issues to
+> > > > > solve, but conceptually to me it feels more natural to have these shared
+> > > > > memory features not mangled into process page tables.
+> > > > 
+> > > > Yes, we can explore all the possibilities, I'm totally fine with it.
+> > > > 
+> > > > I just want to say I still don't think when there's page cache then we must put
+> > > > all the page-relevant things into the page cache.
+> > > 
+> > > [sorry for the late reply]
+> > > 
+> > > Right, but for the case of shared, swapped out pages, the information is
+> > > already there, in the page cache :)
+> > > 
+> > > > 
+> > > > They're shared by processes, but process can still have its own way to describe
+> > > > the relationship to that page in the cache, to me it's as simple as "we allow
+> > > > process A to write to page cache P", while "we don't allow process B to write
+> > > > to the same page" like the write bit.
+> > > 
+> > > The issue I'm having uffd-wp as it was proposed for shared memory is that
+> > > there is hardly a sane use case where we would *want* it to work that way.
+> > > 
+> > > A UFFD-WP flag in a page table for shared memory means "please notify once
+> > > this process modifies the shared memory (via page tables, not via any other
+> > > fd modification)". Do we have an example application where these semantics
+> > > makes sense and don't over-complicate the whole approach? I don't know any,
+> > > thus I'm asking dumb questions :)
+> > > 
+> > > 
+> > > For background snapshots in QEMU the flow would currently be like this,
+> > > assuming all processes have the shared guest memory mapped.
+> > > 
+> > > 1. Background snapshot preparation: QEMU requests all processes
+> > >     to uffd-wp the range
+> > > a) All processes register a uffd handler on guest RAM
+> > 
+> > To be explicit: not a handler; just register with uffd-wp and pass over the fd
+> > to the main process.
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
->  drivers/hwmon/pmbus/bpa-rs600.c | 25 ++++++++-----------------
->  1 file changed, 8 insertions(+), 17 deletions(-)
+> Good point.
 > 
-> diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs600.c
-> index d205b41540ce..d495faa89799 100644
-> --- a/drivers/hwmon/pmbus/bpa-rs600.c
-> +++ b/drivers/hwmon/pmbus/bpa-rs600.c
-> @@ -12,15 +12,6 @@
->  #include <linux/pmbus.h>
->  #include "pmbus.h"
->  
-> -#define BPARS600_MFR_VIN_MIN	0xa0
-> -#define BPARS600_MFR_VIN_MAX	0xa1
-> -#define BPARS600_MFR_IIN_MAX	0xa2
-> -#define BPARS600_MFR_PIN_MAX	0xa3
-> -#define BPARS600_MFR_VOUT_MIN	0xa4
-> -#define BPARS600_MFR_VOUT_MAX	0xa5
-> -#define BPARS600_MFR_IOUT_MAX	0xa6
-> -#define BPARS600_MFR_POUT_MAX	0xa7
-> -
->  enum chips { bpa_rs600, bpd_rs600 };
->  
->  static int bpa_rs600_read_byte_data(struct i2c_client *client, int page, int reg)
-> @@ -83,28 +74,28 @@ static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int pha
->  
->  	switch (reg) {
->  	case PMBUS_VIN_UV_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VIN_MIN);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_VIN_MIN);
->  		break;
->  	case PMBUS_VIN_OV_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VIN_MAX);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_VIN_MAX);
->  		break;
->  	case PMBUS_VOUT_UV_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VOUT_MIN);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_VOUT_MIN);
->  		break;
->  	case PMBUS_VOUT_OV_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VOUT_MAX);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_VOUT_MAX);
->  		break;
->  	case PMBUS_IIN_OC_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_IIN_MAX);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_IIN_MAX);
->  		break;
->  	case PMBUS_IOUT_OC_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_IOUT_MAX);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_IOUT_MAX);
->  		break;
->  	case PMBUS_PIN_OP_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_PIN_MAX);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_PIN_MAX);
->  		break;
->  	case PMBUS_POUT_OP_WARN_LIMIT:
-> -		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_POUT_MAX);
-> +		ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_MFR_POUT_MAX);
-
-If the above is correct, the driver reports the wrong attributes. For example,
-PMBUS_MFR_PIN_MAX is supposed to report the rated limit, not the warning limit.
-What does the datasheet say ?
-
-Guenter
-
->  		break;
->  	case PMBUS_VIN_UV_FAULT_LIMIT:
->  	case PMBUS_VIN_OV_FAULT_LIMIT:
-> -- 
-> 2.32.0
+> > 
+> > > b) All processes fault in all guest memory (essentially populating all
+> > >     memory): with a uffd-WP extensions we might be able to get rid of
+> > >     that, I remember you were working on that.
+> > > c) All processes uffd-WP the range to set the bit in their page table
+> > > 
+> > > 2. Background snapshot runs:
+> > > a) A process either receives a UFFD-WP event and forwards it to QEMU or
+> > >     QEMU polls all other processes for UFFD events.
+> > > b) QEMU writes the to-be-changed page to the migration stream.
+> > > c) QEMU triggers all processes to un-protect the page and wake up any
+> > >     waiters. All processes clear the uffd-WP bit in their page tables.
+> > > 
+> > > 3. Background snapshot completes:
+> > > a) All processes unregister the uffd handler
+> > > 
+> > > 
+> > > Now imagine something like this:
+> > > 
+> > > 1. Background snapshot preparation:
+> > > a) QEMU registers a UFFD-WP handler on a *memfd file* that corresponds
+> > >     to guest memory.
+> > > b) QEMU uffd-wp's the whole file
+> > > 
+> > > 2. Background snapshot runs:
+> > > a) QEMU receives a UFFD-WP event.
+> > > b) QEMU writes the to-be-changed page to the migration stream.
+> > > c) QEMU un-protect the page and wake up any waiters.
+> > > 
+> > > 3. Background snapshot completes:
+> > > a) QEMU unregister the uffd handler
+> > > 
+> > > 
+> > > Wouldn't that be much nicer and much easier to handle? Yes, it is much
+> > > harder to implement because such an infrastructure does not exist yet, and
+> > > it most probably wouldn't be called uffd anymore, because we are dealing
+> > > with file access. But this way, it would actually be super easy to use the
+> > > feature across multiple processes and eventually to even catch other file
+> > > modifications.
+> > 
+> > I can totally understand how you see this.  We've discussed about that, isn't
+> > it? About the ideal worlds. :)
 > 
+> Well, let's dream big :)
+> 
+> > 
+> > It would be great if this can work out, I hope so.  So far I'm not that
+> > ambicious, and as I said, I don't know whether there will be other concerns
+> > when it goes into the page cache layer, and when it's a behavior of multiple
+> > processes where one of them can rule others without others being notice of it.
+> > 
+> > Even if we want to go that way, I think we should first come up with some way
+> > to describe the domains that one uffd-wp registered file should behave upon.
+> > It shouldn't be "any process touching this file".
+> > 
+> > One quick example in my mind is when a malicious process wants to stop another
+> > daemon process, it'll be easier as long as the malicious process can delete a
+> > file that the daemon used to read/write, replace it with a shmem with uffd-wp
+> > registered (or maybe just a regular file on file systems, if your proposal will
+> > naturally work on them).  The problem is, is it really "legal" to be able to
+> > stop the daemon running like that?
+> 
+> Good question, I'd imagine e.g., file sealing could forbid uffd (or however
+> it is called) registration on a file, and there would have to be a way to
+> reject files that have uffd registered. But it's certainly a valid concern -
+> and it raises the question to *what* we actually want to apply such a
+> concept. Random files? random memfd? most probably not. Special memfds
+> created with an ALLOW_UFFD flag? sounds like a good idea.
+
+Note that when daemons open files, they may not be aware of what's underneath
+but read that file directly.  The attacker could still create the file with
+uffd-wp enabled with any flag we introduce.
+
+> 
+> > 
+> > I also don't know the initial concept when uffd is designed and why it's
+> > designed at pte level.  Avoid vma manipulation should be a major factor, but I
+> > can't say I understand all of them.  Not sure whether Andrea has any input here.
+> 
+> AFAIU originally a) avoid signal handler madness and b) avoid VMA
+> modifications and c) avoid taking the mmap lock in write (well, that didn't
+> work out completely for uffd-wp for now IIRC).
+
+Nadav fixed that; it's with read lock now just like when it's introduced.
+Please see mwriteprotect_range() and commit 6ce64428d62026a10c.
+
+I won't say message queue (signal handling) is because uffd is pte-based; that
+seems to be an orthogonal design decision.  But yeah I agree that's something
+better than using signal handlers.
+
+> 
+> > 
+> > That's why I think current uffd can still make sense with per-process concepts
+> > and keep it that way.  When register uffd-wp yes we need to do that for
+> > multiple processes, but it also means each process is fully aware that this is
+> > happening so it's kind of verified that this is wanted behavior for that
+> > process.  It'll happen with less "surprises", and smells safer.
+> > 
+> > I don't think that will not work out.  It may require all the process to
+> > support uffd-wp apis and cooperate, but that's so far how it should work for me
+> > in a safe and self-contained way.  Say, every process should be aware of what's
+> > going to happen on blocked page faults.
+> 
+> That's a valid concern, although I wonder if it can just be handled via
+> specially marked memfds ("this memfd might get a uffd handler registered
+> later").
+
+Yes, please see my above concern.  So I think we at least reached concensus on:
+(1) that idea is already not userfaultfd but something else; what's that is
+still to be defined.  And, (2) that definitely needs further thoughts and
+context to support its validity and safety.  Now uffd got people worried about
+safety already, that's why all the uffd selinux and privileged_userfaultfd
+sysctl comes to mainline; we'd wish good luck with the new concept!
+
+OTOH, uffd whole idea is already in mainline, it has limitations on requiring
+to rework all processes to support uffd-wp, but actually the same to MISSING
+messages has already happened and our QE is testing those: that's what we do
+with e.g. postcopy-migrating vhost-user enabled OVS-DPDK - we pass over uffd
+registered with missing mode and let QEMU handle the page fault.  So it's a bit
+complicated but it should work.  And I hope you can also agree we don't need to
+block uffd before that idea settles.
+
+The pte markers idea need comment; that's about implementation, and it'll be
+great to have comments there or even NACK (better with a better suggestion,
+though :).  But the original idea of uffd that is pte-based has never changed.
+
+> 
+> > > 
+> > > Again, I am not sure if uffd-wp or softdirty make too much sense in general
+> > > when applied to shmem. But I'm happy to learn more.
+> > 
+> > Me too, I'm more than glad to know whether the page cache idea could be
+> > welcomed or am I just wrong about it.  Before I understand more things around
+> > this, so far I still think the per-process based and fd-based solution of uffd
+> > still makes sense.
+> 
+> I'd be curious about applications where the per-process approach would
+> actually solve something a per-fd approach couldn't solve. Maybe there are
+> some that I just can't envision.
+
+Right, that's a good point.
+
+Actually it could be when like virtio-mem that some process shouldn't have
+write privilege, but we still allow some other process writting to the shmem.
+Something like that.
+
+> 
+> (using shmem for a single process only isn't a use case I consider important
+> :) )
+
+If you still remember the discussion about "having qemu start to use memfd and
+shmem as default"? :)
+
+shmem is hard but it's indeed useful in many cases, even if single threaded.
+For example, shmem-based VMs can do local binary update without migrating guest
+RAMs (because memory is shared between old/new binaries!).  To me it's always a
+valid request to enable both shmem and write protect.
+
+[It seems Andrea is not in the loop; do that for real]
+
+Thanks,
+
+-- 
+Peter Xu
+
