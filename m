@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F083E88CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235C63E88CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbhHKD06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 23:26:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:41308 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232795AbhHKD0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:26:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EB561063;
-        Tue, 10 Aug 2021 20:26:30 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.67.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EE33E3F40C;
-        Tue, 10 Aug 2021 20:26:27 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2] arm64/perf: Replace '0xf' instances with ID_AA64DFR0_PMUVER_IMP_DEF
-Date:   Wed, 11 Aug 2021 08:57:07 +0530
-Message-Id: <1628652427-24695-2-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628652427-24695-1-git-send-email-anshuman.khandual@arm.com>
-References: <1628652427-24695-1-git-send-email-anshuman.khandual@arm.com>
+        id S232910AbhHKD3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 23:29:24 -0400
+Received: from mail-m17656.qiye.163.com ([59.111.176.56]:46338 "EHLO
+        mail-m17656.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232625AbhHKD3X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 23:29:23 -0400
+Received: from [172.25.45.51] (unknown [58.251.74.232])
+        by mail-m17656.qiye.163.com (Hmail) with ESMTPA id C2186C40260;
+        Wed, 11 Aug 2021 11:28:57 +0800 (CST)
+Subject: Re: [f2fs-dev] f2fs do DIO write make file corruption
+To:     Chao Yu <chao@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <5b68208b-fd94-bf4e-fc4b-d79d13abf1c6@vivo.com>
+ <6519b8b7-1eb0-f286-7593-5c5ebbfb5554@kernel.org>
+From:   Wu Bo <bo.wu@vivo.com>
+Message-ID: <86e53ee7-13b5-5e8e-7c81-acb1736ebc8b@vivo.com>
+Date:   Wed, 11 Aug 2021 11:28:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <6519b8b7-1eb0-f286-7593-5c5ebbfb5554@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpKGk1WT05DGkkdTx5LHU
+        MYVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktITUpVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBQ6Sww5FT9NTCMQEhYxQwgc
+        NB0KCUtVSlVKTUlDTU5JTkhDSUJIVTMWGhIXVRkUVQwOOw0SDRRVGBQWRVlXWRILWUFZTkNVSU5K
+        VUxPVUlISVlXWQgBWUFITEtCNwY+
+X-HM-Tid: 0a7b33418820da02kuwsc2186c40260
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ID_AA64DFR0_PMUVER_IMP_DEF which indicate implementation defined PMU, never
-actually gets used although there are '0xf' instances scattered all around.
-Just do the macro replacement to improve readability.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-perf-users@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on v5.14-rc5
+在 2021/8/11 11:03, Chao Yu 写道:
+> On 2021/8/11 10:48, Wu Bo wrote:
+>> I use the following command to create a file, the file may got 
+>> corruption:
+>>     f2fs_io write 2 0 512 inc_num dio $path
+>>
+>> And when I use bio or to set the chunk size to 1 block, the file is
+>> normal. The commands as following:
+>>     f2fs_io write 2 0 512 inc_num buffered $path
+>>     f2fs_io write 1 0 512 inc_num dio $path
+>>
+>> I find this bug on old kernel version 4.14.117, and not find on version
+>> 4.19.152. So this bug is fixed. Can anyone can tell me which patch fixed
+>> this bug?
+> 
+> Not sure,
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-4.19.y&id=7bae8b6b73e46c307fa355ce086800b7ad6610f8 
+> 
 
-Changes in V2:
+This patch is applied. The issue occurs when f2fs dio try to preallocate 
+multiple blocks and got scattered disk blocks. The log as following:
+       my_f2fs_io-13425 [002] ....   395.583637: el0_irq_naked: 
+1:type:1,ino:40132,off:768,old_blk:0,new_blk:185764
+       my_f2fs_io-13425 [002] ....   395.583710: el0_irq_naked: 
+1:type:1,ino:40132,off:769,old_blk:0,new_blk:205824
+       my_f2fs_io-13425 [002] ....   395.583721: f2fs_map_blocks: dev = 
+(259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len = 
+0x2, err = 0
+       my_f2fs_io-13425 [002] ....   395.583735: f2fs_map_blocks: dev = 
+(259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len = 
+0x1, err = 0
+       my_f2fs_io-13425 [002] ....   395.583741: f2fs_map_blocks: dev = 
+(259,23), ino = 40132, file offset = 769, start blkaddr = 0x32400, len = 
+0x1, err = 0
 
-- Split out the arm64 part
+And if the blocks are continuously, the file data is normal:
+	  my_f2fs_io-13425 [002] ....   395.584037: el0_irq_naked: 
+1:type:1,ino:40132,off:770,old_blk:0,new_blk:205825
+       my_f2fs_io-13425 [002] ....   395.584066: el0_irq_naked: 
+1:type:1,ino:40132,off:771,old_blk:0,new_blk:205826
+       my_f2fs_io-13425 [002] ....   395.584077: f2fs_map_blocks: dev = 
+(259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len = 
+0x2, err = 0
+       my_f2fs_io-13425 [002] ....   395.584091: f2fs_map_blocks: dev = 
+(259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len = 
+0x2, err = 0
 
-Changes in V1:
-
-https://lore.kernel.org/linux-perf-users/1628571998-13634-1-git-send-email-anshuman.khandual@arm.com/
-
- arch/arm64/include/asm/cpufeature.h | 2 +-
- arch/arm64/kernel/perf_event.c      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 9bb9d11750d7..54474e76ad86 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -552,7 +552,7 @@ cpuid_feature_cap_perfmon_field(u64 features, int field, u64 cap)
- 	u64 mask = GENMASK_ULL(field + 3, field);
- 
- 	/* Treat IMPLEMENTATION DEFINED functionality as unimplemented */
--	if (val == 0xf)
-+	if (val == ID_AA64DFR0_PMUVER_IMP_DEF)
- 		val = 0;
- 
- 	if (val > cap) {
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index d07788dad388..b4044469527e 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -1055,7 +1055,7 @@ static void __armv8pmu_probe_pmu(void *info)
- 	dfr0 = read_sysreg(id_aa64dfr0_el1);
- 	pmuver = cpuid_feature_extract_unsigned_field(dfr0,
- 			ID_AA64DFR0_PMUVER_SHIFT);
--	if (pmuver == 0xf || pmuver == 0)
-+	if (pmuver == ID_AA64DFR0_PMUVER_IMP_DEF || pmuver == 0)
- 		return;
- 
- 	cpu_pmu->pmuver = pmuver;
--- 
-2.20.1
-
+> 
+> Thanks,
+> 
+>>
+>>
+>> _______________________________________________
+>> Linux-f2fs-devel mailing list
+>> Linux-f2fs-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>
+> 
