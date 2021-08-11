@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519453E8C0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA153E8BFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236041AbhHKIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:41:16 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:45512
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233112AbhHKIlL (ORCPT
+        id S236221AbhHKIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236012AbhHKIkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:41:11 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 194E840642
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:40:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628671247;
-        bh=7IJlzam8fj9i6+B2feleMQtESGacIdtIuLP/gvEeeCw=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=F+sKGLWUv4y75hXH1I8HYywT6VfSXXLG68eS/p6IedP8JLrM73GKPrR6BCMaGKpU1
-         ZKfkDNcmA5bvgZReJJcTvDLFTXp6wbozje6OS+d1NggTiJi7y6LPLWGzomeqFwiukw
-         IsHhEh/eECGVb4tnvMz57doqYkVHZs7iBB5nwaTjr+2JPXIDT+lsvhhwA4ktA+P5IN
-         xET5V5aytDynXmmpTBxmttlz/Y52l82USdYl5nEAqLRlnhTf9VdMH+7auiholfP8DE
-         CLCkfTDXH9Rorvqfrj7BqU/nFX2UPuTyQvzeOLiPp/OFnQspCWXYiQ3eowp1Sj5Jfm
-         a5XfPaSPSAMpw==
-Received: by mail-ed1-f72.google.com with SMTP id eg56-20020a05640228b8b02903be79801f9aso842427edb.21
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:40:47 -0700 (PDT)
+        Wed, 11 Aug 2021 04:40:18 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6EEC061765;
+        Wed, 11 Aug 2021 01:39:54 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so1382837wmd.3;
+        Wed, 11 Aug 2021 01:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/cH18u9OhTCq+UpoTOaDG1DbIfkplQjzOdXKSsM62pY=;
+        b=rhcOyetStHFST5GEeY1BJw0x7RWCBh9KJoHPIxjlpISW1LTUNyjLuUyAPLHTj6Xgco
+         mfCVCXvil0lwxvRCLm5akQNAE1L5oq6ORX8ElGjg3o9IboKQhQaoaDFNvX/aEMjTUaeT
+         mbGMuXEzF3j31qdvoqj2HimFUECogfbCXEBLwmayU/t4YKjutfmN+/8nHbmACAwp0h+j
+         ZWPtqo03iknDZHwqSwfu8vDSf/lm4zbqikKpHf8s8wv2Ay2cK49riyP/A9KvIj8wVyYw
+         OPal5vsEZuP/AOn2+7E02in4Fm3lpF6mmb3YJcdYU9OuK7PP8aue4SN8rLSwm/c1CQKE
+         aVCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7IJlzam8fj9i6+B2feleMQtESGacIdtIuLP/gvEeeCw=;
-        b=j6gZzGX7fkiH17jWY5Jyh1fYWItEavyOyowwI9LwGzoZcDNtg+LOIeWo5dwWrFtMqi
-         TBHXe3zJjsa2dwkr+HUJGbTxCftrubY6OdBc9aCq8QE5fu9SflIsKwMmDnAkVx/T1BpH
-         2NHfNFDOko2Iqv6P9qF+z9eQUJsN4b6zfzPt50atbntRW6kNIByV5G7AqaOx6MNjXfoa
-         dH0B3wnrrD4NKdj793qdNpWYdzA6bEe6yYckldCkIM2psvVY3ZZby8TZoR8vFp6xJY0w
-         lZ8l8ZN+q8tzphwM1sc3eMvlQuCrwn0q8FaqR13+8o70x3IRyiUKUyvKALWcYS3q8qRi
-         LVhA==
-X-Gm-Message-State: AOAM530knY/XNeQpwVmIaraqHCcmpgpQ7TfPBcqDXoejWsh2IfpHPDwA
-        QGIScxrbi5wkvJKfcO1yGmnNRhJxo9cNKUbV/jhluJC6A/2277U+TVYYuZ5+zAqfDt1FRSPy+rH
-        mVcNvxAQ8B/Wds5jqa9KUN3Sok3GfuaUqRBdhKe590Q==
-X-Received: by 2002:a17:906:2541:: with SMTP id j1mr2641017ejb.128.1628671246860;
-        Wed, 11 Aug 2021 01:40:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUUDesTyBO0mfEeagVJdMT7XEVX7qkZudK2JBqae0EZ6aa9xBXY9i63c7YHdfe+UIHaDI96Q==
-X-Received: by 2002:a17:906:2541:: with SMTP id j1mr2641008ejb.128.1628671246731;
-        Wed, 11 Aug 2021 01:40:46 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id t25sm10875617edq.29.2021.08.11.01.40.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 01:40:46 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/cH18u9OhTCq+UpoTOaDG1DbIfkplQjzOdXKSsM62pY=;
+        b=VxxdS8OrnMfhHQ3DFnahh/HPMAuwG0cDxR2Xq4y0fW0X9KsjEqrJ8Jmw1GW5nKY6Os
+         /bCcEL4P32ngD2jvUU6cFYDMwYn7AVcEDEs55dlhNgH//yVMoDQ3iBT69JwNgFmT5XkU
+         modPYgCchZvIyIuie/ziwnGha6megBH2ryh8y86KHcBIEseWvyiec85RYAO7r0pVzAKJ
+         aOyoPNO6XGyjRfwWmzAd/OTda297Y5qRJpiEklV7Dk825CODAuG3WERGFoQlRmEm9C+o
+         gOeT0jRcDLrm5AHWkAr8yDCWCcSvWa8fMq35CgGSI7f1NehpsAbj33n+ipP/vhtcluGE
+         Ghlg==
+X-Gm-Message-State: AOAM5321y52gNDV9Pfq5hxic+8Bmoi1PAth/JE4rR5TdywEVBMSQycZS
+        Ngvz5G72QoDT/bew+Jz96DfbV1HV5hLs3g==
+X-Google-Smtp-Source: ABdhPJzvXPBtPce351ozTgUTJzAFC8LeON/hShsPJeZMmb9e8OuKPmGCXGsHChYOwT4/VHQjTHse6g==
+X-Received: by 2002:a7b:c5d2:: with SMTP id n18mr8745229wmk.97.1628671193039;
+        Wed, 11 Aug 2021 01:39:53 -0700 (PDT)
+Received: from ?IPv6:2a01:cb05:8192:e700:90a4:fe44:d3d1:f079? (2a01cb058192e70090a4fe44d3d1f079.ipv6.abo.wanadoo.fr. [2a01:cb05:8192:e700:90a4:fe44:d3d1:f079])
+        by smtp.gmail.com with ESMTPSA id h9sm22884485wmb.35.2021.08.11.01.39.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 01:39:52 -0700 (PDT)
+Subject: Re: [PATCH 1/3] PCI: brcmstb: Break register definitions into
+ separate header
+To:     Jeremy Linton <jeremy.linton@arm.com>, linux-pci@vger.kernel.org
+Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
+        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ARM: dts: exynos: drop undocumented samsung,sata-freq property in Exynos5250
-Date:   Wed, 11 Aug 2021 10:38:59 +0200
-Message-Id: <20210811083859.28234-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210811083859.28234-1-krzysztof.kozlowski@canonical.com>
-References: <20210811083859.28234-1-krzysztof.kozlowski@canonical.com>
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210805211200.491275-1-jeremy.linton@arm.com>
+ <20210805211200.491275-2-jeremy.linton@arm.com>
+ <f82761b1-fb7e-08b2-8bc3-c84d258e26d3@gmail.com>
+ <ab2aa9e3-cdc7-1bc7-d493-8f3c991c3285@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <ff7c598a-4c1d-7da0-f40a-f0c435e785d3@gmail.com>
+Date:   Wed, 11 Aug 2021 01:39:52 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <ab2aa9e3-cdc7-1bc7-d493-8f3c991c3285@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The samsung,sata-freq property is not used (and not documented by
-generic AHCI platform bindings), so can be safely dropped.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/arm/boot/dts/exynos5250.dtsi | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
-index 2ea2caaca4e2..c8c41657988b 100644
---- a/arch/arm/boot/dts/exynos5250.dtsi
-+++ b/arch/arm/boot/dts/exynos5250.dtsi
-@@ -375,7 +375,6 @@ tmu: tmu@10060000 {
- 
- 		sata: sata@122f0000 {
- 			compatible = "snps,dwc-ahci";
--			samsung,sata-freq = <66>;
- 			reg = <0x122F0000 0x1ff>;
- 			interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&clock CLK_SATA>, <&clock CLK_SCLK_SATA>;
+On 8/10/2021 8:10 AM, Jeremy Linton wrote:
+> Hi,
+> 
+> Thanks for taking a look at this!
+> 
+> 
+> On 8/10/21 5:07 AM, Florian Fainelli wrote:
+>>
+>>
+>> On 8/5/2021 2:11 PM, Jeremy Linton wrote:
+>>> We are about to create a standalone ACPI quirk module for the
+>>> bcmstb controller. Lets move the register definitions into a separate
+>>> file so they can be shared between the APCI quirk and the normal
+>>> host bridge driver.
+>>>
+>>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+>>> ---
+>>>   drivers/pci/controller/pcie-brcmstb.c | 179 +------------------------
+>>>   drivers/pci/controller/pcie-brcmstb.h | 182 ++++++++++++++++++++++++++
+>>>   2 files changed, 183 insertions(+), 178 deletions(-)
+>>>   create mode 100644 drivers/pci/controller/pcie-brcmstb.h
+>>
+>> You moved more than just register definitions into pcie-brcmstb.h you 
+>> also moved internal structure definitions, enumerations, etc. which 
+>> are not required since pcie-brcmstb-acpi.c does not access the 
+>> brcm_pcie structure but open codes accesses to the MISC_STATUS 
+>> register instead.
+>>
+>> There are no include guards added to this file (it is debatable 
+>> whether we should add them), and it is also not covered by the 
+>> existing BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE MAINTAINERS file 
+>> entry.
+> 
+> Sure, I will reduce the .h to just the register definitions, guard it, 
+> and tweak maintainers to cover pcie-brcmstb*.
+> 
+> 
+>>
+>> Given that there can be new platforms supported by this PCIe 
+>> controller in the future possibly with the same limitations as the 
+>> 2711, but with a seemingly different MISC_STATUS layout, you will have 
+>> to think about a solution that scales, maybe we cross that bridge when 
+>> we get there.
+> 
+> Yes, given I don't know what those changes are I can't predict how they 
+> would have to be handled, or even if the platform would be a target of 
+> the community maintaining the UEFI/ACPI port on the RPi. So punting on 
+> that topic seems a reasonable solution at the moment. Better yet, more 
+> of the linux community will see the advantage of the firmware interface 
+> and this platform can utilize that method.
+
+Ideally newer platforms would support ECAM and would not require a 
+custom quirk if nothing else, we do have discussions about that right 
+now, although it is not clear to me how it will materialize into a 
+product that people can buy.
 -- 
-2.30.2
-
+Florian
