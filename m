@@ -2,121 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAA93E873B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FBA3E873D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235770AbhHKAZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:25:40 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:57119 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235680AbhHKAZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:25:39 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1EDB6580490;
-        Tue, 10 Aug 2021 20:25:16 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Tue, 10 Aug 2021 20:25:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=CQaGtiKaZFJhddHZEvf2v4rU+OaDWp+
-        Ss2kMo6IVZCs=; b=SA00P7GxQHrtfFqvW+m7kFvoPx2MD+CjTx3gTQusAuPi1v+
-        o+V9MLiL882MpaRZWdcyha7hCJ8dLU3uNxyzSOi96axjvJ/KTyVJ1rAoV/2izbrF
-        UzG8w84Yj6vJKOcmEVQjlv6Of1pJtShlVn3TkIcr549T7r6xUL+ZxDMmAXaqyAiO
-        ku2F7YICI75WyG6HzmFm0YhEySCiR6n7t8WsRFILj7Yldr4rI9d9woJQLF/Q6UYr
-        b9Fg3dr4iXcDutqn4qvbo2wo7kN9xgAdtFm5cJat5+6K2GahJU4G4VsSHrY7NuyG
-        TO7Ic/jHqZrVuJOzOdqk/w57ejrF/jiFkuWiYnw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=CQaGti
-        KaZFJhddHZEvf2v4rU+OaDWp+Ss2kMo6IVZCs=; b=IQWeXBM2nZNQ1O/QfqKFn9
-        nI+k+eO/smlIBlv/78gmPvuOU9V+6Ov3zo/uMvaDnBsXI3kAAGqcVnjm8VYPLEox
-        arlFnFKnpq8P/7syouSurBE4kXV8GMsdH1N5zCBPXtgIpSI3GioKBxMfypDIZokB
-        HeQAm7D5PeiwPo0wUpwsu/xeR8osuH5icucJmHIge8bDIpqKXgJHIogbqkQG7fWC
-        TRAscnGnG1dkZgkzWI6slAxBZSrH611lafOLtBvtCbDOlGxjjw/MKj69wsebkLE4
-        4IgZowGnM0Sh260+tW0K0kgKEPIpK7pNM+2uP3G+AOWtBKipKvPTdzm72OENEzMg
-        ==
-X-ME-Sender: <xms:6RgTYVdkVTqMHNwXpKnSAv-Rz5MsYiT9_op0s_XwFeylYSdGwRVSwg>
-    <xme:6RgTYTP_q8htCYVBa7Lgr_JKBiEq8Z8IU3toB8k-VFm0F1m8UajSdGLAGEd3_UECO
-    Xtk4bM5ju3BCLZJug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedtgdefvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:6hgTYejS52ymUKsEMDRMPh-Nexewh4uRsXv-pnMAzMXRzvm95gQTAg>
-    <xmx:6hgTYe-o9IinhgoWJrGolDqiZ4-FjpW5FTU1QO-fcGbF9e915MEjlw>
-    <xmx:6hgTYRtsilqCIaAOICu1a6mUL-NBYWtNQQ2hAMQY36eMHG52UxUfqQ>
-    <xmx:7BgTYXBFUT-gH886vkzM6ViX413GUYkbmN4pcAweN2MsEJpo_H1AJg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id EF05DAC0DD0; Tue, 10 Aug 2021 20:25:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-554-g53a5f93b7d-fm-20210809.002-g53a5f93b
-Mime-Version: 1.0
-Message-Id: <53199b3e-a711-4071-96a3-7836d3323906@www.fastmail.com>
-In-Reply-To: <CACRpkdZ4A3Lw2U+_jXfbuXJFhpesi3SzNN1Codqxi4sLNu5zPw@mail.gmail.com>
-References: <20210723075858.376378-1-andrew@aj.id.au>
- <20210723075858.376378-2-andrew@aj.id.au>
- <CACRpkdZ4A3Lw2U+_jXfbuXJFhpesi3SzNN1Codqxi4sLNu5zPw@mail.gmail.com>
-Date:   Wed, 11 Aug 2021 09:54:53 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Linus Walleij" <linus.walleij@linaro.org>
-Cc:     "Linux LED Subsystem" <linux-leds@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, "Pavel Machek" <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/6] pinctrl: Add pinctrl_gpio_as_pin()
-Content-Type: text/plain
+        id S235798AbhHKA2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:28:46 -0400
+Received: from mga01.intel.com ([192.55.52.88]:62834 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235680AbhHKA2p (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:28:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="237040982"
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="237040982"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 17:28:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="516097324"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 17:28:17 -0700
+Subject: Re: [PATCH 0/6] perf events update for CascadeLake server and SkyLake
+ server
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com
+References: <20210810020508.31261-1-yao.jin@linux.intel.com>
+ <YRLAWhHWX3oa0iyt@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <8cfa516c-af3c-49d8-90ad-1e922567a24e@linux.intel.com>
+Date:   Wed, 11 Aug 2021 08:28:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <YRLAWhHWX3oa0iyt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnaldo,
 
+On 8/11/2021 2:07 AM, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Aug 10, 2021 at 10:05:02AM +0800, Jin Yao escreveu:
+>> - Update JSON core/uncore events and metrics for CascadeLake Server.
+>> - Update JSON core/uncore events and metrics for SkyLake Server.
+>>
+>> The patch series can be found at (in case broken by mailing system potentially):
+>> https://github.com/yaoj/perf-clx-events.git
+>> branch: perf/core
+> Hey, can you keep just one repository and then create branches?
+> 
 
-On Tue, 10 Aug 2021, at 23:04, Linus Walleij wrote:
-> On Fri, Jul 23, 2021 at 9:59 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> 
-> > Allow gpiochips to map the GPIO numberspace onto a pin numberspace when
-> > the register layout for GPIO control is implemented in terms of the
-> > pin numberspace.
-> >
-> > This requirement sounds kind of strange, but the patch is driven by
-> > trying to resolve a bug in the leds-pca955x driver where this mapping is
-> > not correctly performed.
-> >
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> 
-> (...)
-> 
-> Hm  this looks a bit strange...
-> 
-> > +int pinctrl_gpio_as_pin(struct pinctrl_dev *pctldev, unsigned int gpio)
-> 
-> This is not a good name for this function. Try to come up with
-> a name that says exactly what the function does.
-> 
-> E.g. "apple pear as apple slice" isn't very helpful, the use case for
-> this is really hard to understand.
+Oh, yes, creating too many repos. :(
 
-That's probably because I shouldn't be trying to do what I'm doing :)
+I will keep just one repo and create branches for future event updates.
 
-I'll stop doing that (i.e. rework patch 4/6) and this will go away entirely.
-
-> 
-> > +EXPORT_SYMBOL_GPL(pinctrl_find_gpio_range_from_pin);
-> 
-> This looks completely wrong.
-
-Yeah, whoops. That was an oversight while iterating on the patch.
-
-Andrew
+Thanks
+Jin Yao
