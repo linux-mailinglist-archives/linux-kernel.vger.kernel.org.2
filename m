@@ -2,208 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E08F3E92B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FA23E92B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhHKNc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhHKNc2 (ORCPT
+        id S231672AbhHKNcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:32:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229737AbhHKNcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:32:28 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29435C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:32:04 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x27so5766996lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ggA1Ugc3KslRh4zjEhH3fdMSzLQAduhmaopCk/UOZFk=;
-        b=DdSi7V2zcMU4qPXS+8vM/FdopgXTg0Zh9TF+KqCtpI/ClVWMeSy+FEvOME6qXFxeNw
-         rM1Dw5e+zBaB2cFz6Q2L+Qtu3/BUr7FI8O19cwiCNNzWD8hgHaL8yn4HChnZ7GmKaUs6
-         xNTXPw+vu2s4t6W+0oZsLWPBEa8vnBmYnbdGU5a8n1XfB2x1Gs4lTg8Zbl0xivdR0xwb
-         M4+cgk4k9/zlYSClAMsMTaUm7FzMsDq3oJJ71wpXwrgGTK7JyWTpm9qFOhMFx//vkvRg
-         cOjL5ba6VEExAIN8CFZSV6KRpzpouV64SLPHY4ozsjz21qmUEoYhjmIwpA2fhSeZ5Fmp
-         Fo1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggA1Ugc3KslRh4zjEhH3fdMSzLQAduhmaopCk/UOZFk=;
-        b=H4Z7YjOW1/lDRVTcR2QgDy7Fu8ZnyfpkDhdUNG0o/WKqff3uMXGqHuy08/X1jZbb2t
-         kO4cufWFkrr7EoEEVkso4d7hBXkH6bGwWM8Fba9fpFjSLRNMpEQD0Pzk0YKQEq6ImPsa
-         0ckAwm8KVSyQARX4h5EsFt32ttSIItcxwzU9SvsZdJiKRFXoLCcz6D8mITP5Uid6RqTq
-         tYmT1rBnE0rBdi6ZTXzn5Ceabf6dvgNqBser4u+s7Po7Am5XSfzM48azf5SzTfLQWgDP
-         zSUhP4b4eVYgnGzXGDhgbGQadb0VKNex4xbNqXmtLStp0SuwwFZkps22UJRktNvQYkY5
-         PnEQ==
-X-Gm-Message-State: AOAM531aqXmPQcKwo2e7YoCt/dvmc2QH4jqvL+StxYT+lM0ULFPE+POn
-        SLGmzXq70JNEfTsdDG7AtYa3nGIFqyuSIwwqgPCTEw==
-X-Google-Smtp-Source: ABdhPJx5argS7G0ZE4Ndif5Z03u12TS7Wh/djhLXROnVEBtAasfPOm/ZHCJwZ4+XDviQ56txkQW80rIx93/lbfzrazE=
-X-Received: by 2002:a05:6512:1041:: with SMTP id c1mr6413556lfb.277.1628688722466;
- Wed, 11 Aug 2021 06:32:02 -0700 (PDT)
+        Wed, 11 Aug 2021 09:32:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628688719;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FhI+Jpw21wRyiXw1xpRGiUEgUtxFY2GpZUIIqD4wt6g=;
+        b=EEDBuIXhswlB4DdgJGdmA6q0sCPLXySZC9Uqd20UVx4nZixNngtWKr8eTqy6coZGBCbpAx
+        1VrXRuf3r9ye0cuIeNRUS085Dw9ECZROPUDn/c6y6rEPobqDkg52cbWoUf+YuQSEVNYttD
+        O+EINJ2f4PE0WsEJDZAQcGBsavr/Pyc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-Eq3K6HCoPsyqew-xlV0lzw-1; Wed, 11 Aug 2021 09:31:58 -0400
+X-MC-Unique: Eq3K6HCoPsyqew-xlV0lzw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E02C1018F64;
+        Wed, 11 Aug 2021 13:31:57 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C372E5D9DE;
+        Wed, 11 Aug 2021 13:31:53 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kieran Bingham <kbingham@kernel.org>
+Subject: [PATCH] scripts/gdb: rework lx-symbols gdb script
+Date:   Wed, 11 Aug 2021 16:31:52 +0300
+Message-Id: <20210811133152.904945-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-References: <20210730020019.1487127-1-joshdon@google.com> <20210730020019.1487127-3-joshdon@google.com>
-In-Reply-To: <20210730020019.1487127-3-joshdon@google.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 11 Aug 2021 15:31:49 +0200
-Message-ID: <CAKfTPtCTjhpkYz_eVr0LxcJavh__KHn2zOudD=QB5gKYZK8DtQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched: adjust SCHED_IDLE interactions
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 at 04:00, Josh Don <joshdon@google.com> wrote:
->
-> This patch makes some behavioral changes when SCHED_IDLE entities are
-> competing with non SCHED_IDLE entities.
->
-> 1) Ignore min_granularity for determining the sched_slide of a
-> SCHED_IDLE entity when it is competing with a non SCHED_IDLE entity.
-> This reduces the latency of getting a non SCHED_IDLE entity back on cpu,
-> at the expense of increased context switch frequency of SCHED_IDLE
-> entities.
->
-> In steady state competition between SCHED_IDLE/non-SCHED_IDLE,
-> preemption is driven by the tick, so SCHED_IDLE min_granularity is
-> approximately bounded on the low end by the tick HZ.
->
-> Example: on a machine with HZ=1000, spawned two threads, one of which is
-> SCHED_IDLE, and affined to one cpu. Without this patch, the SCHED_IDLE
-> thread runs for 4ms then waits for 1.4s. With this patch, it runs for
-> 1ms and waits 340ms (as it round-robins with the other thread).
->
-> The benefit of this change is to reduce the round-robin latency for non
-> SCHED_IDLE entities when competing with a SCHED_IDLE entity.
->
-> 2) Don't give sleeper credit to SCHED_IDLE entities when they wake onto
-> a cfs_rq with non SCHED_IDLE entities. As a result, newly woken
-> SCHED_IDLE entities will take longer to preempt non SCHED_IDLE entities.
->
-> Example: spawned four threads affined to one cpu, one of which was set
-> to SCHED_IDLE. Without this patch, wakeup latency for the SCHED_IDLE
-> thread was ~1-2ms, with the patch the wakeup latency was ~10ms.
->
-> The benefit of this change is to make it less likely that a newly woken
-> SCHED_IDLE entity will preempt a short-running non SCHED_IDLE entity
-> before it blocks.
->
-> Signed-off-by: Josh Don <joshdon@google.com>
-> ---
->  kernel/sched/fair.c | 32 ++++++++++++++++++++++++++------
->  1 file changed, 26 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a7feae1cb0f0..24b2c6c057e6 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -674,6 +674,7 @@ static u64 __sched_period(unsigned long nr_running)
->  static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
->  {
->         unsigned int nr_running = cfs_rq->nr_running;
-> +       struct sched_entity *init_se = se;
->         u64 slice;
->
->         if (sched_feat(ALT_PERIOD))
-> @@ -684,12 +685,13 @@ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
->         for_each_sched_entity(se) {
->                 struct load_weight *load;
->                 struct load_weight lw;
-> +               struct cfs_rq *qcfs_rq;
->
-> -               cfs_rq = cfs_rq_of(se);
-> -               load = &cfs_rq->load;
-> +               qcfs_rq = cfs_rq_of(se);
-> +               load = &qcfs_rq->load;
->
->                 if (unlikely(!se->on_rq)) {
-> -                       lw = cfs_rq->load;
-> +                       lw = qcfs_rq->load;
->
->                         update_load_add(&lw, se->load.weight);
->                         load = &lw;
-> @@ -697,8 +699,18 @@ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
->                 slice = __calc_delta(slice, se->load.weight, load);
->         }
->
-> -       if (sched_feat(BASE_SLICE))
-> -               slice = max(slice, (u64)w);
-> +       if (sched_feat(BASE_SLICE)) {
-> +               /*
-> +                * SCHED_IDLE entities are not subject to min_granularity if
-> +                * they are competing with non SCHED_IDLE entities. As a result,
-> +                * non SCHED_IDLE entities will have reduced latency to get back
-> +                * on cpu, at the cost of increased context switch frequency of
-> +                * SCHED_IDLE entities.
-> +                */
+Fix several issues that are present in lx-symbols script:
 
-Ensuring that the entity will have a minimum runtime has been added to
-ensure that we let enough time to move forward.
-If you exclude sched_idle entities from this min runtime, the
-sched_slice of an idle_entity will be really small.
-I don't have details of your example above but I can imagine that it's
-a 16 cpus system which means a sysctl_sched_min_granularity=3.75ms
-which explains the 4ms running time of an idle entity
-For a 16 cpus system, the sched_slice of an idle_entity in your
-example in the cover letter is: 6*(1+log2(16))*3/1027=87us. Of course
-this become even worse with more threads and cgroups or thread with
-ncie prio -19
+* Track module unloads by placing another software breakpoint at
+  'free_module'
+  (force uninline this symbol just in case), and use remove-symbol-file
+  gdb command to unload the symobls of the module that is unloading.
 
-This value is then used to set the next hrtimer event in SCHED_HRTICK
-and 87us is too small to make any progress
+  That gives the gdb a chance to mark all software breakpoints from
+  this module as pending again.
+  Also remove the module from the 'known' module list once it is unloaded.
 
-The 1ms of your test comes from the tick which could be a good
-candidate for a min value or the
-normalized_sysctl_sched_min_granularity which has the advantage of not
-increasing with number of CPU
+* Since we now track module unload, we don't need to reload all
+  symbols anymore when 'known' module loaded again
+  (that can't happen anymore).
+  This allows reloading a module in the debugged kernel to finish
+  much faster, while lx-symbols tracks module loads and unloads.
 
-> +               if (!se_is_idle(init_se) ||
-> +                   cfs_rq->h_nr_running == cfs_rq->idle_h_nr_running)
-> +                       slice = max(slice, (u64)sysctl_sched_min_granularity);
-> +       }
->
->         return slice;
->  }
-> @@ -4216,7 +4228,15 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
->                 if (sched_feat(GENTLE_FAIR_SLEEPERS))
->                         thresh >>= 1;
->
-> -               vruntime -= thresh;
-> +               /*
-> +                * Don't give sleep credit to a SCHED_IDLE entity if we're
-> +                * placing it onto a cfs_rq with non SCHED_IDLE entities.
-> +                */
-> +               if (!se_is_idle(se) ||
-> +                   cfs_rq->h_nr_running == cfs_rq->idle_h_nr_running)
+* Disable/enable all gdb breakpoints on both module load and unload
+  breakpoint hits, and not only in 'load_all_symbols' as was done before.
+  (load_all_symbols is no longer called on breakpoint hit)
+  That allows gdb to avoid getting confused about the state of the
+  (now two) internal breakpoints we place.
+  Otherwise it will leave them in the kernel code segment, when
+  continuing which triggers a guest kernel panic as soon as it skips
+  over the 'int3' instruction and executes the garbage tail of the optcode
+  on which the breakpoint was placed.
 
-Can't this condition above create unfairness between idle entities ?
-idle thread 1 wake up while normal thread is running
-normal thread thread sleeps immediately after
-idle thread 2 wakes up just after and gets some credits compared to the 1st one.
+* Block SIGINT while the script is running as this seems to crash gdb
 
-> +                       vruntime -= thresh;
-> +               else
-> +                       vruntime += 1;
->         }
->
->         /* ensure we never gain time by being placed backwards. */
-> --
-> 2.32.0.554.ge1b32706d8-goog
->
+* Add a basic check that kernel is already loaded into the guest memory
+  to avoid confusing errors.
+
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+---
+ kernel/module.c              |   8 +-
+ scripts/gdb/linux/symbols.py | 203 +++++++++++++++++++++++------------
+ 2 files changed, 143 insertions(+), 68 deletions(-)
+
+diff --git a/kernel/module.c b/kernel/module.c
+index ed13917ea5f3..242bd4bb0b55 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -906,8 +906,12 @@ int module_refcount(struct module *mod)
+ }
+ EXPORT_SYMBOL(module_refcount);
+ 
+-/* This exists whether we can unload or not */
+-static void free_module(struct module *mod);
++/* This exists whether we can unload or not
++ * Keep it uninlined to provide a reliable breakpoint target,
++ * e.g. for the gdb helper command 'lx-symbols'.
++ */
++
++static noinline void free_module(struct module *mod);
+ 
+ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+ 		unsigned int, flags)
+diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+index 08d264ac328b..78e278fb4bad 100644
+--- a/scripts/gdb/linux/symbols.py
++++ b/scripts/gdb/linux/symbols.py
+@@ -14,45 +14,23 @@
+ import gdb
+ import os
+ import re
++import signal
+ 
+ from linux import modules, utils
+ 
+ 
+ if hasattr(gdb, 'Breakpoint'):
+-    class LoadModuleBreakpoint(gdb.Breakpoint):
+-        def __init__(self, spec, gdb_command):
+-            super(LoadModuleBreakpoint, self).__init__(spec, internal=True)
++
++    class BreakpointWrapper(gdb.Breakpoint):
++        def __init__(self, callback, **kwargs):
++            super(BreakpointWrapper, self).__init__(internal=True, **kwargs)
+             self.silent = True
+-            self.gdb_command = gdb_command
++            self.callback = callback
+ 
+         def stop(self):
+-            module = gdb.parse_and_eval("mod")
+-            module_name = module['name'].string()
+-            cmd = self.gdb_command
+-
+-            # enforce update if object file is not found
+-            cmd.module_files_updated = False
+-
+-            # Disable pagination while reporting symbol (re-)loading.
+-            # The console input is blocked in this context so that we would
+-            # get stuck waiting for the user to acknowledge paged output.
+-            show_pagination = gdb.execute("show pagination", to_string=True)
+-            pagination = show_pagination.endswith("on.\n")
+-            gdb.execute("set pagination off")
+-
+-            if module_name in cmd.loaded_modules:
+-                gdb.write("refreshing all symbols to reload module "
+-                          "'{0}'\n".format(module_name))
+-                cmd.load_all_symbols()
+-            else:
+-                cmd.load_module_symbols(module)
+-
+-            # restore pagination state
+-            gdb.execute("set pagination %s" % ("on" if pagination else "off"))
+-
++            self.callback()
+             return False
+ 
+-
+ class LxSymbols(gdb.Command):
+     """(Re-)load symbols of Linux kernel and currently loaded modules.
+ 
+@@ -61,15 +39,52 @@ are scanned recursively, starting in the same directory. Optionally, the module
+ search path can be extended by a space separated list of paths passed to the
+ lx-symbols command."""
+ 
+-    module_paths = []
+-    module_files = []
+-    module_files_updated = False
+-    loaded_modules = []
+-    breakpoint = None
+-
+     def __init__(self):
+         super(LxSymbols, self).__init__("lx-symbols", gdb.COMMAND_FILES,
+                                         gdb.COMPLETE_FILENAME)
++        self.module_paths = []
++        self.module_files = []
++        self.module_files_updated = False
++        self.loaded_modules = {}
++        self.internal_breakpoints = []
++
++    # prepare GDB for loading/unloading a module
++    def _prepare_for_module_load_unload(self):
++
++        self.blocked_sigint = False
++
++        # block SIGINT during execution to avoid gdb crash
++        sigmask = signal.pthread_sigmask(signal.SIG_BLOCK, [])
++        if not signal.SIGINT in sigmask:
++            self.blocked_sigint = True
++            signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
++
++        # disable all breakpoints to workaround a GDB bug where it would
++        # not correctly resume from an internal breakpoint we placed
++        # in do_module_init/free_module (it leaves the int3
++        self.saved_breakpoints = []
++        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
++            for bp in gdb.breakpoints():
++                self.saved_breakpoints.append({'breakpoint': bp, 'enabled': bp.enabled})
++                bp.enabled = False
++
++        # disable pagination to avoid asking user for continue
++        show_pagination = gdb.execute("show pagination", to_string=True)
++        self.saved_pagination = show_pagination.endswith("on.\n")
++        gdb.execute("set pagination off")
++
++    def _unprepare_for_module_load_unload(self):
++        # restore breakpoint state
++        for breakpoint in self.saved_breakpoints:
++            breakpoint['breakpoint'].enabled = breakpoint['enabled']
++
++        # restore pagination state
++        gdb.execute("set pagination %s" % ("on" if self.saved_pagination else "off"))
++
++        # unblock SIGINT
++        if self.blocked_sigint:
++            sigmask = signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
++            self.blocked_sigint = False
+ 
+     def _update_module_files(self):
+         self.module_files = []
+@@ -107,7 +122,7 @@ lx-symbols command."""
+                     name=section_name, addr=str(address)))
+         return "".join(args)
+ 
+-    def load_module_symbols(self, module):
++    def _do_load_module_symbols(self, module):
+         module_name = module['name'].string()
+         module_addr = str(module['core_layout']['base']).split()[0]
+ 
+@@ -130,56 +145,112 @@ lx-symbols command."""
+                 addr=module_addr,
+                 sections=self._section_arguments(module))
+             gdb.execute(cmdline, to_string=True)
+-            if module_name not in self.loaded_modules:
+-                self.loaded_modules.append(module_name)
++
++            self.loaded_modules[module_name] = {"module_file": module_file,
++                                                "module_addr": module_addr}
+         else:
+             gdb.write("no module object found for '{0}'\n".format(module_name))
+ 
++
++    def load_module_symbols(self):
++        module = gdb.parse_and_eval("mod")
++
++                # module already loaded, false alarm
++        # can happen if 'do_init_module' breakpoint is hit multiple times
++        # due to interrupts
++        module_name = module['name'].string()
++        if module_name in self.loaded_modules:
++            gdb.write("spurious module load breakpoint\n")
++            return
++
++        # enforce update if object file is not found
++        self.module_files_updated = False
++        self._prepare_for_module_load_unload()
++        try:
++            self._do_load_module_symbols(module)
++        finally:
++            self._unprepare_for_module_load_unload()
++
++
++    def unload_module_symbols(self):
++        module = gdb.parse_and_eval("mod")
++        module_name = module['name'].string()
++
++        # module already unloaded, false alarm
++        # can happen if 'free_module' breakpoint is hit multiple times
++        # due to interrupts
++        if not module_name in self.loaded_modules:
++            gdb.write("spurious module unload breakpoint\n")
++            return
++
++        module_file = self.loaded_modules[module_name]["module_file"]
++        module_addr = self.loaded_modules[module_name]["module_addr"]
++
++        self._prepare_for_module_load_unload()
++        try:
++            gdb.write("unloading @{addr}: {filename}\n".format(
++                addr=module_addr, filename=module_file))
++            cmdline = "remove-symbol-file {filename}".format(
++                filename=module_file)
++            gdb.execute(cmdline, to_string=True)
++            del self.loaded_modules[module_name]
++
++        finally:
++            self._unprepare_for_module_load_unload()
++
+     def load_all_symbols(self):
+         gdb.write("loading vmlinux\n")
+ 
+-        # Dropping symbols will disable all breakpoints. So save their states
+-        # and restore them afterward.
+-        saved_states = []
+-        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
+-            for bp in gdb.breakpoints():
+-                saved_states.append({'breakpoint': bp, 'enabled': bp.enabled})
+-
+-        # drop all current symbols and reload vmlinux
+-        orig_vmlinux = 'vmlinux'
+-        for obj in gdb.objfiles():
+-            if obj.filename.endswith('vmlinux'):
+-                orig_vmlinux = obj.filename
+-        gdb.execute("symbol-file", to_string=True)
+-        gdb.execute("symbol-file {0}".format(orig_vmlinux))
+-
+-        self.loaded_modules = []
+-        module_list = modules.module_list()
+-        if not module_list:
+-            gdb.write("no modules found\n")
+-        else:
+-            [self.load_module_symbols(module) for module in module_list]
++        self._prepare_for_module_load_unload()
++        try:
++            # drop all current symbols and reload vmlinux
++            orig_vmlinux = 'vmlinux'
++            for obj in gdb.objfiles():
++                if obj.filename.endswith('vmlinux'):
++                    orig_vmlinux = obj.filename
++            gdb.execute("symbol-file", to_string=True)
++            gdb.execute("symbol-file {0}".format(orig_vmlinux))
++            self.loaded_modules = {}
++            module_list = modules.module_list()
++            if not module_list:
++                gdb.write("no modules found\n")
++            else:
++                [self._do_load_module_symbols(module) for module in module_list]
++        finally:
++            self._unprepare_for_module_load_unload()
+ 
+-        for saved_state in saved_states:
+-            saved_state['breakpoint'].enabled = saved_state['enabled']
++        self._unprepare_for_module_load_unload()
+ 
+     def invoke(self, arg, from_tty):
+         self.module_paths = [os.path.abspath(os.path.expanduser(p))
+                              for p in arg.split()]
+         self.module_paths.append(os.getcwd())
+ 
++        try:
++            gdb.parse_and_eval("*start_kernel").fetch_lazy()
++        except gdb.MemoryError:
++            gdb.write("Error: Kernel is not yet loaded\n")
++            return
++
+         # enforce update
+         self.module_files = []
+         self.module_files_updated = False
+ 
++        for bp in self.internal_breakpoints:
++            bp.delete()
++        self.internal_breakpoints = []
++
+         self.load_all_symbols()
+ 
+         if hasattr(gdb, 'Breakpoint'):
+-            if self.breakpoint is not None:
+-                self.breakpoint.delete()
+-                self.breakpoint = None
+-            self.breakpoint = LoadModuleBreakpoint(
+-                "kernel/module.c:do_init_module", self)
++            self.internal_breakpoints.append(
++                BreakpointWrapper(self.load_module_symbols,
++                                  spec="kernel/module.c:do_init_module",
++                                  ))
++            self.internal_breakpoints.append(
++                BreakpointWrapper(self.unload_module_symbols,
++                                  spec="kernel/module.c:free_module",
++                                  ))
+         else:
+             gdb.write("Note: symbol update on module loading not supported "
+                       "with this gdb version\n")
+-- 
+2.26.3
+
