@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4253E8E41
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6A03E8E5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhHKKPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236937AbhHKKPM (ORCPT
+        id S237031AbhHKKSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:18:46 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49888 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231684AbhHKKSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:15:12 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66A7C061765;
-        Wed, 11 Aug 2021 03:14:48 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id u15so1551356wmj.1;
-        Wed, 11 Aug 2021 03:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wIoTEsdxgD+rQHM+TTvpsF8TMu7RDq5yzsyDpH04EdQ=;
-        b=Hus6VAqtAaET1LurL6mMZkdsWOS/A0JniOgBsFqHzyKoTRPbz0DXhdUGPyscKR8EYw
-         /cQvqDsmTv2Y527RDnEZuYpVDbIKbliufTmO/CRXIVYUDTf9xI5wBsqorIwB2g9ugPlv
-         SdFXOh7ullggxoAZhP3TOUxfIT7ocsm5vgAHR9hIDNNGDEFDN1ztByDsdRp4KeWhZefA
-         8bsaQXXqB1TnHrys05CDyJLNP5+aN8GRmRQF7gdSq4HLYVXF4PhQz8x9r+6ziup+ykU6
-         d2HKFJ4myjbaa40GTNZ2PNTvBNVbqTyenBoh5EqzG7J6eE2VCY9V24RNQN39/8cKKpT/
-         XYAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wIoTEsdxgD+rQHM+TTvpsF8TMu7RDq5yzsyDpH04EdQ=;
-        b=APNgNPYkP1lTb4aBQzD3DLHE/r7jIu4gcozi+WsZiqDSzDRgd3B6ugnCw4d3X4L3fw
-         gFz5PNfpe7/kwpADH/e1hCWhVy8f22ppYzYNW+IeoUgbfxf04DQqViMWvCS6GexC7239
-         pIgaVy1D4UMXDsnBqAEcQkDDDkTHqVU8pNmV78vEIHymA83sxq/W3ridxAeh2af/3WJ0
-         RmrxYTo0JBBd8P2+4ygxOaR5hb1JsplahFf3hoi98eKF4jy77lkgXhNJTCgf51AzuHbj
-         pv30uMHMy3G0EM1lBw5l1XYP1DNdFZIfu7UsAlNze78QWFqWVarIibwNAApjlr/WZ3wv
-         TEXw==
-X-Gm-Message-State: AOAM530klAML4odzrZJBP1/V6q/U3zLAWFrzUJ/HSfUh4MJmx/rH5FCZ
-        EfHujC2lOKU7NzT58Rm2t+8=
-X-Google-Smtp-Source: ABdhPJyeZbyPbhlMNdXLlQiI7O7Kxacx895cF0VStOiPQg/X1NnAm+3Nb6MxPi8Zc+ALtu5hZVPSfQ==
-X-Received: by 2002:a05:600c:3555:: with SMTP id i21mr20531484wmq.156.1628676887539;
-        Wed, 11 Aug 2021 03:14:47 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id z17sm26872858wrt.47.2021.08.11.03.14.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 03:14:46 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 12:17:11 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] Tegra Kconfig improvements for 5.15
-Message-ID: <YROjp3WQfWo4Jvm7@orome.fritz.box>
-References: <20210714025127.2411-1-digetx@gmail.com>
+        Wed, 11 Aug 2021 06:18:45 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 492B51FE29;
+        Wed, 11 Aug 2021 10:18:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628677101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pXxkzxAeI1zRXcfhNuJVox5GRDW+XRGzaSn15ZkzWIQ=;
+        b=gtsSEl26C5k6EM+5zPX/KCK03KFnfVW5U022dEYv/6dmvqnBj8sxKsQcmr+8AuslP+ICBi
+        9zq82WtbXGhTW6fIFLjzqf63kAJ5j+hczgbW0gwOxW+HmJ8s7KFt7R0s5/JFlXf4wb4/xy
+        5+a5EoXL9E2Q6q29dEQzhqgztno9uas=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628677101;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pXxkzxAeI1zRXcfhNuJVox5GRDW+XRGzaSn15ZkzWIQ=;
+        b=Y9AYv4piIzyYwgX3rvmnxvuqYC1zL4R9d+zANMULk6eDe98Qj4qQQPjStMBH+wc8ngU6mK
+        98UCKjt6pKGT7jAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3E497131F5;
+        Wed, 11 Aug 2021 10:18:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 13VxAuyjE2HODAAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 10:18:20 +0000
+Subject: Re: [PATCH v14 034/138] mm/memcg: Remove 'page' parameter to
+ mem_cgroup_charge_statistics()
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-35-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <ba1109ed-4ec0-e99c-8524-17084c9f65b6@suse.cz>
+Date:   Wed, 11 Aug 2021 12:18:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WS9QCbIpLi0WkVgN"
-Content-Disposition: inline
-In-Reply-To: <20210714025127.2411-1-digetx@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+In-Reply-To: <20210715033704.692967-35-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> The last use of 'page' was removed by commit 468c398233da ("mm:
+> memcontrol: switch to native NR_ANON_THPS counter"), so we can now remove
+> the parameter from the function.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
---WS9QCbIpLi0WkVgN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 14, 2021 at 05:51:20AM +0300, Dmitry Osipenko wrote:
-> This series enables new Kconfig options, it also fixes CONFIG_FB and
-> CROS_EC options.
->=20
-> Changelog:
->=20
-> v2: - Added two more patches from Maxim Schwalm that are fixing CROS_EC
->       options and refreshing tegra_defconfig.
->=20
->     - Added fixes tag to the CONFIG_FB patch, thanks to Maxim for finding
->       the offending commit.
->=20
-> Dmitry Osipenko (5):
->   ARM: tegra_defconfig: Enable CONFIG_TEGRA30_TSENSOR
->   ARM: tegra_defconfig: Enable CONFIG_FB
->   ARM: tegra_defconfig: Enable Acer A500 drivers
->   ARM: multi_v7_defconfig: Enable Acer A500 drivers
->   ARM: multi_v7_defconfig: Enable CONFIG_TEGRA30_TSENSOR
->=20
-> Maxim Schwalm (2):
->   ARM: tegra_defconfig: Enable CONFIG_CROS_EC
->   ARM: tegra_defconfig: Rebuild defconfig
->=20
->  arch/arm/configs/multi_v7_defconfig |  4 ++++
->  arch/arm/configs/tegra_defconfig    | 25 ++++++++-----------------
->  2 files changed, 12 insertions(+), 17 deletions(-)
-
-Applied, thanks.
-
-Thierry
-
---WS9QCbIpLi0WkVgN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmETo6cACgkQ3SOs138+
-s6Fv9A//eYUenPejiWCCQy6sNLaZkec3RcZ3Ic26R0lvy/WdfvuJFIxNrAMlfZBg
-XT7iDUurOZUV3odwv6Qyn1DYKrr+ji8Gpc9UDN0gW8WP9LmSvhlBdFZ3EN+KPD5P
-XPO9CQTOvyX4Sdg3cog/3baVv6DBXcnEcbLeLaV/YbrDh9pPj8atuvcOcGOLdldu
-2xinbCMfhDU0redKrVe1HDyXzbEf9Iatnj0Vi8WRW5TDY0VnH4ygJzFb+kjY2YfF
-seX9LpvIl40lTVAfQsXhi1EXWu5G9yX9neda0h/7yzQ06CbZzGCD610OnlwDJ7JW
-FQiDBe+abf1s+wdsAxcru6tBjq2qd254iKwWmrxqC8VjsSvrMU1N+1VDgC7hPw6A
-7uTDD/xgD/dpne95QB54XNqI0zpfGbEqiIrPhmDoctCnBTq21CNkSneXW2tceVE8
-0o9gd7bO3NpIT2XLStNqhASo2MbEL/rWVqqFvGqsOwUjJ4NpnxYDuIXWp5lSZxSZ
-HmJl5MNESk0vcsMwvGC4VlhBhAYXAR4TruL+Gmm5rXbMpHxDqx0paHvnBXsfqBaz
-Ju2XtYooKkq4wxJ/k5DFGhZDUM8484NQEj175ULDBk7rC4wZjaBgzhp2sw2FBWmz
-qktDqFzZfaerS31JzQTZflXEdb21NV3HxPb8l8ePQTRTtnyerLE=
-=b/wg
------END PGP SIGNATURE-----
-
---WS9QCbIpLi0WkVgN--
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
