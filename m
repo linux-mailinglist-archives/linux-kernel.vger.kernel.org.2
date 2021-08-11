@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7373E872B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAA93E873B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhHKATf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:19:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235692AbhHKATe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:19:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7607E60F55;
-        Wed, 11 Aug 2021 00:19:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628641152;
-        bh=Zc5dExTPRWUtgOfGNOxttYI0bTWbZetNAgPIsuEtZWA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GIFjD92s9zH7DeIlDYvhYE2t3gAV+mpD0/QyBwwj5tG4K8F9p7zo42W73BWqEGaOI
-         6GUzE41nQ/sj99dq6k2ODuHl9zsmyOF88XQkfD9yCi62IuXwjBpaGuLgOj0Gv6IS65
-         IzbRToSw7A0wE+4SvD7MfvmA+heWLVflfSDdG+Tg0sbpdl7onNwluD7nMb6/wFYmgb
-         zpzW8M3zFIuSlXniaat46GMIzHo+ICKVj9RVUewB4JycIgwvqxYlJGtzBkaVlTxMEg
-         XUBkObLjxcvDnhLzA5q2yUFWV9ZaEnJhWeb309Sc21YbwQOYyIglkA9ZOoBHg830Hs
-         WGGVGp0LCXBlg==
-Date:   Wed, 11 Aug 2021 03:19:09 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Always deregister /dev/sgx_provision on failure
-Message-ID: <20210811001909.wjagzcapjqv7sfrx@kernel.org>
-References: <20210810225627.202890-1-jarkko@kernel.org>
- <20210811112713.267a1d0b99ee53813ba733b3@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811112713.267a1d0b99ee53813ba733b3@intel.com>
+        id S235770AbhHKAZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:25:40 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:57119 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235680AbhHKAZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:25:39 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1EDB6580490;
+        Tue, 10 Aug 2021 20:25:16 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Tue, 10 Aug 2021 20:25:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=CQaGtiKaZFJhddHZEvf2v4rU+OaDWp+
+        Ss2kMo6IVZCs=; b=SA00P7GxQHrtfFqvW+m7kFvoPx2MD+CjTx3gTQusAuPi1v+
+        o+V9MLiL882MpaRZWdcyha7hCJ8dLU3uNxyzSOi96axjvJ/KTyVJ1rAoV/2izbrF
+        UzG8w84Yj6vJKOcmEVQjlv6Of1pJtShlVn3TkIcr549T7r6xUL+ZxDMmAXaqyAiO
+        ku2F7YICI75WyG6HzmFm0YhEySCiR6n7t8WsRFILj7Yldr4rI9d9woJQLF/Q6UYr
+        b9Fg3dr4iXcDutqn4qvbo2wo7kN9xgAdtFm5cJat5+6K2GahJU4G4VsSHrY7NuyG
+        TO7Ic/jHqZrVuJOzOdqk/w57ejrF/jiFkuWiYnw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=CQaGti
+        KaZFJhddHZEvf2v4rU+OaDWp+Ss2kMo6IVZCs=; b=IQWeXBM2nZNQ1O/QfqKFn9
+        nI+k+eO/smlIBlv/78gmPvuOU9V+6Ov3zo/uMvaDnBsXI3kAAGqcVnjm8VYPLEox
+        arlFnFKnpq8P/7syouSurBE4kXV8GMsdH1N5zCBPXtgIpSI3GioKBxMfypDIZokB
+        HeQAm7D5PeiwPo0wUpwsu/xeR8osuH5icucJmHIge8bDIpqKXgJHIogbqkQG7fWC
+        TRAscnGnG1dkZgkzWI6slAxBZSrH611lafOLtBvtCbDOlGxjjw/MKj69wsebkLE4
+        4IgZowGnM0Sh260+tW0K0kgKEPIpK7pNM+2uP3G+AOWtBKipKvPTdzm72OENEzMg
+        ==
+X-ME-Sender: <xms:6RgTYVdkVTqMHNwXpKnSAv-Rz5MsYiT9_op0s_XwFeylYSdGwRVSwg>
+    <xme:6RgTYTP_q8htCYVBa7Lgr_JKBiEq8Z8IU3toB8k-VFm0F1m8UajSdGLAGEd3_UECO
+    Xtk4bM5ju3BCLZJug>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedtgdefvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:6hgTYejS52ymUKsEMDRMPh-Nexewh4uRsXv-pnMAzMXRzvm95gQTAg>
+    <xmx:6hgTYe-o9IinhgoWJrGolDqiZ4-FjpW5FTU1QO-fcGbF9e915MEjlw>
+    <xmx:6hgTYRtsilqCIaAOICu1a6mUL-NBYWtNQQ2hAMQY36eMHG52UxUfqQ>
+    <xmx:7BgTYXBFUT-gH886vkzM6ViX413GUYkbmN4pcAweN2MsEJpo_H1AJg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id EF05DAC0DD0; Tue, 10 Aug 2021 20:25:13 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-554-g53a5f93b7d-fm-20210809.002-g53a5f93b
+Mime-Version: 1.0
+Message-Id: <53199b3e-a711-4071-96a3-7836d3323906@www.fastmail.com>
+In-Reply-To: <CACRpkdZ4A3Lw2U+_jXfbuXJFhpesi3SzNN1Codqxi4sLNu5zPw@mail.gmail.com>
+References: <20210723075858.376378-1-andrew@aj.id.au>
+ <20210723075858.376378-2-andrew@aj.id.au>
+ <CACRpkdZ4A3Lw2U+_jXfbuXJFhpesi3SzNN1Codqxi4sLNu5zPw@mail.gmail.com>
+Date:   Wed, 11 Aug 2021 09:54:53 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Linus Walleij" <linus.walleij@linaro.org>
+Cc:     "Linux LED Subsystem" <linux-leds@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, "Pavel Machek" <pavel@ucw.cz>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/6] pinctrl: Add pinctrl_gpio_as_pin()
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 11:27:13AM +1200, Kai Huang wrote:
-> On Wed, 11 Aug 2021 01:56:27 +0300 Jarkko Sakkinen wrote:
-> > When /dev/sgx_vepc for KVM was added, the initialization was relaxed so
-> > that this file can be accessed even when the driver is disabled.
-> > 
-> > Deregister /dev/sgx_provision when the driver is disabled, because it is
-> > only useful for the driver.
-> 
-> Hi Jarkko,
-> 
-> This is not true.  KVM also uses /dev/sgx_provision to restrict enclave in guest
-> from accessing provisoning key.  Specifically, in order to allow guest enclave
-> to be able to use provisioning key, when one VM is created, Qemu must have
-> permission to open /dev/sgx_provision, and pass the fd as parameter to
-> KVM_CAP_SGX_ATTRIBUTE.
-> 
-> Please see below KVM API:
-> 
-> 7.25 KVM_CAP_SGX_ATTRIBUTE
-> --------------------------           
->                                                      
-> :Architectures: x86                                         
-> :Target: VM                                                              
-> :Parameters: args[0] is a file handle of a SGX attribute file in securityfs
-> :Returns: 0 on success, -EINVAL if the file handle is invalid or if a requested
->           attribute is not supported by KVM.                         
->                                                                                
-> KVM_CAP_SGX_ATTRIBUTE enables a userspace VMM to grant a VM access to one or
-> more priveleged enclave attributes.  args[0] must hold a file handle to a valid
-> SGX attribute file corresponding to an attribute that is supported/restricted
-> by KVM (currently only PROVISIONKEY).
->                                                                     
-> The SGX subsystem restricts access to a subset of enclave attributes to provide
-> additional security for an uncompromised kernel, e.g. use of the PROVISIONKEY
-> is restricted to deter malware from using the PROVISIONKEY to obtain a stable
-> system fingerprint.  To prevent userspace from circumventing such restrictions
-> by running an enclave in a VM, KVM prevents access to privileged attributes by
-> default.                                                 
 
-OK, I was not aware of this.
 
-/Jarkko
+On Tue, 10 Aug 2021, at 23:04, Linus Walleij wrote:
+> On Fri, Jul 23, 2021 at 9:59 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> 
+> > Allow gpiochips to map the GPIO numberspace onto a pin numberspace when
+> > the register layout for GPIO control is implemented in terms of the
+> > pin numberspace.
+> >
+> > This requirement sounds kind of strange, but the patch is driven by
+> > trying to resolve a bug in the leds-pca955x driver where this mapping is
+> > not correctly performed.
+> >
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> 
+> (...)
+> 
+> Hm  this looks a bit strange...
+> 
+> > +int pinctrl_gpio_as_pin(struct pinctrl_dev *pctldev, unsigned int gpio)
+> 
+> This is not a good name for this function. Try to come up with
+> a name that says exactly what the function does.
+> 
+> E.g. "apple pear as apple slice" isn't very helpful, the use case for
+> this is really hard to understand.
+
+That's probably because I shouldn't be trying to do what I'm doing :)
+
+I'll stop doing that (i.e. rework patch 4/6) and this will go away entirely.
+
+> 
+> > +EXPORT_SYMBOL_GPL(pinctrl_find_gpio_range_from_pin);
+> 
+> This looks completely wrong.
+
+Yeah, whoops. That was an oversight while iterating on the patch.
+
+Andrew
