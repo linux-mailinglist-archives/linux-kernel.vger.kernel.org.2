@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2BA3E9462
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC8D3E9463
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbhHKPRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbhHKPPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233157AbhHKPRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233079AbhHKPPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 11:15:34 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D0C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:14:32 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id h2so5189944lji.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/0lDg+NImY6s6wrrkXig40C8tKxVtluzWl+MqfNgFF8=;
-        b=Ce6JQNzC9o3guXHmwPdAlP5mDp+4HOxpqLsiszR2taDsyHd5aZaTtsEiOYzxcA/Euo
-         m54gnDiSAMUsefUpZmERfYaICrSTLWJnss4J6jqUP28MsYD/M/bsudMDrwWw1drgF+11
-         nOaf410iZooybX//Wf08Ka8ZqhmrlLQ8L72boSQnqHy2Ib+K43FyGyfhpWGUj9x2tHJC
-         L5Z3j69a2LgLORqEKz40DeaNSjfU8XuH3+JNL9keKcASIm0brFhxaOML27UvakZ4w2da
-         IZjxzmrnezYfxVthIm88z0AuFFggizbyH/OCvs1HHNsD59HEtXjUK6jkxAQGeotT/7Nk
-         ULdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/0lDg+NImY6s6wrrkXig40C8tKxVtluzWl+MqfNgFF8=;
-        b=nd3j7G+6vM6mDYA5/H0Z3tYiPQTZNjBWdBl1bmtfRCheePxsI5ElaARjsr1N0Ub7HF
-         F2vBIp+ndt3uWxOuJdIb/QeyVLIbPi3dCLptcq+goG32SzYCOWnmjampE665z85lDLHp
-         ZMrdVc/AODYY9gk+0RjlMKy9jjiuqTj9PTEEvGBHcZIo/fK1K216+EZDWB7oXowGXBvl
-         u7HHi0ZltyuEk49gOE6uogDo0ybBjMDHbhxjPjfbvM9mQsS+TtTRWt2It2eiMSwoLIEO
-         19hdhb4U4A5imyHOHDtOUCUIW3MXboURnAeozRgOxY7DshTBirE/EcdxgzpnHYp3YG+X
-         +4ug==
-X-Gm-Message-State: AOAM5317x/6F7a9wOYmtNFugBEBc9yYE4XtiejKmc02ap4VflFQRuSiR
-        jv2umZflKCxHGDXgqlrJg60V0kSs7PEe+/ByJ34cOg==
-X-Google-Smtp-Source: ABdhPJzTOffu1IZaK0MrBftpMq2jJlt6JJb23qCbDVtCTwDCSo3HOeEpRFGxSmZshFxUvPMqYO7T98iaggWO6yENtRI=
-X-Received: by 2002:a2e:a231:: with SMTP id i17mr13187319ljm.467.1628694871026;
- Wed, 11 Aug 2021 08:14:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210805174219.3000667-1-piyush.mehta@xilinx.com> <20210805174219.3000667-2-piyush.mehta@xilinx.com>
-In-Reply-To: <20210805174219.3000667-2-piyush.mehta@xilinx.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 17:14:20 +0200
-Message-ID: <CACRpkdbZouNdL43=nVLZd3hOeVQTLOZT=5FHGuM+3q3Ah2M9yQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/3] firmware: zynqmp: Add MMIO read and write support
- for PS_MODE pin
-To:     Piyush Mehta <piyush.mehta@xilinx.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Michal Simek <michal.simek@xilinx.com>, wendy.liang@xilinx.com,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, rajan.vaja@xilinx.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, git <git@xilinx.com>,
-        Srinivas Goud <sgoud@xilinx.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E124760F21;
+        Wed, 11 Aug 2021 15:14:47 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDpwM-004Mac-2z; Wed, 11 Aug 2021 16:14:46 +0100
+Date:   Wed, 11 Aug 2021 16:14:45 +0100
+Message-ID: <87im0c9foa.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [SPLAT 2/3] irqchip/gic-v3-its: Sleeping spinlocks down gic_reserve_range()
+In-Reply-To: <87a6lop3mi.ffs@tglx>
+References: <20210810134127.1394269-1-valentin.schneider@arm.com>
+        <20210810134127.1394269-3-valentin.schneider@arm.com>
+        <87y2989xhh.wl-maz@kernel.org>
+        <87a6lop3mi.ffs@tglx>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, will@kernel.org, mark.rutland@arm.com, bigeasy@linutronix.de, mgorman@techsingularity.net, ardb@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 7:42 PM Piyush Mehta <piyush.mehta@xilinx.com> wrote:
+On Wed, 11 Aug 2021 13:28:21 +0100,
+Thomas Gleixner <tglx@linutronix.de> wrote:
+> 
+> On Wed, Aug 11 2021 at 09:50, Marc Zyngier wrote:
+> > On Tue, 10 Aug 2021 14:41:26 +0100,
+> > Valentin Schneider <valentin.schneider@arm.com> wrote:
+> > The issue is that although the redistributor tables have been
+> > allocated ahead of time (outside of any cpuhp callback), they cannot
+> > be programmed into the RDs until the corresponding CPUs have been
+> > brought up (the registers may not be accessible).
+> >
+> > For the same reason, we don't know whether we can free them (because
+> > there is already a table programmed there) or have to reserve them
+> > with an efi_mem_reserve_persistent() call. efi_mem_reserve_iomem()
+> > uses GFP_ATOMIC for its allocation, but this is not sufficient for RT
+> > anymore.
+> >
+> > We could postpone the reservation of the memory to a later point (it
+> > is only useful for kexec), but it isn't clear where that point is. The
+> > CPU is not quite up yet, and we can't easily IPI the boot CPU to do
+> > the reserve call.
+> 
+> Right, but don't you know about the need for reservation _before_
+> bringing the CPU up?
 
-> Add Xilinx ZynqMP firmware MMIO APIs support to set and get PS_MODE
-> pins value and status. These APIs create an interface path between
-> mode pin controller driver and low-level API to access GPIO pins.
->
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-> ---
-> Changes in v2:
+Unfortunately not. To find out, you need to access a pair of per-CPU
+registers which are not guaranteed to be powered-on until the
+corresponding CPU has made it into the kernel (the firmware will power
+things on as part of bringing the CPU up).
 
-After Michals description of how this is controlling USB
-PHY and misc resets I'm OK with the concept.
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Which is why we always allocate the memory upfront for all the CPUs,
+and each CPU either frees the memory if it already had something in
+its redistributor, or point the redistributor to the memory and
+reserves it.
 
-Yours,
-Linus Walleij
+This is probably the most epic fail of the GICv3 architecture...
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
