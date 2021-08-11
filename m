@@ -2,122 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B72A3E8BE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6268B3E8BEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236150AbhHKIhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        id S236166AbhHKIi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbhHKIhY (ORCPT
+        with ESMTP id S236041AbhHKIi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:37:24 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09872C061765;
-        Wed, 11 Aug 2021 01:37:01 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 203-20020a1c00d40000b02902e6a4e244e4so1374173wma.4;
-        Wed, 11 Aug 2021 01:37:00 -0700 (PDT)
+        Wed, 11 Aug 2021 04:38:27 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D99C061798
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:38:04 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q10so1940243wro.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:38:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=r2N2lJNtd9ZVoClfrfgh876Vfdtyeq7ZHkyk/68V1gA=;
-        b=dSYtxaXDCl25xHC0RUhzvW1jjtWK0C461gFRD7NdUbEikkzJ0Fq2JFdLgvgeZTSYPt
-         vGbHkLazdljjkjZgnlAOEJPz90n7dwcNji7tOWR2r0zV8KjMQiNCMQeZiHbhafyPm4e2
-         HbdN7bYSWTwGCaLzlZAjivjzq536vg0oBvWAeflq9zyo7rzP9ZliT8rW5e1rAh+jI+y0
-         qm1Z3ltM8zkefRQ9DwenwuOH+arhQ526i2rxdWGu5ooK7ns/Ov5Vmd/xUp06ZurBOKcK
-         HyTVfTQvaae4haJmjC8Mt65Ha7htxJoCWH4ZIJ6dY4e0ytXFv70jJC2XLg9BqvWLvxJ/
-         ROBg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8ctvExXHxoU7MDz0lLq/Tgi84JQatciTVAxD+Fn/jcQ=;
+        b=rEq02tPeUoTDMJlCRt+ttFdA0Jr7daFhR+2ie5RBcOI3BzWNUuUWa9Gbkn4HGOW7WY
+         4dGznTdp6VXTPNE9W13rtYzeqx7tx7wQ393pENejnQSXz9eLj1RNBFRM1k3jq7xv7egq
+         HC0wLX7Gfq1JdtcjNVDY4wLVGIFgnDphxa8SKvMeE6pZoYh5aVDsC/sruC06SYWsY3uM
+         J7cw2lg+GbQUi7uuzGE1t6Q0KYY1VP89pD3oxKNUKWXB+QlwgXjHIwdMYwDYJtjhm4GA
+         VV1DzVJB/z5IitVlWxedaVu1jjrQLyAUK9KtmHXlZnADSSCcDIKhD2TqwcqLbaym+Na8
+         XOdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r2N2lJNtd9ZVoClfrfgh876Vfdtyeq7ZHkyk/68V1gA=;
-        b=Cmytka3+Zyi/vuO+Ra4yYnd3C782al4JvHephR/AbnXnUsCGOPaDkKYdsg4h7et/9y
-         AX+7m6a1N96ljBCQNRnJ6yugWyPk1ygWEG7+8TAkFkdlgDNV8Q3h7Y7B7lzuKsuNLDWK
-         TpwuBSinOSXgGAIHxoAgKq2GitP/zX+hzH9b1p607+6KBcyzg5X3xqz2Qsjw9reoLvEr
-         03SSJHVIAs+J/WfoB9K6SoeT42371wrzk0wk8pavOuAWm/5cuXt2MHYhxIhbzVHcZyPq
-         c8+BMnCqqPwmUbkyAA/P9NWZWmc66jpk0zud/SJfj6kafNrmRSGdONyBCMIkoz1SkaUq
-         Fqjg==
-X-Gm-Message-State: AOAM530/a8cnvULKsDvnkoLL1BHXVOkO+ZWE8DZFQvYBi0PuHxwRzxFF
-        a/Cjdk0PKKcDeEr+lLBjuiNq7hUkkSkXdw==
-X-Google-Smtp-Source: ABdhPJx+Bhx60Go2TR/I/ARqxGl4Pjqxf0dXF/m8YuYGiTNSgcVyZOkKXRwpDNnxmKXEbaUEtP7BXA==
-X-Received: by 2002:a1c:ed03:: with SMTP id l3mr25447530wmh.56.1628671019135;
-        Wed, 11 Aug 2021 01:36:59 -0700 (PDT)
-Received: from ?IPv6:2a01:cb05:8192:e700:90a4:fe44:d3d1:f079? (2a01cb058192e70090a4fe44d3d1f079.ipv6.abo.wanadoo.fr. [2a01:cb05:8192:e700:90a4:fe44:d3d1:f079])
-        by smtp.gmail.com with ESMTPSA id u6sm11308532wrp.83.2021.08.11.01.36.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 01:36:58 -0700 (PDT)
-Subject: Re: [PATCH net-next 1/2] net: pcs: xpcs: enable skip xPCS soft reset
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ctvExXHxoU7MDz0lLq/Tgi84JQatciTVAxD+Fn/jcQ=;
+        b=YMbmFym2hXew8RBcErDvF79h9ycyhhN5W8qG6ZbcxkSnsuXKZF2f8VVWfrDs4I45li
+         0v7Fc7IpNv54IVGxJA1P1yoU9qRRZHpBxH4SQIkpsiL7TgU8WlFTRTtLc+j1Uvp0LK0A
+         8sRsi2SF1i/5BDcKE8qrhCH/Gl3Egfzzm5I6lZFpa2y16Gc+q6irX6Jg/WZtY9w10T1q
+         okC2bNYv7PO6XmN/45gIONkEcW6tkdKb0RBLxfNv7hScOYppilr61tXoHWzl31TxjOId
+         23FwSazzW66oXAoHX0aS2xQK47ugkFCfqX0R/5gqON3AlUlgUAm2oUUdhuJ97ZcI7ns2
+         fh0g==
+X-Gm-Message-State: AOAM533QlIHgcSMVQJZM0ihnumZuFSggPsby1m6VxHim6tFAST+2X3lM
+        HBMhkg3QvihY+EAI0WAjgQf8WQ==
+X-Google-Smtp-Source: ABdhPJzU9YQR62yDNq9PrF7gkVKzwniyJFxIxg9cOJLgH9YZSN7yJXWq44plPsS4/Qn9sPmMW8M/QQ==
+X-Received: by 2002:a5d:490b:: with SMTP id x11mr35305440wrq.322.1628671082736;
+        Wed, 11 Aug 2021 01:38:02 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:43fd:e634:73d9:e10e])
+        by smtp.gmail.com with ESMTPSA id e25sm13986334wra.90.2021.08.11.01.38.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 01:38:02 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 09:37:56 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
- <20210809102229.933748-2-vee.khee.wong@linux.intel.com>
- <YREvDRkiuScyN8Ws@lunn.ch> <20210810235529.GB30818@linux.intel.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f2a1f135-b77a-403d-5d2e-c497efc99df7@gmail.com>
-Date:   Wed, 11 Aug 2021 01:36:56 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
+Message-ID: <YROMZFHCor3pbhMr@google.com>
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <YRJym+Vn4bbwQzzs@google.com>
+ <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <20210810235529.GB30818@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/10/2021 4:55 PM, Wong Vee Khee wrote:
-> Hi Andrew,
-> On Mon, Aug 09, 2021 at 03:35:09PM +0200, Andrew Lunn wrote:
->> On Mon, Aug 09, 2021 at 06:22:28PM +0800, Wong Vee Khee wrote:
->>> From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
->>>
->>> Unlike any other platforms, Intel AlderLake-S uses Synopsys SerDes where
->>> all the SerDes PLL configurations are controlled by the xPCS at the BIOS
->>> level. If the driver perform a xPCS soft reset on initialization, these
->>> settings will be switched back to the power on reset values.
->>>
->>> This changes the xpcs_create function to take in an additional argument
->>> to check if the platform request to skip xPCS soft reset during device
->>> initialization.
->>
->> Why not just call into the BIOS and ask it to configure the SERDES?
->> Isn't that what ACPI is all about, hiding the details from the OS? Or
->> did the BIOS writers not add a control method to do this?
->>
->>      Andrew
+On Wednesday 11 Aug 2021 at 10:48:59 (+0530), Viresh Kumar wrote:
+> On 10-08-21, 13:35, Quentin Perret wrote:
+> > On Tuesday 10 Aug 2021 at 13:06:47 (+0530), Viresh Kumar wrote:
+> > > Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
+> > > with the EM core on their behalf.
+> > 
+> > Hmm, that's not quite what this does. This asks the cpufreq core to
+> > use *PM_OPP* to register an EM, which I think is kinda wrong to do from
+> > there IMO. The decision to use PM_OPP or another mechanism to register
+> > an EM belongs to platform specific code (drivers), so it is odd for the
+> > PM_OPP registration to have its own cpufreq flag but not the other ways.
+> > 
+> > As mentioned in another thread, the very reason to have PM_EM is to not
+> > depend on PM_OPP, so I'm worried about the direction of travel with this
+> > series TBH.
 > 
-> BIOS does configured the SerDes. The problem here is that all the
-> configurations done by BIOS are being reset at xpcs_create().
+> I had to use the pm-opp version, since almost everyone was using that.
 > 
-> We would want user of the pcs-xpcs module (stmmac, sja1105) to have
-> control whether or not we need to perform to the soft reset in the
-> xpcs_create() call.
+> On the other hand, there isn't a lot of OPP specific stuff in
+> dev_pm_opp_of_register_em(). It just uses dev_pm_opp_get_opp_count(),
+> that's all. This ended up in the OPP core, nothing else. Maybe we can
+> now move it back to the EM core and name it differently ?
 
-I understood Andrew's response as suggesting to introduce the ability 
-for xpcs_create() to make a BIOS call which would configure the SerDes 
-after xpcs_soft_reset(). That way the current xpcs_create() signature 
-would remain the same, but you could easily hook any post-reset 
-initialization by making an appropriate BIOS call.
--- 
-Florian
+Well it also uses dev_pm_opp_find_freq_ceil() and
+dev_pm_opp_get_voltage(), so not sure how easy it will be to move, but
+if it is possible no objection from me.
+
+> > > This allows us to get rid of duplicated code
+> > > in the drivers and fix the unregistration part as well, which none of the
+> > > drivers have done until now.
+> > 
+> > This series adds more code than it removes,
+> 
+> Sadly yes :(
+> 
+> > and the unregistration is
+> > not a fix as we don't ever remove the EM tables by design, so not sure
+> > either of these points are valid arguments.
+> 
+> I think that design needs to be looked over again, it looks broken to
+> me everytime I land onto this code. I wonder why we don't unregister
+> stuff.
+> 
+> Lets say, I am working on the cpufreq driver and I want to test that
+> on my ARM machine. Rebooting a simpler board to test stuff out is
+> easy, but if I am working on an ARM server which is running lots of
+> other userspace stuff as well, I won't want to reboot the machine just
+> to test a different versions of the driver. I will rather want to
+> build the driver as module and insert/remove it again and again.
+> 
+> If the frequency table changes in between versions, this just breaks
+> as EM won't be updated again.
+> 
+> This breaks one of the most basic rules of Linux Kernel. Inserting a
+> module should have exactly the same final behavior every single time.
+> This model doesn't guarantee it. It simply looks broken.
+
+Right but the EM is a description of the hardware, so it seemed fair
+to assume this wouldn't change across the lifetime of the OS, similar
+to the DT which we can't reload at run-time. Yes it can be a little odd
+if you load/unload your driver module, but note that you generally can't
+load two completely different drivers on a single system. You'll just
+load the same one again and the hardware hasn't changed in the meantime,
+so the previously loaded EM will still be correct. I hear your argument
+about cpufreq driver development, but the locking involved to allow
+'just' that is pretty involved, and nobody has complained about this
+specific issue so far, so that didn't seem worth it. If we do have good
+reasons to change the EM at runtime, then yes I think we should do it,
+it just didn't seem like that was the case until now.
