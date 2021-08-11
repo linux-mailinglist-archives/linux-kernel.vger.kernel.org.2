@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B143E92D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22EE3E9304
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhHKNlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:41:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50302 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbhHKNlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:41:02 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 34B5822204;
-        Wed, 11 Aug 2021 13:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628689238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZjFqR7vJo7RtWPWOJIW5ZNJ9WTIMNJsq4hJGJ7n5+Ng=;
-        b=2e90UVHJ4cWAkzPDXUcQonr8Ovytf6jkP41WiKSpuQfj/cE2omRF2XLEB9IdICMYWfitfS
-        04KrdWgzprf07ihbHLGvH5blL+3T1IGDcI+R/KpQaKI+t66qkRjXXiDaPkIkjwQzSn8A01
-        nNTgrKlcAe+0OBtdeUBw2hU4xEMXX/M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628689238;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZjFqR7vJo7RtWPWOJIW5ZNJ9WTIMNJsq4hJGJ7n5+Ng=;
-        b=NiD5alPFccwMm4BIwO5XErZvAW7y201197szUm8ni9C0Gw5mRJG8+gIN6w+8bLngc+2jfO
-        8UU3OIlASrfCLPAA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1E9B513969;
-        Wed, 11 Aug 2021 13:40:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id FdzWBlbTE2G9PgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 13:40:38 +0000
-Subject: Re: [PATCH v14 048/138] mm/memcg: Add folio_lruvec_lock() and similar
- functions
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-49-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <6041f5c0-cf18-1170-6509-fba5dd1fc029@suse.cz>
-Date:   Wed, 11 Aug 2021 15:40:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232105AbhHKNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:49:35 -0400
+Received: from mail.djl.id.au ([51.161.134.216]:59726 "EHLO mail.djl.id.au"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231799AbhHKNtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:49:32 -0400
+X-Greylist: delayed 469 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Aug 2021 09:49:32 EDT
+Received: from desktop (unknown [1.145.53.183])
+        by mail.djl.id.au (Postfix) with ESMTPSA id 4CC8520B64;
+        Wed, 11 Aug 2021 13:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=djl.id.au; s=2021042801;
+        t=1628689277; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=aRyA00S4X5p3+7ZrmTyjDWwd0nEXuT1ptgeoX5ewrO0=;
+        b=AaI6EmShLoMGLZjFeK04jG1uBT/ZI6h6E7Evxpl3uJNRi/eIj7y7hQTXTVfIf1wHKDgXtP
+        o7qmZ2uNHWroyGsJfFdZUbFS5XKGN7g3kpmA85INtKwolpai4Hwx8sPl1vkY036tLQozXk
+        LhKReAMe8oRcMQWsTjvkZhp8wqZXbTQ=
+From:   Dee-Jay Anthony Logozzo <dj@djl.id.au>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Dee-Jay Anthony Logozzo <dj@djl.id.au>
+Subject: [PATCH] staging: gdm724x: Place macro argument within parentheses
+Date:   Wed, 11 Aug 2021 23:41:32 +1000
+Message-Id: <20210811134132.5240-1-dj@djl.id.au>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-49-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> These are the folio equivalents of lock_page_lruvec() and similar
-> functions.  Also convert lruvec_memcg_debug() to take a folio.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+Place the macro arguments within parentheses to avoid precedence issues.
+This solves the following checkpatch.pl warnings
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+CHECK: Macro argument 'len' may be better as '(len)' to avoid precedence issues
++#define ND_NLMSG_S_LEN(len)    (len + ND_IFINDEX_LEN)
+
+CHECK: Macro argument 'nlh' may be better as '(nlh)' to avoid precedence issues
++#define ND_NLMSG_R_LEN(nlh)    (nlh->nlmsg_len - ND_IFINDEX_LEN)
+
+Signed-off-by: Dee-Jay Anthony Logozzo <dj@djl.id.au>
+---
+ drivers/staging/gdm724x/netlink_k.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/gdm724x/netlink_k.c b/drivers/staging/gdm724x/netlink_k.c
+index 7902e52a699b..8f39cc5617aa 100644
+--- a/drivers/staging/gdm724x/netlink_k.c
++++ b/drivers/staging/gdm724x/netlink_k.c
+@@ -19,8 +19,8 @@ static DEFINE_MUTEX(netlink_mutex);
+ #define ND_NLMSG_SPACE(len)	(NLMSG_SPACE(len) + ND_IFINDEX_LEN)
+ #define ND_NLMSG_DATA(nlh)	((void *)((char *)NLMSG_DATA(nlh) + \
+ 						  ND_IFINDEX_LEN))
+-#define ND_NLMSG_S_LEN(len)	(len + ND_IFINDEX_LEN)
+-#define ND_NLMSG_R_LEN(nlh)	(nlh->nlmsg_len - ND_IFINDEX_LEN)
++#define ND_NLMSG_S_LEN(len)	((len) + ND_IFINDEX_LEN)
++#define ND_NLMSG_R_LEN(nlh)	((nlh)->nlmsg_len - ND_IFINDEX_LEN)
+ #define ND_NLMSG_IFIDX(nlh)	NLMSG_DATA(nlh)
+ #define ND_MAX_MSG_LEN		(1024 * 32)
+ 
+-- 
+2.31.1
+
