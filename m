@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA653E8F4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFE23E8F4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237221AbhHKLQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:16:19 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3625 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237191AbhHKLQR (ORCPT
+        id S236624AbhHKLQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231821AbhHKLQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:16:17 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gl6gD2vDFz6BCtW;
-        Wed, 11 Aug 2021 19:15:20 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 11 Aug 2021 13:15:52 +0200
-Received: from [10.47.80.4] (10.47.80.4) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 11 Aug
- 2021 12:15:51 +0100
-Subject: Re: [PATCH RFC 2/8] iommu/arm-smmu-v3: Add and use static helper
- function arm_smmu_cmdq_issue_cmd_with_sync()
-To:     Will Deacon <will@kernel.org>
-CC:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210626110130.2416-1-thunder.leizhen@huawei.com>
- <20210626110130.2416-3-thunder.leizhen@huawei.com>
- <20210810182454.GB3296@willie-the-truck>
- <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
- <20210811100905.GB4426@willie-the-truck>
- <d551f31d-4edc-db28-fb08-41a130a5d97f@huawei.com>
- <20210811103344.GA4736@willie-the-truck>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <1dcf5fe0-6ae0-2df6-9d2a-bda6a4f885ac@huawei.com>
-Date:   Wed, 11 Aug 2021 12:15:14 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Wed, 11 Aug 2021 07:16:09 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BCAC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:15:46 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id n6so3912056ljp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E4L1scxTWu6C9n26vo2qgoZeLEILa/cvadfoeBRn16c=;
+        b=PBc4H6TCN8oNeqbaSgDwDWagMBXKbNt1oKWB35rQaKRrQtpSKCgtaCrQCExT3sbXU3
+         EtL2uzoqZr4BiELxdl+Ag+4acwfWjjW1GXa5Qc0sjQzLjVwazoUZaGYZc0MPqNoOImuN
+         erckDhpJnqjfJqupW69vQsiXFvAcQyHG1nvsM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E4L1scxTWu6C9n26vo2qgoZeLEILa/cvadfoeBRn16c=;
+        b=oBNEVaK3w+yrG8YxiCgxT83ArGPWVsUedZKhAiLFwAO/PCMgXuZWhnYOLMpvvdjItL
+         9B983BrZ4EkvVJM8Rxj8ONK8hWCI/9xtOEEcTM6uI+qj6mDhqtwVnz/n2VAuE+RZ7uBs
+         /iwNsiSsvAzkMbPlUkWBCX8qvtuRTsdSfSycd3VGrvchPupqG70LTh+8uwutVoKMgOVa
+         Sw60MCGhuCko+fSALYybdAFwOyIfie1aNngGe/Ito42OWYGyHhWsZHChaBclcsny08R4
+         kSeDO4F35kZFLCt6ihDec6xhzFs+f0WWAHw5DdfZlRJtWENBzkJgnj/nRSxLAilKxsGw
+         Es/Q==
+X-Gm-Message-State: AOAM531Kk55JUVStOUbO68NqkkqpZ5uoprrsof2peTh5z/Y7jLgdy8TA
+        11NaCUXTBjoUxDKvp+EtD1vAbD9i2RfwaAnl
+X-Google-Smtp-Source: ABdhPJxqQuTVPH+lde1iKvhkib30mdLjNIjK75c9IrHtt1gcZndAvCCsg6VSDMZRi+bfzpUJaZxpfg==
+X-Received: by 2002:a2e:1658:: with SMTP id 24mr22708952ljw.429.1628680544061;
+        Wed, 11 Aug 2021 04:15:44 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id x22sm2329815lfe.16.2021.08.11.04.15.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 04:15:43 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id c24so4846206lfi.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:15:43 -0700 (PDT)
+X-Received: by 2002:ac2:55b4:: with SMTP id y20mr24729347lfg.33.1628680542749;
+ Wed, 11 Aug 2021 04:15:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210811103344.GA4736@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.4]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210802121215.703023-1-eizan@chromium.org> <20210802220943.v6.2.Ie6d1e6e39cf9b5d6b2108ae1096af34c3d55880b@changeid>
+ <0aff1abb-734f-c714-6ecc-c906862255c3@collabora.com> <CAOak1e8n6JpNKODfM57OTtbCNz8UBbj+wefwipVWP_Ep6SHmHA@mail.gmail.com>
+ <014b8075-8588-d741-e6f2-edc0567e8c8f@collabora.com>
+In-Reply-To: <014b8075-8588-d741-e6f2-edc0567e8c8f@collabora.com>
+From:   Eizan Miyamoto <eizan@chromium.org>
+Date:   Wed, 11 Aug 2021 21:15:25 +1000
+X-Gmail-Original-Message-ID: <CAOak1e-+v1e+x1SE_Pr2T8eH+gyLikBL6J243ry5tkWAVVx7tA@mail.gmail.com>
+Message-ID: <CAOak1e-+v1e+x1SE_Pr2T8eH+gyLikBL6J243ry5tkWAVVx7tA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/9] mtk-mdp: add driver to probe mdp components
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, wenst@chromium.org,
+        houlong.wei@mediatek.com, yong.wu@mediatek.com,
+        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
+        chunkuang.hu@kernel.org,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>>>
->>>>>> Therefore, function arm_smmu_cmdq_issue_cmd_with_sync() is added to insert
->>>>>> the 'cmd+sync' commands at a time.
->>>>>>
->>>>>> Signed-off-by: Zhen Lei<thunder.leizhen@huawei.com>
->>>>>> ---
->>>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++--------
->>>>>>    1 file changed, 21 insertions(+), 12 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>>>> index 2433d3c29b49ff2..a5361153ca1d6a4 100644
->>>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>>>> @@ -858,11 +858,25 @@ static int arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
->>>>>>    	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, false);
->>>>>>    }
->>>>>> -static int arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
->>>>>> +static int __maybe_unused arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
->>>>>>    {
->>>>>>    	return arm_smmu_cmdq_issue_cmdlist(smmu, NULL, 0, true);
->>>>>>    }
->>>>>> +static int arm_smmu_cmdq_issue_cmd_with_sync(struct arm_smmu_device *smmu,
->>>>>> +					     struct arm_smmu_cmdq_ent *ent)
->>>>>> +{
->>>>>> +	u64 cmd[CMDQ_ENT_DWORDS];
->>>>>> +
->>>>>> +	if (arm_smmu_cmdq_build_cmd(cmd, ent)) {
->>>>>> +		dev_warn(smmu->dev, "ignoring unknown CMDQ opcode 0x%x\n",
->>>>>> +			 ent->opcode);
->>>>>> +		return -EINVAL;
->> Are any of the errors returned from the "issue command" functions actually
->> consumed? I couldn't see it on mainline code from a brief browse.
-> I don't think so.
+Hi Dafna,
 
-I don't think so either.
+On Mon, Aug 9, 2021 at 5:53 PM Dafna Hirschfeld
+<dafna.hirschfeld@collabora.com> wrote:
+> You can send it also as a separate patch. I don't care too much.
 
-> Can we actually propagate them?
+Great. I've sent a separate patch to make mtk_mdp_comp_init static in
+https://patchwork.kernel.org/project/linux-mediatek/list/?series=529639
 
-There does appear to be some places, here's one I found:
-
-arm_smmu_page_response() -> arm_smmu_cmdq_issue_cmd(), and 
-arm_smmu_page_response is set to arm_smmu_ops.page_response, which 
-returns an int
+I will continue with further work to use the clk_blk_* API.
 
 Thanks,
-John
+
+Eizan
