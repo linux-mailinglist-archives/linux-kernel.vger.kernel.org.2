@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2303E8F08
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52363E8F05
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237207AbhHKKvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:51:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237180AbhHKKvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237170AbhHKKvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 11 Aug 2021 06:51:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5157B60E78;
-        Wed, 11 Aug 2021 10:51:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628679076;
-        bh=rH5YRaOaWyAR5nRm148pL736R8MucsTyJdvhBT11OlI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m7xjOa9y9J0xdu2uxFHvu2u5VOkNGxjIhzSUYBCzqjKIjFqxGuiAwMZqh2f98WFUL
-         zp/7IaiGIy05+GMRATbgq4gW1dAKfGM40EA+YYbNuUv1ze/FivFhau/zYbQalQOs8D
-         4C1g1QVH6XiJeMuUbFlXxdBI9bCFs+OP5P4YmUd19VdNWf5rHSmowyakGLoqrGzGXy
-         Hcm65dJKrqPHXuTlDe6Ky+2UHhHz7EM5yFl9a3OsIJdckrp7bbG/FbwXJHwsKTWcub
-         zWvBnRfrmQo9yETjkAeKe/4v4gg3ok4tFaTqqQTlik7tUz/c6TnJrHmGAGEnUjAB48
-         EhB2MzyKb32eQ==
-Date:   Wed, 11 Aug 2021 12:50:48 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Ian Pilcher <arequipeno@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, pali@kernel.org,
-        linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
-Message-ID: <20210811125048.3bbcebdb@thinkpad>
-In-Reply-To: <20210811062642.GA3119@lst.de>
-References: <20210809033217.1113444-1-arequipeno@gmail.com>
-        <20210809205633.4300bbea@thinkpad>
-        <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com>
-        <20210810004331.0f0094a5@thinkpad>
-        <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
-        <20210811062642.GA3119@lst.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:53740 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237020AbhHKKvi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:51:38 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee46113ab96d18-63d46; Wed, 11 Aug 2021 18:51:02 +0800 (CST)
+X-RM-TRANSID: 2ee46113ab96d18-63d46
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee66113ab91f32-3a776;
+        Wed, 11 Aug 2021 18:51:01 +0800 (CST)
+X-RM-TRANSID: 2ee66113ab91f32-3a776
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com
+Cc:     linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] serial: stm32: fix the conditional expression writing
+Date:   Wed, 11 Aug 2021 18:51:36 +0800
+Message-Id: <20210811105136.25392-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 08:26:42 +0200
-Christoph Hellwig <hch@lst.de> wrote:
+In the function stm32_usart_init_port, intent of the code maybe when
+irq returns a value of zero, the return should be '-ENODEV'. But the
+conditional expression '? :' maybe clerical error, it should be
+'?:' to make '-ENODEV' work.
+But in fact, as the example in platform.c is
+  * int irq = platform_get_irq(pdev, 0);
+  * if (irq < 0)
+  * return irq;
+So the return value of zero is unnecessary to check, at last remove
+the unnecessary '?: -ENODEV'.
 
-> On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
-> > On 8/9/21 5:43 PM, Marek Beh=C3=BAn wrote: =20
-> >> I confess that I am not very familiar with internal blkdev API. =20
-> >
-> > It's mainly a matter of symbol visibility.  See this thread from a few
-> > months ago:
-> >
-> >   https://www.spinics.net/lists/linux-leds/msg18244.html
-> >
-> > Now ... my code currently lives in block/, so there isn't actually
-> > anything technically preventing it from iterating through the block
-> > devices.
-> >
-> > The reactions to Enzo's patch (which you can see in that thread) make me
-> > think that anything that iterates through all block devices is likely to
-> > be rejected, but maybe I'm reading too much into it. =20
->=20
-> I think the main issue with this series is that it adds a shitload of
-> code and a hook in the absolute I/O fastpath for fricking blinkenlights.
-> I don't think it is even worth wasting time on something this ridiculous.
+Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/tty/serial/stm32-usart.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-That's why I think we should do this the way the netdev trigger does.
-Periodically reading block_device's stats, and if they are greater,
-blink the LED.
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index ef793b3b4..090822cd1 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -1034,8 +1034,8 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+ 	int ret, irq;
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
+-		return irq ? : -ENODEV;
++	if (irq < 0)
++		return irq;
+ 
+ 	port->iotype	= UPIO_MEM;
+ 	port->flags	= UPF_BOOT_AUTOCONF;
+-- 
+2.20.1.windows.1
 
-Marek
+
+
