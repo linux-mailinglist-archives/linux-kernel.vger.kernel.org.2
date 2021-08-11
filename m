@@ -2,124 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060773E9865
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FC43E9874
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhHKTMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:12:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:56760 "EHLO foss.arm.com"
+        id S231376AbhHKTPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:15:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45700 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhHKTMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:12:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CD32D6E;
-        Wed, 11 Aug 2021 12:12:09 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 524C63F40C;
-        Wed, 11 Aug 2021 12:12:08 -0700 (PDT)
-Subject: Re: [PATCH v3 5/5] dma-iommu: account for min_align_mask
-To:     David Stevens <stevensd@chromium.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        id S230224AbhHKTPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 15:15:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=f25HuEc/QbShUmIYwQa9iVXfyZLGhvb2J0+2abeuUgE=; b=oyLXgPa9hgVfIyL/ITMwiGoHY2
+        EXHaPu73lW+foPifJ2TqGEWD4qA+c2LImxIV5ykyIpZQep8tvcWbnqbUAILcSE9bHZ8uuXuYRiNNH
+        eZuIqoq+Vhr+UsBdEKsAYUT8PP+dOq3Qwzxhyn9DlZxA9b0mTHAkGFZpHDiQEI9hKWIc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mDtge-00HAau-Oz; Wed, 11 Aug 2021 21:14:48 +0200
+Date:   Wed, 11 Aug 2021 21:14:48 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Lokesh Vutla <lokeshvutla@ti.com>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Cory Tusar <cory.tusar@pid1solutions.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210811024247.1144246-1-stevensd@google.com>
- <20210811024247.1144246-6-stevensd@google.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <b5fff839-3242-7080-13f7-61c0e40af304@arm.com>
-Date:   Wed, 11 Aug 2021 20:12:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Subject: Re: [PATCH] ARM: dts: vf610-zii-dev-rev-b: Remove #address-cells and
+ #size-cells property from at93c46d dt node
+Message-ID: <YRQhqHEl8wu2KZz+@lunn.ch>
+References: <20210810064420.9489-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210811024247.1144246-6-stevensd@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810064420.9489-1-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-11 03:42, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> For devices which set min_align_mask, swiotlb preserves the offset of
-> the original physical address within that mask. Since __iommu_dma_map
-> accounts for non-aligned addresses, passing a non-aligned swiotlb
-> address with the swiotlb aligned size results in the offset being
-> accounted for twice in the size passed to iommu_map_atomic. The extra
-> page exposed to DMA is also not cleaned up by __iommu_dma_unmap, since
-> tht at function unmaps with the correct size. This causes mapping failures
-> if the iova gets reused, due to collisions in the iommu page tables.
-> 
-> To fix this, pass the original size to __iommu_dma_map, since that
-> function already handles alignment.
-> 
-> Additionally, when swiotlb returns non-aligned addresses, there is
-> padding at the start of the bounce buffer that needs to be cleared.
-> 
-> Fixes: 1f221a0d0dbf ("swiotlb: respect min_align_mask")
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
->   drivers/iommu/dma-iommu.c | 23 ++++++++++++-----------
->   1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 89b689bf801f..ffa7e8ef5db4 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -549,9 +549,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->   	struct iommu_domain *domain = iommu_get_dma_domain(dev);
->   	struct iommu_dma_cookie *cookie = domain->iova_cookie;
->   	struct iova_domain *iovad = &cookie->iovad;
-> -	size_t aligned_size = org_size;
-> -	void *padding_start;
-> -	size_t padding_size;
-> +	void *tlb_start;
-> +	size_t aligned_size, iova_off, mapping_end_off;
->   	dma_addr_t iova;
->   
->   	/*
-> @@ -566,24 +565,26 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->   		if (phys == DMA_MAPPING_ERROR)
->   			return DMA_MAPPING_ERROR;
->   
-> -		/* Cleanup the padding area. */
-> -		padding_start = phys_to_virt(phys);
-> -		padding_size = aligned_size;
-> +		iova_off = iova_offset(iovad, phys);
-> +		tlb_start = phys_to_virt(phys - iova_off);
->   
-> +		/* Cleanup the padding area. */
->   		if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
->   		    (dir == DMA_TO_DEVICE ||
->   		     dir == DMA_BIDIRECTIONAL)) {
-> -			padding_start += org_size;
-> -			padding_size -= org_size;
-> +			mapping_end_off = iova_off + org_size;
-> +			memset(tlb_start, 0, iova_off);
-> +			memset(tlb_start + mapping_end_off, 0,
-> +			       aligned_size - mapping_end_off);
-> +		} else {
-> +			memset(tlb_start, 0, aligned_size);
->   		}
-> -
-> -		memset(padding_start, 0, padding_size);
->   	}
->   
->   	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
->   		arch_sync_dma_for_device(phys, org_size, dir);
->   
-> -	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
-> +	iova = __iommu_dma_map(dev, phys, org_size, prot, dma_mask);
+On Tue, Aug 10, 2021 at 12:14:20PM +0530, Aswath Govindraju wrote:
+Hi Aswath
 
-This doesn't feel right - what if the IOVA granule was equal to or 
-smaller than min_align_mask, wouldn't you potentially end up mapping the 
-padding rather than the data?
+You did not put a To: in the email, so it is unclear which maintainer
+you expect to pickup this patch.
 
-Robin.
-
->   	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
->   		swiotlb_tbl_unmap_single(dev, phys, org_size, dir, attrs);
->   	return iova;
+> Remove #address-cells and #size-cells property from at93c46d device tree
+> node as it does not have child nodes.
 > 
+> Fixes: 1556063fde42 ("ARM: dts: vf610-zii-dev: Add ZII development board.")
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
