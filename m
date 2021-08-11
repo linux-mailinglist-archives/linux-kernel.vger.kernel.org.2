@@ -2,83 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445BC3E8CC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E483E8CCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236440AbhHKJEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
+        id S236382AbhHKJGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236012AbhHKJEW (ORCPT
+        with ESMTP id S235282AbhHKJGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:04:22 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE6DC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:03:58 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id y7so3415353ljp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yfj42KHxPMVmtJg396WnGN+LpkioAwqLUSTvDjH+oO4=;
-        b=gFm6cO8eTmlgX16tbdhRpHgSqwyC0Cqztn+02tzdbLm+WZeoZXySH+UXcncpWt12Dd
-         2Pig+K15tbN50iDtGYJ/77QsJtZefLLRM+3otAaAFr5ZRQNIMaeTzQy3ogArumEPrj8B
-         9yxEY5Y/nCqY8EEjkO7e0byxRPFEguwWol57bPDu+6GcNkoFQuNVAYerYpmG8J/+FrB+
-         3sG3c4V2w0YFGtHU0xGC9SezoOg6nAYGO/tIOyWBTzvfVYO5lynMZG3zM4cwRQoONdli
-         yvHBjW9BqZHSh/rMxjqlq1ceUvuNqBvVMeqg8FFsF4SOLooy8q9lZiM2bfOPzXuBNW5Q
-         sK6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yfj42KHxPMVmtJg396WnGN+LpkioAwqLUSTvDjH+oO4=;
-        b=GxrZSxfWo/UZ1R4ctit2vXbb/NtKx2kIOsCW04X1oJmBy53DOlCnWnCiFIqaP9uQIn
-         5KE5WEOGXrZMeE9f+XuTQ7wxggWnkLNQw281B4St3wi5/CRsRZqQcps+MrSEFteYw24W
-         hi8jUsmeXazYGo9ixFLy9zlt0PjOdGAVj9eGkbcyTAKGm/Om/T2DWg/K7sO7n0fPJZB3
-         N3kO4pC+4IZTiUIhvt/gxU1xWfA8bd0Daa40VICDseX25WKqxllKaHHGzDe4dE5Ie757
-         BEDEJUbyX6MQqa3kSUFiFDqP/bNHpylLNzhFBAdSmpl0fiOymDA1cWHVibi/Rn53yE1x
-         YFmQ==
-X-Gm-Message-State: AOAM531JkzI7RoY9ngADq//seSaG1F+If5yOzJFAING+dkNssLA43aP+
-        wsMMapwlWVE50lv+MHY5BU0RtnyBIHiQrDRUx9x2Mg==
-X-Google-Smtp-Source: ABdhPJyNY94nczC2kPDrtmSJ30d69h7ydl+BK2umxWNNGDkg1mg3awt0R/CRu8GIXmXzBKN0i3YlELKp2YF6IcwvvSk=
-X-Received: by 2002:a2e:a4ab:: with SMTP id g11mr29387ljm.273.1628672637309;
- Wed, 11 Aug 2021 02:03:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210728041253.15382-1-sergio.paracuellos@gmail.com> <CAMpxmJUnXpOhvaQuNPbFt3TY363vrsEWV1KXxhyBm7cJ-PWvwQ@mail.gmail.com>
-In-Reply-To: <CAMpxmJUnXpOhvaQuNPbFt3TY363vrsEWV1KXxhyBm7cJ-PWvwQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 11:03:46 +0200
-Message-ID: <CACRpkdbHzdCnHB8358Wi6zojMhfi5urhdm2XOiPmhph7q_L1ew@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] gpiolib: convert 'devprop_gpiochip_set_names' to
- support multiple gpiochip banks per device
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        NeilBrown <neil@brown.name>,
-        Nicholas Mc Guire <hofrat@osadl.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Wed, 11 Aug 2021 05:06:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381F0C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:05:45 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <jlu@pengutronix.de>)
+        id 1mDkB9-0002B3-8x; Wed, 11 Aug 2021 11:05:39 +0200
+Received: from localhost ([127.0.0.1])
+        by ptx.hi.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <jlu@pengutronix.de>)
+        id 1mDkB8-0001Be-GU; Wed, 11 Aug 2021 11:05:38 +0200
+Message-ID: <6d396b18455a228719ac4ffeeddcca20b0aa0184.camel@pengutronix.de>
+Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data"
+ property
+From:   Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 11 Aug 2021 11:05:38 +0200
+In-Reply-To: <VI1PR04MB6800D794307B1BDF7100E773E6F89@VI1PR04MB6800.eurprd04.prod.outlook.com>
+References: <20210810073510.18218-1-qiangqing.zhang@nxp.com>
+         <20210810073510.18218-2-qiangqing.zhang@nxp.com>
+         <17daf0f387dff8145559df6a983b0a222c100514.camel@pengutronix.de>
+         <VI1PR04MB6800F6169275A323DE0FD782E6F89@VI1PR04MB6800.eurprd04.prod.outlook.com>
+         <VI1PR04MB6800D794307B1BDF7100E773E6F89@VI1PR04MB6800.eurprd04.prod.outlook.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (by Flathub.org) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: jlu@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 7:43 PM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
-> On Wed, Jul 28, 2021 at 6:12 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
+On Wed, 2021-08-11 at 08:06 +0000, Joakim Zhang wrote:
+> 
+> > -----Original Message-----
+> > From: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > Sent: 2021年8月11日 16:05
+> > To: Jan Lübbe <jlu@pengutronix.de>; srinivas.kandagatla@linaro.org;
+> > robh+dt@kernel.org; shawnguo@kernel.org
+> > Cc: devicetree@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
+> > kernel@pengutronix.de; linux-kernel@vger.kernel.org
+> > Subject: RE: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data"
+> > property
+> > 
+> > 
+> > > -----Original Message-----
+> > > From: Jan Lübbe <jlu@pengutronix.de>
+> > > Sent: 2021年8月10日 23:14
+> > > To: Joakim Zhang <qiangqing.zhang@nxp.com>;
+> > > srinivas.kandagatla@linaro.org; robh+dt@kernel.org;
+> > > shawnguo@kernel.org
+> > > Cc: devicetree@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
+> > > kernel@pengutronix.de; linux-kernel@vger.kernel.org
+> > > Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data"
+> > > property
+> > > 
+> > > On Tue, 2021-08-10 at 15:35 +0800, Joakim Zhang wrote:
+> > > > Introduce "reverse-data" property for nvmem provider to reverse buffer.
+> > > > 
+> > > > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/nvmem/nvmem.yaml | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+> > > > b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+> > > > index b8dc3d2b6e92..bc745083fc64 100644
+> > > > --- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+> > > > +++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+> > > > @@ -61,6 +61,11 @@ patternProperties:
+> > > >                description:
+> > > >                  Size in bit within the address range specified by reg.
+> > > > 
+> > > > +      reverse-data:
+> > > > +        $ref: /schemas/types.yaml#/definitions/flag
+> > > > +        description:
+> > > > +          Reverse the data that read from the storage device.
+> > > 
+> > > I'd prefer if it was more explicit that the *bytes* will be reversed.
+> > > Otherwise a reader might think that this is reversing on the *bit* level.
+> > 
+> > Make sense, how about 'reverse-byte-order'?
+> 
+> Sorry, 'reverse-bytes-order'.
 
-> Patches queued for next. Thanks!
+'reverse-byte-order' sounds better to me, but I'm not a native English speaker.
+I'd be fine with either, though.
 
-Thanks to all for fixing this hairy situation with composite
-GPIO controllers. I think there are some more controllers
-that need this actually.
+Thanks
+Jan
 
-Yours,
-Linus Walleij
