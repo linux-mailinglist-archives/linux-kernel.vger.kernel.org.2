@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA0B3E92EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153CC3E92EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhHKNpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:45:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231661AbhHKNpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:45:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 839D160FA0;
-        Wed, 11 Aug 2021 13:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628689496;
-        bh=O8JVrrpaXEdBnuTdYmtvCs5et+qsGlYfUIcqodvrCBE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Yz74ZQLD53yvkil+NzYu2wm3YsMgcxktWknb8nC7AEKeFG+yvFgCXFTDUs5rfsBDd
-         yqnZsm6sPsP1EozaxLn+8Jt+VHw92MXkVjbH2/DAIbQOg50bL5X+w6q8CJvfy1wkCf
-         GcyHHEv+UJhch2vE+bF7sHp7tXcPNGWOi67HfjLYl3u68dAJVZecROITNUuaa0E1V5
-         AyfTOt0kpDt3Cnd2lLtVLESeJvmOoBapYUtkGlnQgKsvDZGs55Vm791r7iqHtUDZP9
-         HzTHVe//INUnEATMvKlWoYqUU5AS421qKZw/ws8VmQ28owyJt9qZPjMl+Ju/mXwHWB
-         5MS3U4BQPRfAA==
-Subject: Re: [PATCH 2/2] fs: Don't create discard thread when device not
- support realtime discard
-To:     Yangtao Li <frank.li@vivo.com>, jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Fengnan Chang <changfengnan@vivo.com>
-References: <20210811131826.223141-1-frank.li@vivo.com>
- <20210811131826.223141-2-frank.li@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <fc34fe7c-c7ec-3783-8cbc-de91ab81ee0a@kernel.org>
-Date:   Wed, 11 Aug 2021 21:44:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231638AbhHKNqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231240AbhHKNqI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:46:08 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15DFC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:45:44 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id g30so5876945lfv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GFsLrpkcVnHQAcI9LO6wyCFOtOWqn6o7HFSxtLHjjvU=;
+        b=KCrGeOVEN0pWbe2RdBYdpRxYelobeG+W/B1dX6vvROlFe1zePluh6zndsGEXbiVQG+
+         Yo/g/nuafosL4mPPipY0ghaubJLiZYIF6jPtgfuWZWJyALsWpG9BWsETK28WxOs/f0KK
+         KcwGYYZFYAJC9ZvECQYupjVjq+ajk85A2Jtd862R3xxIbP+p7mPhpx8FPogLYdcNr+6+
+         PZcHSDIlrMKgNH+/RsriCcomjD5z5oKnTG5rT65qjTfRLNh5dWboTr9Tim0opPLsf7Ud
+         Ju68rI5iij5XNDJGKZdh5jXxoscX090Un1xDy5V2HSnKdzqD+vqi65BpHPtpAVRYPQUg
+         u46Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GFsLrpkcVnHQAcI9LO6wyCFOtOWqn6o7HFSxtLHjjvU=;
+        b=RDSWVi1UX1XK/peQ5r+uVkTDuebdJbZRr82V7cC09oa2s0j5AiXrWwrl2joqexNWDr
+         ewafdHUixsvve4OXxH1L4qMo/12EB9yzEupHlYcogjmN0wJgBG1XQusFv6LV21+zwJJL
+         QTtmbon7hSCCAPjdtK4vHFirxM0rVFYqS70UsozeRI0A6pm0/dW4U+mv44sH5Pd1YjrG
+         ujaTWbJ1HQhDGxh6L2aAKMxk9fJukqssIUMfnp8NL2C/O70jc2oKGgueXLOW8/ModWzh
+         tydneVH7p5gG9c/S0vfhAmKyIqbAsQkd4ubyRzxkOU8baXsokSjpDjyMMjJJc+pKSfRb
+         Qrgw==
+X-Gm-Message-State: AOAM531ZwGGlNLMSVieaOP3z9UEKdMh0S0a4Xto+ea7wLToTlKP26TzD
+        CMmcDlmNlLIhNcoity5m73jqaA==
+X-Google-Smtp-Source: ABdhPJw5YOeH2Zsrla2DQrb6ly2OcPz1N9CsB+EvBcNJKqxGxwQDSwV55yBKSsroVniZJSs629mEWQ==
+X-Received: by 2002:a05:6512:3b3:: with SMTP id v19mr1731028lfp.10.1628689543315;
+        Wed, 11 Aug 2021 06:45:43 -0700 (PDT)
+Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
+        by smtp.gmail.com with ESMTPSA id b42sm2353668lfv.135.2021.08.11.06.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 06:45:42 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 15:45:42 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Nadezda Lutovinova <lutovinova@ispras.ru>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: Re: [PATCH] media: rcar-csi2: Add checking to rcsi2_start_receiver().
+Message-ID: <YRPUhqvcTxCVvnBG@oden.dyn.berto.se>
+References: <20210811133142.13363-1-lutovinova@ispras.ru>
 MIME-Version: 1.0
-In-Reply-To: <20210811131826.223141-2-frank.li@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210811133142.13363-1-lutovinova@ispras.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/11 21:18, Yangtao Li wrote:
-> From: Fengnan Chang <changfengnan@vivo.com>
+Hi Nadezda,
+
+Thanks for your work.
+
+On 2021-08-11 16:31:42 +0300, Nadezda Lutovinova wrote:
+> If rcsi2_code_to_fmt() return NULL,
+> then null pointer dereference occurs in the next cycle.
+> The patch adds checking if format is NULL.
 > 
-> Don't create discard thread when device not support realtime discard.
+> Found by Linux Driver Verification project (linuxtesting.org).
+
+Please drop the '.' at the end of the patch subject. Also the commit 
+message could be better line wrapped.
+
 > 
-> Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
 > ---
->   fs/f2fs/segment.c | 2 ++
->   1 file changed, 2 insertions(+)
+>  drivers/media/platform/rcar-vin/rcar-csi2.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 363779a4402d..bc4ac46f3041 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -2161,6 +2161,8 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
->   	init_waitqueue_head(&dcc->discard_wait_queue);
->   	SM_I(sbi)->dcc_info = dcc;
->   init_thread:
-> +	if (!f2fs_realtime_discard_enable(sbi))
+> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> index e28eff039688..55bb584d2a13 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+> @@ -553,6 +553,12 @@ static int rcsi2_start_receiver(struct rcar_csi2 *priv)
+>  
+>  	/* Code is validated in set_fmt. */
+>  	format = rcsi2_code_to_fmt(priv->mf.code);
+> +	if (!format) {
 
-How about below case:
-- mount -o nodiscard <dev> <mp>
-- mount -o remount,discard <dev> <mp>
+This can never happen ;-)
 
-Thanks,
+The only place priv->mf.code is set (after probe) is in  
+rcsi2_set_pad_format() and there it explicitly checks if 
+rcsi2_code_to_fmt() returns NULl and if so sets it to something that 
+guarantees it will not.
 
-> +		return err;
->   	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
->   				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
->   	if (IS_ERR(dcc->f2fs_issue_discard)) {
+Think of it as the verification is done at format configuration time so 
+we don't have to have check it at start time. The reason for this is 
+that we can't do much about a failure here other then fail the start 
+while at configure time we can try to correct it and inform the user of 
+the change.
+
+That being said, I'm not oppose to fail the start here if we ever do 
+introduce a bug here where rcsi2_code_to_fmt() would return NULL here.  
+But I would like to drop the dev_err() here and just return -EINVAL.
+
+I would mention in the commit message that this protects from future 
+bugs.
+
+> +		dev_err(priv->dev,
+> +			"Incorrect mbus frame format code %u\n",
+> +			priv->mf.code);
+> +		return -EINVAL;
+> +	}
+>  
+>  	/*
+>  	 * Enable all supported CSI-2 channels with virtual channel and
+> -- 
+> 2.17.1
 > 
+
+-- 
+Regards,
+Niklas Söderlund
