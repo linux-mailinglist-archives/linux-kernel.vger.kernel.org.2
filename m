@@ -2,84 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027263E90A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD813E90B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238140AbhHKMXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:23:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50272 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237728AbhHKMXD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:23:03 -0400
-Message-ID: <20210811121414.546749057@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628684559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7CBCUxlgHeb+vOFixqTSYYb16Nxvav4y8tgc2d3NAcQ=;
-        b=h1OD9jieTATsTKN1Y9tP75EDhm6c3pYePrqhSiXuol3jUnPr29gD/KV84cp7LTSgFIzwQl
-        /T2Dgat1HOXpRTF+YyLVxKIOrPoxVkkO/tp4xoYuhDmEZ5u0YmO0xSTBm+cKwqjoM1ch79
-        DDjkZ5AbXfDD+wGWz7jVMmSSQfqH5EWGhyGkcDjNJrUcB6dP3xlckZ3fCBKRvbdMDS0rqW
-        IgiN5p1vd++QWoiVuHx4nmMMAqS+6dtov0ySlBPzSLJtZFWaLAmxp2wKJks5bCm9HDjOLp
-        kk6GBJMYct3/nhlXcouYEszGP16F5rxVHEniz0y7DnyL13CGGnvwEDKVPS+1SQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628684559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7CBCUxlgHeb+vOFixqTSYYb16Nxvav4y8tgc2d3NAcQ=;
-        b=aDxZJU8tjmAKK58NMit9bRQBnA9izEQ7I9EYnnLQStWLzXK2EQzfKLagaZjrWYTTdQtOU/
-        sZ0JN1qWqGHoKLAQ==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: [patch V4 07/68] sched/wake_q: Provide WAKE_Q_HEAD_INITIALIZER
-References: <20210811120348.855823694@linutronix.de>
+        id S238348AbhHKMYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:24:15 -0400
+Received: from mga18.intel.com ([134.134.136.126]:35393 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237913AbhHKMXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:23:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="202281062"
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="202281062"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:22:47 -0700
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="445911372"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:22:45 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mDnFo-007ord-28; Wed, 11 Aug 2021 15:22:40 +0300
+Date:   Wed, 11 Aug 2021 15:22:40 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        wsa@kernel.org
+Subject: Re: [PATCH v3 1/3] units: Add SI metric prefix definitions
+Message-ID: <YRPBEMVzQK7AbrSL@smile.fi.intel.com>
+References: <20210712142027.22900-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-Date:   Wed, 11 Aug 2021 14:22:39 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712142027.22900-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Mon, Jul 12, 2021 at 05:20:25PM +0300, Andy Shevchenko wrote:
+> Sometimes it's useful to have well-defined SI metric prefix to be used
+> to self-describe the formulas or equations.
+> 
+> List most popular ones in the units.h.
 
-The RT specific spin/rwlock implementation requires special handling of the
-to be woken waiters. Provide a WAKE_Q_HEAD_INITIALIZER which can be used by
-the rtmutex code to implement a RT aware wake_q derivative.
+Wolfram, can we have this applied or commented? It seems we are going to have
+more users of these definitions (I have recently reviewed one of IIO driver
+where two of them are in use).
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/sched/wake_q.h |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
----
---- a/include/linux/sched/wake_q.h
-+++ b/include/linux/sched/wake_q.h
-@@ -42,8 +42,11 @@ struct wake_q_head {
- 
- #define WAKE_Q_TAIL ((struct wake_q_node *) 0x01)
- 
--#define DEFINE_WAKE_Q(name)				\
--	struct wake_q_head name = { WAKE_Q_TAIL, &name.first }
-+#define WAKE_Q_HEAD_INITIALIZER(name)				\
-+	{ WAKE_Q_TAIL, &name.first }
-+
-+#define DEFINE_WAKE_Q(name)					\
-+	struct wake_q_head name = WAKE_Q_HEAD_INITIALIZER(name)
- 
- static inline void wake_q_init(struct wake_q_head *head)
- {
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
