@@ -2,83 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85573E8EDC
+	by mail.lfdr.de (Postfix) with ESMTP id 537753E8EDA
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237095AbhHKKlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237020AbhHKKlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237012AbhHKKlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 11 Aug 2021 06:41:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7510E60FC3;
-        Wed, 11 Aug 2021 10:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628678440;
-        bh=MWYsgBQRSHA52IzMe7OkpIpL0S/lsPWSSoypLj4ev5U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Rr1TiTfXf7kLOQpQAnQMdTKvb6FpJYfiHlPfyzDC4BKNBKnfDcpZ9OG+/ZJp9vnbr
-         wmd1JllIpx58JrGj8ML5wvwuqRavxJYmGploaSGWxXf1IMRymCIWH10rXuxE9LNP/O
-         S2EC8BP3gDFFvXb0lVvxILCj5uZtsb6D9yoJv1/DIGty6+XC9NZzzYrMQwDTJU9nk5
-         +mcCaIHWLxitlQEl4VoDnTRI5G4f3os+LI/Z7+P0B4opUuY0f04Wdtl8hZjq8uxcpZ
-         WIRJPnQ9iBo7qQjrkPz471mys1stPbA/eX8LkxC112c6GbNaG+EsMoK0MUuizBy2ZF
-         muzSJ66j45toQ==
-Received: by mail-ot1-f42.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so2804125otq.2;
-        Wed, 11 Aug 2021 03:40:40 -0700 (PDT)
-X-Gm-Message-State: AOAM530gMrw8T/fpWJt+4PH5OMA01axVn5cSFwdiv12dK3JdKxj0L5H0
-        vXzboY32cMAKKRW3ocvN5akTISaxCSgC5wultWQ=
-X-Google-Smtp-Source: ABdhPJzPyKV7zx62nUBCZ2Es0zascWHwk+SGVynlTVLACq+nWngWkUsz8u230ZGhfNyEloS44T/aLWgev5adH1SFKcI=
-X-Received: by 2002:a9d:5cc7:: with SMTP id r7mr8041809oti.108.1628678439823;
- Wed, 11 Aug 2021 03:40:39 -0700 (PDT)
+Received: from mail.kernel.org ([198.145.29.99]:32790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236855AbhHKKk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:40:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C33EB60560;
+        Wed, 11 Aug 2021 10:40:32 +0000 (UTC)
+Date:   Wed, 11 Aug 2021 12:40:30 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: Questions re the new mount_setattr(2) manual page
+Message-ID: <20210811104030.in6f25hw5h5cotti@wittgenstein>
+References: <b58e2537-03f4-6f6c-4e1b-8ddd989624cc@gmail.com>
+ <d5a8061a-3d8a-6353-5158-8feee0156c6b@gmail.com>
 MIME-Version: 1.0
-References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
- <20210802152359.12623-2-lorenzo.pieralisi@arm.com> <YRKtEDycefrZLB3X@infradead.org>
-In-Reply-To: <YRKtEDycefrZLB3X@infradead.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 11 Aug 2021 12:40:28 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
-Message-ID: <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
- acpi_os_map_iomem() cast
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d5a8061a-3d8a-6353-5158-8feee0156c6b@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 at 18:46, Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Mon, Aug 02, 2021 at 04:23:57PM +0100, Lorenzo Pieralisi wrote:
-> > Add a __force attribute to the void* cast in acpi_os_map_iomem()
-> > to prevent sparse warnings.
->
-> Err, no.  These annotation are there for a reason and need to
-> be propagated instead.  And independent of that a __force cast
-> without a comment explaining it is a complete no-go.
+On Wed, Aug 11, 2021 at 12:47:14AM +0200, Michael Kerrisk (man-pages) wrote:
+> Hi Christian,
+> 
+> Some further questions...
+> 
+> In ERRORS there is:
+> 
+>        EINVAL The underlying filesystem is mounted in a user namespace.
+> 
+> I don't understand this. What does it mean?
 
-The whole problem we are solving here is that ACPI, being based on
-x86, conflates MMIO mappings with memory mappings, and has been using
-the same underlying infrastructure for either. On arm64, this is not
-sufficient, given that the semantics of uncached memory vs device are
-different (the former permits unaligned accesses and clear cacheline
-instructions, but the latter doesn't). A recent optimization applied
-to memcpy() on arm64 (which now relies more on unaligned accesses for
-performance) has uncovered an issue where firmware tables being mapped
-non-cacheable by the ACPI core will end up using device mappings,
-which causes memcpy() to choke on their contents.
+The underlying filesystem has been mounted in a mount namespace that is
+owned by a non-initial user namespace (Think of sysfs, overlayfs etc.).
 
-So propagating the annotation makes no sense, as we are creating a
-memory mapping using the iomem primitive. I wouldn't object to a
-comment being added, but I think the context should have been obvious
-to anyone who had bothered to look at the entire series.
+> 
+> Also, there is this:
+> 
+>        ENOMEM When  changing  mount  propagation to MS_SHARED, a new peer
+>               group ID needs to be allocated for  all  mounts  without  a
+>               peer  group  ID  set.  Allocation of this peer group ID has
+>               failed.
+> 
+>        ENOSPC When changing mount propagation to MS_SHARED,  a  new  peer
+>               group  ID  needs  to  be allocated for all mounts without a
+>               peer group ID set.  Allocation of this peer  group  ID  can
+>               fail.  Note that technically further error codes are possi‐
+>               ble that are specific to the ID  allocation  implementation
+>               used.
+> 
+> What is the difference between these two error cases? (That is, in what 
+> circumstances will one get ENOMEM vs ENOSPC and vice versa?)
+
+I did really wonder whether to even include those errors and I regret
+having included them because they aren't worth a detailed discussion as
+I'd consider them kernel internal relevant errors rather than userspace
+relevant errors. In essence, peer group ids are allocated using the id
+infrastructure of the kernel. It can fail for two main reasons:
+
+1. ENOMEM there's not enough memory to allocate the relevant internal
+   structures needed for the bitmap.
+2. ENOSPC we ran out of ids, i.e. someone has somehow managed to
+   allocate so many peer groups and managed to keep the kernel running
+   (???) that the ida has ran out of ids.
+
+Feel free to just drop those errors.
+
+> 
+> And then:
+> 
+>        EPERM  One  of  the mounts had at least one of MOUNT_ATTR_NOATIME,
+>               MOUNT_ATTR_NODEV, MOUNT_ATTR_NODIRATIME, MOUNT_ATTR_NOEXEC,
+>               MOUNT_ATTR_NOSUID, or MOUNT_ATTR_RDONLY set and the flag is
+>               locked.  Mount attributes become locked on a mount if:
+> 
+>               •  A new mount or mount tree is created causing mount prop‐
+>                  agation  across  user  namespaces.  The kernel will lock
+> 
+> Propagation is done across mont points, not user namespaces.
+> should "across user namespaces" be "to a mount namespace owned 
+> by a different user namespace"? Or something else?
+
+That's really splitting hairs. Of course this means that we're
+propagating into a mount namespace that is owned by a different user
+namespace though "crossing user namespaces" might have been the better
+choice.
+
+> 
+>                  the aforementioned  flags  to  protect  these  sensitive
+>                  properties from being altered.
+> 
+>               •  A  new  mount  and user namespace pair is created.  This
+>                  happens for  example  when  specifying  CLONE_NEWUSER  |
+>                  CLONE_NEWNS  in unshare(2), clone(2), or clone3(2).  The
+>                  aforementioned flags become locked to protect user name‐
+>                  spaces from altering sensitive mount properties.
+> 
+> Again, this seems imprecise. Should it say something like:
+> "... to prevent changes to sensitive mount properties in the new 
+> mount namespace" ? Or perhaps you have a better wording.
+
+That's not imprecise. What you want to protect against is altering
+sensitive mount properties from within a user namespace irrespective of
+whether or not the user namespace actually owns the mount namespace,
+i.e. even if you own the mount namespace you shouldn't be able to alter
+those properties. I concede though that "protect" should've been
+"prevent".
+
+You could probably say:
+
+	A  new  mount  and user namespace pair is created.  This
+	happens for  example  when  specifying  CLONE_NEWUSER  |
+	CLONE_NEWNS  in unshare(2), clone(2), or clone3(2).
+	The aforementioned flags become locked in the new mount
+	namespace to prevent sensitive mount properties from being
+	altered.
+	Since the newly created mount namespace will be owned by the
+	newly created user namespace a caller privileged in the newly
+	created user namespace would be able to alter senstive
+	mount properties. For example, without locking the read-only
+	property for the mounts in the new mount namespace such a caller
+	would be able to remount them read-write.
+
+(Fwiw, in this scenario there's a bit of (moderately sane) strangeness.
+ A CLONE_NEWUSER | CLONE_NEWMNT will cause even stronger protection to
+ kick in. For all mounts not marked as expired MNT_LOCKED will be set
+ which means that a umount() on any such mount copied from the previous
+ mount namespace will yield EINVAL implying from userspace' perspective
+ it's not mounted - granted EINVAL is the ioctl() of multiplexing errnos
+ - whereas a remount to alter a locked flag will yield EPERM.)
+
+Christian
