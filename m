@@ -2,89 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41C53E8903
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6913E8909
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbhHKDux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 23:50:53 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42448
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233217AbhHKDuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:50:52 -0400
-Received: from localhost.localdomain (unknown [222.129.32.23])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 2B74C3F092;
-        Wed, 11 Aug 2021 03:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628653822;
-        bh=PYo4QCNCe15ujHarEaQLzr8YVZRviZIHfwrmiuZ0iLw=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=vJcZ9aTGMBd1sb8HdwfBSR+RupCRZyd7vFRxzG+nTLLI1FTDJfLz5DDDXj04gJX2r
-         DAulGVpDO7nzQYqjUm8jmivSz3SmdBKGj8eDoGMVJ6D1AakZXTBFksreS97lCKMREf
-         SAduN556G5WEqZsqcNCTPsHxCh7Q2gs/j+vQ52NzkWQ6yYkF0zDGG9Tbj4Of6/5mq2
-         mGE5mgJqS2j0764zbn1vNGL+CcQn9savIMeKVdKjFmNgsnNyHFJ3bZiWQhzSYQ8q1e
-         a44beMX26sxrUXeycDautU43zwD+Mp1BtDna+Cu0HeS/VCtQaytdHyTTRVa4MC9cTr
-         LJvcsqo82eoJg==
-From:   Aaron Ma <aaron.ma@canonical.com>
-To:     aaron.ma@canonical.com, dmitry.torokhov@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: psmouse - disable non-wakeup armed PS/2 mouse when s2dile
-Date:   Wed, 11 Aug 2021 11:50:25 +0800
-Message-Id: <20210811035025.44773-1-aaron.ma@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S233546AbhHKDzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 23:55:38 -0400
+Received: from m12-14.163.com ([220.181.12.14]:52287 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232905AbhHKDzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 23:55:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=GM9L+
+        HUk4X50o6mDdEuNj+fmqhM9FliDuUpR9ApSuTE=; b=cIX4VIAmUOEUSbSkqBhoj
+        AXQGmS+4J6/V0mmvalvro/VR3Pf3LQrNmBqVCwnK46V9IlxaW1ges/kgtkgmJMVP
+        nBHzGEsrmPauS9CQ4AvyE0wRGtA9765IKME27ojV/9Ut3QNi4u/3MlDORy086anW
+        LyFu0n2ftX4KqIMSDFMPIk=
+Received: from localhost.localdomain (unknown [223.104.68.7])
+        by smtp10 (Coremail) with SMTP id DsCowABXstbFSRNhUkp5BQ--.21168S2;
+        Wed, 11 Aug 2021 11:53:47 +0800 (CST)
+From:   Slark Xiao <slark_xiao@163.com>
+To:     johan@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        slark_xiao@163.com
+Subject: [PATCH] This change aims to support Foxconn SDX55. In some scenario, we need to use this port to capture memory dump.
+Date:   Wed, 11 Aug 2021 11:53:09 +0800
+Message-Id: <20210811035309.7942-1-slark_xiao@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowABXstbFSRNhUkp5BQ--.21168S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw48tw43CFyUXw1xJw13urg_yoW3Xwc_Cr
+        yDWFZ7W3WYkF4aqr47JaySvw4Fk3y2vFZY9F1vgas5JFW7KaykA3W7tF1Dtr18Xw1xXF9x
+        ZwnrWwn7tr4qgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0Hv3UUUUUU==
+X-Originating-IP: [223.104.68.7]
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/xtbBDQvrZFaEEuWiSwAAsF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 684bec1092b6 ("Input: i8042 - enable keyboard wakeups by
-default when s2idle is used"), kdb is enabled to wakeup laptops.
-Kbd fails to wakeup when touchpad/trackpoint is used on ThinkPad.
-The touchpad is not set to wakeup, and it shares buffer with kbd.
-Send disable command to PS/2 mouse when s2idle, make it clean for
-kdb to wakeup.
-Enable PS/2 mouse when wakeup enabled.
-
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+Signed-off-by: Slark Xiao <slark_xiao@163.com>
 ---
- drivers/input/mouse/psmouse-base.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/usb/serial/qcserial.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
-index 0b4a3039f312..85dc9810d6ec 100644
---- a/drivers/input/mouse/psmouse-base.c
-+++ b/drivers/input/mouse/psmouse-base.c
-@@ -21,6 +21,7 @@
- #include <linux/libps2.h>
- #include <linux/mutex.h>
- #include <linux/types.h>
-+#include <linux/suspend.h>
+diff --git a/drivers/usb/serial/qcserial.c b/drivers/usb/serial/qcserial.c
+index 83da8236e3c8..d8b58aea3c60 100644
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -111,6 +111,7 @@ static const struct usb_device_id id_table[] = {
+ 	{USB_DEVICE(0x16d8, 0x8002)},	/* CMDTech Gobi 2000 Modem device (VU922) */
+ 	{USB_DEVICE(0x05c6, 0x9204)},	/* Gobi 2000 QDL device */
+ 	{USB_DEVICE(0x05c6, 0x9205)},	/* Gobi 2000 Modem device */
++	{USB_DEVICE(0x05c6, 0x901d)},	/* Foxconn SDX55 QDL */
  
- #include "psmouse.h"
- #include "synaptics.h"
-@@ -1457,11 +1458,13 @@ static void psmouse_cleanup(struct serio *serio)
- 	 */
- 	ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_RESET_DIS);
- 
--	/*
--	 * Some boxes, such as HP nx7400, get terribly confused if mouse
--	 * is not fully enabled before suspending/shutting down.
--	 */
--	ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_ENABLE);
-+	if (!pm_suspend_default_s2idle() || device_may_wakeup(&serio->dev)) {
-+		/*
-+		 * Some boxes, such as HP nx7400, get terribly confused if mouse
-+		 * is not fully enabled before suspending/shutting down.
-+		 */
-+		ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_ENABLE);
-+	}
- 
- 	if (parent) {
- 		if (parent->pt_deactivate)
+ 	/* Gobi 3000 devices */
+ 	{USB_DEVICE(0x03f0, 0x371d)},	/* HP un2430 Gobi 3000 QDL */
 -- 
-2.30.2
+2.25.1
 
