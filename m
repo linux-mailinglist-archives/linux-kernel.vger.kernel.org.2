@@ -2,122 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6CF3E926D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF163E927A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhHKNTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhHKNTO (ORCPT
+        id S231434AbhHKNYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:24:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47158 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230271AbhHKNXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:19:14 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2119C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:18:50 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so4792813pjl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cK1OcsU/Xxbl5ieYWkgmE/ytFhLsP50rySoQpfc3oAg=;
-        b=BVTNKJvYkHzNgRaoeCNeZgJIAgdNL59o/KvP8U9cFgIi56EQT6T5uuJ+AGP1IRszAQ
-         4mpWSVKbgPf2/3ueYDD976pR0SxbMT3LkReRIIc7VHH09AiRlPrhZ/sqVYANlBMb3XTK
-         rrWK534CjIvSUIDC+ggIkceNQgY6dYnosRUhPEgaUkcSEQ7r7jWt3QIxpF35ShLa4w38
-         fctHNS9dJwCZZHvI3SGK1c75gS8AELJAblsRjeaPA8XxYeVWrLYwZaiP7SZWVNiUymdc
-         KzwU+yQzvlcUZJomdNNRdLlkIHgmo6X/KEiUjvh+S5n7E3olyaOHYzU/LTBdGKqcStaM
-         xZNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cK1OcsU/Xxbl5ieYWkgmE/ytFhLsP50rySoQpfc3oAg=;
-        b=cWvzjQ74UTTRDMDV8l9mgypfS4DtPH6DzVe/FXkMKHrti6aO8keChQu0InwdBhy1R3
-         A6P8eKmdkbymBIcoTyBVr7+EprHtQAqT5uosMt4hMa+KtI5/7usb2RI+McRXEftCxtyp
-         ua/Zlnv4okEr9Lk4zN/sIHYENE7Wbqz342jOM/VX69zMknf5R/Sbindne+ZY0x0kXNfg
-         ZeOJPi4w7K86731c82rljaokjc5bYRsWx06IpMn44XmQrc/s3ZWKf3fGSuiFtT8ztZsU
-         QNgYUnYhuXQwYxOZ8oXuWCvS1hHN9HCDZb3yqkAPajzRfHdi0LVUI2AM0VyRrVWz7agP
-         +/tg==
-X-Gm-Message-State: AOAM531qlOxrRtNAwdFPO4s1EI3BYfXRoFVoX1i2i7LSVHKZ1vvt7ZV6
-        MKLvo5b1a8GggJzzSsqqlZ8k//Z4bxxbZGsf
-X-Google-Smtp-Source: ABdhPJw9DZ7UC0ry00MCPtzn3gBnJGyWy28WwaKKyDzXb3HeBUfsgvDcMToIosou/6w+5ZURmLnCLw==
-X-Received: by 2002:a17:902:7c01:b029:12c:25f:be9e with SMTP id x1-20020a1709027c01b029012c025fbe9emr23333319pll.75.1628687930291;
-        Wed, 11 Aug 2021 06:18:50 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.115])
-        by smtp.gmail.com with ESMTPSA id v63sm31249872pgv.59.2021.08.11.06.18.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 06:18:50 -0700 (PDT)
-Subject: Re: [RFC PATCH] clocksource: skip check while watchdog hung up or
- unstable
-To:     Thomas Gleixner <tglx@linutronix.de>, john.stultz@linaro.org,
-        sboyd@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <63064a758eb087febce3eff5b2c736a5449b3dd2.1628675461.git.brookxu@tencent.com>
- <877dgsp2vp.ffs@tglx>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <2614d5ac-3392-20d1-d772-7a18bec40fa2@gmail.com>
-Date:   Wed, 11 Aug 2021 21:18:34 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Wed, 11 Aug 2021 09:23:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628688154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E8j3Usu6TPeDlqdG02ig6iok7ibfK10nrJnXjIHPT7g=;
+        b=EeVcgoF/sEjgwVea3WhxX9xYNo04iVoBx1YEtKQalLUO7U1AQBBdncvCHdJPLSn0X6Lm7P
+        KRe3chW5uubOOBucypMlncCTbUQLnIjoV8cn6h9oAnuYov+SS6bHdPBkpp69vaSTTLgvbf
+        9kd6PeczJYsshJrqLcDLBeti6zPbBXQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-c8uzCiM8MpWpL-j_94rFmw-1; Wed, 11 Aug 2021 09:22:32 -0400
+X-MC-Unique: c8uzCiM8MpWpL-j_94rFmw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D97D9802922;
+        Wed, 11 Aug 2021 13:22:29 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A2AC226E0;
+        Wed, 11 Aug 2021 13:22:23 +0000 (UTC)
+Message-ID: <bb7568d08ea7d3598d71db7631d56b9f288d3f32.camel@redhat.com>
+Subject: Re: [PATCH v3 0/6] KVM: my debug patch queue
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Kieran Bingham <kbingham@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Date:   Wed, 11 Aug 2021 16:22:23 +0300
+In-Reply-To: <1646763f-9f92-bb67-f358-9b17c8000b12@redhat.com>
+References: <20210811122927.900604-1-mlevitsk@redhat.com>
+         <1646763f-9f92-bb67-f358-9b17c8000b12@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <877dgsp2vp.ffs@tglx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Thanks for your time.
-
-Thomas Gleixner wrote on 2021/8/11 8:44 下午:
-> On Wed, Aug 11 2021 at 17:55, brookxu wrote:
->> From: Chunguang Xu <brookxu@tencent.com>
->>
->> After patch 1f45f1f3 (clocksource: Make clocksource validation work
->> for all clocksources), md_nsec may be 0 in some scenarios, such as
->> the watchdog is delayed for a long time or the watchdog has a
->> time-warp.
+On Wed, 2021-08-11 at 15:10 +0200, Paolo Bonzini wrote:
+> On 11/08/21 14:29, Maxim Levitsky wrote:
+> > Hi!
+> > 
+> > I would like to publish two debug features which were needed for other stuff
+> > I work on.
+> > 
+> > One is the reworked lx-symbols script which now actually works on at least
+> > gdb 9.1 (gdb 9.2 was reported to fail to load the debug symbols from the kernel
+> > for some reason, not related to this patch) and upstream qemu.
+> > 
+> > The other feature is the ability to trap all guest exceptions (on SVM for now)
+> > and see them in kvmtrace prior to potential merge to double/triple fault.
+> > 
+> > This can be very useful and I already had to manually patch KVM a few
+> > times for this.
+> > I will, once time permits, implement this feature on Intel as well.
+> > 
+> > V2:
+> > 
+> >   * Some more refactoring and workarounds for lx-symbols script
+> > 
+> >   * added KVM_GUESTDBG_BLOCKIRQ flag to enable 'block interrupts on
+> >     single step' together with KVM_CAP_SET_GUEST_DEBUG2 capability
+> >     to indicate which guest debug flags are supported.
+> > 
+> >     This is a replacement for unconditional block of interrupts on single
+> >     step that was done in previous version of this patch set.
+> >     Patches to qemu to use that feature will be sent soon.
+> > 
+> >   * Reworked the the 'intercept all exceptions for debug' feature according
+> >     to the review feedback:
+> > 
+> >     - renamed the parameter that enables the feature and
+> >       moved it to common kvm module.
+> >       (only SVM part is currently implemented though)
+> > 
+> >     - disable the feature for SEV guests as was suggested during the review
+> >     - made the vmexit table const again, as was suggested in the review as well.
+> > 
+> > V3:
+> >   * Modified a selftest to cover the KVM_GUESTDBG_BLOCKIRQ
+> >   * Rebased on kvm/queue
+> > 
+> > Best regards,
+> >          Maxim Levitsky
+> > 
+> > Maxim Levitsky (6):
+> >    KVM: SVM: split svm_handle_invalid_exit
+> >    KVM: x86: add force_intercept_exceptions_mask
+> >    KVM: SVM: implement force_intercept_exceptions_mask
+> >    scripts/gdb: rework lx-symbols gdb script
+> >    KVM: x86: implement KVM_GUESTDBG_BLOCKIRQ
+> >    KVM: selftests: test KVM_GUESTDBG_BLOCKIRQ
+> > 
+> >   Documentation/virt/kvm/api.rst                |   1 +
+> >   arch/x86/include/asm/kvm_host.h               |   5 +-
+> >   arch/x86/include/uapi/asm/kvm.h               |   1 +
+> >   arch/x86/kvm/svm/svm.c                        |  87 +++++++-
+> >   arch/x86/kvm/svm/svm.h                        |   6 +-
+> >   arch/x86/kvm/x86.c                            |  12 +-
+> >   arch/x86/kvm/x86.h                            |   2 +
+> >   kernel/module.c                               |   8 +-
+> >   scripts/gdb/linux/symbols.py                  | 203 ++++++++++++------
+> >   .../testing/selftests/kvm/x86_64/debug_regs.c |  24 ++-
+> >   10 files changed, 266 insertions(+), 83 deletions(-)
+> > 
 > 
-> Maybe 0? There is exactly one single possibility for it to be zero:
+> Queued 1-5-6.
 > 
->   cs->wd_last == wdnow, i.e. delta = 0 -> wd_nsec = 0
+> For patches 2 and 3, please add VMX support too.
 > 
-> So how does that condition solve any long delay or wrap around of the
-> watchdog? It's more than unlikely to hit exactly this case where the
-> readout is identical to the previous readout unless the watchdog stopped
-> counting.
+> For patch 4, it's not KVM :) so please submit it separately.
 
-Maybe I missed something. Like this example, when watchdog run ,hpet have
-wrap around:
+Thanks!
 
-'hpet' wd_now: d76e5a69 wd_last: f929eb3c mask: ffffffff
-
-We can calculate the number of elapsed cycles:
-cycles = wd_now - wd_last = 0xde446f2d
-
-clocksource_delta() uses the MSB to determine an invalid inteval and returns
-0, but for 0xde446f2d, this judgment should be wrong.
+I will do this!
 
 
->> We found a problem when testing nvme disks with fio, when multiple
->> queue interrupts of a disk were mapped to a single CPU. IO interrupt
->> processing will cause the watchdog to be delayed for a long time
->> (155 seconds), the system reports TSC unstable and switches the clock
+Best regards,
+	Maxim Levitsky
+
 > 
-> If you hold off the softirq from running for 155 seconds then the TSC
-> watchdog is the least of your problems.
-
-To be precise, we are processing interrupts in handle_edge_irq() for a long
-time. Since the interrupts of multiple hardware queues are mapped to a single
-CPU, multiple cores are continuously issuing IO, and then a single core is
-processing IO. Perhaps the test case can be optimized, but shouldn't this lead
-to switching clocks in principle?
-
-> Thanks,
+> Paolo
 > 
->         tglx
-> 
+
+
