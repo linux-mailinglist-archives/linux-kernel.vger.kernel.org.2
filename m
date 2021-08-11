@@ -2,114 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE95D3E93F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B0A3E93FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhHKOvT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Aug 2021 10:51:19 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:46652 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232226AbhHKOvP (ORCPT
+        id S232645AbhHKOws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232590AbhHKOwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:51:15 -0400
-Received: by mail-vs1-f53.google.com with SMTP id h7so1659699vso.13;
-        Wed, 11 Aug 2021 07:50:51 -0700 (PDT)
+        Wed, 11 Aug 2021 10:52:47 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8703CC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:52:23 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso5323502pjy.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:52:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=75ur5KKGa4AeVyjOxEPV5aTd7FRhCKJwfef00vGVoM8=;
+        b=dNeuNSPR72XMt8HQMXbWd0apuJjW2wFi8Fq39ovyBunvm4StUIArQlVFfEWxkO+dr3
+         YnCzViRy11XsYT234s4SI7537yMvGLoUrEqokKtsmbSztl1LbI58xxGUq7TN2PqjbC3s
+         VuEbafnY9ZB7yNoW/q2ldEKYN1zKG9JZxFHJo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cIjkkhxIDfcNNlnHybuIBwZKLNxXMpZQOWOrYH4uD+E=;
-        b=U2i7WTkbGtmet9RiSPXlni7nQJulS0nx4kp39lDjeNkKE9KdcuN2cRITk461im3a1Y
-         WpBrAj3thtAjYYcbH1ej3lDeVN9oZbD98TDIvvp2r0TVXNFb2uYdJrNIaJ2XIVFitbsS
-         us6fIIanc7r4pQUhG+nEwsCUv2tITo5XDUguy+27NBMi4KHu/CtJpJk0CnC4yP6tDOfh
-         W85h62XpXzCg1Ex/qaxE10auxV1EbC5MLWzAg4ENlNRvIZIRteyy2I2PJA/FggVEKh/Z
-         iz5LZx9Oa8jMYYVvsu/LGERzdjuidl0sVK1ENG5FsLNKPDi02Xs3L+9oKhz8qFeFOzkk
-         /5+g==
-X-Gm-Message-State: AOAM531VNrFBYICHzfHZD8+z68IKOrYTxownulbjFRHNwVtmCeTHoci8
-        a+9N9aYJccIrGQ4KBSst9j9SguzMJ+rrQwPtP9M=
-X-Google-Smtp-Source: ABdhPJyCKGDxNdZxL1InzZOuebscdelRrflgN7wgfQcLAxNeXbBK11NZVzyFk5Zc6ixhsCh4yORvoZGZjBul5tJ7ZZM=
-X-Received: by 2002:a67:e2c7:: with SMTP id i7mr26153722vsm.3.1628693450818;
- Wed, 11 Aug 2021 07:50:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=75ur5KKGa4AeVyjOxEPV5aTd7FRhCKJwfef00vGVoM8=;
+        b=pbPCLLyYzKZVKGf8OvaGQ0zC3aq5OGwFZdVG8zT3HltgUJE5f0C/tcfIOiJHKWHkPs
+         x/XAY67m9Gcnqxy3tzgNVrWw3nYfikLd2fKi0IL8Y2GWm33hgZBm7oCAYl1Qimv4/zre
+         NVG7+SGjXRKsk8ZTQYL2WhuQbB4pgYemDzJOfgt5YdsAD35xLv6HepmAhm5w0WnomEAk
+         NerrlMn58OBMTWUujYVrokvwjxNKLjYdKK0p/Ahsphu3Hc702HjCG3mdExg5Jr6DNiDN
+         olxzCP+NWGSny4jhEI6T76Zq7oFOdM2b2zZ8ahSzNJoIfm34egjC84rwFHDaGpeuGM/j
+         eajA==
+X-Gm-Message-State: AOAM5322AWxHwWvdV5P03OkHmA6vD+msKDNPHrO16IYjoEkVGYkaDd1/
+        qv0j8PKvLAYomHd+QBCw6hH7GQ==
+X-Google-Smtp-Source: ABdhPJzz0asiYJyz4gYdnrRfwCnsqIypLFkB42hUmXHvd7RDrvQ7eqJaIfLwxn0gFrIY1yTLkMQi3Q==
+X-Received: by 2002:a63:712:: with SMTP id 18mr327582pgh.277.1628693542848;
+        Wed, 11 Aug 2021 07:52:22 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:ee27:bab:1cec:afe5])
+        by smtp.gmail.com with UTF8SMTPSA id b12sm28966736pff.63.2021.08.11.07.52.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 07:52:21 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 07:52:19 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     rajpat@codeaurora.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V4 2/4] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+Message-ID: <YRPkI8AQAjjFuXcf@google.com>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+ <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
+ <YP7cmkayoajJ+1yj@google.com>
+ <bdfd39def9a11104c043090d920ef4df@codeaurora.org>
 MIME-Version: 1.0
-References: <20210803114051.2112986-1-arnd@kernel.org> <20210803114051.2112986-11-arnd@kernel.org>
-In-Reply-To: <20210803114051.2112986-11-arnd@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 11 Aug 2021 16:50:39 +0200
-Message-ID: <CAMuHMdVvBL=qZkWF5DXdKjFMKgT-3X-OUBnLYrqawQijoLG4Xw@mail.gmail.com>
-Subject: Re: [PATCH v2 10/14] [net-next] make legacy ISA probe optional
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Doug Berger <opendmb@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Sam Creasey <sammy@sammy.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bdfd39def9a11104c043090d920ef4df@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, Aug 11, 2021 at 05:43:48PM +0530, rajpat@codeaurora.org wrote:
+> On 2021-07-26 21:32, Matthias Kaehlcke wrote:
+> > On Mon, Jul 26, 2021 at 07:10:45PM +0530, Rajesh Patil wrote:
+> > > From: Roja Rani Yarubandi <rojay@codeaurora.org>
+> > > 
+> > > Add QUPv3 wrapper_0 DT nodes for SC7280 SoC.
+> > > 
+> > > Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> > > Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> > > ---
+> > > Changes in V4:
+> > >  - As per Bjorn's comment, added QUP Wrapper_0 nodes
+> > >    other than debug-uart node
+> > >  - Dropped interconnect votes for wrapper_0 node
+> > > 
+> > > Changes in V3:
+> > >  - Broken the huge V2 patch into 3 smaller patches.
+> > >    1. QSPI DT nodes
+> > >    2. QUP wrapper_0 DT nodes
+> > >    3. QUP wrapper_1 DT nodes
+> > > 
+> > > Changes in V2:
+> > >  - As per Doug's comments removed pinmux/pinconf subnodes.
+> > >  - As per Doug's comments split of SPI, UART nodes has been done.
+> > >  - Moved QSPI node before aps_smmu as per the order.
+> > > 
+> > >  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  84 ++++
+> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 720
+> > > ++++++++++++++++++++++++++++++++
+> > >  2 files changed, 804 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > > b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > > index b0bfd8e..f63cf51 100644
+> > > --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > > +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> > > @@ -358,6 +358,16 @@
+> > >  	vdda18-supply = <&vreg_l1c_1p8>;
+> > >  };
+> > > 
+> > > +&uart7 {
+> > > +	status = "okay";
+> > > +
+> > > +	/delete-property/interrupts;
+> > > +	interrupts-extended = <&intc GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>,
+> > > +				<&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+> > > +	pinctrl-names = "default", "sleep";
+> > > +	pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>,
+> > > <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
+> > > +};
+> > > +
+> > >  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+> > > 
+> > >  &qspi_cs0 {
+> > > @@ -428,3 +438,77 @@
+> > >  		bias-pull-up;
+> > >  	};
+> > >  };
+> > > +&qup_uart7_cts {
+> > > +	/*
+> > > +	 * Configure a pull-down on CTS to match the pull of
+> > > +	 * the Bluetooth module.
+> > > +	 */
+> > > +	bias-pull-down;
+> > > +};
+> > > +
+> > > +&qup_uart7_rts {
+> > > +	/* We'll drive RTS, so no pull */
+> > > +	drive-strength = <2>;
+> > > +	bias-disable;
+> > > +};
+> > > +
+> > > +&qup_uart7_tx {
+> > > +	/* We'll drive TX, so no pull */
+> > > +	drive-strength = <2>;
+> > > +	bias-disable;
+> > > +};
+> > > +
+> > > +&qup_uart7_rx {
+> > > +	/*
+> > > +	 * Configure a pull-up on RX. This is needed to avoid
+> > > +	 * garbage data when the TX pin of the Bluetooth module is
+> > > +	 * in tri-state (module powered off or not driving the
+> > > +	 * signal yet).
+> > > +	 */
+> > > +	bias-pull-up;
+> > > +};
+> > > +
+> > > +&tlmm {
+> > > +	qup_uart7_sleep_cts: qup-uart7-sleep-cts {
+> > > +		pins = "gpio28";
+> > > +		function = "gpio";
+> > > +		/*
+> > > +		 * Configure a pull-down on CTS to match the pull of
+> > > +		 * the Bluetooth module.
+> > > +		 */
+> > > +		bias-pull-down;
+> > > +	};
+> > > +
+> > > +	qup_uart7_sleep_rts: qup-uart7-sleep-rts {
+> > > +		pins = "gpio29";
+> > > +		function = "gpio";
+> > > +		/*
+> > > +		 * Configure pull-down on RTS. As RTS is active low
+> > > +		 * signal, pull it low to indicate the BT SoC that it
+> > > +		 * can wakeup the system anytime from suspend state by
+> > > +		 * pulling RX low (by sending wakeup bytes).
+> > > +		 */
+> > > +		bias-pull-down;
+> > > +	};
+> > > +
+> > > +	qup_uart7_sleep_tx: qup-uart7-sleep-tx {
+> > > +		pins = "gpio30";
+> > > +		function = "gpio";
+> > > +		/*
+> > > +		 * Configure pull-up on TX when it isn't actively driven
+> > > +		 * to prevent BT SoC from receiving garbage during sleep.
+> > > +		 */
+> > > +		bias-pull-up;
+> > > +	};
+> > > 
+> > > +	qup_uart7_sleep_rx: qup-uart7-sleep-rx {
+> > > +		pins = "gpio31";
+> > > +		function = "gpio";
+> > > +		/*
+> > > +		 * Configure a pull-up on RX. This is needed to avoid
+> > > +		 * garbage data when the TX pin of the Bluetooth module
+> > > +		 * is floating which may cause spurious wakeups.
+> > > +		 */
+> > > +		bias-pull-up;
+> > > +	};
+> > > +};
+> > 
+> > How the patches of this series are split strikes me as a bit odd.
+> > Supposedly
+> > this patch adds the QUPv3 wrapper_0 DT nodes for the SC7280, however the
+> > above is the pin configuration for the Bluetooth UART of the SC7280 IDP
+> > board.
+> > I don't see a good reason why that should be part of this patch. It
+> > should be
+> > a separate change whose subject indicates that it configures the
+> > Bluetooth UART
+> > of the SC7280 IDP.
+> > 
+> 
+> Okay will split this up.
+> 
+> > Without this conflation of SoC and board DT it would seem perfectly
+> > reasonable
+> > to squash this patch and '[4/4] arm64: dts: sc7280: Add QUPv3 wrapper_1
+> > nodes'
+> > into a single one, they are essentially doing the same thing, I see no
+> > need to
+> > have different patches for the wrapper 0 and 1 nodes.
+> 
+> Previously when QUP wrapper 0 and wrapper 1 nodes were added in single
+> patch, we faced some git issues as the patch was huge. Hence we split it up.
+> https://partnerissuetracker.corp.google.com/issues/177045897#comment12
 
-On Tue, Aug 3, 2021 at 1:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> There are very few ISA drivers left that rely on the static probing from
-> drivers/net/Space.o. Make them all select a new CONFIG_NETDEV_LEGACY_INIT
-> symbol, and drop the entire probe logic when that is disabled.
->
-> The 9 drivers that are called from Space.c are the same set that
-> calls netdev_boot_setup_check().
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+That bug tracker entry isn't public, this is what the comment says:
 
-> --- a/drivers/net/ethernet/8390/ne.c
-> +++ b/drivers/net/ethernet/8390/ne.c
-> @@ -951,6 +951,7 @@ static int __init ne_init(void)
->  }
->  module_init(ne_init);
->
-> +#ifdef CONFIG_NETDEV_LEGACY_INIT
->  struct net_device * __init ne_probe(int unit)
->  {
->         int this_dev;
-> @@ -991,6 +992,7 @@ struct net_device * __init ne_probe(int unit)
->
->         return ERR_PTR(-ENODEV);
->  }
-> +#endif
->  #endif /* MODULE */
+> I suspect that diff is just having a hard time since your patch touches so
+> much stuff. Presumably you could make it happier if you broke your patch
+> into smaller changes. For instance:
+> 
+> One patch that adds the quad SPI. After all the quad SPI isn't really
+> related to the other QUP stuff. One patch that fixes up the existing
+> "uart5" and the QUP it's on to be how it's supposed to be. One patch
+> that adds all the new stuff.
 
-My rbtx4927 build log says:
-
-drivers/net/ethernet/8390/ne.c:909:20: warning: ‘ne_add_devices’
-defined but not used [-Wunused-function]
-
-The network still works fine (nfsroot).
-
-CONFIG_MACH_TX49XX=y
-CONFIG_NE2000=y
-CONFIG_NETDEV_LEGACY_INIT is not set
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+If I understand correctly the problem wasn't that the QUP wrappers are
+added in a single patch (which should be pretty straightforward to
+review), but that the previous patch(es) do too many things at once.
+Adding both QUP wrappers is conceptionally a single thing, the problem
+is intermingling that with adding board specific Bluetooth nodes, board
+flash nodes, pinconf for UART, etc
