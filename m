@@ -2,83 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0011F3E911B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DE03E913E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhHKMbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:31:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232201AbhHKMav (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:30:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628685020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=++F32s6NyzrMcJ6QkU/iMFSAu/4raHLUOF3ZnxBpv3o=;
-        b=etX3rjeP6LkLcii1BF4byojm0kkJvrnpmLn7Or2fBkSxHCyEGokk1pK6vyjGB8TysA2MvI
-        d3u3Ya94duaYG2oPJEpGAWY4TbX4Pc7EcNX1ri5fQnZuAD9p6mQzQWBA/tYVoJmSLnxixN
-        i4a/24jMSuAHueLVp/wgzeUb446zDcQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-V34PEIdXOKO4kGMbz2BpBg-1; Wed, 11 Aug 2021 08:30:18 -0400
-X-MC-Unique: V34PEIdXOKO4kGMbz2BpBg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54F8F1009E39;
-        Wed, 11 Aug 2021 12:30:17 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18988620DE;
-        Wed, 11 Aug 2021 12:30:15 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210715033704.692967-80-willy@infradead.org>
-References: <20210715033704.692967-80-willy@infradead.org> <20210715033704.692967-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 079/138] mm/filemap: Add readahead_folio()
+        id S231286AbhHKMcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229801AbhHKMcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:32:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F5C360FE6;
+        Wed, 11 Aug 2021 12:31:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628685108;
+        bh=tv9C3Cm5qQR3sXiWl3T9jk8eH5uFDMx7/ShOjjjSaDw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c+a18SdN5uY3z6WkcWr/H3kkXDwgXLnIKPqDeY6igowQRch+OLtbTdTpPFnF4q4lL
+         JAW7PQwzFBCaQAGLSPbvCavaFHN404Jhn6OXDnC05WOiT7G/VvTK5t2Sh9qwEcdtGx
+         cKKgvcJ9jUI0lBjjM5NY6aN183Hj1QGC5vDDHitskz3Omf+yF1k0XXqbMNcnmrxr+1
+         s8d11pHOnmt0m8evPNRz9qV9T4FeAHQHqdhI029WN4241n2DQVb/wT838AF4mTtBAZ
+         s6d2q0QRle7HoZ1Lu8wLObCdmZHQvbQcwh8nyvQ/TAkEihwIt9cUM7xe3NqKz/LGrK
+         xubSxdH4209pw==
+Date:   Wed, 11 Aug 2021 15:31:43 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH 09/18] ARC: mm: non-functional code cleanup ahead of 3
+ levels
+Message-ID: <YRPDL90Qr5RLDmnT@kernel.org>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+ <20210811004258.138075-10-vgupta@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2384707.1628685015.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 11 Aug 2021 13:30:15 +0100
-Message-ID: <2384708.1628685015@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811004258.138075-10-vgupta@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
-
-> +/**
-> + * readahead_folio - Get the next folio to read.
-> + * @ractl: The current readahead request.
-> + *
-> + * Context: The folio is locked.  The caller should unlock the folio on=
-ce
-> + * all I/O to that folio has completed.
-> + * Return: A pointer to the next folio, or %NULL if we are done.
+On Tue, Aug 10, 2021 at 05:42:49PM -0700, Vineet Gupta wrote:
+> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+> ---
+>  arch/arc/include/asm/page.h    | 30 ++++++++++++++++--------------
+>  arch/arc/include/asm/pgalloc.h |  7 ++++++-
+>  2 files changed, 22 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+> index c4ac827379cd..313e6f543d2d 100644
+> --- a/arch/arc/include/asm/page.h
+> +++ b/arch/arc/include/asm/page.h
+> @@ -34,6 +34,13 @@ void copy_user_highpage(struct page *to, struct page *from,
+>  			unsigned long u_vaddr, struct vm_area_struct *vma);
+>  void clear_user_page(void *to, unsigned long u_vaddr, struct page *page);
+>  
+> +typedef struct {
+> +	unsigned long pgd;
+> +} pgd_t;
+> +
+> +#define pgd_val(x)	((x).pgd)
+> +#define __pgd(x)	((pgd_t) { (x) })
+> +
+>  typedef struct {
+>  #ifdef CONFIG_ARC_HAS_PAE40
+>  	unsigned long long pte;
+> @@ -41,22 +48,17 @@ typedef struct {
+>  	unsigned long pte;
+>  #endif
+>  } pte_t;
+> -typedef struct {
+> -	unsigned long pgd;
+> -} pgd_t;
+> +
+> +#define pte_val(x)	((x).pte)
+> +#define __pte(x)	((pte_t) { (x) })
+> +
+>  typedef struct {
+>  	unsigned long pgprot;
+>  } pgprot_t;
+>  
+> -#define pte_val(x)      ((x).pte)
+> -#define pgd_val(x)      ((x).pgd)
+> -#define pgprot_val(x)   ((x).pgprot)
+> -
+> -#define __pte(x)        ((pte_t) { (x) })
+> -#define __pgd(x)        ((pgd_t) { (x) })
+> -#define __pgprot(x)     ((pgprot_t) { (x) })
+> -
+> -#define pte_pgprot(x) __pgprot(pte_val(x))
+> +#define pgprot_val(x)	((x).pgprot)
+> +#define __pgprot(x)	((pgprot_t) { (x) })
+> +#define pte_pgprot(x)	__pgprot(pte_val(x))
+>  
+>  typedef pte_t * pgtable_t;
+>  
+> @@ -96,8 +98,8 @@ extern int pfn_valid(unsigned long pfn);
+>   * virt here means link-address/program-address as embedded in object code.
+>   * And for ARC, link-addr = physical address
+>   */
+> -#define __pa(vaddr)  ((unsigned long)(vaddr))
+> -#define __va(paddr)  ((void *)((unsigned long)(paddr)))
+> +#define __pa(vaddr)  		((unsigned long)(vaddr))
+> +#define __va(paddr)  		((void *)((unsigned long)(paddr)))
+>  
+>  #define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
+>  #define virt_addr_valid(kaddr)  pfn_valid(virt_to_pfn(kaddr))
+> diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgalloc.h
+> index 356237b9c537..0cf73431eb89 100644
+> --- a/arch/arc/include/asm/pgalloc.h
+> +++ b/arch/arc/include/asm/pgalloc.h
+> @@ -29,6 +29,11 @@
+>  #ifndef _ASM_ARC_PGALLOC_H
+>  #define _ASM_ARC_PGALLOC_H
+>  
+> +/*
+> + * For ARC, pgtable_t is not struct page *, but pte_t * (to avoid
+> + * extraneous page_address() calculations) hence can't use
+> + * use asm-generic/pgalloc.h which assumes it being struct page *
 > + */
-> +static inline struct folio *readahead_folio(struct readahead_control *r=
-actl)
-> +{
-> +	struct folio *folio =3D __readahead_folio(ractl);
->  =
 
-> -	return page;
-> +	folio_put(folio);
+Another reason to leave ARC without asm-generic/pgalloc.h was
+__get_order_pte() that other arches don't have.
+So this and pgtable_t aliased to pte_t * seemed to me too much to bother
+then, but probably it's worth reconsidering with addition of 3rd and 4th
+levels.
 
-This will oops if __readahead_folio() returns NULL.
+>  #include <linux/mm.h>
+>  #include <linux/log2.h>
+>  
+> @@ -36,7 +41,7 @@ static inline void
+>  pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep)
+>  {
+>  	/*
+> -	 * The cast to long below is OK even when pte is long long (PAE40)
+> +	 * The cast to long below is OK in 32-bit PAE40 regime with long long pte
+>  	 * Despite "wider" pte, the pte table needs to be in non-PAE low memory
+>  	 * as all higher levels can only hold long pointers.
+>  	 *
+> -- 
+> 2.25.1
+> 
 
-> +	return folio;
->  }
-
+-- 
+Sincerely yours,
+Mike.
