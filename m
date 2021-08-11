@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317F93E9128
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923843E9101
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhHKMcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhHKMb6 (ORCPT
+        id S231578AbhHKM3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:29:42 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7983 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhHKM3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:31:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2303FC029836;
-        Wed, 11 Aug 2021 05:28:23 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628684901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b3CyKvJaEwwphnaIVpCFl46BS2WMQuydG6Z8cqn8/sI=;
-        b=Mk2d2aB9aImBYcA7SGIdR5B8V+7ToAlmLvva2lilX9fJ15PIGwsH/DLzqlnV4UQXoPynFX
-        Cx89eyTyx9YI2H3S/Xfu+pal8SPg1YqSchb2ycdhLt6Vmc3AjiF6MeqE99nPYqPW4BIGOg
-        BgGeWH+mvdf63Y8NG/IOASWAPzhBMlXFo/O8pxwjKcsng7W2MKhEyc0sys9on3bEWYcHSE
-        WOe34U+S0ZEy7Wx9rgbMzewFNOZEn0xb+qJHYBD7sXVInmTTUJGxyt5BiNkhmUJkWBFgYz
-        eXN2yqUd6g1GMpNNG662I5P9OIzrDgk4y6y/U3cuoDiNJYqX6WmqD5KfGRYn0w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628684901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b3CyKvJaEwwphnaIVpCFl46BS2WMQuydG6Z8cqn8/sI=;
-        b=BSsIIwvRVuLmwPE6k7Z6GJb6pkJ7BpmY7Pcu7PKjdASNEOJUJQAoxA6q7STVlkNzYavErX
-        zGQZmCIPdaNWZUCQ==
-To:     Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [SPLAT 2/3] irqchip/gic-v3-its: Sleeping spinlocks down
- gic_reserve_range()
-In-Reply-To: <87y2989xhh.wl-maz@kernel.org>
-References: <20210810134127.1394269-1-valentin.schneider@arm.com>
- <20210810134127.1394269-3-valentin.schneider@arm.com>
- <87y2989xhh.wl-maz@kernel.org>
-Date:   Wed, 11 Aug 2021 14:28:21 +0200
-Message-ID: <87a6lop3mi.ffs@tglx>
+        Wed, 11 Aug 2021 08:29:01 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee56113c264abc-64bcd; Wed, 11 Aug 2021 20:28:22 +0800 (CST)
+X-RM-TRANSID: 2ee56113c264abc-64bcd
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.26.114] (unknown[10.42.68.12])
+        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee46113c265114-3fc53;
+        Wed, 11 Aug 2021 20:28:22 +0800 (CST)
+X-RM-TRANSID: 2ee46113c265114-3fc53
+Subject: Re: [PATCH] ASoC: stm32: spdifrx: Delete unnecessary check in the
+ probe function
+To:     Mark Brown <broonie@kernel.org>
+Cc:     olivier.moysan@foss.st.com, arnaud.pouliquen@foss.st.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210811115523.17232-1-tangbin@cmss.chinamobile.com>
+ <20210811115846.GC4167@sirena.org.uk>
+ <7ddb13ee-2ca6-bf8d-2a83-9896d29176c5@cmss.chinamobile.com>
+ <20210811121955.GD4167@sirena.org.uk>
+From:   tangbin <tangbin@cmss.chinamobile.com>
+Message-ID: <d0fa7aa5-b64b-7d4a-a80d-ec2f6dec5712@cmss.chinamobile.com>
+Date:   Wed, 11 Aug 2021 20:28:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210811121955.GD4167@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11 2021 at 09:50, Marc Zyngier wrote:
-> On Tue, 10 Aug 2021 14:41:26 +0100,
-> Valentin Schneider <valentin.schneider@arm.com> wrote:
-> The issue is that although the redistributor tables have been
-> allocated ahead of time (outside of any cpuhp callback), they cannot
-> be programmed into the RDs until the corresponding CPUs have been
-> brought up (the registers may not be accessible).
->
-> For the same reason, we don't know whether we can free them (because
-> there is already a table programmed there) or have to reserve them
-> with an efi_mem_reserve_persistent() call. efi_mem_reserve_iomem()
-> uses GFP_ATOMIC for its allocation, but this is not sufficient for RT
-> anymore.
->
-> We could postpone the reservation of the memory to a later point (it
-> is only useful for kexec), but it isn't clear where that point is. The
-> CPU is not quite up yet, and we can't easily IPI the boot CPU to do
-> the reserve call.
+Hi Mark:
 
-Right, but don't you know about the need for reservation _before_
-bringing the CPU up?
+On 2021/8/11 20:19, Mark Brown wrote:
+> On Wed, Aug 11, 2021 at 08:09:00PM +0800, tangbin wrote:
+>> On 2021/8/11 19:58, Mark Brown wrote:
+>>> On Wed, Aug 11, 2021 at 07:55:23PM +0800, Tang Bin wrote:
+>>>> The function stm32_spdifrx_parse_of() is only called by the function
+>>>> stm32_spdifrx_probe(), and the probe function is only called with
+>>>> an openfirmware platform device. Therefore there is no need to check
+>>>> the device_node in probe function.
+>>> What is the benefit of not doing the check?  It seems like reasonable
+>>> defensive programming.
+>> I think it's unnecessary, because we all know than the probe function is
+>> only trigger if
+>> the device and the driver matches, and the trigger mode is just Device Tree.
+>> So the device_node
+>> must be exist in the probe function if it works. That's the reason why I
+>> think it's redundant.
+> I see why it is redundant, I don't see what problem this redudnancy
+> causes.
 
-Thanks,
+Maybe not, just be redundant. If you think that's ok, just drop this patch.
 
-        tglx
+I'm sorry to trouble you.
+
+Thanks
+
+Tang Bin
+
+
+
