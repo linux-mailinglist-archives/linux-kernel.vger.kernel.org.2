@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8F73E97E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C833E97E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhHKSqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhHKSqw (ORCPT
+        id S230496AbhHKSqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:46:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60997 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229947AbhHKSqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 14:46:52 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED845C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:46:28 -0700 (PDT)
-Subject: Re: [PATCH 03/18] ARC: mm: move mmu/cache externs out to setup.h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1628707586;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628707588;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SK25dEcn466Z3Vi0DqLxIySdCp5Mv9jbvw0c3iJwG8U=;
-        b=ErI1vkw1xnLMlIRzSuseZUPuXhb4a1szsgUdHWTiWa11I+f0/0hXcmuO8ezyEZFEr+Ug/B
-        LQ2mc53++4EVYazWQ9RdU9yCcvWmN1NnHGek2T0hMrH8lGTiC1axkwon0TTjv6uR6jvYNA
-        TgKsIEgUiph6Nmrwms/LjP5RJ6KlDkc=
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vineet Gupta <vgupta@kernel.com>
-References: <20210811004258.138075-1-vgupta@kernel.org>
- <20210811004258.138075-4-vgupta@kernel.org> <YRNb0EbPzejXJdax@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Vineet Gupta <vineet.gupta@linux.dev>
-Message-ID: <fe3a8a38-69ef-ff4b-6e63-b110ffc188e7@linux.dev>
-Date:   Wed, 11 Aug 2021 11:46:21 -0700
+        bh=BOILZBJ0R4YxSBlomh5xiyJL3tlxmw5VR/2YYVBHfVY=;
+        b=EwW1Lt7iXin0ZAb0YDhwtWWbqICvcow1T6t8TIqgeW3Ycfjhdzi922VTdJiwbiHaW0D6lo
+        KiPxSoeE3+2kQIULIqK1c0ZlGxHafOYUwdeTAlxaUWRfdYSfAH699RDYx822sQBQX+OBvH
+        pPP5DqI00Tuhdr0k0VS6u5M5lpUaEw0=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-0k77OzVwM_iT_Gqqr1aDXg-1; Wed, 11 Aug 2021 14:46:27 -0400
+X-MC-Unique: 0k77OzVwM_iT_Gqqr1aDXg-1
+Received: by mail-qt1-f197.google.com with SMTP id g17-20020ac870d10000b02902928f62e229so1792374qtp.18
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:46:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=BOILZBJ0R4YxSBlomh5xiyJL3tlxmw5VR/2YYVBHfVY=;
+        b=uI0YWUYlQVwjRL66vZZVByosrgipRUYzrGZ4056tlMovNHB5ZqdGmW9FJePgZ5X1D6
+         ySQ0oBNxneyhZxxDkluRUAkDhZfwXWMo6+6a4diR2UO9N+Q247i+77vACyRKwAq6XF/d
+         yGqeM7Ha++kCTCYFZfY5BH/FQap/XViGLww2tA3sWs1T6IG/IjWW6hI8P36bID8x7nkP
+         lWYcahzgqurJnkggPtZzcec4oENkABw++UsoXKDSg+SNp2gAPapgTD8heDSzzwVAlHSA
+         /3Z2veXznrAHacqaAjs/jdJoW4WyFzYAkUtVy6xHAMXIA7v/2QgP3biaOEhy6QAlSylZ
+         mMQQ==
+X-Gm-Message-State: AOAM533mLnqYlIBkaS5uZYfReAOQXvQqtIM06DhwtTz2mQypFJe1Pfph
+        8yc+gm2xdAVzrGdsr96JloPKbBlAWsQrnOmII0nMmoDKLTl07IZZy/VqbfOw4PtJU17o2YPGPB5
+        ii0ggQnkime50R+ZErfgRgy0e
+X-Received: by 2002:ac8:47d9:: with SMTP id d25mr123617qtr.247.1628707586780;
+        Wed, 11 Aug 2021 11:46:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwc+HweGCSjMpjaJcpagiM7+c0ZCQmmIkZOMJU7you99awb+4aUS28VxuYA6K2SQkpFfVwoCg==
+X-Received: by 2002:ac8:47d9:: with SMTP id d25mr123604qtr.247.1628707586605;
+        Wed, 11 Aug 2021 11:46:26 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id s69sm12744271qka.102.2021.08.11.11.46.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 11:46:25 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v4 4/6] cgroup/cpuset: Allow non-top parent partition root
+ to distribute out all CPUs
+To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210811030607.13824-1-longman@redhat.com>
+ <20210811030607.13824-5-longman@redhat.com>
+ <YRQTTf+bJZ8f3O3+@slm.duckdns.org>
+ <abfa6f2f-aa13-f18e-5a16-f568082d07bc@redhat.com>
+ <YRQVFkNX5DcKixzy@slm.duckdns.org>
+Message-ID: <ef02d96b-325c-87f6-a6a3-d840feefef24@redhat.com>
+Date:   Wed, 11 Aug 2021 14:46:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YRNb0EbPzejXJdax@kernel.org>
+In-Reply-To: <YRQVFkNX5DcKixzy@slm.duckdns.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: vineet.gupta@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+On 8/11/21 2:21 PM, Tejun Heo wrote:
+> On Wed, Aug 11, 2021 at 02:18:17PM -0400, Waiman Long wrote:
+>> I don't think that is true. A task can reside anywhere in the cgroup
+>> hierarchy. I have encountered no problem moving tasks around.
+> Oh, that shouldn't be happening with controllers enabled. Can you please
+> share a repro?
 
-On 8/10/21 10:10 PM, Mike Rapoport wrote:
-> Hi Vineet,
->
-> On Tue, Aug 10, 2021 at 05:42:43PM -0700, Vineet Gupta wrote:
->> Signed-off-by: Vineet Gupta <vgupta@kernel.com>
-> Hmm, this one seems odd. Try https://www.kernel.com/ ;-)
+I have done further testing. Enabling controllers won't prohibit moving 
+a task into a parent cgroup as long as the child cgroups have no tasks. 
+Once the child cgroup has task, moving another task to the parent is not 
+allowed (-EBUSY). Similarly if a parent cgroup has tasks, you can't put 
+new tasks into the child cgroup. I don't realize that we have such 
+constraints as I usually do my testing with a cgroup hierarchy with no 
+tasks initially. Anyway, a new lesson learned.
 
-Oops, last minute switch to my kernel.org address - this update was not 
-atomic ;-)
+I will try to see how to address that in the patch, but the additional 
+check added is still valid in some special case.
 
->> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
->> ---
->>   arch/arc/include/asm/cache.h |  4 ----
->>   arch/arc/include/asm/mmu.h   |  4 ----
->>   arch/arc/include/asm/setup.h | 12 ++++++++++--
-> A sentence about why these move would have been nice.
+Cheers,
+Longman
 
-Sure
----->
-"Don't pollute mmu.h and cache.h with some of ARC internal bootlog/setup 
-related functions.
-move them aside to setup.h"
 
-Thx for taking the time to review !
 
--Vineet
+
+
