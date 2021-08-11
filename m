@@ -2,137 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E133C3E93B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F3B3E93BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhHKObR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:31:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:52068 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232417AbhHKObP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:31:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 737AA1063;
-        Wed, 11 Aug 2021 07:30:51 -0700 (PDT)
-Received: from [10.57.12.152] (unknown [10.57.12.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01FAE3F718;
-        Wed, 11 Aug 2021 07:30:49 -0700 (PDT)
-Subject: Re: [PATCH V2 1/9] cpufreq: Auto-register with energy model if asked
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Quentin Perret <qperret@google.com>,
+        id S232388AbhHKOcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:32:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56407 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232430AbhHKObw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:31:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628692284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IMsaF6YNRWgvZkKD/Bb4KAtHQ1t58EnxtwdMzN8DDjs=;
+        b=Dca7aWaOz0y7CbKcv2EqKUYKyiheKTiWygl50xldfM+zU/szWNF+Wtu6X1bqNkD4MNLwkF
+        BQoEGJeyo3mQTZWkojtw2/8fIyLgtDw8i1YI/TRvV0fm9NWa+6Dw05alpURNLwdVD5a518
+        zqC3xRMlzFH3wYzHH6WZ8oYaF8BVJyA=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-47-DJBc0_cVNWCotEWjmskx0Q-1; Wed, 11 Aug 2021 10:31:23 -0400
+X-MC-Unique: DJBc0_cVNWCotEWjmskx0Q-1
+Received: by mail-qv1-f72.google.com with SMTP id u6-20020ad448660000b02903500bf28866so1350436qvy.23
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:31:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IMsaF6YNRWgvZkKD/Bb4KAtHQ1t58EnxtwdMzN8DDjs=;
+        b=fW8KDFLxm5AocWMUiXFIntZrYIdfUSFMjJNtWsFwaFaK4RGlrWPoXckWPjQWTmQUXw
+         PtBXs5aJeH63Pf7HR1I1HORXhyk89nZqamstu6G5F2oeOwJbPKYckKpE9vfCUSsJQXdV
+         8a5dBurAi8+IRJU82GPJ3JrCn8f4vqjbszFSCy5B3aI8g7mAqc1Jz+48q9YqNVI8TEf9
+         8tyC6pL0owvfUB0cevkdw6T5siF0Z9BOnEICTexKbYag15akE6z3ibtcTmHm2tcF0pcb
+         EF/S5MtG1j+SEHvtPB32GRzLXQYsyhfCqqcfLAG8aYO4gLkQnP0sQeC9ZRMBl26+PYON
+         wFlQ==
+X-Gm-Message-State: AOAM532e6M1QUmslbv1Zbz5jPg2zK3vvMmDHmgBKVpEgm92xA8Z9AUyV
+        UE0OtdDeKGDsg1e1Pn/GSt80x7znzvUvjigPK05sZnWfnRof9dREomQJuS9eL5tpLOCnADx247s
+        NbLOU2199j3IFAiGTBL0jMBUpXXieYQnW21QTcv42NxX8ekKa0lmXUobYoZ0e8NG1IfFDeW094H
+        wy
+X-Received: by 2002:ac8:7207:: with SMTP id a7mr30353247qtp.32.1628692282737;
+        Wed, 11 Aug 2021 07:31:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRN7N9t97BDNGO5cfSC1+itLxk34dUt1bOU5m035sou0qCpLmrUNFjMm8hxm8bwlwn0p2haw==
+X-Received: by 2002:ac8:7207:: with SMTP id a7mr30353215qtp.32.1628692282500;
+        Wed, 11 Aug 2021 07:31:22 -0700 (PDT)
+Received: from jtoppins.rdu.csb ([107.15.110.69])
+        by smtp.gmail.com with ESMTPSA id q11sm12219443qkm.56.2021.08.11.07.31.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 07:31:22 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 2/2] bonding: combine netlink and console
+ error messages
+To:     Joe Perches <joe@perches.com>, Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, leon@kernel.org,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
         linux-kernel@vger.kernel.org
-References: <cover.1628682874.git.viresh.kumar@linaro.org>
- <9ca302a02d6b51240af8668634c93972183b593f.1628682874.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <253884df-8504-c936-3692-df4997a97713@arm.com>
-Date:   Wed, 11 Aug 2021 15:30:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+References: <cover.1628650079.git.jtoppins@redhat.com>
+ <e6b78ce8f5904a5411a809cf4205d745f8af98cb.1628650079.git.jtoppins@redhat.com>
+ <d5e1aada694465fd62f57695e264259815e60746.camel@perches.com>
+ <20210811054917.722bd988@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <c296dd2f66e97ad38d5456c0fab4e0ff99b14634.camel@perches.com>
+From:   Jonathan Toppins <jtoppins@redhat.com>
+Message-ID: <5100eeab-dd01-d739-95f0-0a0267652bae@redhat.com>
+Date:   Wed, 11 Aug 2021 10:31:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <9ca302a02d6b51240af8668634c93972183b593f.1628682874.git.viresh.kumar@linaro.org>
+In-Reply-To: <c296dd2f66e97ad38d5456c0fab4e0ff99b14634.camel@perches.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/11/21 12:58 PM, Viresh Kumar wrote:
-> Many cpufreq drivers register with the energy model for each policy and
-> do exactly the same thing. Follow the footsteps of thermal-cooling, to
-> get it done from the cpufreq core itself.
+On 8/11/21 9:23 AM, Joe Perches wrote:
+> On Wed, 2021-08-11 at 05:49 -0700, Jakub Kicinski wrote:
+>> On Tue, 10 Aug 2021 20:27:01 -0700 Joe Perches wrote:
+>>>> +#define BOND_NL_ERR(bond_dev, extack, errmsg) do {		\
+>>>> +	if (extack)						\
+>>>> +		NL_SET_ERR_MSG(extack, errmsg);			\
+>>>> +	else							\
+>>>> +		netdev_err(bond_dev, "Error: %s\n", errmsg);	\
+>>>> +} while (0)
+>>>> +
+>>>> +#define SLAVE_NL_ERR(bond_dev, slave_dev, extack, errmsg) do {		\
+>>>> +	if (extack)							\
+>>>> +		NL_SET_ERR_MSG(extack, errmsg);				\
+>>>> +	else								\
+>>>> +		slave_err(bond_dev, slave_dev, "Error: %s\n", errmsg);	\
+>>>> +} while (0)
+>>>
+>>> Ideally both of these would be static functions and not macros.
+>>
+>> That may break our ability for NL_SET_ERR_MSG to place strings
+>> back in a static buffer, no?
 > 
-> Provide a new callback, which will be called, if present, by the cpufreq
-> core at the right moment (more on that in the code's comment). Also
-> provide a generic implementation that uses dev_pm_opp_of_register_em().
+> Not really.
 > 
-> This also allows us to register with the EM at a later point of time,
-> compared to ->init(), from where the EM core can access cpufreq policy
-> directly using cpufreq_cpu_get() type of helpers and perform other work,
-> like marking few frequencies inefficient, this will be done separately.
+> The most common way to place things in a particular section is to
+> use __section("whatever")
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->   drivers/cpufreq/cpufreq.c | 12 ++++++++++++
->   include/linux/cpufreq.h   | 14 ++++++++++++++
->   2 files changed, 26 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 06c526d66dd3..75974e7d6cc5 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1493,6 +1493,18 @@ static int cpufreq_online(unsigned int cpu)
->   		write_unlock_irqrestore(&cpufreq_driver_lock, flags);
->   	}
->   
-> +	/*
-> +	 * Register with the energy model before sched_cpufreq_governor_change()
-> +	 * is called, which will result in rebuilding of the sched domains,
-> +	 * which should only be done once the energy model is properly
-> +	 * initialized for the policy first.
-> +	 *
-> +	 * Also, this should be called before the policy is registered with
-> +	 * cooling framework.
-> +	 */
-> +	if (cpufreq_driver->register_em)
-> +		cpufreq_driver->register_em(policy);
-> +
->   	ret = cpufreq_init_policy(policy);
->   	if (ret) {
->   		pr_err("%s: Failed to initialize policy for cpu: %d (%d)\n",
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index 9fd719475fcd..1295621f6c28 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -9,10 +9,12 @@
->   #define _LINUX_CPUFREQ_H
->   
->   #include <linux/clk.h>
-> +#include <linux/cpu.h>
->   #include <linux/cpumask.h>
->   #include <linux/completion.h>
->   #include <linux/kobject.h>
->   #include <linux/notifier.h>
-> +#include <linux/pm_opp.h>
->   #include <linux/pm_qos.h>
->   #include <linux/spinlock.h>
->   #include <linux/sysfs.h>
-> @@ -373,6 +375,12 @@ struct cpufreq_driver {
->   	/* platform specific boost support code */
->   	bool		boost_enabled;
->   	int		(*set_boost)(struct cpufreq_policy *policy, int state);
-> +
-> +	/*
-> +	 * Set by drivers that want the core to automatically register the
-> +	 * policy's devices with Energy Model.
+> It's pretty trivial to mark these errmsg strings as above.
 
-It covers one use case. I would add also something about customized EM
-setup, which might be provided by drivers and implemented then in this
-callback. It won't be only for automatic registration.
+I am unable to convert these to functions at this time, due to how 
+NL_SET_ERR_MSG is expanded. This is with either a param list prototype 
+of, "const char *errmsg" or "const char errmsg[]".
+
+$ make C=1 drivers/net/bonding/bonding.ko
+   CALL    scripts/checksyscalls.sh
+   CALL    scripts/atomic/check-atomics.sh
+   DESCEND objtool
+   DESCEND bpf/resolve_btfids
+   CC [M]  drivers/net/bonding/bond_main.o
+In file included from ./include/uapi/linux/neighbour.h:6,
+                  from ./include/linux/netdevice.h:45,
+                  from ./include/net/inet_sock.h:19,
+                  from ./include/net/ip.h:28,
+                  from drivers/net/bonding/bond_main.c:42:
+drivers/net/bonding/bond_main.c: In function ‘bond_nl_err’:
+drivers/net/bonding/bond_main.c:1733:26: error: invalid initializer
+    NL_SET_ERR_MSG(extack, errmsg);
+                           ^~~~~~
+./include/linux/netlink.h:92:30: note: in definition of macro 
+‘NL_SET_ERR_MSG’
+   static const char __msg[] = msg;  \
+                               ^~~
+drivers/net/bonding/bond_main.c: In function ‘slave_nl_err’:
+drivers/net/bonding/bond_main.c:1744:26: error: invalid initializer
+    NL_SET_ERR_MSG(extack, errmsg);
+                           ^~~~~~
+./include/linux/netlink.h:92:30: note: in definition of macro 
+‘NL_SET_ERR_MSG’
+   static const char __msg[] = msg;  \
+                               ^~~
+make[3]: *** [scripts/Makefile.build:271: 
+drivers/net/bonding/bond_main.o] Error 1
+make[2]: *** [scripts/Makefile.build:514: drivers/net/bonding] Error 2
+make[1]: *** [scripts/Makefile.build:514: drivers/net] Error 2
+make: *** [Makefile:1841: drivers] Error 2
 
 
-> +	 */
-> +	void		(*register_em)(struct cpufreq_policy *policy);
->   };
->   
->   /* flags */
-> @@ -1046,4 +1054,10 @@ unsigned int cpufreq_generic_get(unsigned int cpu);
->   void cpufreq_generic_init(struct cpufreq_policy *policy,
->   		struct cpufreq_frequency_table *table,
->   		unsigned int transition_latency);
-> +
-> +static inline void cpufreq_register_em_with_opp(struct cpufreq_policy *policy)
-> +{
-> +	dev_pm_opp_of_register_em(get_cpu_device(policy->cpu),
-> +				  policy->related_cpus);
-> +}
->   #endif /* _LINUX_CPUFREQ_H */
-> 
-
-There rest is OK,
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
