@@ -2,98 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3B83E8E98
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B3D3E8E94
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237278AbhHKK2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
+        id S237124AbhHKK00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237259AbhHKK1u (ORCPT
+        with ESMTP id S236818AbhHKK0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:27:50 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B7AC0617BD;
-        Wed, 11 Aug 2021 03:27:02 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id x21so963125uau.0;
-        Wed, 11 Aug 2021 03:27:02 -0700 (PDT)
+        Wed, 11 Aug 2021 06:26:10 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F56C061765;
+        Wed, 11 Aug 2021 03:25:46 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id q11so2304055wrr.9;
+        Wed, 11 Aug 2021 03:25:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p1Ky2vPG07eH4lgjI7fl813x1tcTIOy41jGBLt6fr3c=;
-        b=cJDiynRL3h9JNsYQgjXb+qaX8bVmqJeOr+v3pikqaCw7O5V7pDRaEPf47RURbPp+tS
-         U13qUbQ9Se7vvon1Bu6ddsIDQ5H3ZvdryoESfynad2mDVXQikAT1tOf8Lna9CrSDo6oJ
-         pfbnhIo5o/PyXHgEyKrONGEMMyhhCr+WUxgpC+pPs/Ht11pVoO6T1JIxRTekU/ktAcXB
-         yE4AHrWgdIUpuQ8XIbQ58uZ6mOTGze72FvIM3oPGrZ+2ic6+LRfvRz3hFKK6doPrKYXx
-         zBdHwgbA9OE3mLlHx+Hy8CODLiVcVjRpJB0aDGldyGxGJQ+OMkva9PrUpamN8x5cbB/J
-         jupQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=poD4yJ/4qKvPMZwA0eL/IpVknURnkw2HP2HyOGJX1/c=;
+        b=VRwUa98g/jNOHgolhsmWJpnp+3HHGhuSlXN42pvWXGXqplB8zie7xRIWvAsfQMo0fm
+         4PqjDRpmFZxGLxtEFzTdocajMqV9+Nw7ZLdDHVNU0EXEKpJHhDlSFPrC+l7yDPf2MKop
+         pzp0v+15tQnayMq+CZn0HxepBxFhbz6CCF4utUiQDy96UOBtG52JGa15iOF6oJo/85fW
+         KVcQZUf5j0S8LcAZqmFRqqKIa3lYdRNrjXKeXU25g2ZmXHs7DNFXv850FHrqMbUmVeSg
+         ZXr2vDnx4BlODPy3PAk9kD0soFm3IESoZ2ZjcgLswFRCRMGJuxU3EdvMiWd1V4L4nPMK
+         2HrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p1Ky2vPG07eH4lgjI7fl813x1tcTIOy41jGBLt6fr3c=;
-        b=NwxQdCjrQfOPa5usI3c7Ump+ZA3qDKHl9TTJkfGVpn01G5VaZGv+R5a2QOrM7VY8Oj
-         PYWY6VXymcmvk5Y9zhhfvAz7O0uQ76zKGGIfZ5JDgY3quAvMAXPF1cWZIY6Y48gJN7lQ
-         XJ0QIATUeVFG2shVYCVV4Al3qjGeqj4Tk2867Q9e4hfZSVl0Mlf5DSQneKL2n160qaW/
-         eGnt22Ne7+Yywda6lHHjX+rcgi/aQQgQ6QlOZTmmIf98+kFaRbZQ8pJPJXCfW0dZhNoc
-         CTdRTQ9Ee7/CPH5iOBTXIq/zcWD3d0MRqKWvsImA0p57hS66a36hOqpwo9uiHPqTg95p
-         Hbqw==
-X-Gm-Message-State: AOAM531GZWfcgzquLCe40RnfnsCHRKk/MlOeSs39jHHpgOQ6TgSYMf6F
-        37w1MP1En82I2Mu/4HXEDS45GI7vYsi6+dpbKaA=
-X-Google-Smtp-Source: ABdhPJyHF4jG0uFnPkKsmItTX7DmGBWg49hVMAVsoycngSPyWscu+aTXXTNLHWoDfBKKtJwGolHxuSMNK7q7YlY2KDM=
-X-Received: by 2002:ab0:771a:: with SMTP id z26mr1184058uaq.0.1628677621550;
- Wed, 11 Aug 2021 03:27:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=poD4yJ/4qKvPMZwA0eL/IpVknURnkw2HP2HyOGJX1/c=;
+        b=M6YtTFGxbemVgqsdUObb2SBqMfLeMcnVCyIq9mSba9BPEx7FrxTgbatwINr4WVDKnP
+         jWURNDw+J4ScRuwKr6f5ZX5RuaauNb5j+CdLSLYd5o1pImuqPDNagDYiaTi686Laj0HO
+         71xFPerbJ1HmDqdsWJTkkkTgW18wU4cfRb6VDfsfdJI6UYv9WV/7BTkCzpYRdu3bEaMa
+         Q/YrJmzNxsz0pOsSujIcW0MKlywlsN8Nz2RCPmm4qbjchvu+EpLTuSk9PZHmnBVZF2LT
+         9Eh95ScClwZcrEqba4hdzmxkWgwPRjhFsuEED0afFVW4gt+AERwE2aDlAoVOWm+z1JC2
+         gjMg==
+X-Gm-Message-State: AOAM5328odRn21i25GhY2LpaJKP68c9nVS9oPGMP2v571y4qbsXc3YwP
+        iKZj9ydnTKnyh9g6wClK5DM=
+X-Google-Smtp-Source: ABdhPJx/OVwCCR5GEZWwYZdFNS936Tx9PO+z20xUhoLro+EHeMqsO7igz7VXtNuz1NJ7/oOjKyIV0Q==
+X-Received: by 2002:adf:e0d1:: with SMTP id m17mr35220361wri.233.1628677545106;
+        Wed, 11 Aug 2021 03:25:45 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id 9sm23757021wmf.34.2021.08.11.03.25.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 03:25:43 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 12:28:09 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+Message-ID: <YROmOQ+4Kqukgd6z@orome.fritz.box>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+ <871r71azjw.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210728041253.15382-1-sergio.paracuellos@gmail.com>
- <CAMpxmJUnXpOhvaQuNPbFt3TY363vrsEWV1KXxhyBm7cJ-PWvwQ@mail.gmail.com> <CACRpkdbHzdCnHB8358Wi6zojMhfi5urhdm2XOiPmhph7q_L1ew@mail.gmail.com>
-In-Reply-To: <CACRpkdbHzdCnHB8358Wi6zojMhfi5urhdm2XOiPmhph7q_L1ew@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 11 Aug 2021 12:26:50 +0200
-Message-ID: <CAMhs-H-+yiWitOkMCwmqrMAh6sLPViT0VRXz=YV_F4-vRQH6sw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] gpiolib: convert 'devprop_gpiochip_set_names' to
- support multiple gpiochip banks per device
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        NeilBrown <neil@brown.name>,
-        Nicholas Mc Guire <hofrat@osadl.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LpFoc4PPAZtVVu++"
+Content-Disposition: inline
+In-Reply-To: <871r71azjw.wl-maz@kernel.org>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-On Wed, Aug 11, 2021 at 11:03 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Thu, Jul 29, 2021 at 7:43 PM Bartosz Golaszewski
-> <bgolaszewski@baylibre.com> wrote:
-> > On Wed, Jul 28, 2021 at 6:12 AM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
->
-> > Patches queued for next. Thanks!
->
-> Thanks to all for fixing this hairy situation with composite
-> GPIO controllers. I think there are some more controllers
-> that need this actually.
+--LpFoc4PPAZtVVu++
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I was searching for clear patterns that were using a similar approach
-to this new stuff inside the gpio folder and I was not able to
-properly be sure which other drivers can get the same change that I
-did for mt7621 and broadcom applied... If you point me out to which
-drivers can also use this, I am ok in sending patches for all of them
-when I come back from a little rest time on August 23th.
+On Tue, Aug 10, 2021 at 08:07:47PM +0100, Marc Zyngier wrote:
+> Hi all,
+>=20
+> [adding Thierry, Jon and Will to the fun]
+>=20
+> On Mon, 14 Jun 2021 03:25:04 +0100,
+> Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> >=20
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >=20
+> > On RX an SKB is allocated and the received buffer is copied into it.
+> > But on some architectures, the memcpy() needs the source and destination
+> > buffers to have the same alignment to be efficient.
+> >=20
+> > This is not our case, because SKB data pointer is misaligned by two byt=
+es
+> > to compensate the ethernet header.
+> >=20
+> > Align the RX buffer the same way as the SKB one, so the copy is faster.
+> > An iperf3 RX test gives a decent improvement on a RISC-V machine:
+> >=20
+> > before:
+> > [ ID] Interval           Transfer     Bitrate         Retr
+> > [  5]   0.00-10.00  sec   733 MBytes   615 Mbits/sec   88             s=
+ender
+> > [  5]   0.00-10.01  sec   730 MBytes   612 Mbits/sec                  r=
+eceiver
+> >=20
+> > after:
+> > [ ID] Interval           Transfer     Bitrate         Retr
+> > [  5]   0.00-10.00  sec  1.10 GBytes   942 Mbits/sec    0             s=
+ender
+> > [  5]   0.00-10.00  sec  1.09 GBytes   940 Mbits/sec                  r=
+eceiver
+> >=20
+> > And the memcpy() overhead during the RX drops dramatically.
+> >=20
+> > before:
+> > Overhead  Shared O  Symbol
+> >   43.35%  [kernel]  [k] memcpy
+> >   33.77%  [kernel]  [k] __asm_copy_to_user
+> >    3.64%  [kernel]  [k] sifive_l2_flush64_range
+> >=20
+> > after:
+> > Overhead  Shared O  Symbol
+> >   45.40%  [kernel]  [k] __asm_copy_to_user
+> >   28.09%  [kernel]  [k] memcpy
+> >    4.27%  [kernel]  [k] sifive_l2_flush64_range
+> >=20
+> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+>=20
+> This patch completely breaks my Jetson TX2 system, composed of 2
+> Nvidia Denver and 4 Cortex-A57, in a very "funny" way.
+>=20
+> Any significant amount of traffic result in all sort of corruption
+> (ssh connections get dropped, Debian packages downloaded have the
+> wrong checksums) if any Denver core is involved in any significant way
+> (packet processing, interrupt handling). And it is all triggered by
+> this very change.
+>=20
+> The only way I have to make it work on a Denver core is to route the
+> interrupt to that particular core and taskset the workload to it. Any
+> other configuration involving a Denver CPU results in some sort of
+> corruption. On their own, the A57s are fine.
+>=20
+> This smells of memory ordering going really wrong, which this change
+> would expose. I haven't had a chance to dig into the driver yet (it
+> took me long enough to bisect it), but if someone points me at what is
+> supposed to synchronise the DMA when receiving an interrupt, I'll have
+> a look.
 
-Thanks,
-    Sergio Paracuellos
->
-> Yours,
-> Linus Walleij
+I recall that Jon was looking into a similar issue recently, though I
+think the failure mode was slightly different. I also vaguely recall
+that CPU frequency was impacting this to some degree (lower CPU
+frequencies would increase the chances of this happening).
+
+Jon's currently out of office, but let me try and dig up the details
+on this.
+
+Thierry
+
+>=20
+> Thanks,
+>=20
+> 	M.
+>=20
+> > ---
+> >  drivers/net/ethernet/stmicro/stmmac/stmmac.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net=
+/ethernet/stmicro/stmmac/stmmac.h
+> > index b6cd43eda7ac..04bdb3950d63 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > @@ -338,9 +338,9 @@ static inline bool stmmac_xdp_is_enabled(struct stm=
+mac_priv *priv)
+> >  static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
+> >  {
+> >  	if (stmmac_xdp_is_enabled(priv))
+> > -		return XDP_PACKET_HEADROOM;
+> > +		return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
+> > =20
+> > -	return 0;
+> > +	return NET_SKB_PAD + NET_IP_ALIGN;
+> >  }
+> > =20
+> >  void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
+> > --=20
+> > 2.31.1
+> >=20
+> >=20
+>=20
+> --=20
+> Without deviation from the norm, progress is not possible.
+
+--LpFoc4PPAZtVVu++
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmETpjYACgkQ3SOs138+
+s6FzpRAAqwF1hrrbcKXot3GUKC45t/3TCFrELCjzW4CqTpHhhxWPhEA1F7P7TKiU
+iTOLQO2Gj68Lek6KaistNi6hPdmRdh91mr1qLi8ORq94uquX9j+2Vgq7Iwb+qltE
+eKtaNUoSc5bnh5xUvKj87UVMSn690+LelT6lRiyIzghdk8Pt0RcM9UWbtL5g1VVq
+paYq7o96j3xkiY/QO+SXOObhMH4yH8ew2cQiIvUBYQnQGN7bi1jqvK11MVvZhpFq
+YyxO6SNacXjqKYUL3UDQ2o4k7dMX3HeLBDG/VTOG5FSGcSWZ5eNdaJhRc4Muy70h
+NewtkD6tAAqXjv/LugbgL2BiPt0PyZFiyACVTbClunCn+70yvpRdTSCHw2dzC1d3
+HYK3Um2yVrL6NLBEZaaSb6rX6CM6qom8OzbRPZcNQo3Xho0Cav+Ng2fRaR6a0zc7
++tvKZ9dSxsQy2SvLaeMvF/ECc0M1Kwv98nhpXMhrPKuZCvC2UM/nrqqkm5EyQguT
+xezuFk1x63wDH5oBBeyzEniD9sa+Uht1ehoTwiw0tI+CAFSlqv0ySljWhnn6MNqO
+zwR/WPmZE1zjgqjcKUJ2NnQ97ua3DSs6H6yQK+24KEFJr9wbOmQWOanYYscWIZNf
+4GiAvgpNP4z3f2QJ8wxlesr/oGLvhDVvmcXl9x2zmrAFHz7xLA0=
+=PCp2
+-----END PGP SIGNATURE-----
+
+--LpFoc4PPAZtVVu++--
