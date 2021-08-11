@@ -2,96 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912793E8CCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548FA3E8CD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236591AbhHKJGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236487AbhHKJGO (ORCPT
+        id S236658AbhHKJHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:07:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55421 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236439AbhHKJGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:06:14 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195EEC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:05:51 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id h11so3356828ljo.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:05:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WHR5vMYM5Xq0aEUZrFZkJXPDd1LunIEi4v9qS0h1HO0=;
-        b=U9Jax0Pz4olLYQJIFk2TzLLCgD1/AgsJjjc1jPyfKN+iHIfSf+sOvIgQ2mOcBufJOe
-         dbr669Dfx7xE+7MQXb/jTVZ9PEgd6/3eyXVPGZOoS32v5CEmRvBSJBGOfOGRPUkMz0hr
-         Ytp9oJLePRyBugqYenwQeXFNI4dEVGqFCsCV9UzVJQcEW9lrhEZrg4sUfRmNk7ACOHck
-         a4a2fqVpcZG274sxyUTFt0N2g+UU5o//7Meh9BOOjDCmzm2tbbJtOrxGrx25r3/4WXhB
-         lNP5/JqECXVMx468VZLokXnF9EuF27I4yPLn2YSKV9ndXpW7fCzOgPzKek/fUy820QsH
-         bx0g==
+        Wed, 11 Aug 2021 05:06:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628672773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nY+KsOIvdmq/I8f8sHJvd3e52ylxx2cGgSYbPUMLTyI=;
+        b=dfCHBeibix8mWwilFzqiAj8jYXl6P/PrYH4dQ7fdDrkL4VMPxlVbhUAynIFVi4vGbA/hWX
+        sb2+ubHQkwvNOPAKKX8Ug+HprAwgin9Lf2BnbczoLlRaCro96pDbUTlCG9EnFiK4ovFHLt
+        /0C7iCImodKKdBZcQS+Pm2kWJMacR9c=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-ultUrgX4Ol-XfdvIvCXpHQ-1; Wed, 11 Aug 2021 05:06:11 -0400
+X-MC-Unique: ultUrgX4Ol-XfdvIvCXpHQ-1
+Received: by mail-ej1-f71.google.com with SMTP id gg1-20020a170906e281b029053d0856c4cdso417654ejb.15
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:06:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WHR5vMYM5Xq0aEUZrFZkJXPDd1LunIEi4v9qS0h1HO0=;
-        b=Wx9x+yFH3AT+5yTu3ifRQ5QMy/W6sM8ouLeuKcWWLy9rYqJQSSeDWe0dlvtkBvmafQ
-         Ax06wfLFoK6JxLKmSHgHBnJ4cKUPa2eCpJZwKKTHepbe/6FBwq1/XzKLC2j0dY9tmZg1
-         s2XaJfwkTngpF9lEqQShNTWMLSOezN+FgdlAfz+4I7NP+UkXZljTw4DOoqYarbZWQxQN
-         JLBLRbMuKQcIvbQzJMOVf2DGy0cRfV/mgglzNCmbcrkax4wozot1oPf8NF/X6M80Agxq
-         dy32dwQdCxMYFezJsAhNe5cPd6WOSZZT2B3ZXGNH3LYhW7EVNTcRKFVEYGwwVfaUjx3X
-         54Pg==
-X-Gm-Message-State: AOAM533mNMnLeTeFxrJSftnusrU7rdSST4bWSf87BxAHkJpGMIIy6eL5
-        bf9RzHjmmlCXMifklknQkwaMYTqdEh3GF7/yQWXg4A==
-X-Google-Smtp-Source: ABdhPJzJiIAevboqUG5VU4DSPztTjR+dTM5JpLH29JynmMjAv5LJj9eIi3aCBtOUd4vqeU+9At92D/p9hhh83zGz9LA=
-X-Received: by 2002:a2e:b819:: with SMTP id u25mr22350417ljo.438.1628672749431;
- Wed, 11 Aug 2021 02:05:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nY+KsOIvdmq/I8f8sHJvd3e52ylxx2cGgSYbPUMLTyI=;
+        b=LU6jfxxgoZVJfOgBHHHMvzDQMwkufTwBUYO2MHrUbJO38gwo98OPrn+M9rd5XnUYE5
+         /VdwdgAbW46yB7VkUjL0rYx5VZ6aAWt4FJarMrrS+g8+GZNd2Hwbuz6DBq0/6/m5AdlG
+         rUpeORMYYYCKu++srvES9eEDjPx3BeipY/PBYicXYP5YzjoE3nZ/T8yHuJx2/D+L3wmG
+         d30CP24VgNgi8rQCrvCbd4NWGAFXEtjGWFlUWXu5kwFnjWiayLMu5QzrpIUu/uvX4AdL
+         qTOF9MAdQIY0pQzLO0yQ0o8ESmMsldIDelYNeIlgShSS7jkHwIFybkjdmH4OnGDSmSfP
+         9ZLw==
+X-Gm-Message-State: AOAM530gTEWTkFJezjVpHHLCHvD6o1ZHQkvqjc8CyxZ4Vzvj2ajLyZIj
+        lt4kWPsXYt6sgYMWuUyl8HjVbWx81GGA0gEpERmsjAWllKZI2eFWKRVBXeTTzIQJ+mBkLcTWsgD
+        cZJJy6J/bks10CxfF5iPuumhl
+X-Received: by 2002:a17:906:e57:: with SMTP id q23mr2580424eji.483.1628672770533;
+        Wed, 11 Aug 2021 02:06:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydlQt4cUzS593TJoOXM9aBHzAXiW4JJ0JmGJ2tgg4wf8bTFkdPRDcvQCA3d1fcsJESLEh/Sg==
+X-Received: by 2002:a17:906:e57:: with SMTP id q23mr2580395eji.483.1628672770414;
+        Wed, 11 Aug 2021 02:06:10 -0700 (PDT)
+Received: from steredhat (a-nu5-14.tin.it. [212.216.181.13])
+        by smtp.gmail.com with ESMTPSA id m12sm7955692ejd.21.2021.08.11.02.06.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 02:06:10 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 11:06:07 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v2 2/5] vhost/vsock: support MSG_EOR bit processing
+Message-ID: <20210811090607.bl3cjsjrsg2ss7dp@steredhat>
+References: <20210810113901.1214116-1-arseny.krasnov@kaspersky.com>
+ <20210810114018.1214619-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210726111941.1447057-1-wenst@chromium.org>
-In-Reply-To: <20210726111941.1447057-1-wenst@chromium.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 11:05:38 +0200
-Message-ID: <CACRpkdYgTeqWz=S+HfLAhd4M3HYESkhvOEBbS6_185PYUzzxWQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: pinctrl: mt8195: Use real world values for
- drive-strength arguments
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210810114018.1214619-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 1:19 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
+On Tue, Aug 10, 2021 at 02:40:15PM +0300, Arseny Krasnov wrote:
+>It works in the same way as 'end-of-message' bit: if packet has
+>'EOM' bit, also check for 'EOR' bit.
 
-> The original binding submission for MT8195 pinctrl described the
-> possible drive strength values in micro-amps in its description, but
-> then proceeded to list register values in its device tree binding
-> constraints.
->
-> However, the macros used with the Mediatek pinctrl bindings directly
-> specify the drive strength in micro-amps, instead of hardware register
-> values. The current driver implementation in Linux does convert the
-> value from micro-amps to hardware register values. This implementation
-> is also used with MT7622 and MT8183, which use real world values in
-> their device trees.
->
-> Given the above, it was likely an oversight to use the raw register
-> values in the binding. Correct the values in the binding. Also drop
-> the description since the binding combined with its parent,
-> pinctrl/pincfg.yaml, the binding is now self-describing.
->
-> Fixes: 7f7663899d94 ("dt-bindings: pinctrl: mt8195: add pinctrl file and binding document")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Please describe all changes, e.g. the new variable to accumulate flags 
+to restore.
 
-Patch applied.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> drivers/vhost/vsock.c | 12 ++++++++----
+> 1 file changed, 8 insertions(+), 4 deletions(-)
+>
+>diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>index feaf650affbe..06fc132b13c8 100644
+>--- a/drivers/vhost/vsock.c
+>+++ b/drivers/vhost/vsock.c
+>@@ -114,7 +114,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 		size_t nbytes;
+> 		size_t iov_len, payload_len;
+> 		int head;
+>-		bool restore_flag = false;
+>+		uint32_t flags_to_restore = 0;
+>
+> 		spin_lock_bh(&vsock->send_pkt_list_lock);
+> 		if (list_empty(&vsock->send_pkt_list)) {
+>@@ -187,7 +187,12 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 			 */
+> 			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
+> 				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+>-				restore_flag = true;
+>+				flags_to_restore |= le32_to_cpu(VIRTIO_VSOCK_SEQ_EOM);
+>+
+>+				if (le32_to_cpu(pkt->hdr.flags & VIRTIO_VSOCK_SEQ_EOR)) {
+>+					pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
+>+					flags_to_restore |= le32_to_cpu(VIRTIO_VSOCK_SEQ_EOR);
+                                                             ^
+I'm not sure this is needed, VIRTIO_VSOCK_SEQ_EOR is represented in the 
+cpu endianess.
 
-Yours,
-Linus Walleij
+I think here you can simpy do `flags_to_restore |= VIRTIO_VSOCK_SEQ_EOR` 
+then use `pkt->hdr.flags |= cpu_to_le32(flags_to_restore);` as you 
+already do.
+
+>+				}
+> 			}
+> 		}
+>
+>@@ -224,8 +229,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 		 * to send it with the next available buffer.
+> 		 */
+> 		if (pkt->off < pkt->len) {
+>-			if (restore_flag)
+>-				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+>+			pkt->hdr.flags |= cpu_to_le32(flags_to_restore);
+>
+> 			/* We are queueing the same virtio_vsock_pkt to handle
+> 			 * the remaining bytes, and we want to deliver it
+>-- 
+>2.25.1
+>
+
