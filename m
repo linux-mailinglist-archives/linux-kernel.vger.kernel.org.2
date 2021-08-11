@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4763E9460
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2BA3E9462
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhHKPQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:16:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44318 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233069AbhHKPOk (ORCPT
+        id S233106AbhHKPRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233093AbhHKPPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:14:40 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 371191FED6;
-        Wed, 11 Aug 2021 15:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628694843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t+eHGdoT5jzm2HSlG+BIy5L9hl1UwoXahRV2J4sxtj4=;
-        b=LwH5/6Bzv7OxzEM3iByhsLJsOXF9F+yTMpFahzxeaoO8JqtDs+K504kKpD1nNjUAzUTA5D
-        A3jbAnAMOtKXNQOzZUTGC0tX5CojSuzYWgARK5gi5bBxnAqhRgzQzNCSuODynaDBACBFA6
-        5aLF/EQ40ElxVzuAutllYfJZA/YjB1M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628694843;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t+eHGdoT5jzm2HSlG+BIy5L9hl1UwoXahRV2J4sxtj4=;
-        b=faDBDoocMSbbQKGWq4QPvSps0bem5q9vJkmrRO2A+WD4W6Ecm89AeYgtEyzDDQFKm5KN/g
-        tSotztGPZxjTbfAA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id EBDA2136D9;
-        Wed, 11 Aug 2021 15:14:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id GgJhNjrpE2F6VwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 15:14:02 +0000
-Subject: Re: [PATCH v14 061/138] mm/migrate: Add folio_migrate_flags()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-62-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <601db7e4-eb11-d235-8362-79e204d284d8@suse.cz>
-Date:   Wed, 11 Aug 2021 17:14:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 11:15:34 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D0C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:14:32 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id h2so5189944lji.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/0lDg+NImY6s6wrrkXig40C8tKxVtluzWl+MqfNgFF8=;
+        b=Ce6JQNzC9o3guXHmwPdAlP5mDp+4HOxpqLsiszR2taDsyHd5aZaTtsEiOYzxcA/Euo
+         m54gnDiSAMUsefUpZmERfYaICrSTLWJnss4J6jqUP28MsYD/M/bsudMDrwWw1drgF+11
+         nOaf410iZooybX//Wf08Ka8ZqhmrlLQ8L72boSQnqHy2Ib+K43FyGyfhpWGUj9x2tHJC
+         L5Z3j69a2LgLORqEKz40DeaNSjfU8XuH3+JNL9keKcASIm0brFhxaOML27UvakZ4w2da
+         IZjxzmrnezYfxVthIm88z0AuFFggizbyH/OCvs1HHNsD59HEtXjUK6jkxAQGeotT/7Nk
+         ULdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/0lDg+NImY6s6wrrkXig40C8tKxVtluzWl+MqfNgFF8=;
+        b=nd3j7G+6vM6mDYA5/H0Z3tYiPQTZNjBWdBl1bmtfRCheePxsI5ElaARjsr1N0Ub7HF
+         F2vBIp+ndt3uWxOuJdIb/QeyVLIbPi3dCLptcq+goG32SzYCOWnmjampE665z85lDLHp
+         ZMrdVc/AODYY9gk+0RjlMKy9jjiuqTj9PTEEvGBHcZIo/fK1K216+EZDWB7oXowGXBvl
+         u7HHi0ZltyuEk49gOE6uogDo0ybBjMDHbhxjPjfbvM9mQsS+TtTRWt2It2eiMSwoLIEO
+         19hdhb4U4A5imyHOHDtOUCUIW3MXboURnAeozRgOxY7DshTBirE/EcdxgzpnHYp3YG+X
+         +4ug==
+X-Gm-Message-State: AOAM5317x/6F7a9wOYmtNFugBEBc9yYE4XtiejKmc02ap4VflFQRuSiR
+        jv2umZflKCxHGDXgqlrJg60V0kSs7PEe+/ByJ34cOg==
+X-Google-Smtp-Source: ABdhPJzTOffu1IZaK0MrBftpMq2jJlt6JJb23qCbDVtCTwDCSo3HOeEpRFGxSmZshFxUvPMqYO7T98iaggWO6yENtRI=
+X-Received: by 2002:a2e:a231:: with SMTP id i17mr13187319ljm.467.1628694871026;
+ Wed, 11 Aug 2021 08:14:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-62-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210805174219.3000667-1-piyush.mehta@xilinx.com> <20210805174219.3000667-2-piyush.mehta@xilinx.com>
+In-Reply-To: <20210805174219.3000667-2-piyush.mehta@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 17:14:20 +0200
+Message-ID: <CACRpkdbZouNdL43=nVLZd3hOeVQTLOZT=5FHGuM+3q3Ah2M9yQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] firmware: zynqmp: Add MMIO read and write support
+ for PS_MODE pin
+To:     Piyush Mehta <piyush.mehta@xilinx.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Michal Simek <michal.simek@xilinx.com>, wendy.liang@xilinx.com,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, rajan.vaja@xilinx.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, git <git@xilinx.com>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Turn migrate_page_states() into a wrapper around folio_migrate_flags().
-> Also convert two functions only called from folio_migrate_flags() to
-> be folio-based.  ksm_migrate_page() becomes folio_migrate_ksm() and
-> copy_page_owner() becomes folio_copy_owner().  folio_migrate_flags()
-> alone shrinks by two thirds -- 1967 bytes down to 642 bytes.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Thu, Aug 5, 2021 at 7:42 PM Piyush Mehta <piyush.mehta@xilinx.com> wrote:
 
-After fixing the bug below,
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Add Xilinx ZynqMP firmware MMIO APIs support to set and get PS_MODE
+> pins value and status. These APIs create an interface path between
+> mode pin controller driver and low-level API to access GPIO pins.
+>
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> ---
+> Changes in v2:
 
+After Michals description of how this is controlling USB
+PHY and misc resets I'm OK with the concept.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-> --- a/include/linux/migrate.h
-> +++ b/include/linux/migrate.h
-
-...
-
-> @@ -36,10 +36,10 @@ static inline void split_page_owner(struct page *page, unsigned int nr)
->  	if (static_branch_unlikely(&page_owner_inited))
->  		__split_page_owner(page, nr);
->  }
-> -static inline void copy_page_owner(struct page *oldpage, struct page *newpage)
-> +static inline void folio_copy_owner(struct folio *newfolio, struct folio *old)
-
-This changed order so that new is first.
-
-...
-
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -538,82 +538,80 @@ int migrate_huge_page_move_mapping(struct address_space *mapping,
->  }
->  
->  /*
-> - * Copy the page to its new location
-> + * Copy the flags and some other ancillary information
->   */
-> -void migrate_page_states(struct page *newpage, struct page *page)
-> +void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
->  {
-
-...
-
-> -	copy_page_owner(page, newpage);
-> +	folio_copy_owner(folio, newfolio);
-
-This passes old first.
-
->  
-> -	if (!PageHuge(page))
-> +	if (!folio_test_hugetlb(folio))
->  		mem_cgroup_migrate(folio, newfolio);
->  }
-> -EXPORT_SYMBOL(migrate_page_states);
-> +EXPORT_SYMBOL(folio_migrate_flags);
+Yours,
+Linus Walleij
