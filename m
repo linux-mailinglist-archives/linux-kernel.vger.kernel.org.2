@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F793E8AE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D3F3E8AEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235536AbhHKHRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:17:15 -0400
-Received: from mga11.intel.com ([192.55.52.93]:64771 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235185AbhHKHRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:17:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="211963188"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="211963188"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 00:16:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="516568446"
-Received: from fbrausse-mobl.ger.corp.intel.com (HELO localhost) ([10.251.209.112])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 00:16:44 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Matt Roper <matthew.d.roper@intel.com>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [Intel-gfx] linux-next: Signed-off-by missing for commit in the drm-intel tree
-In-Reply-To: <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210715141854.1ad4a956@canb.auug.org.au> <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com> <YRE2RwQ6XlUqbgmn@phenom.ffwll.local> <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com> <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
-Date:   Wed, 11 Aug 2021 10:16:41 +0300
-Message-ID: <8735rgo3hi.fsf@intel.com>
+        id S235406AbhHKHSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235109AbhHKHSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:18:40 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BF6C061765;
+        Wed, 11 Aug 2021 00:18:17 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y34so3616572lfa.8;
+        Wed, 11 Aug 2021 00:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dg6pLnPjVAtzxSVEs294XC4hAdURgggAJsxQwZ1ihAA=;
+        b=WiaozDn9hHTeG/WdotFQpHJfhhAXmNQ8JrHA7CTf/Op+uc/qOh9ShFDbEJmDkvdE5K
+         KYa5Hb3Rho98p4Wf+atu3+9Th152uhjVGdQBCGguHnX2pxGUhKRtO998MA8YIkndZed+
+         F756ljUgA+dncph+CbxShWCDcLgSs3VWziwSrOkQ+DOd5j66AoEHp2Wn6aKc7L3GLqgQ
+         r5frmMlbeA1xFJHuBES/6xSTJysq1ujdOGlHXAlcGeqyekjsW5IG3HM2IZ75j18H/Inl
+         MEBo4Y7UtIhfhCfaFDyXWCDBrOYIGm+qlV9B91pu1lzRTF1J6KV50z/6ZfFkKV6f6GLm
+         pqKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dg6pLnPjVAtzxSVEs294XC4hAdURgggAJsxQwZ1ihAA=;
+        b=DLX9M/8Fk3jUQt+MWcclWSIzOb6PoauvS7peBqeOW3zIH98DblS7VK4CQyYPhg2yTW
+         luPWzS4Zb/NLriUdKX06ToK3+nMRWbcP4p0KZPmIiv0ZwID3sfcg5xbFrEGOPzygZPxU
+         xGeY0airwARf52v68JP+w9UXEn+f6YD7lNkx12BwXHUlkIvT86VaNDUXiBN6rML1+8m2
+         KRaLvPwh3CUmkaSKt9tn4CyrLWjz1u4fIkqTFtnWbvT69u6ARKVr5VBE0uxJQw3oycvw
+         dEvk+DeaiefRIg4nkYYigerkByRphflY49xoN3X7asWqeGP07w4O2OjZVT7MKo8Dm2Wt
+         wmOA==
+X-Gm-Message-State: AOAM531g/pwR0bbOkmcOjGn+oX4ZXqH4dazH3y3+5vKfqBdjkaWK89TQ
+        bQL4a+SGMf0ch4NGjIt79VqOrl/kHzRWa4zpIFs=
+X-Google-Smtp-Source: ABdhPJwkDjxicadizT9KbFPV2Tun1I/JQcK9eslZZ4FSv1mNWUQ63syojkl0OMzQSqrPOjepv10eXc54ilfGxIr2ULw=
+X-Received: by 2002:a05:6512:3408:: with SMTP id i8mr1495706lfr.525.1628666295694;
+ Wed, 11 Aug 2021 00:18:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210704153314.6995-1-keguang.zhang@gmail.com>
+ <YO5yo8v/tRZLGEdo@matsya> <CAJhJPsUNCSK4VYv9Z4ZNDxC03F4CxQoAXCCf+TJmmbdUe4XNNA@mail.gmail.com>
+ <YPLrsXEmmHPtbZ+N@matsya> <YPMVyYoBojHYsMbJ@kroah.com> <YPa2+TsdL0PrR3hR@matsya>
+ <YPa4IAk3sh7bai15@kroah.com> <YPa/DsO1vWcXKJKd@matsya> <CAJhJPsV211=Y_wrXqaiWz7Tqhvbj-ETwSNWqLcbt8PHi8=JMLA@mail.gmail.com>
+In-Reply-To: <CAJhJPsV211=Y_wrXqaiWz7Tqhvbj-ETwSNWqLcbt8PHi8=JMLA@mail.gmail.com>
+From:   Kelvin Cheung <keguang.zhang@gmail.com>
+Date:   Wed, 11 Aug 2021 15:18:03 +0800
+Message-ID: <CAJhJPsXtm_i5OAtSxZn9mSumAp0X8r5EKJ3VLt1nmC-j-EuOyw@mail.gmail.com>
+Subject: Re: [PATCH V5] dmaengine: Loongson1: Add Loongson1 dmaengine driver
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
-> On Mon, Aug 09, 2021 at 09:19:39AM -0700, Matt Roper wrote:
->> On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
->> > On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
->> > > Hi Matt,
->> > > 
->> > > Always use the dim tooling when applying patches, it will do the right
->> > > thing with regards to adding the S-o-b.
->> > 
->> > fd.o server rejects any pushes that haven't been done by dim, so how did
->> > this get through?
->> 
->> I definitely used dim for all of these patches, but I'm not sure how I
->> lost my s-o-b on this one.  Maybe when I edited the commit message after
->> 'dim extract-tags' I accidentally deleted an extra line when I removed
->> the extract-tags marker?  It's the only patch where the line is missing,
->> so it's almost certainly human error on my part rather than something
->> dim did wrong.
+Kelvin Cheung <keguang.zhang@gmail.com> =E4=BA=8E2021=E5=B9=B47=E6=9C=8821=
+=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=888:22=E5=86=99=E9=81=93=EF=BC=
+=9A
 >
-> Yeah that's an expected failure model, and dim is supposed to catch that
-> by rechecking for sobs when you push. See dim_push_branch ->
-> checkpatch_commit_push_range in dim. So you can hand-edit stuff however
-> you want, dim /should/ catch it when pushing. That it didn't is kinda
-> confusing and I'd like to know why that slipped through.
-
-One of the failures that happened here was that the commit was part of a
-topic branch that was merged and pushed directly. All merges should
-happen via pull requests on the list, and applied (preferrably by
-maintainers or at least with their acks recorded on the merge) using dim
-apply-pull which should also have the checks.
-
-
-BR,
-Jani.
-
+> Hi Vinod, Greg,
 >
->> > Matt, can you pls figure out and type up the patch to
->> > plug that hole?
->> 
->> Are you referring to a patch for dim here?  The i915 patch has already
->> landed, so we can't change its commit message now.
+> Vinod Koul <vkoul@kernel.org> =E4=BA=8E2021=E5=B9=B47=E6=9C=8820=E6=97=A5=
+=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=888:18=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On 20-07-21, 13:48, Greg KH wrote:
+> > > On Tue, Jul 20, 2021 at 05:13:53PM +0530, Vinod Koul wrote:
+> > > > On 17-07-21, 19:39, Greg KH wrote:
+> > > > > On Sat, Jul 17, 2021 at 08:09:45PM +0530, Vinod Koul wrote:
+> > > > > > On 17-07-21, 18:57, Kelvin Cheung wrote:
+> > > > > > > Vinod Koul <vkoul@kernel.org> =E4=BA=8E2021=E5=B9=B47=E6=9C=
+=8814=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:14=E5=86=99=E9=81=93=
+=EF=BC=9A
+> > > > > > > >
+> > > > > > > > On 04-07-21, 23:33, Keguang Zhang wrote:
+> > > > > > > >
+> > > > > > > > > +static struct platform_driver ls1x_dma_driver =3D {
+> > > > > > > > > +     .probe  =3D ls1x_dma_probe,
+> > > > > > > > > +     .remove =3D ls1x_dma_remove,
+> > > > > > > > > +     .driver =3D {
+> > > > > > > > > +             .name   =3D "ls1x-dma",
+> > > > > > > > > +     },
+> > > > > > > > > +};
+> > > > > > > > > +
+> > > > > > > > > +module_platform_driver(ls1x_dma_driver);
+> > > > > > > >
+> > > > > > > > so my comment was left unanswered, who creates this device!
+> > > > > > >
+> > > > > > > Sorry!
+> > > > > > > This patch will create the device: https://patchwork.kernel.o=
+rg/patch/12281691
+> > > > > >
+> > > > > > Greg, looks like the above patch creates platform devices in mi=
+ps, is
+> > > > > > that the right way..?
+> > > > >
+> > > > > I do not understand, what exactly is the question?
+> > > >
+> > > > So this patch was adding Loongson1 dmaengine driver which is a plat=
+form
+> > > > device. I asked about the platform device and was told that [1] cre=
+ates
+> > > > the platform device. I am not sure if that is the recommended way g=
+iven
+> > > > that you have been asking people to not use platform devices.
+> > >
+> > > Yes, but this link:
+> > >
+> > > > [1]: https://patchwork.kernel.org/patch/12281691
+> > >
+> > > Does look like a "real" platform device in that you have fixed resour=
+ces
+> > > for the device and no way to discover it on your own.
+> > >
+> > > But why are you not using DT for this?  That looks like the old platf=
+orm
+> > > data files.
+> >
+> > Apparently I was told that this platform does not use DT :( Looking at
+> > it it should.. Maybe Kelvin can explain why..
 >
-> Yeah dim, not drm-intel, that can't be fixed anymore because it's all
-> baked in.
-> -Daniel
+> Yes, the DT support of Loongson32 is still on the way.
+> Therefore, I have to use the old way to let the driver work.
+> I will update this driver once this platform supports DT.
 >
->> 
->> 
->> Matt
->> 
->> > 
->> > Thanks, Daniel
->> > 
->> > > 
->> > > Regards, Joonas
->> > > 
->> > > Quoting Stephen Rothwell (2021-07-15 07:18:54)
->> > > > Hi all,
->> > > > 
->> > > > Commit
->> > > > 
->> > > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
->> > > > 
->> > > > is missing a Signed-off-by from its committer.
->> > > > 
->> > > > -- 
->> > > > Cheers,
->> > > > Stephen Rothwell
->> > 
->> > -- 
->> > Daniel Vetter
->> > Software Engineer, Intel Corporation
->> > http://blog.ffwll.ch
->> 
->> -- 
->> Matt Roper
->> Graphics Software Engineer
->> VTT-OSGC Platform Enablement
->> Intel Corporation
->> (916) 356-2795
+Hi Vinod,
+Is there anything to be improved?
+Perhaps this patch is acceptable now?
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Thanks!
+> >
+> > --
+> > ~Vinod
+>
+>
+>
+> --
+> Best regards,
+>
+> Kelvin Cheung
+
+
+
+--=20
+Best regards,
+
+Kelvin Cheung
