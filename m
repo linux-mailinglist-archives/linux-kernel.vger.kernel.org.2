@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B69E3E8728
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3BF3E8732
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhHKASk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235678AbhHKASb (ORCPT
+        id S235914AbhHKAUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:20:15 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:53659 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235692AbhHKAUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:18:31 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C40C06179B
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 17:18:05 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so1312767otq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 17:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tC3Mrv9dp9wt6xL+7sHY8TagV0MgWFNV+pJOGnVORVo=;
-        b=FDn7/X54nL1aG3m/4vDJtAKvaaviRB7169EeCZwuzP0shJzDftJhls7H32FjLkR4tK
-         TY0MO1Z+yupNXglfBUjzGPkdnNUoM9reDecGvC2JBQ2aUKhIZBhJf2yC9FksyUUsC8Rq
-         i5GRR3+HOtcJ+Znq6y8W95C/6oqcPcBxeVQZLrF8nQIOI/lWu/0GlgBMh/o/DQujQvMt
-         orLScabv/n3cpxDica+yDQ+iJXHXdMYutH2DCv3IR82bgKnpfMCBjBEkKLWYNyR6cm8s
-         wCnGf+ducxIz14qCU7uLIoawYJIRAcDS+BddSJ7VLsN1rTB5lCozGt2merKrzy5YNmX9
-         fOZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tC3Mrv9dp9wt6xL+7sHY8TagV0MgWFNV+pJOGnVORVo=;
-        b=FvnBLkyVBHX2HTiBEcaBOZSOMUNa/SSjUnTpxt3TJUbouhdXA6ri55z8EVJbZaLCPK
-         WXcdSIru1vjMyN0uaUseg7YqReW+dPwfQ6j1SJ3HbfbucLZ4SUKidQGP0s7Q36Jwx3zw
-         H3mZvUfCN9NNHhmm0yndzjtqOw8jI/nwIxQj7yk89zQ4vi6fCkdBYmIVEb+d+qgDy3H4
-         y1bstHG/f4p07IIOiJrw+qvO/NvjagsVSAc3Ns+405t7HeIWTzoS0Y+TG4v1qZVzDW/E
-         rUKV78uwxEMi6p7g6Pe3QoGFy3Gwefj0ALuHwKT/Z9tvhLdwb225fzLTkZmGlOGKrJgA
-         Si5Q==
-X-Gm-Message-State: AOAM532F8DfXfYoFeH9A/ueB6y9L9dkjVJHbMSxV9CKQHQJkzr+nH8bm
-        i/8jUCd1WAM8KG08WOX2576ucA==
-X-Google-Smtp-Source: ABdhPJwkyONF/aUoE8sR15S4yNOA7sm6WRXOMuaxwi+kTEm/PcLMaps34StDjqMYdEhwRL4FwUMRSg==
-X-Received: by 2002:a9d:2609:: with SMTP id a9mr6767199otb.365.1628641084446;
-        Tue, 10 Aug 2021 17:18:04 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 12sm4176912otg.14.2021.08.10.17.18.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 17:18:04 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 19:18:02 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mike Tipton <mdtipton@codeaurora.org>, djakov@kernel.org,
-        agross@kernel.org, saravanak@google.com, okukatla@codeaurora.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Alex Elder <elder@linaro.org>
-Subject: Re: [PATCH v2 4/4] interconnect: qcom: icc-rpmh: Add BCMs to commit
- list in pre_aggregate
-Message-ID: <YRMXOlA5a98BwT3i@builder.lan>
-References: <20210721175432.2119-1-mdtipton@codeaurora.org>
- <20210721175432.2119-5-mdtipton@codeaurora.org>
- <CAE-0n52iVgX0JjjnYi=NDg49xP961p=+W5R2bmO+2xwRceFhfA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n52iVgX0JjjnYi=NDg49xP961p=+W5R2bmO+2xwRceFhfA@mail.gmail.com>
+        Tue, 10 Aug 2021 20:20:13 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4019058041A;
+        Tue, 10 Aug 2021 20:19:50 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Tue, 10 Aug 2021 20:19:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=TJnR3Y1jRHyuvNKz98aoSVU7LBqrfX9
+        Q1XFcqdbpwL0=; b=otc4PnNARgoLm1XBiDUZWQ8vgpp/dj0SeUE3PcX17toYGay
+        SLVTUGVuw9SgBR623QsWDhaHx594itB5W6LGMjYcb3mRnBdj/lj4PosvJfI/lYwd
+        cmAE+ZP7K9QckxMGAwQ/S/zSXaKpy0nCEooyyK0jIsErAs0fwu1WKxqvQkaR9fvX
+        g98qBCk3+1W/H9N+9Vm0cTf7chZ4eqf7pXRulyxZ3907MoYBBPAhdb2tq0+3K5m+
+        WWcNrQgnJf+wt+QcCAn9IEeqbpYGKvMSK6/A93kBe9ICmS5yWoO4rBEP+V07SJkC
+        p0Osqu9r2ZTc4dUcME63iniXInzHVX2kM57MvCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=TJnR3Y
+        1jRHyuvNKz98aoSVU7LBqrfX9Q1XFcqdbpwL0=; b=ZSUuRYKCUqHRZBsFFklFyz
+        IoHgNcnsC9GQLtyhUERApUoK46BH/NzfAV4S6U525WMZqiEOXYetQEXYnPnIAp85
+        ZyxufUwGuO8RRnqOJ7ZY7Wk9EqYWIrJXx+xo/Bz9iR8PyRSue9rVt328dF6TNNPw
+        0svbooiiaPdEDDVJXD37f2g9bRtNOGSd9/7K/BYEL16o/vxkZiQFNRQmqvM1E/mv
+        xyg7jEup2VIfpm2odPeJK+/O2vFaYfknt/JRevmlQLqDz9K1r8yoiFNSCnMPjVjE
+        yAbxejAhkjFF72bxuJBXVwZyXEYZv2Hy/BH4bW7iUjOk0lLvEeSG/xfMvobNpWUA
+        ==
+X-ME-Sender: <xms:oxcTYQMs9hRztGtED_kTlD9Hcik9VxQ8he7kjxErnKtRbIsIAAgxHA>
+    <xme:oxcTYW-LFY09y7PMvujnBEg2srKUu_Pk66ylPyC-B5P6FIOeXFp9R2AlI-wgbVN-R
+    YF4RRCeT-aFYmlPEQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedtgdeftdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:oxcTYXRwJjHMLOmgVtRkmOHdavu-M1RbiUfLeo8UZQr3hZfrUd_8og>
+    <xmx:oxcTYYuFOf7V3nLo1y0AdEiAKOREhvWOTQxNrL4tYYuZxSY34_nDSw>
+    <xmx:oxcTYYeC4M5cveV0Zodk6hgp-e9hgtHBg80uctI2a5BcWp44JMLw8g>
+    <xmx:phcTYfxd4nMtKVK_Jn7ebZTvlJPezURA6FbGPOMUA_o_pbQoLrB3Yw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 91878AC0DD0; Tue, 10 Aug 2021 20:19:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-554-g53a5f93b7d-fm-20210809.002-g53a5f93b
+Mime-Version: 1.0
+Message-Id: <96e52916-f113-4a91-b83f-e0de144611ca@www.fastmail.com>
+In-Reply-To: <CACRpkdZm9C23aHTWs8DNX1RChSB4A-X0PoyW5wnH2XyQQeviag@mail.gmail.com>
+References: <20210723075858.376378-1-andrew@aj.id.au>
+ <20210723075858.376378-5-andrew@aj.id.au>
+ <CACRpkdZm9C23aHTWs8DNX1RChSB4A-X0PoyW5wnH2XyQQeviag@mail.gmail.com>
+Date:   Wed, 11 Aug 2021 09:49:05 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Linus Walleij" <linus.walleij@linaro.org>
+Cc:     "Linux LED Subsystem" <linux-leds@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, "Pavel Machek" <pavel@ucw.cz>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 4/6] leds: pca955x: Use pinctrl to map GPIOs to pins
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 10 Aug 18:31 CDT 2021, Stephen Boyd wrote:
 
-> Quoting Mike Tipton (2021-07-21 10:54:32)
-> > We're only adding BCMs to the commit list in aggregate(), but there are
-> > cases where pre_aggregate() is called without subsequently calling
-> > aggregate(). In particular, in icc_sync_state() when a node with initial
-> > BW has zero requests. Since BCMs aren't added to the commit list in
-> > these cases, we don't actually send the zero BW request to HW. So the
-> > resources remain on unnecessarily.
-> >
-> > Add BCMs to the commit list in pre_aggregate() instead, which is always
-> > called even when there are no requests.
-> >
-> > Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-> > Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
-> > ---
+
+On Tue, 10 Aug 2021, at 23:24, Linus Walleij wrote:
+> On Fri, Jul 23, 2021 at 9:59 AM Andrew Jeffery <andrew@aj.id.au> wrote:
 > 
-> This patch breaks reboot for me on sc7180 Lazor
+> > The leds-pca955x driver currently assumes that the GPIO numberspace and
+> > the pin numberspace are the same. This quickly falls apart with a
+> > devicetree binding such as the following:
+> (...)
 > 
+> Honestly I do not understand this patch. It seems to implement a pin
+> controller and using it in nonstandard ways.
 
-FWIW, it prevents at least SM8150 from booting (need to check my other
-boards as well), because its no longer okay to have the interconnect
-providers defined without having all client paths specified.
+Yeah, it's a bit abusive, hence RFC :)
 
-Regards,
-Bjorn
+> 
+> If something implements the pin controller driver API it should be
+> used as such IMO, externally. This seems to be using it do relay
+> calls to itself which seems complicated, just invent something
+> locally in the driver in that case? No need to use pin control?
+
+Right. After discussions with Andy I'm going to rework the approach to 
+GPIOs which will remove a lot of complexity.
+
+The thought was to try to maintain the intent of the devicetree binding 
+and use existing APIs, but all-in-all it's ended up twisting things up 
+in knots a fair bit. We discard a lot of it by making the gpiochip 
+always cover all pins and track use directly in the driver.
+
+> 
+> Can you explain why this LED driver needs to implement a pin
+> controller?
+
+The short answer is it doesn't as it has none of the associated 
+hardware.
+
+I'll cook up something simpler with the aim to avoid non-standard (or 
+any) pinctrl.
+
+Andrew
