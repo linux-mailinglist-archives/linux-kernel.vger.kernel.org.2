@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E397C3E9B6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A8B3E9B72
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 02:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbhHKX6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 19:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47738 "EHLO
+        id S232953AbhHLAAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 20:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbhHKX6B (ORCPT
+        with ESMTP id S232704AbhHLAAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 19:58:01 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5303AC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:57:37 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id a13so5921834iol.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:57:37 -0700 (PDT)
+        Wed, 11 Aug 2021 20:00:33 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65316C061765;
+        Wed, 11 Aug 2021 17:00:09 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id nt11so6342790pjb.2;
+        Wed, 11 Aug 2021 17:00:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wgn/XOEZSHXBTS0n02rl8r0RWKOfzVqP/qa7vWvXX9I=;
-        b=aGKdJem0hH3vDMH7+fz/6YNkhQn+Dz1CmX6C7yaAmEdiKmSddK9wr/D/7vIMdpu4oA
-         fGubaCGp9d+If/IDk+hmqvvgtDOXujsgcQoRbBGmjUnR55oVre3BENNA9/p/7LZzc3zh
-         NCB6ROWKUD1491LqDOVFDpuT4Zk9suMTBeLtnsi6/6DYA28XFPYqBs4di3DDfdrNG9t6
-         IlhTc0T7wj1zx8zQqWZ5Z7QvYMay+R65Tejeq+waY4ciFaXv6/bpf0QCLQLKV1uoWSN5
-         NuUFL8tzTL8ElNJZhyoKevdcqgWX51wJLwVAs7/mtBOTrO3DOo54OScCL7FX5kMTnoOO
-         0FcA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KgEdvsrca1SF5BWDushaiKJ06kC9hIpnUAyfu0HpOFc=;
+        b=B7VkmiO3h2XR7G2FVqaGzhMv0Ps38Udsf8F2g8R1NG7Pvhf+P+bINWGWULZtfpx1Dy
+         plQ9otZwDXIeW/ZVQyZtbRsgUhJE5XIAYMoPmJuDrse9IBrcnqTKA9JGwHlwWTIUvgUH
+         y4w4KZV9GZA40CBWma/k3Z0B0H3M5DQe16EluXTuK5G8bOH5JsZJcP+W2AwpAHewaHIt
+         OwLPNGc8oBpich8fe+E/Ibjd2Ze4bX5RNBZ8HZG4BRmiqUGxJ/crF5kcZkGxiB96pMX1
+         8JwVGxRHMGaNHACwT7exfKZ3is2m1gc/ltB2ksflk1LqbB5iJhz5m2eYDwwHn2YGz20C
+         AZUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wgn/XOEZSHXBTS0n02rl8r0RWKOfzVqP/qa7vWvXX9I=;
-        b=eEv3u43hKI/aLBI81pwjATonhepYzlRc93LAZ/6u9qsjY0tS4V3cHY9juLmCtAAyHx
-         KAagjcam9RYKpdRhvaaS1ghJS46Tjm8RaWKyJ5USSN4r3RKa0thMlZRMiO3jXHifrAFU
-         8DafzHQghseFmWqfQSe35hEZHzVWJLAu9IP6z/tJK/95Uh5m8BsBcMsU/UxAtLD7Gj7u
-         M90wGfzJrBCUcpgv48zXDgAHiLYZz7o2KnyATfgEUmT7pP9P+AE5W+KjSPVKoEJgHYE+
-         dtMWIk5hZHT48coa6OdXm/jC3sZV6/uXsKvIIzLIptoz6iIqRbqt6i8P4ZoYkgtEuiU/
-         LQvg==
-X-Gm-Message-State: AOAM531HosMxIBeW+GK40ftxUesE8eFfKGq3L/BkNLdzAL2zpyf+S12d
-        RBx7IWJLlLk5MYowu8htQJf5OmmV3GCyn4fTGby/YQ==
-X-Google-Smtp-Source: ABdhPJw9VCCVk6OxaczdEwet+vtY6KxK1pPvJ4+oGduxsxFDZZVnHnkEFsTeW8g8jQhGQhSRIiEjTN9pa+tcpQ+ofwQ=
-X-Received: by 2002:a5e:d80e:: with SMTP id l14mr853389iok.79.1628726256654;
- Wed, 11 Aug 2021 16:57:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KgEdvsrca1SF5BWDushaiKJ06kC9hIpnUAyfu0HpOFc=;
+        b=hZQHRnfO5B39AfkTuH+rCy02fE2VUroq452v9D2z5D8IJDWxgFgMovNINlE4fZv+xd
+         39dcYpEJwpnZcSrVci6ovuJhXp07pr2Pj1y0LWbB1FMsSIEvCO35O85wFEP1OLVN5VJ+
+         DQN1NvSpFQjWS87VtA5CMpH0eS2lLqJgRSWP1/IlfrDXcbzc7Epg4SSxYcidNWUmh501
+         8VGDJ1C+Io8tXwNW7zYEBneGyBeTPvhWo7neia0pkl+fWTH8jz/xh9n9kWO7MjrklkwF
+         V4wARHjWzc3Vwr2bl6k1T4+2rr9rLAtZ0ON9+09UL2w/ehMRex1RgoZNJamOLFT/hGVO
+         voXw==
+X-Gm-Message-State: AOAM532+rqLh9iGG3LnQ7msyJ3326QTftt2zHE09uZGi84Uwmk4sVyWX
+        tOnNhUCF0LcHnP8xX7sDZL8td3Rr8CBBrAyF
+X-Google-Smtp-Source: ABdhPJxK4Nh5mOO6hzUscxWSTVLCtL+5kfxQU0/wJbk06HcMAQ5tA/jGj108pcu3I4KEs98kq18G8Q==
+X-Received: by 2002:a17:90b:3802:: with SMTP id mq2mr1215768pjb.19.1628726408807;
+        Wed, 11 Aug 2021 17:00:08 -0700 (PDT)
+Received: from localhost.localdomain (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id g14sm762359pfr.31.2021.08.11.17.00.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 17:00:08 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, edumazet@google.com, atenart@kernel.org,
+        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
+        bjorn@kernel.org, memxor@gmail.com
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
+Subject: [PATCH] net: drop skbs in napi->rx_list when removing the napi context.
+Date:   Thu, 12 Aug 2021 07:59:59 +0800
+Message-Id: <20210811235959.1099333-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210811062135.1332927-1-namhyung@kernel.org> <YRPnCLyn9oE540gM@krava>
- <CABPqkBQGu5Xb=PbwjfwQxmp5nVuZZ6tg4LnZaKJConYWkPcL2g@mail.gmail.com>
- <YRQrpcssx9kLHrAh@krava> <CAM9d7cjJKFZUQkYW2U6eBmdQJdSOrVDe0FiojhNBbknsKoEyTQ@mail.gmail.com>
-In-Reply-To: <CAM9d7cjJKFZUQkYW2U6eBmdQJdSOrVDe0FiojhNBbknsKoEyTQ@mail.gmail.com>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Wed, 11 Aug 2021 16:57:25 -0700
-Message-ID: <CABPqkBT3qqDC7cU+XwNcpST66+X6PMmsfwo96_0fTGVKn19ycw@mail.gmail.com>
-Subject: Re: [RFC] perf/core: Add an ioctl to get a number of lost samples
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Gabriel Marin <gmx@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 1:57 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> On Wed, Aug 11, 2021 at 12:57 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Aug 11, 2021 at 12:33:38PM -0700, Stephane Eranian wrote:
-> > > On Wed, Aug 11, 2021 at 8:04 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Tue, Aug 10, 2021 at 11:21:35PM -0700, Namhyung Kim wrote:
-> > > > > Sometimes we want to know an accurate number of samples even if it's
-> > > > > lost.  Currenlty PERF_RECORD_LOST is generated for a ring-buffer which
-> > > > > might be shared with other events.  So it's hard to know per-event
-> > > > > lost count.
-> > > > >
-> > > > > Add event->lost_samples field and PERF_EVENT_IOC_LOST_SAMPLES to
-> > > > > retrieve it from userspace.
-> > > > >
-> > > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > > > ---
-> > > > >  include/linux/perf_event.h      | 2 ++
-> > > > >  include/uapi/linux/perf_event.h | 1 +
-> > > > >  kernel/events/core.c            | 9 +++++++++
-> > > > >  kernel/events/ring_buffer.c     | 5 ++++-
-> > > > >  4 files changed, 16 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> > > > > index f5a6a2f069ed..44d72079c77a 100644
-> > > > > --- a/include/linux/perf_event.h
-> > > > > +++ b/include/linux/perf_event.h
-> > > > > @@ -756,6 +756,8 @@ struct perf_event {
-> > > > >       struct pid_namespace            *ns;
-> > > > >       u64                             id;
-> > > > >
-> > > > > +     atomic_t                        lost_samples;
-> > > > > +
-> > > > >       u64                             (*clock)(void);
-> > > > >       perf_overflow_handler_t         overflow_handler;
-> > > > >       void                            *overflow_handler_context;
-> > > > > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> > > > > index bf8143505c49..24397799127d 100644
-> > > > > --- a/include/uapi/linux/perf_event.h
-> > > > > +++ b/include/uapi/linux/perf_event.h
-> > > > > @@ -505,6 +505,7 @@ struct perf_event_query_bpf {
-> > > > >  #define PERF_EVENT_IOC_PAUSE_OUTPUT          _IOW('$', 9, __u32)
-> > > > >  #define PERF_EVENT_IOC_QUERY_BPF             _IOWR('$', 10, struct perf_event_query_bpf *)
-> > > > >  #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES     _IOW('$', 11, struct perf_event_attr *)
-> > > > > +#define PERF_EVENT_IOC_LOST_SAMPLES          _IOR('$', 12, __u64 *)
-> > > >
-> > > > would it be better to use the read syscall for that?
-> > > >   https://lore.kernel.org/lkml/20210622153918.688500-5-jolsa@kernel.org/
-> > > >
-> > > > that patchset ended up on me not having a way to reproduce the
-> > > > issue you guys wanted the fix for ;-) the lost count is there
-> > > > as well
-> > > >
-> > > Does the read format approach succeed even when the event is in error state?
-> >
-> > nope..
-> >
-> >         /*
-> >          * Return end-of-file for a read on an event that is in
-> >          * error state (i.e. because it was pinned but it couldn't be
-> >          * scheduled on to the CPU at some point).
-> >          */
-> >         if (event->state == PERF_EVENT_STATE_ERROR)
-> >                 return 0;
-> >
->
-> By the way, it'd be nice if the kernel would provide a way for
-> better error reporting.  There are many cases return -EINVAL
-> and it's hard to know what's the problem exactly.
->
-+1. If the kernel has more precise error reporting, then the tool
-could be more helpful in its error reporting and not try to guess with
-heuristics.
+The napi->rx_list is used to hold the GRO_NORMAL skbs before passing
+them to the stack, these skbs only passed to stack at the flush time or
+when the list's weight matches the predefined condition. In case the
+rx_list contains pending skbs when we remove the napi context, we need
+to clean out this list, otherwise, a memory leak will happen.
+
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
+---
+ net/core/dev.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index b51e41d0a7fe..319fffc62ce6 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -7038,6 +7038,13 @@ void __netif_napi_del(struct napi_struct *napi)
+ 	list_del_rcu(&napi->dev_list);
+ 	napi_free_frags(napi);
+
++	if (napi->rx_count) {
++		struct sk_buff *skb, *n;
++
++		list_for_each_entry_safe(skb, n, &napi->rx_list, list)
++			kfree_skb(skb);
++	}
++
+ 	flush_gro_hash(napi);
+ 	napi->gro_bitmask = 0;
+
+--
+2.25.1
+
