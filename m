@@ -2,50 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869653E89FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C943E8A01
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhHKGCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 02:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
+        id S234555AbhHKGGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 02:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbhHKGCk (ORCPT
+        with ESMTP id S234443AbhHKGGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 02:02:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC08C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 23:02:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=JgUqUwUQ1hasPhftYsiPUKHkCk
-        ZSYe5c8lPl3tZ0Lox7CXTMlKmuas85oVO72k788D3nWKOPjsV39thqarACHLf3C7DRlknpw2QIMVa
-        s375o9WQDtfKEgIoMNMzov0RJm11DJNhj9yBYkx2k9t97dDUtKC6xp0ZqdLfvdo90HVGCuVaEx1OI
-        LKBk9c9M8T+W4w5meJqcxiO0czMdDyHMc8exIvgukclxG6QKToPOd7CGw0HyRi+hY9fBoP8wKLLAQ
-        vuCm5OPDsDMyXoid09utkkAx+Ets6URYnW/tfsMU6w207qM7yNT9OCzBQD6X+jPBUCx7d26R3jL4E
-        LhfgEEpA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDhJ4-00D2gf-6P; Wed, 11 Aug 2021 06:01:49 +0000
-Date:   Wed, 11 Aug 2021 07:01:38 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Tom Murphy <murphyt7@tcd.ie>,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v3 2/5] dma-iommu: fix arch_sync_dma for map
-Message-ID: <YRNnwn71E+v6kXYq@infradead.org>
-References: <20210811024247.1144246-1-stevensd@google.com>
- <20210811024247.1144246-3-stevensd@google.com>
+        Wed, 11 Aug 2021 02:06:36 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2436C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 23:06:12 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id r5so3017507oiw.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 23:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=5/tBnKSU5qXKRYe9Fz5ZuIFqv9R0TeD3exvxylKbLkM=;
+        b=fEnxbRim5iht0kgzHGnrloV4XCKndmgEs9lvBefL05a//oQ04KBYaVghGtGFK5Cwjr
+         K0unP+WDy+E6zOON82EcRujIL9b4u+nYxAl/cKyMZja5YVDQ330geXw9EXAOtJrNsZ0a
+         0UE9Dt1OSceaAzQQg4tjgPa5Zxlft8Vp/s/Dw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=5/tBnKSU5qXKRYe9Fz5ZuIFqv9R0TeD3exvxylKbLkM=;
+        b=kS3Ta2z4rr7mLzRF2XAyCpp9SdK5An/xZyT+j515d7CCEk6eLSBfPA0twqP3gU3F1T
+         wcazAz6nmxfgBvHu/sD6JihvhUNz6t9mjRx+jH4lATbxxdPJCaHM2fgtKSuKG411z4Lw
+         s9xIu0uvv/wpx2FCj0xP4PHOUIy0Mx3QhbbIMK19OMI3zipIJoY5LDws6pSYGGmktiWH
+         wCrN8iOvphye9i03PK8TWgt6wEgJU4or+NoylFDhpLNKDdGhX+b5vLENZ4LgKzFs3NTq
+         CEvetjefBmodjOUwxgOFmk0kpeEWtTFwn/7eCYyQCyDk5ELasQ1ZuYHOWtovBEYbZzIA
+         UZbw==
+X-Gm-Message-State: AOAM533S6YxvK05+XZ/0+Px3RGmux9u21yDRoTrJpix/2gyrDwEKYgPE
+        lZ6VgwO9OnowpE9yjRFIZ9j2TTjoAQEmnOPz2JotOQ==
+X-Google-Smtp-Source: ABdhPJwXvEiH2a/IHH2d6b4DTNK8/EMOlbTO2eLGwqF/n11xtDpVt6KjOkcQ/0DWPhM3R1lmejtIJF7wDeohma8DIck=
+X-Received: by 2002:a54:468d:: with SMTP id k13mr6293281oic.125.1628661972050;
+ Tue, 10 Aug 2021 23:06:12 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 10 Aug 2021 23:06:11 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811024247.1144246-3-stevensd@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210721080549.28822-3-srivasam@qti.qualcomm.com>
+References: <20210721080549.28822-1-srivasam@qti.qualcomm.com> <20210721080549.28822-3-srivasam@qti.qualcomm.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 10 Aug 2021 23:06:11 -0700
+Message-ID: <CAE-0n52hdv0ehzQi2si3rPumBiO+=stoU3kkK=0e7fU_5+xUZw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
+ link for HDMI
+To:     Srinivasa Rao Mandadapu <srivasam@qti.qualcomm.com>,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, dianders@chromium.org,
+        judyhsiao@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+Quoting Srinivasa Rao Mandadapu (2021-07-21 01:05:49)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index 31bf7c698b8f..a4cb9ee567ff 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -288,6 +288,7 @@ sound: sound {
+>                         "Headphone Jack", "HPOL",
+>                         "Headphone Jack", "HPOR";
+>
+> +               #sound-dai-cells = <0>;
+>                 #address-cells = <1>;
+>                 #size-cells = <0>;
+>
+> @@ -314,6 +315,18 @@ sound_multimedia1_codec: codec {
+>                                 sound-dai = <&max98357a>;
+>                         };
+>                 };
+> +
+> +               dai-link@2 {
+> +                       link-name = "MultiMedia2";
+> +                       reg = <2>;
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Should this be
+
+			reg = <LPASS_DP_RX>;
+
+? And then the dai-link@2 should change to dai-link@5? It doesn't seem
+to really matter though, so maybe not.
+
+> +                       cpu {
+> +                               sound-dai = <&lpass_cpu 2>;
+
+This should be
+
+				sound-dai = <&lpass_cpu LPASS_DP_RX>;
+
+? At least from what I can tell without having it be 5 it doesn't work
+properly and external audio over DP doesn't enumerate.
+
+> +                       };
+> +
+> +                       codec {
+> +                               sound-dai = <&mdss_dp>;
+> +                       };
+> +               };
+>         };
+>  };
+>
+> @@ -768,6 +781,10 @@ secondary_mi2s: mi2s@1 {
+>                 reg = <MI2S_SECONDARY>;
+>                 qcom,playback-sd-lines = <0>;
+>         };
+> +
+> +       hdmi-primary@0 {
+
+This should be hdmi-primary@5 to match the value of LPASS_DP_RX define
+
+> +               reg = <LPASS_DP_RX>;
+> +       };
+>  };
