@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E173F3E9498
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4463E94A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhHKPgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:36:03 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:42700 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233010AbhHKPgC (ORCPT
+        id S233194AbhHKPhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233010AbhHKPg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:36:02 -0400
-Received: by mail-vs1-f42.google.com with SMTP id k24so1764345vsg.9;
-        Wed, 11 Aug 2021 08:35:37 -0700 (PDT)
+        Wed, 11 Aug 2021 11:36:59 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112C7C061765;
+        Wed, 11 Aug 2021 08:36:36 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id x7so3275048ilh.10;
+        Wed, 11 Aug 2021 08:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C4Yippe1FfLHJnm/bBg0Tev596XLEVnx9ptKT8Tmv1w=;
+        b=tuo0NJhlbsE1cgJWOCTQMJGME0TyKH6WbYQBRHNGe6yb4vS8khVqpRBj9CelO4Drcu
+         ipgawXlzgK+T4+0OBbYZXrAC1LFA5a7zBBMAxXttMA0xiNXNci6NbPSr29QvVBGM+LzW
+         29epQDHdAjX31mv91AAwgsMS8FmaqZJ2+oJcz/nKZExo2GdJ6bM9tSj48TZSrpoMKC02
+         c+JeSib3R+Nz6EjTa6xDUcvTxRMEGNVg12BZ4RkXpr1AUdAsrvuWuBm2oTzNFEZOw4S7
+         PMChY9ksUDnIApH0yl+pHTagBMzZoevhZZ0489tbZYC1FLezbgfwtDnFmSd48OU9F4Sr
+         Cgpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qe0iSj8XpU18YU856j4Cl+K1mgU1eag6gHjOJIBodYU=;
-        b=NxbMnEOENBHaXg4NMprVdhDf6hm/iv8kojr90GBi/mZJvHW2UBFe3kuT37cSCMFpOJ
-         WSKTIZrLDfHkr3TCElHHczCSfqT94Kl8POn7qJ0H8q4XD+QeFIVI7O5D/ASitH+1RsVz
-         ImwdIRcCp1UJetSE/xdF/uDTnW6WoN0evVQbWoBYLEcLzF4rJUGNwJa/uP9naCWVfW+B
-         5C7uFG3wWW+2dYv59oZRPPhbDzgWUUYfWyNbf5SDQtHLCFUPjH8pekxT2uziRhGOcxTy
-         PkPqp8ozJMKO2RWf6QFF4q7HbJu1awxrLDiqUidDKLSAugYQYAd9RxKGw4jsRdErdNsf
-         NdNQ==
-X-Gm-Message-State: AOAM532FKs2F8dhaSJE9z8LbThpgml7plQ1eXadzYFJKB/UZW59xx9Vq
-        MxkfEDSVkqERhRomXeWlr5HDusICQEN7n/4Yzos=
-X-Google-Smtp-Source: ABdhPJyCg7XeMMJOVeEoBRA0hgH3tr2A9kDf4d5be/Soj53sLrczZ+iXFRzYK6VNuP5kM7qaaKYjO/TzUNz0MI9TmgQ=
-X-Received: by 2002:a67:8009:: with SMTP id b9mr27769636vsd.18.1628696137555;
- Wed, 11 Aug 2021 08:35:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1628670468.git.geert+renesas@glider.be> <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
-In-Reply-To: <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 11 Aug 2021 17:35:26 +0200
-Message-ID: <CAMuHMdVFJ_qGs0V7f+XhfD6v3WnkMJ98fO31sCRSNaeS89XXUQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/9] MIPS: Avoid future duplicate elf core header reservation
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C4Yippe1FfLHJnm/bBg0Tev596XLEVnx9ptKT8Tmv1w=;
+        b=LpSorsVwJjjVCPeQGFkGkfWbP7HWl53bo8sHm2c7D4QGOsuYZYyV88HR08mZuH45tb
+         0er6S5+RvjA6EBDmtYCULRCX0dvtRDnGGO1WUJIHtLumctYOOwYSeNtHGo1v1VQrg64g
+         B5KX1sxj8LIbxxFYsBU1OhjZT1ef7qpW+JjhENWVnYtWqW5WKMKkveHbEPrE+m47m1S3
+         V6fDbBLTxd2ZFUjOr0u6Qz/vCD/sEgXSkwVg1jvhU8+LodJeon9X2jb/MKQL3UbGyteU
+         vRASRzGwI6DP5+bPB9pkohaaInKBZfPyHQBpSy/0YzLfe9EVjjs0611usmD7kN1/TtSk
+         cBeA==
+X-Gm-Message-State: AOAM530djA9ULyBqQnzmp8PQhXfU3tV0rTxcBJLbT0RUtar2DDabmWdd
+        Unc9EAjeiolcGq3TOTiq5cU=
+X-Google-Smtp-Source: ABdhPJyNTPz4hVjuOvkYyoJGprZOIGKlvLeq9sYzEWOuFruqzCYMdKQk+WsJtr3StkToCnA5pmFe0A==
+X-Received: by 2002:a05:6e02:1aaf:: with SMTP id l15mr51523ilv.128.1628696195512;
+        Wed, 11 Aug 2021 08:36:35 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id r1sm12858165ilt.37.2021.08.11.08.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 08:36:35 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1293C27C0054;
+        Wed, 11 Aug 2021 11:36:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 11 Aug 2021 11:36:34 -0400
+X-ME-Sender: <xms:f-4TYeyDY-tqzLn91IwpWBMsoKdcnhn-Po73HZSJ3YMhnblmhH6gIQ>
+    <xme:f-4TYaRPay_p1qCOKeStxdzVbhKSppcTl_RPqCUtDWdQJOq5zohNwNqwm6rsyrJRz
+    1s2B_ufH2JLpr152Q>
+X-ME-Received: <xmr:f-4TYQWZzjQEVuDeGplKGtke55nDNhu_9lu3CX5s3jm5oyWwKiAwekeYZKY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedugdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcuhfgv
+    nhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrh
+    hnpeeiueevjeelheduteefveeflefgjeetfeehvdekudekgfegudeghfduhfetveejuden
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhs
+    ohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnh
+    hgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:f-4TYUgR8cSw0c2QXu0An5T3UvBrcX3cDGBtKcReql7HxgKePM4i-w>
+    <xmx:f-4TYQDQzgoxcAIn_ZyyTk4-napsH79pFmucDo26F5V8xSvPVEIYyw>
+    <xmx:f-4TYVIs1alv2ETfrTUIikowPrWaQA-FrrMbpOX1YhoQKGbwm5dRWQ>
+    <xmx:ge4TYXC3gDEQxmiAu1dk9kOmvcSH1TynfVeQg8CBKcwSw82hnL8DC6YWMrk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 11 Aug 2021 11:36:31 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: [RFC 0/5] PCI: Use the private field of pci_host_bridge for ACPI device
+Date:   Wed, 11 Aug 2021 23:36:14 +0800
+Message-Id: <20210811153619.88922-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:51 AM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
-> Prepare for early_init_fdt_scan_reserved_mem() reserving the memory
-> occupied by an elf core header described in the device tree.
-> As arch_mem_init() calls early_init_fdt_scan_reserved_mem() before
-> mips_reserve_vmcore(), the latter needs to check if the memory has
-> already been reserved before.
->
-> Note that mips_reserve_vmcore() cannot just be removed, as not all MIPS
-> systems use DT.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v5:
->   - New.
-> ---
->  arch/mips/kernel/setup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 23a140327a0bac1b..4693add05743d78b 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -429,7 +429,8 @@ static void __init mips_reserve_vmcore(void)
->         pr_info("Reserving %ldKB of memory at %ldKB for kdump\n",
->                 (unsigned long)elfcorehdr_size >> 10, (unsigned long)elfcorehdr_addr >> 10);
->
-> -       memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
-> +       if (!memblock_is_region_reserved(elfcorehdr_addr, elfcorehdr_size)
+Hi Lorenzo,
 
-As pointed out by lkp, there's a closing parenthesis missing.
+As our previous discussion, I make a patchset showing the required
+effort if we want to use ->private in pci_host_bridge to store ACPI
+device pointer on ARM64. This patchset is mostly for discussion purpose.
 
-/me hides back under his rock.
+This patchset is based onto the v5 of my Hyper-V PCI on ARM64 patchset:
 
-> +               memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
->  #endif
+	https://lore.kernel.org/lkml/20210726180657.142727-1-boqun.feng@gmail.com/
 
-Gr{oetje,eeting}s,
+, and I've tested it with other code under development to fully enable
+Hyper-V virtual PCI on ARM64.
 
-                        Geert
+Regards,
+Boqun
+
+
+Boqun Feng (5):
+  PCI: Introduce pci_create_root_bus_priv()
+  PCI/ACPI: Store ACPI device information in the host bridge structure
+  PCI: hv: Set NULL as the ACPI device for the PCI host bridge
+  arm64: PCI: Retrieve ACPI device information directly from host
+    bridges
+  PCI: hv: Remove the dependency of pci_config_window
+
+ arch/arm64/kernel/pci.c             | 14 +-------------
+ drivers/acpi/pci_root.c             |  5 +++--
+ drivers/pci/controller/pci-hyperv.c | 20 +++++++++++++++-----
+ drivers/pci/probe.c                 | 15 ++++++++++++---
+ include/linux/pci-acpi.h            |  5 +++++
+ include/linux/pci.h                 |  3 +++
+ 6 files changed, 39 insertions(+), 23 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.32.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
