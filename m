@@ -2,309 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF6B3E8DBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B4C3E8DA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236890AbhHKJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
+        id S236780AbhHKJ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236892AbhHKJ6h (ORCPT
+        with ESMTP id S236521AbhHKJ4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:58:37 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C02AC0611A0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:58:10 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
-        by xavier.telenet-ops.be with bizsmtp
-        id g9y52500X1gJxCh019y5RV; Wed, 11 Aug 2021 11:58:07 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzs-001zgg-Vh; Wed, 11 Aug 2021 11:58:04 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzr-005NQF-Sm; Wed, 11 Aug 2021 11:58:03 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v5 19/19] auxdisplay: ht16k33: Add LED support
-Date:   Wed, 11 Aug 2021 11:57:59 +0200
-Message-Id: <20210811095759.1281480-20-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210811095759.1281480-1-geert@linux-m68k.org>
-References: <20210811095759.1281480-1-geert@linux-m68k.org>
+        Wed, 11 Aug 2021 05:56:48 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B2BC061765;
+        Wed, 11 Aug 2021 02:56:25 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id u1so1540689wmm.0;
+        Wed, 11 Aug 2021 02:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ej3XkkVy2Mkdl4WbgSlULmvp3Q2tHnmIbB47E6hdIZ0=;
+        b=fwqyG3+dJBqCPhqiwk2VVMrx0xJEdQ7LH/kPOoVitCiJ3QdoqT+YHjKwK3qpS2SOiK
+         jUVa86CnhjCOLo3GJZvTLdfxWsOt0vlkLedcdr/uD3VPlucNmKfQm3nXJSEUhEyqL3LL
+         Hc4/u9ndl6bSv33LnMCVC+Ny/WS4fRSuAkgTgJncrBkEwPZvm37yfZtdQipxm4tRDgrb
+         vx5eoOnZ02tEJOuF7GwtN+i3PikXZDRWUvSno0j3jd3gB28IWcRk2PtYXkRVwhxQTd1X
+         Nu/hhki+icJ0T4ucgvnmlSTgz2vWVc5NpNYmiwFlhIW6/tw1KNmZHw0kID5iiS738sBt
+         cfLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ej3XkkVy2Mkdl4WbgSlULmvp3Q2tHnmIbB47E6hdIZ0=;
+        b=PwvbzTk0NUtlWbrzputDNm4YDFffKCrj2p9CCizCwmcEdVuOcfO4ouTaWDG+J3GyHo
+         FuMGCE0kvAivLz5Y0x+EdKt558zneV4EM/2nASPi30Yiah8B0vOUeZ0KzUC6H0/HDme4
+         +E5ZqJF0uIP31j0hJZCR4wDR+JTL8B37V90uwMAdTzUSDPtlio5V+vLhrVX4cMkyHwCt
+         dT6gQlN8t0T6aIoKF6tpybnGUm/HcuLw268vALNig7u2ccpF9HNyGlgiyHQUBEs2Bseg
+         /VUJNXqodNDJDc2PttGPLNQ7nLkKVnSfat7a0r8TtA9xNeMe6A2T2fQY/59GPMXL4gWt
+         13fA==
+X-Gm-Message-State: AOAM533Qx5Eq0iYDzLj8rkfq1R84NPe0vDvD3GZnv9jHjxjJZrlAf7DF
+        Dwf3MENjjN/uCbufXSWZMmY=
+X-Google-Smtp-Source: ABdhPJz4rdVV6mfWlnvmvbbrsBAMotmDoPu3ouCW/nwR46/V7lyOEhle42HlJwVEfMOu8BW8FMG7/w==
+X-Received: by 2002:a05:600c:20f:: with SMTP id 15mr16053783wmi.176.1628675783813;
+        Wed, 11 Aug 2021 02:56:23 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id k1sm26695067wrz.61.2021.08.11.02.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 02:56:21 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 11:58:46 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 4/4] clk: tegra: Remove CLK_IS_CRITICAL flag from fuse
+ clock
+Message-ID: <YROfVuevpA9DEWZ4@orome.fritz.box>
+References: <20210802221336.32016-1-digetx@gmail.com>
+ <20210802221336.32016-5-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ApKy06so4aP3qKHX"
+Content-Disposition: inline
+In-Reply-To: <20210802221336.32016-5-digetx@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instantiate a single LED based on the "led" subnode in DT.
-This allows the user to control display brightness and blinking (backed
-by hardware support) through the LED class API and triggers, and exposes
-the display color.  The LED will be named
-"auxdisplay:<color>:<function>".
 
-When running in dot-matrix mode and if no "led" subnode is found, the
-driver falls back to the traditional backlight mode, to preserve
-backwards compatibility.
+--ApKy06so4aP3qKHX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v5:
-  - Add missing select NEW_LEDS,
+On Tue, Aug 03, 2021 at 01:13:36AM +0300, Dmitry Osipenko wrote:
+> FUSE driver now takes care of keeping the clock enabled when necessary.
+> Remove the CLK_IS_CRITICAL flag from the clock.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/clk/tegra/clk-tegra-periph.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 
-v4:
-  - Add missing select LEDS_CLASS,
+Mike, Stephen,
 
-v3:
-  - Remove unneeded C++ comment,
-  - Use "err" instead of "error" to be consistent with existing driver
-    naming style,
-  - Make the creation of the LED device dependent on the presence of the
-    "led" subnode in DT, so it can be used in dot-matrix mode too.
-  - Use led_init_data() and devm_led_classdev_register_ext() to retrieve
-    all LED properties from DT, instead of manual LED name construction
-    based on just the "color" property,
+I've picked this up into the Tegra tree because it has a runtime
+dependency on the patches earlier in this series.
 
-v2:
-  - Use "auxdisplay" instead of DRIVER_NAME in LED name.
----
- drivers/auxdisplay/Kconfig   |   2 +
- drivers/auxdisplay/ht16k33.c | 124 ++++++++++++++++++++++++++++++-----
- 2 files changed, 109 insertions(+), 17 deletions(-)
+Thierry
 
-diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-index 42fc7b155de09dbc..e32ef7f9945d49b2 100644
---- a/drivers/auxdisplay/Kconfig
-+++ b/drivers/auxdisplay/Kconfig
-@@ -176,6 +176,8 @@ config HT16K33
- 	select FB_SYS_IMAGEBLIT
- 	select INPUT_MATRIXKMAP
- 	select FB_BACKLIGHT
-+	select NEW_LEDS
-+	select LEDS_CLASS
- 	select LINEDISP
- 	help
- 	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 3b555e119e326cec..8c9a4a554a680ff2 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -18,6 +18,7 @@
- #include <linux/backlight.h>
- #include <linux/input.h>
- #include <linux/input/matrix_keypad.h>
-+#include <linux/leds.h>
- #include <linux/workqueue.h>
- #include <linux/mm.h>
- 
-@@ -34,6 +35,10 @@
- 
- #define REG_DISPLAY_SETUP		0x80
- #define REG_DISPLAY_SETUP_ON		BIT(0)
-+#define REG_DISPLAY_SETUP_BLINK_OFF	(0 << 1)
-+#define REG_DISPLAY_SETUP_BLINK_2HZ	(1 << 1)
-+#define REG_DISPLAY_SETUP_BLINK_1HZ	(2 << 1)
-+#define REG_DISPLAY_SETUP_BLINK_0HZ5	(3 << 1)
- 
- #define REG_ROWINT_SET			0xA0
- #define REG_ROWINT_SET_INT_EN		BIT(0)
-@@ -94,12 +99,14 @@ struct ht16k33_seg {
- struct ht16k33_priv {
- 	struct i2c_client *client;
- 	struct delayed_work work;
-+	struct led_classdev led;
- 	struct ht16k33_keypad keypad;
- 	union {
- 		struct ht16k33_fbdev fbdev;
- 		struct ht16k33_seg seg;
- 	};
- 	enum display_type type;
-+	uint8_t blink;
- };
- 
- static const struct fb_fix_screeninfo ht16k33_fb_fix = {
-@@ -158,7 +165,7 @@ static DEVICE_ATTR(map_seg14, 0644, map_seg_show, map_seg_store);
- 
- static int ht16k33_display_on(struct ht16k33_priv *priv)
+>=20
+> diff --git a/drivers/clk/tegra/clk-tegra-periph.c b/drivers/clk/tegra/clk=
+-tegra-periph.c
+> index 292d6269daf1..4dcf7f7cb8a0 100644
+> --- a/drivers/clk/tegra/clk-tegra-periph.c
+> +++ b/drivers/clk/tegra/clk-tegra-periph.c
+> @@ -777,11 +777,7 @@ static struct tegra_periph_init_data gate_clks[] =3D=
  {
--	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON;
-+	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON | priv->blink;
- 
- 	return i2c_smbus_write_byte(priv->client, data);
- }
-@@ -173,8 +180,10 @@ static int ht16k33_brightness_set(struct ht16k33_priv *priv,
- {
- 	int err;
- 
--	if (brightness == 0)
-+	if (brightness == 0) {
-+		priv->blink = REG_DISPLAY_SETUP_BLINK_OFF;
- 		return ht16k33_display_off(priv);
-+	}
- 
- 	err = ht16k33_display_on(priv);
- 	if (err)
-@@ -184,6 +193,49 @@ static int ht16k33_brightness_set(struct ht16k33_priv *priv,
- 				    REG_BRIGHTNESS | (brightness - 1));
- }
- 
-+static int ht16k33_brightness_set_blocking(struct led_classdev *led_cdev,
-+					   enum led_brightness brightness)
-+{
-+	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
-+						 led);
-+
-+	return ht16k33_brightness_set(priv, brightness);
-+}
-+
-+static int ht16k33_blink_set(struct led_classdev *led_cdev,
-+			     unsigned long *delay_on, unsigned long *delay_off)
-+{
-+	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
-+						 led);
-+	unsigned int delay;
-+	uint8_t blink;
-+	int err;
-+
-+	if (!*delay_on && !*delay_off) {
-+		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
-+		delay = 1000;
-+	} else if (*delay_on <= 750) {
-+		blink = REG_DISPLAY_SETUP_BLINK_2HZ;
-+		delay = 500;
-+	} else if (*delay_on <= 1500) {
-+		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
-+		delay = 1000;
-+	} else {
-+		blink = REG_DISPLAY_SETUP_BLINK_0HZ5;
-+		delay = 2000;
-+	}
-+
-+	err = i2c_smbus_write_byte(priv->client,
-+				   REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON |
-+				   blink);
-+	if (err)
-+		return err;
-+
-+	priv->blink = blink;
-+	*delay_on = *delay_off = delay;
-+	return 0;
-+}
-+
- static void ht16k33_fb_queue(struct ht16k33_priv *priv)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-@@ -425,6 +477,35 @@ static void ht16k33_seg14_update(struct work_struct *work)
- 	i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
- }
- 
-+static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
-+			     unsigned int brightness)
-+{
-+	struct led_init_data init_data = {};
-+	struct device_node *node;
-+	int err;
-+
-+	/* The LED is optional */
-+	node = of_get_child_by_name(dev->of_node, "led");
-+	if (!node)
-+		return 0;
-+
-+	led->brightness_set_blocking = ht16k33_brightness_set_blocking;
-+	led->blink_set = ht16k33_blink_set;
-+	led->flags = LED_CORE_SUSPENDRESUME;
-+	led->brightness = brightness;
-+	led->max_brightness = MAX_BRIGHTNESS;
-+
-+	init_data.fwnode = of_fwnode_handle(node);
-+	init_data.devicename = "auxdisplay";
-+	init_data.devname_mandatory = true;
-+
-+	err = devm_led_classdev_register_ext(dev, led, &init_data);
-+	if (err)
-+		dev_err(dev, "Failed to register LED\n");
-+
-+	return err;
-+}
-+
- static int ht16k33_keypad_probe(struct i2c_client *client,
- 				struct ht16k33_keypad *keypad)
- {
-@@ -498,24 +579,28 @@ static int ht16k33_fbdev_probe(struct device *dev, struct ht16k33_priv *priv,
- 			       uint32_t brightness)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
--	struct backlight_properties bl_props;
--	struct backlight_device *bl;
-+	struct backlight_device *bl = NULL;
- 	int err;
- 
--	/* Backlight */
--	memset(&bl_props, 0, sizeof(struct backlight_properties));
--	bl_props.type = BACKLIGHT_RAW;
--	bl_props.max_brightness = MAX_BRIGHTNESS;
-+	if (!priv->led.dev) {
-+		/* backwards compatibility with DT lacking an led subnode */
-+		struct backlight_properties bl_props;
- 
--	bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev, priv,
--					    &ht16k33_bl_ops, &bl_props);
--	if (IS_ERR(bl)) {
--		dev_err(dev, "failed to register backlight\n");
--		return PTR_ERR(bl);
--	}
-+		memset(&bl_props, 0, sizeof(struct backlight_properties));
-+		bl_props.type = BACKLIGHT_RAW;
-+		bl_props.max_brightness = MAX_BRIGHTNESS;
-+
-+		bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev,
-+						    priv, &ht16k33_bl_ops,
-+						    &bl_props);
-+		if (IS_ERR(bl)) {
-+			dev_err(dev, "failed to register backlight\n");
-+			return PTR_ERR(bl);
-+		}
- 
--	bl->props.brightness = brightness;
--	ht16k33_bl_update_status(bl);
-+		bl->props.brightness = brightness;
-+		ht16k33_bl_update_status(bl);
-+	}
- 
- 	/* Framebuffer (2 bytes per column) */
- 	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
-@@ -575,7 +660,7 @@ static int ht16k33_seg_probe(struct device *dev, struct ht16k33_priv *priv,
- 	struct ht16k33_seg *seg = &priv->seg;
- 	int err;
- 
--	err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
-+	err = ht16k33_brightness_set(priv, brightness);
- 	if (err)
- 		return err;
- 
-@@ -653,6 +738,11 @@ static int ht16k33_probe(struct i2c_client *client)
- 		dft_brightness = MAX_BRIGHTNESS;
- 	}
- 
-+	/* LED */
-+	err = ht16k33_led_probe(dev, &priv->led, dft_brightness);
-+	if (err)
-+		return err;
-+
- 	/* Keypad */
- 	if (client->irq > 0) {
- 		err = ht16k33_keypad_probe(client, &priv->keypad);
--- 
-2.25.1
+>  	GATE("ahbdma", "hclk", 33, 0, tegra_clk_ahbdma, 0),
+>  	GATE("apbdma", "pclk", 34, 0, tegra_clk_apbdma, 0),
+>  	GATE("kbc", "clk_32k", 36, TEGRA_PERIPH_ON_APB | TEGRA_PERIPH_NO_RESET,=
+ tegra_clk_kbc, 0),
+> -	/*
+> -	 * Critical for RAM re-repair operation, which must occur on resume
+> -	 * from LP1 system suspend and as part of CCPLEX cluster switching.
+> -	 */
+> -	GATE("fuse", "clk_m", 39, TEGRA_PERIPH_ON_APB, tegra_clk_fuse, CLK_IS_C=
+RITICAL),
+> +	GATE("fuse", "clk_m", 39, TEGRA_PERIPH_ON_APB, tegra_clk_fuse, 0),
+>  	GATE("fuse_burn", "clk_m", 39, TEGRA_PERIPH_ON_APB, tegra_clk_fuse_burn=
+, 0),
+>  	GATE("kfuse", "clk_m", 40, TEGRA_PERIPH_ON_APB, tegra_clk_kfuse, 0),
+>  	GATE("apbif", "clk_m", 107, TEGRA_PERIPH_ON_APB, tegra_clk_apbif, 0),
+> --=20
+> 2.32.0
+>=20
 
+--ApKy06so4aP3qKHX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmETn1YACgkQ3SOs138+
+s6GGbQ//VxRQd5VZsLWIVmenpbQW6n9uDX+prPqoihH5xRPIpy8rmV/2Kg+TVDCK
+dIBxN+3nrM6mtPPh6QB2bQWMODOE4lzILL1zhVRs+v1lHXkDfU++eF43gMz/Jcst
+DlDbmCvo65QywreoRZrN5mIuiDa8K7RMvGcIscMkCc3Znki8DYJL1MMbukDYUP2q
+9o0r59h/3HezmiDy7Jb+VOJn0k23Ht4HJaAljBfpJ9nK7lN7aZvMi06IEvXURD85
+baNKIy1GTXEFFZ+qOGcNCz5462Toh178Lt6Y9tFSqNapHvh3dD3ufclJ9ioDn1Ci
+ehY30Db5oF3FlCTPUgocRJRRoEBwezMFMy/kMNlEzFpdywIliqKtSxSeRtEAw0CR
+YzLKMUywX96B3KOf0pbDSWlZT/5vficui7aedknSb8JQN9qkNiiuJv+VH2y9UaO5
+/uv4RlLBZ78I3RpknHIlGjHZTxCkaxOB3lh8qV+LEFqVaktPeU+SPwW+hYWw9+5Y
+iDhvRGzM9BCC0OI2WfnHgPaGETDFiukVpK56cC8TTeECfc3M9dgBsLG5idzJGyOS
+mcF72OOdoYJEHTLsL0YT6IxDLr9boOU9N7tPRhH49zOsTKsyDBU9WTA+yuCaFlbY
+2bMHT91UAQqW2M51qEZMcsH3B2FeqjvaxpNjj/z8ybeuF7f4TzY=
+=dPAD
+-----END PGP SIGNATURE-----
+
+--ApKy06so4aP3qKHX--
