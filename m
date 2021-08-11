@@ -2,126 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D813E8B04
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59EC3E8B07
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233540AbhHKH1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:27:19 -0400
-Received: from mga11.intel.com ([192.55.52.93]:65519 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231472AbhHKH1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:27:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="211964517"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="211964517"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 00:26:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="675929359"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2021 00:26:53 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDidZ-000LOR-1T; Wed, 11 Aug 2021 07:26:53 +0000
-Date:   Wed, 11 Aug 2021 15:26:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:smp/core] BUILD SUCCESS
- ebca71a8c96f0af2ba482489ecc64d88979cd825
-Message-ID: <61137bad.ncwer9NfhLy8h8jV%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235332AbhHKH3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:29:09 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39902 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhHKH3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:29:08 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2A2F11C0B76; Wed, 11 Aug 2021 09:28:44 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 09:28:43 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        jason@jlekstrand.net, Jonathan Gray <jsg@jsg.id.au>
+Subject: Re: [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in
+ eb_parse()
+Message-ID: <20210811072843.GC10829@duo.ucw.cz>
+References: <20210810172955.660225700@linuxfoundation.org>
+ <20210810173000.050147269@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="iFRdW5/EC4oqxDHL"
+Content-Disposition: inline
+In-Reply-To: <20210810173000.050147269@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
-branch HEAD: ebca71a8c96f0af2ba482489ecc64d88979cd825  cpu/hotplug: Add debug printks for hotplug callback failures
 
-elapsed time: 853m
+--iFRdW5/EC4oqxDHL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-configs tested: 70
-configs skipped: 3
+Hi!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> From: Jonathan Gray <jsg@jsg.id.au>
+>=20
+> The backport of c9d9fdbc108af8915d3f497bbdf3898bf8f321b8 to 5.10 in
+> 6976f3cf34a1a8b791c048bbaa411ebfe48666b1 removed more than it should
+> have leading to 'batch' being used uninitialised.  The 5.13 backport and
+> the mainline commit did not remove the portion this patch adds back.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210811
-sh                               j2_defconfig
-mips                          rb532_defconfig
-sh                        dreamcast_defconfig
-s390                          debug_defconfig
-powerpc                 mpc834x_itx_defconfig
-nds32                               defconfig
-mips                           jazz_defconfig
-mips                           rs90_defconfig
-powerpc                           allnoconfig
-sh                           se7724_defconfig
-arm64                            alldefconfig
-powerpc                        cell_defconfig
-riscv                          rv32_defconfig
-xtensa                  nommu_kc705_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a002-20210809
-x86_64               randconfig-a004-20210809
-x86_64               randconfig-a006-20210809
-x86_64               randconfig-a003-20210809
-x86_64               randconfig-a001-20210809
-x86_64               randconfig-a005-20210809
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+This patch has no upstream equivalent, right?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Which is okay -- it explains it in plain english, but it shows that
+scripts should not simply search for anything that looks like SHA and
+treat it as upsteam commit it.
+
+So let me re-iterate need for consistent marking of upstream commits.
+
+So far this works reasonably well, but selecting one format and
+sticking to it would be even better.
+
+                ma =3D re.match(".*Upstream commit ([0-9a-f]*) .*", l)
+                if ma:
+                    m.upstream =3D ma.group(1)
+		ma =3D re.match("[Cc]ommit ([0-9a-f]*) upstream[.]*", l)
+                if ma:
+                    m.upstream =3D ma.group(1)
+		ma =3D re.match("[Cc]ommit: ([0-9a-f]*)", l)
+                if ma:
+	            m.upstream =3D ma.group(1)
+
+Thanks and best regards,
+								Pavel
+
+> Signed-off-by: Jonathan Gray <jsg@jsg.id.au>
+> Fixes: 6976f3cf34a1 ("drm/i915: Revert "drm/i915/gem: Asynchronous cmdpar=
+ser"")
+> Cc: <stable@vger.kernel.org> # 5.10
+> Cc: Jason Ekstrand <jason@jlekstrand.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c |    7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+> @@ -2351,6 +2351,12 @@ static int eb_parse(struct i915_execbuff
+>  		eb->batch_flags |=3D I915_DISPATCH_SECURE;
+>  	}
+> =20
+> +	batch =3D eb_dispatch_secure(eb, shadow);
+> +	if (IS_ERR(batch)) {
+> +		err =3D PTR_ERR(batch);
+> +		goto err_trampoline;
+> +	}
+> +
+>  	err =3D intel_engine_cmd_parser(eb->engine,
+>  				      eb->batch->vma,
+>  				      eb->batch_start_offset,
+> @@ -2377,6 +2383,7 @@ secure_batch:
+>  err_unpin_batch:
+>  	if (batch)
+>  		i915_vma_unpin(batch);
+> +err_trampoline:
+>  	if (trampoline)
+>  		i915_vma_unpin(trampoline);
+>  err_shadow:
+>=20
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--iFRdW5/EC4oqxDHL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRN8KwAKCRAw5/Bqldv6
+8jBbAKCauBZgV5eO5Kezo/NR3t/5b6kB2wCeJ+0eyFa9mRtULm2hLeFAoRvDWQc=
+=jABX
+-----END PGP SIGNATURE-----
+
+--iFRdW5/EC4oqxDHL--
