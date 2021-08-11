@@ -2,60 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D89A3E9257
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57553E9260
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhHKNP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:15:28 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7984 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhHKNPZ (ORCPT
+        id S231218AbhHKNRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhHKNRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:15:25 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee56113cd4900d-65121; Wed, 11 Aug 2021 21:14:49 +0800 (CST)
-X-RM-TRANSID: 2ee56113cd4900d-65121
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee66113cd44cdd-41e64;
-        Wed, 11 Aug 2021 21:14:49 +0800 (CST)
-X-RM-TRANSID: 2ee66113cd44cdd-41e64
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     linux@armlinux.org.uk
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] ARM/smp_twd: Cleanup the unnecessary cast
-Date:   Wed, 11 Aug 2021 21:15:12 +0800
-Message-Id: <20210811131512.940-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Wed, 11 Aug 2021 09:17:42 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49538C061765;
+        Wed, 11 Aug 2021 06:17:19 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id l11so2659416plk.6;
+        Wed, 11 Aug 2021 06:17:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AurmHbnu8tfyA/yzKLIfssWMJAWF2LYw49Rd9z7EAkk=;
+        b=dZwrnERaSbZZNDXN+dyFAet/wCemiwH1eUgrw9DGNN7uvH775b2YuDSDDyNAza72vU
+         lPcRL2Mwm+atA3ek24Hz8D5Xgm766noYbhqjO8yG+PKWfcY4ah2sR63Og1JO9mxP4QCv
+         groTxtG5alNaP0greoq/Fyav3UJXYQ+tPP7UAvp94itF5gVKODNvAICbF5valSAhQa8K
+         AkvH+x2IPku9Xu+GNiJPKGPI5g+A5oVHNJg9OVC/EQnGarsLgbcKzkZw3eMpfXLe5csP
+         gAvECrewBVBBsFL3xrv5fkTkaEa2gZAghE0ybYmLU6h0rnTEVjj2vaISuGMcsfSqXePe
+         uCTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AurmHbnu8tfyA/yzKLIfssWMJAWF2LYw49Rd9z7EAkk=;
+        b=ZPaCLiDdqDXrVPsk/LOd7+L7A6LGnVWXTSvpXsU/g449OCh7MB0Q90yyIKr5BUW62T
+         tVUP9ipdVbOYT0MhRsEkeWnTi4861LSyK22vmGo+QAw2GvNhswpLIshPgBsM/BiLelVz
+         DPRKV02fdYZUKEP1oTk0uX1MGM+3qxb4e4aGdG6lxbg1p70CUNri2xmAkc+SulaGgsSC
+         Cp6wjF7HQhNAzptie4UsnHEAu7BgzWp8wmx7p38T35MOyUUUOaWv7i7hE7SPqRp4gARH
+         5u2KxX6urNYgIFttfgY2KtM2CB9tnZnx8FgkpgGOLR3OmxXPiyhzGE+Ofw+r48VfnetQ
+         ntew==
+X-Gm-Message-State: AOAM532WfYzzxPy6aH0sRiOIUcqJd4Kyr0dD6cGG+a6PpxYcvtudB3mG
+        ySlMk7ZtXGvhN/tXweI9nMI=
+X-Google-Smtp-Source: ABdhPJz65d07WF/BHnXwATnHXb5Mrw6MDXV1vO+KkYtuH3CYo83l807tZO8lx1fcHfUv27K9rm1dnQ==
+X-Received: by 2002:a63:5802:: with SMTP id m2mr298909pgb.171.1628687838850;
+        Wed, 11 Aug 2021 06:17:18 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.103])
+        by smtp.gmail.com with ESMTPSA id bk24sm6651019pjb.26.2021.08.11.06.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 06:17:18 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] [SCSI] megaraid_sas: Fix possible divide-by-zero bugs in megaraid_sas_fp.c
+Date:   Wed, 11 Aug 2021 06:16:47 -0700
+Message-Id: <20210811131647.9300-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's not necessary to specify 'int' castingfor 'PTR_ERR(twd_clk)'.
+In the function mega_mod64(). the variable is checked in:
+  if (!divisor)
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+This indicates that divisor can be zero.
+If so, a divide-by-zero bug will occur:
+  remainder = do_div(d, divisor);
+
+Also, in the function mega_div64_32(), a divide-by-zero bug can also occur 
+if divisor is NULL.
+
+To fix these divide-by-zero bugs, the functions return 0 if divisor is 
+zero.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
 ---
- arch/arm/kernel/smp_twd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/megaraid/megaraid_sas_fp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/kernel/smp_twd.c b/arch/arm/kernel/smp_twd.c
-index 9a14f721a..423e9079d 100644
---- a/arch/arm/kernel/smp_twd.c
-+++ b/arch/arm/kernel/smp_twd.c
-@@ -199,7 +199,7 @@ static void twd_get_clock(struct device_node *np)
- 		twd_clk = clk_get_sys("smp_twd", NULL);
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fp.c b/drivers/scsi/megaraid/megaraid_sas_fp.c
+index 83f69c33b01a..05eb0d201aed 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fp.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fp.c
+@@ -72,8 +72,10 @@ u32 mega_mod64(u64 dividend, u32 divisor)
+ 	u64 d;
+ 	u32 remainder;
  
- 	if (IS_ERR(twd_clk)) {
--		pr_err("smp_twd: clock not found %d\n", (int) PTR_ERR(twd_clk));
-+		pr_err("smp_twd: clock not found %d\n", PTR_ERR(twd_clk));
- 		return;
- 	}
+-	if (!divisor)
++	if (!divisor) {
+ 		printk(KERN_ERR "megasas : DIVISOR is zero, in div fn\n");
++		return 0;
++	}
+ 	d = dividend;
+ 	remainder = do_div(d, divisor);
+ 	return remainder;
+@@ -90,8 +92,10 @@ static u64 mega_div64_32(uint64_t dividend, uint32_t divisor)
+ {
+ 	u64 d = dividend;
+ 
+-	if (!divisor)
++	if (!divisor) {
+ 		printk(KERN_ERR "megasas : DIVISOR is zero in mod fn\n");
++		return 0;
++	}
+ 
+ 	do_div(d, divisor);
  
 -- 
-2.20.1.windows.1
-
-
+2.25.1
 
