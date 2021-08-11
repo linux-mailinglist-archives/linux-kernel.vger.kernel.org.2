@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59093E8F6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33CF3E8FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237018AbhHKL0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:26:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231821AbhHKL0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:26:03 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 563DC60F55;
-        Wed, 11 Aug 2021 11:25:40 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mDmMc-004J3u-6l; Wed, 11 Aug 2021 12:25:38 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     will@kernel.org, suzuki.poulose@arm.com, james.morse@arm.com,
-        alexandru.elisei@arm.com, catalin.marinas@arm.com,
-        Quentin Perret <qperret@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, qwandor@google.com,
-        dbrazdil@google.com, kernel-team@android.com, ardb@kernel.org,
-        tabba@google.com
-Subject: Re: [PATCH v4 00/21] Track shared pages at EL2 in protected mode
-Date:   Wed, 11 Aug 2021 12:25:34 +0100
-Message-Id: <162868104087.2706016.2089522816364249636.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210809152448.1810400-1-qperret@google.com>
-References: <20210809152448.1810400-1-qperret@google.com>
+        id S237476AbhHKLq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237461AbhHKLqy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 07:46:54 -0400
+X-Greylist: delayed 1231 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 11 Aug 2021 04:46:31 PDT
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35441C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:46:30 -0700 (PDT)
+Received: from ip4d14bdef.dynamic.kabel-deutschland.de ([77.20.189.239] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mDmMt-0004mO-LT; Wed, 11 Aug 2021 13:25:55 +0200
+To:     Dmitry Vyukov <dvyukov@google.com>, regressions@lists.linux.dev
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        automated-testing@yoctoproject.org,
+        Sasha Levin <sashalevin@google.com>,
+        Marco Elver <elver@google.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Mara Mihali <mihalimara22@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+References: <CACT4Y+YvovgRNC5EFhN_d=jApwSAsWcNj35=FCJf1k867vBqfw@mail.gmail.com>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: finding regressions with syzkaller
+Message-ID: <067b8eea-3c77-c1f0-8e68-b99e6bf0c033@leemhuis.info>
+Date:   Wed, 11 Aug 2021 13:25:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CACT4Y+YvovgRNC5EFhN_d=jApwSAsWcNj35=FCJf1k867vBqfw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-BS
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: will@kernel.org, suzuki.poulose@arm.com, james.morse@arm.com, alexandru.elisei@arm.com, catalin.marinas@arm.com, qperret@google.com, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, qwandor@google.com, dbrazdil@google.com, kernel-team@android.com, ardb@kernel.org, tabba@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1628682391;d3c8f349;
+X-HE-SMSGID: 1mDmMt-0004mO-LT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Aug 2021 16:24:27 +0100, Quentin Perret wrote:
-> This is v4 of the patch series previously posted here:
-> 
-> https://lore.kernel.org/lkml/20210729132818.4091769-1-qperret@google.com/
-> 
-> This series aims to improve how the nVHE hypervisor tracks ownership of
-> memory pages when running in protected mode ("kvm-arm.mode=protected" on
-> the kernel command line).
-> 
+[CCing Lukas]
+
+Hi Dmitry!
+
+On 10.08.21 19:08, Dmitry Vyukov wrote:
 > [...]
+> The idea is to generate random test programs (as syzkaller does) and
+> then execute them on 2 different kernels and compare results (so
+> called "differential fuzzing"). This has the potential of finding not
+> just various "crashes" but also logical bugs and regressions.
 
-Applied to next, thanks!
+Hmmm, interesting concept!
 
-[01/21] KVM: arm64: Add hyp_spin_is_locked() for basic locking assertions at EL2
-        commit: d21292f13f1f0721d60e8122e2db46bea8cf6950
-[02/21] KVM: arm64: Introduce hyp_assert_lock_held()
-        commit: 8e049e0daf23aa380c264e5e15e4c64ea5497ed7
-[03/21] KVM: arm64: Provide the host_stage2_try() helper macro
-        commit: 1bac49d490cbc813f407a5c9806e464bf4a300c9
-[05/21] KVM: arm64: Expose page-table helpers
-        commit: 51add457733bbc4a442fc280d73d14bfe262e4a0
-[06/21] KVM: arm64: Optimize host memory aborts
-        commit: c4f0935e4d957bfcea25ad76860445660a60f3fd
-[07/21] KVM: arm64: Rename KVM_PTE_LEAF_ATTR_S2_IGNORED
-        commit: 178cac08d588e7406a09351a992f57892d8d9cc9
-[08/21] KVM: arm64: Don't overwrite software bits with owner id
-        commit: 8a0282c68121e53ab17413283cfed408a47e1a2a
-[09/21] KVM: arm64: Tolerate re-creating hyp mappings to set software bits
-        commit: b53846c5f279cb5329b82f19a7d313f02cb9d21c
-[10/21] KVM: arm64: Enable forcing page-level stage-2 mappings
-        commit: 5651311941105ca077d3ab74dd4a92e646ecf7fb
-[11/21] KVM: arm64: Allow populating software bits
-        commit: 4505e9b624cefafa4b75d8a28e72f32076c33375
-[12/21] KVM: arm64: Add helpers to tag shared pages in SW bits
-        commit: ec250a67ea8db6209918a389554cf3aec0395b1f
-[13/21] KVM: arm64: Expose host stage-2 manipulation helpers
-        commit: 39257da0e04e5cdb1e4a3ca715dc3d949fe8b059
-[14/21] KVM: arm64: Expose pkvm_hyp_id
-        commit: 2d77e238badb022adb364332b7d6a1d627f77145
-[15/21] KVM: arm64: Introduce addr_is_memory()
-        commit: e009dce1292c37cf8ee7c33e0887ad3c642f980f
-[16/21] KVM: arm64: Enable retrieving protections attributes of PTEs
-        commit: 9024b3d0069ab4b8ef70cf55f0ee09e61f3a0747
-[17/21] KVM: arm64: Mark host bss and rodata section as shared
-        commit: 2c50166c62ba7f3c23c1bbdbb9324db462ddc97b
-[18/21] KVM: arm64: Remove __pkvm_mark_hyp
-        commit: ad0e0139a8e163245d8f44ab4f6ec3bc9b08034d
-[19/21] KVM: arm64: Refactor protected nVHE stage-1 locking
-        commit: f9370010e92638f66473baf342e19de940403362
-[20/21] KVM: arm64: Restrict EL2 stage-1 changes in protected mode
-        commit: 66c57edd3bc79e3527daaae8123f72ecd1e3fa25
-[21/21] KVM: arm64: Make __pkvm_create_mappings static
-        commit: 64a80fb766f9a91e26930bfc56d8e7c12425df12
+> The major issue is various false positive differences caused by
+> timings, non-determinism, accumulated state, intentional and
+> semi-intentional changes (e.g. subtle API extensions), etc. We learnt
+> how to deal with some of these to some degree, but feasibility is
+> still an open question.
 
-Note that patch #4 has been used as the base for this series,
-and is already part of the mapping level rework.
+Sounds complicated and like a lot of manual work.
 
-Cheers,
+Do you have in mind that Linus and hence many other Kernel developers
+afaics only care about regressions someone actually observed in a
+practice? Like a software or script breaking due to a kernel-side change?
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+To quote Linus from
+https://lore.kernel.org/lkml/CA+55aFx3RswnjmCErk8QhCo0KrCvxZnuES3WALBR1NkPbUZ8qw@mail.gmail.com/
 
+```The Linux "no regressions" rule is not about some theoretical
+"the ABI changed". It's about actual observed regressions.
 
+So if we can improve the ABI without any user program or workflow
+breaking, that's fine.```
+
+His stance on that afaik has not changed since then.
+
+Thus after ruling our all false positives syzkaller might find, there
+will always be the follow-up question "well, does anything/anyone
+actually care?". That might be hard to answer and requires yet more
+manual work by some human. Maybe this working hours at least for now are
+better spend in other areas.
+
+> Since this work is in very early stage, I only have very high-level questions:
+>  - what do you think about feasibility/usefulness of this idea in general?
+
+TBH I'm a bit sceptical due to the above factors. Don't get me wrong,
+making syzkaller look out for regressions sounds great, but I wonder if
+there are more pressing issues that are worth getting at first.
+
+Another aspect: CI testing already finds quite a few regressions, but
+those that are harder to catch are afaics often in driver code. And you
+often can't test that without the hardware, which makes me assume that
+syzkaller wouldn't help here (or am I wrong?)
+
+>  - any suggestions on how to make the tool find more differences/bugs
+> or how to make it more reliable?
+>  - is there a list or pointers to some known past regressions that
+> would be useful to find with such tool? (I've looked at the things
+> reported on the regressions@ list, but it's mostly crashes/not
+> booting, but that's what syzkaller can find already well)
+
+I first wanted to tell you "look up the reports I compiled in 2017 in
+the LKML archives", but I guess the way better solution is: just grep
+for "regression" in the commit log.
+
+>  - anybody else we should CC?
+
+I guess the people from the Elisa project might be interested in this,
+that's why I CCed Lukas.
+
+Ciao, Thorsten
