@@ -2,108 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DB43E985C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBF73E9862
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhHKTKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbhHKTKA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:10:00 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAAFC0613D3;
-        Wed, 11 Aug 2021 12:09:36 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id k9so5289983edr.10;
-        Wed, 11 Aug 2021 12:09:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W1z9wlbpNj+qS2ENH9OLcLWtfXZ7e4t/ziztlj9T5ZM=;
-        b=aWK92ZZsdHMiy5eJTgZW6Ey00F8/qlix9+mlvDycVBPJLis1JQ74CE4akL0VYd64cO
-         LJzR5f8t1yBxRq/Bs9SrG2F+PSNKBg/h2CDoU3qjkbOUPXncLcLQqrT9L0SuXW9RHsle
-         iifbwXcPpQ2YlLS7JjM/f9jZNl0VTaxw1Ti3wCP8ne/AhswzkzT4m1jXqwERNa7rgVc2
-         ULShRw2XuxmCN10koUdxIzh2ElZ1OAFwjyfXJ2C+1gAl3vftMPzSRuB4XekBg+oPmZar
-         lUGtcN9VxFVi/S2O2dXj12nxL8x4e41zf1TtQSmpE8ExHk66buhhWxJt6ij0A/C84VRg
-         d49g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W1z9wlbpNj+qS2ENH9OLcLWtfXZ7e4t/ziztlj9T5ZM=;
-        b=UIQa/zc0idalzZBA4V0rAZWvjEl9fuv1RN3tg6CG6cB03XijWhXM20jefGI3BkTNIE
-         RuNekHYnkZ5i7AlmzwCGI9JNCVs2TalTZhI5sXFpIITk1IYHNWDg6fj5pOri4m60I387
-         2Knwqj1doEgWSZpbbpYm5Qx2IUS+qfLAmTIBOWexEDn2w+g91uSCuTgsxSKg7uOdr9TN
-         d2mYUCStwVAGp3m5FyfNOINLcOzav01308HlVuOHh02wssa16N0uvxYzy7+HUKQPI1ew
-         TABs0/3BLUV0xUkECM5zecfdIzcpZUBjRA1WhKXXSFF0RmKFX/WVm+6Wc7I+gN04bYpW
-         83sg==
-X-Gm-Message-State: AOAM5307JSspVUVDVh+zBWzB6ZRSlSzcgOtCpzf2E3nPXglhbqnT+IA6
-        ljtRikgmDOtOar+xhwhh/VK/XGa7a+1/7STaOTA=
-X-Google-Smtp-Source: ABdhPJzj8fDfXd6w0gPzUGLjzQekJ7vBDvkmKpwZquuLDTzWJzAtekZHJL3rgB9wVpFtwxxucleWqQ==
-X-Received: by 2002:a05:6402:148:: with SMTP id s8mr513425edu.298.1628708975001;
-        Wed, 11 Aug 2021 12:09:35 -0700 (PDT)
-Received: from ?IPv6:2a04:241e:502:1d80:48ac:8fee:19a2:adc6? ([2a04:241e:502:1d80:48ac:8fee:19a2:adc6])
-        by smtp.gmail.com with ESMTPSA id l9sm59895edt.55.2021.08.11.12.09.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 12:09:34 -0700 (PDT)
-From:   Leonard Crestez <cdleonard@gmail.com>
-Subject: Re: [RFCv2 9/9] selftests: Initial TCP-AO support for fcnal-test
-To:     David Ahern <dsahern@gmail.com>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        David Ahern <dsahern@kernel.org>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Ivan Delalande <colona@arista.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <cover.1628544649.git.cdleonard@gmail.com>
- <3f6d654c1c36f489b471e2892c9231d6fa8fad7a.1628544649.git.cdleonard@gmail.com>
- <57493709-02c0-d77b-0b82-121894b58a49@gmail.com>
-Message-ID: <f7625876-3ee0-53ba-a45a-a5d38edfd2bf@gmail.com>
-Date:   Wed, 11 Aug 2021 22:09:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231613AbhHKTLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:11:46 -0400
+Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:41793
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231443AbhHKTLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 15:11:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YPrmBlV9ZBcK/HBtAqDDhpPjDx32UsCDayAxVwOQycdWBzWwUjghnL2eICAX9ExTMad16lTXJ1RozSd/cCLo2yyTm1l/cnEg2e9lHXafy87kyIYs10SwaOV3SIbg+cFr3aXr9BPRjXrXqeEKCVYsgYUas/qjpvzBumfeJnCFEAdDoYvWbNIs/wZSEn+zTf0We+eDK2qdwmbowhkd2yfd+kFuSk88jm73MejgaviTDw26CJQXZX8jBYPDolO5QS6WFIL8zq98MsddG652mUs5jr4365R6YRNpD3RfcGUg0WVxG0W3oeN8XvvZl7H1Am7QIt99YjXwUJyqAx299AoPPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rl7KFKZV1zkmSYKbw/elQVg5fNcQ/vB8Vy9kpruRA6I=;
+ b=WnJZwX4hEj8r+TcuVpFfPdhN0GwzmI4Dm0IbMjb/A2w5i597ozWZ3w6JVncuKESvqibdEz8cwu7eaaa3AeP41Ibv5/CShrVcdMOsWeTF2gO9biEcdStTVZIAOD26vqYgO2STRyfVJlRv3WXjAQZh94Bt0BbEVLUyCyuwwotG5p/GfWhqglVvHgIaQ7AOz7PyHUpU2oYgnIlTktx0wlMzksv//3kPM3LOJcjs5E5N3J+3qtfuoG4TRgSeFH0oqx4pczWQSyCPC7oHUhSdS56jfUi8sRQGZUPclUUwaV09cgs3cWUMTjsm/RG1fUTfm0FlhamBlJO5YpsncLGl2MhWYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rl7KFKZV1zkmSYKbw/elQVg5fNcQ/vB8Vy9kpruRA6I=;
+ b=0RYmr9vUcUHSbu9+0tedDg3s929DY0Xcm3jF5tpJnqIAAfEFVpzTQhrVa9kc38dsFU/U4EGM6bSZR3XsO7sxrOfJK+4xgN7w4dp6Qm03TF8Rkuedd20HepuNjF2aGcEXCa5bC0O1oG8T2rbwcmN2C47YTxPCQlJDfx/GIcmDqbM=
+Received: from BN6PR18CA0010.namprd18.prod.outlook.com (2603:10b6:404:121::20)
+ by BL1PR12MB5110.namprd12.prod.outlook.com (2603:10b6:208:312::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Wed, 11 Aug
+ 2021 19:11:14 +0000
+Received: from BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:121:cafe::74) by BN6PR18CA0010.outlook.office365.com
+ (2603:10b6:404:121::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend
+ Transport; Wed, 11 Aug 2021 19:11:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=pass action=none
+ header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT026.mail.protection.outlook.com (10.13.177.51) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4415.16 via Frontend Transport; Wed, 11 Aug 2021 19:11:14 +0000
+Received: from RErrabolDevMach.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 11 Aug
+ 2021 14:11:12 -0500
+From:   Ramesh Errabolu <Ramesh.Errabolu@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Ramesh Errabolu <Ramesh.Errabolu@amd.com>
+Subject: [PATCH] Whitelist AMD host bridge device(s) to enable P2P DMA
+Date:   Wed, 11 Aug 2021 14:11:04 -0500
+Message-ID: <20210811191104.21919-1-Ramesh.Errabolu@amd.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <57493709-02c0-d77b-0b82-121894b58a49@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 55842ebe-cec1-4948-db34-08d95cfbc9bc
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5110:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5110BCAE331E09650F5EF470E3F89@BL1PR12MB5110.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: s/nnSI6gMEnjkYpGnzL061/YMhdap1XM/eE8UXPPsvkLBx4q0mnjGY6sGQzvllXIi/rRwg2erFfsJC1OM9ES7v/yzvlo4sHLTi+d7qUwV7tKaMVPdyBRivS60dglhSwifccCHoKzqVlTMCShH9c4uyKej++YWsaQDfB9EfJTwcfsH32t4eRTVPE3PxTJDDqQlC8efPDhQ5ulJIMBYxMxZ2K0i7xthkHhpvb31yAgzQtCEcUQM0jzKMX8AQFrOpVGzjEolnfe/UcrQMapVUu6zrtT0Sm+CD0BPTzZAdRRxH6IXpQwzR+8xK8BqhdEiCjRD0ggL3XtOuPWdbsxKHIkKQVU4cyiCgf52aNIyib/uQWGmXKZ1Raif/l4qmODuYw6OLoayRDHqts5QoY4iSgrnbgz+ddu0kWvt+5w73BC0qFShPDHBT6Sn+lT/rmJwOXYzizst61NXDbIh5/Mmu/WV6NQ9Rek0Cgg8IvlQImZjI6kFNYFFGttNNL86IUXLv4iMl7jaCkElVDMGAZbWujHBMyQw//QwoOyWLH3HaF/x+XKy56dVQlT4lq2CH/J/QA9NSqAxWE4P0Z283bbKyrl9bJREHkq5mcZodmKubDNJoRr5bl0JqJcgF2s9U6KzFqOWqXBqn/JrIZ4ciaQu1AmeeRZ36Rs5cVzFADNJI93S/+TU8U5SWSUxC1FF0zjDslTc9GAUunLfaMm3/jJmOGwC+Nv7BsRsgM/lMHvEWqhbceqG4Bha1UjY+MnMOCLjY57WdKRuVpHCxIQVGEqz2Bcmw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(46966006)(36840700001)(86362001)(16526019)(2906002)(82740400003)(6666004)(7696005)(478600001)(316002)(8936002)(186003)(34020700004)(2616005)(26005)(8676002)(47076005)(336012)(70206006)(70586007)(36756003)(4326008)(36860700001)(5660300002)(1076003)(356005)(110136005)(81166007)(426003)(82310400003)(4744005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 19:11:14.0340
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55842ebe-cec1-4948-db34-08d95cfbc9bc
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.2021 16:46, David Ahern wrote:
-> On 8/9/21 3:35 PM, Leonard Crestez wrote:
->> Just test that a correct password is required.
->>
-> 
-> This test suite needs to be comprehensive that the UAPI works as
-> designed and fails when it should - cleanly and with an extack message
-> as to why some config option fails. Tests should cover the datapath -
-> that it works properly when it should and fails cleanly when it should
-> not. If addresses are involved in the configuration, then the tests need
-> to be written for non VRFs, with VRFs and default VRF since addresses
-> are relative.
-> 
-> Also, in tree test suites are best for the maintenance of this code
-> going forward.
+Current implementation will disallow P2P DMA if the participating
+devices belong to different root complexes. Implementation allows
+this default behavior to be overridden for whitelisted devices. The
+patch adds an AMD host bridge to be whitelisted
 
-I can try to integrate my python test suite into kselftest. It's not a 
-very orthodox choice but a rewrite in C would be much larger.
+Signed-off-by: Ramesh Errabolu <Ramesh.Errabolu@amd.com>
+---
+ drivers/pci/p2pdma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---
-Regards,
-Leonard
+diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+index 196382630363..7003bb9faf23 100644
+--- a/drivers/pci/p2pdma.c
++++ b/drivers/pci/p2pdma.c
+@@ -305,6 +305,8 @@ static const struct pci_p2pdma_whitelist_entry {
+ 	{PCI_VENDOR_ID_INTEL,	0x2032, 0},
+ 	{PCI_VENDOR_ID_INTEL,	0x2033, 0},
+ 	{PCI_VENDOR_ID_INTEL,	0x2020, 0},
++	/* AMD Host Bridge Devices */
++	{PCI_VENDOR_ID_AMD,	0x1480, 0},
+ 	{}
+ };
+ 
+-- 
+2.31.1
+
