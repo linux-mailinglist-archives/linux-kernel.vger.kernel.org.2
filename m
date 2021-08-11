@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8B83E8AF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26ECE3E8AF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235509AbhHKHUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:20:50 -0400
-Received: from mga11.intel.com ([192.55.52.93]:65005 "EHLO mga11.intel.com"
+        id S235539AbhHKHVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:21:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235109AbhHKHUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:20:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="211963694"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="211963694"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 00:20:20 -0700
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="516569110"
-Received: from fbrausse-mobl.ger.corp.intel.com (HELO localhost) ([10.251.209.112])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 00:20:15 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] add fixes to pass DP Link Layer compliance test cases
-In-Reply-To: <1628196295-7382-1-git-send-email-khsieh@codeaurora.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <1628196295-7382-1-git-send-email-khsieh@codeaurora.org>
-Date:   Wed, 11 Aug 2021 10:20:12 +0300
-Message-ID: <87zgtomor7.fsf@intel.com>
+        id S235109AbhHKHU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:20:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 379EB604AC;
+        Wed, 11 Aug 2021 07:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628666434;
+        bh=8mg42c76I6K4QVczZl3i8PdVlEZAiViH4ykH1/0qaxI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JiDYrDJV0dUpoMwMbNMr7BlJRaWCyoeOGIhC2S23kLCgZ9KfJnJPUenjUKGxTNcAl
+         Y2BoMi21mxOjneKQlpjVbmYpoiybgfGGUbPu00qxc1nL2MmN+mlcQ4GUCi4MpFJfkd
+         g9K6E0r188qWtIWVbGXeb/DMcKafROfhLJqjS7JAOzYeU28kp/mfb8wxqV98i4Qdkm
+         aQR2xBFzp7+l2FcbcTcpnMM582sq7R1Zs9KqAtpqqbYNK4j1Q+ifW9u7q9Hrnh60Js
+         7JsOqL+NPXIFvZ292rs9psirqZBspJCPmDgy6WD57j0ygHSGdZ/7o7U6R4Cbz5ouIf
+         14miPA5Kzg9cQ==
+Date:   Wed, 11 Aug 2021 10:20:28 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Maurizio Lombardi <mlombard@redhat.com>, bp@alien8.de,
+        tglx@linutronix.de, x86@kernel.org, pjones@redhat.com,
+        konrad@kernel.org, george.kennedy@oracle.com, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory
+ remapping
+Message-ID: <YRN6PN9uZeauadRJ@kernel.org>
+References: <20210729135250.32212-1-mlombard@redhat.com>
+ <YRKwqAlgWVGVpEJv@infradead.org>
+ <YRK9fxhyPgEzWKce@localhost.localdomain>
+ <YRN01YySPVucdCF0@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRN01YySPVucdCF0@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021, Kuogee Hsieh <khsieh@codeaurora.org> wrote:
-> add fixes to pass DP Link Layer compliance test cases
+On Wed, Aug 11, 2021 at 07:57:25AM +0100, Christoph Hellwig wrote:
+> On Tue, Aug 10, 2021 at 01:55:11PM -0400, Konrad Rzeszutek Wilk wrote:
+> > On Tue, Aug 10, 2021 at 06:00:24PM +0100, Christoph Hellwig wrote:
+> > > > Fix this bug by saving the address of the physical location
+> > > > of the ibft; later the driver will use isa_bus_to_virt() to get
+> > > > the correct virtual address.
+> > > 
+> > > That sound rather broken.  Why not save the physical address in
+> > > find_ibft_region and then later ioremap that when a virtual address is
+> > > needed like all other code accessing magic I/O memory?
+> > 
+> > That is kind of what he does. The physical address is saved as a global
+> > static variable and also the physical address is memreserved. Then
+> > later on the physical address is used to create the virtual address.
+> 
+> Except that it uses isa_bus_to_virt, which is really broken.
+> 
+> > Or are you thinking of making the find_ibft_region reserve the physical
+> > address, and _cache_ the physical address so there is no global
+> > variable ?
+> 
+> No.  Just switch to ioremap/early_ioremap insted of this isa_bus_to_virt
+> mess.
 
-Nitpick, please also include the approriate subject prefix to the cover
-letter, e.g. "drm/msm" or "drm/msm/dp". Helps with mail filtering. :)
-
-BR,
-Jani.
-
->
-> Kuogee Hsieh (6):
->   drm/msm/dp: use dp_ctrl_off_link_stream during PHY compliance test run
->   drm/msm/dp: reduce link rate if failed at link training 1
->   drm/msm/dp: reset aux controller after dp_aux_cmd_fifo_tx() failed.
->   drm/msm/dp: replug event is converted into an unplug followed by an
->     plug events
->   drm/msm/dp: return correct edid checksum after corrupted edid checksum
->     read
->   drm/msm/dp: do not end dp link training until video is ready
->
->  drivers/gpu/drm/msm/dp/dp_aux.c     |   3 +
->  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 137 +++++++++++++++++++++++-------------
->  drivers/gpu/drm/msm/dp/dp_display.c |  14 ++--
->  drivers/gpu/drm/msm/dp/dp_panel.c   |   9 ++-
->  4 files changed, 102 insertions(+), 61 deletions(-)
+Why ioremap? This is not IO memory, plain phys_to_virt should be fine here.
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Sincerely yours,
+Mike.
