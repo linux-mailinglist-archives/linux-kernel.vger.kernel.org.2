@@ -2,159 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BDA3E8995
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551093E8997
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhHKFHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:07:05 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49664
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234105AbhHKFHE (ORCPT
+        id S234188AbhHKFKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 01:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233813AbhHKFKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:07:04 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id BC67C3F36D
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:06:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628658399;
-        bh=TotvfBcP1kbMjZh8i1BQ1gZcG+xBW5bAWGmpNSwCNpM=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=MaxgNhH5g/cUUNLHZHshJ2LxVqSOKLnzT8XA/oZ/Ngqh3z8S+wdTHTjne6m1tUBBv
-         fWQHusnVTW7iWjY5Kufd3Qt1RGwmm44EREuTxyRGQwtxSwy1DlPls8mtUvWYVfJsl5
-         tNI/PGIOxhmPuXNCPrwXxP5vGQ0fabuk+AD5lRaFwC+BzFFUwC0dfNl9IHWMY9xLF3
-         Da2XWANv/Z/HCgRLhqd+zpK2ARSAahZrDux251hOt7kUFfnsNqnHA6uvWBxnyv177L
-         TLDwJrYiovUF3XYAtejaD19yCQqJ+nvt9SPOYz/Ar7z7+MuOxy6CZ7mGZt8txXfx7D
-         VnSHnS14mFg+A==
-Received: by mail-ed1-f70.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso614776edh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:06:39 -0700 (PDT)
+        Wed, 11 Aug 2021 01:10:15 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF27C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:09:52 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so7799153pjr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4+7r2wYydj9au+exa7oWuSxVTG1fG9vj88byQqpPzeA=;
+        b=REqW9HT3NtCm96X/UTqL6H0NrJ1fIp6GMmyoBimTuev8tTbiuwvCtB4wIHxl7q4rDp
+         mUfKK33ey52cW1j8jGxlmHWCk6awcVR4l/nqqpYq58rlaCtVnYphmP/H2vXrPp9lRnPR
+         zPRMs7DYH+6BhhqSZbKaHoSHrQWUBFfJksWfig9AHRdTm/6a4yRuMEf+NodKwdwwrWi7
+         NZKSCkgb1u0DTPQJHkFjaBg3CgnThigPF+WUn9+7+p2eG+Sb4Jqm968e/oT38GsYWJSD
+         /PjxyVqblCnukoc37nQF4r5OPm84eeoJ5TquZNdN87M/xJdnp5rIo6/0fEpYrNSwU779
+         XDPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TotvfBcP1kbMjZh8i1BQ1gZcG+xBW5bAWGmpNSwCNpM=;
-        b=IYrSCdQVYlrTwAumnaOAPdtIrJkLfNG/F6fQSdvOI6GLG7hHnxgTSqynQu8Lard4Rn
-         nT5iP28hrPDjz5M0SF8ZgHknS+cSbMC5Ey5UeArg2loDxoeXDDgAp+szdC94UBzQWzAO
-         WMTubFF8qIv1Ev+ZZapI7Bb6lEskCojh/NOG1wrol/EejG8VHXsJxDSAu4fMkA07MboF
-         D3Fz7sX2W35wVbIocSYqZeMP4aYgQ6dyi74XCWVT4SB/lfZbrCvAOmFC/pqEioqC1xpp
-         /o6nWDtKD/zDxP1DbecLe4nrejEmITlr8OaJH++ssE6/ExgMVaZeVlb1OIhz/tOFhUAH
-         SQPw==
-X-Gm-Message-State: AOAM530LxYRvl9Vii/jZXK8jk0Cx8oFk7/chsiO8doeyJAcvbIAjTkA4
-        iwdUMLqi19rErglNfmn0mWWrAXCUIxXR3/UIdib+NXHw4izRRaxZXZQPGxJI9Bp2OguitrUQgPY
-        IcrGx1tsGvUUpBcemo791U/1db7zgLBDcWY5LAJDdE7Ao0pWLTJRABnr9NQ==
-X-Received: by 2002:a17:906:1fd5:: with SMTP id e21mr1818193ejt.78.1628658399261;
-        Tue, 10 Aug 2021 22:06:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjbceDaG+3OstRYpbet+P/X5bEXCCmLxZKIkHr9viaPkg/A8aTiHo8F16CG0uSfno2K4R1xAFbim0uYcXs4JM=
-X-Received: by 2002:a17:906:1fd5:: with SMTP id e21mr1818176ejt.78.1628658399029;
- Tue, 10 Aug 2021 22:06:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4+7r2wYydj9au+exa7oWuSxVTG1fG9vj88byQqpPzeA=;
+        b=R/UTy8q8m4icBKE30OQl4Hxvd2X9wX/c5SP2kIZnnKfNZ6PR4wch7oVARmHY1smTVZ
+         Wt/VXo8gAxJNh2Vyx7IU+PPj0K037/oOxQytvPyn3xHJL4zci0k7GoBu7uIRR6/iWVu1
+         ECpkGCDkYhtkKHEcFbrWBqmGMm3iXtT568LyaCfhlTIVxTvtw7I4GqorGM1WK2e4QArR
+         pn2x/JN9XduCSdjGd6SxxCO7WFE//bkzQ/9J3DJS5hyzsP3sC2TYJyZhzovoXe60SGgA
+         1tS4LgNo5PTCHe/3Rbwm/iVREBg/1OuzGMFqRCqOGuNe11NFYWYyMctWC/vj/51kagKf
+         9YnA==
+X-Gm-Message-State: AOAM532OjXQrmB3tJaNQUFRj9fQZ0mW5/E4yRqjGxWLOSkSV++HsSYWP
+        5Di+jRBBWzaanzPb20P7MQo=
+X-Google-Smtp-Source: ABdhPJzQSclZvmDBAqfL4DFvgTqVQURrVJD2YoHY90U2Cizd0Xv0QwdLJYaVQMlPn0NbFY2atWrcrA==
+X-Received: by 2002:a63:1359:: with SMTP id 25mr139944pgt.79.1628658591547;
+        Tue, 10 Aug 2021 22:09:51 -0700 (PDT)
+Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
+        by smtp.gmail.com with ESMTPSA id z15sm30314987pgc.13.2021.08.10.22.09.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 22:09:51 -0700 (PDT)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     narmstrong@baylibre.com
+Cc:     jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        christianshewitt@gmail.com, art@khadas.com, nick@khadas.com,
+        gouwa@khadas.com
+Subject: [PATCH] arm64: dts: meson-sm1: add spdifin spdifout nodes
+Date:   Wed, 11 Aug 2021 13:09:41 +0800
+Message-Id: <20210811050941.398360-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
- <20210809042414.107430-1-kai.heng.feng@canonical.com> <20210809094731.GA16595@wunner.de>
- <CAAd53p7cR3EzUjEU04cDhJDY5F=5k+eRHMVNKQ=jEfbZvUQq3Q@mail.gmail.com>
- <20210809150005.GA6916@wunner.de> <CAAd53p7qm=K99xO1n0Pwmn020Q7_iDj2S6-QGjeRjP0CpSphTg@mail.gmail.com>
- <20210810162144.GA24713@wunner.de>
-In-Reply-To: <20210810162144.GA24713@wunner.de>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 11 Aug 2021 13:06:27 +0800
-Message-ID: <CAAd53p7bMm5KyjXvUOTevspm9e0mtPP2KWoq5xZSWng8q1kGPg@mail.gmail.com>
-Subject: Re: [PATCH] PCI/portdrv: Disallow runtime suspend when waekup is
- required but PME service isn't supported
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:21 AM Lukas Wunner <lukas@wunner.de> wrote:
->
-> On Tue, Aug 10, 2021 at 11:37:12PM +0800, Kai-Heng Feng wrote:
-> > On Mon, Aug 9, 2021 at 11:00 PM Lukas Wunner <lukas@wunner.de> wrote:
-> > > If PME is not granted to the OS, the only consequence is that the PME
-> > > port service is not instantiated at the root port.  But PME is still
-> > > enabled for downstream devices.  Maybe that's a mistake?  I think the
-> > > ACPI spec is a little unclear what to do if PME control is *not* granted.
-> > > It only specifies what to do if PME control is *granted*:
-> >
-> > So do you prefer to just disable runtime PM for the downstream device?
->
-> I honestly don't know.  I was just wondering whether it is okay
-> to enable PME on devices if control is not granted by the firmware.
-> The spec is fairly vague.  But I guess the idea is that enabling PME
-> on devices is correct, just handling the interrupts is done by firmware
-> instead of the OS.
+Add spdifin spdifout spdifout_b nodes for Amlogic SM1 SoCs.
 
-Does this imply that current ACPI doesn't handle this part?
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 40 ++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
->
-> In your case, the endpoint device claims it can signal PME from D3cold,
-> which is why we allow the root port above to runtime suspend to D3hot.
-> The lspci output you've attached to the bugzilla indicates that yes,
-> signaling PME in D3cold does work, but the PME interrupt is neither
-> handled by the OS (because it's not allowed to) nor by firmware.
->
-> So you would like to rely on PME polling instead, which only works if the
-> root port remains in D0.  Otherwise config space of the endpoint device
-> is inaccessible.
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+index 3d8b1f4f2..1efdbb61e 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+@@ -356,6 +356,33 @@ tdmin_lb: audio-controller@3c0 {
+ 			status = "disabled";
+ 		};
+ 
++		spdifin: audio-controller@400 {
++			compatible = "amlogic,g12a-spdifin",
++			"amlogic,axg-spdifin";
++			reg = <0x0 0x400 0x0 0x30>;
++			#sound-dai-cells = <0>;
++			sound-name-prefix = "SPDIFIN";
++			interrupts = <GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
++			clocks = <&clkc_audio AUD_CLKID_SPDIFIN>,
++			<&clkc_audio AUD_CLKID_SPDIFIN_CLK>;
++			clock-names = "pclk", "refclk";
++			resets = <&clkc_audio AUD_RESET_SPDIFIN>;
++			status = "disabled";
++		};
++
++		spdifout: audio-controller@480 {
++			compatible = "amlogic,g12a-spdifout",
++			"amlogic,axg-spdifout";
++			reg = <0x0 0x480 0x0 0x50>;
++			#sound-dai-cells = <0>;
++			sound-name-prefix = "SPDIFOUT";
++			clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
++			<&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
++			clock-names = "pclk", "mclk";
++			resets = <&clkc_audio AUD_RESET_SPDIFOUT>;
++			status = "disabled";
++		};
++
+ 		tdmout_a: audio-controller@500 {
+ 			compatible = "amlogic,sm1-tdmout";
+ 			reg = <0x0 0x500 0x0 0x40>;
+@@ -401,6 +428,19 @@ tdmout_c: audio-controller@580 {
+ 			status = "disabled";
+ 		};
+ 
++		spdifout_b: audio-controller@680 {
++			compatible = "amlogic,g12a-spdifout",
++			"amlogic,axg-spdifout";
++			reg = <0x0 0x680 0x0 0x50>;
++			#sound-dai-cells = <0>;
++			sound-name-prefix = "SPDIFOUT_B";
++			clocks = <&clkc_audio AUD_CLKID_SPDIFOUT_B>,
++			<&clkc_audio AUD_CLKID_SPDIFOUT_B_CLK>;
++			clock-names = "pclk", "mclk";
++			resets = <&clkc_audio AUD_RESET_SPDIFOUT_B>;
++			status = "disabled";
++		};
++
+ 		toacodec: audio-controller@740 {
+ 			compatible = "amlogic,sm1-toacodec",
+ 				     "amlogic,g12a-toacodec";
+-- 
+2.25.1
 
-The Windows approach is to make the entire hierarchy stays at D0, I
-think maybe it's a better way than relying on PME polling.
-
->
-> I think the proper solution is that firmware should handle the PME
-> interrupt.  You've said the vendor objects because they found PME
-> doesn't work reliably.
-
-The PME works, what vendor said is that enabling PME makes the system
-"unstable".
-
-> Well in that case the endpoint device shouldn't
-> indicate that it can signal PME, at least not from D3cold.  Perhaps
-> the vendor is able to change the endpoint device's config space so
-> that it doesn't claim to support PME?
-
- This is not an viable option, and we have to consider that BIOS from
-different vendors can exhibit the same behavior.
-
->
-> If that doesn't work and thus a kernel patch is necessary, the next
-> question is whether changing core code is the right approach.
-
-I really don't see other way because non-granted PME is a system-wide thing...
-
->
-> If you do want to change core code, I'd suggest modifying
-> pci_dev_check_d3cold() so that it blocks runtime PM on upstream
-> bridges if PME is not handled natively AND firmware failed to enable
-> the PME interrupt at the root port.  The rationale is that upstream
-> bridges need to remain in D0 so that PME polling is possible.
-
-How do I know that firmware failed to enable PME IRQ?
-
-And let me see how to make pci_dev_check_d3cold() work for this case.
-
->
-> An alternative would be a quirk for this specific laptop which clears
-> pdev->pme_support.
-
-This won't scale, because many models are affected.
-
-Kai-Heng
-
->
-> Thanks,
->
-> Lukas
