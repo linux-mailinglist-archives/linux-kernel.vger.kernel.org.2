@@ -2,93 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC3D3E92E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA0B3E92EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhHKNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhHKNo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:44:57 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528AAC061765;
-        Wed, 11 Aug 2021 06:44:33 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so9578876pji.5;
-        Wed, 11 Aug 2021 06:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=eCt2wsyZd2oXWNANaRGNRd49CscrG4STsqKNCVrAZMc=;
-        b=KR0jaHtdFKt/MKcdHAdLGTfpT584saeRGF0HariciM+9jXidZbnTVW7h2iiIW4mQvD
-         bxTxJv5DL9IvTx4GYCDrsGl553X7/w3//Yre7y63maWBnvt5wcs/I5sFvpHogn6ozEy7
-         Md6WPuxg6p3WKauy+FuYyzXMxMhwFqiv71HmmhF5KICx43oKJoZ62gNBFxR45Is/eAk5
-         oE/KRoiaUfYnnwrJ3mZeXDZVz6sc5QtFe9Dge1YoHSZKxIILNjx4+DcVQpZSJkV9ClQo
-         QQK/FFwRKglrtv7YX6Ya60COo0dxOcSreg0I+Bke3eIZ/S4k0tc9llTKspBw1pF0MVRa
-         ILhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=eCt2wsyZd2oXWNANaRGNRd49CscrG4STsqKNCVrAZMc=;
-        b=L+aukZwcbSYg2Qm0wUV+16iFbABWFUOWX3wvpTdHpSl91eRLMko5A6dWRF0ZYCZHtZ
-         WXhO6Q2RFXsbnjE38p80acylgUDy489LhHxx+PFudwcGatXQDGUGKHQvyhbq5YVJ6+vg
-         roCD4Opmgk8Z5lm+5s2ynZUopqsZvaaOkrn5e7vsZrp8s1k718gSPQWTUlXizhE17rmh
-         z2enW6YBDPHqzBxzScjfMys3gWzMBV8oV88N17Ggn3vDwHsfvmCxUwH6oMe1GXNy+FSs
-         s0FEhbljzqmtL72wXeqqpLbKz3BGQm0mYGnMGItQ/ZM0wPZdUrVRHWY6ww2oJ34V4XEj
-         34dw==
-X-Gm-Message-State: AOAM532Yn6npiwgTH7/P6IHqhFzqIBfedAS1p92ys+WuPzumCB9Nnosa
-        n3A6nfF/dqndbrcW+Cwknf4=
-X-Google-Smtp-Source: ABdhPJz2sWNeOQxA0VhWcX8bUiL7AMEKuDWyy6xIy6ATye9lPxBjS9yXZfWuIMOKGT8KoX/JMFwrsQ==
-X-Received: by 2002:a63:f004:: with SMTP id k4mr23341pgh.390.1628689472821;
-        Wed, 11 Aug 2021 06:44:32 -0700 (PDT)
-Received: from [10.178.0.42] ([85.203.23.37])
-        by smtp.gmail.com with ESMTPSA id q4sm9160247pga.48.2021.08.11.06.44.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 06:44:32 -0700 (PDT)
-To:     njavali@marvell.com, mrangankar@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
-From:   Tuo Li <islituo@gmail.com>
-Subject: [BUG] scsi: qla4xxx: possible double lock in qla4_82xx_wr_32()
-Message-ID: <50b8ad40-b272-d601-889e-9ef336bf9170@gmail.com>
-Date:   Wed, 11 Aug 2021 21:44:29 +0800
+        id S231928AbhHKNpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:45:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231661AbhHKNpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:45:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 839D160FA0;
+        Wed, 11 Aug 2021 13:44:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628689496;
+        bh=O8JVrrpaXEdBnuTdYmtvCs5et+qsGlYfUIcqodvrCBE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Yz74ZQLD53yvkil+NzYu2wm3YsMgcxktWknb8nC7AEKeFG+yvFgCXFTDUs5rfsBDd
+         yqnZsm6sPsP1EozaxLn+8Jt+VHw92MXkVjbH2/DAIbQOg50bL5X+w6q8CJvfy1wkCf
+         GcyHHEv+UJhch2vE+bF7sHp7tXcPNGWOi67HfjLYl3u68dAJVZecROITNUuaa0E1V5
+         AyfTOt0kpDt3Cnd2lLtVLESeJvmOoBapYUtkGlnQgKsvDZGs55Vm791r7iqHtUDZP9
+         HzTHVe//INUnEATMvKlWoYqUU5AS421qKZw/ws8VmQ28owyJt9qZPjMl+Ju/mXwHWB
+         5MS3U4BQPRfAA==
+Subject: Re: [PATCH 2/2] fs: Don't create discard thread when device not
+ support realtime discard
+To:     Yangtao Li <frank.li@vivo.com>, jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Fengnan Chang <changfengnan@vivo.com>
+References: <20210811131826.223141-1-frank.li@vivo.com>
+ <20210811131826.223141-2-frank.li@vivo.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <fc34fe7c-c7ec-3783-8cbc-de91ab81ee0a@kernel.org>
+Date:   Wed, 11 Aug 2021 21:44:52 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210811131826.223141-2-frank.li@vivo.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021/8/11 21:18, Yangtao Li wrote:
+> From: Fengnan Chang <changfengnan@vivo.com>
+> 
+> Don't create discard thread when device not support realtime discard.
+> 
+> Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+>   fs/f2fs/segment.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 363779a4402d..bc4ac46f3041 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -2161,6 +2161,8 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+>   	init_waitqueue_head(&dcc->discard_wait_queue);
+>   	SM_I(sbi)->dcc_info = dcc;
+>   init_thread:
+> +	if (!f2fs_realtime_discard_enable(sbi))
 
-Our static analysis tool finds a possible double lock in ql4_nx.c in 
-Linux 5.14.0-rc3:
+How about below case:
+- mount -o nodiscard <dev> <mp>
+- mount -o remount,discard <dev> <mp>
 
-ha->hw_lock is first locked in:
-418:    write_lock_irqsave(&ha->hw_lock, flags);
+Thanks,
 
-And then the function qla4_82xx_crb_win_lock() is called:
-419:    qla4_82xx_crb_win_lock(ha);
-
-In this function, the function qla4_82xx_rd_32() is called:
-389:    done = qla4_82xx_rd_32(ha, QLA82XX_PCIE_REG(PCIE_SEM7_LOCK));
-
-In this function, ha->hw_lock is locked again:
-442:    write_lock_irqsave(&ha->hw_lock, flags);
-
-I am not quite sure whether this possible double lock is real and how to 
-fix it if it is real.
-Any feedback would be appreciated, thanks!
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-Best wishes,
-Tuo Li
+> +		return err;
+>   	dcc->f2fs_issue_discard = kthread_run(issue_discard_thread, sbi,
+>   				"f2fs_discard-%u:%u", MAJOR(dev), MINOR(dev));
+>   	if (IS_ERR(dcc->f2fs_issue_discard)) {
+> 
