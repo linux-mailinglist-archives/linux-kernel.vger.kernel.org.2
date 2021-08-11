@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DC33E896A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476233E896E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233699AbhHKEef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 00:34:35 -0400
-Received: from mail-lj1-f171.google.com ([209.85.208.171]:46602 "EHLO
-        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhHKEee (ORCPT
+        id S233762AbhHKEgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 00:36:09 -0400
+Received: from mail-4325.protonmail.ch ([185.70.43.25]:16399 "EHLO
+        mail-4325.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233657AbhHKEgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 00:34:34 -0400
-Received: by mail-lj1-f171.google.com with SMTP id h17so2345029ljh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:34:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+JyTIpyUoOH+FpHRKLiZgIeYXX8zEGMVThj9kDtlYpc=;
-        b=PzZK2iX4HdZypOyoDUPK1IfE+cJLPaSvU5604zFupruwEQfyjylnLXuxwbA3XUB/Fx
-         WMi6ftOQvqbZB/txFnsOUyfQtOLj0rBW3d2pgIDMcoPYbi4n6hEGpI/o8Tk37e1KJhes
-         0c1+IrFbTtb8eSKdotbVmphgWgrrifZfUSbmWinnCJ8SNO6VHri4KcNtjnCJZQ8ehLca
-         4BaILAkjzmSiePS/lXgnTt9GONgLwuQOOlXWX/L9gpp7iNpzj5fxw4FUmgMTW9bmpDF9
-         rWp+vcXOUSBmjIOAmGA4fZf0UuKOBpKfI6IFQZE/IOSD6SCIkF0f7Ojd+q+X6X1TmFjq
-         KT8Q==
-X-Gm-Message-State: AOAM531/pQJR3qiWj/CaEWu5QPSZ6FY2K31FCphsDsyAmYqn3phqQsvh
-        naI66QBeofvrboTXdW635LslCcGhqYYxcSCb07Y=
-X-Google-Smtp-Source: ABdhPJzzXj90/px8vI6WeKdY5VSWQADo/rsoqUEf8QnlfMqYmnPa913w3e4I6kZFm76uZuvXzdcJNABj/Ut5FFl9nFQ=
-X-Received: by 2002:a05:651c:38f:: with SMTP id e15mr21496438ljp.233.1628656450266;
- Tue, 10 Aug 2021 21:34:10 -0700 (PDT)
+        Wed, 11 Aug 2021 00:36:07 -0400
+Date:   Wed, 11 Aug 2021 04:35:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1628656541;
+        bh=p6OzoMEtzDt7NEqEXpiYeEgZDvjeL0XKSnirVR7O4Z8=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=sqMhd5F3Mdf0KHU8Y27g8pjo+q8APJ8hB4qhMoNuPQgbpLWrv8cibIEl7udYgWXq0
+         reLYU7cR7YVXA6n8kt8tyYZOtvIVBVz6os/0jaCEfvVAbwnIpnDP1RKUwkZBk1qK9c
+         hykyiOyAyyr7ioSRTVSiHSq9gNfh6ZUrpQFmmt7I=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH v3 0/6] interconnect: qcom: Add MSM8996 interconnect driver
+Message-ID: <20210811043451.189776-1-y.oudjana@protonmail.com>
 MIME-Version: 1.0
-References: <20210724040129.2268452-1-namhyung@kernel.org> <20210724040129.2268452-2-namhyung@kernel.org>
- <YP61gJD91GwvfzwT@krava>
-In-Reply-To: <YP61gJD91GwvfzwT@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 10 Aug 2021 21:33:59 -0700
-Message-ID: <CAM9d7ci24NW9mn6FBOER_ut=AmgSB5x=8xD8Xhakt1Sxz+62vw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] perf record: Add --synth option
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+This series adds a driver for interconnects on MSM8996. This fixes some rar=
+e display underflows
+and causes a slight heat reduction.
 
-On Mon, Jul 26, 2021 at 6:15 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Fri, Jul 23, 2021 at 09:01:29PM -0700, Namhyung Kim wrote:
-> > Add an option to control synthesize behavior.
-> >
-> >     --synth <no|all|task|mmap|cgroup>
-> >                       Fine-tune event synthesis: default=all
-> >
-> > This can be useful when we know it doesn't need some synthesis like
-> > in a specific usecase and/or when using pipe:
-> >
-> >   $ perf record -a --all-cgroups --synth cgroup -o- sleep 1 | \
-> >   > perf report -i- -s cgroup
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/Documentation/perf-record.txt |  9 +++++
-> >  tools/perf/builtin-record.c              | 48 +++++++++++++++++++-----
-> >  tools/perf/util/record.h                 |  1 +
-> >  tools/perf/util/synthetic-events.c       | 28 ++++++++++++++
-> >  tools/perf/util/synthetic-events.h       | 12 ++++++
-> >  5 files changed, 89 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> > index d71bac847936..03a41bec0583 100644
-> > --- a/tools/perf/Documentation/perf-record.txt
-> > +++ b/tools/perf/Documentation/perf-record.txt
-> > @@ -596,6 +596,15 @@ options.
-> >  'perf record --dry-run -e' can act as a BPF script compiler if llvm.dump-obj
-> >  in config file is set to true.
-> >
-> > +--synth=TYPE::
-> > +Collect and synthesize given type of events (comma separated).
-> > +Available types are:
-> > +  'task'    - synthesize FORK and COMM events for each task
-> > +  'mmap'    - synthesize MMAP events for each process (implies 'task')
-> > +  'cgroup'  - synthesize CGROUP events for each cgroup
-> > +  'all'     - synthesize all events (default)
-> > +  'no'      - do not synthesize any of the above events
->
-> this only affects events we take from proc right?
+The driver currently supports all NoCs on MSM8996 except a0noc, due to some=
+ issues with writing
+to its registers.
 
-Right.
+Changes since v2:
+ - Dual-license qcom,msm8996.h and move it to the dt bindings patch
+ - Remove interconnect paths from CPUs since cpufreq driver doesn't support=
+ icc scaling yet.
+Changes since v1:
+ - Split first patch into 2 patches, one for renaming qcom_icc_set in icc-r=
+pmh, and another
+   one for the actual commonization.
+ - Revert unnecessary move of include line in sdm660.c=20
 
->
-> should we perhaps mention it, because you'll get mmap
-> events from kernel even if you specify --synth=task
+Yassine Oudjana (6):
+  interconnect: qcom: icc-rpmh: Rename qcom_icc_set
+  interconnect: qcom: sdm660: Commonize RPM-QoS
+  dt-bindings: interconnect: Move SDM660 to a new RPM-QoS file
+  dt-bindings: interconnect: Add Qualcomm MSM8996 DT bindings
+  interconnect: qcom: Add MSM8996 interconnect provider driver
+  arm64: dts: qcom: msm8996: Add interconnect support
 
-Good point, will update.
+ .../{qcom,sdm660.yaml =3D> qcom,rpm-qos.yaml}   |  23 +-
+ arch/arm64/boot/dts/qcom/msm8996.dtsi         |  80 +++
+ drivers/interconnect/qcom/Kconfig             |  14 +-
+ drivers/interconnect/qcom/Makefile            |   4 +
+ drivers/interconnect/qcom/icc-rpm-qos.c       | 237 ++++++++
+ drivers/interconnect/qcom/icc-rpm-qos.h       | 133 ++++
+ drivers/interconnect/qcom/icc-rpmh.c          |   6 +-
+ drivers/interconnect/qcom/icc-rpmh.h          |   2 +-
+ drivers/interconnect/qcom/msm8996.c           | 574 ++++++++++++++++++
+ drivers/interconnect/qcom/msm8996.h           | 149 +++++
+ drivers/interconnect/qcom/sc7180.c            |   2 +-
+ drivers/interconnect/qcom/sc7280.c            |   2 +-
+ drivers/interconnect/qcom/sdm660.c            | 346 +----------
+ drivers/interconnect/qcom/sdm845.c            |   2 +-
+ drivers/interconnect/qcom/sdx55.c             |   2 +-
+ drivers/interconnect/qcom/sm8150.c            |   2 +-
+ drivers/interconnect/qcom/sm8250.c            |   2 +-
+ drivers/interconnect/qcom/sm8350.c            |   2 +-
+ .../dt-bindings/interconnect/qcom,msm8996.h   | 163 +++++
+ 19 files changed, 1387 insertions(+), 358 deletions(-)
+ rename Documentation/devicetree/bindings/interconnect/{qcom,sdm660.yaml =
+=3D> qcom,rpm-qos.yaml} (82%)
+ create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.c
+ create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.h
+ create mode 100644 drivers/interconnect/qcom/msm8996.c
+ create mode 100644 drivers/interconnect/qcom/msm8996.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,msm8996.h
 
-Thanks,
-Namhyung
+--=20
+2.32.0
+
+
