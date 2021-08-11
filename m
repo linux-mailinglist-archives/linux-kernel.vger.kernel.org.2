@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A093E8E25
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0843E8E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236883AbhHKKJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236690AbhHKKJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:09:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20E5A601FD;
-        Wed, 11 Aug 2021 10:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628676550;
-        bh=WFdcMDOdwT6iqhf90eKghlHbPA/yHhanICAd1+UlmRM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vAuQbY91bb67oIRwclNTdMUX+7hGHLmfOVBobsNUxT24P57KeqHCdpi20UnTatwot
-         OZTwRCmKEHFSunGGfYDgTE4fvaSJFZSFMq9eR4Vj+Mq7MkOs0tQGNsscLUOj5Vs3LI
-         fi6VUbSxohmzU3VdJiV4LVrxqFwDx+djRZUBmkqB5Nw8ogI/nwRutVaqUWWic9Q+DV
-         XcXffrF9Gzgc7UVsNls69LOLZ/rgVhMuQEvqM7u6l6pJI6unO60/779Am1YIu7Ah+7
-         oxEOBtNDLKDCD61Gii2bw60MtIHfAyuFvv9rv9XqZRGmgsDTvTYd77MPiKiw1TLOow
-         H1fZODrUX+eyg==
-Date:   Wed, 11 Aug 2021 11:09:06 +0100
-From:   Will Deacon <will@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC 2/8] iommu/arm-smmu-v3: Add and use static helper
- function arm_smmu_cmdq_issue_cmd_with_sync()
-Message-ID: <20210811100905.GB4426@willie-the-truck>
-References: <20210626110130.2416-1-thunder.leizhen@huawei.com>
- <20210626110130.2416-3-thunder.leizhen@huawei.com>
- <20210810182454.GB3296@willie-the-truck>
- <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
+        id S237060AbhHKKIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237000AbhHKKIV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:08:21 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3432C0613D3;
+        Wed, 11 Aug 2021 03:07:44 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id k29so2243257wrd.7;
+        Wed, 11 Aug 2021 03:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=S4hqVy65+RqdfbEZFzhI05OrdFqRKRNyS+UZZ1UKMEg=;
+        b=DSk7KF/Hl604HiNkXJunPo3CQy2Q1GXLXmaxkFOpFpfyogVuakMRIJkzTx7wNzEXQi
+         tuWqU9R2dmjFKEvtpmLNk7IcEqribvixcmM3zyL5GztluQpAsAmMWeatkJX+Q7Dp6dIw
+         w0BdI/9xWYSiKsKF+9UFifL9dB/7s6yvf7sYoFDZeRvzGs5VsAbkR0KeGd9FjOsdDokZ
+         RAnpSqUOL6eKnsD0qwr5VXSW17TuehdizEsm+fIHYFT9QVN8fJ/3kZXzMo2z1U03JVJy
+         vAWZQA3g4eIKfDRGkX4e9A6GaelxqWN9VxDgZihRRvWRlDkkek35kHMYynbLIpeb6kaU
+         CrKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=S4hqVy65+RqdfbEZFzhI05OrdFqRKRNyS+UZZ1UKMEg=;
+        b=KuXpkjhHQpxFT49Q0EfIH8eVJ7yKvwCJt3R570R1ESWK8mAC35/e3DvQEp21QZPbV1
+         UepmeTEK5zYUx1bVUcZUJtl85A/wHE6EJAdBnU247AwDWOkuJuqUhr+QPQC7OdKZkQJp
+         8Q+88h/Mq6giprYoNBiRNC07DSFiGWwNDskecvMJp0r8Sr2pIlFACM0Qt4zXrDmZKeXy
+         o+BWIwlQ8TDFWJvhiwtEaq4RYNlikNnMeNS+npEhrM2ahZ+QucXJ7+ePVmdVBw+77Uwz
+         5wEbuJtZN507YZ7Gk470ZINPftOGxl3xmp8RwLS2wOLb0KH7+x4c9Zm6vk7kI1U7T8h+
+         bINQ==
+X-Gm-Message-State: AOAM531MoacFkvy9zWHeMpwxmcIQFPXdRqIow3sHgjs+wIGyZgdjivNO
+        HI3u7Psh7g4rjlEiTxndcyo=
+X-Google-Smtp-Source: ABdhPJwwUVKorzNJ9hasthKW2Q2CRca/WuAZIJBYk/7Bwo1tYUVM9Jyi0oOZpUPOAyxVUUtWTJrCxw==
+X-Received: by 2002:a5d:51cd:: with SMTP id n13mr34902882wrv.185.1628676463339;
+        Wed, 11 Aug 2021 03:07:43 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id u6sm11570356wrp.83.2021.08.11.03.07.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 03:07:42 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 12:10:07 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] arm64: tegra194: p2888: Correct interrupt trigger
+ type of temperature sensor
+Message-ID: <YROh/29zpIVH9AkL@orome.fritz.box>
+References: <20210711234939.28103-1-digetx@gmail.com>
+ <20210711234939.28103-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="x2Da+L5daCTg3cgs"
 Content-Disposition: inline
-In-Reply-To: <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210711234939.28103-2-digetx@gmail.com>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:16:39AM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/8/11 2:24, Will Deacon wrote:
-> > On Sat, Jun 26, 2021 at 07:01:24PM +0800, Zhen Lei wrote:
-> >> The obvious key to the performance optimization of commit 587e6c10a7ce
-> >> ("iommu/arm-smmu-v3: Reduce contention during command-queue insertion") is
-> >> to allow multiple cores to insert commands in parallel after a brief mutex
-> >> contention.
-> >>
-> >> Obviously, inserting as many commands at a time as possible can reduce the
-> >> number of times the mutex contention participates, thereby improving the
-> >> overall performance. At least it reduces the number of calls to function
-> >> arm_smmu_cmdq_issue_cmdlist().
-> >>
-> >> Therefore, function arm_smmu_cmdq_issue_cmd_with_sync() is added to insert
-> >> the 'cmd+sync' commands at a time.
-> >>
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> ---
-> >>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++--------
-> >>  1 file changed, 21 insertions(+), 12 deletions(-)
-> >>
-> >> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> >> index 2433d3c29b49ff2..a5361153ca1d6a4 100644
-> >> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> >> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> >> @@ -858,11 +858,25 @@ static int arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
-> >>  	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, false);
-> >>  }
-> >>  
-> >> -static int arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
-> >> +static int __maybe_unused arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
-> >>  {
-> >>  	return arm_smmu_cmdq_issue_cmdlist(smmu, NULL, 0, true);
-> >>  }
-> >>  
-> >> +static int arm_smmu_cmdq_issue_cmd_with_sync(struct arm_smmu_device *smmu,
-> >> +					     struct arm_smmu_cmdq_ent *ent)
-> >> +{
-> >> +	u64 cmd[CMDQ_ENT_DWORDS];
-> >> +
-> >> +	if (arm_smmu_cmdq_build_cmd(cmd, ent)) {
-> >> +		dev_warn(smmu->dev, "ignoring unknown CMDQ opcode 0x%x\n",
-> >> +			 ent->opcode);
-> >> +		return -EINVAL;
-> >> +	}
-> >> +
-> >> +	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, true);
-> >> +}
-> > 
-> > This function is almost identical to arm_smmu_cmdq_issue_cmd(). How about
-> > moving the guts out into a helper:
-> > 
-> > 	static int __arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
-> > 					     struct arm_smmu_cmdq_ent *ent,
-> > 					     bool sync);
-> > 
-> > and then having arm_smmu_cmdq_issue_cmd_with_sync() and
-> > arm_smmu_cmdq_issue_cmd() wrap that?
-> 
-> OK, I will do it.
-> 
-> How about remove arm_smmu_cmdq_issue_sync()? It's unused now.
 
-Sure.
+--x2Da+L5daCTg3cgs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Will
+On Mon, Jul 12, 2021 at 02:49:39AM +0300, Dmitry Osipenko wrote:
+> The LM90 temperature sensor should use edge-triggered interrupt because
+> LM90 hardware doesn't deassert interrupt line until temperature is back
+> to normal state, which results in interrupt storm. Correct the interrupt
+> trigger type.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Applied, thanks.
+
+Thierry
+
+--x2Da+L5daCTg3cgs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmETof8ACgkQ3SOs138+
+s6FiBQ/+OxPxWNCs+D7wXQH4ICkuZ3JEOHMQvs2A58mATxCL3poGIdFx+1u9AWJg
+3EEg8EGkuBDJhlRoYqyJhej52+xH9Zs5XAhn1aeemSr2gerwVPn2GURgvfFUH5by
+9roYnl80UDhzEY0tfxblnYxgI8vtM0HWwbo2PLEDuKoFi7Xil/AgGUBOYiYD22cc
+Qvn5AI0gv5+Kj1aosjaE1Pg1KBsB8IiEpI7hrAmWDIFEjjBR8xXkbZ5lHSpWeTA5
+edWTYKAn+nS45DNUj3AL8paV6wtqZ+8xuCMD00TWUjIInsg8Z/w0lxzutv/mrYjS
+oLHWLYESlIY77SngrAUrzZMs9SJXM54YMkFHHCbY9puub9m8+dHTpn6Df8bGR135
+/Iz2TkcdcQ7QLrJY9zvueUjmAWpNddYhosjDM8YuD1rGVYTbq7AC9cOgRsj35nHi
+VBKUwfIIEh1iDMpIL8cPJP8IpBnOV6OeawE0tnuX9A7+cbbwkghX7jHP65y2oDVo
+reNb0CnJR8uEBqfXdtFZbyLh9QV7dbh9rfVMQRFi8Q2MlXET46Q8N4wVlrKG7i5X
+g02icVutpOVCDoc+6ugLuUUclukNC0Q0wFGikkcbMyH2pFWpOIN1ZLJ//3/oJBdD
+4pUGCtQSemZo86rdQy6O45SdlwWhgtTz7KFGCXmJmK7jCbs/lD8=
+=WzH2
+-----END PGP SIGNATURE-----
+
+--x2Da+L5daCTg3cgs--
