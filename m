@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7313E9751
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DCD3E9758
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhHKSJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:09:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhHKSJL (ORCPT
+        id S229987AbhHKSLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:11:55 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:34697 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhHKSLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:09:11 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2B3C061765;
-        Wed, 11 Aug 2021 11:08:47 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d1so3748250pll.1;
-        Wed, 11 Aug 2021 11:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XPgK+iyXy46IJH8Hj0istqzWfGCuBh53Hqdy3vFF5K4=;
-        b=r7PopeTgrDc7n/bWwJ5e0f+BfBFRl6LtdflJvnIbuLrPKhqkoKkpxRUqoXMKOpzs0V
-         Q4Gnet2Qeyd83m0rW2rhAHI1r3i6lVIitzHZcv//k30rtHw4yEevrtcr44drgCpAVOFa
-         kEqekTBwmfWRuPmSupYTKQRxrPvxcABuszOiWjjJrZXnzWBI0HvEpD26C0FVOXhTr24+
-         QJ2tHd2EfoMIJnZikWNESVpzCCC5dA+gbx+ix8M3McgtB/jYW3w4G5mHME7Ncr5oy09T
-         zUmokknlszJGYu245+vvI3g6gp3mip3SjOKvWykSOL/xetEvmbOKOEfb1Rxi43R70IVB
-         kubQ==
+        Wed, 11 Aug 2021 14:11:54 -0400
+Received: by mail-pl1-f180.google.com with SMTP id d1so3757759pll.1;
+        Wed, 11 Aug 2021 11:11:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=XPgK+iyXy46IJH8Hj0istqzWfGCuBh53Hqdy3vFF5K4=;
-        b=ftY6tcSrhnoh9AiA+lySnP4rdjq1OkxAKxXk4jgtLUwuijlH5UZoh6vGdUNC+pms8b
-         fZyZK2Q2pgMHaNO2DqDu6MWLLVGYxpOkDdOk3kkiz+UvFHUj2Tpj0EYtwX+PuDZ57Ow4
-         Zd1KW7cN5jJGvPv4yPUU1q/RJDI2613tCrJHCzqmDYlvjimsy1/Egk0rWzr9f3ydQJru
-         eK86LalBHcnvvYiXXEdRXUg09LrUMKmj1Ur3L4T7Td84U3pPtpxFB8vkty6PeARaT/3f
-         mUquz33Jmx3/r3/Q2ClMhAGBeaI8VCxF+ELGRAU4b6Hr8uUUMe7NzEIo+9oQlxig/LIF
-         WjJg==
-X-Gm-Message-State: AOAM530vwFfQBEUlRJpMHWeP8EgLbPNqrEJ4BtkHnyaLDScTHivBl/J8
-        WH84MJR9ziKx4AiPyVy0bx8=
-X-Google-Smtp-Source: ABdhPJyM4psCveusSAJW4HLpM4x36fW1ck8QCH6YAqzVzGyG0fLw56sU1y2hMvpPr33k8Nng5+yrZg==
-X-Received: by 2002:a63:5c10:: with SMTP id q16mr10236pgb.128.1628705327189;
-        Wed, 11 Aug 2021 11:08:47 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id k3sm198429pfc.16.2021.08.11.11.08.42
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1A9gzdbnn58lRehU+hUclDHaFNwYQNoEsi8rcFLZjN8=;
+        b=O90UncPSkx8NEIc6958yp4hBRpwY/4VgbhrFlAfHaK/VehU6aj2lsGtuC7KHqGunEF
+         WjXwbVz6wXeZYjrikuURARkiT69fsOe9ZVeUA/AI7nAA5liqCnCqXaFoLLtSW51xFoPo
+         daVbPmdcQxJjb4frqe6dkUzVJsMKC8e1Ib0d/b7bhO9cBsQV4GTQhzmR2LIX84j19UBi
+         BWcgD34MWlpH7/zaVnpPzzJf4ya1lhvTni//faQZ4eWY7tvuGqpobJjERDUj0FhwNvdf
+         cIgdwLH7nIHF47q5jM1KeppPXI82u/J+PDr29gccDN/75/sGxroo0Ech/VPVtnbNxGG4
+         kjRw==
+X-Gm-Message-State: AOAM533O7LK1h+gzwSJIj7S1ILg68kyZmofzRctm4Zgk7xpkPA2KMJ8Q
+        b0psq9+ZtokymKnujmXapw==
+X-Google-Smtp-Source: ABdhPJylZYCNsi7aLdnU5BXGhlWKKRwa0qCJ5LYDWJSxKrWZNnd2izzg5emDhPlR1+rNNPVyexC6GA==
+X-Received: by 2002:a63:a902:: with SMTP id u2mr174837pge.123.1628705489665;
+        Wed, 11 Aug 2021 11:11:29 -0700 (PDT)
+Received: from robh.at.kernel.org ([208.184.162.215])
+        by smtp.gmail.com with ESMTPSA id 66sm196425pfu.67.2021.08.11.11.11.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:08:46 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 11 Aug 2021 08:08:41 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        Wed, 11 Aug 2021 11:11:28 -0700 (PDT)
+Received: (nullmailer pid 15921 invoked by uid 1000);
+        Wed, 11 Aug 2021 18:11:22 -0000
+Date:   Wed, 11 Aug 2021 12:11:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Iwona Winiarska <iwona.winiarska@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        David Muller <d.mueller@elsoft.ch>, x86@kernel.org,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v4 2/6] cgroup/cpuset: Properly handle partition root tree
-Message-ID: <YRQSKZB8rQUsfF2K@slm.duckdns.org>
-References: <20210811030607.13824-1-longman@redhat.com>
- <20210811030607.13824-3-longman@redhat.com>
+        Rob Herring <robh+dt@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>, linux-doc@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Zev Weiss <zweiss@equinix.com>, Ingo Molnar <mingo@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v2 03/15] dt-bindings: Add generic bindings for PECI
+Message-ID: <YRQSyjFcS8bAfqDU@robh.at.kernel.org>
+References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
+ <20210803113134.2262882-4-iwona.winiarska@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811030607.13824-3-longman@redhat.com>
+In-Reply-To: <20210803113134.2262882-4-iwona.winiarska@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 03 Aug 2021 13:31:22 +0200, Iwona Winiarska wrote:
+> Add device tree bindings for the PECI controller.
+> 
+> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+> ---
+>  .../bindings/peci/peci-controller.yaml        | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/peci/peci-controller.yaml
+> 
 
-On Tue, Aug 10, 2021 at 11:06:03PM -0400, Waiman Long wrote:
-> For a partition root tree with parent and child partition roots, this
-> patch will now prohibit changing parent partition root back to member
-> as changes to "cpuset.cpus.partition" should not cause those child
-> partition roots to become invalid.
-
-So, the general rule is that a descendant should never be able to affect or
-restrict what an ancestor can do in terms of configuration. This is because
-descendant cgroups can be delegated and a system manager sitting at a higher
-level in the hierarchy may not have much control over what happens under
-delegated subtrees.
-
-Given that we're promoting the error state as the first class citizen in the
-interface anyway, wouldn't it be better to keep this in line too?
-
-Thanks.
-
--- 
-tejun
+Reviewed-by: Rob Herring <robh@kernel.org>
