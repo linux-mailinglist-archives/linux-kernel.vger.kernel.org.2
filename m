@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCE53E9237
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76383E9239
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhHKNHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:07:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230030AbhHKNHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:07:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7F560D07;
-        Wed, 11 Aug 2021 13:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628687216;
-        bh=qcTlRMTdng/DbA+1wbB5n4EdMMJWgDMlUQ9bV3LywUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pD8ogjIbgcl+s78ScsxVFt6sFVlPZqalp8R+XFdW0kWFDBcfgY6S/ZlxkieoDVV4o
-         wvIRSd8GxyOxlhtvDsi2/gvKNPYswwlw4kM6T9ejIkb7GXOr1qyHyc9V4wPxve6iK6
-         xVagAwh3GRd537LMzD93Y9JfkD9SjNBHgD+O++2o=
-Date:   Wed, 11 Aug 2021 15:06:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        jason@jlekstrand.net, Jonathan Gray <jsg@jsg.id.au>
-Subject: Re: [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in
- eb_parse()
-Message-ID: <YRPLbV+Dq2xTnv2e@kroah.com>
-References: <20210810172955.660225700@linuxfoundation.org>
- <20210810173000.050147269@linuxfoundation.org>
- <20210811072843.GC10829@duo.ucw.cz>
- <YROARN2fMPzhFMNg@kroah.com>
- <20210811122702.GA8045@duo.ucw.cz>
+        id S231232AbhHKNHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:07:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46588 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhHKNHo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:07:44 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C4F0B221F7;
+        Wed, 11 Aug 2021 13:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628687239; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BMEqaaybARGsEuv2GgBrFBnuSy83x/SG5H3WT5k8KMM=;
+        b=hh4XEiiBRUrB/OYeA0UovCcgMYEvBwcAxwlfP+VMDEs+hJhr2uoGl4rumjgU0ywE/+ykCH
+        2sceWZ+By8+zTsKzSV5tDRWBwQNvefVs75ZYUPxRXYZwluDvpR/BwRM038/81kSOL9K9o8
+        raDb1q5GzvumxZ5sjzFx936MbRRWxlc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628687239;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BMEqaaybARGsEuv2GgBrFBnuSy83x/SG5H3WT5k8KMM=;
+        b=CL9YMNZl+JODHUB2GguNQpydy04NwSxizp/Z/RAYWrWIt1n5LEi9T+9Ieapxo438+FdJ+U
+        opoDZbPXvXoZVOAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AEF97136D9;
+        Wed, 11 Aug 2021 13:07:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id ftYSKofLE2GLNgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 13:07:19 +0000
+Subject: Re: [PATCH v14 044/138] mm/memcg: Convert
+ mem_cgroup_track_foreign_dirty_slowpath() to folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-45-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <580af636-58fb-449a-1e43-7a7e97214398@suse.cz>
+Date:   Wed, 11 Aug 2021 15:07:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811122702.GA8045@duo.ucw.cz>
+In-Reply-To: <20210715033704.692967-45-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 02:27:02PM +0200, Pavel Machek wrote:
-> On Wed 2021-08-11 09:46:12, Greg Kroah-Hartman wrote:
-> > On Wed, Aug 11, 2021 at 09:28:43AM +0200, Pavel Machek wrote:
-> > > Hi!
-> > > 
-> > > > From: Jonathan Gray <jsg@jsg.id.au>
-> > > > 
-> > > > The backport of c9d9fdbc108af8915d3f497bbdf3898bf8f321b8 to 5.10 in
-> > > > 6976f3cf34a1a8b791c048bbaa411ebfe48666b1 removed more than it should
-> > > > have leading to 'batch' being used uninitialised.  The 5.13 backport and
-> > > > the mainline commit did not remove the portion this patch adds back.
-> > > 
-> > > This patch has no upstream equivalent, right?
-> > > 
-> > > Which is okay -- it explains it in plain english, but it shows that
-> > > scripts should not simply search for anything that looks like SHA and
-> > > treat it as upsteam commit it.
-> > 
-> > Sounds like you have a broken script if you do it that way.
+On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
+> The page was only being used for the memcg and to gather trace
+> information, so this is a simple conversion.  The only caller of
+> mem_cgroup_track_foreign_dirty() will be converted to folios in a later
+> patch, so doing this now makes that patch simpler.
 > 
-> That is what you told me to do!
-> 
-> https://lore.kernel.org/stable/YQEvUay+1Rzp04SO@kroah.com/
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Yes, which is fine for matching sha1 values.
-
-> I would happily adapt my script, but there's no
-> good/documented/working way to determine upstream commit given -stable
-> commit.
-> 
-> If we could agree on
-> 
-> Commit: (SHA)
-> 
-> in the beggining of body, that would be great.
-> 
-> Upstream: (SHA)
-> 
-> in sign-off area would be even better.
-
-What exactly are you trying to do when you find a sha1?  For some reason
-my scripts work just fine with a semi-free-form way that we currently
-have been doing this for the past 17+ years.  What are you attempting to
-do that requires such a fixed format?
-
-thanks,
-
-greg k-h
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
