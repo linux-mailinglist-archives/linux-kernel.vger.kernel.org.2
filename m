@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3503E8B2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2963E8B2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235740AbhHKHlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:41:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54276 "EHLO mail.kernel.org"
+        id S235782AbhHKHlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:41:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234043AbhHKHlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:41:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BEBC6056B;
-        Wed, 11 Aug 2021 07:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628667639;
-        bh=rdqhOz0L1PAh4KXTeSKY4XD8/H+gEn5LQTTMro2BQ9M=;
+        id S235491AbhHKHlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:41:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A150760230;
+        Wed, 11 Aug 2021 07:40:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628667656;
+        bh=V/N3eN/dw5gSqAyCkP+gCTFP8cNeUSG7Vnrmvybg9YA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uQVzxGtxi3P/hMjDt7J/0kB2xhblAqToa9zpLvlF8G+Vf83bZyGVBqazQX+UNuqL7
-         0Nr4/5GeWK2BB6TfyNUG48RN6NEs/twP/NVKGi+wdis36tHP64IE6qNW4WZJxdhRF7
-         QX+oYwtXG362ZK/Rh5crKTcuFKcObaKlFP3l5lwE+f49eN7wJsLEFzl1ZzoBrQAb9Y
-         CjoyTSylavwgQXDExA4IJY79Lr3nElg5YusevfuvinucbLmlLyiiD2VmzaeCtt+uDi
-         OEQjQ+66vfF0aFHvX8fEAYLiFEdbavEvLltA6xGTpiwuZ2Yfmxti884966gk3bANhO
-         1evdzfauj/Xjw==
-Date:   Wed, 11 Aug 2021 09:40:34 +0200
-From:   Robert Richter <rric@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Len Baker <len.baker@gmx.com>, Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        b=2nEEGo6qq4f/vChJviFvNJGOXUdcy2sE4Et/9BG/ML35x1TGhgsfEw5gTXUiWdINt
+         ttGxCioO0qIIw83UY6v5FTymJIdfLouK9VD6KUJOg7OXzijRvWbuAMD6gVR+6EMjhW
+         4RQjquwm8YCOTFlMaKWo+P7hjklKwna7KOYnrSFk=
+Date:   Wed, 11 Aug 2021 09:40:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-Message-ID: <YRN+8u59lJ6MWsOL@rric.localdomain>
-References: <20210807155957.10069-1-len.baker@gmx.com>
- <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
- <20210808112617.GA1927@titan>
- <YRD90L6PMoVbbv+9@rric.localdomain>
- <99448ef29830fda9b19409bc23b0e7513b22f7b7.camel@perches.com>
- <YRKO4An9UkObVGmB@rric.localdomain>
- <b3070c0352e2a5661a1a59d5c5354cc82a1cce1e.camel@perches.com>
+Subject: Re: [PATCH 8/8] staging: r8188eu: remove lines from Makefile that
+ silence build warnings
+Message-ID: <YRN/BYRayELQnM+2@kroah.com>
+References: <20210810235047.177883-1-phil@philpotter.co.uk>
+ <20210810235047.177883-9-phil@philpotter.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b3070c0352e2a5661a1a59d5c5354cc82a1cce1e.camel@perches.com>
+In-Reply-To: <20210810235047.177883-9-phil@philpotter.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.21 08:02:17, Joe Perches wrote:
-> On Tue, 2021-08-10 at 16:36 +0200, Robert Richter wrote:
-> > On 09.08.21 10:18:58, Joe Perches wrote:
-> > 
-> > > strscpy and scnprintf have different return values and it's simpler
-> > > and much more common to use scnprintf for appended strings that are
-> > > limited to a specific buffer length.
-> > 
-> > Calculating the bytes written from the return value is a oneliner.
+On Wed, Aug 11, 2021 at 12:50:47AM +0100, Phillip Potter wrote:
+> Remove the several lines from the Makefile that append EXTRA_CFLAGS options
+> to silence build warnings about unused variables, unused functions and such
+> like. This will enable cleanup of missed warnings, and easier spotting
+> of future such problems.
 > 
-> Not really.
-> You still have to test for strscpy's possible return of -E2BIG.
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>  drivers/staging/r8188eu/Makefile | 9 ---------
+>  1 file changed, 9 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/Makefile b/drivers/staging/r8188eu/Makefile
+> index 152d6325b4d9..7f6658f931d1 100644
+> --- a/drivers/staging/r8188eu/Makefile
+> +++ b/drivers/staging/r8188eu/Makefile
+> @@ -2,15 +2,6 @@ SHELL := /bin/bash
+>  EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
+>  EXTRA_CFLAGS += -O1
+>  
+> -EXTRA_CFLAGS += -Wno-unused-variable
+> -EXTRA_CFLAGS += -Wno-unused-value
+> -EXTRA_CFLAGS += -Wno-unused-label
+> -EXTRA_CFLAGS += -Wno-unused-parameter
+> -EXTRA_CFLAGS += -Wno-unused-function
+> -EXTRA_CFLAGS += -Wno-unused
+> -
+> -EXTRA_CFLAGS += -Wno-uninitialized
+> -
 
-I thought of:
+Ah, that is why I didn't see any warnings!  Thanks for these changes,
+will go queue them up now.
 
-	num = strscpy(p, OTHER_LABEL, len);
-	num = num < 0 ? len : num;
-	len -= num;
-	p += num;
-
-Clearly, this does not look nice, esp. if this is repeated in the
-code. That's why I prefer the strlen(p) implementation:
-
-	strscpy(p, OTHER_LABEL, len);
-	len -= strlen(p);
-	p += strlen(p);
-
--Robert
+greg k-h
