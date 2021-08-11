@@ -2,123 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A1F3E9207
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96D83E920A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhHKM5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51574 "EHLO mail.kernel.org"
+        id S230332AbhHKM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:58:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:38868 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230200AbhHKM5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:57:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71D10601FF;
-        Wed, 11 Aug 2021 12:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628686630;
-        bh=+CFOKZhQCvP4jIpuALDJ47zPNHlom+tWJ/IiTz1zLDg=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=haVrEXIhoaiy0l5SlTb7FLEhBK6jGOgnxOdZnm/+fKjkcyYBOs8jl4WD8C8KUVgho
-         NXx/FwkBYzlxAkzoUA/SGV/Le0ReEPtlOJqShaBRDO5C0tj3/4CEMzyRTHX4JqCES5
-         zF2isEQQBixBmnlnF4KQclDre3GehRcx20N4H6KHRMHjHC5QK9i5LCQml27i8z0hEO
-         Y9RG4zzpWv5LW09tb/P8xqd63Zbw8Dsx8H6Cg7/sys2uRE8+TEiilSVnwgpoF+I01Q
-         dhLfiXcawQnlMd0j6lU6U6m8g7oiZ7gqw7BA2kfmnz9SsFup8mgBcjiJr5oGy57FNs
-         p4szhztvNNWmA==
-Subject: Re: [f2fs-dev] f2fs do DIO write make file corruption
-To:     Wu Bo <bo.wu@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <5b68208b-fd94-bf4e-fc4b-d79d13abf1c6@vivo.com>
- <6519b8b7-1eb0-f286-7593-5c5ebbfb5554@kernel.org>
- <86e53ee7-13b5-5e8e-7c81-acb1736ebc8b@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <aa5f3225-6409-bc62-1021-107a18040384@kernel.org>
-Date:   Wed, 11 Aug 2021 20:57:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229994AbhHKM6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:58:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214848584"
+X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
+   d="scan'208";a="214848584"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:58:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
+   d="scan'208";a="676062619"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2021 05:58:17 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mDnoH-000LeX-2n; Wed, 11 Aug 2021 12:58:17 +0000
+Date:   Wed, 11 Aug 2021 20:58:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 7f331fc57eafebe07e77a828741084db8d3b1dfe
+Message-ID: <6113c959.pioJz2TFckcg5d/s%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <86e53ee7-13b5-5e8e-7c81-acb1736ebc8b@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/11 11:28, Wu Bo wrote:
-> 
-> 在 2021/8/11 11:03, Chao Yu 写道:
->> On 2021/8/11 10:48, Wu Bo wrote:
->>> I use the following command to create a file, the file may got
->>> corruption:
->>>      f2fs_io write 2 0 512 inc_num dio $path
->>>
->>> And when I use bio or to set the chunk size to 1 block, the file is
->>> normal. The commands as following:
->>>      f2fs_io write 2 0 512 inc_num buffered $path
->>>      f2fs_io write 1 0 512 inc_num dio $path
->>>
->>> I find this bug on old kernel version 4.14.117, and not find on version
->>> 4.19.152. So this bug is fixed. Can anyone can tell me which patch fixed
->>> this bug?
->>
->> Not sure,
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-4.19.y&id=7bae8b6b73e46c307fa355ce086800b7ad6610f8
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 7f331fc57eafebe07e77a828741084db8d3b1dfe  rcutorture: Don't cpuhp_remove_state() if cpuhp_setup_state() failed
 
-I didn't see this patch in 4.14 stable kernel of mailine, so do you mean 4.14 kernel
-maintained by Android?
+elapsed time: 723m
 
-If so, f2fs codes in between 4.14 and 4.19 Android kernel are almost the same,
-see below link:
+configs tested: 125
+configs skipped: 3
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-stable.git/
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210811
+um                           x86_64_defconfig
+sh                               j2_defconfig
+mips                          rb532_defconfig
+sh                        dreamcast_defconfig
+xtensa                         virt_defconfig
+sh                           se7722_defconfig
+m68k                        m5307c3_defconfig
+arc                         haps_hs_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                      acadia_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                      makalu_defconfig
+arm                          imote2_defconfig
+s390                          debug_defconfig
+powerpc                 mpc834x_itx_defconfig
+nds32                               defconfig
+mips                           jazz_defconfig
+mips                           rs90_defconfig
+powerpc                           allnoconfig
+m68k                             alldefconfig
+powerpc                    adder875_defconfig
+mips                      bmips_stb_defconfig
+sh                           se7712_defconfig
+mips                        qi_lb60_defconfig
+powerpc                     pseries_defconfig
+sh                           se7724_defconfig
+arm64                            alldefconfig
+powerpc                        cell_defconfig
+riscv                          rv32_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                       aspeed_g4_defconfig
+mips                         bigsur_defconfig
+sh                          sdk7786_defconfig
+sh                            hp6xx_defconfig
+nds32                             allnoconfig
+powerpc                     mpc83xx_defconfig
+mips                      loongson3_defconfig
+microblaze                      mmu_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a004-20210810
+x86_64               randconfig-a006-20210810
+x86_64               randconfig-a003-20210810
+x86_64               randconfig-a005-20210810
+x86_64               randconfig-a002-20210810
+x86_64               randconfig-a001-20210810
+i386                 randconfig-a004-20210810
+i386                 randconfig-a002-20210810
+i386                 randconfig-a001-20210810
+i386                 randconfig-a003-20210810
+i386                 randconfig-a006-20210810
+i386                 randconfig-a005-20210810
+i386                 randconfig-a004-20210811
+i386                 randconfig-a001-20210811
+i386                 randconfig-a002-20210811
+i386                 randconfig-a003-20210811
+i386                 randconfig-a006-20210811
+i386                 randconfig-a005-20210811
+i386                 randconfig-a011-20210810
+i386                 randconfig-a015-20210810
+i386                 randconfig-a013-20210810
+i386                 randconfig-a014-20210810
+i386                 randconfig-a016-20210810
+i386                 randconfig-a012-20210810
+i386                 randconfig-a012-20210809
+i386                 randconfig-a015-20210809
+i386                 randconfig-a011-20210809
+i386                 randconfig-a013-20210809
+i386                 randconfig-a014-20210809
+i386                 randconfig-a016-20210809
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
->>
-> 
-> This patch is applied. The issue occurs when f2fs dio try to preallocate
-> multiple blocks and got scattered disk blocks. The log as following:
->         my_f2fs_io-13425 [002] ....   395.583637: el0_irq_naked:
-> 1:type:1,ino:40132,off:768,old_blk:0,new_blk:185764
->         my_f2fs_io-13425 [002] ....   395.583710: el0_irq_naked:
-> 1:type:1,ino:40132,off:769,old_blk:0,new_blk:205824
->         my_f2fs_io-13425 [002] ....   395.583721: f2fs_map_blocks: dev =
-> (259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len =
-> 0x2, err = 0
->         my_f2fs_io-13425 [002] ....   395.583735: f2fs_map_blocks: dev =
-> (259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len =
-> 0x1, err = 0
->         my_f2fs_io-13425 [002] ....   395.583741: f2fs_map_blocks: dev =
-> (259,23), ino = 40132, file offset = 769, start blkaddr = 0x32400, len =
-> 0x1, err = 0
-> 
-> And if the blocks are continuously, the file data is normal:
-> 	  my_f2fs_io-13425 [002] ....   395.584037: el0_irq_naked:
-> 1:type:1,ino:40132,off:770,old_blk:0,new_blk:205825
->         my_f2fs_io-13425 [002] ....   395.584066: el0_irq_naked:
-> 1:type:1,ino:40132,off:771,old_blk:0,new_blk:205826
->         my_f2fs_io-13425 [002] ....   395.584077: f2fs_map_blocks: dev =
-> (259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len =
-> 0x2, err = 0
->         my_f2fs_io-13425 [002] ....   395.584091: f2fs_map_blocks: dev =
-> (259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len =
-> 0x2, err = 0
-> 
->>
->> Thanks,
->>
->>>
->>>
->>> _______________________________________________
->>> Linux-f2fs-devel mailing list
->>> Linux-f2fs-devel@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>>
->>
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> 
+clang tested configs:
+x86_64               randconfig-c001-20210811
+x86_64               randconfig-c001-20210810
+x86_64               randconfig-a013-20210810
+x86_64               randconfig-a011-20210810
+x86_64               randconfig-a012-20210810
+x86_64               randconfig-a016-20210810
+x86_64               randconfig-a014-20210810
+x86_64               randconfig-a015-20210810
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
