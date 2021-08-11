@@ -2,228 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F52B3E9024
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1133E9001
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237582AbhHKMHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
+        id S237361AbhHKMCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237652AbhHKMHH (ORCPT
+        with ESMTP id S232160AbhHKMCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:07:07 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F32C061799
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:06:43 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so4495353pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lWMPxMr+0+XtByl7tZGdcG2GFI54dtlZAQg+hT8HCaQ=;
-        b=kNo51Ty287+Kf3xWLJBGIhyPm4y4DKiLm98i3Pq848jWbLqTuUdKifktM6kOb8qJw0
-         F/sq6JVvy/bWf1cOTxFySRV4rHJLp+UX64TZypAKdYtU3JkS7zkMYq95K1YmsZOZIXzT
-         p1rPaHOcyg8Rrm/Y/j3JC6D4bK9jmywwIxlIaGa+a2SByYNW9PkjDxnkDg0CypZrn+em
-         rfZHy34KzjrzNllk+I0kOIjPH8Ror6DiLlRUOOkn2vA5bKpfw4Tsq+QfLy1MeZepCUQ5
-         gOlaSUNNiqSlbAbLb5CvD5r/f6Bm2r/Nhqod+ejhJFCOfHndYqhyTyN7gYra+c46BSff
-         9O9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lWMPxMr+0+XtByl7tZGdcG2GFI54dtlZAQg+hT8HCaQ=;
-        b=uIAailhK8THIyUV1IR+YNI0UnRZlJn4G/AaojWVBqajQbF0S4rOw9StBfyHKI0yrRx
-         jSx7HYBBibnw1C09rLMaBts3mtOz3B2FrxP8xFEuJlanTh7lSRKx6FhX2DW3dPeJxSkA
-         6LEFifNBiXeeheuKppgbw2Ql0uI+Lpv5JDC9VRDOwO7NX7ygGKQzthRA0xO0F3GedOOi
-         k3c3O7DdDWsbRtYuYBWpXdV1IZkUBadaIWblWiqSFFzzta2ifm7d66o2AYYYZhmNsOIa
-         aohULNcjysz98lhEurGOvzu0oXt8iGcNE+0FbLPz5deZVbrh6zR6LTaoLCxrV8Gdt/b2
-         13Pw==
-X-Gm-Message-State: AOAM531D12U+bvShauL+zjGRr3c42sqBSLelOafzd+63jSuCAwVlRlKq
-        HluGmc4LBJQMAZlIkqU/ddEyqQ==
-X-Google-Smtp-Source: ABdhPJzuhNq2gHC1rhespgT1ixci1XjdDZ6D/VCU7fl35v7DEuY2tOp/P3ptzOMUU1RI1LiFg0J9YQ==
-X-Received: by 2002:a65:6a0a:: with SMTP id m10mr744726pgu.82.1628683603490;
-        Wed, 11 Aug 2021 05:06:43 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id c9sm26616579pgq.58.2021.08.11.05.06.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 05:06:43 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
-Date:   Wed, 11 Aug 2021 17:28:47 +0530
-Message-Id: <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <cover.1628682874.git.viresh.kumar@linaro.org>
-References: <cover.1628682874.git.viresh.kumar@linaro.org>
+        Wed, 11 Aug 2021 08:02:52 -0400
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C944C061765;
+        Wed, 11 Aug 2021 05:02:28 -0700 (PDT)
+Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 17BC1vRT024740
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Wed, 11 Aug 2021 14:01:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1628683318; bh=ZMAPDJRikzYs/k+y/xgS9A/z7vNWC6FiVDP1jJK1Frc=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=Drk0DmlQNrR6MVvx8eIXJOsvyZOG/WuthaMyQwpmbTXMs34DxAWc03v0zmQRq6StQ
+         EcjkN5AeMHYkzivMACMXI1vHXk+GV9Q7pYGhjC91Ja+cKQRGuVOmfXlFuG+2PU8Zt8
+         SfJVvry5wUzpKU6B1f5W55iCSAvZN4ktqX5UYeYo=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94.2)
+        (envelope-from <bjorn@mork.no>)
+        id 1mDmvl-000IMy-IV; Wed, 11 Aug 2021 14:01:57 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Slark Xiao <slark_xiao@163.com>
+Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2,1/1] This aims to support Foxconn SDX55
+Organization: m
+References: <20210811085635.4699-1-slark_xiao@163.com>
+Date:   Wed, 11 Aug 2021 14:01:57 +0200
+In-Reply-To: <20210811085635.4699-1-slark_xiao@163.com> (Slark Xiao's message
+        of "Wed, 11 Aug 2021 16:56:35 +0800")
+Message-ID: <875ywcfave.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.103.2 at canardo
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the newly added .register_em() callback to register with the EM
-after the cpufreq policy is properly initialized.
+Slark Xiao <slark_xiao@163.com> writes:
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/scmi-cpufreq.c | 55 ++++++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 23 deletions(-)
+> diff --git a/drivers/usb/serial/qcserial.c b/drivers/usb/serial/qcserial.c
+> index 83da8236e3c8..d8b58aea3c60 100644
+> --- a/drivers/usb/serial/qcserial.c
+> +++ b/drivers/usb/serial/qcserial.c
+> @@ -111,6 +111,7 @@ static const struct usb_device_id id_table[] =3D {
+>  	{USB_DEVICE(0x16d8, 0x8002)},	/* CMDTech Gobi 2000 Modem device (VU922)=
+ */
+>  	{USB_DEVICE(0x05c6, 0x9204)},	/* Gobi 2000 QDL device */
+>  	{USB_DEVICE(0x05c6, 0x9205)},	/* Gobi 2000 Modem device */
+> +	{USB_DEVICE(0x05c6, 0x901d)},	/* Foxconn SDX55 QDL */
 
-diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-index 75f818d04b48..b916c9e22921 100644
---- a/drivers/cpufreq/scmi-cpufreq.c
-+++ b/drivers/cpufreq/scmi-cpufreq.c
-@@ -22,7 +22,9 @@
- 
- struct scmi_data {
- 	int domain_id;
-+	int nr_opp;
- 	struct device *cpu_dev;
-+	cpumask_var_t opp_shared_cpus;
- };
- 
- static struct scmi_protocol_handle *ph;
-@@ -123,9 +125,6 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 	struct device *cpu_dev;
- 	struct scmi_data *priv;
- 	struct cpufreq_frequency_table *freq_table;
--	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
--	cpumask_var_t opp_shared_cpus;
--	bool power_scale_mw;
- 
- 	cpu_dev = get_cpu_device(policy->cpu);
- 	if (!cpu_dev) {
-@@ -133,9 +132,15 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 		return -ENODEV;
- 	}
- 
--	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL))
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
- 		return -ENOMEM;
- 
-+	if (!zalloc_cpumask_var(&priv->opp_shared_cpus, GFP_KERNEL)) {
-+		ret = -ENOMEM;
-+		goto out_free_priv;
-+	}
-+
- 	/* Obtain CPUs that share SCMI performance controls */
- 	ret = scmi_get_sharing_cpus(cpu_dev, policy->cpus);
- 	if (ret) {
-@@ -148,14 +153,14 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 	 * The OPP 'sharing cpus' info may come from DT through an empty opp
- 	 * table and opp-shared.
- 	 */
--	ret = dev_pm_opp_of_get_sharing_cpus(cpu_dev, opp_shared_cpus);
--	if (ret || !cpumask_weight(opp_shared_cpus)) {
-+	ret = dev_pm_opp_of_get_sharing_cpus(cpu_dev, priv->opp_shared_cpus);
-+	if (ret || !cpumask_weight(priv->opp_shared_cpus)) {
- 		/*
- 		 * Either opp-table is not set or no opp-shared was found.
- 		 * Use the CPU mask from SCMI to designate CPUs sharing an OPP
- 		 * table.
- 		 */
--		cpumask_copy(opp_shared_cpus, policy->cpus);
-+		cpumask_copy(priv->opp_shared_cpus, policy->cpus);
- 	}
- 
- 	 /*
-@@ -180,7 +185,7 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 			goto out_free_opp;
- 		}
- 
--		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
-+		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, priv->opp_shared_cpus);
- 		if (ret) {
- 			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
- 				__func__, ret);
-@@ -188,21 +193,13 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 			goto out_free_opp;
- 		}
- 
--		power_scale_mw = perf_ops->power_scale_mw_get(ph);
--		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb,
--					    opp_shared_cpus, power_scale_mw);
--	}
--
--	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		ret = -ENOMEM;
--		goto out_free_opp;
-+		priv->nr_opp = nr_opp;
- 	}
- 
- 	ret = dev_pm_opp_init_cpufreq_table(cpu_dev, &freq_table);
- 	if (ret) {
- 		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
--		goto out_free_priv;
-+		goto out_free_opp;
- 	}
- 
- 	priv->cpu_dev = cpu_dev;
-@@ -223,17 +220,16 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 	policy->fast_switch_possible =
- 		perf_ops->fast_switch_possible(ph, cpu_dev);
- 
--	free_cpumask_var(opp_shared_cpus);
- 	return 0;
- 
--out_free_priv:
--	kfree(priv);
--
- out_free_opp:
- 	dev_pm_opp_remove_all_dynamic(cpu_dev);
- 
- out_free_cpumask:
--	free_cpumask_var(opp_shared_cpus);
-+	free_cpumask_var(priv->opp_shared_cpus);
-+
-+out_free_priv:
-+	kfree(priv);
- 
- 	return ret;
- }
-@@ -244,11 +240,23 @@ static int scmi_cpufreq_exit(struct cpufreq_policy *policy)
- 
- 	dev_pm_opp_free_cpufreq_table(priv->cpu_dev, &policy->freq_table);
- 	dev_pm_opp_remove_all_dynamic(priv->cpu_dev);
-+	free_cpumask_var(priv->opp_shared_cpus);
- 	kfree(priv);
- 
- 	return 0;
- }
- 
-+static void scmi_cpufreq_register_em(struct cpufreq_policy *policy)
-+{
-+	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
-+	bool power_scale_mw = perf_ops->power_scale_mw_get(ph);
-+	struct scmi_data *priv = policy->driver_data;
-+
-+	em_dev_register_perf_domain(get_cpu_device(policy->cpu), priv->nr_opp,
-+				    &em_cb, priv->opp_shared_cpus,
-+				    power_scale_mw);
-+}
-+
- static struct cpufreq_driver scmi_cpufreq_driver = {
- 	.name	= "scmi",
- 	.flags	= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
-@@ -261,6 +269,7 @@ static struct cpufreq_driver scmi_cpufreq_driver = {
- 	.get	= scmi_cpufreq_get_rate,
- 	.init	= scmi_cpufreq_init,
- 	.exit	= scmi_cpufreq_exit,
-+	.register_em	= scmi_cpufreq_register_em,
- };
- 
- static int scmi_cpufreq_probe(struct scmi_device *sdev)
--- 
-2.31.1.272.g89b43f80a514
+I assume this device will expose other serial functions when booted in
+application USB mode?  But probably not with a Gobi 2k layout... Maybe
+add the application device ID to some USB serial driver too, and include
+the QDL device ID there as well to reduce confusion?
+
+Could you provide a view of the default USB descriptors in both QDL and
+application mode?  E.g from lsusb -v or  /sys/kernel/debug/usb/devices?
+
+
+Bj=C3=B8rn
 
