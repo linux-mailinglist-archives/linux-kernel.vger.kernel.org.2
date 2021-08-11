@@ -2,142 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3763E9586
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4856E3E958A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbhHKQH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:07:28 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:33809 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229481AbhHKQH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:07:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628698023; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=qxumipKKm/JchP+aeDIrrd0PRFUUHFLvRR6b646nQno=;
- b=rg8C6rUIt+lIoynKRlLSbWcKb9KbUJ31I0ap1ldurp/eDGif1PkDWiM8DEgQGe2LM90FyP8u
- 2t8wLoyKUGakgePfUd3Qf06yYjdCzaWL2uA/u6AUb54AKFqz0C36Yk/ZPHT2G9o8nMzcX1gV
- +HCmU10K9614Hx6j+vSPJcI7Yhg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6113f575f746c298d9e1926d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 16:06:13
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A4669C43460; Wed, 11 Aug 2021 16:06:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC676C433F1;
-        Wed, 11 Aug 2021 16:06:12 +0000 (UTC)
+        id S229788AbhHKQHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhHKQHr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 12:07:47 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE00C061765;
+        Wed, 11 Aug 2021 09:07:24 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id u15so1159430ple.2;
+        Wed, 11 Aug 2021 09:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KffArpOyUib3xLvmma0gw4eoYf5u08GOHiGqQNefyKY=;
+        b=HPsATQBC1TxP9YXDvO6/HpnceepixH7+UmUBemM9O8th0lKUu49VkCwyUE7hgiKJu+
+         E1iB419oPuAm3guuO9cghFv2L5raN/td2TeRpx8iWqYlB8ywGC7lulfVrCfIzTtYgb9+
+         MuIW3p2ylatMLkI/DzZAxcCcacf6cU7voMhmWY+fGW/Jz+DlqTUZ9Ol7crc//34rGb3z
+         nGCYRTyyJt4n2ndvZkeSY32nfSc8EjljyrDblJ9asrt2s17SgPkWVeXs9U9XsYHhLpX9
+         It0+K+mdbanfy+JZ79Rgb7JcHhAiMr4T4hk9bED+aVJ15CHQ6vK5lEMicRCC5Sr04DiG
+         2ZlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KffArpOyUib3xLvmma0gw4eoYf5u08GOHiGqQNefyKY=;
+        b=TFMm101y16MTRkM1ztaLpyNkb4gBRKtT7PAmWSWjuHjGa+Ooi/RPrZdppqCnQ95DDh
+         sKlxJKDm+Zx2pb0tWWTc6VDxL2tmoD/TZ8AnIxY6H19gfsFDzQ5HrOi+rJb7UELE9a4l
+         NhhG1J+2rlGH66VZHMowkDuBEpBJccImWP7Dnxr2j+Srz4saCUgWr0Qmbe3mhid4oYNs
+         h/rdrzcqsrPGfLLKvmt/16tbHHx/CFZvYg6LTKz1ERfPPFob+lwPnzHszh7Bq6Pvgi88
+         kji1Sa2afDcPjsjEGOBHmLdlIfqKisq2GTjROHfHhcd3gGs7d7IitoT4XPy09O/23vsy
+         VLcw==
+X-Gm-Message-State: AOAM531yrmRZkDmEchEh35eMmC7QHO6o6HzqF+camIMlYjEujgcyUMad
+        jtLnpx5kLmD3sZbT/YTId7HPSl/kMPqnXf5tkmg=
+X-Google-Smtp-Source: ABdhPJxT/bamFNOzxnUwiKPLoYVj6shFGLY6RHKownLvpNsQtzfsSR4MoEDaHdyJpn6tl9YNSsIMvQ8w5e31/7xAJIE=
+X-Received: by 2002:a17:902:e786:b029:12d:2a7:365f with SMTP id
+ cp6-20020a170902e786b029012d02a7365fmr4813354plb.21.1628698043540; Wed, 11
+ Aug 2021 09:07:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Aug 2021 21:36:12 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCHv4] iommu/arm-smmu: Optimize ->tlb_flush_walk() for qcom
- implementation
-In-Reply-To: <7be65300-632a-8626-e5da-13bc9e276763@arm.com>
-References: <20210811060725.25221-1-saiprakash.ranjan@codeaurora.org>
- <20210811103011.GD4426@willie-the-truck>
- <7be65300-632a-8626-e5da-13bc9e276763@arm.com>
-Message-ID: <746c64bffa60e18b34075f09881946e0@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210809075745.160042-1-dmugil2000@gmail.com> <20210809075745.160042-3-dmugil2000@gmail.com>
+ <CAHp75Ve=D1d5wFZgNseP=wGpteEkZHnmAi7j9ykKC+u_NrR5xw@mail.gmail.com> <013bcb79-c496-44d8-2e93-57eb57834ee0@metafoo.de>
+In-Reply-To: <013bcb79-c496-44d8-2e93-57eb57834ee0@metafoo.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 11 Aug 2021 19:06:43 +0300
+Message-ID: <CAHp75VcvA=dDOJXSFzgz69JVgbez4Lz27EGOEF7JWUehyrwQrA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: potentiometer: Add driver support for AD5110
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        Darius <Darius.Berghe@analog.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Slawomir Stepien <sst@poczta.fm>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-11 21:23, Robin Murphy wrote:
-> On 2021-08-11 11:30, Will Deacon wrote:
->> On Wed, Aug 11, 2021 at 11:37:25AM +0530, Sai Prakash Ranjan wrote:
->>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
->>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> index f7da8953afbe..3904b598e0f9 100644
->>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> @@ -327,9 +327,16 @@ static void arm_smmu_tlb_inv_range_s2(unsigned 
->>> long iova, size_t size,
->>>   static void arm_smmu_tlb_inv_walk_s1(unsigned long iova, size_t 
->>> size,
->>>   				     size_t granule, void *cookie)
->>>   {
->>> -	arm_smmu_tlb_inv_range_s1(iova, size, granule, cookie,
->>> -				  ARM_SMMU_CB_S1_TLBIVA);
->>> -	arm_smmu_tlb_sync_context(cookie);
->>> +	struct arm_smmu_domain *smmu_domain = cookie;
->>> +	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
->>> +
->>> +	if (cfg->flush_walk_prefer_tlbiasid) {
->>> +		arm_smmu_tlb_inv_context_s1(cookie);
->> 
->> Hmm, this introduces an unconditional wmb() if tlbiasid is preferred. 
->> I
->> think that should be predicated on ARM_SMMU_FEAT_COHERENT_WALK like it 
->> is
->> for the by-VA ops. Worth doing as a separate patch.
->> 
->>> +	} else {
->>> +		arm_smmu_tlb_inv_range_s1(iova, size, granule, cookie,
->>> +					  ARM_SMMU_CB_S1_TLBIVA);
->>> +		arm_smmu_tlb_sync_context(cookie);
->>> +	}
->>>   }
->>>     static void arm_smmu_tlb_add_page_s1(struct iommu_iotlb_gather 
->>> *gather,
->>> @@ -765,8 +772,10 @@ static int arm_smmu_init_domain_context(struct 
->>> iommu_domain *domain,
->>>   		.iommu_dev	= smmu->dev,
->>>   	};
->>>   -	if (!iommu_get_dma_strict(domain))
->>> +	if (!iommu_get_dma_strict(domain)) {
->>>   		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
->>> +		cfg->flush_walk_prefer_tlbiasid = true;
->> 
->> This is going to interact badly with Robin's series to allow dynamic
->> transition to non-strict mode, as we don't have a mechanism to switch
->> over to the by-ASID behaviour. Yes, it should _work_, but it's ugly 
->> having
->> different TLBI behaviour just because of the how the domain became
->> non-strict.
->> 
->> Robin -- I think this originated from your idea at [1]. Any idea how 
->> to make
->> it work with your other series, or shall we drop this part for now and 
->> leave
->> the TLB invalidation behaviour the same for now?
-> 
-> Yeah, I'd say drop it - I'm currently half an hour into a first
-> attempt at removing io_pgtable_tlb_flush_walk() entirely, which would
-> make it moot for non-strict anyway.
-> 
+On Wed, Aug 11, 2021 at 11:15 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
+> On 8/10/21 2:49 PM, Andy Shevchenko wrote:
+> >
+> >> +       data->tol = data->cfg->kohms * (val & GENMASK(6, 0)) * 10 / 8;
+> >> +       if (!(val & BIT(7)))
+> >> +               data->tol *= -1;
+> > Shouldn't you simple use corresponding sign_extend*()?
+> The data is encoded a sign-magnitude. sign_extend() works for two's
+> complement numbers.
 
-I have dropped it and sent a v5.
-
-Thanks,
-Sai
+Good catch!
+I'm wondering if it's a good idea to have a sign_magnitude_to_int()
+helper or so?
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+With Best Regards,
+Andy Shevchenko
