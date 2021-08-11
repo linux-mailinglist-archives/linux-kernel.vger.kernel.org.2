@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3DF3E9827
+	by mail.lfdr.de (Postfix) with ESMTP id 98DB43E9828
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhHKTAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhHKTAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:00:52 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0508CC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:00:29 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id f3so3928556plg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3CsU35fOhbuuli30dohmgqLObcTY79znFpJHx0d+Vy4=;
-        b=QV3izP3GAULcDtht5Wp/Vmx2A8dV/jbUdWU7ehJ8dQb/Fvb5mnk2dHxZcbIj3smvTl
-         qj+LG9z3h8GCJEAd0/WcSNjUdLQbzlEZV0Y85HcwNdd3aIITKNCTZwD7OlG7hZ02jLXK
-         xD9VzXnZt7QeXxYSgu5R6v+E/rE5O57HcU11s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3CsU35fOhbuuli30dohmgqLObcTY79znFpJHx0d+Vy4=;
-        b=o2F/yc5SpqDWY591NpgwFG/LXzA41OGwFe3yyxrda8+S91PzJBKoMP4df8y6NjOOfN
-         mpojfxz9oS/yTC3tpnoy49608ZnC13e56hjrvVGlXrjFXTIZ68Mmu7jvtsfyEbIlLdXx
-         F4WewzgQpq8k+GD/Pa7AwTSmkd3v+0KmfNVi/wuwKi/FIDFFdDj+/Bsa0kEQC+/zTtam
-         tcLHQon/FOlvamhYqmQC/QhA1ULVcQ9EyV+TDCroHqrp46aCiAhv1CbYlyEl7qwZoFGf
-         IXZr8sx1cESfz3UwmOJfNGwqyBJzgnt+y3W57Ylv2LOjyDtOyhXwoUKzO1UiRUzzNMia
-         hZcg==
-X-Gm-Message-State: AOAM530GckQc+ikAQKJc8z05/O3mknezMjvaat+wQGhnOcP0OElt4giJ
-        YktKMEUQyN3Df+hmdsEWHcDeOQ==
-X-Google-Smtp-Source: ABdhPJydDJLT6ZY8AFeY16wf3Xr5X0+LI6c+dBnlYCGoGGMgiuWtHqdPvGxbAFeCo/n6enZ+X7tgHg==
-X-Received: by 2002:a17:902:e744:b029:12d:6479:83a3 with SMTP id p4-20020a170902e744b029012d647983a3mr324604plf.30.1628708428538;
-        Wed, 11 Aug 2021 12:00:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e4sm216401pgt.22.2021.08.11.12.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 12:00:28 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 12:00:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Hsuan-Chi Kuo <hsuanchikuo@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Wiktor Garbacz <wiktorg@google.com>
-Subject: [GIT PULL] seccomp fixes for v5.14-rc6
-Message-ID: <202108111159.123B4811F7@keescook>
+        id S231319AbhHKTBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:01:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:56564 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230224AbhHKTBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 15:01:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27FADD6E;
+        Wed, 11 Aug 2021 12:00:42 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FA263F40C;
+        Wed, 11 Aug 2021 12:00:40 -0700 (PDT)
+Subject: Re: [PATCH v3 3/5] dma-iommu: add SKIP_CPU_SYNC after syncing
+To:     David Stevens <stevensd@chromium.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210811024247.1144246-1-stevensd@google.com>
+ <20210811024247.1144246-4-stevensd@google.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d8f07858-e8e7-9989-b95f-c512ba3904cf@arm.com>
+Date:   Wed, 11 Aug 2021 20:00:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210811024247.1144246-4-stevensd@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 2021-08-11 03:42, David Stevens wrote:
+> From: David Stevens <stevensd@chromium.org>
+> 
+> After syncing in map/unmap, add the DMA_ATTR_SKIP_CPU_SYNC flag so
+> anything that uses attrs later on will skip any sync work that has
+> already been completed. In particular, this skips copying from the
+> swiotlb twice during unmap.
+> 
+> Signed-off-by: David Stevens <stevensd@chromium.org>
+> ---
+>   drivers/iommu/dma-iommu.c | 13 ++++++++++---
+>   1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 4f0cc4a0a61f..be0214b1455c 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -859,8 +859,11 @@ static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+>   static void iommu_dma_unmap_page(struct device *dev, dma_addr_t dma_handle,
+>   		size_t size, enum dma_data_direction dir, unsigned long attrs)
+>   {
+> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+>   		iommu_dma_sync_single_for_cpu(dev, dma_handle, size, dir);
+> +		attrs |= DMA_ATTR_SKIP_CPU_SYNC;
+> +	}
+> +
+>   	__iommu_dma_unmap_swiotlb(dev, dma_handle, size, dir, attrs);
 
-Please pull these small seccomp fixes for v5.14-rc6.
+Again, fold that into here and put the arch sync in an else case to the 
+is_swiotlb_buffer() check.
 
-Thanks!
+>   }
+>   
+> @@ -999,8 +1002,10 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>   	if (dev_is_untrusted(dev))
+>   		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
+>   
+> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+>   		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
+> +		attrs |= DMA_ATTR_SKIP_CPU_SYNC;
+> +	}
 
--Kees
+Why? attrs is never referenced again after this.
 
-The following changes since commit 9a03abc16c77062c73972df08206f1031862d9b4:
+>   	/*
+>   	 * Work out how much IOVA space we need, and align the segments to
+> @@ -1068,8 +1073,10 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+>   	struct scatterlist *tmp;
+>   	int i;
+>   
+> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+>   		iommu_dma_sync_sg_for_cpu(dev, sg, nents, dir);
+> +		attrs |= DMA_ATTR_SKIP_CPU_SYNC;
+> +	}
 
-  selftests/seccomp: Avoid using "sysctl" for report (2021-06-28 12:49:52 -0700)
+Just move it down so it's out of the SWIOTLB path entirely. Exactly like 
+you did in patch #2 for map_sg, conspicuous in the hunk above.
 
-are available in the Git repository at:
+Robin.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.14-rc6
-
-for you to fetch changes up to b4d8a58f8dcfcc890f296696cadb76e77be44b5f:
-
-  seccomp: Fix setting loaded filter count during TSYNC (2021-08-11 11:48:28 -0700)
-
-----------------------------------------------------------------
-seccomp fixes for v5.14-rc6
-
-- Fix typo in user notification documentation (Rodrigo Campos)
-
-- Fix userspace counter report when using TSYNC (Hsuan-Chi Kuo, Wiktor Garbacz)
-
-----------------------------------------------------------------
-Hsuan-Chi Kuo (1):
-      seccomp: Fix setting loaded filter count during TSYNC
-
-Rodrigo Campos (1):
-      Documentation: seccomp: Fix typo in user notification
-
- Documentation/userspace-api/seccomp_filter.rst | 2 +-
- kernel/seccomp.c                               | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
--- 
-Kees Cook
+>   
+>   	if (dev_is_untrusted(dev)) {
+>   		iommu_dma_unmap_sg_swiotlb(dev, sg, nents, dir, attrs);
+> 
