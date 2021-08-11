@@ -2,65 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B383E9350
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB1A3E9348
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhHKOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhHKOKR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:10:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01219C061765;
-        Wed, 11 Aug 2021 07:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6de5f1CHYWUoF/nzjynDUSvxATwDyMoWSPF0pDGm5XU=; b=eM12qi1hSd1qymPbnnzmRIklfs
-        0S++2PUuneV36qq6sFOvdoavU6paqQq57Lk2dhxKdaGR2F9i5p3e1KflxJX+VyILry9w1qiLHZHd4
-        jsnNcgUGjaWshyFTehQSUgGXbYL2BpD/WM8QNWi+h7rzk7ZYwHZE0RTMSwHPjyasP8O/PxqFF/ath
-        aDXzXwpYKliVXymf1auHsI/KgvZ/yHiagzjqZwh4KaLzK5U5oYNKmFnlYTV9nL5Adtpyi9jA3vZQn
-        WoTcNSARF6vQuR+5bEPfi5P423GcGnrsWEbhr2M0c7k/vR3SHLGnDwo1Ub0SibWiukHiio5TtPLtR
-        qxAgavEA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDou8-00DUX4-3n; Wed, 11 Aug 2021 14:08:34 +0000
-Date:   Wed, 11 Aug 2021 15:08:24 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
+        id S232320AbhHKOJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:09:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:51656 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231872AbhHKOJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:09:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0A151063;
+        Wed, 11 Aug 2021 07:09:17 -0700 (PDT)
+Received: from [10.57.12.152] (unknown [10.57.12.152])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F0CEF3F718;
+        Wed, 11 Aug 2021 07:09:15 -0700 (PDT)
+Subject: Re: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
+To:     Quentin Perret <qperret@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
         Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
- acpi_os_map_iomem() cast
-Message-ID: <YRPZ2Kqb/MFggHzQ@infradead.org>
-References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
- <20210802152359.12623-2-lorenzo.pieralisi@arm.com>
- <YRKtEDycefrZLB3X@infradead.org>
- <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1628682874.git.viresh.kumar@linaro.org>
+ <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
+ <YRPN8zjp1wqkHg6t@google.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <b02cff82-d242-f783-6f29-78e734f78e26@arm.com>
+Date:   Wed, 11 Aug 2021 15:09:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YRPN8zjp1wqkHg6t@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:40:28PM +0200, Ard Biesheuvel wrote:
-> The whole problem we are solving here is that ACPI, being based on
-> x86, conflates MMIO mappings with memory mappings, and has been using
-> the same underlying infrastructure for either.
 
-So let's fix that problem instead of papering over it.
+
+On 8/11/21 2:17 PM, Quentin Perret wrote:
+> On Wednesday 11 Aug 2021 at 17:28:47 (+0530), Viresh Kumar wrote:
+>> Set the newly added .register_em() callback to register with the EM
+>> after the cpufreq policy is properly initialized.
+>>
+>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>> ---
+>>   drivers/cpufreq/scmi-cpufreq.c | 55 ++++++++++++++++++++--------------
+>>   1 file changed, 32 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+>> index 75f818d04b48..b916c9e22921 100644
+>> --- a/drivers/cpufreq/scmi-cpufreq.c
+>> +++ b/drivers/cpufreq/scmi-cpufreq.c
+>> @@ -22,7 +22,9 @@
+>>   
+>>   struct scmi_data {
+>>   	int domain_id;
+>> +	int nr_opp;
+>>   	struct device *cpu_dev;
+>> +	cpumask_var_t opp_shared_cpus;
+> 
+> Can we use policy->related_cpus and friends directly in the callback
+
+Unfortunately not. This tricky setup code was introduced because we may
+have a platform with per-CPU policy, so single bit set in
+policy->related_cpus, but we want EAS to be still working on set
+of CPUs. That's why we construct temporary cpumask and pass it to EM.
+
+> instead? That should simplify the patch a bit.
+> 
+> Also, we can probably afford calling dev_pm_opp_get_opp_count() from the
+> em_register callback as it is not a hot path, which would avoid wasting
+> some 'resident' memory here that is only used during init.
+> 
+> Thanks,
+> Quentin
+> 
