@@ -2,55 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1503E941F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7B93E9423
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbhHKO7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:59:20 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45284 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232871AbhHKO7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:59:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=G1+EmfpBKcPDyvMCIc7/dEMpI7YHnByfxi9Wq3B3J3o=; b=azJD3R7eiZKOLJNttUr/gTYHDh
-        qt4XCEK08Kr3FMrQPzLGWcbwi9BBX+Njdzbd/ZiCb7EZIBnnIEOwgebyt8jtAEE8zgNk4kJ0ucuhc
-        HMrb2sVexCpAM+oLfWPjx05N0ws/eO5p7/oOlqnc+6vjptXWAM+MXNsXMUiwkAMVGp00=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mDpgw-00H8My-Lk; Wed, 11 Aug 2021 16:58:50 +0200
-Date:   Wed, 11 Aug 2021 16:58:50 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, robert.marko@sartura.hr,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH v2 3/3] dt-bindings: net: Add the properties for ipq4019
- MDIO
-Message-ID: <YRPlqgszKOtFMVt7@lunn.ch>
-References: <20210810133116.29463-1-luoj@codeaurora.org>
- <20210810133116.29463-4-luoj@codeaurora.org>
+        id S232822AbhHKO7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:59:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60894 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232601AbhHKO7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:59:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 82E2F221BF;
+        Wed, 11 Aug 2021 14:59:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628693964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CSK9Ueh4HkzV8UK8QM+3oyCtIN6KFd4kqVEY7guN9Ag=;
+        b=AmIC5rOloroA5xeSCJ4XmkCRIKHcGPFO7G5JESvhEPj7FL1ZlDCd/R26VK7OyMa6Yqt11i
+        zxEjE0uTxsP14bt3MlHcES2c9ulRDeNSsxETvXzXiJk9OlEminGvpf//1OCVLC2ybFz7h/
+        zh/IuqwN0i626hyEa+aB2nVN6axPBtE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628693964;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CSK9Ueh4HkzV8UK8QM+3oyCtIN6KFd4kqVEY7guN9Ag=;
+        b=1zB6XBHofM7Y5DdNBUwnv+AN/ik3lw5V9M3uNH0J+4y70HfQrKSfagcgsVHrBNudp5byQs
+        BmHLkLoGaWalbzBw==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 7462AA3CDA;
+        Wed, 11 Aug 2021 14:59:24 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4A2431E62D5; Wed, 11 Aug 2021 16:59:21 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 16:59:21 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>
+Cc:     jack@suse.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fix array index out of bound exception
+Message-ID: <20210811145921.GG14725@quack2.suse.cz>
+References: <20210811131150.20282-1-asha.16@itfac.mrt.ac.lk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210810133116.29463-4-luoj@codeaurora.org>
+In-Reply-To: <20210811131150.20282-1-asha.16@itfac.mrt.ac.lk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 09:31:16PM +0800, Luo Jie wrote:
-> The new added properties resource "reg" is for configuring
-> ethernet LDO in the IPQ5018 chipset, the property "clocks"
-> is for configuring the MDIO clock source frequency.
+On Wed 11-08-21 18:41:50, F.A. SULAIMAN wrote:
+> From: "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
 > 
-> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+> Array index out of bound exception occurs when the 'part' variable is
+> passed into the freeSpactTable array, this can be avoided using pointer
+> arithmetic. 
+> 
+> Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+I'm sorry but this doesn't even compile and the change is obviously
+bogus...
 
-    Andrew
+								Honza
+
+> ---
+>  fs/udf/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/udf/super.c b/fs/udf/super.c
+> index 2f83c1204e20..d330c7162c3a 100644
+> --- a/fs/udf/super.c
+> +++ b/fs/udf/super.c
+> @@ -2522,7 +2522,7 @@ static unsigned int udf_count_free(struct super_block *sb)
+>  			sbi->s_lvid_bh->b_data;
+>  		if (le32_to_cpu(lvid->numOfPartitions) > part) {
+>  			accum = le32_to_cpu(
+> -					lvid->freeSpaceTable[part]);
+> +					(lvid->freeSpaceTable + part));
+>  			if (accum == 0xFFFFFFFF)
+>  				accum = 0;
+>  		}
+> -- 
+> 2.17.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
