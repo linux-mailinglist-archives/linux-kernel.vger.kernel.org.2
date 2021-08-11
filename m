@@ -2,103 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893E73E8D77
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676633E8D7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbhHKJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:47:43 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48910
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236056AbhHKJrm (ORCPT
+        id S236714AbhHKJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236563AbhHKJs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:47:42 -0400
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5DCD63F346
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628675238;
-        bh=PS8yHIKypIU7zjLPbMN2+vMgzErZMgMuY8iIETH4G0E=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Q9xR+QkUrIo7CU1N8tqHSaysSSzlfIHPcDEuGPsB4Oy3AJNXQVTqTYH0KINBdSDZH
-         k8Qhrotyq6S/NGxatX3xfaaUARwtcOFJGYuUWhF/F6DdKxMVhXtK8rn7bcuN+KMwjD
-         dI6lX92u5uxtJYOeNYOo3PtLAqq3/UygZ5kyHA1NdZQ62vve8yKNUmhk6dEh3GY6XM
-         O/OB6MZKFSTsxV0PrRt695MVki1mmb4Yxm1knQikaJDk+aiIVkyECdu+N82vCy2GSs
-         7ZG1dTPxvfCtuSt4id2hbMxOF4HvlAnLbRT5Y9XR/VvfLfBnkoTVjU9yzmN8Lni6NM
-         +tmfSuPri8esQ==
-Received: by mail-ej1-f71.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso450830ejc.22
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:47:18 -0700 (PDT)
+        Wed, 11 Aug 2021 05:48:27 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BE6C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:48:03 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id h13so2218139wrp.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ODZcfL88nEna9jnx6MeSXB765F0RXBgR99zQotJA1Pg=;
+        b=RySFRDAgx0nFdxb2V3wpXVxMXPO/SiilkFlctM/MlDhtqARVV/T3BUY7IoiL7ZDyCo
+         AF2JRnrcTlJOEvAfLumcYXSk9pQFcidFuRqOjwN+BUJcSsQG2coOxeDkgJUh51055TPv
+         0doA2RAX1UwtY71jv1jDib0GBGGgLOjRoLt4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PS8yHIKypIU7zjLPbMN2+vMgzErZMgMuY8iIETH4G0E=;
-        b=bV0MD+kbmKVSj/3wsgVs2fT1aSJsvOnZ/f0jMkijCb5NqONzMMyc9mG89h2f9So6Fg
-         8gPA0/RikYq8MaQx0CHcH90QZgMIbawBwGqTmE7UYA8hSb53A4JiDgTdYVUQRB4CVsvK
-         0YXN8hIOaek2Ugn8cP/Pla0zmXVTeQo+AGLgrhUlOBN3kE4/6KoHG/9123d7Uw5Q/Ed5
-         v3L554gh9bOpWxMDa3uu0rAhHRkGUs7308b4IRV1/niDoDGYOhGxUOjvism5YluVxIlO
-         bHqrMQxsqu+HzghDKh7sl5t+YYJro6DcaunuHeVDkSYQm+dDZXHS2AlvvFYR/Z4HrHjG
-         wR1Q==
-X-Gm-Message-State: AOAM531H2Qqsy5gddgdUvQjJJ/8wHrFGKAR0wEOF94KfW3p/U0FtPl1U
-        YKNFSRNy48yBmjXvlkdCeFU0tlrL29NbsBTEXcVA7BkT2e9CfIXu27bm2AsozN8+QZDfVsTT6ju
-        0obuJtOdf68jMSZG7KYV2U9bww/jg422y0FhNwaArRg==
-X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr10558289edc.379.1628675238029;
-        Wed, 11 Aug 2021 02:47:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKnLgxSqQnEduvT026FRmXeeMndTcAU4cAxXY0ufzsJkkLI7k6aLcWk+14ITfo34bPu2r46w==
-X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr10558262edc.379.1628675237812;
-        Wed, 11 Aug 2021 02:47:17 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id c6sm7906447eje.105.2021.08.11.02.47.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 02:47:17 -0700 (PDT)
-Subject: Re: [PATCH 3/3] gpiolib: of: constify few local device_node variables
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-References: <20210728144229.323611-1-krzysztof.kozlowski@canonical.com>
- <20210728144229.323611-4-krzysztof.kozlowski@canonical.com>
- <CACRpkdabg6vDKSRL6_AJUOMm6L_zUFCxf9nBz-MbfA5rLGcHng@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <f830c295-03d1-831c-8561-248d54cd782e@canonical.com>
-Date:   Wed, 11 Aug 2021 11:47:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=ODZcfL88nEna9jnx6MeSXB765F0RXBgR99zQotJA1Pg=;
+        b=Xy5imFGRgMyFyDCL2q2s9/s+DTyyU8JGT5N9CHtAalHXSmVAUHNPMxbXw/kLiOBrp2
+         eQ7ddCeLwcl3JQ7ro5n4e3L3+LnqXlK8HnnKq+5jeMhPJlvmI4KqS1MXy+4a7NOiwbgb
+         El5ObTuewr+h4Seba+QY6h939P1Nnq1uY7jgEQ2DfqULt+AacSozMxZvqOFf5JPPzq53
+         ItRcryIexyCBj67RVt0tmPQQU71bK+RkbzL/QDl2jl3El7nZHWQ5hl0R3q02LLd/P6Uy
+         /3G6trgWHe263Oq0kdTtdX5ktkSu46x55CjMldxj+914jW8hjI3gqc6fLaJsmvg3UY5K
+         Tmjg==
+X-Gm-Message-State: AOAM532sOx8lz8MfhLqtb4xekzNM6uyvc/k3MsIuP8znHOiaO0Iql/wT
+        9kh7sca2L91aVw/6Sx1HA4dbDg==
+X-Google-Smtp-Source: ABdhPJxSalMkFMHC3mOT3puaFVGTb6omXC7nqX4zfFlwQf7LNl1KZTQjAqi7Rn8bt6sOQIlc3u0HPg==
+X-Received: by 2002:adf:ab0e:: with SMTP id q14mr2791183wrc.171.1628675282490;
+        Wed, 11 Aug 2021 02:48:02 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id i21sm5641963wrb.62.2021.08.11.02.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 02:48:01 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 11:48:00 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [Intel-gfx] linux-next: Signed-off-by missing for commit in the
+ drm-intel tree
+Message-ID: <YROc0KkBbuAwrx0f@phenom.ffwll.local>
+Mail-Followup-To: Jani Nikula <jani.nikula@linux.intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210715141854.1ad4a956@canb.auug.org.au>
+ <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com>
+ <YRE2RwQ6XlUqbgmn@phenom.ffwll.local>
+ <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com>
+ <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
+ <8735rgo3hi.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdabg6vDKSRL6_AJUOMm6L_zUFCxf9nBz-MbfA5rLGcHng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8735rgo3hi.fsf@intel.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2021 11:00, Linus Walleij wrote:
-> On Wed, Jul 28, 2021 at 4:42 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
+On Wed, Aug 11, 2021 at 10:16:41AM +0300, Jani Nikula wrote:
+> On Tue, 10 Aug 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
+> > On Mon, Aug 09, 2021 at 09:19:39AM -0700, Matt Roper wrote:
+> >> On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
+> >> > On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
+> >> > > Hi Matt,
+> >> > > 
+> >> > > Always use the dim tooling when applying patches, it will do the right
+> >> > > thing with regards to adding the S-o-b.
+> >> > 
+> >> > fd.o server rejects any pushes that haven't been done by dim, so how did
+> >> > this get through?
+> >> 
+> >> I definitely used dim for all of these patches, but I'm not sure how I
+> >> lost my s-o-b on this one.  Maybe when I edited the commit message after
+> >> 'dim extract-tags' I accidentally deleted an extra line when I removed
+> >> the extract-tags marker?  It's the only patch where the line is missing,
+> >> so it's almost certainly human error on my part rather than something
+> >> dim did wrong.
+> >
+> > Yeah that's an expected failure model, and dim is supposed to catch that
+> > by rechecking for sobs when you push. See dim_push_branch ->
+> > checkpatch_commit_push_range in dim. So you can hand-edit stuff however
+> > you want, dim /should/ catch it when pushing. That it didn't is kinda
+> > confusing and I'd like to know why that slipped through.
 > 
->> gpiolib does not modify struct device_node, so few local pointers can
->> point to a const data.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> One of the failures that happened here was that the commit was part of a
+> topic branch that was merged and pushed directly. All merges should
+> happen via pull requests on the list, and applied (preferrably by
+> maintainers or at least with their acks recorded on the merge) using dim
+> apply-pull which should also have the checks.
+
+Ah yes if the merge is applied directly instead of using apply-pull then
+that's not good. I guess that's why we have the rule that only maintainers
+should handle topic branches ...
+
+Not sure how we can fix this in dim? Maybe a check whether the patches
+your pushing contain a merge commit, which prompts an additional query
+like
+
+"Merge commits should only be done by repo maintainers, not committers.
+Confirm that you are a maintainer of $repo?"
+
+It's not the first time this slipped through and caused some fun. Similar
+to how we have the confirmation check if you push a lot of patches.
+
+Thoughts?
+-Daniel
+
+
 > 
-> LGTM
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> I guess this needs to be merged with the other two patches?
-> I suppose in Rob Herrings DT tree?
+> 
+> BR,
+> Jani.
+> 
+> >
+> >> > Matt, can you pls figure out and type up the patch to
+> >> > plug that hole?
+> >> 
+> >> Are you referring to a patch for dim here?  The i915 patch has already
+> >> landed, so we can't change its commit message now.
+> >
+> > Yeah dim, not drm-intel, that can't be fixed anymore because it's all
+> > baked in.
+> > -Daniel
+> >
+> >> 
+> >> 
+> >> Matt
+> >> 
+> >> > 
+> >> > Thanks, Daniel
+> >> > 
+> >> > > 
+> >> > > Regards, Joonas
+> >> > > 
+> >> > > Quoting Stephen Rothwell (2021-07-15 07:18:54)
+> >> > > > Hi all,
+> >> > > > 
+> >> > > > Commit
+> >> > > > 
+> >> > > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
+> >> > > > 
+> >> > > > is missing a Signed-off-by from its committer.
+> >> > > > 
+> >> > > > -- 
+> >> > > > Cheers,
+> >> > > > Stephen Rothwell
+> >> > 
+> >> > -- 
+> >> > Daniel Vetter
+> >> > Software Engineer, Intel Corporation
+> >> > http://blog.ffwll.ch
+> >> 
+> >> -- 
+> >> Matt Roper
+> >> Graphics Software Engineer
+> >> VTT-OSGC Platform Enablement
+> >> Intel Corporation
+> >> (916) 356-2795
+> 
+> -- 
+> Jani Nikula, Intel Open Source Graphics Center
 
-Bartosz replied he merged it:
-https://lore.kernel.org/lkml/CAMpxmJVtxy-GBWmFLp-tMAOf03Fr7fg8RZ2ndMbvAu_M3qEkHQ@mail.gmail.com/
-
-
-
-Best regards,
-Krzysztof
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
