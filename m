@@ -2,194 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676633E8D7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57ECA3E8D85
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236714AbhHKJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S236730AbhHKJtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236563AbhHKJs1 (ORCPT
+        with ESMTP id S236719AbhHKJtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:48:27 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BE6C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:48:03 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id h13so2218139wrp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:48:03 -0700 (PDT)
+        Wed, 11 Aug 2021 05:49:11 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8ACC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:48:47 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so3962107wms.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:48:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ODZcfL88nEna9jnx6MeSXB765F0RXBgR99zQotJA1Pg=;
-        b=RySFRDAgx0nFdxb2V3wpXVxMXPO/SiilkFlctM/MlDhtqARVV/T3BUY7IoiL7ZDyCo
-         AF2JRnrcTlJOEvAfLumcYXSk9pQFcidFuRqOjwN+BUJcSsQG2coOxeDkgJUh51055TPv
-         0doA2RAX1UwtY71jv1jDib0GBGGgLOjRoLt4k=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p4WmlR24/y2/H/iFDZT8SMkW7O2fno0PSDl3vpvyQeE=;
+        b=iaVC7Y7Zmp0QcX38aol/tjPqpn4a9rxsP+5sEfJ55JdRHQf78WhTS54TvYm1QuiZb9
+         Tfv0V+kMCmuN3NlmWiy+TFbkP8Z36BybITbwzyiRLjWOhIIr9BHtWja4KxbVpcBPi/HI
+         HuD68dSvDc/WEbgyaUM8PsEuId/nmfzZ9pPp60bwzZ1zayPm70ShfyqrudfelYC77Hsv
+         lYfsQBRYWFNavWRipVgXXp3YGsoJzSPKV2/B/dz02TFMtktJ/TilyV8Jiu+vO4+FU2Ra
+         CLbILl4Kx7dV2I8iGXshcBeO08NSv6p9CNlc4nncGiFlrwXLzL7ajuNEyVzb/lB2uvJY
+         953w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ODZcfL88nEna9jnx6MeSXB765F0RXBgR99zQotJA1Pg=;
-        b=Xy5imFGRgMyFyDCL2q2s9/s+DTyyU8JGT5N9CHtAalHXSmVAUHNPMxbXw/kLiOBrp2
-         eQ7ddCeLwcl3JQ7ro5n4e3L3+LnqXlK8HnnKq+5jeMhPJlvmI4KqS1MXy+4a7NOiwbgb
-         El5ObTuewr+h4Seba+QY6h939P1Nnq1uY7jgEQ2DfqULt+AacSozMxZvqOFf5JPPzq53
-         ItRcryIexyCBj67RVt0tmPQQU71bK+RkbzL/QDl2jl3El7nZHWQ5hl0R3q02LLd/P6Uy
-         /3G6trgWHe263Oq0kdTtdX5ktkSu46x55CjMldxj+914jW8hjI3gqc6fLaJsmvg3UY5K
-         Tmjg==
-X-Gm-Message-State: AOAM532sOx8lz8MfhLqtb4xekzNM6uyvc/k3MsIuP8znHOiaO0Iql/wT
-        9kh7sca2L91aVw/6Sx1HA4dbDg==
-X-Google-Smtp-Source: ABdhPJxSalMkFMHC3mOT3puaFVGTb6omXC7nqX4zfFlwQf7LNl1KZTQjAqi7Rn8bt6sOQIlc3u0HPg==
-X-Received: by 2002:adf:ab0e:: with SMTP id q14mr2791183wrc.171.1628675282490;
-        Wed, 11 Aug 2021 02:48:02 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id i21sm5641963wrb.62.2021.08.11.02.48.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p4WmlR24/y2/H/iFDZT8SMkW7O2fno0PSDl3vpvyQeE=;
+        b=MrAeWZGb1GvIibYdgkOKZ0Tix+V7VrMI8U1LDldShSJhaj5JO3epzDQsfIbe+DRj7o
+         /S8BqI2XyS2/+y3/H60oZwxLNxeeBWDjlTqYITTMDEbFyrYqyLbQbq0r2cBZXfvMZAM+
+         QQr6ZXDV2ZHp+qNiPvZxQ1F1hQZ8qUqULKk0iFvBAnWxFDWpOn5EFMDgHXMF/RY7yZbX
+         /m0d1BwCjwf8bPMm0THlhcVVKbyOLoVFBLjzXPlho+7Sy777Or6OPR2Yp3Qd+SKLuxqz
+         hI4fPu9i8vggz74CPEmzxWE5oMNjmB7H3hdCmFNeUX8NZHlAc2wRBceF5h8LC7B6veGC
+         Ma+w==
+X-Gm-Message-State: AOAM530Sp9M1Tgmcv+/7it9P69Fioq7UBWgQRDDPmDWW0M5IX6o/I6eT
+        IR9blpqWRfp+CHhhhFKIWmo6uA==
+X-Google-Smtp-Source: ABdhPJwGyl1imWlJBD9wXE9eHTwazSKJ1G8Ab8pkXMP8KjdfEz4VJdIoamsdZzeXoxBFY1zz1ZxyEw==
+X-Received: by 2002:a7b:c350:: with SMTP id l16mr8974823wmj.151.1628675325873;
+        Wed, 11 Aug 2021 02:48:45 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:43fd:e634:73d9:e10e])
+        by smtp.gmail.com with ESMTPSA id p4sm14701093wrq.81.2021.08.11.02.48.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 02:48:01 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 11:48:00 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [Intel-gfx] linux-next: Signed-off-by missing for commit in the
- drm-intel tree
-Message-ID: <YROc0KkBbuAwrx0f@phenom.ffwll.local>
-Mail-Followup-To: Jani Nikula <jani.nikula@linux.intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210715141854.1ad4a956@canb.auug.org.au>
- <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com>
- <YRE2RwQ6XlUqbgmn@phenom.ffwll.local>
- <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com>
- <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
- <8735rgo3hi.fsf@intel.com>
+        Wed, 11 Aug 2021 02:48:45 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 10:48:39 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
+Message-ID: <YROc95YKA1Y/TfYI@google.com>
+References: <cover.1628579170.git.viresh.kumar@linaro.org>
+ <YRJym+Vn4bbwQzzs@google.com>
+ <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
+ <20210811053406.jqwextgtnxhgsjd2@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8735rgo3hi.fsf@intel.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210811053406.jqwextgtnxhgsjd2@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:16:41AM +0300, Jani Nikula wrote:
-> On Tue, 10 Aug 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
-> > On Mon, Aug 09, 2021 at 09:19:39AM -0700, Matt Roper wrote:
-> >> On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
-> >> > On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
-> >> > > Hi Matt,
-> >> > > 
-> >> > > Always use the dim tooling when applying patches, it will do the right
-> >> > > thing with regards to adding the S-o-b.
-> >> > 
-> >> > fd.o server rejects any pushes that haven't been done by dim, so how did
-> >> > this get through?
-> >> 
-> >> I definitely used dim for all of these patches, but I'm not sure how I
-> >> lost my s-o-b on this one.  Maybe when I edited the commit message after
-> >> 'dim extract-tags' I accidentally deleted an extra line when I removed
-> >> the extract-tags marker?  It's the only patch where the line is missing,
-> >> so it's almost certainly human error on my part rather than something
-> >> dim did wrong.
-> >
-> > Yeah that's an expected failure model, and dim is supposed to catch that
-> > by rechecking for sobs when you push. See dim_push_branch ->
-> > checkpatch_commit_push_range in dim. So you can hand-edit stuff however
-> > you want, dim /should/ catch it when pushing. That it didn't is kinda
-> > confusing and I'd like to know why that slipped through.
+On Wednesday 11 Aug 2021 at 11:04:06 (+0530), Viresh Kumar wrote:
+> On 11-08-21, 10:48, Viresh Kumar wrote:
+> > On 10-08-21, 13:35, Quentin Perret wrote:
+> > > This series adds more code than it removes,
+> > 
+> > Sadly yes :(
+> > 
+> > > and the unregistration is
+> > > not a fix as we don't ever remove the EM tables by design, so not sure
+> > > either of these points are valid arguments.
+> > 
+> > I think that design needs to be looked over again, it looks broken to
+> > me everytime I land onto this code. I wonder why we don't unregister
+> > stuff.
 > 
-> One of the failures that happened here was that the commit was part of a
-> topic branch that was merged and pushed directly. All merges should
-> happen via pull requests on the list, and applied (preferrably by
-> maintainers or at least with their acks recorded on the merge) using dim
-> apply-pull which should also have the checks.
+> Coming back to this series. We have two options, based on what I
+> proposed here:
+> 
+> https://lore.kernel.org/linux-pm/20210811050327.3yxrk4kqxjjwaztx@vireshk-i7/
+> 
+> 1. Let cpufreq core register with EM on behalf of cpufreq drivers.
 
-Ah yes if the merge is applied directly instead of using apply-pull then
-that's not good. I guess that's why we have the rule that only maintainers
-should handle topic branches ...
+If we're going that route, I think we should allow _all_ possible
+EM registration methods (via PM_OPP or else) to be done that way.
+Otherwise we're creating an inconsitency in how the EM is registered
+(e.g. from the ->init() cpufreq callback for some, or from cpufreq core
+for others) which is problematic as we risk building features that
+assume loading is done at a certain time, which won't work for some
+platforms.
 
-Not sure how we can fix this in dim? Maybe a check whether the patches
-your pushing contain a merge commit, which prompts an additional query
-like
+> 2. Update drivers to use ->ready() callback to do this stuff.
 
-"Merge commits should only be done by repo maintainers, not committers.
-Confirm that you are a maintainer of $repo?"
-
-It's not the first time this slipped through and caused some fun. Similar
-to how we have the confirmation check if you push a lot of patches.
+I think this should work, but perhaps will be a bit tricky for cpufreq
+driver developers as they need to have a pretty good understanding of
+the stack to know that they should do the registration from here and not
+->init() for instance. Suggested alternative: we introduce a ->register_em()
+callback to cpufreq_driver, and turn dev_pm_opp_of_register_em() into a
+valid handler for this callback. This should 'document' things a bit
+better, avoid some of the problems your other series tried to achieve, and
+allow us to call the EM registration in exactly the right place from
+cpufreq core. On the plus side, we could easily make this work for e.g.
+the SCMI driver which would only need to provide its own version of
+->register_em().
 
 Thoughts?
--Daniel
-
-
-> 
-> 
-> BR,
-> Jani.
-> 
-> >
-> >> > Matt, can you pls figure out and type up the patch to
-> >> > plug that hole?
-> >> 
-> >> Are you referring to a patch for dim here?  The i915 patch has already
-> >> landed, so we can't change its commit message now.
-> >
-> > Yeah dim, not drm-intel, that can't be fixed anymore because it's all
-> > baked in.
-> > -Daniel
-> >
-> >> 
-> >> 
-> >> Matt
-> >> 
-> >> > 
-> >> > Thanks, Daniel
-> >> > 
-> >> > > 
-> >> > > Regards, Joonas
-> >> > > 
-> >> > > Quoting Stephen Rothwell (2021-07-15 07:18:54)
-> >> > > > Hi all,
-> >> > > > 
-> >> > > > Commit
-> >> > > > 
-> >> > > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
-> >> > > > 
-> >> > > > is missing a Signed-off-by from its committer.
-> >> > > > 
-> >> > > > -- 
-> >> > > > Cheers,
-> >> > > > Stephen Rothwell
-> >> > 
-> >> > -- 
-> >> > Daniel Vetter
-> >> > Software Engineer, Intel Corporation
-> >> > http://blog.ffwll.ch
-> >> 
-> >> -- 
-> >> Matt Roper
-> >> Graphics Software Engineer
-> >> VTT-OSGC Platform Enablement
-> >> Intel Corporation
-> >> (916) 356-2795
-> 
-> -- 
-> Jani Nikula, Intel Open Source Graphics Center
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
