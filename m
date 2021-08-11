@@ -2,141 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260343E934E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A873E9354
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhHKOKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:10:05 -0400
-Received: from mga17.intel.com ([192.55.52.151]:5689 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231661AbhHKOKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:10:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="195396850"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="195396850"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:09:20 -0700
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="503506436"
-Received: from gdthomps-mobl.amr.corp.intel.com (HELO intel.com) ([10.255.37.76])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:09:18 -0700
-Date:   Wed, 11 Aug 2021 10:09:17 -0400
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [Intel-gfx] linux-next: Signed-off-by missing for commit in the
- drm-intel tree
-Message-ID: <YRPaDYtUxXO4hzTI@intel.com>
-References: <20210715141854.1ad4a956@canb.auug.org.au>
- <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com>
- <YRE2RwQ6XlUqbgmn@phenom.ffwll.local>
- <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com>
- <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
- <8735rgo3hi.fsf@intel.com>
+        id S232207AbhHKOLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:11:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11946 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231902AbhHKOLx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:11:53 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BE31w3037444;
+        Wed, 11 Aug 2021 10:11:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=dUKxIJSDOKApYQlXkSoKV4OJ/WGFyoGgyMLFMdjO54o=;
+ b=quELoMWgefur2ZOYWb8r83XOCCJhEd62nnp/w8CijaQveGvoL/xS2dkl5Tvm7x/z6eYy
+ v1oRodDR7ZGPF2x+sv2CKMhacf6rfc/OhKmAERUMxO7fIa2pzjZLbC3YgcYrLTdsaO5w
+ vC7Zd3FKUiV8uHnkwCNopn/ij/Cmx1Yx1x0bodMLW5+iJCpD6q8Hfct1eLQq/5DrZ+lQ
+ +L9M3hv6DeoIDBJ1l/AjlrqkVQuatcKraBrOsIp+uWPL66Ls67uocMCqj8LIzxsPUaek
+ Fp2abClT7H3tLHO88vBLW+cWTtfse3i7dS5jGnqZ8YNcuNBU99OahVwzPkdKN52jwdAO PQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3abvtekusj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 10:11:13 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17BE3s9W041379;
+        Wed, 11 Aug 2021 10:11:13 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3abvtekurd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 10:11:12 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BE7j36005828;
+        Wed, 11 Aug 2021 14:11:10 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 3a9ht90628-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 14:11:10 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BEB87U14287190
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 14:11:08 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 34733AE04D;
+        Wed, 11 Aug 2021 14:11:08 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7B064AE05D;
+        Wed, 11 Aug 2021 14:11:07 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.154.55])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 11 Aug 2021 14:11:07 +0000 (GMT)
+Date:   Wed, 11 Aug 2021 17:11:05 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Qian Cai <quic_qiancai@quicinc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux-next: crash in alloc_huge_page()
+Message-ID: <YRPaeQYHPwI9r5a/@linux.ibm.com>
+References: <846c4502-3332-0d25-87f5-cb3b71afc38f@quicinc.com>
+ <YRM+qm66PfTUQNFL@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8735rgo3hi.fsf@intel.com>
+In-Reply-To: <YRM+qm66PfTUQNFL@casper.infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oY_pqWWuTXzOrNTlOMeyorEWhc-F3EiB
+X-Proofpoint-ORIG-GUID: yXV4swswMghlNMsSqlQCOAdWbZcYiV4H
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-11_04:2021-08-11,2021-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0 impostorscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108110095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:16:41AM +0300, Jani Nikula wrote:
-> On Tue, 10 Aug 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
-> > On Mon, Aug 09, 2021 at 09:19:39AM -0700, Matt Roper wrote:
-> >> On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
-> >> > On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
-> >> > > Hi Matt,
-> >> > > 
-> >> > > Always use the dim tooling when applying patches, it will do the right
-> >> > > thing with regards to adding the S-o-b.
-> >> > 
-> >> > fd.o server rejects any pushes that haven't been done by dim, so how did
-> >> > this get through?
-> >> 
-> >> I definitely used dim for all of these patches, but I'm not sure how I
-> >> lost my s-o-b on this one.  Maybe when I edited the commit message after
-> >> 'dim extract-tags' I accidentally deleted an extra line when I removed
-> >> the extract-tags marker?  It's the only patch where the line is missing,
-> >> so it's almost certainly human error on my part rather than something
-> >> dim did wrong.
-> >
-> > Yeah that's an expected failure model, and dim is supposed to catch that
-> > by rechecking for sobs when you push. See dim_push_branch ->
-> > checkpatch_commit_push_range in dim. So you can hand-edit stuff however
-> > you want, dim /should/ catch it when pushing. That it didn't is kinda
-> > confusing and I'd like to know why that slipped through.
+On Wed, Aug 11, 2021 at 04:06:18AM +0100, Matthew Wilcox wrote:
+> On Tue, Aug 10, 2021 at 10:22:37PM -0400, Qian Cai wrote:
+> > and the page->lru has an address fffffffffffffffc for some reasons. Does it sound like some error code
+> > had not been handled properly and had been propagated here instead? I tried reverting a few recent
+> > commits for mm/hugetlb.c and mm/memblock.c without luck so far.
 > 
-> One of the failures that happened here was that the commit was part of a
-> topic branch that was merged and pushed directly. All merges should
-> happen via pull requests on the list, and applied (preferrably by
-> maintainers or at least with their acks recorded on the merge) using dim
-> apply-pull which should also have the checks.
+> Yes, ff..fc is going to be at offset 8 from the actual address, so
+> that's -12 and -12 is ...
+> 
+> #define ENOMEM          12      /* Out of memory */
+> 
+> so something's returning ERR_PTR(-ENOMEM) instead of NULL.
 
-My bad. I have asked Matt to go ahead with the topic branch.
-So it is an ack, which didn't get recorded.
-But I didn't expect this case of missing dim checks with this flow.
+page is not initialized in alloc_buddy_huge_page_with_mpol() and after
+commit 2cfa8b23744f ("mm-hugetlb-add-support-for-mempolicy-mpol_preferred_many-fix") we have 
 
-Sorry,
-Rodrigo.
+	struct page *page;
 
-> 
-> 
-> BR,
-> Jani.
-> 
-> >
-> >> > Matt, can you pls figure out and type up the patch to
-> >> > plug that hole?
-> >> 
-> >> Are you referring to a patch for dim here?  The i915 patch has already
-> >> landed, so we can't change its commit message now.
-> >
-> > Yeah dim, not drm-intel, that can't be fixed anymore because it's all
-> > baked in.
-> > -Daniel
-> >
-> >> 
-> >> 
-> >> Matt
-> >> 
-> >> > 
-> >> > Thanks, Daniel
-> >> > 
-> >> > > 
-> >> > > Regards, Joonas
-> >> > > 
-> >> > > Quoting Stephen Rothwell (2021-07-15 07:18:54)
-> >> > > > Hi all,
-> >> > > > 
-> >> > > > Commit
-> >> > > > 
-> >> > > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
-> >> > > > 
-> >> > > > is missing a Signed-off-by from its committer.
-> >> > > > 
-> >> > > > -- 
-> >> > > > Cheers,
-> >> > > > Stephen Rothwell
-> >> > 
-> >> > -- 
-> >> > Daniel Vetter
-> >> > Software Engineer, Intel Corporation
-> >> > http://blog.ffwll.ch
-> >> 
-> >> -- 
-> >> Matt Roper
-> >> Graphics Software Engineer
-> >> VTT-OSGC Platform Enablement
-> >> Intel Corporation
-> >> (916) 356-2795
-> 
-> -- 
-> Jani Nikula, Intel Open Source Graphics Center
+	...
+
+	if (mpol_is_preferred_many(mpol)) {
+		gfp_t gfp = gfp_mask | __GFP_NOWARN;
+
+		gfp &=  ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
+		page = alloc_surplus_huge_page(h, gfp, nid, nodemask, false);
+
+		/* Fallback to all nodes if page==NULL */
+		nodemask = NULL;
+	}
+
+	if (!page)
+		page = alloc_surplus_huge_page(h, gfp_mask, nid, nodemask, false
+
+	mpol_cond_put(mpol);
+	return page;
+
+so for !mpol_is_preferred_many() we return an uninitialized variable.
+
+This should fix it:
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 008662083fec..6337697f7ee4 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2152,7 +2152,7 @@ static
+ struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
+ 		struct vm_area_struct *vma, unsigned long addr)
+ {
+-	struct page *page;
++	struct page *page = NULL;
+ 	struct mempolicy *mpol;
+ 	gfp_t gfp_mask = htlb_alloc_mask(h);
+ 	int nid;
+ 
+-- 
+Sincerely yours,
+Mike.
