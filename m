@@ -2,160 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF163E927A
+	by mail.lfdr.de (Postfix) with ESMTP id 1330D3E9278
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhHKNYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:24:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47158 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230271AbhHKNXV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:23:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628688154;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E8j3Usu6TPeDlqdG02ig6iok7ibfK10nrJnXjIHPT7g=;
-        b=EeVcgoF/sEjgwVea3WhxX9xYNo04iVoBx1YEtKQalLUO7U1AQBBdncvCHdJPLSn0X6Lm7P
-        KRe3chW5uubOOBucypMlncCTbUQLnIjoV8cn6h9oAnuYov+SS6bHdPBkpp69vaSTTLgvbf
-        9kd6PeczJYsshJrqLcDLBeti6zPbBXQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-c8uzCiM8MpWpL-j_94rFmw-1; Wed, 11 Aug 2021 09:22:32 -0400
-X-MC-Unique: c8uzCiM8MpWpL-j_94rFmw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S231303AbhHKNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:24:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhHKNXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:23:36 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D97D9802922;
-        Wed, 11 Aug 2021 13:22:29 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A2AC226E0;
-        Wed, 11 Aug 2021 13:22:23 +0000 (UTC)
-Message-ID: <bb7568d08ea7d3598d71db7631d56b9f288d3f32.camel@redhat.com>
-Subject: Re: [PATCH v3 0/6] KVM: my debug patch queue
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Kieran Bingham <kbingham@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Wed, 11 Aug 2021 16:22:23 +0300
-In-Reply-To: <1646763f-9f92-bb67-f358-9b17c8000b12@redhat.com>
-References: <20210811122927.900604-1-mlevitsk@redhat.com>
-         <1646763f-9f92-bb67-f358-9b17c8000b12@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        by mail.kernel.org (Postfix) with ESMTPSA id BD90F6054F;
+        Wed, 11 Aug 2021 13:23:12 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDoCM-004LE7-P4; Wed, 11 Aug 2021 14:23:10 +0100
+Date:   Wed, 11 Aug 2021 14:23:10 +0100
+Message-ID: <87pmuk9ku9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+In-Reply-To: <YROpd450N+n6hYt2@orome.fritz.box>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+        <871r71azjw.wl-maz@kernel.org>
+        <YROpd450N+n6hYt2@orome.fritz.box>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, mcroce@linux.microsoft.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk, jonathanh@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-11 at 15:10 +0200, Paolo Bonzini wrote:
-> On 11/08/21 14:29, Maxim Levitsky wrote:
-> > Hi!
-> > 
-> > I would like to publish two debug features which were needed for other stuff
-> > I work on.
-> > 
-> > One is the reworked lx-symbols script which now actually works on at least
-> > gdb 9.1 (gdb 9.2 was reported to fail to load the debug symbols from the kernel
-> > for some reason, not related to this patch) and upstream qemu.
-> > 
-> > The other feature is the ability to trap all guest exceptions (on SVM for now)
-> > and see them in kvmtrace prior to potential merge to double/triple fault.
-> > 
-> > This can be very useful and I already had to manually patch KVM a few
-> > times for this.
-> > I will, once time permits, implement this feature on Intel as well.
-> > 
-> > V2:
-> > 
-> >   * Some more refactoring and workarounds for lx-symbols script
-> > 
-> >   * added KVM_GUESTDBG_BLOCKIRQ flag to enable 'block interrupts on
-> >     single step' together with KVM_CAP_SET_GUEST_DEBUG2 capability
-> >     to indicate which guest debug flags are supported.
-> > 
-> >     This is a replacement for unconditional block of interrupts on single
-> >     step that was done in previous version of this patch set.
-> >     Patches to qemu to use that feature will be sent soon.
-> > 
-> >   * Reworked the the 'intercept all exceptions for debug' feature according
-> >     to the review feedback:
-> > 
-> >     - renamed the parameter that enables the feature and
-> >       moved it to common kvm module.
-> >       (only SVM part is currently implemented though)
-> > 
-> >     - disable the feature for SEV guests as was suggested during the review
-> >     - made the vmexit table const again, as was suggested in the review as well.
-> > 
-> > V3:
-> >   * Modified a selftest to cover the KVM_GUESTDBG_BLOCKIRQ
-> >   * Rebased on kvm/queue
-> > 
-> > Best regards,
-> >          Maxim Levitsky
-> > 
-> > Maxim Levitsky (6):
-> >    KVM: SVM: split svm_handle_invalid_exit
-> >    KVM: x86: add force_intercept_exceptions_mask
-> >    KVM: SVM: implement force_intercept_exceptions_mask
-> >    scripts/gdb: rework lx-symbols gdb script
-> >    KVM: x86: implement KVM_GUESTDBG_BLOCKIRQ
-> >    KVM: selftests: test KVM_GUESTDBG_BLOCKIRQ
-> > 
-> >   Documentation/virt/kvm/api.rst                |   1 +
-> >   arch/x86/include/asm/kvm_host.h               |   5 +-
-> >   arch/x86/include/uapi/asm/kvm.h               |   1 +
-> >   arch/x86/kvm/svm/svm.c                        |  87 +++++++-
-> >   arch/x86/kvm/svm/svm.h                        |   6 +-
-> >   arch/x86/kvm/x86.c                            |  12 +-
-> >   arch/x86/kvm/x86.h                            |   2 +
-> >   kernel/module.c                               |   8 +-
-> >   scripts/gdb/linux/symbols.py                  | 203 ++++++++++++------
-> >   .../testing/selftests/kvm/x86_64/debug_regs.c |  24 ++-
-> >   10 files changed, 266 insertions(+), 83 deletions(-)
-> > 
+On Wed, 11 Aug 2021 11:41:59 +0100,
+Thierry Reding <thierry.reding@gmail.com> wrote:
 > 
-> Queued 1-5-6.
+> On Tue, Aug 10, 2021 at 08:07:47PM +0100, Marc Zyngier wrote:
+> > Hi all,
+> > 
+> > [adding Thierry, Jon and Will to the fun]
+> > 
+> > On Mon, 14 Jun 2021 03:25:04 +0100,
+> > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > > 
+> > > From: Matteo Croce <mcroce@microsoft.com>
+> > > 
+> > > On RX an SKB is allocated and the received buffer is copied into it.
+> > > But on some architectures, the memcpy() needs the source and destination
+> > > buffers to have the same alignment to be efficient.
+> > > 
+> > > This is not our case, because SKB data pointer is misaligned by two bytes
+> > > to compensate the ethernet header.
+> > > 
+> > > Align the RX buffer the same way as the SKB one, so the copy is faster.
+> > > An iperf3 RX test gives a decent improvement on a RISC-V machine:
+> > > 
+> > > before:
+> > > [ ID] Interval           Transfer     Bitrate         Retr
+> > > [  5]   0.00-10.00  sec   733 MBytes   615 Mbits/sec   88             sender
+> > > [  5]   0.00-10.01  sec   730 MBytes   612 Mbits/sec                  receiver
+> > > 
+> > > after:
+> > > [ ID] Interval           Transfer     Bitrate         Retr
+> > > [  5]   0.00-10.00  sec  1.10 GBytes   942 Mbits/sec    0             sender
+> > > [  5]   0.00-10.00  sec  1.09 GBytes   940 Mbits/sec                  receiver
+> > > 
+> > > And the memcpy() overhead during the RX drops dramatically.
+> > > 
+> > > before:
+> > > Overhead  Shared O  Symbol
+> > >   43.35%  [kernel]  [k] memcpy
+> > >   33.77%  [kernel]  [k] __asm_copy_to_user
+> > >    3.64%  [kernel]  [k] sifive_l2_flush64_range
+> > > 
+> > > after:
+> > > Overhead  Shared O  Symbol
+> > >   45.40%  [kernel]  [k] __asm_copy_to_user
+> > >   28.09%  [kernel]  [k] memcpy
+> > >    4.27%  [kernel]  [k] sifive_l2_flush64_range
+> > > 
+> > > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> > 
+> > This patch completely breaks my Jetson TX2 system, composed of 2
+> > Nvidia Denver and 4 Cortex-A57, in a very "funny" way.
+> > 
+> > Any significant amount of traffic result in all sort of corruption
+> > (ssh connections get dropped, Debian packages downloaded have the
+> > wrong checksums) if any Denver core is involved in any significant way
+> > (packet processing, interrupt handling). And it is all triggered by
+> > this very change.
+> > 
+> > The only way I have to make it work on a Denver core is to route the
+> > interrupt to that particular core and taskset the workload to it. Any
+> > other configuration involving a Denver CPU results in some sort of
+> > corruption. On their own, the A57s are fine.
+> > 
+> > This smells of memory ordering going really wrong, which this change
+> > would expose. I haven't had a chance to dig into the driver yet (it
+> > took me long enough to bisect it), but if someone points me at what is
+> > supposed to synchronise the DMA when receiving an interrupt, I'll have
+> > a look.
 > 
-> For patches 2 and 3, please add VMX support too.
+> One other thing that kind of rings a bell when reading DMA and
+> interrupts is a recent report (and attempt to fix this) where upon
+> resume from system suspend, the DMA descriptors would get corrupted.
 > 
-> For patch 4, it's not KVM :) so please submit it separately.
+> I don't think we ever figured out what exactly the problem was, but
+> interestingly the fix for the issue immediately caused things to go
+> haywire on... Jetson TX2.
 
-Thanks!
+I love this machine... Did this issue occur with the Denver CPUs
+disabled?
 
-I will do this!
-
-
-Best regards,
-	Maxim Levitsky
-
+> I recall looking at this a bit and couldn't find where exactly the DMA
+> was being synchronized on suspend/resume, or what the mechanism was to
+> ensure that (in transit) packets were not received after the suspension
+> of the Ethernet device. Some information about this can be found here:
 > 
-> Paolo
+> 	https://lore.kernel.org/netdev/708edb92-a5df-ecc4-3126-5ab36707e275@nvidia.com/
 > 
+> It's interesting that this happens only on Jetson TX2. Apparently on the
+> newer Jetson AGX Xavier this problem does not occur. I think Jon also
+> narrowed this down to being related to the IOMMU being enabled on Jetson
+> TX2, whereas Jetson AGX Xavier didn't have it enabled. I wasn't able to
+> find any notes on whether disabling the IOMMU on Jetson TX2 did anything
+> to improve on this, so perhaps that's something worth trying.
 
+Actually, I was running with the SMMU disabled, as I use the upstream
+u-boot provided DT. Switching to the kernel one didn't change a thing
+(with passthough or not).
 
+> We have since enabled the IOMMU on Jetson AGX Xavier, and I haven't seen
+> any test reports indicating that this is causing issues. So I don't
+> think this has anything directly to do with the IOMMU support.
+
+No, it looks more like either ordering or cache management. The fact
+that this patch messes with the buffer alignment makes me favour the
+latter...
+
+> That said, if these problems are all exclusive to Jetson TX2, or rather
+> Tegra186, that could indicate that we're missing something at a more
+> fundamental level (maybe some cache maintenance quirk?).
+
+That'd be pretty annoying. Do you know if the Ethernet is a coherent
+device on this machine? or does it need active cache maintenance?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
