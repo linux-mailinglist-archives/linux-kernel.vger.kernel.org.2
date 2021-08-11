@@ -2,122 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3BF3E8732
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7373E872B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235914AbhHKAUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:20:15 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:53659 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235692AbhHKAUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:20:13 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4019058041A;
-        Tue, 10 Aug 2021 20:19:50 -0400 (EDT)
-Received: from imap43 ([10.202.2.93])
-  by compute2.internal (MEProxy); Tue, 10 Aug 2021 20:19:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=TJnR3Y1jRHyuvNKz98aoSVU7LBqrfX9
-        Q1XFcqdbpwL0=; b=otc4PnNARgoLm1XBiDUZWQ8vgpp/dj0SeUE3PcX17toYGay
-        SLVTUGVuw9SgBR623QsWDhaHx594itB5W6LGMjYcb3mRnBdj/lj4PosvJfI/lYwd
-        cmAE+ZP7K9QckxMGAwQ/S/zSXaKpy0nCEooyyK0jIsErAs0fwu1WKxqvQkaR9fvX
-        g98qBCk3+1W/H9N+9Vm0cTf7chZ4eqf7pXRulyxZ3907MoYBBPAhdb2tq0+3K5m+
-        WWcNrQgnJf+wt+QcCAn9IEeqbpYGKvMSK6/A93kBe9ICmS5yWoO4rBEP+V07SJkC
-        p0Osqu9r2ZTc4dUcME63iniXInzHVX2kM57MvCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=TJnR3Y
-        1jRHyuvNKz98aoSVU7LBqrfX9Q1XFcqdbpwL0=; b=ZSUuRYKCUqHRZBsFFklFyz
-        IoHgNcnsC9GQLtyhUERApUoK46BH/NzfAV4S6U525WMZqiEOXYetQEXYnPnIAp85
-        ZyxufUwGuO8RRnqOJ7ZY7Wk9EqYWIrJXx+xo/Bz9iR8PyRSue9rVt328dF6TNNPw
-        0svbooiiaPdEDDVJXD37f2g9bRtNOGSd9/7K/BYEL16o/vxkZiQFNRQmqvM1E/mv
-        xyg7jEup2VIfpm2odPeJK+/O2vFaYfknt/JRevmlQLqDz9K1r8yoiFNSCnMPjVjE
-        yAbxejAhkjFF72bxuJBXVwZyXEYZv2Hy/BH4bW7iUjOk0lLvEeSG/xfMvobNpWUA
-        ==
-X-ME-Sender: <xms:oxcTYQMs9hRztGtED_kTlD9Hcik9VxQ8he7kjxErnKtRbIsIAAgxHA>
-    <xme:oxcTYW-LFY09y7PMvujnBEg2srKUu_Pk66ylPyC-B5P6FIOeXFp9R2AlI-wgbVN-R
-    YF4RRCeT-aFYmlPEQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedtgdeftdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:oxcTYXRwJjHMLOmgVtRkmOHdavu-M1RbiUfLeo8UZQr3hZfrUd_8og>
-    <xmx:oxcTYYuFOf7V3nLo1y0AdEiAKOREhvWOTQxNrL4tYYuZxSY34_nDSw>
-    <xmx:oxcTYYeC4M5cveV0Zodk6hgp-e9hgtHBg80uctI2a5BcWp44JMLw8g>
-    <xmx:phcTYfxd4nMtKVK_Jn7ebZTvlJPezURA6FbGPOMUA_o_pbQoLrB3Yw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 91878AC0DD0; Tue, 10 Aug 2021 20:19:47 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-554-g53a5f93b7d-fm-20210809.002-g53a5f93b
-Mime-Version: 1.0
-Message-Id: <96e52916-f113-4a91-b83f-e0de144611ca@www.fastmail.com>
-In-Reply-To: <CACRpkdZm9C23aHTWs8DNX1RChSB4A-X0PoyW5wnH2XyQQeviag@mail.gmail.com>
-References: <20210723075858.376378-1-andrew@aj.id.au>
- <20210723075858.376378-5-andrew@aj.id.au>
- <CACRpkdZm9C23aHTWs8DNX1RChSB4A-X0PoyW5wnH2XyQQeviag@mail.gmail.com>
-Date:   Wed, 11 Aug 2021 09:49:05 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Linus Walleij" <linus.walleij@linaro.org>
-Cc:     "Linux LED Subsystem" <linux-leds@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, "Pavel Machek" <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/6] leds: pca955x: Use pinctrl to map GPIOs to pins
-Content-Type: text/plain
+        id S235860AbhHKATf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:19:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235692AbhHKATe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:19:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7607E60F55;
+        Wed, 11 Aug 2021 00:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628641152;
+        bh=Zc5dExTPRWUtgOfGNOxttYI0bTWbZetNAgPIsuEtZWA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GIFjD92s9zH7DeIlDYvhYE2t3gAV+mpD0/QyBwwj5tG4K8F9p7zo42W73BWqEGaOI
+         6GUzE41nQ/sj99dq6k2ODuHl9zsmyOF88XQkfD9yCi62IuXwjBpaGuLgOj0Gv6IS65
+         IzbRToSw7A0wE+4SvD7MfvmA+heWLVflfSDdG+Tg0sbpdl7onNwluD7nMb6/wFYmgb
+         zpzW8M3zFIuSlXniaat46GMIzHo+ICKVj9RVUewB4JycIgwvqxYlJGtzBkaVlTxMEg
+         XUBkObLjxcvDnhLzA5q2yUFWV9ZaEnJhWeb309Sc21YbwQOYyIglkA9ZOoBHg830Hs
+         WGGVGp0LCXBlg==
+Date:   Wed, 11 Aug 2021 03:19:09 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Always deregister /dev/sgx_provision on failure
+Message-ID: <20210811001909.wjagzcapjqv7sfrx@kernel.org>
+References: <20210810225627.202890-1-jarkko@kernel.org>
+ <20210811112713.267a1d0b99ee53813ba733b3@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811112713.267a1d0b99ee53813ba733b3@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 10 Aug 2021, at 23:24, Linus Walleij wrote:
-> On Fri, Jul 23, 2021 at 9:59 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+On Wed, Aug 11, 2021 at 11:27:13AM +1200, Kai Huang wrote:
+> On Wed, 11 Aug 2021 01:56:27 +0300 Jarkko Sakkinen wrote:
+> > When /dev/sgx_vepc for KVM was added, the initialization was relaxed so
+> > that this file can be accessed even when the driver is disabled.
+> > 
+> > Deregister /dev/sgx_provision when the driver is disabled, because it is
+> > only useful for the driver.
 > 
-> > The leds-pca955x driver currently assumes that the GPIO numberspace and
-> > the pin numberspace are the same. This quickly falls apart with a
-> > devicetree binding such as the following:
-> (...)
+> Hi Jarkko,
 > 
-> Honestly I do not understand this patch. It seems to implement a pin
-> controller and using it in nonstandard ways.
-
-Yeah, it's a bit abusive, hence RFC :)
-
+> This is not true.  KVM also uses /dev/sgx_provision to restrict enclave in guest
+> from accessing provisoning key.  Specifically, in order to allow guest enclave
+> to be able to use provisioning key, when one VM is created, Qemu must have
+> permission to open /dev/sgx_provision, and pass the fd as parameter to
+> KVM_CAP_SGX_ATTRIBUTE.
 > 
-> If something implements the pin controller driver API it should be
-> used as such IMO, externally. This seems to be using it do relay
-> calls to itself which seems complicated, just invent something
-> locally in the driver in that case? No need to use pin control?
-
-Right. After discussions with Andy I'm going to rework the approach to 
-GPIOs which will remove a lot of complexity.
-
-The thought was to try to maintain the intent of the devicetree binding 
-and use existing APIs, but all-in-all it's ended up twisting things up 
-in knots a fair bit. We discard a lot of it by making the gpiochip 
-always cover all pins and track use directly in the driver.
-
+> Please see below KVM API:
 > 
-> Can you explain why this LED driver needs to implement a pin
-> controller?
+> 7.25 KVM_CAP_SGX_ATTRIBUTE
+> --------------------------           
+>                                                      
+> :Architectures: x86                                         
+> :Target: VM                                                              
+> :Parameters: args[0] is a file handle of a SGX attribute file in securityfs
+> :Returns: 0 on success, -EINVAL if the file handle is invalid or if a requested
+>           attribute is not supported by KVM.                         
+>                                                                                
+> KVM_CAP_SGX_ATTRIBUTE enables a userspace VMM to grant a VM access to one or
+> more priveleged enclave attributes.  args[0] must hold a file handle to a valid
+> SGX attribute file corresponding to an attribute that is supported/restricted
+> by KVM (currently only PROVISIONKEY).
+>                                                                     
+> The SGX subsystem restricts access to a subset of enclave attributes to provide
+> additional security for an uncompromised kernel, e.g. use of the PROVISIONKEY
+> is restricted to deter malware from using the PROVISIONKEY to obtain a stable
+> system fingerprint.  To prevent userspace from circumventing such restrictions
+> by running an enclave in a VM, KVM prevents access to privileged attributes by
+> default.                                                 
 
-The short answer is it doesn't as it has none of the associated 
-hardware.
+OK, I was not aware of this.
 
-I'll cook up something simpler with the aim to avoid non-standard (or 
-any) pinctrl.
-
-Andrew
+/Jarkko
