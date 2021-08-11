@@ -2,100 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FFE3E90FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4333E90FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237939AbhHKM2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:28:34 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:37918 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbhHKM11 (ORCPT
+        id S237867AbhHKM2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:28:55 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:5126 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231721AbhHKM1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:27:27 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 874411C0B77; Wed, 11 Aug 2021 14:27:02 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 14:27:02 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, jason@jlekstrand.net,
-        Jonathan Gray <jsg@jsg.id.au>
-Subject: Re: [PATCH 5.10 125/135] drm/i915: avoid uninitialised var in
- eb_parse()
-Message-ID: <20210811122702.GA8045@duo.ucw.cz>
-References: <20210810172955.660225700@linuxfoundation.org>
- <20210810173000.050147269@linuxfoundation.org>
- <20210811072843.GC10829@duo.ucw.cz>
- <YROARN2fMPzhFMNg@kroah.com>
+        Wed, 11 Aug 2021 08:27:42 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BCQa49028635;
+        Wed, 11 Aug 2021 12:27:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2021-07-09;
+ bh=S//UJb2BAflVWKg64/+XomkAmAV29LtsUxuQPldZtd4=;
+ b=k3EcOtbTnDCp/t1AtXTiUQHA7ZwWO9SeT70x6oSpj1wKBn9h2q4jXqWRQeuwyDYkJVFE
+ tpFpttaJ5/HfEsHwBJgTCiS91a4L6wNtOj8tCZoEU+ev6dZsEGHcQpAcnqDh/OAOzc+n
+ /wmQ/22lrTkkN5gFr8dxV8RLAh6VLnJoinhOaSM6hvTRGQGcABiPkymByfhH5KyqlW/X
+ v6GJntefdRFm0myi0BqXpOm8XwNMOW1U55+L2kHopeMLfubZhIIXCj+Nd7hEQxWjJBem
+ OEcjYLME6H1mVWB0HskTmIx0mD+XWMvOv9sWKUfUpc5BRCDsJxGT0mNDfREvObJhZSNe Kg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=S//UJb2BAflVWKg64/+XomkAmAV29LtsUxuQPldZtd4=;
+ b=rs3csblgTCnMFEQV1gok5plxIYDG3phDZ6andKT59mUQ+blcmAC5t6FzU5wOoj69ZFvi
+ KYURyN6EAtuVnrDPMz1cgqhVs00tSBwu85eedjHfjkW3UA4aebZKPSNWcmYCzqGHgKaj
+ CiKMdkg6sA8QVgNoA78nmabktNpmz2Agq+LyqSjQCb4HxHL0II8FQsvTL7ojDrcF092l
+ r7ERv0Q6UB/CMRbV+skAHQbQgDN/JFtpxiu90ZfSgVx8HUNIWSveq8JuVi06szOLUsg8
+ WlIP3DRsOSDgCC03EAxRq6FTPV1CVwlAA4CBxr/TvKlIjlXruq56pBU9Ydy3AAXCK7Rz AA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3abt44ahnk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 12:27:16 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17BCQFGj001398;
+        Wed, 11 Aug 2021 12:27:14 GMT
+Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
+        by userp3020.oracle.com with ESMTP id 3aa3xv0s52-1;
+        Wed, 11 Aug 2021 12:27:14 +0000
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH for-next] RDMA/core/sa_query: Remove unused function
+Date:   Wed, 11 Aug 2021 14:27:11 +0200
+Message-Id: <1628684831-26981-1-git-send-email-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-In-Reply-To: <YROARN2fMPzhFMNg@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10072 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108110084
+X-Proofpoint-ORIG-GUID: OBOx6C_EL44qT5Rpy1axSa2h3St--oP2
+X-Proofpoint-GUID: OBOx6C_EL44qT5Rpy1axSa2h3St--oP2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ib_sa_service_rec_query() was introduced in kernel v2.6.13 by commit
+cbae32c56314 ("[PATCH] IB: Add Service Record support to SA client")
+in 2005. It was not used then and have never been used since.
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Removing it.
 
-On Wed 2021-08-11 09:46:12, Greg Kroah-Hartman wrote:
-> On Wed, Aug 11, 2021 at 09:28:43AM +0200, Pavel Machek wrote:
-> > Hi!
-> >=20
-> > > From: Jonathan Gray <jsg@jsg.id.au>
-> > >=20
-> > > The backport of c9d9fdbc108af8915d3f497bbdf3898bf8f321b8 to 5.10 in
-> > > 6976f3cf34a1a8b791c048bbaa411ebfe48666b1 removed more than it should
-> > > have leading to 'batch' being used uninitialised.  The 5.13 backport =
-and
-> > > the mainline commit did not remove the portion this patch adds back.
-> >=20
-> > This patch has no upstream equivalent, right?
-> >=20
-> > Which is okay -- it explains it in plain english, but it shows that
-> > scripts should not simply search for anything that looks like SHA and
-> > treat it as upsteam commit it.
->=20
-> Sounds like you have a broken script if you do it that way.
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/sa_query.c | 101 -------------------------------------
+ include/rdma/ib_sa.h               |  10 ----
+ 2 files changed, 111 deletions(-)
 
-That is what you told me to do!
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index b61576f..7c31b91 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1656,107 +1656,6 @@ static void ib_sa_service_rec_release(struct ib_sa_query *sa_query)
+ 	kfree(container_of(sa_query, struct ib_sa_service_query, sa_query));
+ }
+ 
+-/**
+- * ib_sa_service_rec_query - Start Service Record operation
+- * @client:SA client
+- * @device:device to send request on
+- * @port_num: port number to send request on
+- * @method:SA method - should be get, set, or delete
+- * @rec:Service Record to send in request
+- * @comp_mask:component mask to send in request
+- * @timeout_ms:time to wait for response
+- * @gfp_mask:GFP mask to use for internal allocations
+- * @callback:function called when request completes, times out or is
+- * canceled
+- * @context:opaque user context passed to callback
+- * @sa_query:request context, used to cancel request
+- *
+- * Send a Service Record set/get/delete to the SA to register,
+- * unregister or query a service record.
+- * The callback function will be called when the request completes (or
+- * fails); status is 0 for a successful response, -EINTR if the query
+- * is canceled, -ETIMEDOUT is the query timed out, or -EIO if an error
+- * occurred sending the query.  The resp parameter of the callback is
+- * only valid if status is 0.
+- *
+- * If the return value of ib_sa_service_rec_query() is negative, it is an
+- * error code.  Otherwise it is a request ID that can be used to cancel
+- * the query.
+- */
+-int ib_sa_service_rec_query(struct ib_sa_client *client,
+-			    struct ib_device *device, u32 port_num, u8 method,
+-			    struct ib_sa_service_rec *rec,
+-			    ib_sa_comp_mask comp_mask,
+-			    unsigned long timeout_ms, gfp_t gfp_mask,
+-			    void (*callback)(int status,
+-					     struct ib_sa_service_rec *resp,
+-					     void *context),
+-			    void *context,
+-			    struct ib_sa_query **sa_query)
+-{
+-	struct ib_sa_service_query *query;
+-	struct ib_sa_device *sa_dev = ib_get_client_data(device, &sa_client);
+-	struct ib_sa_port   *port;
+-	struct ib_mad_agent *agent;
+-	struct ib_sa_mad *mad;
+-	int ret;
+-
+-	if (!sa_dev)
+-		return -ENODEV;
+-
+-	port  = &sa_dev->port[port_num - sa_dev->start_port];
+-	agent = port->agent;
+-
+-	if (method != IB_MGMT_METHOD_GET &&
+-	    method != IB_MGMT_METHOD_SET &&
+-	    method != IB_SA_METHOD_DELETE)
+-		return -EINVAL;
+-
+-	query = kzalloc(sizeof(*query), gfp_mask);
+-	if (!query)
+-		return -ENOMEM;
+-
+-	query->sa_query.port     = port;
+-	ret = alloc_mad(&query->sa_query, gfp_mask);
+-	if (ret)
+-		goto err1;
+-
+-	ib_sa_client_get(client);
+-	query->sa_query.client = client;
+-	query->callback        = callback;
+-	query->context         = context;
+-
+-	mad = query->sa_query.mad_buf->mad;
+-	init_mad(&query->sa_query, agent);
+-
+-	query->sa_query.callback = callback ? ib_sa_service_rec_callback : NULL;
+-	query->sa_query.release  = ib_sa_service_rec_release;
+-	mad->mad_hdr.method	 = method;
+-	mad->mad_hdr.attr_id	 = cpu_to_be16(IB_SA_ATTR_SERVICE_REC);
+-	mad->sa_hdr.comp_mask	 = comp_mask;
+-
+-	ib_pack(service_rec_table, ARRAY_SIZE(service_rec_table),
+-		rec, mad->data);
+-
+-	*sa_query = &query->sa_query;
+-
+-	ret = send_mad(&query->sa_query, timeout_ms, gfp_mask);
+-	if (ret < 0)
+-		goto err2;
+-
+-	return ret;
+-
+-err2:
+-	*sa_query = NULL;
+-	ib_sa_client_put(query->sa_query.client);
+-	free_mad(&query->sa_query);
+-
+-err1:
+-	kfree(query);
+-	return ret;
+-}
+-EXPORT_SYMBOL(ib_sa_service_rec_query);
+-
+ static void ib_sa_mcmember_rec_callback(struct ib_sa_query *sa_query,
+ 					int status,
+ 					struct ib_sa_mad *mad)
+diff --git a/include/rdma/ib_sa.h b/include/rdma/ib_sa.h
+index ba3c808..b09f1f1 100644
+--- a/include/rdma/ib_sa.h
++++ b/include/rdma/ib_sa.h
+@@ -430,16 +430,6 @@ int ib_sa_path_rec_get(struct ib_sa_client *client, struct ib_device *device,
+ 					void *context),
+ 		       void *context, struct ib_sa_query **query);
+ 
+-int ib_sa_service_rec_query(struct ib_sa_client *client,
+-			    struct ib_device *device, u32 port_num, u8 method,
+-			    struct ib_sa_service_rec *rec,
+-			    ib_sa_comp_mask comp_mask, unsigned long timeout_ms,
+-			    gfp_t gfp_mask,
+-			    void (*callback)(int status,
+-					     struct ib_sa_service_rec *resp,
+-					     void *context),
+-			    void *context, struct ib_sa_query **sa_query);
+-
+ struct ib_sa_multicast {
+ 	struct ib_sa_mcmember_rec rec;
+ 	ib_sa_comp_mask		comp_mask;
+-- 
+1.8.3.1
 
-https://lore.kernel.org/stable/YQEvUay+1Rzp04SO@kroah.com/
-
-I would happily adapt my script, but there's no
-good/documented/working way to determine upstream commit given -stable
-commit.
-
-If we could agree on
-
-Commit: (SHA)
-
-in the beggining of body, that would be great.
-
-Upstream: (SHA)
-
-in sign-off area would be even better.
-
-Best regards,
-
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYRPCFgAKCRAw5/Bqldv6
-8mQcAJ9AKlFoH8jnzzSxqkYLGTi8OCpOXQCdFy3CePlHbLfq+roeM+HiygkP9mo=
-=jAGr
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
