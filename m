@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1748D3E93CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4E53E93CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhHKOlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232226AbhHKOlh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:41:37 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43481C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:41:14 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id kl2so1230619qvb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=woz6rh43vQuyI5ixWRzgN4oCrQUNRAIALrBLaN/K7qo=;
-        b=E1ueDDxsTSx2qzVSyxsOzrux23LFqyPTmzNUp59VgAkT5ipHwksITT5ySPwBN3j5jI
-         Ky8NehEabNtPsqMTK3UmCumvjNVMWPQf8JXDOvVTV9v7VUeDF4c2UwkC/MPtAhddyuZF
-         NMQDhdBHWJR0+eRzEyhkNCGxvsbPMV0/yD36s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=woz6rh43vQuyI5ixWRzgN4oCrQUNRAIALrBLaN/K7qo=;
-        b=gvecADs31gCI5WUTn7xE3ybvSUgSGtlcU2WzIn9RJozWaC/Fn1D74cuLZplEpqFMwG
-         r03k+OI0Jh49l/nR7PG7h6Cv64bZgS5SjaKIGuNCZ8fEFQ8iqloAIsGoJGYeq2Doyug+
-         MWAlQjGMYkJJZ9fzwfs8N45X+i6HbbnOMitFQ5/r/AppxqfJc3uXy3Qzoeoyxcb/bNs7
-         LNFchgCm9VwL1rXZlen08YDnzZQu4UjCVx4Dj8pv/MpGQTjoFXGr5QF1jR8BeHZnZO3B
-         6LkrGG3ez2+kX6dxhxWN535wMQ8BW97qP41qxPN/kJ0bVLdpMlFRKrybMnfuUpuU5KuU
-         AadQ==
-X-Gm-Message-State: AOAM530Xe+3ooAbYVBk5alR/532tDaHq1Ucdy1PQ1i9RxOXo0kxvx3sX
-        32mPuOBkhYg3REMcWdPq0nEqHAkt7FhSeg==
-X-Google-Smtp-Source: ABdhPJxQI6t8FA7XyVQOdgz2Tm5Xa06tDl8K2lX/NM3J2yZOEIV6PJre1cR5fsBgmKDPb180LrMttw==
-X-Received: by 2002:a05:6214:20e4:: with SMTP id 4mr21158954qvk.18.1628692873008;
-        Wed, 11 Aug 2021 07:41:13 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id t64sm12685233qkd.71.2021.08.11.07.41.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 07:41:11 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id w17so5050528ybl.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:41:11 -0700 (PDT)
-X-Received: by 2002:a25:ba44:: with SMTP id z4mr44332481ybj.476.1628692871281;
- Wed, 11 Aug 2021 07:41:11 -0700 (PDT)
+        id S232576AbhHKOm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:42:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232555AbhHKOmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:42:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 839BE60C40;
+        Wed, 11 Aug 2021 14:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628692922;
+        bh=567DqEJ2CW8yoSvw1a5r0eKHS+MofAlVun4Dh6mctKw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m4nzoWszuVSWD73z+V3eW7ZyJ6MkRW74PpSMwcdiB/R7qEeMB1o8ISO5BGDySgBJB
+         3uqKiK55QBIZIP2CGQ2d2udlzk1wS83qUnCPxWJxQiXoALMiq/tzoNfNEi3QgKai3k
+         Z4CaQVTgkMUctnm2fYN3ns33UQp/mHzrP4cjGDL+dyGiZUnC5lH1zAzNQaEUTvmz4I
+         6pV0OhGv7VDZqhKvHDz+trOk0szvz10ayMFJWWCvJ4M5SN+Dn5nhKoTxzjBlq3b4Xn
+         XzBy9ExsbfE4rMRCAX6vrzrI2ZcKaWq1jAoaqnjtWwA+mncFk2LfjLl2lJXKZN8sF1
+         IyUAKbNbmVUVQ==
+Date:   Wed, 11 Aug 2021 15:41:43 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/12] ASoC: cs42l42: Don't reconfigure the PLL while it
+ is running
+Message-ID: <20210811144143.GE4167@sirena.org.uk>
+References: <20210810153759.24333-1-rf@opensource.cirrus.com>
+ <20210810153759.24333-5-rf@opensource.cirrus.com>
+ <20210810154959.GD4704@sirena.org.uk>
+ <c194004a-2a22-5354-9042-3ce811236319@opensource.cirrus.com>
+ <20210811115637.GA4167@sirena.org.uk>
+ <bae1afcb-d983-c17c-d932-3afac16df501@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
- <CAE-0n50K+gAa0U9-kswTCdt+UAkxhuJ8BMg-D4sQayP1xqWTyQ@mail.gmail.com>
-In-Reply-To: <CAE-0n50K+gAa0U9-kswTCdt+UAkxhuJ8BMg-D4sQayP1xqWTyQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 11 Aug 2021 07:40:59 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VdjTYvLmKfGONCZhpbyrzM_tG7uXkm5==-X6-uO1gTVw@mail.gmail.com>
-Message-ID: <CAD=FV=VdjTYvLmKfGONCZhpbyrzM_tG7uXkm5==-X6-uO1gTVw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: rt5682: Properly turn off regulators if wrong
- device ID
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Bard Liao <bardliao@realtek.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WK3l2KTTmXPVedZ6"
+Content-Disposition: inline
+In-Reply-To: <bae1afcb-d983-c17c-d932-3afac16df501@opensource.cirrus.com>
+X-Cookie: To stay youthful, stay useful.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Aug 10, 2021 at 9:24 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> > @@ -156,6 +163,10 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
-> >                 dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
-> >                 return ret;
-> >         }
->
-> Nit: Add newline here.
+--WK3l2KTTmXPVedZ6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-How strongly do you feel about it? I purposely left the newline off to
-try to tie the devm_add_action_or_reset() more closely to the
-devm_regulator_bulk_get(). I wanted to make it more obvious that the
-two of them were "together" and shouldn't be split up. That being
-said, it's no skin off my teeth to add a newline if everyone likes it
-better. ;-)
+On Wed, Aug 11, 2021 at 01:21:24PM +0100, Richard Fitzgerald wrote:
+> On 11/08/2021 12:56, Mark Brown wrote:
+> > On Tue, Aug 10, 2021 at 05:27:45PM +0100, Richard Fitzgerald wrote:
 
-> > +       ret = devm_add_action_or_reset(&i2c->dev, rt5682_i2c_disable_regulators,
-> > +                                      rt5682);
-> > +       if (ret)
-> > +               return ret;
+> > > cs42l42_pll_config() could check whether it is already running and skip
+> > > configuration in that case, but that seems to me a rather opaque
+> > > implementation. In my opinion this doesn't really fall into the case of
+> > > ignoring-bad-stuff-to-be-helpful (like free() accepting a NULL).
+
+> > This doesn't treat the situation as an error though, it just ignores it,
+> > and there's nothing to stop _pll_config() generating a warning if that
+> > makes sense.
+
+> It isn't an error. hw_params() will be called for both substreams
+> (PLAYBACK and CAPTURE) and if one is already running we mustn't
+> reconfigure the things we already configured. The DAI is marked
+> symmetric so both substreams will always produce the same I2C BCLK.
+
+If it's a noop reconfiguration then there's a case for saying that
+_pll_config() should just silently do nothing anyway regardless of
+issues with reconfiguring, though you might also want to warn dpeending
+on other expectations.  If it's not a noop reconfiguration then
+presumably the new configuration not taking effect might mean that other
+things aren't going to see the clocks they expect.  Either way if a
+reconfiguration gets introduced via a path other than hw_params(),
+either now or later, having the check in the _pll_config() would catch
+it.
+
+--WK3l2KTTmXPVedZ6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmET4aYACgkQJNaLcl1U
+h9DrmQgAhIQarTTvYNjhmlbeS0r6u4MqTIjCzyT8my/0LDFR/3QbeNOLzkt5BmaN
+he52NPO92gWzet0lby3zYDerMvDsHZniAfV/c0U+u+ZhN6wRWMzNbAfH6VR6ijgw
+fL0cT2Gtr4C7WGWnDrvBNJxx1QgiQjIZD4d8wTT1lKZNWEYK9gUUyUA9OEYR4YFM
+wVvKPIS6N2zRx1kRauCCy4tOtq3k+MorJ04T6VpUKc/72CUmx8uSI7Fc9Z5H0UO6
+Do70jom82Aj6dEbbSWCyXHQnxaB5JiuUkr/7TLXVea2Gfr1v1ssxc1R4uXlo3O11
+mADp4anO/f5zLjL4+o5tC5ndq2RCew==
+=Io2A
+-----END PGP SIGNATURE-----
+
+--WK3l2KTTmXPVedZ6--
