@@ -2,181 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B703E950A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552933E9512
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbhHKPvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S233342AbhHKPxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbhHKPvF (ORCPT
+        with ESMTP id S233201AbhHKPwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:51:05 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5EFC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:50:42 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id w14so4111802pjh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:50:42 -0700 (PDT)
+        Wed, 11 Aug 2021 11:52:54 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE38C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:52:20 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d1so3273611pll.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:52:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=HDZhi9XpYgHTgorc2OqZWb4+Dn8Pza3yr4fx29G3AVQ=;
-        b=AEhoJhKmbeC5GgV/97p6O3udQIf4Q0+7UWbeiwxH/z2QhJS1n08h/2R9xiJSMIntYa
-         jUcaTPjZmw81jxg1qJ0Dn7ZH9KlZ/iBUA6paPTTGu8hsRLbZOG37ihXMKMgx+qLtOHmV
-         zsf7LflKfdG+d9qhGCuI39zJuskFnQWfkFH9nF57XJrWiqF2AWqsbRWa8lhveq5MIR0g
-         huktQryGoKV94jJRKZyWLzD2/EpCHN0HEIz3iMfs1SzMy6rS9HMoQ4MASWAqyDYP0XGD
-         q05OGGsTZfA7O3Ye8sKwVzTZ9mpH6lsNI6+0+BJZcTXGeTwG/bzwwxQaIN1OcY2N/u1w
-         12QA==
+        bh=5LIL7TooUdF4jsk1ShMs5Hj6yTpAYJOQMbpQgvOSIVs=;
+        b=TZ0ZBPoAkcrtXMYs67yvlc/TxTa93EDbVEhrkTkgjtjd9HqIb9zMkXF8uBGNGxlREo
+         sACE0/6tzrQCPH1P8KznR9K049lCmT4LVltVmhex2nSH6LL8Cu0xS6K9suZYeHt+dWzy
+         bMv3K/g1wEyJ8++ThT/UujdWetAiU+ZQEoQOWzBeR0+0wRk51yirvqjRQln4EVocUdHM
+         SPqAtOL5jLhymUv9WpKnhifW2Il6qdmRF3GBsJen9yzthPCnlg3HdGZHamCIpM15ApSN
+         FFa1sJclUnoHbS5C/GNXdKixfBCvcchBZvCtpbJFPzL5UiOo4qH8EAb3/AMg77tgFvVY
+         6dQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HDZhi9XpYgHTgorc2OqZWb4+Dn8Pza3yr4fx29G3AVQ=;
-        b=TaDq3LO6pCqs7DtBWWSOu9h6HbNZ6P8JPoOCKhDKoXt9v/i6N/U8q1WrIOX/DM2w3y
-         sXp+uqPAAzUFi6OaDIhglEG0eJjtTihBG3RZRljsOGnwIXAL2yV5Uqx13PzCDM96bNsG
-         +hHJOz99JfjobjjxpvPiQZv3unpWD6BsBX5zcRgC0L7kRE9SL2FnX+Nn59dn2zBhj45P
-         ycV6VM3Rzla80w/tTnTmlitnfaEz70/xqH6aXpLJpesjrHVN6Wu8imiqY3a/11fML+Ds
-         jJHWzwKPUZCV6sMfOhdGJwZjcwEEm2If9DmiQqgX1kp0oZQ66bAjw/IFta0Tne+rckui
-         M7hw==
-X-Gm-Message-State: AOAM533fah07J27E1UiBIsIRinooQHLCCJfHAtdwmWVpEQmkmuwvciVi
-        AMQfpFyCAj+CZOhT9Al90vs=
-X-Google-Smtp-Source: ABdhPJx/bKBPLeqiUivcetWojcjlMjWbbWVWvVHI1P/0NrskerG0pKvcLv5q0OqS39aXMykT5VZj0A==
-X-Received: by 2002:a63:4005:: with SMTP id n5mr230189pga.140.1628697041515;
-        Wed, 11 Aug 2021 08:50:41 -0700 (PDT)
-Received: from localhost ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id a2sm17301269pgb.19.2021.08.11.08.50.40
+        bh=5LIL7TooUdF4jsk1ShMs5Hj6yTpAYJOQMbpQgvOSIVs=;
+        b=c0iyH6E/KNEOAar1+UBw0eGOWCFW5XPavoOdiNtaUVxP9UJw7y+086XQEuPcHxl56z
+         EDcutdS6HI5uKpvZpfHM+VLMUgQyO721G9QH3G0BCzmsm7svGQSiMlYVZGYPrO9kHS/y
+         NiHQn7qNiK9ddQpLqdleaqMsoUsJtEvODtdRXeUAu/zNwBPy3EXsIGPnDY6yF2fcBq/R
+         kBZ26DzATuzI5Ql5qeUdZb7UeI8HIVvsdvnRgkGosDgX1ffqMM3j8NB5+rOjMQyw/CNE
+         Ebu30IHEx4apXKEtOqA6KAe4vayQyGBx6okUwcTdqnn1tbJz21HvxwRa/MwRspfc5xuP
+         6INA==
+X-Gm-Message-State: AOAM530/VBnejMYztfwEBC/2hvyjFENKBx5q3e6XhtveaoU70Fg9YCDL
+        CYj3WMyq95+44UbbMC6bZr+bJw==
+X-Google-Smtp-Source: ABdhPJzy7ItsvyY0Z/dD5yQa+gbL0TSGT69lYVYnkCI4eCcvMSWrsciOyAsWNdeHSB464MyvFOY3wQ==
+X-Received: by 2002:a63:4e51:: with SMTP id o17mr399343pgl.126.1628697139744;
+        Wed, 11 Aug 2021 08:52:19 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z131sm10806573pfc.159.2021.08.11.08.52.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 08:50:40 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 08:51:32 -0700
-From:   CGEL <cgel.zte@gmail.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     keescook@chromium.org, ktkhai@virtuozzo.com,
-        jamorris@linux.microsoft.com, varad.gautam@suse.com,
-        legion@kernel.org, dbueso@suse.de, linux-kernel@vger.kernel.org,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>
-Subject: Re: [PATCH] ipc: add set_ownership() and permissions() callbacks for
- posix mqueue sysctl
-Message-ID: <20210811155132.GA13845@www>
-References: <20210729030651.536326-1-ran.xiaokai@zte.com.cn>
- <20210729145348.hvvhu6lmlcn5js4y@wittgenstein>
- <20210803103150.GA607784@www>
- <20210803140133.vksebmgqhlbqipla@wittgenstein>
+        Wed, 11 Aug 2021 08:52:19 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 15:52:13 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Protect marking SPs unsync when using
+ TDP MMU with spinlock
+Message-ID: <YRPyLagRbw5QKoNc@google.com>
+References: <20210810224554.2978735-1-seanjc@google.com>
+ <20210810224554.2978735-2-seanjc@google.com>
+ <74bb6910-4a0c-4d2f-e6b5-714a3181638e@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803140133.vksebmgqhlbqipla@wittgenstein>
+In-Reply-To: <74bb6910-4a0c-4d2f-e6b5-714a3181638e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:01:33PM +0200, Christian Brauner wrote:
-> - Create a new mount and ipc namespace and mount mqueue in there.
->   Read and remember the /proc/sys/fs/mqueue/queues_max value.
-> - Now create a new user + mount namespace pair in a child process.
-> - Mount mqueue filesystem in there.
-> - Set /proc/sys/fs/mqueue/queues_max to 1.
-> - Call mq_open with O_CREAT in the child process the first time and
->   expect success keeping the fd open.
-> - Call mq_open with O_CREAT in the child process a second time and
->   expect failure because of:
+On Wed, Aug 11, 2021, Paolo Bonzini wrote:
+> On 11/08/21 00:45, Sean Christopherson wrote:
+> > Use an entirely new spinlock even though piggybacking tdp_mmu_pages_lock
+> > would functionally be ok.  Usurping the lock could degrade performance when
+> > building upper level page tables on different vCPUs, especially since the
+> > unsync flow could hold the lock for a comparatively long time depending on
+> > the number of indirect shadow pages and the depth of the paging tree.
 > 
-> 	if (ipc_ns->mq_queues_count >= ipc_ns->mq_queues_max &&
-> 	    !capable(CAP_SYS_RESOURCE)) {
-> 		error = -ENOSPC;
-> 		goto out_unlock;
-> 	}
-> 	ipc_ns->mq_queues_count++;
-> 	spin_unlock(&mq_lock);
-> 
-> - Reap the child in the parent expecting success.
-> - Verify that the /proc/sys/fs/mqueue/queues_max value in the parent is
->   identical to the value you read before creating the child.
+> If we are to introduce a new spinlock, do we need to make it conditional and
+> pass it around like this?  It would be simpler to just take it everywhere
+> (just like, in patch 2, passing "shared == true" to tdp_mmu_link_page is
+> always safe anyway).
 
-Hi, Christian                                                                                                                                                                                                             
-Thanks for your patient explanation of the kselftest code.                                                   
-Please give comments on this test code. 
+It's definitely not necessary to pass it around.  I liked this approach because
+the lock is directly referenced only by the TDP MMU.
 
-int get_mq_queues_max(void)
-{
-	int fd;
-	char buf[16];
-	int val = -1;
+My runner up was to key off of is_tdp_mmu_enabled(), which is not strictly
+necessary, but I didn't like checking is_tdp_mmu() this far down the call chain.
+E.g. minus comments and lockdeps
 
-	fd = open("/proc/sys/fs/mqueue/queues_max", O_RDONLY);
-	if (fd >= 0) {
-		if (read(fd, buf, sizeof(buf)) > 0)
-			val = atoi(buf);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index d574c68cbc5c..651256a10cb9 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2594,6 +2594,8 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+  */
+ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+ {
++       bool tdp_mmu = is_tdp_mmu_enabled(vcpu->kvm);
++       bool write_locked = !tdp_mmu;
+        struct kvm_mmu_page *sp;
 
-		close(fd);
-		return val;
-	}
-	return val;
-}
+        /*
+@@ -2617,9 +2619,19 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+                if (sp->unsync)
+                        continue;
 
-TEST(mqueue_sysctl)
-{
-	pid_t pid;
-	int qmax1, qmax2;
-	
-	/*
-	> - Create a new mount and ipc namespace and mount mqueue in there.
-	This test code is intended to run as non-root user,
-	so unshare(CLONE_NEWNS) is not allowed, so i skip this step.
-	 */
++               if (!write_locked) {
++                       write_locked = true;
++                       spin_lock(&vcpu->kvm->arch.tdp_mmu_unsync_pages_lock);
++
++                       if (READ_ONCE(sp->unsync))
++                               continue;
++               }
++
+                WARN_ON(sp->role.level != PG_LEVEL_4K);
+                kvm_unsync_page(vcpu, sp);
+        }
++       if (tdp_mmu && write_locked)
++               spin_unlock(&vcpu->kvm->arch.tdp_mmu_unsync_pages_lock);
 
-	chdir(getenv("HOME"));
-	/* read and stash the original sysctl value */
-	qmax1 = get_mq_queues_max();
-	ASSERT_GE(qmax1, 0);
-
-	pid = fork();
-	ASSERT_GE(pid, 0);
-
-	if (pid == 0) {
-		ASSERT_EQ(prepare_unpriv_mountns(), 0);
-	
-	/*
-	A new mqueue filesystem instance will be mounted by kernel internally 
-	when a ipc namespace created. I don't quite get the point here why we should 
-	mount mqueue manually?
-	 */
-		if (mkdir("./mqueue", 755) && errno != EEXIST)
-			SKIP(return, "mkdir /dev/mqueue failed");
-
-		ASSERT_EQ(mount("none", "./mqueue", "mqueue", MS_NOATIME, NULL), 0);
-
-		/* modify the sysctl value in new ipc namesapce */
-		ASSERT_EQ(write_file("/proc/sys/fs/mqueue/queues_max", "1", 1), 0);
-
-		ASSERT_GE(mq_open("/new_ns1",  O_RDWR | O_CREAT, 0644, NULL), 0);
-
-		/* mq_open() should fail as exceeding of queues_max */
-		ASSERT_EQ(mq_open("/new_ns2",  O_RDWR | O_CREAT, 0644, NULL), -1);
-
-		ASSERT_EQ(mq_unlink("/new_ns1"), 0);
-		ASSERT_EQ(umount("./mqueue"), 0);
-
-		exit(0);
-	}
-
-	ASSERT_EQ(wait_for_pid(pid), 0);
-
-	qmax2 = get_mq_queues_max();
-	ASSERT_EQ(qmax1, qmax2);
-}
-
-TEST_HARNESS_MAIN
-
-for this test code ,i add a new file mq_sysctl_test.c, a makefile and a config file 
-with content
-CONFIG_USER_NS=y
-CONFIG_POSIX_MQUEUE_SYSCTL=y
-
-but i am not sure which directory to place thess files,
-for the original tools/testing/selftests/mqueue/
-i think this directory don't need a config file, but for this test code,
-this config file is needed,
-do you have any suggestion on which directory this test code should place?
+        /*
+         * We need to ensure that the marking of unsync pages is visible
 
 
+
+All that said, I do not have a strong preference.  Were you thinking something
+like this?
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index d574c68cbc5c..b622e8a13b8b 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2595,6 +2595,7 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+ {
+        struct kvm_mmu_page *sp;
++       bool locked = false;
+
+        /*
+         * Force write-protection if the page is being tracked.  Note, the page
+@@ -2617,9 +2618,34 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+                if (sp->unsync)
+                        continue;
+
++               /*
++                * TDP MMU page faults require an additional spinlock as they
++                * run with mmu_lock held for read, not write, and the unsync
++                * logic is not thread safe.  Take the spinklock regardless of
++                * the MMU type to avoid extra conditionals/parameters, there's
++                * no meaningful penalty if mmu_lock is held for write.
++                */
++               if (!locked) {
++                       locked = true;
++                       spin_lock(&kvm->arch.mmu_unsync_pages_lock);
++
++                       /*
++                        * Recheck after taking the spinlock, a different vCPU
++                        * may have since marked the page unsync.  A false
++                        * positive on the unprotected check above is not
++                        * possible as clearing sp->unsync _must_ hold mmu_lock
++                        * for write, i.e. unsync cannot transition from 0->1
++                        * while this CPU holds mmu_lock for read.
++                        */
++                       if (READ_ONCE(sp->unsync))
++                               continue;
++               }
++
+                WARN_ON(sp->role.level != PG_LEVEL_4K);
+                kvm_unsync_page(vcpu, sp);
+        }
++       if (locked)
++               spin_unlock(&kvm->arch.mmu_unsync_pages_lock);
+
+        /*
+         * We need to ensure that the marking of unsync pages is visible
