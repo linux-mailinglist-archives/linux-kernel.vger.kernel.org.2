@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614213E9742
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD6F3E9744
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhHKSE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHKSE5 (ORCPT
+        id S230009AbhHKSFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:05:11 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:55283 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230089AbhHKSFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:04:57 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E357AC061765;
-        Wed, 11 Aug 2021 11:04:33 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so10891531pjn.4;
-        Wed, 11 Aug 2021 11:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OiO20UHglT1NPC5OUbJaD10lEfkdZcWqGJoPTWQxoOU=;
-        b=jd8jqbBx9YTWzOvvdMy5jg2ItpkiGKByB0gZfqiqlaARW76DkXmvqaRoGwQ79Jjkvu
-         1KguaVTlcK8NDQFqc5bQ+gu3GX9ofT3kUKrMsMVwhJ+ZT2Ml8o/CYmARQXEvkIFiwMhZ
-         k/eGDoEkLtJmBVFOdO+M+Wi9m3VG/BTPvWh075Xzsb25oGdsR2YBf3WdEL9FIKZ6l41H
-         YSdcXTbTaW3yMF0OiUJTPG/n9zOadpO9ebDwe2HZfSnW8wHZO9E3eoS8wd3UsxmyXKMD
-         +f8l7vo5ZilYaWchBBQxT1RfO/NcGKtSbwK5mgcfBidu4JMgafuRJ1Eo86nMU/lylfUu
-         dzKA==
+        Wed, 11 Aug 2021 14:05:07 -0400
+Received: by mail-pj1-f44.google.com with SMTP id a8so4760072pjk.4;
+        Wed, 11 Aug 2021 11:04:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OiO20UHglT1NPC5OUbJaD10lEfkdZcWqGJoPTWQxoOU=;
-        b=NqDfyPSZpWK7iHlX5BgT+wL4+mAQqRQVmCf+BeujhnFHTnsQOv0OUbXWTi+WdHo3y6
-         li86V00FBzjAE22bKR4+Sd8KPBAkMQgnGGDQ/ZOzGsbpDPZBBIlV2LfdpUa0GB7WHHJL
-         D/1MsgGnQGnb+XeTQupz+iKrfNPvAB5OJue6LT2ngjQIr1w/M/fTbAeR41ugkwoa8YfP
-         fsmaPkByzu1I9UG1QMHpRUHygV0FayG+kBeEiGwCHsbHKZq3QxRXMYaU1DntlAfJzj16
-         m17cI0mk5IG3VgRg85/iIdkyJLvEakQYQplXVYkmitNxr0mx1/YO2c2AwaJNisVU2Abk
-         LBSQ==
-X-Gm-Message-State: AOAM531BjM7yyNC2yWXbHaobFIwRxHPG2IJhjMZMXQigVUPzk30AKpoB
-        LpeHi6nqdrMqzHNUilgccEo=
-X-Google-Smtp-Source: ABdhPJxNmdN6SPNK6ttpWpEps6y/muZWcUeT9JaqAcfxDLw/qA7GAxVt8LTKjYUKRs398wxE4PloYA==
-X-Received: by 2002:a17:90a:8809:: with SMTP id s9mr11711271pjn.44.1628705073315;
-        Wed, 11 Aug 2021 11:04:33 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id j6sm170548pfn.107.2021.08.11.11.04.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eKtlG454in3Dc/QU9s2cgp31LIi/iAWHdH0tzX1ufew=;
+        b=a/0TGRSdaBuPi+aVQk6Z+gaDAANPpxqpQj3JOZVsgNzKpzkEY7aJbrO+rNA1N4J/cm
+         gKAz2PCNX61LnaCWDj++f0uiUSDiRYTirIT/D8k7G93Gbw6cXue+Tsng0KrDE8JpMUSV
+         rwfQLCGC8XpfPSFQz7Z0qwuLsNgAqpZJ6tARl1bMfX9y2Frq4hrI1+sHlRkpFIE6J3w3
+         aBKX7wcro2YzjujFQslwPAWD3cTLaHm3s5O/ywsY/YTyJQ53c355WRMbdBUL0Cn7uE0F
+         TxI4qmJ8hfBab5osS2sxGzwQNPDWQqjlO86V5cnj01kxJ1IYp/Dm12D6/ea6klG6/iZI
+         6S1g==
+X-Gm-Message-State: AOAM531ee+nIC8iT+JQ/WMVc696e42s3WA9ISEw9HwMScDp8JIZ2lTz4
+        dw5Pm9yNjEVuMRHSn2QIHg==
+X-Google-Smtp-Source: ABdhPJzUpqUdnU6CQA6cwHSbG7+5+AB9EFa+JIFSqM1aIg7k4CDMZq59oDbbzajYfkw+SKdD9F2AmA==
+X-Received: by 2002:a05:6a00:1c65:b029:3cd:e06d:c0b5 with SMTP id s37-20020a056a001c65b02903cde06dc0b5mr75591pfw.38.1628705083171;
+        Wed, 11 Aug 2021 11:04:43 -0700 (PDT)
+Received: from robh.at.kernel.org ([208.184.162.215])
+        by smtp.gmail.com with ESMTPSA id v7sm90625pjk.37.2021.08.11.11.04.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:04:32 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 11 Aug 2021 08:04:31 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v4 1/6] cgroup/cpuset: Enable event notification when
- partition state changes
-Message-ID: <YRQRL0M5SAKugVQ6@slm.duckdns.org>
-References: <20210811030607.13824-1-longman@redhat.com>
- <20210811030607.13824-2-longman@redhat.com>
+        Wed, 11 Aug 2021 11:04:42 -0700 (PDT)
+Received: (nullmailer pid 3882 invoked by uid 1000);
+        Wed, 11 Aug 2021 18:04:38 -0000
+Date:   Wed, 11 Aug 2021 12:04:38 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v1] dt-bindings: timer: fsl,imxgpt: add optional osc_per
+ clock
+Message-ID: <YRQRNrLXIYERa6FT@robh.at.kernel.org>
+References: <20210803072958.4815-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811030607.13824-2-longman@redhat.com>
+In-Reply-To: <20210803072958.4815-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:06:02PM -0400, Waiman Long wrote:
-> A valid cpuset partition can become invalid if all its CPUs are offlined
-> or somehow removed. This can happen through external events without
-> "cpuset.cpus.partition" being touched at all.
+On Tue, Aug 03, 2021 at 09:29:58AM +0200, Oleksij Rempel wrote:
+> Add optional osc_per and fix dts validation warnings on imx6 SoCs.
 > 
-> Users that rely on the property of a partition being present do not
-> currently have a simple way to get such an event notified other than
-> constant periodic polling which is both inefficient and cumbersome.
+> Fixes: df8cad689eae ("dt-bindings: timer: Convert i.MX GPT to json-schema")
+
+I don't think you can say the above commit was broken.
+
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../devicetree/bindings/timer/fsl,imxgpt.yaml   | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
-> To make life easier for those users, event notification is now enabled
-> for "cpuset.cpus.partition" whenever its state changes.
+> diff --git a/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml b/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+> index a4f51f46b7a1..e496dd9f4988 100644
+> --- a/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+> +++ b/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+> @@ -43,11 +43,15 @@ properties:
+>      items:
+>        - description: SoC GPT ipg clock
+>        - description: SoC GPT per clock
+> +      - description: optional SoC GPT oscillator
+> +    minItems: 2
+
+The 3rd clock is valid on every version of the h/w?
+
+>  
+>    clock-names:
+>      items:
+>        - const: ipg
+>        - const: per
+> +      - const: osc_per
+> +    minItems: 2
+>  
+>  required:
+>    - compatible
+> @@ -70,3 +74,16 @@ examples:
+>                   <&clks IMX27_CLK_PER1_GATE>;
+>          clock-names = "ipg", "per";
+>      };
+> +
+> +  - |
+> +    #include <dt-bindings/clock/imx6qdl-clock.h>
+> +
+> +    timer@2098000 {
+> +        compatible = "fsl,imx6q-gpt", "fsl,imx31-gpt";
+> +        reg = <0x02098000 0x4000>;
+> +        interrupts = <26>;
+> +        clocks = <&clks IMX6QDL_CLK_GPT_IPG>,
+> +                 <&clks IMX6QDL_CLK_GPT_IPG_PER>,
+> +                 <&clks IMX6QDL_CLK_GPT_3M>;
+> +        clock-names = "ipg", "per", "osc_per";
+> +    };
+> -- 
+> 2.30.2
 > 
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-
-Applied to cgroup/for-5.15.
-
-Thanks.
-
--- 
-tejun
+> 
