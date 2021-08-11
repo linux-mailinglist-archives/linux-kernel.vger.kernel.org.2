@@ -2,242 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226373E95D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8853F3E9611
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbhHKQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhHKQWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:22:33 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3028C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:22:08 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id z11so4552844edb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sw6Jt0zasQwCv1AHq12NR9c9myNo+U4Sy7Uas4YKZJo=;
-        b=aam0OJSRZraEPiPFnu5HPKBpyfB816nzuXH/FJKkrnqurvSQjtPd7WwxBnzycfR+BZ
-         aDRHVlbWMwpRq2/wYWzyXdcbUjTIZZEoAP/+A7WB+Zb80UXB4P8M0JWwuP1eKNe4QQ7c
-         hNIEQ6E45Wohqv+Rj0pmVdbIdyU8QeJVYSmxT3eRANVgmjKQHOAXIfSfLOrlaSxnTL3a
-         10oggmhoV7biMamQTefrwl14O7RebVIKEsWib6CyI3S4OQO0fPYTvHpgvlMBwqO2fqYV
-         DU/PSb5jqcppbBLGgw96xEOvB8mx2xEIHOz5oSvR49fD5jlb2VlaM8HfiIIZLwQecTtn
-         JB6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sw6Jt0zasQwCv1AHq12NR9c9myNo+U4Sy7Uas4YKZJo=;
-        b=Uiq4qxv8tEoKuFHaQmSsevVQXSTtd9GbeiS5rjpLrtFnFKWuOcSZyjrC5oXqQghAnx
-         Ny0mKvWPFkP+uXwVGenJEg6LzWpopSEAGXroRZYa8SMBWHc3MFEjftpVSrEq0oRhXzv0
-         TMpu2rtkxv8gnCr7wrqjOQu36NkUhtWUXSwJYmTlFh5IaoEJIM0zR0Ydx/Jt7TMQ3LNH
-         kpFGss1eOAuYm5QzdGakVjJVl7eSiCUVZ5lbn/CsTX2Pa7CyM1x39aZbak+pNMdk9r/+
-         4PflAv0W1CkUNHgfpxCxZ8XD0UiZht/eoZkEsuld8Tt8sa4Tfg+noa/BikXci4uVaQWV
-         rCCw==
-X-Gm-Message-State: AOAM532voWyge+yogrG2Q66GaiktgqNVmtL3tukDAZDJora5eHc5tJq9
-        Qb5pzWvK/3rUpDldH+VUnRqaOp9pIcJ9q/6EWEZDRg==
-X-Google-Smtp-Source: ABdhPJys2f8IHZkB8vWkiWg0q/z4QZxCaZ4QVZ7qfGlbJldrou1SgKA3LCZqQFgsGFibTEvkzJ/CvftElPXKVgANBnY=
-X-Received: by 2002:aa7:cb9a:: with SMTP id r26mr12361302edt.78.1628698926906;
- Wed, 11 Aug 2021 09:22:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210810173000.928681411@linuxfoundation.org>
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 11 Aug 2021 21:51:55 +0530
-Message-ID: <CA+G9fYtX+CeD3xV16TMuhvee_YpE1REkicoPtNRttnAQh-ey2g@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/175] 5.13.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S230325AbhHKQel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:34:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30250 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230056AbhHKQej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 12:34:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628699655; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=gvbzXWH0n+NKtqFjoatqc0R0BrprLzQ2Kn6H7/1zuVU=; b=trNEl39/hZtvWURm/PL42TtOPC6BQxKghO1K0nocZ5y3glL5U/KFfiQDRt8EOvFKx3MsaH+w
+ k5iAkzluXyECAOc8VxiPNytXsDolhxeCPOQv2UxOtGTIhD0oNPaLAZIP2fSUd4ViUXFqQDbM
+ fyTnrVZlET0woIVR3lW7nlNPGOQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6113fb2591487ad5208f7b0e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 16:30:29
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 019AEC43144; Wed, 11 Aug 2021 16:30:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2A23C4338A;
+        Wed, 11 Aug 2021 16:30:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B2A23C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] add fixes to pass DP Link Layer compliance test cases
+Date:   Wed, 11 Aug 2021 09:30:01 -0700
+Message-Id: <1628699407-28358-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 at 23:13, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.13.10 release.
-> There are 175 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.13.10-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.13.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+drm/msm/dp: add fixes to pass DP Link Layer compliance test cases
 
+Kuogee Hsieh (6):
+  drm/msm/dp: use dp_ctrl_off_link_stream during PHY compliance test run
+  drm/msm/dp: reduce link rate if failed at link training 1
+  drm/msm/dp: reset aux controller after dp_aux_cmd_fifo_tx() failed.
+  drm/msm/dp: replug event is converted into an unplug followed by an
+    plug events
+  drm/msm/dp: return correct edid checksum after corrupted edid checksum
+    read
+  drm/msm/dp: do not end dp link training until video is ready
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+ drivers/gpu/drm/msm/dp/dp_aux.c     |   3 +
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 137 +++++++++++++++++++++++-------------
+ drivers/gpu/drm/msm/dp/dp_display.c |  14 ++--
+ drivers/gpu/drm/msm/dp/dp_panel.c   |   9 ++-
+ 4 files changed, 102 insertions(+), 61 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-## Build
-* kernel: 5.13.10-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.13.y
-* git commit: 97aa49c885ec4453ea3d76036935989e68a6175b
-* git describe: v5.13.9-176-g97aa49c885ec
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
-.9-176-g97aa49c885ec
-
-## No regressions (compared to v5.13.9)
-
-
-## No fixes (compared to v5.13.9)
-
-
-## Test result summary
-total: 86407, pass: 70850, fail: 2091, skip: 12372, xfail: 1094
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
