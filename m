@@ -2,273 +2,463 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F093E9964
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC013E9965
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhHKUJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 16:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhHKUJd (ORCPT
+        id S231605AbhHKUKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 16:10:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43423 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229655AbhHKUKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:09:33 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDF7C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:09:09 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so4845231otl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:09:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=exnctuowc9qHgxEWsNBVGITBkzW8bW+Co5aongFhmAI=;
-        b=FK4OreJMdkR6kTtJ0JmareP37fetUzQ5umI6C/3lMblqr9kIPrEZBY3KMEILpEdKLW
-         mI/CkNDlhYoTGzYXe+TVI/Jl8IIHmnlukn0t4ak+A7nuvFgpAkdGWAJVLnnAXJCPb5Do
-         TBWOLKscfWQ2eRWSBuNQTRduzOKoY1FHdI77cgcrkU8Ao8LDQ5JxKB2XfbWxxLMYJLL4
-         lQzMsCaIXBCT2K1szk7xRk60Vym7WRoA/QwqgA+Hf8wLe4elh11DtX+Ozd3iVZaEKL1z
-         IIRG+G16E0yLX9FqwFhwUjEAFGBZQMRLlmJhaCt5FffKw7rUwl9dn3vuPiEzydqA/qtW
-         IPHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=exnctuowc9qHgxEWsNBVGITBkzW8bW+Co5aongFhmAI=;
-        b=gbsVtiAC+PcBFfumCJ6pgp3+pDRIRTMtgq/ctQbTiK0aTUbp6SLy8UN6LBQ51+2r8v
-         XARpt84Ea/A1OZOPE0nh0h+FvXseIe9FPDsozDqKYv+Yg973a2PTlYROJbDBECsNOf62
-         8jXjVH6w9fQEfZu/EcV3r90L3wtcfXcLVbCBNwf53GWXjATDteNPiWF9ah3xij/+SvAk
-         yXini/4zDJG/q3tVRRr8RwaT9kOI9XxS5+pFWAcGLvaRK9BCC0bGtuIJK6Mm9KIUz5Se
-         +DsTWJs4Jsg/vCDx2SVXXh2f/HnhBUDFPHIoCZ/cBwjs/cebfbW7BP69Pm0wUp+M/Wlp
-         E2ng==
-X-Gm-Message-State: AOAM5330SROAQM7z0+mYeoM3v+nRzRcGeOz8X0xTIX0Xo2mU5DPBU2NW
-        x1GtR5aV/UF6JrdMwCIkbL0raNCYKPqJwdyjRib/tw==
-X-Google-Smtp-Source: ABdhPJyGzHkP5yGOf0XbQ+khYPVoNTw0E4ktw0WVSnzDCbFO5o6M+eqavMNCSiukXRr/v+PPLinHY+tk8T4RC+P5R/c=
-X-Received: by 2002:a9d:4104:: with SMTP id o4mr543878ote.139.1628712548945;
- Wed, 11 Aug 2021 13:09:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210811175647.3851629-1-ndesaulniers@google.com> <cf568688-01a3-849e-2bcc-1cbe6845c9f8@kernel.org>
-In-Reply-To: <cf568688-01a3-849e-2bcc-1cbe6845c9f8@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 11 Aug 2021 13:08:57 -0700
-Message-ID: <CAKwvOd=2kCSewy+LvdhB=mrwfE4-bjiPE44O-nX1jVa76pbw+g@mail.gmail.com>
-Subject: Re: [PATCH] x86/build: remove stale cc-option checks
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
+        Wed, 11 Aug 2021 16:10:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628712624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8ivjRmEB+5963TU7ruqdjbSW+t0p95RzeQzlnneJwU=;
+        b=cU31jvCiLfDYvH6JsMwrRX/ZaLWkfKYM/cVQsEdZy9KqkkPntWY6/AHbhO1/3YUYEu9Ymt
+        yTZb0o4ftjcFqj1EVct8sZIsO7Spq3eVIJJD7AkrYUhsc5sRx+HZfyefbWmviNGL7uRjT7
+        FGwqk9/IzWF63ku7AYv6Y2TTTFyPKnA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-jxTqjXzxM7O5ZFLsHmq-Pw-1; Wed, 11 Aug 2021 16:10:18 -0400
+X-MC-Unique: jxTqjXzxM7O5ZFLsHmq-Pw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 831401082922;
+        Wed, 11 Aug 2021 20:10:17 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 881E860BF1;
+        Wed, 11 Aug 2021 20:10:15 +0000 (UTC)
+Message-ID: <6ebb9699530e245f33628c10bc774035fe7bfc84.camel@redhat.com>
+Subject: Re: [PATCH] scripts/gdb: rework lx-symbols gdb script
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>, linux-kernel@vger.kernel.org
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kieran Bingham <kbingham@kernel.org>
+Date:   Wed, 11 Aug 2021 23:10:14 +0300
+In-Reply-To: <651bf834-5855-d298-bc1c-383e5da74aa5@siemens.com>
+References: <20210811133152.904945-1-mlevitsk@redhat.com>
+         <651bf834-5855-d298-bc1c-383e5da74aa5@siemens.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:22 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On 8/11/2021 10:56 AM, Nick Desaulniers wrote:
-> > cc-option, __cc-option, cc-option-yn, and cc-disable-warning all invoke
-> > the compiler during build time, and can slow down the build when these
-> > checks become stale for our supported compilers, whose minimally
-> > supported versions increases over time. See
-> > Documentation/process/changes.rst for the current supported minimal
-> > versions (GCC 4.9+, clang 10.0.1+). Compiler version support for these
-> > flags may be verified on godbolt.org.
-> >
-> > The following flags are supported by all supported versions of GCC and
-> > Clang. Remove their cc-option, __cc-option, and cc-option-yn tests.
-> > * -Wno-address-of-packed-member
-> > * -mno-avx
-> > * -m32
-> > * -mno-80387
-> > * -march=k8
-> > * -march=nocona
-> > * -march=core2
-> > * -march=atom
-> > * -mtune=generic
-> > * -mfentry
-> >
-> > -mpreferred-stack-boundary= is specific to GCC, while
-> > -mstack-alignment= is specific to Clang. Rather than test for this three
-> > times via cc-option and __cc-option, rely on CONFIG_CC_IS_* from
-> > Kconfig.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1436
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
->
-> A few comments below.
->
+On Wed, 2021-08-11 at 21:01 +0200, Jan Kiszka wrote:
+> On 11.08.21 15:31, Maxim Levitsky wrote:
+> > Fix several issues that are present in lx-symbols script:
+> > 
+> > * Track module unloads by placing another software breakpoint at
+> >   'free_module'
+> >   (force uninline this symbol just in case), and use remove-symbol-file
+> >   gdb command to unload the symobls of the module that is unloading.
+> > 
+> >   That gives the gdb a chance to mark all software breakpoints from
+> >   this module as pending again.
+> >   Also remove the module from the 'known' module list once it is unloaded.
+> > 
+> > * Since we now track module unload, we don't need to reload all
+> >   symbols anymore when 'known' module loaded again
+> >   (that can't happen anymore).
+> >   This allows reloading a module in the debugged kernel to finish
+> >   much faster, while lx-symbols tracks module loads and unloads.
+> > 
+> > * Disable/enable all gdb breakpoints on both module load and unload
+> >   breakpoint hits, and not only in 'load_all_symbols' as was done before.
+> >   (load_all_symbols is no longer called on breakpoint hit)
+> >   That allows gdb to avoid getting confused about the state of the
+> >   (now two) internal breakpoints we place.
+> >   Otherwise it will leave them in the kernel code segment, when
+> >   continuing which triggers a guest kernel panic as soon as it skips
+> >   over the 'int3' instruction and executes the garbage tail of the optcode
+> >   on which the breakpoint was placed.
+> > 
+> > * Block SIGINT while the script is running as this seems to crash gdb
+> > 
+> > * Add a basic check that kernel is already loaded into the guest memory
+> >   to avoid confusing errors.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > > ---
-> >   arch/x86/Makefile | 51 +++++++++++++++++------------------------------
-> >   1 file changed, 18 insertions(+), 33 deletions(-)
-> >
-> > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> > index 0fa7dc73b5d8..6de2985ba1a5 100644
-> > --- a/arch/x86/Makefile
-> > +++ b/arch/x86/Makefile
-> > @@ -14,10 +14,13 @@ endif
-> >
-> >   # For gcc stack alignment is specified with -mpreferred-stack-boundary,
-> >   # clang has the option -mstack-alignment for that purpose.
-> > +ifdef CONFIG_CC_IS_GCC
-> >   ifneq ($(call cc-option, -mpreferred-stack-boundary=4),)
->
-> Is this cc-option call still needed? It looks like it was added by
-> commit d77698df39a5 ("x86/build: Specify stack alignment for clang"),
-> which at the time claimed to support back to gcc 3.2, but that flag
-> appears to be supported at least back to gcc 4.1.2 according to godbolt.
+> >  kernel/module.c              |   8 +-
+> >  scripts/gdb/linux/symbols.py | 203 +++++++++++++++++++++++------------
+> >  2 files changed, 143 insertions(+), 68 deletions(-)
+> > 
+> > diff --git a/kernel/module.c b/kernel/module.c
+> > index ed13917ea5f3..242bd4bb0b55 100644
+> > --- a/kernel/module.c
+> > +++ b/kernel/module.c
+> > @@ -906,8 +906,12 @@ int module_refcount(struct module *mod)
+> >  }
+> >  EXPORT_SYMBOL(module_refcount);
+> >  
+> > -/* This exists whether we can unload or not */
+> > -static void free_module(struct module *mod);
+> > +/* This exists whether we can unload or not
+> > + * Keep it uninlined to provide a reliable breakpoint target,
+> > + * e.g. for the gdb helper command 'lx-symbols'.
+> > + */
+> > +
+> > +static noinline void free_module(struct module *mod);
+> >  
+> >  SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+> >  		unsigned int, flags)
+> 
+> You likely want and need to push that as separate patch, analogously to
+> be02a1862304.
 
-Yes!
-https://godbolt.org/z/1nWbrGTb3
+I will do.
 
-While the test is for a value of 4, the actual flags used are 2 and 3;
-values less than 4 were only supported in GCC 7+!
-So the test is wrong and should have been for a value less than 4; it
-didn't fail because of the additional cc-option/__cc-option below that
-I removed.
+> 
+> And as you are factoring the patch, maybe think about whether you can
+> split the changes to symbols.py into logical steps as well. The commit
+> messages suggests that, thought that might be misleading.
 
-So I should send a v2 that changes that particular test to test
-support for the value 3 (or 2) rather than 4.  Let me know off thread
-if you'd like me to carry forward your RB tag for that.
+I can try doing that.
 
->
-> >         cc_stack_align4 := -mpreferred-stack-boundary=2
-> >         cc_stack_align8 := -mpreferred-stack-boundary=3
-> > -else ifneq ($(call cc-option, -mstack-alignment=16),)
-> > +endif
-> > +endif
-> > +ifdef CONFIG_CC_IS_CLANG
-> >         cc_stack_align4 := -mstack-alignment=4
-> >         cc_stack_align8 := -mstack-alignment=8
-> >   endif
-> > @@ -31,8 +34,8 @@ REALMODE_CFLAGS     := -m16 -g -Os -DDISABLE_BRANCH_PROFILING \
-> >
-> >   REALMODE_CFLAGS += -ffreestanding
-> >   REALMODE_CFLAGS += -fno-stack-protector
-> > -REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
-> > -REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
-> > +REALMODE_CFLAGS += -Wno-address-of-packed-member
-> > +REALMODE_CFLAGS += $(cc_stack_align4)
-> >   REALMODE_CFLAGS += $(CLANG_FLAGS)
-> >   export REALMODE_CFLAGS
-> >
-> > @@ -48,8 +51,7 @@ export BITS
-> >   #
-> >   #    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
-> >   #
-> > -KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
-> > -KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
-> > +KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
-> >
-> >   # Intel CET isn't enabled in the kernel
-> >   KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
-> > @@ -59,9 +61,8 @@ ifeq ($(CONFIG_X86_32),y)
-> >           UTS_MACHINE := i386
-> >           CHECKFLAGS += -D__i386__
-> >
-> > -        biarch := $(call cc-option,-m32)
-> > -        KBUILD_AFLAGS += $(biarch)
-> > -        KBUILD_CFLAGS += $(biarch)
-> > +        KBUILD_AFLAGS += -m32
-> > +        KBUILD_CFLAGS += -m32
-> >
-> >           KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
-> >
-> > @@ -72,7 +73,7 @@ ifeq ($(CONFIG_X86_32),y)
-> >           # Align the stack to the register width instead of using the default
-> >           # alignment of 16 bytes. This reduces stack usage and the number of
-> >           # alignment instructions.
-> > -        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
-> > +        KBUILD_CFLAGS += $(cc_stack_align4)
-> >
-> >           # CPU-specific tuning. Anything which can be shared with UML should go here.
-> >           include $(srctree)/arch/x86/Makefile_32.cpu
->
-> What tree were you intending to target with this? If it is -tip, this is
-> going to cause it to fail to apply because the '$(srctree)' comes from
-> Masahiro:
->
-> https://git.kernel.org/masahiroy/linux-kbuild/c/d8285639550578a1bf2d102391d1a9e08e0586ca
-
-I can regen v2 against tip.
-
->
-> > @@ -93,7 +94,6 @@ else
-> >           UTS_MACHINE := x86_64
-> >           CHECKFLAGS += -D__x86_64__
-> >
-> > -        biarch := -m64
-> >           KBUILD_AFLAGS += -m64
-> >           KBUILD_CFLAGS += -m64
-> >
-> > @@ -104,7 +104,7 @@ else
-> >           KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
-> >
-> >           # Don't autogenerate traditional x87 instructions
-> > -        KBUILD_CFLAGS += $(call cc-option,-mno-80387)
-> > +        KBUILD_CFLAGS += -mno-80387
-> >           KBUILD_CFLAGS += $(call cc-option,-mno-fp-ret-in-387)
-> >
-> >           # By default gcc and clang use a stack alignment of 16 bytes for x86.
-> > @@ -114,20 +114,17 @@ else
-> >           # default alignment which keep the stack *mis*aligned.
-> >           # Furthermore an alignment to the register width reduces stack usage
-> >           # and the number of alignment instructions.
-> > -        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align8))
-> > +        KBUILD_CFLAGS += $(cc_stack_align8)
-> >
-> >       # Use -mskip-rax-setup if supported.
-> >       KBUILD_CFLAGS += $(call cc-option,-mskip-rax-setup)
-> >
-> >           # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
-> > -        cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
-> > -        cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
+> 
+> > diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+> > index 08d264ac328b..78e278fb4bad 100644
+> > --- a/scripts/gdb/linux/symbols.py
+> > +++ b/scripts/gdb/linux/symbols.py
+> > @@ -14,45 +14,23 @@
+> >  import gdb
+> >  import os
+> >  import re
+> > +import signal
+> >  
+> >  from linux import modules, utils
+> >  
+> >  
+> >  if hasattr(gdb, 'Breakpoint'):
+> > -    class LoadModuleBreakpoint(gdb.Breakpoint):
+> > -        def __init__(self, spec, gdb_command):
+> > -            super(LoadModuleBreakpoint, self).__init__(spec, internal=True)
+> > +
+> > +    class BreakpointWrapper(gdb.Breakpoint):
+> > +        def __init__(self, callback, **kwargs):
+> > +            super(BreakpointWrapper, self).__init__(internal=True, **kwargs)
+> >              self.silent = True
+> > -            self.gdb_command = gdb_command
+> > +            self.callback = callback
+> >  
+> >          def stop(self):
+> > -            module = gdb.parse_and_eval("mod")
+> > -            module_name = module['name'].string()
+> > -            cmd = self.gdb_command
 > > -
-> > -        cflags-$(CONFIG_MCORE2) += \
-> > -                $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
-> > -     cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
-> > -             $(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
-> > -        cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
-> > +        cflags-$(CONFIG_MK8)         += -march=k8
-> > +        cflags-$(CONFIG_MPSC)                += -march=nocona
-> > +        cflags-$(CONFIG_MCORE2)              += -march=core2
-> > +        cflags-$(CONFIG_MATOM)               += -march=atom
-> > +        cflags-$(CONFIG_GENERIC_CPU) += -mtune=generic
-> >           KBUILD_CFLAGS += $(cflags-y)
-> >
-> >           KBUILD_CFLAGS += -mno-red-zone
-> > @@ -158,18 +155,6 @@ export CONFIG_X86_X32_ABI
-> >   ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> >     ifndef CONFIG_HAVE_FENTRY
-> >       ACCUMULATE_OUTGOING_ARGS := 1
-> > -  else
-> > -    ifeq ($(call cc-option-yn, -mfentry), n)
-> > -     ACCUMULATE_OUTGOING_ARGS := 1
+> > -            # enforce update if object file is not found
+> > -            cmd.module_files_updated = False
 > > -
-> > -     # GCC ignores '-maccumulate-outgoing-args' when used with '-Os'.
-> > -     # If '-Os' is enabled, disable it and print a warning.
-> > -        ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-> > -          undefine CONFIG_CC_OPTIMIZE_FOR_SIZE
-> > -          $(warning Disabling CONFIG_CC_OPTIMIZE_FOR_SIZE.  Your compiler does not have -mfentry so you cannot optimize for size with CONFIG_FUNCTION_GRAPH_TRACER.)
-> > -        endif
+> > -            # Disable pagination while reporting symbol (re-)loading.
+> > -            # The console input is blocked in this context so that we would
+> > -            # get stuck waiting for the user to acknowledge paged output.
+> > -            show_pagination = gdb.execute("show pagination", to_string=True)
+> > -            pagination = show_pagination.endswith("on.\n")
+> > -            gdb.execute("set pagination off")
 > > -
-> > -    endif
-> >     endif
-> >   endif
-> >
-> > @@ -193,7 +178,7 @@ ifdef CONFIG_RETPOLINE
-> >     # only been fixed starting from gcc stable version 8.4.0 and
-> >     # onwards, but not for older ones. See gcc bug #86952.
-> >     ifndef CONFIG_CC_IS_CLANG
-> > -    KBUILD_CFLAGS += $(call cc-option,-fno-jump-tables)
-> > +    KBUILD_CFLAGS += -fno-jump-tables
-> >     endif
-> >   endif
-> >
-> >
->
-> --
+> > -            if module_name in cmd.loaded_modules:
+> > -                gdb.write("refreshing all symbols to reload module "
+> > -                          "'{0}'\n".format(module_name))
+> > -                cmd.load_all_symbols()
+> > -            else:
+> > -                cmd.load_module_symbols(module)
+> > -
+> > -            # restore pagination state
+> > -            gdb.execute("set pagination %s" % ("on" if pagination else "off"))
+> > -
+> > +            self.callback()
+> >              return False
+> >  
+> > -
+> >  class LxSymbols(gdb.Command):
+> >      """(Re-)load symbols of Linux kernel and currently loaded modules.
+> >  
+> > @@ -61,15 +39,52 @@ are scanned recursively, starting in the same directory. Optionally, the module
+> >  search path can be extended by a space separated list of paths passed to the
+> >  lx-symbols command."""
+> >  
+> > -    module_paths = []
+> > -    module_files = []
+> > -    module_files_updated = False
+> > -    loaded_modules = []
+> > -    breakpoint = None
+> > -
+> >      def __init__(self):
+> >          super(LxSymbols, self).__init__("lx-symbols", gdb.COMMAND_FILES,
+> >                                          gdb.COMPLETE_FILENAME)
+> > +        self.module_paths = []
+> > +        self.module_files = []
+> > +        self.module_files_updated = False
+> > +        self.loaded_modules = {}
+> > +        self.internal_breakpoints = []
+> > +
+> > +    # prepare GDB for loading/unloading a module
+> > +    def _prepare_for_module_load_unload(self):
+> > +
+> > +        self.blocked_sigint = False
+> > +
+> > +        # block SIGINT during execution to avoid gdb crash
+> > +        sigmask = signal.pthread_sigmask(signal.SIG_BLOCK, [])
+> > +        if not signal.SIGINT in sigmask:
+> > +            self.blocked_sigint = True
+> > +            signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
+> > +
+> > +        # disable all breakpoints to workaround a GDB bug where it would
+> > +        # not correctly resume from an internal breakpoint we placed
+> > +        # in do_module_init/free_module (it leaves the int3
+> 
+> Seems the comment ends prematurely.
 
--- 
-Thanks,
-~Nick Desaulniers
+Yep, GDB leaves the int3 instruction in the guest memory, and the guest dies after
+it encounters the truncated instruction that follows it.
+
+> 
+> Any reference to a gdb bug tracker entry? Or affected versions? The
+> description is a bit too fuzzy.
+
+Well stricly speaking this isn't a GDB bug.
+GDB documentation explictly prohibits what we are doing in this script.
+
+https://sourceware.org/gdb/current/onlinedocs/gdb/Breakpoints-In-Python.html
+
+"You should not alter the execution state of the inferior (i.e., step, next, etc.), alter the current frame context 
+(i.e., change the current active frame), or alter, add or delete any breakpoint. 
+As a general rule, you should not alter any data within GDB or the inferior at this time."
+
+However we are reloading the whole symbol table as a response to a breakpoint.
+
+However there is pretty much no other way to do what this script does so the next best thing
+is to workaround this as was already partially done, and I just made it more robust.
+
+Same for blocking SIGINT which I added, which otherwise crashes GDB
+while the symbols are reloading.
+It probably will also be blamed on this.
+
+Do you think I might have some luck taking with GDB maintainers and asking them to support
+this use case of updating symbol table when a breakpoint hits?
+
+> 
+> > +        self.saved_breakpoints = []
+> > +        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
+> > +            for bp in gdb.breakpoints():
+> > +                self.saved_breakpoints.append({'breakpoint': bp, 'enabled': bp.enabled})
+> > +                bp.enabled = False
+> > +
+> > +        # disable pagination to avoid asking user for continue
+> > +        show_pagination = gdb.execute("show pagination", to_string=True)
+> > +        self.saved_pagination = show_pagination.endswith("on.\n")
+> > +        gdb.execute("set pagination off")
+> > +
+> > +    def _unprepare_for_module_load_unload(self):
+> > +        # restore breakpoint state
+> > +        for breakpoint in self.saved_breakpoints:
+> > +            breakpoint['breakpoint'].enabled = breakpoint['enabled']
+> > +
+> > +        # restore pagination state
+> > +        gdb.execute("set pagination %s" % ("on" if self.saved_pagination else "off"))
+> > +
+> > +        # unblock SIGINT
+> > +        if self.blocked_sigint:
+> > +            sigmask = signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
+> > +            self.blocked_sigint = False
+> >  
+> >      def _update_module_files(self):
+> >          self.module_files = []
+> > @@ -107,7 +122,7 @@ lx-symbols command."""
+> >                      name=section_name, addr=str(address)))
+> >          return "".join(args)
+> >  
+> > -    def load_module_symbols(self, module):
+> > +    def _do_load_module_symbols(self, module):
+> >          module_name = module['name'].string()
+> >          module_addr = str(module['core_layout']['base']).split()[0]
+> >  
+> > @@ -130,56 +145,112 @@ lx-symbols command."""
+> >                  addr=module_addr,
+> >                  sections=self._section_arguments(module))
+> >              gdb.execute(cmdline, to_string=True)
+> > -            if module_name not in self.loaded_modules:
+> > -                self.loaded_modules.append(module_name)
+> > +
+> > +            self.loaded_modules[module_name] = {"module_file": module_file,
+> > +                                                "module_addr": module_addr}
+> >          else:
+> >              gdb.write("no module object found for '{0}'\n".format(module_name))
+> >  
+> > +
+> > +    def load_module_symbols(self):
+> > +        module = gdb.parse_and_eval("mod")
+> > +
+> > +        # module already loaded, false alarm
+> > +        # can happen if 'do_init_module' breakpoint is hit multiple times
+> > +        # due to interrupts
+> 
+> Maybe better move this comment into the if-clause to make the context
+> clearer.
+
+Good idea, will do.
+
+> 
+> > +        module_name = module['name'].string()
+> > +        if module_name in self.loaded_modules:
+> > +            gdb.write("spurious module load breakpoint\n")
+> > +            return
+> > +
+> > +        # enforce update if object file is not found
+> > +        self.module_files_updated = False
+> > +        self._prepare_for_module_load_unload()
+> > +        try:
+> > +            self._do_load_module_symbols(module)
+> > +        finally:
+> > +            self._unprepare_for_module_load_unload()
+> > +
+> > +
+> > +    def unload_module_symbols(self):
+> > +        module = gdb.parse_and_eval("mod")
+> > +        module_name = module['name'].string()
+> > +
+> > +        # module already unloaded, false alarm
+> > +        # can happen if 'free_module' breakpoint is hit multiple times
+> > +        # due to interrupts
+> 
+> Same as above.
+> 
+> > +        if not module_name in self.loaded_modules:
+> > +            gdb.write("spurious module unload breakpoint\n")
+> > +            return
+> > +
+> > +        module_file = self.loaded_modules[module_name]["module_file"]
+> > +        module_addr = self.loaded_modules[module_name]["module_addr"]
+> > +
+> > +        self._prepare_for_module_load_unload()
+> > +        try:
+> > +            gdb.write("unloading @{addr}: {filename}\n".format(
+> > +                addr=module_addr, filename=module_file))
+> > +            cmdline = "remove-symbol-file {filename}".format(
+> > +                filename=module_file)
+> > +            gdb.execute(cmdline, to_string=True)
+> > +            del self.loaded_modules[module_name]
+> > +
+> > +        finally:
+> > +            self._unprepare_for_module_load_unload()
+> > +
+> >      def load_all_symbols(self):
+> >          gdb.write("loading vmlinux\n")
+> >  
+> > -        # Dropping symbols will disable all breakpoints. So save their states
+> > -        # and restore them afterward.
+> > -        saved_states = []
+> > -        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
+> > -            for bp in gdb.breakpoints():
+> > -                saved_states.append({'breakpoint': bp, 'enabled': bp.enabled})
+> > -
+> > -        # drop all current symbols and reload vmlinux
+> > -        orig_vmlinux = 'vmlinux'
+> > -        for obj in gdb.objfiles():
+> > -            if obj.filename.endswith('vmlinux'):
+> > -                orig_vmlinux = obj.filename
+> > -        gdb.execute("symbol-file", to_string=True)
+> > -        gdb.execute("symbol-file {0}".format(orig_vmlinux))
+> > -
+> > -        self.loaded_modules = []
+> > -        module_list = modules.module_list()
+> > -        if not module_list:
+> > -            gdb.write("no modules found\n")
+> > -        else:
+> > -            [self.load_module_symbols(module) for module in module_list]
+> > +        self._prepare_for_module_load_unload()
+> > +        try:
+> > +            # drop all current symbols and reload vmlinux
+> > +            orig_vmlinux = 'vmlinux'
+> > +            for obj in gdb.objfiles():
+> > +                if obj.filename.endswith('vmlinux'):
+> > +                    orig_vmlinux = obj.filename
+> > +            gdb.execute("symbol-file", to_string=True)
+> > +            gdb.execute("symbol-file {0}".format(orig_vmlinux))
+> > +            self.loaded_modules = {}
+> > +            module_list = modules.module_list()
+> > +            if not module_list:
+> > +                gdb.write("no modules found\n")
+> > +            else:
+> > +                [self._do_load_module_symbols(module) for module in module_list]
+> 
+> Is that common python style? Elsewhere, you do
+> 
+> for var in list:
+>     function(var)
+
+It is a code I moved verbatim from the above. 
+I can change it to use the more common syntax.
+
+> 
+> > +        finally:
+> > +            self._unprepare_for_module_load_unload()
+> >  
+> > -        for saved_state in saved_states:
+> > -            saved_state['breakpoint'].enabled = saved_state['enabled']
+> > +        self._unprepare_for_module_load_unload()
+> >  
+> >      def invoke(self, arg, from_tty):
+> >          self.module_paths = [os.path.abspath(os.path.expanduser(p))
+> >                               for p in arg.split()]
+> >          self.module_paths.append(os.getcwd())
+> >  
+> > +        try:
+> > +            gdb.parse_and_eval("*start_kernel").fetch_lazy()
+> > +        except gdb.MemoryError:
+> > +            gdb.write("Error: Kernel is not yet loaded\n")
+> > +            return
+> > +
+> >          # enforce update
+> >          self.module_files = []
+> >          self.module_files_updated = False
+> >  
+> > +        for bp in self.internal_breakpoints:
+> > +            bp.delete()
+> > +        self.internal_breakpoints = []
+> > +
+> >          self.load_all_symbols()
+> >  
+> >          if hasattr(gdb, 'Breakpoint'):
+> > -            if self.breakpoint is not None:
+> > -                self.breakpoint.delete()
+> > -                self.breakpoint = None
+> > -            self.breakpoint = LoadModuleBreakpoint(
+> > -                "kernel/module.c:do_init_module", self)
+> > +            self.internal_breakpoints.append(
+> > +                BreakpointWrapper(self.load_module_symbols,
+> > +                                  spec="kernel/module.c:do_init_module",
+> > +                                  ))
+> > +            self.internal_breakpoints.append(
+> > +                BreakpointWrapper(self.unload_module_symbols,
+> > +                                  spec="kernel/module.c:free_module",
+> > +                                  ))
+> >          else:
+> >              gdb.write("Note: symbol update on module loading not supported "
+> >                        "with this gdb version\n")
+> > 
+> 
+> The logic of the changes look good to me.
+
+Thanks!
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> Jan
+> 
+
+
