@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9AE3E9425
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DF33E942E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbhHKPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:00:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60904 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbhHKPAY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:00:24 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S232833AbhHKPDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232792AbhHKPDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 11:03:13 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A22F9221BF;
-        Wed, 11 Aug 2021 14:59:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628693999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MciToW3SFUh+Fm8yPjWHXnDJfhQxrSPXbDGjkDcJjIU=;
-        b=T2jopGmElVX5HHcg6MVQqGTHem4aEPi/TYzg0HO9JBSCcTpDMJugMz52Voctr68lF4/zFN
-        21JGiJqaz/Jk8tfyt6TmAww+DrNuYOwOSeGJZCY6VMOHnglvNu4ukUjrxiFdYORRNnzwiZ
-        IajSUbamGFAY+slF8Nsdasx652it0B0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628693999;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MciToW3SFUh+Fm8yPjWHXnDJfhQxrSPXbDGjkDcJjIU=;
-        b=ob/f2cK6yraH9NykvMqpK+NziI5y0mr5Xcr9z3otBhLXhhuiA3xml/n7G/w+Jq6LF0RKSj
-        nIviqPxNoozVYoBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 82949136D9;
-        Wed, 11 Aug 2021 14:59:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id SzKSHu/lE2HeUwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 14:59:59 +0000
-Subject: Re: [PATCH v14 060/138] mm/migrate: Add folio_migrate_mapping()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-61-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <0c1cfbd5-9e1c-b801-642b-1eb313533252@suse.cz>
-Date:   Wed, 11 Aug 2021 16:59:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 857E760F55;
+        Wed, 11 Aug 2021 15:02:49 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDpkl-004MSu-GS; Wed, 11 Aug 2021 16:02:47 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH V2] KVM: arm64: Restrict IPA size to maximum 48 bits on 4K and 16K page size
+Date:   Wed, 11 Aug 2021 16:02:44 +0100
+Message-Id: <162869415426.2969316.15859233360100994637.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <1628680275-16578-1-git-send-email-anshuman.khandual@arm.com>
+References: <1628680275-16578-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-61-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, anshuman.khandual@arm.com, catalin.marinas@arm.com, alexandru.elisei@arm.com, james.morse@arm.com, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, suzuki.poulose@arm.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Reimplement migrate_page_move_mapping() as a wrapper around
-> folio_migrate_mapping().  Saves 193 bytes of kernel text.
+On Wed, 11 Aug 2021 16:41:15 +0530, Anshuman Khandual wrote:
+> Even though ID_AA64MMFR0.PARANGE reports 52 bit PA size support, it cannot
+> be enabled as guest IPA size on 4K or 16K page size configurations. Hence
+> kvm_ipa_limit must be restricted to 48 bits. This change achieves required
+> IPA capping.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Before the commit c9b69a0cf0b4 ("KVM: arm64: Don't constrain maximum IPA
+> size based on host configuration"), the problem here would have been just
+> latent via PHYS_MASK_SHIFT (which earlier in turn capped kvm_ipa_limit),
+> which remains capped at 48 bits on 4K and 16K configs.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Applied to next, thanks!
+
+[1/1] KVM: arm64: Restrict IPA size to maximum 48 bits on 4K and 16K page size
+      commit: 5e5df9571c319fb107d7a523cc96fcc99961ee70
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
