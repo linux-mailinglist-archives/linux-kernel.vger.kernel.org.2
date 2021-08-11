@@ -2,144 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B4C3E8DA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7953E8DF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236780AbhHKJ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        id S236812AbhHKKBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236521AbhHKJ4s (ORCPT
+        with ESMTP id S236784AbhHKKBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:56:48 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B2BC061765;
-        Wed, 11 Aug 2021 02:56:25 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id u1so1540689wmm.0;
-        Wed, 11 Aug 2021 02:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ej3XkkVy2Mkdl4WbgSlULmvp3Q2tHnmIbB47E6hdIZ0=;
-        b=fwqyG3+dJBqCPhqiwk2VVMrx0xJEdQ7LH/kPOoVitCiJ3QdoqT+YHjKwK3qpS2SOiK
-         jUVa86CnhjCOLo3GJZvTLdfxWsOt0vlkLedcdr/uD3VPlucNmKfQm3nXJSEUhEyqL3LL
-         Hc4/u9ndl6bSv33LnMCVC+Ny/WS4fRSuAkgTgJncrBkEwPZvm37yfZtdQipxm4tRDgrb
-         vx5eoOnZ02tEJOuF7GwtN+i3PikXZDRWUvSno0j3jd3gB28IWcRk2PtYXkRVwhxQTd1X
-         Nu/hhki+icJ0T4ucgvnmlSTgz2vWVc5NpNYmiwFlhIW6/tw1KNmZHw0kID5iiS738sBt
-         cfLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ej3XkkVy2Mkdl4WbgSlULmvp3Q2tHnmIbB47E6hdIZ0=;
-        b=PwvbzTk0NUtlWbrzputDNm4YDFffKCrj2p9CCizCwmcEdVuOcfO4ouTaWDG+J3GyHo
-         FuMGCE0kvAivLz5Y0x+EdKt558zneV4EM/2nASPi30Yiah8B0vOUeZ0KzUC6H0/HDme4
-         +E5ZqJF0uIP31j0hJZCR4wDR+JTL8B37V90uwMAdTzUSDPtlio5V+vLhrVX4cMkyHwCt
-         dT6gQlN8t0T6aIoKF6tpybnGUm/HcuLw268vALNig7u2ccpF9HNyGlgiyHQUBEs2Bseg
-         /VUJNXqodNDJDc2PttGPLNQ7nLkKVnSfat7a0r8TtA9xNeMe6A2T2fQY/59GPMXL4gWt
-         13fA==
-X-Gm-Message-State: AOAM533Qx5Eq0iYDzLj8rkfq1R84NPe0vDvD3GZnv9jHjxjJZrlAf7DF
-        Dwf3MENjjN/uCbufXSWZMmY=
-X-Google-Smtp-Source: ABdhPJz4rdVV6mfWlnvmvbbrsBAMotmDoPu3ouCW/nwR46/V7lyOEhle42HlJwVEfMOu8BW8FMG7/w==
-X-Received: by 2002:a05:600c:20f:: with SMTP id 15mr16053783wmi.176.1628675783813;
-        Wed, 11 Aug 2021 02:56:23 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id k1sm26695067wrz.61.2021.08.11.02.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 02:56:21 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 11:58:46 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] clk: tegra: Remove CLK_IS_CRITICAL flag from fuse
- clock
-Message-ID: <YROfVuevpA9DEWZ4@orome.fritz.box>
-References: <20210802221336.32016-1-digetx@gmail.com>
- <20210802221336.32016-5-digetx@gmail.com>
+        Wed, 11 Aug 2021 06:01:10 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66002C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 03:00:39 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mDl2H-0002SZ-1U; Wed, 11 Aug 2021 12:00:33 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mDl2F-00044X-ON; Wed, 11 Aug 2021 12:00:31 +0200
+Date:   Wed, 11 Aug 2021 12:00:31 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, kernel@pengutronix.de
+Subject: Re: [PATCH v2] media: vivid: drop CONFIG_FB dependency
+Message-ID: <20210811100031.GB27204@pengutronix.de>
+Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, kernel@pengutronix.de
+References: <8615e9e583173652894889afd492022683389621.1628177586.git.guillaume.tucker@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ApKy06so4aP3qKHX"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210802221336.32016-5-digetx@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+In-Reply-To: <8615e9e583173652894889afd492022683389621.1628177586.git.guillaume.tucker@collabora.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:49:31 up 174 days, 13:13, 93 users,  load average: 0.01, 0.05,
+ 0.07
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 05 Aug 2021 16:36:31 +0100, Guillaume Tucker wrote:
+> Drop the vivid dependency on CONFIG_FB by compiling out parts of the
+> code that make use of the framebuffer API when not enabled.  This is
+> particularly useful as CONFIG_FB is not selected any more by
+> DRM_FBDEV_EMULATION.
 
---ApKy06so4aP3qKHX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I like this a lot.
 
-On Tue, Aug 03, 2021 at 01:13:36AM +0300, Dmitry Osipenko wrote:
-> FUSE driver now takes care of keeping the clock enabled when necessary.
-> Remove the CLK_IS_CRITICAL flag from the clock.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> 
+> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
 > ---
->  drivers/clk/tegra/clk-tegra-periph.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> Notes:
+>     Changes in v2:
+>     * fix Makefile conditional for when CONFIG_FB=m
+>     * compile-out bit 16 (framebuffer) when no CONFIG_FB
+> 
+>  drivers/media/test-drivers/vivid/Kconfig       | 5 +----
+>  drivers/media/test-drivers/vivid/Makefile      | 5 ++++-
+>  drivers/media/test-drivers/vivid/vivid-core.c  | 9 +++++++++
+>  drivers/media/test-drivers/vivid/vivid-ctrls.c | 4 ++++
+>  4 files changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/test-drivers/vivid/Kconfig b/drivers/media/test-drivers/vivid/Kconfig
+> index c3abde2986b2..06ad350f1903 100644
+> --- a/drivers/media/test-drivers/vivid/Kconfig
+> +++ b/drivers/media/test-drivers/vivid/Kconfig
+> @@ -1,13 +1,10 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  config VIDEO_VIVID
+>  	tristate "Virtual Video Test Driver"
+> -	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64 && FB
+> +	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64
+>  	depends on HAS_DMA
+>  	select FONT_SUPPORT
+>  	select FONT_8x16
+> -	select FB_CFB_FILLRECT
+> -	select FB_CFB_COPYAREA
+> -	select FB_CFB_IMAGEBLIT
+>  	select VIDEOBUF2_VMALLOC
+>  	select VIDEOBUF2_DMA_CONTIG
+>  	select VIDEO_V4L2_TPG
+> diff --git a/drivers/media/test-drivers/vivid/Makefile b/drivers/media/test-drivers/vivid/Makefile
+> index b12ad0152a3e..2ad634da7f88 100644
+> --- a/drivers/media/test-drivers/vivid/Makefile
+> +++ b/drivers/media/test-drivers/vivid/Makefile
+> @@ -3,10 +3,13 @@ vivid-objs := vivid-core.o vivid-ctrls.o vivid-vid-common.o vivid-vbi-gen.o \
+>  		vivid-vid-cap.o vivid-vid-out.o vivid-kthread-cap.o vivid-kthread-out.o \
+>  		vivid-radio-rx.o vivid-radio-tx.o vivid-radio-common.o \
+>  		vivid-rds-gen.o vivid-sdr-cap.o vivid-vbi-cap.o vivid-vbi-out.o \
+> -		vivid-osd.o vivid-meta-cap.o vivid-meta-out.o \
+> +		vivid-meta-cap.o vivid-meta-out.o \
+>  		vivid-kthread-touch.o vivid-touch-cap.o
+>  ifeq ($(CONFIG_VIDEO_VIVID_CEC),y)
+>    vivid-objs += vivid-cec.o
+>  endif
+> +ifneq ($(CONFIG_FB),)
+> +  vivid-objs += vivid-osd.o
 
-Mike, Stephen,
+vivid-osd depends on FB_CFB_FILLRECT, FB_CFB_COPYAREA, and FB_CFB_IMAGEBLIT,
+which are not selected anymore, and linking fails if CONFIG_FB is enabled, but
+the others are disabled.
 
-I've picked this up into the Tegra tree because it has a runtime
-dependency on the patches earlier in this series.
+Michael
 
-Thierry
-
->=20
-> diff --git a/drivers/clk/tegra/clk-tegra-periph.c b/drivers/clk/tegra/clk=
--tegra-periph.c
-> index 292d6269daf1..4dcf7f7cb8a0 100644
-> --- a/drivers/clk/tegra/clk-tegra-periph.c
-> +++ b/drivers/clk/tegra/clk-tegra-periph.c
-> @@ -777,11 +777,7 @@ static struct tegra_periph_init_data gate_clks[] =3D=
- {
->  	GATE("ahbdma", "hclk", 33, 0, tegra_clk_ahbdma, 0),
->  	GATE("apbdma", "pclk", 34, 0, tegra_clk_apbdma, 0),
->  	GATE("kbc", "clk_32k", 36, TEGRA_PERIPH_ON_APB | TEGRA_PERIPH_NO_RESET,=
- tegra_clk_kbc, 0),
-> -	/*
-> -	 * Critical for RAM re-repair operation, which must occur on resume
-> -	 * from LP1 system suspend and as part of CCPLEX cluster switching.
-> -	 */
-> -	GATE("fuse", "clk_m", 39, TEGRA_PERIPH_ON_APB, tegra_clk_fuse, CLK_IS_C=
-RITICAL),
-> +	GATE("fuse", "clk_m", 39, TEGRA_PERIPH_ON_APB, tegra_clk_fuse, 0),
->  	GATE("fuse_burn", "clk_m", 39, TEGRA_PERIPH_ON_APB, tegra_clk_fuse_burn=
-, 0),
->  	GATE("kfuse", "clk_m", 40, TEGRA_PERIPH_ON_APB, tegra_clk_kfuse, 0),
->  	GATE("apbif", "clk_m", 107, TEGRA_PERIPH_ON_APB, tegra_clk_apbif, 0),
-> --=20
-> 2.32.0
->=20
-
---ApKy06so4aP3qKHX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmETn1YACgkQ3SOs138+
-s6GGbQ//VxRQd5VZsLWIVmenpbQW6n9uDX+prPqoihH5xRPIpy8rmV/2Kg+TVDCK
-dIBxN+3nrM6mtPPh6QB2bQWMODOE4lzILL1zhVRs+v1lHXkDfU++eF43gMz/Jcst
-DlDbmCvo65QywreoRZrN5mIuiDa8K7RMvGcIscMkCc3Znki8DYJL1MMbukDYUP2q
-9o0r59h/3HezmiDy7Jb+VOJn0k23Ht4HJaAljBfpJ9nK7lN7aZvMi06IEvXURD85
-baNKIy1GTXEFFZ+qOGcNCz5462Toh178Lt6Y9tFSqNapHvh3dD3ufclJ9ioDn1Ci
-ehY30Db5oF3FlCTPUgocRJRRoEBwezMFMy/kMNlEzFpdywIliqKtSxSeRtEAw0CR
-YzLKMUywX96B3KOf0pbDSWlZT/5vficui7aedknSb8JQN9qkNiiuJv+VH2y9UaO5
-/uv4RlLBZ78I3RpknHIlGjHZTxCkaxOB3lh8qV+LEFqVaktPeU+SPwW+hYWw9+5Y
-iDhvRGzM9BCC0OI2WfnHgPaGETDFiukVpK56cC8TTeECfc3M9dgBsLG5idzJGyOS
-mcF72OOdoYJEHTLsL0YT6IxDLr9boOU9N7tPRhH49zOsTKsyDBU9WTA+yuCaFlbY
-2bMHT91UAQqW2M51qEZMcsH3B2FeqjvaxpNjj/z8ybeuF7f4TzY=
-=dPAD
------END PGP SIGNATURE-----
-
---ApKy06so4aP3qKHX--
+> +endif
+>  
+>  obj-$(CONFIG_VIDEO_VIVID) += vivid.o
+> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+> index d2bd2653cf54..7675962b9e93 100644
+> --- a/drivers/media/test-drivers/vivid/vivid-core.c
+> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
+> @@ -126,7 +126,9 @@ MODULE_PARM_DESC(node_types, " node types, default is 0xe1d3d. Bitmask with the
+>  			     "\t\t    bit 8: Video Output node\n"
+>  			     "\t\t    bit 10-11: VBI Output node: 0 = none, 1 = raw vbi, 2 = sliced vbi, 3 = both\n"
+>  			     "\t\t    bit 12: Radio Transmitter node\n"
+> +#if IS_ENABLED(CONFIG_FB)
+>  			     "\t\t    bit 16: Framebuffer for testing overlays\n"
+> +#endif
+>  			     "\t\t    bit 17: Metadata Capture node\n"
+>  			     "\t\t    bit 18: Metadata Output node\n"
+>  			     "\t\t    bit 19: Touch Capture node\n");
+> @@ -1021,9 +1023,11 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
+>  	/* do we have a modulator? */
+>  	*has_modulator = dev->has_radio_tx;
+>  
+> +#if IS_ENABLED(CONFIG_FB)
+>  	if (dev->has_vid_cap)
+>  		/* do we have a framebuffer for overlay testing? */
+>  		dev->has_fb = node_type & 0x10000;
+> +#endif
+>  
+>  	/* can we do crop/compose/scaling while capturing? */
+>  	if (no_error_inj && *ccs_cap == -1)
+> @@ -1355,6 +1359,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
+>  			return ret;
+>  	}
+>  
+> +#if IS_ENABLED(CONFIG_FB)
+>  	if (dev->has_fb) {
+>  		/* Create framebuffer for testing capture/output overlay */
+>  		ret = vivid_fb_init(dev);
+> @@ -1363,6 +1368,8 @@ static int vivid_create_queues(struct vivid_dev *dev)
+>  		v4l2_info(&dev->v4l2_dev, "Framebuffer device registered as fb%d\n",
+>  			  dev->fb_info.node);
+>  	}
+> +#endif
+> +
+>  	return 0;
+>  }
+>  
+> @@ -2069,12 +2076,14 @@ static int vivid_remove(struct platform_device *pdev)
+>  				video_device_node_name(&dev->radio_tx_dev));
+>  			video_unregister_device(&dev->radio_tx_dev);
+>  		}
+> +#if IS_ENABLED(CONFIG_FB)
+>  		if (dev->has_fb) {
+>  			v4l2_info(&dev->v4l2_dev, "unregistering fb%d\n",
+>  				dev->fb_info.node);
+>  			unregister_framebuffer(&dev->fb_info);
+>  			vivid_fb_release_buffers(dev);
+>  		}
+> +#endif
+>  		if (dev->has_meta_cap) {
+>  			v4l2_info(&dev->v4l2_dev, "unregistering %s\n",
+>  				  video_device_node_name(&dev->meta_cap_dev));
+> diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
+> index 8dc50fe22972..081470a1d88a 100644
+> --- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
+> +++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
+> @@ -305,6 +305,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_ro_int32 = {
+>  
+>  /* Framebuffer Controls */
+>  
+> +#if IS_ENABLED(CONFIG_FB)
+>  static int vivid_fb_s_ctrl(struct v4l2_ctrl *ctrl)
+>  {
+>  	struct vivid_dev *dev = container_of(ctrl->handler,
+> @@ -328,6 +329,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_clear_fb = {
+>  	.name = "Clear Framebuffer",
+>  	.type = V4L2_CTRL_TYPE_BUTTON,
+>  };
+> +#endif /* IS_ENABLED(CONFIG_FB) */
+>  
+>  
+>  /* Video User Controls */
+> @@ -1761,8 +1763,10 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
+>  	    (dev->has_vbi_cap && dev->has_vbi_out))
+>  		v4l2_ctrl_new_custom(hdl_loop_cap, &vivid_ctrl_loop_video, NULL);
+>  
+> +#if IS_ENABLED(CONFIG_FB)
+>  	if (dev->has_fb)
+>  		v4l2_ctrl_new_custom(hdl_fb, &vivid_ctrl_clear_fb, NULL);
+> +#endif
+>  
+>  	if (dev->has_radio_rx) {
+>  		v4l2_ctrl_new_custom(hdl_radio_rx, &vivid_ctrl_radio_hw_seek_mode, NULL);
+> -- 
+> 2.20.1
+> 
+> 
