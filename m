@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D5C3E87BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7643E87C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhHKBst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 21:48:49 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53626 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230290AbhHKBss (ORCPT
+        id S231366AbhHKBvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 21:51:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46982 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230401AbhHKBvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 21:48:48 -0400
-X-UUID: c8513f723c7c4d8da1c8282354e980ee-20210811
-X-UUID: c8513f723c7c4d8da1c8282354e980ee-20210811
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 284427358; Wed, 11 Aug 2021 09:48:23 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 11 Aug 2021 09:48:22 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 11 Aug 2021 09:48:21 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH v4] drm/mediatek: clear pending flag when cmdq packet is done.
-Date:   Wed, 11 Aug 2021 09:47:48 +0800
-Message-ID: <1628646468-29775-2-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1628646468-29775-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1628646468-29775-1-git-send-email-yongqiang.niu@mediatek.com>
+        Tue, 10 Aug 2021 21:51:22 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17B1Wb8S121278;
+        Tue, 10 Aug 2021 21:50:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4YyHtzQsCrTd8shlfgbCeJc6L1qn4hEFd6Uj12mcM2g=;
+ b=byCez6+QwW2j1RWt48H0HmT5+pbHDEnVvgVGCJkRlufw284nxq0fO/2sigSa5xlcLQOI
+ 1N/he4anLjGrl3aXki13hp9TvvNiJ2j/OUjpzt64b8JYmJH9x6cu0azy9KZQ1nKZXAt+
+ yr5R7CzCy2/2vLlzIYJyvTy9bc3HBO21E8nrRyhXBl2GX1mRg6r/7lENwTBZcYywdz5s
+ pbIqTEFhQhmNExYu1AuLmnThn7yEjpF93DNbvhPI/m+TIpCAemQjrTViscBv3KAule+P
+ pn0ueg/Ut0L5RQAnv1pc2hzxIMGbc4T4Q9d9Q1CDGrvaPZkhpYnIUqZ904gqScw9D83G nA== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aby977t1f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Aug 2021 21:50:58 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17B1m0ke021287;
+        Wed, 11 Aug 2021 01:50:58 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma04dal.us.ibm.com with ESMTP id 3a9htdm53m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 01:50:58 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17B1oub630278046
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 01:50:56 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D85F28068;
+        Wed, 11 Aug 2021 01:50:56 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D3CF2806D;
+        Wed, 11 Aug 2021 01:50:56 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Aug 2021 01:50:56 +0000 (GMT)
+Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to tpm_status
+ and define flag
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     nasastry@in.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
+        George Wilson <gcwilson@linux.ibm.com>
+References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
+ <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
+ <20210810175855.fixtw5jks4gbmkua@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <86f6a6c8-87cc-a397-35b3-a30220f12aed@linux.ibm.com>
+Date:   Tue, 10 Aug 2021 21:50:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210810175855.fixtw5jks4gbmkua@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kHS51RwoDUoLBMfVUf9-7oWwEuLThsug
+X-Proofpoint-ORIG-GUID: kHS51RwoDUoLBMfVUf9-7oWwEuLThsug
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-10_08:2021-08-10,2021-08-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108110007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In cmdq mode, packet may be flushed before it is executed, so
-the pending flag should be cleared after cmdq packet is done.
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 47 +++++++++++++++++++++++++++++----
- 1 file changed, 42 insertions(+), 5 deletions(-)
+On 8/10/21 1:58 PM, Jarkko Sakkinen wrote:
+> On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
+>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>
+>> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
+>> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
+>>
+>>
+>>   		default:
+>> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
+>> index 51198b137461..252f1cccdfc5 100644
+>> --- a/drivers/char/tpm/tpm_ibmvtpm.h
+>> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
+>> @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
+>>   	wait_queue_head_t wq;
+>>   	u16 res_len;
+>>   	u32 vtpm_version;
+>> -	u8 tpm_processing_cmd;
+>> +	u8 tpm_status;
+>> +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
+> Declare this already in the fix, and just leave the rename here.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 4c25e33..89f093d 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -267,6 +267,36 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
- {
- 	struct mtk_drm_crtc *mtk_crtc = container_of(cl, struct mtk_drm_crtc, cmdq_cl);
- 	struct cmdq_cb_data *data = mssg;
-+	struct mtk_crtc_state *state;
-+	unsigned int i;
-+
-+	state = to_mtk_crtc_state(mtk_crtc->base.state);
-+
-+	state->pending_config = false;
-+
-+	if (mtk_crtc->pending_planes) {
-+		for (i = 0; i < mtk_crtc->layer_nr; i++) {
-+			struct drm_plane *plane = &mtk_crtc->planes[i];
-+			struct mtk_plane_state *plane_state;
-+
-+			plane_state = to_mtk_plane_state(plane->state);
-+
-+			plane_state->pending.config = false;
-+		}
-+		mtk_crtc->pending_planes = false;
-+	}
-+
-+	if (mtk_crtc->pending_async_planes) {
-+		for (i = 0; i < mtk_crtc->layer_nr; i++) {
-+			struct drm_plane *plane = &mtk_crtc->planes[i];
-+			struct mtk_plane_state *plane_state;
-+
-+			plane_state = to_mtk_plane_state(plane->state);
-+
-+			plane_state->pending.async_config = false;
-+		}
-+		mtk_crtc->pending_async_planes = false;
-+	}
- 
- 	mtk_crtc->cmdq_vblank_cnt = 0;
- 	mtk_drm_cmdq_pkt_destroy(mtk_crtc->cmdq_chan, data->pkt);
-@@ -423,7 +453,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
- 				    state->pending_vrefresh, 0,
- 				    cmdq_handle);
- 
--		state->pending_config = false;
-+		if (!cmdq_handle)
-+			state->pending_config = false;
- 	}
- 
- 	if (mtk_crtc->pending_planes) {
-@@ -443,9 +474,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
- 				mtk_ddp_comp_layer_config(comp, local_layer,
- 							  plane_state,
- 							  cmdq_handle);
--			plane_state->pending.config = false;
-+			if (!cmdq_handle)
-+				plane_state->pending.config = false;
- 		}
--		mtk_crtc->pending_planes = false;
-+
-+		if (!cmdq_handle)
-+			mtk_crtc->pending_planes = false;
- 	}
- 
- 	if (mtk_crtc->pending_async_planes) {
-@@ -465,9 +499,12 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
- 				mtk_ddp_comp_layer_config(comp, local_layer,
- 							  plane_state,
- 							  cmdq_handle);
--			plane_state->pending.async_config = false;
-+			if (!cmdq_handle)
-+				plane_state->pending.async_config = false;
- 		}
--		mtk_crtc->pending_async_planes = false;
-+
-+		if (!cmdq_handle)
-+			mtk_crtc->pending_async_planes = false;
- 	}
- }
- 
--- 
-1.8.1.1.dirty
+You mean the fix patch does not use 'true' anymore but uses the 
+TPM_STATUS_BUSY flag already but the name is still tpm_processing_cmd? 
+And literally only the renaming of this field is done in the 2nd patch?
 
+
+    Stefan
+
+
+>
+>>   };
+>>   
+>>   #define CRQ_RES_BUF_SIZE	PAGE_SIZE
+>> -- 
+>> 2.31.1
+>>
+>>
+> Otherwise, these look fine.
+>
+> /Jarkko
