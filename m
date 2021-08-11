@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852673E918F
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7113E918E
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhHKMfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
+        id S230208AbhHKMfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhHKMe4 (ORCPT
+        with ESMTP id S230041AbhHKMez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:34:56 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8AFC0617A3;
-        Wed, 11 Aug 2021 05:34:33 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so4646715pjb.0;
-        Wed, 11 Aug 2021 05:34:33 -0700 (PDT)
+        Wed, 11 Aug 2021 08:34:55 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7483C0617A2;
+        Wed, 11 Aug 2021 05:34:31 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id x7so4281655ljn.10;
+        Wed, 11 Aug 2021 05:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5FijFRuNeIw6uFkos7dxaelXYoxcJOgS14al3RfG1Bg=;
-        b=TegwMQKVI9K85UhYMUKjCyzLz28KcF26BhRV+36pk0SRypogkvU9PhnbRPxrv/tvr+
-         VCheCqP9VLIIzKHPtDGvO530luOKJrErpfBrjOEl4c0hLLb/PeNt31lQ/LzY48nTQ8+w
-         w/cQdXFrBNfo7dKRpBEVdfE1+59++1drGGdxX1+HE01bWK90raz4Kp/koTNE/YNCYDMQ
-         6QyFz8wwjTfSq5cow8W9hYMvtdFZbsyMoYT6jQ5AnvIhsO5hfuCphkJ0mhfUzXw50TFK
-         jJ2HMPR2Xo2S1SRLCyRWZYYXj+mZDHey6a1kOr8bJiiJm6v0IYAm6QPBAwYzROjndwKb
-         nI5g==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=K9DpAgAnqxctyg4iaJo9mqnhzEJ5oKvSm6u/94Ov1yA=;
+        b=ZRIuqf+6LM6KdfsSSjraUybCR6jhHjLqDQpSn7xIO9yjwZr2fubJupLvo4GZYVSC+P
+         PHSVc7LGUeLAJvq305BQxnx0zVjVvnYMSqI9ioC7MPS16pq0DY+9YnXPrNoA5AG12pzJ
+         LgbT+FBN7NNVQJb7ICIjZXIw35q3Mszfy/JbqKPjYAxZiInGJE8ESV3Aj0F3boGHZWpx
+         Bwo1j4Bzu+nTzH5VPW7/VfV8nanVJEL8fLvihnA4tvPJHJcaSaiZhDXEBVhv5n236w4+
+         RhHfhvouBvUNs6624gP7m6pBII4lXaKO/xcthf1lxd5ehJfP5M8ltvjxQuJazhqh7qNv
+         E50A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5FijFRuNeIw6uFkos7dxaelXYoxcJOgS14al3RfG1Bg=;
-        b=dptI5x74oB1x9nwjtcKEfq77ps1GOwGfSyaCWTlUlAGlc1LBmBnTpM9gioXMVYy1sa
-         YUJW7a9r1jIUlubHxoYr9k1LzpvVBK+9iCPSqE4K3Th9Bhl0tMUiH2afrLzZYsPOwFRy
-         FB8HjJs+Kt/tBsWQSPwA1juHMib98A8BDcN5xHYkcvnoBcJUzuhfCO3COFoVwXSujhDB
-         NnCCBxEP6ijqVQYBoKIEuqjye2NFUqEJDBeZdqQvoPCvJJb75Z65O6becG9f084AtzPq
-         vu+R+THh1sd5YoDNyz1knfdXfNd13ngt8k/BFY6EtNK8j2HxuJx8yxE63KtOt8kDcl5b
-         J+mw==
-X-Gm-Message-State: AOAM531zO1LM53KksxVZqfXMeX7aFQz1vKqdTO5ldCf/v6MAvfCxDcEq
-        vtL7ArMwe45mLpbNt/NMn1L7nv+DPyjnwMjz
-X-Google-Smtp-Source: ABdhPJwCiveTQ7Y0cdhTfOEp7qyYjpD7aEssGdTlbw28Jc6Qdp7VfgPNLTpprSNT2+urVj5swAotug==
-X-Received: by 2002:a17:90a:2a8e:: with SMTP id j14mr10375833pjd.208.1628685272647;
-        Wed, 11 Aug 2021 05:34:32 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.103])
-        by smtp.gmail.com with ESMTPSA id k6sm12466039pjj.52.2021.08.11.05.34.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 05:34:32 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] IB/mthca: Fix possible uninitialized-variable access in mthca_SYS_EN()
-Date:   Wed, 11 Aug 2021 05:34:15 -0700
-Message-Id: <20210811123415.8200-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=K9DpAgAnqxctyg4iaJo9mqnhzEJ5oKvSm6u/94Ov1yA=;
+        b=cJK9W37OC39iEgvQvvUadfGrnkE3BTG4Sf7kv6dP7h4T03/loWc1uYDoNZGot55ePv
+         hPumrZKVNM3piHsnBpoL7Husk7pGWJX0pcoH1wmGv5VdNmbdheTRBuqOxGrWkkB8HKmO
+         NR9NdOT/klCGudHDbtWfGcyScPDn372DXi5GecOLWGhzJ47njaQu250Y9et1yDsVe0F2
+         okxUR2/yr5NXdlNC7OzxsBbfbEFX2X/TpHUa/LMXwV3s2fqfnFBoKvFAKWChEUTBAYeW
+         lg8P/2maDARSL1i1JDK2Ngc97RivXivVLk3afdnNubq3XBAwp8u+ZFwBknRtPezeTpGF
+         5qlA==
+X-Gm-Message-State: AOAM531IhkxcJHBuS7/n3djyp7S5F27e9zWaChxqUoSm8I0uFQ4GtF0H
+        zo5H+9ZH/fgN+QQohzsGFgZWZYelFTBbwPyZnQA9PtKOdRw=
+X-Google-Smtp-Source: ABdhPJwc11vu//JpjbWm8gdvehISxVfavnwrQtgO73mGuFN5KpY+qWgqnTROg/oCvj6P3+R46Ai50erZcXzcEmXsmvQ=
+X-Received: by 2002:a2e:3206:: with SMTP id y6mr8086833ljy.187.1628685270124;
+ Wed, 11 Aug 2021 05:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Muni Sekhar <munisekharrms@gmail.com>
+Date:   Wed, 11 Aug 2021 18:04:18 +0530
+Message-ID: <CAHhAz+iRiLjG+=xMDoZiqZzqn9fO1ZHk4ZtawCkWZ-TyH8forA@mail.gmail.com>
+Subject: USB-Audio: Device or resource busy
+To:     alsa-devel <alsa-devel@alsa-project.org>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-usb@vger.kernel.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable out is declared without initialization, and its address is 
-passed to mthca_cmd_imm():
-  ret = mthca_cmd_imm(dev, 0, &out, 0, 0, CMD_SYS_EN, CMD_TIME_CLASS_D);
+Hi All,
 
-In this function, mthca_cmd_wait() or mthca_cmd_poll() will be called with 
-the argument out_param, which is the address of the varialbe out. In these 
-two called functions, mthca_cmd_post() will be called with *out_param, 
-whose value comes from the uninitialized variable out.
-  err = mthca_cmd_post(dev, in_param, out_param ? *out_param : 0, ...)
+$ cat /proc/asound/cards
+ 0 [USB            ]: USB-Audio - Plantronics .Audio 628 USB
+                      Plantronics Plantronics .Audio 628 USB at
+usb-0000:00:14.0-2, full speed
 
-In mthca_cmd_post(), mthca_cmd_post_dbell() or mthca_cmd_post_hcr() will 
-be called, in which the value from the uninitialized varialble out may be
-used:
-  __raw_writel((__force u32) cpu_to_be32(out_param >> 32), ptr + offs[3]);
+I am using a Plantronics USB Audio headset.
 
-To fix this possible uninitialized-variable access, initialized out to 0 
-at the begining of mthca_SYS_EN().
+$ arecord --device hw:0,0 --channels 2 --format S16_LE --rate 44100Hz x.wav
+arecord: main:722: audio open error: Device or resource busy
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- drivers/infiniband/hw/mthca/mthca_cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_cmd.c b/drivers/infiniband/hw/mthca/mthca_cmd.c
-index bdf5ed38de22..86584982e496 100644
---- a/drivers/infiniband/hw/mthca/mthca_cmd.c
-+++ b/drivers/infiniband/hw/mthca/mthca_cmd.c
-@@ -635,7 +635,7 @@ void mthca_free_mailbox(struct mthca_dev *dev, struct mthca_mailbox *mailbox)
- 
- int mthca_SYS_EN(struct mthca_dev *dev)
- {
--	u64 out;
-+	u64 out = 0;
- 	int ret;
- 
- 	ret = mthca_cmd_imm(dev, 0, &out, 0, 0, CMD_SYS_EN, CMD_TIME_CLASS_D);
+'arecord' command always fails the first time after system boot in my
+system. But subsequent execution of the 'arecord' command runs fine.
+
+
+I've attached the strace log for the "audio open error: Device or
+resource busy" failure. Is there any fix available for this issue?
+
+
 -- 
-2.25.1
-
+Thanks,
+Sekhar
