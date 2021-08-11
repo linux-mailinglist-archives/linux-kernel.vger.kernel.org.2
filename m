@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FD73E8E05
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D143E8DFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236864AbhHKKFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:05:16 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:21417 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236832AbhHKKFO (ORCPT
+        id S236817AbhHKKDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236573AbhHKKDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:05:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1628676283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zY7IlNQveS7mZDONl1X1zTg8Sk5luSNcsx4pv8pCz/w=;
-        b=FDHns+zZ40YcXe/TnC6VuUJShp3dXUIH7dItNRb92o8yz4mjEWsu2GhV9i6vlC/Ca1rSBB
-        JX6h/AbDaLqNscDt93w7DfOTgBvi/pEtEQRsZNCJiHA9wyboqEKKa0T6vrDaqR/GuGxHJr
-        jxlGzcgK1RgWAnjvko863cKvkTRuDoQ=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2104.outbound.protection.outlook.com [104.47.17.104])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-11-j8bKfrjgNreY5JSEjtQoeQ-1; Wed, 11 Aug 2021 12:04:42 +0200
-X-MC-Unique: j8bKfrjgNreY5JSEjtQoeQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SObmzXICfc0m6sYyDITd+pn0FUc4S/bh+P9cVU9dkhPl//krAUIrV3WhmyxY060G3tWIDGEsZjVPJxMFPS5dSCXE8nIXw1aPAKvPINCPkAufLB+C+3gsf3UUsL0kJ2/e0WfYzCzHFfgJyNOS5nEYS/w5zHR69UUWFGhSOPrLYEPyj0KpUrBp4KSYnSkiBd5K00lL4IjvG7wiORis0qkPFjeh1DjeA3353qeXfl2czXdVq+UsuyLA1gmjAR9Hz34O263Fr6cZffFUOeo9gD+ZrgUZxFBKGFd7gh318+kq8PBlmgivV8c1xFQjSCRGjviIEhNH16vELmPYN72+rctbIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4J/Tr3AyUok6Qr6jdvAY7MgLJxu++lwYwVvpgN/TKWQ=;
- b=YwAw5lv9PhBEstwZq3fVNX3SmAWXyOvTE0/fDHY45RdB3SXG5NSAxH8fo9+8Fz0FdWeqxSrzlyBtOawjWKeSUEaL4JphqIWZ6fcVnqMg4ZehDW7vhCAvCDsbPWHCuFkKPGwe1DCylm2ZUfSPMSDn0reNAI/AP9SeoWKNOw2Joge25RqnTMz5OwkPatJLYxUehrFyNV6qrt99N/7NJwOvXSJq5udZBmse1MqGG+jycXZcttKm0atVfMPMcclCMK8Qd6bs0J8QvWfvH/Nqk4aeJDio0kVMpqMzPN0UDBs2iS99h8YsMfRkETkJIfOBINJh85/7FRCAe29uoIkq1O6/kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from DB7PR04MB5050.eurprd04.prod.outlook.com (2603:10a6:10:22::23)
- by DB9PR04MB8284.eurprd04.prod.outlook.com (2603:10a6:10:25e::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.19; Wed, 11 Aug
- 2021 10:04:39 +0000
-Received: from DB7PR04MB5050.eurprd04.prod.outlook.com
- ([fe80::4cc0:191d:5c04:8ede]) by DB7PR04MB5050.eurprd04.prod.outlook.com
- ([fe80::4cc0:191d:5c04:8ede%7]) with mapi id 15.20.4394.023; Wed, 11 Aug 2021
- 10:04:39 +0000
-Subject: Re: read() via USB bus
-To:     Muni Sekhar <munisekharrms@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>
-CC:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CAHhAz+jKREfXERKj7XB7U3Wh1g4STO2Dt0qnMkcPV5nXB3_bwg@mail.gmail.com>
- <8923f2b8-0be0-ffbf-70a4-c03c9a02d58a@suse.com>
- <CAHhAz+i5YeQdJnBH6BvMJ-B0DtoBu9ER4Z79CPOfX5NuFvO=bA@mail.gmail.com>
- <4e7c9279-805c-c236-c048-2b817b1a7c3c@suse.com>
- <CAHhAz+ioThu3v4VW6LVqFn9MhgNaqv=qDoxh8Orkw2LOEC_JYA@mail.gmail.com>
-From:   Oliver Neukum <oneukum@suse.com>
-Message-ID: <4ab157b8-5cc0-14cc-9245-5a235a52408f@suse.com>
-Date:   Wed, 11 Aug 2021 12:04:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <CAHhAz+ioThu3v4VW6LVqFn9MhgNaqv=qDoxh8Orkw2LOEC_JYA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-ClientProxiedBy: AM8P190CA0002.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:219::7) To DB7PR04MB5050.eurprd04.prod.outlook.com
- (2603:10a6:10:22::23)
+        Wed, 11 Aug 2021 06:03:36 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DB9C061765;
+        Wed, 11 Aug 2021 03:03:13 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso3979644wmg.4;
+        Wed, 11 Aug 2021 03:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yHJmYJ+iLasQ/NhqiYwsp7hXEwdmSi+n3SNIBsWP/t0=;
+        b=aM3rfTlF1LxRtAwhykRxcMt5AB5GwV5uq0HyjW8JQOXibcwDEbmkhFA0xjlWOXPjCj
+         Lb4BKAOHHPflObtQ0bCOCQfSVeYH+iBtdttHM8UZm8VLXodWliQIkN6yZFZHDT9mlcfS
+         fpDJ3WtGy84DNhkg8p4aFjb5PwWy3WfQkXv5jjb87/z42vVmV1IJSa1ORU7HVcIDFjjj
+         JeeSOkvlxSVVPfz59g6jQpht2s21i15Q+1zZIUgFBoW7tzlTsjnwHEw+6655AeTmtOGN
+         blcTyGUkUbX/7WSKXiR+e5eyE0IE8SS0C8TRgmYGOvH6dLIcAHKfQubv08S0OQMgrU8U
+         5PXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yHJmYJ+iLasQ/NhqiYwsp7hXEwdmSi+n3SNIBsWP/t0=;
+        b=nt0NRYJwdayxTcIF8qiAxZ/4cT6QDk1E1kVtGv73Q2x5ll6V6jK9Cb+h88ewgOVw51
+         Gs5hGlgrnUw4x4WX0SESvQRfqNIKSVXIUBPtlUrgmtAVaalPmOiQgkYNLZ1QArRqpRkn
+         HhusJqWWW5PHpaS1ZI2cxjUv5Iw+996WW0vcFXISDBGsxaewVyMAzLtWD6RMEZrZPIyA
+         NmYi7OuW4J0TDuJZE6IogsHW1aAMDOXfrMpYlptxfDqhB+KSC6pPUs5NpgbrEF/Fh5uZ
+         LEnSHKhzRtP557Ext2v0kUEjcFv+dRd8owkqFktmHlj0rEVUSjyH9twMmRobr9BpjxkI
+         d8dg==
+X-Gm-Message-State: AOAM532RkVS8TUuYqbpBk1abGvsWAYNvtJV2UXbzlTi+H5Ol62dSq0Ah
+        Zz8a36wE5ktWFRDrttI75Uo=
+X-Google-Smtp-Source: ABdhPJyFmYJlSuYS4zIYvYiiyN1uZEpXBbwYXYvtgI3RNIK4RB9t84j1DEVDKhpm+25b0toKrwmrnA==
+X-Received: by 2002:a1c:4d13:: with SMTP id o19mr8910146wmh.32.1628676191934;
+        Wed, 11 Aug 2021 03:03:11 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id g5sm5136900wmh.31.2021.08.11.03.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 03:03:10 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: Re: [PATCH v2 00/15] Tegra ARM32 device-tree improvements for 5.15
+Date:   Wed, 11 Aug 2021 12:05:35 +0200
+Message-Id: <162867631362.1310243.7415185739241921029.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210802211947.19715-1-digetx@gmail.com>
+References: <20210802211947.19715-1-digetx@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2001:a61:3b0f:ce01:6142:66c1:effb:a0be) by AM8P190CA0002.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:219::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Wed, 11 Aug 2021 10:04:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b13af83f-5c10-4847-ac4a-08d95caf6e33
-X-MS-TrafficTypeDiagnostic: DB9PR04MB8284:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB9PR04MB8284DC6AC565B683AD03D00CC7F89@DB9PR04MB8284.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0POsGkkrV95my6xFAGePkrdd3Kspdhdq46h/V4pzlCK4bguEv8zHsbJ4v5AybtLMS2pKW2Cwa01M29QVRYlEKaZreZt40HAopM57UMMRS1B0RIfTD8qLnYCm4s7VeE+yzhypqL/Qa8SV2SovZHAMYTryNNmpBy9trW5r4eCm/tuEuZkLGUCjWHTbX20hXzJb8g46sw2CUY7KIlPM8iEjc73BsupkTX0V5OQ+h9v3XNtHsXkf7InMqsJwU0r9FGjCr/f9pRi3FXEBH43wmU/BO7RinyxctS9KScOQUbMZX4JXOP4+ZewQ32Kk/KcmnlNCYPimLHGWXvzzs/4A8Jqd7esLLD84Y9P1qrvcL9vNNYSIVCifsMugaMeNpXeHkR4Lx8yESED0Rcv/2LvYSPktuhs3UKIOuvyf6Olp8igOWArSx1n4a7Wu7/3M0GOsxqz0Uup42HLkJUXeKS7mqsnJ+bPlIV3qNh9tEZJL8uFdao4cGd15/3sSVoLlS7/osiAg5bBtfvHO+pjNnDVxfYu3C2lN1bhhV86rQwr87r9LGpAf25jmDrwyNa2dEa0hYlaArwpTfNL8IjmqYuSBgCsMeeHC+/VFsra7QhUz49YlSMoPYmknNj1hM7H/IpViE/K8u8mbi5FrUukPVYBVUQArP3aUYBxeXk+ssGGjTzjffGSBAgWYsKMVZDhCs5NAv5UwxICzc30VCV2+N02LWvW1LbpvJMyI+bjY5zrXQaK7DgM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5050.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(110136005)(186003)(8936002)(66556008)(66476007)(5660300002)(31686004)(86362001)(53546011)(8676002)(6486002)(6512007)(31696002)(6506007)(4744005)(66946007)(508600001)(316002)(4326008)(2616005)(2906002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8I9V21+d5TD5kKuA9Y76bSQTUJDtO5irnSDXf+V503UpOBj6zT1CrA9+a7BX?=
- =?us-ascii?Q?HWVHlQsOUDkFXdnodGXlRnIf46ELs9O4LTlFj2f7Zpl2TqqAZQ0l0HyT22qA?=
- =?us-ascii?Q?N1SC7b30ngeLCgHGprYqVVMgTzVXfSyjHXhz4co1W1vj/dHSqDyvF57Zxlwx?=
- =?us-ascii?Q?oiye11HgE5m78mFRItpb9dhI1Nu0GI5H3ycPS+aouXYuuY5KKhzg4ZfrEYMF?=
- =?us-ascii?Q?NyXwIceZn4ziejI6m9d8vAtaeJYiMHr7sgZG9s95/NF/sprgU6uM5tMSWgSr?=
- =?us-ascii?Q?3wTEM4McL/ft9YpXetEhyEs2wM7/TdfuRummxWdXimbG4h1VAMWprWK1yWed?=
- =?us-ascii?Q?c7YdcNKJk13Tn1KA8G3BMRIDGLPZGRm/l6GuI+Moby3v8buSOrEJcj5x/z/e?=
- =?us-ascii?Q?m1934ZjepgiyRTkKBZ8I6OO1UNBY/GJgjLubuoNRwBqswg6fLz7u5m0d5QEh?=
- =?us-ascii?Q?FXjSk8clh1zLpicJ6tqFKaoZai3zWFP1nAYn6ykA8tEymJPv9cSMXdnJ5EuC?=
- =?us-ascii?Q?ntcWfxikCWK0kBzes8gTxFR1ct+dvOlYZNqDZ/YAFPFe96VflQTmTyZh3wDm?=
- =?us-ascii?Q?iPfEONi+AhBB4EOXoDIipQn5t2PaUXce8L/Iaqf3i2MFIrzdYi3zurL51NMf?=
- =?us-ascii?Q?mEzpWyzC0E6ZQcq0lLnWa94WdCLismxj/lG6oSgXTruYMo+L2uiDf16N+nRi?=
- =?us-ascii?Q?uIr3ytX16Usrad8Ml0sraPocJBuYOvSidUlfZJ6P58M+PtGOF3+RF8nv25G8?=
- =?us-ascii?Q?LDM70qmU60LR3Z+Zi/XRk/xIjHPuZQ93qhBk8xwbYoar5ZWI9s8E1CmFMkLQ?=
- =?us-ascii?Q?WBr92FoMHD75kE//IN6giWeZMN53YWiJCTLfhqEqSUr1AKxZbgPsrVS+9z1p?=
- =?us-ascii?Q?q3bDF/AXIZALxL/eHlwFem5iSTkIeSkWNj4RcfHGXmmGd66vp6ckOiLDdF/a?=
- =?us-ascii?Q?FSsHSirwx45upmG6iGU6nw6EpcRrDUy7p/VstjgrnLMkiq1wVLmRXcs8FBfR?=
- =?us-ascii?Q?AEmS6bj4+QL0W+3r5/jw4NkjSDV5uP1jB2pTkZpcMKjS+eV+qRPGG1EYRkr5?=
- =?us-ascii?Q?42mqiIkPPzoC3bH5nRH7mr8Vcb78fQUr80so71+FsRn0m4YaFR6Cp1jxSYh6?=
- =?us-ascii?Q?Vh48yOVpks43hkRfm40L2gNaEsBE87W6IjXjgHQBkFrHzb79Xwqm7lyzSMA1?=
- =?us-ascii?Q?eB/ez2b4xu7BEItHPj7XLBJlHcyaHGmu3Htyef1PTMR9FnuORp4grqCaqHq+?=
- =?us-ascii?Q?VKgTF9giyp93dt/4e924nGv45oqILaQN0qpP2HIEjSFIFqcnZeX1rS7l2uQh?=
- =?us-ascii?Q?0LlIheldRocRGyMW/2DuP60YjzxoN0CPUY7J6n6O1Ayyd7Wurip050fvDreG?=
- =?us-ascii?Q?pa7PptPaRnN0vuPyo1BCBGTQFNry?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b13af83f-5c10-4847-ac4a-08d95caf6e33
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5050.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 10:04:39.0046
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TzrdaRZ2EcpKOn6aYYCtJI/Ewt6LPFJpwzfcqRWYgGUdMXGNIUoqinzVYaYBWwIXz7upca6OxW6GNLJ2CetL8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8284
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Thierry Reding <treding@nvidia.com>
 
-On 10.08.21 21:27, Muni Sekhar wrote:
->
-> Any other examples of devices associated with the USB bus? Do we have
-> any reference driver in the mainline kernel tree?
+On Tue, 3 Aug 2021 00:19:32 +0300, Dmitry Osipenko wrote:
+> This series:
+> 
+>   - adds SoC thermal sensor node
+>   - adds interrupt for LM90 to Ouya, AC100, Nexus 7 and A500 devices
+>   - fixes interrupt of LM90 sensor for all boards
+>   - removes bogus VBUS regulators from A500 device-tree
+>   - improves thermal zones of Nexus 7 and A500 devices based on previous
+>     discussion with Daniel Lezcano [1]
+> 
+> [...]
 
+Applied, thanks!
 
-No, not really. We have the debug serial drivers,
-but they are associated with a host controller
-as such.
+[01/15] ARM: tegra: Add SoC thermal sensor to Tegra30 device-trees
+        commit: ffd8969c91000c5e914e3a6e9dd108b80a935910
+[02/15] ARM: tegra: ouya: Add interrupt to temperature sensor node
+        commit: 00786f61df89c45c83d04e07f4021acc8fb87287
+[03/15] ARM: tegra: paz00: Add interrupt to temperature sensor node
+        commit: a371e9698e8912ddae6cff65cb5bd068e45efe80
+[04/15] ARM: tegra: nexus7: Add interrupt to temperature sensor node
+        commit: 4eb121af6184dcbae39438a4e6a5cfbac820cdd4
+[05/15] ARM: tegra: acer-a500: Add interrupt to temperature sensor node
+        commit: c626fd7eeb11934af7b59b330885ff8f96e2c2a0
+[06/15] ARM: tegra: nyan: Correct interrupt trigger type of temperature sensor
+        commit: 303e2f343403472f3a8421bdd9f62525117507d7
+[07/15] ARM: tegra: apalis: Correct interrupt trigger type of temperature sensor
+        commit: 61f8c4f6eefb1f5053ba208c872bceac057747ff
+[08/15] ARM: tegra: cardhu: Correct interrupt trigger type of temperature sensor
+        commit: ad86e473e1f3a7faa034535a91c9e594dd038830
+[09/15] ARM: tegra: dalmore: Correct interrupt trigger type of temperature sensor
+        commit: 0a6e9f9cc27be904f32ed40742f3b74a8fc2690d
+[10/15] ARM: tegra: jetson-tk1: Correct interrupt trigger type of temperature sensor
+        commit: 3970dc6444c5902463b50b10f04d3b0f576077bf
+[11/15] ARM: tegra: acer-a500: Remove bogus USB VBUS regulators
+        commit: 0c3136565b64e6e90ab5f9bd6b6c12d5b506c335
+[12/15] ARM: tegra: acer-a500: Add power supplies to accelerometer
+        commit: ebfbd63602b036f523514c48b5d1d36bef481d51
+[13/15] ARM: tegra: acer-a500: Use verbose variant of atmel,wakeup-method value
+        commit: 0cae833ff5187f9f629ef8b97543eb24d2c64faa
+[14/15] ARM: tegra: acer-a500: Improve thermal zones
+        commit: d97a74513cec1e378de9ffb6e5f512703db447d4
+[15/15] ARM: tegra: nexus7: Improve thermal zones
+        commit: b3b3e68aaab6a7f233fbf05ec30ace9ddcb36e51
 
-> Does lsusb reports these devices?
-No.
-
-=C2=A0=C2=A0=C2=A0 Regards
-=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 Oliver
-
+Best regards,
+-- 
+Thierry Reding <treding@nvidia.com>
