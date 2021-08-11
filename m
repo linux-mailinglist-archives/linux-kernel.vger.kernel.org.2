@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D233E8B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C813E8B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235594AbhHKHjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:39:01 -0400
-Received: from www.zeus03.de ([194.117.254.33]:33634 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235526AbhHKHi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:38:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=cJhLM0w8xelHNY+NtuK+XG86hCLr
-        bVL6hhxw6Nkx4uA=; b=N9ZslsZ2frHvx9+9dXFJnWBf3ERHXM+2CMH6CSsTfFPI
-        MqEczSaGo6epHPe+HBpHZT7vQeGWQnjb0m/8zyEECLIMqsKN49oi7XOz9g9HpVAf
-        9Z5rLmspL51SDCPKtZFFxThAaomVH1ftXoBhWtVUeUWaQLYZcXo8rm0HbZvWe7A=
-Received: (qmail 2561430 invoked from network); 11 Aug 2021 09:38:33 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 11 Aug 2021 09:38:33 +0200
-X-UD-Smtp-Session: l3s3148p1@8EFytEPJPMYgAwDPXwY8AL9PxqFiRnVq
-Date:   Wed, 11 Aug 2021 09:38:30 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-mmc@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tejun Heo <tj@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dennis Zhou <dennis@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/4] bitmap: unify find_bit operations
-Message-ID: <YRN+dmd0lKtYNe5N@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-mmc@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tejun Heo <tj@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dennis Zhou <dennis@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210719021755.883182-1-yury.norov@gmail.com>
- <20210719021755.883182-3-yury.norov@gmail.com>
+        id S235712AbhHKHjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235721AbhHKHjH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:39:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5981C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 00:38:44 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mDiov-00062w-6P; Wed, 11 Aug 2021 09:38:37 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mDiou-0008MK-6T; Wed, 11 Aug 2021 09:38:36 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v1] ARM: dts: imx6qp-prtwd3: configure ENET_REF clock to 125MHz
+Date:   Wed, 11 Aug 2021 09:38:35 +0200
+Message-Id: <20210811073835.32082-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/b49F6uIw+J2vpAL"
-Content-Disposition: inline
-In-Reply-To: <20210719021755.883182-3-yury.norov@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+By default ENET_REF is configured to 50MHz, which is usable for the RMII
+link. In case RGMII is used, we need 125MHz clock.
 
---/b49F6uIw+J2vpAL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ arch/arm/boot/dts/imx6qp-prtwd3.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Sun, Jul 18, 2021 at 07:17:53PM -0700, Yury Norov wrote:
-> bitmap_for_each_{set,clear}_region() are similar to for_each_bit()
-> macros in include/linux/find.h, but interface and implementation
-> of them are different.
->=20
-> This patch adds for_each_bitrange() macros and drops unused
-> bitmap_*_region() API in sake of unification.
->=20
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+diff --git a/arch/arm/boot/dts/imx6qp-prtwd3.dts b/arch/arm/boot/dts/imx6qp-prtwd3.dts
+index 9cbe3386c51a..effe032273f7 100644
+--- a/arch/arm/boot/dts/imx6qp-prtwd3.dts
++++ b/arch/arm/boot/dts/imx6qp-prtwd3.dts
+@@ -256,6 +256,8 @@ can@0 {
+ &fec {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_enet>;
++	assigned-clocks = <&clks IMX6QDL_CLK_ENET_REF>;
++	assigned-clock-rates = <125000000>;
+ 	status = "okay";
+ 
+ 	phy-mode = "rgmii";
+-- 
+2.30.2
 
-I fetched your bitmap-20210716 branch and tested it on a Renesas
-Salvator-XS board with an R-Car M3-N SoC with some debug output added.
-Still works and values make sense, so:
-
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-
---/b49F6uIw+J2vpAL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmETfnIACgkQFA3kzBSg
-KbaFWQ//RcyowROGCgtdqiVotoOwSBpocOqGVQAqLCl7wsSMcikuIt/D0NiQu37v
-Cv0iGNjYcarcn3AL33EDywMyKAJS8LYXIyW75pH7Gc9tHmPeEZeJXEriKi+gT53Q
-mJWlvngNQhIsPmtt1JMik7b2Qdl1R+S4AkS+lUVY7abj2pF9e7/IOPQ2hWKcaIK/
-wzTfi5415Z4a7bB+JcHefmpkifGzMGu5DCSsaap/jEVVAgzO7WqFD4x9Oueh9ZtT
-d1lHSB6CMMG6Iwb6ftDaG9OtLtmq0flmRqsqIMAhdJ/N7V6sEneNA/y0St6zTrx/
-bE4v4OftO01EsLTqqvT//Gwq/GxEdl8/VoD7uH40phiOmu/w6UIQh3CHStRzbjpw
-B/3jHXUO3llJso0MXr45C6/qHrKTNCZ27HDxcME7BO0LqnC4+nYOyNlGnQsax3Df
-ACHAYTEaq/4VPrH3FKccsx+va0EaK3gdgvv2xTTbnUfOXp+FNaLqKHfC9Yj8duNE
-GiVN9j01H0qNj1uTzgnkOav9xWNo9bErCPC2z6u/zCh44pXUhcOEMtuyxyLH1zgH
-Lif9wOkhyOiCwT3I6wUepOPVfjcusa34Q1gKUOQjt3vpuSvOAK2P8WDDufSbeGMz
-nhHNkASrn0+4ZGPHfqaFZBbPY37z3uiNRPbgyKFEP4UFqWSNR2Q=
-=x/C1
------END PGP SIGNATURE-----
-
---/b49F6uIw+J2vpAL--
