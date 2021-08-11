@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B54F3E8FE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A7F3E8FD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237373AbhHKLzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:55:41 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:13307 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237271AbhHKLze (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:55:34 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gl7RQ1ypLz857J;
-        Wed, 11 Aug 2021 19:50:10 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 19:55:06 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 19:55:06 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 4/4] iommu/arm-smmu-v3: Extract reusable function __arm_smmu_cmdq_skip_err()
-Date:   Wed, 11 Aug 2021 19:48:52 +0800
-Message-ID: <20210811114852.2429-5-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210811114852.2429-1-thunder.leizhen@huawei.com>
-References: <20210811114852.2429-1-thunder.leizhen@huawei.com>
+        id S237430AbhHKLt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:49:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237589AbhHKLtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 07:49:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5943760C3E;
+        Wed, 11 Aug 2021 11:49:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628682569;
+        bh=NpZoarZNXOYI6N/IP04rCszscxBifRJPQcNMIhZUxq0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uaLhK8xHUrlzAp7BPCC4GmxUZJLbKJoXtourSyBET2zV2VUqX91dyMNiJGuzrjUp4
+         XbutvdMjUbsmcntFVd06sJMl0PVF+LD4tr5LSqCQsd+Dk0A8Xj49al2S2eEHbS40yD
+         899aro87UICWXSwLi/EDCD22ulACt7tni089e+n0=
+Date:   Wed, 11 Aug 2021 13:49:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        robin.murphy@arm.com, will@kernel.org, linuxarm@huawei.com,
+        Zhou Wang <wangzhou1@hisilicon.com>
+Subject: Re: [PATCH] platform-msi: Add ABI to show msi_irqs of platform
+ devices
+Message-ID: <YRO5R0/N9KITjyY9@kroah.com>
+References: <20210811105020.12980-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811105020.12980-1-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SMMU_GERROR.CMDQP_ERR is different to SMMU_GERRORN.CMDQP_ERR, it
-indicates that one or more errors have been encountered on a command queue
-control page interface. We need to traverse all ECMDQs in that control
-page to find all errors. For each ECMDQ error handling, it is much the
-same as the CMDQ error handling. This common processing part is extracted
-as a new function __arm_smmu_cmdq_skip_err().
+On Wed, Aug 11, 2021 at 10:50:20PM +1200, Barry Song wrote:
+> Just like pci devices have msi_irqs which can be used by userspace irq affinity
+> tools or applications to bind irqs, platform devices also widely support msi
+> irqs. For platform devices, for example ARM SMMU, userspaces also care about
+> its msi irqs as applications can know the mapping between devices and irqs
+> and then make smarter decision on handling irq affinity. For example, for
+> SVA mode, it is better to pin io page fault to the numa node applications
+> are running on. Otherwise, io page fault will get a remote page from the
+> node iopf happens.
+> With this patch, a system with multiple arm SMMUs in multiple different numa
+> node can get the mapping between devices and irqs now:
+> root@ubuntu:/sys/devices/platform# ls -l arm-smmu-v3.*/msi_irqs/*
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/25
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.0.auto/msi_irqs/26
+> -r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/27
+> -r--r--r-- 1 root root 4096 Aug 11 10:28 arm-smmu-v3.1.auto/msi_irqs/28
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/29
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.2.auto/msi_irqs/30
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/31
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.3.auto/msi_irqs/32
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/33
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.4.auto/msi_irqs/34
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/35
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.5.auto/msi_irqs/36
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/37
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.6.auto/msi_irqs/38
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/39
+> -r--r--r-- 1 root root 4096 Aug 11 10:29 arm-smmu-v3.7.auto/msi_irqs/40
+> 
+> Applications can use the mapping and the numa node information to pin
+> irqs by leveraging the numa information which has also been exported:
+> root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.0.auto/numa_node
+> 0
+> root@ubuntu:/sys/devices/platform# cat arm-smmu-v3.4.auto/numa_node
+> 2
+> 
+> Cc: Zhou Wang <wangzhou1@hisilicon.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-platform |  14 +++
+>  drivers/base/platform-msi.c                  | 122 +++++++++++++++++++++++++++
+>  2 files changed, 136 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-platform b/Documentation/ABI/testing/sysfs-bus-platform
+> index 194ca70..4498f89 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-platform
+> +++ b/Documentation/ABI/testing/sysfs-bus-platform
+> @@ -28,3 +28,17 @@ Description:
+>  		value comes from an ACPI _PXM method or a similar firmware
+>  		source. Initial users for this file would be devices like
+>  		arm smmu which are populated by arm64 acpi_iort.
+> +
+> +What:		/sys/bus/platform/devices/.../msi_irqs/
+> +Date:		August 2021
+> +Contact:	Barry Song <song.bao.hua@hisilicon.com>
+> +Description:
+> +		The /sys/devices/.../msi_irqs directory contains a variable set
+> +		of files, with each file being named after a corresponding msi
+> +		irq vector allocated to that device.
+> +
+> +What:		/sys/bus/platform/devices/.../msi_irqs/<N>
+> +Date:		August 2021
+> +Contact:	Barry Song <song.bao.hua@hisilicon.com>
+> +Description:
+> +		This attribute will show "msi" if <N> is a valid msi irq
+> diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
+> index 0b72b13..6a72ebc 100644
+> --- a/drivers/base/platform-msi.c
+> +++ b/drivers/base/platform-msi.c
+> @@ -23,6 +23,7 @@
+>  struct platform_msi_priv_data {
+>  	struct device		*dev;
+>  	void 			*host_data;
+> +	const struct attribute_group    **msi_irq_groups;
+>  	msi_alloc_info_t	arg;
+>  	irq_write_msi_msg_t	write_msg;
+>  	int			devid;
+> @@ -245,6 +246,120 @@ static void platform_msi_free_priv_data(struct platform_msi_priv_data *data)
+>  	kfree(data);
+>  }
+>  
+> +static ssize_t platform_msi_show(struct device *dev, struct device_attribute *attr,
+> +			     char *buf)
+> +{
+> +	struct msi_desc *entry;
+> +	unsigned long irq;
+> +	int retval;
+> +
+> +	retval = kstrtoul(attr->attr.name, 10, &irq);
+> +	if (retval)
+> +		return retval;
+> +
+> +	entry = irq_get_msi_desc(irq);
+> +	if (entry)
+> +		return sprintf(buf, "msi\n");
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+sysfs_emit()?
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index be2df5ad2eb51b8..597cc0ff5ef40f0 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -359,7 +359,8 @@ static void arm_smmu_cmdq_build_sync_cmd(u64 *cmd, struct arm_smmu_device *smmu,
- 	arm_smmu_cmdq_build_cmd(cmd, &ent);
- }
- 
--static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
-+static void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
-+				     struct arm_smmu_queue *q)
- {
- 	static const char * const cerror_str[] = {
- 		[CMDQ_ERR_CERROR_NONE_IDX]	= "No error",
-@@ -370,7 +371,6 @@ static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
- 
- 	int i;
- 	u64 cmd[CMDQ_ENT_DWORDS];
--	struct arm_smmu_queue *q = &smmu->cmdq.q;
- 	u32 cons = readl_relaxed(q->cons_reg);
- 	u32 idx = FIELD_GET(CMDQ_CONS_ERR, cons);
- 	struct arm_smmu_cmdq_ent cmd_sync = {
-@@ -417,6 +417,11 @@ static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
- 	queue_write(Q_ENT(q, cons), cmd, q->ent_dwords);
- }
- 
-+static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
-+{
-+	__arm_smmu_cmdq_skip_err(smmu, &smmu->cmdq.q);
-+}
-+
- /*
-  * Command queue locking.
-  * This is a form of bastardised rwlock with the following major changes:
--- 
-2.26.0.106.g9fadedd
+But why isn't this all handled by the MSI core code?  Why would each bus
+need to have this logic in it?
 
+thanks,
+
+greg k-h
