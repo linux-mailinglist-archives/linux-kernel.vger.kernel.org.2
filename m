@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E573E90E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369ED3E90F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238345AbhHKM0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:26:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51076 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237737AbhHKMYF (ORCPT
+        id S237961AbhHKM1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231698AbhHKMZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:24:05 -0400
-Message-ID: <20210811121417.532930310@linutronix.de>
+        Wed, 11 Aug 2021 08:25:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5F6C061382
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:23:43 -0700 (PDT)
+Message-ID: <20210811121417.590136432@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628684621;
+        s=2020; t=1628684622;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=GL0Akvx+J+4uTUYuRwUlXnL+P0pnSl80bsHAu0ZT1EU=;
-        b=ro4TpzAoNW5c8/1aIN4N49w09qOP3duQ7kQmoQWNy+sPEarDA4IY9cnG8WR2C84qJVNWt5
-        rx7i1OHQHrM71HvwxBC+D7qgwuIBzG+eFrQiqZSyxasFhu6izIGwkhm5Sl3AqdOPGAQzcJ
-        kSQflwBqP2gTjZ4FaJW5YTRD/iOLTIdAhqofvYu6idPrZQWQ3PpM8nl/LukDTpwA2nmoQi
-        dLUunrCh6fC6LU1vzbT9idbolEIFmeCRp0yKUXIQurGbq19mVjQPbr86ACUNOP6PC2ZTvu
-        ydotOYRzPHOw/8gC+14y7xAnW43plUatPYoeR+tvxdXqVnqDJ5owL5BWAAu2lA==
+        bh=9snN8xer+lJKJI12sG/6cncJ9Ea2JsEyaBt7/r26lmo=;
+        b=cNSlBXdTvTuYYj9fmDfEmlzf1uYmt0/YX7YE1VJQFbwoRQ5U5U9fjTdwyg953oAflX5MRn
+        2REunNRzPfqIYlG5lqOy750oSMsOY3Um6xaTSmFjpXHwzdqaIuR+/+00Seh5Qqo7ygKYPt
+        uf2drcYbbHjpHU5zL/tEO/qSR3x5e1urKsWLFIn8QDLkLXEE5N+nlZHGVQiSgZmYLfDjF3
+        f/saULNq/t/ivGuMuXx+A8gsaWJ1ljUUZQ5ZO9pmRHaZkzKBTlAUdYJx8wtNr8VrHhRiBO
+        Q/CAR7PghwBrK7V3Kgyk4NJsprSvYCKENhedH24JTSjZ9K5/342PWTxzJYBfXg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628684621;
+        s=2020e; t=1628684622;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=GL0Akvx+J+4uTUYuRwUlXnL+P0pnSl80bsHAu0ZT1EU=;
-        b=Dv+RLVY9eOVBd0eLIw+orTlRkMcjceFSKFN0wqhBBGMurZy7CkeogKKBtw7y2ZEBp/bQet
-        EWhkP4gWUl+2CCBw==
+        bh=9snN8xer+lJKJI12sG/6cncJ9Ea2JsEyaBt7/r26lmo=;
+        b=5AQ0ENmaUwW0Zw8vWDLs3+loNZC1K8DJ2mIa71akzE7xsu3yN27OvopnDaqEtooGgNHwfY
+        wlsOCNdlLBCONpCA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,135 +48,51 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V4 57/68] futex: Clarify futex_requeue() PI handling
+Subject: [patch V4 58/68] futex: Remove bogus condition for requeue PI
 References: <20210811120348.855823694@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Wed, 11 Aug 2021 14:23:41 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 14:23:42 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When requeuing to a PI futex then the requeue code tries to trylock the PI
-futex on behalf of the topmost waiter on the inner 'waitqueue' futex. If
-that succeeds then PI state has to be allocated in order to requeue further
-waiters to the PI futex.
+For requeue PI it's required to establish PI state for the PI futex to
+which waiters are requeued. This either acquires the user space futex on
+behalf of the top most waiter on the inner 'waitqueue' futex or attaches to
+the PI state of an existing waiter or creates on attached to the owner of
+the futex.
 
-The comment and the code are confusing as the PI state allocation uses
-lookup_pi_state() which either attaches to an existing waiter or to the
-owner. As the PI futex was just acquired, there cannot be a waiter on the
-PI futex because the hash bucket lock is held.
+This code can retry in case of failure, but retry can never happen when the
+pi state was successfully created. The condition to run this code is:
 
-Clarify the comment and use attach_to_pi_owner() directly. As the task on
-which behalf the PI futex has been acquired is guaranteed to be alive and
-not exiting, this call must succeed. Add a WARN_ON() in case that fails.
+  (task_count - nr_wake) < nr_requeue
+
+which is always true because:
+
+   task_count = 0
+   nr_wake = 1
+   nr_requeue >= 0
+
+Remove it all together.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V4: New patch
 ---
- kernel/futex.c |   61 +++++++++++++++++++++------------------------------------
- 1 file changed, 23 insertions(+), 38 deletions(-)
+ kernel/futex.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -1299,27 +1299,6 @@ static int attach_to_pi_owner(u32 __user
- 	return 0;
- }
- 
--static int lookup_pi_state(u32 __user *uaddr, u32 uval,
--			   struct futex_hash_bucket *hb,
--			   union futex_key *key, struct futex_pi_state **ps,
--			   struct task_struct **exiting)
--{
--	struct futex_q *top_waiter = futex_top_waiter(hb, key);
--
--	/*
--	 * If there is a waiter on that futex, validate it and
--	 * attach to the pi_state when the validation succeeds.
--	 */
--	if (top_waiter)
--		return attach_to_pi_state(uaddr, uval, top_waiter->pi_state, ps);
--
--	/*
--	 * We are the first waiter - try to look up the owner based on
--	 * @uval and attach to it.
--	 */
--	return attach_to_pi_owner(uaddr, uval, key, ps, exiting);
--}
--
- static int lock_pi_update_atomic(u32 __user *uaddr, u32 uval, u32 newval)
- {
- 	int err;
-@@ -2038,8 +2017,8 @@ static int futex_requeue(u32 __user *uad
- 		 * At this point the top_waiter has either taken uaddr2 or is
- 		 * waiting on it.  If the former, then the pi_state will not
- 		 * exist yet, look it up one more time to ensure we have a
--		 * reference to it. If the lock was taken, ret contains the
--		 * vpid of the top waiter task.
-+		 * reference to it. If the lock was taken, @ret contains the
-+		 * VPID of the top waiter task.
- 		 * If the lock was not taken, we have pi_state and an initial
- 		 * refcount on it. In case of an error we have nothing.
- 		 */
-@@ -2047,19 +2026,25 @@ static int futex_requeue(u32 __user *uad
- 			WARN_ON(pi_state);
- 			task_count++;
- 			/*
--			 * If we acquired the lock, then the user space value
--			 * of uaddr2 should be vpid. It cannot be changed by
--			 * the top waiter as it is blocked on hb2 lock if it
--			 * tries to do so. If something fiddled with it behind
--			 * our back the pi state lookup might unearth it. So
--			 * we rather use the known value than rereading and
--			 * handing potential crap to lookup_pi_state.
-+			 * If futex_proxy_trylock_atomic() acquired the
-+			 * user space futex, then the user space value
-+			 * @uaddr2 has been set to the @hb1's top waiter
-+			 * task VPID. This task is guaranteed to be alive
-+			 * and cannot be exiting because it is either
-+			 * sleeping or blocked on @hb2 lock.
-+			 *
-+			 * The @uaddr2 futex cannot have waiters either as
-+			 * otherwise futex_proxy_trylock_atomic() would not
-+			 * have succeeded.
- 			 *
--			 * If that call succeeds then we have pi_state and an
--			 * initial refcount on it.
-+			 * In order to requeue waiters to @hb2, pi state is
-+			 * required. Hand in the VPID value (@ret) and
-+			 * allocate PI state with an initial refcount on
-+			 * it.
- 			 */
--			ret = lookup_pi_state(uaddr2, ret, hb2, &key2,
--					      &pi_state, &exiting);
-+			ret = attach_to_pi_owner(uaddr2, ret, &key2, &pi_state,
-+						 &exiting);
-+			WARN_ON(ret);
+@@ -2000,7 +2000,7 @@ static int futex_requeue(u32 __user *uad
  		}
- 
- 		switch (ret) {
-@@ -2183,9 +2168,9 @@ static int futex_requeue(u32 __user *uad
  	}
  
- 	/*
--	 * We took an extra initial reference to the pi_state either
--	 * in futex_proxy_trylock_atomic() or in lookup_pi_state(). We
--	 * need to drop it here again.
-+	 * We took an extra initial reference to the pi_state either in
-+	 * futex_proxy_trylock_atomic() or in attach_to_pi_owner(). We need
-+	 * to drop it here again.
- 	 */
- 	put_pi_state(pi_state);
+-	if (requeue_pi && (task_count - nr_wake < nr_requeue)) {
++	if (requeue_pi) {
+ 		struct task_struct *exiting = NULL;
  
-@@ -2364,7 +2349,7 @@ static int __fixup_pi_state_owner(u32 __
- 	 * Modifying pi_state _before_ the user space value would leave the
- 	 * pi_state in an inconsistent state when we fault here, because we
- 	 * need to drop the locks to handle the fault. This might be observed
--	 * in the PID check in lookup_pi_state.
-+	 * in the PID checks when attaching to PI state .
- 	 */
- retry:
- 	if (!argowner) {
+ 		/*
 
