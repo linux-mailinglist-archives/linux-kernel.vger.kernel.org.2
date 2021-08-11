@@ -2,74 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31043E9805
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55603E9807
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhHKSyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:54:21 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:44811 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhHKSyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:54:20 -0400
-Received: by mail-pj1-f41.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so6601183pjb.3;
-        Wed, 11 Aug 2021 11:53:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M1uZob/D+GwylCXdgRi3obUxS40Qeihru4aemoTLAUQ=;
-        b=RQAqBoGxIRm1rwU9qIU5SbqrqvqxjaC4mdS43Jw1QDluVcYXrEohGmWjV7FvMy/PNJ
-         Sw9LtcKEa6fB5ZTdiTSKfe5678gQ1YlwcybLwCe7mHnQ87MqkKxK5sdqObKh5epaNV6E
-         0wMDsCMEt8WsiczQIKba06N7tdjUIIQuMf1jEnBGGBpX49G4Il6SElXMMF9hlaznrn/h
-         UaL6A6vussnbhn5u9suoDROOYh33eSXtnWrsXI39qoaifIUSuvkp9kez/xAM5keSgKrv
-         GJE4oZQB7lOBinpE+6bxLvy00vTQZRNORXQ3nDEqRGWi2/xoRCG2G2fEuOU1UpmMzcE0
-         5dwQ==
-X-Gm-Message-State: AOAM530UnvSDATHBkB6o2Zh0R1v/lh0hhVIh3fNhQNHgVt0M5GMU2D76
-        X6Lya6jvYAWgbot+fRdCYQ==
-X-Google-Smtp-Source: ABdhPJzwPWdzjp/BVTGo4S+qJUbIvZLtknvskDXcbQTrge6t+rdZVuqlnSego1aoSS8+I6dV0b0rbA==
-X-Received: by 2002:a17:90a:d144:: with SMTP id t4mr64475pjw.113.1628708036070;
-        Wed, 11 Aug 2021 11:53:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([208.184.162.215])
-        by smtp.gmail.com with ESMTPSA id x13sm188199pjh.30.2021.08.11.11.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:53:55 -0700 (PDT)
-Received: (nullmailer pid 90561 invoked by uid 1000);
-        Wed, 11 Aug 2021 18:53:52 -0000
-Date:   Wed, 11 Aug 2021 12:53:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yuji2.ishikawa@toshiba.co.jp, Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Subject: Re: [PATCH v4 2/4] dt-bindings: clock: Add DT bindings for SMU of
- Toshiba Visconti TMPV770x SoC
-Message-ID: <YRQcwD7771ncxtMT@robh.at.kernel.org>
-References: <20210804092244.390376-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210804092244.390376-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+        id S231240AbhHKSzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:55:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229947AbhHKSzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 14:55:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87E116105A;
+        Wed, 11 Aug 2021 18:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628708094;
+        bh=cL9/V/8y48DqMm0G8VqpaHkYQP93I7XMoZKL5XYZJIk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=t7eYs+MheagFnbayhOJoScPhNm1JfqpHSZhBq0rOce+BYN3DpclmvWRjLXW1gjnsB
+         wy/knE/P6Tq5TqyYwPY6t4RqxTC461yti36XG2pGxYTDJHCxsWP3W0UYAmT5ix3Sdc
+         Asx9+TGU0136x8yA2JtxxbscjtFc9HhJhcTHhHcTt+Z0O+x9bYchIg6nH3on+d/v71
+         6j9GhRQetE+7v/YkkK50CBy+owff2OIYvBL+kp0b+MavFyStIi4nrp6NgKofkY0LhG
+         /iyPSig9l4hANt3ZVxakxl4SIVGujK9Q2zI2+/xj+iEgALrelP2Z6f/U7QEoc1fxHb
+         OtRD8htJnPZuA==
+Subject: Re: [PATCH 04/18] ARC: mm: remove pgd_offset_fast
+To:     Mike Rapoport <rppt@kernel.org>, Vineet Gupta <vgupta@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+ <20210811004258.138075-5-vgupta@kernel.org> <YRNcJpyr76h5EK0k@kernel.org>
+X-Priority: 1 (Highest)
+From:   Vineet Gupta <vgupta@kernel.org>
+Message-ID: <c8170afd-2a9d-a8fd-3f4d-bbde4ff02e36@kernel.org>
+Date:   Wed, 11 Aug 2021 11:54:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804092244.390376-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <YRNcJpyr76h5EK0k@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Aug 2021 18:22:42 +0900, Nobuhiro Iwamatsu wrote:
-> Add device tree bindings for SMU (System Management Unit) controller of
-> Toshiba Visconti TMPV770x SoC series.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  .../clock/toshiba,tmpv770x-pismu.yaml         |  50 +++++
->  include/dt-bindings/clock/toshiba,tmpv770x.h  | 181 ++++++++++++++++++
->  include/dt-bindings/reset/toshiba,tmpv770x.h  |  41 ++++
->  3 files changed, 272 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/toshiba,tmpv770x-pismu.yaml
->  create mode 100644 include/dt-bindings/clock/toshiba,tmpv770x.h
->  create mode 100644 include/dt-bindings/reset/toshiba,tmpv770x.h
-> 
+On 8/10/21 10:12 PM, Mike Rapoport wrote:
+> On Tue, Aug 10, 2021 at 05:42:44PM -0700, Vineet Gupta wrote:
+>> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+>> ---
+>>   arch/arc/include/asm/pgtable.h | 23 -----------------------
+>>   arch/arc/mm/fault.c            |  2 +-
+>>   2 files changed, 1 insertion(+), 24 deletions(-)
+> Shouldn't this be a part of the patch that removed usage of the scratch reg
+> for pgd?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Yep, now folded in there. Also updated prev patch's terse commit log.
+
+Thx,
+-Vineet
