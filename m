@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146183E8753
+	by mail.lfdr.de (Postfix) with ESMTP id 607C93E8754
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbhHKAno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:43:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38752 "EHLO mail.kernel.org"
+        id S236066AbhHKAnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235855AbhHKAnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:43:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8A1860EB9;
-        Wed, 11 Aug 2021 00:43:16 +0000 (UTC)
+        id S235977AbhHKAnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:43:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4815A60C40;
+        Wed, 11 Aug 2021 00:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1628642597;
-        bh=Sa6jMMUF++eFjzZYBgaSDDh1YfwHQ1O6NoBVOUIDx/g=;
+        bh=ErFVGLefxP4MHVDH8Q7kswgyJ2BqPsS+5BKbLRJMXC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uMxUxQgx1jgTzlvGIW04vLHOiuyIkTT6O6VD7SWGFbbuke4VTOsJg4wyRQdAAhFoG
-         xQjGGzOOEizjooOwacnj5Zvnlkr7ozFvpGV8uZYF1/Eux50OJmSn1Ot6AVgxp2lo9f
-         FJJ7wgHeJHPLCHjnCh3NyI67yJRDkiCtgCaQlkkkH/U0YX70ZZACMUwgdZOdNT6RSy
-         5Ash1i70JjBkvTZdaV4T87bSdkfUXmmlLd7Ku81CA1hQhTdvvhEGAMxT7Mp9C6jjLa
-         uKAZIxRmhIk7p7Ly02C59FJcSLE62HS7a/tP56gKlOy1DLKbJzed0AmRM/ItoYES0+
-         4eMVYfU2uv3Bg==
+        b=egE2spqBx9LY1O7g9Vel5aVr2I9KAWdVGpTZz7DgmNWefl5hyvv2tvPorFxHkRDM6
+         71q003FAcfpShb9J3ju2shYDhiSXfgvywX1nA6koVInrgfrBNwBCZCDXr3f7iqGnGk
+         wOWsQuPFRv7iEzuOIANE9FD5R1TosNU3At/HgbrtDMrxyQdmOXDghsduu2L9ilt14G
+         qAGZuuhrLvsYi5uN86y5YuDxQK+if4ld8+jYDyb90HcE5WSW+GXfQHPr8D43pX0abq
+         dz+hrCoqbVnJwkM/RlUwdmYnwPxroHVgLApEPTTYHjfz1UO4oTLFrD+5HFlwoMesVi
+         4WVmPOy3cmk1g==
 From:   Vineet Gupta <vgupta@kernel.org>
 To:     linux-snps-arc@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
@@ -30,9 +30,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Mike Rapoport <rppt@kernel.org>,
         Vineet Gupta <vgupta@kernel.org>,
         Vineet Gupta <vgupta@kernel.com>
-Subject: [PATCH 02/18] ARC: mm: remove tlb paranoid code
-Date:   Tue, 10 Aug 2021 17:42:42 -0700
-Message-Id: <20210811004258.138075-3-vgupta@kernel.org>
+Subject: [PATCH 03/18] ARC: mm: move mmu/cache externs out to setup.h
+Date:   Tue, 10 Aug 2021 17:42:43 -0700
+Message-Id: <20210811004258.138075-4-vgupta@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210811004258.138075-1-vgupta@kernel.org>
 References: <20210811004258.138075-1-vgupta@kernel.org>
@@ -42,179 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was used way back when in arc700 debugging when ASID allocator was
-still bit flaky. Not needed in last 5 years
-
 Signed-off-by: Vineet Gupta <vgupta@kernel.com>
 Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 ---
- arch/arc/Kconfig           |  3 ---
- arch/arc/include/asm/mmu.h |  6 -----
- arch/arc/mm/tlb.c          | 40 ------------------------------
- arch/arc/mm/tlbex.S        | 50 --------------------------------------
- 4 files changed, 99 deletions(-)
+ arch/arc/include/asm/cache.h |  4 ----
+ arch/arc/include/asm/mmu.h   |  4 ----
+ arch/arc/include/asm/setup.h | 12 ++++++++++--
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 0680b1de0fc3..59d5b2a179f6 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -537,9 +537,6 @@ config ARC_DW2_UNWIND
- 	  If you don't debug the kernel, you can say N, but we may not be able
- 	  to solve problems without frame unwind information
+diff --git a/arch/arc/include/asm/cache.h b/arch/arc/include/asm/cache.h
+index d8ece4292388..f0f1fc5d62b6 100644
+--- a/arch/arc/include/asm/cache.h
++++ b/arch/arc/include/asm/cache.h
+@@ -62,10 +62,6 @@
+ #define ARCH_SLAB_MINALIGN	8
+ #endif
  
--config ARC_DBG_TLB_PARANOIA
--	bool "Paranoia Checks in Low Level TLB Handlers"
+-extern void arc_cache_init(void);
+-extern char *arc_cache_mumbojumbo(int cpu_id, char *buf, int len);
+-extern void read_decode_cache_bcr(void);
 -
- config ARC_DBG_JUMP_LABEL
- 	bool "Paranoid checks in Static Keys (jump labels) code"
- 	depends on JUMP_LABEL
+ extern int ioc_enable;
+ extern unsigned long perip_base, perip_end;
+ 
 diff --git a/arch/arc/include/asm/mmu.h b/arch/arc/include/asm/mmu.h
-index 4065335a7922..38a036508699 100644
+index 38a036508699..762cfe66e16b 100644
 --- a/arch/arc/include/asm/mmu.h
 +++ b/arch/arc/include/asm/mmu.h
-@@ -64,12 +64,6 @@ typedef struct {
+@@ -64,10 +64,6 @@ typedef struct {
  	unsigned long asid[NR_CPUS];	/* 8 bit MMU PID + Generation cycle */
  } mm_context_t;
  
--#ifdef CONFIG_ARC_DBG_TLB_PARANOIA
--void tlb_paranoid_check(unsigned int mm_asid, unsigned long address);
--#else
--#define tlb_paranoid_check(a, b)
--#endif
+-void arc_mmu_init(void);
+-extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
+-void read_decode_mmu_bcr(void);
 -
- void arc_mmu_init(void);
- extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
- void read_decode_mmu_bcr(void);
-diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
-index 349fb7a75d1d..6079dfd129b9 100644
---- a/arch/arc/mm/tlb.c
-+++ b/arch/arc/mm/tlb.c
-@@ -400,7 +400,6 @@ void create_tlb(struct vm_area_struct *vma, unsigned long vaddr, pte_t *ptep)
- 	 *
- 	 * Removing the assumption involves
- 	 * -Using vma->mm->context{ASID,SASID}, as opposed to MMU reg.
--	 * -Fix the TLB paranoid debug code to not trigger false negatives.
- 	 * -More importantly it makes this handler inconsistent with fast-path
- 	 *  TLB Refill handler which always deals with "current"
- 	 *
-@@ -423,8 +422,6 @@ void create_tlb(struct vm_area_struct *vma, unsigned long vaddr, pte_t *ptep)
+ static inline int is_pae40_enabled(void)
+ {
+ 	return IS_ENABLED(CONFIG_ARC_HAS_PAE40);
+diff --git a/arch/arc/include/asm/setup.h b/arch/arc/include/asm/setup.h
+index 01f85478170d..028a8cf76206 100644
+--- a/arch/arc/include/asm/setup.h
++++ b/arch/arc/include/asm/setup.h
+@@ -2,8 +2,8 @@
+ /*
+  * Copyright (C) 2004, 2007-2010, 2011-2012 Synopsys, Inc. (www.synopsys.com)
+  */
+-#ifndef __ASMARC_SETUP_H
+-#define __ASMARC_SETUP_H
++#ifndef __ASM_ARC_SETUP_H
++#define __ASM_ARC_SETUP_H
  
- 	local_irq_save(flags);
  
--	tlb_paranoid_check(asid_mm(vma->vm_mm, smp_processor_id()), vaddr);
--
- 	vaddr &= PAGE_MASK;
+ #include <linux/types.h>
+@@ -34,4 +34,12 @@ long __init arc_get_mem_sz(void);
+ #define IS_AVAIL2(v, s, cfg)	IS_AVAIL1(v, s), IS_AVAIL1(v, IS_USED_CFG(cfg))
+ #define IS_AVAIL3(v, v2, s)	IS_AVAIL1(v, s), IS_AVAIL1(v, IS_DISABLED_RUN(v2))
  
- 	/* update this PTE credentials */
-@@ -818,40 +815,3 @@ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
- 
- 	local_irq_restore(flags);
- }
--
--/***********************************************************************
-- * Diagnostic Routines
-- *  -Called from Low Level TLB Handlers if things don;t look good
-- **********************************************************************/
--
--#ifdef CONFIG_ARC_DBG_TLB_PARANOIA
--
--/*
-- * Low Level ASM TLB handler calls this if it finds that HW and SW ASIDS
-- * don't match
-- */
--void print_asid_mismatch(int mm_asid, int mmu_asid, int is_fast_path)
--{
--	pr_emerg("ASID Mismatch in %s Path Handler: sw-pid=0x%x hw-pid=0x%x\n",
--	       is_fast_path ? "Fast" : "Slow", mm_asid, mmu_asid);
--
--	__asm__ __volatile__("flag 1");
--}
--
--void tlb_paranoid_check(unsigned int mm_asid, unsigned long addr)
--{
--	unsigned int mmu_asid;
--
--	mmu_asid = read_aux_reg(ARC_REG_PID) & 0xff;
--
--	/*
--	 * At the time of a TLB miss/installation
--	 *   - HW version needs to match SW version
--	 *   - SW needs to have a valid ASID
--	 */
--	if (addr < 0x70000000 &&
--	    ((mm_asid == MM_CTXT_NO_ASID) ||
--	      (mmu_asid != (mm_asid & MM_CTXT_ASID_MASK))))
--		print_asid_mismatch(mm_asid, mmu_asid, 0);
--}
--#endif
-diff --git a/arch/arc/mm/tlbex.S b/arch/arc/mm/tlbex.S
-index bcd2909c691f..0b4bb62fa0ab 100644
---- a/arch/arc/mm/tlbex.S
-+++ b/arch/arc/mm/tlbex.S
-@@ -93,11 +93,6 @@ ex_saved_reg1:
- 	st_s  r1, [r0, 4]
- 	st_s  r2, [r0, 8]
- 	st_s  r3, [r0, 12]
--
--	; VERIFY if the ASID in MMU-PID Reg is same as
--	; one in Linux data structures
--
--	tlb_paranoid_check_asm
- .endm
- 
- .macro TLBMISS_RESTORE_REGS
-@@ -146,51 +141,6 @@ ex_saved_reg1:
- 
- #endif
- 
--;============================================================================
--;  Troubleshooting Stuff
--;============================================================================
--
--; Linux keeps ASID (Address Space ID) in task->active_mm->context.asid
--; When Creating TLB Entries, instead of doing 3 dependent loads from memory,
--; we use the MMU PID Reg to get current ASID.
--; In bizzare scenrios SW and HW ASID can get out-of-sync which is trouble.
--; So we try to detect this in TLB Mis shandler
--
--.macro tlb_paranoid_check_asm
--
--#ifdef CONFIG_ARC_DBG_TLB_PARANOIA
--
--	GET_CURR_TASK_ON_CPU  r3
--	ld r0, [r3, TASK_ACT_MM]
--	ld r0, [r0, MM_CTXT+MM_CTXT_ASID]
--	breq r0, 0, 55f	; Error if no ASID allocated
--
--	lr r1, [ARC_REG_PID]
--	and r1, r1, 0xFF
--
--	and r2, r0, 0xFF	; MMU PID bits only for comparison
--	breq r1, r2, 5f
--
--55:
--	; Error if H/w and S/w ASID don't match, but NOT if in kernel mode
--	lr  r2, [erstatus]
--	bbit0 r2, STATUS_U_BIT, 5f
--
--	; We sure are in troubled waters, Flag the error, but to do so
--	; need to switch to kernel mode stack to call error routine
--	GET_TSK_STACK_BASE   r3, sp
--
--	; Call printk to shoutout aloud
--	mov r2, 1
--	j print_asid_mismatch
--
--5:	; ASIDs match so proceed normally
--	nop
--
--#endif
--
--.endm
--
- ;============================================================================
- ;TLB Miss handling Code
- ;============================================================================
++extern void arc_mmu_init(void);
++extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
++extern void read_decode_mmu_bcr(void);
++
++extern void arc_cache_init(void);
++extern char *arc_cache_mumbojumbo(int cpu_id, char *buf, int len);
++extern void read_decode_cache_bcr(void);
++
+ #endif /* __ASMARC_SETUP_H */
 -- 
 2.25.1
 
