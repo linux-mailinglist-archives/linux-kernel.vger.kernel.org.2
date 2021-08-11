@@ -2,463 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC013E9965
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BB23E9966
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhHKUKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 16:10:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43423 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229655AbhHKUKs (ORCPT
+        id S231818AbhHKULD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 16:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhHKULC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:10:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628712624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+8ivjRmEB+5963TU7ruqdjbSW+t0p95RzeQzlnneJwU=;
-        b=cU31jvCiLfDYvH6JsMwrRX/ZaLWkfKYM/cVQsEdZy9KqkkPntWY6/AHbhO1/3YUYEu9Ymt
-        yTZb0o4ftjcFqj1EVct8sZIsO7Spq3eVIJJD7AkrYUhsc5sRx+HZfyefbWmviNGL7uRjT7
-        FGwqk9/IzWF63ku7AYv6Y2TTTFyPKnA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-jxTqjXzxM7O5ZFLsHmq-Pw-1; Wed, 11 Aug 2021 16:10:18 -0400
-X-MC-Unique: jxTqjXzxM7O5ZFLsHmq-Pw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 831401082922;
-        Wed, 11 Aug 2021 20:10:17 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 881E860BF1;
-        Wed, 11 Aug 2021 20:10:15 +0000 (UTC)
-Message-ID: <6ebb9699530e245f33628c10bc774035fe7bfc84.camel@redhat.com>
-Subject: Re: [PATCH] scripts/gdb: rework lx-symbols gdb script
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>, linux-kernel@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kieran Bingham <kbingham@kernel.org>
-Date:   Wed, 11 Aug 2021 23:10:14 +0300
-In-Reply-To: <651bf834-5855-d298-bc1c-383e5da74aa5@siemens.com>
-References: <20210811133152.904945-1-mlevitsk@redhat.com>
-         <651bf834-5855-d298-bc1c-383e5da74aa5@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 11 Aug 2021 16:11:02 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D18C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:10:38 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so11440482pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hZRR3KbThFnNJYUDfRkki0dEGff2LS9+I9PdbQL0MA8=;
+        b=Wzyx1Y0L8r1Jt66tvpbEFeO18N8SDEIH4Kdx5HNC/xp1AyIqwmj+1piwMrT6W8Gk6o
+         Mdwrl5t8Bvb2PFPkQyMbfmnUVv3ptp4sk+vl5/omH4qUu3e7B87YM/b21EyWlVUOkei6
+         mrrQJ2WUFQHjOWoni4SNg+oErCVDyQGsemtUA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hZRR3KbThFnNJYUDfRkki0dEGff2LS9+I9PdbQL0MA8=;
+        b=OZ2rNvu0BJ4et6weh7uO/A4xj+G0NbZarrwTtIIojYcwtahQ0r3IzFa7/mID0vY/xa
+         92YrBa40CyBwB2NdTaxntivZDWqld2HizXupus0U9aRzwDDzDZ0q/ZWnN2bDryoZS5+6
+         GtnwzQs5Xu5dpAHc04P60T88y0jqnLvRPEnNtBsDZpmRnPRelh2jeZGgUwuizrBVL4PB
+         lRNTCJNgWu3zRZ7LiT/DcMNZYrLatnGRUTVTw5QPtJCLY22xIoVJpOkCrky9jt9D3cmj
+         0L7ak3lCaVOa/xHYfNrVH7+KzEGIh+phFp3nGYr75ke3w+SDbLEs6jRmPoIZPVChsJUV
+         0Agw==
+X-Gm-Message-State: AOAM530L9LxzS0Rp5yNbgeKoVh8pvlW1RmgJCITLQSTePK5yG/bhl1q3
+        eOaQ00e17kyZST/j1uYMjGAZBA==
+X-Google-Smtp-Source: ABdhPJxmyg1h9DKqWJ+EwyXYBn1yzs6AKuJmcCk2R0eO5h3KlCfZakOp8eSCRFpns/ZbcAIVgVrMDQ==
+X-Received: by 2002:a17:902:d487:b029:12d:4209:a72 with SMTP id c7-20020a170902d487b029012d42090a72mr587922plg.8.1628712637800;
+        Wed, 11 Aug 2021 13:10:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v16sm7844849pje.24.2021.08.11.13.10.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 13:10:37 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 13:10:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Elliot Berman <quic_eberman@quicinc.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org, Jinlong Mao <jinlmao@codeaurora.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: Re: [PATCH 1/1] cfi: Use rcu_read_{un}lock_sched_notrace
+Message-ID: <202108111306.527943F39@keescook>
+References: <20210811155914.19550-1-quic_eberman@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210811155914.19550-1-quic_eberman@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-11 at 21:01 +0200, Jan Kiszka wrote:
-> On 11.08.21 15:31, Maxim Levitsky wrote:
-> > Fix several issues that are present in lx-symbols script:
-> > 
-> > * Track module unloads by placing another software breakpoint at
-> >   'free_module'
-> >   (force uninline this symbol just in case), and use remove-symbol-file
-> >   gdb command to unload the symobls of the module that is unloading.
-> > 
-> >   That gives the gdb a chance to mark all software breakpoints from
-> >   this module as pending again.
-> >   Also remove the module from the 'known' module list once it is unloaded.
-> > 
-> > * Since we now track module unload, we don't need to reload all
-> >   symbols anymore when 'known' module loaded again
-> >   (that can't happen anymore).
-> >   This allows reloading a module in the debugged kernel to finish
-> >   much faster, while lx-symbols tracks module loads and unloads.
-> > 
-> > * Disable/enable all gdb breakpoints on both module load and unload
-> >   breakpoint hits, and not only in 'load_all_symbols' as was done before.
-> >   (load_all_symbols is no longer called on breakpoint hit)
-> >   That allows gdb to avoid getting confused about the state of the
-> >   (now two) internal breakpoints we place.
-> >   Otherwise it will leave them in the kernel code segment, when
-> >   continuing which triggers a guest kernel panic as soon as it skips
-> >   over the 'int3' instruction and executes the garbage tail of the optcode
-> >   on which the breakpoint was placed.
-> > 
-> > * Block SIGINT while the script is running as this seems to crash gdb
-> > 
-> > * Add a basic check that kernel is already loaded into the guest memory
-> >   to avoid confusing errors.
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  kernel/module.c              |   8 +-
-> >  scripts/gdb/linux/symbols.py | 203 +++++++++++++++++++++++------------
-> >  2 files changed, 143 insertions(+), 68 deletions(-)
-> > 
-> > diff --git a/kernel/module.c b/kernel/module.c
-> > index ed13917ea5f3..242bd4bb0b55 100644
-> > --- a/kernel/module.c
-> > +++ b/kernel/module.c
-> > @@ -906,8 +906,12 @@ int module_refcount(struct module *mod)
-> >  }
-> >  EXPORT_SYMBOL(module_refcount);
-> >  
-> > -/* This exists whether we can unload or not */
-> > -static void free_module(struct module *mod);
-> > +/* This exists whether we can unload or not
-> > + * Keep it uninlined to provide a reliable breakpoint target,
-> > + * e.g. for the gdb helper command 'lx-symbols'.
-> > + */
-> > +
-> > +static noinline void free_module(struct module *mod);
-> >  
-> >  SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
-> >  		unsigned int, flags)
+On Wed, Aug 11, 2021 at 08:59:14AM -0700, Elliot Berman wrote:
+> If rcu_read_lock_sched tracing is enabled, the tracing subsystem can
+> perform a jump which needs to be checked by CFI. For example, stm_ftrace
+> source is enabled as a module and hooks into enabled ftrace events. This
+> can cause an recursive loop where find_shadow_check_fn ->
+> rcu_read_lock_sched -> (call to stm_ftrace generates cfi slowpath) ->
+> find_shadow_check_fn -> rcu_read_lock_sched -> ...
 > 
-> You likely want and need to push that as separate patch, analogously to
-> be02a1862304.
-
-I will do.
-
+> To avoid the recursion, either the ftrace codes needs to be marked with
+> __no_cfi or CFI should not trace. Use the "_notrace" in CFI to avoid
+> tracing so that CFI can guard ftrace.
 > 
-> And as you are factoring the patch, maybe think about whether you can
-> split the changes to symbols.py into logical steps as well. The commit
-> messages suggests that, thought that might be misleading.
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 
-I can try doing that.
+Thanks for this patch! While applying it I noticed that the DKIM
+signature failed. This is actually even visible in the lore archive:
+https://lore.kernel.org/lkml/20210811155914.19550-1-quic_eberman@quicinc.com/raw
+(DKIM_INVALID)
 
-> 
-> > diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-> > index 08d264ac328b..78e278fb4bad 100644
-> > --- a/scripts/gdb/linux/symbols.py
-> > +++ b/scripts/gdb/linux/symbols.py
-> > @@ -14,45 +14,23 @@
-> >  import gdb
-> >  import os
-> >  import re
-> > +import signal
-> >  
-> >  from linux import modules, utils
-> >  
-> >  
-> >  if hasattr(gdb, 'Breakpoint'):
-> > -    class LoadModuleBreakpoint(gdb.Breakpoint):
-> > -        def __init__(self, spec, gdb_command):
-> > -            super(LoadModuleBreakpoint, self).__init__(spec, internal=True)
-> > +
-> > +    class BreakpointWrapper(gdb.Breakpoint):
-> > +        def __init__(self, callback, **kwargs):
-> > +            super(BreakpointWrapper, self).__init__(internal=True, **kwargs)
-> >              self.silent = True
-> > -            self.gdb_command = gdb_command
-> > +            self.callback = callback
-> >  
-> >          def stop(self):
-> > -            module = gdb.parse_and_eval("mod")
-> > -            module_name = module['name'].string()
-> > -            cmd = self.gdb_command
-> > -
-> > -            # enforce update if object file is not found
-> > -            cmd.module_files_updated = False
-> > -
-> > -            # Disable pagination while reporting symbol (re-)loading.
-> > -            # The console input is blocked in this context so that we would
-> > -            # get stuck waiting for the user to acknowledge paged output.
-> > -            show_pagination = gdb.execute("show pagination", to_string=True)
-> > -            pagination = show_pagination.endswith("on.\n")
-> > -            gdb.execute("set pagination off")
-> > -
-> > -            if module_name in cmd.loaded_modules:
-> > -                gdb.write("refreshing all symbols to reload module "
-> > -                          "'{0}'\n".format(module_name))
-> > -                cmd.load_all_symbols()
-> > -            else:
-> > -                cmd.load_module_symbols(module)
-> > -
-> > -            # restore pagination state
-> > -            gdb.execute("set pagination %s" % ("on" if pagination else "off"))
-> > -
-> > +            self.callback()
-> >              return False
-> >  
-> > -
-> >  class LxSymbols(gdb.Command):
-> >      """(Re-)load symbols of Linux kernel and currently loaded modules.
-> >  
-> > @@ -61,15 +39,52 @@ are scanned recursively, starting in the same directory. Optionally, the module
-> >  search path can be extended by a space separated list of paths passed to the
-> >  lx-symbols command."""
-> >  
-> > -    module_paths = []
-> > -    module_files = []
-> > -    module_files_updated = False
-> > -    loaded_modules = []
-> > -    breakpoint = None
-> > -
-> >      def __init__(self):
-> >          super(LxSymbols, self).__init__("lx-symbols", gdb.COMMAND_FILES,
-> >                                          gdb.COMPLETE_FILENAME)
-> > +        self.module_paths = []
-> > +        self.module_files = []
-> > +        self.module_files_updated = False
-> > +        self.loaded_modules = {}
-> > +        self.internal_breakpoints = []
-> > +
-> > +    # prepare GDB for loading/unloading a module
-> > +    def _prepare_for_module_load_unload(self):
-> > +
-> > +        self.blocked_sigint = False
-> > +
-> > +        # block SIGINT during execution to avoid gdb crash
-> > +        sigmask = signal.pthread_sigmask(signal.SIG_BLOCK, [])
-> > +        if not signal.SIGINT in sigmask:
-> > +            self.blocked_sigint = True
-> > +            signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
-> > +
-> > +        # disable all breakpoints to workaround a GDB bug where it would
-> > +        # not correctly resume from an internal breakpoint we placed
-> > +        # in do_module_init/free_module (it leaves the int3
-> 
-> Seems the comment ends prematurely.
+$ b4 am -tls https://lore.kernel.org/lkml/20210811155914.19550-1-quic_eberman@quicinc.com/
+Grabbing thread from lore.kernel.org/lkml/20210811155914.19550-1-quic_eberman%40quicinc.com/t.mbox.gz
+Analyzing 2 messages in the thread
+Checking attestation on all messages, may take a moment...
+---
+  ✗ [PATCH 1/1] cfi: Use rcu_read_{un}lock_sched_notrace
+    + Reviewed-by: Sami Tolvanen <samitolvanen@google.com> (✓ DKIM/google.com)
+    + Signed-off-by: Kees Cook <keescook@chromium.org>
+    + Link: https://lore.kernel.org/r/20210811155914.19550-1-quic_eberman@quicinc.com
+  ---
+  ✗ BADSIG: DKIM/quicinc.com
 
-Yep, GDB leaves the int3 instruction in the guest memory, and the guest dies after
-it encounters the truncated instruction that follows it.
 
-> 
-> Any reference to a gdb bug tracker entry? Or affected versions? The
-> description is a bit too fuzzy.
 
-Well stricly speaking this isn't a GDB bug.
-GDB documentation explictly prohibits what we are doing in this script.
-
-https://sourceware.org/gdb/current/onlinedocs/gdb/Breakpoints-In-Python.html
-
-"You should not alter the execution state of the inferior (i.e., step, next, etc.), alter the current frame context 
-(i.e., change the current active frame), or alter, add or delete any breakpoint. 
-As a general rule, you should not alter any data within GDB or the inferior at this time."
-
-However we are reloading the whole symbol table as a response to a breakpoint.
-
-However there is pretty much no other way to do what this script does so the next best thing
-is to workaround this as was already partially done, and I just made it more robust.
-
-Same for blocking SIGINT which I added, which otherwise crashes GDB
-while the symbols are reloading.
-It probably will also be blamed on this.
-
-Do you think I might have some luck taking with GDB maintainers and asking them to support
-this use case of updating symbol table when a breakpoint hits?
-
-> 
-> > +        self.saved_breakpoints = []
-> > +        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
-> > +            for bp in gdb.breakpoints():
-> > +                self.saved_breakpoints.append({'breakpoint': bp, 'enabled': bp.enabled})
-> > +                bp.enabled = False
-> > +
-> > +        # disable pagination to avoid asking user for continue
-> > +        show_pagination = gdb.execute("show pagination", to_string=True)
-> > +        self.saved_pagination = show_pagination.endswith("on.\n")
-> > +        gdb.execute("set pagination off")
-> > +
-> > +    def _unprepare_for_module_load_unload(self):
-> > +        # restore breakpoint state
-> > +        for breakpoint in self.saved_breakpoints:
-> > +            breakpoint['breakpoint'].enabled = breakpoint['enabled']
-> > +
-> > +        # restore pagination state
-> > +        gdb.execute("set pagination %s" % ("on" if self.saved_pagination else "off"))
-> > +
-> > +        # unblock SIGINT
-> > +        if self.blocked_sigint:
-> > +            sigmask = signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
-> > +            self.blocked_sigint = False
-> >  
-> >      def _update_module_files(self):
-> >          self.module_files = []
-> > @@ -107,7 +122,7 @@ lx-symbols command."""
-> >                      name=section_name, addr=str(address)))
-> >          return "".join(args)
-> >  
-> > -    def load_module_symbols(self, module):
-> > +    def _do_load_module_symbols(self, module):
-> >          module_name = module['name'].string()
-> >          module_addr = str(module['core_layout']['base']).split()[0]
-> >  
-> > @@ -130,56 +145,112 @@ lx-symbols command."""
-> >                  addr=module_addr,
-> >                  sections=self._section_arguments(module))
-> >              gdb.execute(cmdline, to_string=True)
-> > -            if module_name not in self.loaded_modules:
-> > -                self.loaded_modules.append(module_name)
-> > +
-> > +            self.loaded_modules[module_name] = {"module_file": module_file,
-> > +                                                "module_addr": module_addr}
-> >          else:
-> >              gdb.write("no module object found for '{0}'\n".format(module_name))
-> >  
-> > +
-> > +    def load_module_symbols(self):
-> > +        module = gdb.parse_and_eval("mod")
-> > +
-> > +        # module already loaded, false alarm
-> > +        # can happen if 'do_init_module' breakpoint is hit multiple times
-> > +        # due to interrupts
-> 
-> Maybe better move this comment into the if-clause to make the context
-> clearer.
-
-Good idea, will do.
-
-> 
-> > +        module_name = module['name'].string()
-> > +        if module_name in self.loaded_modules:
-> > +            gdb.write("spurious module load breakpoint\n")
-> > +            return
-> > +
-> > +        # enforce update if object file is not found
-> > +        self.module_files_updated = False
-> > +        self._prepare_for_module_load_unload()
-> > +        try:
-> > +            self._do_load_module_symbols(module)
-> > +        finally:
-> > +            self._unprepare_for_module_load_unload()
-> > +
-> > +
-> > +    def unload_module_symbols(self):
-> > +        module = gdb.parse_and_eval("mod")
-> > +        module_name = module['name'].string()
-> > +
-> > +        # module already unloaded, false alarm
-> > +        # can happen if 'free_module' breakpoint is hit multiple times
-> > +        # due to interrupts
-> 
-> Same as above.
-> 
-> > +        if not module_name in self.loaded_modules:
-> > +            gdb.write("spurious module unload breakpoint\n")
-> > +            return
-> > +
-> > +        module_file = self.loaded_modules[module_name]["module_file"]
-> > +        module_addr = self.loaded_modules[module_name]["module_addr"]
-> > +
-> > +        self._prepare_for_module_load_unload()
-> > +        try:
-> > +            gdb.write("unloading @{addr}: {filename}\n".format(
-> > +                addr=module_addr, filename=module_file))
-> > +            cmdline = "remove-symbol-file {filename}".format(
-> > +                filename=module_file)
-> > +            gdb.execute(cmdline, to_string=True)
-> > +            del self.loaded_modules[module_name]
-> > +
-> > +        finally:
-> > +            self._unprepare_for_module_load_unload()
-> > +
-> >      def load_all_symbols(self):
-> >          gdb.write("loading vmlinux\n")
-> >  
-> > -        # Dropping symbols will disable all breakpoints. So save their states
-> > -        # and restore them afterward.
-> > -        saved_states = []
-> > -        if hasattr(gdb, 'breakpoints') and not gdb.breakpoints() is None:
-> > -            for bp in gdb.breakpoints():
-> > -                saved_states.append({'breakpoint': bp, 'enabled': bp.enabled})
-> > -
-> > -        # drop all current symbols and reload vmlinux
-> > -        orig_vmlinux = 'vmlinux'
-> > -        for obj in gdb.objfiles():
-> > -            if obj.filename.endswith('vmlinux'):
-> > -                orig_vmlinux = obj.filename
-> > -        gdb.execute("symbol-file", to_string=True)
-> > -        gdb.execute("symbol-file {0}".format(orig_vmlinux))
-> > -
-> > -        self.loaded_modules = []
-> > -        module_list = modules.module_list()
-> > -        if not module_list:
-> > -            gdb.write("no modules found\n")
-> > -        else:
-> > -            [self.load_module_symbols(module) for module in module_list]
-> > +        self._prepare_for_module_load_unload()
-> > +        try:
-> > +            # drop all current symbols and reload vmlinux
-> > +            orig_vmlinux = 'vmlinux'
-> > +            for obj in gdb.objfiles():
-> > +                if obj.filename.endswith('vmlinux'):
-> > +                    orig_vmlinux = obj.filename
-> > +            gdb.execute("symbol-file", to_string=True)
-> > +            gdb.execute("symbol-file {0}".format(orig_vmlinux))
-> > +            self.loaded_modules = {}
-> > +            module_list = modules.module_list()
-> > +            if not module_list:
-> > +                gdb.write("no modules found\n")
-> > +            else:
-> > +                [self._do_load_module_symbols(module) for module in module_list]
-> 
-> Is that common python style? Elsewhere, you do
-> 
-> for var in list:
->     function(var)
-
-It is a code I moved verbatim from the above. 
-I can change it to use the more common syntax.
-
-> 
-> > +        finally:
-> > +            self._unprepare_for_module_load_unload()
-> >  
-> > -        for saved_state in saved_states:
-> > -            saved_state['breakpoint'].enabled = saved_state['enabled']
-> > +        self._unprepare_for_module_load_unload()
-> >  
-> >      def invoke(self, arg, from_tty):
-> >          self.module_paths = [os.path.abspath(os.path.expanduser(p))
-> >                               for p in arg.split()]
-> >          self.module_paths.append(os.getcwd())
-> >  
-> > +        try:
-> > +            gdb.parse_and_eval("*start_kernel").fetch_lazy()
-> > +        except gdb.MemoryError:
-> > +            gdb.write("Error: Kernel is not yet loaded\n")
-> > +            return
-> > +
-> >          # enforce update
-> >          self.module_files = []
-> >          self.module_files_updated = False
-> >  
-> > +        for bp in self.internal_breakpoints:
-> > +            bp.delete()
-> > +        self.internal_breakpoints = []
-> > +
-> >          self.load_all_symbols()
-> >  
-> >          if hasattr(gdb, 'Breakpoint'):
-> > -            if self.breakpoint is not None:
-> > -                self.breakpoint.delete()
-> > -                self.breakpoint = None
-> > -            self.breakpoint = LoadModuleBreakpoint(
-> > -                "kernel/module.c:do_init_module", self)
-> > +            self.internal_breakpoints.append(
-> > +                BreakpointWrapper(self.load_module_symbols,
-> > +                                  spec="kernel/module.c:do_init_module",
-> > +                                  ))
-> > +            self.internal_breakpoints.append(
-> > +                BreakpointWrapper(self.unload_module_symbols,
-> > +                                  spec="kernel/module.c:free_module",
-> > +                                  ))
-> >          else:
-> >              gdb.write("Note: symbol update on module loading not supported "
-> >                        "with this gdb version\n")
-> > 
-> 
-> The logic of the changes look good to me.
+Do you know if qualcomm is mangling outbound emails? (i.e. was the
+trailing body suffix added after calculating the DKIM signature?)
 
 Thanks!
 
-Best regards,
-	Maxim Levitsky
+-Kees
 
-> 
-> Jan
-> 
-
-
+-- 
+Kees Cook
