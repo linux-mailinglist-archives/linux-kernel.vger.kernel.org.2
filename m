@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87103E98A5
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1713E98A4
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhHKTWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
+        id S231650AbhHKTWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhHKTWI (ORCPT
+        with ESMTP id S231477AbhHKTWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 15:22:08 -0400
 Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DAEC0613D5
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87508C061765
         for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:21:44 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1628709702;
+        t=1628709703;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jkojDrgxIR2XbRn8TG52WE2ryFsf3sjf8wg3n6qSYXw=;
-        b=ZQA3DIJPeYBGIm367eDBHHF5G/+S1RPsCaAuYZJjP7ppikgECgag9bDuLaHwXtIOvbikBs
-        PJXPsL/HWVXrnWWeHixEunAx8QceGbqi3S10zPdeIyGk8HyHhPA5KbEezuBjPYsKS7KNrT
-        sr//2VMSZRN/cOnXy0j7La5BBStzulw=
+        bh=mDv6lThH9LBlRq+G7bShNnjHZy0fm6nN/s0ZaRwS7lU=;
+        b=IYrielYM/cUXC5oix+bER2LtE+OBDs1gEC5/QYijlKAzZ0X4Lmk3v9FjK7DbPrbsO82zwM
+        jQYf6nr9h3nad13J67sseFkvGTaBhF+Pq0tO29XU9zX0FrmcMO/H9W+nMMOhcMx6NlMKlP
+        hJbCMrFpLJu8yl9c/h8pIPNa9KLWgno=
 From:   andrey.konovalov@linux.dev
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
@@ -35,9 +35,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Alexander Potapenko <glider@google.com>,
         kasan-dev@googlegroups.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/8] kasan: test: avoid corrupting memory via memset
-Date:   Wed, 11 Aug 2021 21:21:19 +0200
-Message-Id: <e9e2f7180f96e2496f0249ac81887376c6171e8f.1628709663.git.andreyknvl@gmail.com>
+Subject: [PATCH 4/8] kasan: test: disable kmalloc_memmove_invalid_size for HW_TAGS
+Date:   Wed, 11 Aug 2021 21:21:20 +0200
+Message-Id: <408c63e4a0353633a13403aab4ff25a505e03d93.1628709663.git.andreyknvl@gmail.com>
 In-Reply-To: <cover.1628709663.git.andreyknvl@gmail.com>
 References: <cover.1628709663.git.andreyknvl@gmail.com>
 MIME-Version: 1.0
@@ -50,94 +50,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@gmail.com>
 
-kmalloc_oob_memset_*() tests do writes past the allocated objects.
-As the result, they corrupt memory, which might lead to crashes with the
-HW_TAGS mode, as it neither uses quarantine nor redzones.
+The HW_TAGS mode doesn't check memmove for negative size. As a result,
+the kmalloc_memmove_invalid_size test corrupts memory, which can result
+in a crash.
 
-Adjust the tests to only write memory within the aligned kmalloc objects.
+Disable this test with HW_TAGS KASAN.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
 ---
- lib/test_kasan.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ lib/test_kasan.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index c82a82eb5393..fd00cd35e82c 100644
+index fd00cd35e82c..0b5698cd7d1d 100644
 --- a/lib/test_kasan.c
 +++ b/lib/test_kasan.c
-@@ -431,61 +431,61 @@ static void kmalloc_uaf_16(struct kunit *test)
- static void kmalloc_oob_memset_2(struct kunit *test)
- {
- 	char *ptr;
--	size_t size = 8;
-+	size_t size = 128 - KASAN_GRANULE_SIZE;
+@@ -495,11 +495,17 @@ static void kmalloc_memmove_invalid_size(struct kunit *test)
+ 	size_t size = 64;
+ 	volatile size_t invalid_size = -2;
  
++	/*
++	 * Hardware tag-based mode doesn't check memmove for negative size.
++	 * As a result, this test introduces a side-effect memory corruption,
++	 * which can result in a crash.
++	 */
++	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_HW_TAGS);
++
  	ptr = kmalloc(size, GFP_KERNEL);
  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
  
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + 7 + OOB_TAG_OFF, 0, 2));
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size, 0, 2));
- 	kfree(ptr);
- }
- 
- static void kmalloc_oob_memset_4(struct kunit *test)
- {
- 	char *ptr;
--	size_t size = 8;
-+	size_t size = 128 - KASAN_GRANULE_SIZE;
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + 5 + OOB_TAG_OFF, 0, 4));
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size, 0, 4));
- 	kfree(ptr);
- }
- 
+ 	memset((char *)ptr, 0, 64);
 -
- static void kmalloc_oob_memset_8(struct kunit *test)
- {
- 	char *ptr;
--	size_t size = 8;
-+	size_t size = 128 - KASAN_GRANULE_SIZE;
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + 1 + OOB_TAG_OFF, 0, 8));
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size, 0, 8));
+ 	KUNIT_EXPECT_KASAN_FAIL(test,
+ 		memmove((char *)ptr, (char *)ptr + 4, invalid_size));
  	kfree(ptr);
- }
- 
- static void kmalloc_oob_memset_16(struct kunit *test)
- {
- 	char *ptr;
--	size_t size = 16;
-+	size_t size = 128 - KASAN_GRANULE_SIZE;
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + 1 + OOB_TAG_OFF, 0, 16));
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size, 0, 16));
- 	kfree(ptr);
- }
- 
- static void kmalloc_oob_in_memset(struct kunit *test)
- {
- 	char *ptr;
--	size_t size = 666;
-+	size_t size = 128 - KASAN_GRANULE_SIZE;
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr, 0, size + 5 + OOB_TAG_OFF));
-+	KUNIT_EXPECT_KASAN_FAIL(test,
-+				memset(ptr, 0, size + KASAN_GRANULE_SIZE));
- 	kfree(ptr);
- }
- 
 -- 
 2.25.1
 
