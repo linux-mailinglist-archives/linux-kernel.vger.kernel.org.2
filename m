@@ -2,82 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6770A3E9547
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6D23E958E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhHKQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbhHKQCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:02:40 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951DBC061765;
-        Wed, 11 Aug 2021 09:02:16 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id nt11so4224084pjb.2;
-        Wed, 11 Aug 2021 09:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xp7fAHuStoMf5bIGzrdp1ddyp2JL7ecgJJqJ7viLvyQ=;
-        b=g8pWK67UPmKgXGAIsziQSHtJkoZCrnHj0R7Ggcl3aEfFyva6bdZKYXwFiu3mRSw7Dx
-         MgJKgC8cXG56ewNREDttPnPqSDLcPAE+66JzmWHXMdOSN2rNZTllI4W5LaJtzy0VxCIi
-         9HPQuQKXcJt2+DdEkL76QTy2tXrcInl9y8ALpP7ywysIGOvkkN1ClTM4ioSROnhvxGD0
-         4TzAEgHc5YU7MY/iXJx+4wOw0WjxWwDOOROaax1wDb1P9jeatFtKT23OPsEj68VF5xKz
-         siUti0ROrc6R4YdJr21x2nU+Y0CnqmmG5RfMVPlx9AsF8LAndllkZcgkJFzH8BIIA55t
-         vK/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xp7fAHuStoMf5bIGzrdp1ddyp2JL7ecgJJqJ7viLvyQ=;
-        b=SGXsDfaS5Og15/zYIwS0kbyPDQHrZsjziTAa/9UyT1MlpUfVQD8EZa9Ee98D6QHITV
-         9uQl916mvvSTDL0ZyhJBzwaaGAgK0d6Ig2jpT3TS10pG7PQVBdf9t7ssE+5lwFNpS3E9
-         YBgvru0CmN6l8zzyo3NhGJjeAgbvrzScBU/NoCofRBpjN959SjmQIinmxQrqUEkJD7iq
-         iHO+3XH+4mUVHLFY1iIH/nz6qsqx+cZSLgkGy89IF1HUL5EguISc63HVOlx+SufG0cwa
-         e69FwVjXU6F7TwGI7w3yIM1fC6dtaP2SZj7kF2LqYISx83WlpbFZQ1/NuqVS6rJFMtPd
-         rNiA==
-X-Gm-Message-State: AOAM533yQHYQSeMXXGGPicPsZ/QNKch9lKM5PIEyw823afkljRGoz6kN
-        V5hqlyeBw4BbQpv89HqGw6JeNobeqCYyIn9tmIdIHYb7DRmkF78y
-X-Google-Smtp-Source: ABdhPJzlL1aDC2iXEX4fxF9XlKhwbXp4u/YW844FC6pezRpDprQfleemVG7KJi7+PJjT8E8bHqwl5CDP1EqHZpfB4HE=
-X-Received: by 2002:aa7:868c:0:b029:3bc:e2ca:4e2f with SMTP id
- d12-20020aa7868c0000b02903bce2ca4e2fmr35296186pfo.73.1628697736067; Wed, 11
- Aug 2021 09:02:16 -0700 (PDT)
+        id S229756AbhHKQIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:08:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:33809 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229481AbhHKQIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 12:08:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628698067; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=/dodn4TWlFOqj0OEqhjbQUxQZm3eNQVMRimqQrGkcog=; b=GWCbp/ocT/7yfilOvVUItyaVBphzc2grULe0Dw/a2vMoWXnFUOvbi0TX7V0JIRA3GPJBr2a5
+ tyNflJKE8na/gKJyIABMZee5X+Tsf9hSDdavYviSUCqZRJbo7j2EMtvOWofoYmDggT9qTPlQ
+ ruNPH2G2XRux4c57zEsJ8LzEy2k=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6113f51a7ee6040977ce5a99 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 16:04:42
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E667C433F1; Wed, 11 Aug 2021 16:04:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D8D9C433F1;
+        Wed, 11 Aug 2021 16:04:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D8D9C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Doug Anderson <dianders@chromium.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv5] iommu/arm-smmu: Optimize ->tlb_flush_walk() for qcom implementation
+Date:   Wed, 11 Aug 2021 21:34:26 +0530
+Message-Id: <20210811160426.10312-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210811073027.124619-1-puranjay12@gmail.com>
-In-Reply-To: <20210811073027.124619-1-puranjay12@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 11 Aug 2021 19:01:36 +0300
-Message-ID: <CAHp75VeGKYe_OhAhZJ5zaHnLgrn-yv6viz37yrz5ucqvBw3eFg@mail.gmail.com>
-Subject: Re: [PATCH v12 0/2] iio: accel: add support for ADXL355
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        Darius <Darius.Berghe@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 10:30 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
->
-> Add the dt-bindings and the driver for ADXL355 3-axis MEMS Accelerometer.
->
-> Changes since v11:
-> 1. Add forward declaration of struct device in header.
+Currently for iommu_unmap() of large scatter-gather list with page size
+elements, the majority of time is spent in flushing of partial walks in
+__arm_lpae_unmap() which is a VA based TLB invalidation invalidating
+page-by-page on iommus like arm-smmu-v2 (TLBIVA).
 
-> 2. Use defines for power-of-10s.
+For example: to unmap a 32MB scatter-gather list with page size elements
+(8192 entries), there are 16->2MB buffer unmaps based on the pgsize (2MB
+for 4K granule) and each of 2MB will further result in 512 TLBIVAs (2MB/4K)
+resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing a huge
+overhead.
 
-TWIMC, Wolfram applied patch against units.h to add the SI prefixes:
-https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/commit/?id=26471d4a6cf8d5d0bd0fb55c7169de7d67cc703a
+On qcom implementation, there are several performance improvements for
+TLB cache invalidations in HW like wait-for-safe (for realtime clients
+such as camera and display) and few others to allow for cache
+lookups/updates when TLBI is in progress for the same context bank.
+So the cost of over-invalidation is less compared to the unmap latency
+on several usecases like camera which deals with large buffers. So,
+ASID based TLB invalidations (TLBIASID) can be used to invalidate the
+entire context for partial walk flush thereby improving the unmap
+latency.
 
+For this example of 32MB scatter-gather list unmap, this change results
+in just 16 ASID based TLB invalidations (TLBIASIDs) as opposed to 8192
+TLBIVAs thereby increasing the performance of unmaps drastically.
+
+Test on QTI SM8150 SoC for 10 iterations of iommu_{map_sg}/unmap:
+(average over 10 iterations)
+
+Before this optimization:
+
+    size        iommu_map_sg      iommu_unmap
+      4K            2.067 us         1.854 us
+     64K            9.598 us         8.802 us
+      1M          148.890 us       130.718 us
+      2M          305.864 us        67.291 us
+     12M         1793.604 us       390.838 us
+     16M         2386.848 us       518.187 us
+     24M         3563.296 us       775.989 us
+     32M         4747.171 us      1033.364 us
+
+After this optimization:
+
+    size        iommu_map_sg      iommu_unmap
+      4K            1.723 us         1.765 us
+     64K            9.880 us         8.869 us
+      1M          155.364 us       135.223 us
+      2M          303.906 us         5.385 us
+     12M         1786.557 us        21.250 us
+     16M         2391.890 us        27.437 us
+     24M         3570.895 us        39.937 us
+     32M         4755.234 us        51.797 us
+
+Real world data also shows big difference in unmap performance as below:
+
+There were reports of camera frame drops because of high overhead in
+iommu unmap without this optimization because of frequent unmaps issued
+by camera of about 100MB/s taking more than 100ms thereby causing frame
+drops.
+
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+
+Changes in v5:
+ * Drop non-strict mode change as it will conflict with Robin's series
+
+Changes in v4:
+ * Use a flag in struct arm_smmu_cfg to prefer TLBIASID (Will)
+
+Changes in v3:
+ * Move the logic to arm-smmu driver from io-pgtable (Robin)
+ * Use a new set of iommu_flush_ops->arm_smmu_s1_tlb_impl_ops and use it for qcom impl
+
+Changes in v2:
+ * Add a quirk to choose tlb_flush_all in partial walk flush
+ * Set the quirk for QTI SoC implementation
+
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 11 +++++++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu.c      | 13 ++++++++++---
+ drivers/iommu/arm/arm-smmu/arm-smmu.h      |  1 +
+ 3 files changed, 22 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index 9b9d13ec5a88..55690af1b25d 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -193,6 +193,8 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ {
+ 	struct adreno_smmu_priv *priv;
+ 
++	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
++
+ 	/* Only enable split pagetables for the GPU device (SID 0) */
+ 	if (!qcom_adreno_smmu_is_gpu_device(dev))
+ 		return 0;
+@@ -235,6 +237,14 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+ 	{ }
+ };
+ 
++static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
++		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
++{
++	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
++
++	return 0;
++}
++
+ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
+ {
+ 	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
+@@ -358,6 +368,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+ }
+ 
+ static const struct arm_smmu_impl qcom_smmu_impl = {
++	.init_context = qcom_smmu_init_context,
+ 	.cfg_probe = qcom_smmu_cfg_probe,
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+ 	.reset = qcom_smmu500_reset,
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index f7da8953afbe..67b660b0551d 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -327,9 +327,16 @@ static void arm_smmu_tlb_inv_range_s2(unsigned long iova, size_t size,
+ static void arm_smmu_tlb_inv_walk_s1(unsigned long iova, size_t size,
+ 				     size_t granule, void *cookie)
+ {
+-	arm_smmu_tlb_inv_range_s1(iova, size, granule, cookie,
+-				  ARM_SMMU_CB_S1_TLBIVA);
+-	arm_smmu_tlb_sync_context(cookie);
++	struct arm_smmu_domain *smmu_domain = cookie;
++	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
++
++	if (cfg->flush_walk_prefer_tlbiasid) {
++		arm_smmu_tlb_inv_context_s1(cookie);
++	} else {
++		arm_smmu_tlb_inv_range_s1(iova, size, granule, cookie,
++					  ARM_SMMU_CB_S1_TLBIVA);
++		arm_smmu_tlb_sync_context(cookie);
++	}
+ }
+ 
+ static void arm_smmu_tlb_add_page_s1(struct iommu_iotlb_gather *gather,
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+index a50271595960..432de2f742c3 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+@@ -346,6 +346,7 @@ struct arm_smmu_cfg {
+ 	};
+ 	enum arm_smmu_cbar_type		cbar;
+ 	enum arm_smmu_context_fmt	fmt;
++	bool				flush_walk_prefer_tlbiasid;
+ };
+ #define ARM_SMMU_INVALID_IRPTNDX	0xff
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
