@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591BB3E89E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A794B3E89F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhHKFyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:54:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:43190 "EHLO foss.arm.com"
+        id S234475AbhHKF5D convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Aug 2021 01:57:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:58594 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233651AbhHKFye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:54:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D6431FB;
-        Tue, 10 Aug 2021 22:54:08 -0700 (PDT)
-Received: from [10.163.67.241] (unknown [10.163.67.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EA133F718;
-        Tue, 10 Aug 2021 22:54:04 -0700 (PDT)
-Subject: Re: [PATCH 3/5] KVM: arm64: Drop check_kvm_target_cpu() based percpu
- probe
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
- <1628578961-29097-4-git-send-email-anshuman.khandual@arm.com>
- <20210810132822.GC2946@willie-the-truck>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <c7f87766-bf91-d0c1-ce9d-893506350020@arm.com>
-Date:   Wed, 11 Aug 2021 11:24:57 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233842AbhHKF5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 01:57:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="211952274"
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="211952274"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 22:56:37 -0700
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="516413329"
+Received: from mtiebout-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.238])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 22:56:33 -0700
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210810132822.GC2946@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
+References: <20210715141854.1ad4a956@canb.auug.org.au> <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com> <YRE2RwQ6XlUqbgmn@phenom.ffwll.local> <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com> <YRIcTTsEF0Kg7F8K@phenom.ffwll.local>
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Matt Roper <matthew.d.roper@intel.com>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Subject: Re: [Intel-gfx] linux-next: Signed-off-by missing for commit in the drm-intel tree
+Cc:     DRI <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Dave Airlie <airlied@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <162866138994.4210.10598129488916811422@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Wed, 11 Aug 2021 08:56:29 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++ Dave as FYI
 
-
-On 8/10/21 6:58 PM, Will Deacon wrote:
-> On Tue, Aug 10, 2021 at 12:32:39PM +0530, Anshuman Khandual wrote:
->> kvm_target_cpu() never returns a negative error code, so check_kvm_target()
->> would never have 'ret' filled with a negative error code. Hence the percpu
->> probe via check_kvm_target_cpu() does not make sense as its never going to
->> find an unsupported CPU, forcing kvm_arch_init() to exit early. Hence lets
->> just drop this percpu probe (and also check_kvm_target_cpu()) altogether.
->>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: kvmarm@lists.cs.columbia.edu
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/kvm/arm.c | 14 --------------
->>  1 file changed, 14 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> index 19560e457c11..16f93678c17e 100644
->> --- a/arch/arm64/kvm/arm.c
->> +++ b/arch/arm64/kvm/arm.c
->> @@ -2010,11 +2010,6 @@ static int finalize_hyp_mode(void)
->>  	return 0;
->>  }
->>  
->> -static void check_kvm_target_cpu(void *ret)
->> -{
->> -	*(int *)ret = kvm_target_cpu();
->> -}
->> -
->>  struct kvm_vcpu *kvm_mpidr_to_vcpu(struct kvm *kvm, unsigned long mpidr)
->>  {
->>  	struct kvm_vcpu *vcpu;
->> @@ -2074,7 +2069,6 @@ void kvm_arch_irq_bypass_start(struct irq_bypass_consumer *cons)
->>  int kvm_arch_init(void *opaque)
->>  {
->>  	int err;
->> -	int ret, cpu;
->>  	bool in_hyp_mode;
->>  
->>  	if (!is_hyp_mode_available()) {
->> @@ -2089,14 +2083,6 @@ int kvm_arch_init(void *opaque)
->>  		kvm_info("Guests without required CPU erratum workarounds can deadlock system!\n" \
->>  			 "Only trusted guests should be used on this system.\n");
->>  
->> -	for_each_online_cpu(cpu) {
->> -		smp_call_function_single(cpu, check_kvm_target_cpu, &ret, 1);
->> -		if (ret < 0) {
->> -			kvm_err("Error, CPU %d not supported!\n", cpu);
->> -			return -ENODEV;
->> -		}
->> -	}
+Quoting Daniel Vetter (2021-08-10 09:27:25)
+> On Mon, Aug 09, 2021 at 09:19:39AM -0700, Matt Roper wrote:
+> > On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
+> > > On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
+> > > > Hi Matt,
+> > > > 
+> > > > Always use the dim tooling when applying patches, it will do the right
+> > > > thing with regards to adding the S-o-b.
+> > > 
+> > > fd.o server rejects any pushes that haven't been done by dim, so how did
+> > > this get through?
+> > 
+> > I definitely used dim for all of these patches, but I'm not sure how I
+> > lost my s-o-b on this one.  Maybe when I edited the commit message after
+> > 'dim extract-tags' I accidentally deleted an extra line when I removed
+> > the extract-tags marker?  It's the only patch where the line is missing,
+> > so it's almost certainly human error on my part rather than something
+> > dim did wrong.
 > 
-> Looks like kvm_target_cpu() *could* return an error at one time of day (at
-> least on 32-bit), but agreed that this checking is no longer needed:
+> Yeah that's an expected failure model, and dim is supposed to catch that
+> by rechecking for sobs when you push. See dim_push_branch ->
+> checkpatch_commit_push_range in dim. So you can hand-edit stuff however
+> you want, dim /should/ catch it when pushing. That it didn't is kinda
+> confusing and I'd like to know why that slipped through.
 > 
-> Acked-by: Will Deacon <will@kernel.org>
+> > > Matt, can you pls figure out and type up the patch to
+> > > plug that hole?
+> > 
+> > Are you referring to a patch for dim here?  The i915 patch has already
+> > landed, so we can't change its commit message now.
 > 
-> Perhaps it's worth making the return type of kvm_target_cpu() a u32 to
-> make it a bit more explicit that you shouldn't be returning an error code
-> there?
-
-Sure, will change the return type to u32.
+> Yeah dim, not drm-intel, that can't be fixed anymore because it's all
+> baked in.
+> -Daniel
+> 
+> > 
+> > 
+> > Matt
+> > 
+> > > 
+> > > Thanks, Daniel
+> > > 
+> > > > 
+> > > > Regards, Joonas
+> > > > 
+> > > > Quoting Stephen Rothwell (2021-07-15 07:18:54)
+> > > > > Hi all,
+> > > > > 
+> > > > > Commit
+> > > > > 
+> > > > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
+> > > > > 
+> > > > > is missing a Signed-off-by from its committer.
+> > > > > 
+> > > > > -- 
+> > > > > Cheers,
+> > > > > Stephen Rothwell
+> > > 
+> > > -- 
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+> > 
+> > -- 
+> > Matt Roper
+> > Graphics Software Engineer
+> > VTT-OSGC Platform Enablement
+> > Intel Corporation
+> > (916) 356-2795
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
