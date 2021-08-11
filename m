@@ -2,201 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978E03E8B1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C863E8B1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235632AbhHKHcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235458AbhHKHcp (ORCPT
+        id S235583AbhHKHeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:34:21 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:28530 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235177AbhHKHeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:32:45 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AC5C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 00:32:21 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id g12-20020a17090a7d0cb0290178f80de3d8so3167949pjl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 00:32:21 -0700 (PDT)
+        Wed, 11 Aug 2021 03:34:18 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17B7VSVc019662;
+        Wed, 11 Aug 2021 07:33:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
+ bh=3U0HbZI/0jNieu5FDDvRFz6a9mBk9uXFHEV+JuYRFtg=;
+ b=nfJvHaNlSJMHmY7wiYNWY0O2RHqanWtnVlhcGbENCqyP2SJvS3o4Hxd8clsKQBAPE30R
+ M7YN/KoMZyzXTpmND0S2flVW1ytYs37AnteU/67fKM+CWPNeTIJGiFwxzXZRRXN3VHS6
+ xAEgfs0X2LLQOv1/qF1jNNuOSW+matDPIErjxLwZIru2tXm7QDcf8C/tEL5UiDMRxDDv
+ dHTGOBXkqIsvF2xSebUyyve1ZSJOdptEnHSIBtAU6V6Nsmf5GqvwJw7Q/GzAri5G4tAO
+ ofrC3kEl+7m4o7VDFnqvbCmw51F4OlMQSW0GNSU3EybzWuEyGlEABbe3bz9icCpyfuOb WQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2020-01-29;
+ bh=3U0HbZI/0jNieu5FDDvRFz6a9mBk9uXFHEV+JuYRFtg=;
+ b=ydTGLrm6NMHe3ec2cuMYiWJShVA2g/sz+vR7is3yq7XLsioDjUAgYPdfIUlgm0T5Ncob
+ v6mOMZC4OzwIUukQakyQ8ZjDh1fzyozAdoA0W5g3fBbzQ5o52U12LoAQy8cljP1+Wajc
+ 0Qon9Tj9TjwgXV5FHO+1P1GW3hE6rZj0nm0RACiJsVqjYn4Pf4wAWYCpp0SV3cw03O43
+ AeYmdLZmel59GC88pk0tYg32VaQdK3LrYKUwBYU9ycTj9rZ1S5zmW8nprp9dVIY23l1w
+ PIsi8ZWBNXViN1yAzI9iHbysrLIWUSnIE3fxWKpistpcXbHzMfq40NriZPdL+MDgp4Dp Rw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ab17dwdcp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 07:33:36 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17B7UUCT175108;
+        Wed, 11 Aug 2021 07:33:35 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
+        by aserp3020.oracle.com with ESMTP id 3a9vv6391p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 07:33:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CW5u8Q4xqVpQoUDe64/5q/239KvQ4xgxWBAeu1Re4ZBQIfl7UkrF/h+iGZkvAW9DFIudQxm/Mz66qAMtXoEjBQHaWi+3Tr+YhCto88geb9DZKyglr5TQuHosJbKWUo1bDmjQmwPz2q/I/oQFNmun0Qn3eI0nRSdEWbLFGQwha/e/wCKSzP470igkWy6jFf5gIVsKFZmfF/hpkCqq9ai0ER4X39m4koY4VNjY6QOHmii0U+yg2+BUbsQge5xr2+zIXv/+H9K9NnKKBs3sD8UnKaddYW1GqwdUz1yqPzA0PRfJVWmbWH8w+0pWmrecGUBHRWHf39fLjaxTMnnDYe+/sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NGa+O5H7PEVFWcE0/ASI26AVqwAK4S2yGLkRoz9aAJo=;
+ b=cvn7E7xACgfOPhZGYzRDEIXeoUdTVd9uwcwrBo0Nrk+03Bpe+rfwf9wZIS0FxRlRg5WxcmK6/z+C6WAoKsgPnZH2Ar+OTkhn+L+iGjzdcP7J75IJym/VFmdaSyILIyx9MXeE/2DiQLhKtROhEERYSOSSfGj+/xd184EeLUGtbRLhuYeUaDhEzCOaej1BFaMnfQ1yJ1E6OK/hdAqtG/0NmL21ejMBwga3jjqbU4ewISEF0N50nLxuCI/I5+7wbiKWcAkPl4zHF4MkouCMCpof75Zp2MkBDt0ackOddHuPn2bU65hybZbWEM90pQDg1DW9tKy4Ik4vw3azb65j5ec0NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wcD/JNTEx81hT6hEHrkw+9ZwSdksENZDQ4kxkWN0qsg=;
-        b=hadeHsvkdSdW3mjdvkCVqKcazLNvhqaVGag0+BUfnhoLI84mAKmdewf3CasNSu27bP
-         663s/Ctr/5Rc5Inl0pttRsHMDxKqOduuDwOjCBpYmsoeS8dKK2Kw4NTK91JaWvgoAoBI
-         PPMmU+2a1vkw42ojU0SxCOLTYnI6qg7WLXT3qQb7SDQbzCc3PG0PYy+p3gTLva9SL/IN
-         qO5DanDSUR42uEqrV3ZEtIRhp3z8wRAPfjQkpGtGZ/6FR0e5h5Lkz2Ujbp6V2Z4u7/3E
-         czXLVXVb8YB4RFDB8Xx13qpWo0W2KJaKHsK3o5ZjsYL66QYGAbXb3z6lrgxtJ9DLYNQb
-         weyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wcD/JNTEx81hT6hEHrkw+9ZwSdksENZDQ4kxkWN0qsg=;
-        b=dUVCo/XsnJTJlKLsz1jL3eNIHvGjf1Otx3i5nvN2+nEJazzOCvxPKYFTXEmfVQBG0v
-         /y+tlsqWLQvKTsxoCyjHlZXIhw2l9wvMv2DI5gthkO46Ebou3ZC76Z6tiAUW01gDlmBw
-         0cErGqHm5n34HAq7Keaf2HViZa22BVEu71H/8HCELxFUZyUD3C5F0MBhAOOsn13UCWlG
-         C7jroOnkf4EMCVgoBu3YGolpeARsUVfrtPNerZ2xAJX5hHFruVuEFQnjpVT/S/sWwkXA
-         ca9+RQuUQ0FKCmMH26MWuPHzwotTvQhNuv7YWNCtr1xP5JV4BlUZ2/2gr9KPiSa5SvWZ
-         Fqvg==
-X-Gm-Message-State: AOAM533b/pergsX65Ad0e7I7ot0HGMxkwrKMTffKT/k/bQ2Y+UuPzUAb
-        7boarIYFztz7BafYbvEXBYCvQam3Px38A+1dyMUtvg==
-X-Google-Smtp-Source: ABdhPJy2t8leznlaC8TIy/KxCH+9ARTl3UVlt7gvYOC7pdip0katvMheH+4sR+MoN755Pxs0C6dohnIhsKsoKuin+gU=
-X-Received: by 2002:a63:f754:: with SMTP id f20mr17246pgk.385.1628667141334;
- Wed, 11 Aug 2021 00:32:21 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NGa+O5H7PEVFWcE0/ASI26AVqwAK4S2yGLkRoz9aAJo=;
+ b=IRfeaBFUoFPGAYMaII2gPcdJdFu3wYHb7Ug54DFqG2H2s3Q2ZQGt/Ru9Xdgw3h++TjZ3E/zkVAiK+N7CTUOfzEAouQG1mk9A3lmaVHG6nGTvjQTtmx6yFRHwD8PER3At/z1g0ywN7EABuq8yaBIcJBsWtBURf32Qr03lPyTB2vA=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4754.namprd10.prod.outlook.com
+ (2603:10b6:303:91::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.18; Wed, 11 Aug
+ 2021 07:33:34 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4394.023; Wed, 11 Aug 2021
+ 07:33:34 +0000
+Date:   Wed, 11 Aug 2021 10:33:11 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Tuo Li <islituo@gmail.com>
+Cc:     gregkh@linuxfoundation.org, will+git@drnd.me,
+        davidsondfgl@gmail.com, zhaoxiao@uniontech.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
+Subject: Re: [BUG] staging: rtl8192e: possible null-pointer dereference in
+ rtllib_wx_set_encode()
+Message-ID: <20210811073311.GT22532@kadam>
+References: <a86f508c-84b0-3523-2a8e-6710e35e5bb3@gmail.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a86f508c-84b0-3523-2a8e-6710e35e5bb3@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNXP275CA0040.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::28)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-References: <CGME20210810214617eucas1p1e007c68c34792a844b6c72dd11d05887@eucas1p1.samsung.com>
- <20210726080113.8378-1-robert.foss@linaro.org> <cea446e5-f377-d565-2701-94194d565d99@samsung.com>
-In-Reply-To: <cea446e5-f377-d565-2701-94194d565d99@samsung.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 11 Aug 2021 09:32:11 +0200
-Message-ID: <CAG3jFyvwpU6BGLQTn8x8MuvTqhy5XAE+HeYVFWN5vZdGows5SA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] media: camss: vfe: Don't read hardware version needlessly
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (102.222.70.252) by JNXP275CA0040.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15 via Frontend Transport; Wed, 11 Aug 2021 07:33:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f1acfe90-b8d8-43d4-d7e8-08d95c9a52d1
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4754:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO1PR10MB4754E4CD753518AAE614FB478EF89@CO1PR10MB4754.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YYlTKKPyBH2/rccvirPhtBhcS9SnuKh9SwrSYT6lXjgIwdqU6pvh6fXPgWblMFMg5EcE5ZAqLKpOqyP7nzPZdN/YjwC2x9TvI81tqtJC4TAUapHf0lYdAl4gXcIp2WW3BCWcvyDgMdYDwWygK0ncLnaVnODnh5Nv58fBaW6VJRE8IEIEmUTW47lCiAtUgOY3U+vz0IrXyKRFvgxr2UhQx5h7skjBLUPuPXE2hdIy1a6an354cGooxuFpz8IaQbeltDX19BbJsWoD6UzwCXcalBEXB6jA6wGQTjVag9ejXKtZP5Yj3xy0Dr87LfCClFXgX0iEul/fO+wIZlu5JHTYy+8DzHqIBbxtsiCR9n++GUAkzvsutWobkx7evivEA/5B+9rk2KSkUcjFuuhXQwWwAkpaeQgvWOCUO3t+StH8/PwVWsFtKrTiQrGQF7B3HYSLusa50hS2XO7NsLGaje/AeEZl4joCBXDFg8XqB38insLiUJ7fUDoZPkc8jhuohoLOPMuzrByyoA+GagAZ8yl9WAKrYuOfbVLVJbDhLN2DakEs+MFvL/FjkkuCYDXzH0Zq1y+j96J6Kd0YkgUeSqWP/FTWe4Gc3y1xaX0A7mwkHX2lJKgqkhAexVcaSwToMgn30loR3pbzWgAzUApZgLIwFTaQRqVUFnWiz2cb6JOtX55yNdPcwBW3ylJHZDW1T6fhD/IsFhAfHK/2kNdHaJP0VA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(366004)(33716001)(6916009)(956004)(66946007)(38100700002)(6666004)(478600001)(66556008)(9686003)(55016002)(186003)(4326008)(38350700002)(1076003)(8936002)(44832011)(5660300002)(66476007)(8676002)(33656002)(9576002)(26005)(316002)(2906002)(52116002)(6496006)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?hSZuxj1x1dSQcwD5AESi+1VWtrfrMz9MZLr8izhYOj1zQex4Qh8d9yzXqq?=
+ =?iso-8859-1?Q?/GEzLx4T6CagCF2qEc6tMPurL1bmCdf79ue6ONHHWLeXp0cRzEV1jWKqKw?=
+ =?iso-8859-1?Q?M2vEKXXGxlMwdFiBB8p0J2rbBQPgXHJRVI3eHiMa4tAV/HIYjlz9rt1myI?=
+ =?iso-8859-1?Q?525fDDiZ0pyTOatjDdm+oJlIsddxEtlbAXkmaahbv/GtSN9B1bVioKJ8mE?=
+ =?iso-8859-1?Q?BXKx7gKA8duZuZHH/vXs5HbYfGCRetsP3MGY7PjMQGhT7mjxfI6rVCTKNI?=
+ =?iso-8859-1?Q?008rdJx0dwGFF0V9f6zJ2UtNns1js4McJPI+60U0GbrHgY1cPUu8tPq3+9?=
+ =?iso-8859-1?Q?2ySRl+dTPu6/212IZITSeaEp2ayuFh6OT+evHyFBc8AxNBMVvJJheVeFtg?=
+ =?iso-8859-1?Q?EegZ7rABWz/x+X3ACyjR2MULmN7zGXBHUgsGVEwBNOWLbWnDMxfPzdfdBA?=
+ =?iso-8859-1?Q?Jg9ulYN5RMSXsk1Y3oCr+DbbH7ElZS5rXxP6xuerz/wnOQAlIJCljIquvZ?=
+ =?iso-8859-1?Q?Wl7qUdken771y68JbW+12yqEA0f83tYBoJRWXeHSEH7/w0Zd9wCUmmJpje?=
+ =?iso-8859-1?Q?vSkGk+r9FMRA7qA/VKXXdjn/DRUKPmTpBB/A2ih+WEn6AgZjvhk4JYlsGB?=
+ =?iso-8859-1?Q?Wkd2jG1Wxdm2Suky3vNc9Kc1FPlJllCLBus58ub92nqHUHcOiasB4mgV2E?=
+ =?iso-8859-1?Q?UMH6phRUh7+cEbRnSD+f/WN/cxdEiQZsUkma2yZgLYzGLqpP1Gq5qXqGqL?=
+ =?iso-8859-1?Q?IZ/6XNHB2CokTA3oYuoxjjUL7eaXjDt5PLg+wyREEjXltHb2w1m77+VeHI?=
+ =?iso-8859-1?Q?+nLYgIJChvrbXj5vjd4RV71oElNQrR4qUxzM2SejEeJ6GESck8Lh8B9QTe?=
+ =?iso-8859-1?Q?eKN6J9P8mqfqihXgn9tLqszenNWLLsemXq92Xrs+nl9NqPw7PhEetsVqO6?=
+ =?iso-8859-1?Q?bnKhXliRtTB/ghWhh+cIlsMBPeln+tP9XAGWKX0IG3x/gh/YV48g/oDBDl?=
+ =?iso-8859-1?Q?v5NlUR0gy+Xo71XuT8N5Z1BXz/iJioNoXP7Cg4Fy7/I44U5HfutDmxgaQ6?=
+ =?iso-8859-1?Q?C6c0I4GBDflwLQJSIvXMQgrleBLXzLmzGsQfHskSFqb0e4injn0xl4OURo?=
+ =?iso-8859-1?Q?gNMtqGD0e++D3LJfGxSitpj2HwEfpZBlzsp1tYj4h7g6lxtPIvHX50KrM5?=
+ =?iso-8859-1?Q?8YxA1b8Vpbg/1JjMas2lxe7USFe1D5hiEveN1fWzDG5ltzpvEDmGymlo5C?=
+ =?iso-8859-1?Q?7PhXE5LejI6DH0NT5klCr339gO5Qe1d1BQyu00hEwpKIs2yEJcvZSkuvZ6?=
+ =?iso-8859-1?Q?yQFtcQCYTT+Z6FNDqjONPvmAK+Pqr2VLNroy0UpRsw/ksyYzOREWZ/EyeZ?=
+ =?iso-8859-1?Q?wtc2QkB7+G?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1acfe90-b8d8-43d4-d7e8-08d95c9a52d1
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 07:33:33.8376
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VJ8iimwzyZnhFwTc2m9k6AgPoLq4vhVdT8irdybN/8kyc+nxzUdAY8ETXAlvSmTJFyXvjpUshBvM7K8tW1RhFZbYndKloZUGPMsOhcxURs0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4754
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10072 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 mlxlogscore=903 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108110048
+X-Proofpoint-GUID: 9c0PMfCeKyi1XfzGjeJRZVimI5MLpADK
+X-Proofpoint-ORIG-GUID: 9c0PMfCeKyi1XfzGjeJRZVimI5MLpADK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Marek,
+On Wed, Aug 11, 2021 at 11:33:57AM +0800, Tuo Li wrote:
+> Hello,
+> 
+> Our static analysis tool finds a possible null-pointer dereference in
+> rtllib_wx.c in Linux 5.14.0-rc3:
+> 
+> The variable (*crypt)->ops is checked in:
+> 342:    if (*crypt && (*crypt)->ops && strcmp((*crypt)->ops->name, "R-WEP")
+> != 0)
+> 
+> This indicates that it can be NULL. If so, null-pointer dereferences will
+> occur:
+> 389:    (*crypt)->ops->set_key()
+> 400:    len = (*crypt)->ops->get_key()
+> 
+> I am not quite sure whether this possible null-pointer dereference is real
+> and how to fix it if it is real.
+> Any feedback would be appreciated, thanks!
+> 
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
 
+I don't *think* the check is required.
 
+The data in ieee->crypt_info.crypt[idx] is set in rtllib_wx_set_encode()
+and rtllib_wx_set_encode_ext() when we do "*crypt = new_crypt;".  (The
+line is the same in both functions).  And in both cases ->ops is
+non-NULL.
 
-On Tue, 10 Aug 2021 at 23:46, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
->
-> Hi,
->
-> On 26.07.2021 10:01, Robert Foss wrote:
-> > vfe_set_power() is invoced a few times, which causes a lot of
-> > VFE HW version prints.
-> >
-> > Secondly there is no real reason for calling hw_version_read() from
-> > this location specifically, since it does nothing more than print
-> > the VFE HW version.
-> >
-> > A better location for the hw_version_read() call would be somewhere
-> > which is only executed once per VFE unit.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
->
-> This patch landed recently in linux-next as commit b10b5334528a ("media:
-> camss: vfe: Don't read hardware version needlessly"). Sadly it causes a
-> following regression on DragonBoard410c
-> (arch/arm64/boot/dts/qcom/apq8016-sbc.dts):
->
-> Unable to handle kernel NULL pointer dereference at virtual address
-> 0000000000000000
-> Mem abort info:
->    ESR = 0x96000006
->    EC = 0x25: DABT (current EL), IL = 32 bits
->    SET = 0, FnV = 0
->    EA = 0, S1PTW = 0
->    FSC = 0x06: level 2 translation fault
-> input: pm8941_resin as
-> /devices/platform/soc/200f000.spmi/spmi-0/0-00/200f000.spmi:pmic@0:pon@800/200f000.spmi:pmic@0:pon@800:resin/input/input2
-> Data abort info:
->    ISV = 0, ISS = 0x00000006
->    CM = 0, WnR = 0
-> user pgtable: 4k pages, 48-bit VAs, pgdp=0000000087ca0000
-> [0000000000000000] pgd=0800000084c4c003, p4d=0800000084c4c003,
-> pud=08000000859c2003, pmd=0000000000000000
-> Internal error: Oops: 96000006 [#1] PREEMPT SMP
-> Modules linked in: msm(+) qcom_pon rtc_pm8xxx qcom_spmi_vadc
-> qcom_vadc_common qcom_camss(+) snd_soc_msm8916_analog
-> qcom_spmi_temp_alarm venus_core(+) videobuf2_dma_sg v4l2_fwnode
-> snd_soc_lpass_apq8016 v4l2_async videobuf2_memops snd_soc_lpass_cpu
-> v4l2_mem2mem snd_soc_apq8016_sbc snd_soc_lpass_platform
-> snd_soc_msm8916_digital videobuf2_v4l2 snd_soc_qcom_common
-> videobuf2_common qnoc_msm8916 qcom_rng videodev i2c_qcom_cci mdt_loader
-> mc icc_smd_rpm crct10dif_ce socinfo rmtfs_mem display_connector
-> adreno 1c00000.gpu: Adding to iommu group 2
-> CPU: 1 PID: 286 Comm: systemd-udevd Not tainted 5.14.0-rc4+ #3778
-> Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> pc : vfe_hw_version_read+0x4/0x10 [qcom_camss]
-> platform 1a98000.dsi: Fixing up cyclic dependency with 3-0039
-> lr : msm_vfe_subdev_init+0x84/0x558 [qcom_camss]
-> platform 1a98000.dsi: Fixing up cyclic dependency with 1a01000.mdp
-> sp : ffff8000148337f0
-> x29: ffff8000148337f0 x28: ffff000006c1d800 x27: 0000000000000001
-> x26: 0000000000000002 x25: ffff8000091976d0 x24: ffff000006a98080
-> x23: 0000000000000000 x22: ffff000006c1d800 x21: ffff000000298010
-> x20: ffff800009197028 x19: ffff000000298000 x18: 0000000000000000
-> x17: 2e726f74616c7567 x16: 0000000000000028 x15: 0000b5f01da86af8
-> x14: 0000000000000001 x13: 000000000000001f x12: 0000000000000001
-> x11: 0000000000000010 x10: 0101010101010101 x9 : ffff8000091922f0
-> x8 : ffff8000091949f0 x7 : ffff800009194a08 x6 : ffff8000091925c8
-> x5 : ffff800009191f00 x4 : ffff000006a9ca00 x3 : ffff000006a9c080
-> x2 : ffff80000918d3a0 x1 : ffff000000298010 x0 : 0000000000000000
-> msm_mdp 1a01000.mdp: Adding to iommu group 3
-> Call trace:
->   vfe_hw_version_read+0x4/0x10 [qcom_camss]
->   camss_probe+0x370/0xdd0 [qcom_camss]
->   platform_probe+0x90/0xd8
->   really_probe+0x138/0x2d0
->   __driver_probe_device+0x78/0xd8
->   driver_probe_device+0x40/0x110
->   __driver_attach+0xcc/0x118
->   bus_for_each_dev+0x68/0xc8
->   driver_attach+0x20/0x28
->   bus_add_driver+0x168/0x1f8
->   driver_register+0x60/0x110
->   __platform_driver_register+0x24/0x30
->   qcom_camss_driver_init+0x1c/0x1000 [qcom_camss]
->   do_one_initcall+0x84/0x450
->   do_init_module+0x58/0x200
->   load_module+0x1f54/0x26a0
->   __do_sys_finit_module+0xe4/0x100
->   __arm64_sys_finit_module+0x18/0x20
->   invoke_syscall+0x40/0xf8
->   el0_svc_common+0x60/0x100
->   do_el0_svc_compat+0x1c/0x48
->   el0_svc_compat+0x20/0x30
->   el0t_32_sync_handler+0xec/0x140
->   el0t_32_sync+0x168/0x16c
-> Code: 88dffc63 88dffc63 00000000 f9400800 (b9400000)
-> ---[ end trace e1e3b303eae40654 ]---
->
-> Let me know if I can help somehow to fix this issue.
->
-> > ---
-> >   drivers/media/platform/qcom/camss/camss-vfe.c | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-> > index e0f3a36f3f3f..f6e889c1598e 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-vfe.c
-> > +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-> > @@ -713,8 +713,6 @@ static int vfe_set_power(struct v4l2_subdev *sd, int on)
-> >               ret = vfe_get(vfe);
-> >               if (ret < 0)
-> >                       return ret;
-> > -
-> > -             vfe->ops->hw_version_read(vfe, vfe->camss->dev);
-> >       } else {
-> >               vfe_put(vfe);
-> >       }
-> > @@ -1301,6 +1299,7 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
-> >               return -EINVAL;
-> >       }
-> >       vfe->ops->subdev_init(dev, vfe);
-> > +     vfe->ops->hw_version_read(vfe, dev);
-> >
-> >       /* Memory */
-> >
->
+So probably the check should be removed.
 
-Thanks for reporting this.
+On the other hand, I don't know the code very well and it's possible I
+missed something.
 
-I submitted a patch[1] for this yesterday, if you have time to test it
-and supply a Tested-by/Reviewed-by, that would be really helpful.
-
-[1] https://lore.kernel.org/linux-arm-msm/20210810103336.114077-1-robert.foss@linaro.org/
+regards,
+dan carpenter
