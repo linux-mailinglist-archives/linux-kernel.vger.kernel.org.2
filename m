@@ -2,132 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570C93E8886
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE493E888A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhHKDCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 23:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbhHKDBa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:01:30 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB9EC061388;
-        Tue, 10 Aug 2021 19:59:55 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so7365326pjb.3;
-        Tue, 10 Aug 2021 19:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kSZRq8ntqj28TNNxiPdEJFUwJIVmHzf13EePntIiFzY=;
-        b=cYME/lcwe1HDj+Fk7/SdLr/gMbjUtjKli+dt53YhEmFFkckwdhAmprNhFHtKmi6P+j
-         X+QYknbISTmyegACbuZDCY25Uv1VPf+R7CkOCV4bcEHDY/KtiJkqwQ80+Hi8hip5cVkR
-         xcy9wK/OTDXlHH7zdSERSX0XOSoK9tFPzFKwITtwDi21gmQ6Z6IoZXPLUYwPAupMZofF
-         Cba7McADXuoym9sdxSxxp5l98Yl+rvZ4PCfS1WOfABIHf6u8s8P2DEw81xuzQphZebBK
-         ENu0KUvcR7C0gqLJsJIGhin8jKMspIUP+ouDqYgG3U139xi+Q8U7JSMz2asIaAQDwjpY
-         pUvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kSZRq8ntqj28TNNxiPdEJFUwJIVmHzf13EePntIiFzY=;
-        b=M/0CMAzOfgfcigoHguri0ohKLX1tMswiAWWJvCAkLm0y9TE8TqJ6uzVBqf2XAZ/8ZE
-         jY2hI2XDAxNa9G5NX0Ov/vlVko+rFbZlalhz39wn0SCnDGB9u+QMMHnB3T81P9SW/oM/
-         AV/8X+eBVLXqU+3egkLlRrmOnUyjZL+Ep2V6PXrizKUxPyOPVbBR2DlW9RUpQee0/VGC
-         KZPRaVJm05KgDp85P7uezYzWUjGSUF0olfJlsKE3o53Miag1Uy3yPtWMsk8dW0W440mj
-         on+GVAphFaC2nN44QEZg42pRYn8RaU/aqZWobQskW4mIQTi/D2Uw7JGOHXB4ligUJQUW
-         7PZQ==
-X-Gm-Message-State: AOAM5312Ua+TGLp0GibcJ7ePf7Nc/mq64DYJzKI4sUtyDeQveNepnU60
-        1x96OqZxe5RJVVLZYxrHBaM=
-X-Google-Smtp-Source: ABdhPJzn3RA+PlWT/jS6cwheRBfz2s3WPTEeiZkjKvDQtnrI9sut+MPGLcSENH8yOTQfLbWgjUTtww==
-X-Received: by 2002:a17:902:7889:b029:12b:cf54:4bf1 with SMTP id q9-20020a1709027889b029012bcf544bf1mr1249957pll.85.1628650794747;
-        Tue, 10 Aug 2021 19:59:54 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.173])
-        by smtp.gmail.com with ESMTPSA id h7sm23657036pjs.38.2021.08.10.19.59.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 19:59:54 -0700 (PDT)
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com, paulmck@kernel.org,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH V2][RFC] lockdep: improve comments in wait-type checks
-Date:   Wed, 11 Aug 2021 10:59:20 +0800
-Message-Id: <20210811025920.20751-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S232584AbhHKDDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 23:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231967AbhHKDDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 23:03:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 537D760462;
+        Wed, 11 Aug 2021 03:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628650958;
+        bh=LVEvsCUnhkiBvovzKLcl7idNN3Nj5VRggMyAEysn2w4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=alBGW0y1DL8L+ffz+YpIivtU7Da14LWtT26vscB0O8/5JM2VWIBsZ4unRsn9P6MQ5
+         ePbklliswl++8La6QzKfiEjRXaVWHEcmJ1fAoiS1cuy6yu+WQJw96r2cVvPsKln2TF
+         uTmnWOMUSIej6d0q1SjQ8ZUfYeu4g97nZEG3wJa1HSIJoiWzgOSZJRPbQqfVQj0fT7
+         RwhjxOrnrlTmjk3DCV39ppkQOFeAeJBwrZf4jWiXaU3UGiz/5954jY5Dnj8MnGEukG
+         1X6eGJXUmYBaVdxoVg8cmPzUaFvqeeGUQY6m7gM1VBYo8/ox3YMqUZj7SxLw5zMdwQ
+         PDvUMkC/8xevA==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH RFC v2] x86/sgx: Add a read-only sysctl attribute kernel.sgx.total_mem
+Date:   Wed, 11 Aug 2021 06:02:21 +0300
+Message-Id: <20210811030221.852092-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-comments in wait-type checks be improved by mentioning the
-PREEPT_RT kernel configure option.
+The amount of EPC on the system is determined by the BIOS and it varies
+wildly between systems.  It can be dozens of MB on desktops, or many GB
+on servers. Introduce a read-only sysctl attribute kernel.sgx_total_mem,
+which provides the amount of EPC memory available in the system.
 
-Many thanks
-Zhouyi
+The primary use case for this attribute are stress tests.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Just like normal memory, SGX memory can be overcommitted.  SGX has its
+own reclaim mechanism which kicks in when physical SGX memory (Enclave
+Page Cache / EPC) is exhausted.  That reclaim mechanism is relatively
+rarely exercised and needs selftests to poke at it.
+
+To run in a reasonable amount of time, the selftest needs to know how
+much EPC there is in the system.
+
+Using a sysctl attribute makes most sense, given that its meaning is
+shared with the SGX driver and KVM. It must be available even when the
+driver is disabled.
+
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
- include/linux/lockdep_types.h | 2 +-
- kernel/locking/lockdep.c      | 2 +-
- kernel/rcu/update.c           | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index 3e726ace5c62..d22430840b53 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -21,7 +21,7 @@ enum lockdep_wait_type {
- 	LD_WAIT_SPIN,		/* spin loops, raw_spinlock_t etc.. */
+v2:
+* Removed Dave's ack.
+* Rewrote Documentation/x86/sgx.rst. It was not properly updated in the
+  previous iteration.
+
+ Documentation/x86/sgx.rst      | 10 +++++++++
+ arch/x86/kernel/cpu/sgx/main.c | 40 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 48 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96ff9ef..f29402aa824a 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -250,3 +250,13 @@ user wants to deploy SGX applications both on the host and in guests
+ on the same machine, the user should reserve enough EPC (by taking out
+ total virtual EPC size of all SGX VMs from the physical EPC size) for
+ host SGX applications so they can run with acceptable performance.
++
++Sysctls
++=======
++
++The following sysctl files can be found in the ``/proc/sys/kernel/sgx/`` directory:
++
++``sgx_total_mem``
++	The total amount of SGX protected memory in bytes available in the system
++	available for use. In other words, it describes the size of the Enclave
++	Page Cache (EPC).
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 63d3de02bbcc..c857253a2e5d 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -28,7 +28,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+ static LIST_HEAD(sgx_active_page_list);
+ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
  
- #ifdef CONFIG_PROVE_RAW_LOCK_NESTING
--	LD_WAIT_CONFIG,		/* CONFIG_PREEMPT_LOCK, spinlock_t etc.. */
-+	LD_WAIT_CONFIG,		/* preemptible in PREEMPT_RT, spinlock_t etc.. */
- #else
- 	LD_WAIT_CONFIG = LD_WAIT_SPIN,
- #endif
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index bf1c00c881e4..952d0ccf8776 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -4671,7 +4671,7 @@ print_lock_invalid_wait_context(struct task_struct *curr,
- /*
-  * Verify the wait_type context.
-  *
-- * This check validates we takes locks in the right wait-type order; that is it
-+ * This check validates we take locks in the right wait-type order; that is it
-  * ensures that we do not take mutexes inside spinlocks and do not attempt to
-  * acquire spinlocks inside raw_spinlocks and the sort.
-  *
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c21b38cc25e9..690b0cec7459 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -247,7 +247,7 @@ struct lockdep_map rcu_lock_map = {
- 	.name = "rcu_read_lock",
- 	.key = &rcu_lock_key,
- 	.wait_type_outer = LD_WAIT_FREE,
--	.wait_type_inner = LD_WAIT_CONFIG, /* XXX PREEMPT_RCU ? */
-+	.wait_type_inner = LD_WAIT_CONFIG, /* PREEMPT_RT implies PREEMPT_RCU */
- };
- EXPORT_SYMBOL_GPL(rcu_lock_map);
+-/* The free page list lock protected variables prepend the lock. */
++/* Total EPC memory available in bytes. */
++static unsigned long sgx_total_mem;
++
++/* The number of free EPC pages in all nodes. */
+ static unsigned long sgx_nr_free_pages;
  
-@@ -256,7 +256,7 @@ struct lockdep_map rcu_bh_lock_map = {
- 	.name = "rcu_read_lock_bh",
- 	.key = &rcu_bh_lock_key,
- 	.wait_type_outer = LD_WAIT_FREE,
--	.wait_type_inner = LD_WAIT_CONFIG, /* PREEMPT_LOCK also makes BH preemptible */
-+	.wait_type_inner = LD_WAIT_CONFIG, /* PREEMPT_RT makes BH preemptible. */
- };
- EXPORT_SYMBOL_GPL(rcu_bh_lock_map);
+ /* Nodes with one or more EPC sections. */
+@@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+ 	}
+ 
++	sgx_total_mem += nr_pages * PAGE_SIZE;
++
+ 	return true;
+ }
+ 
+@@ -790,8 +795,30 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
+ }
+ EXPORT_SYMBOL_GPL(sgx_set_attribute);
+ 
++static struct ctl_path sgx_sysctl_path[] = {
++	{ .procname = "kernel", },
++	{ .procname = "sgx", },
++	{ }
++};
++
++static unsigned long sgx_total_mem_max = ~0UL;
++
++static struct ctl_table sgx_sysctl_table[] = {
++	{
++		.procname       = "total_mem",
++		.data           = &sgx_total_mem,
++		.maxlen         = sizeof(unsigned long),
++		.mode           = 0444,
++		.proc_handler   = proc_doulongvec_minmax,
++		.extra1		= SYSCTL_ZERO, /* min */
++		.extra2		= &sgx_total_mem_max, /* max */
++	},
++	{ }
++};
++
+ static int __init sgx_init(void)
+ {
++	struct ctl_table_header *sysctl_table_header;
+ 	int ret;
+ 	int i;
+ 
+@@ -810,6 +837,12 @@ static int __init sgx_init(void)
+ 	if (ret)
+ 		goto err_kthread;
+ 
++	sysctl_table_header = register_sysctl_paths(sgx_sysctl_path, sgx_sysctl_table);
++	if (!sysctl_table_header) {
++		pr_err("sysctl registration failed.\n");
++		goto err_provision;
++	}
++
+ 	/*
+ 	 * Always try to initialize the native *and* KVM drivers.
+ 	 * The KVM driver is less picky than the native one and
+@@ -821,10 +854,13 @@ static int __init sgx_init(void)
+ 	ret = sgx_drv_init();
+ 
+ 	if (sgx_vepc_init() && ret)
+-		goto err_provision;
++		goto err_sysctl;
+ 
+ 	return 0;
+ 
++err_sysctl:
++	unregister_sysctl_table(sysctl_table_header);
++
+ err_provision:
+ 	misc_deregister(&sgx_dev_provision);
  
 -- 
-2.25.1
+2.32.0
 
