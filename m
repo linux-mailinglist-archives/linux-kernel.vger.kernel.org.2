@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F473E90C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07813E90D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbhHKMZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
+        id S238414AbhHKMYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238024AbhHKMXd (ORCPT
+        with ESMTP id S237888AbhHKMXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:23:33 -0400
+        Wed, 11 Aug 2021 08:23:34 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A32C0617A4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:22:53 -0700 (PDT)
-Message-ID: <20210811121415.162130146@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5920DC0617A5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:22:54 -0700 (PDT)
+Message-ID: <20210811121415.221319935@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628684571;
+        s=2020; t=1628684573;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zmnhIKtCEBdBUbPTeaXsAflTQ/pCUB3Yr2SAQ9wy2GY=;
-        b=mEa1eXyy6vUAYa37yp7CbjE4bEublx6bQ0z2706sG49nx757OYarTvrw6D2Td0zi+TqoqQ
-        GF3MHAiVZWfGtr8Y3WYR2ZA04J0O4U6H9pKxufjciYZFce2SNvfjOFdTLnqvQzJApr/Rq1
-        01UyErav8NbWBvx3ZgOwE1PHFtQfSQm7pO981+suSVmWTzuJ4TAMcyUeW3tn7EyZOUpgqz
-        nOIFiuX87HOQYoUp7xtGTErRClXjGYmjw3A7MyWGsIg07ZPXznzfURv41YmUcuj7G96jUd
-        PbLbqdxrbOiqbD9SR+vEG0fveREXPyynu8D1n+0VYCUmfIOXbaSK12arybHG2w==
+        bh=fP9XsUlBVD2vjkCEGGDuvxemWGwIcwoms9TDZrdDGfM=;
+        b=l9/+x+5FTYv8HeTloup3YY62tNH09cWtbGpx3rfMtsJCfy+uObEElN9ZXk8mAf82ulObe5
+        qBJm+6/uL/ediTHaYiUsLbIwyb4pOrm0p58bRM5npbwelauU46j1LUobgiVqfNdi5p/aZK
+        ZXYhit6WwOWTv8+iicF9+pe71cUCg4bkRBZXW8pE9RKbYJVEDk6Inmp6mxF6OQEE5T+P9g
+        rwWY3+Ri2DlkMlH6x3zCS+b78Yv4KY2wpcJIXrchByICwezo+ftPpGI6nwR7XkQLjZD/+7
+        Osvqat4Hp4z5VC6D20o7D5l0o5LFv8a9EuddKawl60h28UwbXjIgxtLXD52ekA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628684571;
+        s=2020e; t=1628684573;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zmnhIKtCEBdBUbPTeaXsAflTQ/pCUB3Yr2SAQ9wy2GY=;
-        b=69LB9+Vuqh5dgkalMlfl7Ko5uar6tFUeEZ9N4SZNwQfZQ8WQzrqk4F/V9ULDrN7S7SLPcK
-        zis5XaqcxDurRMDA==
+        bh=fP9XsUlBVD2vjkCEGGDuvxemWGwIcwoms9TDZrdDGfM=;
+        b=hwoqE7eMjARmnfdSywJy3x//+7/LVH6t+YTzRBG/y1AA6Nxt5Twrm9MY9+EmRVhCP/TY8a
+        jux9hOBzESGHiwAw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,259 +48,87 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V4 17/68] locking/rwsem: Add rtmutex based R/W semaphore
- implementation
+Subject: [patch V4 18/68] locking/rtmutex: Add wake_state to rt_mutex_waiter
 References: <20210811120348.855823694@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Wed, 11 Aug 2021 14:22:51 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 14:22:52 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-The RT specific R/W semaphore implementation used to restrict the number of
-readers to one because a writer cannot block on multiple readers and
-inherit its priority or budget.
+Regular sleeping locks like mutexes, rtmutexes and rw_semaphores are always
+entering and leaving a blocking section with task state == TASK_RUNNING.
 
-The single reader restricting was painful in various ways:
+On a non-RT kernel spinlocks and rwlocks never affect the task state, but
+on RT kernels these locks are converted to rtmutex based 'sleeping' locks.
 
- - Performance bottleneck for multi-threaded applications in the page fault
-   path (mmap sem)
+So in case of contention the task goes to block which requires to carefully
+preserve the task state and restore it after acquiring the lock taking
+regular wakeups for the task into account which happened while the task was
+blocked. This state preserving is achieved by having a separate task state
+for blocking on a RT spin/rwlock and a saved_state field in task_struct
+along with careful handling of these wakeup scenarios in try_to_wake_up().
 
- - Progress blocker for drivers which are carefully crafted to avoid the
-   potential reader/writer deadlock in mainline.
-
-The analysis of the writer code paths shows, that properly written RT tasks
-should not take them. Syscalls like mmap(), file access which take mmap sem
-write locked have unbound latencies which are completely unrelated to mmap
-sem. Other R/W sem users like graphics drivers are not suitable for RT tasks
-either.
-
-So there is little risk to hurt RT tasks when the RT rwsem implementation is
-done in the following way:
-
- - Allow concurrent readers
-
- - Make writers block until the last reader left the critical section. This
-   blocking is not subject to priority/budget inheritance.
-
- - Readers blocked on a writer inherit their priority/budget in the normal
-   way.
-
-There is a drawback with this scheme. R/W semaphores become writer unfair
-though the applications which have triggered writer starvation (mostly on
-mmap_sem) in the past are not really the typical workloads running on a RT
-system. So while it's unlikely to hit writer starvation, it's possible. If
-there are unexpected workloads on RT systems triggering it, the problem
-has to be revisited.
+To avoid conditionals in the rtmutex code, store the wake state which has
+to be used for waking a lock waiter in rt_mutex_waiter which allows to
+handle the regular and RT spin/rwlocks by handing it to wake_up_state().
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: Fix indent fail (Peter Z)
+V2: Use unsigned int for wake_state (Peter Z.)
 ---
- include/linux/rwsem.h  |   58 ++++++++++++++++++++++++++
- kernel/locking/rwsem.c |  108 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 166 insertions(+)
+ kernel/locking/rtmutex.c        |    2 +-
+ kernel/locking/rtmutex_common.h |    9 +++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 ---
---- a/include/linux/rwsem.h
-+++ b/include/linux/rwsem.h
-@@ -16,6 +16,9 @@
- #include <linux/spinlock.h>
- #include <linux/atomic.h>
- #include <linux/err.h>
-+
-+#ifndef CONFIG_PREEMPT_RT
-+
- #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
- #include <linux/osq_lock.h>
- #endif
-@@ -119,6 +122,61 @@ static inline int rwsem_is_contended(str
- 	return !list_empty(&sem->wait_list);
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -692,7 +692,7 @@ static int __sched rt_mutex_adjust_prio_
+ 		 * to get the lock.
+ 		 */
+ 		if (prerequeue_top_waiter != rt_mutex_top_waiter(lock))
+-			wake_up_process(rt_mutex_top_waiter(lock)->task);
++			wake_up_state(waiter->task, waiter->wake_state);
+ 		raw_spin_unlock_irq(&lock->wait_lock);
+ 		return 0;
+ 	}
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -25,6 +25,7 @@
+  * @pi_tree_entry:	pi node to enqueue into the mutex owner waiters tree
+  * @task:		task reference to the blocked task
+  * @lock:		Pointer to the rt_mutex on which the waiter blocks
++ * @wake_state:		Wakeup state to use (TASK_NORMAL or TASK_RTLOCK_WAIT)
+  * @prio:		Priority of the waiter
+  * @deadline:		Deadline of the waiter if applicable
+  */
+@@ -33,6 +34,7 @@ struct rt_mutex_waiter {
+ 	struct rb_node		pi_tree_entry;
+ 	struct task_struct	*task;
+ 	struct rt_mutex_base	*lock;
++	unsigned int		wake_state;
+ 	int			prio;
+ 	u64			deadline;
+ };
+@@ -158,9 +160,16 @@ static inline void rt_mutex_init_waiter(
+ 	debug_rt_mutex_init_waiter(waiter);
+ 	RB_CLEAR_NODE(&waiter->pi_tree_entry);
+ 	RB_CLEAR_NODE(&waiter->tree_entry);
++	waiter->wake_state = TASK_NORMAL;
+ 	waiter->task = NULL;
  }
  
-+#else /* !CONFIG_PREEMPT_RT */
-+
-+#include <linux/rwbase_rt.h>
-+
-+struct rw_semaphore {
-+	struct rwbase_rt	rwbase;
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map	dep_map;
-+#endif
-+};
-+
-+#define __RWSEM_INITIALIZER(name)				\
-+	{							\
-+		.rwbase = __RWBASE_INITIALIZER(name),		\
-+		RW_DEP_MAP_INIT(name)				\
-+	}
-+
-+#define DECLARE_RWSEM(lockname) \
-+	struct rw_semaphore lockname = __RWSEM_INITIALIZER(lockname)
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+extern void  __rwsem_init(struct rw_semaphore *rwsem, const char *name,
-+			  struct lock_class_key *key);
-+#else
-+static inline void  __rwsem_init(struct rw_semaphore *rwsem, const char *name,
-+				 struct lock_class_key *key)
++static inline void rtlock_init_rtmutex_waiter(struct rt_mutex_waiter *waiter)
 +{
-+}
-+#endif
-+
-+#define init_rwsem(sem)						\
-+do {								\
-+	static struct lock_class_key __key;			\
-+								\
-+	init_rwbase_rt(&(sem)->rwbase);			\
-+	__rwsem_init((sem), #sem, &__key);			\
-+} while (0)
-+
-+static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
-+{
-+	return rw_base_is_locked(&sem->rwbase);
++	rt_mutex_init_waiter(waiter);
++	waiter->wake_state = TASK_RTLOCK_WAIT;
 +}
 +
-+static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
-+{
-+	return rw_base_is_contended(&sem->rwbase);
-+}
-+
-+#endif /* CONFIG_PREEMPT_RT */
-+
-+/*
-+ * The functions below are the same for all rwsem implementations including
-+ * the RT specific variant.
-+ */
-+
- /*
-  * lock for reading
-  */
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -28,6 +28,7 @@
- #include <linux/rwsem.h>
- #include <linux/atomic.h>
- 
-+#ifndef CONFIG_PREEMPT_RT
- #include "lock_events.h"
- 
- /*
-@@ -1344,6 +1345,113 @@ static inline void __downgrade_write(str
- 		rwsem_downgrade_wake(sem);
- }
- 
-+#else /* !CONFIG_PREEMPT_RT */
-+
-+#include "rtmutex.c"
-+
-+#define rwbase_set_and_save_current_state(state)	\
-+	set_current_state(state)
-+
-+#define rwbase_restore_current_state()			\
-+	__set_current_state(TASK_RUNNING)
-+
-+#define rwbase_rtmutex_lock_state(rtm, state)		\
-+	__rt_mutex_lock(rtm, state)
-+
-+#define rwbase_rtmutex_slowlock_locked(rtm, state)	\
-+	__rt_mutex_slowlock_locked(rtm, state)
-+
-+#define rwbase_rtmutex_unlock(rtm)			\
-+	__rt_mutex_unlock(rtm)
-+
-+#define rwbase_rtmutex_trylock(rtm)			\
-+	__rt_mutex_trylock(rtm)
-+
-+#define rwbase_signal_pending_state(state, current)	\
-+	signal_pending_state(state, current)
-+
-+#define rwbase_schedule()				\
-+	schedule()
-+
-+#include "rwbase_rt.c"
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+void __rwsem_init(struct rw_semaphore *sem, const char *name,
-+		  struct lock_class_key *key)
-+{
-+	debug_check_no_locks_freed((void *)sem, sizeof(*sem));
-+	lockdep_init_map(&sem->dep_map, name, key, 0);
-+}
-+EXPORT_SYMBOL(__rwsem_init);
-+#endif
-+
-+static inline void __down_read(struct rw_semaphore *sem)
-+{
-+	rwbase_read_lock(&sem->rwbase, TASK_UNINTERRUPTIBLE);
-+}
-+
-+static inline int __down_read_interruptible(struct rw_semaphore *sem)
-+{
-+	return rwbase_read_lock(&sem->rwbase, TASK_INTERRUPTIBLE);
-+}
-+
-+static inline int __down_read_killable(struct rw_semaphore *sem)
-+{
-+	return rwbase_read_lock(&sem->rwbase, TASK_KILLABLE);
-+}
-+
-+static inline int __down_read_trylock(struct rw_semaphore *sem)
-+{
-+	return rwbase_read_trylock(&sem->rwbase);
-+}
-+
-+static inline void __up_read(struct rw_semaphore *sem)
-+{
-+	rwbase_read_unlock(&sem->rwbase, TASK_NORMAL);
-+}
-+
-+static inline void __sched __down_write(struct rw_semaphore *sem)
-+{
-+	rwbase_write_lock(&sem->rwbase, TASK_UNINTERRUPTIBLE);
-+}
-+
-+static inline int __sched __down_write_killable(struct rw_semaphore *sem)
-+{
-+	return rwbase_write_lock(&sem->rwbase, TASK_KILLABLE);
-+}
-+
-+static inline int __down_write_trylock(struct rw_semaphore *sem)
-+{
-+	return rwbase_write_trylock(&sem->rwbase);
-+}
-+
-+static inline void __up_write(struct rw_semaphore *sem)
-+{
-+	rwbase_write_unlock(&sem->rwbase);
-+}
-+
-+static inline void __downgrade_write(struct rw_semaphore *sem)
-+{
-+	rwbase_write_downgrade(&sem->rwbase);
-+}
-+
-+/* Debug stubs for the common API */
-+#define DEBUG_RWSEMS_WARN_ON(c, sem)
-+
-+static inline void __rwsem_set_reader_owned(struct rw_semaphore *sem,
-+					    struct task_struct *owner)
-+{
-+}
-+
-+static inline bool is_rwsem_reader_owned(struct rw_semaphore *sem)
-+{
-+	int count = atomic_read(&sem->rwbase.readers);
-+
-+	return count < 0 && count != READER_BIAS;
-+}
-+
-+#endif /* CONFIG_PREEMPT_RT */
-+
- /*
-  * lock for reading
-  */
+ #else /* CONFIG_RT_MUTEXES */
+ /* Used in rcu/tree_plugin.h */
+ static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
 
