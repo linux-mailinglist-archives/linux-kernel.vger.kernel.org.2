@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BA93E9262
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFCB3E9265
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhHKNRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:17:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56278 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhHKNRy (ORCPT
+        id S229986AbhHKNSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhHKNSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:17:54 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B4AC020178;
-        Wed, 11 Aug 2021 13:17:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628687849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gVCLfCFvwJauS930PmgecQwLOMOK/vjNwnwDUMr16AE=;
-        b=odE9maepLGWkNwngSUKZhRC60CXLr8GnRmDdHjc9uU4MAWYUefYWdj9JXQPQDqowGsbMz8
-        gGxg7PhpIKE8Ys90EEAtKmX1xcZICsSppPs8HcpyzvCt+QeoqEX3vwMPSJRN9HF1t1Cdb/
-        KBACuyNAXkYBS/Wcf+KGgrzwV9iINLg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628687849;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gVCLfCFvwJauS930PmgecQwLOMOK/vjNwnwDUMr16AE=;
-        b=GyVBEWsfFC33uvoW9povXLXWMKdv3VptMn3pXiY62/uDYlSt2XOAg9RxVwoco5khpjQe02
-        lGRlSkoIR6tl2SAA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 96D5A136D9;
-        Wed, 11 Aug 2021 13:17:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id vDfJI+nNE2FBOQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 13:17:29 +0000
-Subject: Re: [PATCH v14 045/138] mm/memcg: Add folio_memcg_lock() and
- folio_memcg_unlock()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-46-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <7a08539d-6a07-02b7-a9b0-a374aa6c88a0@suse.cz>
-Date:   Wed, 11 Aug 2021 15:17:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 09:18:10 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F84C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:17:46 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so1971572wmi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2xXMH953pZKCgCZ25e4o88jpheK19gphzrEklU0JwmQ=;
+        b=N4jsEQMm8u5Z3lUmz5YhckOJN30t7GmxaBr/GyBrLlCIypYSx4DQdSeWJ3lYSvvYBN
+         fj7stKjnQStjvf+Yr3j+QuN6RIRSGi284w9wZFzo1CUEt0VAY71Y9r4T+xdecrqCwSXi
+         Xf/8F05FY0CXoaKedUtvqCKv4UVZHXCJZHuHpn+wynWUnWaeX+4dZNlVsuzMIQ/ly7W6
+         PufK/ExoII8fGmC4rVj9r1TRSMuyfzGzjVzSUSXVBin5n3ciHmb45XOQDoYpoZkeGxnn
+         1+ptpUmArPo/T8A2nEow1cRfU7t8SVlU93GNLR1XebZ8LsGyvxOiiiUk61doZafLRtPw
+         Jf3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2xXMH953pZKCgCZ25e4o88jpheK19gphzrEklU0JwmQ=;
+        b=kteLfTnuk2zK5s+TtPTC9Vtkzmri1jq5B1FvnXHAqNhytYnumF/mBGsIbUyqlvDU2k
+         f8hp7Numycb1AaqsoySdAMKrViQIVApKSXGeS9NxhHpSXmYjiZEgHVuiGpMvvp0/hgVF
+         q7YjJYXpn/DBIFkGyZvYjhEhEgr7zYAhCy+gTWhxkid6fIHi0TXJOKBOcoNwMIxDzHB0
+         KSovONqSzWFetLO9Lvt2Xfscx+l9knpOQ5gCrX8oIoyv5xeC7pGXHZjnwyzV1K9jD0IV
+         hll0aZD9dlqo7qT8o+O7LzS7i/lVq7XvL/stWR3oKkFFD6EVR4SgWAEDWvIPi/uzGvwT
+         b+aA==
+X-Gm-Message-State: AOAM532oWj7XqT8+4RnVhgXjOjgSNcJ901D5z2QHKyvHn5uqtvrFJyAL
+        qD0VV1xg4gby+dinVLUrUN+CVQ==
+X-Google-Smtp-Source: ABdhPJwIUxJpPNGUgdCSYFBLbtc9j6za/dLf5bCk68g89565QOV9b0vnjKefGnpYPFSTCxW9pYRBcA==
+X-Received: by 2002:a7b:c102:: with SMTP id w2mr10068103wmi.133.1628687865175;
+        Wed, 11 Aug 2021 06:17:45 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:43fd:e634:73d9:e10e])
+        by smtp.gmail.com with ESMTPSA id t15sm25828059wrw.48.2021.08.11.06.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 06:17:44 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 14:17:39 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
+Message-ID: <YRPN8zjp1wqkHg6t@google.com>
+References: <cover.1628682874.git.viresh.kumar@linaro.org>
+ <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-46-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> These are the folio equivalents of lock_page_memcg() and
-> unlock_page_memcg().
+On Wednesday 11 Aug 2021 at 17:28:47 (+0530), Viresh Kumar wrote:
+> Set the newly added .register_em() callback to register with the EM
+> after the cpufreq policy is properly initialized.
 > 
-> lock_page_memcg() and unlock_page_memcg() have too many callers to be
-> easily replaced in a single patch, so reimplement them as wrappers for
-> now to be cleaned up later when enough callers have been converted to
-> use folios.
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/scmi-cpufreq.c | 55 ++++++++++++++++++++--------------
+>  1 file changed, 32 insertions(+), 23 deletions(-)
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+> index 75f818d04b48..b916c9e22921 100644
+> --- a/drivers/cpufreq/scmi-cpufreq.c
+> +++ b/drivers/cpufreq/scmi-cpufreq.c
+> @@ -22,7 +22,9 @@
+>  
+>  struct scmi_data {
+>  	int domain_id;
+> +	int nr_opp;
+>  	struct device *cpu_dev;
+> +	cpumask_var_t opp_shared_cpus;
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Can we use policy->related_cpus and friends directly in the callback
+instead? That should simplify the patch a bit.
+
+Also, we can probably afford calling dev_pm_opp_get_opp_count() from the
+em_register callback as it is not a hot path, which would avoid wasting
+some 'resident' memory here that is only used during init.
+
+Thanks,
+Quentin
