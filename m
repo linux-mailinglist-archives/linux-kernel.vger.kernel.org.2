@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158713E8C9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7DF3E8C9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236494AbhHKIyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        id S236410AbhHKIyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236328AbhHKIyF (ORCPT
+        with ESMTP id S229958AbhHKIyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 04:54:05 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E922C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:53:42 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x8so4177480lfe.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3AiCUWhgfaQ/Re4MVUqsQq5azIzJHgBMesbI0wlW/ZQ=;
-        b=uCwmQccxrxGK0rbVI2asZmP3OKbsYKZ+DvVUn6w4vzMQO2hqr5ZpeMmShnvbBU8/Yr
-         ZHrWLxRoxQX1pVuGeAJoOic61PhlPpiwESkj7USTzPr/1EAXEQxFAjqosz11DxT4FlFM
-         bbrPVxhBxg2k5VgjesQQZC9WjuEXQz4y4fIV4eunpY/rKbK7wv13z32fDiOGlz5tlXtF
-         lC15FlLulxhKFjSC41aMc28F/YM8Gy/fhV1LC5lcLoLFKfmLCcY97MdrfpTDMX36LDzg
-         zLXli7upUMMfUBTLWPlXFZlU7rbgvECD5d3SbvaneR1in6XEIMcHGVMHFG3FuiJMk7Pa
-         dHXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3AiCUWhgfaQ/Re4MVUqsQq5azIzJHgBMesbI0wlW/ZQ=;
-        b=KsDEtqrp6TuEQ1RuZXON/ItXLBCcLHW1g37xsEvQAT9mE0ZTV7adLKDQ9P9aYvpzq6
-         kJxqO8+ITbdkr4DLqUwlWXkDFa9gTj1KD72aVHwx+Yg+0nUi97Ovtyxw7F4sqWjI0LKf
-         inQdIe0+Gma5q1QVkoJ82DCQrDISkTRbcCmMrcDH79wcry+m9lqrMJKLVmTAXg2lQ6uv
-         4O3K165SnIhl4gZ4hyizn2f+NS0UcNDJcQ36qWWk7fXKt8H5/8MDoBdxNrkONIBRoByc
-         rPtIV2+mp6ttEp2SMwLoip9yB1wyvcbW3w+0NnXIMCL5SlHq3su+FnnAgwWoWl0EPXJX
-         UUTA==
-X-Gm-Message-State: AOAM532HCg6VCLUn91hWs4Sgg5/qO1Kp/oeiIUuIKAx4IKf9I7ElPYZK
-        sF3l9XVgI/lVxyPVRWJYb5BjG5l1do4zWcF8qtoaUg==
-X-Google-Smtp-Source: ABdhPJwiM31QODgSzneDy7YtTHVThH6UHiJzC+ra8IUt6YwIQr8jCgHTyTZ7OO09tzof0XpJJpPWGQJeaRRxwn8/QIA=
-X-Received: by 2002:a05:6512:32a3:: with SMTP id q3mr13222195lfe.157.1628672020757;
- Wed, 11 Aug 2021 01:53:40 -0700 (PDT)
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3A2C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:53:40 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
+        by albert.telenet-ops.be with bizsmtp
+        id g8tf2500X1gJxCh068tfzh; Wed, 11 Aug 2021 10:53:39 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mDjzX-001yiR-96; Wed, 11 Aug 2021 10:53:39 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mDjzW-0059AM-NL; Wed, 11 Aug 2021 10:53:38 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] of: fdt: Remove weak early_init_dt_mark_hotplug_memory_arch()
+Date:   Wed, 11 Aug 2021 10:53:37 +0200
+Message-Id: <1a61f75ec50d3c2922fcdbe33337266a58a4125f.1628671960.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210804044033.3047296-1-hsinyi@chromium.org>
-In-Reply-To: <20210804044033.3047296-1-hsinyi@chromium.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 10:53:29 +0200
-Message-ID: <CACRpkdaC-vD2Op-ZzJY8uWQUoS8WH5UPd0FPpWYkExXDg-5biQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] arm: dts: mt8135: Move pinfunc to include/dt-bindings/pinctrl
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Andy Teng <andy.teng@mediatek.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi, Matthias,
+Commit 41a9ada3e6b4253f ("of/fdt: mark hotpluggable memory") introduced
+two (for systems with and without memblock) weak versions of
+early_init_dt_mark_hotplug_memory_arch(), that could be overridden by an
+architecture-specific version.  However, no overrides ever emerged.
+Later, commit aca52c3983891060 ("mm: remove CONFIG_HAVE_MEMBLOCK")
+removed the non-memblock version.
 
-I have applied all three patches on this immutable branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=ib-mt8135
+Remove early_init_dt_mark_hotplug_memory_arch(), and replace it by a
+direct call to memblock_mark_hotplug().
 
-Then I merged this branch into the pinctrl "devel" branch for
-v5.15.
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/of/fdt.c       | 7 +------
+ include/linux/of_fdt.h | 1 -
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-Matthias can pull the same branch into his MT SoC tree so
-that the hashes will match up in the merge window. No rebasing.
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index ee8f9937227b5e45..d29e610d336d39a5 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1120,7 +1120,7 @@ int __init early_init_dt_scan_memory(unsigned long node, const char *uname,
+ 		if (!hotpluggable)
+ 			continue;
+ 
+-		if (early_init_dt_mark_hotplug_memory_arch(base, size))
++		if (memblock_mark_hotplug(base, size))
+ 			pr_warn("failed to mark hotplug range 0x%llx - 0x%llx\n",
+ 				base, base + size);
+ 	}
+@@ -1235,11 +1235,6 @@ void __init __weak early_init_dt_add_memory_arch(u64 base, u64 size)
+ 	memblock_add(base, size);
+ }
+ 
+-int __init __weak early_init_dt_mark_hotplug_memory_arch(u64 base, u64 size)
+-{
+-	return memblock_mark_hotplug(base, size);
+-}
+-
+ static void * __init early_init_dt_alloc_memory_arch(u64 size, u64 align)
+ {
+ 	void *ptr = memblock_alloc(size, align);
+diff --git a/include/linux/of_fdt.h b/include/linux/of_fdt.h
+index 3b1500a0116f91fd..cf6a65b94d40e6a7 100644
+--- a/include/linux/of_fdt.h
++++ b/include/linux/of_fdt.h
+@@ -67,7 +67,6 @@ extern void early_init_fdt_scan_reserved_mem(void);
+ extern void early_init_fdt_reserve_self(void);
+ extern void __init early_init_dt_scan_chosen_arch(unsigned long node);
+ extern void early_init_dt_add_memory_arch(u64 base, u64 size);
+-extern int early_init_dt_mark_hotplug_memory_arch(u64 base, u64 size);
+ extern u64 dt_mem_next_cell(int s, const __be32 **cellp);
+ 
+ /* Early flat tree scan hooks */
+-- 
+2.25.1
 
-The same patches will then come in to Torvalds in two ways
-with the same hashes and match perfectly.
-
-Yours,
-Linus Walleij
