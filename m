@@ -2,173 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280013E87A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891F13E87AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhHKBbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 21:31:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:44103 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229845AbhHKBbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 21:31:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="300619501"
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="300619501"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 18:31:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
-   d="scan'208";a="445636101"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 10 Aug 2021 18:31:09 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDd5J-000L83-4N; Wed, 11 Aug 2021 01:31:09 +0000
-Date:   Wed, 11 Aug 2021 09:30:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 746f5ea9c4283d98353c1cd41864aec475e0edbd
-Message-ID: <6113282c.1/A9g17WEkWfTSpS%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230354AbhHKBgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 21:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhHKBf7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 21:35:59 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8895BC061765;
+        Tue, 10 Aug 2021 18:35:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkspD4TgTz9sWS;
+        Wed, 11 Aug 2021 11:35:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628645733;
+        bh=oLqcRhkKAlWqkAi2nMUD2QJlUlWpIKdpuMPS6Z6G9G0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RdesqB14I4595HORSPRmXz0aBsrDmLe2K/WqYg610cTAzNGOWFy+xoKKOWN8b4vas
+         OaDD3BwMfMyAB7rBlJZojWhKV3KFeoMFTQeM2SsPcJxQdJyJOS0LvnG5udUgG8eNTS
+         D6UP3OxFL6kol3znk/+wKj2GJxoDDG+dR5gRsNcMzv0hz+AyUNEJsqDUkiPQZjRRVH
+         vz94FCdonkNlQ3ktuB2Psu8C7oPYywDpPI9ZImcBZbg+EN6cN3zCa15kCMINoDc1cn
+         1ZbT9NwPqgeIZgHyhElhZEplOene7a19Pta7TVWYRxnnSBTdVdz0MysNrmUv1RhE8C
+         MCCKNhYNoZI+A==
+Date:   Wed, 11 Aug 2021 11:35:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210811113531.18f8ee4d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/lMcLOHdoJF.0nDkZSpI/_SX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 746f5ea9c4283d98353c1cd41864aec475e0edbd  sched: Replace deprecated CPU-hotplug functions.
+--Sig_/lMcLOHdoJF.0nDkZSpI/_SX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 727m
+Hi all,
 
-configs tested: 115
-configs skipped: 3
+Today's linux-next merge of the net-next tree got conflicts in:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+  include/linux/bpf-cgroup.h
+  kernel/bpf/helpers.c
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210809
-powerpc                      ep88xc_defconfig
-arm                            lart_defconfig
-mips                    maltaup_xpa_defconfig
-arm                       versatile_defconfig
-powerpc                 mpc837x_mds_defconfig
-mips                            e55_defconfig
-xtensa                    xip_kc705_defconfig
-arc                      axs103_smp_defconfig
-mips                      maltasmvp_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                     powernv_defconfig
-mips                         bigsur_defconfig
-powerpc                     pseries_defconfig
-mips                          ath79_defconfig
-mips                           ci20_defconfig
-powerpc                     mpc83xx_defconfig
-mips                      loongson3_defconfig
-microblaze                      mmu_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-i386                 randconfig-a004-20210809
-i386                 randconfig-a005-20210809
-i386                 randconfig-a006-20210809
-i386                 randconfig-a002-20210809
-i386                 randconfig-a001-20210809
-i386                 randconfig-a003-20210809
-i386                 randconfig-a004-20210808
-i386                 randconfig-a005-20210808
-i386                 randconfig-a006-20210808
-i386                 randconfig-a002-20210808
-i386                 randconfig-a001-20210808
-i386                 randconfig-a003-20210808
-i386                 randconfig-a011-20210810
-i386                 randconfig-a015-20210810
-i386                 randconfig-a013-20210810
-i386                 randconfig-a014-20210810
-i386                 randconfig-a016-20210810
-i386                 randconfig-a012-20210810
-i386                 randconfig-a012-20210809
-i386                 randconfig-a015-20210809
-i386                 randconfig-a011-20210809
-i386                 randconfig-a013-20210809
-i386                 randconfig-a014-20210809
-i386                 randconfig-a016-20210809
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+between commit:
 
-clang tested configs:
-x86_64               randconfig-c001-20210810
-x86_64               randconfig-a013-20210810
-x86_64               randconfig-a011-20210810
-x86_64               randconfig-a012-20210810
-x86_64               randconfig-a016-20210810
-x86_64               randconfig-a014-20210810
-x86_64               randconfig-a015-20210810
-x86_64               randconfig-a016-20210809
-x86_64               randconfig-a012-20210809
-x86_64               randconfig-a013-20210809
-x86_64               randconfig-a011-20210809
-x86_64               randconfig-a014-20210809
-x86_64               randconfig-a015-20210809
+  a2baf4e8bb0f ("bpf: Fix potentially incorrect results with bpf_get_local_=
+storage()")
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+from the net tree and commit:
+
+  c7603cfa04e7 ("bpf: Add ambient BPF runtime context stored in current")
+
+from the net-next tree.
+
+The latter removed the code that the former modified.
+
+I fixed it up (I just used the latter version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lMcLOHdoJF.0nDkZSpI/_SX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmETKWMACgkQAVBC80lX
+0Gzyfgf+KTO4rZkAA24NrU1UYOCngS691NC2QJICnvtCdwumV0b/kTlQLTLcTEGJ
+nQyY0js6Djh56plEwboBEknbob80ex8keTDm6BWq1Tpu4wqH1C1EhbenWMqtra+I
+pZyEUkz1wjX8JjbUSNKNZ8InOPZIRwlTGqVLZMTB/D/ewZZkHdVjlRgoOdzb1n5S
+DfPZliDyIdXpdKpFUq6pkt/GoojUJkhTPiXbjH9+vSbX17ldlz4eURFaYD0a5s9+
+iD03r3y17VCz/hpbvY8iUzldGRaJzJca0uBVw6iHpiaNNtD1PHC/ioz00D+AM0FX
+gNqZVfvfCX6clhRcHBtdenf2LOXH2Q==
+=/39c
+-----END PGP SIGNATURE-----
+
+--Sig_/lMcLOHdoJF.0nDkZSpI/_SX--
