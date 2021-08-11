@@ -2,133 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DEE3E9610
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C9A3E9624
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhHKQei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhHKQed (ORCPT
+        id S230200AbhHKQit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:38:49 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:24493 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhHKQip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:34:33 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D71DC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:34:10 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id a4so3453451ilj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:34:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MiyXaKuo5MKFz5xTuKgPxPuaaij2HCFYcE1MAYz0REg=;
-        b=qzk/GM33ZCdtZbJZtJAJP/kWtgtTjQwNcsmSSAYqiffShG7oeLVm7tOQVHINHXsoLq
-         9yWPnQuRcQvO4IAUfgcxAW7CMdJCXasEmfFWEzHNwNv20ottnoat8QezWCS/nXvvykGE
-         Lzb894TfheLpGH5YyB2IzuFezJgPbfyNde+6Zy9U1hbZ1tQppF3RrUnNP80Hfy9/OaDv
-         UklNV67dzGuO2Ybv20/Vwq1dXd028bYefpz/bf3O0/w8Cm6VR32Wdp55ZqeS2gpww3Ej
-         AuYUAJw/UMgfwC2SmzJho8Y8cEuY9cGqzpv95LK9F8UiBfKgd6ROYTng30Mm2EQ7g+EY
-         Xu0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MiyXaKuo5MKFz5xTuKgPxPuaaij2HCFYcE1MAYz0REg=;
-        b=TLVXKwLavlK0af+438UOaEu04OExt6Ibgl2Wx9UePTFvfNmM0+k2TXAy67RqFBqj4P
-         flvvJqOeG/CDEb47CGgDK3Cc/WPW1EPO3yWrUI8AYVTbIH9jtDJipNjJxcg//L+ui/yo
-         OHAJFwyQ6q964vWKXMdBb1g4mW8G0HUv+DHW9tiVVagfFi075ogwX2bqdfwmO/qUQfad
-         NoJseo3qEjqdG7tmTnPuz7T0V9Di5Mftclog+ahXM8MFsxfnNlXCPQFvGVzr6C1itpvY
-         rXaT9c6bPTi/PqXDgmhe7U8HWf9B0L7SmfwgS5/DOPa6s9Iv6pZVDHW6nXbPokQjVHy0
-         TQSg==
-X-Gm-Message-State: AOAM533AY3RCXoCikuVyrC8H0M7emLjAaOnFfI3mYfOyOwVhdDAjCWcN
-        O6FkkOlUEdSrc/QThHI8Ms2peGtqN0v0gvGn2ejEuA==
-X-Google-Smtp-Source: ABdhPJxkZl/Bld6p9S4wH0FuPMsDn/NAUqDQkIWLW5eMNnp6ZjwvJenOZrxV33H7v0n74tA+UpWY12fJfNxFzc8/+QY=
-X-Received: by 2002:a05:6e02:15c8:: with SMTP id q8mr612495ilu.285.1628699649398;
- Wed, 11 Aug 2021 09:34:09 -0700 (PDT)
+        Wed, 11 Aug 2021 12:38:45 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 17BGbXJ0027140;
+        Thu, 12 Aug 2021 01:37:33 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 17BGbXJ0027140
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628699854;
+        bh=2Er+QKd5Ko20deRGrSXJT5qge6sZHPDP5YZQuMjEZ7w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ft0nJbzedZBO2jy1hxu7A5L0tSQGzE8VEozrXX2HQdh92QLFiQBR0uxGHYH5jcf3J
+         8LyqckdJgnu4WwJsUnLyPemTGfgNk9aTFABrv8mI9NPr+sOr5ET2q3Dn1s8/BWVqsZ
+         bvjPfpYTkuf2cFdmhWLrK7aOF+qUhMNGIZdEGEIJUOTV1CeJolQHaIzQnQtgqrfZWx
+         kTaGUaKxFpsB3+JU900omGp9esMMQVcRUhSF0oeof0YrTJo8r6MQv6yB+rUy+VJwuH
+         ySUMgXq9OAdOtl++bpFjIojsNnxGLzbyy4T1f2c2w3U4P/L1KMTZDaDcXZrdAX1qYK
+         n1bSvm0KP7Knw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] xtensa: remove unneeded exports
+Date:   Thu, 12 Aug 2021 01:37:28 +0900
+Message-Id: <20210811163731.186125-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210810224554.2978735-1-seanjc@google.com> <20210810224554.2978735-3-seanjc@google.com>
-In-Reply-To: <20210810224554.2978735-3-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 11 Aug 2021 09:33:58 -0700
-Message-ID: <CANgfPd9MQWjP47-DjOt-dPrTRuV46VdiR7wEWjX9pYefyBfZ1A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Drop 'shared' param from tdp_mmu_link_page()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 3:46 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Drop @shared from tdp_mmu_link_page() and hardcode it to work for
-> mmu_lock being held for read.  The helper has exactly one caller and
-> in all likelihood will only ever have exactly one caller.  Even if KVM
-> adds a path to install translations without an initiating page fault,
-> odds are very, very good that the path will just be a wrapper to the
-> "page fault" handler (both SNP and TDX RFCs propose patches to do
-> exactly that).
->
-> No functional change intended.
->
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+These are not used in any of subdirectories.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Nice cleanup!
+ arch/xtensa/Makefile | 2 --
+ 1 file changed, 2 deletions(-)
 
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 17 ++++-------------
->  1 file changed, 4 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index d99e064d366f..c5b901744d15 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -257,26 +257,17 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
->   *
->   * @kvm: kvm instance
->   * @sp: the new page
-> - * @shared: This operation may not be running under the exclusive use of
-> - *         the MMU lock and the operation must synchronize with other
-> - *         threads that might be adding or removing pages.
->   * @account_nx: This page replaces a NX large page and should be marked for
->   *             eventual reclaim.
->   */
->  static void tdp_mmu_link_page(struct kvm *kvm, struct kvm_mmu_page *sp,
-> -                             bool shared, bool account_nx)
-> +                             bool account_nx)
->  {
-> -       if (shared)
-> -               spin_lock(&kvm->arch.tdp_mmu_pages_lock);
-> -       else
-> -               lockdep_assert_held_write(&kvm->mmu_lock);
-> -
-> +       spin_lock(&kvm->arch.tdp_mmu_pages_lock);
->         list_add(&sp->link, &kvm->arch.tdp_mmu_pages);
->         if (account_nx)
->                 account_huge_nx_page(kvm, sp);
-> -
-> -       if (shared)
-> -               spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
-> +       spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
->  }
->
->  /**
-> @@ -1062,7 +1053,7 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
->                                                      !shadow_accessed_mask);
->
->                         if (tdp_mmu_set_spte_atomic_no_dirty_log(vcpu->kvm, &iter, new_spte)) {
-> -                               tdp_mmu_link_page(vcpu->kvm, sp, true,
-> +                               tdp_mmu_link_page(vcpu->kvm, sp,
->                                                   huge_page_disallowed &&
->                                                   req_level >= iter.level);
->
-> --
-> 2.32.0.605.g8dce9f2422-goog
->
+diff --git a/arch/xtensa/Makefile b/arch/xtensa/Makefile
+index e9c8f064c44d..6fab7fc87579 100644
+--- a/arch/xtensa/Makefile
++++ b/arch/xtensa/Makefile
+@@ -17,7 +17,6 @@
+ variant-y := $(patsubst "%",%,$(CONFIG_XTENSA_VARIANT_NAME))
+ 
+ VARIANT = $(variant-y)
+-export VARIANT
+ 
+ ifneq ($(VARIANT),)
+   ifdef cross_compiling
+@@ -34,7 +33,6 @@ platform-$(CONFIG_XTENSA_PLATFORM_ISS)		:= iss
+ platform-$(CONFIG_XTENSA_PLATFORM_XTFPGA)	:= xtfpga
+ 
+ PLATFORM = $(platform-y)
+-export PLATFORM
+ 
+ # temporarily until string.h is fixed
+ KBUILD_CFLAGS += -ffreestanding -D__linux__
+-- 
+2.30.2
+
