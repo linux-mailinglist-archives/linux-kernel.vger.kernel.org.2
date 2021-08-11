@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153643E9B47
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082523E9B4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhHKXhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 19:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        id S232878AbhHKXrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 19:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbhHKXhs (ORCPT
+        with ESMTP id S232803AbhHKXrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 19:37:48 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5C5C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:37:24 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d17so4807621plr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:37:24 -0700 (PDT)
+        Wed, 11 Aug 2021 19:47:07 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EB3C061765;
+        Wed, 11 Aug 2021 16:46:43 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id bo18so6354069pjb.0;
+        Wed, 11 Aug 2021 16:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QuIfA2qSoLvffItEog0Txhua4v5iPaRzueSF+kKPuoo=;
-        b=Nro9k9HupQ0Cn+4oIjxpP/aOsJSJiQlbcDnud9jglYKtOK1I0eEvP8zsE4YsrYE+oC
-         dM5Y1lSLMwn9dUNR/4gAMeGhFLNJJZytNjNPtQG7PpAd+19TSBqqaOHk6kFCNa8PMfN1
-         qbqcUC4EFE6n1Sjxiow8HPGx7L1efNBXBdS+CypfzSEHGUGac6SOX03pwZXxt4L+ENsB
-         cxyO7kqlKPER+4C0Tdwncp7J0I6mgCo6s3JJXyQWckpc3SFO29QaGaeOxzRWD8xL8JZv
-         0jQw1CufdMFLq7Rr7men3ROWSNuJpj6uXERI28mC64ddXyFjfQr/et1vYzNcGXdNHT7h
-         kU1A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nYwCxQJ9/49X2zOi88wvf0V9m4gUqdeY1chCL4IkZO4=;
+        b=aOatYWRwElPP6ZXSdCZSyUhtbaghDH/JrKjaLWQsDElEiJWHm4XQP7WBs4ISYqHB7J
+         Hf4o1W+HM5Yl8Lx5fj0WXPdJxQ8oyFF67Nbx2oz/h1yHnvdXiSZRDi3A/mphMSazT0az
+         DPD4H2Da7MNg6GufC5JFZ3rzZpGTdLvvcuBE7oZ89jNFVq6X+ier9kloRmcMooJTCYbf
+         1Vc2PwBwz63/I5dQTe/TBgfHumS1Neyhk89cTewrfWT4moFuZF3qYBhCN0B8xnLw+H5Z
+         HiGiSBWhpg3nii0cQonrzlk+yqAPW6viczAEhQLlXcC3IsRbHWi3aXNGg0d5JZ7XK1MT
+         i0ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QuIfA2qSoLvffItEog0Txhua4v5iPaRzueSF+kKPuoo=;
-        b=rZt4EUX9kEAJcIqilRyIBv76ozmD6fPk0douL5jG257TR2co/DoycLg+JrUs7y+/+C
-         q3ibR2o2FLCAZ3qZ3xL8tMWccd3cTMQLf+cZlZ2mv/Yzf5VFgclQ2cDfSR9feXxnUB7g
-         6PNncjfsqyYoLlq1iv8U84Tpufcyb3dAAb6S1c+S0bah2ZIhTtOWPb7yEmWnymVfOB1U
-         mC2PLcBwdHfe3qJdOL00P0Jg7OT2pZES2neyu0bJT2vsIuv0PY/DVSMpVSNvzLwQnBmn
-         14V33f/YavhyGHF690ULkoDPDFbFIC5cI+rf6W5j0hTcCr3i6K/O+yPCrFolwDSvzfLm
-         54Tg==
-X-Gm-Message-State: AOAM531VrrXCQdkHCb9bkRx3MOEUzsX+W9ApeYnPQiD2pakmK/KGc0me
-        pTs/1SLoAuv4IdALARythc4=
-X-Google-Smtp-Source: ABdhPJyQGvRB9kkKj7AWTBgQe9I4K3r9yhn9qQqCihdTFxOmCUbYJm5EuA21UJ9jpeeEICMMJ3sfug==
-X-Received: by 2002:a17:902:7889:b029:12b:cf54:4bf1 with SMTP id q9-20020a1709027889b029012bcf544bf1mr1194219pll.85.1628725043745;
-        Wed, 11 Aug 2021 16:37:23 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id n33sm723129pfv.96.2021.08.11.16.37.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nYwCxQJ9/49X2zOi88wvf0V9m4gUqdeY1chCL4IkZO4=;
+        b=eZWdEmUWDLNHgeebZC5FPFXOBK2lHuzXDSLabpPSFsoio6Xlg48fe+hmz8+E1q+0DQ
+         iay8nYohFSLfP46zc0PpvFw8BQyuvIq0EqUjtPre5XaKAXZFhAikF5K3gU6+jcA4jj5P
+         UKhk+vnGFHkSXPM9Z5eazc+nIjyO+cuB7sfdyfFPNW90xETY1Iqk25rZGwh4tX+HlIpe
+         QWsXsyI7RCGvpAcp03ZGiPTrojH5o8Z/nEEL9xDU0Po+ikqjr0jVqhzzq5HJCkP0Tj/T
+         2H4VsonH1EKwNoPeVXITYJBZelS8Wf3ZVfnjBHOE/n5M9iskjjy0ToVBaD1KemYHAyPN
+         oCqw==
+X-Gm-Message-State: AOAM533ddmrFxb2zyp7sNqVR2D0Uh5ohK+DX6Y1cYi0M4qYULCUeQ070
+        gTqSNO3UqH/bTJdF/tI7Sm8=
+X-Google-Smtp-Source: ABdhPJymMZJQEXJ6i/YvE3tP05Tin9dZz072nwdOhv1eKu+lLq8CDjMLVcMxDlOBiXsCtGy0ACkb+w==
+X-Received: by 2002:a17:90a:df14:: with SMTP id gp20mr11043265pjb.33.1628725602917;
+        Wed, 11 Aug 2021 16:46:42 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:6006:a148:ab4a:57a2:9e36:2395])
+        by smtp.googlemail.com with ESMTPSA id v20sm734361pgi.39.2021.08.11.16.46.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 16:37:23 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 07:37:19 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: kexec: do not add '-mno-relax' flag if compiler
- doesn't support it
-Message-ID: <20210811233719.2thdgy7hqudf7yf4@mail.google.com>
-References: <20210722021715.127066-1-changbin.du@gmail.com>
+        Wed, 11 Aug 2021 16:46:42 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH] PCI: Remove duplicate #ifdef in pci_try_set_mwi()
+Date:   Thu, 12 Aug 2021 05:16:01 +0530
+Message-Id: <20210811234601.341947-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722021715.127066-1-changbin.du@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, ping status for this fix. There's a build error with gcc7-.
+Remove the unnecessary #ifdef PCI_DISABLE_MWI, because pci_set_mwi()
+performs the same check.
 
-On Thu, Jul 22, 2021 at 10:17:15AM +0800, Changbin Du wrote:
-> The RISC-V special option '-mno-relax' which to disable linker relaxations
-> is supported by GCC8+. For GCC7 and lower versions do not support this
-> option.
-> 
-> Fixes: fba8a8674f ("RISC-V: Add kexec support")
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> ---
->  arch/riscv/kernel/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> index d3081e4d9600..3397ddac1a30 100644
-> --- a/arch/riscv/kernel/Makefile
-> +++ b/arch/riscv/kernel/Makefile
-> @@ -11,7 +11,7 @@ endif
->  CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
->  
->  ifdef CONFIG_KEXEC
-> -AFLAGS_kexec_relocate.o := -mcmodel=medany -mno-relax
-> +AFLAGS_kexec_relocate.o := -mcmodel=medany $(call cc-option,-mno-relax)
->  endif
->  
->  extra-y += head.o
-> -- 
-> 2.26.2
-> 
-> 
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+---
+ drivers/pci/pci.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index aacf575c15cf..7d4c7c294ef2 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4456,11 +4456,7 @@ EXPORT_SYMBOL(pcim_set_mwi);
+  */
+ int pci_try_set_mwi(struct pci_dev *dev)
+ {
+-#ifdef PCI_DISABLE_MWI
+-	return 0;
+-#else
+ 	return pci_set_mwi(dev);
+-#endif
+ }
+ EXPORT_SYMBOL(pci_try_set_mwi);
+ 
 -- 
-Cheers,
-Changbin Du
+2.25.1
+
