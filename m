@@ -2,126 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACD93E97AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBB13E97B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhHKSaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhHKSaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:30:05 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C11C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:29:41 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e19so3777565pla.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5u5xWf8fH3lSDD8C8CeQ89dIv41ElE5n6uIfcU9ZCf0=;
-        b=SPHtAE3CUi+rHIK5iZyiYptiSl8gQKF9kMsJgVM24KkKJCa1JQizODARByJfyUMKjI
-         m/fCdSV9wzSR0AxmIEhpuMNsDoTbA72TEsStL5DEn9xantDelFldkGcEaJrdGn9NqrWn
-         wlqPZh9/BT2mBRlISvu7t9Nv6RQeN82cJnmr0VGlRbnzczZRN5XlaKyTznWRUqKZFPlT
-         InPUM1ejaR748oXOLc0Q12dp4XSvhnBMln4o69ugeNZ/6uZwHKhJzOCt+x0J6VVgRIO3
-         6yt4e51bwgsjuv8y8XMKLO5OtHOZxZkve+abSgmKAWDVsdzdgpo++40P/ldzur6EOXLu
-         HQ/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5u5xWf8fH3lSDD8C8CeQ89dIv41ElE5n6uIfcU9ZCf0=;
-        b=KUSHH14k1qELVEIrJ95zxnlqQB3xCT56W6+J0S9DZc7BcGJLEt29qfOaHg+sRqRI9t
-         n5azgDeEo9mLfRDArs/BWw4XOyOpnN12x6oxVI331WIaz+duRgwTnEabRC4sZk1NCiAy
-         OdhmwPLWiZfv6ciXrQu6TUxkYsr37FkNZ/jeaqfHdRjvvXBOHLJIOxySn7kVAQa1JVWt
-         YgPKYbCcVcCGak5JRSMm+fUY4HK++Y7HGbQQsH2sqMwUD9Hyi6JjsWTkA3NHWan1xjbv
-         Vytr5l2i1gLOueENmaU9+h34nyJxP3RT+vHJ8kL/iwftrFSZTbSG9B23pzwj2kQIx6Zj
-         pBSA==
-X-Gm-Message-State: AOAM5305cFdHLpK+tsEMIxn2c1l0y7/FdcdN2V6Ji6DjU4ejKniLenTO
-        5kAt8ZYdDEheMkxxVePK2tRropt4+NY=
-X-Google-Smtp-Source: ABdhPJxxIHRrDtXqLi/qTsWb+Zgdqd50Jz8EuJWohWLL0TeLkI52sgnhvnQkkcgJvqwc6oJz04yK2Q==
-X-Received: by 2002:a17:903:3091:b029:12d:6927:9ff4 with SMTP id u17-20020a1709033091b029012d69279ff4mr218791plc.1.1628706580923;
-        Wed, 11 Aug 2021 11:29:40 -0700 (PDT)
-Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id j128sm241653pfd.38.2021.08.11.11.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:29:40 -0700 (PDT)
-From:   Doug Berger <opendmb@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Doug Berger <opendmb@gmail.com>
-Subject: [PATCH] mm/page_alloc: don't corrupt pcppage_migratetype
-Date:   Wed, 11 Aug 2021 11:29:17 -0700
-Message-Id: <20210811182917.2607994-1-opendmb@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230405AbhHKScG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:32:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhHKScC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 14:32:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C89761077;
+        Wed, 11 Aug 2021 18:31:38 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mDt0q-004Oaz-DM; Wed, 11 Aug 2021 19:31:36 +0100
+Date:   Wed, 11 Aug 2021 19:31:36 +0100
+Message-ID: <87fsvfal4n.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>
+Subject: Re: [PATCH] irqchip/gic-v3: Fix priority comparison when non-secure priorities are used
+In-Reply-To: <20210811171505.1502090-1-wenst@chromium.org>
+References: <20210811171505.1502090-1-wenst@chromium.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: wenst@chromium.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Alexandru.Elisei@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When placing pages on a pcp list, migratetype values over
-MIGRATE_PCPTYPES get added to the MIGRATE_MOVABLE pcp list.
++ Alex, who introduced this.
 
-However, the actual migratetype is preserved in the page and
-should not be changed to MIGRATE_MOVABLE or the page may end
-up on the wrong free_list.
+On Wed, 11 Aug 2021 18:15:05 +0100,
+Chen-Yu Tsai <wenst@chromium.org> wrote:
+> 
+> When non-secure priorities are used, compared to the raw priority set,
+> the value read back from RPR is also right-shifted by one and the
+> highest bit set.
+> 
+> Add a macro to do the modifications to the raw priority when doing the
+> comparison against the RPR value. This corrects the pseudo-NMI behavior
+> when non-secure priorities in the GIC are used. Tested on 5.10 with
+> the "IPI as pseudo-NMI" series [1] applied on MT8195.
+> 
+> [1] https://lore.kernel.org/linux-arm-kernel/1604317487-14543-1-git-send-email-sumit.garg@linaro.org/
+> 
+> Fixes: 336780590990 ("irqchip/gic-v3: Support pseudo-NMIs when SCR_EL3.FIQ == 0")
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index e0f4debe64e1..e7a0b55413db 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -100,6 +100,15 @@ EXPORT_SYMBOL(gic_pmr_sync);
+>  DEFINE_STATIC_KEY_FALSE(gic_nonsecure_priorities);
+>  EXPORT_SYMBOL(gic_nonsecure_priorities);
+>  
+> +#define GICD_INT_RPR_PRI(priority)					\
+> +	({								\
+> +		u32 __priority = (priority);				\
+> +		if (static_branch_unlikely(&gic_nonsecure_priorities))	\
+> +			__priority = 0x80 | (__priority >> 1);		\
+> +									\
+> +		__priority;						\
 
-Fixes: df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
----
- mm/page_alloc.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+This doesn't reflect what the pseudocode says of a read of ICC_RPR_EL1
+AFAICS. When the priority is activated, it is indeed shifted. But a
+read of RPR does appear to shift things back (and you loose the lowest
+bit in the process). Please see 'aarch64/support/ICC_RPR_EL1' in the
+architecture spec.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 73704e836649..8addb4919f75 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3436,19 +3436,10 @@ void free_unref_page_list(struct list_head *list)
- 		 * comment in free_unref_page.
- 		 */
- 		migratetype = get_pcppage_migratetype(page);
--		if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
--			if (unlikely(is_migrate_isolate(migratetype))) {
--				list_del(&page->lru);
--				free_one_page(page_zone(page), page, pfn, 0,
--							migratetype, FPI_NONE);
--				continue;
--			}
--
--			/*
--			 * Non-isolated types over MIGRATE_PCPTYPES get added
--			 * to the MIGRATE_MOVABLE pcp list.
--			 */
--			set_pcppage_migratetype(page, MIGRATE_MOVABLE);
-+		if (unlikely(is_migrate_isolate(migratetype))) {
-+			list_del(&page->lru);
-+			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
-+			continue;
- 		}
- 
- 		set_page_private(page, pfn);
-@@ -3458,7 +3449,15 @@ void free_unref_page_list(struct list_head *list)
- 	list_for_each_entry_safe(page, next, list, lru) {
- 		pfn = page_private(page);
- 		set_page_private(page, 0);
-+
-+		/*
-+		 * Non-isolated types over MIGRATE_PCPTYPES get added
-+		 * to the MIGRATE_MOVABLE pcp list.
-+		 */
- 		migratetype = get_pcppage_migratetype(page);
-+		if (unlikely(migratetype >= MIGRATE_PCPTYPES))
-+			migratetype = MIGRATE_MOVABLE;
-+
- 		trace_mm_page_free_batched(page);
- 		free_unref_page_commit(page, pfn, migratetype, 0);
- 
+Can you confirm that SCR_EL3.FIQ is set on your system?
+
+Thanks,
+
+	M.
+
+> +	})
+> +
+>  /* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
+>  static refcount_t *ppi_nmi_refs;
+>  
+> @@ -687,7 +696,7 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+>  		return;
+>  
+>  	if (gic_supports_nmi() &&
+> -	    unlikely(gic_read_rpr() == GICD_INT_NMI_PRI)) {
+> +	    unlikely(gic_read_rpr() == GICD_INT_RPR_PRI(GICD_INT_NMI_PRI))) {
+>  		gic_handle_nmi(irqnr, regs);
+>  		return;
+>  	}
+
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
