@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796CB3E90BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDCF3E90CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238212AbhHKMY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:24:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50310 "EHLO
+        id S238011AbhHKMZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:25:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50206 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238062AbhHKMXf (ORCPT
+        with ESMTP id S238079AbhHKMXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:23:35 -0400
-Message-ID: <20210811121416.118105642@linutronix.de>
+        Wed, 11 Aug 2021 08:23:36 -0400
+Message-ID: <20210811121416.177015120@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628684591;
+        s=2020; t=1628684592;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=lqolXdw1SKc4oNuWw3sFxwNczR7NC0sp2gE+CrKGG7I=;
-        b=hAQfQbncTlGpeaHl1GSGHgF6/V5Ycv2Vc6/Rz5gO0wdh1mw+R1dDkKdSQr9yJGDdYOb5cp
-        7lmlOprR6QvjyqeVpnqhj7w9vm0rGqq93PfldB/kY6fce4Ib8BA4gJPzMBoIpqCFWWluJn
-        6qMZa9A1bP/Q4U3SW4LM3jIrHlcVRAeVRjQe44buDqHzDBCSv9BkhNHIi51Mr4ul9/pl7u
-        MOuVtv1x8zrLx60UPtuDm4q8NzafXK+UM/EmzlKwhq0Att7T4sdRa1xqEQ7ZKP4tX5+2Mp
-        NiJSaryHl81Wm4xMrrPVz8hkTLl07MxhR75JwdKvngz7iLyEZLErjkG5Yz30Uw==
+        bh=reRzed86Pe+3Vy1p3TGh3C7MLppPCF3yiEkMuDYTBRU=;
+        b=az/Q6KQZ8/8ljGmwIGSwpIcOV9Jcjkw21c5OaMHjCyhcgoihQ4TRZag+F2V+pa/kyaSgdS
+        qb4f1NDz+HNkKqne+bZwMCY1XbT8B6b2xgWklsWpveHQrD2VKhZIV0me08f8MjqnWmeV1u
+        Zz26mbZ1zqUbamE4THHPHad0Mo5bLkp89qTinj+hSQ8MAEWSf+dK4VUlE/0KrnN1xiUEKF
+        dQOnJzfu5yj/n0oOlc3kaonIiMue54aDXnGSdZntI5cQ9WLaI8+P7Ah8zxvc8QKv/J/IDA
+        V5FnJA2VJc+QRtc0HtMsbpoFjGu67Uvnk/Rbsqwuf8vzzo3fYZ84Y/0X4Ta7Sg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628684591;
+        s=2020e; t=1628684592;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=lqolXdw1SKc4oNuWw3sFxwNczR7NC0sp2gE+CrKGG7I=;
-        b=H37FcQ5EBgOyERjZYhHsUjm7shHEM6v3o0MRf57BCagYPsNdzD8NzEpOL8ldRg3dxxL2BP
-        tAuPT1DoQubSvXCQ==
+        bh=reRzed86Pe+3Vy1p3TGh3C7MLppPCF3yiEkMuDYTBRU=;
+        b=i+67C9D7XGDbFbcsi5A5ontCHInPw+z84U3KZUXkQwwdJVCUAP0sTHbDBYjLLuHndVES4B
+        lG+EJdc1/C/96YBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,82 +45,133 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V4 33/68] locking/rtmutex: Squash !RT tasks to DEFAULT_PRIO
+Subject: [patch V4 34/68] locking/mutex: Consolidate core headers
 References: <20210811120348.855823694@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Wed, 11 Aug 2021 14:23:11 +0200 (CEST)
+Date:   Wed, 11 Aug 2021 14:23:12 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure all !RT tasks have the same prio such that they end up in FIFO
-order and aren't split up according to nice level.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-The reason why nice levels were taken into account so far is historical. In
-the early days of the rtmutex code it was done to give the PI boosting and
-deboosting a larger coverage.
+Having two header files which contain just the non-debug and debug variants
+is mostly waste of disc space and has no real value. Stick the debug
+variants into the common mutex.h file as counterpart to the stubs for the
+non-debug case.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+That allows to add helpers and defines to the common header for the
+upcoming handling of mutexes and ww_mutexes on PREEMPT_RT.
+
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V4: Picked up as a new patch
+ kernel/locking/mutex-debug.c |    4 +---
+ kernel/locking/mutex-debug.h |   29 -----------------------------
+ kernel/locking/mutex.c       |    6 +-----
+ kernel/locking/mutex.h       |   20 +++++++++++++++++---
+ 4 files changed, 19 insertions(+), 40 deletions(-)
+ delete mode 100644 kernel/locking/mutex-debug.h
 ---
----
- kernel/locking/rtmutex.c |   25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
-
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -244,11 +244,28 @@ static __always_inline bool unlock_rt_mu
- }
- #endif
- 
-+static __always_inline int __waiter_prio(struct task_struct *task)
-+{
-+	int prio = task->prio;
-+
-+	if (!rt_prio(prio))
-+		return DEFAULT_PRIO;
-+
-+	return prio;
-+}
-+
-+static __always_inline void
-+waiter_update_prio(struct rt_mutex_waiter *waiter, struct task_struct *task)
-+{
-+	waiter->prio = __waiter_prio(task);
-+	waiter->deadline = task->dl.deadline;
-+}
-+
+--- a/kernel/locking/mutex-debug.c
++++ b/kernel/locking/mutex-debug.c
+@@ -1,6 +1,4 @@
  /*
-  * Only use with rt_mutex_waiter_{less,equal}()
+- * kernel/mutex-debug.c
+- *
+  * Debugging code for mutexes
+  *
+  * Started by Ingo Molnar:
+@@ -22,7 +20,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/debug_locks.h>
+ 
+-#include "mutex-debug.h"
++#include "mutex.h"
+ 
+ /*
+  * Must be called with lock->wait_lock held.
+--- a/kernel/locking/mutex-debug.h
++++ /dev/null
+@@ -1,29 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Mutexes: blocking mutual exclusion locks
+- *
+- * started by Ingo Molnar:
+- *
+- *  Copyright (C) 2004, 2005, 2006 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
+- *
+- * This file contains mutex debugging related internal declarations,
+- * prototypes and inline functions, for the CONFIG_DEBUG_MUTEXES case.
+- * More details are in kernel/mutex-debug.c.
+- */
+-
+-/*
+- * This must be called with lock->wait_lock held.
+- */
+-extern void debug_mutex_lock_common(struct mutex *lock,
+-				    struct mutex_waiter *waiter);
+-extern void debug_mutex_wake_waiter(struct mutex *lock,
+-				    struct mutex_waiter *waiter);
+-extern void debug_mutex_free_waiter(struct mutex_waiter *waiter);
+-extern void debug_mutex_add_waiter(struct mutex *lock,
+-				   struct mutex_waiter *waiter,
+-				   struct task_struct *task);
+-extern void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
+-				struct task_struct *task);
+-extern void debug_mutex_unlock(struct mutex *lock);
+-extern void debug_mutex_init(struct mutex *lock, const char *name,
+-			     struct lock_class_key *key);
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -30,11 +30,7 @@
+ #include <linux/debug_locks.h>
+ #include <linux/osq_lock.h>
+ 
+-#ifdef CONFIG_DEBUG_MUTEXES
+-# include "mutex-debug.h"
+-#else
+-# include "mutex.h"
+-#endif
++#include "mutex.h"
+ 
+ void
+ __mutex_init(struct mutex *lock, const char *name, struct lock_class_key *key)
+--- a/kernel/locking/mutex.h
++++ b/kernel/locking/mutex.h
+@@ -5,11 +5,24 @@
+  * started by Ingo Molnar:
+  *
+  *  Copyright (C) 2004, 2005, 2006 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
+- *
+- * This file contains mutex debugging related internal prototypes, for the
+- * !CONFIG_DEBUG_MUTEXES case. Most of them are NOPs:
   */
- #define task_to_waiter(p)	\
--	&(struct rt_mutex_waiter){ .prio = (p)->prio, .deadline = (p)->dl.deadline }
-+	&(struct rt_mutex_waiter){ .prio = __waiter_prio(p), .deadline = (p)->dl.deadline }
  
- static __always_inline int rt_mutex_waiter_less(struct rt_mutex_waiter *left,
- 						struct rt_mutex_waiter *right)
-@@ -698,8 +715,7 @@ static int __sched rt_mutex_adjust_prio_
- 	 * serializes all pi_waiters access and rb_erase() does not care about
- 	 * the values of the node being removed.
- 	 */
--	waiter->prio = task->prio;
--	waiter->deadline = task->dl.deadline;
-+	waiter_update_prio(waiter, task);
- 
- 	rt_mutex_enqueue(lock, waiter);
- 
-@@ -969,8 +985,7 @@ static int __sched task_blocks_on_rt_mut
- 	raw_spin_lock(&task->pi_lock);
- 	waiter->task = task;
- 	waiter->lock = lock;
--	waiter->prio = task->prio;
--	waiter->deadline = task->dl.deadline;
-+	waiter_update_prio(waiter, task);
- 
- 	/* Get the top priority waiter on the lock */
- 	if (rt_mutex_has_waiters(lock))
++#ifdef CONFIG_DEBUG_MUTEXES
++extern void debug_mutex_lock_common(struct mutex *lock,
++				    struct mutex_waiter *waiter);
++extern void debug_mutex_wake_waiter(struct mutex *lock,
++				    struct mutex_waiter *waiter);
++extern void debug_mutex_free_waiter(struct mutex_waiter *waiter);
++extern void debug_mutex_add_waiter(struct mutex *lock,
++				   struct mutex_waiter *waiter,
++				   struct task_struct *task);
++extern void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
++				      struct task_struct *task);
++extern void debug_mutex_unlock(struct mutex *lock);
++extern void debug_mutex_init(struct mutex *lock, const char *name,
++			     struct lock_class_key *key);
++#else /* CONFIG_DEBUG_MUTEXES */
++
+ #define debug_mutex_wake_waiter(lock, waiter)		do { } while (0)
+ #define debug_mutex_free_waiter(waiter)			do { } while (0)
+ #define debug_mutex_add_waiter(lock, waiter, ti)	do { } while (0)
+@@ -21,3 +34,4 @@ static inline void
+ debug_mutex_lock_common(struct mutex *lock, struct mutex_waiter *waiter)
+ {
+ }
++#endif /* !CONFIG_DEBUG_MUTEXES */
 
