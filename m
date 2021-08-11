@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8472F3E9B41
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153643E9B47
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhHKXbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 19:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
+        id S232832AbhHKXhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 19:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbhHKXbS (ORCPT
+        with ESMTP id S232470AbhHKXhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 19:31:18 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1DAC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:30:54 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso7655320pjy.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:30:54 -0700 (PDT)
+        Wed, 11 Aug 2021 19:37:48 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5C5C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:37:24 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d17so4807621plr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oGjft6uK2qjPni3rYs2xkfv9Qr3hWhHlCu61Lfg9dwo=;
-        b=KGF7OvjM6xpm2dcnV4TZt94/0PP/6rryAn51TQtMI8PMyNstZiqpR4o4M6dhTamRWs
-         g9EOZxb5D89XEfktvUEHHhPkpXy+Hmi05VOWRgwTVd9OLvFSv4xWFXhNWjEyIN09KyKs
-         4fyqkWNdWLKgAPlcPDpAcmVW8lSwcX6cLZVgTZo6u78f/aDCPj+/UighVkaCNH/VsJGQ
-         7hZeajrWOtjCr0mUDPSGbr2zvZ/0e2Z3s/NNdhwxHuoGSZq50liLutTN/XQtkRapPCgV
-         FF6Bcix3tq/Al/ufi1oP33g4e6gANYimhDTdAXfmGgi4fPZkt9KFhhdzxGEY6dDmG5KC
-         +BNw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QuIfA2qSoLvffItEog0Txhua4v5iPaRzueSF+kKPuoo=;
+        b=Nro9k9HupQ0Cn+4oIjxpP/aOsJSJiQlbcDnud9jglYKtOK1I0eEvP8zsE4YsrYE+oC
+         dM5Y1lSLMwn9dUNR/4gAMeGhFLNJJZytNjNPtQG7PpAd+19TSBqqaOHk6kFCNa8PMfN1
+         qbqcUC4EFE6n1Sjxiow8HPGx7L1efNBXBdS+CypfzSEHGUGac6SOX03pwZXxt4L+ENsB
+         cxyO7kqlKPER+4C0Tdwncp7J0I6mgCo6s3JJXyQWckpc3SFO29QaGaeOxzRWD8xL8JZv
+         0jQw1CufdMFLq7Rr7men3ROWSNuJpj6uXERI28mC64ddXyFjfQr/et1vYzNcGXdNHT7h
+         kU1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oGjft6uK2qjPni3rYs2xkfv9Qr3hWhHlCu61Lfg9dwo=;
-        b=dYMwJByDg421zo/xP/YLNJGswwHc7jVZq4scDTBVXHBuTxYOYJQNVQ9FbMLwFC77t2
-         AmN6ux8rZ8zvyzv2VQKwmUUWun8CTEMRDua5Y1dl4FCTUqbsdXVfoKotlosTQAcZWESB
-         yrs2xGi4XTo2cAiQ9uKYMmGqdGcDmjRo2d4dtYwokFzgRAwQca6rRFgf8VS1g4Wag24x
-         jiOb7NKAkd+y7d7nZ6vqc5deG3+J93luiTQW5EcUg9rvlf7NA6iN5TInKJvfUQ5a7a4r
-         t8LNSA8l1BLATbIKe3aurAjZ5VneiBOqoYMoNApVlT51aZZa8dTlrCGvgrBjnbuVi/RK
-         e3nQ==
-X-Gm-Message-State: AOAM531y4bkXpvWr32Sx03J1YfJuIZ6tp8W6gUkzcCXQymBBqCbhqWy3
-        MmRCnIs0IZvEjI1Lv2jXR/AcgEkiWaLBH0Sz9NtIAA==
-X-Google-Smtp-Source: ABdhPJxlna/Ynzwk5Dff6Ys7vZddkj55PSC1UknedewCBNdz+1n2p06B5wLltjn/hQhKtMBQvZDWD+WnZ2/JP5T0TSs=
-X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr1054428pjq.217.1628724653564;
- Wed, 11 Aug 2021 16:30:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QuIfA2qSoLvffItEog0Txhua4v5iPaRzueSF+kKPuoo=;
+        b=rZt4EUX9kEAJcIqilRyIBv76ozmD6fPk0douL5jG257TR2co/DoycLg+JrUs7y+/+C
+         q3ibR2o2FLCAZ3qZ3xL8tMWccd3cTMQLf+cZlZ2mv/Yzf5VFgclQ2cDfSR9feXxnUB7g
+         6PNncjfsqyYoLlq1iv8U84Tpufcyb3dAAb6S1c+S0bah2ZIhTtOWPb7yEmWnymVfOB1U
+         mC2PLcBwdHfe3qJdOL00P0Jg7OT2pZES2neyu0bJT2vsIuv0PY/DVSMpVSNvzLwQnBmn
+         14V33f/YavhyGHF690ULkoDPDFbFIC5cI+rf6W5j0hTcCr3i6K/O+yPCrFolwDSvzfLm
+         54Tg==
+X-Gm-Message-State: AOAM531VrrXCQdkHCb9bkRx3MOEUzsX+W9ApeYnPQiD2pakmK/KGc0me
+        pTs/1SLoAuv4IdALARythc4=
+X-Google-Smtp-Source: ABdhPJyQGvRB9kkKj7AWTBgQe9I4K3r9yhn9qQqCihdTFxOmCUbYJm5EuA21UJ9jpeeEICMMJ3sfug==
+X-Received: by 2002:a17:902:7889:b029:12b:cf54:4bf1 with SMTP id q9-20020a1709027889b029012bcf544bf1mr1194219pll.85.1628725043745;
+        Wed, 11 Aug 2021 16:37:23 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id n33sm723129pfv.96.2021.08.11.16.37.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 16:37:23 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 07:37:19 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: kexec: do not add '-mno-relax' flag if compiler
+ doesn't support it
+Message-ID: <20210811233719.2thdgy7hqudf7yf4@mail.google.com>
+References: <20210722021715.127066-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-References: <20210810235047.177883-1-phil@philpotter.co.uk> <37fc4e87-3131-eb54-d47d-8ed4dc85e983@gmail.com>
-In-Reply-To: <37fc4e87-3131-eb54-d47d-8ed4dc85e983@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Thu, 12 Aug 2021 00:30:42 +0100
-Message-ID: <CAA=Fs0nkmsnewA8z_XKB--0bcxOoPnxZgn-_1fD3CccfN4nt3A@mail.gmail.com>
-Subject: Re: [PATCH 0/8] staging: r8188eu: cleanup several warnings
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722021715.127066-1-changbin.du@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 at 07:39, Michael Straube <straube.linux@gmail.com> wrote:
->
-> On 8/11/21 1:50 AM, Phillip Potter wrote:
-> > This series does a lot of cleanup, and came about due to me noticing
-> > that the Makefile contains several lines that silence build warnings
-> > about unused variables, functions and so on.
-> >
-> > It accomplishes does three things therefore:
-> > (1) Removes the unused functions no longer called by rtw_ioctl, which
-> >      was deleted in a previous patch (with the exception of the android
-> >      code, which I will add back in once ndo_siocdevprivate is merged in).
-> > (2) Cleanup all build warnings resulting from removing the offending
-> >      Makefile lines.
-> > (3) Remove the offending Makefile lines so that future build warnings
-> >      can be caught locally before submission as well.
-> >
-> > Phillip Potter (8):
-> >    staging: r8188eu: remove unused functions from os_dep/ioctl_linux.c
-> >    staging: r8188eu: remove unused oid_null_function function
-> >    staging: r8188eu: remove unused label from recv_indicatepkt_reorder
-> >    staging: r8188eu: remove rtw_mfree_sta_priv_lock function
-> >    staging: r8188eu: remove unused variable from rtl8188e_init_dm_priv
-> >    staging: r8188eu: remove unused variable from rtw_init_drv_sw
-> >    staging: r8188eu: remove unused variable from rtw_init_recv_timer
-> >    staging: r8188eu: remove lines from Makefile that silence build
-> >      warnings
-> >
-> >   drivers/staging/r8188eu/Makefile             |    9 -
-> >   drivers/staging/r8188eu/core/rtw_recv.c      |    2 -
-> >   drivers/staging/r8188eu/core/rtw_sta_mgt.c   |    9 -
-> >   drivers/staging/r8188eu/hal/rtl8188e_dm.c    |    1 -
-> >   drivers/staging/r8188eu/include/rtw_ioctl.h  |    6 -
-> >   drivers/staging/r8188eu/os_dep/ioctl_linux.c | 1538 ++----------------
-> >   drivers/staging/r8188eu/os_dep/os_intfs.c    |    1 -
-> >   drivers/staging/r8188eu/os_dep/recv_linux.c  |    2 -
-> >   8 files changed, 127 insertions(+), 1441 deletions(-)
-> >
->
-> Acked-by: Michael Straube <straube.linux@gmail.com>
->
-> Michael
+Hello, ping status for this fix. There's a build error with gcc7-.
 
-Thank you Michael :-)
+On Thu, Jul 22, 2021 at 10:17:15AM +0800, Changbin Du wrote:
+> The RISC-V special option '-mno-relax' which to disable linker relaxations
+> is supported by GCC8+. For GCC7 and lower versions do not support this
+> option.
+> 
+> Fixes: fba8a8674f ("RISC-V: Add kexec support")
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> ---
+>  arch/riscv/kernel/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index d3081e4d9600..3397ddac1a30 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -11,7 +11,7 @@ endif
+>  CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
+>  
+>  ifdef CONFIG_KEXEC
+> -AFLAGS_kexec_relocate.o := -mcmodel=medany -mno-relax
+> +AFLAGS_kexec_relocate.o := -mcmodel=medany $(call cc-option,-mno-relax)
+>  endif
+>  
+>  extra-y += head.o
+> -- 
+> 2.26.2
+> 
+> 
 
-Regards,
-Phil
+-- 
+Cheers,
+Changbin Du
