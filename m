@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FE13E9949
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A0A3E9946
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhHKT6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:58:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27323 "EHLO
+        id S231678AbhHKT55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:57:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53796 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231403AbhHKT6Y (ORCPT
+        by vger.kernel.org with ESMTP id S229991AbhHKT5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:58:24 -0400
+        Wed, 11 Aug 2021 15:57:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628711880;
+        s=mimecast20190719; t=1628711850;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=WxdcaYuyKYoi6tYy6rnNj7AJtwXW/DVftZFjymOGA2c=;
-        b=c5lcvTKVGt+/wwgvMdYJ0ARA5hOF/ipJ7dKb/78lq1BiqvfHMbSQ5LUvXOHGzytGqMlEYu
-        pK1DeMFmdVdFfC6ago9W3ypyOFRCiDc+SsEXgihnf4wk5Az9IqjbGeJNWdtOq3S5b7spzR
-        Lwm5e/5O+sD82A6/1i0TCLUUlWCxi8U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-THlbMnEaOlCLFHARtJeTbg-1; Wed, 11 Aug 2021 15:57:56 -0400
-X-MC-Unique: THlbMnEaOlCLFHARtJeTbg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D109192D78F;
-        Wed, 11 Aug 2021 19:57:41 +0000 (UTC)
-Received: from llong.com (unknown [10.22.18.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98E29797C8;
-        Wed, 11 Aug 2021 19:57:17 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH v2] cgroup/cpuset: Enable memory migration for cpuset v2
-Date:   Wed, 11 Aug 2021 15:57:07 -0400
-Message-Id: <20210811195707.30851-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a8CdrLYaScW3g1zgCUeylW9y3VU78MKEKlY7JTX+NVc=;
+        b=RolYUSm5OwYK5zK2ouiS+qhkopDGiz7T4cHEIVmyEn3KvNtzigX+Zrm6y+4uQH1/8QRCDS
+        hsGoVICizVCTRT+v1ofKBS1YFF3wRr+q7AqkMZ7ZWuX9daprThzGPI1Qddfk0MO4IhRXhT
+        +yVhhwvZMnZsXe41U3k6VXUC3FfokkU=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-i7JjN190MFi4LeAbVciFag-1; Wed, 11 Aug 2021 15:57:29 -0400
+X-MC-Unique: i7JjN190MFi4LeAbVciFag-1
+Received: by mail-ej1-f70.google.com with SMTP id kf21-20020a17090776d5b02905af6ad96f02so1123327ejc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:57:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a8CdrLYaScW3g1zgCUeylW9y3VU78MKEKlY7JTX+NVc=;
+        b=GbegmIq39FkEaoEsV/v8P09WZ6Q4f8cdKrTgGsfnVlO7F2M3J/1aGs/g76tHQ8ELAb
+         xwTR0jbHSg4CKOEfJ0dtorR3g80obibXhQf9VwiuDVx1pp8aCUd12bqJxPHwm2X40T25
+         0w18QaNoCszhuMdVkWw/fHWU5tNV33FYBU6eNJWtnaCGewm3UQPy9cLBKmJ4pi0Pvx7w
+         hjNzHaNMaJsZG6/qW3E4ZDeUD60hl01lAiOaUvP6ewpt7EXvXPOCL0r2YdxudoZYQl95
+         yXDwJ9221VwLG0h7/7do8IuqD7J9oStNQhrrFDt3QUW26/9Oa6+cuFd0x61LUPfkfMni
+         yuKg==
+X-Gm-Message-State: AOAM532peqVSbYNZFakM9Yc90L3KMvZyc0tUbIZsi75ZxhcwaQt0SViz
+        cbAl2upIZXtECCO1XsaMkJa11BQDV0G6ZhM4vvBcUmnOY6SY6/hAZi2OZGsBkWJNqHiJ7mzmzLn
+        fzaAtVdX5RLv9qQE53QoMEuqG
+X-Received: by 2002:a17:906:eb06:: with SMTP id mb6mr230349ejb.50.1628711847853;
+        Wed, 11 Aug 2021 12:57:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMJm0MMozqlG2NGnCnoaOANvZ79H3EYGGIQ9hpOTtXCU4DwGFHZthhruLDn6IqoXtjuyTtYg==
+X-Received: by 2002:a17:906:eb06:: with SMTP id mb6mr230338ejb.50.1628711847679;
+        Wed, 11 Aug 2021 12:57:27 -0700 (PDT)
+Received: from krava ([83.240.61.5])
+        by smtp.gmail.com with ESMTPSA id q21sm124012eji.59.2021.08.11.12.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 12:57:27 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 21:57:25 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, gmx@google.com
+Subject: Re: [RFC] perf/core: Add an ioctl to get a number of lost samples
+Message-ID: <YRQrpcssx9kLHrAh@krava>
+References: <20210811062135.1332927-1-namhyung@kernel.org>
+ <YRPnCLyn9oE540gM@krava>
+ <CABPqkBQGu5Xb=PbwjfwQxmp5nVuZZ6tg4LnZaKJConYWkPcL2g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABPqkBQGu5Xb=PbwjfwQxmp5nVuZZ6tg4LnZaKJConYWkPcL2g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a user changes cpuset.cpus, each task in a v2 cpuset will be moved
-to one of the new cpus if it is not there already. For memory, however,
-they won't be migrated to the new nodes when cpuset.mems changes. This is
-an inconsistency in behavior.
+On Wed, Aug 11, 2021 at 12:33:38PM -0700, Stephane Eranian wrote:
+> On Wed, Aug 11, 2021 at 8:04 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Tue, Aug 10, 2021 at 11:21:35PM -0700, Namhyung Kim wrote:
+> > > Sometimes we want to know an accurate number of samples even if it's
+> > > lost.  Currenlty PERF_RECORD_LOST is generated for a ring-buffer which
+> > > might be shared with other events.  So it's hard to know per-event
+> > > lost count.
+> > >
+> > > Add event->lost_samples field and PERF_EVENT_IOC_LOST_SAMPLES to
+> > > retrieve it from userspace.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  include/linux/perf_event.h      | 2 ++
+> > >  include/uapi/linux/perf_event.h | 1 +
+> > >  kernel/events/core.c            | 9 +++++++++
+> > >  kernel/events/ring_buffer.c     | 5 ++++-
+> > >  4 files changed, 16 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> > > index f5a6a2f069ed..44d72079c77a 100644
+> > > --- a/include/linux/perf_event.h
+> > > +++ b/include/linux/perf_event.h
+> > > @@ -756,6 +756,8 @@ struct perf_event {
+> > >       struct pid_namespace            *ns;
+> > >       u64                             id;
+> > >
+> > > +     atomic_t                        lost_samples;
+> > > +
+> > >       u64                             (*clock)(void);
+> > >       perf_overflow_handler_t         overflow_handler;
+> > >       void                            *overflow_handler_context;
+> > > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> > > index bf8143505c49..24397799127d 100644
+> > > --- a/include/uapi/linux/perf_event.h
+> > > +++ b/include/uapi/linux/perf_event.h
+> > > @@ -505,6 +505,7 @@ struct perf_event_query_bpf {
+> > >  #define PERF_EVENT_IOC_PAUSE_OUTPUT          _IOW('$', 9, __u32)
+> > >  #define PERF_EVENT_IOC_QUERY_BPF             _IOWR('$', 10, struct perf_event_query_bpf *)
+> > >  #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES     _IOW('$', 11, struct perf_event_attr *)
+> > > +#define PERF_EVENT_IOC_LOST_SAMPLES          _IOR('$', 12, __u64 *)
+> >
+> > would it be better to use the read syscall for that?
+> >   https://lore.kernel.org/lkml/20210622153918.688500-5-jolsa@kernel.org/
+> >
+> > that patchset ended up on me not having a way to reproduce the
+> > issue you guys wanted the fix for ;-) the lost count is there
+> > as well
+> >
+> Does the read format approach succeed even when the event is in error state?
 
-In cpuset v1, there is a memory_migrate control file to enable such
-behavior by setting the CS_MEMORY_MIGRATE flag. Make it the default
-for cpuset v2 so that we have a consistent set of behavior for both
-cpus and memory.
+nope..
 
-There is certainly a cost to make memory migration the default, but it
-is a one time cost that shouldn't really matter as long as cpuset.mems
-isn't changed frequenty.  Update the cgroup-v2.rst file to document the
-new behavior and recommend against changing cpuset.mems frequently.
+        /*
+         * Return end-of-file for a read on an event that is in
+         * error state (i.e. because it was pinned but it couldn't be
+         * scheduled on to the CPU at some point).
+         */
+        if (event->state == PERF_EVENT_STATE_ERROR)
+                return 0;
 
-Since there won't be any concurrent access to the newly allocated cpuset
-structure in cpuset_css_alloc(), we can use the cheaper non-atomic
-__set_bit() instead of the more expensive atomic set_bit().
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 11 +++++++++++
- kernel/cgroup/cpuset.c                  |  6 +++++-
- 2 files changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 5c7377b5bd3e..babbe04c8d37 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2056,6 +2056,17 @@ Cpuset Interface Files
- 	The value of "cpuset.mems" stays constant until the next update
- 	and won't be affected by any memory nodes hotplug events.
- 
-+	Setting a non-empty value to "cpuset.mems" causes memory of
-+	tasks within the cgroup to be migrated to the designated nodes if
-+	they are currently using memory outside of the designated nodes.
-+
-+	There is a cost for this memory migration.  The migration
-+	may not be complete and some memory pages may be left behind.
-+	So it is recommended that "cpuset.mems" should be set properly
-+	before spawning new tasks into the cpuset.  Even if there is
-+	a need to change "cpuset.mems" with active tasks, it shouldn't
-+	be done frequently.
-+
-   cpuset.mems.effective
- 	A read-only multiple values file which exists on all
- 	cpuset-enabled cgroups.
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index adb5190c4429..d151e1de93d4 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2737,12 +2737,16 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
-+	__set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
- 	nodes_clear(cs->mems_allowed);
- 	nodes_clear(cs->effective_mems);
- 	fmeter_init(&cs->fmeter);
- 	cs->relax_domain_level = -1;
- 
-+	/* Set CS_MEMORY_MIGRATE for default hierarchy */
-+	if (cgroup_subsys_on_dfl(cpuset_cgrp_subsys))
-+		__set_bit(CS_MEMORY_MIGRATE, &cs->flags);
-+
- 	return &cs->css;
- }
- 
--- 
-2.18.1
+jirka
 
