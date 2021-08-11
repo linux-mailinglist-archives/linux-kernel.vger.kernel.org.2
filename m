@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8173E9B51
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799D43E9B56
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbhHKXvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 19:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        id S232924AbhHKXv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 19:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbhHKXvR (ORCPT
+        with ESMTP id S232911AbhHKXvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 19:51:17 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17F7C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:50:52 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so12284488pji.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:50:52 -0700 (PDT)
+        Wed, 11 Aug 2021 19:51:25 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B70C061765;
+        Wed, 11 Aug 2021 16:51:01 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so12341061pjr.1;
+        Wed, 11 Aug 2021 16:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HEga9V3w054sVWObR8faNCjdILL695VoP9rSy8xFIWo=;
-        b=1VDZXLD2+/AyA1j2CUlow20YJ/V4hGd64IsPjmRUEe0vG+LNr+GEpRpuQj3RsqhheJ
-         3rKRN1OQykWmQu/jUlMOjJvtsVKRPZApVX8mVPonnIZk78X1eb4NDS6sNf29XIy68/Iq
-         R7WHtWRaVh0NnYuIq/XH6ZrW3fmUbzKecRAZqlgCzZFhZRpmFPWfri36H/Q5cYym7RAP
-         UPhMCZvnrw1aKGl845110bGqsECF4Joc6+aPvZh0/RcEqKWRWTuX+cqv3qdhl011Ar8O
-         BK1byFRlwg0dTB9vaYFGSR0Ze3aOiG83NiVOkalwLg3d/hfQBoFCmYl/LQaA1qvk6Ghf
-         Jhig==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pOu/fILHgt+GHJ+t3LqOqvToD4GhAEtXIH4LNz022yE=;
+        b=OkYnTFE5LQCWTSV+vCVRV1ljIhlzqPvGYsIHL6dIOUfIKFcM6itQeLlu7/ryrZMI4/
+         VsJJBKl6ZLSVYBLA4jae2Vup29c616ibhlt81IbiXbAOYiIcvdFY05z7QY99dEtnxVpK
+         gJaIfwK0Wl/hua7x2ks+tHZ2fJvF15ZApFMpfK31ie1bpusWvki5U3gBh1+B3MK1YWE7
+         9RYSUA26LK8e8qYZBCL2GxmS97cv7yfdOfjDVS51Er3kHMUFJ1qGEDQXksyJyfH4jOZ2
+         m+H5eTise9xNcf2vBtqdfUM07+sC9+u3ndnH8+FTtz60FtV7XSTeGPRfzftPI2b/FoKT
+         g6rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HEga9V3w054sVWObR8faNCjdILL695VoP9rSy8xFIWo=;
-        b=P+3hjRF49uXOzbRBkG6UlQUld3UwlNH0lhA5fC9RYp4eEkKjkhZnkYB0PrjhkxY+GK
-         Cz3iyfszYdy9X5QC90VUA35stNID/g4KwZBo/Qe4ZvrkQBUyve/aW2ZQ9OCqbW0yRVAD
-         1g3Lk9+OciLPzhugbvXWOzhXnoBiI66AM6h48N6TNXqJ7FOHV83ceqKRI4u3wNCqBFvH
-         ONjpLQZ1CUztzEnqmJ3t9CRp3exXtqBjP5cTqx5uvLpGTPTKtxswccp1bst4mWs+ezBW
-         L6+M1mOn+E9blDUuw1R9r3fGrtwcftPvVDI1dZ/dvHcPed4vXyI70TjQkuyrtRDUe73p
-         Bz3Q==
-X-Gm-Message-State: AOAM531Tt5gERZdSsmLEe86ZCaKsU5qcab8Vmq9w+/KMeRIZUhY8Ypt3
-        Lum0DhTE4pJWBycy7YyRAxgUD/Emc4/p8k6dLp74qA==
-X-Google-Smtp-Source: ABdhPJyspPyR7V1yxh9d7KLVIgcebLMBHtTy18nFu1WajssrMJz+HL1/hzmEVKFVwf//FLZbzWm3YZSPzQUf6kkZwx0=
-X-Received: by 2002:a17:902:8c81:b029:12c:ee37:3f58 with SMTP id
- t1-20020a1709028c81b029012cee373f58mr1065401plo.45.1628725852571; Wed, 11 Aug
- 2021 16:50:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pOu/fILHgt+GHJ+t3LqOqvToD4GhAEtXIH4LNz022yE=;
+        b=iMCpuLQOpK852fY3s9BD/PtOwLRQ0rgvpJ9NE/O3v8xFYMDHZg6uyL6fOg1dThN12n
+         o+yPWmdA15/Ujx8mdLUTxL6+84G3F5R1AhYILr42MalXdSrM0NxXByIPre+jRiAcB7Aj
+         AR3HklzDwOS4wFx1s5NDjd3D3oBgTTnoCkO1usUF2gEwntYItmb6rX1HPRmWth1wlUH8
+         +G1a2R9HBV7W5dkHlWiu7YBhj2geJUxiRVC9wH5GOIOBL3xcyKiCnNf9Ndmmv8eDQFJo
+         2MUENC2sobMy8tm2Pzu5G0h/1pP81og79p3n2BBxa0EAdVQFICF/6DuSnkg7J8L2YWFZ
+         NgpQ==
+X-Gm-Message-State: AOAM532YDFkiY9HRP8AlSBW1sixNp+bZyI75CZdeA5vec8PSV37xXPVm
+        b7UKqsbGVY1vnScjpXUe52s=
+X-Google-Smtp-Source: ABdhPJxsDsAj6f4o1hLwy9wQiiHTMfq9dR2jISGP1yYFkJGtHFr8DO4z6bmlY0t9hkpcwVd5R12EZQ==
+X-Received: by 2002:a17:90a:d702:: with SMTP id y2mr1177478pju.127.1628725860621;
+        Wed, 11 Aug 2021 16:51:00 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id l6sm724199pff.74.2021.08.11.16.50.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 16:50:59 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org (open list),
+        Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH 0/4] drm/msm+ti-sn65dsi86: Fix NO_CONNECTOR fallout
+Date:   Wed, 11 Aug 2021 16:52:46 -0700
+Message-Id: <20210811235253.924867-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210811201450.31366-1-martin@kaiser.cx> <20210811201450.31366-2-martin@kaiser.cx>
-In-Reply-To: <20210811201450.31366-2-martin@kaiser.cx>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Thu, 12 Aug 2021 00:50:41 +0100
-Message-ID: <CAA=Fs0kYeHsuAUPXZGpkuo4w5WKwjFDR8vURxSDGHZ-nFtZfyA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] staging: r8188eu: remove unused function parameters
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Aug 2021 at 21:15, Martin Kaiser <martin@kaiser.cx> wrote:
->
-> rtw_usb_if1_init and chip_by_usb_id do not need a
-> struct usb_device_id parameter.
->
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  drivers/staging/r8188eu/os_dep/usb_intf.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> index 8f1e33d2fff7..4bf89b78a74a 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> @@ -250,8 +250,7 @@ static void usb_dvobj_deinit(struct usb_interface *usb_intf)
->
->  }
->
-> -static void chip_by_usb_id(struct adapter *padapter,
-> -                          const struct usb_device_id *pdid)
-> +static void chip_by_usb_id(struct adapter *padapter)
->  {
->         padapter->chip_type = NULL_CHIP_TYPE;
->         hal_set_hw_type(padapter);
-> @@ -569,7 +568,7 @@ int rtw_resume_process(struct adapter *padapter)
->   */
->
->  static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
-> -       struct usb_interface *pusb_intf, const struct usb_device_id *pdid)
-> +       struct usb_interface *pusb_intf)
->  {
->         struct adapter *padapter = NULL;
->         struct net_device *pnetdev = NULL;
-> @@ -587,7 +586,7 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
->
->         /* step 1-1., decide the chip_type via vid/pid */
->         padapter->interface_type = RTW_USB;
-> -       chip_by_usb_id(padapter, pdid);
-> +       chip_by_usb_id(padapter);
->
->         if (rtw_handle_dualmac(padapter, 1) != _SUCCESS)
->                 goto free_adapter;
-> @@ -722,7 +721,7 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
->         if (!dvobj)
->                 goto exit;
->
-> -       if1 = rtw_usb_if1_init(dvobj, pusb_intf, pdid);
-> +       if1 = rtw_usb_if1_init(dvobj, pusb_intf);
->         if (!if1) {
->                 DBG_88E("rtw_init_primarystruct adapter Failed!\n");
->                 goto free_dvobj;
-> --
-> 2.20.1
->
+From: Rob Clark <robdclark@chromium.org>
 
-Dear Martin,
+The first patch fixes breakage in drm-next for the ti eDP bridge (which
+is used on nearly all the snapdragon windows laptops and chromebooks).
+The second add drm/msm NO_CONNECTOR support, and the final two add
+NO_CONNECTOR support to the ti eDP bridge.
 
-Looks good.
+Would be nice to get at least the first one into drm-next kinda soonish
+since at the moment a lot of things are broken.
 
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+Rob Clark (4):
+  drm/bridge: ti-sn65dsi86: Avoid creating multiple connectors
+  drm/msm/dsi: Support NO_CONNECTOR bridges
+  drm/bridge: ti-sn65dsi86: Implement bridge->mode_valid()
+  drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
 
-Regards,
-Phil
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 61 ++++++++++++++++++++++-----
+ drivers/gpu/drm/msm/Kconfig           |  2 +
+ drivers/gpu/drm/msm/dsi/dsi_manager.c | 41 ++++++++++++------
+ 3 files changed, 81 insertions(+), 23 deletions(-)
+
+-- 
+2.31.1
+
