@@ -2,226 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647D63E979C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACD93E97AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhHKS0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:26:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50408 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229869AbhHKS0V (ORCPT
+        id S230307AbhHKSaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhHKSaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:26:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628706356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dPC7yuqLsjJqvrG1jk73xuT51FKTNAzfvIkh4QB+hPY=;
-        b=hjSCe65+4iTA9ej79mG+ksLB7/mjSXd9TZVKGOkgDHapj8iNym4pOmPG1DNTn3h/PVc5vJ
-        uMhJjV5CKPeSDJGKwFfzVs2e0qf5SP4TeeDzV8gBMP+Q3NSRHg4ixmvtoHSfZLNtZC48Oo
-        wg7hMhlvQX9mAg5be/akHI4g0i7Z4nk=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-4RoFpxJUPLicdhDk8j6cMA-1; Wed, 11 Aug 2021 14:25:55 -0400
-X-MC-Unique: 4RoFpxJUPLicdhDk8j6cMA-1
-Received: by mail-qk1-f199.google.com with SMTP id b190-20020a3767c70000b02903ca0967b842so1885886qkc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:25:55 -0700 (PDT)
+        Wed, 11 Aug 2021 14:30:05 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C11C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:29:41 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id e19so3777565pla.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5u5xWf8fH3lSDD8C8CeQ89dIv41ElE5n6uIfcU9ZCf0=;
+        b=SPHtAE3CUi+rHIK5iZyiYptiSl8gQKF9kMsJgVM24KkKJCa1JQizODARByJfyUMKjI
+         m/fCdSV9wzSR0AxmIEhpuMNsDoTbA72TEsStL5DEn9xantDelFldkGcEaJrdGn9NqrWn
+         wlqPZh9/BT2mBRlISvu7t9Nv6RQeN82cJnmr0VGlRbnzczZRN5XlaKyTznWRUqKZFPlT
+         InPUM1ejaR748oXOLc0Q12dp4XSvhnBMln4o69ugeNZ/6uZwHKhJzOCt+x0J6VVgRIO3
+         6yt4e51bwgsjuv8y8XMKLO5OtHOZxZkve+abSgmKAWDVsdzdgpo++40P/ldzur6EOXLu
+         HQ/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dPC7yuqLsjJqvrG1jk73xuT51FKTNAzfvIkh4QB+hPY=;
-        b=URSfjwxkVCw6n74TMHapRf4hL8wc+JeQfRX8nVvFlO5+GjTq3W/fP5e8lHwArmaClr
-         2ExFJ2iLFPR08NPmfRrJ9qVaUGS4FT2mGLkzH4+yMUwEMp0nySzcX9gMyi1y4J8IhTSY
-         kgAwikse2ONZ3i5M2n2AcK2UhtoP6N28TowcR4GIrzsbqKwUEfmyGddafHEIW2SQah88
-         1JHliH7SkBaY7ipsItlqJ8KTfLEdpb9/DqnsBjHU1WP6V4Qb3wruz+ak8pYq88mYP/hA
-         j8ZJ8DXh6GzkAU8OxVrqzpoifxDUgq2r/QEAbIJFvLtzKr6LRz+d2oHmY2xgqdvlY3hp
-         vrJg==
-X-Gm-Message-State: AOAM5313IriN2tcgXPK4CHNJCoXia/0sjwu+ufMPX6wxN3VUU8+lj4i3
-        uZedo2EXt4KrrcUionONvDa/oOIiHF9rO/jM0ai2mG8nNsCczrmPijZy4zqyRLNzJqnBIdQp5Hg
-        X7QPWe7QZ8bmvWVpHbpPgQviR
-X-Received: by 2002:a37:383:: with SMTP id 125mr333201qkd.321.1628706355005;
-        Wed, 11 Aug 2021 11:25:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwnSpIK9A3sv+nXhr9+jALvfldLeORuwofGKxFehBJfcFnu50+qbEV6jgS8/IERVecl8T5i5A==
-X-Received: by 2002:a37:383:: with SMTP id 125mr333175qkd.321.1628706354755;
-        Wed, 11 Aug 2021 11:25:54 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id q9sm10875890qkn.85.2021.08.11.11.25.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5u5xWf8fH3lSDD8C8CeQ89dIv41ElE5n6uIfcU9ZCf0=;
+        b=KUSHH14k1qELVEIrJ95zxnlqQB3xCT56W6+J0S9DZc7BcGJLEt29qfOaHg+sRqRI9t
+         n5azgDeEo9mLfRDArs/BWw4XOyOpnN12x6oxVI331WIaz+duRgwTnEabRC4sZk1NCiAy
+         OdhmwPLWiZfv6ciXrQu6TUxkYsr37FkNZ/jeaqfHdRjvvXBOHLJIOxySn7kVAQa1JVWt
+         YgPKYbCcVcCGak5JRSMm+fUY4HK++Y7HGbQQsH2sqMwUD9Hyi6JjsWTkA3NHWan1xjbv
+         Vytr5l2i1gLOueENmaU9+h34nyJxP3RT+vHJ8kL/iwftrFSZTbSG9B23pzwj2kQIx6Zj
+         pBSA==
+X-Gm-Message-State: AOAM5305cFdHLpK+tsEMIxn2c1l0y7/FdcdN2V6Ji6DjU4ejKniLenTO
+        5kAt8ZYdDEheMkxxVePK2tRropt4+NY=
+X-Google-Smtp-Source: ABdhPJxxIHRrDtXqLi/qTsWb+Zgdqd50Jz8EuJWohWLL0TeLkI52sgnhvnQkkcgJvqwc6oJz04yK2Q==
+X-Received: by 2002:a17:903:3091:b029:12d:6927:9ff4 with SMTP id u17-20020a1709033091b029012d69279ff4mr218791plc.1.1628706580923;
+        Wed, 11 Aug 2021 11:29:40 -0700 (PDT)
+Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id j128sm241653pfd.38.2021.08.11.11.29.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:25:54 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 14:25:52 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        christian.brauner@ubuntu.com, ebiederm@xmission.com,
-        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
-        vincenzo.frascino@arm.com, catalin.marinas@arm.com,
-        peterz@infradead.org, chinwen.chang@mediatek.com,
-        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
-        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
-        jonathan.davies@nutanix.com
-Subject: Re: [PATCH 0/1] pagemap: swap location for shared pages
-Message-ID: <YRQWMIBwkdBK12Z3@t490s>
-References: <20210730160826.63785-1-tiberiu.georgescu@nutanix.com>
- <YQrdY5zQOVgQJ1BI@t490s>
- <839e82f7-2c54-d1ef-8371-0a332a4cb447@redhat.com>
- <YQrn33pOlpdl662i@t490s>
- <0beb1386-d670-aab1-6291-5c3cb0d661e0@redhat.com>
+        Wed, 11 Aug 2021 11:29:40 -0700 (PDT)
+From:   Doug Berger <opendmb@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Doug Berger <opendmb@gmail.com>
+Subject: [PATCH] mm/page_alloc: don't corrupt pcppage_migratetype
+Date:   Wed, 11 Aug 2021 11:29:17 -0700
+Message-Id: <20210811182917.2607994-1-opendmb@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0beb1386-d670-aab1-6291-5c3cb0d661e0@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 06:15:37PM +0200, David Hildenbrand wrote:
-> On 04.08.21 21:17, Peter Xu wrote:
-> > On Wed, Aug 04, 2021 at 08:49:14PM +0200, David Hildenbrand wrote:
-> > > TBH, I tend to really dislike the PTE marker idea. IMHO, we shouldn't store
-> > > any state information regarding shared memory in per-process page tables: it
-> > > just doesn't make too much sense.
-> > > 
-> > > And this is similar to SOFTDIRTY or UFFD_WP bits: this information actually
-> > > belongs to the shared file ("did *someone* write to this page", "is
-> > > *someone* interested into changes to that page", "is there something"). I
-> > > know, that screams for a completely different design in respect to these
-> > > features.
-> > > 
-> > > I guess we start learning the hard way that shared memory is just different
-> > > and requires different interfaces than per-process page table interfaces we
-> > > have (pagemap, userfaultfd).
-> > > 
-> > > I didn't have time to explore any alternatives yet, but I wonder if tracking
-> > > such stuff per an actual fd/memfd and not via process page tables is
-> > > actually the right and clean approach. There are certainly many issues to
-> > > solve, but conceptually to me it feels more natural to have these shared
-> > > memory features not mangled into process page tables.
-> > 
-> > Yes, we can explore all the possibilities, I'm totally fine with it.
-> > 
-> > I just want to say I still don't think when there's page cache then we must put
-> > all the page-relevant things into the page cache.
-> 
-> [sorry for the late reply]
-> 
-> Right, but for the case of shared, swapped out pages, the information is
-> already there, in the page cache :)
-> 
-> > 
-> > They're shared by processes, but process can still have its own way to describe
-> > the relationship to that page in the cache, to me it's as simple as "we allow
-> > process A to write to page cache P", while "we don't allow process B to write
-> > to the same page" like the write bit.
-> 
-> The issue I'm having uffd-wp as it was proposed for shared memory is that
-> there is hardly a sane use case where we would *want* it to work that way.
-> 
-> A UFFD-WP flag in a page table for shared memory means "please notify once
-> this process modifies the shared memory (via page tables, not via any other
-> fd modification)". Do we have an example application where these semantics
-> makes sense and don't over-complicate the whole approach? I don't know any,
-> thus I'm asking dumb questions :)
-> 
-> 
-> For background snapshots in QEMU the flow would currently be like this,
-> assuming all processes have the shared guest memory mapped.
-> 
-> 1. Background snapshot preparation: QEMU requests all processes
->    to uffd-wp the range
-> a) All processes register a uffd handler on guest RAM
+When placing pages on a pcp list, migratetype values over
+MIGRATE_PCPTYPES get added to the MIGRATE_MOVABLE pcp list.
 
-To be explicit: not a handler; just register with uffd-wp and pass over the fd
-to the main process.
+However, the actual migratetype is preserved in the page and
+should not be changed to MIGRATE_MOVABLE or the page may end
+up on the wrong free_list.
 
-> b) All processes fault in all guest memory (essentially populating all
->    memory): with a uffd-WP extensions we might be able to get rid of
->    that, I remember you were working on that.
-> c) All processes uffd-WP the range to set the bit in their page table
-> 
-> 2. Background snapshot runs:
-> a) A process either receives a UFFD-WP event and forwards it to QEMU or
->    QEMU polls all other processes for UFFD events.
-> b) QEMU writes the to-be-changed page to the migration stream.
-> c) QEMU triggers all processes to un-protect the page and wake up any
->    waiters. All processes clear the uffd-WP bit in their page tables.
-> 
-> 3. Background snapshot completes:
-> a) All processes unregister the uffd handler
-> 
-> 
-> Now imagine something like this:
-> 
-> 1. Background snapshot preparation:
-> a) QEMU registers a UFFD-WP handler on a *memfd file* that corresponds
->    to guest memory.
-> b) QEMU uffd-wp's the whole file
-> 
-> 2. Background snapshot runs:
-> a) QEMU receives a UFFD-WP event.
-> b) QEMU writes the to-be-changed page to the migration stream.
-> c) QEMU un-protect the page and wake up any waiters.
-> 
-> 3. Background snapshot completes:
-> a) QEMU unregister the uffd handler
-> 
-> 
-> Wouldn't that be much nicer and much easier to handle? Yes, it is much
-> harder to implement because such an infrastructure does not exist yet, and
-> it most probably wouldn't be called uffd anymore, because we are dealing
-> with file access. But this way, it would actually be super easy to use the
-> feature across multiple processes and eventually to even catch other file
-> modifications.
+Fixes: df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+---
+ mm/page_alloc.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-I can totally understand how you see this.  We've discussed about that, isn't
-it? About the ideal worlds. :)
-
-It would be great if this can work out, I hope so.  So far I'm not that
-ambicious, and as I said, I don't know whether there will be other concerns
-when it goes into the page cache layer, and when it's a behavior of multiple
-processes where one of them can rule others without others being notice of it.
-
-Even if we want to go that way, I think we should first come up with some way
-to describe the domains that one uffd-wp registered file should behave upon.
-It shouldn't be "any process touching this file".
-
-One quick example in my mind is when a malicious process wants to stop another
-daemon process, it'll be easier as long as the malicious process can delete a
-file that the daemon used to read/write, replace it with a shmem with uffd-wp
-registered (or maybe just a regular file on file systems, if your proposal will
-naturally work on them).  The problem is, is it really "legal" to be able to
-stop the daemon running like that?
-
-I also don't know the initial concept when uffd is designed and why it's
-designed at pte level.  Avoid vma manipulation should be a major factor, but I
-can't say I understand all of them.  Not sure whether Andrea has any input here.
-
-That's why I think current uffd can still make sense with per-process concepts
-and keep it that way.  When register uffd-wp yes we need to do that for
-multiple processes, but it also means each process is fully aware that this is
-happening so it's kind of verified that this is wanted behavior for that
-process.  It'll happen with less "surprises", and smells safer.
-
-I don't think that will not work out.  It may require all the process to
-support uffd-wp apis and cooperate, but that's so far how it should work for me
-in a safe and self-contained way.  Say, every process should be aware of what's
-going to happen on blocked page faults.
-
-> 
-> Again, I am not sure if uffd-wp or softdirty make too much sense in general
-> when applied to shmem. But I'm happy to learn more.
-
-Me too, I'm more than glad to know whether the page cache idea could be
-welcomed or am I just wrong about it.  Before I understand more things around
-this, so far I still think the per-process based and fd-based solution of uffd
-still makes sense.
-
-Thanks,
-
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 73704e836649..8addb4919f75 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3436,19 +3436,10 @@ void free_unref_page_list(struct list_head *list)
+ 		 * comment in free_unref_page.
+ 		 */
+ 		migratetype = get_pcppage_migratetype(page);
+-		if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
+-			if (unlikely(is_migrate_isolate(migratetype))) {
+-				list_del(&page->lru);
+-				free_one_page(page_zone(page), page, pfn, 0,
+-							migratetype, FPI_NONE);
+-				continue;
+-			}
+-
+-			/*
+-			 * Non-isolated types over MIGRATE_PCPTYPES get added
+-			 * to the MIGRATE_MOVABLE pcp list.
+-			 */
+-			set_pcppage_migratetype(page, MIGRATE_MOVABLE);
++		if (unlikely(is_migrate_isolate(migratetype))) {
++			list_del(&page->lru);
++			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
++			continue;
+ 		}
+ 
+ 		set_page_private(page, pfn);
+@@ -3458,7 +3449,15 @@ void free_unref_page_list(struct list_head *list)
+ 	list_for_each_entry_safe(page, next, list, lru) {
+ 		pfn = page_private(page);
+ 		set_page_private(page, 0);
++
++		/*
++		 * Non-isolated types over MIGRATE_PCPTYPES get added
++		 * to the MIGRATE_MOVABLE pcp list.
++		 */
+ 		migratetype = get_pcppage_migratetype(page);
++		if (unlikely(migratetype >= MIGRATE_PCPTYPES))
++			migratetype = MIGRATE_MOVABLE;
++
+ 		trace_mm_page_free_batched(page);
+ 		free_unref_page_commit(page, pfn, migratetype, 0);
+ 
 -- 
-Peter Xu
+2.25.1
 
