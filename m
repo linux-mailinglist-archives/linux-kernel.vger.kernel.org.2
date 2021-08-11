@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE553E93CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF4C3E93D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhHKOnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:43:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34204 "EHLO mail.kernel.org"
+        id S232579AbhHKOoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:44:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232364AbhHKOnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:43:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63B9B60C40;
-        Wed, 11 Aug 2021 14:42:54 +0000 (UTC)
+        id S231872AbhHKOoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AB560E93;
+        Wed, 11 Aug 2021 14:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628692975;
-        bh=f/AVoeAgOQsi7jtVb4jpRLKXKdBrhsXQTZF78EVwSzA=;
+        s=k20201202; t=1628693025;
+        bh=A4sH3E2KfyLdhCZNMa6bajIYD//xy6/126wVil10EmI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QT3owfR5lYN7ObwCiAL5hulFbFrgoLqq8Fc/CSyuTqFyd3pQkTcmN+XHT8KJt7e44
-         TRVYYIkscctTo4rf7kut3qwA5XWe+HeMWTK5b+xV1hjwReMvlSQ89tnTjaG0Z/cfAs
-         YF3aWs0dZnh7erOx98JkjfM+nkFC3jgRzX4bdrhgaD8y7DMnot4KdqNZVj6qu/D8hP
-         WufXqtxAZlSEG0a6XPwvDWNnPn72aG9x3fS5Br9FNzjdMLnzcGWdlrUUD6ipR0xSM1
-         ozWoWFalq6JLKdoPYnEf4U4uK+tqZt+s+SerG2V/HedVIQOWWgWP9HVZBwA7JVBWtm
-         KIPmDdK5gAp0g==
-Date:   Wed, 11 Aug 2021 16:42:51 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v3 1/3] units: Add SI metric prefix definitions
-Message-ID: <YRPh60yHab3q0mVo@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-References: <20210712142027.22900-1-andriy.shevchenko@linux.intel.com>
- <YRPBEMVzQK7AbrSL@smile.fi.intel.com>
+        b=fMKD9jHSTsGoJ7/M9qyzF9VUMwo+yqYhQSkzJ73z8l+Kr+EB6Xn6s56daPVg0z6+u
+         kv4ZPQnOTr5NkLfQaVQJ6MkxsHGKg3+2jeuSAb/Jv/OEK4/QHA9m8qXheEVlsnuJ4X
+         F65m3OfiNtOB4qKENXSt2sM6gpxcAsK/Mgm5+1N43PFsei+TcDHqPW4HL1owG8LVI4
+         IDLKnjPI6B0ZKkxwMWybTVqaIc/ykpejz+o1b09xct7IKv3Fj56L1El59oECL45dX3
+         Bsm5QsmHCj9TTzfQk7mqWqIiQmT8QcJfa3VnD52WZo1uLp3YOteq18Lezo1hNP62xZ
+         yZpRekj+rC3mQ==
+Date:   Wed, 11 Aug 2021 07:43:45 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        Dave Chinner <dchinner@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the folio tree with the xfs tree
+Message-ID: <20210811144345.GC3601443@magnolia>
+References: <20210811174231.688566de@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DURPq4zVU7c15iyL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRPBEMVzQK7AbrSL@smile.fi.intel.com>
+In-Reply-To: <20210811174231.688566de@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 11, 2021 at 05:42:31PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the folio tree got a conflict in:
+> 
+>   mm/util.c
+> 
+> between commit:
+> 
+>   de2860f46362 ("mm: Add kvrealloc()")
+> 
+> from the xfs tree and commit:
+> 
+>   3bc0556bade4 ("mm: Add folio_raw_mapping()")
+> 
+> from the folio tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
---DURPq4zVU7c15iyL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmmm.  Seeing as krealloc lives in mm/slab_common.c anyway, I might just
+move this function there, and (hopefully) avoid this conflict.
 
-On Wed, Aug 11, 2021 at 03:22:40PM +0300, Andy Shevchenko wrote:
-> On Mon, Jul 12, 2021 at 05:20:25PM +0300, Andy Shevchenko wrote:
-> > Sometimes it's useful to have well-defined SI metric prefix to be used
-> > to self-describe the formulas or equations.
-> >=20
-> > List most popular ones in the units.h.
->=20
-> Wolfram, can we have this applied or commented? It seems we are going to =
-have
-> more users of these definitions (I have recently reviewed one of IIO driv=
-er
-> where two of them are in use).
+--D
 
-Okay, seems there won't be one to ack the units.h changes. Doesn't
-really matter, I think. Will apply now.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc mm/util.c
+> index d06e48b28eec,e8fa30e48447..000000000000
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@@ -660,31 -635,6 +660,21 @@@ void kvfree_sensitive(const void *addr
+>   }
+>   EXPORT_SYMBOL(kvfree_sensitive);
+>   
+>  +void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
+>  +{
+>  +	void *newp;
+>  +
+>  +	if (oldsize >= newsize)
+>  +		return (void *)p;
+>  +	newp = kvmalloc(newsize, flags);
+>  +	if (!newp)
+>  +		return NULL;
+>  +	memcpy(newp, p, oldsize);
+>  +	kvfree(p);
+>  +	return newp;
+>  +}
+>  +EXPORT_SYMBOL(kvrealloc);
+>  +
+> - static inline void *__page_rmapping(struct page *page)
+> - {
+> - 	unsigned long mapping;
+> - 
+> - 	mapping = (unsigned long)page->mapping;
+> - 	mapping &= ~PAGE_MAPPING_FLAGS;
+> - 
+> - 	return (void *)mapping;
+> - }
+> - 
+>   /* Neutral page->mapping pointer to address_space or anon_vma or other */
+>   void *page_rmapping(struct page *page)
+>   {
 
 
---DURPq4zVU7c15iyL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmET4ecACgkQFA3kzBSg
-KbbyRQ/+PaWjrR6kRg46GHm7g8EgLe/ezpT6FelhOt9WMTC9HJL1q+0U7TYETX7L
-wPHX960YAFL3pjLZjPA5FojE4PlFhKOaAuOqYznRQCjVR1zjoGjXlnUxY/aBYjsW
-2v5z5Rmp3I5bvS1m33x7V5qZlS7AyqqlQEeN+A4U/+Fy/U48Qjl+rb2tBJmcqgz6
-m/6+XcWYFKRzrJCeSN8MW+wbzh59lf47lMuhmmSs2kGGhjbVxs9ms3e81e8lCi9N
-RrWbWc25J3mmT0hoCB55M7FzHEE88xYcBuFNO9uTRTwPkhaIAU+DKjnDMUgOsGAJ
-z5mk9iICyNwBu+GfuobyYpv6PVtQEERhL8crf++9y8XHoN7GUpUAIidW4r80AIhU
-wR9MjCdhbBxn1gP/M1/sp4nXhKhM8GohYkeksf4r15vjz/BUIXrLM3W6fg3QW5eQ
-K0ThYH2/HdBs6BMbEAIvTNPbgR4jVxrBQ5Qzq7bxzr3f//RwqotlnbPQYwTnpyuI
-4WomPesFUKr6PAMA0Flmdee/tw7au6C0Tsf92oNibK7wKSYYTrT615O5nOX6C7Xv
-tKdx7vmOo2WzvRJt+da4eZ/TdrlRde4mNe4IClGckvwHLkxNJ0XlteVKbZpb0UK4
-4k5lC1YoaqL+f5s/Nn8MxX2Ug4XAQOgy+Fdf+PukCRmkdWERDsQ=
-=NxIx
------END PGP SIGNATURE-----
-
---DURPq4zVU7c15iyL--
