@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9033E86F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CC93E86F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhHKAEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:04:04 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:55162 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234289AbhHKAED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:04:03 -0400
-X-Greylist: delayed 300 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Aug 2021 20:04:02 EDT
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 92CAE472; Tue, 10 Aug 2021 18:58:38 -0500 (CDT)
-Date:   Tue, 10 Aug 2021 18:58:38 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Kir Kolyshkin <kolyshkin@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>
-Subject: Re: Documenting the requirement of CAP_SETFCAP to map UID 0
-Message-ID: <20210810235838.GA4561@mail.hallyn.com>
-References: <14cbab6f-19f6-a28c-05d8-453ecca62180@gmail.com>
+        id S235706AbhHKAEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234289AbhHKAEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:04:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F732C061765;
+        Tue, 10 Aug 2021 17:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=oEMWLoJ15XGTU1uDxOZTCeL7G0nFB55u5+5nltWOW/w=; b=mow1pUdqDHxWhPTLIo9hCoo34w
+        SAo9lQlbuzaQI5wjDic//GPlEVhLzWGU8B4EEG0FiwKpS+p+uha7f4sqhOv4yx9ocWp1Lf7SVSwwp
+        hlv3Ijmyap8sBxBmDMHSGwD63dy+Rk7sY5Bv9HqWr6jjno4AxFlDKZWoYxCLfF9mphlOHp56H23az
+        //tRCYlw9XLhGeCYNLAEs3qL3GSQqO8zqQixzAsRgbu1z5AcTDzb11PpEEFgKVwAdpUB+g/35Ayvj
+        CV/QW18zmB7KrBpnq3zl4y/1jhT1S1OaGvr33ceh5JryBCowDnEdbNRt+fVAJW3SRyFVa+uNmyMxL
+        97Bfe2Wg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDbio-0054h5-I1; Wed, 11 Aug 2021 00:03:50 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [PATCH] cgroup: cgroup-v1: clean up kernel-doc notation
+Date:   Tue, 10 Aug 2021 17:03:49 -0700
+Message-Id: <20210811000349.32645-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <14cbab6f-19f6-a28c-05d8-453ecca62180@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 11:09:30AM +0200, Michael Kerrisk (man-pages) wrote:
-> Hello Serge,
-> 
-> Your commit:
-> 
-> [[
-> commit db2e718a47984b9d71ed890eb2ea36ecf150de18
-> Author: Serge E. Hallyn <serge@hallyn.com>
-> Date:   Tue Apr 20 08:43:34 2021 -0500
-> 
->     capabilities: require CAP_SETFCAP to map uid 0
-> ]]
-> 
-> added a new requirement when updating a UID map a user namespace
-> with a value of '0 0 *'.
-> 
-> Kir sent a patch to briefly document this change, but I think much more
-> should be written. I've attempted to do so. Could you tell me whether the
-> following text (to be added in user_namespaces(7)) is accurate please:
+Fix kernel-doc warnings found in cgroup-v1.c:
 
-Sorry for the delay - this did not go into my main mailbox.
+kernel/cgroup/cgroup-v1.c:55: warning: No description found for return value of 'cgroup_attach_task_all'
+kernel/cgroup/cgroup-v1.c:94: warning: expecting prototype for cgroup_trasnsfer_tasks(). Prototype was for cgroup_transfer_tasks() instead
+cgroup-v1.c:96: warning: No description found for return value of 'cgroup_transfer_tasks'
+kernel/cgroup/cgroup-v1.c:687: warning: No description found for return value of 'cgroupstats_build'
 
-The text looks good.  Thanks!
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+---
+ kernel/cgroup/cgroup-v1.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-> [[
->       In  order  for  a  process  to  write  to  the /proc/[pid]/uid_map
->        (/proc/[pid]/gid_map) file, all of the following requirements must
->        be met:
-> 
->        [...]
-> 
->        4. If  updating  /proc/[pid]/uid_map to create a mapping that maps
->           UID 0 in the parent namespace, then one of the  following  must
->           be true:
-> 
->           *  if  writing process is in the parent user namespace, then it
->              must have the CAP_SETFCAP capability in that user namespace;
->              or
-> 
->           *  if  the writing process is in the child user namespace, then
->              the process that created the user namespace  must  have  had
->              the CAP_SETFCAP capability when the namespace was created.
-> 
->           This rule has been in place since Linux 5.12.  It eliminates an
->           earlier security bug whereby a UID 0  process  that  lacks  the
->           CAP_SETFCAP capability, which is needed to create a binary with
->           namespaced file capabilities (as described in capabilities(7)),
->           could  nevertheless  create  such  a  binary,  by the following
->           steps:
-> 
->           *  Create a new user namespace with the identity mapping (i.e.,
->              UID  0 in the new user namespace maps to UID 0 in the parent
->              namespace), so that UID 0 in both namespaces  is  equivalent
->              to the same root user ID.
-> 
->           *  Since  the  child process has the CAP_SETFCAP capability, it
->              could create a binary with namespaced file capabilities that
->              would  then  be  effective in the parent user namespace (be‐
->              cause the root user IDs are the same in the two namespaces).
-> 
->        [...]
-> ]]
-> 
-> Thanks,
-> 
-> Michael
-> 
-> -- 
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+--- linux-next-20210809.orig/kernel/cgroup/cgroup-v1.c
++++ linux-next-20210809/kernel/cgroup/cgroup-v1.c
+@@ -50,6 +50,8 @@ bool cgroup1_ssid_disabled(int ssid)
+  * cgroup_attach_task_all - attach task 'tsk' to all cgroups of task 'from'
+  * @from: attach to all cgroups of a given task
+  * @tsk: the task to be attached
++ *
++ * Return: %0 on success or a negative errno code on failure
+  */
+ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
+ {
+@@ -80,7 +82,7 @@ int cgroup_attach_task_all(struct task_s
+ EXPORT_SYMBOL_GPL(cgroup_attach_task_all);
+ 
+ /**
+- * cgroup_trasnsfer_tasks - move tasks from one cgroup to another
++ * cgroup_transfer_tasks - move tasks from one cgroup to another
+  * @to: cgroup to which the tasks will be moved
+  * @from: cgroup in which the tasks currently reside
+  *
+@@ -89,6 +91,8 @@ EXPORT_SYMBOL_GPL(cgroup_attach_task_all
+  * is guaranteed to be either visible in the source cgroup after the
+  * parent's migration is complete or put into the target cgroup.  No task
+  * can slip out of migration through forking.
++ *
++ * Return: %0 on success or a negative errno code on failure
+  */
+ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+ {
+@@ -682,6 +686,8 @@ int proc_cgroupstats_show(struct seq_fil
+  *
+  * Build and fill cgroupstats so that taskstats can export it to user
+  * space.
++ *
++ * Return: %0 on success or a negative errno code on failure
+  */
+ int cgroupstats_build(struct cgroupstats *stats, struct dentry *dentry)
+ {
