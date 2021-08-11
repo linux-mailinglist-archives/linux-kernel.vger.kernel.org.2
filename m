@@ -2,122 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306CB3E9507
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C873E9505
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhHKPum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45616 "EHLO mail.kernel.org"
+        id S233448AbhHKPuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:50:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:32970 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233215AbhHKPuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:50:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72CF960F46;
-        Wed, 11 Aug 2021 15:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628697015;
-        bh=bAQmrlaUVkq13+zcTrfGl3O+cLvwRrRvfQjisxSvWgs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=IxRvROWUBR28R+IXOU9fS1Dek63Fcy/cb+8EDDi0xjS2/56FDRKhEdymIWuhtiuWn
-         yWs1q+lZRbrB0SUx40bp79lSNFP16WjOGJgESmkwLV6a5jjj5Xu5Ni4nXXrOwV52xs
-         vPTJolg/mNdtTbH0S7YL5Tc/BK9cJvxZdzJNuq5ri2IoLf9IUOLpGqZXVfLh1seYYC
-         dxk6FklCAY6Bv4sdZN34BixjeNitUqdwRtC5ERdyYmVGXZKez6ntzv4sBRkI/XkzvU
-         niscNOFikv5lqs0FtCTNXQfPZQ/nVl00I99MToVS76iJdIuaurC7igxL4DTF1FnA7d
-         wtnpmc/33omRg==
-Subject: Re: [PATCH 5.13 159/175] interconnect: qcom: icc-rpmh: Add BCMs to
- commit list in pre_aggregate
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Mike Tipton <mdtipton@codeaurora.org>
-References: <20210810173000.928681411@linuxfoundation.org>
- <20210810173006.202673615@linuxfoundation.org>
-From:   Georgi Djakov <djakov@kernel.org>
-Message-ID: <b52559cd-7f4a-70af-8878-a9e513a66bcd@kernel.org>
-Date:   Wed, 11 Aug 2021 18:50:12 +0300
+        id S232946AbhHKPuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 11:50:15 -0400
+Received: from zn.tnic (p200300ec2f0d7c00c5d666a347f4c0f8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:7c00:c5d6:66a3:47f4:c0f8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 660481EC04F0;
+        Wed, 11 Aug 2021 17:49:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1628696986;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Zbc1Agl3LGZzQ4c2hBGGXpqbK9OXFObDT/acgb1b9io=;
+        b=ThTDol6a0ayPm9FRQkd+ti/dDUFLYNzu9/RqRxQPZbJTNplW2qqZV6UyMsKNB4XPspWxRy
+        s1HJH1mLvFt7UfeuqB+9AgyQoZJCLp2Kp3Wae8gmCLGiLSV/xRAOoCyIQQyD7au1kVKtLL
+        OUzIj1Tc90fl2FbRMWSebt0L4gLhYvM=
+Date:   Wed, 11 Aug 2021 17:50:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     James Morse <james.morse@arm.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com
+Subject: Re: [PATCH v7 16/24] x86/resctrl: Add a helper to read a closid's
+ configuration
+Message-ID: <YRPxwC99/jjZE8pO@zn.tnic>
+References: <20210728170637.25610-1-james.morse@arm.com>
+ <20210728170637.25610-17-james.morse@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210810173006.202673615@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210728170637.25610-17-james.morse@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.21 20:31, Greg Kroah-Hartman wrote:
-> From: Mike Tipton <mdtipton@codeaurora.org>
-> 
-> commit f84f5b6f72e68bbaeb850b58ac167e4a3a47532a upstream.
-> 
-> We're only adding BCMs to the commit list in aggregate(), but there are
-> cases where pre_aggregate() is called without subsequently calling
-> aggregate(). In particular, in icc_sync_state() when a node with initial
-> BW has zero requests. Since BCMs aren't added to the commit list in
-> these cases, we don't actually send the zero BW request to HW. So the
-> resources remain on unnecessarily.
-> 
-> Add BCMs to the commit list in pre_aggregate() instead, which is always
-> called even when there are no requests.
-> 
-> Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
-> Link: https://lore.kernel.org/r/20210721175432.2119-5-mdtipton@codeaurora.org
-> Signed-off-by: Georgi Djakov <djakov@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Hello Greg,
-
-Please drop this patch, as people are reporting issues on some
-platforms. So please do not apply it to any stable trees yet
-(5.10 and 5.13). I will send a revert (or other fix) to you soon.
-
-Thanks,
-Georgi
-
-> ---
->   drivers/interconnect/qcom/icc-rpmh.c |   10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> --- a/drivers/interconnect/qcom/icc-rpmh.c
-> +++ b/drivers/interconnect/qcom/icc-rpmh.c
-> @@ -20,13 +20,18 @@ void qcom_icc_pre_aggregate(struct icc_n
->   {
->   	size_t i;
->   	struct qcom_icc_node *qn;
-> +	struct qcom_icc_provider *qp;
->   
->   	qn = node->data;
-> +	qp = to_qcom_provider(node->provider);
->   
->   	for (i = 0; i < QCOM_ICC_NUM_BUCKETS; i++) {
->   		qn->sum_avg[i] = 0;
->   		qn->max_peak[i] = 0;
->   	}
+On Wed, Jul 28, 2021 at 05:06:29PM +0000, James Morse wrote:
+> +void resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
+> +			     u32 closid, u32 *value)
+> +{
+> +	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
 > +
-> +	for (i = 0; i < qn->num_bcms; i++)
-> +		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
->   }
->   EXPORT_SYMBOL_GPL(qcom_icc_pre_aggregate);
->   
-> @@ -44,10 +49,8 @@ int qcom_icc_aggregate(struct icc_node *
->   {
->   	size_t i;
->   	struct qcom_icc_node *qn;
-> -	struct qcom_icc_provider *qp;
->   
->   	qn = node->data;
-> -	qp = to_qcom_provider(node->provider);
->   
->   	if (!tag)
->   		tag = QCOM_ICC_TAG_ALWAYS;
-> @@ -67,9 +70,6 @@ int qcom_icc_aggregate(struct icc_node *
->   	*agg_avg += avg_bw;
->   	*agg_peak = max_t(u32, *agg_peak, peak_bw);
->   
-> -	for (i = 0; i < qn->num_bcms; i++)
-> -		qcom_icc_bcm_voter_add(qp->voter, qn->bcms[i]);
-> -
->   	return 0;
->   }
->   EXPORT_SYMBOL_GPL(qcom_icc_aggregate);
-> 
-> 
+> +	if (!is_mba_sc(r))
+> +		*value = hw_dom->ctrl_val[closid];
+> +	else
+> +		*value = hw_dom->mbps_val[closid];
 
+I don't like functions which are of void type but which still return a
+value through an arg pointer. Please send a cleanup ontop of the whole
+set converting it to return u32 as the mbps value instead.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
