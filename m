@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093AD3E91ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F433E91F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhHKMvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:51:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:51583 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhHKMvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:51:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="278861581"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="278861581"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:50:39 -0700
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="590083571"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:50:36 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mDngk-007pI5-Q6; Wed, 11 Aug 2021 15:50:30 +0300
-Date:   Wed, 11 Aug 2021 15:50:30 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v2 2/2] wwan: core: Unshadow error code returned by
- ida_alloc_range))
-Message-ID: <YRPHlsmBv66r4+vD@smile.fi.intel.com>
-References: <20210806085413.61536-1-andriy.shevchenko@linux.intel.com>
- <20210806085413.61536-2-andriy.shevchenko@linux.intel.com>
- <CAHNKnsTPQp16FPuVxY+FtJVOXnSga7zt=K8bhXr2YG15M9Y0eQ@mail.gmail.com>
- <CAHp75VcbucQ4w1rki2NZvpS7p-z5b582HwWXDMW5G67C7C6f3w@mail.gmail.com>
- <CAHNKnsQOhpwLFHLbcyLDLDOQjD7uDdsOg4ptVpdVmwWHK01NwQ@mail.gmail.com>
+        id S230288AbhHKMvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhHKMvW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:51:22 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20A2C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:50:58 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id d4so5422535lfk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6XnUn5xinC7TQ7DvlWdoMJyb/x+Aa8xU1z0K8iDHsyQ=;
+        b=AcGwxD/FnbxwTyP2occSnOgePQTrd8gNQMPZn1jZwyqRKXcEHH/I/Af5viIELcErf2
+         xL6nKEJhaBUvsVQrW591BTCyqQSY96Hn+sEDyhHTQrlJw/lLG+ac2SywlO0aqM0lE5SO
+         SV21UaDrPxaX+wx1AODnYn0fAWufXEXsKX+mFa295Y9SWUQoAId5iXP/nXVz3IZCuBPI
+         /u68XZkSYbd4ehElQaRJp8FcfUvgKoiIPA0XW7Mlr8oku6VTMln47uo8V9ZoLdXyTXuK
+         75vn+Pfx26FJFsymhCg9Aylg782SZUlm2rBXmBUHtHx/UX3W7+HFF5+hIvsaBqpy4rdx
+         89aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6XnUn5xinC7TQ7DvlWdoMJyb/x+Aa8xU1z0K8iDHsyQ=;
+        b=r2St7md764936IE9MEFy0SbyHKsndKRfo2VfPby16ktfp1nXNp8lPefjQUDA4p05hk
+         IrJtCIi7ZK0NI4D2qLp3FpZJGpoNMDgJtr5GDZ+OBjGhtcZk88cW+bkP2STo9hE3G/sx
+         8dhyqvylhCESXlmI8U+5uTg6ioYPpz1l0lGSkHUrSiJeQ3VGyP6llHUFEymFsVOw2JBS
+         dhbVLpmDYKGtgAj4/8DbdZGGlb//KJAt3Val2paoarGG32+hJRkviG7UoeQHzi07oE7d
+         igE/QhwjVwDdwIjlIwV/h/4vXyB1Dp8c4xGZL51Ni8+xS/honJlgCxGxC6+KsyYoxw2I
+         a1xw==
+X-Gm-Message-State: AOAM531VN7b5foNy0t/e71AozrVs5Zk75033i/ZlUHOrkDjKJgZQxdfA
+        DMd5CfaYoqctrKm+mdapgPT8YNQsrqp5MzZGliJ8Rg==
+X-Google-Smtp-Source: ABdhPJwxNT+YoriB7cWMW6ao5YcwKQ6uFM5ecY9hyynvKPtHvY9BmvMGGjUuJzY+I0e+9bS3wnMJE2R7Kxtgv+mfR2E=
+X-Received: by 2002:a19:ac04:: with SMTP id g4mr9257110lfc.29.1628686257120;
+ Wed, 11 Aug 2021 05:50:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHNKnsQOhpwLFHLbcyLDLDOQjD7uDdsOg4ptVpdVmwWHK01NwQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com> <20210804160019.77105-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210804160019.77105-2-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 14:50:46 +0200
+Message-ID: <CACRpkdazSqdOaoCknv=0wo3vw-FjrZKAy0rgh1hFbgd6au0vYw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] gpio: dwapb: Read GPIO base from gpio-base property
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 11:35:04PM +0300, Sergey Ryazanov wrote:
-> On Fri, Aug 6, 2021 at 5:20 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Fri, Aug 6, 2021 at 5:14 PM Sergey Ryazanov <ryazanov.s.a@gmail.com> wrote:
-> >> On Fri, Aug 6, 2021 at 12:00 PM Andy Shevchenko
-> >> <andriy.shevchenko@linux.intel.com> wrote:
-> >>> ida_alloc_range)) may return other than -ENOMEM error code.
-> >>> Unshadow it in the wwan_create_port().
-> >>>
-> >>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >>
-> >> A small nitpick, looks like "ida_alloc_range))" in the description is
-> >> a typo and should be "ida_alloc_range()". Besides this:
-> >
-> > Shall I resend?
-> 
-> Yes, please. And specify the target tree in the subject, please. See
-> patchwork warning [1, 2]. The first patch is a clear bug fix, so it
-> should be targeted to the 'net' tree, while the second patch despite
-> its usefulness could not be considered a bug fix, so it should be
-> targeted to the 'net-next' tree. Subjects could be like this:
-> 
-> [PATCHv3 net 1/2] wwan: core: Avoid returning NULL from wwan_create_dev()
-> [PATCHv3 net-next 2/2] wwan: core: Unshadow error code returned by
-> ida_alloc_range()
-> 
-> Or since the second patch is not depends on the first one and patches
-> target different trees, patches could be submitted independently:
-> 
-> [PATCHv3 net] wwan: core: Avoid returning NULL from wwan_create_dev()
-> [PATCHv3 net-next] wwan: core: Unshadow error code returned by ida_alloc_range()
+On Wed, Aug 4, 2021 at 6:15 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Split and sent separately, thanks!
+> For backward compatibility with some legacy devices introduce
+> a new (*) property gpio-base to read GPIO base. This will allow
+> further cleaning up of the driver.
+>
+> *) Note, it's not new for the GPIO library since the mockup driver
+>    is using it already.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: added check to ensure that the property won't be used by FW (Serge)
+>  drivers/gpio/gpio-dwapb.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index 4c7153cb646c..674e91e69cc5 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -584,6 +584,10 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
+>
+>                 pp->gpio_base   = -1;
+>
+> +               /* For internal use only, new platforms mustn't exercise this */
+> +               if (is_software_node(fwnode))
+> +                       fwnode_property_read_u32(fwnode, "gpio-base", &pp->gpio_base);
 
-> 1. https://patchwork.kernel.org/project/netdevbpf/patch/20210806085413.61536-1-andriy.shevchenko@linux.intel.com/
-> 2. https://patchwork.kernel.org/project/netdevbpf/patch/20210806085413.61536-2-andriy.shevchenko@linux.intel.com/
+You rewrite the code quicker than I can review  :D
 
--- 
-With Best Regards,
-Andy Shevchenko
+So this is elegant, I would prefer "linux,gpio-base" but the
+overall change is more important, with or without that change:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-
+Yours,
+Linus Walleij
