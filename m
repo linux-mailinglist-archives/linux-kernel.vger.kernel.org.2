@@ -2,268 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F166C3E9209
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A1F3E9207
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhHKM5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:57:41 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:33235 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhHKM5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230286AbhHKM5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230200AbhHKM5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 08:57:33 -0400
-Date:   Wed, 11 Aug 2021 12:56:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1628686625;
-        bh=fnwNuodEHW6jgrmLRroC0GTlmUzP7CcYZkBDo8BUNdY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=uYoJ0dUnWmyOJWILLr3BMsYTKExKyPawzFePwVc2zT8PyJLawDZhf499ruNtt7KuX
-         kEdkec0ciPKXK9bFDnDurrkTrbgP8ON6ami/PJ6W/r82KOye3onuqzSAe7vksKDfec
-         aLGxaPvR8ckLX0LaFVrj1YvEg1U5slSz7UQ46St0=
-To:     Georgi Djakov <djakov@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        okukatla@codeaurora.org, mdtipton@codeaurora.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: Re: [PATCH v3 5/6] interconnect: qcom: Add MSM8996 interconnect provider driver
-Message-ID: <CMEOXQ.F594ZQFPV8PT2@protonmail.com>
-In-Reply-To: <a520d353-f291-4596-e21b-6bdd27fdc965@kernel.org>
-References: <20210811043451.189776-1-y.oudjana@protonmail.com> <20210811043451.189776-6-y.oudjana@protonmail.com> <a520d353-f291-4596-e21b-6bdd27fdc965@kernel.org>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71D10601FF;
+        Wed, 11 Aug 2021 12:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628686630;
+        bh=+CFOKZhQCvP4jIpuALDJ47zPNHlom+tWJ/IiTz1zLDg=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=haVrEXIhoaiy0l5SlTb7FLEhBK6jGOgnxOdZnm/+fKjkcyYBOs8jl4WD8C8KUVgho
+         NXx/FwkBYzlxAkzoUA/SGV/Le0ReEPtlOJqShaBRDO5C0tj3/4CEMzyRTHX4JqCES5
+         zF2isEQQBixBmnlnF4KQclDre3GehRcx20N4H6KHRMHjHC5QK9i5LCQml27i8z0hEO
+         Y9RG4zzpWv5LW09tb/P8xqd63Zbw8Dsx8H6Cg7/sys2uRE8+TEiilSVnwgpoF+I01Q
+         dhLfiXcawQnlMd0j6lU6U6m8g7oiZ7gqw7BA2kfmnz9SsFup8mgBcjiJr5oGy57FNs
+         p4szhztvNNWmA==
+Subject: Re: [f2fs-dev] f2fs do DIO write make file corruption
+To:     Wu Bo <bo.wu@vivo.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <5b68208b-fd94-bf4e-fc4b-d79d13abf1c6@vivo.com>
+ <6519b8b7-1eb0-f286-7593-5c5ebbfb5554@kernel.org>
+ <86e53ee7-13b5-5e8e-7c81-acb1736ebc8b@vivo.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <aa5f3225-6409-bc62-1021-107a18040384@kernel.org>
+Date:   Wed, 11 Aug 2021 20:57:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <86e53ee7-13b5-5e8e-7c81-acb1736ebc8b@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/8/11 11:28, Wu Bo wrote:
+> 
+> 在 2021/8/11 11:03, Chao Yu 写道:
+>> On 2021/8/11 10:48, Wu Bo wrote:
+>>> I use the following command to create a file, the file may got
+>>> corruption:
+>>>      f2fs_io write 2 0 512 inc_num dio $path
+>>>
+>>> And when I use bio or to set the chunk size to 1 block, the file is
+>>> normal. The commands as following:
+>>>      f2fs_io write 2 0 512 inc_num buffered $path
+>>>      f2fs_io write 1 0 512 inc_num dio $path
+>>>
+>>> I find this bug on old kernel version 4.14.117, and not find on version
+>>> 4.19.152. So this bug is fixed. Can anyone can tell me which patch fixed
+>>> this bug?
+>>
+>> Not sure,
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-4.19.y&id=7bae8b6b73e46c307fa355ce086800b7ad6610f8
 
+I didn't see this patch in 4.14 stable kernel of mailine, so do you mean 4.14 kernel
+maintained by Android?
 
-On Wed, Aug 11 2021 at 14:56:01 +0400, Georgi Djakov=20
-<djakov@kernel.org> wrote:
-> Hi Yassine,
->=20
-> Thank you for working on this!
->=20
-> On 11.08.21 7:37, Yassine Oudjana wrote:
->>  Add a driver for the MSM8996 NoCs. This chip is similar to SDM660=20
->> where
->>  some busses are controlled by RPM, while others directly by the AP=20
->> with
->>  writes to QoS registers.
->>=20
->>  This driver currently supports all NoCs except a0noc.
->=20
-> Just curious what's the issue with a0noc. Do we need to enable some=20
-> GDSC
-> or clock in order to write to the QoS registers?
+If so, f2fs codes in between 4.14 and 4.19 Android kernel are almost the same,
+see below link:
 
-I'm not sure why, but I get a SError interrupt when writing to its=20
-registers.
-I tried enabling AGGRE0_NOC_GDSC but it didn't change anything.
-
->=20
->>=20
->>  Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
->>  ---
->>    drivers/interconnect/qcom/Kconfig   |   9 +
->>    drivers/interconnect/qcom/Makefile  |   2 +
->>    drivers/interconnect/qcom/msm8996.c | 574=20
->> ++++++++++++++++++++++++++++
->>    drivers/interconnect/qcom/msm8996.h | 149 ++++++++
->>    4 files changed, 734 insertions(+)
->>    create mode 100644 drivers/interconnect/qcom/msm8996.c
->>    create mode 100644 drivers/interconnect/qcom/msm8996.h
->>=20
->>  diff --git a/drivers/interconnect/qcom/Kconfig=20
->> b/drivers/interconnect/qcom/Kconfig
->>  index ad16224f1720..e30ad95e5584 100644
->>  --- a/drivers/interconnect/qcom/Kconfig
->>  +++ b/drivers/interconnect/qcom/Kconfig
->>  @@ -35,6 +35,15 @@ config INTERCONNECT_QCOM_MSM8974
->>    =09 This is a driver for the Qualcomm Network-on-Chip on=20
->> msm8974-based
->>    =09 platforms.
->>=20
->>  +config INTERCONNECT_QCOM_MSM8996
->>  +=09tristate "Qualcomm MSM8996 interconnect driver"
->>  +=09depends on INTERCONNECT_QCOM
->>  +=09depends on QCOM_SMD_RPM
->>  +=09select INTERCONNECT_QCOM_SMD_RPM_QOS
->>  +=09help
->>  +=09  This is a driver for the Qualcomm Network-on-Chip on=20
->> msm8996-based
->>  +=09  platforms.
->>  +
->>    config INTERCONNECT_QCOM_OSM_L3
->>    =09tristate "Qualcomm OSM L3 interconnect driver"
->>    =09depends on INTERCONNECT_QCOM || COMPILE_TEST
->>  diff --git a/drivers/interconnect/qcom/Makefile=20
->> b/drivers/interconnect/qcom/Makefile
->>  index 2d04d024f46e..8a198b8b7a45 100644
->>  --- a/drivers/interconnect/qcom/Makefile
->>  +++ b/drivers/interconnect/qcom/Makefile
->>  @@ -4,6 +4,7 @@ icc-bcm-voter-objs=09=09=09:=3D bcm-voter.o
->>    qnoc-msm8916-objs=09=09=09:=3D msm8916.o
->>    qnoc-msm8939-objs=09=09=09:=3D msm8939.o
->>    qnoc-msm8974-objs=09=09=09:=3D msm8974.o
->>  +qnoc-msm8996-objs=09=09=09:=3D msm8996.o
->>    icc-osm-l3-objs=09=09=09=09:=3D osm-l3.o
->>    qnoc-qcs404-objs=09=09=09:=3D qcs404.o
->>    icc-rpmh-obj=09=09=09=09:=3D icc-rpmh.o
->>  @@ -22,6 +23,7 @@ obj-$(CONFIG_INTERCONNECT_QCOM_BCM_VOTER) +=3D=20
->> icc-bcm-voter.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_MSM8916) +=3D qnoc-msm8916.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_MSM8939) +=3D qnoc-msm8939.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_MSM8974) +=3D qnoc-msm8974.o
->>  +obj-$(CONFIG_INTERCONNECT_QCOM_MSM8996) +=3D qnoc-msm8996.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_OSM_L3) +=3D icc-osm-l3.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_QCS404) +=3D qnoc-qcs404.o
->>    obj-$(CONFIG_INTERCONNECT_QCOM_RPMH) +=3D icc-rpmh.o
->>  diff --git a/drivers/interconnect/qcom/msm8996.c=20
->> b/drivers/interconnect/qcom/msm8996.c
->>  new file mode 100644
->>  index 000000000000..0cb93d743f35
->>  --- /dev/null
->>  +++ b/drivers/interconnect/qcom/msm8996.c
->>  @@ -0,0 +1,574 @@
->>  +/* SPDX-License-Identifier: GPL-2.0-only */
->=20
-> The // style is preferred for .c files.
-
-Noted.
-
->=20
->>  +/*
->>  + * Qualcomm MSM8996 Network-on-Chip (NoC) QoS driver
->>  + *
->>  + * Copyright (c) 2021 Yassine Oudjana <y.oudjana@protonmail.com>
->>  + */
->>  +
->>  +#include <linux/clk.h>
->>  +#include <linux/device.h>
->>  +#include <linux/interconnect-provider.h>
->>  +#include <linux/io.h>
->>  +#include <linux/module.h>
->>  +#include <linux/of_device.h>
->>  +#include <linux/of_platform.h>
->>  +#include <linux/platform_device.h>
->>  +#include <linux/regmap.h>
->>  +
->>  +#include <dt-bindings/interconnect/qcom,msm8996.h>
->>  +
->>  +#include "icc-rpm-qos.h"
->>  +#include "smd-rpm.h"
->>  +#include "msm8996.h"
->>  +
-> [..]
->>  +DEFINE_QNODE(mas_mdp_p0, MSM8996_MASTER_MDP_PORT0, 32, 8, -1,=20
->> true, NOC_QOS_MODE_BYPASS, 0, 1, MSM8996_SLAVE_MNOC_BIMC);
->>  +DEFINE_QNODE(mas_mdp_p1, MSM8996_MASTER_MDP_PORT1, 32, 61, -1,=20
->> true, NOC_QOS_MODE_BYPASS, 0, 2, MSM8996_SLAVE_MNOC_BIMC);
->>  +DEFINE_QNODE(mas_rotator, MSM8996_MASTER_ROTATOR, 32, 120, -1,=20
->> true, NOC_QOS_MODE_BYPASS, 0, 0, MSM8996_SLAVE_MNOC_BIMC);
->>  +DEFINE_QNODE(mas_venus, MSM8996_MASTER_VIDEO_P0, 32, 9, -1, true,=20
->> NOC_QOS_MODE_BYPASS, 0, 3 /* TODO: 3 4 ?? */,=20
->> MSM8996_SLAVE_MNOC_BIMC);
->=20
-> Is the TODO for multiple QoS ports?
-
-I was going to better format that TODO or remove it but it seems that I=20
-forgot.
-Downstream has both ports specified.
-
->=20
-> [..]
->=20
->>  +static const struct regmap_config msm8996_mnoc_regmap_config =3D {
->>  +=09.reg_bits=09=3D 32,
->>  +=09.reg_stride=09=3D 4,
->>  +=09.val_bits=09=3D 32,
->>  +=09.max_register=09=3D 0x20000,
->>  +=09.fast_io=09=3D true,
->>  +};
->>  +
->>  +static const struct qcom_icc_desc msm8996_mnoc =3D {
->>  +=09.nodes =3D mnoc_nodes,
->>  +=09.num_nodes =3D ARRAY_SIZE(mnoc_nodes),
->>  +=09.regmap_cfg =3D &msm8996_mnoc_regmap_config,
->>  +};
->>  +
->>  +
->=20
-> Nit: No multiple blank lines, please.
-
-Noted.
-
->=20
->>  +static struct qcom_icc_node *pnoc_nodes[] =3D {
->>  +=09[MASTER_SNOC_PNOC] =3D &mas_snoc_pnoc,
->>  +=09[MASTER_SDCC_1] =3D &mas_sdcc_1,
->>  +=09[MASTER_SDCC_2] =3D &mas_sdcc_2,
->>  +=09[MASTER_SDCC_4] =3D &mas_sdcc_4,
->>  +=09[MASTER_USB_HS] =3D &mas_usb_hs,
->>  +=09[MASTER_BLSP_1] =3D &mas_blsp_1,
->>  +=09[MASTER_BLSP_2] =3D &mas_blsp_2,
->>  +=09[MASTER_TSIF] =3D &mas_tsif,
->>  +=09[SLAVE_PNOC_A1NOC] =3D &slv_pnoc_a1noc,
->>  +=09[SLAVE_USB_HS] =3D &slv_usb_hs,
->>  +=09[SLAVE_SDCC_2] =3D &slv_sdcc_2,
->>  +=09[SLAVE_SDCC_4] =3D &slv_sdcc_4,
->>  +=09[SLAVE_TSIF] =3D &slv_tsif,
->>  +=09[SLAVE_BLSP_2] =3D &slv_blsp_2,
->>  +=09[SLAVE_SDCC_1] =3D &slv_sdcc_1,
->>  +=09[SLAVE_BLSP_1] =3D &slv_blsp_1,
->>  +=09[SLAVE_PDM] =3D &slv_pdm,
->>  +=09[SLAVE_AHB2PHY] =3D &slv_ahb2phy,
->>  +};
->>  +
->>  +static const struct regmap_config msm8996_pnoc_regmap_config =3D {
->>  +=09.reg_bits=09=3D 32,
->>  +=09.reg_stride=09=3D 4,
->>  +=09.val_bits=09=3D 32,
->>  +=09.max_register=09=3D 0x3000,
->>  +=09.fast_io=09=3D true,
->>  +};
->>  +
-> [..]
->>  +=09for (i =3D 0; i < num_nodes; i++) {
->>  +=09=09size_t j;
->>  +
->>  +=09=09node =3D icc_node_create(qnodes[i]->id);
->>  +=09=09if (IS_ERR(node)) {
->>  +=09=09=09ret =3D PTR_ERR(node);
->>  +=09=09=09goto err;
->>  +=09=09}
->>  +
->>  +=09=09node->name =3D qnodes[i]->name;
->>  +=09=09node->data =3D qnodes[i];
->>  +=09=09icc_node_add(node, provider);
->>  +
->>  +=09=09for (j =3D 0; j < qnodes[i]->num_links; j++) {
->>  +=09=09=09icc_link_create(node, qnodes[i]->links[j]);
->>  +=09=09}
->=20
-> Nit: No need for braces.
->=20
-> Also please rebase all patches onto linux-next.
->=20
-> Thanks,
-> Georgi
-
-Will do.
+https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-stable.git/
 
 Thanks,
-Yassine
 
-
-
+>>
+> 
+> This patch is applied. The issue occurs when f2fs dio try to preallocate
+> multiple blocks and got scattered disk blocks. The log as following:
+>         my_f2fs_io-13425 [002] ....   395.583637: el0_irq_naked:
+> 1:type:1,ino:40132,off:768,old_blk:0,new_blk:185764
+>         my_f2fs_io-13425 [002] ....   395.583710: el0_irq_naked:
+> 1:type:1,ino:40132,off:769,old_blk:0,new_blk:205824
+>         my_f2fs_io-13425 [002] ....   395.583721: f2fs_map_blocks: dev =
+> (259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len =
+> 0x2, err = 0
+>         my_f2fs_io-13425 [002] ....   395.583735: f2fs_map_blocks: dev =
+> (259,23), ino = 40132, file offset = 768, start blkaddr = 0x2d5a4, len =
+> 0x1, err = 0
+>         my_f2fs_io-13425 [002] ....   395.583741: f2fs_map_blocks: dev =
+> (259,23), ino = 40132, file offset = 769, start blkaddr = 0x32400, len =
+> 0x1, err = 0
+> 
+> And if the blocks are continuously, the file data is normal:
+> 	  my_f2fs_io-13425 [002] ....   395.584037: el0_irq_naked:
+> 1:type:1,ino:40132,off:770,old_blk:0,new_blk:205825
+>         my_f2fs_io-13425 [002] ....   395.584066: el0_irq_naked:
+> 1:type:1,ino:40132,off:771,old_blk:0,new_blk:205826
+>         my_f2fs_io-13425 [002] ....   395.584077: f2fs_map_blocks: dev =
+> (259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len =
+> 0x2, err = 0
+>         my_f2fs_io-13425 [002] ....   395.584091: f2fs_map_blocks: dev =
+> (259,23), ino = 40132, file offset = 770, start blkaddr = 0x32401, len =
+> 0x2, err = 0
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-f2fs-devel mailing list
+>>> Linux-f2fs-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>
+>>
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> 
