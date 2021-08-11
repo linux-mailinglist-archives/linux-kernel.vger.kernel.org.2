@@ -2,151 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C573E9B65
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547BC3E9B67
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbhHKXvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 19:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        id S232889AbhHKXxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 19:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232948AbhHKXvf (ORCPT
+        with ESMTP id S232704AbhHKXxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 19:51:35 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962FBC061765;
-        Wed, 11 Aug 2021 16:51:11 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id a8so6267167pjk.4;
-        Wed, 11 Aug 2021 16:51:11 -0700 (PDT)
+        Wed, 11 Aug 2021 19:53:52 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18179C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:53:28 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso7775904pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=04WJj5s3tctrSwR8Sz6N1WyD9Un9NfxweT900BICdVM=;
-        b=ne9DzUb+oQO4z6rDjwVGCE9QmlLYsujxft75FhYrqw6dKpJVnnuAf4c+a7U+3CE3Pp
-         M3V3z9TSE50E4H12+sSkPYWgBiqNmOoMkuu+FNSVD/NZeWsuCd1cfMoFsyBB//ayEBs7
-         CuIy1Znix+tRa6+ApM51ahJCVzMkSVP/gmo31jYDk6A/WOM973ZXwqTw/Fr27pYWm5PT
-         widI0YQHAsDmBpolqOAz/YkViZfW5A82VJAQlrge7gYXZWdPJBOis8uzM20JYDlnFvBl
-         2n/qcGeZfV7jPa0C87rAdjZyN98MpEVZ+U4qwM3wtDsSx52nbMtuu/9s0ffZQEHGJShG
-         wmdg==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yH5g66y79L9H25uzVilhEw52pa/PdLgYYJLVxPnNFwE=;
+        b=Gu8C+0lvV/onCX19VoAQrGJVAwO0pe5rLgV2iJSRspNvJYs31k6U0P24DLkiASxBFo
+         seTBfU16F214u7vJCow8uRfnhKZCDmqzni7wCHHJDRTmVCo2Q53N0DSPR9XEPR8srNb4
+         +lGOlw23VCctvaxqjbkSCa4+0Lu+Ru1ybUmfl9sHqUw1894vvG+klkGeHksUV0GFWQkR
+         87Rxs/5gu0AV5cdWR+/NbCkmX6awps9iFaCPwFxsbf6Dm+5avd6es/ZNbzbsvuTzdi45
+         MBb70raS8VZcoFiz0rkz7WkvjEuZsjGh5OOXlCTMzTXzV3/0UHXnCkpTlfWWkY4kaV76
+         xNlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=04WJj5s3tctrSwR8Sz6N1WyD9Un9NfxweT900BICdVM=;
-        b=GRNOjAZgnY7r4b2XtVd9M46vkZdEHOtBXeYHhWpyxTyNkcfh7Vp41bz82oeqtoT3bk
-         kRd1NLT3B7zG6E+BOYMMb4nZg8zwKwj5o33V9GJYt27gYRRPlDYwiX4Z8sjXgs7n58LF
-         Onl/Ho7AheusZzrz94IRdUCnRdM3WO+DRSjcKu7BdFFx/6UJ2UBslDHT9HXgZJZRjLRc
-         yNmn1iOcR3Hi8heOxyeAQ2mc49sTNGr9JZHOxTIuhsuxDW5iqd2mLGBWYX2cYgowW6/l
-         JK+tlMF4DZlBmKsw4q/uCeP41m/UOpC93lUF0r4zHWhx91Ub34x0kx2Km67u0jnBGIds
-         ExAg==
-X-Gm-Message-State: AOAM533K/2it8XiSWqGHlMXl8aPyzf9XGHO9vNgLmtgBexpXquWIUlhe
-        sb9CHFQ1pAp9u0USZWEdmkY=
-X-Google-Smtp-Source: ABdhPJw1q2RqS/5nMBmm9zC4l9pNzGk/XZcfLbMnn089P0iE1maQfoZnavDOwU1JF/CdkIXCuGM6Xw==
-X-Received: by 2002:a65:6441:: with SMTP id s1mr1164917pgv.214.1628725871203;
-        Wed, 11 Aug 2021 16:51:11 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id j16sm727463pfi.165.2021.08.11.16.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 16:51:10 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 4/4] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
-Date:   Wed, 11 Aug 2021 16:52:50 -0700
-Message-Id: <20210811235253.924867-5-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210811235253.924867-1-robdclark@gmail.com>
-References: <20210811235253.924867-1-robdclark@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yH5g66y79L9H25uzVilhEw52pa/PdLgYYJLVxPnNFwE=;
+        b=McS5iHCnQl10JnmW+qo9ryFl/WBqGdw8n5opbBV0LU1mTTXFci/PwpVEPyJIVysB/7
+         OyZF92oX9gG/7UMhK3oKyV4fCBkcyoVgU6OisFjztS0m97hmYwl83CNNhfYk56hqQYLR
+         tK5vOhhhvdhBgWimPzzPrSfTOY3Wy+2XoF0f+aQPRRiFo8EKb3Dwy1UdJKEqDCieJk9U
+         8bUcAO0S+Yi7+uppgY3LR2Y1vAaE9Tqdw6cYP/EJImis8WDiZbIEEOvNf3njA6qR1//H
+         hZnktmgQrzw2PIxOVMCyGced0wyrxa0NVSpAVJNUou0QacdnGqySYsIE1DHQfN3WIHXX
+         EcJg==
+X-Gm-Message-State: AOAM5304VnzCqUClUW3dsW0EPlP1V8X3p9CFqsjNcKW23h8INdMgAFzi
+        uvxyu9LNB5C3RjfRyH+Brnfl0IsZ9P8MfVrfiul9O2c7uBI=
+X-Google-Smtp-Source: ABdhPJyWBUWTR4y/5fMrTK3+S6BvM654Efr4KgJCYniLU5jnvNzUGHEt9kiGhurqZJyemkylUhU6vcGjF4u5FG6d6rk=
+X-Received: by 2002:a65:6a0a:: with SMTP id m10mr1199403pgu.82.1628726007667;
+ Wed, 11 Aug 2021 16:53:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210811201450.31366-1-martin@kaiser.cx> <20210811201450.31366-3-martin@kaiser.cx>
+In-Reply-To: <20210811201450.31366-3-martin@kaiser.cx>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Thu, 12 Aug 2021 00:53:16 +0100
+Message-ID: <CAA=Fs0n0U62cZADeEGXD7HUYzCXpZuHXGZZruztNoTeShFw5aA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] staging: r8188eu: (trivial) remove a duplicate debug print
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Wed, 11 Aug 2021 at 21:15, Martin Kaiser <martin@kaiser.cx> wrote:
+>
+> Keep the one that shows the wakeup capability.
+>
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/staging/r8188eu/os_dep/usb_intf.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> index 4bf89b78a74a..6e4bf623f788 100644
+> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
+> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> @@ -624,7 +624,6 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+>                 dvobj->pusbdev->do_remote_wakeup = 1;
+>                 pusb_intf->needs_remote_wakeup = 1;
+>                 device_init_wakeup(&pusb_intf->dev, 1);
+> -               DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
+>                 DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
+>                         device_may_wakeup(&pusb_intf->dev));
+>         }
+> --
+> 2.20.1
+>
 
-Slightly awkward to fish out the display_info when we aren't creating
-own connector.  But I don't see an obvious better way.
+Dear Martin,
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 34 +++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 5 deletions(-)
+Just my personal opinion, but I'd be inclined to strip out all DBG_88E
+calls totally. If there are necessary functions being called such as
+device_may_wakeup() we can always just keep this part and remove the
+macro call (not checked this function out myself yet). Thanks.
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 38dcc49eccaf..dc8112bab3d3 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -693,9 +693,11 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- 		return ret;
- 	}
- 
--	ret = ti_sn_bridge_connector_init(pdata);
--	if (ret < 0)
--		goto err_conn_init;
-+	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-+		ret = ti_sn_bridge_connector_init(pdata);
-+		if (ret < 0)
-+			goto err_conn_init;
-+	}
- 
- 	/*
- 	 * TODO: ideally finding host resource and dsi dev registration needs
-@@ -757,7 +759,8 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- err_dsi_attach:
- 	mipi_dsi_device_unregister(dsi);
- err_dsi_host:
--	drm_connector_cleanup(&pdata->connector);
-+	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
-+		drm_connector_cleanup(&pdata->connector);
- err_conn_init:
- 	drm_dp_aux_unregister(&pdata->aux);
- 	return ret;
-@@ -806,9 +809,30 @@ static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
- 	regmap_write(pdata->regmap, SN_DSIA_CLK_FREQ_REG, val);
- }
- 
-+/*
-+ * Find the connector and fish out the bpc from display_info.  It would
-+ * be nice if we could get this instead from drm_bridge_state, but that
-+ * doesn't yet appear to be the case.
-+ */
- static unsigned int ti_sn_bridge_get_bpp(struct ti_sn65dsi86 *pdata)
- {
--	if (pdata->connector.display_info.bpc <= 6)
-+	struct drm_bridge *bridge = &pdata->bridge;
-+	struct drm_connector_list_iter conn_iter;
-+	struct drm_connector *connector;
-+	unsigned bpc = 0;
-+
-+	drm_connector_list_iter_begin(bridge->dev, &conn_iter);
-+	drm_for_each_connector_iter(connector, &conn_iter) {
-+		if (drm_connector_has_possible_encoder(connector, bridge->encoder)) {
-+			bpc = connector->display_info.bpc;
-+			break;
-+		}
-+	}
-+	drm_connector_list_iter_end(&conn_iter);
-+
-+	WARN_ON(bpc == 0);
-+
-+	if (bpc <= 6)
- 		return 18;
- 	else
- 		return 24;
--- 
-2.31.1
-
+Regards,
+Phil
