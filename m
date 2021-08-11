@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2514E3E97CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CC33E97CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhHKSlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:41:06 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:39729 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhHKSlF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:41:05 -0400
-Received: by mail-pj1-f46.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so11046888pjn.4;
-        Wed, 11 Aug 2021 11:40:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YgL5QZA+nttpaayeuohalxKILerIeWnfwKqrpAxGEV8=;
-        b=Xbw75G3rL0OV/OcYpmsUGoSt8qhnLSh6vfQVdiYuM5rAH4aht7qZycDZsnkxoV23Q3
-         GPQkDbz1tYi7Z4TmMa9Cn8GAn/MNHj7d/WABtrckpsH5y3/zLceLwlk/c7RkJEiVY6Ae
-         AvGLNAwuNJm62KUPxhMp9wSf5eeQAE9wbj5T/UK8NOu7JGePP2ZC04NC35tM42z37JCV
-         prM7pHtQvxvXpoPMEt3gEcVeY9PYPDc17vcJygB0Zs9uhcPFFg+co1aO6eEV7WayTr1Y
-         0BEZ9ctKCNThJc2TydCYJiW37bBYfYKP55QaK0IomMZ06xQ9c9gvmsYgGENbkeCuMkdO
-         Do+Q==
-X-Gm-Message-State: AOAM5317ZKlnyUXLu6xZSSZu7J7i02hryXWUFG74p5XKpTzmRSThRK5o
-        fEtK1AwQyOAr3Slf5/DMcw==
-X-Google-Smtp-Source: ABdhPJwnahoo1EM8pHpP+QSc3xuGsCPXqSQ/jRidO7xuzVac8Xmgh3XG//7qIy7NBtmcjC/sj/1XOQ==
-X-Received: by 2002:aa7:9906:0:b029:3c7:a6a1:c73d with SMTP id z6-20020aa799060000b02903c7a6a1c73dmr199239pff.1.1628707241447;
-        Wed, 11 Aug 2021 11:40:41 -0700 (PDT)
-Received: from robh.at.kernel.org ([208.184.162.215])
-        by smtp.gmail.com with ESMTPSA id d9sm224216pfv.161.2021.08.11.11.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:40:40 -0700 (PDT)
-Received: (nullmailer pid 67452 invoked by uid 1000);
-        Wed, 11 Aug 2021 18:40:36 -0000
-Date:   Wed, 11 Aug 2021 12:40:36 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, Shawn Guo <shawnguo@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Fabio Estevam <festevam@gmail.com>, soc@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: arm: fsl: add SKOV imx6q and imx6dl
- based boards
-Message-ID: <YRQZpGn/+XfDy4Gj@robh.at.kernel.org>
-References: <20210804043439.11757-1-o.rempel@pengutronix.de>
- <20210804043439.11757-3-o.rempel@pengutronix.de>
+        id S230473AbhHKSlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:41:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229655AbhHKSlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 14:41:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8874A6104F;
+        Wed, 11 Aug 2021 18:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628707243;
+        bh=6FBya3zd7+WtAeRn1jjfYTE4KY3Ha+15NLGh2e389sI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qwETC8ifPyPMBBlkwetsJmwmCnctosRPgsVEt1NST5M3HpQQrseFW/52NQBIvMhOw
+         OEGPaB5r5KBU9m2o7WSvamA1NJ3er7lC7SBDa+cpvq7l7ZEV3+qRZ3uuNnFodh8lDU
+         R1LG1eUcwAjtkjKXIbQEuDad0zLGZftfBPbiDmyoKzq2q0Th/l4qKd7zO4vbC8L7q0
+         yzbj/1iWIXc/YdfLcOqGtoC2KX6BHnTUn0OppGbYiX4Ywha3ZbUPpFldALOmRVYr23
+         4Pjr10G/MsClNEk4fdtbsEVHEIlUEGOB5oEbIZaMu6PKSUaQyesCg7igDFj7oxZHZV
+         ZF0a9cdVQ7syg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A5696403F2; Wed, 11 Aug 2021 15:40:40 -0300 (-03)
+Date:   Wed, 11 Aug 2021 15:40:40 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf test: make --skip work on shell tests
+Message-ID: <YRQZqOH9JLGAX6NE@kernel.org>
+References: <20210811180625.160944-1-rickyman7@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210804043439.11757-3-o.rempel@pengutronix.de>
+In-Reply-To: <20210811180625.160944-1-rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Aug 2021 06:34:38 +0200, Oleksij Rempel wrote:
-> Add SKOV imx6q/dl LT2, LT6 and mi1010ait-1cp1 boards.
+Em Wed, Aug 11, 2021 at 08:06:26PM +0200, Riccardo Mancini escreveu:
+> perf-test has the option --skip to provide a list of tests to skip.
+> However, this option does not work with shell scripts.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> This patch passes the skiplist to run_shell_tests, so that also shell
+> scripts could be skipped using --skip.
+
+In such cases please provide an example of the usage you're fixing, what
+was it that you tried that didn't work and that now works?
+
+Its obviously a fix, so I'm applying it.
+
+- Arnaldo
+ 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
+>  tools/perf/tests/builtin-test.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index 5e6242576236325c..fb4a75cc8fa9530e 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -594,7 +594,8 @@ static int shell_test__run(struct test *test, int subdir __maybe_unused)
+>  	return WEXITSTATUS(err) == 2 ? TEST_SKIP : TEST_FAIL;
+>  }
+>  
+> -static int run_shell_tests(int argc, const char *argv[], int i, int width)
+> +static int run_shell_tests(int argc, const char *argv[], int i, int width,
+> +				struct intlist *skiplist)
+>  {
+>  	struct dirent **entlist;
+>  	struct dirent *ent;
+> @@ -628,6 +629,12 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+>  
+>  		st.file = ent->d_name;
+>  		pr_info("%2d: %-*s:", i, width, test.desc);
+> +
+> +		if (intlist__find(skiplist, i)) {
+> +			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (user override)\n");
+> +			continue;
+> +		}
+> +
+>  		test_and_print(&test, false, -1);
+>  	}
+>  
+> @@ -727,7 +734,7 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+>  		}
+>  	}
+>  
+> -	return run_shell_tests(argc, argv, i, width);
+> +	return run_shell_tests(argc, argv, i, width, skiplist);
+>  }
+>  
+>  static int perf_test__list_shell(int argc, const char **argv, int i)
+> -- 
+> 2.31.1
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+-- 
+
+- Arnaldo
