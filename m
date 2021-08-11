@@ -2,102 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276223E91A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7B43E91A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhHKMiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhHKMiS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:38:18 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEA3C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:37:54 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id x8so5413429lfe.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9S5hNWF7Ym56keRWy48m1LDZ9cViBH7sfuOyRaprzEc=;
-        b=OhLxJMmJn6LGQeeXfeGiPmO+AVDUGQYNXJzRzfNxRqi3efHSiZcwI019V8OUjhaXSb
-         qyVz6X+DF4E6khqP1VjSveuZVdirnVTgWJoVcttI+pE7f0PfqZ8Tk2xevufW2vVMJwOb
-         lp96fWowdQ+F2t7vIf4f9ksWjDCxUFHW/TUacoBkvZ0Nn8Cz98X4fC4sMgBr9ey/zE8c
-         8XJP222RFXrP8FAF1Pja2BQfYUXPdTzUmaNfvpu+9hEcE3EnTZdvRUFjQ7Jwp6kfW9Cp
-         zd+teOJ8jhY81xicFaR5mL6JRc+jpi4SCQhEv37rPqsZRNuUb600s4Qr6iwlnxyQOGB1
-         u8ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9S5hNWF7Ym56keRWy48m1LDZ9cViBH7sfuOyRaprzEc=;
-        b=Br5Qc3LOQybnmririYah+hgOsAnwk73kR+cbv2hlcIesRhAq7YGTFLnF6KNCjN4Rpu
-         OLliRitBTjDbwFFovNgYTdp1XeMMJhVmxehJuYyi+9W9CHrjxbIOssKxeKTKKSCTUwVT
-         dibdQC3BnWJT1cJgZVVTORRdaYGNvY1s43pnkKf3Mh1DyHMN1Yz4fsj5U2YA+7/EeUbB
-         QzXepzsX2hpYz+iHXqd8boXXrr2AOcMiFWA7Af8h4Lji7d/By19QeWy/hkCU9Yk3k+6I
-         aiGz25R+qltYEpd18ru2G2vq1Z1gU4twVe802AlM4pzAq1hO5tAwwYvW/awulcZc/sCf
-         5UQw==
-X-Gm-Message-State: AOAM5307izMT3a0I+bu1fcR7I+yF7L+5MYPD93D6UkzlQTlBgzmMp9Bk
-        Tj2eUwhcpaReAe8KR4e2RxjF6L9rJlMTBQxbxaVGlg==
-X-Google-Smtp-Source: ABdhPJzcII1prgIZeP3ejqboxiWA7I+FA2kPmqQ4S+j1vFjaVQJyk+h5CSOe2+KVFhyLYUO1sAb/UlIcR+aFDzlq8nk=
-X-Received: by 2002:a19:ac04:: with SMTP id g4mr9218546lfc.29.1628685473062;
- Wed, 11 Aug 2021 05:37:53 -0700 (PDT)
+        id S230265AbhHKMiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229621AbhHKMip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:38:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F40806101D;
+        Wed, 11 Aug 2021 12:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628685502;
+        bh=jhuq01fqEpbHFvLeiAGA1FMQm84p3MsBrozDI5DHMk8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=C82Kzm6eKUUW+CjCh+6Ci3CgF9VGd4i/EUPDewtdLHoUbX7T8gL1flcuPcB0jSFjr
+         rLtfU4aTlKR7vOIDrKTZKasqgUFf4+ytseRe54YaEJPBMNznGliIANZiBUa6nmKN5M
+         nf1l8mGYxJoh5lU2QC9VCUez5zCCHtdJBepQrQg3a/pAnLDj2E+8X1oPQA3PGOwa0n
+         l6HGKhW9s+rLEmjcNIAmKdja+jDiCgGLzKNku5EGMtDh6jvbRSwyPHv/LcC1ON9g7q
+         8M6m/mD3yBAh2yd9horRjpgAifsbXbxDaVaY5uiHb0egfWztNn+8nDWhGYk7PUeO4P
+         N8Syk0K1RHhcA==
+Subject: Re: [PATCH v15 0/6] usb: misc: Add onboard_usb_hub driver
+To:     Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Peter Chen <peter.chen@kernel.org>, devicetree@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-usb@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Andy Gross <agross@kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nishanth Menon <nm@ti.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20210727004118.2583774-1-mka@chromium.org>
+ <YRFOnhJkB2vi/zwD@google.com>
+From:   Roger Quadros <rogerq@kernel.org>
+Message-ID: <8a8cae28-6617-76d3-1742-3f151a149069@kernel.org>
+Date:   Wed, 11 Aug 2021 15:38:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com> <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 14:37:42 +0200
-Message-ID: <CACRpkdarpuFwzj-xRPRe0Y4iWwMtsMeTKwZRp8E0hSyDZZcHwg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base property
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YRFOnhJkB2vi/zwD@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 2:54 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Hi Matthias,
 
-> For backward compatibility with some legacy devices introduce
-> a new (*) property gpio-base to read GPIO base. This will allow
-> further cleanup of the driver.
->
-> *) Note, it's not new for GPIO library since mockup driver is
->    using it already.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-(...)
-> -               pp->gpio_base   = -1;
-> +               if (fwnode_property_read_u32(fwnode, "gpio-base", &pp->gpio_base))
-> +                       pp->gpio_base = -1;
+On 09/08/2021 18:49, Matthias Kaehlcke wrote:
+> Hi Greg,
+> 
+> Just wanted to check if this series is still on your radar. Is
+> there anything that blocks it from landing (further ACKs, ...)?
+> 
+> Thanks
+> 
+> Matthias
+> 
+> On Mon, Jul 26, 2021 at 05:41:12PM -0700, Matthias Kaehlcke wrote:
+>> This series adds:
+>> - the onboard_usb_hub_driver
+>> - glue in the xhci-plat driver to create and destroy the
+>>   onboard_usb_hub platform devices if needed
+>> - a device tree binding for the Realtek RTS5411 USB hub controller
+>> - device tree changes that add RTS5411 entries for the QCA SC7180
+>>   based boards trogdor and lazor
+>> - a couple of stubs for platform device functions to avoid
+>>   unresolved symbols with certain kernel configs
+>>
+>> The main issue the driver addresses is that a USB hub needs to be
+>> powered before it can be discovered. For discrete onboard hubs (an
+>> example for such a hub is the Realtek RTS5411) this is often solved
+>> by supplying the hub with an 'always-on' regulator, which is kind
+>> of a hack. Some onboard hubs may require further initialization
+>> steps, like changing the state of a GPIO or enabling a clock, which
+>> requires even more hacks. This driver creates a platform device
+>> representing the hub which performs the necessary initialization.
+>> Currently it only supports switching on a single regulator, support
+>> for multiple regulators or other actions can be added as needed.
+>> Different initialization sequences can be supported based on the
+>> compatible string.
+>>
+>> Besides performing the initialization the driver can be configured
+>> to power the hub off during system suspend. This can help to extend
+>> battery life on battery powered devices which have no requirements
+>> to keep the hub powered during suspend. The driver can also be
+>> configured to leave the hub powered when a wakeup capable USB device
+>> is connected when suspending, and power it off otherwise.
+>>
+>> Changes in v15:
+>> - adjusted dependencies of USB_DWC3_CORE to make sure it can only
+>>   be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
+>>   or USB_DWC3_DUAL_ROLE is selectable
+>>
+>> Changes in v14:
+>> - rebased on top of v5.14-rc1
+>> - dropped DT binding patch which landed in v5.13
+>>
+>> Changes in v13:
+>> - added patch "usb: Specify dependency on USB_XHCI_PLATFORM with
+>>   'depends on'" to the series to avoid Kconfig conflicts
+>> - added patch "arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM"
+>>   to the series to keep effective defconfig unchanged
+>>
+>> Changes in v12:
+>> - onboard_hub driver: use IS_ENABLED(CONFIG_USB_ONBOARD_HUB_MODULE)
+>>   in onboard_hub.h to also check for the driver built as module
+>> - onboard_hub_driver: include onboard_hub.h again to make sure there
+>>   are prototype declarations for the public functions
+>>
+>> Changes in v11:
+>> - support multiple onboard hubs connected to the same parent
+>> - don't include ‘onboard_hub.h’ from the onboard hub driver
+>>
+>> Changes in v10:
+>> - always use of_is_onboard_usb_hub() stub unless ONBOARD_USB_HUB=y/m
+>> - keep 'regulator-boot-on' property for pp3300_hub
+>>
+>> Changes in v9:
+>> - added dependency on ONBOARD_USB_HUB (or !!ONBOARD_USB_HUB) to
+>>   USB_PLATFORM_XHCI
+>>
+>> Changes in v7:
+>> - updated DT binding
+>> - series rebased on qcom/arm64-for-5.13
+>>
+>> Changes in v6:
+>> - updated summary
+>>
+>> Changes in v5:
+>> - cover letter added
+>>
+>> Matthias Kaehlcke (6):
+>>   usb: misc: Add onboard_usb_hub driver
+>>   of/platform: Add stubs for of_platform_device_create/destroy()
+>>   arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM
+>>   usb: Specify dependencies on USB_XHCI_PLATFORM with 'depends on'
+>>   usb: host: xhci-plat: Create platform device for onboard hubs in
+>>     probe()
+>>   arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
+>>
+>>  .../sysfs-bus-platform-onboard-usb-hub        |   8 +
+>>  MAINTAINERS                                   |   7 +
+>>  .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
+>>  .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  12 +-
+>>  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
+>>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  19 +-
+>>  arch/arm64/configs/defconfig                  |   1 +
+>>  drivers/usb/cdns3/Kconfig                     |   2 +-
+>>  drivers/usb/dwc3/Kconfig                      |   5 +-
+>>  drivers/usb/host/Kconfig                      |   5 +-
 
-This is problematic because we have repeatedly NACKed this property
-to be added to device trees.
+These Kconfig changes are causing the resulting .config to be different.
+For example, if I start with omap2plus_defconfig, the resulting .config
+before and after your series is different as shown below
 
-I don't know about fwnode policies, but in the device tree this would have
-to be "linux,gpio-base" and then it would be NACKed because of adding
-an operating-system specific thing to a OS-independent hardware
-description.
+:/work/linux$ diff /tmp/.config .config
+1902d1901
+< # CONFIG_HISI_HIKEY_USB is not set
+4992c4991
+< CONFIG_USB_XHCI_PLATFORM=m
+---
+> # CONFIG_USB_XHCI_PLATFORM is not set
+5073,5075c5072
+< # CONFIG_USB_DWC3_HOST is not set
+< # CONFIG_USB_DWC3_GADGET is not set
+< CONFIG_USB_DWC3_DUAL_ROLE=y
+---
+> CONFIG_USB_DWC3_GADGET=y
+5173a5171
+> # CONFIG_USB_ONBOARD_HUB is not set
+5285c5283
+< CONFIG_USB_ROLE_SWITCH=m
+---
+> # CONFIG_USB_ROLE_SWITCH is not set
 
-I don't know what to do with this really, but I understand the need of it
-as a kernel-internal thing, however I am afraid that adding this will make
-it possible to add linux,gpio-base = <n> to any device tree gpio_chip
-as well and that encourages bad behaviour even if we don't allow a
-DT binding (YAML) like that.
+I would expect the same issues for multi_v7_defconfig and multi_v8_defconfig as well.
+I'm ok to update the relevant defconfigs files so that the resulting .config is identical to
+before your series. Thanks!
 
-Is there a way to make a fwnode property only come from software
-nodes and not allowed to be used in ACPI or DT? (I guess not...)
-
-Yours,
-Linus Walleij
+--
+cheers,
+-roger
