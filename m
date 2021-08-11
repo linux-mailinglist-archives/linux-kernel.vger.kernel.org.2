@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D0B3E9327
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FD23E932F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhHKOAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbhHKOAP (ORCPT
+        id S232240AbhHKOBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:01:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51890 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231995AbhHKOBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:00:15 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EF7C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:59:52 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id n17so2225366ioc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G3+CVK8r94N1sJaYl4cTeuh/cF4j3sRvIlNBySKEKgY=;
-        b=UvGovQgQKWUzbDOXmQsvIcU8ygpRqh4fGDHVh1WZ6N85572t1rBjrInpFRa4khdKY5
-         3ir4Y1ftdGzTYbi6xgDSa/QYDH7vJgrUqIso09Z1Xd5HvjRusTCEpB8r6zZcHQ61Fxlx
-         OI/+OsJ98gw9mcRYUuqHx0/wxIPnK/jYi0rkw7IyBSEjb9xsOg6YuiYO8GzjHvam9+rQ
-         Wa3r0ft5fUJffGYHi9vc+gmAte/NaKn15PR7K+6Kg6uAT/2qT0veb2Xc7Iui/SYJe0bb
-         CpGov3Sk6IQ0AZWwtg40eAx5oSt0xtyS/fNU4oh5Pg/gr9+VehPfdDOB/Ug9GNvXXwKA
-         +GUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G3+CVK8r94N1sJaYl4cTeuh/cF4j3sRvIlNBySKEKgY=;
-        b=p4y/NAzqqR4G9Sn6I0D87VYUxIPMUGnTZvTLMu7MTc7COz5bhNuq2yWZ0uSY51EV89
-         C8RimQkHxbf+4kh0F3vYhzg59FHqBjlznWmUwRL0q4fwGJTu3R1ynK1mP/+nzYvqIdSc
-         6MWsNtyXXcUap5TLrRdlHQsnvQ7l+gRFEKa6G1O6Tv4tSVlPpxmotzjVSNEyfrvLFZ9R
-         KUq5jJeLEwmcVFVBnT8gvdJ8Q0H9BCgA+WzvNR4OLW6kuK3ligz8jFMOKgw+k/0gy5CP
-         ZRYhZTh9qV/ub2F8tn16YCiWo0ksVQd+c0bM6nkU0yq+Hmst18Lp6R+aTCvQ1WnKdU4g
-         JXEQ==
-X-Gm-Message-State: AOAM532JZL59JZ3OfANa0bbEybdPDNJYm+EoAH4siEoxAA7umSNYO6KK
-        ZhLb+ElLawCuVLbiPZQOUc7/5w==
-X-Google-Smtp-Source: ABdhPJyNYBQRIlZS3VNVkzqaDxzSpyNry4pJECFYY9t/dYAQRaILavwYMsWL5nAmW8mzn+M8eictaQ==
-X-Received: by 2002:a05:6638:2590:: with SMTP id s16mr28628567jat.121.1628690391653;
-        Wed, 11 Aug 2021 06:59:51 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id i18sm4915165ilk.84.2021.08.11.06.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 06:59:51 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     leon@kernel.org, bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, lkp@intel.com,
-        elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2] net: ipa: always inline ipa_aggr_granularity_val()
-Date:   Wed, 11 Aug 2021 08:59:48 -0500
-Message-Id: <20210811135948.2634264-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 11 Aug 2021 10:01:38 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628690473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9/WQG4wAuQpuciWFmnWQOW1DW6+lNNLda5gvClzQMmo=;
+        b=L2Qfc8IPdYQA8OK206g61OR25VDGpx9aVDK+5cL8bJC9oc12iTf48/DWAXFLTCc13QL7xf
+        WGk78vxsFSvW8gqmQktn1ZcQLQrv52uI1eHCZdt0dDEYIaGlu4WWz7fTcD9JMaK239jJBU
+        Zq3vQVQNWe1ZOyv8+cl+nVbNLKdekNwLc12ILR09z4khVNOKofbCXTmuA+GcauzqGKT4y6
+        6J898+vGIulr/Y8iSn8FIwY2Q+ArhMeUEPFkoOt6qE1jBGmLdJcdbVoYkFum88Fq+JFGfT
+        HwcawB5/eT0Vc4JoBepzvlj6q65mHm+5RwQQfBU47Al+UTxMRA0O2zIDsWSnLA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628690473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9/WQG4wAuQpuciWFmnWQOW1DW6+lNNLda5gvClzQMmo=;
+        b=NBQF6I389MtOsXvROySoBQW2pdb5tCMcS8xABm2LV8SY5WEb+iftTwrhx2AFkKBtexOMlq
+        GOVLeZ9V3sAS83Dg==
+To:     brookxu <brookxu.cn@gmail.com>, john.stultz@linaro.org,
+        sboyd@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] clocksource: skip check while watchdog hung up or
+ unstable
+In-Reply-To: <2614d5ac-3392-20d1-d772-7a18bec40fa2@gmail.com>
+References: <63064a758eb087febce3eff5b2c736a5449b3dd2.1628675461.git.brookxu@tencent.com>
+ <877dgsp2vp.ffs@tglx> <2614d5ac-3392-20d1-d772-7a18bec40fa2@gmail.com>
+Date:   Wed, 11 Aug 2021 16:01:13 +0200
+Message-ID: <87wnoshyhi.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It isn't required, but all callers of ipa_aggr_granularity_val()
-pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
-Two of those callers are in ipa_validate_build(), with the result
-being passed to BUILD_BUG_ON().
+On Wed, Aug 11 2021 at 21:18, brookxu wrote:
+> Thomas Gleixner wrote on 2021/8/11 8:44 =E4=B8=8B=E5=8D=88:
+>> On Wed, Aug 11 2021 at 17:55, brookxu wrote:
+>>> From: Chunguang Xu <brookxu@tencent.com>
+>>>
+>>> After patch 1f45f1f3 (clocksource: Make clocksource validation work
+>>> for all clocksources), md_nsec may be 0 in some scenarios, such as
+>>> the watchdog is delayed for a long time or the watchdog has a
+>>> time-warp.
+>>=20
+>> Maybe 0? There is exactly one single possibility for it to be zero:
+>>=20
+>>   cs->wd_last =3D=3D wdnow, i.e. delta =3D 0 -> wd_nsec =3D 0
+>>=20
+>> So how does that condition solve any long delay or wrap around of the
+>> watchdog? It's more than unlikely to hit exactly this case where the
+>> readout is identical to the previous readout unless the watchdog stopped
+>> counting.
+>
+> Maybe I missed something. Like this example, when watchdog run ,hpet have
+> wrap around:
+>
+> 'hpet' wd_now: d76e5a69 wd_last: f929eb3c mask: ffffffff
+>
+> We can calculate the number of elapsed cycles:
+> cycles =3D wd_now - wd_last =3D 0xde446f2d
+>
+> clocksource_delta() uses the MSB to determine an invalid inteval and retu=
+rns
+> 0, but for 0xde446f2d, this judgment should be wrong.
 
-Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
-inline ipa_aggr_granularity_val(), so the result of the function is
-not constant at compile time, and that leads to build errors.
+You're right. I forgot about the MSB check which is enabled on x86.
 
-Define the function with the __always_inline attribute to avoid the
-errors.  We can see by inspection that the value passed is never
-zero, so we can just remove its WARN_ON() call.
+>>> We found a problem when testing nvme disks with fio, when multiple
+>>> queue interrupts of a disk were mapped to a single CPU. IO interrupt
+>>> processing will cause the watchdog to be delayed for a long time
+>>> (155 seconds), the system reports TSC unstable and switches the clock
+>>=20
+>> If you hold off the softirq from running for 155 seconds then the TSC
+>> watchdog is the least of your problems.
+>
+> To be precise, we are processing interrupts in handle_edge_irq() for a lo=
+ng
+> time. Since the interrupts of multiple hardware queues are mapped to a si=
+ngle
+> CPU, multiple cores are continuously issuing IO, and then a single core is
+> processing IO. Perhaps the test case can be optimized, but shouldn't this=
+ lead
+> to switching clocks in principle?
 
-Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-v2: Drop WARN_ON() call, as suggested by Leon Romanovsky
+The clocksource watchdog failure is only _ONE_ consequence. Processing
+hard interrupts for 155 seconds straight will trigger lockup detectors
+of all sorts if you have them enabled.
 
-David/Jakub, the bug this fixes is only in net-next/master.
+So just papering over the clocksource watchdog does not solve anything,
+really. Next week you have to add similar hacks to the lockup detectors,
+RCU and whatever.
 
- drivers/net/ipa/ipa_main.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Thanks,
 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index f332210ce5354..581b75488c6fe 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -253,12 +253,11 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
- /* Compute the value to use in the COUNTER_CFG register AGGR_GRANULARITY
-  * field to represent the given number of microseconds.  The value is one
-  * less than the number of timer ticks in the requested period.  0 is not
-- * a valid granularity value.
-+ * a valid granularity value (so for example @usec must be at least 16 for
-+ * a TIMER_FREQUENCY of 32000).
-  */
--static u32 ipa_aggr_granularity_val(u32 usec)
-+static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
- {
--	WARN_ON(!usec);
--
- 	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
- }
- 
--- 
-2.27.0
-
+        tglx
