@@ -2,187 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5825C3E8D57
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9CF3E8D5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236727AbhHKJhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:37:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:46128 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236705AbhHKJhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:37:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D657D113E;
-        Wed, 11 Aug 2021 02:36:46 -0700 (PDT)
-Received: from [10.163.67.241] (unknown [10.163.67.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 736E53F70D;
-        Wed, 11 Aug 2021 02:36:44 -0700 (PDT)
-Subject: Re: [PATCH 1/5] KVM: arm64: Drop direct PAGE_[SHIFT|SIZE] usage as
- page size
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
- <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
- <25ee7799069492f2501003faec7f9732@kernel.org>
- <0b47c654-7e9b-a7ca-bdf4-f9607062200e@arm.com> <87zgto9z9i.wl-maz@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <4a4d320e-f09c-5198-d3cb-397d837190b1@arm.com>
-Date:   Wed, 11 Aug 2021 15:07:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236746AbhHKJiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:38:51 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:42713 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236605AbhHKJiu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 05:38:50 -0400
+Received: by mail-vs1-f43.google.com with SMTP id k24so1072738vsg.9;
+        Wed, 11 Aug 2021 02:38:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jFrsES6PK29W3F7zHpy8Q/7CDx1PGMKHOeHn4kSSpjk=;
+        b=MFY0fWRVEBnfjSQsEplj4oYUIzWDR/ah1kJcHSGcMcO99u/xkEpcbuRbAY0pfr03dM
+         ulaG7U7DC6fhna/TtHX+6uyWHmzgO0MI2OZQc+GTTsi0T8KvDpfVcBZ2EKVQ8t40vNg7
+         p9m5nndiTd8iN2N4AtgVP8Bc/YrpcVSSW+yAgRk40tMnRxzeBAUSeSV1ywuDPTcGolFX
+         JE5tBH+Ur/ooAqOivvxr/vnFRU9Ou36pOMpKzwwioC2yuZ88f9+D2AUd/YdHeLJFxGLJ
+         x10UNTMupJaEXHjWGWOqE/dkpJGwfRNdg+iq+XEakYp57cBtyuB7jLTrE587r0zQemLR
+         3HRQ==
+X-Gm-Message-State: AOAM530oPGY3WU1UGgZNCrkwaT0IdW47pbsYBbzXNnSDi0Fiy1nf9TI7
+        wQdcZPElyIPonekqVkMBhX+II/obVXOukTVxCFk=
+X-Google-Smtp-Source: ABdhPJwaw19/a3af/wq9KAfUTaIhn/b/oWusE9PSK1kD5S7XVBrLMX/us0cmhGf351HBIl3Htr8XHfPPG6n8KuahPiE=
+X-Received: by 2002:a05:6102:d9:: with SMTP id u25mr15945790vsp.42.1628674706266;
+ Wed, 11 Aug 2021 02:38:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87zgto9z9i.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210808125012.4715-1-len.baker@gmx.com> <20210808125012.4715-3-len.baker@gmx.com>
+In-Reply-To: <20210808125012.4715-3-len.baker@gmx.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 11 Aug 2021 11:38:14 +0200
+Message-ID: <CAMuHMdV7ZM9oZG-KU4Ap+H4YehnyGoZn+jsdiJ20GwMFNh+6uQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] drivers/soc/renesas: Prefer memcpy over strcpy
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@aculab.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-hardening@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 8, 2021 at 4:50 PM Len Baker <len.baker@gmx.com> wrote:
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. So, use memcpy() as a safe replacement.
+>
+> This is a previous step in the path to remove the strcpy() function
+> entirely from the kernel.
+>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.15.
 
-On 8/11/21 1:41 PM, Marc Zyngier wrote:
-> On Wed, 11 Aug 2021 06:34:46 +0100,
-> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
->>
->>
->>
->> On 8/10/21 7:03 PM, Marc Zyngier wrote:
->>> On 2021-08-10 08:02, Anshuman Khandual wrote:
->>>> All instances here could just directly test against CONFIG_ARM64_XXK_PAGES
->>>> instead of evaluating via PAGE_SHIFT or PAGE_SIZE. With this change, there
->>>> will be no such usage left.
->>>>
->>>> Cc: Marc Zyngier <maz@kernel.org>
->>>> Cc: James Morse <james.morse@arm.com>
->>>> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
->>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>> Cc: Will Deacon <will@kernel.org>
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: kvmarm@lists.cs.columbia.edu
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> ---
->>>>  arch/arm64/kvm/hyp/pgtable.c | 6 +++---
->>>>  arch/arm64/mm/mmu.c          | 2 +-
->>>>  2 files changed, 4 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>>> index 05321f4165e3..a6112b6d6ef6 100644
->>>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>>> @@ -85,7 +85,7 @@ static bool kvm_level_supports_block_mapping(u32 level)
->>>>       * Reject invalid block mappings and don't bother with 4TB mappings for
->>>>       * 52-bit PAs.
->>>>       */
->>>> -    return !(level == 0 || (PAGE_SIZE != SZ_4K && level == 1));
->>>> +    return !(level == 0 || (!IS_ENABLED(CONFIG_ARM64_4K_PAGES) && level == 1));
->>>>  }
->>>>
->>>>  static bool kvm_block_mapping_supported(u64 addr, u64 end, u64 phys, u32 level)
->>>> @@ -155,7 +155,7 @@ static u64 kvm_pte_to_phys(kvm_pte_t pte)
->>>>  {
->>>>      u64 pa = pte & KVM_PTE_ADDR_MASK;
->>>>
->>>> -    if (PAGE_SHIFT == 16)
->>>> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
->>>>          pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
->>>>
->>>>      return pa;
->>>> @@ -165,7 +165,7 @@ static kvm_pte_t kvm_phys_to_pte(u64 pa)
->>>>  {
->>>>      kvm_pte_t pte = pa & KVM_PTE_ADDR_MASK;
->>>>
->>>> -    if (PAGE_SHIFT == 16)
->>>> +    if (IS_ENABLED(CONFIG_ARM64_64K_PAGES))
->>>>          pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
->>>>
->>>>      return pte;
->>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->>>> index 9ff0de1b2b93..8fdfca179815 100644
->>>> --- a/arch/arm64/mm/mmu.c
->>>> +++ b/arch/arm64/mm/mmu.c
->>>> @@ -296,7 +296,7 @@ static void alloc_init_cont_pmd(pud_t *pudp,
->>>> unsigned long addr,
->>>>  static inline bool use_1G_block(unsigned long addr, unsigned long next,
->>>>              unsigned long phys)
->>>>  {
->>>> -    if (PAGE_SHIFT != 12)
->>>> +    if (!IS_ENABLED(CONFIG_ARM64_4K_PAGES))
->>>>          return false;
->>>>
->>>>      if (((addr | next | phys) & ~PUD_MASK) != 0)
->>>
->>> I personally find it a lot less readable.
->>>
->>> Also, there is no evaluation whatsoever. All the code guarded
->>> by a PAGE_SIZE/PAGE_SHIFT that doesn't match the configuration
->>> is dropped at compile time.
->>
->> The primary idea here is to unify around IS_ENABLED(CONFIG_ARM64_XXK_PAGES)
->> usage in arm64, rather than having multiple methods to test page size when
->> ever required.
-> 
-> I'm sorry, but I find the idiom extremely painful to parse. If you are
+Gr{oetje,eeting}s,
 
-Okay, it was not explained very well. My bad.
+                        Geert
 
-> annoyed with the 'PAGE_SHIFT == 12/14/16', consider replacing it with
-> 'PAGE_SIZE == SZ_4/16/64K' instead.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Sure, understood. But the problem here is not with PAGE_SHIFT/PAGE_SIZE
-based tests but rather having multiple ways of doing the same thing in
-arm64 tree. Please find further explanation below.
-
-> 
-> IS_ENABLED(CONFIG_ARM64_XXK_PAGES) also gives the wrong impression
-> that *multiple* page sizes can be selected at any given time. That's
-> obviously not the case, which actually makes PAGE_SIZE a much better
-> choice.
-
-PAGE_SHIFT and PAGE_SIZE are derived from CONFIG_ARM64_XXK_PAGES. Hence
-why not just directly use the original user selected config option that
-eventually decides PAGE_SHIFT and PAGE_SIZE.
-
-config ARM64_PAGE_SHIFT
-        int
-        default 16 if ARM64_64K_PAGES
-        default 14 if ARM64_16K_PAGES
-        default 12
-
-arch/arm64/include/asm/page-def.h:#define PAGE_SHIFT	CONFIG_ARM64_PAGE_SHIFT
-arch/arm64/include/asm/page-def.h:#define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
-
-Also there are already similar IS_ENABLED() instances which do not
-create much confusion. The point here being, to have just a single
-method that checks compiled page size support, instead of three
-different ways of doing the same thing.
-
-- IS_ENABLED(CONFIG_ARM64_XXK_PAGES)
-- if (PAGE_SHIFT == XX)
-- if (PAGE_SIZE == XX)
-
-$git grep IS_ENABLED arch/arm64/ | grep PAGES
-
-arch/arm64/include/asm/vmalloc.h:	return IS_ENABLED(CONFIG_ARM64_4K_PAGES) &&
-arch/arm64/mm/mmu.c:		BUG_ON(!IS_ENABLED(CONFIG_ARM64_16K_PAGES));
-arch/arm64/mm/mmu.c:		BUG_ON(!IS_ENABLED(CONFIG_ARM64_16K_PAGES));
-
-> 
-> As things stand, I don't plan to take such a patch.
-
-Sure, will drop it from the series if the above explanation and
-the rationale for the patch still does not convince you.
-
-> 
-> Thanks,
-> 
-> 	M.
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
