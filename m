@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801C03E8D47
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0DF3E8D49
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbhHKJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:34:50 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13264 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236580AbhHKJet (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:34:49 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gl4QT4C8yz1CTRf;
-        Wed, 11 Aug 2021 17:34:09 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 17:34:17 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 17:34:17 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2] genirq/timings: Fix error return code in irq_timings_test_irqs()
-Date:   Wed, 11 Aug 2021 17:33:32 +0800
-Message-ID: <20210811093333.2376-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S236606AbhHKJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:35:15 -0400
+Received: from m12-12.163.com ([220.181.12.12]:56982 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236320AbhHKJfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 05:35:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Wbsn2
+        O/J6vFmAj3DGGFuogIXi2AVx6ruHiH1V6mPGMk=; b=mupELqWa8QDZuSQTK1/9h
+        eVwrby7tqv0uOCLao7iDjrTz22QNbNkbAay0bgkc88Fslpnfausg7N3jxA6zvgiT
+        oRBusb8R1W7LMgliZuKiznA2BomQ2+tDpSK42HjmzRvw69p7c/uAJzb/+zcKpsf4
+        dVcLztd50wQlCDfrjTF9Ok=
+Received: from localhost.localdomain (unknown [223.104.68.7])
+        by smtp8 (Coremail) with SMTP id DMCowABHuySZmRNhgrW4TQ--.1768S2;
+        Wed, 11 Aug 2021 17:34:21 +0800 (CST)
+From:   Slark Xiao <slark_xiao@163.com>
+To:     hmh@hmh.eng.br, hdegoede@redhat.com
+Cc:     ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Slark Xiao <slark_xiao@163.com>
+Subject: [PATCH] [v2,1/1] Fix WWAN device disabled issue after S3 deep
+Date:   Wed, 11 Aug 2021 17:34:07 +0800
+Message-Id: <20210811093407.5583-1-slark_xiao@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowABHuySZmRNhgrW4TQ--.1768S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AryUuF17Gr1rJFWxury7trb_yoW8tr4xpr
+        Z0yFW0yFW7K3yYg3WxAw4UWay5Cr98C3yxKFZFkw109FWqgFyrJ3yxtFWSqF43Gry8Ja12
+        va1kXr48Aa1UZ3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaa0PUUUUU=
+X-Originating-IP: [223.104.68.7]
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbivx3rZFWBvNSAzgAAsf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+When WWAN device wake from S3 deep, under thinkpad platform,
+WWAN would be disabled. This disable status could be checked
+ by command 'nmcli r wwan' or 'rfkill list'.
+Issue analysis as below:
+  When host resume from S3 deep, thinkpad_acpi driver would
+call hotkey_resume() function. Finnaly, it will use
+wan_get_status to check the current status of WWAN device.
+During this resume progress, wan_get_status would always
+return off even WWAN boot up completely.
+  If wan_get_status() return off, rfkill_set_sw_state() would set WWAN's
+status as disabled.
+  This may be a fault of LENOVO BIOS.
+  Workaround is add a WWAN device check before rfkill_set_sw_state().
+If it's a Foxconn WWAN device, then we will ignore to do a status update.
 
-Fixes: f52da98d900e ("genirq/timings: Add selftest for irqs circular buffer")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Slark Xiao <slark_xiao@163.com>
 ---
- kernel/irq/timings.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/x86/thinkpad_acpi.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-v1 --> v2:
-Replace -EFAULT with two more appropriate error codes.
-
-diff --git a/kernel/irq/timings.c b/kernel/irq/timings.c
-index d309d6fbf5bd..59affb3bfdfa 100644
---- a/kernel/irq/timings.c
-+++ b/kernel/irq/timings.c
-@@ -794,12 +794,14 @@ static int __init irq_timings_test_irqs(struct timings_intervals *ti)
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 603156a6e3ed..e3b7bc0e7a33 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -1159,6 +1159,13 @@ struct tpacpi_rfk_ops {
  
- 		__irq_timings_store(irq, irqs, ti->intervals[i]);
- 		if (irqs->circ_timings[i & IRQ_TIMINGS_MASK] != index) {
-+			ret = -EBADSLT;
- 			pr_err("Failed to store in the circular buffer\n");
- 			goto out;
- 		}
- 	}
+ static struct tpacpi_rfk *tpacpi_rfkill_switches[TPACPI_RFK_SW_MAX];
  
- 	if (irqs->count != ti->count) {
-+		ret = -ERANGE;
- 		pr_err("Count differs\n");
- 		goto out;
- 	}
++/*Foxconn SDX55 T77W175 products. All available device ID*/
++static const struct pci_device_id foxconn_device_ids[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0AB) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0AF) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0B4) },
++	{}
++};
+ /* Query FW and update rfkill sw state for a given rfkill switch */
+ static int tpacpi_rfk_update_swstate(const struct tpacpi_rfk *tp_rfk)
+ {
+@@ -1182,8 +1189,13 @@ static void tpacpi_rfk_update_swstate_all(void)
+ {
+ 	unsigned int i;
+ 
+-	for (i = 0; i < TPACPI_RFK_SW_MAX; i++)
+-		tpacpi_rfk_update_swstate(tpacpi_rfkill_switches[i]);
++	for (i = 0; i < TPACPI_RFK_SW_MAX; i++) {
++		if (pci_dev_present(foxconn_device_ids) && i == 1)
++			pr_info("Find Foxconn wwan device, ignore to update rfkill switch status\n");
++		else
++			tpacpi_rfk_update_swstate(tpacpi_rfkill_switches[i]);
++
++	}
+ }
+ 
+ /*
 -- 
 2.25.1
+
 
