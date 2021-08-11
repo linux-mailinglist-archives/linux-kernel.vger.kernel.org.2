@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE17D3E9366
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2A53E936B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhHKORm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:17:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55470 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbhHKORi (ORCPT
+        id S232346AbhHKOSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231991AbhHKOS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:17:38 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C638C220E8;
-        Wed, 11 Aug 2021 14:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628691433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xl723j198up04BkKn425KjWjCe12u51etMnxGBEI4+g=;
-        b=K1FsBpOGGjzV02EWDXDQ4+ryuc6DeHzX59qTWNF0h5JJ7ciFeGp8Kbtru/9Vn3ZppmzUrR
-        +eLR5Yj19geEiVVTdUUqSUgkxnrPx/0tIow64qoY6vj2NiIRhAflzEjUaznBB3tNVAhefb
-        hYpgEs7lTFP1A3xIdPlf+V5l4bP92tk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628691433;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xl723j198up04BkKn425KjWjCe12u51etMnxGBEI4+g=;
-        b=+aNHMwa4n6002kVNEZAsrd203luLPCVWa1J/3Vgzu63aINrCe683sE2lmhWi6UuwVAGkgU
-        HDIwAXTLoioKWtBQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B0C9513969;
-        Wed, 11 Aug 2021 14:17:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id kdCWKunbE2FDSQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 14:17:13 +0000
-Subject: Re: [PATCH v14 054/138] mm: Add kmap_local_folio()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Wed, 11 Aug 2021 10:18:29 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D944C061798
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:18:05 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id k3so3021849ilu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 07:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LDWP9qisBxFdueMqiOTeG0NsmbdU+x+l/xp0sQwGHd4=;
+        b=WO/JfNQFytTyy9YMRuVLi7YfkL9EWNVf3vMlugzUjYyHGImqe/zrP0msZjp+R5UMaI
+         Z6txHSWra1O3C49h3bR+/FF0q5h1BqlUHJch1M3gsDr89UR+QTGYsp7zLSe1dGyOQl8T
+         IJHiaVDTmiWd5W39HhEIkGc9sv1houRJnCGLBDtxQ2fJO2Me0u2hhGg8h4bJC1+D/ytZ
+         evCDTbYjpWTP/Vbn+yc/ZFcOKtKOq+uBsKFOion6GeNbXcAnL+hr7sRPpC37ClE00aD6
+         DGZxWwWLRKv9/1FFAUbTts0ae9JVwnqgrG9rrX2Rcl1uexKhpBlKQ6HGzAdVuWny1+lp
+         3+gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LDWP9qisBxFdueMqiOTeG0NsmbdU+x+l/xp0sQwGHd4=;
+        b=pVij1IrU6lbi68fNDb0xLtF4/RZIF3EoBkA4gdDlMOCCzmlbA8OJmeNV7uLpQUkYUi
+         2n7thfAxHURaNTDqALZ2Ntznnwiki+5yUPDLwmGFDNagAXFmYnwgT2e7UtSP75pO7rj6
+         vhUc9B09kMSjBdPlPygAteib3H+nfekXL1BS/BHLs7TRogqWLvp9BUuoQGevUgRpj0rV
+         K0RhkaRclkenJiPFnD8NCKAKlnH8dgOvUrNbJaf/vo/MR0RIeqqWRJ+2mvuY9zZIN6jx
+         2HZbNFQWh/gPePPHHo4hhQODkQAY9tRJjJT+mz0Ob2BFPsTj+FYkCYWpWaFd6JrU1tvb
+         f5GQ==
+X-Gm-Message-State: AOAM533bB1rNiV0JFwqMQZRzBu8trImdAAi2XeVP8/sKJqKCE3UlhR98
+        qUlBtP9DcKnQsgRFRnk4swQGUw==
+X-Google-Smtp-Source: ABdhPJzce3iTAAaoGtIR+QNCm0uokAhIEHbadQJi8RMqBWXFTFRUmUPU3BgJvyPd+jOeEnePjMAmww==
+X-Received: by 2002:a92:c601:: with SMTP id p1mr73562ilm.284.1628691484831;
+        Wed, 11 Aug 2021 07:18:04 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id m184sm14287014ioa.17.2021.08.11.07.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 07:18:04 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     robh+dt@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-55-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <7644cca0-3858-5238-3566-46a7328ae611@suse.cz>
-Date:   Wed, 11 Aug 2021 16:17:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Subject: [PATCH net-next v4] dt-bindings: net: qcom,ipa: make imem interconnect optional
+Date:   Wed, 11 Aug 2021 09:18:02 -0500
+Message-Id: <20210811141802.2635424-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-55-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> This allows us to map a portion of a folio.  Callers can only expect
-> to access up to the next page boundary.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On some newer SoCs, the interconnect between IPA and SoC internal
+memory (imem) is not used.  Update the binding to indicate that
+having just the memory and config interconnects is another allowed
+configuration.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+v4: Hopefully I included all the right addressees this time.
+v3: Based on net-next/master; sending for inclusion in net-next.
+v2: Based on linux-next/master.
+
+An earlier version was sent with some DTS updates and was accepted
+into the net-next/master branch, but later reverted.  Bjorn accepted
+the re-sent DTS patches into the Qualcomm repository; this patch
+should go (by itself) via the net-next repository.
+
+					-Alex
+
+ .../devicetree/bindings/net/qcom,ipa.yaml     | 24 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+index ed88ba4b94df5..b8a0b392b24ea 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+@@ -87,16 +87,24 @@ properties:
+       - const: ipa-setup-ready
+ 
+   interconnects:
+-    items:
+-      - description: Interconnect path between IPA and main memory
+-      - description: Interconnect path between IPA and internal memory
+-      - description: Interconnect path between IPA and the AP subsystem
++    oneOf:
++      - items:
++          - description: Path leading to system memory
++          - description: Path between the AP and IPA config space
++      - items:
++          - description: Path leading to system memory
++          - description: Path leading to internal memory
++          - description: Path between the AP and IPA config space
+ 
+   interconnect-names:
+-    items:
+-      - const: memory
+-      - const: imem
+-      - const: config
++    oneOf:
++      - items:
++          - const: memory
++          - const: config
++      - items:
++          - const: memory
++          - const: imem
++          - const: config
+ 
+   qcom,smem-states:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+-- 
+2.27.0
+
