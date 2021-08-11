@@ -2,111 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0843E8E21
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EEE3E8E28
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237060AbhHKKIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237000AbhHKKIV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:08:21 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3432C0613D3;
-        Wed, 11 Aug 2021 03:07:44 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id k29so2243257wrd.7;
-        Wed, 11 Aug 2021 03:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=S4hqVy65+RqdfbEZFzhI05OrdFqRKRNyS+UZZ1UKMEg=;
-        b=DSk7KF/Hl604HiNkXJunPo3CQy2Q1GXLXmaxkFOpFpfyogVuakMRIJkzTx7wNzEXQi
-         tuWqU9R2dmjFKEvtpmLNk7IcEqribvixcmM3zyL5GztluQpAsAmMWeatkJX+Q7Dp6dIw
-         w0BdI/9xWYSiKsKF+9UFifL9dB/7s6yvf7sYoFDZeRvzGs5VsAbkR0KeGd9FjOsdDokZ
-         RAnpSqUOL6eKnsD0qwr5VXSW17TuehdizEsm+fIHYFT9QVN8fJ/3kZXzMo2z1U03JVJy
-         vAWZQA3g4eIKfDRGkX4e9A6GaelxqWN9VxDgZihRRvWRlDkkek35kHMYynbLIpeb6kaU
-         CrKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=S4hqVy65+RqdfbEZFzhI05OrdFqRKRNyS+UZZ1UKMEg=;
-        b=KuXpkjhHQpxFT49Q0EfIH8eVJ7yKvwCJt3R570R1ESWK8mAC35/e3DvQEp21QZPbV1
-         UepmeTEK5zYUx1bVUcZUJtl85A/wHE6EJAdBnU247AwDWOkuJuqUhr+QPQC7OdKZkQJp
-         8Q+88h/Mq6giprYoNBiRNC07DSFiGWwNDskecvMJp0r8Sr2pIlFACM0Qt4zXrDmZKeXy
-         o+BWIwlQ8TDFWJvhiwtEaq4RYNlikNnMeNS+npEhrM2ahZ+QucXJ7+ePVmdVBw+77Uwz
-         5wEbuJtZN507YZ7Gk470ZINPftOGxl3xmp8RwLS2wOLb0KH7+x4c9Zm6vk7kI1U7T8h+
-         bINQ==
-X-Gm-Message-State: AOAM531MoacFkvy9zWHeMpwxmcIQFPXdRqIow3sHgjs+wIGyZgdjivNO
-        HI3u7Psh7g4rjlEiTxndcyo=
-X-Google-Smtp-Source: ABdhPJwwUVKorzNJ9hasthKW2Q2CRca/WuAZIJBYk/7Bwo1tYUVM9Jyi0oOZpUPOAyxVUUtWTJrCxw==
-X-Received: by 2002:a5d:51cd:: with SMTP id n13mr34902882wrv.185.1628676463339;
-        Wed, 11 Aug 2021 03:07:43 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id u6sm11570356wrp.83.2021.08.11.03.07.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 03:07:42 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 12:10:07 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] arm64: tegra194: p2888: Correct interrupt trigger
- type of temperature sensor
-Message-ID: <YROh/29zpIVH9AkL@orome.fritz.box>
-References: <20210711234939.28103-1-digetx@gmail.com>
- <20210711234939.28103-2-digetx@gmail.com>
+        id S236848AbhHKKKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:10:18 -0400
+Received: from mga04.intel.com ([192.55.52.120]:33981 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236580AbhHKKKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:10:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213242778"
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="213242778"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 03:09:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="506890714"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Aug 2021 03:09:52 -0700
+Subject: Re: [PATCH 5/5] perf tools: Add dlfilter test
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+References: <20210810114813.12951-1-adrian.hunter@intel.com>
+ <20210810114813.12951-6-adrian.hunter@intel.com>
+ <YRLGTfQdg7pBcf29@kernel.org>
+ <e0eba7e7-d9ae-eff4-254c-6fe16809a675@intel.com>
+ <YRLf0+ij2rNLvdRj@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a02ebcc2-798a-6c0c-60b2-7a90fd12163b@intel.com>
+Date:   Wed, 11 Aug 2021 13:10:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="x2Da+L5daCTg3cgs"
-Content-Disposition: inline
-In-Reply-To: <20210711234939.28103-2-digetx@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+In-Reply-To: <YRLf0+ij2rNLvdRj@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/08/21 11:21 pm, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Aug 10, 2021 at 10:06:13PM +0300, Adrian Hunter escreveu:
+>> On 10/08/21 9:32 pm, Arnaldo Carvalho de Melo wrote:
+>>> Em Tue, Aug 10, 2021 at 02:48:13PM +0300, Adrian Hunter escreveu:
+>>>> Add a perf test to test the dlfilter C API.
+>>>>
+>>>> A perf.data file is synthesized and then processed by perf script with a
+>>>> dlfilter named dlfilter-test-api-v0.so. Also a C file is compiled to
+>>>> provide a dso to match the synthesized perf.data file.
+>>>
+>>> [root@five ~]# perf test dlfilter
+>>> 72: dlfilter C API                                                  : FAILED!
 
---x2Da+L5daCTg3cgs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 12, 2021 at 02:49:39AM +0300, Dmitry Osipenko wrote:
-> The LM90 temperature sensor should use edge-triggered interrupt because
-> LM90 hardware doesn't deassert interrupt line until temperature is back
-> to normal state, which results in interrupt storm. Correct the interrupt
-> trigger type.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Applied, thanks.
-
-Thierry
-
---x2Da+L5daCTg3cgs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmETof8ACgkQ3SOs138+
-s6FiBQ/+OxPxWNCs+D7wXQH4ICkuZ3JEOHMQvs2A58mATxCL3poGIdFx+1u9AWJg
-3EEg8EGkuBDJhlRoYqyJhej52+xH9Zs5XAhn1aeemSr2gerwVPn2GURgvfFUH5by
-9roYnl80UDhzEY0tfxblnYxgI8vtM0HWwbo2PLEDuKoFi7Xil/AgGUBOYiYD22cc
-Qvn5AI0gv5+Kj1aosjaE1Pg1KBsB8IiEpI7hrAmWDIFEjjBR8xXkbZ5lHSpWeTA5
-edWTYKAn+nS45DNUj3AL8paV6wtqZ+8xuCMD00TWUjIInsg8Z/w0lxzutv/mrYjS
-oLHWLYESlIY77SngrAUrzZMs9SJXM54YMkFHHCbY9puub9m8+dHTpn6Df8bGR135
-/Iz2TkcdcQ7QLrJY9zvueUjmAWpNddYhosjDM8YuD1rGVYTbq7AC9cOgRsj35nHi
-VBKUwfIIEh1iDMpIL8cPJP8IpBnOV6OeawE0tnuX9A7+cbbwkghX7jHP65y2oDVo
-reNb0CnJR8uEBqfXdtFZbyLh9QV7dbh9rfVMQRFi8Q2MlXET46Q8N4wVlrKG7i5X
-g02icVutpOVCDoc+6ugLuUUclukNC0Q0wFGikkcbMyH2pFWpOIN1ZLJ//3/oJBdD
-4pUGCtQSemZo86rdQy6O45SdlwWhgtTz7KFGCXmJmK7jCbs/lD8=
-=WzH2
------END PGP SIGNATURE-----
-
---x2Da+L5daCTg3cgs--
+Should be fixed in V2
