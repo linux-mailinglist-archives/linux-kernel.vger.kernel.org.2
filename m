@@ -2,86 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF223E8BAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96213E8B72
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234125AbhHKIUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:20:55 -0400
-Received: from m12-17.163.com ([220.181.12.17]:53816 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230063AbhHKIUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:20:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5+JWO
-        J3r+zEO/65mm1qHsvRxGwpDfO8uhEu2vZUGL9Y=; b=lS/ZdneJ0e+Nqt9K/vkAm
-        FJu5eNhIXmQfIB8+VIX0TQmFzm0KGnigMVJc53q7RukrW4FSIyC7b5UW1pHjl0Rv
-        5zCLBGaWaIBClsIJgcUQUkGPS1ORxMJiXBQHQTsi+yftu3l/ER31zBxGO5FT+9D/
-        3gW3+0DMOLveo3xbwgqsxI=
-Received: from localhost.localdomain (unknown [223.104.68.7])
-        by smtp13 (Coremail) with SMTP id EcCowADnDIFehBNhWMUnFg--.10383S2;
-        Wed, 11 Aug 2021 16:03:43 +0800 (CST)
-From:   Slark Xiao <slark_xiao@163.com>
-To:     hmh@hmh.eng.br, hdegoede@redhat.com
-Cc:     ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Slark Xiao <slark_xiao@163.com>
-Subject: [PATCH] Fix WWAN device disabled issue after S3 deep When WWAN device wake from S3 deep, under thinkpad platform,it would be disabled. This disable status could be checked by command 'nmcli r wwan' or 'rfkill list'. Issue analysis as below: 1. When host resume from S3 deep, thinkpad_acpi driver would call hotkey_resume() function. Finnaly, it will use wan_get_status to check the current status of WWAN device. During this resume progress, wan_get_status would always return off even WWAN boot up completely. 2. If wan_get_status() return off, rfkill_set_sw_state() would set WWAN's status as disabled. 3. This may be a fault of LENOVO BIOS. 4. Workaround is add a WWAN device check before rfkill_set_sw_state(). If it's a Foxconn WWAN device, then we will ignore to do a status update.
-Date:   Wed, 11 Aug 2021 16:03:38 +0800
-Message-Id: <20210811080338.3098-1-slark_xiao@163.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowADnDIFehBNhWMUnFg--.10383S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZFyfury5Zw17ZFyfXFy7Jrb_yoW8Xr15pr
-        WYyay0yFW7Kw4ag3WxJa15Ca98uFn8CryxKFZFyw1SvFWDKFyrJa4xtay3ZF43Gry8ta1a
-        va4kJr18Ga1DZrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaVbkUUUUU=
-X-Originating-IP: [223.104.68.7]
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/xtbBDRDrZFaEEueg5wABsz
+        id S236241AbhHKIJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:09:07 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:9479 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236135AbhHKIFt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 04:05:49 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 11 Aug 2021 01:05:25 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Aug 2021 01:05:23 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 11 Aug 2021 13:35:02 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id EE88021C9C; Wed, 11 Aug 2021 13:35:00 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     andy.gross@linaro.org, david.brown@linaro.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v5] arm64: dts: qcom: sc7280: Add venus DT node
+Date:   Wed, 11 Aug 2021 13:34:50 +0530
+Message-Id: <1628669090-15648-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Slark Xiao <slark_xiao@163.com>
+Add DT entries for the sc7280 venus encoder/decoder.
+
+Change since v4:
+	rebased on latest linux-next tree.
+
+this patch depends on [1].
+
+[1] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=529463
+
+Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 603156a6e3ed..e3b7bc0e7a33 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -1159,6 +1159,13 @@ struct tpacpi_rfk_ops {
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 3e96604..88de534 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -73,6 +73,11 @@
+ 			reg = <0x0 0x80b00000 0x0 0x100000>;
+ 		};
  
- static struct tpacpi_rfk *tpacpi_rfkill_switches[TPACPI_RFK_SW_MAX];
- 
-+/*Foxconn SDX55 T77W175 products. All available device ID*/
-+static const struct pci_device_id foxconn_device_ids[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0AB) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0AF) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xE0B4) },
-+	{}
-+};
- /* Query FW and update rfkill sw state for a given rfkill switch */
- static int tpacpi_rfk_update_swstate(const struct tpacpi_rfk *tp_rfk)
- {
-@@ -1182,8 +1189,13 @@ static void tpacpi_rfk_update_swstate_all(void)
- {
- 	unsigned int i;
- 
--	for (i = 0; i < TPACPI_RFK_SW_MAX; i++)
--		tpacpi_rfk_update_swstate(tpacpi_rfkill_switches[i]);
-+	for (i = 0; i < TPACPI_RFK_SW_MAX; i++) {
-+		if (pci_dev_present(foxconn_device_ids) && i == 1)
-+			pr_info("Find Foxconn wwan device, ignore to update rfkill switch status\n");
-+		else
-+			tpacpi_rfk_update_swstate(tpacpi_rfkill_switches[i]);
++		video_mem: memory@8b200000 {
++			reg = <0x0 0x8b200000 0x0 0x500000>;
++			no-map;
++		};
 +
-+	}
- }
+ 		ipa_fw_mem: memory@8b700000 {
+ 			reg = <0 0x8b700000 0 0x10000>;
+ 			no-map;
+@@ -1398,6 +1403,76 @@
+ 			};
+ 		};
  
- /*
++		venus: video-codec@aa00000 {
++			compatible = "qcom,sc7280-venus";
++			reg = <0 0x0aa00000 0 0xd0600>;
++			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
++				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
++				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
++				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
++			clock-names = "core", "bus", "iface",
++				      "vcodec_core", "vcodec_bus";
++
++			power-domains = <&videocc MVSC_GDSC>,
++					<&videocc MVS0_GDSC>,
++					<&rpmhpd SC7280_CX>;
++			power-domain-names = "venus", "vcodec0", "cx";
++			operating-points-v2 = <&venus_opp_table>;
++
++			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
++					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
++			interconnect-names = "cpu-cfg", "video-mem";
++
++			iommus = <&apps_smmu 0x2180 0x20>,
++				 <&apps_smmu 0x2184 0x20>;
++			memory-region = <&video_mem>;
++
++			video-decoder {
++				compatible = "venus-decoder";
++			};
++
++			video-encoder {
++				compatible = "venus-encoder";
++			};
++
++			video-firmware {
++				iommus = <&apps_smmu 0x21a2 0x0>;
++			};
++
++			venus_opp_table: venus-opp-table {
++				compatible = "operating-points-v2";
++
++				opp-133330000 {
++					opp-hz = /bits/ 64 <133330000>;
++					required-opps = <&rpmhpd_opp_low_svs>;
++				};
++
++				opp-240000000 {
++					opp-hz = /bits/ 64 <240000000>;
++					required-opps = <&rpmhpd_opp_svs>;
++				};
++
++				opp-335000000 {
++					opp-hz = /bits/ 64 <335000000>;
++					required-opps = <&rpmhpd_opp_svs_l1>;
++				};
++
++				opp-424000000 {
++					opp-hz = /bits/ 64 <424000000>;
++					required-opps = <&rpmhpd_opp_nom>;
++				};
++
++				opp-460000000 {
++					opp-hz = /bits/ 64 <460000000>;
++					required-opps = <&rpmhpd_opp_turbo>;
++				};
++			};
++
++		};
++
+ 		videocc: clock-controller@aaf0000 {
+ 			compatible = "qcom,sc7280-videocc";
+ 			reg = <0 0xaaf0000 0 0x10000>;
 -- 
-2.25.1
-
+2.7.4
 
