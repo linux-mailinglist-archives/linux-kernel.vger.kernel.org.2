@@ -2,266 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7DD3E932C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D0B3E9327
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhHKOAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:00:48 -0400
-Received: from mga04.intel.com ([192.55.52.120]:49691 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232194AbhHKOAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:00:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="213273780"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="213273780"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:00:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="469410173"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 11 Aug 2021 07:00:21 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDomJ-000Lh5-2Z; Wed, 11 Aug 2021 14:00:19 +0000
-Date:   Wed, 11 Aug 2021 21:59:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.08.06a] BUILD REGRESSION
- 31c3569d656f0188aa63f826b69e62e8634302f7
-Message-ID: <6113d7be.OtiNjLKPh5a63keu%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231781AbhHKOAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhHKOAP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:00:15 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EF7C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:59:52 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id n17so2225366ioc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G3+CVK8r94N1sJaYl4cTeuh/cF4j3sRvIlNBySKEKgY=;
+        b=UvGovQgQKWUzbDOXmQsvIcU8ygpRqh4fGDHVh1WZ6N85572t1rBjrInpFRa4khdKY5
+         3ir4Y1ftdGzTYbi6xgDSa/QYDH7vJgrUqIso09Z1Xd5HvjRusTCEpB8r6zZcHQ61Fxlx
+         OI/+OsJ98gw9mcRYUuqHx0/wxIPnK/jYi0rkw7IyBSEjb9xsOg6YuiYO8GzjHvam9+rQ
+         Wa3r0ft5fUJffGYHi9vc+gmAte/NaKn15PR7K+6Kg6uAT/2qT0veb2Xc7Iui/SYJe0bb
+         CpGov3Sk6IQ0AZWwtg40eAx5oSt0xtyS/fNU4oh5Pg/gr9+VehPfdDOB/Ug9GNvXXwKA
+         +GUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G3+CVK8r94N1sJaYl4cTeuh/cF4j3sRvIlNBySKEKgY=;
+        b=p4y/NAzqqR4G9Sn6I0D87VYUxIPMUGnTZvTLMu7MTc7COz5bhNuq2yWZ0uSY51EV89
+         C8RimQkHxbf+4kh0F3vYhzg59FHqBjlznWmUwRL0q4fwGJTu3R1ynK1mP/+nzYvqIdSc
+         6MWsNtyXXcUap5TLrRdlHQsnvQ7l+gRFEKa6G1O6Tv4tSVlPpxmotzjVSNEyfrvLFZ9R
+         KUq5jJeLEwmcVFVBnT8gvdJ8Q0H9BCgA+WzvNR4OLW6kuK3ligz8jFMOKgw+k/0gy5CP
+         ZRYhZTh9qV/ub2F8tn16YCiWo0ksVQd+c0bM6nkU0yq+Hmst18Lp6R+aTCvQ1WnKdU4g
+         JXEQ==
+X-Gm-Message-State: AOAM532JZL59JZ3OfANa0bbEybdPDNJYm+EoAH4siEoxAA7umSNYO6KK
+        ZhLb+ElLawCuVLbiPZQOUc7/5w==
+X-Google-Smtp-Source: ABdhPJyNYBQRIlZS3VNVkzqaDxzSpyNry4pJECFYY9t/dYAQRaILavwYMsWL5nAmW8mzn+M8eictaQ==
+X-Received: by 2002:a05:6638:2590:: with SMTP id s16mr28628567jat.121.1628690391653;
+        Wed, 11 Aug 2021 06:59:51 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id i18sm4915165ilk.84.2021.08.11.06.59.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 06:59:51 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     leon@kernel.org, bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, lkp@intel.com,
+        elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2] net: ipa: always inline ipa_aggr_granularity_val()
+Date:   Wed, 11 Aug 2021 08:59:48 -0500
+Message-Id: <20210811135948.2634264-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.08.06a
-branch HEAD: 31c3569d656f0188aa63f826b69e62e8634302f7  EXP cpu: Add ->thread_ack to multi_cpu_stop() debugging
+It isn't required, but all callers of ipa_aggr_granularity_val()
+pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
+Two of those callers are in ipa_validate_build(), with the result
+being passed to BUILD_BUG_ON().
 
-possible Error/Warning in current branch:
+Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
+inline ipa_aggr_granularity_val(), so the result of the function is
+not constant at compile time, and that leads to build errors.
 
-(.text+0x2d64): undefined reference to `__aeabi_uldivmod'
-arm-linux-gnueabi-ld: (.text+0x2e08): undefined reference to `__aeabi_uldivmod'
-cpu.c:(.text+0x1dd6): undefined reference to `__udivdi3'
-cpu.c:(.text.unlikely+0x61): undefined reference to `__udivdi3'
-kernel/cpu.c:143: undefined reference to `__udivdi3'
-kernel/cpu.c:144:6: error: redefinition of 'cpu_hp_stop_now'
-kernel/cpu.c:146:6: error: redefinition of 'cpu_hp_stop_now'
-kernel/cpu.c:155:6: error: conflicting types for 'cpu_hp_check_delay'
-kernel/cpu.c:158:6: error: conflicting types for 'cpu_hp_check_delay'
-kernel/cpu.c:184: undefined reference to `__udivdi3'
-kernel/cpu.c:733:45: error: passing 'const char [19]' to parameter of type 'void *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
-ld: cpu.c:(.text+0x6c4): undefined reference to `__udivdi3'
-ld: cpu.c:(.text.unlikely+0x7b): undefined reference to `__udivdi3'
-ld: kernel/cpu.c:153: undefined reference to `__udivdi3'
-ld: kernel/cpu.c:170: undefined reference to `__udivdi3'
-ld: kernel/cpu.c:212: undefined reference to `__udivdi3'
-riscv32-linux-ld: cpu.c:(.text+0x1ef2): undefined reference to `__udivdi3'
+Define the function with the __always_inline attribute to avoid the
+errors.  We can see by inspection that the value passed is never
+zero, so we can just remove its WARN_ON() call.
 
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-randconfig-c024-20210811
-|   |-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay
-|   `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-|-- arc-allyesconfig
-|   |-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay
-|   `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-|-- arc-defconfig
-|   |-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay
-|   `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-|-- arc-randconfig-r024-20210810
-|   `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-|-- arm-omap2plus_defconfig
-|   |-- (.text):undefined-reference-to-__aeabi_uldivmod
-|   `-- arm-linux-gnueabi-ld:(.text):undefined-reference-to-__aeabi_uldivmod
-|-- i386-buildonly-randconfig-r003-20210810
-|   |-- cpu.c:(.text.unlikely):undefined-reference-to-__udivdi3
-|   |-- ld:cpu.c:(.text):undefined-reference-to-__udivdi3
-|   `-- ld:cpu.c:(.text.unlikely):undefined-reference-to-__udivdi3
-|-- i386-randconfig-a004-20210810
-|   |-- kernel-cpu.c:undefined-reference-to-__udivdi3
-|   `-- ld:kernel-cpu.c:undefined-reference-to-__udivdi3
-|-- i386-randconfig-a011-20210810
-|   |-- kernel-cpu.c:undefined-reference-to-__udivdi3
-|   `-- ld:kernel-cpu.c:undefined-reference-to-__udivdi3
-|-- i386-randconfig-a013-20210810
-|   |-- kernel-cpu.c:undefined-reference-to-__udivdi3
-|   `-- ld:kernel-cpu.c:undefined-reference-to-__udivdi3
-|-- i386-randconfig-m021-20210810
-|   |-- kernel-cpu.c:undefined-reference-to-__udivdi3
-|   `-- ld:kernel-cpu.c:undefined-reference-to-__udivdi3
-|-- i386-randconfig-r014-20210810
-|   |-- kernel-cpu.c:undefined-reference-to-__udivdi3
-|   `-- ld:kernel-cpu.c:undefined-reference-to-__udivdi3
-|-- mips-bigsur_defconfig
-|   `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-|-- openrisc-randconfig-r023-20210810
-|   |-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay
-|   `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-|-- riscv-randconfig-r024-20210811
-|   |-- cpu.c:(.text):undefined-reference-to-__udivdi3
-|   `-- riscv32-linux-ld:cpu.c:(.text):undefined-reference-to-__udivdi3
-`-- riscv-randconfig-r026-20210811
-    |-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay
-    `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-
-clang_recent_errors
-|-- hexagon-randconfig-r003-20210810
-|   `-- kernel-cpu.c:error:passing-const-char-to-parameter-of-type-void-discards-qualifiers-Werror-Wincompatible-pointer-types-discards-qualifiers
-`-- hexagon-randconfig-r045-20210810
-    |-- kernel-cpu.c:error:conflicting-types-for-cpu_hp_check_delay
-    `-- kernel-cpu.c:error:redefinition-of-cpu_hp_stop_now
-
-elapsed time: 726m
-
-configs tested: 136
-configs skipped: 3
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210811
-i386                 randconfig-c001-20210809
-arm                       omap2plus_defconfig
-arm                         at91_dt_defconfig
-arm                           omap1_defconfig
-arm                         s3c2410_defconfig
-arm                           viper_defconfig
-xtensa                         virt_defconfig
-sh                           se7722_defconfig
-m68k                        m5307c3_defconfig
-arc                         haps_hs_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                      acadia_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                      makalu_defconfig
-arm                          imote2_defconfig
-s390                          debug_defconfig
-powerpc                 mpc834x_itx_defconfig
-nds32                               defconfig
-mips                           jazz_defconfig
-mips                           rs90_defconfig
-powerpc                           allnoconfig
-m68k                             alldefconfig
-powerpc                    adder875_defconfig
-mips                      bmips_stb_defconfig
-sh                           se7712_defconfig
-mips                        qi_lb60_defconfig
-powerpc                     pseries_defconfig
-xtensa                    xip_kc705_defconfig
-arc                      axs103_smp_defconfig
-arm                            lart_defconfig
-mips                      maltasmvp_defconfig
-xtensa                  cadence_csp_defconfig
-arm                       aspeed_g4_defconfig
-mips                         bigsur_defconfig
-sh                          sdk7786_defconfig
-sh                        dreamcast_defconfig
-sh                            hp6xx_defconfig
-nds32                             allnoconfig
-powerpc                     mpc83xx_defconfig
-mips                      loongson3_defconfig
-microblaze                      mmu_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-i386                 randconfig-a004-20210810
-i386                 randconfig-a002-20210810
-i386                 randconfig-a001-20210810
-i386                 randconfig-a003-20210810
-i386                 randconfig-a006-20210810
-i386                 randconfig-a005-20210810
-x86_64               randconfig-a016-20210808
-x86_64               randconfig-a012-20210808
-x86_64               randconfig-a013-20210808
-x86_64               randconfig-a011-20210808
-x86_64               randconfig-a014-20210808
-x86_64               randconfig-a015-20210808
-i386                 randconfig-a011-20210810
-i386                 randconfig-a015-20210810
-i386                 randconfig-a013-20210810
-i386                 randconfig-a014-20210810
-i386                 randconfig-a016-20210810
-i386                 randconfig-a012-20210810
-i386                 randconfig-a012-20210809
-i386                 randconfig-a015-20210809
-i386                 randconfig-a011-20210809
-i386                 randconfig-a013-20210809
-i386                 randconfig-a014-20210809
-i386                 randconfig-a016-20210809
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c001-20210811
-x86_64               randconfig-c001-20210810
-x86_64               randconfig-a013-20210810
-x86_64               randconfig-a011-20210810
-x86_64               randconfig-a012-20210810
-x86_64               randconfig-a016-20210810
-x86_64               randconfig-a014-20210810
-x86_64               randconfig-a015-20210810
-x86_64               randconfig-a004-20210811
-x86_64               randconfig-a006-20210811
-x86_64               randconfig-a003-20210811
-x86_64               randconfig-a002-20210811
-x86_64               randconfig-a005-20210811
-x86_64               randconfig-a001-20210811
-
+Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alex Elder <elder@linaro.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v2: Drop WARN_ON() call, as suggested by Leon Romanovsky
+
+David/Jakub, the bug this fixes is only in net-next/master.
+
+ drivers/net/ipa/ipa_main.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index f332210ce5354..581b75488c6fe 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -253,12 +253,11 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
+ /* Compute the value to use in the COUNTER_CFG register AGGR_GRANULARITY
+  * field to represent the given number of microseconds.  The value is one
+  * less than the number of timer ticks in the requested period.  0 is not
+- * a valid granularity value.
++ * a valid granularity value (so for example @usec must be at least 16 for
++ * a TIMER_FREQUENCY of 32000).
+  */
+-static u32 ipa_aggr_granularity_val(u32 usec)
++static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
+ {
+-	WARN_ON(!usec);
+-
+ 	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
+ }
+ 
+-- 
+2.27.0
+
