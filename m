@@ -2,97 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF843E89CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BE53E89D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbhHKFjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S234408AbhHKFkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 01:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234112AbhHKFjU (ORCPT
+        with ESMTP id S234153AbhHKFkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:39:20 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B08FC0613D5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:38:57 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id f3so1233175plg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9C16aGrQd4DbmatTkdrN+5r9o60LDqyKnHni66oi5yA=;
-        b=ay0Z1NCDG8WPAn0RRxsixr6dpvr8p3y035Y6DM7CKPLF66XtxVf/sGr/q2+7hVyGVL
-         xcflIio6ixnfRRGtcl/5KkgLtZOB7FIEkp1fyih99x8YgYKnxcwd4L96wIA66wTHDsS6
-         De+km3kdPeHefFd9x6AgF1K79DBr4IUgdVRzH6rJTP0gfnRgWkwSaUCSdvIsdz0pE29k
-         Or/CuxzYPn3vrRDz3/rr4lIpxBYsK1B96T2ed09VcExRXsLwDGAfGQu9RLou53lMuYy+
-         mDzGmi1oL4rp6XLd3heku9vLzLtzx9jnhtzCLTovxxPd6wZpbQxYW6reVTjUdWqNGGVL
-         6/Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9C16aGrQd4DbmatTkdrN+5r9o60LDqyKnHni66oi5yA=;
-        b=JmnmKwXSzR8vXgoU0neIJkioCWr6wBbe87KhrWKe4EtjW4W/nPt/dGYHBS+KpP5bfO
-         fCEP6xPcQVAhVTq26RdUENrNguQ5JKpwCbB9JxbB6NF0fdiMpV4oQ37Zbzz8fSkWZl+A
-         B6T1RcBmQvvrgjC+iTUxj5bJO8ZXGmVkYt9OtCe0QO1RWT0prPKbxet2AAif5w9HZRSU
-         boe/8Buf5dObklozcxe+oUZolqRuE07f/sO0oqnuAwSfa/lJ9vX6XuirFRXSlyJdNR/L
-         u97W9FNNLvCbtshOHKwOpWKokHVCMESGNP/W2A35d4R2CxmeAOdXukOew8Io3MERAXNA
-         VMfg==
-X-Gm-Message-State: AOAM532JdeS1fTTfLWfrkp/LvuQECs0Ij3gsCLUZdexL/HnSiRV3fiIP
-        elPdJJjULOT58wAI+OxR6GOWDQ==
-X-Google-Smtp-Source: ABdhPJz670d+mhV5NHPn4IBMMT7nwf5ci7sI0cLkCTuYIabeyKuBFTWpGjH65c1d6erAUk37z2/Zog==
-X-Received: by 2002:a17:902:9897:b029:12d:17ac:3d40 with SMTP id s23-20020a1709029897b029012d17ac3d40mr14926473plp.67.1628660336982;
-        Tue, 10 Aug 2021 22:38:56 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id o9sm27927871pfh.217.2021.08.10.22.38.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 22:38:56 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 11:08:54 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH V4 0/5] virtio: Add virtio-device bindings
-Message-ID: <20210811053854.37uf55p62r525ees@vireshk-i7>
-References: <cover.1627362340.git.viresh.kumar@linaro.org>
- <20210804035623.flacrogemvjina3o@vireshk-i7>
+        Wed, 11 Aug 2021 01:40:35 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1006AC061765;
+        Tue, 10 Aug 2021 22:40:12 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkzDR6ZTNz9sRN;
+        Wed, 11 Aug 2021 15:40:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628660408;
+        bh=sQV6y3XX3iHyj5pvmLRvlcPDOEiAuXdY/NHLb0fNv7g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZAejA8Tu18mAHVOJXGHWYwa5R3U8BJmtMZ1iok6fti59Zx76pyuQZcHdsIZfN3mbE
+         9OAS3rdiM2z/tkajgQS5fFw1i0ds2N4hQ6xT3O9XJ6mFJ2C1rH3O+/zZcy4q5sadoC
+         19BMRVui89rxmV4QKRxRcvSFDAzU4Cm8/Bf7ME54XC9hAUt2HfD8kuTghGsw9UBejx
+         ih8zLwiVq7p0DP2G0k9EjP1X/0qGa+RH6e+jNwa9m/V9mODJli4oPxzuMITDwBETdm
+         KelOevU+sTL3d06BQul+LpqoLpMuHjwvdt5XKyHvAUKiHi0NXSe0aXa9WcFCqYArCi
+         /sOFLF4OT0rVg==
+Date:   Wed, 11 Aug 2021 15:40:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+Subject: linux-next: manual merge of the scsi-mkp tree with Linus' tree
+Message-ID: <20210811154005.7fbbb9e2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804035623.flacrogemvjina3o@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="Sig_/jQSnKhTegTuB2gIUivp.zsC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-08-21, 09:26, Viresh Kumar wrote:
-> Michael,
-> 
-> I hope you will be picking this series (Now that it is reviewed by
-> others) ? Just so you know, Wolfram needs the 4th patch, 4/5, to base
-> the virtio-i2c driver over it and has requested an immutable branch
-> for the same.
+--Sig_/jQSnKhTegTuB2gIUivp.zsC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Michael, we need an immutable branch with the following patch:
+Hi all,
 
-  uapi: virtio_ids: Sync ids with specification
+Today's linux-next merge of the scsi-mkp tree got conflicts in:
 
-This will enable Wolfram to apply the I2C driver for 5.15-rc1 and
-maybe Linus as well for the GPIO driver.
+  drivers/scsi/mpt3sas/mpt3sas_base.c
+  drivers/scsi/mpt3sas/mpt3sas_base.h
 
--- 
-viresh
+between commit:
+
+  fae21608c31c ("scsi: mpt3sas: Transition IOC to Ready state during shutdo=
+wn")
+
+from Linus' tree and commit:
+
+  432bc7caef4e ("scsi: mpt3sas: Add io_uring iopoll support")
+
+from the scsi-mkp tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/scsi/mpt3sas/mpt3sas_base.c
+index cf4a3a2c22ad,e7f6fbb282bd..000000000000
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@@ -8471,7 -8738,8 +8738,8 @@@ mpt3sas_base_hard_reset_handler(struct=20
+  	_base_pre_reset_handler(ioc);
+  	mpt3sas_wait_for_commands_to_complete(ioc);
+  	mpt3sas_base_mask_interrupts(ioc);
++ 	mpt3sas_base_pause_mq_polling(ioc);
+ -	r =3D _base_make_ioc_ready(ioc, type);
+ +	r =3D mpt3sas_base_make_ioc_ready(ioc, type);
+  	if (r)
+  		goto out;
+  	_base_clear_outstanding_commands(ioc);
+diff --cc drivers/scsi/mpt3sas/mpt3sas_base.h
+index 0c6c3df0038d,3cf2e4615ff5..000000000000
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.h
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.h
+@@@ -1730,10 -1755,9 +1755,13 @@@ do {	ioc_err(ioc, "In func: %s\n", __fu
+  	status, mpi_request, sz); } while (0)
+ =20
+  int mpt3sas_wait_for_ioc(struct MPT3SAS_ADAPTER *ioc, int wait_count);
+ +int
+ +mpt3sas_base_make_ioc_ready(struct MPT3SAS_ADAPTER *ioc, enum reset_type =
+type);
+ +void mpt3sas_base_free_irq(struct MPT3SAS_ADAPTER *ioc);
+ +void mpt3sas_base_disable_msix(struct MPT3SAS_ADAPTER *ioc);
++ int mpt3sas_blk_mq_poll(struct Scsi_Host *shost, unsigned int queue_num);
++ void mpt3sas_base_pause_mq_polling(struct MPT3SAS_ADAPTER *ioc);
++ void mpt3sas_base_resume_mq_polling(struct MPT3SAS_ADAPTER *ioc);
+ =20
+  /* scsih shared API */
+  struct scsi_cmnd *mpt3sas_scsih_scsi_lookup_get(struct MPT3SAS_ADAPTER *i=
+oc,
+
+--Sig_/jQSnKhTegTuB2gIUivp.zsC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmETYrUACgkQAVBC80lX
+0Gxbqwf+LeSkg2kU8TJYXh5aMX/3AaM543vCO7luLBTgMQxjhuC/kH+jgeOttMRa
+j0QXmyuUmNwJhNWm16kogMK1PJVq9MM4qpWR/DDLcosVvl6w5hpcaUAW/4u/1qke
+56W0zS51M5xbmSlxtF6Wuknh8l80kfsXQwsJSsfHgktexa3ALBOXwC1k758AQfYl
+K59ABRSzGo5rAJl1kSc+5J3P552YctJk2lhuWllkKHaxx9kAB67+IdxiDWWZO7rw
+zENbevgZaU1EYbfSE7KxRvbIuvdQIt8ZfSSVMJ9B2BZPrYJ13VdiTn4h0lhGyMcA
+mR59vGSgWyvwq8rL+19JfMKBZRc8hQ==
+=RgVL
+-----END PGP SIGNATURE-----
+
+--Sig_/jQSnKhTegTuB2gIUivp.zsC--
