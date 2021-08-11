@@ -2,109 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B653E8F32
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF3C3E8F39
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237251AbhHKK67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:58:59 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:46395 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231758AbhHKK66 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:58:58 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 452813200924;
-        Wed, 11 Aug 2021 06:58:33 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Wed, 11 Aug 2021 06:58:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=QukJRM727lS1gcuLKaQE+uIs0YGF
-        NOFtD4CuEIR6MPc=; b=FNl7oUb5D9vB2uK/GMLSX1rHvVIjzLSnoEph6wFYu7DO
-        mPzyzb+Si/Lx/uTQaJxWDbGGFfJdnCUBEUIt9GTeXK5KHZi6CUvcn2u7Unjl8Mek
-        80Eocr9ZlWWmpuuakYZDbcVpMkJtA5DFr4p3/pMQ0utJThRtDtl4gnh6YXYZZx7x
-        Cw3AsyAj1M/yXmjwNTFWQNFFC4F0GZTAANKYYVD2GypitECpjbfd6ZdifO4OeXJH
-        q+dZBEd3SSm0DtqiPNhCs1Bpb1fLPtHdH4pBk4oX50WD0tknuoKrd1iG7gjPqp46
-        /MMYlP9SpLS11tnk3G8fHGMzQtE4AO2MCKu2Q5kdqQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QukJRM
-        727lS1gcuLKaQE+uIs0YGFNOFtD4CuEIR6MPc=; b=RIOSccIeM5FEJgfw+v4sju
-        ZivFE5AJkDojefZ/2o1JnvQwVvrY6ClDO7sFVhb8D2cGDtI8qYpb0zmdlt0Osdw4
-        gavkSudCOi3AMyb1L9HBdXmgM4gXyS87C45yhUjPj3yJ+RgtkznvTRa/aSXo1oeF
-        ZxqWUnxH8ksuKuEEqDZv8MzKmWF8ehxekzBCutoYedPGvEGD7Dus0wBXSULtZGQg
-        DdCr9LJX2PiwPEbzXOkE9Pnb0psG2seZdsxWzyYW6qk9yy+k6vaJykwEyWjDsxAe
-        Y0R7U58qYizLxW/4zfQspEDXG7iE5rUK6QtJkwpmuDd8X2w/Qr7yNQSQf8Wo8hBg
-        ==
-X-ME-Sender: <xms:V60TYXS5cIxUkw7NnUTXdaqwv0IO1sr8YQ87vbsnmxjJv5OmKHkdwQ>
-    <xme:V60TYYxKg-kn_h4wB77yQzJn8LF6XsIobRvYFY7o7Nr6NakuaR8gCtlU1sgth7pao
-    ZwRswsMsJOFtGXC4jI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedugdeffecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhvvghn
-    ucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrth
-    htvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudehvdef
-    keffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
-    hvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:V60TYc3dUHrSsWRdqteQyKmRaqhGUg2N94cWYdgXFHfno-lS7yWr9w>
-    <xmx:V60TYXAKlD-7k-yYd8Pab2xlnT8Ira7sl2lT5IIRHE-M_vJSwjHxBg>
-    <xmx:V60TYQjW7A5CGo0XrIP6TdG99bWYGuYJdVIIRRYArSp8qx76mm90jg>
-    <xmx:WK0TYYdzi1IUMOIDZnzq1vCG0Krr9Y3dT2ns2_8rNsn9wYhMuvLTqg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0B01051C0060; Wed, 11 Aug 2021 06:58:30 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-554-g53a5f93b7d-fm-20210809.002-g53a5f93b
-Mime-Version: 1.0
-Message-Id: <ae4e4b9f-add0-4ab2-9c82-04124b1862b7@www.fastmail.com>
-In-Reply-To: <44fcf525273b32c9afcd7e99acbd346d47f0e047.1628603162.git.geert+renesas@glider.be>
-References: <44fcf525273b32c9afcd7e99acbd346d47f0e047.1628603162.git.geert+renesas@glider.be>
-Date:   Wed, 11 Aug 2021 12:58:10 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
-        "Hector Martin" <marcan@marcan.st>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu: APPLE_DART should depend on ARCH_APPLE
+        id S237190AbhHKLCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:02:55 -0400
+Received: from mga06.intel.com ([134.134.136.31]:61663 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231758AbhHKLCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 07:02:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="276137096"
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="276137096"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 04:02:29 -0700
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="484829327"
+Received: from fbrausse-mobl.ger.corp.intel.com (HELO localhost) ([10.251.209.112])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 04:02:25 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [Intel-gfx] linux-next: Signed-off-by missing for commit in the drm-intel tree
+In-Reply-To: <YROc0KkBbuAwrx0f@phenom.ffwll.local>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210715141854.1ad4a956@canb.auug.org.au> <162823181614.15830.10618174106053255881@jlahtine-mobl.ger.corp.intel.com> <YRE2RwQ6XlUqbgmn@phenom.ffwll.local> <20210809161939.GS1556418@mdroper-desk1.amr.corp.intel.com> <YRIcTTsEF0Kg7F8K@phenom.ffwll.local> <8735rgo3hi.fsf@intel.com> <YROc0KkBbuAwrx0f@phenom.ffwll.local>
+Date:   Wed, 11 Aug 2021 14:02:22 +0300
+Message-ID: <87o8a4megx.fsf@intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good catch, thanks!
+On Wed, 11 Aug 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Wed, Aug 11, 2021 at 10:16:41AM +0300, Jani Nikula wrote:
+>> On Tue, 10 Aug 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
+>> > On Mon, Aug 09, 2021 at 09:19:39AM -0700, Matt Roper wrote:
+>> >> On Mon, Aug 09, 2021 at 04:05:59PM +0200, Daniel Vetter wrote:
+>> >> > On Fri, Aug 06, 2021 at 09:36:56AM +0300, Joonas Lahtinen wrote:
+>> >> > > Hi Matt,
+>> >> > > 
+>> >> > > Always use the dim tooling when applying patches, it will do the right
+>> >> > > thing with regards to adding the S-o-b.
+>> >> > 
+>> >> > fd.o server rejects any pushes that haven't been done by dim, so how did
+>> >> > this get through?
+>> >> 
+>> >> I definitely used dim for all of these patches, but I'm not sure how I
+>> >> lost my s-o-b on this one.  Maybe when I edited the commit message after
+>> >> 'dim extract-tags' I accidentally deleted an extra line when I removed
+>> >> the extract-tags marker?  It's the only patch where the line is missing,
+>> >> so it's almost certainly human error on my part rather than something
+>> >> dim did wrong.
+>> >
+>> > Yeah that's an expected failure model, and dim is supposed to catch that
+>> > by rechecking for sobs when you push. See dim_push_branch ->
+>> > checkpatch_commit_push_range in dim. So you can hand-edit stuff however
+>> > you want, dim /should/ catch it when pushing. That it didn't is kinda
+>> > confusing and I'd like to know why that slipped through.
+>> 
+>> One of the failures that happened here was that the commit was part of a
+>> topic branch that was merged and pushed directly. All merges should
+>> happen via pull requests on the list, and applied (preferrably by
+>> maintainers or at least with their acks recorded on the merge) using dim
+>> apply-pull which should also have the checks.
+>
+> Ah yes if the merge is applied directly instead of using apply-pull then
+> that's not good. I guess that's why we have the rule that only maintainers
+> should handle topic branches ...
+>
+> Not sure how we can fix this in dim? Maybe a check whether the patches
+> your pushing contain a merge commit, which prompts an additional query
+> like
+>
+> "Merge commits should only be done by repo maintainers, not committers.
+> Confirm that you are a maintainer of $repo?"
+>
+> It's not the first time this slipped through and caused some fun. Similar
+> to how we have the confirmation check if you push a lot of patches.
 
-Acked-by: Sven Peter <sven@svenpeter.dev>
+I sent an untested patch to this effect. It's a start. I guess there
+could be more detailed automated checks, but frankly dim is getting
+pretty complicated for a bash script. Or because it's a bash script.
 
-Sven
+BR,
+Jani.
 
-On Tue, Aug 10, 2021, at 15:47, Geert Uytterhoeven wrote:
-> The Apple DART (Device Address Resolution Table) IOMMU is only present
-> on Apple ARM SoCs like the M1.  Hence add a dependency on ARCH_APPLE, to
-> prevent asking the user about this driver when configuring a kernel
-> without support for the Apple Silicon SoC family.
-> 
-> Fixes: 05ce9d20d699b093 ("iommu/dart: Add DART iommu driver")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/iommu/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index dfe81da483e9e073..e908b8222e4ed679 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -292,7 +292,7 @@ config SPAPR_TCE_IOMMU
->  
->  config APPLE_DART
->  	tristate "Apple DART IOMMU Support"
-> -	depends on ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> +	depends on ARCH_APPLE || (COMPILE_TEST && !GENERIC_ATOMIC64)
->  	select IOMMU_API
->  	select IOMMU_IO_PGTABLE_LPAE
->  	default ARCH_APPLE
-> -- 
-> 2.25.1
-> 
-> 
+
+>
+> Thoughts?
+> -Daniel
+>
+>
+>> 
+>> 
+>> BR,
+>> Jani.
+>> 
+>> >
+>> >> > Matt, can you pls figure out and type up the patch to
+>> >> > plug that hole?
+>> >> 
+>> >> Are you referring to a patch for dim here?  The i915 patch has already
+>> >> landed, so we can't change its commit message now.
+>> >
+>> > Yeah dim, not drm-intel, that can't be fixed anymore because it's all
+>> > baked in.
+>> > -Daniel
+>> >
+>> >> 
+>> >> 
+>> >> Matt
+>> >> 
+>> >> > 
+>> >> > Thanks, Daniel
+>> >> > 
+>> >> > > 
+>> >> > > Regards, Joonas
+>> >> > > 
+>> >> > > Quoting Stephen Rothwell (2021-07-15 07:18:54)
+>> >> > > > Hi all,
+>> >> > > > 
+>> >> > > > Commit
+>> >> > > > 
+>> >> > > >   db47fe727e1f ("drm/i915/step: s/<platform>_revid_tbl/<platform>_revids")
+>> >> > > > 
+>> >> > > > is missing a Signed-off-by from its committer.
+>> >> > > > 
+>> >> > > > -- 
+>> >> > > > Cheers,
+>> >> > > > Stephen Rothwell
+>> >> > 
+>> >> > -- 
+>> >> > Daniel Vetter
+>> >> > Software Engineer, Intel Corporation
+>> >> > http://blog.ffwll.ch
+>> >> 
+>> >> -- 
+>> >> Matt Roper
+>> >> Graphics Software Engineer
+>> >> VTT-OSGC Platform Enablement
+>> >> Intel Corporation
+>> >> (916) 356-2795
+>> 
+>> -- 
+>> Jani Nikula, Intel Open Source Graphics Center
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
