@@ -2,198 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1943E90EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333993E90F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237695AbhHKM04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:26:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50874 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238391AbhHKMYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:24:18 -0400
-Message-ID: <20210811121418.181768544@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628684634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=BU+a69+6ahUqAFhsziSIuOkhY64ZRPFjxofuSmf1/Ac=;
-        b=c40J4TZhei4jHzXVkjfi2hPPgxxIfdC9VVzWJkoSLRTqBDn0qRet7+8rW4axMsInhrcsYt
-        ESHONGGQUo6iAbrvg6vD0npuT4oyYT4k9riCzHpSfMeZ1eTRd6r1NswmpJP99R90dx5s/k
-        sla8QECWEeE0T99EoIhy2BdV9FZ8DAdmA5dKe+VD5vaDVjCu4WpSonm3aDdi+rEGFbgO/C
-        /6ylA3sWVFHFcIR7xqJT7nXN6MQhlOJx69PfqdNeWE/X1DE5p659LSPj3NWbPe3w8JsXQL
-        rJggw+yoTOFBNu60ZhMGAXkhbWHvlq7Fu34Ihhi7ftLONj3MJO8gpJhWMVuKTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628684634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=BU+a69+6ahUqAFhsziSIuOkhY64ZRPFjxofuSmf1/Ac=;
-        b=4nYnITFp9TEDBLhWcS+uA/BK12z92V6W+PKE/u4WRxLgmDDO/o8Tt9hHv0io7cn7EfdAz3
-        Qim13oImEkb8nYCw==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: [patch V4 68/68] locking/rtmutex: Add adaptive spinwait mechanism
-References: <20210811120348.855823694@linutronix.de>
+        id S238009AbhHKM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:27:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238277AbhHKMZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA6B60FC3;
+        Wed, 11 Aug 2021 12:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628684681;
+        bh=KhdkyWs62enuVFTS+UMmW5FuOLpzgkVsa0BKCMVUt7o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lZkS9XrxaOjEOWe6Q2O59awKPKuPx5XbCdDz2OToG9JFc15gaznkxR8pY9VlOYtn/
+         KNHrFOD5xfxn2dUKIe5b+/zbNMP0k/bl55YzSeXq4K+X8rctM7hYkgHiF+IPyu1yvH
+         dInFR2P4k8LtxljGT9vwyc1TtKqACUj9vs1m/Dn0VEiIeCM+WUHvd5XgAxQUtNLx/q
+         EIP+lGwLdSBN8dIuv21+pljWkz2PyvvSNExSOwoNCpX93VtqH0N2OJNvLyHZu37vtL
+         P/Yl/YUXdkyteJUIIJVB1ATIu0X03dGEtsWknR7RYVxxat0LzLbzvL4fudjinrKit9
+         YKg7Zhwj4HdZg==
+Date:   Wed, 11 Aug 2021 15:24:36 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH 15/18] ARC: mm: support 3 levels of page tables
+Message-ID: <YRPBhJyYM/L5XWb/@kernel.org>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+ <20210811004258.138075-16-vgupta@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-Date:   Wed, 11 Aug 2021 14:23:54 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811004258.138075-16-vgupta@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt <rostedt@goodmis.org>
+On Tue, Aug 10, 2021 at 05:42:55PM -0700, Vineet Gupta wrote:
+> ARCv2 MMU is software walked and Linux implements 2 levels of paging: pgd/pte.
+> Forthcoming hw will have multiple levels, so this change preps mm code
+> for same. It is also fun to try multi levels even on soft-walked code to
+> ensure generic mm code is robust to handle.
+> 
+> overview
+> ________
+> 
+> 2 levels {pgd, pte} : pmd is folded but pmd_* macros are valid and operate on pgd
+> 3 levels {pgd, pmd, pte}:
+>   - pud is folded and pud_* macros point to pgd
+>   - pmd_* macros operate on actual pmd
+> 
+> code changes
+> ____________
+> 
+> 1. #include <asm-generic/pgtable-nopud.h>
+> 
+> 2. Define CONFIG_PGTABLE_LEVELS 3
+> 
+> 3a. Define PMD_SHIFT, PMD_SIZE, PMD_MASK, pmd_t
+> 3b. Define pmd_val() which actually deals with pmd
+>     (pmd_offset(), pmd_index() are provided by generic code)
+> 3c. Define pmd_alloc_one() and pmd_free() to allocate pmd
+>     (pmd_populate/pmd_free already exist)
+> 
+> 4. Define pud_none(), pud_bad() macros based on generic pud_val() which
+>    internally pertains to pgd now.
+> 4b. define pud_populate() to just setup pgd
+> 
+> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+> ---
+>  arch/arc/Kconfig                      |  4 ++
+>  arch/arc/include/asm/page.h           | 11 +++++
+>  arch/arc/include/asm/pgalloc.h        | 22 ++++++++++
+>  arch/arc/include/asm/pgtable-levels.h | 63 ++++++++++++++++++++++++---
+>  arch/arc/include/asm/processor.h      |  2 +-
+>  arch/arc/mm/fault.c                   |  4 ++
+>  arch/arc/mm/tlb.c                     |  4 +-
+>  arch/arc/mm/tlbex.S                   |  9 ++++
+>  8 files changed, 111 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+> index 59d5b2a179f6..43cb8aaf57a2 100644
+> --- a/arch/arc/Kconfig
+> +++ b/arch/arc/Kconfig
+> @@ -314,6 +314,10 @@ config ARC_HUGEPAGE_16M
+>  
+>  endchoice
+>  
+> +config PGTABLE_LEVELS
+> +	int "Number of Page table levels"
+> +	default 2
+> +
+>  config ARC_COMPACT_IRQ_LEVELS
+>  	depends on ISA_ARCOMPACT
+>  	bool "Setup Timer IRQ as high Priority"
+> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+> index 313e6f543d2d..df3cc154ae4a 100644
+> --- a/arch/arc/include/asm/page.h
+> +++ b/arch/arc/include/asm/page.h
+> @@ -41,6 +41,17 @@ typedef struct {
+>  #define pgd_val(x)	((x).pgd)
+>  #define __pgd(x)	((pgd_t) { (x) })
+>  
+> +#if CONFIG_PGTABLE_LEVELS > 2
+> +
+> +typedef struct {
+> +	unsigned long pmd;
+> +} pmd_t;
+> +
+> +#define pmd_val(x)	((x).pmd)
+> +#define __pmd(x)	((pmd_t) { (x) })
+> +
+> +#endif
+> +
+>  typedef struct {
+>  #ifdef CONFIG_ARC_HAS_PAE40
+>  	unsigned long long pte;
+> diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgalloc.h
+> index 0cf73431eb89..01c2d84418ed 100644
+> --- a/arch/arc/include/asm/pgalloc.h
+> +++ b/arch/arc/include/asm/pgalloc.h
+> @@ -86,6 +86,28 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+>  }
+>  
+>  
+> +#if CONFIG_PGTABLE_LEVELS > 2
+> +
+> +static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
+> +{
+> +	set_pud(pudp, __pud((unsigned long)pmdp));
+> +}
+> +
+> +static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
+> +{
+> +	return (pmd_t *)__get_free_page(
+> +		GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO);
+> +}
+> +
+> +static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+> +{
+> +	free_page((unsigned long)pmd);
+> +}
+> +
+> +#define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
+> +
+> +#endif
+> +
+>  /*
+>   * With software-only page-tables, addr-split for traversal is tweakable and
+>   * that directly governs how big tables would be at each level.
+> diff --git a/arch/arc/include/asm/pgtable-levels.h b/arch/arc/include/asm/pgtable-levels.h
+> index 8ece75335bb5..1c2f022d4ad0 100644
+> --- a/arch/arc/include/asm/pgtable-levels.h
+> +++ b/arch/arc/include/asm/pgtable-levels.h
+> @@ -10,6 +10,8 @@
+>  #ifndef _ASM_ARC_PGTABLE_LEVELS_H
+>  #define _ASM_ARC_PGTABLE_LEVELS_H
+>  
+> +#if CONFIG_PGTABLE_LEVELS == 2
+> +
+>  /*
+>   * 2 level paging setup for software walked MMUv3 (ARC700) and MMUv4 (HS)
+>   *
+> @@ -37,16 +39,38 @@
+>  #define PGDIR_SHIFT		21
+>  #endif
+>  
+> -#define PGDIR_SIZE		BIT(PGDIR_SHIFT)	/* vaddr span, not PDG sz */
+> -#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
+> +#else
+> +
+> +/*
+> + * A default 3 level paging testing setup in software walked MMU
+> + *   MMUv4 (8K page): <4> : <7> : <8> : <13>
+> + */
+> +#define PGDIR_SHIFT		28
+> +#if CONFIG_PGTABLE_LEVELS > 2
+> +#define PMD_SHIFT		21
+> +#endif
+> +
+> +#endif
+>  
+> +#define PGDIR_SIZE		BIT(PGDIR_SHIFT)
+> +#define PGDIR_MASK		(~(PGDIR_SIZE - 1))
+>  #define PTRS_PER_PGD		BIT(32 - PGDIR_SHIFT)
+>  
+> -#define PTRS_PER_PTE		BIT(PGDIR_SHIFT - PAGE_SHIFT)
+> +#if CONFIG_PGTABLE_LEVELS > 2
+> +#define PMD_SIZE		BIT(PMD_SHIFT)
+> +#define PMD_MASK		(~(PMD_SIZE - 1))
+> +#define PTRS_PER_PMD		BIT(PGDIR_SHIFT - PMD_SHIFT)
 
-Going to sleep when locks are contended can be quite inefficient when the
-contention time is short and the lock owner is running on a different CPU.
+Maybe move these into the previous #if CONFIG_PGTABLE_LEVELS > 2?
 
-The MCS mechanism cannot be used because MCS is strictly FIFO ordered while
-for rtmutex based locks the waiter ordering is priority based.
+> +#endif
+> +
+> +#define PTRS_PER_PTE		BIT(PMD_SHIFT - PAGE_SHIFT)
+>  
+>  #ifndef __ASSEMBLY__
+>  
+> +#if CONFIG_PGTABLE_LEVELS > 2
+> +#include <asm-generic/pgtable-nopud.h>
+> +#else
+>  #include <asm-generic/pgtable-nopmd.h>
+> +#endif
+>  
+>  /*
+>   * 1st level paging: pgd
+> @@ -57,9 +81,35 @@
+>  #define pgd_ERROR(e) \
+>  	pr_crit("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
+>  
+> +#if CONFIG_PGTABLE_LEVELS > 2
+> +
+> +/* In 3 level paging, pud_* macros work on pgd */
+> +#define pud_none(x)		(!pud_val(x))
+> +#define pud_bad(x)		((pud_val(x) & ~PAGE_MASK))
+> +#define pud_present(x)		(pud_val(x))
+> +#define pud_clear(xp)		do { pud_val(*(xp)) = 0; } while (0)
+> +#define pud_pgtable(pud)	((pmd_t *)(pud_val(pud) & PAGE_MASK))
+> +#define pud_page(pud)		virt_to_page(pud_pgtable(pud))
+> +#define set_pud(pudp, pud)	(*(pudp) = pud)
+> +
+> +/*
+> + * 2nd level paging: pmd
+> + */
+> +#define pmd_ERROR(e) \
+> +	pr_crit("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
+> +
+> +#define pmd_pfn(pmd)		((pmd_val(pmd) & PMD_MASK) >> PAGE_SHIFT)
+> +#define pfn_pmd(pfn,prot)	__pmd(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
+> +#define mk_pmd(page,prot)	pfn_pmd(page_to_pfn(page),prot)
+> +
+> +#endif
+> +
+>  /*
+> - * Due to the strange way generic pgtable level folding works, in a 2 level
+> - * setup, pmd_val() returns pgd, so these pmd_* macros actually work on pgd
+> + * Due to the strange way generic pgtable level folding works, the pmd_* macros
+> + *  - are valid even for 2 levels (which supposedly only has pgd - pte)
+> + *  - behave differently for 2 vs. 3
+> + * In 2  level paging        (pgd -> pte), pmd_* macros work on pgd
+> + * In 3+ level paging (pgd -> pmd -> pte), pmd_* macros work on pmd
+>   */
+>  #define pmd_none(x)		(!pmd_val(x))
+>  #define pmd_bad(x)		((pmd_val(x) & ~PAGE_MASK))
+> @@ -70,6 +120,9 @@
+>  #define set_pmd(pmdp, pmd)	(*(pmdp) = pmd)
+>  #define pmd_pgtable(pmd)	((pgtable_t) pmd_page_vaddr(pmd))
+>  
+> +/*
+> + * 3rd level paging: pte
+> + */
+>  #define pte_ERROR(e) \
+>  	pr_crit("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
+>  
+> diff --git a/arch/arc/include/asm/processor.h b/arch/arc/include/asm/processor.h
+> index e4031ecd3c8c..f28afcf5c6d1 100644
+> --- a/arch/arc/include/asm/processor.h
+> +++ b/arch/arc/include/asm/processor.h
+> @@ -93,7 +93,7 @@ extern unsigned int get_wchan(struct task_struct *p);
+>  #define VMALLOC_START	(PAGE_OFFSET - (CONFIG_ARC_KVADDR_SIZE << 20))
+>  
+>  /* 1 PGDIR_SIZE each for fixmap/pkmap, 2 PGDIR_SIZE gutter (see asm/highmem.h) */
+> -#define VMALLOC_SIZE	((CONFIG_ARC_KVADDR_SIZE << 20) - PGDIR_SIZE * 4)
+> +#define VMALLOC_SIZE	((CONFIG_ARC_KVADDR_SIZE << 20) - PMD_SIZE * 4)
+>  
+>  #define VMALLOC_END	(VMALLOC_START + VMALLOC_SIZE)
+>  
+> diff --git a/arch/arc/mm/fault.c b/arch/arc/mm/fault.c
+> index 41f154320964..8da2f0ad8c69 100644
+> --- a/arch/arc/mm/fault.c
+> +++ b/arch/arc/mm/fault.c
+> @@ -39,6 +39,8 @@ noinline static int handle_kernel_vaddr_fault(unsigned long address)
+>  	if (!pgd_present(*pgd_k))
+>  		goto bad_area;
+>  
+> +	set_pgd(pgd, *pgd_k);
+> +
+>  	p4d = p4d_offset(pgd, address);
+>  	p4d_k = p4d_offset(pgd_k, address);
+>  	if (!p4d_present(*p4d_k))
+> @@ -49,6 +51,8 @@ noinline static int handle_kernel_vaddr_fault(unsigned long address)
+>  	if (!pud_present(*pud_k))
+>  		goto bad_area;
+>  
+> +	set_pud(pud, *pud_k);
+> +
+>  	pmd = pmd_offset(pud, address);
+>  	pmd_k = pmd_offset(pud_k, address);
+>  	if (!pmd_present(*pmd_k))
+> diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
+> index 34f16e0b41e6..77da83569b36 100644
+> --- a/arch/arc/mm/tlb.c
+> +++ b/arch/arc/mm/tlb.c
+> @@ -658,8 +658,8 @@ char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len)
+>  			  IS_USED_CFG(CONFIG_TRANSPARENT_HUGEPAGE));
+>  
+>  	n += scnprintf(buf + n, len - n,
+> -		      "MMU [v%x]\t: %dk PAGE, %sJTLB %d (%dx%d), uDTLB %d, uITLB %d%s%s\n",
+> -		       p_mmu->ver, p_mmu->pg_sz_k, super_pg,
+> +		      "MMU [v%x]\t: %dk PAGE, %s, swalk %d lvl, JTLB %d (%dx%d), uDTLB %d, uITLB %d%s%s\n",
+> +		       p_mmu->ver, p_mmu->pg_sz_k, super_pg,  CONFIG_PGTABLE_LEVELS,
+>  		       p_mmu->sets * p_mmu->ways, p_mmu->sets, p_mmu->ways,
+>  		       p_mmu->u_dtlb, p_mmu->u_itlb,
+>  		       IS_AVAIL2(p_mmu->pae, ", PAE40 ", CONFIG_ARC_HAS_PAE40));
+> diff --git a/arch/arc/mm/tlbex.S b/arch/arc/mm/tlbex.S
+> index d08bd09a0afc..5f6bfdfda1be 100644
+> --- a/arch/arc/mm/tlbex.S
+> +++ b/arch/arc/mm/tlbex.S
+> @@ -173,6 +173,15 @@ ex_saved_reg1:
+>  	tst	r3, r3
+>  	bz	do_slow_path_pf         ; if no Page Table, do page fault
+>  
+> +#if CONFIG_PGTABLE_LEVELS > 2
+> +	lsr     r0, r2, PMD_SHIFT	; Bits for indexing into PMD
+> +	and	r0, r0, (PTRS_PER_PMD - 1)
+> +	ld.as	r1, [r3, r0]		; PMD entry
+> +	tst	r1, r1
+> +	bz	do_slow_path_pf
+> +	mov	r3, r1
+> +#endif
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	and.f	0, r3, _PAGE_HW_SZ	; Is this Huge PMD (thp)
+>  	add2.nz	r1, r1, r0
+> -- 
+> 2.25.1
+> 
 
-Provide a simple adaptive spinwait mechanism which currently restricts the
-spinning to the top priority waiter.
-
-[ tglx: Provide a contemporary changelog, extended it to all rtmutex based
-  	locks and updated it to match the other spin on owner implementations ]
-
-Originally-by: Gregory Haskins <ghaskins@novell.com>
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V4: Rename to rtmutex_spin_on_owner() (PeterZ)
-    Check for top waiter changes and rewrite comment (Davidlohr)
-V3: Fold the extension for regular sleeping locks and add the missing spin
-    wait checks (PeterZ)
----
- kernel/locking/rtmutex.c |   67 +++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 2 deletions(-)
----
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -8,6 +8,11 @@
-  *  Copyright (C) 2005-2006 Timesys Corp., Thomas Gleixner <tglx@timesys.com>
-  *  Copyright (C) 2005 Kihon Technologies Inc., Steven Rostedt
-  *  Copyright (C) 2006 Esben Nielsen
-+ * Adaptive Spinlocks:
-+ *  Copyright (C) 2008 Novell, Inc., Gregory Haskins, Sven Dietrich,
-+ *				     and Peter Morreale,
-+ * Adaptive Spinlocks simplification:
-+ *  Copyright (C) 2008 Red Hat, Inc., Steven Rostedt <srostedt@redhat.com>
-  *
-  *  See Documentation/locking/rt-mutex-design.rst for details.
-  */
-@@ -1297,6 +1302,52 @@ static __always_inline void __rt_mutex_u
- 	rt_mutex_slowunlock(lock);
- }
- 
-+#ifdef CONFIG_SMP
-+static bool rtmutex_spin_on_owner(struct rt_mutex_base *lock,
-+				  struct rt_mutex_waiter *waiter,
-+				  struct task_struct *owner)
-+{
-+	bool res = true;
-+
-+	rcu_read_lock();
-+	for (;;) {
-+		/* If owner changed, trylock again. */
-+		if (owner != rt_mutex_owner(lock))
-+			break;
-+		/*
-+		 * Ensure that @owner is dereferenced after checking that
-+		 * the lock owner still matches @owner. If that fails,
-+		 * @owner might point to freed memory. If it still matches,
-+		 * the rcu_read_lock() ensures the memory stays valid.
-+		 */
-+		barrier();
-+		/*
-+		 * Stop spinning when:
-+		 *  - the lock owner has been scheduled out
-+		 *  - current is not longer the top waiter
-+		 *  - current is requested to reschedule (redundant
-+		 *    for CONFIG_PREEMPT_RCU=y)
-+		 *  - the VCPU on which owner runs is preempted
-+		 */
-+		if (!owner->on_cpu || waiter != rt_mutex_top_waiter(lock) ||
-+		    need_resched() || vcpu_is_preempted(task_cpu(owner))) {
-+			res = false;
-+			break;
-+		}
-+		cpu_relax();
-+	}
-+	rcu_read_unlock();
-+	return res;
-+}
-+#else
-+static bool rtmutex_spin_on_owner(struct rt_mutex_base *lock,
-+				  struct rt_mutex_waiter *waiter,
-+				  struct task_struct *owner)
-+{
-+	return false;
-+}
-+#endif
-+
- #ifdef RT_MUTEX_BUILD_MUTEX
- /*
-  * Functions required for:
-@@ -1381,6 +1432,7 @@ static int __sched rt_mutex_slowlock_blo
- 					   struct rt_mutex_waiter *waiter)
- {
- 	struct rt_mutex *rtm = container_of(lock, struct rt_mutex, rtmutex);
-+	struct task_struct *owner;
- 	int ret = 0;
- 
- 	for (;;) {
-@@ -1403,9 +1455,14 @@ static int __sched rt_mutex_slowlock_blo
- 				break;
- 		}
- 
-+		if (waiter == rt_mutex_top_waiter(lock))
-+			owner = rt_mutex_owner(lock);
-+		else
-+			owner = NULL;
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		schedule();
-+		if (!owner || !rtmutex_spin_on_owner(lock, waiter, owner))
-+			schedule();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
- 		set_current_state(state);
-@@ -1561,6 +1618,7 @@ static __always_inline int __rt_mutex_lo
- static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
- {
- 	struct rt_mutex_waiter waiter;
-+	struct task_struct *owner;
- 
- 	lockdep_assert_held(&lock->wait_lock);
- 
-@@ -1579,9 +1637,14 @@ static void __sched rtlock_slowlock_lock
- 		if (try_to_take_rt_mutex(lock, current, &waiter))
- 			break;
- 
-+		if (&waiter == rt_mutex_top_waiter(lock))
-+			owner = rt_mutex_owner(lock);
-+		else
-+			owner = NULL;
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		schedule_rtlock();
-+		if (!owner || !rtmutex_spin_on_owner(lock, &waiter, owner))
-+			schedule_rtlock();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
- 		set_current_state(TASK_RTLOCK_WAIT);
-
+-- 
+Sincerely yours,
+Mike.
