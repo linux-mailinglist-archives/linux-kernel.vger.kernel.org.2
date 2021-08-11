@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7B93E9423
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0343E942A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhHKO7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:59:51 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60894 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232601AbhHKO7t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:59:49 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 82E2F221BF;
-        Wed, 11 Aug 2021 14:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628693964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CSK9Ueh4HkzV8UK8QM+3oyCtIN6KFd4kqVEY7guN9Ag=;
-        b=AmIC5rOloroA5xeSCJ4XmkCRIKHcGPFO7G5JESvhEPj7FL1ZlDCd/R26VK7OyMa6Yqt11i
-        zxEjE0uTxsP14bt3MlHcES2c9ulRDeNSsxETvXzXiJk9OlEminGvpf//1OCVLC2ybFz7h/
-        zh/IuqwN0i626hyEa+aB2nVN6axPBtE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628693964;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CSK9Ueh4HkzV8UK8QM+3oyCtIN6KFd4kqVEY7guN9Ag=;
-        b=1zB6XBHofM7Y5DdNBUwnv+AN/ik3lw5V9M3uNH0J+4y70HfQrKSfagcgsVHrBNudp5byQs
-        BmHLkLoGaWalbzBw==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 7462AA3CDA;
-        Wed, 11 Aug 2021 14:59:24 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4A2431E62D5; Wed, 11 Aug 2021 16:59:21 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 16:59:21 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>
-Cc:     jack@suse.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fix array index out of bound exception
-Message-ID: <20210811145921.GG14725@quack2.suse.cz>
-References: <20210811131150.20282-1-asha.16@itfac.mrt.ac.lk>
+        id S232916AbhHKPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:00:32 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45304 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232855AbhHKPA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 11:00:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=7bQV05XnMWhdDuuxH7FMFpb9864KxRDn5zp0OhtPXvw=; b=kH
+        zTplGIEv9C7x/ovp/yn1HMn6dH3E1cwlN77Me/7Y3zrALRYHqiqHk3jNxgY99o/p57/VUj47jh0Wq
+        LMy8isa1wTtGmuSRh367mEsjqm5h6x4IcoaN7jyIiGcYUdO51ljenhlUUvAi2Mlpc3kPH/tYZs2B7
+        ham3wL0W8myUpVg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mDphw-00H8Ni-3h; Wed, 11 Aug 2021 16:59:52 +0200
+Date:   Wed, 11 Aug 2021 16:59:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Marek Vasut <marex@denx.de>, David Jander <david@protonic.nl>,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/1] net: phy: nxp-tja11xx: log critical
+ health state
+Message-ID: <YRPl6NVyxU9q98AS@lunn.ch>
+References: <20210811063712.19695-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210811131150.20282-1-asha.16@itfac.mrt.ac.lk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210811063712.19695-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 11-08-21 18:41:50, F.A. SULAIMAN wrote:
-> From: "F.A.Sulaiman" <asha.16@itfac.mrt.ac.lk>
+On Wed, Aug 11, 2021 at 08:37:12AM +0200, Oleksij Rempel wrote:
+> TJA1102 provides interrupt notification for the critical health states
+> like overtemperature and undervoltage.
 > 
-> Array index out of bound exception occurs when the 'part' variable is
-> passed into the freeSpactTable array, this can be avoided using pointer
-> arithmetic. 
+> The overtemperature bit is set if package temperature is beyond 155C°.
+> This functionality was tested by heating the package up to 200C°
 > 
-> Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
+> The undervoltage bit is set if supply voltage drops beyond some critical
+> threshold. Currently not tested.
+> 
+> In a typical use case, both of this events should be logged and stored
+> (or send to some remote system) for further investigations.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-I'm sorry but this doesn't even compile and the change is obviously
-bogus...
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-								Honza
-
-> ---
->  fs/udf/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/udf/super.c b/fs/udf/super.c
-> index 2f83c1204e20..d330c7162c3a 100644
-> --- a/fs/udf/super.c
-> +++ b/fs/udf/super.c
-> @@ -2522,7 +2522,7 @@ static unsigned int udf_count_free(struct super_block *sb)
->  			sbi->s_lvid_bh->b_data;
->  		if (le32_to_cpu(lvid->numOfPartitions) > part) {
->  			accum = le32_to_cpu(
-> -					lvid->freeSpaceTable[part]);
-> +					(lvid->freeSpaceTable + part));
->  			if (accum == 0xFFFFFFFF)
->  				accum = 0;
->  		}
-> -- 
-> 2.17.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+    Andrew
