@@ -2,99 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C0C3E8A26
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5F63E8A2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhHKGR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 02:17:59 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:29083 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234642AbhHKGR6 (ORCPT
+        id S234756AbhHKGWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 02:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234575AbhHKGWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 02:17:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628662655; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FQZkSZe1h4Zy65xkKu3P5x1Lb3t+16QZpUVBCSFj4hs=;
- b=m5znBkNBfNlp9xOYBCTj/aOWjgSdmD1LRALT2veVH2f7MQEjKvrS3ulHaByuvzjzIf+DDRom
- Fn4cpaiy8j2Pm7gqLkQycimAJDRVLv/Op4jU+5brtH9CEfU1ipOHNSNq3xAOxJpO1T9lGI1A
- iQXa5vU1YPkKLOjPQMwx/kZcDyU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 61136b73b14e7e2ecb65e2a9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 06:17:23
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 95D7CC4338A; Wed, 11 Aug 2021 06:17:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93975C433D3;
-        Wed, 11 Aug 2021 06:17:22 +0000 (UTC)
+        Wed, 11 Aug 2021 02:22:01 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD28C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 23:21:38 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so7983660pjn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 23:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K9I/88TeAnuctbwS5Yv4ovCvKiz2sqaoKEvkjlujzRQ=;
+        b=UdbF+/YVy2lYJ99ttOf6uJGSTzTZ8HMlI5KV5SQjQRwsmLgo0wXuiu9haHhlfw+dff
+         vzPcZLoCR6Y5r2boSnEcHBTEtqIEbyGeCs/FGb+b6DK5/e5STwTGQeuuTWFkHTPayTce
+         sdWmZ+f5zYGpwLSpr/OpP78O6n6KVfkm6AyphLRIvQi8jlFoByuerYqfyo3kX5uL3za6
+         EzXoImmJwtNqf/YU0Pn6Go09R2VAUj6nLUS6sFelveUW8LBr6Bwq2V7kDWoRYtSQi8UK
+         CTTwPoEvM0/wfC05SKIgWaLhFJUddwx17DF/Z8xREMjW7ls/y0GtBQyVystc5siMjyhM
+         Nmzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=K9I/88TeAnuctbwS5Yv4ovCvKiz2sqaoKEvkjlujzRQ=;
+        b=RF2L7Zu4eZz7BlTaal2eNgcIaTvhaBha+9CQZa/siFOk4uPLhuQdEqDP3Vo3s3Aldf
+         wzXY1DfoOIPv0Ch5QZeH8BfmL4eIQ1Mv3F7kvODATlQqGqKa5TpIKwseUWLiz/VwB8RQ
+         0pYf0wfz8kUpdtJEC+rZP3ylRx3SXwFqvekmzTITbTqkblcJQNu9VaFGRI9YTRBAB644
+         RmMDRspNJXvC/eX5IYaWjYEAKW8zDQy6rW+bcWRpbz/q/2IWLlTGlIgfNQ8Kk842npOw
+         ZUuhxVbAY3LCzyjQ+QWz/gwvzftmwLK4/LeUh0SYUnI//+f32a9kD+ZY7Af42nWDRR7s
+         /Tlg==
+X-Gm-Message-State: AOAM5337bBuLvHrt5nPfqyj7BON0LoJxw/4bCefNRN4qGyhgVBecJwj1
+        +401l5I9VkiuKG0Tvh1lCwM=
+X-Google-Smtp-Source: ABdhPJxtuCQYDbKsbcOYEhIS6dnSokiT7b253Bxvf8e3eMpcV13EY0AAcPE2xr9qhVKvC4TtC++OuA==
+X-Received: by 2002:a17:90a:a63:: with SMTP id o90mr19266814pjo.167.1628662897959;
+        Tue, 10 Aug 2021 23:21:37 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:e240:a1a:ce43:c895:6a75])
+        by smtp.gmail.com with ESMTPSA id g13sm19757624pfj.128.2021.08.10.23.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Aug 2021 23:21:37 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, gmx@google.com
+Subject: [RFC] perf/core: Add an ioctl to get a number of lost samples
+Date:   Tue, 10 Aug 2021 23:21:35 -0700
+Message-Id: <20210811062135.1332927-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Aug 2021 11:47:22 +0530
-From:   skakit@codeaurora.org
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     bhupesh.sharma@linaro.org, Das Srinagesh <gurus@codeaurora.org>,
-        kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [RESEND PATCH V7 0/3] Convert qcom pmic gpio bindings to YAML
-In-Reply-To: <1627910464-19363-1-git-send-email-skakit@codeaurora.org>
-References: <1627910464-19363-1-git-send-email-skakit@codeaurora.org>
-Message-ID: <182fc9a13b78d114bd209f9658274f0c@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Sometimes we want to know an accurate number of samples even if it's
+lost.  Currenlty PERF_RECORD_LOST is generated for a ring-buffer which
+might be shared with other events.  So it's hard to know per-event
+lost count.
 
-Can you pls merge these patches? I have rebased them on linux-next.
+Add event->lost_samples field and PERF_EVENT_IOC_LOST_SAMPLES to
+retrieve it from userspace.
 
-Thanks,
-Satya Priya
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ include/linux/perf_event.h      | 2 ++
+ include/uapi/linux/perf_event.h | 1 +
+ kernel/events/core.c            | 9 +++++++++
+ kernel/events/ring_buffer.c     | 5 ++++-
+ 4 files changed, 16 insertions(+), 1 deletion(-)
 
-On 2021-08-02 18:51, satya priya wrote:
-> Hi,
-> 
->  I've rebased this series on linux-next. Patch [1/3] of this series is
->  already applied but I'm resending it just to avoid Bot errors.
-> 
-> Thanks,
-> Satya Priya
-> 
-> satya priya (3):
->   dt-bindings: mfd: pm8008: Add gpio-ranges and spmi-gpio compatible
->   dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom pmic gpio bindings
->     to YAML
->   dt-bindings: pinctrl: qcom-pmic-gpio: Remove the interrupts property
-> 
->  .../devicetree/bindings/mfd/qcom,pm8008.yaml       |  13 +-
->  .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 290 
-> ---------------------
->  .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 239 
-> +++++++++++++++++
->  3 files changed, 249 insertions(+), 293 deletions(-)
->  delete mode 100644 
-> Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
->  create mode 100644
-> Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index f5a6a2f069ed..44d72079c77a 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -756,6 +756,8 @@ struct perf_event {
+ 	struct pid_namespace		*ns;
+ 	u64				id;
+ 
++	atomic_t			lost_samples;
++
+ 	u64				(*clock)(void);
+ 	perf_overflow_handler_t		overflow_handler;
+ 	void				*overflow_handler_context;
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index bf8143505c49..24397799127d 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -505,6 +505,7 @@ struct perf_event_query_bpf {
+ #define PERF_EVENT_IOC_PAUSE_OUTPUT		_IOW('$', 9, __u32)
+ #define PERF_EVENT_IOC_QUERY_BPF		_IOWR('$', 10, struct perf_event_query_bpf *)
+ #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES	_IOW('$', 11, struct perf_event_attr *)
++#define PERF_EVENT_IOC_LOST_SAMPLES		_IOR('$', 12, __u64 *)
+ 
+ enum perf_event_ioc_flags {
+ 	PERF_IOC_FLAG_GROUP		= 1U << 0,
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 0e125ae2fa92..a4d6736b6594 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -5664,6 +5664,15 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
+ 
+ 		return perf_event_modify_attr(event,  &new_attr);
+ 	}
++
++	case PERF_EVENT_IOC_LOST_SAMPLES: {
++		u64 lost = atomic_read(&event->lost_samples);
++
++		if (copy_to_user((void __user *)arg, &lost, sizeof(lost)))
++			return -EFAULT;
++		return 0;
++	}
++
+ 	default:
+ 		return -ENOTTY;
+ 	}
+diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+index 52868716ec35..06d7dacb05da 100644
+--- a/kernel/events/ring_buffer.c
++++ b/kernel/events/ring_buffer.c
+@@ -172,8 +172,10 @@ __perf_output_begin(struct perf_output_handle *handle,
+ 		goto out;
+ 
+ 	if (unlikely(rb->paused)) {
+-		if (rb->nr_pages)
++		if (rb->nr_pages) {
+ 			local_inc(&rb->lost);
++			atomic_inc(&event->lost_samples);
++		}
+ 		goto out;
+ 	}
+ 
+@@ -254,6 +256,7 @@ __perf_output_begin(struct perf_output_handle *handle,
+ 
+ fail:
+ 	local_inc(&rb->lost);
++	atomic_inc(&event->lost_samples);
+ 	perf_output_put_handle(handle);
+ out:
+ 	rcu_read_unlock();
+-- 
+2.32.0.605.g8dce9f2422-goog
+
