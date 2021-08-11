@@ -2,241 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324153E9666
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E185C3E9669
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhHKRAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        id S229723AbhHKRDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhHKRAy (ORCPT
+        with ESMTP id S229484AbhHKRDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:00:54 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A901C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:00:30 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id i6so4800398edu.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:00:30 -0700 (PDT)
+        Wed, 11 Aug 2021 13:03:31 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E80C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:03:07 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id q16so2168639ioj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 10:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1lyCX4uoOl9TkSg5+9sCmiEFCTaxYNyI5pWwpGNyYL4=;
-        b=ZoH870kdqfn5xTB/o0o45+xfGDzwBVtPUKmIYP5/nqN5EfQygWuAamKLvD02jOrKz2
-         Jponfgm/8BPNq+3+hCOlxY/llaDl1F+uRsDlVCsrAvcRjHXQHpu1E+3yingcZOTOoTLb
-         rCs3HZfLDpPnT560Q0xH0/nb2KEAcj+nSY/c8l4YV/BMeJeYSZeGo/mHH9YBUI7KpkCN
-         kiAWLCbHSiQjv4A2Axsl/eA2I5GDeM5I/mOahiuzOnTShL5MfxN+ockc+cohlmQGOIVr
-         atVZ80YRq8vt+4NtrS80gS6Me+fSxjdOEPItxQv9fRT2GxvAacaZ/XvkYb+vg8PvK/fF
-         6FQg==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=+yQZonj2UhHe2aQHGqlrhGof+s13QyCXUrF1bcCnKOc=;
+        b=SAZy7Gu7yGMbnl/YNgWcSM2cniQAfdb2oQc7duHrNZSywviBLXPHteOJMoDGbbB/hL
+         ExpolCQBz5dpMhZo8JiMbOFEfNRiVsWygeDC9xwYrpnnnKG3fpGYBQIQwMVS4YyQEgJL
+         tRm0tXhzyXbM027oDI3CSbNwJKaXKznd30pZfhPrEoSTIiagO81iea/ynZHePNSUUpQM
+         ma8crM7My2o7y/EkHIcaHWxKoiCkmD2+0vcBKn988W9/IUBaThYl0hrAjwAo7zrhKBn5
+         zO5Dy4bftRSVP0kgx5Su/jRTXdzloK9c4jBLy69I9P/zDhgsQ7ip8odL9hscGIyAmzZr
+         0HUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1lyCX4uoOl9TkSg5+9sCmiEFCTaxYNyI5pWwpGNyYL4=;
-        b=OA0o7JOBJ93NQS98SvEH83Z0twuYbxRdhMDzgQKwEStDBQprmzhEGI4Ci/FOQYno4h
-         hDOr3EPcW1hLWw1PGY/Z3g2CGmwDIYUAzI90SUdoa54rWfoMF2x7bt1UHusr/AQNkEue
-         /wac10nvlAREzjT56qB8y6e7XoDTIfaFLjfxlULkSzXjnhQtrDaO6zB1WVFQYuEs3pVF
-         fej6T3YQLaqdSbYNfQzLy8Xxnkxe50P23p9efZaJ/MXCQikb3Dk0CD+81cpgKnO1rf3D
-         naiGC/u6mMQOOQDthqtDWjSZyRDilQctt1z3ngOkdlVbqBcFYIpeAqm3sIpIRUBGKbVL
-         xFiQ==
-X-Gm-Message-State: AOAM53060pOppC36T6wSLYuWfkqr72XyRM+P+GBGQQ3vyWCOlmToc4KM
-        ZnWJaRh2haqstFRqTSA6cD6m0xgHTVlz4uU+4RSGFQ==
-X-Google-Smtp-Source: ABdhPJyBsCDIe3i+LJ9SYJAFhB7iHMEvS/Hk+ZJppnfICoZ4n9Ki7t7WaLhvOBaBga4Hm+7JTXy9f8AHcVdhlXYePg0=
-X-Received: by 2002:a05:6402:2153:: with SMTP id bq19mr1857977edb.239.1628701228710;
- Wed, 11 Aug 2021 10:00:28 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=+yQZonj2UhHe2aQHGqlrhGof+s13QyCXUrF1bcCnKOc=;
+        b=fwnJDQfsYGLSmGmYEwdcNztxt3EviwdtPPAuu5JdRccJNIhkEvu5PSosWCAano/Uu9
+         89xxWJz3iBiYdiQUJE0wnPkGjPNPLAiH/rqSJCkl/DGnszxinJgS1O69+7AGv4zwthbq
+         1g4M+HM0Zgbyf7sb0xL8m3P92/cmwKfk6uJUvTu/ZjJ9DcAjRWiHus2mLhpatUK3GYIP
+         j1XeSHYDMjuKarz9WilO65+5OpDHcb42mm1jqoEKTIqremwd9kGGRiUJGUR7+KwKId3q
+         5JqJRSwO7NlzQMjRCqp8hzBFtqN99MueofokLRseVOn97OZrDfw6Z3osnSs5RVTtmyfV
+         da+w==
+X-Gm-Message-State: AOAM530rDZTSY57a89p/h4AzFr8xR6lE3otNJVobmqW0GVwIN9T/8sBO
+        m/UilMm6DSsT845dETWL0GkVkWvlalKPojT1lrQ=
+X-Google-Smtp-Source: ABdhPJz3Q9einJ2gTY7eo4/IpZ4BF8Rn+PDnooLcHkoVXMYq7UM80umEmfU0fB2YjmKadQbCSXeb+228/yNWFUm2BdY=
+X-Received: by 2002:a05:6638:37a9:: with SMTP id w41mr19150520jal.142.1628701386613;
+ Wed, 11 Aug 2021 10:03:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210810172955.660225700@linuxfoundation.org>
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 11 Aug 2021 22:30:17 +0530
-Message-ID: <CA+G9fYt6Uvh+YcnhiwRHLix8Like3gUMzhbi8WWvJa-Rmx=ifg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/135] 5.10.58-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+Received: by 2002:ac0:db4e:0:0:0:0:0 with HTTP; Wed, 11 Aug 2021 10:03:06
+ -0700 (PDT)
+Reply-To: bartholomieuakakpoballbmb@gmail.com
+From:   BARTHOLOMIEU AKAKPO <itrutb@gmail.com>
+Date:   Wed, 11 Aug 2021 18:03:06 +0100
+Message-ID: <CA+M=+Uy4=d8QaCLSBhCPhVN=+dPJSuhpNNdX6SEDbOosk+6HqA@mail.gmail.com>
+Subject: I am Bartholomieu
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 at 23:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.58 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.58-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.10.58-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: 252d84386e003502ea789f777bda459363174184
-* git describe: v5.10.57-136-g252d84386e00
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.57-136-g252d84386e00
-
-## No regressions (compared to v5.10.57-126-gb04ed4b2e724)
-
-
-## No fixes (compared to v5.10.57-126-gb04ed4b2e724)
-
-## Test result summary
-total: 82063, pass: 67049, fail: 2170, skip: 11566, xfail: 1278
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* prep-tmp-disk
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Good day dear friend. My name is BARTHOLOMIEU AKAKPO; I'm the senior
+partner at BARTHOLOMIEU AKAKPO & Associate Law Firm based in Togo
+republic.
+I want us to claim the sum of (US$ 10,950,777.00) from the BTCI bank Lome Togo.
+You get 40% from the total amount. We work together and there will be
+success at the end. Reply for more details.
