@@ -2,55 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B423E8A32
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A06C3E8A3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234778AbhHKG1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 02:27:10 -0400
-Received: from verein.lst.de ([213.95.11.211]:39257 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234575AbhHKG1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 02:27:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id AE39F6736F; Wed, 11 Aug 2021 08:26:42 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 08:26:42 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>, hch@lst.de,
-        pali@kernel.org, linux-block@vger.kernel.org,
-        linux-leds@vger.kernel.org, axboe@kernel.dk, pavel@ucw.cz,
-        linux-kernel@vger.kernel.org, kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH v2 00/10] Add configurable block device LED triggers
-Message-ID: <20210811062642.GA3119@lst.de>
-References: <20210809033217.1113444-1-arequipeno@gmail.com> <20210809205633.4300bbea@thinkpad> <81c128a1-c1b8-0f1e-a77b-6704bade26c0@gmail.com> <20210810004331.0f0094a5@thinkpad> <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
+        id S234811AbhHKGfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 02:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234674AbhHKGfg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 02:35:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1978C061765;
+        Tue, 10 Aug 2021 23:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=X/9UKyHOryjlmUGIKGWy+RTCadBtP6oBKSG5ANMcSkQ=; b=pCFgJlYt2edG1XOl4oriihOBVC
+        lwMYAOaI31yWH3EzAA40GuhzgXiBVktn9F8/GoCyXmnuUFhNdERc1Xaoyg47ZckMXRDKU1BY9G/8L
+        y+xaoayK4hXZ0SKxNi1BJaAFtMlBEJ4u1PcxYS+HosSHOAh3lxqVt3x3g9LC6DxRszVaIDmVuoCAK
+        xRGqr+XU6lJ7yIUAobcGadwoNR+uggjv6pc8elArVdaz34mgWgfRNe1CwRriSba1BSr70EwjVROnJ
+        yTLFrFqsqRHjXy4I4eXO002WpfdO0GTb/UJ9BZKgUEOBI+R2lTzB4dmDURli1YVMwTOEcrzxB/OX9
+        3wE8LYmg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDhp6-00D4x8-4V; Wed, 11 Aug 2021 06:34:50 +0000
+Date:   Wed, 11 Aug 2021 07:34:44 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joe Perches <joe@perches.com>, socketcan@esd.eu,
+        Stefan M??tje <Stefan.Maetje@esd.eu>
+Subject: Re: [PATCH v3] mailmap: update email address of Matthias Fuchs and
+ Thomas K??rper
+Message-ID: <YRNvhNtdzUA2NZZX@infradead.org>
+References: <20210809175843.207864-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7b5f3509-5bcd-388b-8d3b-4ea95a9483ad@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210809175843.207864-1-mkl@pengutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 06:50:44PM -0500, Ian Pilcher wrote:
-> On 8/9/21 5:43 PM, Marek Behún wrote:
->> I confess that I am not very familiar with internal blkdev API.
->
-> It's mainly a matter of symbol visibility.  See this thread from a few
-> months ago:
->
->   https://www.spinics.net/lists/linux-leds/msg18244.html
->
-> Now ... my code currently lives in block/, so there isn't actually
-> anything technically preventing it from iterating through the block
-> devices.
->
-> The reactions to Enzo's patch (which you can see in that thread) make me
-> think that anything that iterates through all block devices is likely to
-> be rejected, but maybe I'm reading too much into it.
-
-I think the main issue with this series is that it adds a shitload of
-code and a hook in the absolute I/O fastpath for fricking blinkenlights.
-I don't think it is even worth wasting time on something this ridiculous.
+I do not think that this is proper use of .mailcap, which should
+redirect email to person from one address to another.  What you do
+is hijack mail to be sent to one person to a set of others.
