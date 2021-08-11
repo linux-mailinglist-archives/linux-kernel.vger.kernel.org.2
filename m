@@ -2,124 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A573E9056
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3210D3E905F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237521AbhHKMSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
+        id S237453AbhHKMTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbhHKMSV (ORCPT
+        with ESMTP id S237382AbhHKMTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:18:21 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0364C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:17:57 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id m17so448703ljp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:17:57 -0700 (PDT)
+        Wed, 11 Aug 2021 08:19:34 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D26C06179B
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:19:07 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id w20so5259617lfu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KQjb/FThXLfBl/otc3Znh0SZQ+j62VlqIHDeYo+IMZg=;
-        b=tpLq6HB2rX522yTr4THCUwY7joSNADf4vSrKKu61HhVFIllWBYhinsNhaggrONz8hM
-         tDLN86QYxoZIZfKrdxHMR2/59QaV86eynH52IIlKR274X1lcOprxx/+RBEbVTk7ygZIQ
-         ngjRQkm8RAfN4gMDLdy9NpLGwYCiZlywH2O3Is4x4Nr2NNdW3C8wtPIP/gFqTMTjlC51
-         MGNu85NbTSDHS/GTNLKH+63Mk6pnX3tmBlD/98aTh55zEWaB7g6hADOSHK84xiMsIjvh
-         243ls6P1nfk47fcRXZamgi5COT+S1zFrLX0Gldz8FVbrJ3YFL6Q4eJulvPy4NPi0X0Ej
-         9dOQ==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QRfjFOudnOiwA+M7/UAaVDTJpihSFBYjea6mHo6NSYA=;
+        b=FrdABWFOYFHYVQYvsn9eIFG1XXIqUnaFBCPEPrWXTbkImjcaYqnfbbDKJbjXTj8n2z
+         XKpeeMl+HDYMaw1njH7BCzSmXb2GWH1pBn4+E1w1Zkax9zqjTCMN0ceFLpN0oNSL7p4h
+         tTOYo06jVnb3EuSp9CAkw3RajLjCGRh5DcWWOVaUC3oCLa3fiXHjMHrKiPKxkbd9MHf4
+         XWiG9YDES/j+Q6K8AbBgatHhy3Ey7EF4Mw9l8egNLjOvPiIJBkLqlDJHfGJd1OD2IwY9
+         /Dj5oeYRUTA55X3eykWwXtvq+RdRhaXu8H17iGSYXfRtDXdJr3ACYPa147h4M5kexh1Q
+         1YFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KQjb/FThXLfBl/otc3Znh0SZQ+j62VlqIHDeYo+IMZg=;
-        b=iqAtj11WhJlTpDLvZIqb926pPH/Knb5Dxr1PWGfZitG16/+zr7LtTd3E6Ma/1cxv6j
-         ZgeYrN6Q3NxLPrnf1Xbs7rKgrWnzLV6TuwIkODgvHRH4yLEZzPVOp8B/BZtULDKzbDID
-         0tCEURCZmoEW1Lp26egy04iToqw0Aftunpx9xLzwuIzIPexuaa8wIe9Y5XMcjYoBw3Os
-         lFkcfGZMQW4jIAaK6jJi5m53C/Tmv6QMWVAQNzrmZT5Hx9Vqs1xVnD7q/JKToPlvodaN
-         2bYIqG/cKXlBGyrWmFevxNYLOyXJB3WX0XhD0e066yxaOBP6tO/jf1Mo3EGIbuKen0Fo
-         EExw==
-X-Gm-Message-State: AOAM5338l4L8RO+ZvEJlbHTPAN6ucNkeiDmIr50yCmxF5SlbIGmF8ady
-        8bCHTrbQhMt2S4CrPcQoYJO2P6qBNnW3xFGdKaDGkg==
-X-Google-Smtp-Source: ABdhPJykncSqm3nyxK3p72zHiH80OFKfNQHUKLJLnWJSQkukUssrqDDbMiWiEf8QJ4mkA7jhMhWxAvKH1ulwqn1rzAY=
-X-Received: by 2002:a05:651c:1318:: with SMTP id u24mr23139087lja.200.1628684276361;
- Wed, 11 Aug 2021 05:17:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QRfjFOudnOiwA+M7/UAaVDTJpihSFBYjea6mHo6NSYA=;
+        b=OHbfiXm8OYwNFVQY1q4kGPboAOjuHq/B2vlca7CUtLP3roKB/cIzKN1IUcZgmeH70M
+         heVaIJYrgrXdGvcNjh9OCS4jdScaDJHXZ34DGiP/LU7RKtdDpMUjsMVKln9C5GhYrvtm
+         GFpN9JUPdRLU2T5nKezAks7bfHZUL5LNs1w+KtapGjlk/5uc6y6z39S2RN0ZzrLopgjR
+         NSD2mhkoW4HrAVhjwzgMumxcqksZ2rnCQ10lPHYF18DKoFK+S4sZEAOBsMvxW9Ss3PwI
+         8A40DhH8R4+mnsPK1EhItuDrJ/pT6CaqpGkCvBuAIp4XPrqM6TKezRLnD313ScH0XZUT
+         xYmA==
+X-Gm-Message-State: AOAM531athbcn7OrTQC/F+zV3TmqWtMkoy2CgSdHqhiaDgG46dsacERQ
+        7isDK9iYCyEXpJc5MCHdBZq2mg==
+X-Google-Smtp-Source: ABdhPJwYqCmmrayYkwT8dKOh/tHUuUvcGTl6bQD02skpgV77PxIfPFHOo1k2HSgXk2Z2qwWhaj6ksA==
+X-Received: by 2002:ac2:50d8:: with SMTP id h24mr4762329lfm.631.1628684346244;
+        Wed, 11 Aug 2021 05:19:06 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id w7sm2337599lft.285.2021.08.11.05.19.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 05:19:05 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id A68EB102A2E; Wed, 11 Aug 2021 15:19:17 +0300 (+03)
+Date:   Wed, 11 Aug 2021 15:19:17 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Will Deacon <will@kernel.org>, Dave Young <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH 07/11] treewide: Replace the use of mem_encrypt_active()
+ with prot_guest_has()
+Message-ID: <20210811121917.ghxi7g4mctuybhbk@box.shutemov.name>
+References: <cover.1627424773.git.thomas.lendacky@amd.com>
+ <029791b24c6412f9427cfe6ec598156c64395964.1627424774.git.thomas.lendacky@amd.com>
+ <166f30d8-9abb-02de-70d8-6e97f44f85df@linux.intel.com>
+ <4b885c52-f70a-147e-86bd-c71a8f4ef564@amd.com>
 MIME-Version: 1.0
-References: <20210607123317.3242031-1-robert.marko@sartura.hr>
- <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org> <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
- <20210719225906.GA2769608@robh.at.kernel.org> <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
- <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
-In-Reply-To: <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 14:17:45 +0200
-Message-ID: <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Rob Herring <robh@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4b885c52-f70a-147e-86bd-c71a8f4ef564@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 9:23 PM Robert Marko <robert.marko@sartura.hr> wrote:
+On Tue, Aug 10, 2021 at 02:48:54PM -0500, Tom Lendacky wrote:
+> On 8/10/21 1:45 PM, Kuppuswamy, Sathyanarayanan wrote:
+> > 
+> > 
+> > On 7/27/21 3:26 PM, Tom Lendacky wrote:
+> >> diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+> >> index de01903c3735..cafed6456d45 100644
+> >> --- a/arch/x86/kernel/head64.c
+> >> +++ b/arch/x86/kernel/head64.c
+> >> @@ -19,7 +19,7 @@
+> >>   #include <linux/start_kernel.h>
+> >>   #include <linux/io.h>
+> >>   #include <linux/memblock.h>
+> >> -#include <linux/mem_encrypt.h>
+> >> +#include <linux/protected_guest.h>
+> >>   #include <linux/pgtable.h>
+> >>     #include <asm/processor.h>
+> >> @@ -285,7 +285,7 @@ unsigned long __head __startup_64(unsigned long
+> >> physaddr,
+> >>        * there is no need to zero it after changing the memory encryption
+> >>        * attribute.
+> >>        */
+> >> -    if (mem_encrypt_active()) {
+> >> +    if (prot_guest_has(PATTR_MEM_ENCRYPT)) {
+> >>           vaddr = (unsigned long)__start_bss_decrypted;
+> >>           vaddr_end = (unsigned long)__end_bss_decrypted;
+> > 
+> > 
+> > Since this change is specific to AMD, can you replace PATTR_MEM_ENCRYPT with
+> > prot_guest_has(PATTR_SME) || prot_guest_has(PATTR_SEV). It is not used in
+> > TDX.
+> 
+> This is a direct replacement for now.
 
-> The pins that this driver wants to expose are used for SFP-s only,
-> they are provided by the Lattice CPLD which also does other things.
->
-> Linux has a generic SFP driver which is used to manage these SFP
-> ports, but it only supports GPIO-s, it has no concept of anything else.
-> Since the driver is fully generic, I have no idea how could one extend it
-> to effectively handle these pins internally, especially since I have more
-> switches that use the CPLD for SFP-s as well, even for 48 ports and 192
-> pins for them.
+With current implementation of prot_guest_has() for TDX it breaks boot for
+me.
 
-Which file is this driver in so I can look?
+Looking at code agains, now I *think* the reason is accessing a global
+variable from __startup_64() inside TDX version of prot_guest_has().
 
-Maybe it is not a good idea to look for generic code just because
-it is convenient? I have had this problem before with GPIO, along
-the lines "lemme just do this dirty thing this one time because it
-is so convenient for me" (more or less) and the answer is still
-"no".
+__startup_64() is special. If you access any global variable you need to
+use fixup_pointer(). See comment before __startup_64().
 
-Can you either augment the driver to handle a regmap with bit indices
-instead or write a new similar driver for that or refactor it some other
-way?
+I'm not sure how you get away with accessing sme_me_mask directly from
+there. Any clues? Maybe just a luck and complier generates code just right
+for your case, I donno.
 
-It is not a simple solution to your problem, but it might be the right
-solution even if it means some more work.
+A separate point is that TDX version of prot_guest_has() relies on
+cpu_feature_enabled() which is not ready at this point.
 
-> GPIO regmap works perfectly for this as its generic enough to cover all of
-> these cases.
+I think __bss_decrypted fixup has to be done if sme_me_mask is non-zero.
+Or just do it uncoditionally because it's NOP for sme_me_mask == 0.
 
-Yeah but it might be the wrong thing to do even if it is simple
-to use and works.
+> I think the change you're requesting
+> should be done as part of the TDX support patches so it's clear why it is
+> being changed.
+> 
+> But, wouldn't TDX still need to do something with this shared/unencrypted
+> area, though? Or since it is shared, there's actually nothing you need to
+> do (the bss decrpyted section exists even if CONFIG_AMD_MEM_ENCRYPT is not
+> configured)?
 
-> CPLD also provides pins to test the port LED-s per color as well,
-> but I have chosen not to expose them so far.
+AFAICS, only kvmclock uses __bss_decrypted. We don't enable kvmclock in
+TDX at the moment. It may change in the future.
 
-Have you considered
-Documentation/devicetree/bindings/leds/register-bit-led.txt
-
-> > If it is a regmap in Linux then that is fine, just pass the regmap
-> > around inside the kernel, OK finished. But really that is an OS
-> > detail.
->
-> Yes, its regmap but I cant really pass it to the SFP driver as I don't have
-> special driver handling the SFP but rather the generic kernel one.
-> It only knows how to handle GPIO-s.
-
-Of course you have to program it. If I know which driver it
-is it is easier to provide architecture ideas.
-
-Yours,
-Linus Walleij
+-- 
+ Kirill A. Shutemov
