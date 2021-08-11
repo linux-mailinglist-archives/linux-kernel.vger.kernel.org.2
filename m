@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A213C3E9334
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFBF3E9335
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhHKOCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:02:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:51498 "EHLO foss.arm.com"
+        id S232266AbhHKODR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:03:17 -0400
+Received: from mga14.intel.com ([192.55.52.115]:44021 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhHKOCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:02:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE76C1063;
-        Wed, 11 Aug 2021 07:02:07 -0700 (PDT)
-Received: from e123427-lin.cambridge.arm.com (unknown [10.57.39.227])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B09CF3F718;
-        Wed, 11 Aug 2021 07:02:04 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 15:01:57 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
- acpi_os_map_iomem() cast
-Message-ID: <20210811140157.GA28658@e123427-lin.cambridge.arm.com>
-References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
- <20210802152359.12623-2-lorenzo.pieralisi@arm.com>
- <YRKtEDycefrZLB3X@infradead.org>
- <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
+        id S231799AbhHKODQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:03:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214859605"
+X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
+   d="scan'208";a="214859605"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:02:53 -0700
+X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
+   d="scan'208";a="516745657"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.213.159]) ([10.254.213.159])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:02:51 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <jroedel@suse.de>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v1 1/2] iommu/vt-d: Move intel_iommu_ops to header file
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
+ <3c7663db-5b1e-3e00-3ff1-381c7a107ac9@linux.intel.com>
+ <YQOyzka9VDJU3NhU@smile.fi.intel.com>
+ <17a2b3f2-747d-2798-7fea-5846eec0b1fe@linux.intel.com>
+ <YRPVfES0aTbfaHES@smile.fi.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <f0f98e37-2486-fe79-7950-0a117a59b303@linux.intel.com>
+Date:   Wed, 11 Aug 2021 22:02:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YRPVfES0aTbfaHES@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:40:28PM +0200, Ard Biesheuvel wrote:
-> On Tue, 10 Aug 2021 at 18:46, Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Mon, Aug 02, 2021 at 04:23:57PM +0100, Lorenzo Pieralisi wrote:
-> > > Add a __force attribute to the void* cast in acpi_os_map_iomem()
-> > > to prevent sparse warnings.
-> >
-> > Err, no.  These annotation are there for a reason and need to
-> > be propagated instead.  And independent of that a __force cast
-> > without a comment explaining it is a complete no-go.
+On 2021/8/11 21:49, Andy Shevchenko wrote:
+> On Fri, Jul 30, 2021 at 09:01:41PM +0800, Lu Baolu wrote:
+>> On 2021/7/30 16:05, Andy Shevchenko wrote:
+>>> On Fri, Jul 30, 2021 at 10:20:08AM +0800, Lu Baolu wrote:
+>>>> On 7/30/21 12:35 AM, Andy Shevchenko wrote:
+>>>>> Compiler is not happy about hidden declaration of intel_iommu_ops.
+>>>>>
+>>>>> .../drivers/iommu/intel/iommu.c:414:24: warning: symbol 'intel_iommu_ops' was not declared. Should it be static?
+>>>>>
+>>>>> Move declaration to header file to make compiler happy.
+>>>>
+>>>> Thanks for the cleanup. Sharing data structures between different files
+>>>> doesn't seem to be a good design. How about adding a helper so that the
+>>>> intel_iommu_ops could be a static one?
+>>>
+>>> Whatever suits the purpose.
+>>> Can you apply patch 2 of this series, please?
+>>>
+>>
+>> Yes, I will. Thanks!
 > 
-> The whole problem we are solving here is that ACPI, being based on
-> x86, conflates MMIO mappings with memory mappings, and has been using
-> the same underlying infrastructure for either. On arm64, this is not
-> sufficient, given that the semantics of uncached memory vs device are
-> different (the former permits unaligned accesses and clear cacheline
-> instructions, but the latter doesn't). A recent optimization applied
-> to memcpy() on arm64 (which now relies more on unaligned accesses for
-> performance) has uncovered an issue where firmware tables being mapped
-> non-cacheable by the ACPI core will end up using device mappings,
-> which causes memcpy() to choke on their contents.
+> Gentle reminder.
 > 
-> So propagating the annotation makes no sense, as we are creating a
-> memory mapping using the iomem primitive. I wouldn't object to a
-> comment being added, but I think the context should have been obvious
-> to anyone who had bothered to look at the entire series.
 
-I can add a comment and respin. Basically a __force attribute is
-added to ignore a sparse warning that's been ignored for aeons
-anyway - I will add the rationale above.
+Thanks. Normally I will queue the vt-d patches to Joerg in the rc6 week.
 
-drivers/acpi/osl.c:379:17: warning: cast removes address space '__iomem' of expression
+Best regards,
+baolu
