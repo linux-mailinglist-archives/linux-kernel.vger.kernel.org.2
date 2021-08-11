@@ -2,140 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A0A3E9946
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98E23E994B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhHKT55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:57:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53796 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229991AbhHKT5y (ORCPT
+        id S231748AbhHKT7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231403AbhHKT7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:57:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628711850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a8CdrLYaScW3g1zgCUeylW9y3VU78MKEKlY7JTX+NVc=;
-        b=RolYUSm5OwYK5zK2ouiS+qhkopDGiz7T4cHEIVmyEn3KvNtzigX+Zrm6y+4uQH1/8QRCDS
-        hsGoVICizVCTRT+v1ofKBS1YFF3wRr+q7AqkMZ7ZWuX9daprThzGPI1Qddfk0MO4IhRXhT
-        +yVhhwvZMnZsXe41U3k6VXUC3FfokkU=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-i7JjN190MFi4LeAbVciFag-1; Wed, 11 Aug 2021 15:57:29 -0400
-X-MC-Unique: i7JjN190MFi4LeAbVciFag-1
-Received: by mail-ej1-f70.google.com with SMTP id kf21-20020a17090776d5b02905af6ad96f02so1123327ejc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:57:28 -0700 (PDT)
+        Wed, 11 Aug 2021 15:59:07 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849FEC061765;
+        Wed, 11 Aug 2021 12:58:43 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id kl2so1790353qvb.11;
+        Wed, 11 Aug 2021 12:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L2WxdQ8VewyRg1okrEww3x0oNOVTdbRMN0u6B0FgKJ4=;
+        b=JNV+zCRdxcpphjenev7v2I3fTLx8Yyn3FZQ1VPbPnkV0HEf+dlcgXJGFQgj3hsPVQj
+         wguqau/czYtevsY7O2tfkRTaJ9IF682IxxtNrG6nI9m4nHiIIoTedP94moNaW19hId7l
+         Qqw6YhNq7LxV8Xb3quM65xaIF76TCMwvqH6Dibv32MKmb5qxkqsQWQ1Nr/ii4Yulpn3T
+         ACgFXeJnZlSPf61mFyURNU5KKpKxwfeYZGNA61ad0+v7JeS0NmliiHrY/euFh6tOGGgt
+         ohcElSpE1XSSMwTPzD6UuofRi2CDyf7Gb1YaKfBzG+1dW8QimdytpRZGJ6JX0ory2bRC
+         e8Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a8CdrLYaScW3g1zgCUeylW9y3VU78MKEKlY7JTX+NVc=;
-        b=GbegmIq39FkEaoEsV/v8P09WZ6Q4f8cdKrTgGsfnVlO7F2M3J/1aGs/g76tHQ8ELAb
-         xwTR0jbHSg4CKOEfJ0dtorR3g80obibXhQf9VwiuDVx1pp8aCUd12bqJxPHwm2X40T25
-         0w18QaNoCszhuMdVkWw/fHWU5tNV33FYBU6eNJWtnaCGewm3UQPy9cLBKmJ4pi0Pvx7w
-         hjNzHaNMaJsZG6/qW3E4ZDeUD60hl01lAiOaUvP6ewpt7EXvXPOCL0r2YdxudoZYQl95
-         yXDwJ9221VwLG0h7/7do8IuqD7J9oStNQhrrFDt3QUW26/9Oa6+cuFd0x61LUPfkfMni
-         yuKg==
-X-Gm-Message-State: AOAM532peqVSbYNZFakM9Yc90L3KMvZyc0tUbIZsi75ZxhcwaQt0SViz
-        cbAl2upIZXtECCO1XsaMkJa11BQDV0G6ZhM4vvBcUmnOY6SY6/hAZi2OZGsBkWJNqHiJ7mzmzLn
-        fzaAtVdX5RLv9qQE53QoMEuqG
-X-Received: by 2002:a17:906:eb06:: with SMTP id mb6mr230349ejb.50.1628711847853;
-        Wed, 11 Aug 2021 12:57:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxMJm0MMozqlG2NGnCnoaOANvZ79H3EYGGIQ9hpOTtXCU4DwGFHZthhruLDn6IqoXtjuyTtYg==
-X-Received: by 2002:a17:906:eb06:: with SMTP id mb6mr230338ejb.50.1628711847679;
-        Wed, 11 Aug 2021 12:57:27 -0700 (PDT)
-Received: from krava ([83.240.61.5])
-        by smtp.gmail.com with ESMTPSA id q21sm124012eji.59.2021.08.11.12.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 12:57:27 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 21:57:25 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, gmx@google.com
-Subject: Re: [RFC] perf/core: Add an ioctl to get a number of lost samples
-Message-ID: <YRQrpcssx9kLHrAh@krava>
-References: <20210811062135.1332927-1-namhyung@kernel.org>
- <YRPnCLyn9oE540gM@krava>
- <CABPqkBQGu5Xb=PbwjfwQxmp5nVuZZ6tg4LnZaKJConYWkPcL2g@mail.gmail.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L2WxdQ8VewyRg1okrEww3x0oNOVTdbRMN0u6B0FgKJ4=;
+        b=M3ngJ8rVRHCdQN8llPeyRhbJ0ZowgkytgwU6uTtTdcojAfwTydJswMHKvxhjDXwUXU
+         qk2FSbbMIDS91+RPDEkUmT+IxlXLmHpi4f2ZQ8FMrgBN2OvKjc/7Ux520ZR04o8KaXPF
+         NWhb3lYJdTH7kjVAykug3QRuH8yNyiFB+ai0yzGFnULJpU0N1wyy7m0WdksVcHqk13oP
+         6kXe0ZjSMUTY3vVPx+VqOuFb2Pd6HCEJTk9ImS0PlVctSdDmMOAiyA0xa18dRqIwMCaf
+         Z6bw8pzru8tgh/TLCpQ1CeW1b3clZYJyOPUj3d4S4KJd9tb1CwbIV3CeN+xAp1iwk97B
+         m4Zw==
+X-Gm-Message-State: AOAM533ri+qtbo1X/Lr9ez19181NB68navCkxAShLEwBc5rZ54xAz6k8
+        +PvWVUXegYP+vODu+IkzA0lA0GREb7E=
+X-Google-Smtp-Source: ABdhPJzLvYj1Bjli62XFIlEPLD/2qRNIA19UghObpoyPFUxucoUVvZJLuuWxN/TGMmaL3kuCgyF6/A==
+X-Received: by 2002:a05:6214:20ea:: with SMTP id 10mr314657qvk.13.1628711922525;
+        Wed, 11 Aug 2021 12:58:42 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 79sm96607qkd.94.2021.08.11.12.58.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 12:58:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.19 00/54] 4.19.203-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210810172944.179901509@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <681f21a1-ea1b-aea5-e86b-a2d030ce6665@roeck-us.net>
+Date:   Wed, 11 Aug 2021 12:58:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABPqkBQGu5Xb=PbwjfwQxmp5nVuZZ6tg4LnZaKJConYWkPcL2g@mail.gmail.com>
+In-Reply-To: <20210810172944.179901509@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 12:33:38PM -0700, Stephane Eranian wrote:
-> On Wed, Aug 11, 2021 at 8:04 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Aug 10, 2021 at 11:21:35PM -0700, Namhyung Kim wrote:
-> > > Sometimes we want to know an accurate number of samples even if it's
-> > > lost.  Currenlty PERF_RECORD_LOST is generated for a ring-buffer which
-> > > might be shared with other events.  So it's hard to know per-event
-> > > lost count.
-> > >
-> > > Add event->lost_samples field and PERF_EVENT_IOC_LOST_SAMPLES to
-> > > retrieve it from userspace.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  include/linux/perf_event.h      | 2 ++
-> > >  include/uapi/linux/perf_event.h | 1 +
-> > >  kernel/events/core.c            | 9 +++++++++
-> > >  kernel/events/ring_buffer.c     | 5 ++++-
-> > >  4 files changed, 16 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> > > index f5a6a2f069ed..44d72079c77a 100644
-> > > --- a/include/linux/perf_event.h
-> > > +++ b/include/linux/perf_event.h
-> > > @@ -756,6 +756,8 @@ struct perf_event {
-> > >       struct pid_namespace            *ns;
-> > >       u64                             id;
-> > >
-> > > +     atomic_t                        lost_samples;
-> > > +
-> > >       u64                             (*clock)(void);
-> > >       perf_overflow_handler_t         overflow_handler;
-> > >       void                            *overflow_handler_context;
-> > > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> > > index bf8143505c49..24397799127d 100644
-> > > --- a/include/uapi/linux/perf_event.h
-> > > +++ b/include/uapi/linux/perf_event.h
-> > > @@ -505,6 +505,7 @@ struct perf_event_query_bpf {
-> > >  #define PERF_EVENT_IOC_PAUSE_OUTPUT          _IOW('$', 9, __u32)
-> > >  #define PERF_EVENT_IOC_QUERY_BPF             _IOWR('$', 10, struct perf_event_query_bpf *)
-> > >  #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES     _IOW('$', 11, struct perf_event_attr *)
-> > > +#define PERF_EVENT_IOC_LOST_SAMPLES          _IOR('$', 12, __u64 *)
-> >
-> > would it be better to use the read syscall for that?
-> >   https://lore.kernel.org/lkml/20210622153918.688500-5-jolsa@kernel.org/
-> >
-> > that patchset ended up on me not having a way to reproduce the
-> > issue you guys wanted the fix for ;-) the lost count is there
-> > as well
-> >
-> Does the read format approach succeed even when the event is in error state?
+On 8/10/21 10:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.203 release.
+> There are 54 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
+> Anything received after that time might be too late.
+> 
 
-nope..
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 439 pass: 439 fail: 0
 
-        /*
-         * Return end-of-file for a read on an event that is in
-         * error state (i.e. because it was pinned but it couldn't be
-         * scheduled on to the CPU at some point).
-         */
-        if (event->state == PERF_EVENT_STATE_ERROR)
-                return 0;
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-jirka
-
+Guenter
