@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939163E880B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19253E880D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhHKCha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 22:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbhHKCh2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 22:37:28 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7722C061765;
-        Tue, 10 Aug 2021 19:37:05 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso7316901pjb.2;
-        Tue, 10 Aug 2021 19:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c34YqbDj4H2LkHIxUJ62k4rMkPDaBHR70bxWD8IA/H8=;
-        b=e9gDwcexdW+buNc728tSZSTDkMYQCZ8NLHBQgiANGkb1skl7uhP3dgDQzwR9/1pDFE
-         3KUbLGVxjJ+Abb8IHtezOFIoNwqcTd+Oopw50ieDYlwJe2S7Znk/MyIKwu/JSO1bQlTc
-         kwavT97aiZ8tVsbMCP8t05MLqXo7ahF1onj34Hh5rKm5jCtiVJ5UiPLTm7Mp8FPP5Xb3
-         ui5zDg5rr9ka1F2X9Q1BmtGeWDvAsmcq+d53nRhVRAh0Dw3bEFqs2jEMhTfFht55mbku
-         vYSFNcPq+7WcWM9UsXuTfhY1aGw/r98qfJ1CQTVDv1P7UyJIN52gOgjya300YhKfX8wy
-         +HSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c34YqbDj4H2LkHIxUJ62k4rMkPDaBHR70bxWD8IA/H8=;
-        b=rzptiEqCCOt/xeGhHzgwvi/OyVBSKileS33ubXlcRpScHYrxq9sx9hTBfeNinW1cwe
-         s8FD5x+JsRd5LG/jBwo35406vWmyCm4XsdUdWBtT0kSY1OW7Dz0ATluw23v5RkeOwnYx
-         jOK1e/FG7TIB9+Y08SnLZMc+Jn6zoNJ6WAAKyamEXbXC7gzgcS7I0rY3S+S598Y+muVJ
-         1RZjpaoH0aAauQ+0yitkZ3ILOfinIuHayCmQ256wuEdtTWXnqqEmbky47mAVNusIHNeh
-         PH6NclwYIYtXYr95HNwoadIZ4lHbKDXh544gWO5c7xgIHEshXetlS8ukBbKqy22SgiKH
-         A03g==
-X-Gm-Message-State: AOAM531d3M0sXEru0FrjJlsB8ODJI6RJO8SrmS6E4g8hx9KjInuA8WYT
-        LT855mR7PV3RDqyqvhF120c=
-X-Google-Smtp-Source: ABdhPJxeuzMTAdfuaWG3SE+gfJ7vLtU8abmwxbRvqmjSGRsIdZrRxNFrczjRApq+qN5EnIJCY6GIhA==
-X-Received: by 2002:a17:90a:ab07:: with SMTP id m7mr33714953pjq.27.1628649425179;
-        Tue, 10 Aug 2021 19:37:05 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.103])
-        by smtp.gmail.com with ESMTPSA id l185sm18044975pfd.62.2021.08.10.19.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 19:37:04 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     alex.aring@gmail.com, stefan@datenfreihafen.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] ieee802154: hwsim: fix possible null-pointer dereference in mac802154_hwsim.c
-Date:   Tue, 10 Aug 2021 19:36:54 -0700
-Message-Id: <20210811023654.2971-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S232147AbhHKChp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 22:37:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231699AbhHKChp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 22:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21EF260EC0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:37:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628649442;
+        bh=MHlVCJfEpTNGT+yzyF+RQ8u5NVXIOPzi87+tKm6W6iA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OAVjFx91OCFJcmNgdJOp6YzJT9IFPvYAAmttvY7TrRHcEsMBvyb3GNXGKcTbzHc4/
+         e9BisN7nnu6Po6D1Ocxzm3anfnUARe0WipfZnL1jrKhWmuUNRJHJpjSweN5jrtmJMq
+         AuHkyCTVLD2dWyPQHML82fh0ua7dLdbQ+Ja/pJM1KIzAun4QvHbqPozhhJF95DwffP
+         iCJqphM9Q6Tkf1G8VWvaRbeLR4x+3wjrf8f6rhuWBrtssniJ1osfp8segpvdK77oHa
+         i3S2fdiPFzFj60Hv0nUVY+hh3YfAxo0zTnTF9ek6CfwQHD9W7qTpitIVsKZWjcg282
+         g+6jD+hbkrzaQ==
+Received: by mail-lf1-f45.google.com with SMTP id g13so2246261lfj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:37:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531L0n4NHBR9iiJBZDI5tXCc13ew/qungqcB4AGNdcN/28a82zCp
+        IrHIWvDeBo/vAKvbFzAAg/Wmu/KKSgdPAMcVfpI=
+X-Google-Smtp-Source: ABdhPJw2vA7JqVfl0uZjLyoxurCd7RC53bidiEj+txGH/1tG2+XLGVDDueUTzDPrAS/5k0eYj7TUPpO3IUSTD5ZtQSQ=
+X-Received: by 2002:ac2:47e8:: with SMTP id b8mr1163135lfp.555.1628649440441;
+ Tue, 10 Aug 2021 19:37:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210806121521.124365-1-xianting.tian@linux.alibaba.com>
+In-Reply-To: <20210806121521.124365-1-xianting.tian@linux.alibaba.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 11 Aug 2021 10:37:09 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQue-szv1MqFoxuceCL0cN70XHW44hqcDOrj5Vird6neQ@mail.gmail.com>
+Message-ID: <CAJF2gTQue-szv1MqFoxuceCL0cN70XHW44hqcDOrj5Vird6neQ@mail.gmail.com>
+Subject: Re: [PATCH] mailbox: fix a UAF bug in msg_submit()
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     jassisinghbrar@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In hwsim_new_edge_nl() and hwsim_set_edge_lqi(), if only one of the two
-info->attrs is NULL, the functions will not return.
-  if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] &&
-      !info->attrs[MAC802154_HWSIM_ATTR_RADIO_EDGE])
-	  return -EINVAL;
+On Fri, Aug 6, 2021 at 8:15 PM Xianting Tian
+<xianting.tian@linux.alibaba.com> wrote:
+>
+> We met a UAF issue during our mailbox testing.
+>
+> In synchronous mailbox, we use mbox_send_message() to send a message
+> and wait for completion. mbox_send_message() calls msg_submit() to
+> send the message for the first time, if timeout, it will send the
+> message in tx_tick() for the second time.
+Yes, in chan->cl->tx_block will give a second chance to transmit the
+msg in tx_tick. If chan->mbox->ops->send_data returned error again,
+then mbox_send_message would return to the user's driver, and the user
+driver would free the mssg which is still in chan->msg_data &
+msg_count. Then it caused "Used After Free" problem.
 
-However, both of them may be dereferenced in the function
-nla_parse_nested_deprecated(), causing a null-pointer dereference.
-To fix this possible null-pointer dereference, the function returns
--EINVAL if any info_attr is NULL.
+The current second chance for chan->cl->tx_block is tricky and it's
+hard for mailbox driver and user driver implementation in the way.
+I recommend deleting the second chance mechanism totally to make the
+code understandable. (If first failed, 2th & 3th & 4th would be still
+failed.)
 
-Similarly, in hwsim_set_edge_lqi(), if only one of the two edge_attrs is
-NULL, both nla_get_u32() and nla_get_u8() will be called, causing a
-null-pointer dereference.
-Also, to fix this possible null-pointer dereference, the function returns
--EINVAL if any edge_attr is NULL.
 
-Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- drivers/net/ieee802154/mac802154_hwsim.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> We assume message sending failed for both two times,  then the message
+> will be still in the internal buffer of a chan(chan->msg_data[idx]).
+> It will be send again in the same way when mbox_send_message() is
+> called next time. But, at this time this message (chan->msg_data[idx])
+> may be a UAF pointer, as the message is passed to mailbox core by user.
+> User may free it after last calling of mbox_send_message() returned
+> or not. Who knows!!!
+>
+> In this patch, if the first time sending timeout, we pass timeout
+> info(-ETIME) to msg_submit() when do the second time sending by
+> tx_tick(). If it still send failed (chan->mbox->ops->send_data()
+> returned non-zero value) in the second time, we will give up this
+> message(chan->msg_count--) sending. It doesn't matter, user can chose
+> to send it again.
+>
+> Actually, the issue I described above doesn't exist if
+> 'chan->mbox->ops->send_data()' always return 0. Because if it always
+> returns 0, we will always do 'chan->msg_count=E2=80=94' regardless of mes=
+sage
+> sending success or failure. We have such mailbox driver, for example,
+> hi6220_mbox_send_data() always return 0. But we still have mailbox
+> drivers, which don't always return 0, for example, flexrm_send_data()
+> of drivers/mailbox/bcm-flexrm-mailbox.c.
+>
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> ---
+>  drivers/mailbox/mailbox.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+> index 3e7d4b20a..3e010aafa 100644
+> --- a/drivers/mailbox/mailbox.c
+> +++ b/drivers/mailbox/mailbox.c
+> @@ -50,7 +50,7 @@ static int add_to_rbuf(struct mbox_chan *chan, void *ms=
+sg)
+>         return idx;
+>  }
+>
+> -static void msg_submit(struct mbox_chan *chan)
+> +static void msg_submit(struct mbox_chan *chan, int last_submit)
+>  {
+>         unsigned count, idx;
+>         unsigned long flags;
+> @@ -75,7 +75,7 @@ static void msg_submit(struct mbox_chan *chan)
+>                 chan->cl->tx_prepare(chan->cl, data);
+>         /* Try to submit a message to the MBOX controller */
+>         err =3D chan->mbox->ops->send_data(chan, data);
+> -       if (!err) {
+> +       if (!err || last_submit =3D=3D -ETIME) {
+>                 chan->active_req =3D data;
+>                 chan->msg_count--;
+>         }
+> @@ -101,7 +101,7 @@ static void tx_tick(struct mbox_chan *chan, int r)
+>         spin_unlock_irqrestore(&chan->lock, flags);
+>
+>         /* Submit next message */
+> -       msg_submit(chan);
+> +       msg_submit(chan, r);
+>
+>         if (!mssg)
+>                 return;
+> @@ -260,7 +260,7 @@ int mbox_send_message(struct mbox_chan *chan, void *m=
+ssg)
+>                 return t;
+>         }
+>
+> -       msg_submit(chan);
+> +       msg_submit(chan, 0);
+>
+>         if (chan->cl->tx_block) {
+>                 unsigned long wait;
+> --
+> 2.17.1
+>
 
-diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
-index ebc976b7fcc2..8caa61ec718f 100644
---- a/drivers/net/ieee802154/mac802154_hwsim.c
-+++ b/drivers/net/ieee802154/mac802154_hwsim.c
-@@ -418,7 +418,7 @@ static int hwsim_new_edge_nl(struct sk_buff *msg, struct genl_info *info)
- 	struct hwsim_edge *e;
- 	u32 v0, v1;
- 
--	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] &&
-+	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] ||
- 	    !info->attrs[MAC802154_HWSIM_ATTR_RADIO_EDGE])
- 		return -EINVAL;
- 
-@@ -528,14 +528,14 @@ static int hwsim_set_edge_lqi(struct sk_buff *msg, struct genl_info *info)
- 	u32 v0, v1;
- 	u8 lqi;
- 
--	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] &&
-+	if (!info->attrs[MAC802154_HWSIM_ATTR_RADIO_ID] ||
- 	    !info->attrs[MAC802154_HWSIM_ATTR_RADIO_EDGE])
- 		return -EINVAL;
- 
- 	if (nla_parse_nested_deprecated(edge_attrs, MAC802154_HWSIM_EDGE_ATTR_MAX, info->attrs[MAC802154_HWSIM_ATTR_RADIO_EDGE], hwsim_edge_policy, NULL))
- 		return -EINVAL;
- 
--	if (!edge_attrs[MAC802154_HWSIM_EDGE_ATTR_ENDPOINT_ID] &&
-+	if (!edge_attrs[MAC802154_HWSIM_EDGE_ATTR_ENDPOINT_ID] ||
- 	    !edge_attrs[MAC802154_HWSIM_EDGE_ATTR_LQI])
- 		return -EINVAL;
- 
--- 
-2.25.1
 
+--=20
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
