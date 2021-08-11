@@ -2,83 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF913E9954
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2B63E995D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbhHKUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 16:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S231594AbhHKUID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 16:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhHKUBU (ORCPT
+        with ESMTP id S229655AbhHKUIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:01:20 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92C3C061765;
-        Wed, 11 Aug 2021 13:00:56 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id m3so1853081qvu.0;
-        Wed, 11 Aug 2021 13:00:56 -0700 (PDT)
+        Wed, 11 Aug 2021 16:08:02 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189F3C061765;
+        Wed, 11 Aug 2021 13:07:38 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c24so8272362lfi.11;
+        Wed, 11 Aug 2021 13:07:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eu42UCR+xc4e2lhU7ja0MgDX034KYJebqltOZ74ChIs=;
-        b=rLIx+mcNEu5QvaP02pdOCTSqR4fhiH4H/nXCceDPDYzQsfaaQ37wv9l9YMDxv2WZW/
-         AfcSzJbKb4Ym4uVDMwBXlWPHvBK2IYequEmSwrn2l5lB7zPoaa9Xc4HHp1UCNiJfPSDA
-         NigSJMaCkt+eMVm7bepCmbRW++PRQgBe7fls1TLI/RYU/F4hxIdYlBDcMlSzRQ9H6jHQ
-         KvFZmtXkA1OlysE1xYyJmwmnKazhf1U6ds/wvb58zszvPJFYRfGKWl/yoTqXtTxQ245Y
-         XRa+t/822Gh86A23tY0cds8K9oemTQ2h7uqFyJiouo5xFptSAekrOM4W1ZptEhh2I0Rb
-         TDVQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6x/Ii2bZE05v6ZuwKQcPDMHG6HP7Qj7fPV8rl2juls0=;
+        b=LkdVKZdciMSClp8si2q44wywjxt8r3IN6TppA4H2TIPu+0+91MXgkz7z1e2+cYx5bI
+         FFl24k22TB9SAb1U6LpW3yIVJMqKxbb+iuhqE0nuiyu34CH/K+GttoXzqCcEItavH5Es
+         onq/90eG/hFmvZr+r3t0FtWJEQmNb4ojZxADmVa2jb3HNeklXwxjMFJ1E1dK0TbVBQSI
+         p8wOruNV8Cik61hmh2G77K9c0671XGyJaRyHTrmF9QuoyEG6l1xhGQU38I0tekpQIHZF
+         7b5EArW/vmqy67abzu1C8OKde7KDB6QUiDyCnNx+uLPq0NJT3YsZ1TBBj+Pl+HY2uZn5
+         4KIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=eu42UCR+xc4e2lhU7ja0MgDX034KYJebqltOZ74ChIs=;
-        b=smpejV83BZEMGaOImt/2Vb6LIuelK1qBv/LmZbBYEJsCg92RT8j3p9XD4O1Hj+Usuk
-         PUHGPJsnfPI2aE3TMcIxF8HnhHwP3pv9nIQapF+28p2gQwGwkIeyGu9rfgB5xLlBZU41
-         aPRgRR3RbBXEg3qI78LWK4kl69GziBj/4tK5XoMMMCFfr/YUZ9vBh3S6s/GAd/6KKiLb
-         NrcXDfxk5Y8OFU5Nsj54jnGSfcVNVCTiwHlJ6sgMxaAO5+k8XeG+2YpuNfqSYCEeMilY
-         4+3NsCu7lbt7Qv4WOFYEGBEFGwfNEK2G12+D4zyF3JKKTSBFUNTN58eKCd67gTkbFs8c
-         0YYg==
-X-Gm-Message-State: AOAM530MrXPZf20cNqSXG8ql33eAcyOx+BXpwkrv3ZrdHtk4sR7PVo8n
-        7bQMVYmwyTOvldEZJVEw1AA=
-X-Google-Smtp-Source: ABdhPJzZfUh2ZEIFzVwnUMX8eBXyL3Qb8g9CWgdQm8qavjIW/1C0yjAiMmek12WFteKMPdalIvjk8Q==
-X-Received: by 2002:a05:6214:c6f:: with SMTP id t15mr449015qvj.52.1628712056177;
-        Wed, 11 Aug 2021 13:00:56 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x25sm98861qkj.31.2021.08.11.13.00.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6x/Ii2bZE05v6ZuwKQcPDMHG6HP7Qj7fPV8rl2juls0=;
+        b=YGJCJl77edHkEji32purXXXhxCCNwM9hXmS33Dh+EknO57S8dIAfQE6Fm/+NXOgITA
+         1cHd31OBahmMSJ1Jnz2SCHzB6UH1QGMWFHh9wbwi+OcZEHoM1JMvHvUInidNA0p61vLZ
+         BTeyh4ZfmFDWzIHYKI9aB7o4QF3CgQvvF7gG39B4OucR63fcvoAOg+4BWYDKq4P8a5rg
+         iQh3lueZ+2VvoM4wcIsSkuqnv8ZO/spPQCAJpsEpJQriwDfhMExBFL2tnYLy5Dunr9jl
+         XyKfCrcVY15XEaHuZH7gimJmuiGvQKTLP8X8RcMoi/zWudMjmgY/E5gjgdfT2EorZdOb
+         w9IA==
+X-Gm-Message-State: AOAM532klzV8WvmEdHD3mCfPix6Bh2YTyhf2G84uFVn89vwfWKoNu+FJ
+        HbzY1orZbaXpt1AOYWgsIPkxc5O69c52KvS3S9U=
+X-Google-Smtp-Source: ABdhPJy2RDrh2NEyZNAkYxs6FdawzbOZTa+AN1/da3WGSDF8im1sQA9aDuHZYtgmT0LRESl9xE9jAQ==
+X-Received: by 2002:a05:6512:3f90:: with SMTP id x16mr374331lfa.518.1628712456173;
+        Wed, 11 Aug 2021 13:07:36 -0700 (PDT)
+Received: from localhost.localdomain ([46.109.162.86])
+        by smtp.gmail.com with ESMTPSA id u9sm32038lfc.278.2021.08.11.13.07.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 13:00:55 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 11 Aug 2021 13:00:54 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/175] 5.13.10-rc1 review
-Message-ID: <20210811200054.GC966765@roeck-us.net>
-References: <20210810173000.928681411@linuxfoundation.org>
+        Wed, 11 Aug 2021 13:07:35 -0700 (PDT)
+From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+Subject: [PATCH] btrfs: Allow read-only mount with corrupted extent tree
+Date:   Wed, 11 Aug 2021 23:07:17 +0300
+Message-Id: <20210811200717.48344-1-davispuh@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 07:28:28PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.10 release.
-> There are 175 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
+Currently if there's any corruption at all in extent tree
+(eg. even single bit) then mounting will fail with:
+"failed to read block groups: -5" (-EIO)
+It happens because we immediately abort on first error when
+searching in extent tree for block groups.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+Now with this patch if `ignorebadroots` option is specified
+then we handle such case and continue by removing already
+created block groups and creating dummy block groups.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
+---
+ fs/btrfs/block-group.c | 20 ++++++++++++++++++++
+ fs/btrfs/disk-io.c     |  4 ++--
+ fs/btrfs/disk-io.h     |  2 ++
+ 3 files changed, 24 insertions(+), 2 deletions(-)
 
-Guenter
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 9e7d9d0c763d..80b9bb9afb8c 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2212,6 +2212,26 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+ 	ret = check_chunk_block_group_mappings(info);
+ error:
+ 	btrfs_free_path(path);
++
++	if (ret == -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
++
++		if (btrfs_super_log_root(info->super_copy) != 0) {
++			btrfs_warn(info, "Ignoring tree-log replay due to extent tree corruption!");
++			btrfs_set_super_log_root(info->super_copy, 0);
++		}
++
++		btrfs_put_block_group_cache(info);
++		btrfs_stop_all_workers(info);
++		btrfs_free_block_groups(info);
++		ret = btrfs_init_workqueues(info, NULL);
++		if (ret)
++			return ret;
++		ret = btrfs_init_space_info(info);
++		if (ret)
++			return ret;
++		return fill_dummy_bgs(info);
++	}
++
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index a59ab7b9aea0..b1ad9c85d578 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2115,7 +2115,7 @@ static int read_backup_root(struct btrfs_fs_info *fs_info, u8 priority)
+ }
+ 
+ /* helper to cleanup workers */
+-static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
++void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+ {
+ 	btrfs_destroy_workqueue(fs_info->fixup_workers);
+ 	btrfs_destroy_workqueue(fs_info->delalloc_workers);
+@@ -2283,7 +2283,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
+ 	mutex_init(&fs_info->qgroup_rescan_lock);
+ }
+ 
+-static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
++int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+ 		struct btrfs_fs_devices *fs_devices)
+ {
+ 	u32 max_active = fs_info->thread_pool_size;
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 0e7e9526b6a8..41348c8d3f9a 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -139,6 +139,8 @@ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid);
+ int btrfs_init_root_free_objectid(struct btrfs_root *root);
+ int __init btrfs_end_io_wq_init(void);
+ void __cold btrfs_end_io_wq_exit(void);
++void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info);
++int btrfs_init_workqueues(struct btrfs_fs_info *fs_info, struct btrfs_fs_devices *fs_devices);
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ void btrfs_set_buffer_lockdep_class(u64 objectid,
+-- 
+2.32.0
+
