@@ -2,211 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7B43E91A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC343E91B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhHKMiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229621AbhHKMip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:38:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F40806101D;
-        Wed, 11 Aug 2021 12:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628685502;
-        bh=jhuq01fqEpbHFvLeiAGA1FMQm84p3MsBrozDI5DHMk8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=C82Kzm6eKUUW+CjCh+6Ci3CgF9VGd4i/EUPDewtdLHoUbX7T8gL1flcuPcB0jSFjr
-         rLtfU4aTlKR7vOIDrKTZKasqgUFf4+ytseRe54YaEJPBMNznGliIANZiBUa6nmKN5M
-         nf1l8mGYxJoh5lU2QC9VCUez5zCCHtdJBepQrQg3a/pAnLDj2E+8X1oPQA3PGOwa0n
-         l6HGKhW9s+rLEmjcNIAmKdja+jDiCgGLzKNku5EGMtDh6jvbRSwyPHv/LcC1ON9g7q
-         8M6m/mD3yBAh2yd9horRjpgAifsbXbxDaVaY5uiHb0egfWztNn+8nDWhGYk7PUeO4P
-         N8Syk0K1RHhcA==
-Subject: Re: [PATCH v15 0/6] usb: misc: Add onboard_usb_hub driver
-To:     Matthias Kaehlcke <mka@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     Bastien Nocera <hadess@hadess.net>,
-        Peter Chen <peter.chen@kernel.org>, devicetree@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Andy Gross <agross@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nishanth Menon <nm@ti.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Shawn Guo <shawnguo@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
-References: <20210727004118.2583774-1-mka@chromium.org>
- <YRFOnhJkB2vi/zwD@google.com>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <8a8cae28-6617-76d3-1742-3f151a149069@kernel.org>
-Date:   Wed, 11 Aug 2021 15:38:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231665AbhHKMjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:39:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55346 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231420AbhHKMjY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:39:24 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17BCcpDx018046;
+        Wed, 11 Aug 2021 07:38:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1628685531;
+        bh=pHvrbMNdD6ZqFqlIVcWlZcPt0n1QzBmXRLI7yry//as=;
+        h=From:To:CC:Subject:Date;
+        b=iv504BLIU5mYMTDZbZ6J0lilFMqCmft/7aBf8s+xxcKkcyXyGd1jBmRKRb41NbH1i
+         4WNSzusDLeRLMDKvKKCFvEfuutNwN7uAdT85Nah3ehKais/FUBJx5qZPYYlPFj55TO
+         +cf+v4+agb2nL6prbj58o+qGmPDmxCD3hAFLc2U0=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17BCcpw5018400
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 11 Aug 2021 07:38:51 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 11
+ Aug 2021 07:38:51 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 11 Aug 2021 07:38:51 -0500
+Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17BCckKx053470;
+        Wed, 11 Aug 2021 07:38:47 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>, <kishon@ti.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 0/2] PCI: Add legacy interrupt support in pci-j721e
+Date:   Wed, 11 Aug 2021 18:08:44 +0530
+Message-ID: <20210811123846.31921-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <YRFOnhJkB2vi/zwD@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+Patch series adds support for legacy interrupt in pci-j721e. There are
+two HW implementations of legacy interrupt controller, one specific to
+J721E and the other for J7200/AM64.
 
-On 09/08/2021 18:49, Matthias Kaehlcke wrote:
-> Hi Greg,
-> 
-> Just wanted to check if this series is still on your radar. Is
-> there anything that blocks it from landing (further ACKs, ...)?
-> 
-> Thanks
-> 
-> Matthias
-> 
-> On Mon, Jul 26, 2021 at 05:41:12PM -0700, Matthias Kaehlcke wrote:
->> This series adds:
->> - the onboard_usb_hub_driver
->> - glue in the xhci-plat driver to create and destroy the
->>   onboard_usb_hub platform devices if needed
->> - a device tree binding for the Realtek RTS5411 USB hub controller
->> - device tree changes that add RTS5411 entries for the QCA SC7180
->>   based boards trogdor and lazor
->> - a couple of stubs for platform device functions to avoid
->>   unresolved symbols with certain kernel configs
->>
->> The main issue the driver addresses is that a USB hub needs to be
->> powered before it can be discovered. For discrete onboard hubs (an
->> example for such a hub is the Realtek RTS5411) this is often solved
->> by supplying the hub with an 'always-on' regulator, which is kind
->> of a hack. Some onboard hubs may require further initialization
->> steps, like changing the state of a GPIO or enabling a clock, which
->> requires even more hacks. This driver creates a platform device
->> representing the hub which performs the necessary initialization.
->> Currently it only supports switching on a single regulator, support
->> for multiple regulators or other actions can be added as needed.
->> Different initialization sequences can be supported based on the
->> compatible string.
->>
->> Besides performing the initialization the driver can be configured
->> to power the hub off during system suspend. This can help to extend
->> battery life on battery powered devices which have no requirements
->> to keep the hub powered during suspend. The driver can also be
->> configured to leave the hub powered when a wakeup capable USB device
->> is connected when suspending, and power it off otherwise.
->>
->> Changes in v15:
->> - adjusted dependencies of USB_DWC3_CORE to make sure it can only
->>   be enabled when at least one of USB_DWC3_HOST, USB_DWC3_GADGET
->>   or USB_DWC3_DUAL_ROLE is selectable
->>
->> Changes in v14:
->> - rebased on top of v5.14-rc1
->> - dropped DT binding patch which landed in v5.13
->>
->> Changes in v13:
->> - added patch "usb: Specify dependency on USB_XHCI_PLATFORM with
->>   'depends on'" to the series to avoid Kconfig conflicts
->> - added patch "arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM"
->>   to the series to keep effective defconfig unchanged
->>
->> Changes in v12:
->> - onboard_hub driver: use IS_ENABLED(CONFIG_USB_ONBOARD_HUB_MODULE)
->>   in onboard_hub.h to also check for the driver built as module
->> - onboard_hub_driver: include onboard_hub.h again to make sure there
->>   are prototype declarations for the public functions
->>
->> Changes in v11:
->> - support multiple onboard hubs connected to the same parent
->> - don't include ‘onboard_hub.h’ from the onboard hub driver
->>
->> Changes in v10:
->> - always use of_is_onboard_usb_hub() stub unless ONBOARD_USB_HUB=y/m
->> - keep 'regulator-boot-on' property for pp3300_hub
->>
->> Changes in v9:
->> - added dependency on ONBOARD_USB_HUB (or !!ONBOARD_USB_HUB) to
->>   USB_PLATFORM_XHCI
->>
->> Changes in v7:
->> - updated DT binding
->> - series rebased on qcom/arm64-for-5.13
->>
->> Changes in v6:
->> - updated summary
->>
->> Changes in v5:
->> - cover letter added
->>
->> Matthias Kaehlcke (6):
->>   usb: misc: Add onboard_usb_hub driver
->>   of/platform: Add stubs for of_platform_device_create/destroy()
->>   arm64: defconfig: Explicitly enable USB_XHCI_PLATFORM
->>   usb: Specify dependencies on USB_XHCI_PLATFORM with 'depends on'
->>   usb: host: xhci-plat: Create platform device for onboard hubs in
->>     probe()
->>   arm64: dts: qcom: sc7180-trogdor: Add nodes for onboard USB hub
->>
->>  .../sysfs-bus-platform-onboard-usb-hub        |   8 +
->>  MAINTAINERS                                   |   7 +
->>  .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  19 +-
->>  .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  12 +-
->>  .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  19 +-
->>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  |  19 +-
->>  arch/arm64/configs/defconfig                  |   1 +
->>  drivers/usb/cdns3/Kconfig                     |   2 +-
->>  drivers/usb/dwc3/Kconfig                      |   5 +-
->>  drivers/usb/host/Kconfig                      |   5 +-
+In both these implementations, the legacy interrupt is connect to pulse
+interrupt of GIC and level to pulse is handled by configuring EOI
+register. EOI to convert level to pulse is broken in J721E due to an
+errata but is functional in J7200. Hence legacy interrupt support is not
+added for J721E
 
-These Kconfig changes are causing the resulting .config to be different.
-For example, if I start with omap2plus_defconfig, the resulting .config
-before and after your series is different as shown below
+v1 of the patch series can be found @ [1]
+Patch series is created on top of [2]
 
-:/work/linux$ diff /tmp/.config .config
-1902d1901
-< # CONFIG_HISI_HIKEY_USB is not set
-4992c4991
-< CONFIG_USB_XHCI_PLATFORM=m
----
-> # CONFIG_USB_XHCI_PLATFORM is not set
-5073,5075c5072
-< # CONFIG_USB_DWC3_HOST is not set
-< # CONFIG_USB_DWC3_GADGET is not set
-< CONFIG_USB_DWC3_DUAL_ROLE=y
----
-> CONFIG_USB_DWC3_GADGET=y
-5173a5171
-> # CONFIG_USB_ONBOARD_HUB is not set
-5285c5283
-< CONFIG_USB_ROLE_SWITCH=m
----
-> # CONFIG_USB_ROLE_SWITCH is not set
+Changes from v2:
+1) Dropped legacy interrupt support for J721e
+2) Enable legacy interrupts registers in .irq_enable callback
 
-I would expect the same issues for multi_v7_defconfig and multi_v8_defconfig as well.
-I'm ok to update the relevant defconfigs files so that the resulting .config is identical to
-before your series. Thanks!
+Changes from v1:
+1) Only the legacy interrupt specific part is sent as part of this
+series. Rest are split and sent as a separate series [2]
+2) Created irq_chip for legacy interrupt and used it's ops for enabling,
+disabling the interrupts.
 
---
-cheers,
--roger
+[1] -> http://lore.kernel.org/r/20210325090936.9306-1-kishon@ti.com
+[2] -> https://lore.kernel.org/linux-omap/20210811123336.31357-1-kishon@ti.com/
+
+Kishon Vijay Abraham I (2):
+  dt-bindings: PCI: ti,j721e: Add bindings to specify legacy interrupts
+  PCI: j721e: Add PCI legacy interrupt support for J7200
+
+ .../bindings/pci/ti,j721e-pci-host.yaml       |  15 +++
+ drivers/pci/controller/cadence/pci-j721e.c    | 119 ++++++++++++++++++
+ 2 files changed, 134 insertions(+)
+
+-- 
+2.17.1
+
