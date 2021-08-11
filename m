@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A663E91DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1DB3E91DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhHKMtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:49:23 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3753 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230178AbhHKMtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:49:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="276150146"
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="276150146"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:48:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
-   d="scan'208";a="445916469"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Aug 2021 05:48:54 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4FC46142; Wed, 11 Aug 2021 15:48:53 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Loic Poulain <loic.poulain@linaro.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 net 1/1] wwan: core: Avoid returning NULL from wwan_create_dev()
-Date:   Wed, 11 Aug 2021 15:48:45 +0300
-Message-Id: <20210811124845.10955-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230385AbhHKMtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230320AbhHKMtW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:49:22 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C09BC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:48:58 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id m18so4396738ljo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GR+MMrd9XOW5rm81dzQfCFtmEkUJfv7NwFWFwbfborQ=;
+        b=W0Nm8Bqom8fG2CTvOVOdaNHCmOv6POACotv2jUKnioHaQeTQussn1eFGzrt/w9UsAq
+         703Br3qPDFM7IX0gEmpWCGAUNtbu07XUX1dUD4quYbTrk7cgGz+CusQiCuwB8URnXmPf
+         UX5vCB94aDC1bVzQ1dy45r2lRdBZF8fPLrbCp6vNc5+fi+qWj4gi+cTMxVzUxTftaCVF
+         01Os8GwxsJXLRiNKj10Ks3e8OP3Jm+pfXhic6lgRq5WfszfgLF9v2j1N0P5CE6/UI3+G
+         wnQhGsZmSZw5wAhjf6u+wpXc0JNpkevf/962ZfS091JjBTwOcHSCGlajTII3jS8qvrpf
+         x6nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GR+MMrd9XOW5rm81dzQfCFtmEkUJfv7NwFWFwbfborQ=;
+        b=DjJlf4kjIggtG1S51tc7iO8Fx5EjFFLf8l+46K03BDwM05UjBCoEnXF5U0m1mGRsRq
+         0QbY6mJu/0mo9BBE4Fkgd3/2zbUAAJVW9cQ8Gjn6C+qUw9trOdFbTLjFZnAlwNdn+uX6
+         7D3kEG1rndhfYxlVu38b/o5VGIgMNtMz6bBc7q7Gwf8skN470pne+0JqKBQ/+rxMXQ/o
+         x9LzhFmAgoy2kFaSOnGC9Y7UlYJPV1wnXECI91DRbvnWmi92FdSntnzrswkxHrYb3+G/
+         7nvG2EdKuVr7mdocZxKJtWAoy0ub5F1hqJU+KWaxn/SDymnU+8IMeg7JkDWrm7Tw0vMK
+         sJNg==
+X-Gm-Message-State: AOAM530QjecUkbAuzPIwaJj8SGkECxZwjNiNFJTEh+wBQ96VP91LptqM
+        TxHc2tR84hdnST8JFCHrv9GESXUGS4PK9r/vHJ9wwA==
+X-Google-Smtp-Source: ABdhPJxEQ5PFNvYyQbJDXisGpYVk211iTHo7KxNddvwCfd2v00OKJtPRjt1cj2iKS63HHjuTyrT0pUXhoclMSkvvZNM=
+X-Received: by 2002:a05:651c:1318:: with SMTP id u24mr23231122lja.200.1628686136709;
+ Wed, 11 Aug 2021 05:48:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com> <20210804160019.77105-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210804160019.77105-3-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 14:48:45 +0200
+Message-ID: <CACRpkdZghJFGV8g2wq01VtigKNnb0nTpZ=WtY0tp2j0tVjeNrQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
+ software nodes
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make wwan_create_dev() to return either valid or error pointer,
-In some cases it may return NULL. Prevent this by converting
-it to the respective error pointer.
+On Wed, Aug 4, 2021 at 6:15 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Fixes: 9a44c1cc6388 ("net: Add a WWAN subsystem")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
----
-v3: split from original series with fixed subject (Sergey)
+> The driver can provide a software node group instead of
+> passing legacy platform data. This will allow to drop
+> the legacy platform data structures along with unifying
+> a child device driver to use same interface for all
+> property providers, i.e. Device Tree, ACPI, and board files.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Serge Semin <fancer.lancer@gmail.com>
 
- drivers/net/wwan/wwan_core.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
-index 674a81d79db3..35ece98134c0 100644
---- a/drivers/net/wwan/wwan_core.c
-+++ b/drivers/net/wwan/wwan_core.c
-@@ -164,11 +164,14 @@ static struct wwan_device *wwan_create_dev(struct device *parent)
- 		goto done_unlock;
- 
- 	id = ida_alloc(&wwan_dev_ids, GFP_KERNEL);
--	if (id < 0)
-+	if (id < 0) {
-+		wwandev = ERR_PTR(id);
- 		goto done_unlock;
-+	}
- 
- 	wwandev = kzalloc(sizeof(*wwandev), GFP_KERNEL);
- 	if (!wwandev) {
-+		wwandev = ERR_PTR(-ENOMEM);
- 		ida_free(&wwan_dev_ids, id);
- 		goto done_unlock;
- 	}
-@@ -182,7 +185,8 @@ static struct wwan_device *wwan_create_dev(struct device *parent)
- 	err = device_register(&wwandev->dev);
- 	if (err) {
- 		put_device(&wwandev->dev);
--		wwandev = NULL;
-+		wwandev = ERR_PTR(err);
-+		goto done_unlock;
- 	}
- 
- done_unlock:
-@@ -1014,8 +1018,8 @@ int wwan_register_ops(struct device *parent, const struct wwan_ops *ops,
- 		return -EINVAL;
- 
- 	wwandev = wwan_create_dev(parent);
--	if (!wwandev)
--		return -ENOMEM;
-+	if (IS_ERR(wwandev))
-+		return PTR_ERR(wwandev);
- 
- 	if (WARN_ON(wwandev->ops)) {
- 		wwan_remove_dev(wwandev);
--- 
-2.30.2
-
+Yours,
+Linus Walleij
