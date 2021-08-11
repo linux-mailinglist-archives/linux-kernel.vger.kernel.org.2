@@ -2,116 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6273E9380
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736343E9395
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbhHKOVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbhHKOVG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:21:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E68C061765;
-        Wed, 11 Aug 2021 07:20:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628691641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OafCV4to9crXJDZQlKZLG9oI45GR46qnotTCu0bnsWg=;
-        b=EHUkGagFvKnCQfRChYF6XHFSVvFkpBTTSBznUoNqLIaN/MtSeRxqbpW0jv1fi56h8WDEmK
-        rxSLrO0jGRbOfwk+0EbUXiOulBMfssktsSLCWww9KOlMRMI9etJTXmXjiFKuKHUwQ+VTzQ
-        FVUrBjPXMXjugerRSCzY2amVrGRh0Tyf5fobbAoQQvFhMH7BBk0S0NrbTrY3NaFe45YKkA
-        SZGHv/tcioR4+5pX1iKrJA4gKHDmBG2ZNIwyexbLLOT2rNUtr9RyQzk3kH2xxf4Z5IFDrn
-        /Vnt88zEbk5XRba5fPgWrRmz1ikvuPHxOUMxu5LAI2dxakjrrfkaUu/Oignsmw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628691641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OafCV4to9crXJDZQlKZLG9oI45GR46qnotTCu0bnsWg=;
-        b=HAyOZ9MVx5HrgdCxBFhawXExDimFeQOh1KIrtLFE68XqN2B6WuRUJqfNSd0pV9UX9WSoUd
-        UslWqykbe6uHL0BA==
-To:     blinkin@email.it
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
-Subject: Re: Bug report for kernel v4.15-rc8+
-In-Reply-To: <1437097118.2114098.1628689870926.JavaMail.zimbra@email.it>
-References: <629765464.1655403.1628264743080.JavaMail.zimbra@email.it>
- <87tujxssp2.ffs@tglx>
- <217397770.2008922.1628604301644.JavaMail.zimbra@email.it>
- <877dgtql9v.ffs@tglx>
- <1437097118.2114098.1628689870926.JavaMail.zimbra@email.it>
-Date:   Wed, 11 Aug 2021 16:20:41 +0200
-Message-ID: <87tujwhxl2.ffs@tglx>
+        id S232460AbhHKOV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:21:56 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45150 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232341AbhHKOVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 10:21:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=hKc2VUZOlUn7+9qhTayubrmJeEFnKYw+IpcOlyGgPPk=; b=PbyC/yxQGYgnOdQZDAa0h8cp6m
+        Qlzmv+ahlLg98NOGhtKsPTjc5n4pywyf0RD2mgvwWFJpCpJOwSLsu/y58jWtQNZO5bTSbHSy3cQS3
+        4PsgXxyKHPz9IbUkdqdRUBChsNzWnr6T2OhDC2hLQDR7n57+YaDf/GW9w/bBFFq6NEbY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mDp6G-00H7vb-PU; Wed, 11 Aug 2021 16:20:56 +0200
+Date:   Wed, 11 Aug 2021 16:20:56 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Wong Vee Khee <vee.khee.wong@linux.intel.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] net: pcs: xpcs: enable skip xPCS soft reset
+Message-ID: <YRPcyHTc2FJeEoqk@lunn.ch>
+References: <20210809102229.933748-1-vee.khee.wong@linux.intel.com>
+ <20210809102229.933748-2-vee.khee.wong@linux.intel.com>
+ <YREvDRkiuScyN8Ws@lunn.ch>
+ <20210810235529.GB30818@linux.intel.com>
+ <f2a1f135-b77a-403d-5d2e-c497efc99df7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f2a1f135-b77a-403d-5d2e-c497efc99df7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11 2021 at 15:51, blinkin@email.it wrote:
-> 1) You're booting with an out of tree module
->
->   Uninstalled virtualbox, reproduced same behavior without the module.
->   dmesg outputs attached with and without the workaround
->   (dmesg_novboxdrv_clean.txt and dmesg_novboxdrv_irqaffinity0.txt)
+> > BIOS does configured the SerDes. The problem here is that all the
+> > configurations done by BIOS are being reset at xpcs_create().
+> > 
+> > We would want user of the pcs-xpcs module (stmmac, sja1105) to have
+> > control whether or not we need to perform to the soft reset in the
+> > xpcs_create() call.
+> 
+> I understood Andrew's response as suggesting to introduce the ability for
+> xpcs_create() to make a BIOS call which would configure the SerDes after
+> xpcs_soft_reset().
 
-Ok.
+Yes. Exactly. That is what ACPI is for, so we should use it for this.
 
-> 2) Please provide information what is consuming 90% of a CPU
->
->   top shows a kworker process consistently at 50% without the
->   workaround, 60% with the workaround. No significant activity amounts
->   from other processes.  Sometimes that 50% is split between two
->   kworker processes for a short time.  CPU core #0 activity is a
->   constant 60% without the workaround, 90% with the workaround
-
-That's broken. /proc/interrupts gives some hint:
-
-1) Stock kernel
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:          0          0          0          9  IR-IO-APIC    1-edge      i8042
->    8:          0          1          0          0  IR-IO-APIC    8-edge      rtc0
->    9:          0     923411          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-900k ACPI interrupts right after boot
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:          0          0          0         11  IR-IO-APIC    1-edge      i8042
->    8:          0          1          0          0  IR-IO-APIC    8-edge      rtc0
->    9:          0    4869059          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-One minute later it's 4.8M
-
-With affinity forced to CPU0 it's even more:
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:          9          0          0          0  IR-IO-APIC    1-edge      i8042
->    8:          1          0          0          0  IR-IO-APIC    8-edge      rtc0
->    9:    7576456          0          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-7.5M right after boot
-
->             CPU0       CPU1       CPU2       CPU3       
->    0:         10          0          0          0  IR-IO-APIC    2-edge      timer
->    1:         11          0          0          0  IR-IO-APIC    1-edge      i8042
->    8:          1          0          0          0  IR-IO-APIC    8-edge      rtc0
->    9:   10992420          0          0          0  IR-IO-APIC    9-fasteoi   acpi
-
-10.9M after one minute. Though the delta between right after boot and 1
-minute later is in the same ballpark.
-
-Cc'ed the ACPI people for clues.
-
-Thanks,
-
-        tglx
+     Andrew
