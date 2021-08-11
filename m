@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7B03E9707
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1143E9709
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhHKRvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:51:05 -0400
-Received: from mail-pj1-f44.google.com ([209.85.216.44]:42674 "EHLO
-        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhHKRvD (ORCPT
+        id S231374AbhHKRvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhHKRvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:51:03 -0400
-Received: by mail-pj1-f44.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso6328637pjb.1;
-        Wed, 11 Aug 2021 10:50:39 -0700 (PDT)
+        Wed, 11 Aug 2021 13:51:21 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0FAC061765;
+        Wed, 11 Aug 2021 10:50:57 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id m17so2187211ljp.7;
+        Wed, 11 Aug 2021 10:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WzsnUxBYIc+bSZUtA3NKiDP+0ZwVyawbHIDa/FfGc4Y=;
+        b=Z98w6Murfk1StGoEFJCxePVLAOuOt1g1EmB1/Vb7kolrquRDRjbCvwlsGVHgf0/s6R
+         6Gi1582QeZGW5yn4B89EGNMtVaADen/DMnYolZ8DU4/JEuU7EJG7skg+Gh1KOv7ca7aT
+         IuGOcO53necv70sOTZbxVWkH1lb1NMKAAx3GStoRV7NQVC/ECn3ANBhpzVMBYz8liMMi
+         C++Jg2VJOFum8AoP3ryOAk9oH5PW8Yi5LnDkGpbgG82yPzsAiACedneLPUSYNdtp45WW
+         AlDPBjttamudHhH3+D+gXlvS+WcTS+Tfv3yq+9yyxsrlai0ulfcQYqu7ok4DenjDTz4b
+         yThQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uXuZxvmC9dWMxXHamiQ0kCxgDbumKVveKsGWWbzD8PI=;
-        b=XD0zdgPOBkocNasvwGoH+G2voAaY6yV8xHCv/LE5HI36J8qVIJT+DSHifb10BUtrFO
-         q18qpgzoyceDBwzST528OvHQGP/iHRWXOGORvEJujcfrttQzONCNGbPoHSReYiXpbSym
-         Fv+vZB8ZXpJnF7ha3bshPy8tvvE7KS1mCG6tNJjQL5dpHB68bvaIeHsF9IVLu2TK36kT
-         8iZ78ORdslXEx8HVayatcHATriWMQjMDRVBa5vWELap+qJLVQtkV7LU6BjicTJjPLD58
-         eFxBf0FGuRe1hzPi1wYjbKn7jclb6c2gg6lwf/fNdxnZYwkED052yvyAj6HRqbqa67Xt
-         FIow==
-X-Gm-Message-State: AOAM533mhTDziTbqWfeunKZmCq52UDxm/IYCl2vGJ2cir60ezg+Ei1ku
-        3BjHlbu490Un/8gDD/otVw==
-X-Google-Smtp-Source: ABdhPJxuEAsQX2oLcwEObZ00L2Y1HqW/rUDfIiQ9FVgGXV3Y6qIEzhTf4EKv95M02ZNUs+Q2cxypiQ==
-X-Received: by 2002:a63:5252:: with SMTP id s18mr65321pgl.94.1628704238944;
-        Wed, 11 Aug 2021 10:50:38 -0700 (PDT)
-Received: from robh.at.kernel.org ([208.184.162.215])
-        by smtp.gmail.com with ESMTPSA id e31sm78977pjk.19.2021.08.11.10.50.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WzsnUxBYIc+bSZUtA3NKiDP+0ZwVyawbHIDa/FfGc4Y=;
+        b=TaBo2mep0SGWpOMIrOUpplmSoqvYSI7Lhenk8yMKjLxOVlw7NlNEpuY8ecNMYJvrll
+         ri0K8NZWsOaNvhat355/jbZCrxOSxnZ1WMwbxTJk85QuUJCCCQBrPhWGn46RqEOmE1Ca
+         JRBk29qICrYOYG6M5If1YRItjlr9djbdnBwOrxV9s2kydtmY6jbkrmENt2c+8L4otNGX
+         j5U95Ka4slqDNmRpvObtwpgCZjTRa7mh+5K5f8MQsYEu0juQVKuAmUC3OouC+FeIl95L
+         qwrxHTrjw2Ut9j0MMPmiWe3aU9GaBS9OkI5K5BkWyp69B0tlg7+bFWJqpJbKkICcoOJ2
+         PfpQ==
+X-Gm-Message-State: AOAM533rGvGyC4wEzPUEk32DQ4dmxJb7RxzIfz9+qfcdDIESkyCsSGYG
+        U8gs7s5zIPF3PIr38HrjWr4=
+X-Google-Smtp-Source: ABdhPJzEyaU97ApUL46N7106t7ETiGvrl5AX89dDJP4GxSN4vbomMZnLX8IRmHcAPlg3m9k57d7mtw==
+X-Received: by 2002:a05:651c:2043:: with SMTP id t3mr17204244ljo.499.1628704255038;
+        Wed, 11 Aug 2021 10:50:55 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.232])
+        by smtp.gmail.com with ESMTPSA id h10sm1619lfc.49.2021.08.11.10.50.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 10:50:38 -0700 (PDT)
-Received: (nullmailer pid 4169078 invoked by uid 1000);
-        Wed, 11 Aug 2021 17:50:34 -0000
-Date:   Wed, 11 Aug 2021 11:50:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        devicetree@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] dt-bindings: pci: Add DT binding for Toshiba
- Visconti PCIe controller
-Message-ID: <YRQN6paKB1772KJD@robh.at.kernel.org>
-References: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210811083830.784065-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Wed, 11 Aug 2021 10:50:54 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     kraxel@redhat.com, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, dongwon.kim@intel.com
+Cc:     linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+e9cd3122a37c5d6c51e8@syzkaller.appspotmail.com
+Subject: [PATCH next] udmabuf: fix general protection fault in udmabuf_create
+Date:   Wed, 11 Aug 2021 20:50:52 +0300
+Message-Id: <20210811175052.21254-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811083830.784065-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 05:38:28PM +0900, Nobuhiro Iwamatsu wrote:
-> This commit adds the Device Tree binding documentation that allows
-> to describe the PCIe controller found in Toshiba Visconti SoCs.
-> 
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> 
-> v3 -> v4:
->  - Changed the redundant clock name.
-> 
-> v2 -> v3:
->  - No update.
-> 
-> v1 -> v2:
->  - Remove white space.
->  - Drop num-viewport and bus-range from required.
->  - Drop status line from example.
->  - Drop bus-range from required.
->  - Removed lines defined in pci-bus.yaml from required.
-> ---
->  .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++++++++++++++
->  1 file changed, 110 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+Syzbot reported general protection fault in udmabuf_create. The problem
+was in wrong error handling.
 
-I already applied this, why are you sending it again?
+In commit 16c243e99d33 ("udmabuf: Add support for mapping hugepages (v4)")
+shmem_read_mapping_page() call was replaced with find_get_page_flags(),
+but find_get_page_flags() returns NULL on failure instead PTR_ERR().
 
-Rob
+Wrong error checking was causing GPF in get_page(), since passed page
+was equal to NULL. Fix it by changing if (IS_ER(!hpage)) to if (!hpage)
+
+Reported-by: syzbot+e9cd3122a37c5d6c51e8@syzkaller.appspotmail.com
+Fixes: 16c243e99d33 ("udmabuf: Add support for mapping hugepages (v4)")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/dma-buf/udmabuf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+index 8df761a10251..c57a609db75b 100644
+--- a/drivers/dma-buf/udmabuf.c
++++ b/drivers/dma-buf/udmabuf.c
+@@ -227,8 +227,8 @@ static long udmabuf_create(struct miscdevice *device,
+ 				if (!hpage) {
+ 					hpage = find_get_page_flags(mapping, pgoff,
+ 								    FGP_ACCESSED);
+-					if (IS_ERR(hpage)) {
+-						ret = PTR_ERR(hpage);
++					if (!hpage) {
++						ret = -EINVAL;
+ 						goto err;
+ 					}
+ 				}
+-- 
+2.32.0
+
