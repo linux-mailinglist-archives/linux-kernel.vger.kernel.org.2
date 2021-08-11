@@ -2,131 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF21C3E984C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4F33E9858
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhHKTH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:07:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48558 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229802AbhHKTHZ (ORCPT
+        id S231398AbhHKTJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhHKTJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:07:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628708821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5QE/fAtzET4+bnEA1B+px7kFDrqIsaQmncafMGX56pg=;
-        b=acGaNmFyQOUPi9V004SBa6Y7J0E2zAMjHPX2EUY3ISuppRIeUnNBPNbqi90J8qiXCY1zk+
-        pVJmCyCefZR6P8GddJoEMfXWNbKMoDs+S+DJl2w7bQCfrJKUlXggzSAUb830md29DbRJmt
-        1eaBs1vmHeJvRIwB9hoEON6JUg81pW4=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-89-nvjtjfukOpSPxe3jmXIT9g-1; Wed, 11 Aug 2021 15:07:00 -0400
-X-MC-Unique: nvjtjfukOpSPxe3jmXIT9g-1
-Received: by mail-qk1-f197.google.com with SMTP id p123-20020a378d810000b02903ad5730c883so1915411qkd.22
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:07:00 -0700 (PDT)
+        Wed, 11 Aug 2021 15:09:26 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63194C061765;
+        Wed, 11 Aug 2021 12:09:02 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id bo19so5294655edb.9;
+        Wed, 11 Aug 2021 12:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/kx99l4AFREz6kWtSe9Q0SS4hFkwUFel+RKAC9QtMoo=;
+        b=FraEamM/2irn/3FwdHRonPpAyqpBozB2aShfvrFtpJgDVkgT0jP742F/xL1whVNt8+
+         +hEnpthv1sdtAbZ4wxtXoaSrYeIjHwMO/94o8SYzZr6NEs1gPYvTDkGRkN3SqV9BJlay
+         k37WwgYRCiUry6CY5SkJehxa/LYyIvFTiHOB27EtMekizRwv8Vz8bjsmbAnPW8T16TZ3
+         /BW5c2hn260Y6GeR9OAwAOS8kCDV2muCgWdP14sskdK8MPPW7z6QDHSkDK7i/uhgMbjF
+         YIMwApRYJZQfsd8J1OOzkBPFOyG0DUWT6szlnRWKBwL2qS6qdsecyd2664KRHbwEK0BM
+         3xkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5QE/fAtzET4+bnEA1B+px7kFDrqIsaQmncafMGX56pg=;
-        b=luPAEst+hBlbVN8ilNIPnuNQ1ZgDuXdW5f4tPMkaWWMH54mCin53boLDd2bNGiM203
-         nAtSA2ItbzcodIia05APzpXJIJhn4TLVm1LvJWoxLBUpXkwz47EXjOUdwX+RHfhhZ5Ne
-         xyenCpA0RdIzv5UlHlchNZeopDvCk1IrptMcRT8e7DpUbcx77tyqrLkqy2ROde30Ckl4
-         Idm7Fh4gQK91xkCu+Nu0RMucMcO5xI5SBXn+RVj0Jnrc9tK2ynqpUnuibiGkJkQ3VdEi
-         7w2ERWVXMMFVUME2ZQubRvK1qVokk66vvcDXZBEspf1ZbbhUmNY0LSU1/EldBWmlezuO
-         LT2g==
-X-Gm-Message-State: AOAM532/NnQ+apb6QuSV1+8V58KFxyCGwwemQ02uM01IAKvpVFJxKxls
-        Q5Adl5MJevUX88ounE0qIQc54L8VsyzHTeNaoOoYhmVJMNmAhShdTYNFxLchtj36is2+WItt6Ia
-        dBDo8bW3IBw9+ktTnIrKq+SuA
-X-Received: by 2002:a05:620a:d54:: with SMTP id o20mr546817qkl.326.1628708819956;
-        Wed, 11 Aug 2021 12:06:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKHjAyXPoQ+oPzvXay29LjdH91msFnZE5INVFTZ7WTWz4fV05+iXY5Xx2XjtEEZI8g965sFQ==
-X-Received: by 2002:a05:620a:d54:: with SMTP id o20mr546794qkl.326.1628708819787;
-        Wed, 11 Aug 2021 12:06:59 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id b7sm57742qtj.72.2021.08.11.12.06.58
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/kx99l4AFREz6kWtSe9Q0SS4hFkwUFel+RKAC9QtMoo=;
+        b=rGH7HIrQXRMF4/coQ/BS5WikKbyD7u1Lp5PTi8TTQcRfCoyYfOdpR0HXIiBpdprxeH
+         PYiT+eP3ohnNlAZanUJ3BKoNqd+VRDBtSbxWYZHvbxfE6VfzxSybsr/KQ6Tg+YOa01pH
+         VgSa7P5QKvEq8vHAVrvETJcecGuXUFeK08jd0MKVydAHrRQiqF4HcEYqKoCTkq0vElfn
+         P5hRmwCUOaU2sqmZqaqO+eRVeZ30aAAmHZZI5PGMsM64lCwpyTsG6x/l1QfY12ecUJJ8
+         2jhV43czbFgbf9xLOC+Z7TyvIVcvh2VmCJnBwEMVTrQkg3xrybbPjIEhMv+d6+qCtLUo
+         GptA==
+X-Gm-Message-State: AOAM533chReNKlj2QZGTQa9iyUaRMTdRig8NgSqxlyVsoKTcu9NYYqeI
+        266VQflk8vHu0rJ1Kif+iYA=
+X-Google-Smtp-Source: ABdhPJxiLXCb7e9rw5zJfAOg0IgJGT1m8l2QjGXe1StGYsjdZc6FYZznaZTEVN7VjSI9Od9COnyUpg==
+X-Received: by 2002:a05:6402:202:: with SMTP id t2mr529833edv.116.1628708940905;
+        Wed, 11 Aug 2021 12:09:00 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:502:1d80:48ac:8fee:19a2:adc6? ([2a04:241e:502:1d80:48ac:8fee:19a2:adc6])
+        by smtp.gmail.com with ESMTPSA id p3sm100314ejy.20.2021.08.11.12.08.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 12:06:59 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] cgroup/cpuset: Enable memory migration for cpuset v2
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20210811163035.1977-1-longman@redhat.com>
- <YRQbdTgprUJyuis7@cmpxchg.org>
-Message-ID: <b85cfcb5-9037-b92e-6513-871944995090@redhat.com>
-Date:   Wed, 11 Aug 2021 15:06:58 -0400
+        Wed, 11 Aug 2021 12:09:00 -0700 (PDT)
+From:   Leonard Crestez <cdleonard@gmail.com>
+Subject: Re: [RFCv2 1/9] tcp: authopt: Initial support and key management
+To:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        Dmitry Safonov <dima@arista.com>
+References: <cover.1628544649.git.cdleonard@gmail.com>
+ <67c1471683200188b96a3f712dd2e8def7978462.1628544649.git.cdleonard@gmail.com>
+ <CAJwJo6aicw_KGQSM5U1=0X11QfuNf2dMATErSymytmpf75W=tA@mail.gmail.com>
+ <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
+ <68749e37-8e29-7a51-2186-7692f5fd6a79@gmail.com>
+Message-ID: <44e5ae2b-0a9c-b5bc-19d2-f037de061944@gmail.com>
+Date:   Wed, 11 Aug 2021 22:08:57 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YRQbdTgprUJyuis7@cmpxchg.org>
+In-Reply-To: <68749e37-8e29-7a51-2186-7692f5fd6a79@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/21 2:48 PM, Johannes Weiner wrote:
-> On Wed, Aug 11, 2021 at 12:30:35PM -0400, Waiman Long wrote:
->> When a user changes cpuset.cpus, each task in a v2 cpuset will be moved
->> to one of the new cpus if it is not there already. For memory, however,
->> they won't be migrated to the new nodes when cpuset.mems changes. This is
->> an inconsistency in behavior.
+On 11.08.2021 17:31, Dmitry Safonov wrote:
+> On 8/11/21 9:29 AM, Leonard Crestez wrote:
+>> On 8/10/21 11:41 PM, Dmitry Safonov wrote:
+>>> I wonder if it's also worth saving some bytes by something like
+>>> struct tcp_ao_key *key;
+>>>
+>>> With
+>>> struct tcp_ao_key {
+>>>         u8 keylen;
+>>>         u8 key[0];
+>>> };
+>>>
+>>> Hmm?
 >>
->> In cpuset v1, there is a memory_migrate control file to enable such
->> behavior by setting the CS_MEMORY_MIGRATE flag. Make it the default
->> for cpuset v2 so that we have a consistent set of behavior for both
->> cpus and memory.
->>
->> There is certainly a cost to make memory migration the default, but it
->> is a one time cost that shouldn't really matter as long as cpuset.mems
->> isn't changed frequenty.  Update the cgroup-v2.rst file to document the
->> new behavior and recommend against changing cpuset.mems frequently.
->>
->> Since there won't be any concurrent access to the newly allocated cpuset
->> structure in cpuset_css_alloc(), we can use the cheaper non-atomic
->> __set_bit() instead of the more expensive atomic set_bit().
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   Documentation/admin-guide/cgroup-v2.rst | 6 ++++++
->>   kernel/cgroup/cpuset.c                  | 6 +++++-
->>   2 files changed, 11 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
->> index 5c7377b5bd3e..47c832ad1322 100644
->> --- a/Documentation/admin-guide/cgroup-v2.rst
->> +++ b/Documentation/admin-guide/cgroup-v2.rst
->> @@ -2056,6 +2056,12 @@ Cpuset Interface Files
->>   	The value of "cpuset.mems" stays constant until the next update
->>   	and won't be affected by any memory nodes hotplug events.
->>   
->> +	Setting a non-empty value to "cpuset.mems" causes memory of
->> +	tasks within the cgroup to be migrated to the designated nodes if
->> +	they are currently using memory outside of the designated nodes.
->> +	There is a cost for this migration.  So "cpuset.mems" shouldn't
->> +	be changed frequently.
-> The migration skips over pages that are (temporarily) off the LRU for
-> reclaim, compaction etc. so it can leave random pages behind.
->
-> In practice it's probably fine, but it probably makes sense to say
-> it's advisable to set this config once before the workload launches
-> for best results, and not rely too much on changing things around
-> post-hoc, due to cost you pointed out but also due to reliability.
->
-> Otherwise no objection from me.
->
-Thanks for the suggestion. Will update the patch to include additional 
-wording about that.
+>> This increases memory management complexity for very minor gains. Very
+>> few tcp_authopt_key will ever be created.
+> 
+> The change doesn't seem to be big, like:
+> --- a/net/ipv4/tcp_authopt.c
+> +++ b/net/ipv4/tcp_authopt.c
+> @@ -422,8 +422,16 @@ int tcp_set_authopt_key(struct sock *sk, sockptr_t
+> optval, unsig>
+>          key_info = __tcp_authopt_key_info_lookup(sk, info, opt.local_id);
+>          if (key_info)
+>                  tcp_authopt_key_del(sk, info, key_info);
+> +
+> +       key = sock_kmalloc(sk, sizeof(*key) + opt.keylen, GFP_KERNEL |
+> __GFP_ZERO);
+> +       if (!key) {
+> +               tcp_authopt_alg_release(alg);
+> +               return -ENOMEM;
+> +       }
+> +
+>          key_info = sock_kmalloc(sk, sizeof(*key_info), GFP_KERNEL |
+> __GFP_ZERO);
+>          if (!key_info) {
+> +               sock_kfree_s(sk, key, sizeof(*key) + opt.keylen);
+>                  tcp_authopt_alg_release(alg);
+>                  return -ENOMEM;
+>          }
+> 
+> I don't know, probably it'll be enough for every user to limit their
+> keys by length of 80, but if one day it won't be enough - this ABI will
+> be painful to extend.
 
-Cheers,
-Longman
+struct tcp_authopt_key also needs to be modified and a separate 
+copy_from_user is required. It's not very complicated but not very 
+useful either.
 
+>>>> +struct tcp_authopt_key {
+>>>> +       /** @flags: Combination of &enum tcp_authopt_key_flag */
+>>>> +       __u32   flags;
+>>>> +       /** @local_id: Local identifier */
+>>>> +       __u32   local_id;
+>>>> +       /** @send_id: keyid value for send */
+>>>> +       __u8    send_id;
+>>>> +       /** @recv_id: keyid value for receive */
+>>>> +       __u8    recv_id;
+>>>> +       /** @alg: One of &enum tcp_authopt_alg */
+>>>> +       __u8    alg;
+>>>> +       /** @keylen: Length of the key buffer */
+>>>> +       __u8    keylen;
+>>>> +       /** @key: Secret key */
+>>>> +       __u8    key[TCP_AUTHOPT_MAXKEYLEN];
+>>>> +       /**
+>>>> +        * @addr: Key is only valid for this address
+>>>> +        *
+>>>> +        * Ignored unless TCP_AUTHOPT_KEY_ADDR_BIND flag is set
+>>>> +        */
+>>>> +       struct __kernel_sockaddr_storage addr;
+>>>> +};
+>>>
+>>> It'll be an ABI if this is accepted. As it is - it can't support
+>>> RFC5925 fully.
+>>> Extending syscall ABI is painful. I think, even the initial ABI *must*
+>>> support
+>>> all possible features of the RFC.
+>>> In other words, there must be src_addr, src_port, dst_addr and dst_port.
+>>> I can see from docs you've written you don't want to support a mix of
+>>> different
+>>> addr/port MKTs, so you can return -EINVAL or -ENOTSUPP for any value
+>>> but zero.
+>>> This will create an ABI that can be later extended to fully support RFC.
+>>
+>> RFC states that MKT connection identifiers can be specified using ranges
+>> and wildcards and the details are up to the implementation. Keys are
+>> *NOT* just bound to a classical TCP 4-tuple.
+>>
+>> * src_addr and src_port is implicit in socket binding. Maybe in theory
+>> src_addr they could apply for a server socket bound to 0.0.0.0:PORT but
+>> userspace can just open more sockets.
+>> * dst_port is not supported by MD5 and I can't think of any useful
+>> usecase. This is either well known (179 for BGP) or auto-allocated.
+>> * tcp_md5 was recently enhanced allow a "prefixlen" for addr and
+>> "l3mdev" ifindex binding.
+>>
+>> This last point shows that the binding features people require can't be
+>> easily predicted in advance so it's better to allow the rules to be
+>> extended.
+> 
+> Yeah, I see both changes you mention went on easy way as they reused
+> existing paddings in the ABI structures.
+> Ok, if you don't want to reserve src_addr/src_port/dst_addr/dst_port,
+> than how about reserving some space for those instead?
+
+My idea was that each additional binding featurs can be added as a new 
+bit flag in tcp_authopt_key_flag and the structure extended. Older 
+applications won't pass the flag and kernel will silently accept the 
+shorter optval and you get compatibility.
+
+As far as I can tell MD5 supports binding in 3 ways:
+
+1) By dst ip address
+2) By dst ip address and prefixlen
+3) By ifindex for vrfs
+
+Current version of tcp_authopt only supports (1) but I think adding the 
+other methods isn't actually difficult at all.
+
+I'd rather not guess at future features by adding unused fields.
+
+>>> The same is about key: I don't think you need to define/use
+>>> tcp_authopt_alg.
+>>> Just use algo name - that way TCP-AO will automatically be able to use
+>>> any algo supported by crypto engine.
+>>> See how xfrm does it, e.g.:
+>>> struct xfrm_algo_auth {
+>>>       char        alg_name[64];
+>>>       unsigned int    alg_key_len;    /* in bits */
+>>>       unsigned int    alg_trunc_len;  /* in bits */
+>>>       char        alg_key[0];
+>>> };
+>>>
+>>> So you can let a user chose maclen instead of hard-coding it.
+>>> Much more extendable than what you propose.
+>>
+>> This complicates ABI and implementation with features that are not
+>> needed. I'd much rather only expose an enum of real-world tcp-ao
+>> algorithms.
+> 
+> I see it exactly the opposite way: a new enum unnecessary complicates
+> ABI, instead of passing alg_name[] to crypto engine. No need to add any
+> support in tcp-ao as the algorithms are already provided by kernel.
+> That is how it transparently works for ipsec, why not for tcp-ao?
+
+The TCP Authentication Option standard has been out there for many many 
+years now and alternative algorithms are not widely used. I think cisco 
+has a third algorithm? What you're asking for is a large extension of 
+the IETF standard.
+
+If you look at the rest of this series I had a lot of trouble with 
+crypto tfm allocation context so I had to create per-cpu pool, similar 
+to tcp-md5. Should I potentially create a pool for each alg known to 
+crypto-api?
+
+Letting use control algorithms and traffickey and mac lengths creates 
+new potential avenues for privilege escalation that need to be checked.
+
+As much as possible I would like to avoid exposing the linux crypto api 
+through TCP sockopts.
+
+I was also thinking of having a non-namespaced sysctl to disable 
+tcp_authopt by default for security reasons. Unless you're running a 
+router you should never let userspace touch these options.
+
+>>> [..]
+>>>> +#ifdef CONFIG_TCP_AUTHOPT
+>>>> +       case TCP_AUTHOPT: {
+>>>> +               struct tcp_authopt info;
+>>>> +
+>>>> +               if (get_user(len, optlen))
+>>>> +                       return -EFAULT;
+>>>> +
+>>>> +               lock_sock(sk);
+>>>> +               tcp_get_authopt_val(sk, &info);
+>>>> +               release_sock(sk);
+>>>> +
+>>>> +               len = min_t(unsigned int, len, sizeof(info));
+>>>> +               if (put_user(len, optlen))
+>>>> +                       return -EFAULT;
+>>>> +               if (copy_to_user(optval, &info, len))
+>>>> +                       return -EFAULT;
+>>>> +               return 0;
+>>>> +       }
+>>>
+>>> I'm pretty sure it's not a good choice to write partly tcp_authopt.
+>>> And a user has no way to check what's the correct len on this kernel.
+>>> Instead of len = min_t(unsigned int, len, sizeof(info)), it should be
+>>> if (len != sizeof(info))
+>>>       return -EINVAL;
+>>
+>> Purpose is to allow sockopts to grow as md5 has grown.
+> 
+> md5 has not grown. See above.
+> 
+> Another issue with your approach
+> 
+> +       /* If userspace optlen is too short fill the rest with zeros */
+> +       if (optlen > sizeof(opt))
+> +               return -EINVAL;
+> +       memset(&opt, 0, sizeof(opt));
+> +       if (copy_from_sockptr(&opt, optval, optlen))
+> +               return -EFAULT;
+> 
+> is that userspace compiled with updated/grew structure will fail on
+> older kernel. So, no extension without breaking something is possible.
+
+Userspace that needs new features and also compatibility with older 
+kernels could check something like uname.
+
+I think this is already a problem with md5: passing 
+TCP_MD5SIG_FLAG_PREFIX on an old kernel simply won't take effect and 
+that's fine.
+
+The bigger concern is to ensure that old binaries work without changes.
+
+> Which also reminds me that currently you don't validate (opt.flags) for
+> unknown by kernel flags.
+
+Not sure what you mean, it is explicitly only known flags that are 
+copied from userspace. I can make setsockopt return an error on unknown 
+flags, this will make new apps fail more explicitly on old kernels.
+
+> Extending syscalls is impossible without breaking userspace if ABI is
+> not designed with extensibility in mind. That was quite a big problem,
+> and still is. Please, read this carefully:
+> https://lwn.net/Articles/830666/
+> 
+> That is why I'm suggesting you all those changes that will be harder to
+> fix when/if your patches get accepted.
+
+Both of the sockopt structs have a "flags" field and structure expansion 
+will be accompanied by new flags. Is this not sufficient for compatibility?
