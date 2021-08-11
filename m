@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A783E904C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA673E904E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbhHKMQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:16:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237540AbhHKMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:15:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA16760FC3;
-        Wed, 11 Aug 2021 12:15:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628684122;
-        bh=irWqmSUH1/ML7unA3kAGPLQs6RzjTFj1LRE3RBi/7uA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HWiEn6NQt2QEye6Wzv9LpGZn4RqnIljkxxoNbuBDIu4bd3YZe+W1DYmeqtLQFUtSq
-         0e8yYus7TgjRw6ZrpCzOzjwimI2Us1Ot1dII3/iOUjl8lQn9UoJ3t5twgQtV/Ez3Xw
-         +zgbPEaJhx37Ojq8iEglLqVqemr7Ve+B8vmalbMuZOJ5I3enz1cRyBYnFSld8DU0YJ
-         BIx9lJ4Fii9axtjz7BTFuNRLDo40kAMm2TLo9aY7SsZYqo98nCYo9IwVKjyrSqlrgo
-         7a9xr13+/PbEGH9ZB5ajQ5eG9oPKCu/ejw/vQ/uH6nEVj8gu2JkpHKjd5T3UYbtc5G
-         ga165PmyZH8cg==
-Date:   Wed, 11 Aug 2021 15:15:17 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vineet Gupta <vgupta@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 11/18] ARC: mm: move MMU specific bits out of entry code
-Message-ID: <YRO/VSMNi00X37xQ@kernel.org>
-References: <20210811004258.138075-1-vgupta@kernel.org>
- <20210811004258.138075-12-vgupta@kernel.org>
+        id S237668AbhHKMQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237478AbhHKMQT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:16:19 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CE8C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:15:55 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 203-20020a1c00d40000b02902e6a4e244e4so1806484wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nuviainc-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nn/UPEtSSOq2aO+2n1rQfQxHGvQ/Gb9SyS5gCui4WYA=;
+        b=lF2YYKb4jTBJYsM584kgmaeezgvjtLBvwh+Z3r4O92Wx+UZnokkPIXv6Ft0VrpO+gU
+         FBRISDB4mkfr+rFk8xebcIzXIstiEBECHdjhTCNS24t5rFHWrDNsM7OBbj87DK7T+Bn5
+         zIgj+wRY19cycQ/1pbeiUeOZIC/JJZZoBeJezaM129dN6fniuGJ06bPRQbp20SxblaTl
+         gui4Hm9hYkrawNye97fNW3Ucn8FC5AsaavmiPnnrUMvLZe1FKfAm3l4nkg9C8+V0ISva
+         xNXH8qd3iXMQCesPGF1Y6mIliyOC0eKV4qtnt9FB3vQa3XCg5SBZpP506QlZRe0rsRtl
+         xgcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nn/UPEtSSOq2aO+2n1rQfQxHGvQ/Gb9SyS5gCui4WYA=;
+        b=CRMRFcy6PpG+4KOSWxEc9XVkbF+XPrBJ5eIQNJhOATROX0Xpfw14pHJvmXuCqw2ebD
+         uUQYesP78KIOXiTjlUA9Peu1yhIQzpiP14Zqsuvu50Z80X+6VgOwRwj1oaGI5oo1OLf+
+         sd6QhrYpsl5eljCDDZEY2tFhc2fWULzz4STfcSbrvZZ867XlZmPBtxosZYJihjL2P3TU
+         pQX9ouE5TC7+BkOZvjBnG6MXvyNzRlXzAj5/rOECukG0xX4aeUZeDUY+U/HNJ3TaQV88
+         UFEyM4iMzN4AhNaVOp1hq/0gm/CYTK7oc22+PhiPYBlaH+qYTy58lYZIHp18BhRP2cBG
+         5oiA==
+X-Gm-Message-State: AOAM530LwOhwWN5SRUBRfR1GalKpXHQQoN9fGiNoKTbOiPPoycMwEDJY
+        cTFOJJ3mc3Yi4DO+TawTSFdEcA==
+X-Google-Smtp-Source: ABdhPJwbiZZJ3tq7YeVxFlt6/xFEZZ5E4igk1i+pordJ0dTrDJZklBO9SHmM1R+GAj1h1e5BOMZ9jQ==
+X-Received: by 2002:a7b:c958:: with SMTP id i24mr8339082wml.42.1628684153630;
+        Wed, 11 Aug 2021 05:15:53 -0700 (PDT)
+Received: from localhost ([82.44.17.50])
+        by smtp.gmail.com with ESMTPSA id h9sm5558968wrv.84.2021.08.11.05.15.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 05:15:52 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 13:15:52 +0100
+From:   Jamie Iles <jamie@nuviainc.com>
+To:     James Morse <james.morse@arm.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com
+Subject: Re: [PATCH v1 02/20] x86/resctrl: Merge mon_capable and mon_enabled
+Message-ID: <YRO/ePm75ekuO+6j@hazel>
+References: <20210729223610.29373-1-james.morse@arm.com>
+ <20210729223610.29373-3-james.morse@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811004258.138075-12-vgupta@kernel.org>
+In-Reply-To: <20210729223610.29373-3-james.morse@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I believe a few words here would be useful even for the future version of
-yourself ;-)
+Hi James,
 
-On Tue, Aug 10, 2021 at 05:42:51PM -0700, Vineet Gupta wrote:
-> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+On Thu, Jul 29, 2021 at 10:35:52PM +0000, James Morse wrote:
+> mon_enabled and mon_capable are always set as a pair by
+> rdt_get_mon_l3_config().
+> 
+> There is no point having two values.
+> 
+> Merge them together.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
 > ---
->  arch/arc/kernel/entry.S | 6 ------
->  arch/arc/mm/tlb.c       | 3 +++
->  2 files changed, 3 insertions(+), 6 deletions(-)
+>  arch/x86/kernel/cpu/resctrl/internal.h | 4 ----
+>  arch/x86/kernel/cpu/resctrl/monitor.c  | 1 -
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 8 ++++----
+>  include/linux/resctrl.h                | 4 ++--
+>  4 files changed, 6 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
-> index 2cb8dfe866b6..684efd094520 100644
-> --- a/arch/arc/kernel/entry.S
-> +++ b/arch/arc/kernel/entry.S
-> @@ -101,12 +101,6 @@ ENTRY(EV_MachineCheck)
->  	lr  r0, [efa]
->  	mov r1, sp
->  
-> -	; hardware auto-disables MMU, re-enable it to allow kernel vaddr
-> -	; access for say stack unwinding of modules for crash dumps
-> -	lr	r3, [ARC_REG_PID]
-> -	or	r3, r3, MMU_ENABLE
-> -	sr	r3, [ARC_REG_PID]
-> -
->  	lsr  	r3, r2, 8
->  	bmsk 	r3, r3, 7
->  	brne    r3, ECR_C_MCHK_DUP_TLB, 1f
-> diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
-> index b68d5798327b..34f16e0b41e6 100644
-> --- a/arch/arc/mm/tlb.c
-> +++ b/arch/arc/mm/tlb.c
-> @@ -813,5 +813,8 @@ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
->  		}
->  	}
->  
-> +	/* Re-enable MMU as hardware may have auto-disabled it upon exception */
-> +	write_aux_reg(ARC_REG_PID, read_aux_reg(ARC_REG_PID) | MMU_ENABLE);
-> +
->  	local_irq_restore(flags);
->  }
-> -- 
-> 2.25.1
-> 
+...
+> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> index ada0a02093a6..d715df9de37f 100644
+> --- a/include/linux/resctrl.h
+> +++ b/include/linux/resctrl.h
+> @@ -130,7 +130,7 @@ struct resctrl_schema;
+>  /**
+>   * struct rdt_resource - attributes of a resctrl resource
+>   * @rid:		The index of the resource
+> - * @mon_enabled:	Is monitoring enabled for this feature
+> + * @cdp_enabled		Is CDP enabled for this resource
+>   * @alloc_capable:	Is allocation available on this machine
+>   * @mon_capable:	Is monitor feature available on this machine
+>   * @num_rmid:		Number of RMIDs available
+> @@ -149,7 +149,7 @@ struct resctrl_schema;
+>   */
+>  struct rdt_resource {
+>  	int			rid;
+> -	bool			mon_enabled;
+> +	bool			cdp_enabled;
 
--- 
-Sincerely yours,
-Mike.
+Nothing is setting cdp_enabled in this patch, is this intended to be 
+here?
+
+Thanks,
+
+Jamie
