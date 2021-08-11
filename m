@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FC73E9A97
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 23:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6AF3E9A9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 23:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhHKVxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 17:53:19 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:38659 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232166AbhHKVxR (ORCPT
+        id S232395AbhHKVyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 17:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232013AbhHKVyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 17:53:17 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id AD6435C00BE;
-        Wed, 11 Aug 2021 17:52:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 11 Aug 2021 17:52:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FK7M9k
-        Owfu+KZDsOKjdiQ8lyNCXWTSpz2RJWMEH8QTE=; b=myEzfllXbQ91dfcBRmK3Yi
-        EIsoDkH8QYIvtmWI06mfJudcL/j9ABgMuHQZ3ULavzfvBITA5nKaqFbyb+yC7wZu
-        NoEcIzQwFqIIoquw6vTg52KjbQQNXrpjLVffJ2xB9BlmaxTD9jrfP2vS2MehMPPI
-        8GsnpdKafi0DoMVN56gkf/E4fYfS6K2nhhsMmXi9PgU47cIlJOiCQjW4CGT8rLIM
-        fypQcoUzK6i7wIfAzLMHAzmsf4YImpn+iJU4Hd1ryS67+WD7i9cNz/DFMnhZ/b8w
-        skGLGNQ2PEBwVNMBIgMUOR7zwjZKKbgVvqCHqfqu8DB7msNEPpOvSpFw/08a1qKw
-        ==
-X-ME-Sender: <xms:s0YUYUnGq_w357Aj6jRi8dtC1AJH12uVnu7vtD7FX1uJ8SBzjcos3g>
-    <xme:s0YUYT0fi0oZZNJsDq2PhiWBd30nh_eI9vI2DpyVqHaPLqjW0DWS7CJDRZzP5b9G6
-    LJpYQcVtlB9xaI>
-X-ME-Received: <xmr:s0YUYSpz6WQ-iCSqCkIXM9-2Q7zT7okw6Kq6AyxZ0GUIfLdYpN5bJk5K41TSFHUB2gQaQW9enmLeXNN30jjB6khz2_-2kQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkedvgddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepihguoh
-    hstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:s0YUYQkxeZAQTq8K-r0ZKyWpsQ3XSR5dIHp-R6_U0dQKJqiZRbDfMg>
-    <xmx:s0YUYS27N6QbEsSQbfH9XrGmmsHLukeSPstwge_6FvIHLcsTs0vhpw>
-    <xmx:s0YUYXu8RxKwwqd9spBJenIhKgJ-TTF_EiMB4RiAQlgiobaaEAYUrg>
-    <xmx:tEYUYbnynv0_56JXPddZ1sA5cfeG3RFgk5qeNMCgbHpri8iiifsUUg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 11 Aug 2021 17:52:51 -0400 (EDT)
-Date:   Thu, 12 Aug 2021 00:52:48 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     DENG Qingfang <dqfext@gmail.com>, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "moderated list:ETHERNET BRIDGE" <bridge@lists.linux-foundation.org>,
-        "open list:ETHERNET BRIDGE" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH net-next] net: bridge: switchdev: allow port isolation to
- be offloaded
-Message-ID: <YRRGsL60WeDGQOnv@shredder>
-References: <20210811135247.1703496-1-dqfext@gmail.com>
- <YRRDcGWaWHgBkNhQ@shredder>
- <20210811214506.4pf5t3wgabs5blqj@skbuf>
+        Wed, 11 Aug 2021 17:54:49 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3EAC061765;
+        Wed, 11 Aug 2021 14:54:25 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id B55E7C63FA; Wed, 11 Aug 2021 22:54:21 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1628718861; bh=wP+KfV1K5Aheg65Q3eew3Tf/ttId206mNOCxpxd/k14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sKpPyjT6eyd2CJkNT1y9K7fKiIq7U/WLse0MX6NRuaZAoz+3xpcz4JBVeSXVF2lQA
+         d+qJ2KORoXRKNndWJYgD/5g6FyQeZhH7NOOhtbufBwJBaGpg9Nb41ncS0vh/Ljxv7k
+         adzmvkG91v95tnboW2LNJZLLgnylkfyozCcupoUK1jQm+yHSTHI75Imh+AVpRD3oiP
+         1RXjrqz91/UHbWoiVYnGfzOR6+L5NwAWNlEJ5TYSnUgwlSPB6pLZy1hDXOr0TrtQeX
+         ZgbSYmd1ptiI4+7HbeLMCK13ZbGxCatGLxYgi9u8qzGk2ZEU6+LZM39PHH/GfHi+Ys
+         MC6LZDYhDb4uA==
+Date:   Wed, 11 Aug 2021 22:54:21 +0100
+From:   Sean Young <sean@mess.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     mchehab@kernel.org, tomimo@ncircle.nullnet.fi,
+        thierry.merle@free.fr, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] media: dvb-usb: fix memory leak in
+ cinergyt2_frontend_attach
+Message-ID: <20210811215421.GA28513@gofer.mess.org>
+References: <20210620202317.4338-1-paskripkin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811214506.4pf5t3wgabs5blqj@skbuf>
+In-Reply-To: <20210620202317.4338-1-paskripkin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 12:45:06AM +0300, Vladimir Oltean wrote:
-> On Thu, Aug 12, 2021 at 12:38:56AM +0300, Ido Schimmel wrote:
-> > On Wed, Aug 11, 2021 at 09:52:46PM +0800, DENG Qingfang wrote:
-> > > Add BR_ISOLATED flag to BR_PORT_FLAGS_HW_OFFLOAD, to allow switchdev
-> > > drivers to offload port isolation.
-> > >
-> > > Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> > > Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> > > ---
-> > >  net/bridge/br_switchdev.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
-> > > index 6bf518d78f02..898257153883 100644
-> > > --- a/net/bridge/br_switchdev.c
-> > > +++ b/net/bridge/br_switchdev.c
-> > > @@ -71,7 +71,8 @@ bool nbp_switchdev_allowed_egress(const struct net_bridge_port *p,
-> > >
-> > >  /* Flags that can be offloaded to hardware */
-> > >  #define BR_PORT_FLAGS_HW_OFFLOAD (BR_LEARNING | BR_FLOOD | \
-> > > -				  BR_MCAST_FLOOD | BR_BCAST_FLOOD)
-> > > +				  BR_MCAST_FLOOD | BR_BCAST_FLOOD | \
-> > > +				  BR_ISOLATED)
-> >
-> > Why add it now and not as part of a patchset that actually makes use of
-> > the flag in a driver that offloads port isolation?
+On Sun, Jun 20, 2021 at 11:23:17PM +0300, Pavel Skripkin wrote:
+> My local syzbot instance hit a memory leak in
+> cinergyt2_frontend_attach() [1].
 > 
-> The way the information got transmitted is a bit unfortunate.
-> 
-> Making BR_ISOLATED part of BR_PORT_FLAGS_HW_OFFLOAD is a matter of
-> correctness when switchdev offloads the data path. Since this feature
-> will not work correctly without driver intervention, it makes sense that
-> drivers should reject it currently, which is exactly what this patch
-> accomplishes - it makes the code path go through the
-> SWITCHDEV_ATTR_ID_PORT_PRE_BRIDGE_FLAGS driver handlers, which return
-> -EINVAL for everything they don't recognize.
+> The problem was in non-freed dvb_frontend in case of error.
+> If dvb_usb_generic_rw() call fails, an error will be returned from
+> cinergyt2_frontend_attach() [1] and num_adapters_initialized of
+> dvb_usb_device won't be incremented. That means dvb usb library
+> won't take care of freeing allocated frontend.
 
-If the purpose is correctness, then this is not the only flag that was
-missed. BR_HAIRPIN_MODE is also relevant for the data path, for example.
+This issue is already fixed by:
 
-Anyway, the commit message needs to be reworded to reflect the true
-purpose of the patch.
+9ad1efee086e0 media: dvd_usb: memory leak in cinergyt2_fe_attach
+
+Thanks for reporting and making a patch though.
+
+
+Sean
 
 > 
-> (yes, we do still have a problem for drivers that don't catch
-> SWITCHDEV_ATTR_ID_PORT_PRE_BRIDGE_FLAGS at all, switchdev will return
-> -EOPNOTSUPP for those which is then ignored, but those are in the
-> minority)
+> Fail log:
+> BUG: memory leak
+> unreferenced object 0xffff88801d9c6000 (size 2048):
+>   comm "kworker/1:3", pid 2960, jiffies 4295150569 (age 17.150s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 54 65 72 72 61 54 65 63  ........TerraTec
+>     2f 71 61 6e 75 20 55 53 42 32 2e 30 20 48 69 67  /qanu USB2.0 Hig
+>   backtrace:
+>     [<ffffffff85e169f0>] kmalloc include/linux/slab.h:556 [inline]
+>     [<ffffffff85e169f0>] kzalloc include/linux/slab.h:686 [inline]
+>     [<ffffffff85e169f0>] cinergyt2_fe_attach+0x40/0x110 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
+>     [<ffffffff85e15b31>] cinergyt2_frontend_attach+0x61/0x140 drivers/media/usb/dvb-usb/cinergyT2-core.c:74 [1]
+>     [<ffffffff85dcd71e>] dvb_usb_adapter_frontend_init+0x35e/0x5b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
+>     [<ffffffff88f98e83>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:90 [inline]
+>     [<ffffffff88f98e83>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:184 [inline]
+> 
+> Fixes: 986bd1e58b18 ("V4L/DVB (9107): Alternative version of Terratec Cinergy T2
+> driver")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  drivers/media/usb/dvb-usb/cinergyT2-core.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/media/usb/dvb-usb/cinergyT2-core.c b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+> index 969a7ec71dff..fb60af097535 100644
+> --- a/drivers/media/usb/dvb-usb/cinergyT2-core.c
+> +++ b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+> @@ -79,6 +79,7 @@ static int cinergyt2_frontend_attach(struct dvb_usb_adapter *adap)
+>  	ret = dvb_usb_generic_rw(d, st->data, 1, st->data, 3, 0);
+>  	if (ret < 0) {
+>  		deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
+> +		kfree(adap->fe_adap[0].fe);
+>  	}
+>  	mutex_unlock(&d->data_mutex);
+>  
+> -- 
+> 2.32.0
