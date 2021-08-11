@@ -2,101 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0343E8C57
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11CE3E8C71
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236231AbhHKIt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        id S236260AbhHKIv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235282AbhHKIt2 (ORCPT
+        with ESMTP id S229958AbhHKIvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:49:28 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721EDC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:49:04 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id h2so3347209lji.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:49:04 -0700 (PDT)
+        Wed, 11 Aug 2021 04:51:55 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87088C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:51:32 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id t3so1748487plg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JDzCwx530Uv8LE9Hg8k3gK4gX2isyfl8rKYS+HUnkVk=;
-        b=sFPNyBA3VF6paJeXHKJGiJN+Sh1GjSKbCHnngcFcrnT6aiT7iW9rGuN4Xsb21ft9Ma
-         T9/jSYq2dJBnAcpGVMVLvcjhtxLe6R5AQttb9yzE64d2XIUvUwUHb0MvTYfeldRrJu4j
-         aRrdXj3HskgcDrSEFBjyV7LBoctEoNNhSHEUCbwE8Xz6lUfoCKic4cYmh0BMOMb5ow8v
-         Vszgor5Hf8sUoNHIa3FgvoL/d94zBWOeYkpxKAkN2lItJBfUiwSu9LMs9cAFkfI1qWST
-         p2iHlEVXpW6omG2OORWBoQ/Ug3vBXorseCLE3nxaDI1BB9L/V1UWVy1loGcKl5t1Dmlm
-         fHqA==
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7vn1eldgbv11PV6+xbV5jWseW1R8cuS20m4woT+uMpA=;
+        b=bImmEc8rUsnx7O3YDjx4SMdyB5LjrzuWSVS+d19JS4Bvuh0I0MDJddl9RWl//ljE9p
+         /AjgyOczhJH57r6h5AwBOE3gCVpUCzyNlsnRniuMBvc1PDSJBJbgceE6FSgRkhc2yqYR
+         R+ukyzrGl1vPmXgYzoM8z8qXeuH2ZdoPeh7OA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JDzCwx530Uv8LE9Hg8k3gK4gX2isyfl8rKYS+HUnkVk=;
-        b=sNjrADzhbDPCC8LCh72A8nb27jdPjwxzTdCQl/XuEp4jyLSC9JuTKbXYPcNoPtWQSC
-         F8fplDTosc6wdDNE/3aBGDAe/y1FMsiQ92wjxJidBMQGh18ckAbG2QBjhu1GNJ9LzFNK
-         mGHmLqe/wKQMzGDfSRhQ3WmYqeCpjCw9v1BARyvtbld8pZqQuzOHGCh7To+aRIaGNl8M
-         4KCITjcLYJswZVKdVTgeunLqLnDBcZkvPeARmslebUclt4Xv/+HNHdVuTUoaqMX+LlFH
-         HZHGHH4CsUbMuSgH2VuulBWWYxX9cIUXlHEF+sDMkbBkendgcJnw1O1R/dmKEqFP7Dr0
-         kNwQ==
-X-Gm-Message-State: AOAM532lqPj+EhIBNNuV9oWtsLtulaapMsPagDEL2O0eDXZrnc1kYYfz
-        gRhExZ5zRHW5HNh1QXdwBy1Kr3zm5P2KjP5CSpM7Qw==
-X-Google-Smtp-Source: ABdhPJwCxS4RyJPQYMtZ37IXjlOSjy5gDhIzOTNQJe7kYmuLW56om7abo3l/tT9UNYV9boQQa6wawGYkS0DjsBv4nS8=
-X-Received: by 2002:a05:651c:327:: with SMTP id b7mr22987076ljp.74.1628671742768;
- Wed, 11 Aug 2021 01:49:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7vn1eldgbv11PV6+xbV5jWseW1R8cuS20m4woT+uMpA=;
+        b=ZVaO1GenCWpHAcIkQY8FlBlhXQ+4TLL8e5DRLAmSxk0u1Fx3DgQ+GYd2dw4uEp2Z/i
+         hQf5IHWmXvGAmcwCeOZjGu53KiRprF2lgCKukMpxjcswo7BXMuWHkOfOgqmuLMdfj8/w
+         Au15VUVr+nyniH3n9hfhAQm7EGZrge+X1SGFBSyZ8SKDRVUaiiuD2fQuiJL1k28QlnWq
+         W1ik0KUg9+2nO0UOi65WJql+sGfZbetxc6ZXWp5ZRc3veUQzE/o7owHrovdSI58+qWzP
+         G/EEvXIL20r+ArhrTctBIhDKZ6TL0h4evFFKeRVcAnybwWWNOZNDislLpIpV37hsh1P2
+         gF4Q==
+X-Gm-Message-State: AOAM532BpYSdxzRX6OE0OvIccLsyUYAHbhTtFAG317xNz1pUadz41f51
+        8mbdIkhO3IQu/3C+O8OmJHOyZQ==
+X-Google-Smtp-Source: ABdhPJzyyofg68LqLd3IEv7hF5/lLSnYCz8QJZvRcSjm+UlCxruIjcZ/S6MIAYlbUozesqOU9TG4qA==
+X-Received: by 2002:a17:90b:3007:: with SMTP id hg7mr9524316pjb.66.1628671892015;
+        Wed, 11 Aug 2021 01:51:32 -0700 (PDT)
+Received: from shiro.work (p866038-ipngn200510sizuokaden.shizuoka.ocn.ne.jp. [180.9.60.38])
+        by smtp.googlemail.com with ESMTPSA id ga8sm5704348pjb.4.2021.08.11.01.51.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 01:51:31 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com,
+        richard@nod.at
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G parts
+Date:   Wed, 11 Aug 2021 17:49:24 +0900
+Message-Id: <20210811084924.52293-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210804044033.3047296-1-hsinyi@chromium.org> <d48087c2-ddff-0c58-c7e6-a0ba526a393f@gmail.com>
-In-Reply-To: <d48087c2-ddff-0c58-c7e6-a0ba526a393f@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 10:48:51 +0200
-Message-ID: <CACRpkdb39r+AraKaAocB2qX+eLDdRvx3zFyvf0nqvEwFg_QdXg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] arm: dts: mt8135: Move pinfunc to include/dt-bindings/pinctrl
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Andy Teng <andy.teng@mediatek.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 11:02 AM Matthias Brugger <matthias.bgg@gmail.com> wrote:
+Add support for the various Foresee FS35ND0*G parts manufactured by Longsys.
 
-> Hi Linus,
->
-> On 04/08/2021 06:40, Hsin-Yi Wang wrote:
-> > Move mt8135-pinfunc.h into include/dt-bindings/pinctrl so that we can
-> > include it in yaml examples.
-> >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> >  arch/arm/boot/dts/mt8135.dtsi                                   | 2 +-
-> >  .../boot/dts => include/dt-bindings/pinctrl}/mt8135-pinfunc.h   | 0
-> >  2 files changed, 1 insertion(+), 1 deletion(-)
-> >  rename {arch/arm/boot/dts => include/dt-bindings/pinctrl}/mt8135-pinfunc.h (100%)
-> >
->
-> If that's fine with you, I'll take patch 1+2 through my tree. IMHO the best for
-> patch 3 would be to go through your tree.
->
-> Sounds good?
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 
-It can't be done that way. Patch 3 depends on patch 1+2 to get the
-include file into the right place for patch 3/3 to compile. (YAML
-check.)
+Link: https://datasheet.lcsc.com/szlcsc/2008121142_FORESEE-FS35ND01G-S1Y2QWFI000_C719495.pdf
+---
+ Changes since v2:
+ - Originally I only had the 1Gbit version of this chip, now I have the 2Gbit and 4Gbit
+   variations so I've added support for those too. There is no datasheet for the bigger
+   chips but they are documented in a flashing tool from an SoC vendor so I took the parameters
+   from there.
+ - Previous versions of this patch only had single io read cache variants. My SPI flash driver
+   now supports dual and quad io for reading so I added and tested those modes too.
+   My driver/hardware only supports single io for writing so those are still left out.
+ - Implemented proper logic for checking the ECC status.
+ - Combined with the previous patch for 1-filling the OOB in the page buffer before writing
+   I have been using this for a few months now without anything getting broken.
+ 
+ drivers/mtd/nand/spi/Makefile  |   2 +-
+ drivers/mtd/nand/spi/core.c    |   1 +
+ drivers/mtd/nand/spi/longsys.c | 134 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |   1 +
+ 4 files changed, 137 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/longsys.c
 
-I will apply all three and then provide an immutable branch that you
-can pull in to your tree as well. This is usually what we do with
-cross-tree dependencies.
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 9662b9c1d5a9..1d6819022e43 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
++spinand-objs := core.o gigadevice.o longsys.o macronix.o micron.o paragon.o toshiba.o winbond.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 446ba8d43fbc..48f635d5c1ff 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -895,6 +895,7 @@ static const struct nand_ops spinand_ops = {
+ 
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&gigadevice_spinand_manufacturer,
++	&longsys_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+ 	&paragon_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/longsys.c b/drivers/mtd/nand/spi/longsys.c
+new file mode 100644
+index 000000000000..ee38f8728262
+--- /dev/null
++++ b/drivers/mtd/nand/spi/longsys.c
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 Daniel Palmer <daniel@thingy.jp>
++ *
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_LONGSYS			0xCD
++#define FS35ND01G_S1Y2_STATUS_ECC_0_3_BITFLIPS	(0 << 4)
++#define FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS	(1 << 4)
++#define FS35ND01G_S1Y2_STATUS_ECC_UNCORRECTABLE	(2 << 4)
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int fs35nd01g_s1y2_ooblayout_ecc(struct mtd_info *mtd, int section,
++					struct mtd_oob_region *region)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	/* ECC is not user accessible */
++	region->offset = 0;
++	region->length = 0;
++
++	return 0;
++}
++
++static int fs35nd01g_s1y2_ooblayout_free(struct mtd_info *mtd, int section,
++				    struct mtd_oob_region *region)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	/*
++	 * No ECC data is stored in the accessible OOB so the full 16 bytes
++	 * of each spare region is available to the user. Apparently also
++	 * covered by the internal ECC.
++	 */
++	if (section) {
++		region->offset = 16 * section;
++		region->length = 16;
++	} else {
++		/* First byte in spare0 area is used for bad block marker */
++		region->offset = 1;
++		region->length = 15;
++	}
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops fs35nd01g_s1y2_ooblayout = {
++	.ecc = fs35nd01g_s1y2_ooblayout_ecc,
++	.free = fs35nd01g_s1y2_ooblayout_free,
++};
++
++static int fs35nd01g_s1y2_ecc_get_status(struct spinand_device *spinand,
++					u8 status)
++{
++	switch (status & STATUS_ECC_MASK) {
++	case FS35ND01G_S1Y2_STATUS_ECC_0_3_BITFLIPS:
++		return 3;
++	/*
++	 * The datasheet says *successful* with 4 bits flipped.
++	 * nandbiterrs always complains that the read reported
++	 * successful but the data is incorrect.
++	 */
++	case FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS:
++		return 4;
++	case FS35ND01G_S1Y2_STATUS_ECC_UNCORRECTABLE:
++		return -EBADMSG;
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
++static const struct spinand_info longsys_spinand_table[] = {
++	SPINAND_INFO("FS35ND01G-S1Y2",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEA, 0x11),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
++				     fs35nd01g_s1y2_ecc_get_status)),
++	SPINAND_INFO("FS35ND02G-S3Y2",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEB, 0x11),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
++				     fs35nd01g_s1y2_ecc_get_status)),
++	SPINAND_INFO("FS35ND04G-S2Y2",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xEC, 0x11),
++		     NAND_MEMORG(1, 2048, 64, 64, 4096, 40, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&fs35nd01g_s1y2_ooblayout,
++				     fs35nd01g_s1y2_ecc_get_status)),
++};
++
++static const struct spinand_manufacturer_ops longsys_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer longsys_spinand_manufacturer = {
++	.id = SPINAND_MFR_LONGSYS,
++	.name = "Longsys",
++	.chips = longsys_spinand_table,
++	.nchips = ARRAY_SIZE(longsys_spinand_table),
++	.ops = &longsys_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6988956b8492..f6c38528bb03 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -261,6 +261,7 @@ struct spinand_manufacturer {
+ 
+ /* SPI NAND manufacturers */
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
++extern const struct spinand_manufacturer longsys_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+ extern const struct spinand_manufacturer paragon_spinand_manufacturer;
+-- 
+2.32.0
 
-Yours,
-Linus Walleij
