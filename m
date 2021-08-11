@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F463E91D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9812A3E91D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhHKMrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        id S229719AbhHKMsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhHKMrY (ORCPT
+        with ESMTP id S229473AbhHKMsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:47:24 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA87C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:47:00 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id t9so5440621lfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:47:00 -0700 (PDT)
+        Wed, 11 Aug 2021 08:48:20 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A2FC061765;
+        Wed, 11 Aug 2021 05:47:57 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id w20so5441111lfu.7;
+        Wed, 11 Aug 2021 05:47:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rj94y2JfuX7qcPy6zjJFuxSqjWMshF2nOi2+g7LA8bY=;
-        b=F3TUtOjcLErsbQR7veDomHtIzbA6d7E+jFIUKIsFSCb2rLxmegEkIq+QCbnChTydel
-         KwTW48kdfRMTRQELo7vkiax5HTSPAvziOcPQdzlLI7Ky2APkl/J4UBkhPjNa+ifr/cY3
-         HSZ6hAvzt5ekswjX+YppLOV+cFUAZgFKyZdZohGizCOTtDcniaV2CDg+7r38EvWD4MOH
-         n1GH/cjgS/rH6THTYaUmdtPjzo64VSNWEub5pmowm1VaKATO/tqbeR/8YeQq0IjY9hcd
-         /WLC8JKwICIhKaZZ83J3OCfmlOWxjWyhe2UamUFG4GixbM1Y6KuM1G8yYrwS5aZo5Op5
-         cWOA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=maVdPAhzuun15W4v+98yU9YOHED/7XUgEFEe/1oMvOA=;
+        b=RX8mgA2mqjOOK93KuFiX2pdWvtkcpIUs7LVTZU8lS+InmsSd89MWKauhshqzNUlNn1
+         mhTYVz1fPUMgotTWyhMNoxY6kHN3sqODLgyXMWgZmIvAHgQ/oi9ZqWCgdkX1fo0d9oKR
+         vFVkFDsMNvKLmecuMB522cb9DZGYHA9cDImZH7iG6Cn5p/Y2sYtMJOdXq7x/Lyh+au/N
+         tp4ccvczuNjxSM4lC4pUEFuzWTJIdFKL8Wh94SRdatnVNjme591FjaeKt3e4i/WMeV78
+         v/nC9y57SXwPAMinpBlFcpRQ3AxaI9jRModDiBLWmQ52N6HZlleJBoIfomLxl6FRfMde
+         64rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rj94y2JfuX7qcPy6zjJFuxSqjWMshF2nOi2+g7LA8bY=;
-        b=Z8DNN3aA5z63KOPHuPzjRYaCYvcjMpCwnVa8tgtrVK5ctTDpptqKMykxUtlwVRdglk
-         0fp5JZ9rbeQULbgtPka+CP4bIM+PRWYgjTXiszo064+RLMSTdezKjYUQrrFOHDgXOcls
-         Fu3nkHyXRm/i5oc1IPdfoxd8gDKcImr4MgTj2ULHc9ZED+L/cuWQSFxGo3BgLWWZ4Cg/
-         DnGpV2lVpM4KCklI0Xl+qye4olvcvMV6sl1XSzKVCfyxwLzNDFOw4b1DxaqyzgfKhCXV
-         Yv035v7Tywztxto8MR6qUq/0fNJ7HuACBEfiq9NkqDeDrX+s2ruNqVd9AsgiSEXiiQ+4
-         Hz2Q==
-X-Gm-Message-State: AOAM530PG9no0fy0y4OXbrW+X7zHOLDUGIBzHRbFhASXlYam9PS/Q9VP
-        9lAX/WSrvbE6bQ0I0EbMxG87RFbnOUkXNfL7gI6BmA==
-X-Google-Smtp-Source: ABdhPJw1cJwD1KmJCz1WIAG1+s4OaTxheMM1ZK65fMIXjUdMVuRPl4Kuh4jRS/yOvwPU0mTNEFnHsU6hnaPlr+dfwzE=
-X-Received: by 2002:a05:6512:1084:: with SMTP id j4mr26142038lfg.586.1628686018878;
- Wed, 11 Aug 2021 05:46:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=maVdPAhzuun15W4v+98yU9YOHED/7XUgEFEe/1oMvOA=;
+        b=Drp2qkkj44ZsOt9Lh0v/OIef2wL0omJ7GGTTKENzLBTF2Cayhs9cEOZQwZL9QF3vVf
+         MS47g8EfF/HHPQ5W5TMUt067lzJVNNulhY0N6NYjoBJnTaie7/ReMZioBfXn83D1I9Hz
+         suaoUNv05wg/8MT5W2XY6ywR73GxzzjqyDwdeh9c6W3Mji10vMg4xv+2LrqEQNnSDctp
+         pa0FobsXkTMXRLQ2m/jhYOR8sDfH34tMn+RDDJ12zF5xHhkTjrsT4gdIHqOqE2l+5jOG
+         Xh8vxb6scLxh3YilyioiJtcqyaDFxgw7LZdsYVT2tEoqscuExID/o1S2ZiE9E1IyV8PE
+         f5iA==
+X-Gm-Message-State: AOAM530EdYNKz7t+0avHS0QTpWVa8zbTvyisWubtNQfP1rpHEvF79ScD
+        rX9aVaHTn115lVDFgO7EwMs=
+X-Google-Smtp-Source: ABdhPJzjb8jZ/Njn/4tPomE/Wan7HmUOf3JwJT/erg1ebJJW/nBfaFufA3lJ0IKfgS++eJQHesec+A==
+X-Received: by 2002:ac2:4106:: with SMTP id b6mr24945834lfi.89.1628686075610;
+        Wed, 11 Aug 2021 05:47:55 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id v27sm2348551lfp.155.2021.08.11.05.47.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 05:47:55 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 15:47:53 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>
+Subject: Re: [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base
+ property
+Message-ID: <20210811124753.nckmggmil47yytxz@mobilestation>
+References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+ <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
+ <20210802135839.4clqd34npppwasyh@mobilestation>
+ <CAHp75Vcz=vkaGObUcOOTZA51pHPoMc50RpPBLg4fgZgHdUStRA@mail.gmail.com>
+ <20210804124433.crh7w6jzfjcswubo@mobilestation>
+ <YQqnrHAuSneeEFgO@smile.fi.intel.com>
+ <CACRpkdYJyVUix6MSLQvF1Ok21gHdk6d8ToGpP_rh5v6Rpwyn5g@mail.gmail.com>
 MIME-Version: 1.0
-References: <8ee569d3-7fac-68c6-a1f7-f6457ce0343c@gmail.com>
-In-Reply-To: <8ee569d3-7fac-68c6-a1f7-f6457ce0343c@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 14:46:47 +0200
-Message-ID: <CACRpkdbYy8jSGmX06i36Xw80ZR4F8M0hqQ=5k6GPXyhtj25o6Q@mail.gmail.com>
-Subject: Re: [pinctrl-amd] 5.14-rcX, d62bd5ce12d79bcd6a6c3e4381daa7375dc21158
- breaks poweroff/shutdown on ThinkPads
-To:     Gabriel C <nix.or.die@googlemail.com>,
-        Raul E Rangel <rrangel@chromium.org>,
-        Doug Anderson <dianders@chromium.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYJyVUix6MSLQvF1Ok21gHdk6d8ToGpP_rh5v6Rpwyn5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gabriel,
+Hello Linus
 
-On Mon, Aug 2, 2021 at 8:18 PM Gabriel C <nix.or.die@googlemail.com> wrote:
+On Wed, Aug 11, 2021 at 02:40:49PM +0200, Linus Walleij wrote:
+> On Wed, Aug 4, 2021 at 4:44 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Wed, Aug 04, 2021 at 03:44:33PM +0300, Serge Semin wrote:
+> > > Thus, yes, I think we need to make sure here that the property
+> > > is only used in framework of the kernel and isn't passed via
+> > > inappropriate paths like DT/ACPI fw so not to get into the
+> > > maintainability troubles in future.
+> >
+> > Got it. I'll add the additional check in next version.
+> 
 
-> Reverting d62bd5ce12d79bcd6a6c3e4381daa7375dc21158 fixes the problem.
+> This seems reasonable for me, if you can get this done with
+> some kind of elegance.
+> 
 
-Maintenance of the AMD pin controller is a constant headache for me.
-The chromium people step in I think out of necessity, I bet there is
-some interesting discussions between Google and AMD about this.
+There is v2 of this series has already been posted:
+https://lore.kernel.org/linux-gpio/20210804160019.77105-1-andriy.shevchenko@linux.intel.com/
+with the denoted concern taken into account. 
 
-I don't know if Raul if unavailable, let's check with Doug Anderson, I
-am sure he knows how to raise awareness about this at Chromium
-if Raul is off duty.
+-Sergey
 
-If the problem persists, please send a proper revert patch.
-
-Yours,
-Linus Walleij
+> Maybe use the "linux,gpio-base" property as mentioned so it is
+> clear that this is a Linux-internal thing only.
+> 
+> Yours,
+> Linus Walleij
