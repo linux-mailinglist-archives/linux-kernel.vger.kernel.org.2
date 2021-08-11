@@ -2,156 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6983E8F82
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBCD3E8F84
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237377AbhHKLfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:35:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8898 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237323AbhHKLfK (ORCPT
+        id S237367AbhHKLgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231625AbhHKLgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:35:10 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BBWsh8128241;
-        Wed, 11 Aug 2021 07:34:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=WKV0mifP9mdv8ecyMfTa0U/d4OeeOKmNT+j0H4eQvJk=;
- b=hH9bPsD7c2pVAMfOhj4RRDHnxRRv2Bzx7DYgxiHRupsbbeBh6W+vBmIYsXxk1TG7Bhid
- 8rKKHR+Y3VJgFF8pCXs0D9awrfRW5aNEnOyWZkZ8UJBOmkeeO1Yc8cQB0kb8YeVe2TcN
- /FQVZtjPg+pAZleKOsrmjttH4PpR5qfi0LGJZ6eYAGJFgkhSJAcml1QQVcwvQfnEM+wQ
- InpRu/GmkR/GPCSqGcxORgZ84oGIAeys2hvhsZKAEr+H8tOGJuWrg+DAaz5P8Rj0PdzY
- AN5c28/RHpjrmcH1h7E0ys0KBnfFQ1p0G5M/PD+fcb6yMfjPKYZhLZLJEbbJbk23AYrv wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3acbt3jyg6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 07:34:28 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17BBYR1v138486;
-        Wed, 11 Aug 2021 07:34:28 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3acbt3jyeq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 07:34:27 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BBXGG5011004;
-        Wed, 11 Aug 2021 11:34:25 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3a9ht8yxs0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 11:34:24 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BBYMo128377392
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 11:34:22 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73D28A4059;
-        Wed, 11 Aug 2021 11:34:22 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 39878A404D;
-        Wed, 11 Aug 2021 11:34:19 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.27.84])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Aug 2021 11:34:19 +0000 (GMT)
-Message-ID: <d4f5c2593380c82ceebae2c8782a1c440b35f165.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] fscrypt: support trusted keys
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 11 Aug 2021 07:34:18 -0400
-In-Reply-To: <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
-References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
-         <20210809094408.4iqwsx77u64usfx6@kernel.org> <YRGVcaquAJiuc8bp@gmail.com>
-         <20210810180636.vqwaeftv7alsodgn@kernel.org> <YRLJmaafp941uOdA@gmail.com>
-         <20210810212140.sdq5dq2wy5uaj7h7@kernel.org> <YRLvPJehAeMiYb2Z@gmail.com>
-         <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: r6-4IUomzcvJFMnp_seKefxgZMrV5TsK
-X-Proofpoint-ORIG-GUID: 9YaVVr2iQJOX9DHzgWTnnrzbsVhn8PWv
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-11_04:2021-08-11,2021-08-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- mlxlogscore=751 adultscore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 clxscore=1011
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108110073
+        Wed, 11 Aug 2021 07:36:07 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D6FC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:35:43 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id k2so2244931plk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ocNu8t+0vPe8xDuDrmXUgxK/R5Hfv7t0v2kfkL1QOgA=;
+        b=B+dx6gtSem9LSUSvN8E6giOkQHucQX2rfdWvdRiGZVmSPgioJxHNzz96Wv/7YAzK/m
+         JyrlpDgL5bOF6eMtXkydeAbLGqIVrhMrKIOcRV1PJmBbaTyLJ7prchjvpW3b/9EJ4Gcf
+         ateFz6QnoBeY6tSGD7pStGh857XyHpTJPAPNYmXPvvaf8f6DMcrxqyD04zVorltoKP3z
+         E9/BFvyIJiHW/R/cj3ZR88UE93OebnOpVaMGRh8SMPHgat07me51s6HqtWI7CNWbMEe0
+         xEtnFJU2f52n+5cz37RdDZfaSwfAZp2z2D4FqRC4OCW3n6bDmRvJZFMhXfWD/Tci4rTh
+         0rZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ocNu8t+0vPe8xDuDrmXUgxK/R5Hfv7t0v2kfkL1QOgA=;
+        b=HmZbE1vaXClSQF4Jpfc7+vvWXaiaS3mK9Kb6xMIRciZ63AaUg2wv31lkbdRq+O7IYe
+         UPaAwmJiv5kfv4wRBJY+Ot4tKN7hg+27InhU6TIDRMO1uyWar5hMKlm5TgWzRnxbd2B+
+         1jzjB1yU3RtQO+jbLYAWjd3two96ER9BuQCF1fEU1CbMZ3OwsHA4eEl/JP++cqYurhlj
+         EXbH/R6kOHY/Sj7VCpQLRMuccFTxJeOKh6qIAbPGYFvE0KezU05PkfhYeWnRgtkfDz/Y
+         x838v68vaC7x18+dUHfMDT6gtEBma9Jp3D3w/L4PiB/BgwaiVOX3z6xyAe1TaXn/iROq
+         HZXQ==
+X-Gm-Message-State: AOAM532Cm1bOqS4xttGuCH5Xj/SZ4IgQEkry8wTIGRcZNlS1qsa18COW
+        bD8socTKvbOBcHDWPV9AQQ4=
+X-Google-Smtp-Source: ABdhPJz2SBVANXMZ07VbSSh4pznTgoL/y9wtPx7R4CwSyd5hF9Ctj75Fuud9mXAdwAvfcZj7S9//6A==
+X-Received: by 2002:a17:902:8543:b029:12d:461f:a6a8 with SMTP id d3-20020a1709028543b029012d461fa6a8mr3905116plo.1.1628681743298;
+        Wed, 11 Aug 2021 04:35:43 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.103])
+        by smtp.gmail.com with ESMTPSA id c12sm26423669pfl.56.2021.08.11.04.35.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 04:35:42 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        luben.tuikov@amd.com, tzimmermann@suse.de, sam@ravnborg.org
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] gpu: drm: amd: amdgpu: amdgpu_i2c: fix possible uninitialized-variable access in amdgpu_i2c_router_select_ddc_port()
+Date:   Wed, 11 Aug 2021 04:34:58 -0700
+Message-Id: <20210811113458.6940-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-11 at 03:17 +0300, Jarkko Sakkinen wrote:
-> On Tue, Aug 10, 2021 at 02:27:24PM -0700, Eric Biggers wrote:
-> > On Wed, Aug 11, 2021 at 12:21:40AM +0300, Jarkko Sakkinen wrote:
-> > > On Tue, Aug 10, 2021 at 11:46:49AM -0700, Eric Biggers wrote:
-> > > > On Tue, Aug 10, 2021 at 09:06:36PM +0300, Jarkko Sakkinen wrote:
-> > > > > > > 
-> > > > > > > I don't think this is right, or at least it does not follow the pattern
-> > > > > > > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
-> > > > > > 
-> > > > > > What's the benefit of the extra layer of indirection over just using a "trusted"
-> > > > > > key directly?  The use case for "encrypted" keys is not at all clear to me.
-> > > > > 
-> > > > > Because it is more robust to be able to use small amount of trusted keys,
-> > > > > which are not entirely software based.
-> > > > > 
-> > > > > And since it's also a pattern on existing kernel features utilizing trusted
-> > > > > keys, the pressure here to explain why break the pattern, should be on the
-> > > > > side of the one who breaks it.
-> > > > 
-> > > > This is a new feature, so it's on the person proposing the feature to explain
-> > > > why it's useful.  The purpose of "encrypted" keys is not at all clear, and the
-> > > > documentation for them is heavily misleading.  E.g.:
-> > > > 
-> > > >     "user space sees, stores, and loads only encrypted blobs"
-> > > >     (Not necessarily true, as I've explained previously.)
-> > > > 
-> > > >     "Encrypted keys do not depend on a trust source" ...  "The main disadvantage
-> > > >     of encrypted keys is that if they are not rooted in a trusted key"
-> > > >     (Not necessarily true, and in fact it seems they're only useful when they
-> > > >     *do* depend on a trust source.  At least that's the use case that is being
-> > > >     proposed here, IIUC.)
-> > > > 
-> > > > I do see a possible use for the layer of indirection that "encrypted" keys are,
-> > > > which is that it would reduce the overhead of having lots of keys be directly
-> > > > encrypted by the TPM/TEE/CAAM.  Is this the use case?  If so, it needs to be
-> > > > explained.
-> > > 
-> > > If trusted keys are used directly, it's an introduction of a bottleneck.
-> > > If they are used indirectly, you can still choose to have one trusted
-> > > key per fscrypt key.
-> > > 
-> > > Thus, it's obviously a bad idea to use them directly.
-> > 
-> > So actually explain that in the documentation.  It's not obvious at all.  And
-> > does this imply that the support for trusted keys in dm-crypt is a mistake?
-> 
-> Looking at dm-crypt implementation, you can choose to use 'encrypted' key
-> type, which you can seal with a trusted key.
-> 
-> Note: I have not been involved when the feature was added to dm-crypt.
+The variable val is declared without initialization, and its address is 
+passed to amdgpu_i2c_get_byte(). In this function, the value of val is 
+accessed in:
+  DRM_DEBUG("i2c 0x%02x 0x%02x read failed\n",
+       addr, *val);
 
-At least for TPM 1.2,  "trusted" keys may be sealed to a PCR and then
-extended to prevent subsequent usage.  For example, in the initramfs
-all of the "encrypted" keys could be decrypted by a single "trusted"
-key, before extending the PCR.
+Also, when amdgpu_i2c_get_byte() returns, val may remain uninitialized, 
+but it is accessed in:
+  val &= ~amdgpu_connector->router.ddc_mux_control_pin;
 
-Mimi
+To fix this possible uninitialized-variable access, initialize val to 0 in
+amdgpu_i2c_router_select_ddc_port().
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
+index bca4dddd5a15..82608df43396 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
+@@ -339,7 +339,7 @@ static void amdgpu_i2c_put_byte(struct amdgpu_i2c_chan *i2c_bus,
+ void
+ amdgpu_i2c_router_select_ddc_port(const struct amdgpu_connector *amdgpu_connector)
+ {
+-	u8 val;
++	u8 val = 0;
+ 
+ 	if (!amdgpu_connector->router.ddc_valid)
+ 		return;
+-- 
+2.25.1
 
