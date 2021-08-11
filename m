@@ -2,66 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAB93E91DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A663E91DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhHKMsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHKMsu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:48:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D728C061765;
-        Wed, 11 Aug 2021 05:48:26 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628686105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UIGmo69KZrc2J9HeCu65ppUBj4zfHrwzhS5X2A72n+c=;
-        b=ysr+3jUJrjWVrnARKplskpxUSmoqLGvr5hwN92aP4+nowhWjgmRtIHbHDALO5Nu/OKI1MH
-        h6/YppAsbNtsvS3guAgjC5ATnP9p6LqPU3u+baQpVtIGoXeC9LOMv0slpTSguAphTVhPm3
-        WyqxEwxTivaTuUa3A+B/qay/MlIis/2DYjRZpknk02YXO4T6dYFRCIcKCekqCWH+pw48Jh
-        9hhZ+y1duXq4gjtKOnIbIDcKvz45hPkfXtEpJ2dgxoNX7PKRhxmo2sqHpZ+6TpRkh+1RdD
-        hvQ4wLXbd06qxSGZ4Sgj9bwuYGGMwj1oqUDTI1V/MOiqLTPRnVIlXCqR935pOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628686105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UIGmo69KZrc2J9HeCu65ppUBj4zfHrwzhS5X2A72n+c=;
-        b=yfxhM/yJc8O22ZYimus/Y+SjpdfR6O+BllFZ0Lgc1pX2gqxyHkWw18fE8ikVSRQ7ntiWuw
-        uDC37QeXlRaVlUAA==
-To:     linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org,
-        vincent.donnefort@arm.com, valentin.schneider@arm.com,
-        peterz@infradead.org, mingo@kernel.org, rdunlap@infradead.org
-Subject: Re: + kernel-cpuc-eliminate-all-kernel-doc-warnings.patch added to
- -mm tree
-In-Reply-To: <874kbwp2te.ffs@tglx>
-References: <20210811043016.-ahQ6%akpm@linux-foundation.org>
- <874kbwp2te.ffs@tglx>
-Date:   Wed, 11 Aug 2021 14:48:24 +0200
-Message-ID: <871r70p2p3.ffs@tglx>
+        id S230358AbhHKMtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:49:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3753 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230178AbhHKMtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:49:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="276150146"
+X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
+   d="scan'208";a="276150146"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 05:48:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,313,1620716400"; 
+   d="scan'208";a="445916469"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Aug 2021 05:48:54 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 4FC46142; Wed, 11 Aug 2021 15:48:53 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Loic Poulain <loic.poulain@linaro.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 net 1/1] wwan: core: Avoid returning NULL from wwan_create_dev()
+Date:   Wed, 11 Aug 2021 15:48:45 +0300
+Message-Id: <20210811124845.10955-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11 2021 at 14:45, Thomas Gleixner wrote:
-> On Tue, Aug 10 2021 at 21:30, akpm@linux-foundation.org wrote:
->> The patch titled
->>      Subject: kernel/cpu.c: eliminate all kernel-doc warnings
->> has been added to the -mm tree.  Its filename is
->>      kernel-cpuc-eliminate-all-kernel-doc-warnings.patch
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=smp/core&id=11bc021d1fbaaa1a6e7b92d6631faa875dd40b7d
+Make wwan_create_dev() to return either valid or error pointer,
+In some cases it may return NULL. Prevent this by converting
+it to the respective error pointer.
 
-I picked up the corresponding kernel/smp.c fix as well
+Fixes: 9a44c1cc6388 ("net: Add a WWAN subsystem")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+---
+v3: split from original series with fixed subject (Sergey)
 
-Thanks,
+ drivers/net/wwan/wwan_core.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-        tglx
+diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
+index 674a81d79db3..35ece98134c0 100644
+--- a/drivers/net/wwan/wwan_core.c
++++ b/drivers/net/wwan/wwan_core.c
+@@ -164,11 +164,14 @@ static struct wwan_device *wwan_create_dev(struct device *parent)
+ 		goto done_unlock;
+ 
+ 	id = ida_alloc(&wwan_dev_ids, GFP_KERNEL);
+-	if (id < 0)
++	if (id < 0) {
++		wwandev = ERR_PTR(id);
+ 		goto done_unlock;
++	}
+ 
+ 	wwandev = kzalloc(sizeof(*wwandev), GFP_KERNEL);
+ 	if (!wwandev) {
++		wwandev = ERR_PTR(-ENOMEM);
+ 		ida_free(&wwan_dev_ids, id);
+ 		goto done_unlock;
+ 	}
+@@ -182,7 +185,8 @@ static struct wwan_device *wwan_create_dev(struct device *parent)
+ 	err = device_register(&wwandev->dev);
+ 	if (err) {
+ 		put_device(&wwandev->dev);
+-		wwandev = NULL;
++		wwandev = ERR_PTR(err);
++		goto done_unlock;
+ 	}
+ 
+ done_unlock:
+@@ -1014,8 +1018,8 @@ int wwan_register_ops(struct device *parent, const struct wwan_ops *ops,
+ 		return -EINVAL;
+ 
+ 	wwandev = wwan_create_dev(parent);
+-	if (!wwandev)
+-		return -ENOMEM;
++	if (IS_ERR(wwandev))
++		return PTR_ERR(wwandev);
+ 
+ 	if (WARN_ON(wwandev->ops)) {
+ 		wwan_remove_dev(wwandev);
+-- 
+2.30.2
+
