@@ -2,140 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712843E8933
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E549F3E8944
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbhHKEYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 00:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
+        id S233725AbhHKEZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 00:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhHKEYq (ORCPT
+        with ESMTP id S233638AbhHKEZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 00:24:46 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8D3C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:24:22 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id bi32so2755431oib.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:24:22 -0700 (PDT)
+        Wed, 11 Aug 2021 00:25:25 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44090C0613D5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:25:02 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id t128so2755672oig.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 21:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=4+a6akEpZU2Rl1zSGbSNGtRGCQXtOnzuxporXN9r8kw=;
-        b=jxMCTvQXPanclZeeolIVPBZrNb2967Z1Vp2PMXijVJmWvLi/cbZqfziutKJ4IyjCrJ
-         nO2uQc0OKlVaO9WhXLQe3GJsSpfEOrev5/i/FeojQKagbej9L6LA1JPam9PX75WCLWcA
-         SbbfYEJY5aHpmmLGnMIUfVO+m5ApnGwCwp5dc=
+        bh=M1sSmgNNoQtvHtZ8PDHG8m3seC8ac1MZGKZ0FeNvlRE=;
+        b=QjfTC2HgE2XYDjQKSruFloDLhFtwBgKdO4NJ6MdiAKvtLwie8egxASVNDwDSfzVyv2
+         q6mWjvHWSb7ckfpuJSiEw/heccYf1aZLWU/1Tbhqg3QhOcadFbV2J9g1hvE1reVygIPr
+         LS0N9RRDRp4FTw6qpgYlkcjrAw2qPUl+pAUZY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=4+a6akEpZU2Rl1zSGbSNGtRGCQXtOnzuxporXN9r8kw=;
-        b=mbY1L7IpO2NwuVLGuy8TG5PqYS+x1xdHrcVVpF7NT+/FyVp1JzEwK5xomDzz1qWSzr
-         skXRGc78rKZ61DM0f/l3jUiFPR8XVS1/bOddKmBTbaH0NjcbXdrxVVc5WklXG/ZmryPH
-         9/hgZFmLg8EJ0KSiEeJQ6PJ18Ao0HQM897ykhzOdM39EeUMRj1zJ20ppTyAKY1ZX4gbJ
-         bnUr+WO2sa7DinJamE5+Ayd74A1hfqfZSYLUT4yOrAvygEyF4dUc1slFXQBia54HHLo8
-         vpArmSP66xUHRHvgVeWomjDBzUCVNR43ro4ckB0tMTBBpT4fqDEHxo3Dxl8LxTJFpfE3
-         XPIg==
-X-Gm-Message-State: AOAM533UwaeLNVHhNJeqSZHX1lYvNPUaLuoAw9kIZAkNg/cH3RZISHtC
-        mT4dSOaK+VhkYZqbu7lRsyf8TuvKAqTQsYsB26S2/g==
-X-Google-Smtp-Source: ABdhPJxhuBLsVb23ZNxG/JRW3v8sQ+/Xa1+LNCkfc0G3wJkAgaq2+FaAG51xDk5Ag9SJd5Qlf9jHNaCGwd6V1n67aQc=
-X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr8782072oiu.19.1628655862338;
- Tue, 10 Aug 2021 21:24:22 -0700 (PDT)
+        bh=M1sSmgNNoQtvHtZ8PDHG8m3seC8ac1MZGKZ0FeNvlRE=;
+        b=Fzrup4bkZO+znLuAg84QXssxxJBrcukqwAUxn6BQVCSmvl5K0YU+JKaCREgQkQWwlf
+         M+Ckr5MtXyKNJP4FxNaF/mDTtAaiZZJdy///lr+TZfKPG1VGy8vlYkofRoxCZcgrr2YZ
+         wmfVBpAhyxx2Dm4C2QgeZVeBqlW/LiNl0zSum2C78FLNgjqbZkxSjJc7H3Dyp7vdetMJ
+         eT6qVpJD2wVhQlnZM9DJEylhy1e1XgPpalbanu63wv9Cjsigqwg+BtRE3nvpJLYDELE5
+         tWojlzo+tze87TGSBCppSbUaTs+hUb4icZJnqt5IWqnwTTvyVzOqrKvxBGuvcMrBwxIO
+         6ZEA==
+X-Gm-Message-State: AOAM533/TJowhLAzpTGRkihOQCBhMDvwNCCNCbSJdzWzaPUgysQAJhpJ
+        8xGeM54qHZ3KBZBiOzWaDmAWUj7UyrAe33ZUVO80kA==
+X-Google-Smtp-Source: ABdhPJzObOIuMfn0reOOJWy5m+iJuxp3aHw0B9qKARNxTS22IDkTolDzUwIP41OajjreV0Rx6cLTjTp9cAj7k2M+Dkg=
+X-Received: by 2002:a54:468d:: with SMTP id k13mr6077146oic.125.1628655901625;
+ Tue, 10 Aug 2021 21:25:01 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 10 Aug 2021 21:24:21 -0700
+ HTTPREST; Tue, 10 Aug 2021 21:25:01 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
-References: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
+In-Reply-To: <YRMHjmEG3l4SolTi@builder.lan>
+References: <1628180254-758-1-git-send-email-deesin@codeaurora.org>
+ <CAE-0n5203g4CkF5WP1fQYU57fntXbdyVBsMsTKU_xPkgvbt+7Q@mail.gmail.com>
+ <bf2b00c5-0826-00d2-ca95-b4ae6a030211@codeaurora.org> <CAE-0n53ojhs+RMpsYtVjsrYbb_PRdkJOvxFhiTtJPMUDuoP_eA@mail.gmail.com>
+ <8009f5a1458468dbf0b7b20dd166911c@codeaurora.org> <CAE-0n53TCo1UTVi3e18N5hF3+Y_bLiqgH1o5PEua7F9-bog_gQ@mail.gmail.com>
+ <YRMHjmEG3l4SolTi@builder.lan>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Tue, 10 Aug 2021 21:24:21 -0700
-Message-ID: <CAE-0n50K+gAa0U9-kswTCdt+UAkxhuJ8BMg-D4sQayP1xqWTyQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: rt5682: Properly turn off regulators if wrong
- device ID
-To:     Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Oder Chiou <oder_chiou@realtek.com>
-Cc:     Bard Liao <bardliao@realtek.com>, Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
+Date:   Tue, 10 Aug 2021 21:25:01 -0700
+Message-ID: <CAE-0n51+t6ATCcDgfKeMyh0f0p0=otnUmBjChViX-r3qJYfhZg@mail.gmail.com>
+Subject: Re: [PATCH V1 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P IRQ
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Sibi Sankar <sibis@codeaurora.org>,
+        Deepak Kumar Singh <deesin@codeaurora.org>,
+        clew@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Andy Gross <agross@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-08-10 16:59:15)
-> When I booted up on a board that had a slightly different codec
-> stuffed on it, I got this message at bootup:
+Quoting Bjorn Andersson (2021-08-10 16:11:10)
+> On Tue 10 Aug 14:18 CDT 2021, Stephen Boyd wrote:
 >
->   rt5682 9-001a: Device with ID register 6749 is not rt5682
+> > Quoting Sibi Sankar (2021-08-10 10:24:32)
+> > > On 2021-08-09 23:28, Stephen Boyd wrote:
+> > > > Quoting Deepak Kumar Singh (2021-08-09 04:05:08)
+> > > >>
+> > > >> On 8/6/2021 1:10 AM, Stephen Boyd wrote:
+> > > >> > Quoting Deepak Kumar Singh (2021-08-05 09:17:33)
+> > > >> >> Some use cases require SMP2P interrupts to wake up the host
+> > > >> >> from suspend.
+> > > >> > Please elaborate on this point so we understand what sort of scenarios
+> > > >> > want to wakeup from suspend.
+> > > >>
+> > > >> Once such scenario is where WiFi/modem crashes and notifies crash to
+> > > >> local host through smp2p
+> > > >>
+> > > >> if local host is in suspend it should wake up to handle the crash and
+> > > >> reboot the WiFi/modem.
+> > > >
+> > > > Does anything go wrong if the firmware crashes during suspend and the
+> > > > local host doesn't handle it until it wakes for some other reason? I'd
+> > > > like to understand if the crash handling can be delayed/combined with
+> > > > another wakeup.
+> > >
+> > > If the modem firmware crashes
+> > > during suspend, the system comes
+> > > out of xo-shutdown and AFAIK stays
+> > > there until we handle the interrupt.
+> > >
+> >
+> > So you're saying we waste power if we don't wakeup the AP and leave the
+> > SoC in a shallow low power state? That would be good to have indicated
+> > in the code via a comment and in the commit text so we know that we want
+> > to handle the wakeup by default.
 >
-> That's normal/expected, but what wasn't normal was the splat that I
-> got after:
+> Sounds like in a system without autosleep (or userspace equivalent) it
+> would be desirable to leave the SoC in this lower state than to wake up
+> the system handle the crash and then just idle?
 >
->   WARNING: CPU: 7 PID: 176 at drivers/regulator/core.c:2151 _regulator_put+0x150/0x158
->   pc : _regulator_put+0x150/0x158
->   ...
->   Call trace:
->    _regulator_put+0x150/0x158
->    regulator_bulk_free+0x48/0x70
->    devm_regulator_bulk_release+0x20/0x2c
->    release_nodes+0x1cc/0x244
->    devres_release_all+0x44/0x60
->    really_probe+0x17c/0x378
->    ...
+> But leaving the system in this state will result in you missing your
+> important phone calls...
 >
-> This is because the error paths don't turn off the regulator. Let's
-> fix that.
->
-> Fixes: 0ddce71c21f0 ("ASoC: rt5682: add rt5682 codec driver")
-> Fixes: 87b42abae99d ("ASoC: rt5682: Implement remove callback")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-
->
->  sound/soc/codecs/rt5682-i2c.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-> index 4a56a52adab5..1cc07812b5ac 100644
-> --- a/sound/soc/codecs/rt5682-i2c.c
-> +++ b/sound/soc/codecs/rt5682-i2c.c
-> @@ -117,6 +117,13 @@ static struct snd_soc_dai_driver rt5682_dai[] = {
->         },
->  };
->
-> +static void rt5682_i2c_disable_regulators(void *data)
-> +{
-> +       struct rt5682_priv *rt5682 = data;
-> +
-> +       regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
-> +}
-> +
->  static int rt5682_i2c_probe(struct i2c_client *i2c,
->                 const struct i2c_device_id *id)
->  {
-> @@ -156,6 +163,10 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
->                 dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
->                 return ret;
->         }
-
-Nit: Add newline here.
-
-> +       ret = devm_add_action_or_reset(&i2c->dev, rt5682_i2c_disable_regulators,
-> +                                      rt5682);
-> +       if (ret)
-> +               return ret;
->
->         ret = regulator_bulk_enable(ARRAY_SIZE(rt5682->supplies),
->                                     rt5682->supplies);
-> @@ -285,7 +296,6 @@ static int rt5682_i2c_remove(struct i2c_client *client)
->         struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
->
->         rt5682_i2c_shutdown(client);
-> -       regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
->
->         return 0;
->  }
+Yes I think we should just add a comment to the code and commit text and
+move on.
