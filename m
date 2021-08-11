@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA70F3E8ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85573E8EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236866AbhHKKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232644AbhHKKgr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:36:47 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49123C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 03:36:24 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1mDlaw-0007X3-Kn; Wed, 11 Aug 2021 12:36:22 +0200
-Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1mDlav-0006UT-HD; Wed, 11 Aug 2021 12:36:21 +0200
-Date:   Wed, 11 Aug 2021 12:36:21 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH] reset: reset-zynqmp: Fixed the argument data type
-Message-ID: <20210811103621.GA23827@pengutronix.de>
-References: <925cebbe4eb73c7d0a536da204748d33c7100d8c.1624448778.git.michal.simek@xilinx.com>
+        id S237095AbhHKKlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:41:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237020AbhHKKlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:41:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7510E60FC3;
+        Wed, 11 Aug 2021 10:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628678440;
+        bh=MWYsgBQRSHA52IzMe7OkpIpL0S/lsPWSSoypLj4ev5U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Rr1TiTfXf7kLOQpQAnQMdTKvb6FpJYfiHlPfyzDC4BKNBKnfDcpZ9OG+/ZJp9vnbr
+         wmd1JllIpx58JrGj8ML5wvwuqRavxJYmGploaSGWxXf1IMRymCIWH10rXuxE9LNP/O
+         S2EC8BP3gDFFvXb0lVvxILCj5uZtsb6D9yoJv1/DIGty6+XC9NZzzYrMQwDTJU9nk5
+         +mcCaIHWLxitlQEl4VoDnTRI5G4f3os+LI/Z7+P0B4opUuY0f04Wdtl8hZjq8uxcpZ
+         WIRJPnQ9iBo7qQjrkPz471mys1stPbA/eX8LkxC112c6GbNaG+EsMoK0MUuizBy2ZF
+         muzSJ66j45toQ==
+Received: by mail-ot1-f42.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so2804125otq.2;
+        Wed, 11 Aug 2021 03:40:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530gMrw8T/fpWJt+4PH5OMA01axVn5cSFwdiv12dK3JdKxj0L5H0
+        vXzboY32cMAKKRW3ocvN5akTISaxCSgC5wultWQ=
+X-Google-Smtp-Source: ABdhPJzPyKV7zx62nUBCZ2Es0zascWHwk+SGVynlTVLACq+nWngWkUsz8u230ZGhfNyEloS44T/aLWgev5adH1SFKcI=
+X-Received: by 2002:a9d:5cc7:: with SMTP id r7mr8041809oti.108.1628678439823;
+ Wed, 11 Aug 2021 03:40:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <925cebbe4eb73c7d0a536da204748d33c7100d8c.1624448778.git.michal.simek@xilinx.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:28:45 up 174 days, 13:52, 93 users,  load average: 0.02, 0.09,
- 0.15
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mtr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
+ <20210802152359.12623-2-lorenzo.pieralisi@arm.com> <YRKtEDycefrZLB3X@infradead.org>
+In-Reply-To: <YRKtEDycefrZLB3X@infradead.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 11 Aug 2021 12:40:28 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
+Message-ID: <CAMj1kXEB1CFj1svCWu7yOoUi_OkEqYEUQnB_XWOd3gD+ejO_6w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] ACPI: osl: Add __force attribute in
+ acpi_os_map_iomem() cast
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Veronika kabatova <vkabatov@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 13:46:20 +0200, Michal Simek wrote:
-> From: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-> 
-> This patch changes the data type of the variable 'val' from
-> int to u32.
-> 
-> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> Addresses-Coverity: argument of type "int *" is incompatible with parameter of type "u32 *"
-> ---
-> 
->  drivers/reset/reset-zynqmp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
-> index daa425e74c96..59dc0ff9af9e 100644
-> --- a/drivers/reset/reset-zynqmp.c
-> +++ b/drivers/reset/reset-zynqmp.c
-> @@ -53,7 +53,8 @@ static int zynqmp_reset_status(struct reset_controller_dev *rcdev,
->  			       unsigned long id)
->  {
->  	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
-> -	int val, err;
-> +	int err;
-> +	u32 val;
+On Tue, 10 Aug 2021 at 18:46, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Mon, Aug 02, 2021 at 04:23:57PM +0100, Lorenzo Pieralisi wrote:
+> > Add a __force attribute to the void* cast in acpi_os_map_iomem()
+> > to prevent sparse warnings.
+>
+> Err, no.  These annotation are there for a reason and need to
+> be propagated instead.  And independent of that a __force cast
+> without a comment explaining it is a complete no-go.
 
-The function returns val as int instead of u32. While this shouldn't be a
-problem in this case, maybe there should be an additional check just to be
-sure?
+The whole problem we are solving here is that ACPI, being based on
+x86, conflates MMIO mappings with memory mappings, and has been using
+the same underlying infrastructure for either. On arm64, this is not
+sufficient, given that the semantics of uncached memory vs device are
+different (the former permits unaligned accesses and clear cacheline
+instructions, but the latter doesn't). A recent optimization applied
+to memcpy() on arm64 (which now relies more on unaligned accesses for
+performance) has uncovered an issue where firmware tables being mapped
+non-cacheable by the ACPI core will end up using device mappings,
+which causes memcpy() to choke on their contents.
 
-Michael
-
->  
->  	err = zynqmp_pm_reset_get_status(priv->data->reset_id + id, &val);
->  	if (err)
-> -- 
-> 2.32.0
+So propagating the annotation makes no sense, as we are creating a
+memory mapping using the iomem primitive. I wouldn't object to a
+comment being added, but I think the context should have been obvious
+to anyone who had bothered to look at the entire series.
