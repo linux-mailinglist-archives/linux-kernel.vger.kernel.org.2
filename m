@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8443E98C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8243E98C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhHKT3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhHKT3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:29:39 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509F9C061765;
-        Wed, 11 Aug 2021 12:29:15 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id a7-20020a9d5c870000b029050333abe08aso4620804oti.13;
-        Wed, 11 Aug 2021 12:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cItHMKJVxWFQWZ7rI24FO7YfKCVa/vam+UV+c07Up1o=;
-        b=iWEAazlRiGBVCeST1c1e7cLPlTN8E0/DRTC+Bhae5/qa0DJidHsFfDDZICR1xh2jqW
-         a9giG76Vp4DmKoBcyDzT/XI2QJOwCBM+LldPNoSwSv9V6dyl2g4Ju5J/p3uaT27bHeJS
-         7Ug5gjCJwR0WRWBRcwvV8l7p4L8zlYv3h3lyzb0KFwexwxjy+aes7cDy6Cj7HNTle0Ko
-         Oidg8E6/qB9NhurNGGum5OQdqdcqoio5jJpAHKp3E/r6LZSw1x4/j7aalzBhhtvDlxMs
-         Dz4HQYeIk6TqwJl28LXMiooX/d8gG3vCQxCwbndVa901PhdMtsMSjh14+EUhqGYSzK39
-         OHmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cItHMKJVxWFQWZ7rI24FO7YfKCVa/vam+UV+c07Up1o=;
-        b=AMk1wAI+L/tIuM6l3CpH4zMxUK7PQmy4wur3zNzzcxbJhy9QPkL6UAgV2WopY4wGRf
-         NRZ9D00jX9UOuUyI2Op4uO2rGUHyRD7uSxea7MJKbiYYC6hSzxJWrU+YP+D+x8XSrENX
-         uFeaBCSPrM9xUjQMgMVx/uy/l6Jy5K1jcijozKZY1CI9HSBo5bVcT8ZSe1TUQbkr4Udx
-         9x8KdFED7Oe1q30f8Y5FR9Uk42QdPkKbp38QXa4yjgorOgGzwEQ+JIVZTpNgNfSK/GXL
-         lLDPkpPehlZgVLvZ+BN3XnbITD8hk3uRStDPEERW8b77iMUDVuUkINb0Ivd9iRub0Z9D
-         dHFA==
-X-Gm-Message-State: AOAM532mcrb+DWey7dr6AlBOymTT9tgsd8E628vmuoZyCVyJKctagB2e
-        dmjEKmyaxRqqkL0Xv1ZXjqI3BQ9/UQVhkrak/SI=
-X-Google-Smtp-Source: ABdhPJw8P2BEPyaHP96Yjy6S2wYbnIXwHhEmGm+qPmLkxNgYmZbqrkYjLD6Sd8KRIlva1aL6GA+e0zObqJ+5qV00IUE=
-X-Received: by 2002:a05:6830:1e78:: with SMTP id m24mr418330otr.23.1628710154710;
- Wed, 11 Aug 2021 12:29:14 -0700 (PDT)
+        id S231546AbhHKTah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:30:37 -0400
+Received: from out0.migadu.com ([94.23.1.103]:38177 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229655AbhHKTag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 15:30:36 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1628710208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gpLXpLqEdWJax+H+vzAJpIoO8hEwkusrWIf9JpaCtao=;
+        b=pSu9Edxg3jDKMLO55j/mpxb0e5E4TaHYxP2V2UWbyaHTec/NyCS7a6c/sYYn5d6ySAftC6
+        eWFXDmrhCifqdx5Y/ia8oJz67CNw2MONnOHlmGS+/kePm1R2efvQMqKrQq8I89kLaBmf9u
+        IYS6LOrB3xcCivzT7j7VSpsagZ/FEW0=
+From:   andrey.konovalov@linux.dev
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 7/8] kasan: test: avoid corrupting memory in copy_user_test
+Date:   Wed, 11 Aug 2021 21:30:06 +0200
+Message-Id: <17b812a3c28024acfca9b1a9e45c8235b35efa32.1628709663.git.andreyknvl@gmail.com>
+In-Reply-To: <cover.1628709663.git.andreyknvl@gmail.com>
+References: <cover.1628709663.git.andreyknvl@gmail.com>
 MIME-Version: 1.0
-References: <20210811191104.21919-1-Ramesh.Errabolu@amd.com>
-In-Reply-To: <20210811191104.21919-1-Ramesh.Errabolu@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 11 Aug 2021 15:29:03 -0400
-Message-ID: <CADnq5_OVA1fB5x6=CGrd_5O-i=P7snmoJaTyauF2RKuWjc8Gog@mail.gmail.com>
-Subject: Re: [PATCH] Whitelist AMD host bridge device(s) to enable P2P DMA
-To:     Ramesh Errabolu <Ramesh.Errabolu@amd.com>
-Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: andrey.konovalov@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 3:11 PM Ramesh Errabolu <Ramesh.Errabolu@amd.com> wrote:
->
-> Current implementation will disallow P2P DMA if the participating
-> devices belong to different root complexes. Implementation allows
-> this default behavior to be overridden for whitelisted devices. The
-> patch adds an AMD host bridge to be whitelisted
+From: Andrey Konovalov <andreyknvl@gmail.com>
 
-Why do we need this?  cpu_supports_p2pdma() should return true for all
-AMD Zen CPUs.
+copy_user_test() does writes past the allocated object. As the result,
+it corrupts kernel memory, which might lead to crashes with the HW_TAGS
+mode, as it neither uses quarantine nor redzones.
 
-Alex
+(Technically, this test can't yet be enabled with the HW_TAGS mode, but
+this will be implemented in the future.)
 
->
-> Signed-off-by: Ramesh Errabolu <Ramesh.Errabolu@amd.com>
-> ---
->  drivers/pci/p2pdma.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index 196382630363..7003bb9faf23 100644
-> --- a/drivers/pci/p2pdma.c
-> +++ b/drivers/pci/p2pdma.c
-> @@ -305,6 +305,8 @@ static const struct pci_p2pdma_whitelist_entry {
->         {PCI_VENDOR_ID_INTEL,   0x2032, 0},
->         {PCI_VENDOR_ID_INTEL,   0x2033, 0},
->         {PCI_VENDOR_ID_INTEL,   0x2020, 0},
-> +       /* AMD Host Bridge Devices */
-> +       {PCI_VENDOR_ID_AMD,     0x1480, 0},
->         {}
->  };
->
-> --
-> 2.31.1
->
+Adjust the test to only write memory within the aligned kmalloc object.
+
+Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
+---
+ lib/test_kasan_module.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/lib/test_kasan_module.c b/lib/test_kasan_module.c
+index f1017f345d6c..fa73b9df0be4 100644
+--- a/lib/test_kasan_module.c
++++ b/lib/test_kasan_module.c
+@@ -15,13 +15,11 @@
+ 
+ #include "../mm/kasan/kasan.h"
+ 
+-#define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : KASAN_GRANULE_SIZE)
+-
+ static noinline void __init copy_user_test(void)
+ {
+ 	char *kmem;
+ 	char __user *usermem;
+-	size_t size = 10;
++	size_t size = 128 - KASAN_GRANULE_SIZE;
+ 	int __maybe_unused unused;
+ 
+ 	kmem = kmalloc(size, GFP_KERNEL);
+@@ -38,25 +36,25 @@ static noinline void __init copy_user_test(void)
+ 	}
+ 
+ 	pr_info("out-of-bounds in copy_from_user()\n");
+-	unused = copy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
++	unused = copy_from_user(kmem, usermem, size + 1);
+ 
+ 	pr_info("out-of-bounds in copy_to_user()\n");
+-	unused = copy_to_user(usermem, kmem, size + 1 + OOB_TAG_OFF);
++	unused = copy_to_user(usermem, kmem, size + 1);
+ 
+ 	pr_info("out-of-bounds in __copy_from_user()\n");
+-	unused = __copy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
++	unused = __copy_from_user(kmem, usermem, size + 1);
+ 
+ 	pr_info("out-of-bounds in __copy_to_user()\n");
+-	unused = __copy_to_user(usermem, kmem, size + 1 + OOB_TAG_OFF);
++	unused = __copy_to_user(usermem, kmem, size + 1);
+ 
+ 	pr_info("out-of-bounds in __copy_from_user_inatomic()\n");
+-	unused = __copy_from_user_inatomic(kmem, usermem, size + 1 + OOB_TAG_OFF);
++	unused = __copy_from_user_inatomic(kmem, usermem, size + 1);
+ 
+ 	pr_info("out-of-bounds in __copy_to_user_inatomic()\n");
+-	unused = __copy_to_user_inatomic(usermem, kmem, size + 1 + OOB_TAG_OFF);
++	unused = __copy_to_user_inatomic(usermem, kmem, size + 1);
+ 
+ 	pr_info("out-of-bounds in strncpy_from_user()\n");
+-	unused = strncpy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
++	unused = strncpy_from_user(kmem, usermem, size + 1);
+ 
+ 	vm_munmap((unsigned long)usermem, PAGE_SIZE);
+ 	kfree(kmem);
+-- 
+2.25.1
+
