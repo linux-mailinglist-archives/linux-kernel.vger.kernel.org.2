@@ -2,146 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445003E8A0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6EF3E8A11
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 08:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234680AbhHKGKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 02:10:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42883 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234636AbhHKGKe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 02:10:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628662211; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=6w8DE7PV8bfZUOdc7XTyHPzls7aBAT4UaE5qpmAy/X8=; b=C//CJdEQHTTcwupDz+Ey/lGi+CrAwXkbRAIbfXFH+aSz5WQNANLikpGsS1Hlz7ZH1V/vW6uS
- AbFMhGlC/3UkNrsAtWiKuIXzJi3z7zivlHHfy2wJcnNFgzPIZjUWJfNThOAJVoT6vFCDFWtH
- mdAl0S9JLfVPeaPxzi2GqttjWpY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 611369b3b14e7e2ecb5facf6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 06:09:55
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3E393C43144; Wed, 11 Aug 2021 06:09:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53C17C433D3;
-        Wed, 11 Aug 2021 06:09:54 +0000 (UTC)
+        id S234732AbhHKGLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 02:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234468AbhHKGLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 02:11:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2840C60F41;
+        Wed, 11 Aug 2021 06:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628662252;
+        bh=AKwTurEJzTx7U40tBTzGKeANm+iVMkeeFGKfRLV6toc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bw7bdqJhsZvuUoyFRRqt7VzbA22+hLjUJb/VctHnEC2eRxDYdTv001GU0L7+McjWG
+         zgCvbIIleLYtIYX2JrHqrGY3ngWqtESh64nkJLktfUDLPM9txKwxJrk9x+lpcuiEmK
+         dyw4KjwtiYeEWCkTQ3R0GqMku46c/5Dsc/UQFBftUJlm2bUeno+7j2csjvn8vYOYxS
+         S2+K/KZ5EQheTMO3xSk976tWfnlCV2sdBjiuPbG+KQFFEjH1jnoAaVTH/j+/eIu1sk
+         Yj3zaux0Dg60EpwSvDqc/1hodllYInFhHWLV1B7px5aPMQ401gTg5ScvnauVch7s5c
+         t7IOiuE0d73jg==
+Date:   Wed, 11 Aug 2021 09:10:49 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Yufeng Mo <moyufeng@huawei.com>
+Subject: Re: [PATCH net-next 0/5] Move devlink_register to be near
+ devlink_reload_enable
+Message-ID: <YRNp6Zmh99N3kJVa@unreal>
+References: <cover.1628599239.git.leonro@nvidia.com>
+ <20210810165318.323eae24@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Aug 2021 11:39:54 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCHv3] iommu/arm-smmu: Optimize ->tlb_flush_walk() for qcom
- implementation
-Message-ID: <6f013c7eb690d40091f7c503ef640711@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810165318.323eae24@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-10 23:38, Will Deacon wrote:
-> On Tue, Aug 03, 2021 at 11:09:17AM +0530, Sai Prakash Ranjan wrote:
->> On 2021-08-02 21:13, Will Deacon wrote:
->> > On Wed, Jun 23, 2021 at 07:12:01PM +0530, Sai Prakash Ranjan wrote:
->> > > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> > > b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> > > index d3c6f54110a5..f3845e822565 100644
->> > > --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> > > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> > > @@ -341,6 +341,12 @@ static void arm_smmu_tlb_add_page_s1(struct
->> > > iommu_iotlb_gather *gather,
->> > >  				  ARM_SMMU_CB_S1_TLBIVAL);
->> > >  }
->> > >
->> > > +static void arm_smmu_tlb_inv_walk_impl_s1(unsigned long iova,
->> > > size_t size,
->> > > +				     size_t granule, void *cookie)
->> > > +{
->> > > +	arm_smmu_tlb_inv_context_s1(cookie);
->> > > +}
->> > > +
->> > >  static void arm_smmu_tlb_inv_walk_s2(unsigned long iova, size_t size,
->> > >  				     size_t granule, void *cookie)
->> > >  {
->> > > @@ -388,6 +394,12 @@ static const struct iommu_flush_ops
->> > > arm_smmu_s1_tlb_ops = {
->> > >  	.tlb_add_page	= arm_smmu_tlb_add_page_s1,
->> > >  };
->> > >
->> > > +const struct iommu_flush_ops arm_smmu_s1_tlb_impl_ops = {
->> > > +	.tlb_flush_all	= arm_smmu_tlb_inv_context_s1,
->> > > +	.tlb_flush_walk	= arm_smmu_tlb_inv_walk_impl_s1,
->> > > +	.tlb_add_page	= arm_smmu_tlb_add_page_s1,
->> > > +};
->> >
->> > Hmm, dunno about this. Wouldn't it be a lot cleaner if the
->> > tlb_flush_walk
->> > callbacks just did the right thing based on the smmu_domain (maybe in
->> > the
->> > arm_smmu_cfg?) rather than having an entirely new set of ops just
->> > because
->> > they're const and you can't overide the bit you want?
->> >
->> > I don't think there's really an awful lot qcom-specific about the
->> > principle
->> > here -- there's a trade-off between over-invalidation and invalidation
->> > latency. That happens on the CPU as well.
->> >
->> 
->> Sorry didn't understand, based on smmu_domain what? How do we make
->> this implementation specific? Do you mean something like a quirk?
->> The reason we didn't make this common was because nvidia folks weren't
->> so happy with that, you can find the discussion in this thread [1].
->> 
->> [1] 
->> https://lore.kernel.org/lkml/20210609145315.25750-1-saiprakash.ranjan@codeaurora.org/
+On Tue, Aug 10, 2021 at 04:53:18PM -0700, Jakub Kicinski wrote:
+> On Tue, 10 Aug 2021 16:37:30 +0300 Leon Romanovsky wrote:
+> > This series prepares code to remove devlink_reload_enable/_disable API
+> > and in order to do, we move all devlink_register() calls to be right
+> > before devlink_reload_enable().
+> > 
+> > The best place for such a call should be right before exiting from
+> > the probe().
+> > 
+> > This is done because devlink_register() opens devlink netlink to the
+> > users and gives them a venue to issue commands before initialization
+> > is finished.
+> > 
+> > 1. Some drivers were aware of such "functionality" and tried to protect
+> > themselves with extra locks, state machines and devlink_reload_enable().
+> > Let's assume that it worked for them, but I'm personally skeptical about
+> > it.
+> > 
+> > 2. Some drivers copied that pattern, but without locks and state
+> > machines. That protected them from reload flows, but not from any _set_
+> > routines.
+> > 
+> > 3. And all other drivers simply didn't understand the implications of early
+> > devlink_register() and can be seen as "broken".
 > 
-> The ->tlb_flush_walk() callbacks take a 'void *cookie' which, for this
-> driver, is a 'struct arm_smmu_domain *'. From that, you can get to the
-> 'struct arm_smmu_cfg' which could have something as coarse as:
+> What are those implications for drivers which don't implement reload?
+> Depending on which parts of devlink the drivers implement there may well
+> be nothing to worry about.
 > 
-> 	bool	flush_walk_prefer_tlbiasid;
-> 
-> which you can set when you initialise the domain (maybe in the
-> ->init_context callback?). It shouldn't affect anybody else.
-> 
+> Plus devlink instances start out with reload disabled. Could you please
+> take a step back and explain why these changes are needed.
 
-Ah ok, you meant a new flag in arm_smmu_cfg, right getting it from 
-cookie
-is no big deal but nonetheless thanks for detailing it. I have made the
-changes and sent a v4 after testing.
+The problem is that devlink_register() adds new devlink instance to the
+list of visible devlinks (devlink_list). It means that all devlink_*_dumpit()
+will try to access devices during their initialization, before they are ready.
 
-Thanks,
-Sai
+The more troublesome case is that devlink_list is iterated in the
+devlink_get_from_attrs() and it is used in devlink_nl_pre_doit(). The
+latter function will return to the caller that new devlink is valid and
+such caller will be able to proceed to *_set_doit() functions.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Just as an example:
+ * user sends netlink message
+  * devlink_nl_cmd_eswitch_set_doit()
+   * ops->eswitch_mode_set()
+    * Are you sure that all drivers protected here?
+      I remind that driver is in the middle of its probe().
+
+Someone can argue that drivers and devlink are protected from anything
+harmful with their global (devlink_mutex and devlink->lock) and internal
+(device->lock, e.t.c.) locks. However it is impossible to prove for all
+drivers and prone to errors.
+
+Reload enable/disable gives false impression that the problem exists in
+that flow only, which is not true.
+
+devlink_reload_enable() is a duct tape because reload flows much easier
+to hit.
+
+> 
+> > In this series, we focus on items #1 and #2.
+> > 
+> > Please share your opinion if I should change ALL other drivers to make
+> > sure that devlink_register() is the last command or leave them in an
+> > as-is state.
+> 
+> Can you please share the output of devlink monitor and ip monitor link
+> before and after?  The modified drivers will not register ports before
+> they register the devlink instance itself.
+
+Not really, they will register but won't be accessible from the user space.
+The only difference is the location of "[dev,new] ..." notification.
+
+[leonro@vm ~]$ sudo modprobe mlx5_core
+[  105.575790] mlx5_core 0000:00:09.0: firmware version: 4.8.9999
+[  105.576349] mlx5_core 0000:00:09.0: 0.000 Gb/s available PCIe bandwidth (8.0 GT/s PCIe x255 link)
+[  105.686217] pps pps0: new PPS source ptp0
+[  105.688144] mlx5_core 0000:00:09.0: E-Switch: Total vports 2, per vport: max uc(32768) max mc(32768)
+[  105.717736] mlx5_core 0000:00:09.0: MLX5E: StrdRq(1) RqSz(8) StrdSz(2048) RxCqeCmprss(0)
+[  106.957028] mlx5_core 0000:00:09.0 eth1: Link down
+[  106.960379] mlx5_core 0000:00:09.0 eth1: Link up
+[  106.967916] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
+================================================================================================
+Before:
+[leonro@vm ~]$ sudo devlink monitor
+[dev,new] pci/0000:00:09.0
+[param,new] pci/0000:00:09.0: name flow_steering_mode type driver-specific
+  values:
+[param,new] pci/0000:00:09.0: name esw_port_metadata type driver-specific
+  values:
+[param,new] pci/0000:00:09.0: name enable_remote_dev_reset type generic
+  values:
+[param,new] pci/0000:00:09.0: name enable_roce type generic
+  values:
+    cmode driverinit value true
+[param,new] pci/0000:00:09.0: name fdb_large_groups type driver-specific
+  values:
+    cmode driverinit value 15
+[param,new] pci/0000:00:09.0: name flow_steering_mode type driver-specific
+  values:
+    cmode runtime value dmfs
+[param,new] pci/0000:00:09.0: name enable_roce type generic
+  values:
+    cmode driverinit value true
+[param,new] pci/0000:00:09.0: name fdb_large_groups type driver-specific
+  values:
+    cmode driverinit value 15
+[param,new] pci/0000:00:09.0: name esw_port_metadata type driver-specific
+  values:
+    cmode runtime value true
+[param,new] pci/0000:00:09.0: name enable_remote_dev_reset type generic
+  values:
+    cmode runtime value true
+[trap-group,new] pci/0000:00:09.0: name l2_drops generic true
+[trap,new] pci/0000:00:09.0: name ingress_vlan_filter type drop generic true action drop group l2_drops
+[trap,new] pci/0000:00:09.0: name dmac_filter type drop generic true action drop group l2_drops
+[port,new] pci/0000:00:09.0/131071: type notset flavour physical port 0 splittable false
+[port,new] pci/0000:00:09.0/131071: type eth netdev eth1 flavour physical port 0 splittable false
+
+[leonro@vm ~]$ sudo ip monitor
+inet eth1 forwarding off rp_filter loose mc_forwarding off proxy_neigh off ignore_routes_with_linkdown off 
+inet6 eth1 forwarding off mc_forwarding off proxy_neigh off ignore_routes_with_linkdown off 
+4: eth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default 
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff
+4: eth1: <NO-CARRIER,BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state DOWN group default 
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff
+multicast ff00::/8 dev eth1 table local proto kernel metric 256 pref medium
+fe80::/64 dev eth1 proto kernel metric 256 pref medium
+4: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default 
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff
+4: eth1    inet6 fe80::5054:ff:fe12:3456/64 scope link 
+       valid_lft forever preferred_lft forever
+local fe80::5054:ff:fe12:3456 dev eth1 table local proto kernel metric 0 pref medium
+
+===========================================================================================================
+After:
+[leonro@vm ~]$ sudo devlink monitor
+[param,new] pci/0000:00:09.0: name flow_steering_mode type driver-specific
+  values:
+[param,new] pci/0000:00:09.0: name esw_port_metadata type driver-specific
+  values:
+[param,new] pci/0000:00:09.0: name enable_remote_dev_reset type generic
+  values:
+[param,new] pci/0000:00:09.0: name enable_roce type generic
+  values:
+    cmode driverinit value true
+[param,new] pci/0000:00:09.0: name fdb_large_groups type driver-specific
+  values:
+    cmode driverinit value 15
+[param,new] pci/0000:00:09.0: name flow_steering_mode type driver-specific
+  values:
+    cmode runtime value dmfs
+[param,new] pci/0000:00:09.0: name enable_roce type generic
+  values:
+    cmode driverinit value true
+[param,new] pci/0000:00:09.0: name fdb_large_groups type driver-specific
+  values:
+    cmode driverinit value 15
+[param,new] pci/0000:00:09.0: name esw_port_metadata type driver-specific
+  values:
+    cmode runtime value true
+[param,new] pci/0000:00:09.0: name enable_remote_dev_reset type generic
+  values:
+    cmode runtime value true
+[trap-group,new] pci/0000:00:09.0: name l2_drops generic true
+[trap,new] pci/0000:00:09.0: name ingress_vlan_filter type drop generic true action drop group l2_drops
+[trap,new] pci/0000:00:09.0: name dmac_filter type drop generic true action drop group l2_drops
+[dev,new] pci/0000:00:09.0
+[port,new] pci/0000:00:09.0/131071: type notset flavour physical port 0 splittable false
+[port,new] pci/0000:00:09.0/131071: type eth netdev eth1 flavour physical port 0 splittable false
+
+[leonro@vm ~]$ sudo ip monitor
+inet eth1 forwarding off rp_filter loose mc_forwarding off proxy_neigh off ignore_routes_with_linkdown off 
+inet6 eth1 forwarding off mc_forwarding off proxy_neigh off ignore_routes_with_linkdown off 
+4: eth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default 
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff
+4: eth1: <NO-CARRIER,BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state DOWN group default 
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff
+multicast ff00::/8 dev eth1 table local proto kernel metric 256 pref medium
+fe80::/64 dev eth1 proto kernel metric 256 pref medium
+4: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default 
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff
+4: eth1    inet6 fe80::5054:ff:fe12:3456/64 scope link 
+       valid_lft forever preferred_lft forever
+local fe80::5054:ff:fe12:3456 dev eth1 table local proto kernel metric 0 pref medium
