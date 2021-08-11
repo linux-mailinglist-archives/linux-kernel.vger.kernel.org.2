@@ -2,80 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E182C3E8CB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3633E8CBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236515AbhHKJBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236255AbhHKJA7 (ORCPT
+        id S236610AbhHKJBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:01:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60751 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236570AbhHKJBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:00:59 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DB2C0613D5
+        Wed, 11 Aug 2021 05:01:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628672438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xVYk6O6UbKVQlEk4hpiQ+ioYAfkIhHzccxHN1Fx+454=;
+        b=T/pogVQ6LOdA85cxys2r8Oov0oYWdqkwp4EIA6yINrMWIf8rUlOBOI2NJ6ecwD42S2IEDK
+        FJRSU5xXa/fJogpaDT8SxftcvDOQgnbxTKZoywOOOl7OofO8xdfTJxvxzk9Hr5v5TV6mML
+        cWjeq9kl6yCws6JbJxJYijPmrwRiG9U=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-ikHHE2RiNgCNkynurHdFQA-1; Wed, 11 Aug 2021 05:00:35 -0400
+X-MC-Unique: ikHHE2RiNgCNkynurHdFQA-1
+Received: by mail-ej1-f70.google.com with SMTP id q19-20020a1709064cd3b02904c5f93c0124so411537ejt.14
         for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:00:35 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id h2so3390222lji.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:00:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ByYMlbMTyxkiBAaSmL+WOHNG/B2x6QEQfrThcArQKRw=;
-        b=Xn2tYDqZkw3fKcnhQZLg6e4OaqolCiGbM848DSvUY18JusO5D+NdAuA4WuQxXRSYrT
-         /5EMIHXOAPJ5utshYtZquuBHQKvCv9syhSFaQSvqQxy1G1KpLDGqPH5ZZ9Iv1SL4QD5Q
-         mA+t+YGkJLNpyPaeObi1Ve1IRZZHmBs3t5p757rQyU22tVAKLjaKGsp5GiraguJvtvA0
-         UOn4pPGrubN5ZT1RvwP3qy3chzJ1xp8SvkmvvWUJTIYbM6n9Pomc6/Cq4hzjPOsaFuMz
-         yQDF39mH4OUR8yCfJLmu7/n6jlWSiLeoH2HgYYEAaBJnsE2WffF8DPDGimOcoJdpVL95
-         fUFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ByYMlbMTyxkiBAaSmL+WOHNG/B2x6QEQfrThcArQKRw=;
-        b=jOEPAZ5dt29g5mLf2iVcBmi2FLqf29BWgdx8MGKzvbulEelZNdOx+ceXWVjmk1smOb
-         yRKufReIJn/dPH+fEWLzyXs6lCYkSlmc652lFPCh1VO0D01OW48yTLnK2JPnUM3MLDic
-         l5+Kj9CTe83WBy7Vo8tEbTLg3DJMAoksqmXUH7ql+nqZwt/oN6+xIo9RfLcy8DuqfgPe
-         07OgTXrk5W3wP6hXa18B963jSb1KKsWf5o6xXb6jizCGybn0xzF3tWbwbWUl3OdZs0WZ
-         7EeMC5TE9stB29a1RA0UobbGKsC8uP3vyebdU4/Ye6TToK3szIhbFKE7tjOonYXGqaPx
-         sg8w==
-X-Gm-Message-State: AOAM531QAmq9HjNo4d3b8T0g9a7qun1mEkiJCnPyTpeg3hm/yzajizJJ
-        bK/lp9bKgd7MDNhvtA5qVBXiuAvu2GOJmN2Bre34+Q==
-X-Google-Smtp-Source: ABdhPJzPGdg6StS/V0/ilLK95SVU9vwc4TnCmVmPA4yxIJY2EvfBR5qOtuosUnK2p3OSXtx8OTSM9RjguR9Tgv6OaPo=
-X-Received: by 2002:a2e:a4ab:: with SMTP id g11mr20952ljm.273.1628672433464;
- Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xVYk6O6UbKVQlEk4hpiQ+ioYAfkIhHzccxHN1Fx+454=;
+        b=jpDEm5HB3MkFByfS11D5RyMn2ilqGDE4i3iQncA+4IzfB5e61BgRKKHLT3kPAqBXnr
+         slnptppwJL4U9UURUktXAa4K9WNLjQFlx1YsDkG/EGh/IvultXYE21kZ83sk0OPa6Ltn
+         BlsOLxfhyqGV943rEPLxlSHUtmaqAu0BUxxt6UniJ/RwZZIp94hjAeyDlkaReUGl2Cck
+         /rZs9rVcVqZsb6elnnJpl2HDYP/bpltF7ytYkPEjIwLls0ScfjMBymBUunf6HSS8X9yj
+         iXdpz7/lpq5t61xIPbUg2nLRrtgCPo9rwFxHArcTVlZkmemXTLsh1JzBm1egYDsL5InH
+         SaLA==
+X-Gm-Message-State: AOAM532OwFSntHLF79dPV5Zxhsm7SY56KLYmTp8Ygyp/7meT7IiHr29X
+        Lzj/Amz+LAqx+jXZLhpVwsA641lpbXGb7+cXNJo80L5pB0NjTT/SzBk+goVu4WCUq9t+EHfNJuC
+        909hCuM6iGXFmqvsQxNiBwE/Y
+X-Received: by 2002:a17:906:a08a:: with SMTP id q10mr2593175ejy.100.1628672433792;
+        Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+Wh3oVEmn3QZnNAXMGsVm3JaAoH4eSr1ZKRKUam8aqa4jKG8XOA/RBO+z8M1b/2H29w2Viw==
+X-Received: by 2002:a17:906:a08a:: with SMTP id q10mr2593146ejy.100.1628672433523;
+        Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
+Received: from steredhat (a-nu5-14.tin.it. [212.216.181.13])
+        by smtp.gmail.com with ESMTPSA id l19sm4147213edb.86.2021.08.11.02.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 11:00:30 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v2 1/5] virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOM' bit
+Message-ID: <20210811090030.snu5ckf6bdkzxdg7@steredhat>
+References: <20210810113901.1214116-1-arseny.krasnov@kaspersky.com>
+ <20210810113956.1214463-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210728144229.323611-1-krzysztof.kozlowski@canonical.com> <20210728144229.323611-4-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210728144229.323611-4-krzysztof.kozlowski@canonical.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 11:00:22 +0200
-Message-ID: <CACRpkdabg6vDKSRL6_AJUOMm6L_zUFCxf9nBz-MbfA5rLGcHng@mail.gmail.com>
-Subject: Re: [PATCH 3/3] gpiolib: of: constify few local device_node variables
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210810113956.1214463-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 4:42 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Tue, Aug 10, 2021 at 02:39:53PM +0300, Arseny Krasnov wrote:
 
-> gpiolib does not modify struct device_node, so few local pointers can
-> point to a const data.
+The title is confusing, we are renaming EOR in EOM.
+
+>This bit is used to mark end of messages('EOM' - end of message), while
+>'VIRIO_VSOCK_SEQ_EOR' is used to pass MSG_EOR. Also rename 'record' to
+>'message' in implementation as it is different things.
 >
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> drivers/vhost/vsock.c                   | 12 ++++++------
+> include/uapi/linux/virtio_vsock.h       |  3 ++-
+> net/vmw_vsock/virtio_transport_common.c | 14 +++++++-------
+> 3 files changed, 15 insertions(+), 14 deletions(-)
+>
+>diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>index f249622ef11b..feaf650affbe 100644
+>--- a/drivers/vhost/vsock.c
+>+++ b/drivers/vhost/vsock.c
+>@@ -178,15 +178,15 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 			 * small rx buffers, headers of packets in rx queue are
+> 			 * created dynamically and are initialized with 
+> 			 header
+> 			 * of current packet(except length). But in case of
+>-			 * SOCK_SEQPACKET, we also must clear record delimeter
+>-			 * bit(VIRTIO_VSOCK_SEQ_EOR). Otherwise, instead of one
+>-			 * packet with delimeter(which marks end of record),
+>+			 * SOCK_SEQPACKET, we also must clear message delimeter
+>+			 * bit(VIRTIO_VSOCK_SEQ_EOM). Otherwise, instead of one
+>+			 * packet with delimeter(which marks end of message),
+> 			 * there will be sequence of packets with delimeter
+> 			 * bit set. After initialized header will be copied to
+> 			 * rx buffer, this bit will be restored.
+> 			 */
+>-			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
+>-				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
+>+			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
+>+				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+> 				restore_flag = true;
+> 			}
+> 		}
+>@@ -225,7 +225,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 		 */
+> 		if (pkt->off < pkt->len) {
+> 			if (restore_flag)
+>-				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
+>+				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+>
+> 			/* We are queueing the same virtio_vsock_pkt to handle
+> 			 * the remaining bytes, and we want to deliver it
+>diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
+>index 3dd3555b2740..64738838bee5 100644
+>--- a/include/uapi/linux/virtio_vsock.h
+>+++ b/include/uapi/linux/virtio_vsock.h
+>@@ -97,7 +97,8 @@ enum virtio_vsock_shutdown {
+>
+> /* VIRTIO_VSOCK_OP_RW flags values */
+> enum virtio_vsock_rw {
+>-	VIRTIO_VSOCK_SEQ_EOR = 1,
+>+	VIRTIO_VSOCK_SEQ_EOM = 1,
+>+	VIRTIO_VSOCK_SEQ_EOR = 2,
+         ^
+I think is better to add this new flag in a separate patch.
 
-LGTM
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-I guess this needs to be merged with the other two patches?
-I suppose in Rob Herrings DT tree?
+> };
+>
+> #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index 081e7ae93cb1..4d5a93beceb0 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -77,7 +77,7 @@ virtio_transport_alloc_pkt(struct virtio_vsock_pkt_info *info,
+>
+> 		if (msg_data_left(info->msg) == 0 &&
+> 		    info->type == VIRTIO_VSOCK_TYPE_SEQPACKET)
+>-			pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
+>+			pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+> 	}
+>
+> 	trace_virtio_transport_alloc_pkt(src_cid, src_port,
+>@@ -457,7 +457,7 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+> 				dequeued_len += pkt_len;
+> 		}
+>
+>-		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
+>+		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
+> 			msg_ready = true;
+> 			vvs->msg_count--;
+> 		}
+>@@ -1029,7 +1029,7 @@ virtio_transport_recv_enqueue(struct vsock_sock *vsk,
+> 		goto out;
+> 	}
+>
+>-	if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
+>+	if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM)
+> 		vvs->msg_count++;
+>
+> 	/* Try to copy small packets into the buffer of last packet queued,
+>@@ -1044,12 +1044,12 @@ virtio_transport_recv_enqueue(struct vsock_sock *vsk,
+>
+> 		/* If there is space in the last packet queued, we copy the
+> 		 * new packet in its buffer. We avoid this if the last packet
+>-		 * queued has VIRTIO_VSOCK_SEQ_EOR set, because this is
+>-		 * delimiter of SEQPACKET record, so 'pkt' is the first packet
+>-		 * of a new record.
+>+		 * queued has VIRTIO_VSOCK_SEQ_EOM set, because this is
+>+		 * delimiter of SEQPACKET message, so 'pkt' is the first packet
+>+		 * of a new message.
+> 		 */
+> 		if ((pkt->len <= last_pkt->buf_len - last_pkt->len) &&
+>-		    !(le32_to_cpu(last_pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)) {
+>+		    !(le32_to_cpu(last_pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM)) {
+> 			memcpy(last_pkt->buf + last_pkt->len, pkt->buf,
+> 			       pkt->len);
+> 			last_pkt->len += pkt->len;
+>-- 
+>2.25.1
+>
 
-Yours,
-Linus Walleij
+The rest LGTM!
+
+Thanks,
+Stefano
+
