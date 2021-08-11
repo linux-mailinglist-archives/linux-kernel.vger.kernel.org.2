@@ -2,75 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1133E9001
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7903E9003
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237361AbhHKMCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232160AbhHKMCw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:02:52 -0400
-Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C944C061765;
-        Wed, 11 Aug 2021 05:02:28 -0700 (PDT)
-Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
-        (authenticated bits=0)
-        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 17BC1vRT024740
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Wed, 11 Aug 2021 14:01:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1628683318; bh=ZMAPDJRikzYs/k+y/xgS9A/z7vNWC6FiVDP1jJK1Frc=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=Drk0DmlQNrR6MVvx8eIXJOsvyZOG/WuthaMyQwpmbTXMs34DxAWc03v0zmQRq6StQ
-         EcjkN5AeMHYkzivMACMXI1vHXk+GV9Q7pYGhjC91Ja+cKQRGuVOmfXlFuG+2PU8Zt8
-         SfJVvry5wUzpKU6B1f5W55iCSAvZN4ktqX5UYeYo=
-Received: from bjorn by miraculix.mork.no with local (Exim 4.94.2)
-        (envelope-from <bjorn@mork.no>)
-        id 1mDmvl-000IMy-IV; Wed, 11 Aug 2021 14:01:57 +0200
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2,1/1] This aims to support Foxconn SDX55
-Organization: m
-References: <20210811085635.4699-1-slark_xiao@163.com>
-Date:   Wed, 11 Aug 2021 14:01:57 +0200
-In-Reply-To: <20210811085635.4699-1-slark_xiao@163.com> (Slark Xiao's message
-        of "Wed, 11 Aug 2021 16:56:35 +0800")
-Message-ID: <875ywcfave.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S237438AbhHKMDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:03:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232160AbhHKMDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:03:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A7D760E93;
+        Wed, 11 Aug 2021 12:02:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628683362;
+        bh=XHoR5BqMPxzKlhQzjnPDWel87OITrOE6CsKd1mWHcHM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kBMycUB5uB8gsx/uR3qd4MCTSpXUqPaTVF1DVryhH69XBG1S0CDhvpCTt3HjIP70+
+         t/gza7u4P1GIGyomnOblxMEz0321w6+5Sp8fR3McPnZf4KtiqyVhm9Ykphqo30xH+s
+         1M/evu3lE1719F0TI++92Sx1B86/6Y5xF04w/BP6D7cGq3q/QUuZDqIe3HaDi28mvn
+         eQUi8PpcsmIKSodxh38vbDk5P9oPefb9mDaItwGBOL/qo/6wcL2/Ewe5b8af14dONp
+         gw2cHlTeWOJoMBIuPg4aZYZnGmAXJoIdSxNVAD1v7HJmF1znvi8D1yVvkpzo0G3qke
+         3ifLdeo0qnlIA==
+Date:   Wed, 11 Aug 2021 15:02:38 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, lkp@intel.com, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: ipa: always inline
+ ipa_aggr_granularity_val()
+Message-ID: <YRO8Xtd9+RRMqw1J@unreal>
+References: <20210810160213.2257424-1-elder@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.103.2 at canardo
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810160213.2257424-1-elder@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Slark Xiao <slark_xiao@163.com> writes:
+On Tue, Aug 10, 2021 at 11:02:13AM -0500, Alex Elder wrote:
+> It isn't required, but all callers of ipa_aggr_granularity_val()
+> pass a constant value (IPA_AGGR_GRANULARITY) as the usec argument.
+> Two of those callers are in ipa_validate_build(), with the result
+> being passed to BUILD_BUG_ON().
+> 
+> Evidently the "sparc64-linux-gcc" compiler (at least) doesn't always
+> inline ipa_aggr_granularity_val(), so the result of the function is
+> not constant at compile time, and that leads to build errors.
+> 
+> Define the function with the __always_inline attribute to avoid the
+> errors.  And given that the function is inline, we can switch the
+> WARN_ON() there to be BUILD_BUG_ON().
+> 
+> Fixes: 5bc5588466a1f ("net: ipa: use WARN_ON() rather than assertions")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+> 
+> David/Jakub, this fixes a bug in a commit in net-next/master.  -Alex
+> 
+>  drivers/net/ipa/ipa_main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+> index 25bbb456e0078..f90b3521e266b 100644
+> --- a/drivers/net/ipa/ipa_main.c
+> +++ b/drivers/net/ipa/ipa_main.c
+> @@ -255,9 +255,9 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
+>   * less than the number of timer ticks in the requested period.  0 is not
+>   * a valid granularity value.
+>   */
+> -static u32 ipa_aggr_granularity_val(u32 usec)
+> +static __always_inline u32 ipa_aggr_granularity_val(u32 usec)
+>  {
+> -	WARN_ON(!usec);
+> +	BUILD_BUG_ON(!usec);
 
-> diff --git a/drivers/usb/serial/qcserial.c b/drivers/usb/serial/qcserial.c
-> index 83da8236e3c8..d8b58aea3c60 100644
-> --- a/drivers/usb/serial/qcserial.c
-> +++ b/drivers/usb/serial/qcserial.c
-> @@ -111,6 +111,7 @@ static const struct usb_device_id id_table[] =3D {
->  	{USB_DEVICE(0x16d8, 0x8002)},	/* CMDTech Gobi 2000 Modem device (VU922)=
- */
->  	{USB_DEVICE(0x05c6, 0x9204)},	/* Gobi 2000 QDL device */
->  	{USB_DEVICE(0x05c6, 0x9205)},	/* Gobi 2000 Modem device */
-> +	{USB_DEVICE(0x05c6, 0x901d)},	/* Foxconn SDX55 QDL */
+So what exactly are you checking here if all callers pass same value?
+It is in-kernel API, declared as static inside one module. There is no
+need to protect from itself.
 
-I assume this device will expose other serial functions when booted in
-application USB mode?  But probably not with a Gobi 2k layout... Maybe
-add the application device ID to some USB serial driver too, and include
-the QDL device ID there as well to reduce confusion?
+Thanks
 
-Could you provide a view of the default USB descriptors in both QDL and
-application mode?  E.g from lsusb -v or  /sys/kernel/debug/usb/devices?
-
-
-Bj=C3=B8rn
-
+>  
+>  	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
+>  }
+> -- 
+> 2.27.0
+> 
