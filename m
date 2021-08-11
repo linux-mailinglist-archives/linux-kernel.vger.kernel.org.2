@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153CC3E92EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8C83E9300
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhHKNqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbhHKNqI (ORCPT
+        id S232050AbhHKNrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:47:33 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:44317 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231963AbhHKNrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:46:08 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15DFC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:45:44 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id g30so5876945lfv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:45:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GFsLrpkcVnHQAcI9LO6wyCFOtOWqn6o7HFSxtLHjjvU=;
-        b=KCrGeOVEN0pWbe2RdBYdpRxYelobeG+W/B1dX6vvROlFe1zePluh6zndsGEXbiVQG+
-         Yo/g/nuafosL4mPPipY0ghaubJLiZYIF6jPtgfuWZWJyALsWpG9BWsETK28WxOs/f0KK
-         KcwGYYZFYAJC9ZvECQYupjVjq+ajk85A2Jtd862R3xxIbP+p7mPhpx8FPogLYdcNr+6+
-         PZcHSDIlrMKgNH+/RsriCcomjD5z5oKnTG5rT65qjTfRLNh5dWboTr9Tim0opPLsf7Ud
-         Ju68rI5iij5XNDJGKZdh5jXxoscX090Un1xDy5V2HSnKdzqD+vqi65BpHPtpAVRYPQUg
-         u46Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GFsLrpkcVnHQAcI9LO6wyCFOtOWqn6o7HFSxtLHjjvU=;
-        b=RDSWVi1UX1XK/peQ5r+uVkTDuebdJbZRr82V7cC09oa2s0j5AiXrWwrl2joqexNWDr
-         ewafdHUixsvve4OXxH1L4qMo/12EB9yzEupHlYcogjmN0wJgBG1XQusFv6LV21+zwJJL
-         QTtmbon7hSCCAPjdtK4vHFirxM0rVFYqS70UsozeRI0A6pm0/dW4U+mv44sH5Pd1YjrG
-         ujaTWbJ1HQhDGxh6L2aAKMxk9fJukqssIUMfnp8NL2C/O70jc2oKGgueXLOW8/ModWzh
-         tydneVH7p5gG9c/S0vfhAmKyIqbAsQkd4ubyRzxkOU8baXsokSjpDjyMMjJJc+pKSfRb
-         Qrgw==
-X-Gm-Message-State: AOAM531ZwGGlNLMSVieaOP3z9UEKdMh0S0a4Xto+ea7wLToTlKP26TzD
-        CMmcDlmNlLIhNcoity5m73jqaA==
-X-Google-Smtp-Source: ABdhPJw5YOeH2Zsrla2DQrb6ly2OcPz1N9CsB+EvBcNJKqxGxwQDSwV55yBKSsroVniZJSs629mEWQ==
-X-Received: by 2002:a05:6512:3b3:: with SMTP id v19mr1731028lfp.10.1628689543315;
-        Wed, 11 Aug 2021 06:45:43 -0700 (PDT)
-Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
-        by smtp.gmail.com with ESMTPSA id b42sm2353668lfv.135.2021.08.11.06.45.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 06:45:42 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 15:45:42 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: Re: [PATCH] media: rcar-csi2: Add checking to rcsi2_start_receiver().
-Message-ID: <YRPUhqvcTxCVvnBG@oden.dyn.berto.se>
-References: <20210811133142.13363-1-lutovinova@ispras.ru>
+        Wed, 11 Aug 2021 09:47:06 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N4i3j-1nDVou3Hyp-011iWG; Wed, 11 Aug 2021 15:46:39 +0200
+Received: by mail-wm1-f41.google.com with SMTP id 203-20020a1c00d40000b02902e6a4e244e4so2026325wma.4;
+        Wed, 11 Aug 2021 06:46:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531jQKlZl5JpWc7EyG8xhf8ovkJ04pR1+KbJEDT5MMPR5aKHxDrk
+        27orYS2+URH1E4IkGaCQ2W2uk7gH5AlO68S2qko=
+X-Google-Smtp-Source: ABdhPJzeHDd0FHBmfbs2ZDN/qKdPw/326OoOVEunTVNFojrgSBiRxcFRkHpVRPVIq6jZ54rermFnJzWU+XJ7JpAf3Wg=
+X-Received: by 2002:a05:600c:3b08:: with SMTP id m8mr10139690wms.84.1628689599369;
+ Wed, 11 Aug 2021 06:46:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210811133142.13363-1-lutovinova@ispras.ru>
+References: <20210805174219.3000667-1-piyush.mehta@xilinx.com>
+ <20210805174219.3000667-2-piyush.mehta@xilinx.com> <CACRpkdYo5e7uTJJRqnK1R4QLtUzRGNbsvNvm-47UFZOr4_R9Cw@mail.gmail.com>
+In-Reply-To: <CACRpkdYo5e7uTJJRqnK1R4QLtUzRGNbsvNvm-47UFZOr4_R9Cw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 11 Aug 2021 15:46:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3ZdZSdiX6_AeSW4qSFhUp+wKrUe6S5z5bKDtcU068sjQ@mail.gmail.com>
+Message-ID: <CAK8P3a3ZdZSdiX6_AeSW4qSFhUp+wKrUe6S5z5bKDtcU068sjQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] firmware: zynqmp: Add MMIO read and write support
+ for PS_MODE pin
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Piyush Mehta <piyush.mehta@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Michal Simek <michal.simek@xilinx.com>, wendy.liang@xilinx.com,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, git <git@xilinx.com>,
+        Srinivas Goud <sgoud@xilinx.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:kzrHtECqBV9bGkTAErGbe1Ac/LDvSkXZRJAkQSl2LTdHw9dZGjL
+ gLj4EqBwKcVu982Kus4skiECAZ58Dp6OrbIwH3koV7/eol5QUkx6Vsz324agwXsCGDodkXO
+ csd6sB0ivJRanu7JWZELdnkmpncBHyueQvf1dxt9zZ3OQ5bFbsvhFmBjoTfQvCZEm8EY98q
+ gD1fXt0FIF5XMtxLGMKMQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a33CKD5cniU=:A9HLAxdrNpUz9ARLA5dO0l
+ otDG4mlznSQJO2uZtp2s/jSI+pbJs7VvbAm7QvV5zwX3sE5K5DO4rzpJER/FXq2p6ru5HXjRj
+ r27oZj5FfN/4xOgkJUOzdD4A1z9jH56CwhuKforrkgA/cM7YFaQIRN5ZAOO1Ts9CVEqdr2G61
+ 3bxjbfN4JKM53KlPVbUIJbatryzShUrL9cq2hn501f+Y1rIqbFJnw2bxZ++Y+baFaW8wL9BeU
+ LBg5vyF5CV2uLpVlwSQmzmhnbVo6cVOAyYghlea5MFK41D8gFXVrbNLc8Jg104aYIOBlhi4vA
+ GgTTEunThGtZlEQ6tVayFVAYsA5LUc/nNuvWFWsFmfNYRKeV4q5tGaSXmeegmkBnSmhuutU2s
+ 6fLQE66BhGOKgUo7U2vOD/6rL+wS5y1bjEsLP5UbqbkSytHZgseY1R8YrwIcKuQ0a6ku6C2Jz
+ BkCar8l2/WxzfenV4/dtRox5Q1YPM1gPW+EjDufP7pJv3ACX+0TkhTG8lDOIs3vbI+RdACfOy
+ lHYDURafyNTMO+zuC54OvKPY+yu/9Y6DO+DfCU9hiAvovSPe6y2whfd/u6TkIZoP1YukSu7od
+ ZkogpY6feM3IRo9bzJdNagtpgGIgSsyI791xQiPJVCvafBDrR9AhcVV+CMdMij/itjbHgFIV/
+ J0fOJp5XfEjL0fVrEczQsD8dODuyU3zFxuKVYtFofRc5dcOThDU5uqUoz/r3vQHJoJe5ro1kF
+ rt3OCl3AY2GYT6leLxVPNC/k4deJsy3PYHOjYiNlUrGE070y7a53YY8/hZFnnVOJG4eu37zQm
+ O0Y135iRV5FVgDFpjolnVL2aPAZZKRn+1tFyhKmcrObPY/Y2wkMaFSDcUyujeqodZOEAkfWSb
+ MPGVebX1soeBl6UKMP6w9b72Fx8H/FfUutG9D7ZyKxvFUXbLVTMWiecLlei+14OmBzo0aqiKu
+ XUlfJhniFZLsxM+hFBtIeETd/xEfG/HWc+Xr/8CzRSW1aV6d63u2g
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadezda,
+On Wed, Aug 11, 2021 at 3:08 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Thu, Aug 5, 2021 at 7:42 PM Piyush Mehta <piyush.mehta@xilinx.com> wrote:
+>
+> > Add Xilinx ZynqMP firmware MMIO APIs support to set and get PS_MODE
+> > pins value and status. These APIs create an interface path between
+> > mode pin controller driver and low-level API to access GPIO pins.
+> >
+> > Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> > ---
+> > Changes in v2:
+> > - Added Xilinx ZynqMP firmware MMIO API support to set and get pin
+> >   value and status.
+>
+> I doubt this is "GPIO".
+> General Purpose? I think not. It seems to be about boot mode.
 
-Thanks for your work.
+Agreed.
 
-On 2021-08-11 16:31:42 +0300, Nadezda Lutovinova wrote:
-> If rcsi2_code_to_fmt() return NULL,
-> then null pointer dereference occurs in the next cycle.
-> The patch adds checking if format is NULL.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
+> If you need a userspace ABI, then add sysfs files to this firmware
+> driver instead of bridging it to the GPIO subsystem.
 
-Please drop the '.' at the end of the patch subject. Also the commit 
-message could be better line wrapped.
+I don't really want custom user interfaces in firmware drivers either.
 
-> 
-> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-> ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index e28eff039688..55bb584d2a13 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -553,6 +553,12 @@ static int rcsi2_start_receiver(struct rcar_csi2 *priv)
->  
->  	/* Code is validated in set_fmt. */
->  	format = rcsi2_code_to_fmt(priv->mf.code);
-> +	if (!format) {
+What is the high-level description of the 'PS_MODE' here? Is
+this perhaps something we already have a user interface for?
 
-This can never happen ;-)
-
-The only place priv->mf.code is set (after probe) is in  
-rcsi2_set_pad_format() and there it explicitly checks if 
-rcsi2_code_to_fmt() returns NULl and if so sets it to something that 
-guarantees it will not.
-
-Think of it as the verification is done at format configuration time so 
-we don't have to have check it at start time. The reason for this is 
-that we can't do much about a failure here other then fail the start 
-while at configure time we can try to correct it and inform the user of 
-the change.
-
-That being said, I'm not oppose to fail the start here if we ever do 
-introduce a bug here where rcsi2_code_to_fmt() would return NULL here.  
-But I would like to drop the dev_err() here and just return -EINVAL.
-
-I would mention in the commit message that this protects from future 
-bugs.
-
-> +		dev_err(priv->dev,
-> +			"Incorrect mbus frame format code %u\n",
-> +			priv->mf.code);
-> +		return -EINVAL;
-> +	}
->  
->  	/*
->  	 * Enable all supported CSI-2 channels with virtual channel and
-> -- 
-> 2.17.1
-> 
-
--- 
-Regards,
-Niklas Söderlund
+       Arnd
