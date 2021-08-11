@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1543B3E8757
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416C83E875A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236108AbhHKAnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:43:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38824 "EHLO mail.kernel.org"
+        id S236154AbhHKAn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235981AbhHKAnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:43:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1C06101D;
+        id S235988AbhHKAnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:43:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA36C60EB7;
         Wed, 11 Aug 2021 00:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628642598;
-        bh=SDwFDPOQmz/pmHMM+4prMbb/FBKaF/3A8kiP4jUiFjY=;
+        s=k20201202; t=1628642599;
+        bh=BuXcRdzmWNIaOIOjXT4hDOm7eBJ0j1zqPiGdlTfIt3c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZkJz7h7+oRGr3Xu1DUppMJk0wp3gXJP97aJv06qXq1C4tMizWAXPfFe5GyVCcMKmT
-         +vPP/Ls42lfy8cgY4VR+nEGmA3S59MGj1hVyPixzMORUsnw2WxfPJqoCRGZuTx0mdD
-         RdowomDxp3/FtdZbae2lZGnJAvVQb3RJrx1SPcmtMcvRC8+cMDbj6UVbitRzs6Ti9w
-         x4iWLmXJXWjEHmuPA59CjG8jRhMnzUCdq/fdTSXgaZLh4dDN5MmG4PsFU4Zb58WdRF
-         9LkrTwbllbHu4pkenQgBHaTko3uU7oTXGT4YJqugupg64C+RCKItUwjwomN0F5mOG3
-         bd2XlgnvbUzaQ==
+        b=NAIjZVUTNQb2BJzsdAr3U4xsFLcKsv+4Ht25B1BbDsNPwpB2KSQF+Y4jmTlLMhWEs
+         Xb18N17B7SI7QdUMHiWuwy30IeczfwO+Rz6FtHYMw/1/sr73OIjotSX6lotAgkIOYn
+         8luy7zPkY7o2GjM3gi4Afbk4/0BR5v7mUw3B29Oskq3ctOd/HhHQBpDgY1eNL98w/Q
+         0kRFfAlZdQkWx/WQrN21NQyyqGRBQpV2J7fwiIHYu4kUDULM/pHYEBAGzFmHXaQQLj
+         Tdzv6c1H9x1bsnRnbY7wupfVVXtAMIrhmMv/BkRQD3Yzsf9BNqYlXuzw/MdcDbW7sZ
+         /kQlMijewEjnQ==
 From:   Vineet Gupta <vgupta@kernel.org>
 To:     linux-snps-arc@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Anshuman Khandual <anshuman.khandual@arm.com>,
         Mike Rapoport <rppt@kernel.org>,
         Vineet Gupta <vgupta@kernel.org>
-Subject: [PATCH 05/18] ARC: mm: Fixes to allow STRICT_MM_TYPECHECKS
-Date:   Tue, 10 Aug 2021 17:42:45 -0700
-Message-Id: <20210811004258.138075-6-vgupta@kernel.org>
+Subject: [PATCH 06/18] ARC: mm: Enable STRICT_MM_TYPECHECKS
+Date:   Tue, 10 Aug 2021 17:42:46 -0700
+Message-Id: <20210811004258.138075-7-vgupta@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210811004258.138075-1-vgupta@kernel.org>
 References: <20210811004258.138075-1-vgupta@kernel.org>
@@ -41,53 +41,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the past I've refrained from doing this (atleast 2 times) due to the
+slight code bloat due to ABI implications of pte_t etc becoming sttuct
+
+Per ARC ABI, functions return struct via memory and not through register
+r0, even if the struct would fits in register(s)
+
+ - caller allocates space on stack and passes the address as first arg
+   (r0), shifting rest of args by one
+
+ - callee creates return struct in memory (referenced via r0)
+
+This time around the code actually shrunk slightly (due to subtle
+inlining heuristic effects), but still slightly inefficient due to
+return values passed through memory. That however seems like a small
+cost compared to maintenance burden given the impending new mmu support
+for page walk etc
+
 Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 ---
- arch/arc/mm/tlb.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ arch/arc/include/asm/page.h | 26 --------------------------
+ arch/arc/mm/ioremap.c       |  2 +-
+ 2 files changed, 1 insertion(+), 27 deletions(-)
 
-diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
-index 6079dfd129b9..15cbc285b0de 100644
---- a/arch/arc/mm/tlb.c
-+++ b/arch/arc/mm/tlb.c
-@@ -71,7 +71,7 @@ static void tlb_entry_erase(unsigned int vaddr_n_asid)
- 	}
+diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
+index 4a9d33372fe2..c4ac827379cd 100644
+--- a/arch/arc/include/asm/page.h
++++ b/arch/arc/include/asm/page.h
+@@ -34,12 +34,6 @@ void copy_user_highpage(struct page *to, struct page *from,
+ 			unsigned long u_vaddr, struct vm_area_struct *vma);
+ void clear_user_page(void *to, unsigned long u_vaddr, struct page *page);
+ 
+-#undef STRICT_MM_TYPECHECKS
+-
+-#ifdef STRICT_MM_TYPECHECKS
+-/*
+- * These are used to make use of C type-checking..
+- */
+ typedef struct {
+ #ifdef CONFIG_ARC_HAS_PAE40
+ 	unsigned long long pte;
+@@ -64,26 +58,6 @@ typedef struct {
+ 
+ #define pte_pgprot(x) __pgprot(pte_val(x))
+ 
+-#else /* !STRICT_MM_TYPECHECKS */
+-
+-#ifdef CONFIG_ARC_HAS_PAE40
+-typedef unsigned long long pte_t;
+-#else
+-typedef unsigned long pte_t;
+-#endif
+-typedef unsigned long pgd_t;
+-typedef unsigned long pgprot_t;
+-
+-#define pte_val(x)	(x)
+-#define pgd_val(x)	(x)
+-#define pgprot_val(x)	(x)
+-#define __pte(x)	(x)
+-#define __pgd(x)	(x)
+-#define __pgprot(x)	(x)
+-#define pte_pgprot(x)	(x)
+-
+-#endif
+-
+ typedef pte_t * pgtable_t;
+ 
+ /*
+diff --git a/arch/arc/mm/ioremap.c b/arch/arc/mm/ioremap.c
+index 95c649fbc95a..052bbd8b1e5f 100644
+--- a/arch/arc/mm/ioremap.c
++++ b/arch/arc/mm/ioremap.c
+@@ -39,7 +39,7 @@ void __iomem *ioremap(phys_addr_t paddr, unsigned long size)
+ 	if (arc_uncached_addr_space(paddr))
+ 		return (void __iomem *)(u32)paddr;
+ 
+-	return ioremap_prot(paddr, size, PAGE_KERNEL_NO_CACHE);
++	return ioremap_prot(paddr, size, pgprot_val(PAGE_KERNEL_NO_CACHE));
  }
+ EXPORT_SYMBOL(ioremap);
  
--static void tlb_entry_insert(unsigned int pd0, pte_t pd1)
-+static void tlb_entry_insert(unsigned int pd0, phys_addr_t pd1)
- {
- 	unsigned int idx;
- 
-@@ -109,13 +109,16 @@ static void tlb_entry_erase(unsigned int vaddr_n_asid)
- 	write_aux_reg(ARC_REG_TLBCOMMAND, TLBDeleteEntry);
- }
- 
--static void tlb_entry_insert(unsigned int pd0, pte_t pd1)
-+static void tlb_entry_insert(unsigned int pd0, phys_addr_t pd1)
- {
- 	write_aux_reg(ARC_REG_TLBPD0, pd0);
--	write_aux_reg(ARC_REG_TLBPD1, pd1);
- 
--	if (is_pae40_enabled())
-+	if (!is_pae40_enabled()) {
-+		write_aux_reg(ARC_REG_TLBPD1, pd1);
-+	} else {
-+		write_aux_reg(ARC_REG_TLBPD1, pd1 & 0xFFFFFFFF);
- 		write_aux_reg(ARC_REG_TLBPD1HI, (u64)pd1 >> 32);
-+	}
- 
- 	write_aux_reg(ARC_REG_TLBCOMMAND, TLBInsertEntry);
- }
-@@ -391,7 +394,7 @@ void create_tlb(struct vm_area_struct *vma, unsigned long vaddr, pte_t *ptep)
- 	unsigned long flags;
- 	unsigned int asid_or_sasid, rwx;
- 	unsigned long pd0;
--	pte_t pd1;
-+	phys_addr_t pd1;
- 
- 	/*
- 	 * create_tlb() assumes that current->mm == vma->mm, since
 -- 
 2.25.1
 
