@@ -2,135 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42BF3E9969
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4BB3E996D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhHKUM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 16:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53070 "EHLO
+        id S231698AbhHKUNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 16:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhHKUM2 (ORCPT
+        with ESMTP id S229655AbhHKUNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:12:28 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7F9C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:12:04 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id z24so3114192qtn.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:12:04 -0700 (PDT)
+        Wed, 11 Aug 2021 16:13:08 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB46C061765;
+        Wed, 11 Aug 2021 13:12:44 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id n32so1962815wms.2;
+        Wed, 11 Aug 2021 13:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dseBtZhhg9TsasXaHWSLbsjrv3u/VkKskBnthNFAxT4=;
-        b=hvzuQOAZu6QoXPV3ctaRS+JQBK2U322/9mTsXzYjnDwldMWR9zenMkNZXC50YrigSX
-         JqAwY9JGBj1vTZg1ujQZQBFc2cgfTVO/T6CBUaiQzF+Uba8a7Hb9eRYdqBppmT6cia4Z
-         rw84fr5+fHMv3f7+TRh04LB3M1alBfygFd3S048oec2VQY3a0Xjn0t362Reb720wqzJe
-         6CT4sljeyFyi7w6ZV0/6uBnCoEyYkFd02rwgtmSUGXHc2TNpboGDwLxeM0pkfcZpredt
-         RbC39ozGmqI14YoCIMjDt3ft2UjCnhYuuj9oY1UTc5TjXbi2OsoRs9M+cGgS7WnDQL8f
-         nf4Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qtbH24sys0A+E+TreCMzv6nq61b8pVYX9klQznBRbB8=;
+        b=HYQhInI2mDD9u/AjCPBMCdwFVimviA3NE3D3JSF80rJugdwzsE6lq0df+NfkWF7ymU
+         Q79lulXSORu8Ju7M+Vl+5BC6lUitS/Q+TenH4YirRnAlFE47jWbExccqcVuBJ9IP4Qyw
+         ZG6wnTvrEj/D3LHRein7jgFUbwqM6Z3GkEoXCEw8Gn79TNCkei7S8B40LU6IATtv8Up2
+         qI4tb1Z59ftvNSynMzardm5k8Amyvi48Upv4j+tISO6K3QsRgp40LGxglLCtfcpfzRLJ
+         hArJcfivS35drmmsDQfHiiVDZHYT35Uw84i+zpsVEsn4HO5OfzVHzE8abhJ7yVZEY3EF
+         hGfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dseBtZhhg9TsasXaHWSLbsjrv3u/VkKskBnthNFAxT4=;
-        b=UHWbgz3ZurCKSKK/6UN5ROKJfOVtgzO5FPxnxjMtskaSBvgmoSQmidJQXWWOd7O03E
-         d60vH3yuAiLq5MwC91HRXeHj3P1yBNP9t274Rp9k0ajIexonDsJ569evre7pInWVFrWD
-         ElG3WgiI/BZv1DWHhdP+JFIhiWF9QMzaciJU8WiVad61/zUJPnTDshnfDchnPdfRhAOy
-         c4ij21zGIIhKkqv5h/SeDGjR5AJxaXtd9/lv53ETHlSXfEBtU5Rm2zmJIwiefXUgwzY2
-         6WP7qbFm8ZVanTPvDs4dvvoX8o6sA44+h1CZFPFHl2zFhQwEti+OE/W+72MnmJE4WyXV
-         PAAA==
-X-Gm-Message-State: AOAM530DM8x4ugOvTlJBELqYx7rJhspLVbjr0oryYaTG1zQZleVEpYyn
-        tP2wk+rVL+kjH6IkF7hRxt+kTw==
-X-Google-Smtp-Source: ABdhPJzNZ9lfXuQCnyXb83m2lGZDVT13lnlDbqNXUjiS8EBWAJYAmyoSK30V7waZFnq1G8iebJ2SwA==
-X-Received: by 2002:ac8:e4f:: with SMTP id j15mr476657qti.124.1628712723577;
-        Wed, 11 Aug 2021 13:12:03 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:d9fa])
-        by smtp.gmail.com with ESMTPSA id j185sm132039qkf.28.2021.08.11.13.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 13:12:02 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 16:12:01 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
-Message-ID: <YRQvEbMSUqIkuMnk@cmpxchg.org>
-References: <20210811031734.GA5193@xsang-OptiPlex-9020>
- <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qtbH24sys0A+E+TreCMzv6nq61b8pVYX9klQznBRbB8=;
+        b=OAq+AIZviMSH55/e2daOWR89VQoEfxsob6y9VHVscEL7EgOuT008NH1v2KCfxu2yTx
+         GxJUvV4UFtr0+WEGa8g49Y9eihpYKZp/+ADcI4l5GGfUrb+QBhfLqq8VMJOz4UnI/4K1
+         g8fvpIEKySsO0jUpW36upYI5GGUFjWjJpUuR1Xv7bUrtPHYPhhICcAH7esJaYGRSyarg
+         UNb9Y/E5phl2CkQzrPd7sAd5fBcjFSbNqKqf6DwQPG30/udISS1K0MIGl4ZxasLQv0jH
+         sly5jdI4EbpOhn9DgZJsSyjuhWlme7xJ1hojf/uuv7dqKsSxZm3RphgsS5pUFdn6z1/8
+         elHw==
+X-Gm-Message-State: AOAM533RuEV3kI/zhjEy4mxlfP2TOZ/LEwyzhQ2gk+y+EkTeD19v/DNd
+        w/SvYZYtoUuafXPCSnRk2eY=
+X-Google-Smtp-Source: ABdhPJy0lnP4+OJ/68HRlO5b+lZtYimvhGFmZartwqv30KJ6RNjGNFvMjYCS73wNAFax5o9eiNQjMw==
+X-Received: by 2002:a05:600c:20f:: with SMTP id 15mr303065wmi.176.1628712762677;
+        Wed, 11 Aug 2021 13:12:42 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id n30sm448596wra.1.2021.08.11.13.12.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 13:12:42 -0700 (PDT)
+Subject: Re: [RFCv2 1/9] tcp: authopt: Initial support and key management
+To:     David Ahern <dsahern@gmail.com>,
+        Leonard Crestez <cdleonard@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        David Ahern <dsahern@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        Dmitry Safonov <dima@arista.com>
+References: <cover.1628544649.git.cdleonard@gmail.com>
+ <67c1471683200188b96a3f712dd2e8def7978462.1628544649.git.cdleonard@gmail.com>
+ <CAJwJo6aicw_KGQSM5U1=0X11QfuNf2dMATErSymytmpf75W=tA@mail.gmail.com>
+ <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
+ <68749e37-8e29-7a51-2186-7692f5fd6a79@gmail.com>
+ <ac911d47-eef7-c97b-9a77-f386546b56e8@gmail.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Message-ID: <2c39e02b-1da5-7a62-512e-67f008fe15fc@gmail.com>
+Date:   Wed, 11 Aug 2021 21:12:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <ac911d47-eef7-c97b-9a77-f386546b56e8@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 07:59:53PM -1000, Linus Torvalds wrote:
-> On Tue, Aug 10, 2021 at 4:59 PM kernel test robot <oliver.sang@intel.com> wrote:
-> >
-> > FYI, we noticed a -36.4% regression of vm-scalability.throughput due to commit:
-> > 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
-> 
-> Hmm. I guess some cost is to be expected, but that's a big regression.
-> 
-> I'm not sure what the code ends up doing, and how relevant this test
-> is, but Johannes - could you please take a look?
-> 
-> I can't make heads nor tails of the profile. The profile kind of points at this:
-> 
-> >       2.77 ą 12%     +27.4       30.19 ą  8%  perf-profile.children.cycles-pp.native_queued_spin_lock_slowpath
-> >       2.86 ą 12%     +27.4       30.29 ą  8%  perf-profile.children.cycles-pp._raw_spin_lock_irqsave
-> >       2.77 ą 12%     +27.4       30.21 ą  8%  perf-profile.children.cycles-pp.lock_page_lruvec_irqsave
-> >       4.26 ą 10%     +28.1       32.32 ą  7%  perf-profile.children.cycles-pp.lru_cache_add
-> >       4.15 ą 10%     +28.2       32.33 ą  7%  perf-profile.children.cycles-pp.__pagevec_lru_add
-> 
-> and that seems to be from the chain __do_fault -> shmem_fault ->
-> shmem_getpage_gfp -> lru_cache_add -> __pagevec_lru_add ->
-> lock_page_lruvec_irqsave -> _raw_spin_lock_irqsave ->
-> native_queued_spin_lock_slowpath.
-> 
-> That shmem_fault codepath being hot may make sense for sokme VM
-> scalability test. But it seems to make little sense when I look at the
-> commit that it bisected to.
-> 
-> We had another report of this commit causing a much more reasonable
-> small slowdown (-2.8%) back in May.
-> 
-> I'm not sure what's up with this new report. Johannes, does this make
-> sense to you?
-> 
-> Is it perhaps another "unlucky cache line placement" thing? Or has the
-> statistics changes just changed the behavior of the test?
+Hi David,
 
-I'm at a loss as well.
+On 8/11/21 6:15 PM, David Ahern wrote:
+> On 8/11/21 8:31 AM, Dmitry Safonov wrote:
+>> On 8/11/21 9:29 AM, Leonard Crestez wrote:
+>>> On 8/10/21 11:41 PM, Dmitry Safonov wrote:
+[..]
+>>>> I'm pretty sure it's not a good choice to write partly tcp_authopt.
+>>>> And a user has no way to check what's the correct len on this kernel.
+>>>> Instead of len = min_t(unsigned int, len, sizeof(info)), it should be
+>>>> if (len != sizeof(info))
+>>>>      return -EINVAL;
+>>>
+>>> Purpose is to allow sockopts to grow as md5 has grown.
+>>
+>> md5 has not grown. See above.
+> 
+> MD5 uapi has - e.g., 8917a777be3ba and  6b102db50cdde. We want similar
+> capabilities for growth with this API.
 
-The patch only changes how we aggregate the cgroup's memory.stat file,
-it doesn't influence reclaim/LRU operations.
+So, you mean adding a new setsockopt when the struct has to be extended?
+Like TCP_AUTHOPT_EXT?
 
-The test itself isn't interacting with memory.stat either - IIRC it
-doesn't even run inside a dedicated cgroup in this test
-environment. The patch should actually reduce accounting overhead here
-because we switched from batched percpu flushing during updates to
-only flushing when the stats are *read* - which doesn't happen here.
+It can work, but sounds like adding a new syscall every time the old one
+can't be extended. I can see that with current limitations on TCP-AO RFC
+the ABI in these patches will have to be extended.
 
-That would leave cachelines. But the cachelines the patch touched are
-in struct mem_cgroup, whereas the lock this profile points out is in a
-separately allocated per-node structure. The cache footprint on the
-percpu data this test is hammering also didn't increase; it actually
-decreased a bit, but not sure where this could cause conflicts.
+The second commit started using new cmd.tcpm_flags, where unknown flags
+are still at this moment silently ignored by the kernel. So 6b102db50cdd
+could have introduced a regression in userspace. By luck and by reason
+that md5 isn't probably frequently used it didn't.
+Not nice at all example for newer APIs.
 
-I'll try to reproduce this on a smaller setup. But I have to say, I've
-seen a few of these bisection reports now that didn't seem to make any
-sense, which is why I've started to take these with a grain of salt.
+>> Another issue with your approach
+>>
+>> +       /* If userspace optlen is too short fill the rest with zeros */
+>> +       if (optlen > sizeof(opt))
+>> +               return -EINVAL;
+>> +       memset(&opt, 0, sizeof(opt));
+>> +       if (copy_from_sockptr(&opt, optval, optlen))
+>> +               return -EFAULT;
+>>
+>> is that userspace compiled with updated/grew structure will fail on
+>> older kernel. So, no extension without breaking something is possible.
+>> Which also reminds me that currently you don't validate (opt.flags) for
+>> unknown by kernel flags.
+>>
+>> Extending syscalls is impossible without breaking userspace if ABI is
+>> not designed with extensibility in mind. That was quite a big problem,
+>> and still is. Please, read this carefully:
+>> https://lwn.net/Articles/830666/
+>>
+>> That is why I'm suggesting you all those changes that will be harder to
+>> fix when/if your patches get accepted.
+>> As an example how it should work see in copy_clone_args_from_user().
+>>
+> 
+> Look at how TCP_ZEROCOPY_RECEIVE has grown over releases as an example
+> of how to properly handle this.
+
+Exactly.
+
+: switch (len) {
+:		case offsetofend(...)
+:		case offsetofend(...)
+
+And than also:
+:		if (unlikely(len > sizeof(zc))) {
+:			err = check_zeroed_user(optval + sizeof(zc),
+:						len - sizeof(zc));
+
+Does it sound similar to what I've written in my ABI review?
+And what the LWN article has in it.
+Please, look again at the patch I replied to.
+
+Thanks,
+         Dmitry
