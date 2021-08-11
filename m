@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85BD3E908F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B664F3E9091
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237754AbhHKMXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:23:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:48758 "EHLO foss.arm.com"
+        id S237892AbhHKMXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:23:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:48906 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237805AbhHKMWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:22:44 -0400
+        id S237816AbhHKMWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:22:47 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34CD6106F;
-        Wed, 11 Aug 2021 05:22:21 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D01A113E;
+        Wed, 11 Aug 2021 05:22:23 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7E26A3F718;
-        Wed, 11 Aug 2021 05:22:19 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 721A13F718;
+        Wed, 11 Aug 2021 05:22:21 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
         john.garry@huawei.com, dianders@chromium.org, rajatja@google.com,
-        chenxiang66@hisilicon.com
-Subject: [PATCH v4 15/24] iommu/io-pgtable: Remove non-strict quirk
-Date:   Wed, 11 Aug 2021 13:21:29 +0100
-Message-Id: <155b5c621cd8936472e273a8b07a182f62c6c20d.1628682049.git.robin.murphy@arm.com>
+        chenxiang66@hisilicon.com,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH v4 16/24] iommu: Introduce explicit type for non-strict DMA domains
+Date:   Wed, 11 Aug 2021 13:21:30 +0100
+Message-Id: <08cd2afaf6b63c58ad49acec3517c9b32c2bb946.1628682049.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1628682048.git.robin.murphy@arm.com>
 References: <cover.1628682048.git.robin.murphy@arm.com>
@@ -36,143 +37,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IO_PGTABLE_QUIRK_NON_STRICT was never a very comfortable fit, since it's
-not a quirk of the pagetable format itself. Now that we have a more
-appropriate way to convey non-strict unmaps, though, this last of the
-non-quirk quirks can also go, and with the flush queue code also now
-enforcing its own ordering we can have a lovely cleanup all round.
+Promote the difference between strict and non-strict DMA domains from an
+internal detail to a distinct domain feature and type, to pave the road
+for exposing it through the sysfs default domain interface.
 
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-
 ---
+ drivers/iommu/dma-iommu.c |  2 +-
+ drivers/iommu/iommu.c     |  8 ++++++--
+ include/linux/iommu.h     | 11 +++++++++++
+ 3 files changed, 18 insertions(+), 3 deletions(-)
 
-v3: New
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  3 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c       |  3 ---
- drivers/iommu/io-pgtable-arm-v7s.c          | 12 ++----------
- drivers/iommu/io-pgtable-arm.c              | 12 ++----------
- include/linux/io-pgtable.h                  |  5 -----
- 5 files changed, 4 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 4c648da447bf..d9c93d8d193d 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2174,9 +2174,6 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
- 		.iommu_dev	= smmu->dev,
- 	};
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index d63b30a7dc82..207c8febdac9 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -1312,7 +1312,7 @@ void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
+ 	 * The IOMMU core code allocates the default DMA domain, which the
+ 	 * underlying IOMMU driver needs to support via the dma-iommu layer.
+ 	 */
+-	if (domain->type == IOMMU_DOMAIN_DMA) {
++	if (iommu_is_dma_domain(domain)) {
+ 		if (iommu_dma_init_domain(domain, dma_base, dma_limit, dev))
+ 			goto out_err;
+ 		dev->dma_ops = &iommu_dma_ops;
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index fa8109369f74..982545234cf3 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -115,6 +115,7 @@ static const char *iommu_domain_type_str(unsigned int t)
+ 	case IOMMU_DOMAIN_UNMANAGED:
+ 		return "Unmanaged";
+ 	case IOMMU_DOMAIN_DMA:
++	case IOMMU_DOMAIN_DMA_FQ:
+ 		return "Translated";
+ 	default:
+ 		return "Unknown";
+@@ -552,6 +553,9 @@ static ssize_t iommu_group_show_type(struct iommu_group *group,
+ 		case IOMMU_DOMAIN_DMA:
+ 			type = "DMA\n";
+ 			break;
++		case IOMMU_DOMAIN_DMA_FQ:
++			type = "DMA-FQ\n";
++			break;
+ 		}
+ 	}
+ 	mutex_unlock(&group->mutex);
+@@ -765,7 +769,7 @@ static int iommu_create_device_direct_mappings(struct iommu_group *group,
+ 	unsigned long pg_size;
+ 	int ret = 0;
  
--	if (!iommu_get_dma_strict(domain))
--		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
--
- 	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
- 	if (!pgtbl_ops)
- 		return -ENOMEM;
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 970d9e4dcd69..a325d4769c17 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -765,9 +765,6 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
- 		.iommu_dev	= smmu->dev,
- 	};
+-	if (!domain || domain->type != IOMMU_DOMAIN_DMA)
++	if (!domain || !iommu_is_dma_domain(domain))
+ 		return 0;
  
--	if (!iommu_get_dma_strict(domain))
--		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
--
- 	if (smmu->impl && smmu->impl->init_context) {
- 		ret = smmu->impl->init_context(smmu_domain, &pgtbl_cfg, dev);
- 		if (ret)
-diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
-index 5db90d7ce2ec..e84478d39705 100644
---- a/drivers/iommu/io-pgtable-arm-v7s.c
-+++ b/drivers/iommu/io-pgtable-arm-v7s.c
-@@ -700,14 +700,7 @@ static size_t __arm_v7s_unmap(struct arm_v7s_io_pgtable *data,
- 						ARM_V7S_BLOCK_SIZE(lvl + 1));
- 				ptep = iopte_deref(pte[i], lvl, data);
- 				__arm_v7s_free_table(ptep, lvl + 1, data);
--			} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
--				/*
--				 * Order the PTE update against queueing the IOVA, to
--				 * guarantee that a flush callback from a different CPU
--				 * has observed it before the TLBIALL can be issued.
--				 */
--				smp_wmb();
--			} else {
-+			} else if (!gather->queued) {
- 				io_pgtable_tlb_add_page(iop, gather, iova, blk_size);
- 			}
- 			iova += blk_size;
-@@ -791,8 +784,7 @@ static struct io_pgtable *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
+ 	BUG_ON(!domain->pgsize_bitmap);
+@@ -1947,7 +1951,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+ 	/* Assume all sizes by default; the driver may override this later */
+ 	domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
  
- 	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
- 			    IO_PGTABLE_QUIRK_NO_PERMS |
--			    IO_PGTABLE_QUIRK_ARM_MTK_EXT |
--			    IO_PGTABLE_QUIRK_NON_STRICT))
-+			    IO_PGTABLE_QUIRK_ARM_MTK_EXT))
- 		return NULL;
+-	if (type == IOMMU_DOMAIN_DMA && iommu_get_dma_cookie(domain)) {
++	if (iommu_is_dma_domain(domain) && iommu_get_dma_cookie(domain)) {
+ 		iommu_domain_free(domain);
+ 		domain = NULL;
+ 	}
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index f7679f6684b1..5629ae42951f 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -61,6 +61,7 @@ struct iommu_domain_geometry {
+ #define __IOMMU_DOMAIN_DMA_API	(1U << 1)  /* Domain for use in DMA-API
+ 					      implementation              */
+ #define __IOMMU_DOMAIN_PT	(1U << 2)  /* Domain is identity mapped   */
++#define __IOMMU_DOMAIN_DMA_FQ	(1U << 3)  /* DMA-API uses flush queue    */
  
- 	/* If ARM_MTK_4GB is enabled, the NO_PERMS is also expected. */
-diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-index 053df4048a29..48a5bd8f571d 100644
---- a/drivers/iommu/io-pgtable-arm.c
-+++ b/drivers/iommu/io-pgtable-arm.c
-@@ -638,14 +638,7 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
- 				io_pgtable_tlb_flush_walk(iop, iova + i * size, size,
- 							  ARM_LPAE_GRANULE(data));
- 				__arm_lpae_free_pgtable(data, lvl + 1, iopte_deref(pte, data));
--			} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
--				/*
--				 * Order the PTE update against queueing the IOVA, to
--				 * guarantee that a flush callback from a different CPU
--				 * has observed it before the TLBIALL can be issued.
--				 */
--				smp_wmb();
--			} else {
-+			} else if (!gather->queued) {
- 				io_pgtable_tlb_add_page(iop, gather, iova + i * size, size);
- 			}
+ /*
+  * This are the possible domain-types
+@@ -73,12 +74,17 @@ struct iommu_domain_geometry {
+  *	IOMMU_DOMAIN_DMA	- Internally used for DMA-API implementations.
+  *				  This flag allows IOMMU drivers to implement
+  *				  certain optimizations for these domains
++ *	IOMMU_DOMAIN_DMA_FQ	- As above, but definitely using batched TLB
++ *				  invalidation.
+  */
+ #define IOMMU_DOMAIN_BLOCKED	(0U)
+ #define IOMMU_DOMAIN_IDENTITY	(__IOMMU_DOMAIN_PT)
+ #define IOMMU_DOMAIN_UNMANAGED	(__IOMMU_DOMAIN_PAGING)
+ #define IOMMU_DOMAIN_DMA	(__IOMMU_DOMAIN_PAGING |	\
+ 				 __IOMMU_DOMAIN_DMA_API)
++#define IOMMU_DOMAIN_DMA_FQ	(__IOMMU_DOMAIN_PAGING |	\
++				 __IOMMU_DOMAIN_DMA_API |	\
++				 __IOMMU_DOMAIN_DMA_FQ)
  
-@@ -825,7 +818,6 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg *cfg, void *cookie)
- 	bool tg1;
+ struct iommu_domain {
+ 	unsigned type;
+@@ -90,6 +96,11 @@ struct iommu_domain {
+ 	struct iommu_dma_cookie *iova_cookie;
+ };
  
- 	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
--			    IO_PGTABLE_QUIRK_NON_STRICT |
- 			    IO_PGTABLE_QUIRK_ARM_TTBR1 |
- 			    IO_PGTABLE_QUIRK_ARM_OUTER_WBWA))
- 		return NULL;
-@@ -929,7 +921,7 @@ arm_64_lpae_alloc_pgtable_s2(struct io_pgtable_cfg *cfg, void *cookie)
- 	typeof(&cfg->arm_lpae_s2_cfg.vtcr) vtcr = &cfg->arm_lpae_s2_cfg.vtcr;
- 
- 	/* The NS quirk doesn't apply at stage 2 */
--	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_NON_STRICT))
-+	if (cfg->quirks)
- 		return NULL;
- 
- 	data = arm_lpae_alloc_pgtable(cfg);
-diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
-index c43f3b899d2a..9ba6d9ea316e 100644
---- a/include/linux/io-pgtable.h
-+++ b/include/linux/io-pgtable.h
-@@ -73,10 +73,6 @@ struct io_pgtable_cfg {
- 	 *	to support up to 35 bits PA where the bit32, bit33 and bit34 are
- 	 *	encoded in the bit9, bit4 and bit5 of the PTE respectively.
- 	 *
--	 * IO_PGTABLE_QUIRK_NON_STRICT: Skip issuing synchronous leaf TLBIs
--	 *	on unmap, for DMA domains using the flush queue mechanism for
--	 *	delayed invalidation.
--	 *
- 	 * IO_PGTABLE_QUIRK_ARM_TTBR1: (ARM LPAE format) Configure the table
- 	 *	for use in the upper half of a split address space.
- 	 *
-@@ -86,7 +82,6 @@ struct io_pgtable_cfg {
- 	#define IO_PGTABLE_QUIRK_ARM_NS		BIT(0)
- 	#define IO_PGTABLE_QUIRK_NO_PERMS	BIT(1)
- 	#define IO_PGTABLE_QUIRK_ARM_MTK_EXT	BIT(3)
--	#define IO_PGTABLE_QUIRK_NON_STRICT	BIT(4)
- 	#define IO_PGTABLE_QUIRK_ARM_TTBR1	BIT(5)
- 	#define IO_PGTABLE_QUIRK_ARM_OUTER_WBWA	BIT(6)
- 	unsigned long			quirks;
++static inline bool iommu_is_dma_domain(struct iommu_domain *domain)
++{
++	return domain->type & __IOMMU_DOMAIN_DMA_API;
++}
++
+ enum iommu_cap {
+ 	IOMMU_CAP_CACHE_COHERENCY,	/* IOMMU can enforce cache coherent DMA
+ 					   transactions */
 -- 
 2.25.1
 
