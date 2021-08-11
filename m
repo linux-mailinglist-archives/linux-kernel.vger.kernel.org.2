@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2573E9127
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317F93E9128
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhHKMcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
+        id S229917AbhHKMcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhHKMb5 (ORCPT
+        with ESMTP id S229776AbhHKMb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:31:57 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60DAC061386
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:28:19 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id h11so4219533ljo.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D5OlZ8oq6iOCdn4aMeG+EEph9Sb1Lla5I4LvuXvSK8A=;
-        b=yxqhdCu/Qo68ddda8afkVdUuov6gTdX9x074yF+7r4kxHkkK2vFbEbiXB2Kl42komk
-         uz5NPqfrnDYX3RbRLlnmXZODJDggmdPFMxMDSLwoD2l/HwkgDbE1gvy7STJCz+e65YtN
-         z5xesgxo3uN8jH9rYn0Sob+2LRCkPlEIYS237Vz7rm8UqyQsV9NsHYVvmJqG1bjPQAMX
-         zRStxZCtg5aGpGjtPDcYzmvw1ubJIwRv/tIDlskxY8flufvRcPbFDuYaVf3Con+7JPUe
-         rOYO6dE9dJyA56ZEgtW0ecC8NkUjs+NlntX1f9Y4W60bbXOss6v4DpUWQ7CLJZgNXKct
-         bixA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D5OlZ8oq6iOCdn4aMeG+EEph9Sb1Lla5I4LvuXvSK8A=;
-        b=Ztlxr3apu8nP2CdsX5bYhUQFYCErpRlRFMpztWqYrXaSGfkrK4YM48QOu79HCtocxK
-         sJTV1mCQ5+9CGbQAyYB7+IexexP4dz2jjQbxlsa+dAr1nxsKgYxlco2SLarcZmNIgmO2
-         +wiiqY2eZOvZeIi/rsHkCUXwwkNJLHOrrkbdL5nnD/RDzYjqFQsOsr/XVhneUps6ePOl
-         nfpmVo0wixUzIZlHntJQlC6Mu3jIChYVhfA4U2sHKfr/XLTvNofNq5R5bmVIERU4Voq5
-         9uY9Hk57RSuqWMzjUinh7h9TILepV0eXZITSGqKycrwyh5Mx2XMUt2+UkUrFkFQYJ5A4
-         BtuQ==
-X-Gm-Message-State: AOAM532/KJbKLKp+JRMf1CHwmkS/yPhc07O6x+WFGxqZOBaAtL4ck6sE
-        xSDTutORCBjbOHd5fs1ioW1qifrKzkJW4RuT1R3rsw==
-X-Google-Smtp-Source: ABdhPJwR2jWpMR0T0owMZaLYzWcyHOEHETHN6xD7KLu7UfEpJk7ksIDK0sBzw2b6PX7p1HpG0zZox0yZRkt4VIF0sKA=
-X-Received: by 2002:a2e:a231:: with SMTP id i17mr12603890ljm.467.1628684898091;
- Wed, 11 Aug 2021 05:28:18 -0700 (PDT)
+        Wed, 11 Aug 2021 08:31:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2303FC029836;
+        Wed, 11 Aug 2021 05:28:23 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628684901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b3CyKvJaEwwphnaIVpCFl46BS2WMQuydG6Z8cqn8/sI=;
+        b=Mk2d2aB9aImBYcA7SGIdR5B8V+7ToAlmLvva2lilX9fJ15PIGwsH/DLzqlnV4UQXoPynFX
+        Cx89eyTyx9YI2H3S/Xfu+pal8SPg1YqSchb2ycdhLt6Vmc3AjiF6MeqE99nPYqPW4BIGOg
+        BgGeWH+mvdf63Y8NG/IOASWAPzhBMlXFo/O8pxwjKcsng7W2MKhEyc0sys9on3bEWYcHSE
+        WOe34U+S0ZEy7Wx9rgbMzewFNOZEn0xb+qJHYBD7sXVInmTTUJGxyt5BiNkhmUJkWBFgYz
+        eXN2yqUd6g1GMpNNG662I5P9OIzrDgk4y6y/U3cuoDiNJYqX6WmqD5KfGRYn0w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628684901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b3CyKvJaEwwphnaIVpCFl46BS2WMQuydG6Z8cqn8/sI=;
+        b=BSsIIwvRVuLmwPE6k7Z6GJb6pkJ7BpmY7Pcu7PKjdASNEOJUJQAoxA6q7STVlkNzYavErX
+        zGQZmCIPdaNWZUCQ==
+To:     Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [SPLAT 2/3] irqchip/gic-v3-its: Sleeping spinlocks down
+ gic_reserve_range()
+In-Reply-To: <87y2989xhh.wl-maz@kernel.org>
+References: <20210810134127.1394269-1-valentin.schneider@arm.com>
+ <20210810134127.1394269-3-valentin.schneider@arm.com>
+ <87y2989xhh.wl-maz@kernel.org>
+Date:   Wed, 11 Aug 2021 14:28:21 +0200
+Message-ID: <87a6lop3mi.ffs@tglx>
 MIME-Version: 1.0
-References: <cover.1628590591.git.viresh.kumar@linaro.org> <96223fb8143a4eaa9b183d376ff46e5cd8ef54b4.1628590591.git.viresh.kumar@linaro.org>
-In-Reply-To: <96223fb8143a4eaa9b183d376ff46e5cd8ef54b4.1628590591.git.viresh.kumar@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 14:28:07 +0200
-Message-ID: <CACRpkdbonnFd5xu=3_CdR=1QtxL0fDoWX-A16fTPMJypWsmcdw@mail.gmail.com>
-Subject: Re: [PATCH V5 2/2] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        stratos-dev@op-lists.linaro.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 12:25 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-
-> This patch adds IRQ support for the virtio GPIO driver. Note that this
-> uses the irq_bus_lock/unlock() callbacks, since those operations over
-> virtio may sleep. Also the notifications for the eventq are processed
-> using a work item to allow sleep-able operations.
+On Wed, Aug 11 2021 at 09:50, Marc Zyngier wrote:
+> On Tue, 10 Aug 2021 14:41:26 +0100,
+> Valentin Schneider <valentin.schneider@arm.com> wrote:
+> The issue is that although the redistributor tables have been
+> allocated ahead of time (outside of any cpuhp callback), they cannot
+> be programmed into the RDs until the corresponding CPUs have been
+> brought up (the registers may not be accessible).
 >
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> For the same reason, we don't know whether we can free them (because
+> there is already a table programmed there) or have to reserve them
+> with an efi_mem_reserve_persistent() call. efi_mem_reserve_iomem()
+> uses GFP_ATOMIC for its allocation, but this is not sufficient for RT
+> anymore.
+>
+> We could postpone the reservation of the memory to a later point (it
+> is only useful for kexec), but it isn't clear where that point is. The
+> CPU is not quite up yet, and we can't easily IPI the boot CPU to do
+> the reserve call.
 
-Looks good to me from a GPIO point of view:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Right, but don't you know about the need for reservation _before_
+bringing the CPU up?
 
-Yours,
-Linus Walleij
+Thanks,
+
+        tglx
