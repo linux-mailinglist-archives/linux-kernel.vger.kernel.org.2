@@ -2,162 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608823E904B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8433E904A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237522AbhHKMQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:16:31 -0400
-Received: from mout.web.de ([212.227.17.11]:51815 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237567AbhHKMPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237608AbhHKMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:16:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62124 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237552AbhHKMPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 08:15:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1628684104;
-        bh=bCm4tjCEKGya1lR1pfJS85TQJwR1Rm1ZCPAbnHFFDnY=;
-        h=X-UI-Sender-Class:From:Subject:To:Cc:Date;
-        b=Q8udKDx1bKDAh+d0e/JdqRPS12A8y6zNiuCpsHV84dY7OjmQL9dp5xg+ERR9FH/0I
-         kqUtRZXJWFlyYdYnnODnn+SyRkxeL8uAfTCuF53WZND+i6Xc6oLKga7y0RW2CyLdon
-         K01ta3ghpggqtKcEDr5wNB7zl5u+3L7nQ6vjTm10=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [10.9.8.2] ([79.220.232.62]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N30dT-1nGIOT19WH-013LMK; Wed, 11
- Aug 2021 14:15:04 +0200
-From:   Soeren Moch <smoch@web.de>
-Subject: [Regression 5.14] media: dvb userspace api
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de>
-Date:   Wed, 11 Aug 2021 14:15:02 +0200
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BC43xD171699;
+        Wed, 11 Aug 2021 08:15:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vz/JF6D9et2ylMltouH3zrYLZOET3avHkTYyvpC8n10=;
+ b=OyhfMP9AB6greSlwzUK/SjRTLCoo/7cXGUMiJgFkF+4Bg23+F1aR4i/7xKbuLqKYb3J8
+ +gIrcHKrgbOKnUvB517PMfwwx85mMpO6A6uTiIgEjFTiBwHGK86Xem4pNOwOxLTUxT/G
+ cs5C1J34mYaUV6uUb8rVbRlt4b4fjR/hA1bf7Nzjqn31RBaNb/sJSl7knm+9e9MPNF4A
+ 3RuPcVbhODJCByXMO2HkCcIuHCgGwFg2a5a6EhvQ/Jj224SWM+Lz6orXM2jPOeO8HUsr
+ lNM81WvF2KTa0IU5RtGvPXAM3jGnEXClYLkDxu8kRDa0nv4nVNQsyNypzsqqDDc/T/NJ Ng== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3accthaeae-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 08:15:17 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BCCoTJ011035;
+        Wed, 11 Aug 2021 12:15:16 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma03dal.us.ibm.com with ESMTP id 3a9hte6tse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Aug 2021 12:15:16 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BCFE0H38011302
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 12:15:14 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3FE1112061;
+        Wed, 11 Aug 2021 12:15:14 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83C88112062;
+        Wed, 11 Aug 2021 12:15:14 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Aug 2021 12:15:14 +0000 (GMT)
+Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to tpm_status
+ and define flag
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, nasastry@in.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
+        George Wilson <gcwilson@linux.ibm.com>
+References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
+ <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
+ <20210810175855.fixtw5jks4gbmkua@kernel.org>
+ <86f6a6c8-87cc-a397-35b3-a30220f12aed@linux.ibm.com>
+ <20210811021030.5meaty2zxf253nfl@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <4eff0296-78da-52b6-322d-56e0f9d78dc2@linux.ibm.com>
+Date:   Wed, 11 Aug 2021 08:15:14 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210811021030.5meaty2zxf253nfl@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Provags-ID: V03:K1:gkYID2/Xgmh9OQpg/093l869RKptm7eldTKehbYkaMJnHdSbpNh
- kLd4NFWd/IX7xBDwfE2wSbZ2ZaEMGCgkidskhH/QdXDCHvtj9QbNkjWsg7UxJEjPKoDvBE4
- aRo2fdFablJOKSWiLZ+kltvfPTNgY/S4dZ9wZNDXpnDB+zHh/xtEgFMT1WbMGZRy/1IhBDb
- Hi1TyPK/G51ZjzKKy2fGg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ipRMMrdLfRE=:d6G4NBUEvkchp4GUuoCq8c
- YypMq0u39YRq+4pkrXKNn+MNNCTOJ3XQUTNXdSAqPxFjxOPq6rp5dx+K7rcuITmteh3RFrBo7
- KVY25G+5qFgOjlNrzrSxf2A1yn6aMMIqVlHozVWuBkFYPwLKGYoY/flWh99yLRt79qfOPblD0
- 8YACxhGHeOVhN8kDhbMxw7D7dvbt1KPBLpS5cFQv/t/yoEPcZNX0ID4mPoHBSImOKqLSSZHO1
- nx/+YXJlPuwvf918sL+QfuM0RPAUPQe+BlqghzKc4ZWnc1/lPVF4EN/eSfujvxQTHkh7faDvp
- 2LfSTanqlo74r2vg9uZqF3XzRGbUJKHSIPfVZ4GW6iC1DEzsQD2afZysvG9jGdZBdzY3/DZMj
- RIPibDts7xIsg4w44WT+vxaw/Tnboj3/tAgeWAGdu5HPcjZHM75XpP8fHh9pio9weWvXZ5OtH
- gWuvER+Z1OFVISLD9F8UTRBA5FXKPhow1yLdzF2jbwJNi6Z/C1ZwsU2tSKnp55u58LFclv7jt
- Rj0+570BrzxRedKRkQzYZUQdFQxrB3w0auVetLYM6zQO1sxia+ek14/9tCWjiFqMFQ0gcIRkJ
- W+0mRMzz5EH/t7iDHKZ+ZCCNBRaNUYnymA1YMKoa+5JgsBrh8c7+lnEn2hijJT8kXgR1jmXy4
- kof0nn8ITChPTe8Hlx16+C5033N4rpeArDjb9+4W4KvWHdekelH844YpxcGbuhOY/ywo0KxcO
- MK21DvypMzQ1+mO6o2DfL0S2gPi9OSYsat7VO/LA3nTwTiH3RHgAVTyThTVY/B4eRqJAzXlBk
- j0h5q8qilDa3IHOwPf+toKvFwgzOLin/pTJTdLlHlUX0ACQH6e9j4zLGMIa5ZsjUVYg/TCs/2
- XW67nUK+8iyRZg67fAhnhJpESYLi0Ujm/VHm8lc+Fx9zBXXbbpmHMkSAvnTKUoyO9nIMuWV5V
- RClkAB8L1ISXlknnhbbOktNs8f/9pYvUacfFuhg1JibwUUi+ij5//TPwJFw10eP6RltLPsfuW
- oicWWay3Kr2/Pu+mijfH/HGGRIt1ijgboZ5VMvwNL1j+CO0FDJ1E63tiWBN0nNrKg73Wl4Ess
- ViVyI7IojLzMEFQKgmfsy7bL+WzrvEUrk6G
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XxohQtRH4nD48N9kbmsjsJOLPSV0YN2o
+X-Proofpoint-ORIG-GUID: XxohQtRH4nD48N9kbmsjsJOLPSV0YN2o
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-11_04:2021-08-11,2021-08-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ spamscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108110080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 819fbd3d8ef36c09576c2a0ffea503f5c46e9177 ("media: dvb header
-files: move some headers to staging") moved audio, video, and osd parts
-of the media DVB API to staging and out of kernel headers. But this is
-part of the media userspace API, removing this causes regressions. There
-already is a RedHat bug filed against this [1], and cannot be resolved
-there, of course. Please revert the above mentioned commit.
 
+On 8/10/21 10:10 PM, Jarkko Sakkinen wrote:
+> On Tue, Aug 10, 2021 at 09:50:55PM -0400, Stefan Berger wrote:
+>> On 8/10/21 1:58 PM, Jarkko Sakkinen wrote:
+>>> On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
+>>>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>>>
+>>>> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
+>>>> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
+>>>>
+>>>>
+>>>>    		default:
+>>>> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
+>>>> index 51198b137461..252f1cccdfc5 100644
+>>>> --- a/drivers/char/tpm/tpm_ibmvtpm.h
+>>>> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
+>>>> @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
+>>>>    	wait_queue_head_t wq;
+>>>>    	u16 res_len;
+>>>>    	u32 vtpm_version;
+>>>> -	u8 tpm_processing_cmd;
+>>>> +	u8 tpm_status;
+>>>> +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
+>>> Declare this already in the fix, and just leave the rename here.
+>> You mean the fix patch does not use 'true' anymore but uses the
+>> TPM_STATUS_BUSY flag already but the name is still tpm_processing_cmd? And
+>> literally only the renaming of this field is done in the 2nd patch?
+> I can fixup these patches, and use '1', instead of true. No need to send
+> new ones.
+>
+> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Linus,
+THANKS!
 
-Please help to keep the media DVB API intact. From all my previous
-experience with Mauro, he would otherwise just ignore this request and
-later claim: it was removed and cannot be brought back. The userspace
-behind this API is a program suite called VDR ("video disk recorder"),
-which was part of the linux media ecosystem from the beginning, is still
-part of linux distributions like RedHat/Fedora, Debian, SuSE, Ubuntu,
-easyVDR, yaVDR, is actively developed further, and runs with a bigger
-community behind it.
-=C2=A0
+   Stefan
 
-Mauro,
-
-=46rom many previous discussions you know that the av7110 driver, the DVB
-API, and especially also the output part of it, is in active use. I also
-asked several times to pull the saa716x driver [2], which also
-implements the full DVB API, among others for the successor cards of
-saa7146/av7110-based so called full-featured DVB cards. I also offered
-several times to maintain both drivers, and the related API.
-
-=46rom your side there was no support whatsoever for this DVB API, you are
-fighting to remove it, against better knowledge that this is used. You
-gave no technical reason for this. Just, "it is an old API, I don't like
-it". And you wrote, that you do not understand it. This probably is the
-main reason for all the related problems. Your request to convert
-everything from the DVB API to the video4linux2 API is like "I don't
-like serial drivers, it is an old API, convert everything from serial to
-drm-framebuffer drivers, if you want to get boot messages out of the
-kernel."
-DVB and v4l2 are totally different APIs with different purpose,
-different supported hardware, different supported userspace
-applications. Just because there are much more drivers implementing v4l2
-than DVB output is no good reason to kill this API, associated drivers
-and the community that keeps all this running. If you don't want to
-maintain the full DVB API and av7110/saa716x drivers any longer, which
-is obvious, there is a better solution than just ripping all this out. I
-just renew my offer to take over this job.
-If there really is a broken frontend support for av7110, I will have a
-look at this. Can you provide more detailed information about this?
-There are many flavours of this card with different frontends, so maybe
-I missed this. Your commit message "the decoder supports only MPEG2,
-with is not compatible with several modern DVB streams" is at least
-misleading. The most popular satellite TV provider in Germany (Astra)
-still transmits most of the interesting programs MPEG-2 encoded, so also
-this is actively used and no reason to retire this card.
-
-In all my previous discussions with maintainers from arm/mvebu, arm/imx,
-arm/rockchip, arm/soc, net, net/wireless, staging, usb, I always
-experienced technical support and fruitful discussions, which lead to
-fixed bugs, working hardware, and happy users.
-Only media is special. Here it can take up to five months, 3 full linux
-release cycles, to get a patch merged that was marked as fix and marked
-for stable, with only a single review comment in all that time: add more
-comments. In media the supporter recommends to maintain drivers outside
-the kernel, because people are happy with that. Of course nobody in the
-related community is happy with that, and maintaining the driver itself
-is the easiest part for me. Other people maintain scripts and how-tos
-for integrating the driver into different distributions with different
-update policies and scripts, that is even more work. All that would not
-be necessary, if the driver would just be pulled.
-So I really hope we also for media can come to a point, where supporters
-support the community, where maintainers maintain drivers they
-understand, patches are reviewed benevolently within reasonable time,
-and existing drivers with working hardware and happy users, only
-implementing long existing APIs (in mainline), are kept working,
-especially when someone exits who volunteers to maintain this.
-
-So please
-- revert this userspace API breakage still for 5.14
-=C2=A0 (commit 819fbd3d8ef36c09576c2a0ffea503f5c46e9177)
-- move the related documentation back from staging
-=C2=A0 (revert commit 793e52d4e77d49737ad83cb11925c98f4907fcb1)
-- move the long existing and working av7110 driver back from staging
-=C2=A0 (revert commit 989cf18ed08f8b6efd1d1592d1d0108fa09b98f5)
-- consider pulling the saa716x driver (based on the current 5.13 branch,
-=C2=A0 I'm happy to provide a new pull request)
-- transfer maintainer-ship for this to me
-=C2=A0
-
-Linus, if you would accept a direct pull request from me, I would be
-happy to provide one, for the requested reverts (for 5.14) of in-tree
-DVB API and av7110 driver, but also for the long existing but still
-out-of-tree saa716x driver (for 5.15).
-
-Thanks,
-Soeren
-
-
-[1] https://bugzilla.redhat.com/show_bug.cgi?id=3D1989125
-[2] https://github.com/s-moch/linux-saa716x
+>
+> /Jarkko
