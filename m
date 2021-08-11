@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782E03E9B15
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 00:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4992F3E9B1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhHKWzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 18:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbhHKWzK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 18:55:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC865C061765;
-        Wed, 11 Aug 2021 15:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=2wxyBZN4Hk4I18K5RwgFDHv/H1AMQ7HcLWjYd+zp/TY=; b=nnMKtZLzc1yUsXHZArntvKErl1
-        UjtrIJISkTvTz02IN8VXHr5j9ypw288xz9EtemV2TNnJl/1Q/jdmdFsqrf4MJK1xD0FZpYhBA9Dz3
-        pKFQlumqspzOuiWT2f1ONtLvbEGnktVYAlOLIAlRlkfnFQQ/Iif+p/wJqiNa8Ln7XcvamFwmr2sQR
-        LzcOguFmqxFtCXxx8gPnFQ7oKLel4WTomnXVelMJ4TW056Ca11kDlRhkQqUcHtUvDS6aXeIPT5jiR
-        K6dQ+BTkTduqz6Npcu5EIICuqp5jdkAQHftYnsam/fRVKAF1n4z8M7KVsmOwwM0ygrE8sFsotuPFG
-        EdVOFw1w==;
-Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDx7U-008Iec-H0; Wed, 11 Aug 2021 22:54:44 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH] kbuild: allow "make" targets 'versioncheck' and 'includecheck' withoug .config file
-Date:   Wed, 11 Aug 2021 15:54:42 -0700
-Message-Id: <20210811225442.9537-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S232692AbhHKXGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 19:06:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232434AbhHKXGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 19:06:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAE64610A3;
+        Wed, 11 Aug 2021 23:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628723143;
+        bh=LBkFZQCUVSz/Rhx1ZP4O8O+xC4njvVvDFWJMqfhUzZc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=N7j+EgSapAyF+E2AEGflrSJiCZjpXiN2JMJWDRznUA/NrxH+lurInjTi1MtNpy85D
+         xrJ7HqMEM0cEO5JzCgW2Lz0DffXyBVfrtxqKIXiAn6i5bBxbOSn+zcxVG6d6GvMMrK
+         bVWXu4t+swt1Ylq/HkupY0NqVEegG6CVxnygcST8s+n1CW6/WYqUrUQkxfr5m2S/ow
+         pMTVv8JkSs5Lvg++Yqzdkq9L51sUm711vSUAPRNPiIeTBhtJ5goF6+14H2UfZQX2Vu
+         cZcu3ctNnysA4Km0Q2sG4gehaPE1JbwKv5poy95kXoLmCCFE/qu1rkqhn293tb2X4e
+         qMsycz3wt/GRg==
+Received: by mail-ej1-f47.google.com with SMTP id hs10so7625769ejc.0;
+        Wed, 11 Aug 2021 16:05:43 -0700 (PDT)
+X-Gm-Message-State: AOAM531q+BuvA+rgO9POSAQk/Z2zf640PYMH1v1bIecnJzjwRlMkLk1T
+        zS/dJfgysQe+dyX7sCL7sh6nqddD8wdA/izkAA==
+X-Google-Smtp-Source: ABdhPJyl3xEbZZiTrI86cuk97OLZ4BOIdeT1gJvH8o+OFIusAC3qYu99JLfekICMO5HYVUlnTIbMmIkwRgDjMX6NUW0=
+X-Received: by 2002:a17:906:fcd7:: with SMTP id qx23mr818236ejb.267.1628723142314;
+ Wed, 11 Aug 2021 16:05:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210810025503.16353-1-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210810025503.16353-1-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 12 Aug 2021 07:05:31 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8+wnXxetnvijkc1FCN=bPuq8sO4psoTpjT9gS-4nieMw@mail.gmail.com>
+Message-ID: <CAAOTY_8+wnXxetnvijkc1FCN=bPuq8sO4psoTpjT9gS-4nieMw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/mediatek: add AAL output size configuration
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        fshao@chromium.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Top-level Makefile targets 'versioncheck' and 'includecheck' don't
-need a configured kernel (i.e., don't need a .config file), so add
-them the the list of "no-dot-config-targets".
-This eliminates the 'make' error:
+Hi, Jason:
 
-***
-*** Configuration file ".config" not found!
-***
-*** Please run some configurator (e.g. "make oldconfig" or
-*** "make menuconfig" or "make xconfig").
-***
-Makefile:759: include/config/auto.conf.cmd: No such file or directory
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=881=
+0=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=8810:55=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> To avoid the output width and height is incorrect,
+> AAL_OUTPUT_SIZE configuration should be set.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: linux-kbuild@vger.kernel.org
----
-Fixes: I couldn't determine this.
+Applied to mediatek-drm-fixes [1], thanks.
 
- Makefile |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-fixes
 
---- linux-next-20210811.orig/Makefile
-+++ linux-next-20210811/Makefile
-@@ -274,7 +274,8 @@ no-dot-config-targets := $(clean-targets
- 			 cscope gtags TAGS tags help% %docs check% coccicheck \
- 			 $(version_h) headers headers_% archheaders archscripts \
- 			 %asm-generic kernelversion %src-pkg dt_binding_check \
--			 outputmakefile rustfmt rustfmtcheck
-+			 outputmakefile rustfmt rustfmtcheck \
-+			 versioncheck includecheck
- # Installation targets should not require compiler. Unfortunately, vdso_install
- # is an exception where build artifacts may be updated. This must be fixed.
- no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
+Regards,
+Chun-Kuang.
+
+>
+> Fixes: 0664d1392c26 ("drm/mediatek: Add AAL engine basic function")
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+> Change in v2:
+> - fix to one line
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
+m/mediatek/mtk_drm_ddp_comp.c
+> index 75bc00e17fc4..50d20562e612 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -34,6 +34,7 @@
+>
+>  #define DISP_AAL_EN                            0x0000
+>  #define DISP_AAL_SIZE                          0x0030
+> +#define DISP_AAL_OUTPUT_SIZE                   0x04d8
+>
+>  #define DISP_DITHER_EN                         0x0000
+>  #define DITHER_EN                              BIT(0)
+> @@ -197,6 +198,7 @@ static void mtk_aal_config(struct device *dev, unsign=
+ed int w,
+>         struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
+>
+>         mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs,=
+ DISP_AAL_SIZE);
+> +       mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs,=
+ DISP_AAL_OUTPUT_SIZE);
+>  }
+>
+>  static void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state =
+*state)
+> --
+> 2.18.0
+>
