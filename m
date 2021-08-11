@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE93F3E9294
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF793E928E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhHKNZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbhHKNZR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:25:17 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F1DC061799;
-        Wed, 11 Aug 2021 06:24:53 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so9600431pjs.0;
-        Wed, 11 Aug 2021 06:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7W29cLmj2qeifcnEP+7O9P/s+IF/H1sNoqJtFlRWsVM=;
-        b=hnX6Fbn3sZNtOM0IiEjv1p5YklFP81Bx39I9A/hm6HUH+C+J57XpkEwFzHcIVlP3Ou
-         hyOCZTAARs3+F3TCUwhzoWcybTIfu7twMhC+VPW9C5AzqkikmxFnNgu4Ch1Lgb+jbCEk
-         esnijG6uQoRQ4SnFVBjdVjCHAuOWl2Mn61MlleatPIJyuLS6UaYQwGnmPvmjLIpTJa2S
-         HpRguc5JtGBixyfV56y9+E5Csy/9F3iNtVtLVCp1O0cUJ6iHi77Z3dGBXlhhuwZkfO7G
-         cERbkGm/efRUt3qUMW77gWk8w6ay9QX0RY9XUIjNf2yt7WJTVWNrHUtpDXbA11D7iukP
-         q8sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7W29cLmj2qeifcnEP+7O9P/s+IF/H1sNoqJtFlRWsVM=;
-        b=jaoCHeE+CDa5sZkhbNkkIwi5Q+Wgmdzj99ucu4wEFmfmP98y9yfQysMn5MHax0zxAh
-         /luHG6FnWfhwNkTN+VW2xokbRUVV/5bg1V0GePkXyQmnY1hZSbbFbHnKoXugj1vER/2i
-         P+eaXzU4d4chmDWtuWlYmxJmTw21mgEavTNKjE08i/1Bfdk1w0M3B9ExYrN8Pxht79Wa
-         3E+PvXC3rVTZlCMPYPJ2tneQQwIXSyk4zBHLW0uVhZQvilxvTponGKh6daawbgMa4agx
-         Hti+r27fNfQgJDBgM+CLtL3gLpe0rFB6WU5LREUcTx7Jh1cguCmInOuHYJAGnB0wdqSR
-         3pNQ==
-X-Gm-Message-State: AOAM530SQ/QftenBx6R3RRKbvoiqlC4vLcGmLiMearROYwZ9B4G9lNeR
-        d65kFe4OhoT/vJ1KBL3R+/Y=
-X-Google-Smtp-Source: ABdhPJwpFtYj0IsB7kGWdVscS5MzJTwhgZR+O1kLVBlilObCPUMi6o50vbf4pj2FDByS5trpGAgqxA==
-X-Received: by 2002:a63:86c8:: with SMTP id x191mr244739pgd.166.1628688293331;
-        Wed, 11 Aug 2021 06:24:53 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.103])
-        by smtp.gmail.com with ESMTPSA id 11sm32404623pgh.52.2021.08.11.06.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 06:24:52 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] scsi: mpt3sas: Fix a possible divide-by-zero bug in base_mod64()
-Date:   Wed, 11 Aug 2021 06:24:39 -0700
-Message-Id: <20210811132439.10370-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231848AbhHKNZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:25:13 -0400
+Received: from www.zeus03.de ([194.117.254.33]:36600 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231768AbhHKNZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:25:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=CYsd51CWfhrDrFvcXo0fNge0rkky
+        RguhFqu5r8E8ouk=; b=Gdm4rFE2D4i6PbaPJkzZaWMGFYS4rauF+ezr5u7VQUzE
+        fSpbnotfGoYv0jwqWJD1otYLpp12olIl/t73Pd1ejjreexdCDt+4ck/rNe8zCdZd
+        LroFytiGbrp/HLFan0DbI9Y32J+LNY8m20504nwwJyBLAq4RXik7MpH1aX9G6jI=
+Received: (qmail 2664639 invoked from network); 11 Aug 2021 15:24:41 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 11 Aug 2021 15:24:41 +0200
+X-UD-Smtp-Session: l3s3148p1@q3NuikjJ9p0gARa4RTP4AfHKOCm/nqrR
+Date:   Wed, 11 Aug 2021 15:24:40 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/7] i2c: qup: : use proper DMAENGINE API for termination
+Message-ID: <YRPPmBafupmDcav+@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210623095942.3325-1-wsa+renesas@sang-engineering.com>
+ <20210623095942.3325-5-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bNy8AuF3KmQsmVsu"
+Content-Disposition: inline
+In-Reply-To: <20210623095942.3325-5-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable divisor is checked in:
-  if (!divisor)
 
-This indicates that divisor can be NULL.
-If so, a divide-by-zero bug will occur:
-  remainder = do_div(dividend, divisor);
+--bNy8AuF3KmQsmVsu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To fix the possible bug, the function returns 0 when divisor is zero.
+On Wed, Jun 23, 2021 at 11:59:38AM +0200, Wolfram Sang wrote:
+> dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+> it should be sync or async. Here, we want dmaengine_terminate_sync()
+> because there is no other synchronization code in the driver to handle
+> an async case.
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- drivers/scsi/mpt3sas/mpt3sas_base.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Applied to for-next, thanks!
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 19b1c0cf5f2a..3550998ea38b 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -1594,8 +1594,10 @@ static u32 base_mod64(u64 dividend, u32 divisor)
- {
- 	u32 remainder;
- 
--	if (!divisor)
-+	if (!divisor) {
- 		pr_err("mpt3sas: DIVISOR is zero, in div fn\n");
-+		return 0;
-+	}
- 	remainder = do_div(dividend, divisor);
- 	return remainder;
- }
--- 
-2.25.1
 
+--bNy8AuF3KmQsmVsu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmETz5gACgkQFA3kzBSg
+KbYKOg//eXDqFoBIKZHdiPR+ODetzC3k/Sj68H7Bwk4mb+1WT6Oj9phM0g5LO8/j
+IkQPlEWVxPPrkWYYi1p+N4tTjzBiLAotfC3gMRWmUJkzXXPGOJ3pI/BelhL8cBgl
+EnjJtVoRUmwX59CI8eJAGe3f1KQ1vwP/oWQ1zLQZ3cyTi31LIFbOaGUadJJCJtak
+xO6U2FEWG83SSvk0CAWYJiOYwtwapNxgnxWmRMlr9kbl3+MJEnSkPV3Iyd0t44Gx
+J3BCSCzSpQtd6H66bvP+4V92/eUHTQtcL1k79kzIQvuD4x6ieNmEmcueTeFruAo0
+XI2Cs5iXzZ+5opQFnV//NfIohyVa67ZiCgUd2Xftonb613ovn1PRi+yPiJf5vMo2
+vQLVgmuyRm5O+jLx8vnUTpn9fALpcoH2GA3fA4v6C3ennC2LmqbFKUmMMacxh31p
+dFwwbd0UC8sIh/Ia7tl/dbRzO2Y8R/mkh/8bLJFTK50mNOt0n0MdnX0ssDFx0kal
+ZgqtPqNHvhfJPCCL93lKj8ttZpzKnGQ9x2RALnrmwV4L1XtKgp4yVNGj+gSV4K6b
+opRUoX/A7aKT0ZwTxCPj/chvHOvqbbdtaSLmv1p/zbNA8uQ0MQMTAti4OKjebgRc
+3fGzzh3Ot02wrc4hlIvyhmJz74YRCuIv5V7fqPEJdouHfX/XLZw=
+=JEnT
+-----END PGP SIGNATURE-----
+
+--bNy8AuF3KmQsmVsu--
