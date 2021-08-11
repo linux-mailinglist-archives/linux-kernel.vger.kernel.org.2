@@ -2,89 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595053E960B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DEE3E9610
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhHKQeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:34:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:54234 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhHKQco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:32:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5C041063;
-        Wed, 11 Aug 2021 09:32:13 -0700 (PDT)
-Received: from [10.57.12.152] (unknown [10.57.12.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 966B83F718;
-        Wed, 11 Aug 2021 09:32:11 -0700 (PDT)
-Subject: Re: [PATCH V2 9/9] cpufreq: scmi: Use .register_em() callback
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1628682874.git.viresh.kumar@linaro.org>
- <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <143a03df-d858-b2de-a2cc-983c35d71e53@arm.com>
-Date:   Wed, 11 Aug 2021 17:32:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230249AbhHKQei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhHKQed (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 12:34:33 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D71DC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:34:10 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id a4so3453451ilj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MiyXaKuo5MKFz5xTuKgPxPuaaij2HCFYcE1MAYz0REg=;
+        b=qzk/GM33ZCdtZbJZtJAJP/kWtgtTjQwNcsmSSAYqiffShG7oeLVm7tOQVHINHXsoLq
+         9yWPnQuRcQvO4IAUfgcxAW7CMdJCXasEmfFWEzHNwNv20ottnoat8QezWCS/nXvvykGE
+         Lzb894TfheLpGH5YyB2IzuFezJgPbfyNde+6Zy9U1hbZ1tQppF3RrUnNP80Hfy9/OaDv
+         UklNV67dzGuO2Ybv20/Vwq1dXd028bYefpz/bf3O0/w8Cm6VR32Wdp55ZqeS2gpww3Ej
+         AuYUAJw/UMgfwC2SmzJho8Y8cEuY9cGqzpv95LK9F8UiBfKgd6ROYTng30Mm2EQ7g+EY
+         Xu0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MiyXaKuo5MKFz5xTuKgPxPuaaij2HCFYcE1MAYz0REg=;
+        b=TLVXKwLavlK0af+438UOaEu04OExt6Ibgl2Wx9UePTFvfNmM0+k2TXAy67RqFBqj4P
+         flvvJqOeG/CDEb47CGgDK3Cc/WPW1EPO3yWrUI8AYVTbIH9jtDJipNjJxcg//L+ui/yo
+         OHAJFwyQ6q964vWKXMdBb1g4mW8G0HUv+DHW9tiVVagfFi075ogwX2bqdfwmO/qUQfad
+         NoJseo3qEjqdG7tmTnPuz7T0V9Di5Mftclog+ahXM8MFsxfnNlXCPQFvGVzr6C1itpvY
+         rXaT9c6bPTi/PqXDgmhe7U8HWf9B0L7SmfwgS5/DOPa6s9Iv6pZVDHW6nXbPokQjVHy0
+         TQSg==
+X-Gm-Message-State: AOAM533AY3RCXoCikuVyrC8H0M7emLjAaOnFfI3mYfOyOwVhdDAjCWcN
+        O6FkkOlUEdSrc/QThHI8Ms2peGtqN0v0gvGn2ejEuA==
+X-Google-Smtp-Source: ABdhPJxkZl/Bld6p9S4wH0FuPMsDn/NAUqDQkIWLW5eMNnp6ZjwvJenOZrxV33H7v0n74tA+UpWY12fJfNxFzc8/+QY=
+X-Received: by 2002:a05:6e02:15c8:: with SMTP id q8mr612495ilu.285.1628699649398;
+ Wed, 11 Aug 2021 09:34:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6094d891b4cb0cba3357e2894c8a4431c4c65e67.1628682874.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210810224554.2978735-1-seanjc@google.com> <20210810224554.2978735-3-seanjc@google.com>
+In-Reply-To: <20210810224554.2978735-3-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 11 Aug 2021 09:33:58 -0700
+Message-ID: <CANgfPd9MQWjP47-DjOt-dPrTRuV46VdiR7wEWjX9pYefyBfZ1A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Drop 'shared' param from tdp_mmu_link_page()
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 10, 2021 at 3:46 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Drop @shared from tdp_mmu_link_page() and hardcode it to work for
+> mmu_lock being held for read.  The helper has exactly one caller and
+> in all likelihood will only ever have exactly one caller.  Even if KVM
+> adds a path to install translations without an initiating page fault,
+> odds are very, very good that the path will just be a wrapper to the
+> "page fault" handler (both SNP and TDX RFCs propose patches to do
+> exactly that).
+>
+> No functional change intended.
+>
+> Cc: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-On 8/11/21 12:58 PM, Viresh Kumar wrote:
-> Set the newly added .register_em() callback to register with the EM
-> after the cpufreq policy is properly initialized.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Nice cleanup!
+
 > ---
->   drivers/cpufreq/scmi-cpufreq.c | 55 ++++++++++++++++++++--------------
->   1 file changed, 32 insertions(+), 23 deletions(-)
-
->   
-> +static void scmi_cpufreq_register_em(struct cpufreq_policy *policy)
-> +{
-> +	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
-> +	bool power_scale_mw = perf_ops->power_scale_mw_get(ph);
-> +	struct scmi_data *priv = policy->driver_data;
-> +
-> +	em_dev_register_perf_domain(get_cpu_device(policy->cpu), priv->nr_opp,
-> +				    &em_cb, priv->opp_shared_cpus,
-> +				    power_scale_mw);
-
-I would free the priv->opp_shared_cpus mask here, since we don't
-need it anymore and memory can be reclaimed. Don't forget this
-setup would be called N CPUs times, on this per-CPU policy platform.
-
-If freed here, then also there wouldn't be a need to free it in
-scmi_cpufreq_exit() so you can remove it from there.
-
-> +}
-> +
->   static struct cpufreq_driver scmi_cpufreq_driver = {
->   	.name	= "scmi",
->   	.flags	= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
-> @@ -261,6 +269,7 @@ static struct cpufreq_driver scmi_cpufreq_driver = {
->   	.get	= scmi_cpufreq_get_rate,
->   	.init	= scmi_cpufreq_init,
->   	.exit	= scmi_cpufreq_exit,
-> +	.register_em	= scmi_cpufreq_register_em,
->   };
->   
->   static int scmi_cpufreq_probe(struct scmi_device *sdev)
-> 
-
-I will test&review this patch on Monday when I re-flash custom FW to my
-Juno (just to be sure that this per-CPU cpufreq + shared EM/EAS works).
+>  arch/x86/kvm/mmu/tdp_mmu.c | 17 ++++-------------
+>  1 file changed, 4 insertions(+), 13 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index d99e064d366f..c5b901744d15 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -257,26 +257,17 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+>   *
+>   * @kvm: kvm instance
+>   * @sp: the new page
+> - * @shared: This operation may not be running under the exclusive use of
+> - *         the MMU lock and the operation must synchronize with other
+> - *         threads that might be adding or removing pages.
+>   * @account_nx: This page replaces a NX large page and should be marked for
+>   *             eventual reclaim.
+>   */
+>  static void tdp_mmu_link_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+> -                             bool shared, bool account_nx)
+> +                             bool account_nx)
+>  {
+> -       if (shared)
+> -               spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> -       else
+> -               lockdep_assert_held_write(&kvm->mmu_lock);
+> -
+> +       spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+>         list_add(&sp->link, &kvm->arch.tdp_mmu_pages);
+>         if (account_nx)
+>                 account_huge_nx_page(kvm, sp);
+> -
+> -       if (shared)
+> -               spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> +       spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+>  }
+>
+>  /**
+> @@ -1062,7 +1053,7 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>                                                      !shadow_accessed_mask);
+>
+>                         if (tdp_mmu_set_spte_atomic_no_dirty_log(vcpu->kvm, &iter, new_spte)) {
+> -                               tdp_mmu_link_page(vcpu->kvm, sp, true,
+> +                               tdp_mmu_link_page(vcpu->kvm, sp,
+>                                                   huge_page_disallowed &&
+>                                                   req_level >= iter.level);
+>
+> --
+> 2.32.0.605.g8dce9f2422-goog
+>
