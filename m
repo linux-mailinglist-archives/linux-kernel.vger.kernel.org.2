@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6033E8817
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1D03E8819
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhHKCnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 22:43:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8396 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbhHKCm5 (ORCPT
+        id S232193AbhHKCoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 22:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231770AbhHKCoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 22:42:57 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GkvC03dnTz85nV;
-        Wed, 11 Aug 2021 10:38:36 +0800 (CST)
-Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 10:42:21 +0800
-Received: from [10.174.176.127] (10.174.176.127) by
- dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 10:42:21 +0800
-Subject: Re: [PATCH 0/5] block: replace incorrect uses of GENHD_FL_UP
-To:     Luis Chamberlain <mcgrof@kernel.org>, <axboe@kernel.dk>
-CC:     <hare@suse.de>, <bvanassche@acm.org>, <ming.lei@redhat.com>,
-        <hch@infradead.org>, <jack@suse.cz>, <osandov@fb.com>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210720182048.1906526-1-mcgrof@kernel.org>
-From:   luomeng <luomeng12@huawei.com>
-Message-ID: <051ab019-5163-e691-43ed-052401b6b95a@huawei.com>
-Date:   Wed, 11 Aug 2021 10:42:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Tue, 10 Aug 2021 22:44:30 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E256C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:44:07 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so7317842pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 19:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qegFIKnQxZw4wxrrKT+itOQUvH07gg9i31emr5EQUb4=;
+        b=RpTikaOmvpWwhBu76RwlPbsObyEP8VBGJW4O3kl7/3R7kPEt0F1chIpOfr1IjPjQBa
+         vpanoB+b2m/11+QKLDdu4+wX35ur2FG5V/fzPTeWDmrryi4W1iBRn+DMCB6FL3kdI+Tn
+         0pjynKjbONb2PPmb3boUZFiwjIRHZ0pyXeizQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qegFIKnQxZw4wxrrKT+itOQUvH07gg9i31emr5EQUb4=;
+        b=DIthkwEXRslaJuxhzdnvvJX4qm4gnFfrehXBXikeZi69m6eenTBLL3UhsB1pj0jLpf
+         CyNjE/2NmYGrYf/BKu490HQTxqs0UPpkBzVoHd07bF0ffPZ/85dDrt0GK/tFq9cl2z4R
+         7iyxI+6LANl6fXI5x6mSrK2qVTmbZYv9f+sC0vC7/OOYdNLljD5fSsWczBo1WpTNAUHY
+         FTwjRPGJCUKeIcIJxuTRvRgfW5FgPFkwoXdQQ1zVd7ueQPirWeQmx7SvXGRFyxeEFqOR
+         Mbl032FtzvOjHPVW1KrRoYLEaJ3NQ5oh4mY5ZH/NQJe+TDaRb+xqOM1lCNX3U/vByi5R
+         1vHg==
+X-Gm-Message-State: AOAM533j5xgO6+BzLIT7GuxnWzseqNHta2XLMXq4SHtx//FsvouVObWS
+        41DxHgxBA7Acijg5R0XSbyQ9zA==
+X-Google-Smtp-Source: ABdhPJxpAtpMRVCkIy0CeKRG1iq4BSx19vJTWB5BGIzxIogqH5LE+bVlWj3wiiCx6ViPagQt5ibgjw==
+X-Received: by 2002:a17:90a:c8c:: with SMTP id v12mr8177299pja.37.1628649847154;
+        Tue, 10 Aug 2021 19:44:07 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:1e5c:70cb:3289:1b5b])
+        by smtp.gmail.com with UTF8SMTPSA id t9sm32800688pgc.81.2021.08.10.19.44.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 19:44:06 -0700 (PDT)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>
+Subject: [PATCH v3 0/5] Fixes for dma-iommu swiotlb bounce buffers
+Date:   Wed, 11 Aug 2021 11:42:42 +0900
+Message-Id: <20210811024247.1144246-1-stevensd@google.com>
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
 MIME-Version: 1.0
-In-Reply-To: <20210720182048.1906526-1-mcgrof@kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.127]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-    When the fuzz test injected memory allocation failed, I had this 
-BUG_ON: kernel BUG at fs/sysfs/group.c:116.
-   The cause of the bug_ON is that the add_disk memory fails to be 
-allocated but no error processing is performed.
-   I find your patches add error processing. So what is your next step 
-with these patches.
-Thanks.
+From: David Stevens <stevensd@chromium.org>
 
-Luo Meng
+This patch set includes various fixes for dma-iommu's swiotlb bounce
+buffers for untrusted devices. There are three fixes for correctness
+issues, one performance issue, and one general cleanup.
 
-ÔÚ 2021/7/21 2:20, Luis Chamberlain Ð´µÀ:
-> I've bumped this from RFC to PATCH form as request by Christoph,
-> as it seems to line up with what he wants to do. As per Hannes
-> I also stuck to one form of naming, so went with blk_disk_added()
-> instead of blk_disk_registered() and used that instead of open
-> coding the flag check.
-> 
-> This is rebased onto next-20210720 and I've made the patch series
-> independent of my *add_disk*() error handling series. This goes
-> compile and boot tested.
-> 
-> Luis Chamberlain (5):
->    block: add flag for add_disk() completion notation
->    md: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED on is_mddev_broken()
->    mmc/core/block: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
->    nvme: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
->    fs/block_dev: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED
-> 
->   block/genhd.c                 |  8 ++++++++
->   drivers/md/md.h               |  4 +---
->   drivers/mmc/core/block.c      |  2 +-
->   drivers/nvme/host/core.c      |  4 ++--
->   drivers/nvme/host/multipath.c |  2 +-
->   fs/block_dev.c                |  5 +++--
->   include/linux/genhd.h         | 11 ++++++++++-
->   7 files changed, 26 insertions(+), 10 deletions(-)
-> 
+The min_align_mask issue was found when running fio on an untrusted nvme
+device with bs=512. The other issues were found via code inspection, so
+I don't have any specific use cases where things were not working, nor
+any concrete performance numbers.
+
+v2 -> v3:
+ - Add new patch to address min_align_mask bug
+ - Set SKIP_CPU_SYNC flag after syncing in map/unmap
+ - Properly call arch_sync_dma_for_cpu in iommu_dma_sync_sg_for_cpu
+
+v1 -> v2:
+ - Split fixes into dedicated patches
+ - Less invasive changes to fix arch_sync when mapping
+ - Leave dev_is_untrusted check for strict iommu
+
+David Stevens (5):
+  dma-iommu: fix sync_sg with swiotlb
+  dma-iommu: fix arch_sync_dma for map
+  dma-iommu: add SKIP_CPU_SYNC after syncing
+  dma-iommu: Check CONFIG_SWIOTLB more broadly
+  dma-iommu: account for min_align_mask
+
+ drivers/iommu/dma-iommu.c | 97 +++++++++++++++++++++------------------
+ 1 file changed, 53 insertions(+), 44 deletions(-)
+
+-- 
+2.32.0.605.g8dce9f2422-goog
+
