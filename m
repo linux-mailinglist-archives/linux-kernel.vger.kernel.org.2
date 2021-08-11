@@ -2,81 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFD53E87DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169CB3E87EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 04:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhHKCK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 22:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49106 "EHLO mail.kernel.org"
+        id S231533AbhHKCMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 22:12:37 -0400
+Received: from mga05.intel.com ([192.55.52.43]:46828 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231573AbhHKCK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 22:10:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D970160184;
-        Wed, 11 Aug 2021 02:10:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628647833;
-        bh=JT0tTCfJOs74pR9exNXGPYUSruB1gH5M38fKvDWrIzs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PK0E6SKAkaAzTR0AnZbVqHMiJFw0yvy7tMZ36JSMA0Jy2DUbdGB14FFAjC5AiwtmM
-         jl54XUhKn8txBpcPegDgFFfyVM9gkEpGzy8gZfpgQxlwWf5NjUbR3x9Nb4DhiCP8Ed
-         17fcKUedfD8HS76O2SZNR6vXszubIx6bbF3LnLlRz9ExW61Dndiwb2VN8YJwdFHvmD
-         citlmZHRZaIhj8odQEsO4TMaqN4sNJ9E/JSDxajvAcFBV22DsLNDrQAiKKmJOp1K/a
-         hvWjACWQ8VYHyM4D2GtMWY9FRx/LfWpKbc2OcKG5HKFiR0BjbugftMBOsR/AeAxfT5
-         8WFYPTXnDbqoQ==
-Date:   Wed, 11 Aug 2021 05:10:30 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, nasastry@in.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-Subject: Re: [PATCH v4 2/2] tpm: ibmvtpm: Rename tpm_process_cmd to
- tpm_status and define flag
-Message-ID: <20210811021030.5meaty2zxf253nfl@kernel.org>
-References: <20210809192159.2176580-1-stefanb@linux.vnet.ibm.com>
- <20210809192159.2176580-3-stefanb@linux.vnet.ibm.com>
- <20210810175855.fixtw5jks4gbmkua@kernel.org>
- <86f6a6c8-87cc-a397-35b3-a30220f12aed@linux.ibm.com>
+        id S231607AbhHKCMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 22:12:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="300624763"
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="300624763"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 19:12:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,311,1620716400"; 
+   d="scan'208";a="506682752"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Aug 2021 19:12:12 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mDdj1-000L9g-Qu; Wed, 11 Aug 2021 02:12:11 +0000
+Date:   Wed, 11 Aug 2021 10:11:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/urgent] BUILD SUCCESS
+ dbbc93576e03fbe24b365fab0e901eb442237a8a
+Message-ID: <611331d9.o/SZimNQzamqZjYQ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86f6a6c8-87cc-a397-35b3-a30220f12aed@linux.ibm.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 09:50:55PM -0400, Stefan Berger wrote:
-> 
-> On 8/10/21 1:58 PM, Jarkko Sakkinen wrote:
-> > On Mon, Aug 09, 2021 at 03:21:59PM -0400, Stefan Berger wrote:
-> > > From: Stefan Berger <stefanb@linux.ibm.com>
-> > > 
-> > > Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
-> > > the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
-> > > 
-> > > 
-> > >   		default:
-> > > diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
-> > > index 51198b137461..252f1cccdfc5 100644
-> > > --- a/drivers/char/tpm/tpm_ibmvtpm.h
-> > > +++ b/drivers/char/tpm/tpm_ibmvtpm.h
-> > > @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
-> > >   	wait_queue_head_t wq;
-> > >   	u16 res_len;
-> > >   	u32 vtpm_version;
-> > > -	u8 tpm_processing_cmd;
-> > > +	u8 tpm_status;
-> > > +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
-> > Declare this already in the fix, and just leave the rename here.
-> 
-> You mean the fix patch does not use 'true' anymore but uses the
-> TPM_STATUS_BUSY flag already but the name is still tpm_processing_cmd? And
-> literally only the renaming of this field is done in the 2nd patch?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
+branch HEAD: dbbc93576e03fbe24b365fab0e901eb442237a8a  genirq/msi: Ensure deactivation on teardown
 
-I can fixup these patches, and use '1', instead of true. No need to send
-new ones.
+elapsed time: 724m
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+configs tested: 89
+configs skipped: 3
 
-/Jarkko
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+sh                               j2_defconfig
+mips                          rb532_defconfig
+sh                        dreamcast_defconfig
+powerpc                     mpc83xx_defconfig
+mips                      loongson3_defconfig
+microblaze                      mmu_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210810
+x86_64               randconfig-a006-20210810
+x86_64               randconfig-a003-20210810
+x86_64               randconfig-a005-20210810
+x86_64               randconfig-a002-20210810
+x86_64               randconfig-a001-20210810
+i386                 randconfig-a004-20210809
+i386                 randconfig-a005-20210809
+i386                 randconfig-a006-20210809
+i386                 randconfig-a002-20210809
+i386                 randconfig-a001-20210809
+i386                 randconfig-a003-20210809
+i386                 randconfig-a011-20210810
+i386                 randconfig-a015-20210810
+i386                 randconfig-a013-20210810
+i386                 randconfig-a014-20210810
+i386                 randconfig-a016-20210810
+i386                 randconfig-a012-20210810
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210810
+x86_64               randconfig-a002-20210808
+x86_64               randconfig-a004-20210808
+x86_64               randconfig-a006-20210808
+x86_64               randconfig-a003-20210808
+x86_64               randconfig-a001-20210808
+x86_64               randconfig-a005-20210808
+x86_64               randconfig-a016-20210809
+x86_64               randconfig-a012-20210809
+x86_64               randconfig-a013-20210809
+x86_64               randconfig-a011-20210809
+x86_64               randconfig-a014-20210809
+x86_64               randconfig-a015-20210809
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
