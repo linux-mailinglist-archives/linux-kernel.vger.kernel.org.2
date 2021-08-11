@@ -2,62 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1053E96CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66C33E96D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbhHKRZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:25:24 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:54058 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhHKRZX (ORCPT
+        id S231621AbhHKRZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:25:34 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:45745 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231639AbhHKRZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:25:23 -0400
-Received: by mail-pj1-f47.google.com with SMTP id j1so4610956pjv.3;
-        Wed, 11 Aug 2021 10:24:59 -0700 (PDT)
+        Wed, 11 Aug 2021 13:25:29 -0400
+Received: by mail-pj1-f53.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so6169722pjl.4;
+        Wed, 11 Aug 2021 10:25:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=8ho/nE6n/CvAmoCklXP6y8CPrnF4FfT1XgorjJAH61w=;
-        b=aTRIc2m4OUL7SEy/fAwhkTLMABkKxWCLTJbsepdja5dHIsWy6igxxzbqid3EjAJ0/N
-         WLynskvZe3vx+wLp3zCCF9z2ZS5k57VFwOWbBn2N6MXdyKDJSUPNN04PHUvLaPct2BI2
-         +Bw4Vs95h/E7YV5N42WIT/0TaJq99WDApcNZuAJbi5C+99Yo+X5yLkCZFus5S9rpML6Y
-         hFEAxQSbPh4wddDecoLCQXcVO1EPKHbka3uJxH1kTqA9euYCukRJVagxuE7KziXTKYOI
-         C8GLC6gSTQ11Tfbqa29GEBTEiRxcix1Ol7j/WkoEs1Stvr8AsL0KyhLnk2/x0fzAvqyy
-         fh4A==
-X-Gm-Message-State: AOAM5328dcUeUgV2Ijc/hXZMZrAGL2EuDGsw2VoIq+cyzcXJCJnF77Uq
-        SngfbQgOyunlE1TWm3MmyQ==
-X-Google-Smtp-Source: ABdhPJxol9tMfULKCUG5gFNIt8Xa+rpQZf/sGPBVP0QovLoMTnfOl9OIuDyD2UYQhq7GKQVWycOD/A==
-X-Received: by 2002:a17:90a:dac4:: with SMTP id g4mr37684833pjx.233.1628702698792;
-        Wed, 11 Aug 2021 10:24:58 -0700 (PDT)
+        bh=zA+3b14ofbyiws8ymmMD/m7+Kf0mcNrODar9P3zeNdc=;
+        b=ZzOjEqXL7BDfC0MAmvXOo56Yc4Cq+Q8CPqqwrln4rREsPcAvqXCw69s7yRX7XvLvly
+         anU3MSc9+iN6eawKSr7TiRZC2dab1UoAoAPLlp7tmUAaRjZLsoB+d002bGcg4wmkcK1j
+         S5mto65MSiW7UOzhi7mTtZZUZ+dUsGacLAFe2Bh+cBTeVejGU8eG/zpDu0D3/rpLpsPu
+         zJ/ptAXQNmeCTqjqj4csSkcdA541nBIDYdKkOmkiqahsP3nqahreGn0hGiCdTzIz39Sr
+         Ve+/CjKAatB8y7NIVqPZp4EFztBV+r/nD2MENxqdGMqn8TOcRjCQnWQ2l9uvDLbwh6x+
+         e8Sg==
+X-Gm-Message-State: AOAM530gSy1D82uEj9XTW1en4UvdwwDn4Xaw1Eq8CeGFQdk8w2MpbVtB
+        SVrvZEDLjWhUFDwDQLxQjQ==
+X-Google-Smtp-Source: ABdhPJwKyhBu56kK4nHhyDFKA48JqamDhYuv7Yhdw715/G0+dgoeHXNeYpZU6Tjc7mq1N8YphlmUJw==
+X-Received: by 2002:aa7:9415:0:b029:3ca:3205:b1f6 with SMTP id x21-20020aa794150000b02903ca3205b1f6mr20916038pfo.27.1628702704749;
+        Wed, 11 Aug 2021 10:25:04 -0700 (PDT)
 Received: from robh.at.kernel.org ([208.184.162.215])
-        by smtp.gmail.com with ESMTPSA id k25sm62357pfa.213.2021.08.11.10.24.55
+        by smtp.gmail.com with ESMTPSA id f6sm86234pfv.69.2021.08.11.10.25.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 10:24:58 -0700 (PDT)
-Received: (nullmailer pid 3975939 invoked by uid 1000);
+        Wed, 11 Aug 2021 10:25:04 -0700 (PDT)
+Received: (nullmailer pid 3975942 invoked by uid 1000);
         Wed, 11 Aug 2021 17:24:53 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     robh+dt@kernel.org, sibis@codeaurora.org, sboyd@kernel.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mpubbise@codeaurora.org, linux-arm-msm@vger.kernel.org
-In-Reply-To: <1628618483-664-3-git-send-email-pillair@codeaurora.org>
-References: <1628618483-664-1-git-send-email-pillair@codeaurora.org> <1628618483-664-3-git-send-email-pillair@codeaurora.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+To:     Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        Alexandre Courbot <acourbot@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Tomasz Figa <tfiga@google.com>, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        George Sun <george.sun@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Irui Wang <irui.wang@mediatek.com>, linux-media@vger.kernel.org
+In-Reply-To: <20210811025801.21597-14-yunfei.dong@mediatek.com>
+References: <20210811025801.21597-1-yunfei.dong@mediatek.com> <20210811025801.21597-14-yunfei.dong@mediatek.com>
+Subject: Re: [PATCH v5, 13/15] dt-bindings: media: mtk-vcodec: Adds decoder dt-bindings for mt8192
 Date:   Wed, 11 Aug 2021 11:24:53 -0600
-Message-Id: <1628702693.296189.3975938.nullmailer@robh.at.kernel.org>
+Message-Id: <1628702693.304754.3975941.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Aug 2021 23:31:22 +0530, Rakesh Pillai wrote:
-> Add WPSS PIL loading support for SC7280 SoCs.
+On Wed, 11 Aug 2021 10:57:59 +0800, Yunfei Dong wrote:
+> Adds decoder dt-bindings for mt8192.
 > 
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 > ---
->  .../bindings/remoteproc/qcom,hexagon-v56.yaml      | 79 ++++++++++++++++++++--
->  1 file changed, 74 insertions(+), 5 deletions(-)
+> v5: no changes
+> 
+> This patch depends on "Mediatek MT8192 clock support"[1].
+> 
+> The definition of decoder clocks are in mt8192-clk.h, need to include them in case of build fail [1].
+> 
+> [1]https://patchwork.kernel.org/project/linux-mediatek/list/?series=511175
+> ---
+>  .../media/mediatek,vcodec-comp-decoder.yaml   | 172 ++++++++++++++++++
+>  1 file changed, 172 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -66,12 +88,19 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.example.dt.yaml: remoteproc@17300000: 'power-domain-names' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+./Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/media/mediatek,vcodec-comp-decoder.yaml#
+Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.example.dts:22:18: fatal error: dt-bindings/clock/mt8192-clk.h: No such file or directory
+   22 |         #include <dt-bindings/clock/mt8192-clk.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1419: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1515482
+See https://patchwork.ozlabs.org/patch/1515556
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
