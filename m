@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCF43E8F79
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBC53E8F78
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237180AbhHKL3t convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Aug 2021 07:29:49 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:43569 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237210AbhHKL3m (ORCPT
+        id S237337AbhHKL3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:29:47 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:38402 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237180AbhHKL3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:29:42 -0400
-Received: by mail-vs1-f45.google.com with SMTP id s196so1240625vsc.10;
+        Wed, 11 Aug 2021 07:29:41 -0400
+Received: by mail-wm1-f51.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso4157256wmq.3;
         Wed, 11 Aug 2021 04:29:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=40wisL4/SKjdMqbDzvwZrkyDfanri5aoKVnQRyWUuY0=;
-        b=SyG6+XczyIGKkdTh4UR41xo5YbZc+ITtlXgZsw+I7R9zWx0YDIqWadUMBjDz1F9WBx
-         6B++eWQDkkBRTwSNCRJUuVjSdXO6XOv1eixJFAiivX8K7gGA7Q8xzctv9xnHX9UvaiLD
-         o1GNzDsw+mjumXC99nphkWAQpzPWgQZXfJEKlxuIuRpspJTWMfD4HzH+PvPvOv8SwmoD
-         oXGfcXRAYQrdLtGsfUQhemsBfC3a8WAx49scXrEseDo5thDJiyClflda/zuUoqbGU1pL
-         q9BAWKt1GZC3wVxVmwQPItLMCrBZkaMqscsuSaq+/NBOUV7dy2lKLYccCDKxGPr/Puv6
-         Ge/Q==
-X-Gm-Message-State: AOAM533G4k4AwlQALJnnZow/MxtR0erk3C6vPZrTVm8XDMdulay5fT05
-        ZU1zppPlQ8mK5ettEk0Dgeohe88pVSzKTVJ5amg=
-X-Google-Smtp-Source: ABdhPJy4XrbkHkqk1N7n531OJu2JQkcYcvarSrfV7a1TjAP6AU3ROsnF7Eatvrj+CJP4HBfqYOWJdNPELnM5eP6VJV4=
-X-Received: by 2002:a67:e2c7:: with SMTP id i7mr25004885vsm.3.1628681358404;
- Wed, 11 Aug 2021 04:29:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SIL3/7PzyH6nx9D3aVENdGNeH/zsOZHpOqb2pn11fKQ=;
+        b=QarEf3cosrpgKM0nAGanTDR3bsznil9qrwtxVrEz/wCjkYQaAB8+no5xtZanQ36Y63
+         y3C3R2i150GlPAwPKAZeryjuvNmoJetKcSuqJZDGxvqlse3OiVcWPX/R6sEZe8D/kKQu
+         IdigcrXuez4eHmG+zfb4362fH0KSWZqbQGGDtY+aeHzbNV5aQd8Xq2SmhkL4ybLW66+f
+         yesI9xN+99tG4hhChhaeMK7RhfyPWLfzO80/oRFW4FyjuxX8tU0kSmDradD1ZuLyiDrJ
+         qWKeBREUHgIi0IP81eeHTSYOqugUkf1xN1CSdAQ7wyz55p9DtVuQfLltKpZxqMQLUOQ/
+         he4Q==
+X-Gm-Message-State: AOAM533boCQAGQFFfHgwaKCgDcPz6DYqENhrIRQwZwGXBWlXiA+QQXxL
+        eT2SfatfFSzEU7Jq2AEdHag=
+X-Google-Smtp-Source: ABdhPJwPwSvnYoXQvnf2p9hhoc7kt4V1UGgGBmb0e3DgHBKWPlXgLtTrsyjaeWHk6K1oYd4f0D+Y2g==
+X-Received: by 2002:a7b:cf21:: with SMTP id m1mr9345344wmg.35.1628681357390;
+        Wed, 11 Aug 2021 04:29:17 -0700 (PDT)
+Received: from localhost (HSI-KBW-095-208-000-224.hsi5.kabel-badenwuerttemberg.de. [95.208.0.224])
+        by smtp.gmail.com with ESMTPSA id g4sm1476865wrb.18.2021.08.11.04.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 04:29:16 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 04:29:15 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, trix@redhat.com,
+        mdf@kernel.org, p.pisati@gmail.com, atull@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: machxo2-spi: return an error on failure
+Message-ID: <YRO0izb18fMEdxWH@archbook>
+References: <20210810164036.922830-1-trix@redhat.com>
+ <YRKyAScLKow17mPO@kroah.com>
+ <20210810185116.GR22532@kadam>
 MIME-Version: 1.0
-References: <20210811095759.1281480-1-geert@linux-m68k.org>
- <20210811095759.1281480-20-geert@linux-m68k.org> <20210811124755.37b0a0a9@thinkpad>
-In-Reply-To: <20210811124755.37b0a0a9@thinkpad>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 11 Aug 2021 13:29:07 +0200
-Message-ID: <CAMuHMdUFPvJBuFByiN6pb539REYtcsNJMKML+M2NQw=GJxTYJg@mail.gmail.com>
-Subject: Re: [PATCH v5 19/19] auxdisplay: ht16k33: Add LED support
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810185116.GR22532@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+On Tue, Aug 10, 2021 at 09:51:16PM +0300, Dan Carpenter wrote:
+> On Tue, Aug 10, 2021 at 07:06:09PM +0200, Greg KH wrote:
+> > On Tue, Aug 10, 2021 at 09:40:36AM -0700, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > > 
+> > > Reported problem
+> > > 
+> > > 	drivers/fpga/machxo2-spi.c:229 machxo2_write_init()
+> > > 	warn: missing error code 'ret'
+> > > 
+> > > 	drivers/fpga/machxo2-spi.c:316 machxo2_write_complete()
+> > > 	warn: missing error code 'ret'
+> > 
+> > What reported this?  What does it mean?  Where was it reported?
+> 
+> These are Smatch errors, but my bug reports don't mention Smatch so
+> that's on me.  I've fixed my report templated to mention Smatch now.
+> 
+> regards,
+> dan carepenter
+> 
+> 
+Applied with slightly reworded commit-message to 'fixes' branch.
 
-On Wed, Aug 11, 2021 at 12:48 PM Marek Behún <kabel@kernel.org> wrote:
-> On Wed, 11 Aug 2021 11:57:59 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> > Instantiate a single LED based on the "led" subnode in DT.
-> > This allows the user to control display brightness and blinking (backed
-> > by hardware support) through the LED class API and triggers, and exposes
-> > the display color.  The LED will be named
-> > "auxdisplay:<color>:<function>".
-> >
-> > When running in dot-matrix mode and if no "led" subnode is found, the
-> > driver falls back to the traditional backlight mode, to preserve
-> > backwards compatibility.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Reviewed-by: Marek Behún <kabel@kernel.org>
-
-Thanks!
-
-> BTW, this driver does not need to depend on OF, methinks.
-> The few instances of properties reading can be
-> easily rewritten to device_* functions (from include/linux/property.h).
-> The of_get_child_by_name() can become device_get_named_child_node().
->
-> Geert, what do you think?
-
-Sure, that can be done later, when an ACPI user appears?
-The dependency on OF was pre-existing, and this series is already
-at v5.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Moritz
