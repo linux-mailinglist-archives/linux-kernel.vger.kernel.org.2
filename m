@@ -2,231 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E713A3E98AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8983E98AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhHKTXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:23:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229802AbhHKTXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:23:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6629960F21;
-        Wed, 11 Aug 2021 19:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628709775;
-        bh=Q/JObU4NvoXdd7Fe3syEJ3D2OKsQ3gJZALazhEenyGQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=beHhS5XPA2VjPDW9Ykg/nfMoadMDgtwupii6wt9ENv39Fl95dagrHXz/ADrd6rDne
-         /NL+NF9PPibxN+pCqiSpgarSIPnLjKJqv0BM6637xYg8NyBcpRWQ9SVJWDHCENFtbg
-         XItrh6KzLHmpyC8I5XeO+dZhD+g1tzyMY8NHN2u74PHbOvpvm/RTg4hLo39E8WuD66
-         VmvnHE0ScLWqGo/VaZ+gj4Z8KiRKb4JCmHMLTbJFyuMgYU5rDAWYwTWCm7PMJDLcQI
-         g/4/SHhAnhCGldlISsmKk+tXcQyb3QWr08j0p7HzqPgqZDmfl3Dpa8Zu6IYCOEL87N
-         mnunyO0q4QpdA==
-Subject: Re: [PATCH] x86/build: remove stale cc-option checks
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210811175647.3851629-1-ndesaulniers@google.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <cf568688-01a3-849e-2bcc-1cbe6845c9f8@kernel.org>
-Date:   Wed, 11 Aug 2021 12:22:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231681AbhHKTXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:23:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49906 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230290AbhHKTXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 15:23:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628709810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QYV7yJkCGUneeZS2etenhK2/KIs8SI+lrmptDbX+IrU=;
+        b=WxLNwEqjsZeDx/8RdY7q2fr2vBau4JMLE923sz5fsskFJ6cbtp8hWf+FwxsHBbroTVGus8
+        Be3TOzYH+Sar3fPUH79/qZ2zznMqnPufqwKWqDTfDbZ3bw9nLXvf4uKXynJQU3My6suiNu
+        TtQcTo81zccnQK4TW1RwDpNHz88RQCE=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300-G32JP5xYP5ajICmvEbzBow-1; Wed, 11 Aug 2021 15:23:29 -0400
+X-MC-Unique: G32JP5xYP5ajICmvEbzBow-1
+Received: by mail-ej1-f69.google.com with SMTP id k12-20020a170906680cb02905aeccdbd1efso1090245ejr.9
+        for <Linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:23:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QYV7yJkCGUneeZS2etenhK2/KIs8SI+lrmptDbX+IrU=;
+        b=ofn6HRQD0fIPx5EjP9liJvzYCDdpeGcchexUqbMPWXL3XSUDkF1u4o8Y5pPu5vOU7+
+         AkTqEqC/ZpJayHrHel9wDNM8rwEFhUgDWxNW4VyPq+EV5/6mr4OaBAboUJ0BCouFDW/c
+         X74veI9OWp6EMBRf7q+MR/o11APbUZNL/kiENNjxl2k8YMmaHa72fdk1fyTyimVAnp0K
+         nUyzyk8le6uUSCSTB68aiwyuI9Xo590o5EfRYvPDRJKsXSioNxi1dWhRaXoOinwUAnFm
+         uk9yUpfQp7xIV8Y6IpzXZOWlKAs0beHxEENhThDajMgYyeW9K1qpm938UYvcBBfRVJAA
+         CyaQ==
+X-Gm-Message-State: AOAM5309cKJaER1aQMHhmmuN58u/QwuSX192+iV+HqjwSrqRiaIr3LDX
+        BYHdZtJYk1SYmiqV+lpChB2Lt5O86VEZceqBkXkuYRw+ntG22LPAq3GuPjpYoC2DzfmwjtBJeNN
+        AP+WA5TrKfoAXmQP5M5jQziIA
+X-Received: by 2002:aa7:d44c:: with SMTP id q12mr571039edr.57.1628709807771;
+        Wed, 11 Aug 2021 12:23:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+jALKFOkws6OsCCeMk2eQauX+CWw145DXpwLY6T0Le8RYbnYyLT78ObJe3flREqQaVWWQHw==
+X-Received: by 2002:aa7:d44c:: with SMTP id q12mr571017edr.57.1628709807627;
+        Wed, 11 Aug 2021 12:23:27 -0700 (PDT)
+Received: from krava ([83.240.61.5])
+        by smtp.gmail.com with ESMTPSA id q8sm66262edv.95.2021.08.11.12.23.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 12:23:27 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 21:23:25 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        rickyman7@gmail.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [PATCH v4 1/2] perf pmu: Add PMU alias support
+Message-ID: <YRQjreot69DL0xVV@krava>
+References: <20210811024827.9483-1-yao.jin@linux.intel.com>
+ <20210811024827.9483-2-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210811175647.3851629-1-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811024827.9483-2-yao.jin@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/2021 10:56 AM, Nick Desaulniers wrote:
-> cc-option, __cc-option, cc-option-yn, and cc-disable-warning all invoke
-> the compiler during build time, and can slow down the build when these
-> checks become stale for our supported compilers, whose minimally
-> supported versions increases over time. See
-> Documentation/process/changes.rst for the current supported minimal
-> versions (GCC 4.9+, clang 10.0.1+). Compiler version support for these
-> flags may be verified on godbolt.org.
+On Wed, Aug 11, 2021 at 10:48:26AM +0800, Jin Yao wrote:
+
+SNIP
+
+>  				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index fc683bc41715..796a4be752f4 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -946,6 +946,18 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+>  	return NULL;
+>  }
+>  
+> +char * __weak
+> +pmu_find_real_name(const char *name)
+> +{
+> +	return strdup(name);
+> +}
+
+hm, why does this need to return already strdup? it forces you
+to add all those goto below.. could just return name and keep
+the 'pmu->name = strdup(name);' below?
+
+that should make the change simpler
+
+jirka
+
+> +
+> +char * __weak
+> +pmu_find_alias_name(const char *name __maybe_unused)
+> +{
+> +	return NULL;
+> +}
+> +
+>  static int pmu_max_precise(const char *name)
+>  {
+>  	char path[PATH_MAX];
+> @@ -959,19 +971,25 @@ static int pmu_max_precise(const char *name)
+>  	return max_precise;
+>  }
+>  
+> -static struct perf_pmu *pmu_lookup(const char *name)
+> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
+>  {
+> -	struct perf_pmu *pmu;
+> +	struct perf_pmu *pmu = NULL;
+>  	LIST_HEAD(format);
+>  	LIST_HEAD(aliases);
+>  	__u32 type;
+> -	bool is_hybrid = perf_pmu__hybrid_mounted(name);
+> +	bool is_hybrid;
+> +	char *name = pmu_find_real_name(lookup_name);
+> +
+> +	if (!name)
+> +		return NULL;
+> +
+> +	is_hybrid = perf_pmu__hybrid_mounted(name);
+>  
+>  	/*
+>  	 * Check pmu name for hybrid and the pmu may be invalid in sysfs
+>  	 */
+>  	if (!strncmp(name, "cpu_", 4) && !is_hybrid)
+> -		return NULL;
+> +		goto out;
+>  
+>  	/*
+>  	 * The pmu data we store & need consists of the pmu
+> @@ -979,23 +997,24 @@ static struct perf_pmu *pmu_lookup(const char *name)
+>  	 * now.
+>  	 */
+>  	if (pmu_format(name, &format))
+> -		return NULL;
+> +		goto out;
+>  
+>  	/*
+>  	 * Check the type first to avoid unnecessary work.
+>  	 */
+>  	if (pmu_type(name, &type))
+> -		return NULL;
+> +		goto out;
+>  
+>  	if (pmu_aliases(name, &aliases))
+> -		return NULL;
+> +		goto out;
+>  
+>  	pmu = zalloc(sizeof(*pmu));
+>  	if (!pmu)
+> -		return NULL;
+> +		goto out;
+>  
+>  	pmu->cpus = pmu_cpumask(name);
+> -	pmu->name = strdup(name);
+> +	pmu->name = name;
+> +	pmu->alias_name = pmu_find_alias_name(name);
+>  	pmu->type = type;
+>  	pmu->is_uncore = pmu_is_uncore(name);
+>  	if (pmu->is_uncore)
+> @@ -1017,6 +1036,10 @@ static struct perf_pmu *pmu_lookup(const char *name)
+>  
+>  	pmu->default_config = perf_pmu__get_default_config(pmu);
+>  
+> +out:
+> +	if (!pmu)
+> +		free(name);
+> +
+>  	return pmu;
+>  }
+>  
+> @@ -1025,7 +1048,8 @@ static struct perf_pmu *pmu_find(const char *name)
+>  	struct perf_pmu *pmu;
+>  
+>  	list_for_each_entry(pmu, &pmus, list)
+> -		if (!strcmp(pmu->name, name))
+> +		if (!strcmp(pmu->name, name) ||
+> +		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
+>  			return pmu;
+>  
+>  	return NULL;
+> @@ -1920,6 +1944,9 @@ bool perf_pmu__has_hybrid(void)
+>  
+>  int perf_pmu__match(char *pattern, char *name, char *tok)
+>  {
+> +	if (!name)
+> +		return -1;
+> +
+>  	if (fnmatch(pattern, name, 0))
+>  		return -1;
+>  
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 926da483a141..f6ca9f6a06ef 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -21,6 +21,7 @@ enum {
+>  #define PERF_PMU_FORMAT_BITS 64
+>  #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
+>  #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
+> +#define MAX_PMU_NAME_LEN 128
+>  
+>  struct perf_event_attr;
+>  
+> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
+>  
+>  struct perf_pmu {
+>  	char *name;
+> +	char *alias_name;	/* PMU alias name */
+>  	char *id;
+>  	__u32 type;
+>  	bool selectable;
+> @@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+>  bool perf_pmu__has_hybrid(void);
+>  int perf_pmu__match(char *pattern, char *name, char *tok);
+>  
+> +char *pmu_find_real_name(const char *name);
+> +char *pmu_find_alias_name(const char *name);
+> +
+>  #endif /* __PMU_H */
+> -- 
+> 2.17.1
 > 
-> The following flags are supported by all supported versions of GCC and
-> Clang. Remove their cc-option, __cc-option, and cc-option-yn tests.
-> * -Wno-address-of-packed-member
-> * -mno-avx
-> * -m32
-> * -mno-80387
-> * -march=k8
-> * -march=nocona
-> * -march=core2
-> * -march=atom
-> * -mtune=generic
-> * -mfentry
-> 
-> -mpreferred-stack-boundary= is specific to GCC, while
-> -mstack-alignment= is specific to Clang. Rather than test for this three
-> times via cc-option and __cc-option, rely on CONFIG_CC_IS_* from
-> Kconfig.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1436
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-A few comments below.
-
-> ---
->   arch/x86/Makefile | 51 +++++++++++++++++------------------------------
->   1 file changed, 18 insertions(+), 33 deletions(-)
-> 
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 0fa7dc73b5d8..6de2985ba1a5 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -14,10 +14,13 @@ endif
->   
->   # For gcc stack alignment is specified with -mpreferred-stack-boundary,
->   # clang has the option -mstack-alignment for that purpose.
-> +ifdef CONFIG_CC_IS_GCC
->   ifneq ($(call cc-option, -mpreferred-stack-boundary=4),)
-
-Is this cc-option call still needed? It looks like it was added by 
-commit d77698df39a5 ("x86/build: Specify stack alignment for clang"), 
-which at the time claimed to support back to gcc 3.2, but that flag 
-appears to be supported at least back to gcc 4.1.2 according to godbolt.
-
->         cc_stack_align4 := -mpreferred-stack-boundary=2
->         cc_stack_align8 := -mpreferred-stack-boundary=3
-> -else ifneq ($(call cc-option, -mstack-alignment=16),)
-> +endif
-> +endif
-> +ifdef CONFIG_CC_IS_CLANG
->         cc_stack_align4 := -mstack-alignment=4
->         cc_stack_align8 := -mstack-alignment=8
->   endif
-> @@ -31,8 +34,8 @@ REALMODE_CFLAGS	:= -m16 -g -Os -DDISABLE_BRANCH_PROFILING \
->   
->   REALMODE_CFLAGS += -ffreestanding
->   REALMODE_CFLAGS += -fno-stack-protector
-> -REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
-> -REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
-> +REALMODE_CFLAGS += -Wno-address-of-packed-member
-> +REALMODE_CFLAGS += $(cc_stack_align4)
->   REALMODE_CFLAGS += $(CLANG_FLAGS)
->   export REALMODE_CFLAGS
->   
-> @@ -48,8 +51,7 @@ export BITS
->   #
->   #    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
->   #
-> -KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
-> -KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
-> +KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
->   
->   # Intel CET isn't enabled in the kernel
->   KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
-> @@ -59,9 +61,8 @@ ifeq ($(CONFIG_X86_32),y)
->           UTS_MACHINE := i386
->           CHECKFLAGS += -D__i386__
->   
-> -        biarch := $(call cc-option,-m32)
-> -        KBUILD_AFLAGS += $(biarch)
-> -        KBUILD_CFLAGS += $(biarch)
-> +        KBUILD_AFLAGS += -m32
-> +        KBUILD_CFLAGS += -m32
->   
->           KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
->   
-> @@ -72,7 +73,7 @@ ifeq ($(CONFIG_X86_32),y)
->           # Align the stack to the register width instead of using the default
->           # alignment of 16 bytes. This reduces stack usage and the number of
->           # alignment instructions.
-> -        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
-> +        KBUILD_CFLAGS += $(cc_stack_align4)
->   
->           # CPU-specific tuning. Anything which can be shared with UML should go here.
->           include $(srctree)/arch/x86/Makefile_32.cpu
-
-What tree were you intending to target with this? If it is -tip, this is 
-going to cause it to fail to apply because the '$(srctree)' comes from 
-Masahiro:
-
-https://git.kernel.org/masahiroy/linux-kbuild/c/d8285639550578a1bf2d102391d1a9e08e0586ca
-
-> @@ -93,7 +94,6 @@ else
->           UTS_MACHINE := x86_64
->           CHECKFLAGS += -D__x86_64__
->   
-> -        biarch := -m64
->           KBUILD_AFLAGS += -m64
->           KBUILD_CFLAGS += -m64
->   
-> @@ -104,7 +104,7 @@ else
->           KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
->   
->           # Don't autogenerate traditional x87 instructions
-> -        KBUILD_CFLAGS += $(call cc-option,-mno-80387)
-> +        KBUILD_CFLAGS += -mno-80387
->           KBUILD_CFLAGS += $(call cc-option,-mno-fp-ret-in-387)
->   
->           # By default gcc and clang use a stack alignment of 16 bytes for x86.
-> @@ -114,20 +114,17 @@ else
->           # default alignment which keep the stack *mis*aligned.
->           # Furthermore an alignment to the register width reduces stack usage
->           # and the number of alignment instructions.
-> -        KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align8))
-> +        KBUILD_CFLAGS += $(cc_stack_align8)
->   
->   	# Use -mskip-rax-setup if supported.
->   	KBUILD_CFLAGS += $(call cc-option,-mskip-rax-setup)
->   
->           # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
-> -        cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
-> -        cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
-> -
-> -        cflags-$(CONFIG_MCORE2) += \
-> -                $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
-> -	cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
-> -		$(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
-> -        cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
-> +        cflags-$(CONFIG_MK8)		+= -march=k8
-> +        cflags-$(CONFIG_MPSC)		+= -march=nocona
-> +        cflags-$(CONFIG_MCORE2)		+= -march=core2
-> +        cflags-$(CONFIG_MATOM)		+= -march=atom
-> +        cflags-$(CONFIG_GENERIC_CPU)	+= -mtune=generic
->           KBUILD_CFLAGS += $(cflags-y)
->   
->           KBUILD_CFLAGS += -mno-red-zone
-> @@ -158,18 +155,6 @@ export CONFIG_X86_X32_ABI
->   ifdef CONFIG_FUNCTION_GRAPH_TRACER
->     ifndef CONFIG_HAVE_FENTRY
->   	ACCUMULATE_OUTGOING_ARGS := 1
-> -  else
-> -    ifeq ($(call cc-option-yn, -mfentry), n)
-> -	ACCUMULATE_OUTGOING_ARGS := 1
-> -
-> -	# GCC ignores '-maccumulate-outgoing-args' when used with '-Os'.
-> -	# If '-Os' is enabled, disable it and print a warning.
-> -        ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-> -          undefine CONFIG_CC_OPTIMIZE_FOR_SIZE
-> -          $(warning Disabling CONFIG_CC_OPTIMIZE_FOR_SIZE.  Your compiler does not have -mfentry so you cannot optimize for size with CONFIG_FUNCTION_GRAPH_TRACER.)
-> -        endif
-> -
-> -    endif
->     endif
->   endif
->   
-> @@ -193,7 +178,7 @@ ifdef CONFIG_RETPOLINE
->     # only been fixed starting from gcc stable version 8.4.0 and
->     # onwards, but not for older ones. See gcc bug #86952.
->     ifndef CONFIG_CC_IS_CLANG
-> -    KBUILD_CFLAGS += $(call cc-option,-fno-jump-tables)
-> +    KBUILD_CFLAGS += -fno-jump-tables
->     endif
->   endif
->   
-> 
