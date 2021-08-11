@@ -2,174 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACE03E9434
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225AB3E9438
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbhHKPFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:05:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232226AbhHKPFJ (ORCPT
+        id S232841AbhHKPGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:06:33 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:19298 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232641AbhHKPGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:05:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628694285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DXlWIK7tP6GW7Nz9BVvMv26u0G/+ywPhUc5vj0Y0Kic=;
-        b=Bw1M5PRr9eTqaa/q0Y7V7x7wWTK5ATSuaAWbfRN6ZgJ4R8f2wI9SxLHhiBVvkX1i2qMd1U
-        olVilD9+gr39EL7qR1AS18TPpSc425Q7WlEeVpbZKdvwUcT8cjZIvefO+m2Z8p5BEJ0BCT
-        9Z5ZS4HXz6PxBLiOw5g1Ph6OYUyTJjE=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-GT3ru3X3ODOQX_r1KMiwfQ-1; Wed, 11 Aug 2021 11:04:44 -0400
-X-MC-Unique: GT3ru3X3ODOQX_r1KMiwfQ-1
-Received: by mail-ej1-f69.google.com with SMTP id zp23-20020a17090684f7b02905a13980d522so812602ejb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:04:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DXlWIK7tP6GW7Nz9BVvMv26u0G/+ywPhUc5vj0Y0Kic=;
-        b=Ih7gDPKf5VMVMjU0bBDvOvWB41QheY4HCp1baSoTsDvACdiISoF87ICDTT7aIGeCDx
-         Wn1Sy5aMEU6kkYTmL1cLR2D9KHnNnTFgL1ub4ZHCuubsYzm4YUWkAOwPcRMwPfm22JdL
-         cc5Te068mPgm++4rSHECYY9K6j4dsjoesPsu/hHK0mX4WUJ+1rLxgqJ80zN3u41z9cUc
-         rJQOSjlvzKc8LSOZhyjcxyzjlT4LtEdqI0XtOm6hc8R7H0ChNjp9jN5q1dLkExNqYAE+
-         Ds/k9jUsdOhPKl4g7lzZumAhkdGt7a2NxAU7OcJACny7Mp+ii3NfeZinI1GnqyrO/F6W
-         CEgQ==
-X-Gm-Message-State: AOAM533PHDtCdMA89DrhMivejTn3iovUWbzIOcwoUQi/eUNYlKVZGlvt
-        xJsJhrXxSBMeg78JBXbAp2qqJGz9ht3Fh3JKyK5BhuWcI+k2YYjQQDFoiYeHZMCioGrz5VA79/S
-        mZeB5ome31ESr3rBAb5BnfJIB
-X-Received: by 2002:a17:906:3ce2:: with SMTP id d2mr4137994ejh.410.1628694283080;
-        Wed, 11 Aug 2021 08:04:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfk0sDjUAWwO91H1b7W7tEIDVPdxP+yjS4UE4uIamE/tcg4MPnblMYVlTQIyMP0Wc9a0U6dQ==
-X-Received: by 2002:a17:906:3ce2:: with SMTP id d2mr4137960ejh.410.1628694282724;
-        Wed, 11 Aug 2021 08:04:42 -0700 (PDT)
-Received: from krava ([83.240.61.5])
-        by smtp.gmail.com with ESMTPSA id dv8sm3479959ejb.93.2021.08.11.08.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 08:04:42 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 17:04:40 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, gmx@google.com
-Subject: Re: [RFC] perf/core: Add an ioctl to get a number of lost samples
-Message-ID: <YRPnCLyn9oE540gM@krava>
-References: <20210811062135.1332927-1-namhyung@kernel.org>
+        Wed, 11 Aug 2021 11:06:32 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BF5nwI003926;
+        Wed, 11 Aug 2021 15:05:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
+ b=t1Xpw8W1eRzW3/uI7bHvz1Jk1lxtw3Bvu5nDjMmlxBKPpB99bTceWJEN6D7QclZCAnCF
+ yHJRiWyuu2940qkq8+jBDoypyDNRrThRPlYhgYnmzzYQMK7t0X+nPI0etmN2QzRc7+6U
+ 7Wgyz8bEFmNvH4NaWj0cKNxcMuxzqjA3tw2LrBEOaTtRCzNBxnihFimkv8r9+N80j5Yb
+ IDPtdcxoN7ozo/ksN278udPleIlNkExsZWA36ESMxBAT+aaFbL7jIfBRkkccaJSpkeOa
+ amLNCRYbbaiOYf5nJ/Pf403OBYxaT2N/sc3rZQF5UCEWq1B5cEQhxWwebFwH4fA4r8d3 cw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
+ b=dy+H6lfyvWHFQA8YQrxLSDfS/VVF++gxrskL/UeZHlmDsaXIZUBBvgBvm12WcNHyJwUH
+ 2fXHnVbOEHB3clb3huIW3QIZouvQEavHEhlvW0ejyB6nRqcVHSPy5RA3HBh1GTeK6ds7
+ rJMNOseY8LQQwlurXBjX1cwu+nw3rcBliDLDKdH0T3g2TtaXWfpISXu7aaAfBC2wydS/
+ 4WCU54OJ87SI58b12sHtPleN0IiEV0BmBnz7/xANJy4hP3Ob2DB5uJqDtQhp5gZr0NPx
+ 5bUw3zAhsse8UmrsEnbuf132t/1Y+2U/oEd/HvpqgirSJlK3u4hEugGGrw4185xqFs5F YA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3abwqgtdv6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 15:05:49 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17BF1mJq078862;
+        Wed, 11 Aug 2021 15:05:48 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2048.outbound.protection.outlook.com [104.47.51.48])
+        by aserp3030.oracle.com with ESMTP id 3abx3vw8ew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Aug 2021 15:05:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eWBdar1msZVvkQucbytL54g2ldkHkH15KgL2f2fjPHYXqO+0fAg4z2D/PfZZqKbXd+5Fa1AkTFJkqCJ9UtxkV3kMmcTG3hqie/xnhoIw+0PiZtRDtuOxIQZ8KsFYHW5vmtwHXfoeN+6qmOlFrTvRJuxFm8mQGJ0ouwai4WsDKZjcTKlqIxGddAGU9kZO1S//UTN6sVK+5z4MJKHxq2H5LXny6HPF40QHmWo4r+96df6dBfLLJm8SIumsdxT+mQlEK+rngFB/38XAyTjzQyepWkpM1oIOHoMRZ4YR3Zdvk2B9bpMaJei3rvbMkuhw3sRGB5C7xvcCxyHmilC0E0YIBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
+ b=QO+7BHN6vTAZ05d2FFpsvCMmtdi3PDgaM+F4NbQ9q8qlhDlCqFa/RhbCyvNxIa2CNA9nAJtQVelgHlidNynblldIkyAjSyTHUaZdn/KAujnNWKLuEtsE05S7I/Fi/FPALTjFI3zcVTAq6yQD5msRcKuUCizOpjxVgEbUp2amU65Ve3Jdk/ZmNYB1BsORmtmYSwV1pFCMjc63o8+bXefP1U1ZTyrIn7FTFFOGef3+UWHC86XjyfI1hmfGfk204hEf+PEI5t/BD68/voOOiVLHL3RnlWjdKdG1qWStg1KsvuI5wf0jL500dBcKOXluHK49mRRuurYIuG1qv4ncBZN54A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IDo6EbQYrFmrwedcp0gCuD2MALZNysVxehj98xOOmVc=;
+ b=w9fwpfAQLvp9m2BR+soEAHhcESqgMMgWXtBma3Dkz7rkkwrxyaS3cV12JGgdbfhW4fZXwngpTJgt5oAm9VDh6VabrmsxuytfQjZPYsJga3oODiiTXjwg0ss2Is+9Sz6ljeeMR63QIJWSa/h/MyJ8Q+9k7CzREVJAA9suRytzNXI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB4062.namprd10.prod.outlook.com (2603:10b6:208:180::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Wed, 11 Aug
+ 2021 15:05:41 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::7cd0:8600:6e6e:aa8c]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::7cd0:8600:6e6e:aa8c%7]) with mapi id 15.20.4415.016; Wed, 11 Aug 2021
+ 15:05:41 +0000
+Subject: Re: [PATCH] xen/events: Fix race in set_evtchn_to_irq
+To:     Maximilian Heyne <mheyne@amazon.de>
+Cc:     Amit Shah <aams@amazon.de>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jan Beulich <jbeulich@suse.com>,
+        Malcolm Crossley <malcolm.crossley@citrix.com>,
+        David Vrabel <david.vrabel@citrix.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20210811140806.75710-1-mheyne@amazon.de>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <482af7c4-ad9e-6054-db45-ec05249a2517@oracle.com>
+Date:   Wed, 11 Aug 2021 11:05:33 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <20210811140806.75710-1-mheyne@amazon.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SA9P221CA0012.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:806:25::17) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811062135.1332927-1-namhyung@kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.99.104] (160.34.89.104) by SA9P221CA0012.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.13 via Frontend Transport; Wed, 11 Aug 2021 15:05:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9421e239-e915-4cea-31a3-08d95cd97c71
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4062:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB40623EEE954B99B689F6730E8AF89@MN2PR10MB4062.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kIGKsSuwbk9wcAFbVc8LBE6/X+XLLBiSLxM6MHoAjQuUasTfcaHb3in83SV4nE/tqz1P9qlvMTH+v5IMf6Fe0/D6W7o4ZPauzNhX9tbpWIKgaMgrAkQG/FSb6Ya3l9ePclyzMSd/im9OI4uTjjntDX/jUHgnAKIOK/52OGde7UR3esJUtEidjlk8dlaLaMubsbVCCJ4o9Barxum17Fk9sgftGXfbgWwpsEEFrxHHi6q44d5EEmZeONu5Jy8HBrTpqOao4ZkmluVs+rlAYefziz8/alLXLLC9MHUHY9u6XMhsztfteA8HXID3+qHzeZoNHk8MWlaq78fQIMohEowwCqgpAzBTeOHGgT9yqnZk93bd5YfBeOT9TuIH579kWwObCxQ1IQhIpUjIIIpX0sApriVxeGGj9WxSkljh3pjP2HLQXnq2C2VXYQvMGVZ5AyclJt870Upl7X7+pGPrnOl/NzbgDfHmQIA5zYi7N7VcNhWywpana8btP7MUWzBtlWO1ZbQLvuGGUHnVE9PjBlkfEQfwV+i1ekPRxX2S9R2DPbA8DcxOYxVzr+j+INpqRzVjatxlMDHXXrzSy0YkVklqRhwU/KK/zoW644DKO1rGzVe15BbhsRjNFMslc5gaQb8QVqvTIxVD09Y1aB0eoxyOn/EFXJWgw+kwVVRaWndvnFmqyuhsb1zzSP2pDJsOP0fkNovOXQceZPn36ubDns4ek5kjusgIQ/8k95mmEpEBAWo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39860400002)(346002)(366004)(376002)(31696002)(36756003)(83380400001)(4326008)(316002)(86362001)(7416002)(478600001)(8936002)(8676002)(6916009)(16576012)(6666004)(38100700002)(54906003)(66476007)(5660300002)(6486002)(66556008)(26005)(66946007)(53546011)(956004)(44832011)(2616005)(31686004)(186003)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bW5oN1l4SkhkaWNKZW9GR0hsb0NaeUhvby9IZWZFWmRzOWxBUmUzSEJpOGdJ?=
+ =?utf-8?B?THoxMFlwRVJ5M0NMcEFJV1VzWjZoU2YyalpZcS9GcjZMdE1vMmZKejNPZGlZ?=
+ =?utf-8?B?dDdSRURDWHg1R1c1bjVyQjB5Y2RoOUZUcHZuc3gwN0hJU2txdEhSMHdXTDFt?=
+ =?utf-8?B?VHhyQWVSWWxRTDRVcTFmdHVROGpGNUlOekJiMHVrSytwRk5YUlFaZThxU0tP?=
+ =?utf-8?B?czhaemlGcWFnSlA2OUdPRGhQSnN0M1dFUDM5S0owWnpkbzA2RXhNclJNc3FP?=
+ =?utf-8?B?OGU2NTlOa2tEWlFFZlpMNm5jTnV5UjVTZVl5OElqbGdmZnBuQ0xYWGJSZll2?=
+ =?utf-8?B?NlJnQy8zRWwwUWU2WEFkdkk0aEYzMFJJSFVrWlgxbTU3T0VNek5UTHEydkZi?=
+ =?utf-8?B?ZVZvOTJ5Tnp2ME0rYUxNY1RUNW93ZmNsc0ZCbjNiUDJCbDNCL3FVMVMyaU5V?=
+ =?utf-8?B?Mm9ER1NsUUZURzZRa1NwQWVkcnBCc21nSXhXYkd0eGNtQ3JzR0ZTTFRvN1ZY?=
+ =?utf-8?B?bmxOenhVNll4UnZEUHphZFREYy9ZZVhuWEdVVDFLTHNVSnRDOGRmcUp5ZUEy?=
+ =?utf-8?B?ZXB0czJTL3JpSzZiZ1dYb1k4cGptcGkyRUxiUEtENk5sVE9odVVVNHRqVk0w?=
+ =?utf-8?B?djlPT2RSZXJQZEV4RThKd2RzMVY1WjhKek1ZVGJqV0JMSWNMZnQrWUxFYkkz?=
+ =?utf-8?B?UlRKbFpPbU9IRW94Q2xQN05nLytKeEFYTEZORHFyeE1vYjIwWGVoYVRGNkpa?=
+ =?utf-8?B?Y0lLQzB1UVEyZ1RueTFUNUovZlhybDdwZDVnV3ZqOUc3RFpRekFrNjFkUFlp?=
+ =?utf-8?B?YzNKb0NPdldBNkNyK2Z6Y0ZvRU5VRFZ2NFBCMUMwNUJ4MTk4c25rZTBMdktZ?=
+ =?utf-8?B?QW44V0oza1cwUWNUb21MczFSWENPWGRXTXY3SDhJZnp2eE5lQ2J2VmFSUDV4?=
+ =?utf-8?B?YzQ5aW9XOFp1WnNUWTVIcGNHREdDZUd1T1ZxUDNJRUJXeVJXVnRmcTEvenVF?=
+ =?utf-8?B?ZHdzaTJTZmd4TzJMeEM3bUdZSlFpWWVUNEt6QWJrSXpMWktILzQyaEI5cnFk?=
+ =?utf-8?B?cmdibEtYaWRydlY0bld2cU00UW9IR25obFNlUlZJU1hRVFVzY3k0N210bndG?=
+ =?utf-8?B?a0NPSm1FcE1mNWVtQk1OSlZBaEk2WmNhdXlucnhTYUxubFJ5QlJkUG5QZXMw?=
+ =?utf-8?B?bnBnb1RUa3ZBMEFHaW5iZHoxMGhBZDYxRHZ6R0c5d3dONVAvbm1OaFQzVG1x?=
+ =?utf-8?B?MUxvQWl3UkNvR1lURWJhT3Y5ajBWRjQvRUR0TkRJQWtCUXRuUEQyejErWFFl?=
+ =?utf-8?B?b3UrdWpqaTFoS1RnZ1FmTyttMmhOQ3RVRE9rVWRxakRvcGIxMU8rQW5tR0hP?=
+ =?utf-8?B?TlhyYW43alVSRDVsQ3k5RXg1R2haRjgwcWFkYTIvQ3JEWlJsSGRWdEwyRHFY?=
+ =?utf-8?B?d3haMDBzNWhkTWpjeFRPbkRoN3ZaNlRXbHVyaEpKaHAraUR1bm5JNG90NWVJ?=
+ =?utf-8?B?WEIxQU9qYm1QdThIeEhreW5ISUQvY2l0SlpGYzluM0hPbjQzVHVOTVFpbkRQ?=
+ =?utf-8?B?ZDN0a2xyMTRkWmJLTEcwMm56bDc2YzV6R3o4VXRlVWZkYU01UUpvQ1BkN3Fn?=
+ =?utf-8?B?K2RjSXpJQVFvUFQ2aDhSZ0VxZUZmZjd3MTh0a1llT1p1cFFJa0NOWWFiSWNQ?=
+ =?utf-8?B?RGpHSFRTRE02Z09ldVkyNG04aU5zalZMM2VNdEFWbWw0R1BPUDNhbG5BNFdZ?=
+ =?utf-8?Q?Kw9bN0Fw5M+WBqPd0IvqGOVIrH7VqmGIKcT3QIm?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9421e239-e915-4cea-31a3-08d95cd97c71
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 15:05:41.5744
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IZpdoqsqxd1qjdb0iIoE1n22LkLGHTr8XvTw32+grNIefOskwvVSj1ql3vz1wChajdyZ79GHIAEC4Q8syHAKp1hDBZpblAIeNoqM/2viPrA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4062
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10072 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 phishscore=0 mlxlogscore=844 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108110101
+X-Proofpoint-ORIG-GUID: YnaBpIpl3LJ3d-hhg-PW9E01XoZSRxLz
+X-Proofpoint-GUID: YnaBpIpl3LJ3d-hhg-PW9E01XoZSRxLz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:21:35PM -0700, Namhyung Kim wrote:
-> Sometimes we want to know an accurate number of samples even if it's
-> lost.  Currenlty PERF_RECORD_LOST is generated for a ring-buffer which
-> might be shared with other events.  So it's hard to know per-event
-> lost count.
-> 
-> Add event->lost_samples field and PERF_EVENT_IOC_LOST_SAMPLES to
-> retrieve it from userspace.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  include/linux/perf_event.h      | 2 ++
->  include/uapi/linux/perf_event.h | 1 +
->  kernel/events/core.c            | 9 +++++++++
->  kernel/events/ring_buffer.c     | 5 ++++-
->  4 files changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index f5a6a2f069ed..44d72079c77a 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -756,6 +756,8 @@ struct perf_event {
->  	struct pid_namespace		*ns;
->  	u64				id;
->  
-> +	atomic_t			lost_samples;
-> +
->  	u64				(*clock)(void);
->  	perf_overflow_handler_t		overflow_handler;
->  	void				*overflow_handler_context;
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index bf8143505c49..24397799127d 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -505,6 +505,7 @@ struct perf_event_query_bpf {
->  #define PERF_EVENT_IOC_PAUSE_OUTPUT		_IOW('$', 9, __u32)
->  #define PERF_EVENT_IOC_QUERY_BPF		_IOWR('$', 10, struct perf_event_query_bpf *)
->  #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES	_IOW('$', 11, struct perf_event_attr *)
-> +#define PERF_EVENT_IOC_LOST_SAMPLES		_IOR('$', 12, __u64 *)
 
-would it be better to use the read syscall for that?
-  https://lore.kernel.org/lkml/20210622153918.688500-5-jolsa@kernel.org/
+On 8/11/21 10:08 AM, Maximilian Heyne wrote:
+>
+> This patch sets evtchn_to_irq rows via a cmpxchg operation so that they
+> will be set only once. Clearing the row was moved up before writing the
+> row to evtchn_to_irq in order to not create a race once the row is
+> visible for other threads. Accesses to the rows are now guarded by
+> READ_ONCE and WRITE_ONCE just as for the columns in the data structure.
 
-that patchset ended up on me not having a way to reproduce the
-issue you guys wanted the fix for ;-) the lost count is there
-as well
 
-jirka
+Is this last part really needed? We needed to do that for array elements to avoid an interrupt handler from seeing a partially updated entry but I am not sure I see how this can happen to the row pointer. The only place where it might be important is when we update the pointer to the new page but you are using cmpxchg there already.
+
 
 >  
->  enum perf_event_ioc_flags {
->  	PERF_IOC_FLAG_GROUP		= 1U << 0,
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 0e125ae2fa92..a4d6736b6594 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -5664,6 +5664,15 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
->  
->  		return perf_event_modify_attr(event,  &new_attr);
->  	}
-> +
-> +	case PERF_EVENT_IOC_LOST_SAMPLES: {
-> +		u64 lost = atomic_read(&event->lost_samples);
-> +
-> +		if (copy_to_user((void __user *)arg, &lost, sizeof(lost)))
-> +			return -EFAULT;
-> +		return 0;
-> +	}
-> +
->  	default:
->  		return -ENOTTY;
->  	}
-> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-> index 52868716ec35..06d7dacb05da 100644
-> --- a/kernel/events/ring_buffer.c
-> +++ b/kernel/events/ring_buffer.c
-> @@ -172,8 +172,10 @@ __perf_output_begin(struct perf_output_handle *handle,
->  		goto out;
->  
->  	if (unlikely(rb->paused)) {
-> -		if (rb->nr_pages)
-> +		if (rb->nr_pages) {
->  			local_inc(&rb->lost);
-> +			atomic_inc(&event->lost_samples);
-> +		}
->  		goto out;
->  	}
->  
-> @@ -254,6 +256,7 @@ __perf_output_begin(struct perf_output_handle *handle,
->  
->  fail:
->  	local_inc(&rb->lost);
-> +	atomic_inc(&event->lost_samples);
->  	perf_output_put_handle(handle);
->  out:
->  	rcu_read_unlock();
-> -- 
-> 2.32.0.605.g8dce9f2422-goog
-> 
+> -		evtchn_to_irq[row] = (int *)get_zeroed_page(GFP_KERNEL);
+> -		if (evtchn_to_irq[row] == NULL)
+> +		evtchn_row = (int *) get_zeroed_page(GFP_KERNEL);
+
+
+Not directly related to this patch but I don't think we need to get a zeroed page --- we will initialize it to -1 immediately below.
+
+
+
+-boris
 
