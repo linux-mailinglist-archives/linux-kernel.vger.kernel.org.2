@@ -2,71 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855573E8CB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E182C3E8CB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236587AbhHKI7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:59:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:45366 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236500AbhHKI7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:59:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4DFF106F;
-        Wed, 11 Aug 2021 01:58:45 -0700 (PDT)
-Received: from [10.57.13.73] (unknown [10.57.13.73])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CD7F3F70D;
-        Wed, 11 Aug 2021 01:58:44 -0700 (PDT)
-Subject: Re: [PATCH] ARM: NOMMU: Return true/false (not 1/0) from bool
- functions
-To:     Huilong Deng <denghuilong@cdjrlc.com>, linux@armlinux.org.uk,
-        ira.weiny@intel.com, sfr@canb.auug.org.au,
-        akpm@linux-foundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210811082041.32309-1-denghuilong@cdjrlc.com>
-From:   Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <1e30b659-a91a-58f6-f9aa-d0f0259eb9e8@arm.com>
-Date:   Wed, 11 Aug 2021 09:58:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S236515AbhHKJBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236255AbhHKJA7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 05:00:59 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DB2C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:00:35 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id h2so3390222lji.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ByYMlbMTyxkiBAaSmL+WOHNG/B2x6QEQfrThcArQKRw=;
+        b=Xn2tYDqZkw3fKcnhQZLg6e4OaqolCiGbM848DSvUY18JusO5D+NdAuA4WuQxXRSYrT
+         /5EMIHXOAPJ5utshYtZquuBHQKvCv9syhSFaQSvqQxy1G1KpLDGqPH5ZZ9Iv1SL4QD5Q
+         mA+t+YGkJLNpyPaeObi1Ve1IRZZHmBs3t5p757rQyU22tVAKLjaKGsp5GiraguJvtvA0
+         UOn4pPGrubN5ZT1RvwP3qy3chzJ1xp8SvkmvvWUJTIYbM6n9Pomc6/Cq4hzjPOsaFuMz
+         yQDF39mH4OUR8yCfJLmu7/n6jlWSiLeoH2HgYYEAaBJnsE2WffF8DPDGimOcoJdpVL95
+         fUFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ByYMlbMTyxkiBAaSmL+WOHNG/B2x6QEQfrThcArQKRw=;
+        b=jOEPAZ5dt29g5mLf2iVcBmi2FLqf29BWgdx8MGKzvbulEelZNdOx+ceXWVjmk1smOb
+         yRKufReIJn/dPH+fEWLzyXs6lCYkSlmc652lFPCh1VO0D01OW48yTLnK2JPnUM3MLDic
+         l5+Kj9CTe83WBy7Vo8tEbTLg3DJMAoksqmXUH7ql+nqZwt/oN6+xIo9RfLcy8DuqfgPe
+         07OgTXrk5W3wP6hXa18B963jSb1KKsWf5o6xXb6jizCGybn0xzF3tWbwbWUl3OdZs0WZ
+         7EeMC5TE9stB29a1RA0UobbGKsC8uP3vyebdU4/Ye6TToK3szIhbFKE7tjOonYXGqaPx
+         sg8w==
+X-Gm-Message-State: AOAM531QAmq9HjNo4d3b8T0g9a7qun1mEkiJCnPyTpeg3hm/yzajizJJ
+        bK/lp9bKgd7MDNhvtA5qVBXiuAvu2GOJmN2Bre34+Q==
+X-Google-Smtp-Source: ABdhPJzPGdg6StS/V0/ilLK95SVU9vwc4TnCmVmPA4yxIJY2EvfBR5qOtuosUnK2p3OSXtx8OTSM9RjguR9Tgv6OaPo=
+X-Received: by 2002:a2e:a4ab:: with SMTP id g11mr20952ljm.273.1628672433464;
+ Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210811082041.32309-1-denghuilong@cdjrlc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210728144229.323611-1-krzysztof.kozlowski@canonical.com> <20210728144229.323611-4-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210728144229.323611-4-krzysztof.kozlowski@canonical.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 11:00:22 +0200
+Message-ID: <CACRpkdabg6vDKSRL6_AJUOMm6L_zUFCxf9nBz-MbfA5rLGcHng@mail.gmail.com>
+Subject: Re: [PATCH 3/3] gpiolib: of: constify few local device_node variables
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/21 9:20 AM, Huilong Deng wrote:
-> ./arch/arm/mm/nommu.c:59:8-9: WARNING: return of 0/1 in function
-> 'security_extensions_enabled' with return type bool
-> 
-> Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
-> ---
->  arch/arm/mm/nommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
-> index 2658f52903da..7256ac159acb 100644
-> --- a/arch/arm/mm/nommu.c
-> +++ b/arch/arm/mm/nommu.c
-> @@ -56,7 +56,7 @@ static inline bool security_extensions_enabled(void)
->  	if ((read_cpuid_id() & 0x000f0000) == 0x000f0000)
->  		return cpuid_feature_extract(CPUID_EXT_PFR1, 4) ||
->  			cpuid_feature_extract(CPUID_EXT_PFR1, 20);
-> -	return 0;
-> +	return false;
->  }
->  
->  unsigned long setup_vectors_base(void)
-> 
+On Wed, Jul 28, 2021 at 4:42 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 
-Reviewed-by: Vladimir Murzin <vladimir.murzin@arm.com>
+> gpiolib does not modify struct device_node, so few local pointers can
+> point to a const data.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Please, submit it into RMK's Patch system [1]
+LGTM
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+I guess this needs to be merged with the other two patches?
+I suppose in Rob Herrings DT tree?
 
-[1] https://www.armlinux.org.uk/developer/patches/
-
-Cheers
-Vladimir
+Yours,
+Linus Walleij
