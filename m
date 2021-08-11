@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082523E9B4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7C03E9B50
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Aug 2021 01:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhHKXrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 19:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        id S232879AbhHKXud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 19:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbhHKXrH (ORCPT
+        with ESMTP id S232704AbhHKXuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 19:47:07 -0400
+        Wed, 11 Aug 2021 19:50:32 -0400
 Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EB3C061765;
-        Wed, 11 Aug 2021 16:46:43 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id bo18so6354069pjb.0;
-        Wed, 11 Aug 2021 16:46:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A208BC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:50:08 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso7764426pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 16:50:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nYwCxQJ9/49X2zOi88wvf0V9m4gUqdeY1chCL4IkZO4=;
-        b=aOatYWRwElPP6ZXSdCZSyUhtbaghDH/JrKjaLWQsDElEiJWHm4XQP7WBs4ISYqHB7J
-         Hf4o1W+HM5Yl8Lx5fj0WXPdJxQ8oyFF67Nbx2oz/h1yHnvdXiSZRDi3A/mphMSazT0az
-         DPD4H2Da7MNg6GufC5JFZ3rzZpGTdLvvcuBE7oZ89jNFVq6X+ier9kloRmcMooJTCYbf
-         1Vc2PwBwz63/I5dQTe/TBgfHumS1Neyhk89cTewrfWT4moFuZF3qYBhCN0B8xnLw+H5Z
-         HiGiSBWhpg3nii0cQonrzlk+yqAPW6viczAEhQLlXcC3IsRbHWi3aXNGg0d5JZ7XK1MT
-         i0ww==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kWMH3PAZAv4+GfGaXs+oiFyMUncS1K0IUlvwZ19DPTY=;
+        b=bAHTHIB0S8t5JP0/xnmGPJUG3eA6pFDe+sC32aFryY5J4JP13QgIZOUd5JIuZYPTEe
+         AgmWgxnTMW7Uyg+rz77mN7xoZy/svlKW55kIpnCizYO+tOnR+TAvILJiaCi56aAQ0mY4
+         Wjt2PPapVUVJgyo/a9NbV/kvjKVrhHEThh/FCqkqLIa803giAKyy4BGVAJWaIb07uvUX
+         VKOkACa5/uKr6jT47s5VL+upD5nFny/lQnWJs570hfyHztRBa2DqH4WoGPonN1pR/plt
+         91DujdEkt0x2AkN9uPNfKsreGmfKjUfPbmWSz073VP+YOm8zq4WwRQXsczJUYlG3Cab4
+         Y+2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nYwCxQJ9/49X2zOi88wvf0V9m4gUqdeY1chCL4IkZO4=;
-        b=eZWdEmUWDLNHgeebZC5FPFXOBK2lHuzXDSLabpPSFsoio6Xlg48fe+hmz8+E1q+0DQ
-         iay8nYohFSLfP46zc0PpvFw8BQyuvIq0EqUjtPre5XaKAXZFhAikF5K3gU6+jcA4jj5P
-         UKhk+vnGFHkSXPM9Z5eazc+nIjyO+cuB7sfdyfFPNW90xETY1Iqk25rZGwh4tX+HlIpe
-         QWsXsyI7RCGvpAcp03ZGiPTrojH5o8Z/nEEL9xDU0Po+ikqjr0jVqhzzq5HJCkP0Tj/T
-         2H4VsonH1EKwNoPeVXITYJBZelS8Wf3ZVfnjBHOE/n5M9iskjjy0ToVBaD1KemYHAyPN
-         oCqw==
-X-Gm-Message-State: AOAM533ddmrFxb2zyp7sNqVR2D0Uh5ohK+DX6Y1cYi0M4qYULCUeQ070
-        gTqSNO3UqH/bTJdF/tI7Sm8=
-X-Google-Smtp-Source: ABdhPJymMZJQEXJ6i/YvE3tP05Tin9dZz072nwdOhv1eKu+lLq8CDjMLVcMxDlOBiXsCtGy0ACkb+w==
-X-Received: by 2002:a17:90a:df14:: with SMTP id gp20mr11043265pjb.33.1628725602917;
-        Wed, 11 Aug 2021 16:46:42 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:6006:a148:ab4a:57a2:9e36:2395])
-        by smtp.googlemail.com with ESMTPSA id v20sm734361pgi.39.2021.08.11.16.46.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 16:46:42 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH] PCI: Remove duplicate #ifdef in pci_try_set_mwi()
-Date:   Thu, 12 Aug 2021 05:16:01 +0530
-Message-Id: <20210811234601.341947-1-utkarshverma294@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kWMH3PAZAv4+GfGaXs+oiFyMUncS1K0IUlvwZ19DPTY=;
+        b=Epn/qMB6YyvQUZFY+MzPoopgj1SoOfKAiS0JwHF8R7meO69rpkhg6c82erjAqIze/9
+         4bt6Q0NzDBQ0VBLks17OvLqe8+2N2DTq9LZPgPHUjy9xIsD4BWpL/4h6nrH17BztjWpH
+         yLX/lcfctGc4mPzWPVzVGms3hOehekU8eLb2Tw9n59qyEQr4oLYRJ2KjNncLmXLosSoJ
+         WE2VkuCD8eXqUfqSyply36ucVtotjFvJSkz9s/yCKzyEa663UUJr+MPc7TaaGyBISqao
+         e3/OaITTPh29OIDdnImCdoe3BkizLcCSLQyx4nkdp8L5jDsP0Qs/+ta8pN+mtN8jLng2
+         /FHQ==
+X-Gm-Message-State: AOAM533uvj01Qfsrk2NqaTLMJaYs5LYWlxKPIbIp2VrLbwOxqrCEoEwC
+        IfgWGHoa34tuPJc4rLHsUnCU0hsb51VpYaIIrCw5wQ==
+X-Google-Smtp-Source: ABdhPJzPyRs+oWgbMbNXOaBBE90nenU0GBlkAf1I4jaw+EF4bTu41rtzPc0sNxm9DuXwkbmIjwJ2LKQhLIDnaW+9eqc=
+X-Received: by 2002:aa7:90d4:0:b029:3b3:2746:5449 with SMTP id
+ k20-20020aa790d40000b02903b327465449mr1263455pfk.81.1628725808142; Wed, 11
+ Aug 2021 16:50:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210811201450.31366-1-martin@kaiser.cx>
+In-Reply-To: <20210811201450.31366-1-martin@kaiser.cx>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Thu, 12 Aug 2021 00:49:57 +0100
+Message-ID: <CAA=Fs0kjxzObRFYU30KhAu_GxA9oZ2R45MHCA-oD3NoFqW88vA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] staging: r8188eu: remove unused efuse hal components
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the unnecessary #ifdef PCI_DISABLE_MWI, because pci_set_mwi()
-performs the same check.
+On Wed, 11 Aug 2021 at 21:15, Martin Kaiser <martin@kaiser.cx> wrote:
+>
+> struct hal_data_8188e contains some components related to efuses which
+> are not used for rl8188eu.
+>
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/staging/r8188eu/include/rtl8188e_hal.h | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+> index ea879572d6e1..3939bf053de1 100644
+> --- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
+> +++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+> @@ -263,9 +263,6 @@ struct hal_data_8188e {
+>         u8      bAPKThermalMeterIgnore;
+>
+>         bool    EepromOrEfuse;
+> -       /* 92C:256bytes, 88E:512bytes, we use union set (512bytes) */
+> -       u8      EfuseMap[2][HWSET_MAX_SIZE_512];
+> -       u8      EfuseUsedPercentage;
+>         struct efuse_hal        EfuseHal;
+>
+>         u8      Index24G_CCK_Base[RF_PATH_MAX][CHANNEL_MAX_NUMBER];
+> --
+> 2.20.1
+>
 
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
----
- drivers/pci/pci.c | 4 ----
- 1 file changed, 4 deletions(-)
+Dear Martin,
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index aacf575c15cf..7d4c7c294ef2 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4456,11 +4456,7 @@ EXPORT_SYMBOL(pcim_set_mwi);
-  */
- int pci_try_set_mwi(struct pci_dev *dev)
- {
--#ifdef PCI_DISABLE_MWI
--	return 0;
--#else
- 	return pci_set_mwi(dev);
--#endif
- }
- EXPORT_SYMBOL(pci_try_set_mwi);
- 
--- 
-2.25.1
+Looks good.
 
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
+
+Regards,
+Phil
