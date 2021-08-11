@@ -2,140 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388DE3E93F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE95D3E93F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhHKOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:51:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41722 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbhHKOvA (ORCPT
+        id S232569AbhHKOvT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Aug 2021 10:51:19 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:46652 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232226AbhHKOvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:51:00 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 086131FED1;
-        Wed, 11 Aug 2021 14:50:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628693436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YwtrtkUl9113t4lr7UC064OuObRR9nzlwURX6E47Ejk=;
-        b=lvigIX8mFaSzgQuTDf0WzrdIDjb8Cmi4SKNrV6/WkKbalfeccyELkgcKHM2ZB9Uqrt7J5Z
-        w83az5wJua6gMQlodw2DHWjn48na0c7F9iHd+bpSP0gK03V+5D6qClnVEIAtEGFLhA8bwc
-        Nj3WbCS4zoDn+bdfCyo/FtW6IqmzRK0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628693436;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YwtrtkUl9113t4lr7UC064OuObRR9nzlwURX6E47Ejk=;
-        b=00aZUMGe8DAXnaS2BDapK+Mr+Eoi/fjwnUnCICeIbY1nJYfQxYL6MFYkzuuzpHiInaB0jj
-        RiUDnj24eQG6sPBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E931B136D9;
-        Wed, 11 Aug 2021 14:50:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id ULIfOLvjE2GcUQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 14:50:35 +0000
-Subject: Re: [PATCH v14 058/138] mm/swap: Add folio_mark_accessed()
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-59-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <114cd25f-8c75-9a7a-f46d-60c31685a055@suse.cz>
-Date:   Wed, 11 Aug 2021 16:50:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 10:51:15 -0400
+Received: by mail-vs1-f53.google.com with SMTP id h7so1659699vso.13;
+        Wed, 11 Aug 2021 07:50:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cIjkkhxIDfcNNlnHybuIBwZKLNxXMpZQOWOrYH4uD+E=;
+        b=U2i7WTkbGtmet9RiSPXlni7nQJulS0nx4kp39lDjeNkKE9KdcuN2cRITk461im3a1Y
+         WpBrAj3thtAjYYcbH1ej3lDeVN9oZbD98TDIvvp2r0TVXNFb2uYdJrNIaJ2XIVFitbsS
+         us6fIIanc7r4pQUhG+nEwsCUv2tITo5XDUguy+27NBMi4KHu/CtJpJk0CnC4yP6tDOfh
+         W85h62XpXzCg1Ex/qaxE10auxV1EbC5MLWzAg4ENlNRvIZIRteyy2I2PJA/FggVEKh/Z
+         iz5LZx9Oa8jMYYVvsu/LGERzdjuidl0sVK1ENG5FsLNKPDi02Xs3L+9oKhz8qFeFOzkk
+         /5+g==
+X-Gm-Message-State: AOAM531VNrFBYICHzfHZD8+z68IKOrYTxownulbjFRHNwVtmCeTHoci8
+        a+9N9aYJccIrGQ4KBSst9j9SguzMJ+rrQwPtP9M=
+X-Google-Smtp-Source: ABdhPJyCKGDxNdZxL1InzZOuebscdelRrflgN7wgfQcLAxNeXbBK11NZVzyFk5Zc6ixhsCh4yORvoZGZjBul5tJ7ZZM=
+X-Received: by 2002:a67:e2c7:: with SMTP id i7mr26153722vsm.3.1628693450818;
+ Wed, 11 Aug 2021 07:50:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-59-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210803114051.2112986-1-arnd@kernel.org> <20210803114051.2112986-11-arnd@kernel.org>
+In-Reply-To: <20210803114051.2112986-11-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 11 Aug 2021 16:50:39 +0200
+Message-ID: <CAMuHMdVvBL=qZkWF5DXdKjFMKgT-3X-OUBnLYrqawQijoLG4Xw@mail.gmail.com>
+Subject: Re: [PATCH v2 10/14] [net-next] make legacy ISA probe optional
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Doug Berger <opendmb@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Sam Creasey <sammy@sammy.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Convert mark_page_accessed() to folio_mark_accessed().  It already
-> operated on the entire compound page, but now we can avoid calling
-> compound_head quite so many times.  Shrinks the function from 424 bytes
-> to 295 bytes (shrinking by 129 bytes).  The compatibility wrapper is 30
-> bytes, plus the 8 bytes for the exported symbol means the kernel shrinks
-> by 91 bytes.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Hi Arnd,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On Tue, Aug 3, 2021 at 1:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> There are very few ISA drivers left that rely on the static probing from
+> drivers/net/Space.o. Make them all select a new CONFIG_NETDEV_LEGACY_INIT
+> symbol, and drop the entire probe logic when that is disabled.
+>
+> The 9 drivers that are called from Space.c are the same set that
+> calls netdev_boot_setup_check().
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Question below:
-
-> @@ -430,36 +430,34 @@ static void __lru_cache_activate_page(struct page *page)
->   * When a newly allocated page is not yet visible, so safe for non-atomic ops,
->   * __SetPageReferenced(page) may be substituted for mark_page_accessed(page).
->   */
-
-The other patches converting whole functions rewrote also comments to be about
-folios, but not this one?
-
-> -void mark_page_accessed(struct page *page)
-> +void folio_mark_accessed(struct folio *folio)
->  {
-> -	page = compound_head(page);
-> -
-> -	if (!PageReferenced(page)) {
-> -		SetPageReferenced(page);
-> -	} else if (PageUnevictable(page)) {
-> +	if (!folio_test_referenced(folio)) {
-> +		folio_set_referenced(folio);
-> +	} else if (folio_test_unevictable(folio)) {
->  		/*
->  		 * Unevictable pages are on the "LRU_UNEVICTABLE" list. But,
->  		 * this list is never rotated or maintained, so marking an
->  		 * evictable page accessed has no effect.
->  		 */
-
-These comments too?
-
-> -	} else if (!PageActive(page)) {
-> +	} else if (!folio_test_active(folio)) {
->  		/*
->  		 * If the page is on the LRU, queue it for activation via
->  		 * lru_pvecs.activate_page. Otherwise, assume the page is on a
->  		 * pagevec, mark it active and it'll be moved to the active
->  		 * LRU on the next drain.
->  		 */
-> -		if (PageLRU(page))
-> -			folio_activate(page_folio(page));
-> +		if (folio_test_lru(folio))
-> +			folio_activate(folio);
->  		else
-> -			__lru_cache_activate_page(page);
-> -		ClearPageReferenced(page);
-> -		workingset_activation(page_folio(page));
-> +			__lru_cache_activate_folio(folio);
-> +		folio_clear_referenced(folio);
-> +		workingset_activation(folio);
->  	}
-> -	if (page_is_idle(page))
-> -		clear_page_idle(page);
-> +	if (folio_test_idle(folio))
-> +		folio_clear_idle(folio);
+> --- a/drivers/net/ethernet/8390/ne.c
+> +++ b/drivers/net/ethernet/8390/ne.c
+> @@ -951,6 +951,7 @@ static int __init ne_init(void)
 >  }
-> -EXPORT_SYMBOL(mark_page_accessed);
-> +EXPORT_SYMBOL(folio_mark_accessed);
->  
->  /**
->   * lru_cache_add - add a page to a page list
-> 
+>  module_init(ne_init);
+>
+> +#ifdef CONFIG_NETDEV_LEGACY_INIT
+>  struct net_device * __init ne_probe(int unit)
+>  {
+>         int this_dev;
+> @@ -991,6 +992,7 @@ struct net_device * __init ne_probe(int unit)
+>
+>         return ERR_PTR(-ENODEV);
+>  }
+> +#endif
+>  #endif /* MODULE */
 
+My rbtx4927 build log says:
+
+drivers/net/ethernet/8390/ne.c:909:20: warning: ‘ne_add_devices’
+defined but not used [-Wunused-function]
+
+The network still works fine (nfsroot).
+
+CONFIG_MACH_TX49XX=y
+CONFIG_NE2000=y
+CONFIG_NETDEV_LEGACY_INIT is not set
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
