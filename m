@@ -2,119 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBF73E9862
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096CC3E9860
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhHKTLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:11:46 -0400
-Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:41793
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231443AbhHKTLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:11:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YPrmBlV9ZBcK/HBtAqDDhpPjDx32UsCDayAxVwOQycdWBzWwUjghnL2eICAX9ExTMad16lTXJ1RozSd/cCLo2yyTm1l/cnEg2e9lHXafy87kyIYs10SwaOV3SIbg+cFr3aXr9BPRjXrXqeEKCVYsgYUas/qjpvzBumfeJnCFEAdDoYvWbNIs/wZSEn+zTf0We+eDK2qdwmbowhkd2yfd+kFuSk88jm73MejgaviTDw26CJQXZX8jBYPDolO5QS6WFIL8zq98MsddG652mUs5jr4365R6YRNpD3RfcGUg0WVxG0W3oeN8XvvZl7H1Am7QIt99YjXwUJyqAx299AoPPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rl7KFKZV1zkmSYKbw/elQVg5fNcQ/vB8Vy9kpruRA6I=;
- b=WnJZwX4hEj8r+TcuVpFfPdhN0GwzmI4Dm0IbMjb/A2w5i597ozWZ3w6JVncuKESvqibdEz8cwu7eaaa3AeP41Ibv5/CShrVcdMOsWeTF2gO9biEcdStTVZIAOD26vqYgO2STRyfVJlRv3WXjAQZh94Bt0BbEVLUyCyuwwotG5p/GfWhqglVvHgIaQ7AOz7PyHUpU2oYgnIlTktx0wlMzksv//3kPM3LOJcjs5E5N3J+3qtfuoG4TRgSeFH0oqx4pczWQSyCPC7oHUhSdS56jfUi8sRQGZUPclUUwaV09cgs3cWUMTjsm/RG1fUTfm0FlhamBlJO5YpsncLGl2MhWYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rl7KFKZV1zkmSYKbw/elQVg5fNcQ/vB8Vy9kpruRA6I=;
- b=0RYmr9vUcUHSbu9+0tedDg3s929DY0Xcm3jF5tpJnqIAAfEFVpzTQhrVa9kc38dsFU/U4EGM6bSZR3XsO7sxrOfJK+4xgN7w4dp6Qm03TF8Rkuedd20HepuNjF2aGcEXCa5bC0O1oG8T2rbwcmN2C47YTxPCQlJDfx/GIcmDqbM=
-Received: from BN6PR18CA0010.namprd18.prod.outlook.com (2603:10b6:404:121::20)
- by BL1PR12MB5110.namprd12.prod.outlook.com (2603:10b6:208:312::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Wed, 11 Aug
- 2021 19:11:14 +0000
-Received: from BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:121:cafe::74) by BN6PR18CA0010.outlook.office365.com
- (2603:10b6:404:121::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend
- Transport; Wed, 11 Aug 2021 19:11:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=pass action=none
- header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT026.mail.protection.outlook.com (10.13.177.51) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4415.16 via Frontend Transport; Wed, 11 Aug 2021 19:11:14 +0000
-Received: from RErrabolDevMach.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Wed, 11 Aug
- 2021 14:11:12 -0500
-From:   Ramesh Errabolu <Ramesh.Errabolu@amd.com>
-To:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Ramesh Errabolu <Ramesh.Errabolu@amd.com>
-Subject: [PATCH] Whitelist AMD host bridge device(s) to enable P2P DMA
-Date:   Wed, 11 Aug 2021 14:11:04 -0500
-Message-ID: <20210811191104.21919-1-Ramesh.Errabolu@amd.com>
-X-Mailer: git-send-email 2.31.1
+        id S231580AbhHKTLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhHKTLf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 15:11:35 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE87C061765;
+        Wed, 11 Aug 2021 12:11:11 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id k9so5296509edr.10;
+        Wed, 11 Aug 2021 12:11:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lAVdRx8rVAjw15yYg5jd7VMToET9O633GZgFgh52dVg=;
+        b=DA9mbXuBxYWj7+ua8E6uQ5C8JSMI+m5xoTojHyv1T/gvnw5jeFQVk8YOJgB8B2NpUe
+         Ux/Xj9alDzEqcloFr2+aTKhrXSsG7YY05pncG7dPd+i9RswdvSz2mwEQsQY/tafyfcVP
+         DcNDRztzG7Ifj/wc9nS7XeUnU1wqS8lPxA5xFKT3xewLTaBSSwOyxAL3VyDtuecjtndJ
+         1W0fpw3/OEM1G4LUFlS1JUj9LXHV8iEgl7Zo2r24l1j9GM101q9P4BLEc5Me2OXe0P31
+         M4TN6HDa7tjKV3kSDXvj8wmJwBg00i4FDks8g4NoqQKDlad8YtOaN94w6grjPd75EqdH
+         e0AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lAVdRx8rVAjw15yYg5jd7VMToET9O633GZgFgh52dVg=;
+        b=sWK9YvpIdsQDqV5h6wPo+/TgEjLMkNiReivwCkZbu3sS8wLdCbE9pszOCvxPVJVmwu
+         TJH1zN0aUHbeAhc5ZRNgTK8ftzbRCNjViiFnnKqEvQaHltu8uyF7oieKBtWoOdMJbBwQ
+         YPX03iGQgdibVSKPpNX4FL78ftmSrZ2h9A3ALsViBRK7jf8oa2LrZvGQBSCHNLLHrwZI
+         6pCe8wFrWOqLipX+lHN5hTEftUURUQnh1iaNFtPoerWGGO/KvN7JTRYI5ZUNBG2PX6ID
+         N6s2fJY1RoLQo4tTcpVLhp1nigggL+IHCdsEIqtlHw7GXV750L9ka5JwjImCY+F5DfOj
+         yRQg==
+X-Gm-Message-State: AOAM532GH/CFmWUs7QPRRedydS556dZCMTOIADagUrzaWtAYe1h0Xt82
+        6ZteLPZU3b4yQo3oe/9tghk=
+X-Google-Smtp-Source: ABdhPJxsc3ca7mnoHqKpnNSxclnTyX85FrZpIgAy3sJ2UVM9yLWlN0i30DxTjiefb1gBBDbOMcR0Kw==
+X-Received: by 2002:a05:6402:184b:: with SMTP id v11mr478907edy.267.1628709070407;
+        Wed, 11 Aug 2021 12:11:10 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:502:1d80:48ac:8fee:19a2:adc6? ([2a04:241e:502:1d80:48ac:8fee:19a2:adc6])
+        by smtp.gmail.com with ESMTPSA id u2sm94423ejc.61.2021.08.11.12.11.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 12:11:09 -0700 (PDT)
+From:   Leonard Crestez <cdleonard@gmail.com>
+Subject: Re: [RFCv2 1/9] tcp: authopt: Initial support and key management
+To:     David Ahern <dsahern@gmail.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        David Ahern <dsahern@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        Dmitry Safonov <dima@arista.com>
+References: <cover.1628544649.git.cdleonard@gmail.com>
+ <67c1471683200188b96a3f712dd2e8def7978462.1628544649.git.cdleonard@gmail.com>
+ <CAJwJo6aicw_KGQSM5U1=0X11QfuNf2dMATErSymytmpf75W=tA@mail.gmail.com>
+ <1e2848fb-1538-94aa-0431-636fa314a36d@gmail.com>
+ <8d656f85-6f66-6c40-c4af-b05c6639b9ab@gmail.com>
+Message-ID: <18235a42-72ad-8471-c940-c70b476cf0e0@gmail.com>
+Date:   Wed, 11 Aug 2021 22:11:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <8d656f85-6f66-6c40-c4af-b05c6639b9ab@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 55842ebe-cec1-4948-db34-08d95cfbc9bc
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5110:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5110BCAE331E09650F5EF470E3F89@BL1PR12MB5110.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: s/nnSI6gMEnjkYpGnzL061/YMhdap1XM/eE8UXPPsvkLBx4q0mnjGY6sGQzvllXIi/rRwg2erFfsJC1OM9ES7v/yzvlo4sHLTi+d7qUwV7tKaMVPdyBRivS60dglhSwifccCHoKzqVlTMCShH9c4uyKej++YWsaQDfB9EfJTwcfsH32t4eRTVPE3PxTJDDqQlC8efPDhQ5ulJIMBYxMxZ2K0i7xthkHhpvb31yAgzQtCEcUQM0jzKMX8AQFrOpVGzjEolnfe/UcrQMapVUu6zrtT0Sm+CD0BPTzZAdRRxH6IXpQwzR+8xK8BqhdEiCjRD0ggL3XtOuPWdbsxKHIkKQVU4cyiCgf52aNIyib/uQWGmXKZ1Raif/l4qmODuYw6OLoayRDHqts5QoY4iSgrnbgz+ddu0kWvt+5w73BC0qFShPDHBT6Sn+lT/rmJwOXYzizst61NXDbIh5/Mmu/WV6NQ9Rek0Cgg8IvlQImZjI6kFNYFFGttNNL86IUXLv4iMl7jaCkElVDMGAZbWujHBMyQw//QwoOyWLH3HaF/x+XKy56dVQlT4lq2CH/J/QA9NSqAxWE4P0Z283bbKyrl9bJREHkq5mcZodmKubDNJoRr5bl0JqJcgF2s9U6KzFqOWqXBqn/JrIZ4ciaQu1AmeeRZ36Rs5cVzFADNJI93S/+TU8U5SWSUxC1FF0zjDslTc9GAUunLfaMm3/jJmOGwC+Nv7BsRsgM/lMHvEWqhbceqG4Bha1UjY+MnMOCLjY57WdKRuVpHCxIQVGEqz2Bcmw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(46966006)(36840700001)(86362001)(16526019)(2906002)(82740400003)(6666004)(7696005)(478600001)(316002)(8936002)(186003)(34020700004)(2616005)(26005)(8676002)(47076005)(336012)(70206006)(70586007)(36756003)(4326008)(36860700001)(5660300002)(1076003)(356005)(110136005)(81166007)(426003)(82310400003)(4744005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2021 19:11:14.0340
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55842ebe-cec1-4948-db34-08d95cfbc9bc
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current implementation will disallow P2P DMA if the participating
-devices belong to different root complexes. Implementation allows
-this default behavior to be overridden for whitelisted devices. The
-patch adds an AMD host bridge to be whitelisted
+On 11.08.2021 16:42, David Ahern wrote:
+> On 8/11/21 2:29 AM, Leonard Crestez wrote:
+>> On 8/10/21 11:41 PM, Dmitry Safonov wrote:
+>>> Hi Leonard,
+>>>
+>>> On Tue, 10 Aug 2021 at 02:50, Leonard Crestez <cdleonard@gmail.com>
+>>> wrote:
+>>> [..]
+>>>> +/* Representation of a Master Key Tuple as per RFC5925 */
+>>>> +struct tcp_authopt_key_info {
+>>>> +       struct hlist_node node;
+>>>> +       /* Local identifier */
+>>>> +       u32 local_id;
+>>>
+>>> There is no local_id in RFC5925, what's that?
+>>> An MKT is identified by (send_id, recv_id), together with
+>>> (src_addr/src_port, dst_addr/dst_port).
+>>> Why introducing something new to already complicated RFC?
+>>
+>> It was there to simplify user interface and initial implementation.
+>>
+>> But it seems that BGP listeners already needs to support multiple
+>> keychains for different peers so identifying the key by (send_id,
+>> recv_id, binding) is easier for userspace to work with. Otherwise they
+>> need to create their own local_id mapping internally.
+>>
+> 
+> any proposed simplification needs to be well explained and how it
+> relates to the RFC spec.
 
-Signed-off-by: Ramesh Errabolu <Ramesh.Errabolu@amd.com>
----
- drivers/pci/p2pdma.c | 2 ++
- 1 file changed, 2 insertions(+)
+The local_id only exists between userspace and kernel so it's not really 
+covered by the RFC.
 
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index 196382630363..7003bb9faf23 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -305,6 +305,8 @@ static const struct pci_p2pdma_whitelist_entry {
- 	{PCI_VENDOR_ID_INTEL,	0x2032, 0},
- 	{PCI_VENDOR_ID_INTEL,	0x2033, 0},
- 	{PCI_VENDOR_ID_INTEL,	0x2020, 0},
-+	/* AMD Host Bridge Devices */
-+	{PCI_VENDOR_ID_AMD,	0x1480, 0},
- 	{}
- };
- 
--- 
-2.31.1
+There are objections to this and it seems to be unhelpful for userspace 
+zo I will replace it with match by binding.
 
+BTW: another somewhat dubious simplification is that I offloaded the RFC 
+requirement to never add overlapping keys to userspace. So if userspace 
+adds keys with same recvid that match the same TCP 4-tuple then 
+connections will just start failing.
+
+It's arguably fine to allow userspace misconfiguration to cause failures.
+
+--
+Regards,
+Leonard
