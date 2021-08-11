@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291EF3E8783
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ECC3E8784
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 03:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbhHKBGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 21:06:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:17003 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbhHKBGt (ORCPT
+        id S235945AbhHKBH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 21:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235897AbhHKBH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 21:06:49 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gks4Q29kWzb0jf;
-        Wed, 11 Aug 2021 09:02:46 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 11 Aug 2021 09:06:24 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 11 Aug 2021 09:06:23 +0800
-Subject: Re: [PATCH 5.10 000/135] 5.10.58-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210810172955.660225700@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <8ddd72da-b337-da3a-ef24-f8e596ccd2b7@huawei.com>
-Date:   Wed, 11 Aug 2021 09:06:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 10 Aug 2021 21:07:26 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F9CC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 18:07:03 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id w17so1322093ybl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 18:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=a2EnmaKuDExlU8XnGG3RzNSaMcnDIxhrZpe2LhsoZ6U=;
+        b=D+iac3BlDRd6s0yv+eLa06H+mhkklWKygguLtLbE9OuiaDc+/UyKG+rXsHuab5RuoC
+         CsCc/0sFilzc9MaswCDRBsmqTtHlY9MRKXDRRbJCePew7jTeU+5AWO/DOuo3PQ1QpPq6
+         H8EINzcA6L2OyDF1Ca9LDszPDOdjNPA3lUG3IxVfZcFGS6oTnDdxQCe6vinuPjcrFPfy
+         3hcidiDyzHza4QxKwz/MTFk+rlSo4K06JRizz7yldoCmRlgk2mVtGcuPl5V8HRCIxdaw
+         DW1XkVCypHjfAzeZqxtKNjPXwfdqnrwGnlLQkscZgq6py40eCQmzF6qotvBS0vvTFqcs
+         cpwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=a2EnmaKuDExlU8XnGG3RzNSaMcnDIxhrZpe2LhsoZ6U=;
+        b=EhcZh3rhWEbLPmoC1nf+b1ZeV/A8ofZhv0xyeaazhsNdisDAMI+RnZX7WHY7DLETNf
+         kuDH5vbP6fInZJBKlpfyzyJDc0KI4Uw7ZC005eICqsoWGQEapOQEIc389L5AEc2v2g8j
+         7hmkwNYxgGIuwfcTKU4I0OmwblbCAwAodXHHZavKbB3qqjMIkH6a0Pkyf7Sq67zAG14M
+         eH55+F/1k37HOcTEpQrZFox5lJBMiptuIMrRwvc4Y0DmXNIFvbnMX0I9zkHuiujsfRIj
+         cHumDFz1q9ZNV3DHpK+XoZGHIpcJPweJ8jzlHwKYJUXvEcP2KHMCfdh+qQ0nmKmV6Jsw
+         rY6g==
+X-Gm-Message-State: AOAM533MoNrVcJ2XEWKm/6R11SyC7D/dMkQlq7F+xEJxamFWMC2GIbEV
+        SEpDgmjJJQT9svslv+4eKHuagyiJf14wx7DnDr+2b21e6hgU2g==
+X-Google-Smtp-Source: ABdhPJzY4F8J7tsA37s1ErHMOBuLjkDBlVrO2agVXnayPhEOAxSieG0E/7DvxEyGXldhihU3agzg1tBDZQ+P/IECVtg=
+X-Received: by 2002:a25:f503:: with SMTP id a3mr40167717ybe.501.1628644022703;
+ Tue, 10 Aug 2021 18:07:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210810172955.660225700@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+References: <20210803044607.599629-1-mizhang@google.com> <20210803044607.599629-4-mizhang@google.com>
+ <CALMp9eR4AB0O7__VwGNbnm-99Pp7fNssr8XGHpq+6Pwkpo_oAw@mail.gmail.com>
+ <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
+ <CAL715WLO9+CpNa4ZQX4J2OdyqOBsX0+g0M4bNe+A+6FVxB2OxA@mail.gmail.com> <YRMKPd2ZarXCX6vm@t490s>
+In-Reply-To: <YRMKPd2ZarXCX6vm@t490s>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Tue, 10 Aug 2021 18:06:51 -0700
+Message-ID: <CAL715WJWPzBqmjeTJ6mZa=dUaF5+MdqaCrk5CEzvcz1X99cm0g@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter,
+
+Thanks for the comments. Please check my feedback inline.
+
+> > From a functionality point of view, the above patch seems duplicate
+> > with mine.
+>
+> The rmap statistics are majorly for rmap, not huge pages.
+>
+
+Got you. I guess the focus of the stat is different.
 
 
-On 2021/8/11 1:28, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.58 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.58-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+>
+> I have a question: why change to using atomic ops?  As most kvm statistic=
+s
+> seems to be not with atomics before.
+>
+> AFAIK atomics are expensive, and they get even more expensive when the ho=
+st is
+> bigger (it should easily go into ten-nanosecond level).  So I have no ide=
+a
+> whether it's worth it for persuing that accuracy.
+>
+> Thanks,
 
-Tested on arm64 and x86 for 5.10.58-rc1,
+Yes, regarding the usage of 'atomic_t', we previously had discussions
+internally with Sean. So I think the main reason is because: in KVM
+currently, mmu may have several modes. Among them, one is the mmu
+running with TDP enabled (say, legacy mode in this scope) and another
+one is the TDP mmu mode (mmu/tdp_mmu.c). In the legacy mode, mmu will
+update spte under a write lock, while in comparison, in the TDP MMU
+mode, mmu will use a read lock. I copied a simple code snippet to
+illustrate the situation:
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.58-rc1
-Commit: b04ed4b2e724be0ecb9ddff01abd637b467eb33c
-Compiler: gcc version 7.3.0 (GCC)
+=C2=BB.......if (is_tdp_mmu_fault)
+=C2=BB.......=C2=BB.......read_lock(&vcpu->kvm->mmu_lock);
+=C2=BB.......else
+=C2=BB.......=C2=BB.......write_lock(&vcpu->kvm->mmu_lock);
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8907
-passed: 8907
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+So here comes the problem: how do we make the page stat update
+correctly across all modes? For the latter case, we definitely have to
+update the stat in an atomic way unless we want extra locking (we
+don't want that). So we could either 1) use a branch to update the
+stat differently for each mode or 2) use an atomic update across all
+cases. After review, Sean mentioned (in pre-v1 internal review) that
+we should just use atomic. I agree since adding a branch at such a hot
+path may slow down even more globally, especially if there is branch
+misprediction? But I appreciate your feedback as well.
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8907
-passed: 8907
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+Regarding the pursuit for accuracy, I think there might be several
+reasons. One of the most critical reasons that I know is that we need
+to ensure dirty logging works correctly, i.e., when dirty logging is
+enabled, all huge pages (both 2MB and 1GB) _are_ gone. Hope that
+clarifies a little bit?
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Thanks.
+-Mingwei
+
+-Mingwei
+
+
+>
+> --
+> Peter Xu
+>
