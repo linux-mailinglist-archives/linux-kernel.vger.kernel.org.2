@@ -2,106 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E033E8ADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E033E8AE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 09:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhHKHM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 03:12:28 -0400
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:37307 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235458AbhHKHMY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 03:12:24 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 98E9F28015488;
-        Wed, 11 Aug 2021 09:11:58 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 8BFB835897; Wed, 11 Aug 2021 09:11:58 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 09:11:58 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] PCI/portdrv: Disallow runtime suspend when waekup is
- required but PME service isn't supported
-Message-ID: <20210811071158.GB6104@wunner.de>
-References: <20210713075726.1232938-1-kai.heng.feng@canonical.com>
- <20210809042414.107430-1-kai.heng.feng@canonical.com>
- <20210809094731.GA16595@wunner.de>
- <CAAd53p7cR3EzUjEU04cDhJDY5F=5k+eRHMVNKQ=jEfbZvUQq3Q@mail.gmail.com>
- <20210809150005.GA6916@wunner.de>
- <CAAd53p7qm=K99xO1n0Pwmn020Q7_iDj2S6-QGjeRjP0CpSphTg@mail.gmail.com>
- <20210810162144.GA24713@wunner.de>
- <CAAd53p7bMm5KyjXvUOTevspm9e0mtPP2KWoq5xZSWng8q1kGPg@mail.gmail.com>
+        id S235250AbhHKHPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 03:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234855AbhHKHPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:15:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 642C7601FE;
+        Wed, 11 Aug 2021 07:14:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628666078;
+        bh=iS6H6YaZt439MG1gVB47NVuu85jYESbYxNTfU/8PEnM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gbv4Ri4duexJ5RJFW3Kh1RGsYH7tugv5mOIUFgeSw23fBQU7aHy7FXcUzZ2tz0k6n
+         gsL6KuATKR5ELh+ews9bEOgYX7UiwDupfxonk/zg+rpa0VujRVSlzeOxUTEo5QCocL
+         mE1e0CrNErmqCh+V7FA2EYtXedk7vrQUMTch72D0gOyKhASbKOlZeUjS+nRx92g5TT
+         bQn4Lx5p6wf4bHRW5iont99+IQ1SzXaXWIiBF00/ZmjU9xrQ2tJSfYgCMhGgJSuAZb
+         mTmtG4em56A386xa2Hw8x9lzFBvAVJit8jOV/OYxTpwzpMVgmJWZKna35+V2FJPU+k
+         R+xO5Xk5I5Eqw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mDiRc-00BrrA-MV; Wed, 11 Aug 2021 09:14:32 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Wei Xu <xuwei5@hisilicon.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: HiSilicon: hi3660: address a PCI warning
+Date:   Wed, 11 Aug 2021 09:14:31 +0200
+Message-Id: <934f397d227ea589a16c89f1ee9c6f199c662093.1628666047.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAd53p7bMm5KyjXvUOTevspm9e0mtPP2KWoq5xZSWng8q1kGPg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 01:06:27PM +0800, Kai-Heng Feng wrote:
-> On Wed, Aug 11, 2021 at 12:21 AM Lukas Wunner <lukas@wunner.de> wrote:
-> >
-> > On Tue, Aug 10, 2021 at 11:37:12PM +0800, Kai-Heng Feng wrote:
-> > I honestly don't know.  I was just wondering whether it is okay
-> > to enable PME on devices if control is not granted by the firmware.
-> > The spec is fairly vague.  But I guess the idea is that enabling PME
-> > on devices is correct, just handling the interrupts is done by firmware
-> > instead of the OS.
-> 
-> Does this imply that current ACPI doesn't handle this part?
+When the driver is registered, it produces a warning when
+registering the PCI bridge:
 
-Apparently not, according to the "lspci-bridge-after-hotplug" you've
-attached to the bugzilla, the PME Interrupt Enable bit wasn't set in
-the Root Control register.  The kernel doesn't register an IRQ handler
-for PME because firmware doesn't grant it control, so it's firmware's
-job to enable and handle the IRQ (or poll the relevant register or
-whatever).
+	[    5.363450] pci_bus 0000:00: root bus resource [bus 00-01]
+	[    5.396998] pci_bus 0000:01: busn_res: can not insert [bus 01-ff] under [bus 00-01] (conflicts with (null) [bus 00-01])
+	[    5.284831] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
 
-  RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna- CRSVisible-
-                                                   ^^^^^^^^^^
+The reason is that the bus-range is wrong. Address it.
 
-> The Windows approach is to make the entire hierarchy stays at D0, I
-> think maybe it's a better way than relying on PME polling.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Including the endpoint device, i.e. the NIC?
-
-
-> > If you do want to change core code, I'd suggest modifying
-> > pci_dev_check_d3cold() so that it blocks runtime PM on upstream
-> > bridges if PME is not handled natively AND firmware failed to enable
-> > the PME interrupt at the root port.  The rationale is that upstream
-> > bridges need to remain in D0 so that PME polling is possible.
-> 
-> How do I know that firmware failed to enable PME IRQ?
-
-Check whether PCI_EXP_RTCTL_PMEIE was set by firmware in the Root Control
-register.
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index f1ec87c05842..cf2079590ad8 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1002,7 +1002,7 @@ pcie@f4000000 {
+ 			      <0x0 0xf3f20000 0x0 0x40000>,
+ 			      <0x0 0xf5000000 0x0 0x2000>;
+ 			reg-names = "dbi", "apb", "phy", "config";
+-			bus-range = <0x0  0x1>;
++			bus-range = <0x0  0xff>;
+ 			#address-cells = <3>;
+ 			#size-cells = <2>;
+ 			device_type = "pci";
+-- 
+2.31.1
 
 
-> > An alternative would be a quirk for this specific laptop which clears
-> > pdev->pme_support.
-> 
-> This won't scale, because many models are affected.
-
-We already have quirks which clear pdev->pme_support, e.g.
-pci_fixup_no_d0_pme() and pci_fixup_no_msi_no_pme().
-Perhaps something like that would be appropriate here.
-
-Thanks,
-
-Lukas
