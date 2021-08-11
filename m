@@ -2,173 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1131E3E939D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97573E93A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 16:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhHKOYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 10:24:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:58143 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbhHKOYs (ORCPT
+        id S232400AbhHKOZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 10:25:46 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:5989 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231872AbhHKOZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:24:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628691864; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=LrA6avLsL15J+FSi8cAmvkPQKQs+fVN8Fyj0kQlmJf0=; b=EaVJAr8bfw9VafYTcU2PdOUXGGy4F5Sp6vZeW2Veroy/8Yjy7GXOoM+Zy+E/W1i0Tk/KpDe/
- KzEbhsqCH08HE0H2QgRzMTa0EayCCurIWj4n2cju5SZzTQSC2vjzKutUBWDnnZksZS8k/6nX
- n4gF7fOID0EdgY9fkws/+e9liyM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6113dd8bb14e7e2ecb7f2d8c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 14:24:11
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 96A17C4338A; Wed, 11 Aug 2021 14:24:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3437EC43460;
-        Wed, 11 Aug 2021 14:24:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3437EC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, linux-arm-msm@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] arm64: dts: qcom: sc7280: Add gpu thermal zone cooling support
-Date:   Wed, 11 Aug 2021 19:53:55 +0530
-Message-Id: <1628691835-36958-2-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628691835-36958-1-git-send-email-akhilpo@codeaurora.org>
-References: <1628691835-36958-1-git-send-email-akhilpo@codeaurora.org>
+        Wed, 11 Aug 2021 10:25:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1628691922; x=1660227922;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=9YgSar484NeNBfbw/ejSJ4MnW1zeRnwCa6czWiKgnAg=;
+  b=rVYx1gRtBZ8FpV159B8YI51hmyRVH6XSHZZTjJ25bWMEe/H63/ilbvzZ
+   904qGrqMqGc7TxtfF74x0v9il3JR6tAuHk6zo01DM6/9V1iIFSeeAoiOH
+   a1Ls3VSE+28fEHijD4vu2Qr/aN3YUg5JWmv20Eg9j08LmC8T6fmXULe46
+   g=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 11 Aug 2021 07:25:21 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Aug 2021 07:25:18 -0700
+Received: from [10.111.172.174] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Wed, 11 Aug
+ 2021 07:25:17 -0700
+Subject: Re: Linux-next: crash in alloc_huge_page()
+To:     Mike Rapoport <rppt@linux.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <846c4502-3332-0d25-87f5-cb3b71afc38f@quicinc.com>
+ <YRM+qm66PfTUQNFL@casper.infradead.org> <YRPaeQYHPwI9r5a/@linux.ibm.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <8379f7d5-5d89-ac37-be83-aaa185dd6c3c@quicinc.com>
+Date:   Wed, 11 Aug 2021 10:25:15 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <YRPaeQYHPwI9r5a/@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03e.na.qualcomm.com (10.85.0.48) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
 
-Add cooling-cells property and the cooling maps for the gpu thermal
-zones to support GPU thermal cooling.
 
-Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
+On 8/11/2021 10:11 AM, Mike Rapoport wrote:
+> On Wed, Aug 11, 2021 at 04:06:18AM +0100, Matthew Wilcox wrote:
+>> On Tue, Aug 10, 2021 at 10:22:37PM -0400, Qian Cai wrote:
+>>> and the page->lru has an address fffffffffffffffc for some reasons. Does it sound like some error code
+>>> had not been handled properly and had been propagated here instead? I tried reverting a few recent
+>>> commits for mm/hugetlb.c and mm/memblock.c without luck so far.
+>>
+>> Yes, ff..fc is going to be at offset 8 from the actual address, so
+>> that's -12 and -12 is ...
+>>
+>> #define ENOMEM          12      /* Out of memory */
+>>
+>> so something's returning ERR_PTR(-ENOMEM) instead of NULL.
+> 
+> page is not initialized in alloc_buddy_huge_page_with_mpol() and after
+> commit 2cfa8b23744f ("mm-hugetlb-add-support-for-mempolicy-mpol_preferred_many-fix") we have 
 
-(no changes since v1)
+Good catch, Mike! Pretty sure I missed to test that commit thought that was an old commit along
+with the rest of the mpol_preferred series.
 
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+It is a dream that one day mm tree could like other subsystem trees where "git tag --contains"
+would work to indicate which linux-next tags contains a particular commit to tell the timeline
+of it. Right now, we have those commits ID always changed and commit date is meaningless for
+mm commits in linux-next.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index b9006d8..cd2bbf0 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -592,7 +592,7 @@
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
--		gpu@3d00000 {
-+		gpu: gpu@3d00000 {
- 			compatible = "qcom,adreno-635.0", "qcom,adreno";
- 			#stream-id-cells = <16>;
- 			reg = <0 0x03d00000 0 0x40000>,
-@@ -607,6 +607,7 @@
- 			qcom,gmu = <&gmu>;
- 			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
- 			interconnect-names = "gfx-mem";
-+			#cooling-cells = <2>;
- 
- 			gpu_opp_table: opp-table {
- 				compatible = "operating-points-v2";
-@@ -2523,16 +2524,16 @@
- 		};
- 
- 		gpuss0-thermal {
--			polling-delay-passive = <0>;
-+			polling-delay-passive = <100>;
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens1 1>;
- 
- 			trips {
- 				gpuss0_alert0: trip-point0 {
--					temperature = <90000>;
-+					temperature = <95000>;
- 					hysteresis = <2000>;
--					type = "hot";
-+					type = "passive";
- 				};
- 
- 				gpuss0_crit: gpuss0-crit {
-@@ -2541,19 +2542,26 @@
- 					type = "critical";
- 				};
- 			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&gpuss0_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
- 		};
- 
- 		gpuss1-thermal {
--			polling-delay-passive = <0>;
-+			polling-delay-passive = <100>;
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens1 2>;
- 
- 			trips {
- 				gpuss1_alert0: trip-point0 {
--					temperature = <90000>;
-+					temperature = <95000>;
- 					hysteresis = <2000>;
--					type = "hot";
-+					type = "passive";
- 				};
- 
- 				gpuss1_crit: gpuss1-crit {
-@@ -2562,6 +2570,13 @@
- 					type = "critical";
- 				};
- 			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&gpuss1_alert0>;
-+					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
- 		};
- 
- 		nspss0-thermal {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
+> 
+> 	struct page *page;
+> 
+> 	...
+> 
+> 	if (mpol_is_preferred_many(mpol)) {
+> 		gfp_t gfp = gfp_mask | __GFP_NOWARN;
+> 
+> 		gfp &=  ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
+> 		page = alloc_surplus_huge_page(h, gfp, nid, nodemask, false);
+> 
+> 		/* Fallback to all nodes if page==NULL */
+> 		nodemask = NULL;
+> 	}
+> 
+> 	if (!page)
+> 		page = alloc_surplus_huge_page(h, gfp_mask, nid, nodemask, false
+> 
+> 	mpol_cond_put(mpol);
+> 	return page;
+> 
+> so for !mpol_is_preferred_many() we return an uninitialized variable.
+> 
+> This should fix it:
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 008662083fec..6337697f7ee4 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2152,7 +2152,7 @@ static
+>  struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
+>  		struct vm_area_struct *vma, unsigned long addr)
+>  {
+> -	struct page *page;
+> +	struct page *page = NULL;
+>  	struct mempolicy *mpol;
+>  	gfp_t gfp_mask = htlb_alloc_mask(h);
+>  	int nid;
+>  
+> 
