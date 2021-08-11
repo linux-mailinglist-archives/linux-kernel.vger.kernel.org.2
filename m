@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3F73E9431
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF453E9430
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhHKPEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
+        id S232769AbhHKPEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:04:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232226AbhHKPEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:04:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3436060FDA;
-        Wed, 11 Aug 2021 15:03:59 +0000 (UTC)
+        id S232440AbhHKPEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 11:04:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67DFF60F55;
+        Wed, 11 Aug 2021 15:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628694239;
-        bh=MEKpd2JWqLokdbSkx61YNu9WAsXeRAvvzmRiMnR33Ng=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s8WWgAepXBPBgkk9rn/oSYpYObUthAeDylwJBqIKptcOjxqjN8Ln3GNc/jpYGR0rs
-         skB7OXc+ggRXWgUpNjMgrhD2NHQsvYaJvLmSYG+SQVCTh49HJS/Mx7ovF80qUVvHTi
-         kHRECWufjTHQ+tVSFlyfGV7kLrLGIgqHv6bQQ7QMuO14lbKaZCWlEYbHg+XM7HVsaD
-         5pua2rb2ZJfwY1ZAvsll0Pn3jNxeLpEilrqTcyFYKXWl5xmvdVFDhQA0tkSYbINN8w
-         btgAxzAyhu10vWrVcUcGPdZ6oZPdHM5PiQVLRdxV5EWB/kPXzQHMB6ivsqTRyG++dC
-         mxocrA/vQ99Kg==
-Date:   Wed, 11 Aug 2021 16:03:40 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Bard Liao <bardliao@realtek.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: rt5682: Properly turn off regulators if wrong
- device ID
-Message-ID: <20210811150340.GG4167@sirena.org.uk>
-References: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
- <CAE-0n50K+gAa0U9-kswTCdt+UAkxhuJ8BMg-D4sQayP1xqWTyQ@mail.gmail.com>
- <CAD=FV=VdjTYvLmKfGONCZhpbyrzM_tG7uXkm5==-X6-uO1gTVw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Zrag5V6pnZGjLKiw"
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=VdjTYvLmKfGONCZhpbyrzM_tG7uXkm5==-X6-uO1gTVw@mail.gmail.com>
-X-Cookie: To stay youthful, stay useful.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        s=k20201202; t=1628694226;
+        bh=3SyeoegT7NMt9d7RSU3GZgS9oF0SIeQGYOW5leKuaQw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GpSupeFK+RqVnwzSldCsGXC5fG9dPNrZ2jY1VAN3XqcZBv+rJ6uPGqzWPi0EiuVi1
+         kuSG6QgIOg9oDRb6fqL/jmRZOf9G5y5Tf0sHzWJ/3M6HSeQwgmP8vY/Ow+dqaClL8G
+         YkwQ/bQGoXW2FiKKBj+hMasrNSsr4A+LfGNJ523bmrGDDkCseJTvVVcpYS+0SXJQ4k
+         dY/zXL2bVBqYlEhKNTuBQMM6jKfuzQ/qVGlGqqwGHIBvXId/ic0KwQxtsAVIoXqLS5
+         d91ZFVwvGLe/rUqBfnfONdYFMbSDrhcQJKV8S/NLXJsj+lNSh13XXjSxPVwrsPIP+c
+         zSjdXknFyboqw==
+Date:   Thu, 12 Aug 2021 00:03:43 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tom.zanussi@linux.intel.com
+Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
+Message-Id: <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
+In-Reply-To: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
+References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 11 Aug 2021 17:14:33 +0300
+"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
 
---Zrag5V6pnZGjLKiw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> From: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> 
+> A new dynamic event is introduced: event probe. The event is attached
+> to an existing tracepoint and uses its fields as arguments. The user
+> can specify custom format string of the new event, select what tracepoint
+> arguments will be printed and how to print them.
+> An event probe is created by writing configuration string in
+> 'dynamic_events' ftrace file:
+>  e:GNAME/ENAME SYSTEM.EVENT [FETCHARGS]	- Set an event probe
 
-On Wed, Aug 11, 2021 at 07:40:59AM -0700, Doug Anderson wrote:
-> On Tue, Aug 10, 2021 at 9:24 PM Stephen Boyd <swboyd@chromium.org> wrote:
+Hmm, this inconsistency looks not good to me.
 
-> > Nit: Add newline here.
+"GNAME/ENAME" "SYSTEM.EVENT"
+ - GNAME is "group name" but SYSTEM is "system name" but both must point
+   same idea.
+ - Delimiter character is different.
 
-> How strongly do you feel about it? I purposely left the newline off to
-> try to tie the devm_add_action_or_reset() more closely to the
-> devm_regulator_bulk_get(). I wanted to make it more obvious that the
-> two of them were "together" and shouldn't be split up. That being
-> said, it's no skin off my teeth to add a newline if everyone likes it
-> better. ;-)
+Aren't these confusing users?
 
-TBH the newline looks off before I've got as far as reading the code.
+One idea is adding a patch for kprobe and uprobe events to accept new
+delimiter '.'. This will give a consistency with hist triggers too.
 
---Zrag5V6pnZGjLKiw
-Content-Type: application/pgp-signature; name="signature.asc"
+Also, you can add a note about that the system and group is same
+meaning in events.
 
------BEGIN PGP SIGNATURE-----
+>  -:GNAME/ENAME				- Delete an event probe
+> 
+> Where:
+>  GNAME	- Group name, if omitted 'eprobes' is used.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmET5ssACgkQJNaLcl1U
-h9BthQf/fUr37JaTB6dDdW5fjOJOkbaLPTH1s18AdnVXPERV5CAFhW7MLpHpQtAJ
-5YeFi0j26U5SHmdyk0gWijwgT+NqBzIyPQBC5wo8wr7XniyF+XZTRw68oVB+1UPW
-3EO3n6jvlSqM9GKRHh3vvOcOeS7DKcUXWHlU15dfTMCPLpYebjU4/HVSADQMfifr
-WBP5iTnEg4G/0lkihF5gZSdkV7o+3D8uXLO7Lo1SMyteEXeQO6eOl9MwRKl6dGPF
-+VxNGfSwCWQjRMZIXGwvRdIUQejFJfsUHLb8OzZ85S+qOLiu5yPckjT19hJsF679
-+ThWf0Yaw/mMpWppdr7wuQKgq1cCMQ==
-=4IAY
------END PGP SIGNATURE-----
+If this is not mandatory, you should write it as 
 
---Zrag5V6pnZGjLKiw--
+e:[GNAME/]ENAME SYSTEM.EVENT [FETCHARGS]
+
+
+>  ENAME	- Name of the new event in GNAME, mandatory.
+>  SYSTEM	- Name of the system, where the tracepoint is defined, mandatory.
+>  EVENT	- Name of the tracepoint event in SYSTEM, mandatory.
+>  FETCHARGS - Arguments:
+>   <name>=$<field>[:TYPE] - Fetch given filed of the tracepoint and print
+> 			   it as given TYPE with given name. Supported
+> 			   types are:
+> 	                    (u8/u16/u32/u64/s8/s16/s32/s64), basic type
+>         	            (x8/x16/x32/x64), hexadecimal types
+> 			    "string", "ustring" and bitfield.
+> 
+> Example, attach an event probe on openat system call and print name of the
+> file that will be opened:
+>  echo "e:esys/eopen syscalls.sys_enter_openat file=\$filename:string" >> dynamic_events
+> A new dynamic event is created in events/esys/eopen/ directory. It
+> can be deleted with:
+>  echo "-:esys/eopen" >> dynamic_events
+> 
+> Filters, triggers and histograms can be attached to the new event, it can
+> be matched in synthetic events. There is one limitation - no synthetic
+> events can be attached to an event probe.
+
+I'm not sure what the "no synthetic events can be attached to an event probe"
+means.
+Can you show an example command what this means?
+
+> 
+> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> ---
+> Subject of the patch is still related to kprobe, though the design no
+> more depends on kprobe. I did not change it for consistency with the
+> first patch version. 
+
+OK, thanks for moving onto the dynevent. Let me check the code in another
+mail.
+Anyway, I think this is good starting point. 
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
