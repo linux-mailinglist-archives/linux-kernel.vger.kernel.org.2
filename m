@@ -2,88 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6183E8768
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5878D3E8761
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236434AbhHKAo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:44:26 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52252 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236175AbhHKAn5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:43:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628642614; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=qJX/Cg6Mrd54CLbdZeqh/0hlWjvtU7QJ3gVygFPmm7o=; b=qnGUPEylbEFaq670UKaU7uZPZJdcIiifAVNunJzbCD5FcEkXb9zFl9OBWwhjGvqwnjuqklPR
- tV+2fbB0cur+CPecv0a2AcUka4c3khNCjRnMmrveY87NITnsFKdKL4gvuJZac/912ThD0zCM
- HDiU0ZgNOGKR3/pMVq5WWNj75Kk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 61131d18f746c298d93d5676 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 00:43:04
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 52D2FC433D3; Wed, 11 Aug 2021 00:43:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 254E5C43460;
-        Wed, 11 Aug 2021 00:42:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 254E5C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v1] arm64: dts: qcom: sc7280: Add clock controller ID headers
-Date:   Wed, 11 Aug 2021 06:12:51 +0530
-Message-Id: <1628642571-25383-1-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S236176AbhHKAoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:44:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236033AbhHKAno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:43:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47A0D610A3;
+        Wed, 11 Aug 2021 00:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628642601;
+        bh=L2ko66DkoJjHQTi6LLynJZ5hIWAzaz3TxQBWShlZROY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=caFPEOdX8sLFSJ91RT+Bqvni8K7mR61I4lTaqPH22gnLnj6HUZ38TSGgxW47eLhAk
+         vX4qGEGOUdGPUZRf/NPu39s+lMVgjI7j5w1vAHOE2+WWO7IHROcE85laoGnAUV2rHC
+         yhflhAA/1v4m2ksutdopSKWTXXWGRC3x/ZGWph2AWA0jQF/WG8mPURQV8H20dddDzT
+         rx8hs+wE8wy3oSb80gvf3Pt7zWcyXM80/XohWh7k5ypxOGNG3zbD24adKkn5c0iF/U
+         hNCFdaveYIiEqk0/tk3ThxkZv6tZbHxPULLlF1ncX3Z5sAHn12onG3ycdZL7l5m5Df
+         o8dRZR5fdjN/A==
+From:   Vineet Gupta <vgupta@kernel.org>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vineet Gupta <vgupta@kernel.org>
+Subject: [PATCH 12/18] ARC: mm: disintegrate mmu.h (arcv2 bits out)
+Date:   Tue, 10 Aug 2021 17:42:52 -0700
+Message-Id: <20210811004258.138075-13-vgupta@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210811004258.138075-1-vgupta@kernel.org>
+References: <20210811004258.138075-1-vgupta@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the GPUCC, DISPCC and VIDEOCC clock headers which were dropped
-earlier.
+non functional change
 
-Fixes: 422a295221bb ("arm64: dts: qcom: sc7280: Add clock controller nodes")
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
+Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arc/include/asm/mmu-arcv2.h   | 94 ++++++++++++++++++++++++++++++
+ arch/arc/include/asm/mmu.h         | 72 +----------------------
+ arch/arc/include/asm/mmu_context.h |  1 +
+ arch/arc/include/asm/pgtable.h     |  6 --
+ arch/arc/mm/tlbex.S                |  2 +-
+ 5 files changed, 97 insertions(+), 78 deletions(-)
+ create mode 100644 arch/arc/include/asm/mmu-arcv2.h
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 53a21d0..3e96604 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -5,8 +5,11 @@
-  * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+diff --git a/arch/arc/include/asm/mmu-arcv2.h b/arch/arc/include/asm/mmu-arcv2.h
+new file mode 100644
+index 000000000000..837a54e39539
+--- /dev/null
++++ b/arch/arc/include/asm/mmu-arcv2.h
+@@ -0,0 +1,94 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2004, 2007-2010, 2011-2012, 2019-20 Synopsys, Inc. (www.synopsys.com)
++ *
++ * MMUv3 (arc700) / MMUv4 (archs) are software page walked and software managed.
++ * This file contains the TLB access registers and commands
++ */
++
++#ifndef _ASM_ARC_MMU_ARCV2_H
++#define _ASM_ARC_MMU_ARCV2_H
++
++/*
++ * TLB Management regs
++ */
++#define ARC_REG_MMU_BCR		0x06f
++
++#ifdef CONFIG_ARC_MMU_V3
++#define ARC_REG_TLBPD0		0x405
++#define ARC_REG_TLBPD1		0x406
++#define ARC_REG_TLBPD1HI	0	/* Dummy: allows common code */
++#define ARC_REG_TLBINDEX	0x407
++#define ARC_REG_TLBCOMMAND	0x408
++#define ARC_REG_PID		0x409
++#define ARC_REG_SCRATCH_DATA0	0x418
++#else
++#define ARC_REG_TLBPD0		0x460
++#define ARC_REG_TLBPD1		0x461
++#define ARC_REG_TLBPD1HI	0x463
++#define ARC_REG_TLBINDEX	0x464
++#define ARC_REG_TLBCOMMAND	0x465
++#define ARC_REG_PID		0x468
++#define ARC_REG_SCRATCH_DATA0	0x46c
++#endif
++
++/* Bits in MMU PID reg */
++#define __TLB_ENABLE		(1 << 31)
++#define __PROG_ENABLE		(1 << 30)
++#define MMU_ENABLE		(__TLB_ENABLE | __PROG_ENABLE)
++
++/* Bits in TLB Index reg */
++#define TLB_LKUP_ERR		0x80000000
++
++#ifdef CONFIG_ARC_MMU_V3
++#define TLB_DUP_ERR		(TLB_LKUP_ERR | 0x00000001)
++#else
++#define TLB_DUP_ERR		(TLB_LKUP_ERR | 0x40000000)
++#endif
++
++/*
++ * TLB Commands
++ */
++#define TLBWrite    		0x1
++#define TLBRead     		0x2
++#define TLBGetIndex 		0x3
++#define TLBProbe    		0x4
++#define TLBWriteNI		0x5  /* write JTLB without inv uTLBs */
++#define TLBIVUTLB		0x6  /* explicitly inv uTLBs */
++
++#ifdef CONFIG_ARC_MMU_V4
++#define TLBInsertEntry		0x7
++#define TLBDeleteEntry		0x8
++#endif
++
++/* Masks for actual TLB "PD"s */
++#define PTE_BITS_IN_PD0		(_PAGE_GLOBAL | _PAGE_PRESENT | _PAGE_HW_SZ)
++#define PTE_BITS_RWX		(_PAGE_EXECUTE | _PAGE_WRITE | _PAGE_READ)
++
++#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK_PHYS | _PAGE_CACHEABLE)
++
++#ifndef __ASSEMBLY__
++
++extern int pae40_exist_but_not_enab(void);
++
++static inline int is_pae40_enabled(void)
++{
++	return IS_ENABLED(CONFIG_ARC_HAS_PAE40);
++}
++
++static void inline mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
++{
++	write_aux_reg(ARC_REG_PID, asid | MMU_ENABLE);
++}
++
++static void inline mmu_setup_pgd(struct mm_struct *mm, pgd_t *pgd)
++{
++	/* PGD cached in MMU reg to avoid 3 mem lookups: task->mm->pgd */
++#ifdef CONFIG_ISA_ARCV2
++	write_aux_reg(ARC_REG_SCRATCH_DATA0, (unsigned int)pgd);
++#endif
++}
++
++#endif /* !__ASSEMBLY__ */
++
++#endif
+diff --git a/arch/arc/include/asm/mmu.h b/arch/arc/include/asm/mmu.h
+index 2cabdfaf2afb..6a27a4caa44c 100644
+--- a/arch/arc/include/asm/mmu.h
++++ b/arch/arc/include/asm/mmu.h
+@@ -7,83 +7,13 @@
+ #define _ASM_ARC_MMU_H
+ 
+ #ifndef __ASSEMBLY__
+-#include <linux/threads.h>	/* NR_CPUS */
+-#endif
+-
+-/* MMU Management regs */
+-#define ARC_REG_MMU_BCR		0x06f
+-
+-#ifdef CONFIG_ARC_MMU_V3
+-#define ARC_REG_TLBPD0		0x405
+-#define ARC_REG_TLBPD1		0x406
+-#define ARC_REG_TLBPD1HI	0	/* Dummy: allows code sharing with ARC700 */
+-#define ARC_REG_TLBINDEX	0x407
+-#define ARC_REG_TLBCOMMAND	0x408
+-#define ARC_REG_PID		0x409
+-#define ARC_REG_SCRATCH_DATA0	0x418
+-#else
+-#define ARC_REG_TLBPD0		0x460
+-#define ARC_REG_TLBPD1		0x461
+-#define ARC_REG_TLBPD1HI	0x463
+-#define ARC_REG_TLBINDEX	0x464
+-#define ARC_REG_TLBCOMMAND	0x465
+-#define ARC_REG_PID		0x468
+-#define ARC_REG_SCRATCH_DATA0	0x46c
+-#endif
+-
+-/* Bits in MMU PID register */
+-#define __TLB_ENABLE		(1 << 31)
+-#define __PROG_ENABLE		(1 << 30)
+-#define MMU_ENABLE		(__TLB_ENABLE | __PROG_ENABLE)
+-
+-/* Error code if probe fails */
+-#define TLB_LKUP_ERR		0x80000000
+-
+-#ifdef CONFIG_ARC_MMU_V3
+-#define TLB_DUP_ERR	(TLB_LKUP_ERR | 0x00000001)
+-#else
+-#define TLB_DUP_ERR	(TLB_LKUP_ERR | 0x40000000)
+-#endif
+ 
+-/* TLB Commands */
+-#define TLBWrite    0x1
+-#define TLBRead     0x2
+-#define TLBGetIndex 0x3
+-#define TLBProbe    0x4
+-#define TLBWriteNI  0x5		/* write JTLB without inv uTLBs */
+-#define TLBIVUTLB   0x6		/* explicitly inv uTLBs */
+-
+-#ifdef CONFIG_ARC_MMU_V4
+-#define TLBInsertEntry	0x7
+-#define TLBDeleteEntry	0x8
+-#endif
+-
+-#ifndef __ASSEMBLY__
++#include <linux/threads.h>	/* NR_CPUS */
+ 
+ typedef struct {
+ 	unsigned long asid[NR_CPUS];	/* 8 bit MMU PID + Generation cycle */
+ } mm_context_t;
+ 
+-static void inline mmu_setup_asid(struct mm_struct *mm, unsigned int asid)
+-{
+-	write_aux_reg(ARC_REG_PID, asid | MMU_ENABLE);
+-}
+-
+-static void inline mmu_setup_pgd(struct mm_struct *mm, pgd_t *pgd)
+-{
+-	/* PGD cached in MMU reg to avoid 3 mem lookups: task->mm->pgd */
+-#ifdef CONFIG_ISA_ARCV2
+-	write_aux_reg(ARC_REG_SCRATCH_DATA0, (unsigned int)pgd);
+ #endif
+-}
+-
+-static inline int is_pae40_enabled(void)
+-{
+-	return IS_ENABLED(CONFIG_ARC_HAS_PAE40);
+-}
+-
+-extern int pae40_exist_but_not_enab(void);
+-
+-#endif	/* !__ASSEMBLY__ */
+ 
+ #endif
+diff --git a/arch/arc/include/asm/mmu_context.h b/arch/arc/include/asm/mmu_context.h
+index dda471f5f05b..2057f55c7685 100644
+--- a/arch/arc/include/asm/mmu_context.h
++++ b/arch/arc/include/asm/mmu_context.h
+@@ -19,6 +19,7 @@
+ 
+ #include <asm/tlb.h>
+ #include <asm-generic/mm_hooks.h>
++#include <asm/mmu-arcv2.h>
+ 
+ /*		ARC ASID Management
+  *
+diff --git a/arch/arc/include/asm/pgtable.h b/arch/arc/include/asm/pgtable.h
+index f762bacb2358..de4576e8d17a 100644
+--- a/arch/arc/include/asm/pgtable.h
++++ b/arch/arc/include/asm/pgtable.h
+@@ -103,12 +103,6 @@
   */
-
-+#include <dt-bindings/clock/qcom,dispcc-sc7280.h>
- #include <dt-bindings/clock/qcom,gcc-sc7280.h>
-+#include <dt-bindings/clock/qcom,gpucc-sc7280.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
-+#include <dt-bindings/clock/qcom,videocc-sc7280.h>
- #include <dt-bindings/interconnect/qcom,sc7280.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/mailbox/qcom-ipcc.h>
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
+ #define PAGE_KERNEL          __pgprot(_K_PAGE_PERMS | _PAGE_CACHEABLE)
+ 
+-/* Masks for actual TLB "PD"s */
+-#define PTE_BITS_IN_PD0		(_PAGE_GLOBAL | _PAGE_PRESENT | _PAGE_HW_SZ)
+-#define PTE_BITS_RWX		(_PAGE_EXECUTE | _PAGE_WRITE | _PAGE_READ)
+-
+-#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK_PHYS | _PAGE_CACHEABLE)
+-
+ /**************************************************************************
+  * Mapping of vm_flags (Generic VM) to PTE flags (arch specific)
+  *
+diff --git a/arch/arc/mm/tlbex.S b/arch/arc/mm/tlbex.S
+index 0b4bb62fa0ab..6b5872197005 100644
+--- a/arch/arc/mm/tlbex.S
++++ b/arch/arc/mm/tlbex.S
+@@ -35,7 +35,7 @@
+ #include <linux/linkage.h>
+ #include <linux/pgtable.h>
+ #include <asm/entry.h>
+-#include <asm/mmu.h>
++#include <asm/mmu-arcv2.h>
+ #include <asm/arcregs.h>
+ #include <asm/cache.h>
+ #include <asm/processor.h>
+-- 
+2.25.1
 
