@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151143E9258
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D89A3E9257
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhHKNPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:15:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47652 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhHKNP0 (ORCPT
+        id S231438AbhHKNP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:15:28 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7984 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhHKNPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:15:26 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 14146221F8;
-        Wed, 11 Aug 2021 13:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628687702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NyszH/jT/NUdzywI2I3wO/gHEti8V9d3gJPMy/2s1lE=;
-        b=aYXDTeyDhSIkaj8UJtCSJ4x0Oa8QbqSy6wGVkCBIO9c7QDZlxSH43syJhkKmLPfVyTEHOP
-        1h2AbmVEtj20lrS5TnoyGEWhtEIaidzF7pjU0tkTv85aGc60fJX7blhhtQNy/RuO8156+G
-        D6d0NhevcV2FxlsHA5SXVHrEn8tDHdk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628687702;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NyszH/jT/NUdzywI2I3wO/gHEti8V9d3gJPMy/2s1lE=;
-        b=5MwuMcmNCiF035GZ+p3nL1kyvRVt4hgj8dbhWmUJEiyw2faJ1Zoh4Fv0u+Kha8EA8qV4qw
-        ivUF43rE/YF58KDg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id F2BB0136D9;
-        Wed, 11 Aug 2021 13:15:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id fFWwOlXNE2GyOAAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 11 Aug 2021 13:15:01 +0000
-Subject: Re: [PATCH v14 043/138] mm/memcg: Convert mem_cgroup_migrate() to
- take folios
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-44-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <48910ce5-c4fc-e29b-d126-2b82166c70d7@suse.cz>
-Date:   Wed, 11 Aug 2021 15:15:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 09:15:25 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee56113cd4900d-65121; Wed, 11 Aug 2021 21:14:49 +0800 (CST)
+X-RM-TRANSID: 2ee56113cd4900d-65121
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee66113cd44cdd-41e64;
+        Wed, 11 Aug 2021 21:14:49 +0800 (CST)
+X-RM-TRANSID: 2ee66113cd44cdd-41e64
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     linux@armlinux.org.uk
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] ARM/smp_twd: Cleanup the unnecessary cast
+Date:   Wed, 11 Aug 2021 21:15:12 +0800
+Message-Id: <20210811131512.940-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210715033704.692967-44-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/21 5:35 AM, Matthew Wilcox (Oracle) wrote:
-> Convert all callers of mem_cgroup_migrate() to call page_folio() first.
-> They all look like they're using head pages already, but this proves it.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+It's not necessary to specify 'int' castingfor 'PTR_ERR(twd_clk)'.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ arch/arm/kernel/smp_twd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/kernel/smp_twd.c b/arch/arm/kernel/smp_twd.c
+index 9a14f721a..423e9079d 100644
+--- a/arch/arm/kernel/smp_twd.c
++++ b/arch/arm/kernel/smp_twd.c
+@@ -199,7 +199,7 @@ static void twd_get_clock(struct device_node *np)
+ 		twd_clk = clk_get_sys("smp_twd", NULL);
+ 
+ 	if (IS_ERR(twd_clk)) {
+-		pr_err("smp_twd: clock not found %d\n", (int) PTR_ERR(twd_clk));
++		pr_err("smp_twd: clock not found %d\n", PTR_ERR(twd_clk));
+ 		return;
+ 	}
+ 
+-- 
+2.20.1.windows.1
+
+
+
