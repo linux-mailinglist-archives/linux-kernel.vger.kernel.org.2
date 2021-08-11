@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B2D3E8E23
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A093E8E25
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 12:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236972AbhHKKIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 06:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236995AbhHKKIX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 06:08:23 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BF3C0617BC
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 03:07:52 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id bo18so2638355pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 03:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tzsS7AZHN5hyd5i/vgo5pHazU+FL6RQAhM9b4mH3Hqc=;
-        b=xrg/dN5zYbriK5itgrKCFqwpt+tinhh9L15HeF9ETxBRpzawjZhN+vtNwQXjjaR8v0
-         MNMTTN+tXhlSPNM8qipa7OYd60SCVukCgd0Y6YJLdEAQw3VYCHFYOqwIUIhhFtERSGZ/
-         wlA8jJ5WT34nwiSSC65FuuGPkxZ9bA4KNM+Q8SJO2JRhovDhAfFR4AWh2MROFe+zVRxN
-         aEHMrJoEpBX3wkLBg1QHKRci/W0t6cSqweFGSE5mbCv9WeypUmZOLaXsntY1KcZfoTnU
-         2S01vgFvBZ82jQ2RvEyU1O+qWzGWsFL7pdIRnc8M2GQWJhVQ/QQxiM0I3dKAh2Xp4Wvc
-         vzqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tzsS7AZHN5hyd5i/vgo5pHazU+FL6RQAhM9b4mH3Hqc=;
-        b=FebNPS5n/Sj45KVYA8BNeqQK1VhVO8kYo66Q9gRP0/JutnwAXtr8HhoRQ6/NaoHO/P
-         9zr8SGV6neJMlcidtGm1cE9De1k6f65m2P8WJ9j8u5OOmJxzMpd7zTmDli4wRFMWRAXk
-         BvJC4W2GQrX+wy7CaMtjA3vLskAJoP024VA7psJAY8dsYM07fMMnV0e2BvlypB3Y/AzL
-         8eMU2u8sGoWm6a+6hDWbl3fytfQQSCxEF3D7p5f+h0W53PclfbevwHBvd6RvFwnNsF0C
-         Dj+FqGrT3gXtTtn2S6/Y576gadBrs31UGfJKp8zs/4uSjakY+tn0PvAbFXke6b6MrO7o
-         WUXw==
-X-Gm-Message-State: AOAM532z/O+QnFLKWkTGARE4DC6fX9UaIMpT+jiJ0klNc7IKvohXoT7A
-        f6ABO0wceVt4R4fENQ8dAIf2Bw==
-X-Google-Smtp-Source: ABdhPJxRiSSMq+j2y9GrkjclfC8eCBy4HeC/eBdFwjlqBgsbEfhh24xzyew4tdnIOtXaJlSnoDnklw==
-X-Received: by 2002:a17:902:8301:b029:12c:d401:1b52 with SMTP id bd1-20020a1709028301b029012cd4011b52mr259440plb.10.1628676471746;
-        Wed, 11 Aug 2021 03:07:51 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id ci23sm24633791pjb.47.2021.08.11.03.07.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 03:07:51 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 15:37:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-Message-ID: <20210811100749.kwg6435m7xj7ulwa@vireshk-i7>
-References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
- <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
- <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
- <2afd0fac-ed28-c090-a345-3fd4284b4125@codeaurora.org>
- <20210810024308.gurvzpbe2bc2bhky@vireshk-i7>
- <e452c0b5-5555-d6e2-40da-6aa21a26766d@codeaurora.org>
+        id S236883AbhHKKJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 06:09:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236690AbhHKKJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 06:09:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20E5A601FD;
+        Wed, 11 Aug 2021 10:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628676550;
+        bh=WFdcMDOdwT6iqhf90eKghlHbPA/yHhanICAd1+UlmRM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vAuQbY91bb67oIRwclNTdMUX+7hGHLmfOVBobsNUxT24P57KeqHCdpi20UnTatwot
+         OZTwRCmKEHFSunGGfYDgTE4fvaSJFZSFMq9eR4Vj+Mq7MkOs0tQGNsscLUOj5Vs3LI
+         fi6VUbSxohmzU3VdJiV4LVrxqFwDx+djRZUBmkqB5Nw8ogI/nwRutVaqUWWic9Q+DV
+         XcXffrF9Gzgc7UVsNls69LOLZ/rgVhMuQEvqM7u6l6pJI6unO60/779Am1YIu7Ah+7
+         oxEOBtNDLKDCD61Gii2bw60MtIHfAyuFvv9rv9XqZRGmgsDTvTYd77MPiKiw1TLOow
+         H1fZODrUX+eyg==
+Date:   Wed, 11 Aug 2021 11:09:06 +0100
+From:   Will Deacon <will@kernel.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC 2/8] iommu/arm-smmu-v3: Add and use static helper
+ function arm_smmu_cmdq_issue_cmd_with_sync()
+Message-ID: <20210811100905.GB4426@willie-the-truck>
+References: <20210626110130.2416-1-thunder.leizhen@huawei.com>
+ <20210626110130.2416-3-thunder.leizhen@huawei.com>
+ <20210810182454.GB3296@willie-the-truck>
+ <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e452c0b5-5555-d6e2-40da-6aa21a26766d@codeaurora.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <b9fa05b5-d3ee-5c79-c8b8-b908e533646a@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-08-21, 15:30, Rajendra Nayak wrote:
-> In my case I don't want to error out if the property is missing, I want to error out
-> only when the property exists but can't be translated into a performance state.
+On Wed, Aug 11, 2021 at 10:16:39AM +0800, Leizhen (ThunderTown) wrote:
 > 
-> So currently I check if the property exists and *only then* try to translate it, Ulf asked
-> me to skip the check. If I do that and I call of_get_required_opp_performance_state()
-> unconditionally, and if it errors out I will need to put in additional logic (check for
-> return value of ENODEV) to distinguish between the property-does-not-exist vs
-> property-exists-but-cannot-be-translated case.
-> It just seems more straight-forward to call this only when the property exists, Ulf?
+> 
+> On 2021/8/11 2:24, Will Deacon wrote:
+> > On Sat, Jun 26, 2021 at 07:01:24PM +0800, Zhen Lei wrote:
+> >> The obvious key to the performance optimization of commit 587e6c10a7ce
+> >> ("iommu/arm-smmu-v3: Reduce contention during command-queue insertion") is
+> >> to allow multiple cores to insert commands in parallel after a brief mutex
+> >> contention.
+> >>
+> >> Obviously, inserting as many commands at a time as possible can reduce the
+> >> number of times the mutex contention participates, thereby improving the
+> >> overall performance. At least it reduces the number of calls to function
+> >> arm_smmu_cmdq_issue_cmdlist().
+> >>
+> >> Therefore, function arm_smmu_cmdq_issue_cmd_with_sync() is added to insert
+> >> the 'cmd+sync' commands at a time.
+> >>
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >> ---
+> >>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++--------
+> >>  1 file changed, 21 insertions(+), 12 deletions(-)
+> >>
+> >> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> >> index 2433d3c29b49ff2..a5361153ca1d6a4 100644
+> >> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> >> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> >> @@ -858,11 +858,25 @@ static int arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
+> >>  	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, false);
+> >>  }
+> >>  
+> >> -static int arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
+> >> +static int __maybe_unused arm_smmu_cmdq_issue_sync(struct arm_smmu_device *smmu)
+> >>  {
+> >>  	return arm_smmu_cmdq_issue_cmdlist(smmu, NULL, 0, true);
+> >>  }
+> >>  
+> >> +static int arm_smmu_cmdq_issue_cmd_with_sync(struct arm_smmu_device *smmu,
+> >> +					     struct arm_smmu_cmdq_ent *ent)
+> >> +{
+> >> +	u64 cmd[CMDQ_ENT_DWORDS];
+> >> +
+> >> +	if (arm_smmu_cmdq_build_cmd(cmd, ent)) {
+> >> +		dev_warn(smmu->dev, "ignoring unknown CMDQ opcode 0x%x\n",
+> >> +			 ent->opcode);
+> >> +		return -EINVAL;
+> >> +	}
+> >> +
+> >> +	return arm_smmu_cmdq_issue_cmdlist(smmu, cmd, 1, true);
+> >> +}
+> > 
+> > This function is almost identical to arm_smmu_cmdq_issue_cmd(). How about
+> > moving the guts out into a helper:
+> > 
+> > 	static int __arm_smmu_cmdq_issue_cmd(struct arm_smmu_device *smmu,
+> > 					     struct arm_smmu_cmdq_ent *ent,
+> > 					     bool sync);
+> > 
+> > and then having arm_smmu_cmdq_issue_cmd_with_sync() and
+> > arm_smmu_cmdq_issue_cmd() wrap that?
+> 
+> OK, I will do it.
+> 
+> How about remove arm_smmu_cmdq_issue_sync()? It's unused now.
 
-The same check will be done by OPP core as well, so it is better to
-optimize for the success case here. I will say, don't error out on
-ENODEV, rest you know well.
+Sure.
 
--- 
-viresh
+Will
