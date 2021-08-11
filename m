@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD543E910D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C273E90F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237742AbhHKMaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhHKMaJ (ORCPT
+        id S238859AbhHKM1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:27:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51266 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238566AbhHKMZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:30:09 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A9FC0617BD
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:25:31 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id h9so4241423ljq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zEH3nbdjRk3iKKEKjuiI8MahBqLUdJ0ANeHswehlAC4=;
-        b=fryX8NC6y6XlhC7j8uc53VpWuPhaK1RvrhW4QxLCjceOa1J59cngm58Q5breUEAZbO
-         OdlWLshstDrjt6UOfytqzUzuH9ayTdiWPqaDLgUlsUlCyZld1UlCCVRE0nBVaW4paNh6
-         1a3FNJ14ZhQ8hNw03miW5hJUrtt3hETfd0HLclQFNJOttkWqXJ3IQJ2dZonNKhWThxNV
-         s25hAQibOskooQ2GsZBsZ7KyVni2733OGYGblU+c4qNb68oeRVGM9Zmcpn+boaMC4754
-         13X17tG6W+wmrmnj86w4abOEdedO5ZYDks6sohT3FniDvvsgkv/WrYVhuuAwaLgJG3Rb
-         a1kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zEH3nbdjRk3iKKEKjuiI8MahBqLUdJ0ANeHswehlAC4=;
-        b=Bal2k3XBRi4iJeJZ3gsue+G5w93aQbSDrSafrcYIPduNUPooikme6lgIr6krpq9N7w
-         od+djai/wfA/ypbN2LNZpd4LsQdRJ+pLZLZuaXKSsghs8Rz7ijMYXTg4cty5ze447WeL
-         4hYaeUhsaxz45Xt795sbsWQOSg9RuZ1ItQtk3iy0Ymu2LrLW5Nha5dX2X70anJTYq+SW
-         rZeehg5GzAizU8KUcW3TCIUhkzI2zUo5fIPp0k20DZPhySrxuBhFDGt0+OUTiWg3XshW
-         7bJUON7V9svfcj9gbhIdP9sjL172r7os7iRi7DBy88Bi8O98LJsaX/CTUKJV3k+pVY8s
-         OEvQ==
-X-Gm-Message-State: AOAM533YJjITEBZQgSHiC+aty27B0VkUKkBcHPy0tRSgVYIaU0hg5CPO
-        0dWaZOPvMpcmgkSiyMoMSZEak213Rx54nMuhyLyHpQ==
-X-Google-Smtp-Source: ABdhPJz/gGHq1zq1jYiqFyFHQT7Hh0KkvI1s2Ai88t2QU+nt6YVYNQmSr60cJpcwWEILkaeEmBjD5VELf9BFPZPEGi4=
-X-Received: by 2002:a2e:9a4b:: with SMTP id k11mr12624317ljj.368.1628684730077;
- Wed, 11 Aug 2021 05:25:30 -0700 (PDT)
+        Wed, 11 Aug 2021 08:25:53 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628684729;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Fc7r61LCYAdoePXBxI4aA4CJKIy5jDNHM9L9gFB7dA=;
+        b=eaojQdyePYuh2fjOmp9v44XjAja9d7cU7a75zQuTnBs2d6ob7dCsUfp9YB8VTHa/vWg+rg
+        HmUggl9EU+mAeq0VamEjZn7Gbcisrw7QAgyMr0tOLCi0mbCkjD+lEYI+A/a9WPR8MVBVY7
+        KWh0kytOv2SBYwXAHcZlyHQlg+1xFObnSZ7zi2+gw019y+ZLwLZGLBA2LbuPW3GdSh1Euq
+        L3yMhmJgAZK0xkOkRObihMdjq4D5C6cVbiWqLCQPGbDIXu1gKjprGah/ziCSKMAi02u+Lh
+        K69xQcIIwoTBE44SlhlgjdtJAsy580dqIn4ZSU/dqcoTE/an/msUvSvB5DNwdQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628684729;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Fc7r61LCYAdoePXBxI4aA4CJKIy5jDNHM9L9gFB7dA=;
+        b=GlohVzjUlTTzk5ErNHrzpKzTts7XWdgsp0gkXse0h6oRLUuabxhz7MH6HbAGKawF3mEDlp
+        AcN/28GRBo0+IaBQ==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH PREEMPT_RT] kcov:  fix locking splat from
+ kcov_remote_start()
+In-Reply-To: <20210811090033.wijh4v37wlnny3ox@linutronix.de>
+References: <20210809155909.333073de@theseus.lan>
+ <20210810095032.epdhivjifjlmbhp5@linutronix.de> <87sfzhox15.ffs@tglx>
+ <20210811090033.wijh4v37wlnny3ox@linutronix.de>
+Date:   Wed, 11 Aug 2021 14:25:29 +0200
+Message-ID: <87czqkp3ra.ffs@tglx>
 MIME-Version: 1.0
-References: <cover.1628590591.git.viresh.kumar@linaro.org> <afc7b34cee856f1ed1a65034f4a9fe705dd04d6a.1628590591.git.viresh.kumar@linaro.org>
-In-Reply-To: <afc7b34cee856f1ed1a65034f4a9fe705dd04d6a.1628590591.git.viresh.kumar@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 14:25:18 +0200
-Message-ID: <CACRpkdajnPsD01ztx5xdVnR=cEK78KY+D169HXeDKuaOMS9qfQ@mail.gmail.com>
-Subject: Re: [PATCH V5 1/2] gpio: Add virtio-gpio driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        stratos-dev@op-lists.linaro.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 12:25 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-
-> This patch adds a new driver for Virtio based GPIO devices.
+On Wed, Aug 11 2021 at 11:00, Sebastian Andrzej Siewior wrote:
+> On 2021-08-10 22:38:30 [+0200], Thomas Gleixner wrote:
+>> And that matters because? kcov has a massive overhead and with that
+>> enabled you care as much about latencies as you do when running with
+>> lockdep enabled.
 >
-> This allows a guest VM running Linux to access GPIO lines provided by
-> the host. It supports all basic operations, except interrupts for the
-> GPIO lines.
->
-> Based on the initial work posted by:
-> "Enrico Weigelt, metux IT consult" <lkml@metux.net>.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> I wasn't aware of that. However, with that local_irq_save() ->
+> local_lock_irqsave() swap and that first C code from
+> Documentation/dev-tools/kcov.rst I don't see any spike in cyclictest's
+> results. Maybe I'm not using it right=E2=80=A6
 
-I see there is a dependency that needs to be fixed but
-the driver looks good to me:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+The problem starts with remote coverage AFAICT.
