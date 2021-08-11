@@ -2,153 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88303E96E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147C23E96EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhHKRhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:37:10 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38672 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhHKRhG (ORCPT
+        id S231360AbhHKRiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:38:10 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:38774 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230454AbhHKRiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:37:06 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17BHaXqS066293;
-        Wed, 11 Aug 2021 12:36:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628703393;
-        bh=koHOYMd3d54ErCB2QIMgjsSyIsfpTXR12oRVDmM0CQI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=TVRvh+ba2DClIx7rkBokgHjhGu87O7rf2h2WdB11e0gQ8kz586rIYf/kQ2UDx6Usf
-         uevzzZTCNBWN6LmdueWQeQE0N1gulKkIU8n3bMWgagdoAc5bz5Bo9JBn4EXwFYRQ1s
-         w5MPkhuK/AeRkWY7Zl95Ed3OLs3W6lo+UipHQI+s=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17BHaXWN014969
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Aug 2021 12:36:33 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 11
- Aug 2021 12:36:33 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 11 Aug 2021 12:36:33 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17BHaWlY013939;
-        Wed, 11 Aug 2021 12:36:32 -0500
-Date:   Wed, 11 Aug 2021 23:06:31 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-CC:     Vinod Koul <vkoul@kernel.org>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
-Subject: Re: [PATCH v3 1/7] phy: Distinguish between Rx and Tx for MIPI D-PHY
- with submodes
-Message-ID: <20210811173629.gse5qmzezlh2ua7g@ti.com>
-References: <20210624184108.21312-1-p.yadav@ti.com>
- <20210624184108.21312-2-p.yadav@ti.com>
- <YQ0Y4ueALPNEAoMI@aptenodytes>
+        Wed, 11 Aug 2021 13:38:08 -0400
+Received: by mail-pj1-f53.google.com with SMTP id lw7-20020a17090b1807b029017881cc80b7so10782667pjb.3;
+        Wed, 11 Aug 2021 10:37:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LoybAd5sHCpogBbkvPiZHgRz3J1+CJcAGwXd1p0kfEA=;
+        b=id1DC+YhCePIB3mt8SXtR1ZH+PjYoBJh3fyYeN4LB/u8CN8EkFb2sfLHV+1w/uQs6s
+         GUXIEh7EC1+G6WOOGiCmMagL+hzTkB4bECkjGB9uMVIPz8tVYCHYYGnbtkTflNghzBXB
+         kfSjwJXRiq1cUSZ3Wntc3VLglpxBXCeBfXwl1DxSaZxTwfnhzlwUumFs9ELIK5p62t4b
+         CzmiY+fRt4Rm3lgYuli8+6Uqy+tPRGrdFYhRb0RbgP+hnq2EMGLaKLQ+8AzmRSZtb+ZS
+         +j+0u5BkPytQPaHVUqyvtnzlaBJYSE4Ve3UU9/REZ0UfR+pmENGY3tvbxaSXG9RqEzvx
+         6wJw==
+X-Gm-Message-State: AOAM531DW5wIyyqAe8q2z4c1hMwKCxE96Mb39T7KfipVQe0IVIOJV+q0
+        JPkicfr94fCdgkTgQ2NK0g==
+X-Google-Smtp-Source: ABdhPJzSoy3yDNPff3jDteYw59XJCtZCU80BKNbY3DzC9F3qQY7IG14H4MAq67eel9fY/L2w37r12Q==
+X-Received: by 2002:a17:90a:a42:: with SMTP id o60mr11780394pjo.191.1628703464404;
+        Wed, 11 Aug 2021 10:37:44 -0700 (PDT)
+Received: from robh.at.kernel.org ([208.184.162.215])
+        by smtp.gmail.com with ESMTPSA id z20sm124823pfr.121.2021.08.11.10.37.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 10:37:43 -0700 (PDT)
+Received: (nullmailer pid 4096083 invoked by uid 1000);
+        Wed, 11 Aug 2021 17:37:39 -0000
+Date:   Wed, 11 Aug 2021 11:37:39 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        sboyd@kernel.org, mpubbise@codeaurora.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: remoteproc: qcom: Add SC7280 WPSS
+ support
+Message-ID: <YRQK4xgxTAD2ALME@robh.at.kernel.org>
+References: <1628618483-664-1-git-send-email-pillair@codeaurora.org>
+ <1628618483-664-3-git-send-email-pillair@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQ0Y4ueALPNEAoMI@aptenodytes>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <1628618483-664-3-git-send-email-pillair@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 01:11PM, Paul Kocialkowski wrote:
-> Hi,
+On Tue, Aug 10, 2021 at 11:31:22PM +0530, Rakesh Pillai wrote:
+> Add WPSS PIL loading support for SC7280 SoCs.
 > 
-> On Fri 25 Jun 21, 00:11, Pratyush Yadav wrote:
-> > From: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > 
-> > As some D-PHY controllers support both Rx and Tx mode, we need a way for
-> > users to explicitly request one or the other. For instance, Rx mode can
-> > be used along with MIPI CSI-2 while Tx mode can be used with MIPI DSI.
-> > 
-> > Introduce new MIPI D-PHY PHY submodes to use with PHY_MODE_MIPI_DPHY.
-> > The default (zero value) is kept to Tx so only the rkisp1 driver, which
-> > uses D-PHY in Rx mode, needs to be adapted.
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+>  .../bindings/remoteproc/qcom,hexagon-v56.yaml      | 79 ++++++++++++++++++++--
+>  1 file changed, 74 insertions(+), 5 deletions(-)
 > 
-> After some thinking and discussions, it appears that using the submode is
-> probably not the best way to distinguish between rx and tx. This is because
-> rx/tx is more of a specification of the hardware component than a run-time
-> descision. Indeed the D-PHY blocks are usually dedicated to an associated
-> controller (DSI or CSI-2) and thus each instance is either meant for tx or
-> rx use.
-
-Ok. IIRC Laurent also brought this point up earlier as well. At that 
-time I took the allwinner DPHY as an example of a DPHY that can run in 
-both modes.
-
-The Cadence DPHY also supports both Rx and Tx modes but I don't know if 
-both can be implemented at the same time, if that would even make any 
-sense.
-
-> 
-> As a result I will be using the allwinner,direction string property in
-> device-tree instead of the submode, with values of either "rx" or "tx".
-> I suppose you can do something similar if you agree it makes more sense.
-
-Wouldn't a different compatible a better idea?
-
-> 
-> Cheers,
-> 
-> Paul
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+> index 5f3558e..9ae433c6 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+> @@ -17,6 +17,7 @@ properties:
+>    compatible:
+>      enum:
+>        - qcom,qcs404-cdsp-pil
+> +      - qcom,sc7280-wpss-pil
+>        - qcom,sdm845-adsp-pil
 >  
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> > 
-> > (no changes since v1)
-> > 
-> >  include/linux/phy/phy-mipi-dphy.h | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> > 
-> > diff --git a/include/linux/phy/phy-mipi-dphy.h b/include/linux/phy/phy-mipi-dphy.h
-> > index a877ffee845d..0f57ef46a8b5 100644
-> > --- a/include/linux/phy/phy-mipi-dphy.h
-> > +++ b/include/linux/phy/phy-mipi-dphy.h
-> > @@ -6,6 +6,19 @@
-> >  #ifndef __PHY_MIPI_DPHY_H_
-> >  #define __PHY_MIPI_DPHY_H_
-> >  
-> > +/**
-> > + * enum phy_mipi_dphy_submode - MIPI D-PHY sub-mode
-> > + *
-> > + * A MIPI D-PHY can be used to transmit or receive data.
-> > + * Since some controllers can support both, the direction to enable is specified
-> > + * with the PHY sub-mode. Transmit is assumed by default with phy_set_mode.
-> > + */
-> > +
-> > +enum phy_mipi_dphy_submode {
-> > +	PHY_MIPI_DPHY_SUBMODE_TX = 0,
-> > +	PHY_MIPI_DPHY_SUBMODE_RX,
-> > +};
-> > +
-> >  /**
-> >   * struct phy_configure_opts_mipi_dphy - MIPI D-PHY configuration set
-> >   *
-> > -- 
-> > 2.30.0
-> > 
-> 
+>    reg:
+> @@ -26,25 +27,30 @@ properties:
+>  
+>    interrupts-extended:
+>      minItems: 5
+> -    maxItems: 5
+> +    maxItems: 6
+>  
+>    interrupt-names:
+>      minItems: 5
+> -    maxItems: 5
+> +    maxItems: 6
+>  
+>    clocks:
+> -    minItems: 7
+> +    minItems: 3
+
+Patch 1 shows 3 clocks are valid...
+
+>      maxItems: 8
+>      description:
+>        List of phandles and clock specifier pairs for the Hexagon,
+>        per clock-names below.
+>  
+>    clock-names:
+> -    minItems: 7
+> +    minItems: 3
+>      maxItems: 8
+>  
+>    power-domains:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  power-domain-names:
+> +    minItems: 1
+> +    maxItems: 2
+>  
+>    resets:
+>      minItems: 1
+> @@ -92,6 +98,7 @@ required:
+>    - clocks
+>    - clock-names
+>    - power-domains
+> +  - power-domain-names
+
+It's not backwards compatible to add a required property.
+
+>    - qcom,halt-regs
+>    - memory-region
+>    - qcom,smem-states
+> @@ -129,6 +136,31 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> +              - qcom,sc7280-wpss-pil
+> +    then:
+> +      properties:
+> +        interrupts-extended:
+> +          items:
+> +            - description: Watchdog interrupt
+> +            - description: Fatal interrupt
+> +            - description: Ready interrupt
+> +            - description: Handover interrupt
+> +            - description: Stop acknowledge interrupt
+> +            - description: Shutdown acknowledge interrupt
+> +        interrupt-names:
+> +          items:
+> +            - const: wdog
+> +            - const: fatal
+> +            - const: ready
+> +            - const: handover
+> +            - const: stop-ack
+> +            - const: shutdown-ack
+
+The items lists can go in the main section with 'minItems: 5' and just 
+'minItems: 6' here.
+
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+>                - qcom,sdm845-adsp-pil
+>      then:
+>        properties:
+> @@ -211,6 +243,26 @@ allOf:
+>          power-domains:
+>            items:
+>              - description: CX power domain
+> +        power-domain-names:
+> +          items:
+> +            - const: cx
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,sc7280-wpss-pil
+> +    then:
+> +      properties:
+> +        power-domains:
+> +          items:
+> +            - description: CX power domain
+> +            - description: MX power domain
+> +        power-domain-names:
+> +          items:
+> +            - const: cx
+> +            - const: mx
+
+As 'cx' is always the first entry, the 'items' lists here can be moved 
+to the main section and you just need minItems or maxItems in the 
+if/then.
+
+>  
+>    - if:
+>        properties:
+> @@ -244,6 +296,23 @@ allOf:
+>            items:
+>              - const: restart
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,sc7280-wpss-pil
+> +    then:
+> +      properties:
+> +        resets:
+> +          items:
+> +            - description: AOSS restart
+> +            - description: PDC SYNC
+> +        reset-names:
+> +          items:
+> +            - const: restart
+> +            - const: pdc_sync
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/arm-gic.h>
 > -- 
-> Paul Kocialkowski, Bootlin
-> Embedded Linux and kernel engineering
-> https://bootlin.com
-
-
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+> 2.7.4
+> 
+> 
