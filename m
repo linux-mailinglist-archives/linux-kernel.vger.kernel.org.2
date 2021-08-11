@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1668B3E98B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38103E98BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 21:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhHKTX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 15:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbhHKTXz (ORCPT
+        id S231366AbhHKT1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 15:27:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56195 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231154AbhHKT1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:23:55 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48EB9C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:23:31 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1628709809;
+        Wed, 11 Aug 2021 15:27:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628710044;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ID41gjBfMNhlXLlGhJT64AiAC6qEC6DO99tAHE2Cp4g=;
-        b=mtaLyk+u+7oahzj0rZrPKhnCKDj1VnWLI/BvMsIE5go8IFuNIG353HryB0EuoqyAdQ6tkq
-        UyokZYQ0HVMRMvSM7FLSpyM/dyF8TOAMvNIYb/2ErEGbEIki37f7OSuQ2troKaEJ8+yg0J
-        jQVLeBU+O0GhXExvNwmkLdJBD2+RztU=
-From:   andrey.konovalov@linux.dev
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] kasan: test: clean up ksize_uaf
-Date:   Wed, 11 Aug 2021 21:23:27 +0200
-Message-Id: <3773f984cbd64f008af9b03e82fc1b317cda9fda.1628709663.git.andreyknvl@gmail.com>
-In-Reply-To: <cover.1628709663.git.andreyknvl@gmail.com>
-References: <cover.1628709663.git.andreyknvl@gmail.com>
+        bh=tiwffSXoiH4DxwCpTg6qh9csw8fx7R1FkfmT6DZocnc=;
+        b=CyRliTBNRNsLfXCLTY0EZhKVS21jvL2Auc5Su/LojcjPOGhDuJb8oK8MspIiOaWKGufPHS
+        f395vfpoq1a7DDL7mzKS0xQrRYROn1GXoOvuv8C2jebsJhIIWSxWZKJfFr5hu6hFsGZ//i
+        Utgy7nBiX1XbbKhTFeErpfi+s4xw7ZI=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-6dt-1g1JOVuALCq2RqyLrg-1; Wed, 11 Aug 2021 15:27:23 -0400
+X-MC-Unique: 6dt-1g1JOVuALCq2RqyLrg-1
+Received: by mail-qt1-f197.google.com with SMTP id m8-20020a05622a0548b029028e6910f18aso1873809qtx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 12:27:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tiwffSXoiH4DxwCpTg6qh9csw8fx7R1FkfmT6DZocnc=;
+        b=KzAKzJ+nSljIFiVaX6xI7eqpoerONcYCnltjPa4ae1yWP+BnAisKpJnz5/1iMB16iu
+         F40FQsGd3aF2H9mTBoVpvn4tfHUKIMiW9lbC9oSX0sBBbg70XumAVts52X7ySLnyYt90
+         el09rZLPDrJJcYtnxvYTwQCmJ64zDX9f9U5gIGvLCCEQ8zi27pMzg9VauRj0Y4DbPtUC
+         1kBMR1irRnfe0o6W8rgrXwtNpdw3osLwH+6ks2UNhYMApGTPMlg4mnyR+EmBvbMKh4vq
+         7X//xryQGAAsQgqbSXZwDa3DwyXJ+q3Sw0D649T4dkXg9bY3ZTwaA0xwu3RsHDhhyNmU
+         bgwQ==
+X-Gm-Message-State: AOAM531msjtR7n3IxSq+7d/sLjxGsqOQiJhnXQUZgDqolfPbMvCn8ssE
+        BhRRsChjqyHOHuYrB+f+jRlAL7wTzTkGFNhVrTeGnBuyg8Sz9lNx9nL687fZVL/PeiAzJoaj7sZ
+        ZVgX4EGkWv4nZ1m30KwPbJTAE
+X-Received: by 2002:a05:6214:528a:: with SMTP id kj10mr223844qvb.38.1628710042540;
+        Wed, 11 Aug 2021 12:27:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpq/PfA7+2XCpTTT9aRZ2gHbPglInuSLcGqqGbvnQp/UX636wyca1IWuYEvOy4vg/NuCUfRQ==
+X-Received: by 2002:a05:6214:528a:: with SMTP id kj10mr223832qvb.38.1628710042306;
+        Wed, 11 Aug 2021 12:27:22 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id n11sm45000qkk.93.2021.08.11.12.27.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 12:27:21 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v4 2/6] cgroup/cpuset: Properly handle partition root tree
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210811030607.13824-1-longman@redhat.com>
+ <20210811030607.13824-3-longman@redhat.com>
+ <YRQSKZB8rQUsfF2K@slm.duckdns.org>
+Message-ID: <b7897818-8fe6-8dd8-3ff6-6b15401162ba@redhat.com>
+Date:   Wed, 11 Aug 2021 15:27:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: andrey.konovalov@linux.dev
+In-Reply-To: <YRQSKZB8rQUsfF2K@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@gmail.com>
+On 8/11/21 2:08 PM, Tejun Heo wrote:
+> Hello,
+>
+> On Tue, Aug 10, 2021 at 11:06:03PM -0400, Waiman Long wrote:
+>> For a partition root tree with parent and child partition roots, this
+>> patch will now prohibit changing parent partition root back to member
+>> as changes to "cpuset.cpus.partition" should not cause those child
+>> partition roots to become invalid.
+> So, the general rule is that a descendant should never be able to affect or
+> restrict what an ancestor can do in terms of configuration. This is because
+> descendant cgroups can be delegated and a system manager sitting at a higher
+> level in the hierarchy may not have much control over what happens under
+> delegated subtrees.
+>
+> Given that we're promoting the error state as the first class citizen in the
+> interface anyway, wouldn't it be better to keep this in line too?
 
-Some KASAN tests use global variables to store function returns values
-so that the compiler doesn't optimize away these functions.
+Disabling partition at the parent level does invalidate all the child 
+partitions under it. So it must be done with care when we disable a 
+partition.
 
-ksize_uaf() doesn't call any functions, so it doesn't need to use
-kasan_int_result. Use volatile accesses instead, to be consistent with
-other similar tests.
+How about we give some indication that a child partition exist when 
+reading cpuset.cpus.partition and recommend double-checking it before 
+disabling a partition? For example, we keep track of the number of cpus 
+delegated to child partitions. Perhaps we can list that information on read.
 
-Signed-off-by: Andrey Konovalov <andreyknvl@gmail.com>
----
- lib/test_kasan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+With that information available, I have no objection to allow disabling 
+a parent partition with child partitions under it.
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index efd0da5c750f..e159d24b3b49 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -731,8 +731,8 @@ static void ksize_uaf(struct kunit *test)
- 	kfree(ptr);
- 
- 	KUNIT_EXPECT_KASAN_FAIL(test, ksize(ptr));
--	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *ptr);
--	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *(ptr + size));
-+	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
-+	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[size]);
- }
- 
- static void kasan_stack_oob(struct kunit *test)
--- 
-2.25.1
+Cheers,
+Longman
 
