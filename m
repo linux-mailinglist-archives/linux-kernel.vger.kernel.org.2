@@ -2,136 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3843E9A36
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 23:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9DA3E9A3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 23:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhHKVGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 17:06:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46095 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231316AbhHKVGp (ORCPT
+        id S232142AbhHKVII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 17:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhHKVIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 17:06:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628715980;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Ge0GTZUIjxikgSWkPB8zfOtpvL+2/SFPvGVsbcuYMDw=;
-        b=TioJd4tKo2tAa6ykiIeMHFWWandOn3T9Vs60ZZajmm6kjt9u2F1DXIlhuwrB3Hf7zt8lfN
-        WfN5nDKulk0bSstFXafaWkJbaJ942im/OXbM/c8X21nEcolo/NePGVj+0j40NDuOKmdTt3
-        Z6wARcvK1Vu4UNCdDB8L5K1LQWpQ0G4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-489-06BHg_uoN0OVyFP1lRgvtA-1; Wed, 11 Aug 2021 17:06:19 -0400
-X-MC-Unique: 06BHg_uoN0OVyFP1lRgvtA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3531344B1;
-        Wed, 11 Aug 2021 21:06:17 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2AFE11ABD8;
-        Wed, 11 Aug 2021 21:06:13 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     dan.j.williams@intel.com, David Hildenbrand <david@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>, linux-edac@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [patch, v2] x86/pat: pass valid address to sanitize_phys()
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Wed, 11 Aug 2021 17:07:37 -0400
-Message-ID: <x49o8a3pu5i.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 11 Aug 2021 17:08:07 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D868C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 14:07:43 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so7231926pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 14:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gtzTdYy8PUd+fsEC4iyKlDQnUGB4u43misFQsmm4WUQ=;
+        b=faQ1VqT220rG5p2qAd4oJXyDy74R1L4u4mCNXXz4Pt0yJZQostBx0s5XE4Bm5w+nPG
+         NS1F8FAVck+KgTztr4+8hFXP+Zh/zZW9qD3P0HSrEMwAGWVVwAX/S1qPd1MlBfObile9
+         Vv1k5Ejrqsqr5Ejivk436J5TONeVLN4+74NAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gtzTdYy8PUd+fsEC4iyKlDQnUGB4u43misFQsmm4WUQ=;
+        b=NIMGl4L1PoEGlFR9qWgwKMNyFBc1eEAMGxq+zIPaoFfL9SWTNjzKYCMONZLgdJbKp4
+         OMAITR8aalNnwcsdoSEXw6Q8uOIUYq+0yycy4p16Wa6hHPa3XMHJGEwPwp16o07SWRt/
+         31jj0jISr2+72QrRqFF8N5HkQGlHLIaNjeJbrJco3qct5Vsm5ugmcok552Ieh0qP8U+H
+         eM6lMrL9OcngU20zAa8jOa4pXj0OaBGCw1dtfZ435xYhKOPxNxxivGGOT/YWtI+iPmqz
+         x/eklBpQ0+U5e/FoqP+BqMzrS0DNKgyXR7hgEjCvJz9/Lz/n93Zry6/RnoUk8P4jfUN0
+         2Kpw==
+X-Gm-Message-State: AOAM5333I64Ru1ESSo9co6jsFSvAXQ1m7njyeC1mV1JU/mdttJzsX5Qj
+        wI2FhXo6IxRA/eV6nce7lwDUJw==
+X-Google-Smtp-Source: ABdhPJzVIOrm0mU0oZmGzPgkmftgGUUneEtiQ1+raq92w2cy9++TP96IpHMDbfzm9pTEGMJIilpRrA==
+X-Received: by 2002:a65:55c6:: with SMTP id k6mr627068pgs.129.1628716062547;
+        Wed, 11 Aug 2021 14:07:42 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b17sm439416pgl.61.2021.08.11.14.07.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 14:07:41 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 14:07:41 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v2] kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
+Message-ID: <202108111403.DA451C8A8@keescook>
+References: <20210811203035.2463343-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811203035.2463343-1-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The end address passed to memtype_reserve() is handed directly to
-sanitize_phys().  However, end is exclusive and sanitize_phys() expects
-an inclusive address.  If end falls at the end of the physical address
-space, sanitize_phys() will return 0.  This can result in drivers
-failing to load, and the following warning:
+On Wed, Aug 11, 2021 at 01:30:35PM -0700, Sami Tolvanen wrote:
+> With CONFIG_LTO_CLANG, we currently link modules into native
+> code just before modpost, which means with TRIM_UNUSED_KSYMS
+> enabled, we still look at the LLVM bitcode in the .o files when
+> generating the list of used symbols. As the bitcode doesn't
+> yet have calls to compiler intrinsics and llvm-nm doesn't see
+> function references that only exist in function-level inline
+> assembly, we currently need a whitelist for TRIM_UNUSED_KSYMS to
+> work with LTO.
+> 
+> This change moves module LTO linking to happen earlier, and
+> thus avoids the issue with LLVM bitcode and TRIM_UNUSED_KSYMS
+> entirely, allowing us to also drop the whitelist from
+> gen_autoksyms.sh.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1369
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+> Tested-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+> Changes in v2:
+> - Fixed a couple of typos.
+> - Fixed objtool arguments for .lto.o to always include --module.
+> 
+> ---
+>  scripts/Makefile.build    | 24 +++++++++++++++++++++++-
+>  scripts/Makefile.lib      |  7 +++++++
+>  scripts/Makefile.modfinal | 21 ++-------------------
+>  scripts/Makefile.modpost  | 22 +++-------------------
+>  scripts/gen_autoksyms.sh  | 12 ------------
+>  5 files changed, 35 insertions(+), 51 deletions(-)
 
-[    9.999440] mpt3sas version 29.100.01.00 loaded
-[    9.999817] mpt3sas_cm0: 64 BIT PCI BUS DMA ADDRESSING SUPPORTED, total mem (65413664 kB)
-[    9.999819] ------------[ cut here ]------------
-[    9.999826] WARNING: CPU: 26 PID: 749 at arch/x86/mm/pat.c:354 reserve_memtype+0x262/0x450
-[    9.999828] reserve_memtype failed: [mem 0x3ffffff00000-0xffffffffffffffff], req uncached-minus
-[    9.999828] Modules linked in: mpt3sas(+) bnxt_en(+) ahci(+) crct10dif_pclmul crct10dif_common nvme crc32c_intel libahci nvme_core libata raid_class scsi_transport_sas devlink drm_panel_orientation_quirks nfit libnvdimm dm_mirror dm_region_hash dm_log dm_mod
-[    9.999840] CPU: 26 PID: 749 Comm: systemd-udevd Not tainted 3.10.0-1077.el7_7.mpt3sas_test008.x86_64 #1
-[    9.999842] Hardware name: Inspur SA5112M5/SA5112M5, BIOS 4.1.12 02/24/2021
-[    9.999843] Call Trace:
-[    9.999851]  [<ffffffffa497c4e4>] dump_stack+0x19/0x1b
-[    9.999857]  [<ffffffffa429bc08>] __warn+0xd8/0x100
-[    9.999859]  [<ffffffffa429bc8f>] warn_slowpath_fmt+0x5f/0x80
-[    9.999861]  [<ffffffffa427b1f2>] reserve_memtype+0x262/0x450
-[    9.999867]  [<ffffffffa4276254>] __ioremap_caller+0xf4/0x330
-[    9.999872]  [<ffffffffc04620a1>] ? mpt3sas_base_map_resources+0x151/0xa60 [mpt3sas]
-[    9.999875]  [<ffffffffa42764aa>] ioremap_nocache+0x1a/0x20
-[    9.999879]  [<ffffffffc04620a1>] mpt3sas_base_map_resources+0x151/0xa60 [mpt3sas]
-[    9.999884]  [<ffffffffa442656b>] ? __kmalloc+0x1eb/0x230
-[    9.999889]  [<ffffffffc0465555>] mpt3sas_base_attach+0xf5/0xa50 [mpt3sas]
-[    9.999894]  [<ffffffffc046af3c>] _scsih_probe+0x4ec/0xb00 [mpt3sas]
-[    9.999901]  [<ffffffffa45d297a>] local_pci_probe+0x4a/0xb0
-[    9.999903]  [<ffffffffa45d40c9>] pci_device_probe+0x109/0x160
-[    9.999909]  [<ffffffffa46b7225>] driver_probe_device+0xc5/0x3e0
-[    9.999910]  [<ffffffffa46b7623>] __driver_attach+0x93/0xa0
-[    9.999912]  [<ffffffffa46b7590>] ? __device_attach+0x50/0x50
-[    9.999914]  [<ffffffffa46b4dc5>] bus_for_each_dev+0x75/0xc0
-[    9.999916]  [<ffffffffa46b6b9e>] driver_attach+0x1e/0x20
-[    9.999918]  [<ffffffffa46b6640>] bus_add_driver+0x200/0x2d0
-[    9.999920]  [<ffffffffa46b7cb4>] driver_register+0x64/0xf0
-[    9.999922]  [<ffffffffa45d3905>] __pci_register_driver+0xa5/0xc0
-[    9.999924]  [<ffffffffc049b000>] ? 0xffffffffc049afff
-[    9.999928]  [<ffffffffc049b16e>] _mpt3sas_init+0x16e/0x1000 [mpt3sas]
-[    9.999933]  [<ffffffffa420210a>] do_one_initcall+0xba/0x240
-[    9.999940]  [<ffffffffa431e95a>] load_module+0x271a/0x2bb0
-[    9.999946]  [<ffffffffa45b0600>] ? ddebug_proc_write+0x100/0x100
-[    9.999948]  [<ffffffffa431eedf>] SyS_init_module+0xef/0x140
-[    9.999954]  [<ffffffffa498fed2>] system_call_fastpath+0x25/0x2a
-[    9.999955] ---[ end trace 6d6eea4438db89ef ]---
-[    9.999957] ioremap reserve_memtype failed -22
-[   10.000087] mpt3sas_cm0: unable to map adapter memory! or resource not found
-[   10.000334] mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10597/_scsih_probe()!
+Cool; this looks good. (It even makes the code smaller.) I can take this
+in my tree if you'd rather not carry it Masahiro?
 
-(Note that this warning was from an older distribution kernel, so line
-numbers and file names may not line up with the current tree.)
+-Kees
 
-Fix this by passing the inclusive end address to sanitize_phys().
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 02197cb8e3a7..778dabea3a89 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -271,12 +271,34 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+>  	$(call if_changed_rule,cc_o_c)
+>  	$(call cmd,force_checksrc)
+>  
+> +ifdef CONFIG_LTO_CLANG
+> +# Module .o files may contain LLVM bitcode, compile them into native code
+> +# before ELF processing
+> +quiet_cmd_cc_lto_link_modules = LTO [M] $@
+> +cmd_cc_lto_link_modules =						\
+> +	$(LD) $(ld_flags) -r -o $@					\
+> +		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
+> +			echo -T $(@:.lto.o=.o.symversions))		\
+> +		--whole-archive $^
+> +
+> +ifdef CONFIG_STACK_VALIDATION
+> +# objtool was skipped for LLVM bitcode, run it now that we have compiled
+> +# modules into native code
+> +cmd_cc_lto_link_modules += ;						\
+> +	$(objtree)/tools/objtool/objtool $(objtool_args) --module	\
+> +		$(@:.ko=$(mod-prelink-ext).o)
+> +endif
+> +
+> +$(obj)/%.lto.o: $(obj)/%.o
+> +	$(call if_changed,cc_lto_link_modules)
+> +endif
+> +
+>  cmd_mod = { \
+>  	echo $(if $($*-objs)$($*-y)$($*-m), $(addprefix $(obj)/, $($*-objs) $($*-y) $($*-m)), $(@:.mod=.o)); \
+>  	$(undefined_syms) echo; \
+>  	} > $@
+>  
+> -$(obj)/%.mod: $(obj)/%.o FORCE
+> +$(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
+>  	$(call if_changed,mod)
+>  
+>  quiet_cmd_cc_lst_c = MKLST   $@
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 10950559b223..af1c920a585c 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -225,6 +225,13 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp -nostdinc                    \
+>  		 $(addprefix -I,$(DTC_INCLUDE))                          \
+>  		 -undef -D__DTS__
+>  
+> +ifeq ($(CONFIG_LTO_CLANG),y)
+> +# With CONFIG_LTO_CLANG, .o files in modules might be LLVM bitcode, so we
+> +# need to run LTO to compile them into native code (.lto.o) before further
+> +# processing.
+> +mod-prelink-ext := .lto
+> +endif
+> +
+>  # Objtool arguments are also needed for modfinal with LTO, so we define
+>  # then here to avoid duplication.
+>  objtool_args =								\
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 5e9b8057fb24..ff805777431c 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -9,7 +9,7 @@ __modfinal:
+>  include include/config/auto.conf
+>  include $(srctree)/scripts/Kbuild.include
+>  
+> -# for c_flags and objtool_args
+> +# for c_flags and mod-prelink-ext
+>  include $(srctree)/scripts/Makefile.lib
+>  
+>  # find all modules listed in modules.order
+> @@ -30,23 +30,6 @@ quiet_cmd_cc_o_c = CC [M]  $@
+>  
+>  ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
+>  
+> -ifdef CONFIG_LTO_CLANG
+> -# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
+> -# avoid a second slow LTO link
+> -prelink-ext := .lto
+> -
+> -# ELF processing was skipped earlier because we didn't have native code,
+> -# so let's now process the prelinked binary before we link the module.
+> -
+> -ifdef CONFIG_STACK_VALIDATION
+> -cmd_ld_ko_o +=								\
+> -	$(objtree)/tools/objtool/objtool $(objtool_args)		\
+> -		$(@:.ko=$(prelink-ext).o);
+> -
+> -endif # CONFIG_STACK_VALIDATION
+> -
+> -endif # CONFIG_LTO_CLANG
+> -
+>  quiet_cmd_ld_ko_o = LD [M]  $@
+>        cmd_ld_ko_o +=							\
+>  	$(LD) -r $(KBUILD_LDFLAGS)					\
+> @@ -72,7 +55,7 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+>  
+>  
+>  # Re-generate module BTFs if either module's .ko or vmlinux changed
+> -$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
+> +$(modules): %.ko: %$(mod-prelink-ext).o %.mod.o scripts/module.lds $(if $(KBUILD_BUILTIN),vmlinux) FORCE
+>  	+$(call if_changed_except,ld_ko_o,vmlinux)
+>  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+>  	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+> index c383ba33d837..eef56d629799 100644
+> --- a/scripts/Makefile.modpost
+> +++ b/scripts/Makefile.modpost
+> @@ -41,7 +41,7 @@ __modpost:
+>  include include/config/auto.conf
+>  include $(srctree)/scripts/Kbuild.include
+>  
+> -# for ld_flags
+> +# for mod-prelink-ext
+>  include $(srctree)/scripts/Makefile.lib
+>  
+>  MODPOST = scripts/mod/modpost								\
+> @@ -118,22 +118,6 @@ $(input-symdump):
+>  	@echo >&2 '         Modules may not have dependencies or modversions.'
+>  	@echo >&2 '         You may get many unresolved symbol warnings.'
+>  
+> -ifdef CONFIG_LTO_CLANG
+> -# With CONFIG_LTO_CLANG, .o files might be LLVM bitcode, so we need to run
+> -# LTO to compile them into native code before running modpost
+> -prelink-ext := .lto
+> -
+> -quiet_cmd_cc_lto_link_modules = LTO [M] $@
+> -cmd_cc_lto_link_modules =						\
+> -	$(LD) $(ld_flags) -r -o $@					\
+> -		$(shell [ -s $(@:.lto.o=.o.symversions) ] &&		\
+> -			echo -T $(@:.lto.o=.o.symversions))		\
+> -		--whole-archive $^
+> -
+> -%.lto.o: %.o
+> -	$(call if_changed,cc_lto_link_modules)
+> -endif
+> -
+>  modules := $(sort $(shell cat $(MODORDER)))
+>  
+>  # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined symbols
+> @@ -144,9 +128,9 @@ endif
+>  # Read out modules.order to pass in modpost.
+>  # Otherwise, allmodconfig would fail with "Argument list too long".
+>  quiet_cmd_modpost = MODPOST $@
+> -      cmd_modpost = sed 's/\.ko$$/$(prelink-ext)\.o/' $< | $(MODPOST) -T -
+> +      cmd_modpost = sed 's/\.ko$$/$(mod-prelink-ext)\.o/' $< | $(MODPOST) -T -
+>  
+> -$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(prelink-ext).o) FORCE
+> +$(output-symdump): $(MODORDER) $(input-symdump) $(modules:.ko=$(mod-prelink-ext).o) FORCE
+>  	$(call if_changed,modpost)
+>  
+>  targets += $(output-symdump)
+> diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
+> index da320151e7c3..6ed0d225c8b1 100755
+> --- a/scripts/gen_autoksyms.sh
+> +++ b/scripts/gen_autoksyms.sh
+> @@ -26,18 +26,6 @@ if [ -n "$CONFIG_MODVERSIONS" ]; then
+>  	needed_symbols="$needed_symbols module_layout"
+>  fi
+>  
+> -# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
+> -# when the .mod files are generated, which means they don't yet contain
+> -# references to certain symbols that will be present in the final binaries.
+> -if [ -n "$CONFIG_LTO_CLANG" ]; then
+> -	# intrinsic functions
+> -	needed_symbols="$needed_symbols memcpy memmove memset"
+> -	# ftrace
+> -	needed_symbols="$needed_symbols _mcount"
+> -	# stack protector symbols
+> -	needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
+> -fi
+> -
+>  ksym_wl=
+>  if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
+>  	# Use 'eval' to expand the whitelist path and check if it is relative
+> 
+> base-commit: 761c6d7ec820f123b931e7b8ef7ec7c8564e450f
+> -- 
+> 2.32.0.605.g8dce9f2422-goog
+> 
 
-Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "decoy" addresses")
-Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
----
-v2:
-- Add the warning splat to the commit log. (tglx)
-- Use parenthesis when referring to function names. (tglx)
-- Add a comment to the code. (tglx)
-- Use inclusive/exclusive instead of interval notation.
-
-diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-index 3112ca7786ed..4ba2a3ee4bce 100644
---- a/arch/x86/mm/pat/memtype.c
-+++ b/arch/x86/mm/pat/memtype.c
-@@ -583,7 +583,12 @@ int memtype_reserve(u64 start, u64 end, enum page_cache_mode req_type,
- 	int err = 0;
- 
- 	start = sanitize_phys(start);
--	end = sanitize_phys(end);
-+
-+	/*
-+	 * The end address passed into this function is exclusive, but
-+	 * sanitize_phys() expects an inclusive address.
-+	 */
-+	end = sanitize_phys(end - 1) + 1;
- 	if (start >= end) {
- 		WARN(1, "%s failed: [mem %#010Lx-%#010Lx], req %s\n", __func__,
- 				start, end - 1, cattr_name(req_type));
-
+-- 
+Kees Cook
