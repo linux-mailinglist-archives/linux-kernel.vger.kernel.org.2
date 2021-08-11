@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4DF3E97C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55653E97C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 20:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhHKSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 14:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhHKSiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:38:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87F1961008;
-        Wed, 11 Aug 2021 18:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628707107;
-        bh=f+gB+BcDzrFnDYSfYVhC0Y8pYBV/xwuoPfWAsf+OLJA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tBvSOhxizJfBTGAMkls/WXwX+z4cCeJlgT+zUA0BzK0edpgIEL950eDk6z1G9fSeG
-         4i6eguQjT6YYFQFu5eXtSyYqu8DgShEvnWruIAs+vhi8mE0Ko6T5L+nmDEjIOkj5j6
-         ygsTseLGsPXKIx+PRQ02Y0UYmJIYXm3OvCNwCerS61CU8pPyIsIvDGwBt32cRPiaM7
-         eM6Rq8HgdLW3KALUzXwW55dsnwXjtOFE3R8mGI2CBkUAr+pIBL4cGEDX5VegRqJYws
-         8PZ9hMZPk9D8dUgwynG5MkqZ7cULjfbpZ3UJgZrbp6F/5t1PGHupTWbDCAYHvYr9Wj
-         0gwXSFc+OWJ1g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D492E403F2; Wed, 11 Aug 2021 15:38:23 -0300 (-03)
-Date:   Wed, 11 Aug 2021 15:38:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, linuxarm@huawei.com
-Subject: Re: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
-Message-ID: <YRQZH9tsyW4vLSAo@kernel.org>
-References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
- <1627566986-30605-3-git-send-email-john.garry@huawei.com>
- <YQgHMt4BsDeJnE09@kernel.org>
- <90094733-741c-50e5-ac7d-f5640b5f0bdd@huawei.com>
- <88294bb8-6fb1-b485-446c-4ec15ff28d4a@huawei.com>
- <YRKGo1AtfBn85sZ7@kernel.org>
- <40e85ad2-3db4-aecf-d972-7d4aa5c2278c@huawei.com>
- <YRK+X/f44UK+btRx@kernel.org>
- <b64a644a-1dfd-2e3b-319c-c53d43c96025@huawei.com>
+        id S230401AbhHKSkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 14:40:53 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:33540 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhHKSkw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 14:40:52 -0400
+Received: by mail-pj1-f48.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so5710087pje.0;
+        Wed, 11 Aug 2021 11:40:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6XWZ7uipzmbT4b9s5UP3Dp3Et7I/DEvFdMWNyQg4EWo=;
+        b=mtNR8gOyDBX1Pt1uklU2vFgcy0l0akrG7R1C/Gzpo700w0R5cVLtUz1eZacUe8ISj3
+         eoJUp8wo/bx8GleeK8F0HHOoozgf0REilBoedJ0YoNIfDXarY7mO2XCmeisq4JHzZIo6
+         NVbcG+BEhDCq7dj6lQVzZL2/XN5SQ4eRBzLKBRv/9CaM783wY9Dwr/gB96aBbFv2Bgge
+         nu8SqCWBmlQR828fps1KNT658BbVAfjJGLd+hiV0uRP37r2UbGRyLSNvy80WRMAE4vDD
+         MwLJNOv583JW3MXCpI5SX7BFPYEjX63M3PTCly+Z6n2lyPPEpyPj3XH+ZtkGNDIrBRdi
+         I4kg==
+X-Gm-Message-State: AOAM531887HYN5hFRdkQZQKUN00E0TXVU5QSNuBwFgbpzD3rIiM/VnFs
+        nAxAOBgqPYuoS5irrGZA+A==
+X-Google-Smtp-Source: ABdhPJydzGSNHHLbCABFjtI2hErQQ3Hvcs3ObcdrBQP2nvWLFn8lM3bPlQ55R/pujUDc+0x05iMkZw==
+X-Received: by 2002:a05:6a00:150d:b029:3c8:e86e:79ec with SMTP id q13-20020a056a00150db02903c8e86e79ecmr182380pfu.62.1628707228843;
+        Wed, 11 Aug 2021 11:40:28 -0700 (PDT)
+Received: from robh.at.kernel.org ([208.184.162.215])
+        by smtp.gmail.com with ESMTPSA id u21sm218257pfh.163.2021.08.11.11.40.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 11:40:27 -0700 (PDT)
+Received: (nullmailer pid 66990 invoked by uid 1000);
+        Wed, 11 Aug 2021 18:40:23 -0000
+Date:   Wed, 11 Aug 2021 12:40:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-kernel@lists.infradead.org, soc@kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] dt-bindings: vendor-prefixes: Add an entry for
+ SKOV A/S
+Message-ID: <YRQZl94LsG9smzI0@robh.at.kernel.org>
+References: <20210804043439.11757-1-o.rempel@pengutronix.de>
+ <20210804043439.11757-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b64a644a-1dfd-2e3b-319c-c53d43c96025@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210804043439.11757-2-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 11, 2021 at 08:59:24AM +0100, John Garry escreveu:
-> On 10/08/2021 18:58, Arnaldo Carvalho de Melo wrote:
-> > > I think that you can apply it before the series. This is a pre-existing
-> > > issue that there was no dependency checking on the test events folder for
-> > > rebuilding pmu-event.c .
-> > Its all now in tmp.perf/core, will move to perf/core as soon as my test
-> > suite finishes.
+On Wed, 04 Aug 2021 06:34:37 +0200, Oleksij Rempel wrote:
+> Add "skov" entry for the SKOV A/S: https://www.skov.com/en/
 > 
-> Excellent, thanks!
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-
-Passed, its in perf/core.
-
-- Arnaldo
+Acked-by: Rob Herring <robh@kernel.org>
