@@ -2,150 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1EA3E89A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B723E89B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234303AbhHKFTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
+        id S234319AbhHKFWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 01:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbhHKFTZ (ORCPT
+        with ESMTP id S233813AbhHKFWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:19:25 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AED6C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:19:02 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so7827162pjr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 22:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HZD0Vc3lp/XqIPTm8s+fyeFvAaL1Bw4mNZGMJyfHjck=;
-        b=JsUzkrlDPAu8MK89pY4o2ZMqmceYFpkvBK5JN4Q3rcKt2yG6fIG7GyD/keZNyuPlO/
-         pWDGRH0qVmkLvGILreUzHaQu2FqD7yCQInNs4MJfpOiBzeWCu1wVYqJHzzWd7jjg+1lK
-         BPFkK9UOvNfF/dC32k369RJCDXvuGtx44NefqAQ8+PCbgjAa2GCfEu+hhsZOan5ymCE4
-         Ckimj6yuQU672Pnu8Th/zBuzKM9OCrQ0Z4nuzcpM71M4Ou7EoR9Xl8bFAePomrmwMIFX
-         SScfYhAV4fznqI7SG3+EA8jmNDowekCV9Zq4xhx491ewQCRU3dBLaVY249wQNytNEBdH
-         cKTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HZD0Vc3lp/XqIPTm8s+fyeFvAaL1Bw4mNZGMJyfHjck=;
-        b=JU12IprSALChgnl1KJBc0zcPvAeFqE1uv+zi9mgd25ohPjKC8pDoQo6WoLFm2yZdy6
-         G0GvJO1xfaVcetd2S81uHssN6XCuMWJ7fh5jI7dZQXHMNlAZb+65M8VPAZBvRH0i+T/B
-         yrsOKgge9nIZsGjJVryCVf0NRkofhnKprAnn5KG3dc12ZsFbyFr4sRwz6tmPRGE+eecD
-         5n49S5BVqMOYPWFjE8Dvbc8oopDU+LunUZ5yhzxq/pwQo53GWPArGoHBARUrRbgTWCMG
-         P21RI8dFJFZ/+ul2F8ibGSgApgSdaVCSjnGzBBP5wCPgHkjuBfkit4QTFB1zw/LpCG8m
-         SWSg==
-X-Gm-Message-State: AOAM532zqJB8L1vCsOH97yd43WekK4+N/kLyZ6Zk3gdQAggKKe888RjG
-        cGEdp48L17dI77+xROYbw/zn9A==
-X-Google-Smtp-Source: ABdhPJzkff8ozUzWrLhACtgWHkaRe212yS2ydFbdEsIQCClF9gDAs7w5Kivh/WFFx4A/swTDLByBiw==
-X-Received: by 2002:a17:90a:ce0a:: with SMTP id f10mr35357981pju.71.1628659141754;
-        Tue, 10 Aug 2021 22:19:01 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id z13sm4816257pjd.44.2021.08.10.22.19.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 22:19:01 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 10:48:59 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
-Message-ID: <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <YRJym+Vn4bbwQzzs@google.com>
+        Wed, 11 Aug 2021 01:22:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9440BC061765;
+        Tue, 10 Aug 2021 22:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vpzaQyEKrZmYpNp17799MlfevE7lZ5qGY4jkrsTFkd4=; b=mFTzQwKJPyhWj8LabAH5uU9j4b
+        F3jWWlaCoCd0sPss8/w0SnqlNPJI8wu1qb8etX+TDJx06ZQIEe95hK5uiNHr+ZhTnAXAvc36eutjr
+        UbVeSuHd0j043Sep41pznPLKjeFojPT1aLYAbLFWCP+N14Ye3aSlhLChPTP823Be/frDLeYT8osNN
+        AXrRDcOs6rWJ06OHJ20PnCwFzsw5lZm+so3IHpxM0B7j6jHPlI97t7l6M7/ssihiqhFgvIaLJgAfH
+        6Z8R5icMjMtTLp4lRWUjNHk1TuSEbKpI7t2bdvPQj6geefGpzjrSJ+5NvezQLcXFn8cvsOISbXLSq
+        PJE9ZZJw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDgeG-00CzyX-HN; Wed, 11 Aug 2021 05:19:44 +0000
+Date:   Wed, 11 Aug 2021 06:19:28 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     luomeng <luomeng12@huawei.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        hare@suse.de, bvanassche@acm.org, ming.lei@redhat.com,
+        hch@infradead.org, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] block: replace incorrect uses of GENHD_FL_UP
+Message-ID: <YRNd4O1uV1auj/pK@infradead.org>
+References: <20210720182048.1906526-1-mcgrof@kernel.org>
+ <051ab019-5163-e691-43ed-052401b6b95a@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YRJym+Vn4bbwQzzs@google.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <051ab019-5163-e691-43ed-052401b6b95a@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-08-21, 13:35, Quentin Perret wrote:
-> On Tuesday 10 Aug 2021 at 13:06:47 (+0530), Viresh Kumar wrote:
-> > Provide a cpufreq driver flag so drivers can ask the cpufreq core to register
-> > with the EM core on their behalf.
-> 
-> Hmm, that's not quite what this does. This asks the cpufreq core to
-> use *PM_OPP* to register an EM, which I think is kinda wrong to do from
-> there IMO. The decision to use PM_OPP or another mechanism to register
-> an EM belongs to platform specific code (drivers), so it is odd for the
-> PM_OPP registration to have its own cpufreq flag but not the other ways.
-> 
-> As mentioned in another thread, the very reason to have PM_EM is to not
-> depend on PM_OPP, so I'm worried about the direction of travel with this
-> series TBH.
+On Wed, Aug 11, 2021 at 10:42:20AM +0800, luomeng wrote:
+> Hi:
+>    When the fuzz test injected memory allocation failed, I had this BUG_ON:
+> kernel BUG at fs/sysfs/group.c:116.
+>   The cause of the bug_ON is that the add_disk memory fails to be allocated
+> but no error processing is performed.
+>   I find your patches add error processing. So what is your next step with
+> these patches.
 
-I had to use the pm-opp version, since almost everyone was using that.
+I have one more pending series on top of this one I need to submit here:
 
-On the other hand, there isn't a lot of OPP specific stuff in
-dev_pm_opp_of_register_em(). It just uses dev_pm_opp_get_opp_count(),
-that's all. This ended up in the OPP core, nothing else. Maybe we can
-now move it back to the EM core and name it differently ?
+http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/alloc_disk
 
-> > This allows us to get rid of duplicated code
-> > in the drivers and fix the unregistration part as well, which none of the
-> > drivers have done until now.
-> 
-> This series adds more code than it removes,
-
-Sadly yes :(
-
-> and the unregistration is
-> not a fix as we don't ever remove the EM tables by design, so not sure
-> either of these points are valid arguments.
-
-I think that design needs to be looked over again, it looks broken to
-me everytime I land onto this code. I wonder why we don't unregister
-stuff.
-
-Lets say, I am working on the cpufreq driver and I want to test that
-on my ARM machine. Rebooting a simpler board to test stuff out is
-easy, but if I am working on an ARM server which is running lots of
-other userspace stuff as well, I won't want to reboot the machine just
-to test a different versions of the driver. I will rather want to
-build the driver as module and insert/remove it again and again.
-
-If the frequency table changes in between versions, this just breaks
-as EM won't be updated again.
-
-This breaks one of the most basic rules of Linux Kernel. Inserting a
-module should have exactly the same final behavior every single time.
-This model doesn't guarantee it. It simply looks broken.
-
-> > This would also make the registration with EM core to happen only after policy
-> > is fully initialized, and the EM core can do other stuff from in there, like
-> > marking frequencies as inefficient (WIP). Though this patchset is useful without
-> > that work being done and should be merged nevertheless.
-> > 
-> > This doesn't update scmi cpufreq driver for now as it is a special case and need
-> > to be handled differently. Though we can make it work with this if required.
-> 
-> Note that we'll have more 'special cases' if other architectures start
-> using PM_EM, which is what we have been trying to allow since the
-> beginning, so that's worth keeping in mind.
-
-Yes, we need to take care of all such special cases as well.
-
--- 
-viresh
+to make sure the disk always has a valid queue reference.  After that
+Luis work to return an error from add_disk should be much easier bause
+we not have defined state.
