@@ -2,105 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CA13E9250
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08743E9252
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 15:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhHKNNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 09:13:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59715 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229737AbhHKNNF (ORCPT
+        id S231352AbhHKNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 09:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231176AbhHKNOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 09:13:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628687561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2NUW/hFy3oKZH4mmTKs/nk2n/0GK2CKMBtpxsO4eQow=;
-        b=NE6FG/sOHmDGU+8w06VPrqwfsBL4Tkp46svd5RJNVCtiRWKJ4TFu7ypOkdM8JZiyskjR0/
-        nre+1AkvIT/1TTGzgC8LcytAMb+CfoygkQhZTnGBtkYYPm46S9QamKri8uwpGu14BZ8NTL
-        rb5xWMRJ69/VZMLnoynA8JRqW2+GFw8=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-9FSFYolsOxawa54OxEPzkQ-1; Wed, 11 Aug 2021 09:12:39 -0400
-X-MC-Unique: 9FSFYolsOxawa54OxEPzkQ-1
-Received: by mail-qk1-f199.google.com with SMTP id a72-20020ae9e84b0000b02903d1f6aa7886so1280968qkg.21
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:12:39 -0700 (PDT)
+        Wed, 11 Aug 2021 09:14:16 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C3DC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:13:52 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id m17so735061ljp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 06:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q1+L5maAAnYSOSbC9LKjnSxKnH93+JIlIdMu7eEpexE=;
+        b=OjRlQpP9cVv52RD0nn7JhPvpcVxyKg+GKPrr8DsAmNXAjJliwDcnmpCIpLncBcu3Nc
+         yTEzrwFbRpkGLM570XQvRe9Qpwr6djPLd+9uMy8u6lvd682pCzIRbgR3u+rkBN0lNl9i
+         YXV3QhbSiTWM4Q6ciFqMobbzl5gCrbMgONa2mxzcOmbMf8L0NwJ12UF00TCVegG0+XFU
+         aRaZTAkrkrRKpr5vP4M5BAc9EYhjfx1eympsP6VsPl4BVAwniQeChDtVtzOIQgYAYbLg
+         h1aBPxCcq2cpc28dA3p2V6j4ATpdpd+WUAZnCO0r8VJkgAiAW0jLzAa4lxfV6GYhC2KZ
+         Uw7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2NUW/hFy3oKZH4mmTKs/nk2n/0GK2CKMBtpxsO4eQow=;
-        b=OXDEGCK16SQ/W43X3n/mE4iKswvCiWzVYGzT6xXEjn2Sgio+u7i6yTpnsgT4ukusec
-         mvRHpbm0pKhSnvYUgR3CrkTqiW8hE5vkohrXChN4P/wahts1WzcI9viAERGQVHsg5uc6
-         j9HqiEzIoy5Fxtihmaqd0GWAtlc4iIQXUt2gSFaW938NhczwzDXLl4BjbjN16vuwq+bK
-         GzMZDK7iaGyYTVFFhkwGGMote86F1ANzc15qsUoNjGw6+FvxpXW43Vn9kvTDdZO7S4Nq
-         lpShxupDGxoAvsHcUf1D1m9LtfNnJCSLjDxw/FtSt/dOL74trkkAECz0CFqYrdJNK8Zu
-         y/Xw==
-X-Gm-Message-State: AOAM532yhibwead0BTpajXG3sd9l1U5pL5U5x+3OsCO+G5ctFijJX+b/
-        J1TscEBPqcflEPKGVakpta4aIJGMsMSE4cCTyGwHl7HWTiD3gF3BIutbTbHAG9vv6rElCYroYjM
-        IqatyTjGwhVly8osACG539q48
-X-Received: by 2002:a37:9e12:: with SMTP id h18mr26581534qke.269.1628687559235;
-        Wed, 11 Aug 2021 06:12:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwUEmKnJEHSZ0KQnrVX16waRKFwS+41amT0mSFyyGRu0A/WJoOskG6slHX0D4+bfgBYmlmxUA==
-X-Received: by 2002:a37:9e12:: with SMTP id h18mr26581513qke.269.1628687559009;
-        Wed, 11 Aug 2021 06:12:39 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id k1sm6848200qkj.21.2021.08.11.06.12.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 06:12:38 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 09:12:36 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v4 3/3] KVM: x86/mmu: Add detailed page size stats
-Message-ID: <YRPMxLdL5vsZRyux@t490s>
-References: <20210803044607.599629-1-mizhang@google.com>
- <20210803044607.599629-4-mizhang@google.com>
- <CALMp9eR4AB0O7__VwGNbnm-99Pp7fNssr8XGHpq+6Pwkpo_oAw@mail.gmail.com>
- <CAL715WJLfJc3dnLUcMRY=wNPX0XDuL9WzF-4VWMdS_OudShXHg@mail.gmail.com>
- <CAL715WLO9+CpNa4ZQX4J2OdyqOBsX0+g0M4bNe+A+6FVxB2OxA@mail.gmail.com>
- <YRMKPd2ZarXCX6vm@t490s>
- <CAL715WJWPzBqmjeTJ6mZa=dUaF5+MdqaCrk5CEzvcz1X99cm0g@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q1+L5maAAnYSOSbC9LKjnSxKnH93+JIlIdMu7eEpexE=;
+        b=pswh0lc5nuIHb1cWBNRSCG6K8sWwOUPMZxWEvUrZEyyOntPVCJgC08kJsRo3tY9Nc6
+         bNlyZ+BpujQrtpaKvyOBoBvB/LLoZ9/DlRSKTNJk3XNeSWO6U0+BOEAClqSYAN8Ht4Uo
+         74h93+iz04CIa+Iv29MnG/U/DZzoiy/jsFPNuwrAdkPEdCutRywC7hYTTcecL7wpn9vt
+         m72T5TAZ1yHwhI4nvz8eohdgO2pVRfLcAKH2TUBJAtRQGQGb9jF3D48HKEtTbAmle4hR
+         BHC66ikKI3NcoppeB+pjI8f2d1XlSd/p7sm3j5UbacTBKaaD0PAX6fW8UEOH8okcr/4Y
+         i3OA==
+X-Gm-Message-State: AOAM530JUPulBS0g8yKsIwBzhjSD/k1T5h9Z9CTLR0GrACGMd3RMXyt6
+        2QZHohcQKJIaWGGNf545Wf2RkcLZggh0UkNiwtk63g==
+X-Google-Smtp-Source: ABdhPJzElwzEiR8zzvMRvJhPG9O5YnRG/KEEhB95WfW4xLAcedlsP/gOJdlbkRQTVj5IQY/FFRHOv95iZsG2HDxxlzs=
+X-Received: by 2002:a05:651c:327:: with SMTP id b7mr23751809ljp.74.1628687631127;
+ Wed, 11 Aug 2021 06:13:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAL715WJWPzBqmjeTJ6mZa=dUaF5+MdqaCrk5CEzvcz1X99cm0g@mail.gmail.com>
+References: <20210806142527.29113-1-lakshmi.sowjanya.d@intel.com>
+In-Reply-To: <20210806142527.29113-1-lakshmi.sowjanya.d@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Aug 2021 15:13:40 +0200
+Message-ID: <CACRpkdb2B-=nkp075+DvZzXYKOEXaUDBdktFSTxqRLwTVDg=Ng@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Add pinctrl support for Intel Keem Bay SoC
+To:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 06:06:51PM -0700, Mingwei Zhang wrote:
-> Regarding the pursuit for accuracy, I think there might be several
-> reasons. One of the most critical reasons that I know is that we need
-> to ensure dirty logging works correctly, i.e., when dirty logging is
-> enabled, all huge pages (both 2MB and 1GB) _are_ gone. Hope that
-> clarifies a little bit?
+On Fri, Aug 6, 2021 at 4:25 PM <lakshmi.sowjanya.d@intel.com> wrote:
 
-It's just for statistics, right?  I mean dirty log should be working even
-without this change.
+> This patch set enables the support for the integrated pin controller in
+> the Intel Keem Bay SoC.
+>
+> Patch 1 holds the implementation of pinctrl driver.
+> Patch 2 holds the relevant Device Tree bindings documentation and an
+> entry in MAINTAINERS file
 
-But I didn't read closely last night, so we want to have "how many huge pages
-we're mapping", not "how many we've mapped in the history".  Yes that makes
-sense to be accurate.  I should have looked more carefully, sorry.
+Patches applied!
 
-PS: it turns out atomic is not that expensive as I thought even on a 200 core
-system, which takes 7ns (but for sure it's still expensive than normal memory
-ops, and bus locking); I thought it'll be bigger as on a 40 core system I got
-15ns which is 2x of my laptop of 8 cores, but it didn't really grow but shrink.
-
-Thanks,
-
--- 
-Peter Xu
-
+Yours,
+Linus Walleij
