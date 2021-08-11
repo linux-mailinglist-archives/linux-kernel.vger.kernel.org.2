@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7B03E8BD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E973E8BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236050AbhHKIcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
+        id S236179AbhHKIcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233167AbhHKIcj (ORCPT
+        with ESMTP id S235282AbhHKIcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Aug 2021 04:32:39 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1099EC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:32:16 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y34so4016376lfa.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:32:15 -0700 (PDT)
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60047C061798;
+        Wed, 11 Aug 2021 01:32:16 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id t25so812613uar.13;
+        Wed, 11 Aug 2021 01:32:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=T9aF/gnHHaozYj2J+OBaspaiiV6uiEkY/GBIP7m0gEg=;
-        b=z4zPOj2oXB+m27UeJcQn5BVLsxsB4z1KOcQYkV7Zp4KvMRcbXTwGaQYgvfjzMX/nBU
-         +zmL0eQOyKOXcbZUzpKCJJfPmbA62iwzKwBm+4YtiuzZjzMDYUtdFO0Mz87QkQPr38YJ
-         fggNcHhRGF/BagSG37jlWaIkXwYqR0dnF13GLl5azCiqyXmrLFlj3Tzz5mag8r20A6HE
-         pZ7rAO2PUBHurc0seOXsZIH1lLrsbGPHPpF9eFSVOwVG8GzQQjJDJ79SKGk+YdBFO9Gx
-         3MZeVhJt+5R2p2mJ8v9vcjavRhrjmWHrZ+uhVc8cVKFVyzaTQfCwk2AHhFi9e1n9y8UE
-         jwsw==
+        bh=RZqRgzHZYgqEPRuuZiIkirwuR0fhVZEI60yV2LcBYEM=;
+        b=ClIol3rlEDFuVYvxlE4Gr0oV80VY7+LLPMCiiyZVWP9vk0uP0Wdw9RJ32FMi8GDUPJ
+         +VtGBzSIoh+x/k5Ga+alG493zgGuqt0zcdWNKsDL31eZPu/kPO2rS9TUgLDeDsCOXbRI
+         TjI5Qi25wGxsQNbiVfN5R/i3mphru4QHi59KnoZEwnQ4mYaz+AWrQEI/ooHz1kvXZwEJ
+         11vhvgYt1vk4Ttmdj5NTsxGyYHfBUWcRDA036HZA+Dthzt/WxZDqwH1YY+YenpvA07ZO
+         FpHru3XJQ4kffcoIw5VrtIIcB6JSsI0RZcZ6bFwYN2ED/5Ysi4GyVrX1XTKcio/eKXtl
+         4V/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T9aF/gnHHaozYj2J+OBaspaiiV6uiEkY/GBIP7m0gEg=;
-        b=c6o1WoQgcAfSLiWgda6FBKoDun3dnreWcNN6gs2AVEvaLIbMMJCeFJUcXHd/IThQNd
-         S5z7GRLGsQx8fkGs599NFQw1JECXDPa2IvxbfxoQwroiXGAhT3/ARVkIZ51RPLLPwf5b
-         EWUMxsotLeGHPLifA9VoZjEoVUkNH2oCqBM5XorIGhAF8KUAc9UZ0ObuX5LOzFaLzfWf
-         UCNPhefUMOfODAoWEsl/ZrnmDeHv7SNWEc5AeSpN7cG6MHG3yT8TYLNLtIdwJlNBm8Z5
-         SZc3fihhmbB0gCQJNvxNiI4OeA6U6lQg+BO3wjDDIykEiq083oh3vIaZJRSUBJtMsRDO
-         X+Xg==
-X-Gm-Message-State: AOAM531Bobo50j5S+SSNoKpqr2SiZzjBgZQVo/5vPDdNTZdiXTMfjCkU
-        GOgEa4aWqpUcEMLDADOnT36gKjLkdHmqyVA5lc84dg==
-X-Google-Smtp-Source: ABdhPJx8KOnvL7KNjPPz1PGddRFRscqa0/aQu7hNC6SM9IIiyOqA7hHEP9AiCoar+a37Et8CsHj/YEfe9PFf6cIfeKQ=
-X-Received: by 2002:a19:c7cd:: with SMTP id x196mr24373795lff.465.1628670734307;
- Wed, 11 Aug 2021 01:32:14 -0700 (PDT)
+        bh=RZqRgzHZYgqEPRuuZiIkirwuR0fhVZEI60yV2LcBYEM=;
+        b=OoCo0e3DMmbpJuu2oyob8bnQtFHsOrl7JrmopN/whT0r3nwXyy/R1MrCSrAQVzDi2g
+         uuAQyg3mDJUqQi1bZw1VThsOWJGSk6wzn12rsVLz5INz5ic6HSOTrXhk1d2bwAL57VyR
+         EbvurpOQiDa6m/zo9Ck5ficRjNc2bSB2DNRinuYacLFuTBZMi8MjD01h/0205qplkttA
+         qaK1nc1HQrfTOPVCGK2er3hcDbgBSZFogkiSRcGZaHHYw4c8QIC0dv9UKTVJkhTN6oYB
+         2kzn+xRZF8DFW+sZKFiGorkgSbvMzrvPJMVDg5Lt20wxEF7ficLNly7NA5zJkoEcFaLw
+         3haw==
+X-Gm-Message-State: AOAM533g0uphmcufZoaCk3dtCB4cu4wDHZGAj4oIQltWnYRO1KesuiwY
+        x2hd37Y4qik+TPGQZBz7N3tZLgSlw5NtZjhX4FU=
+X-Google-Smtp-Source: ABdhPJx/FtlEX8Gvhh7PCGJu6XytwxgMeNnTLsEvzw+ktR01Q4J4q80hivLrP6/q966Wg++ZJAxvpfHyZ1D+NanMDgI=
+X-Received: by 2002:ab0:849:: with SMTP id b9mr24512073uaf.43.1628670735534;
+ Wed, 11 Aug 2021 01:32:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726013345.1634442-1-jay.xu@rock-chips.com>
-In-Reply-To: <20210726013345.1634442-1-jay.xu@rock-chips.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 10:32:03 +0200
-Message-ID: <CACRpkdbU+SXCaJ5N65zKw-btn_CQisp+rhozjtCaZ7y59mvTtQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/9] gpio-rockchip driver
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210809065505.6823-1-jbroadus@gmail.com>
+In-Reply-To: <20210809065505.6823-1-jbroadus@gmail.com>
+From:   =?UTF-8?B?6I6K5L2z6ZyW?= <johnny.chuang.emc@gmail.com>
+Date:   Wed, 11 Aug 2021 16:32:04 +0800
+Message-ID: <CA+B3HhpOM56c2VQF-nOH_deq3U7GduzY8J7X1mLA+2LopO-mmQ@mail.gmail.com>
+Subject: Re: [PATCH] HID: i2c-hid: Fix Elan touchpad regression
+To:     Jim Broadus <jbroadus@gmail.com>
+Cc:     jikos@kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        kai.heng.feng@canonical.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 3:34 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
+> A quirk was recently added for Elan devices that has same device match
+> as an entry earlier in the list. The i2c_hid_lookup_quirk function will
+> always return the last match in the list, so the new entry shadows the
+> old entry. The quirk in the previous entry, I2C_HID_QUIRK_BOGUS_IRQ,
+> silenced a flood of messages which have reappeared in the 5.13 kernel.
+>
+> This change moves the two quirk flags into the same entry.
+>
 
-> Separate gpio driver from pinctrl driver, and support gpio v2 controller.
+LGTM
 
-Mostly looks good, but waiting for a respin to address Bartosz
-comments on patch 5.
+Many thanks,
+Johnny/ELAN
 
-Yours,
-Linus Walleij
+> Fixes: ca66a6770bd9 (HID: i2c-hid: Skip ELAN power-on command after reset)
+> Signed-off-by: Jim Broadus <jbroadus@gmail.com>
+> ---
+>  drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index 46474612e73c..517141138b00 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -171,8 +171,6 @@ static const struct i2c_hid_quirks {
+>                 I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
+>         { I2C_VENDOR_ID_RAYDIUM, I2C_PRODUCT_ID_RAYDIUM_3118,
+>                 I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
+> -       { USB_VENDOR_ID_ELAN, HID_ANY_ID,
+> -                I2C_HID_QUIRK_BOGUS_IRQ },
+>         { USB_VENDOR_ID_ALPS_JP, HID_ANY_ID,
+>                  I2C_HID_QUIRK_RESET_ON_RESUME },
+>         { I2C_VENDOR_ID_SYNAPTICS, I2C_PRODUCT_ID_SYNAPTICS_SYNA2393,
+> @@ -183,7 +181,8 @@ static const struct i2c_hid_quirks {
+>          * Sending the wakeup after reset actually break ELAN touchscreen controller
+>          */
+>         { USB_VENDOR_ID_ELAN, HID_ANY_ID,
+> -                I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
+> +                I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET |
+> +                I2C_HID_QUIRK_BOGUS_IRQ },
+>         { 0, 0 }
+>  };
+>
+> --
+> 2.31.1
+>
