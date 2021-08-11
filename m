@@ -2,237 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2373E8F54
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B1C3E8F5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237269AbhHKLQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:16:50 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44974 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbhHKLQt (ORCPT
+        id S237301AbhHKLTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 07:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237300AbhHKLT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:16:49 -0400
-Received: by mail-io1-f71.google.com with SMTP id e26-20020a6b691a0000b029058223232729so1413059ioc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:16:26 -0700 (PDT)
+        Wed, 11 Aug 2021 07:19:27 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1717C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:19:04 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id bo18so2884416pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mC8C0xwm8W7bgu0JyGtZcqjXFuXUk/Avbe6reu50yCI=;
+        b=aJdqWdV0w84zCE2qGTJuXtiN/EUul8d4ZIx2LnoWE5me1OFiMKrLMJaNmWyfawWz5o
+         VOys7eOAd0Wg/PnrMXQfrwGQSnmKSaeR0rpd8m2loLS575PH50QC3Ue9Cq6XkknRvlpP
+         75ql9KaXbtW75LLYirKzR93x/LLe75PoyKMpLmJvnn+XKFG+pgEHOcQw2zPf55JPHHe8
+         XhRRjePUd9oPIPseAVxj1Ao8SyjU7ZQfsLZ9DDyP+r+MG5hcORJjkjVLAMbmhvzWrFpI
+         so16YJ5LTEkpjHHcwWmGqAg5sUtLMcgeg6kxBKnLcL2eG3r3M4AI4sb9TJi2RGQGte5k
+         NAkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=HmEDS0FYLEJ/zcVv7Q2EVhnsR4cbjcf4BbnPzxZ83Rw=;
-        b=mJRpRoDUR7JCgncZO9OnQulR6hRRaz8UPr/JjiaoZnvHvTaFA+x76eEHQS+L/9jAyc
-         CsC9sZh9ONUmc4o/PK8h12XXUUtinVoz0Bt+CnzdG4l1MoIrLXg3hFuW6FE0AwbS6tEh
-         Xun62PYwtEB6CppN+ZlpckJPDF1QC1jEVpNhbpDgoI3eakVzjRYSxmtN+SNMoh8vB7L5
-         VQ3+LM3sTmrgqV5te2ZKcxr6UozJBtnxR5GCmjn2fL1YJyYBibgBCElLcXnhkNK4CnrI
-         dbr3SjhnGu6RCbVveYZ3CTWwrY1tgITPlhpZCoaeRcPYLZt0YNZNGVh9gALvopefabPM
-         dT+A==
-X-Gm-Message-State: AOAM531hrEur2vJcYv9642ZIE0YeHZs4ZSmpixh3AUC1Aoj1aXYAOl4D
-        toeGbr2XLyiv9KC8Q4BJIhU0X98osegQscjC+yhZUtKM3Muy
-X-Google-Smtp-Source: ABdhPJz5bRKBsEFIZ00tSCnIQTrzNeX1W6f8tFhgOJV9+8/AqH7aqa5YMrxC5cDMEiInVELG6+nj2+mr8D8kLtAdmvidcUOALt+D
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mC8C0xwm8W7bgu0JyGtZcqjXFuXUk/Avbe6reu50yCI=;
+        b=ZW9nCjLNzbTPvsIUH0WHxkS4q61CxGTRfuveN2Ftp8xD3Pk7orB20QE5Fv3MgJaC2S
+         YnWm7wnp7MN2hTHlHvttTSMcD57V+xzI9IEoMtV00l/AcR296ofRYXD0LEPzC5VBWFGw
+         eiU/+FYGcDakmzvjRs1P+5t8GLzfed2+7aZP+aWdt2nS4Seg7CIVknCbYx1qdMCHUpMN
+         Cu2BbWbj7k38e7c1ryQIxONHJkPmGSC0n1WXwqkyO4PYSVh2HpMhTiYmpZucsiOZ3FE7
+         SzKNk+7m0XnW7H9Rwi5x4tg8lZD3cU4hmNl/bGkWYH4GCL7XZ/ikD+Fp/HlVbdLB6qmP
+         69Vg==
+X-Gm-Message-State: AOAM532Xw+ZoBV6XrBaMXeVJfKHZKFPRuk2azRXT6R4fE2ZjZQxCEs23
+        LV2ygBHYFLIPvaEF1u4ftN+pKA==
+X-Google-Smtp-Source: ABdhPJwm7QFpVQrDdQM9uD/6wNXIDd2ezHOUsmTYiL5CuXboXPsLNkKYtggVLkg3cfpqns77Dfrhgg==
+X-Received: by 2002:a62:65c7:0:b029:3c3:4eff:1b26 with SMTP id z190-20020a6265c70000b02903c34eff1b26mr27485612pfb.48.1628680744167;
+        Wed, 11 Aug 2021 04:19:04 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id c14sm31728792pgv.86.2021.08.11.04.19.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 04:19:02 -0700 (PDT)
+Date:   Wed, 11 Aug 2021 16:49:00 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+Message-ID: <20210811111900.bloukqgc3f2a4f2m@vireshk-i7>
+References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
+ <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
+ <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
+ <2afd0fac-ed28-c090-a345-3fd4284b4125@codeaurora.org>
+ <20210810024308.gurvzpbe2bc2bhky@vireshk-i7>
+ <e452c0b5-5555-d6e2-40da-6aa21a26766d@codeaurora.org>
+ <20210811100749.kwg6435m7xj7ulwa@vireshk-i7>
+ <CAPDyKFp3xmx1r_2SCbrVcT-CcyUkTUoNgiUMWoyuWw5jE6WLrA@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c2a:: with SMTP id m10mr188481ilh.114.1628680585872;
- Wed, 11 Aug 2021 04:16:25 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 04:16:25 -0700
-In-Reply-To: <00000000000000410c05c8e29289@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c60fd605c946bfe2@google.com>
-Subject: Re: [syzbot] KASAN: invalid-free in bdev_free_inode (2)
-From:   syzbot <syzbot+5fa698422954b6b9307b@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFp3xmx1r_2SCbrVcT-CcyUkTUoNgiUMWoyuWw5jE6WLrA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On 11-08-21, 12:52, Ulf Hansson wrote:
+> On Wed, 11 Aug 2021 at 12:07, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 11-08-21, 15:30, Rajendra Nayak wrote:
+> > > In my case I don't want to error out if the property is missing, I want to error out
+> > > only when the property exists but can't be translated into a performance state.
+> > >
+> > > So currently I check if the property exists and *only then* try to translate it, Ulf asked
+> > > me to skip the check. If I do that and I call of_get_required_opp_performance_state()
+> > > unconditionally, and if it errors out I will need to put in additional logic (check for
+> > > return value of ENODEV) to distinguish between the property-does-not-exist vs
+> > > property-exists-but-cannot-be-translated case.
+> > > It just seems more straight-forward to call this only when the property exists, Ulf?
+> >
+> > The same check will be done by OPP core as well, so it is better to
+> > optimize for the success case here. I will say, don't error out on
+> > ENODEV, rest you know well.
+> 
+> This should work, while I generally favor not having to parse for
+> specific return codes.
+> 
+> Another option is to add a new OPP OF helperfunction that just informs
+> the caller whether the required-opps property exists (instead of
+> open-coding that part), and if so, the caller can continue with
+> of_get_required_opp_performance_state() and then expect it to succeed.
+> 
+> I have no strong opinion though! Whatever works for me.
 
-HEAD commit:    d3432bf10f17 net: Support filtering interfaces on no master
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14fd894e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8075b2614f3db143
-dashboard link: https://syzkaller.appspot.com/bug?extid=5fa698422954b6b9307b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=174ebaf6300000
+I would like to work with the existing set of APIs, as the OPP core is
+going to do that check anyways, again.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5fa698422954b6b9307b@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: double-free or invalid-free in slab_free mm/slub.c:3210 [inline]
-BUG: KASAN: double-free or invalid-free in kfree+0xe4/0x530 mm/slub.c:4264
-
-CPU: 1 PID: 11043 Comm: syz-executor.1 Not tainted 5.14.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
- kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:358
- ____kasan_slab_free mm/kasan/common.c:346 [inline]
- __kasan_slab_free+0x120/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1625 [inline]
- slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1650
- slab_free mm/slub.c:3210 [inline]
- kfree+0xe4/0x530 mm/slub.c:4264
- bdev_free_inode+0xe0/0x110 fs/block_dev.c:816
- i_callback+0x3f/0x70 fs/inode.c:222
- rcu_do_batch kernel/rcu/tree.c:2550 [inline]
- rcu_core+0x7ab/0x1380 kernel/rcu/tree.c:2785
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:27 [inline]
-RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:197
-Code: 01 f0 4d 89 03 e9 63 fd ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 00 <65> 8b 05 f9 41 8c 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b
-RSP: 0018:ffffc9000dccf1d8 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801c27d4c0 RSI: ffffffff815d5923 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8fceb8a7
-R10: ffffffff815d5919 R11: 0000000000000000 R12: ffffffff84c5a900
-R13: 0000000000000200 R14: dffffc0000000000 R15: ffffc9000dccf238
- console_unlock+0x7c9/0xc40 kernel/printk/printk.c:2653
- vprintk_emit+0x1ca/0x560 kernel/printk/printk.c:2174
- vprintk+0x8d/0x260 kernel/printk/printk_safe.c:392
- printk+0xba/0xed kernel/printk/printk.c:2216
- nbd_genl_connect.cold+0x157/0x16f drivers/block/nbd.c:1852
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665e9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f69709a7188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665e9
-RDX: 0000000000000000 RSI: 0000000020000540 RDI: 0000000000000006
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
-R13: 00007ffca6ecd5bf R14: 00007f69709a7300 R15: 0000000000022000
-
-Allocated by task 11042:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:522
- kmalloc_node include/linux/slab.h:609 [inline]
- kzalloc_node include/linux/slab.h:732 [inline]
- __alloc_disk_node+0x4e/0x380 block/genhd.c:1246
- __blk_mq_alloc_disk+0xec/0x190 block/blk-mq.c:3145
- nbd_dev_add+0x2a9/0x940 drivers/block/nbd.c:1703
- nbd_genl_connect+0x551/0x1820 drivers/block/nbd.c:1842
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 11042:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1625 [inline]
- slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1650
- slab_free mm/slub.c:3210 [inline]
- kfree+0xe4/0x530 mm/slub.c:4264
- __alloc_disk_node+0x2e8/0x380 block/genhd.c:1271
- __blk_mq_alloc_disk+0xec/0x190 block/blk-mq.c:3145
- nbd_dev_add+0x2a9/0x940 drivers/block/nbd.c:1703
- nbd_genl_connect+0x551/0x1820 drivers/block/nbd.c:1842
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888016977000
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 0 bytes inside of
- 512-byte region [ffff888016977000, ffff888016977200)
-The buggy address belongs to the page:
-page:ffffea00005a5d00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x16974
-head:ffffea00005a5d00 order:2 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 ffffea0001164f00 0000000500000005 ffff888010841c80
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 824, ts 2603409140, free_ts 0
- prep_new_page mm/page_alloc.c:2436 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4169
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5391
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- alloc_slab_page mm/slub.c:1688 [inline]
- allocate_slab+0x32e/0x4b0 mm/slub.c:1828
- new_slab mm/slub.c:1891 [inline]
- new_slab_objects mm/slub.c:2637 [inline]
- ___slab_alloc+0x473/0x7b0 mm/slub.c:2800
- __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2840
- slab_alloc_node mm/slub.c:2922 [inline]
- slab_alloc mm/slub.c:2964 [inline]
- kmem_cache_alloc_trace+0x30f/0x3c0 mm/slub.c:2981
- kmalloc include/linux/slab.h:591 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- alloc_bprm+0x51/0x8f0 fs/exec.c:1501
- kernel_execve+0x55/0x460 fs/exec.c:1941
- call_usermodehelper_exec_async+0x2e3/0x580 kernel/umh.c:112
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888016976f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888016976f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888016977000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888016977080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888016977100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
+-- 
+viresh
