@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEC43E8B9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7AE3E8B9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235945AbhHKIPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:15:51 -0400
-Received: from www381.your-server.de ([78.46.137.84]:54956 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbhHKIPt (ORCPT
+        id S235884AbhHKIRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:17:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232489AbhHKIRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:15:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=dUpACG8aiUQKUG+rkp01YuOY1SDfByf1trncBtx1z7c=; b=ds9Nrz6zHCpeudTBYLZWmxaPs6
-        XBTPus2B+JHGUjVVUrYMQGJb5tLCuIRZR7YqtCkAlJNzWNAYVQBDHqpswMrJEz+cq6lWpNXVCO5lH
-        uGTohanqNiQRvqT5dKXLxFxPxJL4ZBtlUVidO4E4bepmSnZ6cCL/hCA/seUeYvvzG2y5OTu4/YHYJ
-        dQVgi8TZ+k/W1KWL1gUP14kTQbR7K6ICcn/M6hV7f1IxALf6SpI8hK48ICQ9SwctLREwoACbBoIab
-        alq3P6WVHT/Zkf737PKgKOHv13S3v9ACiQKdVviYh1Y8sq9vvPiVif04d4Lqu6rTFfQrhMVMZsCCe
-        QE6e4lpw==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mDjOH-00017W-Sp; Wed, 11 Aug 2021 10:15:09 +0200
-Received: from [62.216.202.4] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mDjOH-0006Xj-HU; Wed, 11 Aug 2021 10:15:09 +0200
-Subject: Re: [PATCH v2 2/2] iio: potentiometer: Add driver support for AD5110
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-Cc:     "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        Darius <Darius.Berghe@analog.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Slawomir Stepien <sst@poczta.fm>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-References: <20210809075745.160042-1-dmugil2000@gmail.com>
- <20210809075745.160042-3-dmugil2000@gmail.com>
- <CAHp75Ve=D1d5wFZgNseP=wGpteEkZHnmAi7j9ykKC+u_NrR5xw@mail.gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <013bcb79-c496-44d8-2e93-57eb57834ee0@metafoo.de>
-Date:   Wed, 11 Aug 2021 10:15:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 11 Aug 2021 04:17:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628669799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zI0/uAuYDFBcIURwjRZoalT1u5FlB/tQ3FmUvIqhq04=;
+        b=WwNRybbzTLUZOGeihLtK5fiMTvNAxwUa0dJx/du8G67g1ezV3JZ5xzR3OIwocebmXJ6PPD
+        JIOssC+HgTVgVfK41T+dyIpraWRqlkxR7BKIqodb18JiBLLUuoNBzKlrCYcAusXfgILepF
+        xXMVj8U65wPlIbSqGS/vBlCYbOThzkM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-D5vahKqcM-u3TUMOAR0Wfg-1; Wed, 11 Aug 2021 04:16:38 -0400
+X-MC-Unique: D5vahKqcM-u3TUMOAR0Wfg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46449DF8A5;
+        Wed, 11 Aug 2021 08:16:37 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-13-243.pek2.redhat.com [10.72.13.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 09A295C23A;
+        Wed, 11 Aug 2021 08:16:29 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ivan@prestigetransportation.com,
+        xiangxia.m.yue@gmail.com, willemb@google.com, edumazet@google.com
+Subject: [RFC PATCH] virtio-net: use NETIF_F_GRO_HW instead of NETIF_F_LRO
+Date:   Wed, 11 Aug 2021 16:16:23 +0800
+Message-Id: <20210811081623.9832-1-jasowang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Ve=D1d5wFZgNseP=wGpteEkZHnmAi7j9ykKC+u_NrR5xw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26259/Tue Aug 10 10:19:56 2021)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/21 2:49 PM, Andy Shevchenko wrote:
->
->> +       data->tol = data->cfg->kohms * (val & GENMASK(6, 0)) * 10 / 8;
->> +       if (!(val & BIT(7)))
->> +               data->tol *= -1;
-> Shouldn't you simple use corresponding sign_extend*()?
-The data is encoded a sign-magnitude. sign_extend() works for two's 
-complement numbers.
+Commit a02e8964eaf92 ("virtio-net: ethtool configurable LRO") tries to
+advertise LRO on behalf of the guest offloading features and allow the
+administrator to enable and disable those features via ethtool.
 
+This may lead several issues:
+
+- For the device that doesn't support control guest offloads, the
+  "LRO" can't be disabled so we will get a warn in the
+  dev_disable_lro()
+- For the device that have the control guest offloads, the guest
+  offloads were disabled in the case of bridge etc which may slow down
+  the traffic.
+
+Try to fix this by using NETIF_F_GRO_HW instead so we're not
+guaranteed to be re-segmented as original. Or we may want a new netdev
+feature like RX_GSO since the guest offloads for virtio-net is
+actually to receive GSO packet.
+
+Or we can try not advertise LRO is control guest offloads is not
+enabled. This solves the warning but will still slow down the traffic.
+
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/net/virtio_net.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 0416a7e00914..10c382b08bce 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -63,7 +63,7 @@ static const unsigned long guest_offloads[] = {
+ 	VIRTIO_NET_F_GUEST_CSUM
+ };
+ 
+-#define GUEST_OFFLOAD_LRO_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
++#define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_UFO))
+@@ -2481,7 +2481,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM))) {
+-		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing LRO/CSUM, disable LRO/CSUM first");
++		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+@@ -2612,15 +2612,15 @@ static int virtnet_set_features(struct net_device *dev,
+ 	u64 offloads;
+ 	int err;
+ 
+-	if ((dev->features ^ features) & NETIF_F_LRO) {
++	if ((dev->features ^ features) & NETIF_F_GRO_HW) {
+ 		if (vi->xdp_enabled)
+ 			return -EBUSY;
+ 
+-		if (features & NETIF_F_LRO)
++		if (features & NETIF_F_GRO_HW)
+ 			offloads = vi->guest_offloads_capable;
+ 		else
+ 			offloads = vi->guest_offloads_capable &
+-				   ~GUEST_OFFLOAD_LRO_MASK;
++				   ~GUEST_OFFLOAD_GRO_HW_MASK;
+ 
+ 		err = virtnet_set_guest_offloads(vi, offloads);
+ 		if (err)
+@@ -3100,9 +3100,9 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 		dev->features |= NETIF_F_RXCSUM;
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+ 	    virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO6))
+-		dev->features |= NETIF_F_LRO;
++		dev->features |= NETIF_F_GRO_HW;
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS))
+-		dev->hw_features |= NETIF_F_LRO;
++		dev->hw_features |= NETIF_F_GRO_HW;
+ 
+ 	dev->vlan_features = dev->features;
+ 
+-- 
+2.25.1
 
