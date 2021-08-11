@@ -2,83 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA683E8BEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBEE3E8BF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236178AbhHKIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236012AbhHKIiv (ORCPT
+        id S236195AbhHKIjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:39:36 -0400
+Received: from mo-csw1115.securemx.jp ([210.130.202.157]:49262 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236074AbhHKIjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:38:51 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1116FC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:38:28 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id t9so4062144lfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AaNOC3cQ/uorpXn6DtIck0TXPz/EwiFlRh4xw/zA/n0=;
-        b=Y7TepyPwo5NDwLntwW51ULnit/gk52wZ3nqcPd4Pw7P4wPxvskf0EbFqjuVM7QmMLN
-         WOAs78fOmyBajz3GLxhvF7abXEfFIxfLG+bceaUFjwyZUWKAm1e8neQvgRnDTGJSu7Lk
-         gzqtg1cj9VBOk9EzNQpwuiqlHsfe/PMx6QZjfuhegZIOVtId2HT9r/k02mULPrJOwwLT
-         c1JBidqXV8MfEBIDRq4TOcphTR4sZku5Fjh3bqZPLjsNlszwIXpbuYfv94MbIW3kgSYu
-         vPPmBoaN5ll980SI0nWnpqsQDBUgpoMHi5cOSl4x9hcwjkO8gXRkxa6WVqVQFI6K6d1C
-         rVcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AaNOC3cQ/uorpXn6DtIck0TXPz/EwiFlRh4xw/zA/n0=;
-        b=LxOXng9/awhxql7mUiSsf61iW90ZmBn89nqIzzk9t/k1EfRznQFesG4yXtvvQhICPu
-         Plu8GtpwM+1RJja8LXL+NU9nWeHEc72yGGyedeSD//TLfbapchX5sBdP0rjM8NEGGpZX
-         08jWC6f8KnXFzm6138XeQ0VTPLBGaUFN4Y9TkvQWJeW352SsEIR+RcSGj+4dKaDK2Xum
-         kxaxeV9K2iNDodRwcXUlItqcNGcStLw+0Lns1bm3+UQX8nWos8IOL6IVMGeS3RnsVry5
-         vACTOjdNXcLJ3uK56mI1SbDvUM402pVi2SpjtJAFRIU7wr4Diw5UueUCIEJNf0nK805G
-         8XJg==
-X-Gm-Message-State: AOAM530dZlkDiTZ0M5wrPMSVxPAYtCgmQURmt7Um6WSFei7LmxdlC0QU
-        k8qn7oF4zbtuxZVx0jXYqRAtkG1QmVkz5ZVBL2/w6w==
-X-Google-Smtp-Source: ABdhPJx7v0Fu/ELoRaBaA9FkYkMoNYsLY1wBNnd0D/uWJPSi2EWxY8BDYUIAPPDVJd36CEeCmD3X72In5OwfijSe++Q=
-X-Received: by 2002:a05:6512:32a3:: with SMTP id q3mr13185278lfe.157.1628671106413;
- Wed, 11 Aug 2021 01:38:26 -0700 (PDT)
+        Wed, 11 Aug 2021 04:39:35 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 17B8ceTn029249; Wed, 11 Aug 2021 17:38:40 +0900
+X-Iguazu-Qid: 2wHI1WtxCCdJWdk7yS
+X-Iguazu-QSIG: v=2; s=0; t=1628671120; q=2wHI1WtxCCdJWdk7yS; m=uhCheTdU5gs+WCRi6kl3yWL7U8eyQmXgnGl4qr7N7go=
+Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
+        by relay.securemx.jp (mx-mr1112) id 17B8ccHa006735
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 11 Aug 2021 17:38:39 +0900
+Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id 7DB6D1000E0;
+        Wed, 11 Aug 2021 17:38:38 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 17B8cbbN018239;
+        Wed, 11 Aug 2021 17:38:38 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-pci@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        devicetree@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v6 0/3] Visconti: Add Toshiba Visconti PCIe host controller driver
+Date:   Wed, 11 Aug 2021 17:38:27 +0900
+X-TSB-HOP: ON
+Message-Id: <20210811083830.784065-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com> <20210726125436.58685-3-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210726125436.58685-3-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 10:38:15 +0200
-Message-ID: <CACRpkdZ5NZA0XCZe5X0g6uRGn6cdeFcvtR8WrRoNtu8EwrMV2Q@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
- software nodes
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 2:54 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Hi,
 
-> The driver can provide a software node group instead of
-> passing legacy platform data. This will allow to drop
-> the legacy platform data structures along with unifying
-> a child device driver to use same interface for all
-> property providers, i.e. Device Tree, ACPI, and board files.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files.
 
-This is really nice, I wish I knew better how to use this mechanism
-myself, so I need to practice.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Best regards,
+  Nobuhiro
 
-Yours,
-Linus Walleij
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+    v5 -> v6:
+      - No update.
+    v4 -> v5:
+      - No update.
+    v3 -> v4:
+     - Changed the redundant clock name.
+    v2 -> v3:
+      - No update.
+    v1 -> v2:
+      - Remove white space.
+      - Drop num-viewport and bus-range from required.
+      - Drop status line from example.
+      - Drop bus-range from required.
+      - Removed lines defined in pci-bus.yaml from required.
+
+  PCI: visconti: Add Toshiba Visconti PCIe host controller driver
+    v5 -> v6:                                                                                                                                                                                                                                                                                                                         - Remove unnecessary commit log.                                                                                                                                                                                                                                                                                                - Fix split line of visconti_add_pcie_port() 
+    v4 -> v5:
+      - Remove PCIE_BUS_OFFSET
+      - Change link_up confirmation function of visconti_pcie_link_up().
+      - Move setting event mask before dw_pcie_link_up().
+      - Move the contents of visconti_pcie_power_on() to visconti_pcie_host_init().
+      - Remove code for link_gen.
+    v3 -> v4:
+      - Change variable from pci_addr to cpu_addr in visconti_pcie_cpu_addr_fixup().
+      - Change the calculation method of CPU addres from subtraction to mask, and
+        add comment.
+      - Drop dma_set_mask_and_coherent().
+      - Drop set MAX_MSI_IRQS.
+      - Drop dev_dbg for Link speed.
+      - Use use the dev_err_probe() to handle the devm_clk_get() failed.
+      - Changed the redundant clock name.
+    v2 -> v3:
+      - Update subject.
+      - Wrap description in 75 columns.
+      - Change config name to PCIE_VISCONTI_HOST.
+      - Update Kconfig text.
+      - Drop empty lines.
+      - Adjusted to 80 columns.
+      - Drop inline from functions for register access.
+      - Changed function name from visconti_pcie_check_link_status to
+        visconti_pcie_link_up.
+      - Update to using dw_pcie_host_init().
+      - Reorder these in the order of use in visconti_pcie_establish_link().
+      - Rewrite visconti_pcie_host_init() without dw_pcie_setup_rc().
+      - Change function name from  visconti_device_turnon() to
+        visconti_pcie_power_on().
+      - Unify formats such as dev_err().
+      - Drop error label in visconti_add_pcie_port(). 
+    v1 -> v2:
+      - Fix typo in commit message.
+      - Drop "depends on OF && HAS_IOMEM" from Kconfig.
+      - Stop using the pointer of struct dw_pcie.
+      - Use _relaxed variant.
+      - Drop dw_pcie_wait_for_link.
+      - Drop dbi resource processing.
+      - Drop MSI IRQ initialization processing.
+  
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+    v5 -> v6:
+      - No update.
+    v4 -> v5:
+      - No update.
+    v3 -> v4:
+      - No update.
+    v2 -> v3:
+      - No update.
+    v1 -> v2:
+      - No update.
+
+Nobuhiro Iwamatsu (3):
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+  PCI: visconti: Add Toshiba Visconti PCIe host controller driver
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+
+ .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++
+ MAINTAINERS                                   |   2 +
+ drivers/pci/controller/dwc/Kconfig            |   9 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-visconti.c    | 333 ++++++++++++++++++
+ 5 files changed, 455 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
+
+-- 
+2.32.0
+
