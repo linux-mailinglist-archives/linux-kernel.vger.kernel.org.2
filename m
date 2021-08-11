@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8BB3E8F72
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCF43E8F79
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 13:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237283AbhHKL1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 07:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhHKL1p (ORCPT
+        id S237180AbhHKL3t convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Aug 2021 07:29:49 -0400
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:43569 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237210AbhHKL3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 07:27:45 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48688C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:27:22 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id p22so707359qki.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 04:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M8xB0E2B1K+5eOLxbxOIv4aQXqMJ7e2Gt5MyPt4i1Sg=;
-        b=nL/Xhm/jqNW742WksYFcYXw88JayWRSdCcC7mtJuyJ+1sT0Btf03OBt7djwxwRIGKh
-         whc/Kpe4MxLoS2EGqgHgx43YrkIJwxxZwPjyYzPOx0TMJ8/dR0vw9VQUPVy1JCLmTrjc
-         FEpzCJkMZk6hWb91p3CLrMg1D9Pr2vlyvHP2/syvo6ic9yFf3ygOTFzJUn9ruBtLZmsz
-         C9XwoGI2gb1uRVv7h4BhHPBmKE0x7+VvpIm9CNhEiBaAsH0UvI2Hr1BBxAFPym5OOanS
-         8NWYKqRtHfalYAU/Bvb2dcxOEnL/q/xYLlbtUTGHVuK0bLwQigZKGlXomBIEVOO1ffR7
-         s1Pw==
+        Wed, 11 Aug 2021 07:29:42 -0400
+Received: by mail-vs1-f45.google.com with SMTP id s196so1240625vsc.10;
+        Wed, 11 Aug 2021 04:29:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M8xB0E2B1K+5eOLxbxOIv4aQXqMJ7e2Gt5MyPt4i1Sg=;
-        b=gRkUuSsUQm3m9Xc00ATciLpP7Fd6Axh/d7sVpJimHc4jeQ67kr0PS1E87Xtoxaiqz9
-         PQ769ymHwOcbU6pJnj2BdQhTijU9Czg5VYyLr5ka794TYYnyAb9hcPNDds942knnh1SY
-         tqCUjOqHGsOcAikPHp0iZcQ6jNdrg/ah3xK0jB85Ku8iLwaNaXB8dtNhV9lO29dGNyk0
-         AYFBSptCZ0IFoGNcsj469w5q4fC1qn9bdr1jUHP8v1CGNmdwCuoyq0qUtfaT/JQBgzOm
-         4wdvHZAk2F4Hg77vmYPrOqmYU2zmNYuGl+zvaBpQwaK/IBYc2fKuBb+KFBEemRkb8ith
-         7zDw==
-X-Gm-Message-State: AOAM5304qD5NskmW4cg9Mn+u65de+2+hYoXpl8OjOQWviHqe+dkDQUuI
-        p8zNWm7dXwQdRRsn71+yePxkrA==
-X-Google-Smtp-Source: ABdhPJww/x+iu4ttunbR4CGsUfuQLgc7BaGhPZS72OfL2EQHH4R1Z3rVtsaKuWqV03jE4AysrY8mUg==
-X-Received: by 2002:a37:a8ca:: with SMTP id r193mr30777288qke.191.1628681241460;
-        Wed, 11 Aug 2021 04:27:21 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id d4sm9153573qty.15.2021.08.11.04.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 04:27:20 -0700 (PDT)
-Subject: Re: [Patch v5 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
- support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        steev@kali.org, tdas@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210809191605.3742979-1-thara.gopinath@linaro.org>
- <20210809191605.3742979-4-thara.gopinath@linaro.org>
- <20210810024723.qne6ntjtv5zxf576@vireshk-i7>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <2ea49a1c-5336-5a52-43ff-2000a7b0d25e@linaro.org>
-Date:   Wed, 11 Aug 2021 07:27:19 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=40wisL4/SKjdMqbDzvwZrkyDfanri5aoKVnQRyWUuY0=;
+        b=SyG6+XczyIGKkdTh4UR41xo5YbZc+ITtlXgZsw+I7R9zWx0YDIqWadUMBjDz1F9WBx
+         6B++eWQDkkBRTwSNCRJUuVjSdXO6XOv1eixJFAiivX8K7gGA7Q8xzctv9xnHX9UvaiLD
+         o1GNzDsw+mjumXC99nphkWAQpzPWgQZXfJEKlxuIuRpspJTWMfD4HzH+PvPvOv8SwmoD
+         oXGfcXRAYQrdLtGsfUQhemsBfC3a8WAx49scXrEseDo5thDJiyClflda/zuUoqbGU1pL
+         q9BAWKt1GZC3wVxVmwQPItLMCrBZkaMqscsuSaq+/NBOUV7dy2lKLYccCDKxGPr/Puv6
+         Ge/Q==
+X-Gm-Message-State: AOAM533G4k4AwlQALJnnZow/MxtR0erk3C6vPZrTVm8XDMdulay5fT05
+        ZU1zppPlQ8mK5ettEk0Dgeohe88pVSzKTVJ5amg=
+X-Google-Smtp-Source: ABdhPJy4XrbkHkqk1N7n531OJu2JQkcYcvarSrfV7a1TjAP6AU3ROsnF7Eatvrj+CJP4HBfqYOWJdNPELnM5eP6VJV4=
+X-Received: by 2002:a67:e2c7:: with SMTP id i7mr25004885vsm.3.1628681358404;
+ Wed, 11 Aug 2021 04:29:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210810024723.qne6ntjtv5zxf576@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210811095759.1281480-1-geert@linux-m68k.org>
+ <20210811095759.1281480-20-geert@linux-m68k.org> <20210811124755.37b0a0a9@thinkpad>
+In-Reply-To: <20210811124755.37b0a0a9@thinkpad>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 11 Aug 2021 13:29:07 +0200
+Message-ID: <CAMuHMdUFPvJBuFByiN6pb539REYtcsNJMKML+M2NQw=GJxTYJg@mail.gmail.com>
+Subject: Re: [PATCH v5 19/19] auxdisplay: ht16k33: Add LED support
+To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marek,
 
+On Wed, Aug 11, 2021 at 12:48 PM Marek Behún <kabel@kernel.org> wrote:
+> On Wed, 11 Aug 2021 11:57:59 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> > Instantiate a single LED based on the "led" subnode in DT.
+> > This allows the user to control display brightness and blinking (backed
+> > by hardware support) through the LED class API and triggers, and exposes
+> > the display color.  The LED will be named
+> > "auxdisplay:<color>:<function>".
+> >
+> > When running in dot-matrix mode and if no "led" subnode is found, the
+> > driver falls back to the traditional backlight mode, to preserve
+> > backwards compatibility.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> Reviewed-by: Marek Behún <kabel@kernel.org>
 
-On 8/9/21 10:47 PM, Viresh Kumar wrote:
-> On 09-08-21, 15:16, Thara Gopinath wrote:
->> Add interrupt support to notify the kernel of h/w initiated frequency
->> throttling by LMh. Convey this to scheduler via thermal presssure
->> interface.
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->> ---
->>
->> v4->v5:
->> 	- Changed throttle_lock from a spinlock to mutex to take potential
->> 	  race between LMh de-init sequence and reenabling of
->> 	  interrupts/polling after a thermal throttle event.
->> 	- Other cosmetic fixes as pointed out by Viresh.
-> 
-> How do you expect this to get merged ? I pick up this patch alone ?
+Thanks!
 
-Hi.
+> BTW, this driver does not need to depend on OF, methinks.
+> The few instances of properties reading can be
+> easily rewritten to device_* functions (from include/linux/property.h).
+> The of_get_child_by_name() can become device_get_named_child_node().
+>
+> Geert, what do you think?
 
-Yes, you can pick up this patch alone. This patch is standalone and has 
-no dependencies. Once you do that, I will drop it from my series.
+Sure, that can be done later, when an ACPI user appears?
+The dependency on OF was pre-existing, and this series is already
+at v5.
 
-> 
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Warm Regards
-Thara (She/Her/Hers)
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
