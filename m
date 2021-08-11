@@ -2,92 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126333E95CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226373E95D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 18:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhHKQVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 12:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S229749AbhHKQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 12:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHKQVE (ORCPT
+        with ESMTP id S229588AbhHKQWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 12:21:04 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382ACC061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:20:40 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id w1so6711838lfq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:20:40 -0700 (PDT)
+        Wed, 11 Aug 2021 12:22:33 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3028C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:22:08 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id z11so4552844edb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TP3ufg1FSgd52Z8zyecJ3z2FJfxxpEJLtGauUCReCG0=;
-        b=EA116gbTFYV7o499N6EJRHWJpCb8E2cDR0KgG9vT5t8Ki0uDt41w7TZRef7nzLjAUy
-         UxWG1a3ITXp/zwWJES+A2QmPSrpf6qK3SJgg3e2aC00nDoCc1sPpGjZf8HpjD4pZnot3
-         ERmXXUn8oCwiDwA5toJaM50lGWo9uwncEZGX0=
+         :cc:content-transfer-encoding;
+        bh=sw6Jt0zasQwCv1AHq12NR9c9myNo+U4Sy7Uas4YKZJo=;
+        b=aam0OJSRZraEPiPFnu5HPKBpyfB816nzuXH/FJKkrnqurvSQjtPd7WwxBnzycfR+BZ
+         aDRHVlbWMwpRq2/wYWzyXdcbUjTIZZEoAP/+A7WB+Zb80UXB4P8M0JWwuP1eKNe4QQ7c
+         hNIEQ6E45Wohqv+Rj0pmVdbIdyU8QeJVYSmxT3eRANVgmjKQHOAXIfSfLOrlaSxnTL3a
+         10oggmhoV7biMamQTefrwl14O7RebVIKEsWib6CyI3S4OQO0fPYTvHpgvlMBwqO2fqYV
+         DU/PSb5jqcppbBLGgw96xEOvB8mx2xEIHOz5oSvR49fD5jlb2VlaM8HfiIIZLwQecTtn
+         JB6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TP3ufg1FSgd52Z8zyecJ3z2FJfxxpEJLtGauUCReCG0=;
-        b=QwXnWixBeTmiv+DeM347gQNc4vdpcoMQgh31XkiP41Ts3inhyiNF2nqLfjplp/UpPj
-         P4CPKOpAqUIimSrzagqLavwR56Y0Kis1Bwl7/KGFcabSyyBnESXe6HDJWd+Y1lVUGygQ
-         WZm+Odn28I4LnIM/S5J/8DWlEvsXCJphaQzDi70il1ot7p2EEuerfCe9u09tDp3USsE0
-         pEJBFWOkgFTnpeEL+jsJxbKWoOPGI/N4BCRUhk0A6Df6IclzD0VqWVO/k26hHdjMPk7y
-         8KxwsrXVfUJojjMCgr191tHkRM9Nx9+sjvTIKg8WXRGvNd5TFabRzNTn/chgoQBAaaNv
-         lklA==
-X-Gm-Message-State: AOAM5326uazhCvApvAkN2PMl1koiLpVQVqkAYuF5i/KYfRVweOdcI8K1
-        RW5IzTeQMjrEDsY7oDng2QID4Q3Ni2JK1zU9M0w=
-X-Google-Smtp-Source: ABdhPJxgc5/4JFmCUWV70GI8+ubauuP2AejaHxq+XLMk4UJbeztV52TcNTzIqM2cHre4neMNHir5Sw==
-X-Received: by 2002:a05:6512:3b0f:: with SMTP id f15mr27748809lfv.187.1628698838236;
-        Wed, 11 Aug 2021 09:20:38 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id u18sm739276lfo.280.2021.08.11.09.20.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 09:20:37 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id t9so6915454lfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 09:20:37 -0700 (PDT)
-X-Received: by 2002:a19:491b:: with SMTP id w27mr11814406lfa.421.1628698837270;
- Wed, 11 Aug 2021 09:20:37 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sw6Jt0zasQwCv1AHq12NR9c9myNo+U4Sy7Uas4YKZJo=;
+        b=Uiq4qxv8tEoKuFHaQmSsevVQXSTtd9GbeiS5rjpLrtFnFKWuOcSZyjrC5oXqQghAnx
+         Ny0mKvWPFkP+uXwVGenJEg6LzWpopSEAGXroRZYa8SMBWHc3MFEjftpVSrEq0oRhXzv0
+         TMpu2rtkxv8gnCr7wrqjOQu36NkUhtWUXSwJYmTlFh5IaoEJIM0zR0Ydx/Jt7TMQ3LNH
+         kpFGss1eOAuYm5QzdGakVjJVl7eSiCUVZ5lbn/CsTX2Pa7CyM1x39aZbak+pNMdk9r/+
+         4PflAv0W1CkUNHgfpxCxZ8XD0UiZht/eoZkEsuld8Tt8sa4Tfg+noa/BikXci4uVaQWV
+         rCCw==
+X-Gm-Message-State: AOAM532voWyge+yogrG2Q66GaiktgqNVmtL3tukDAZDJora5eHc5tJq9
+        Qb5pzWvK/3rUpDldH+VUnRqaOp9pIcJ9q/6EWEZDRg==
+X-Google-Smtp-Source: ABdhPJys2f8IHZkB8vWkiWg0q/z4QZxCaZ4QVZ7qfGlbJldrou1SgKA3LCZqQFgsGFibTEvkzJ/CvftElPXKVgANBnY=
+X-Received: by 2002:aa7:cb9a:: with SMTP id r26mr12361302edt.78.1628698926906;
+ Wed, 11 Aug 2021 09:22:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <YRPaodsBm3ambw8z@miu.piliscsaba.redhat.com> <c13de127-a7f0-c2c3-cb21-24fce2c90c11@redhat.com>
-In-Reply-To: <c13de127-a7f0-c2c3-cb21-24fce2c90c11@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 11 Aug 2021 06:20:21 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wg6AAX-uXHZnh_Fy=3dMTQYm_j6PKT3m=7xu-FdJOCxng@mail.gmail.com>
-Message-ID: <CAHk-=wg6AAX-uXHZnh_Fy=3dMTQYm_j6PKT3m=7xu-FdJOCxng@mail.gmail.com>
-Subject: Re: mmap denywrite mess (Was: [GIT PULL] overlayfs fixes for 5.14-rc6)
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org
+References: <20210810173000.928681411@linuxfoundation.org>
+In-Reply-To: <20210810173000.928681411@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 11 Aug 2021 21:51:55 +0530
+Message-ID: <CA+G9fYtX+CeD3xV16TMuhvee_YpE1REkicoPtNRttnAQh-ey2g@mail.gmail.com>
+Subject: Re: [PATCH 5.13 000/175] 5.13.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 4:45 AM David Hildenbrand <david@redhat.com> wrote:
+On Tue, 10 Aug 2021 at 23:13, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> I proposed a while ago to get rid of VM_DENYWRITE completely:
+> This is the start of the stable review cycle for the 5.13.10 release.
+> There are 175 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> https://lkml.kernel.org/r/20210423131640.20080-1-david@redhat.com
+> Responses should be made by Thu, 12 Aug 2021 17:29:30 +0000.
+> Anything received after that time might be too late.
 >
-> I haven't looked how much it still applies to current upstream, but
-> maybe that might help cleaning up that code.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.13.10-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.13.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I like it.
 
-I agree that we could - and probably should - just do it this way.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-We don't expose MAP_DENYWRITE to user space any more - and the old
-legacy library loading code certainly isn't worth it - and so
-effectively the only way to set it is with execve().
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-And yes, it gets rid of all the silly games with the per-mapping flags.
+## Build
+* kernel: 5.13.10-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.13.y
+* git commit: 97aa49c885ec4453ea3d76036935989e68a6175b
+* git describe: v5.13.9-176-g97aa49c885ec
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
+.9-176-g97aa49c885ec
 
-               Linus
+## No regressions (compared to v5.13.9)
+
+
+## No fixes (compared to v5.13.9)
+
+
+## Test result summary
+total: 86407, pass: 70850, fail: 2091, skip: 12372, xfail: 1094
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
