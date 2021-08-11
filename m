@@ -2,79 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1C13E8BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586953E8BC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 10:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236044AbhHKIZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 04:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        id S236138AbhHKIZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 04:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbhHKIZi (ORCPT
+        with ESMTP id S236088AbhHKIZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 04:25:38 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124D8C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:25:15 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id h9so3237929ljq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:25:14 -0700 (PDT)
+        Wed, 11 Aug 2021 04:25:43 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF76EC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:25:19 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id f5so1816627wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 01:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zYG5OW/GuymVifdul+I5Blg04g1AAAuKaCzk0pvxhf0=;
-        b=JkV7+VuBX5K8gla+CwLaHXvUhgX/3/dJKO5GvH3X+2fpHvc1tFi1HU1F0ziyTvpwf5
-         QPM7g2HMUSED4KzVS/g/93Duae/vBTVp6NehMfjyCW1VA7AgjotRGjj+qxQylG2s3Wbf
-         bPWzUwSX19VB0o394R2/B8eURFP2w3Yto/QB+Pug9yFjCGd5zwjlVbQOv2vGk6hv744V
-         83I0NxCVq5gx8hG4Jy+sBpnSxOo0BYgeYXD5sFnWakt0/dbE3woTztU3g1TZhQ/dTac7
-         zoGO6i3JdC/phPsXewy/Io6GaXQe+zOnBKcvcziyK/tt3l0HaMe6NA1qa+ZEOJHJmliP
-         gDew==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=JopxvpFcF/xGESdrh4YQ6rS5KF8DueMkBM15FR5p2zI=;
+        b=n3GjMA9nWMZfHn1qsTgkJAuyGzL7OvGstvZa+uwtSC2+i980Z9CA2iu8oOVRxObgnI
+         Aezd0jo4cnZVKdtebsXlMzqO10Q6xB2O8BzwtbmHl24c9jv5M6oyfUUaAH7bxs6uIenr
+         PbJclzvvkgFR4FwGJ5ueJGIurDvI092GZu3MAvZr5zYCIO2ndBJd/aCoHNOSOV9kEBUB
+         eqE78uIrrVM4Xd9n3xrmpsEfjY6oPgBlmdOGzcG9w5XyTZ9PTG19MMPUmjpRJPEqTrNQ
+         gRe7+3ARCXmXuoIe8vsh5v4FslmItbLzrM3ZumlK2nit9Fm5W2D2ovf5PV++CBuAfL+1
+         pmYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zYG5OW/GuymVifdul+I5Blg04g1AAAuKaCzk0pvxhf0=;
-        b=Pf8rVLeLbwk1TI8BJDk5wCLZDVYMReheWVSUopZJNs/1AX9S4T/vWqpw5TSUVDifcn
-         m+KKLL/6dtMDX+n4IGaZ7yAGQ0sZJx7aI/HplzX/fkL/vcQ8EUXsjB8tCbU7AdXp8AX1
-         +a2rmfc3hfobo86q140tVNd7xIRlhwZC9/fyPIVfPoSsrrc2FZ1fNLambCmqRBAtMScH
-         KyzILsqGlkrthejffru/laDrwMnp+gi+oXD0iO/R9h1CSZehF+vA0sGSq9R+0jITpf//
-         TQWbfaoxKii2P4zEkF2skbHuO5GjdUZIjm25gUTpZburPfQ7mzDG74mAZCO/AXydo6OF
-         EfFA==
-X-Gm-Message-State: AOAM5316ebItUSj+iJ9KdoDPvPGzoQO2iZTgwOKo5utZxvR4aNYoP7g/
-        NW1t/lBHO/gTXvLG1xqvV0KzoHnHL8LhZhsejHSysw==
-X-Google-Smtp-Source: ABdhPJyCWvmoleKs+xBVZZ6DUMgjMXPl0OJ3a6DQFu9ePBD1OEIdGRr9JPO3iNfDJuIooutbqNKEx3Horr68DKpJ8SY=
-X-Received: by 2002:a2e:9a4b:: with SMTP id k11mr11984502ljj.368.1628670313474;
- Wed, 11 Aug 2021 01:25:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=JopxvpFcF/xGESdrh4YQ6rS5KF8DueMkBM15FR5p2zI=;
+        b=hez5wx04tqlsCQKHoXlTQWyY/wzQfeBCmbfytrm7pHT3OemYhgIaffpqkUDT7L/Z0n
+         6THcrdPIlZSAMz2c8eZF2XAkZCZy1R0DsDInhE8gYkimwej3xdtHwwCKuvfcNL+UwgRC
+         XI0evcO/rEeegrirOXzg9UgIQkGQtqcaCWzKHO22ynMU+xD+ZhLWJ8MMSqyMcBmdT9oD
+         C1b5ihJF299iFi4QjjZoOA1rym5roPNok2XkcWLF7xFrBV0Axrmiu9Xf6rqeGzVTi4fx
+         a6yY4h12lKg6ZLBM45vKvnXR/GinfNFaUMTowbuVtqB0FENXbadnfA2T9auXIJtg2t05
+         SObQ==
+X-Gm-Message-State: AOAM530lSdp8HTEuAeUGa1HA2OUzl9idTHZ82d9HDVXZM6p8qL5S/QyL
+        uNFC64sw1b/2KcWqdlPa8pObRQ==
+X-Google-Smtp-Source: ABdhPJzo1gv8/4u+SF3MPLGpjMOnRJmhlmd5mciRp3hwMU3HZV8PLwwodWiHGXiQrJKVriPPdr7lIg==
+X-Received: by 2002:a05:6000:120d:: with SMTP id e13mr11205849wrx.6.1628670318484;
+        Wed, 11 Aug 2021 01:25:18 -0700 (PDT)
+Received: from localhost ([2a01:cb19:826e:8e00:7c84:47f9:c111:a679])
+        by smtp.gmail.com with ESMTPSA id n8sm25498969wrx.46.2021.08.11.01.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 01:25:18 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] Bluetooth: Move shutdown callback before flushing tx
+ and rx queue
+In-Reply-To: <20210810045315.184383-1-kai.heng.feng@canonical.com>
+References: <20210810045315.184383-1-kai.heng.feng@canonical.com>
+Date:   Wed, 11 Aug 2021 10:25:09 +0200
+Message-ID: <87pmuk75i2.fsf@baylibre.com>
 MIME-Version: 1.0
-References: <20210717174836.14776-1-paul@crapouillou.net> <20210717174836.14776-2-paul@crapouillou.net>
-In-Reply-To: <20210717174836.14776-2-paul@crapouillou.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 10:25:02 +0200
-Message-ID: <CACRpkdY3fyAqwGBpBBTNrERMVcP6+61DiDL6BPEFbn5BiuiQ6A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] pinctrl: ingenic: Fix bias config for X2000(E)
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        linux-mips@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 7:48 PM Paul Cercueil <paul@crapouillou.net> wrote:
+Hi Kai-Heng,
 
-> The ingenic_set_bias() function's "bias" argument is not a
-> "enum pin_config_param", so its value should not be compared against
-> values of that enum.
+Thank you for your patch.
+
+Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+
+> Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
+> are flushed or cancelled") introduced a regression that makes mtkbtsdio
+> driver stops working:
+> [   36.593956] Bluetooth: hci0: Firmware already downloaded
+> [   46.814613] Bluetooth: hci0: Execution of wmt command timed out
+> [   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
 >
-> This should fix the bias config not working on the X2000(E) SoCs.
+> The shutdown callback depends on the result of hdev->rx_work, so we
+> should call it before flushing rx_work:
+> -> btmtksdio_shutdown()
+>  -> mtk_hci_wmt_sync()
+>   -> __hci_cmd_send()
+>    -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
 >
-> Fixes: 943e0da15370 ("pinctrl: Ingenic: Add pinctrl driver for X2000.")
-> Cc: <stable@vger.kernel.org> # v5.12
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> -> btmtksdio_recv_event()
+>  -> hci_recv_frame()
+>   -> queue_work(hdev->workqueue, &hdev->rx_work)
+>    -> clears BTMTKSDIO_TX_WAIT_VND_EVT
+>
+> So move the shutdown callback before flushing TX/RX queue to resolve the
+> issue.
+>
+> Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2: 
+>  Move the shutdown callback before clearing HCI_UP, otherwise 1)
+>  shutdown callback won't be called and 2) other routines that depend on
+>  HCI_UP won't work.
+>
+>  net/bluetooth/hci_core.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index cb2e9e513907..8622da2d9395 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -1727,6 +1727,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>  	hci_request_cancel_all(hdev);
+>  	hci_req_sync_lock(hdev);
+>  
+> +	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> +	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> +	    test_bit(HCI_UP, &hdev->flags)) {
+> +		/* Execute vendor specific shutdown routine */
+> +		if (hdev->shutdown)
+> +			hdev->shutdown(hdev);
+> +	}
+> +
+>  	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+>  		cancel_delayed_work_sync(&hdev->cmd_timer);
+>  		hci_req_sync_unlock(hdev);
+> @@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>  		clear_bit(HCI_INIT, &hdev->flags);
+>  	}
+>  
+> -	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> -	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> -	    test_bit(HCI_UP, &hdev->flags)) {
+> -		/* Execute vendor specific shutdown routine */
+> -		if (hdev->shutdown)
+> -			hdev->shutdown(hdev);
+> -	}
+> -
+>  	/* flush cmd  work */
+>  	flush_work(&hdev->cmd_work);
+I confirm this works fine on mt8183-pumpkin using the btmtksdio driver.
 
-Patch applied!
-
-Yours,
-Linus Walleij
+Tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+>  
+> -- 
+> 2.31.1
