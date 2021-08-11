@@ -2,94 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34EB3E9985
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D383E998A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 22:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231878AbhHKUPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 16:15:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:57884 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232168AbhHKUPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:15:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FF461042;
-        Wed, 11 Aug 2021 13:14:45 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E4A5E3F40C;
-        Wed, 11 Aug 2021 13:14:43 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH v3 2/2] notifier: Remove atomic_notifier_call_chain_robust()
-Date:   Wed, 11 Aug 2021 21:14:32 +0100
-Message-Id: <20210811201432.1976916-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210811201432.1976916-1-valentin.schneider@arm.com>
-References: <20210811201432.1976916-1-valentin.schneider@arm.com>
+        id S231685AbhHKUPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 16:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhHKUPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 16:15:43 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA3DC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 13:15:19 -0700 (PDT)
+Received: from dslb-094-219-033-123.094.219.pools.vodafone-ip.de ([94.219.33.123] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mDud6-0004sF-2H; Wed, 11 Aug 2021 22:15:12 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH 1/5] staging: r8188eu: remove unused efuse hal components
+Date:   Wed, 11 Aug 2021 22:14:46 +0200
+Message-Id: <20210811201450.31366-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This now has no more users, remove it.
+struct hal_data_8188e contains some components related to efuses which
+are not used for rl8188eu.
 
-Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- include/linux/notifier.h |  2 --
- kernel/notifier.c        | 19 -------------------
- 2 files changed, 21 deletions(-)
+ drivers/staging/r8188eu/include/rtl8188e_hal.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-index 2fb373a5c1ed..87069b8459af 100644
---- a/include/linux/notifier.h
-+++ b/include/linux/notifier.h
-@@ -168,8 +168,6 @@ extern int raw_notifier_call_chain(struct raw_notifier_head *nh,
- extern int srcu_notifier_call_chain(struct srcu_notifier_head *nh,
- 		unsigned long val, void *v);
+diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+index ea879572d6e1..3939bf053de1 100644
+--- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
++++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+@@ -263,9 +263,6 @@ struct hal_data_8188e {
+ 	u8	bAPKThermalMeterIgnore;
  
--extern int atomic_notifier_call_chain_robust(struct atomic_notifier_head *nh,
--		unsigned long val_up, unsigned long val_down, void *v);
- extern int blocking_notifier_call_chain_robust(struct blocking_notifier_head *nh,
- 		unsigned long val_up, unsigned long val_down, void *v);
- extern int raw_notifier_call_chain_robust(struct raw_notifier_head *nh,
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index 1b019cbca594..b8251dc0bc0f 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -172,25 +172,6 @@ int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
- }
- EXPORT_SYMBOL_GPL(atomic_notifier_chain_unregister);
+ 	bool	EepromOrEfuse;
+-	/* 92C:256bytes, 88E:512bytes, we use union set (512bytes) */
+-	u8	EfuseMap[2][HWSET_MAX_SIZE_512];
+-	u8	EfuseUsedPercentage;
+ 	struct efuse_hal	EfuseHal;
  
--int atomic_notifier_call_chain_robust(struct atomic_notifier_head *nh,
--		unsigned long val_up, unsigned long val_down, void *v)
--{
--	unsigned long flags;
--	int ret;
--
--	/*
--	 * Musn't use RCU; because then the notifier list can
--	 * change between the up and down traversal.
--	 */
--	spin_lock_irqsave(&nh->lock, flags);
--	ret = notifier_call_chain_robust(&nh->head, val_up, val_down, v);
--	spin_unlock_irqrestore(&nh->lock, flags);
--
--	return ret;
--}
--EXPORT_SYMBOL_GPL(atomic_notifier_call_chain_robust);
--NOKPROBE_SYMBOL(atomic_notifier_call_chain_robust);
--
- /**
-  *	atomic_notifier_call_chain - Call functions in an atomic notifier chain
-  *	@nh: Pointer to head of the atomic notifier chain
+ 	u8	Index24G_CCK_Base[RF_PATH_MAX][CHANNEL_MAX_NUMBER];
 -- 
-2.25.1
+2.20.1
 
