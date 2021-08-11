@@ -2,282 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484833E96F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601CA3E96F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 19:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhHKRkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 13:40:33 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34714 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhHKRkc (ORCPT
+        id S231453AbhHKRlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 13:41:45 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:42550 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhHKRln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:40:32 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17BHdqsY001365;
-        Wed, 11 Aug 2021 12:39:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628703592;
-        bh=EeqwQHMJVVet/Wz81B1nnj8xO0XYMvcfTM+AUUBD22w=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Y336EmtNzCHVUy1vovyPDMJlPfn4UUvmg77xOneQ5Tv6khStEGOHh03HbHIDVfkcr
-         hvyDzGLmIARtMjjPmBDRZRviDTlSCsML83G5gM/hGkeGHgj2Jw7s5u0i3IrFzw3eOv
-         X/obi81BB4EAqwdt6VIczImPAJSpzp0g60ABwGrs=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17BHdqHb018479
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Aug 2021 12:39:52 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 11
- Aug 2021 12:39:52 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 11 Aug 2021 12:39:52 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17BHdpJ2029437;
-        Wed, 11 Aug 2021 12:39:51 -0500
-Date:   Wed, 11 Aug 2021 23:09:50 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
-Subject: Re: [PATCH v3 2/7] phy: cdns-dphy: Prepare for Rx support
-Message-ID: <20210811173948.cezk6zu366c3huhw@ti.com>
-References: <20210624184108.21312-1-p.yadav@ti.com>
- <20210624184108.21312-3-p.yadav@ti.com>
- <YQ0MZqI36bz1Jp87@matsya>
+        Wed, 11 Aug 2021 13:41:43 -0400
+Received: by mail-pj1-f48.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso6286238pjb.1;
+        Wed, 11 Aug 2021 10:41:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SKwYFo8dYv0QNS156XTY/lU7jm4l1+2FwbKLknPJvfU=;
+        b=tl4XyX5BGHGC5Erc8VFaolQFCaLt3yVR33/3GYXTw52tX/oCft5Stbkk5DdQAhTmeC
+         88pxZezNJsu0TEUgKuiJJF9SxpYrHzMR4EJjugfTj4y+0txkGZolFaAulcV2TNTH6UQP
+         1l/Z2I6qYOYWzaq2yKVwO7HkAYXi+4zf0afkTaKlIsecKGpJgK+m0dotfffPZuopJ1PK
+         a4wO5F6oNFP4XYabw5pyG1nKCREQwPOkHTG+n7OA1EnREurPXlcP7G4te7R4wkSDD8Rg
+         Wvfd37ijuQqY3TATPO29PvV8U4p5aL6A/GgaMKarVWvqPzaSPTjvsiFUmqpxvUypUj0y
+         AdhA==
+X-Gm-Message-State: AOAM53056sEdI8G02Ez9TETNZ54roGm5xVf405REIeejGagmuJ9j8rzO
+        Wcr1FnpDsRn9i7eqgOUbGw==
+X-Google-Smtp-Source: ABdhPJzd0Rv9z9sTfwYP6BWh5jwSA3kbD4w+MhfZ0jc+4Oh8j0z36V1h4a362NG4HRXAo2xErhqfqw==
+X-Received: by 2002:a63:d044:: with SMTP id s4mr1391317pgi.32.1628703679422;
+        Wed, 11 Aug 2021 10:41:19 -0700 (PDT)
+Received: from robh.at.kernel.org ([208.184.162.215])
+        by smtp.gmail.com with ESMTPSA id e13sm95836pfi.210.2021.08.11.10.41.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 10:41:18 -0700 (PDT)
+Received: (nullmailer pid 4130314 invoked by uid 1000);
+        Wed, 11 Aug 2021 17:41:09 -0000
+Date:   Wed, 11 Aug 2021 11:41:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        George Sun <george.sun@mediatek.com>
+Subject: Re: [PATCH v5, 13/15] dt-bindings: media: mtk-vcodec: Adds decoder
+ dt-bindings for mt8192
+Message-ID: <YRQLtd+IyISzlreI@robh.at.kernel.org>
+References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
+ <20210811025801.21597-14-yunfei.dong@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQ0MZqI36bz1Jp87@matsya>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210811025801.21597-14-yunfei.dong@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 03:48PM, Vinod Koul wrote:
-> On 25-06-21, 00:11, Pratyush Yadav wrote:
-> > The Rx programming sequence differs from the Tx programming sequence.
-> > Currently only Tx mode is supported. Move all the Tx related parts into
-> > a set of Tx-specific hooks that are then called by the main PHY
-> > framework hooks. This way when Rx support is added all that is needed to
-> > be done is to plug in the Rx hooks.
-> > 
-> > The clocks "psm" and "pll_ref" are not used by the Rx path so make them
-> > optional in the probe and then check if they exist in the power_on()
-> > hook.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> > 
-> > (no changes since v1)
-> > 
-> >  drivers/phy/cadence/cdns-dphy.c | 140 ++++++++++++++++++++++++--------
-> >  1 file changed, 104 insertions(+), 36 deletions(-)
-> > 
-> > diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-dphy.c
-> > index ba042e39cfaf..8656f2102a91 100644
-> > --- a/drivers/phy/cadence/cdns-dphy.c
-> > +++ b/drivers/phy/cadence/cdns-dphy.c
-> > @@ -75,6 +75,11 @@ struct cdns_dphy;
-> >  struct cdns_dphy_ops {
-> >  	int (*probe)(struct cdns_dphy *dphy);
-> >  	void (*remove)(struct cdns_dphy *dphy);
-> > +	int (*power_on)(struct cdns_dphy *dphy);
-> > +	int (*power_off)(struct cdns_dphy *dphy);
-> > +	int (*validate)(struct cdns_dphy *dphy, enum phy_mode mode, int submode,
-> > +			union phy_configure_opts *opts);
-> > +	int (*configure)(struct cdns_dphy *dphy, union phy_configure_opts *opts);
-> >  	void (*set_psm_div)(struct cdns_dphy *dphy, u8 div);
-> >  	void (*set_clk_lane_cfg)(struct cdns_dphy *dphy,
-> >  				 enum cdns_dphy_clk_lane_cfg cfg);
-> > @@ -86,12 +91,18 @@ struct cdns_dphy_ops {
-> >  struct cdns_dphy {
-> >  	struct cdns_dphy_cfg cfg;
-> >  	void __iomem *regs;
-> > +	struct device *dev;
-> >  	struct clk *psm_clk;
-> >  	struct clk *pll_ref_clk;
-> >  	const struct cdns_dphy_ops *ops;
-> >  	struct phy *phy;
-> >  };
-> >  
-> > +struct cdns_dphy_driver_data {
-> > +	const struct cdns_dphy_ops *tx;
-> > +	const struct cdns_dphy_ops *rx;
-> > +};
-> > +
-> >  static int cdns_dsi_get_dphy_pll_cfg(struct cdns_dphy *dphy,
-> >  				     struct cdns_dphy_cfg *cfg,
-> >  				     struct phy_configure_opts_mipi_dphy *opts,
-> > @@ -199,20 +210,9 @@ static void cdns_dphy_ref_set_psm_div(struct cdns_dphy *dphy, u8 div)
-> >  	       dphy->regs + DPHY_PSM_CFG);
-> >  }
-> >  
-> > -/*
-> > - * This is the reference implementation of DPHY hooks. Specific integration of
-> > - * this IP may have to re-implement some of them depending on how they decided
-> > - * to wire things in the SoC.
-> > - */
-> > -static const struct cdns_dphy_ops ref_dphy_ops = {
-> > -	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
-> > -	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
-> > -	.set_psm_div = cdns_dphy_ref_set_psm_div,
-> > -};
-> > -
-> > -static int cdns_dphy_config_from_opts(struct phy *phy,
-> > -				      struct phy_configure_opts_mipi_dphy *opts,
-> > -				      struct cdns_dphy_cfg *cfg)
-> > +static int cdns_dphy_tx_config_from_opts(struct phy *phy,
-> > +					 struct phy_configure_opts_mipi_dphy *opts,
-> > +					 struct cdns_dphy_cfg *cfg)
-> >  {
-> >  	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> >  	unsigned int dsi_hfp_ext = 0;
-> > @@ -232,24 +232,13 @@ static int cdns_dphy_config_from_opts(struct phy *phy,
-> >  	return 0;
-> >  }
-> >  
-> > -static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
-> > -			      union phy_configure_opts *opts)
-> > +static int cdns_dphy_tx_configure(struct cdns_dphy *dphy,
-> > +				  union phy_configure_opts *opts)
-> >  {
-> >  	struct cdns_dphy_cfg cfg = { 0 };
-> > -
-> > -	if (mode != PHY_MODE_MIPI_DPHY)
-> > -		return -EINVAL;
-> > -
-> > -	return cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
-> > -}
-> > -
-> > -static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
-> > -{
-> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> > -	struct cdns_dphy_cfg cfg = { 0 };
-> >  	int ret;
-> >  
-> > -	ret = cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
-> > +	ret = cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > @@ -279,9 +268,21 @@ static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
-> >  	return 0;
-> >  }
-> >  
-> > -static int cdns_dphy_power_on(struct phy *phy)
-> > +static int cdns_dphy_tx_validate(struct cdns_dphy *dphy, enum phy_mode mode,
-> > +				 int submode, union phy_configure_opts *opts)
-> >  {
-> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> > +	struct cdns_dphy_cfg cfg = { 0 };
-> > +
-> > +	if (submode != PHY_MIPI_DPHY_SUBMODE_TX)
-> > +		return -EINVAL;
-> > +
-> > +	return cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
-> > +}
-> > +
-> > +static int cdns_dphy_tx_power_on(struct cdns_dphy *dphy)
-> > +{
-> > +	if (!dphy->psm_clk || !dphy->pll_ref_clk)
-> > +		return -EINVAL;
-> >  
-> >  	clk_prepare_enable(dphy->psm_clk);
-> >  	clk_prepare_enable(dphy->pll_ref_clk);
-> > @@ -293,16 +294,77 @@ static int cdns_dphy_power_on(struct phy *phy)
-> >  	return 0;
-> >  }
-> >  
-> > -static int cdns_dphy_power_off(struct phy *phy)
-> > +static int cdns_dphy_tx_power_off(struct cdns_dphy *dphy)
-> >  {
-> > -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> > -
-> >  	clk_disable_unprepare(dphy->pll_ref_clk);
-> >  	clk_disable_unprepare(dphy->psm_clk);
-> >  
-> >  	return 0;
-> >  }
-> >  
-> > +static const struct cdns_dphy_ops tx_ref_dphy_ops = {
-> > +	.power_on = cdns_dphy_tx_power_on,
-> > +	.power_off = cdns_dphy_tx_power_off,
-> > +	.validate = cdns_dphy_tx_validate,
-> > +	.configure = cdns_dphy_tx_configure,
-> > +	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
-> > +	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
-> > +	.set_psm_div = cdns_dphy_ref_set_psm_div,
-> > +};
-> > +
-> > +/*
-> > + * This is the reference implementation of DPHY hooks. Specific integration of
-> > + * this IP may have to re-implement some of them depending on how they decided
-> > + * to wire things in the SoC.
-> > + */
-> > +static const struct cdns_dphy_driver_data ref_dphy_ops = {
-> > +	.tx = &tx_ref_dphy_ops,
-> > +};
-> > +
-> > +static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
-> > +			      union phy_configure_opts *opts)
-> > +{
-> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> > +
-> > +	if (mode != PHY_MODE_MIPI_DPHY)
-> > +		return -EINVAL;
-> > +
-> > +	if (dphy->ops->validate)
-> > +		return dphy->ops->validate(dphy, mode, submode, opts);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int cdns_dphy_power_on(struct phy *phy)
-> > +{
-> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> > +
-> > +	if (dphy->ops->power_on)
-> > +		return dphy->ops->power_on(dphy);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int cdns_dphy_power_off(struct phy *phy)
-> > +{
-> > +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> > +
-> > +	if (dphy->ops->power_off)
-> > +		return dphy->ops->power_off(dphy);
-> > +
-> > +	return 0;
-> > +}
+On Wed, Aug 11, 2021 at 10:57:59AM +0800, Yunfei Dong wrote:
+> Adds decoder dt-bindings for mt8192.
 > 
-> why do you need a dphy specific power_on/off only to call internal
-> ops..? If there is no additional logic lets drop this and continue the
-> phy ops for this
-
-I don't clearly understand what you are trying to say. The internal ops 
-(dphy->ops) are DPHY-specific. So for example, you might have different 
-power on/off sequences for Rx and Tx mode DPHYs. You would then 
-implement different power_on() and power_off() hooks for those and store 
-them in dphy->ops. How else would you handle this?
-
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+> v5: no changes
 > 
+> This patch depends on "Mediatek MT8192 clock support"[1].
+> 
+> The definition of decoder clocks are in mt8192-clk.h, need to include them in case of build fail [1].
+> 
+> [1]https://patchwork.kernel.org/project/linux-mediatek/list/?series=511175
+> ---
+>  .../media/mediatek,vcodec-comp-decoder.yaml   | 172 ++++++++++++++++++
+>  1 file changed, 172 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml b/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
+> new file mode 100644
+> index 000000000000..083c89933917
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
+> @@ -0,0 +1,172 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iommu/mediatek,vcodec-comp-decoder.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek Video Decode Accelerator With Component
+> +
+> +maintainers:
+> +  - Yunfei Dong <yunfei.dong@mediatek.com>
+> +
+> +description: |+
+> +  Mediatek Video Decode is the video decode hardware present in Mediatek
+> +  SoCs which supports high resolution decoding functionalities. Required
+> +  master and component node.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+
+Don't need 'oneOf' when only one entry.
+
+> +      - enum:
+> +          - mediatek,mt8192-vcodec-dec  # for lat hardware
+> +          - mediatek,mtk-vcodec-lat     # for core hardware
+> +          - mediatek,mtk-vcodec-core
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 5
+> +
+> +  clock-names:
+> +    items:
+> +      - const: vdec-sel
+> +      - const: vdec-soc-vdec
+> +      - const: vdec-soc-lat
+> +      - const: vdec-vdec
+> +      - const: vdec-top
+> +
+
+> +  assigned-clocks: true
+> +
+> +  assigned-clock-parents: true
+
+Don't need these 2. Always valid if 'clocks' is present.
+
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  iommus:
+> +    minItems: 1
+> +    maxItems: 32
+> +    description: |
+> +      List of the hardware port in respective IOMMU block for current Socs.
+> +      Refer to bindings/iommu/mediatek,iommu.yaml.
+> +
+> +  dma-ranges:
+> +    maxItems: 1
+> +    description: |
+> +      Describes the physical address space of IOMMU maps to memory.
+> +
+> +  mediatek,scp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    maxItems: 1
+> +    description:
+> +      Describes point to scp.
+> +
+> +required:
+> +      - compatible
+> +      - reg
+> +      - iommus
+> +      - dma-ranges
+> +
+> +allOf:
+> +  - if: #master node
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - mediatek,mt8192-vcodec-dec  # for lat hardware
+> +
+> +    then:
+> +      required:
+> +        - mediatek,scp
+> +
+> +  - if: #component node
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - mediatek,mtk-vcodec-lat     # for core hardware
+> +              - mediatek,mtk-vcodec-core
+> +
+> +    then:
+> +      required:
+> +        - interrupts
+> +        - clocks
+> +        - clock-names
+> +        - assigned-clocks
+> +        - assigned-clock-parents
+> +        - power-domains
+> +
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/memory/mt8192-larb-port.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/clock/mt8192-clk.h>
+> +    #include <dt-bindings/power/mt8192-power.h>
+> +
+> +    vcodec_dec: vcodec_dec@16000000 {
+> +        compatible = "mediatek,mt8192-vcodec-dec";
+> +        reg = <0 0x16000000 0 0x1000>;		/* VDEC_SYS */
+> +        mediatek,scp = <&scp>;
+> +        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>;
+> +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
+> +    };
+> +
+> +    vcodec_lat: vcodec_lat@0x16010000 {
+> +        compatible = "mediatek,mtk-vcodec-lat";
+> +        reg = <0 0x16010000 0 0x800>;		/* VDEC_MISC */
+> +        interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH 0>;
+> +        iommus = <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD_EXT>,
+> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD2_EXT>,
+> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_AVC_MV_EXT>,
+> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_PRED_RD_EXT>,
+> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_TILE_EXT>,
+> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_WDMA_EXT>,
+> +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_RG_CTRL_DMA_EXT>,
+> +             <&iommu0 M4U_PORT_L5_VDEC_UFO_ENC_EXT>;
+> +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
+> +        clocks = <&topckgen CLK_TOP_VDEC_SEL>,
+> +             <&vdecsys_soc CLK_VDEC_SOC_VDEC>,
+> +             <&vdecsys_soc CLK_VDEC_SOC_LAT>,
+> +             <&vdecsys_soc CLK_VDEC_SOC_LARB1>,
+> +             <&topckgen CLK_TOP_MAINPLL_D4>;
+> +        clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
+> +              "vdec-vdec", "vdec-top";
+> +        assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
+> +        assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
+> +        power-domains = <&spm MT8192_POWER_DOMAIN_VDEC>;
+> +    };
+> +
+> +    vcodec_core: vcodec_core@0x16025000 {
+> +        compatible = "mediatek,mtk-vcodec-core";
+> +        reg = <0 0x16025000 0 0x1000>;		/* VDEC_CORE_MISC */
+> +        interrupts = <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH 0>;
+> +        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_UFO_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_PP_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_PRED_RD_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_PRED_WR_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_PPWRAP_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_TILE_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_VLD_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_VLD2_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_AVC_MV_EXT>,
+> +             <&iommu0 M4U_PORT_L4_VDEC_RG_CTRL_DMA_EXT>;
+> +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
+> +        clocks = <&topckgen CLK_TOP_VDEC_SEL>,
+> +             <&vdecsys CLK_VDEC_VDEC>,
+> +             <&vdecsys CLK_VDEC_LAT>,
+> +             <&vdecsys CLK_VDEC_LARB1>,
+> +             <&topckgen CLK_TOP_MAINPLL_D4>;
+> +        clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
+> +              "vdec-vdec", "vdec-top";
+> +        assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
+> +        assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
+> +        power-domains = <&spm MT8192_POWER_DOMAIN_VDEC2>;
+> +    };
 > -- 
-> ~Vinod
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+> 2.25.1
+> 
+> 
