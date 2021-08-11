@@ -2,99 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29A43E946E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9A33E9479
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhHKPUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbhHKPUJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:20:09 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1998C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:19:45 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id az7so2736388qkb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:19:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PTbZTB0OggPkXAxfHZ6VcjTpKi0pARGB5K9rQpw80Ro=;
-        b=FqBrCE1C6bKWw4lmcwBR4rx6mFcqiMBN7iKQCz4ZMcW0+Yvah7IpY8WsGQ8xGinZFb
-         v8MSypdJ4RlYSnsHekMoKjfsdntcqaPm9g7AJNSucqgB/kAspGIodBNXaCAJ5W21tPUf
-         0J+ruriImy6cMSCdkp1m+UYWZw/8XJgK+b1UE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PTbZTB0OggPkXAxfHZ6VcjTpKi0pARGB5K9rQpw80Ro=;
-        b=pVEPK8wN31B+4mnf/PqnOLSUeD8CR1fVf0G1qa+4DMXHeLLEOSMtkTMyGqhBrcduMs
-         b+T0/bVENK5kZrYDONf+Y6L7vtmBSn88nRN3/oY71H9x5SQ5FanIG9AiuayzLdYO5AgG
-         72NKrJF2yHgLrRbajKCkeKqNoHeYLKe2MTztDUD2DuBsSQdc0BfjP/ZyMVKtMZ8i/EMY
-         Jvw8n1eFEntgUY+4yMOYmVR1vg+91qC2XDO+0RWf8L1qLIMBw44ZohO/sR0E2eadGDdT
-         wzJHSQPB6I2OIhAcO9WpPYa54VAOBdncoivZGl5Mm/z7sAuduoy68rZwf3GBU+3+P4hr
-         JH3w==
-X-Gm-Message-State: AOAM5335eRZ7efMkFpTC99lQfZNGqbs6A4NuMSKKa+EjobKWZuFvtGSx
-        UjBWQPh7lrGFceW/BQoMxApEmiYdrAsPmw==
-X-Google-Smtp-Source: ABdhPJzNWubb3Z+hzVwaSW5jWXsqjVRG7fkfTCDxAvtlJNgrn2xJEOLwUh566R/MazAkWSN+ljcuJQ==
-X-Received: by 2002:a05:620a:138b:: with SMTP id k11mr21974824qki.486.1628695184687;
-        Wed, 11 Aug 2021 08:19:44 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id q6sm3041299qtr.91.2021.08.11.08.19.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 08:19:44 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id n15so4580351ybm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:19:43 -0700 (PDT)
-X-Received: by 2002:a25:ba44:: with SMTP id z4mr44554834ybj.476.1628695183483;
- Wed, 11 Aug 2021 08:19:43 -0700 (PDT)
+        id S232884AbhHKPXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:23:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232821AbhHKPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 11:23:15 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BF2E6024A;
+        Wed, 11 Aug 2021 15:22:51 +0000 (UTC)
+Date:   Wed, 11 Aug 2021 11:22:49 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tom.zanussi@linux.intel.com
+Subject: Re: [PATCH v4] [RFC] trace: Add kprobe on tracepoint
+Message-ID: <20210811112249.555463f2@oasis.local.home>
+In-Reply-To: <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
+References: <20210811141433.1976072-1-tz.stoyanov@gmail.com>
+        <20210812000343.887f0084ff1c48de8c47ec90@kernel.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
- <CAE-0n50K+gAa0U9-kswTCdt+UAkxhuJ8BMg-D4sQayP1xqWTyQ@mail.gmail.com>
- <CAD=FV=VdjTYvLmKfGONCZhpbyrzM_tG7uXkm5==-X6-uO1gTVw@mail.gmail.com> <20210811150340.GG4167@sirena.org.uk>
-In-Reply-To: <20210811150340.GG4167@sirena.org.uk>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 11 Aug 2021 08:19:32 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W0rS0-EZQn3i1GxgYy2A4OhnMNk=W0WUSrFOssjnUOYw@mail.gmail.com>
-Message-ID: <CAD=FV=W0rS0-EZQn3i1GxgYy2A4OhnMNk=W0WUSrFOssjnUOYw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: rt5682: Properly turn off regulators if wrong
- device ID
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Bard Liao <bardliao@realtek.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 12 Aug 2021 00:03:43 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-On Wed, Aug 11, 2021 at 8:04 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Aug 11, 2021 at 07:40:59AM -0700, Doug Anderson wrote:
-> > On Tue, Aug 10, 2021 at 9:24 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> > > Nit: Add newline here.
->
-> > How strongly do you feel about it? I purposely left the newline off to
-> > try to tie the devm_add_action_or_reset() more closely to the
-> > devm_regulator_bulk_get(). I wanted to make it more obvious that the
-> > two of them were "together" and shouldn't be split up. That being
-> > said, it's no skin off my teeth to add a newline if everyone likes it
-> > better. ;-)
->
-> TBH the newline looks off before I've got as far as reading the code.
+> On Wed, 11 Aug 2021 17:14:33 +0300
+> "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com> wrote:
+> 
+> > From: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > 
+> > A new dynamic event is introduced: event probe. The event is attached
+> > to an existing tracepoint and uses its fields as arguments. The user
+> > can specify custom format string of the new event, select what tracepoint
+> > arguments will be printed and how to print them.
+> > An event probe is created by writing configuration string in
+> > 'dynamic_events' ftrace file:
+> >  e:GNAME/ENAME SYSTEM.EVENT [FETCHARGS]	- Set an event probe  
+> 
+> Hmm, this inconsistency looks not good to me.
 
-Fair 'nuff. v2 is posted with the blank line.
+Hi Masami,
 
-https://lore.kernel.org/r/20210811081751.v2.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid/
+Thanks for reviewing this.
 
--Doug
+> 
+> "GNAME/ENAME" "SYSTEM.EVENT"
+>  - GNAME is "group name" but SYSTEM is "system name" but both must point
+>    same idea.
+>  - Delimiter character is different.
+> 
+> Aren't these confusing users?
+
+I agree. It was basically copying code from the histogram logic that
+uses '.', and that's how it got mixed up. We should change it to be
+more consistent.
+
+> 
+> One idea is adding a patch for kprobe and uprobe events to accept new
+> delimiter '.'. This will give a consistency with hist triggers too.
+
+I think the above is good. We can make it work with both '/' and '.'.
+
+Would that work for you?
+
+
+> 
+> Also, you can add a note about that the system and group is same
+> meaning in events.
+> 
+> >  -:GNAME/ENAME				- Delete an event probe
+> > 
+> > Where:
+> >  GNAME	- Group name, if omitted 'eprobes' is used.  
+> 
+> If this is not mandatory, you should write it as 
+> 
+> e:[GNAME/]ENAME SYSTEM.EVENT [FETCHARGS]
+
+Good point.
+
+> 
+> 
+> >  ENAME	- Name of the new event in GNAME, mandatory.
+> >  SYSTEM	- Name of the system, where the tracepoint is defined, mandatory.
+> >  EVENT	- Name of the tracepoint event in SYSTEM, mandatory.
+> >  FETCHARGS - Arguments:
+> >   <name>=$<field>[:TYPE] - Fetch given filed of the tracepoint and print
+> > 			   it as given TYPE with given name. Supported
+> > 			   types are:
+> > 	                    (u8/u16/u32/u64/s8/s16/s32/s64), basic type
+> >         	            (x8/x16/x32/x64), hexadecimal types
+> > 			    "string", "ustring" and bitfield.
+> > 
+> > Example, attach an event probe on openat system call and print name of the
+> > file that will be opened:
+> >  echo "e:esys/eopen syscalls.sys_enter_openat file=\$filename:string" >> dynamic_events
+> > A new dynamic event is created in events/esys/eopen/ directory. It
+> > can be deleted with:
+> >  echo "-:esys/eopen" >> dynamic_events
+> > 
+> > Filters, triggers and histograms can be attached to the new event, it can
+> > be matched in synthetic events. There is one limitation - no synthetic
+> > events can be attached to an event probe.  
+> 
+> I'm not sure what the "no synthetic events can be attached to an event probe"
+> means.
+> Can you show an example command what this means?
+
+Basically, we can not do:
+
+  echo 'my_open pid_t pid; unsigned long file' > synthetic_events
+
+  echo 'e:myopen_ret syscalls.sys_exit_open ret=$ret' > dynamic_events
+
+  echo 'hist:keys=common_pid:file=filename' > events/syscalls/sys_enter_open/trigger
+  echo 'hist:keys=common_pid:file=$file:onmatch(eprobes.myopen).trace(my_open,common_pid,$file)' > events/eprobes/myopen_ret
+
+The above attaches a trace call to a synthetic event from the
+myopen_ret event. The reason we do not allow it, is because we want
+eprobes to attach to synthetic events (because they can convert the
+types and do more to them), but we do not allow eprobes to attach to
+eprobes. But if we allow synthetic events to attach to an eprobe, then
+we can have:
+
+ eprobe -> synthetic_event -> eprobe -> synthetic_event -> eprobe ...
+
+Which can be dangerous, and hard to find loops.
+
+Currently, we don't see any real use case to allow synthetic events to
+attach to an eprobe, but if there is, we can change the code to allow
+it, but we need to keep track of how many are attached, and limit them,
+and we need to find a way to check for loops.
+
+> 
+> > 
+> > Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > ---
+> > Subject of the patch is still related to kprobe, though the design
+> > no more depends on kprobe. I did not change it for consistency with
+> > the first patch version.   
+> 
+> OK, thanks for moving onto the dynevent. Let me check the code in
+> another mail.
+> Anyway, I think this is good starting point. 
+> 
+
+Thanks for your time at looking at this. We greatly appreciate it!
+
+-- Steve
