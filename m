@@ -2,200 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3633E8CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4935C3E8CB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236610AbhHKJBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:01:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60751 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236570AbhHKJBC (ORCPT
+        id S236328AbhHKJBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:01:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48982 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232734AbhHKJA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:01:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628672438;
+        Wed, 11 Aug 2021 05:00:59 -0400
+Date:   Wed, 11 Aug 2021 11:00:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628672434;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xVYk6O6UbKVQlEk4hpiQ+ioYAfkIhHzccxHN1Fx+454=;
-        b=T/pogVQ6LOdA85cxys2r8Oov0oYWdqkwp4EIA6yINrMWIf8rUlOBOI2NJ6ecwD42S2IEDK
-        FJRSU5xXa/fJogpaDT8SxftcvDOQgnbxTKZoywOOOl7OofO8xdfTJxvxzk9Hr5v5TV6mML
-        cWjeq9kl6yCws6JbJxJYijPmrwRiG9U=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-ikHHE2RiNgCNkynurHdFQA-1; Wed, 11 Aug 2021 05:00:35 -0400
-X-MC-Unique: ikHHE2RiNgCNkynurHdFQA-1
-Received: by mail-ej1-f70.google.com with SMTP id q19-20020a1709064cd3b02904c5f93c0124so411537ejt.14
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:00:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xVYk6O6UbKVQlEk4hpiQ+ioYAfkIhHzccxHN1Fx+454=;
-        b=jpDEm5HB3MkFByfS11D5RyMn2ilqGDE4i3iQncA+4IzfB5e61BgRKKHLT3kPAqBXnr
-         slnptppwJL4U9UURUktXAa4K9WNLjQFlx1YsDkG/EGh/IvultXYE21kZ83sk0OPa6Ltn
-         BlsOLxfhyqGV943rEPLxlSHUtmaqAu0BUxxt6UniJ/RwZZIp94hjAeyDlkaReUGl2Cck
-         /rZs9rVcVqZsb6elnnJpl2HDYP/bpltF7ytYkPEjIwLls0ScfjMBymBUunf6HSS8X9yj
-         iXdpz7/lpq5t61xIPbUg2nLRrtgCPo9rwFxHArcTVlZkmemXTLsh1JzBm1egYDsL5InH
-         SaLA==
-X-Gm-Message-State: AOAM532OwFSntHLF79dPV5Zxhsm7SY56KLYmTp8Ygyp/7meT7IiHr29X
-        Lzj/Amz+LAqx+jXZLhpVwsA641lpbXGb7+cXNJo80L5pB0NjTT/SzBk+goVu4WCUq9t+EHfNJuC
-        909hCuM6iGXFmqvsQxNiBwE/Y
-X-Received: by 2002:a17:906:a08a:: with SMTP id q10mr2593175ejy.100.1628672433792;
-        Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+Wh3oVEmn3QZnNAXMGsVm3JaAoH4eSr1ZKRKUam8aqa4jKG8XOA/RBO+z8M1b/2H29w2Viw==
-X-Received: by 2002:a17:906:a08a:: with SMTP id q10mr2593146ejy.100.1628672433523;
-        Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
-Received: from steredhat (a-nu5-14.tin.it. [212.216.181.13])
-        by smtp.gmail.com with ESMTPSA id l19sm4147213edb.86.2021.08.11.02.00.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 02:00:33 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 11:00:30 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v2 1/5] virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOM' bit
-Message-ID: <20210811090030.snu5ckf6bdkzxdg7@steredhat>
-References: <20210810113901.1214116-1-arseny.krasnov@kaspersky.com>
- <20210810113956.1214463-1-arseny.krasnov@kaspersky.com>
+        bh=6NUQ3TyOknPB3iraV2OgTTMR9Er1TbuGJXWQNUYkDqU=;
+        b=u6BMEXBN2yeUctjIs2HApfcf8dYyn07sY99LQ8uM7znA/yEGZJ3w5pbH1Ihhe4qMzSo7ac
+        qPk2YuOa0X83kkOF7savnE+eF4l2NRb2CzvsLr+K/hRm01IcO0USiHbd3WfyQzVWOQ2bMY
+        ZWkBvoACEIwqtnDfHIcew7aEvDIIUlibFZStW+vF95v3VQdkPjWJI9EpSoIm8qjOV0ONjd
+        FiM19UMKXxhPoM/GLl+4ins5GJ6DylaIYMPNLrg4OBQfjleTkpWVmZxVff9xQFSgCIt9DW
+        7+WnFnvuZW4gBzd8FMUbO3DsQKLWNjNz2WS0gRme/jsd4tEK+A3289WpZv4taw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628672434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6NUQ3TyOknPB3iraV2OgTTMR9Er1TbuGJXWQNUYkDqU=;
+        b=ZIrd3wXtGnh9Qa9T0DZIudsTeT22ZUnv/O7EwgJ6VjkxgYCf8DcfKdk+++agUZEVnUVbPz
+        slaKnDd/5GHqLpAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH PREEMPT_RT] kcov:  fix locking splat from
+ kcov_remote_start()
+Message-ID: <20210811090033.wijh4v37wlnny3ox@linutronix.de>
+References: <20210809155909.333073de@theseus.lan>
+ <20210810095032.epdhivjifjlmbhp5@linutronix.de>
+ <87sfzhox15.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210810113956.1214463-1-arseny.krasnov@kaspersky.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87sfzhox15.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 02:39:53PM +0300, Arseny Krasnov wrote:
+On 2021-08-10 22:38:30 [+0200], Thomas Gleixner wrote:
+> On Tue, Aug 10 2021 at 11:50, Sebastian Andrzej Siewior wrote:
+> > On 2021-08-09 15:59:09 [-0500], Clark Williams wrote:
+> >> Saw the following splat on 5.14-rc4-rt5 with:
+> > =E2=80=A6
+> >> Change kcov_remote_lock from regular spinlock_t to raw_spinlock_t so t=
+hat
+> >> we don't get "sleeping function called from invalid context" on PREEMP=
+T_RT kernel.
+> >
+> > I'm not entirely happy with that:
+> > - kcov_remote_start() decouples spin_lock_irq() and does local_irq_save=
+()
+> >   + spin_lock() which shouldn't be done as per
+> >       Documentation/locking/locktypes.rst
+> >   I would prefer to see the local_irq_save() replaced by
+> >   local_lock_irqsave() so we get a context on what is going on.
+>=20
+> Which does not make it raw unless we create a raw_local_lock.
 
-The title is confusing, we are renaming EOR in EOM.
+But why raw? I was thinking about local_lock_irqsave() instead of
+local_irq_save() and keeping the spinlock_t.
 
->This bit is used to mark end of messages('EOM' - end of message), while
->'VIRIO_VSOCK_SEQ_EOR' is used to pass MSG_EOR. Also rename 'record' to
->'message' in implementation as it is different things.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> drivers/vhost/vsock.c                   | 12 ++++++------
-> include/uapi/linux/virtio_vsock.h       |  3 ++-
-> net/vmw_vsock/virtio_transport_common.c | 14 +++++++-------
-> 3 files changed, 15 insertions(+), 14 deletions(-)
->
->diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->index f249622ef11b..feaf650affbe 100644
->--- a/drivers/vhost/vsock.c
->+++ b/drivers/vhost/vsock.c
->@@ -178,15 +178,15 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
-> 			 * small rx buffers, headers of packets in rx queue are
-> 			 * created dynamically and are initialized with 
-> 			 header
-> 			 * of current packet(except length). But in case of
->-			 * SOCK_SEQPACKET, we also must clear record delimeter
->-			 * bit(VIRTIO_VSOCK_SEQ_EOR). Otherwise, instead of one
->-			 * packet with delimeter(which marks end of record),
->+			 * SOCK_SEQPACKET, we also must clear message delimeter
->+			 * bit(VIRTIO_VSOCK_SEQ_EOM). Otherwise, instead of one
->+			 * packet with delimeter(which marks end of message),
-> 			 * there will be sequence of packets with delimeter
-> 			 * bit set. After initialized header will be copied to
-> 			 * rx buffer, this bit will be restored.
-> 			 */
->-			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
->-				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->+			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
->+				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
-> 				restore_flag = true;
-> 			}
-> 		}
->@@ -225,7 +225,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
-> 		 */
-> 		if (pkt->off < pkt->len) {
-> 			if (restore_flag)
->-				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->+				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->
-> 			/* We are queueing the same virtio_vsock_pkt to handle
-> 			 * the remaining bytes, and we want to deliver it
->diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
->index 3dd3555b2740..64738838bee5 100644
->--- a/include/uapi/linux/virtio_vsock.h
->+++ b/include/uapi/linux/virtio_vsock.h
->@@ -97,7 +97,8 @@ enum virtio_vsock_shutdown {
->
-> /* VIRTIO_VSOCK_OP_RW flags values */
-> enum virtio_vsock_rw {
->-	VIRTIO_VSOCK_SEQ_EOR = 1,
->+	VIRTIO_VSOCK_SEQ_EOM = 1,
->+	VIRTIO_VSOCK_SEQ_EOR = 2,
-         ^
-I think is better to add this new flag in a separate patch.
+> > - kcov_remote_reset() has a kfree() with that irq-off lock acquired.
+>=20
+> That free needs to move out obviously
+>=20
+> > - kcov_remote_add() has a kmalloc() and is invoked with that irq-off
+> >   lock acquired.
+>=20
+> So does the kmalloc.
+>=20
+> > - kcov_remote_area_put() uses INIT_LIST_HEAD() for no reason (just
+> >   happen to notice).
+> >
+> > - kcov_remote_stop() does local_irq_save() + spin_lock(&kcov->lock);.
+> >   This should also create a splat.
+> >
+> > - With lock kcov_remote_lock acquired there is a possible
+> >   hash_for_each_safe() and list_for_each() iteration. I don't know what
+> >   the limits are here but with a raw_spinlock_t it will contribute to
+> >   the maximal latency.=20
+>=20
+> And that matters because? kcov has a massive overhead and with that
+> enabled you care as much about latencies as you do when running with
+> lockdep enabled.
 
-> };
->
-> #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index 081e7ae93cb1..4d5a93beceb0 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -77,7 +77,7 @@ virtio_transport_alloc_pkt(struct virtio_vsock_pkt_info *info,
->
-> 		if (msg_data_left(info->msg) == 0 &&
-> 		    info->type == VIRTIO_VSOCK_TYPE_SEQPACKET)
->-			pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->+			pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
-> 	}
->
-> 	trace_virtio_transport_alloc_pkt(src_cid, src_port,
->@@ -457,7 +457,7 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
-> 				dequeued_len += pkt_len;
-> 		}
->
->-		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
->+		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
-> 			msg_ready = true;
-> 			vvs->msg_count--;
-> 		}
->@@ -1029,7 +1029,7 @@ virtio_transport_recv_enqueue(struct vsock_sock *vsk,
-> 		goto out;
-> 	}
->
->-	if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
->+	if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM)
-> 		vvs->msg_count++;
->
-> 	/* Try to copy small packets into the buffer of last packet queued,
->@@ -1044,12 +1044,12 @@ virtio_transport_recv_enqueue(struct vsock_sock *vsk,
->
-> 		/* If there is space in the last packet queued, we copy the
-> 		 * new packet in its buffer. We avoid this if the last packet
->-		 * queued has VIRTIO_VSOCK_SEQ_EOR set, because this is
->-		 * delimiter of SEQPACKET record, so 'pkt' is the first packet
->-		 * of a new record.
->+		 * queued has VIRTIO_VSOCK_SEQ_EOM set, because this is
->+		 * delimiter of SEQPACKET message, so 'pkt' is the first packet
->+		 * of a new message.
-> 		 */
-> 		if ((pkt->len <= last_pkt->buf_len - last_pkt->len) &&
->-		    !(le32_to_cpu(last_pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)) {
->+		    !(le32_to_cpu(last_pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM)) {
-> 			memcpy(last_pkt->buf + last_pkt->len, pkt->buf,
-> 			       pkt->len);
-> 			last_pkt->len += pkt->len;
->-- 
->2.25.1
->
+I wasn't aware of that. However, with that local_irq_save() ->
+local_lock_irqsave() swap and that first C code from
+Documentation/dev-tools/kcov.rst I don't see any spike in cyclictest's
+results. Maybe I'm not using it right=E2=80=A6
 
-The rest LGTM!
+> Thanks,
+>=20
+>         tglx
 
-Thanks,
-Stefano
-
+Sebastian
