@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA673E904E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC24A3E9053
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237668AbhHKMQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237478AbhHKMQT (ORCPT
+        id S237497AbhHKMR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:17:59 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:43831 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237453AbhHKMR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:16:19 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CE8C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:15:55 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 203-20020a1c00d40000b02902e6a4e244e4so1806484wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 05:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nuviainc-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Nn/UPEtSSOq2aO+2n1rQfQxHGvQ/Gb9SyS5gCui4WYA=;
-        b=lF2YYKb4jTBJYsM584kgmaeezgvjtLBvwh+Z3r4O92Wx+UZnokkPIXv6Ft0VrpO+gU
-         FBRISDB4mkfr+rFk8xebcIzXIstiEBECHdjhTCNS24t5rFHWrDNsM7OBbj87DK7T+Bn5
-         zIgj+wRY19cycQ/1pbeiUeOZIC/JJZZoBeJezaM129dN6fniuGJ06bPRQbp20SxblaTl
-         gui4Hm9hYkrawNye97fNW3Ucn8FC5AsaavmiPnnrUMvLZe1FKfAm3l4nkg9C8+V0ISva
-         xNXH8qd3iXMQCesPGF1Y6mIliyOC0eKV4qtnt9FB3vQa3XCg5SBZpP506QlZRe0rsRtl
-         xgcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nn/UPEtSSOq2aO+2n1rQfQxHGvQ/Gb9SyS5gCui4WYA=;
-        b=CRMRFcy6PpG+4KOSWxEc9XVkbF+XPrBJ5eIQNJhOATROX0Xpfw14pHJvmXuCqw2ebD
-         uUQYesP78KIOXiTjlUA9Peu1yhIQzpiP14Zqsuvu50Z80X+6VgOwRwj1oaGI5oo1OLf+
-         sd6QhrYpsl5eljCDDZEY2tFhc2fWULzz4STfcSbrvZZ867XlZmPBtxosZYJihjL2P3TU
-         pQX9ouE5TC7+BkOZvjBnG6MXvyNzRlXzAj5/rOECukG0xX4aeUZeDUY+U/HNJ3TaQV88
-         UFEyM4iMzN4AhNaVOp1hq/0gm/CYTK7oc22+PhiPYBlaH+qYTy58lYZIHp18BhRP2cBG
-         5oiA==
-X-Gm-Message-State: AOAM530LwOhwWN5SRUBRfR1GalKpXHQQoN9fGiNoKTbOiPPoycMwEDJY
-        cTFOJJ3mc3Yi4DO+TawTSFdEcA==
-X-Google-Smtp-Source: ABdhPJwbiZZJ3tq7YeVxFlt6/xFEZZ5E4igk1i+pordJ0dTrDJZklBO9SHmM1R+GAj1h1e5BOMZ9jQ==
-X-Received: by 2002:a7b:c958:: with SMTP id i24mr8339082wml.42.1628684153630;
-        Wed, 11 Aug 2021 05:15:53 -0700 (PDT)
-Received: from localhost ([82.44.17.50])
-        by smtp.gmail.com with ESMTPSA id h9sm5558968wrv.84.2021.08.11.05.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 05:15:52 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 13:15:52 +0100
-From:   Jamie Iles <jamie@nuviainc.com>
-To:     James Morse <james.morse@arm.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        lcherian@marvell.com, bobo.shaobowang@huawei.com
-Subject: Re: [PATCH v1 02/20] x86/resctrl: Merge mon_capable and mon_enabled
-Message-ID: <YRO/ePm75ekuO+6j@hazel>
-References: <20210729223610.29373-1-james.morse@arm.com>
- <20210729223610.29373-3-james.morse@arm.com>
+        Wed, 11 Aug 2021 08:17:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628684255; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lytk+GDi5s2zB6R0XzDXR78NKrdNr9wxnP0Z0BAj3XY=;
+ b=sLb83qEDwQytEjyE4ZLYlKCn82AwIAXBewexlM5OYsypX3Qww4XJZfrbd4S1bsHrcvdLYH1C
+ iQSd7bk1MRv6DML6eTVDYou/Oy+nX1UwXgDbXQPJ0IfXZgeVWUBblyzyP2KD9VuNPGBkPiVy
+ 07/5xQUh82KcgXmR+rUnzEmwR0I=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6113bfdc91487ad52013cbba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Aug 2021 12:17:32
+ GMT
+Sender: rajpat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D5B06C43217; Wed, 11 Aug 2021 12:17:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajpat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 535F7C4338A;
+        Wed, 11 Aug 2021 12:17:31 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729223610.29373-3-james.morse@arm.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Aug 2021 17:47:31 +0530
+From:   rajpat@codeaurora.org
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V4 2/4] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+In-Reply-To: <162741363048.2368309.1689681966672627944@swboyd.mtv.corp.google.com>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+ <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
+ <162741363048.2368309.1689681966672627944@swboyd.mtv.corp.google.com>
+Message-ID: <552cd7bd2ae6635cf97e03be590f6e93@codeaurora.org>
+X-Sender: rajpat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
-
-On Thu, Jul 29, 2021 at 10:35:52PM +0000, James Morse wrote:
-> mon_enabled and mon_capable are always set as a pair by
-> rdt_get_mon_l3_config().
+On 2021-07-28 00:50, Stephen Boyd wrote:
+> Quoting Rajesh Patil (2021-07-26 06:40:45)
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index ca6e36b..455e58f 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -520,6 +520,25 @@
+>> 
+>>                 };
+>> 
+>> +               qup_opp_table: qup-opp-table {
 > 
-> There is no point having two values.
+> Surely this can live underneath a qup node parallel to the i2c and spi
+> devices?
 > 
-> Merge them together.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/internal.h | 4 ----
->  arch/x86/kernel/cpu/resctrl/monitor.c  | 1 -
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 8 ++++----
->  include/linux/resctrl.h                | 4 ++--
->  4 files changed, 6 insertions(+), 11 deletions(-)
-> 
-...
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index ada0a02093a6..d715df9de37f 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -130,7 +130,7 @@ struct resctrl_schema;
->  /**
->   * struct rdt_resource - attributes of a resctrl resource
->   * @rid:		The index of the resource
-> - * @mon_enabled:	Is monitoring enabled for this feature
-> + * @cdp_enabled		Is CDP enabled for this resource
->   * @alloc_capable:	Is allocation available on this machine
->   * @mon_capable:	Is monitor feature available on this machine
->   * @num_rmid:		Number of RMIDs available
-> @@ -149,7 +149,7 @@ struct resctrl_schema;
->   */
->  struct rdt_resource {
->  	int			rid;
-> -	bool			mon_enabled;
-> +	bool			cdp_enabled;
+But this is common to both qup0 and qup1 right?
 
-Nothing is setting cdp_enabled in this patch, is this intended to be 
-here?
-
-Thanks,
-
-Jamie
+>> +                       compatible = "operating-points-v2";
+>> +
+>> +                       opp-75000000 {
+>> +                               opp-hz = /bits/ 64 <75000000>;
+>> +                               required-opps = <&rpmhpd_opp_low_svs>;
+>> +                       };
+>> +
+>> +                       opp-100000000 {
+>> +                               opp-hz = /bits/ 64 <100000000>;
+>> +                               required-opps = <&rpmhpd_opp_svs>;
+>> +                       };
+>> +
+>> +                       opp-128000000 {
+>> +                               opp-hz = /bits/ 64 <128000000>;
+>> +                               required-opps = <&rpmhpd_opp_nom>;
+>> +                       };
+>> +               };
+>> +
+>>                 qupv3_id_0: geniqup@9c0000 {
+>>                         compatible = "qcom,geni-se-qup";
+>>                         reg = <0 0x009c0000 0 0x2000>;
