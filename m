@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CC93E86F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45793E8724
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 02:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhHKAEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 20:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234289AbhHKAEP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:04:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F732C061765;
-        Tue, 10 Aug 2021 17:03:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=oEMWLoJ15XGTU1uDxOZTCeL7G0nFB55u5+5nltWOW/w=; b=mow1pUdqDHxWhPTLIo9hCoo34w
-        SAo9lQlbuzaQI5wjDic//GPlEVhLzWGU8B4EEG0FiwKpS+p+uha7f4sqhOv4yx9ocWp1Lf7SVSwwp
-        hlv3Ijmyap8sBxBmDMHSGwD63dy+Rk7sY5Bv9HqWr6jjno4AxFlDKZWoYxCLfF9mphlOHp56H23az
-        //tRCYlw9XLhGeCYNLAEs3qL3GSQqO8zqQixzAsRgbu1z5AcTDzb11PpEEFgKVwAdpUB+g/35Ayvj
-        CV/QW18zmB7KrBpnq3zl4y/1jhT1S1OaGvr33ceh5JryBCowDnEdbNRt+fVAJW3SRyFVa+uNmyMxL
-        97Bfe2Wg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mDbio-0054h5-I1; Wed, 11 Aug 2021 00:03:50 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-Subject: [PATCH] cgroup: cgroup-v1: clean up kernel-doc notation
-Date:   Tue, 10 Aug 2021 17:03:49 -0700
-Message-Id: <20210811000349.32645-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S235806AbhHKASQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Aug 2021 20:18:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235680AbhHKASI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:18:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A02360FD9;
+        Wed, 11 Aug 2021 00:17:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628641065;
+        bh=vS0O2G4UqYCFp5XbO0UvX+Z3o0P/EBLHkKPuQEwAbYc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m90I8MFYojVSKUZbGrXDKIJU8CpLr0ZkbA+yZJ31ujVzplnqw+lVK5V/WFofFfbtY
+         YJl9Jd8kVgfFQCL9hbNlX9aweGNOlBnrqZIJ9e4oC+6oIVBy1U/VedMB5GddqhD3LM
+         cln6DPrUnDQhiyi5vhboXLklmcr7o5JtK2kL7kOfy0PeZSNFlhfb9Re4Gf4Vihz9mv
+         lHRW2GirAxlHKqUc/U3nW1jlQjlQpWkfZslp8ai02bxlodrclzFuu6nWxKjArgLu7y
+         zDLZrBbiQgbtJxOd4J3SbyVFFzZXbcQASgAcBjkavW6dgY3w08MWp3qldid9INCFEL
+         aFjN4yuBuj1TQ==
+Date:   Wed, 11 Aug 2021 03:17:43 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel@pengutronix.de,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fscrypt: support trusted keys
+Message-ID: <20210811001743.ofzkwdwa6rcjsf4d@kernel.org>
+References: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+ <20210809094408.4iqwsx77u64usfx6@kernel.org>
+ <YRGVcaquAJiuc8bp@gmail.com>
+ <20210810180636.vqwaeftv7alsodgn@kernel.org>
+ <YRLJmaafp941uOdA@gmail.com>
+ <20210810212140.sdq5dq2wy5uaj7h7@kernel.org>
+ <YRLvPJehAeMiYb2Z@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRLvPJehAeMiYb2Z@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warnings found in cgroup-v1.c:
+On Tue, Aug 10, 2021 at 02:27:24PM -0700, Eric Biggers wrote:
+> On Wed, Aug 11, 2021 at 12:21:40AM +0300, Jarkko Sakkinen wrote:
+> > On Tue, Aug 10, 2021 at 11:46:49AM -0700, Eric Biggers wrote:
+> > > On Tue, Aug 10, 2021 at 09:06:36PM +0300, Jarkko Sakkinen wrote:
+> > > > > > 
+> > > > > > I don't think this is right, or at least it does not follow the pattern
+> > > > > > in [*]. I.e. you should rather use trusted key to seal your fscrypt key.
+> > > > > 
+> > > > > What's the benefit of the extra layer of indirection over just using a "trusted"
+> > > > > key directly?  The use case for "encrypted" keys is not at all clear to me.
+> > > > 
+> > > > Because it is more robust to be able to use small amount of trusted keys,
+> > > > which are not entirely software based.
+> > > > 
+> > > > And since it's also a pattern on existing kernel features utilizing trusted
+> > > > keys, the pressure here to explain why break the pattern, should be on the
+> > > > side of the one who breaks it.
+> > > 
+> > > This is a new feature, so it's on the person proposing the feature to explain
+> > > why it's useful.  The purpose of "encrypted" keys is not at all clear, and the
+> > > documentation for them is heavily misleading.  E.g.:
+> > > 
+> > >     "user space sees, stores, and loads only encrypted blobs"
+> > >     (Not necessarily true, as I've explained previously.)
+> > > 
+> > >     "Encrypted keys do not depend on a trust source" ...  "The main disadvantage
+> > >     of encrypted keys is that if they are not rooted in a trusted key"
+> > >     (Not necessarily true, and in fact it seems they're only useful when they
+> > >     *do* depend on a trust source.  At least that's the use case that is being
+> > >     proposed here, IIUC.)
+> > > 
+> > > I do see a possible use for the layer of indirection that "encrypted" keys are,
+> > > which is that it would reduce the overhead of having lots of keys be directly
+> > > encrypted by the TPM/TEE/CAAM.  Is this the use case?  If so, it needs to be
+> > > explained.
+> > 
+> > If trusted keys are used directly, it's an introduction of a bottleneck.
+> > If they are used indirectly, you can still choose to have one trusted
+> > key per fscrypt key.
+> > 
+> > Thus, it's obviously a bad idea to use them directly.
+> > 
+> 
+> So actually explain that in the documentation.  It's not obvious at all.  And
+> does this imply that the support for trusted keys in dm-crypt is a mistake?
 
-kernel/cgroup/cgroup-v1.c:55: warning: No description found for return value of 'cgroup_attach_task_all'
-kernel/cgroup/cgroup-v1.c:94: warning: expecting prototype for cgroup_trasnsfer_tasks(). Prototype was for cgroup_transfer_tasks() instead
-cgroup-v1.c:96: warning: No description found for return value of 'cgroup_transfer_tasks'
-kernel/cgroup/cgroup-v1.c:687: warning: No description found for return value of 'cgroupstats_build'
+Looking at dm-crypt implementation, you can choose to use 'encrypted' key
+type, which you can seal with a trusted key.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org
----
- kernel/cgroup/cgroup-v1.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Note: I have not been involved when the feature was added to dm-crypt.
 
---- linux-next-20210809.orig/kernel/cgroup/cgroup-v1.c
-+++ linux-next-20210809/kernel/cgroup/cgroup-v1.c
-@@ -50,6 +50,8 @@ bool cgroup1_ssid_disabled(int ssid)
-  * cgroup_attach_task_all - attach task 'tsk' to all cgroups of task 'from'
-  * @from: attach to all cgroups of a given task
-  * @tsk: the task to be attached
-+ *
-+ * Return: %0 on success or a negative errno code on failure
-  */
- int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
- {
-@@ -80,7 +82,7 @@ int cgroup_attach_task_all(struct task_s
- EXPORT_SYMBOL_GPL(cgroup_attach_task_all);
- 
- /**
-- * cgroup_trasnsfer_tasks - move tasks from one cgroup to another
-+ * cgroup_transfer_tasks - move tasks from one cgroup to another
-  * @to: cgroup to which the tasks will be moved
-  * @from: cgroup in which the tasks currently reside
-  *
-@@ -89,6 +91,8 @@ EXPORT_SYMBOL_GPL(cgroup_attach_task_all
-  * is guaranteed to be either visible in the source cgroup after the
-  * parent's migration is complete or put into the target cgroup.  No task
-  * can slip out of migration through forking.
-+ *
-+ * Return: %0 on success or a negative errno code on failure
-  */
- int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
- {
-@@ -682,6 +686,8 @@ int proc_cgroupstats_show(struct seq_fil
-  *
-  * Build and fill cgroupstats so that taskstats can export it to user
-  * space.
-+ *
-+ * Return: %0 on success or a negative errno code on failure
-  */
- int cgroupstats_build(struct cgroupstats *stats, struct dentry *dentry)
- {
+/Jarkko
