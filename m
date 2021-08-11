@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEDC3E908C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85BD3E908F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 14:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237833AbhHKMW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 08:22:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:48858 "EHLO foss.arm.com"
+        id S237754AbhHKMXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 08:23:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:48758 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237785AbhHKMWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:22:42 -0400
+        id S237805AbhHKMWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 08:22:44 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B85A13D5;
-        Wed, 11 Aug 2021 05:22:19 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34CD6106F;
+        Wed, 11 Aug 2021 05:22:21 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 705EC3F718;
-        Wed, 11 Aug 2021 05:22:17 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7E26A3F718;
+        Wed, 11 Aug 2021 05:22:19 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
@@ -24,9 +24,9 @@ Cc:     iommu@lists.linux-foundation.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
         john.garry@huawei.com, dianders@chromium.org, rajatja@google.com,
         chenxiang66@hisilicon.com
-Subject: [PATCH v4 14/24] iommu: Indicate queued flushes via gather data
-Date:   Wed, 11 Aug 2021 13:21:28 +0100
-Message-Id: <bf5f8e2ad84e48c712ccbf80fa8c610594c7595f.1628682049.git.robin.murphy@arm.com>
+Subject: [PATCH v4 15/24] iommu/io-pgtable: Remove non-strict quirk
+Date:   Wed, 11 Aug 2021 13:21:29 +0100
+Message-Id: <155b5c621cd8936472e273a8b07a182f62c6c20d.1628682049.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1628682048.git.robin.murphy@arm.com>
 References: <cover.1628682048.git.robin.murphy@arm.com>
@@ -36,17 +36,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since iommu_iotlb_gather exists to help drivers optimise flushing for a
-given unmap request, it is also the logical place to indicate whether
-the unmap is strict or not, and thus help them further optimise for
-whether to expect a sync or a flush_all subsequently. As part of that,
-it also seems fair to make the flush queue code take responsibility for
-enforcing the really subtle ordering requirement it brings, so that we
-don't need to worry about forgetting that if new drivers want to add
-flush queue support, and can consolidate the existing versions.
-
-While we're adding to the kerneldoc, also fill in some info for
-@freelist which was overlooked previously.
+IO_PGTABLE_QUIRK_NON_STRICT was never a very comfortable fit, since it's
+not a quirk of the pagetable format itself. Now that we have a more
+appropriate way to convey non-strict unmaps, though, this last of the
+non-quirk quirks can also go, and with the flush queue code also now
+enforcing its own ordering we can have a lovely cleanup all round.
 
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 
@@ -54,69 +48,131 @@ Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 
 v3: New
 ---
- drivers/iommu/dma-iommu.c | 1 +
- drivers/iommu/iova.c      | 7 +++++++
- include/linux/iommu.h     | 8 +++++++-
- 3 files changed, 15 insertions(+), 1 deletion(-)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  3 ---
+ drivers/iommu/arm/arm-smmu/arm-smmu.c       |  3 ---
+ drivers/iommu/io-pgtable-arm-v7s.c          | 12 ++----------
+ drivers/iommu/io-pgtable-arm.c              | 12 ++----------
+ include/linux/io-pgtable.h                  |  5 -----
+ 5 files changed, 4 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index e28396cea6eb..d63b30a7dc82 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -474,6 +474,7 @@ static void __iommu_dma_unmap(struct device *dev, dma_addr_t dma_addr,
- 	dma_addr -= iova_off;
- 	size = iova_align(iovad, size + iova_off);
- 	iommu_iotlb_gather_init(&iotlb_gather);
-+	iotlb_gather.queued = cookie->fq_domain;
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 4c648da447bf..d9c93d8d193d 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -2174,9 +2174,6 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+ 		.iommu_dev	= smmu->dev,
+ 	};
  
- 	unmapped = iommu_unmap_fast(domain, dma_addr, size, &iotlb_gather);
- 	WARN_ON(unmapped != size);
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index b6cf5f16123b..2ad73fb2e94e 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -637,6 +637,13 @@ void queue_iova(struct iova_domain *iovad,
- 	unsigned long flags;
- 	unsigned idx;
+-	if (!iommu_get_dma_strict(domain))
+-		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
+-
+ 	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
+ 	if (!pgtbl_ops)
+ 		return -ENOMEM;
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index 970d9e4dcd69..a325d4769c17 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -765,9 +765,6 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+ 		.iommu_dev	= smmu->dev,
+ 	};
  
-+	/*
-+	 * Order against the IOMMU driver's pagetable update from unmapping
-+	 * @pte, to guarantee that iova_domain_flush() observes that if called
-+	 * from a different CPU before we release the lock below.
-+	 */
-+	smp_wmb();
-+
- 	spin_lock_irqsave(&fq->lock, flags);
+-	if (!iommu_get_dma_strict(domain))
+-		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
+-
+ 	if (smmu->impl && smmu->impl->init_context) {
+ 		ret = smmu->impl->init_context(smmu_domain, &pgtbl_cfg, dev);
+ 		if (ret)
+diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+index 5db90d7ce2ec..e84478d39705 100644
+--- a/drivers/iommu/io-pgtable-arm-v7s.c
++++ b/drivers/iommu/io-pgtable-arm-v7s.c
+@@ -700,14 +700,7 @@ static size_t __arm_v7s_unmap(struct arm_v7s_io_pgtable *data,
+ 						ARM_V7S_BLOCK_SIZE(lvl + 1));
+ 				ptep = iopte_deref(pte[i], lvl, data);
+ 				__arm_v7s_free_table(ptep, lvl + 1, data);
+-			} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
+-				/*
+-				 * Order the PTE update against queueing the IOVA, to
+-				 * guarantee that a flush callback from a different CPU
+-				 * has observed it before the TLBIALL can be issued.
+-				 */
+-				smp_wmb();
+-			} else {
++			} else if (!gather->queued) {
+ 				io_pgtable_tlb_add_page(iop, gather, iova, blk_size);
+ 			}
+ 			iova += blk_size;
+@@ -791,8 +784,7 @@ static struct io_pgtable *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
  
- 	/*
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 141779d76035..f7679f6684b1 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -161,16 +161,22 @@ enum iommu_dev_features {
-  * @start: IOVA representing the start of the range to be flushed
-  * @end: IOVA representing the end of the range to be flushed (inclusive)
-  * @pgsize: The interval at which to perform the flush
-+ * @freelist: Removed pages to free after sync
-+ * @queued: Indicates that the flush will be queued
-  *
-  * This structure is intended to be updated by multiple calls to the
-  * ->unmap() function in struct iommu_ops before eventually being passed
-- * into ->iotlb_sync().
-+ * into ->iotlb_sync(). Drivers can add pages to @freelist to be freed after
-+ * ->iotlb_sync() or ->iotlb_flush_all() have cleared all cached references to
-+ * them. @queued is set to indicate when ->iotlb_flush_all() will be called
-+ * later instead of ->iotlb_sync(), so drivers may optimise accordingly.
-  */
- struct iommu_iotlb_gather {
- 	unsigned long		start;
- 	unsigned long		end;
- 	size_t			pgsize;
- 	struct page		*freelist;
-+	bool			queued;
- };
+ 	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
+ 			    IO_PGTABLE_QUIRK_NO_PERMS |
+-			    IO_PGTABLE_QUIRK_ARM_MTK_EXT |
+-			    IO_PGTABLE_QUIRK_NON_STRICT))
++			    IO_PGTABLE_QUIRK_ARM_MTK_EXT))
+ 		return NULL;
  
- /**
+ 	/* If ARM_MTK_4GB is enabled, the NO_PERMS is also expected. */
+diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+index 053df4048a29..48a5bd8f571d 100644
+--- a/drivers/iommu/io-pgtable-arm.c
++++ b/drivers/iommu/io-pgtable-arm.c
+@@ -638,14 +638,7 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
+ 				io_pgtable_tlb_flush_walk(iop, iova + i * size, size,
+ 							  ARM_LPAE_GRANULE(data));
+ 				__arm_lpae_free_pgtable(data, lvl + 1, iopte_deref(pte, data));
+-			} else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
+-				/*
+-				 * Order the PTE update against queueing the IOVA, to
+-				 * guarantee that a flush callback from a different CPU
+-				 * has observed it before the TLBIALL can be issued.
+-				 */
+-				smp_wmb();
+-			} else {
++			} else if (!gather->queued) {
+ 				io_pgtable_tlb_add_page(iop, gather, iova + i * size, size);
+ 			}
+ 
+@@ -825,7 +818,6 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg *cfg, void *cookie)
+ 	bool tg1;
+ 
+ 	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
+-			    IO_PGTABLE_QUIRK_NON_STRICT |
+ 			    IO_PGTABLE_QUIRK_ARM_TTBR1 |
+ 			    IO_PGTABLE_QUIRK_ARM_OUTER_WBWA))
+ 		return NULL;
+@@ -929,7 +921,7 @@ arm_64_lpae_alloc_pgtable_s2(struct io_pgtable_cfg *cfg, void *cookie)
+ 	typeof(&cfg->arm_lpae_s2_cfg.vtcr) vtcr = &cfg->arm_lpae_s2_cfg.vtcr;
+ 
+ 	/* The NS quirk doesn't apply at stage 2 */
+-	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_NON_STRICT))
++	if (cfg->quirks)
+ 		return NULL;
+ 
+ 	data = arm_lpae_alloc_pgtable(cfg);
+diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+index c43f3b899d2a..9ba6d9ea316e 100644
+--- a/include/linux/io-pgtable.h
++++ b/include/linux/io-pgtable.h
+@@ -73,10 +73,6 @@ struct io_pgtable_cfg {
+ 	 *	to support up to 35 bits PA where the bit32, bit33 and bit34 are
+ 	 *	encoded in the bit9, bit4 and bit5 of the PTE respectively.
+ 	 *
+-	 * IO_PGTABLE_QUIRK_NON_STRICT: Skip issuing synchronous leaf TLBIs
+-	 *	on unmap, for DMA domains using the flush queue mechanism for
+-	 *	delayed invalidation.
+-	 *
+ 	 * IO_PGTABLE_QUIRK_ARM_TTBR1: (ARM LPAE format) Configure the table
+ 	 *	for use in the upper half of a split address space.
+ 	 *
+@@ -86,7 +82,6 @@ struct io_pgtable_cfg {
+ 	#define IO_PGTABLE_QUIRK_ARM_NS		BIT(0)
+ 	#define IO_PGTABLE_QUIRK_NO_PERMS	BIT(1)
+ 	#define IO_PGTABLE_QUIRK_ARM_MTK_EXT	BIT(3)
+-	#define IO_PGTABLE_QUIRK_NON_STRICT	BIT(4)
+ 	#define IO_PGTABLE_QUIRK_ARM_TTBR1	BIT(5)
+ 	#define IO_PGTABLE_QUIRK_ARM_OUTER_WBWA	BIT(6)
+ 	unsigned long			quirks;
 -- 
 2.25.1
 
