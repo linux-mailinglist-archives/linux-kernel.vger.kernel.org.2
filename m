@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB8B3E89C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AF73E89BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbhHKFcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:32:04 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:57893 "EHLO pegase2.c-s.fr"
+        id S234016AbhHKFbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 01:31:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:42892 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhHKFcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:32:03 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gkz2f3tsQz9sW4;
-        Wed, 11 Aug 2021 07:31:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ZhuviGjr4pbP; Wed, 11 Aug 2021 07:31:38 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gkz2f2nbHz9sVx;
-        Wed, 11 Aug 2021 07:31:38 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 43FCB8B7C3;
-        Wed, 11 Aug 2021 07:31:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id PtipKJ7MVT60; Wed, 11 Aug 2021 07:31:38 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8904E8B765;
-        Wed, 11 Aug 2021 07:31:37 +0200 (CEST)
-Subject: Re: [PATCH v2] powerpc/kprobes: Fix kprobe Oops happens in booke
-To:     Pu Lehui <pulehui@huawei.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        naveen.n.rao@linux.vnet.ibm.com, mhiramat@kernel.org,
-        peterz@infradead.org, npiggin@gmail.com, ruscur@russell.cc
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        zhangjinhao2@huawei.com
-References: <20210809023658.218915-1-pulehui@huawei.com>
- <df17030e-484c-ebd4-0225-6923e2982282@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9c6cdb3f-37ac-9a8c-2c75-3a939ed76ab4@csgroup.eu>
-Date:   Wed, 11 Aug 2021 07:31:37 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229730AbhHKFbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Aug 2021 01:31:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1BE71FB;
+        Tue, 10 Aug 2021 22:31:15 -0700 (PDT)
+Received: from [10.163.67.241] (unknown [10.163.67.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41B5F3F40C;
+        Tue, 10 Aug 2021 22:31:13 -0700 (PDT)
+Subject: Re: [PATCH 1/5] KVM: arm64: Drop direct PAGE_[SHIFT|SIZE] usage as
+ page size
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+References: <1628578961-29097-1-git-send-email-anshuman.khandual@arm.com>
+ <1628578961-29097-2-git-send-email-anshuman.khandual@arm.com>
+ <20210810132015.GA2946@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <7ac63cc6-d35a-d455-f629-abea2932d312@arm.com>
+Date:   Wed, 11 Aug 2021 11:02:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <df17030e-484c-ebd4-0225-6923e2982282@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210810132015.GA2946@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Le 11/08/2021 à 04:53, Pu Lehui a écrit :
-> Ping, serious problem here. All booke ppc will trigger Oops when
-> perform kprobes related operations.
-
-As far as I can see it is in the fixes branch: 
-https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/log/?h=fixes
-
-> 
-> On 2021/8/9 10:36, Pu Lehui wrote:
->> When using kprobe on powerpc booke series processor, Oops happens
->> as show bellow:
+On 8/10/21 6:50 PM, Will Deacon wrote:
+> On Tue, Aug 10, 2021 at 12:32:37PM +0530, Anshuman Khandual wrote:
+>> All instances here could just directly test against CONFIG_ARM64_XXK_PAGES
+>> instead of evaluating via PAGE_SHIFT or PAGE_SIZE. With this change, there
+>> will be no such usage left.
 >>
->> / # echo "p:myprobe do_nanosleep" > /sys/kernel/debug/tracing/kprobe_events
->> / # echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
->> / # sleep 1
->> [   50.076730] Oops: Exception in kernel mode, sig: 5 [#1]
->> [   50.077017] BE PAGE_SIZE=4K SMP NR_CPUS=24 QEMU e500
->> [   50.077221] Modules linked in:
->> [   50.077462] CPU: 0 PID: 77 Comm: sleep Not tainted 5.14.0-rc4-00022-g251a1524293d #21
->> [   50.077887] NIP:  c0b9c4e0 LR: c00ebecc CTR: 00000000
->> [   50.078067] REGS: c3883de0 TRAP: 0700   Not tainted (5.14.0-rc4-00022-g251a1524293d)
->> [   50.078349] MSR:  00029000 <CE,EE,ME>  CR: 24000228  XER: 20000000
->> [   50.078675]
->> [   50.078675] GPR00: c00ebdf0 c3883e90 c313e300 c3883ea0 00000001 00000000 c3883ecc 00000001
->> [   50.078675] GPR08: c100598c c00ea250 00000004 00000000 24000222 102490c2 bff4180c 101e60d4
->> [   50.078675] GPR16: 00000000 102454ac 00000040 10240000 10241100 102410f8 10240000 00500000
->> [   50.078675] GPR24: 00000002 00000000 c3883ea0 00000001 00000000 0000c350 3b9b8d50 00000000
->> [   50.080151] NIP [c0b9c4e0] do_nanosleep+0x0/0x190
->> [   50.080352] LR [c00ebecc] hrtimer_nanosleep+0x14c/0x1e0
->> [   50.080638] Call Trace:
->> [   50.080801] [c3883e90] [c00ebdf0] hrtimer_nanosleep+0x70/0x1e0 (unreliable)
->> [   50.081110] [c3883f00] [c00ec004] sys_nanosleep_time32+0xa4/0x110
->> [   50.081336] [c3883f40] [c001509c] ret_from_syscall+0x0/0x28
->> [   50.081541] --- interrupt: c00 at 0x100a4d08
->> [   50.081749] NIP:  100a4d08 LR: 101b5234 CTR: 00000003
->> [   50.081931] REGS: c3883f50 TRAP: 0c00   Not tainted (5.14.0-rc4-00022-g251a1524293d)
->> [   50.082183] MSR:  0002f902 <CE,EE,PR,FP,ME>  CR: 24000222  XER: 00000000
->> [   50.082457]
->> [   50.082457] GPR00: 000000a2 bf980040 1024b4d0 bf980084 bf980084 64000000 00555345 fefefeff
->> [   50.082457] GPR08: 7f7f7f7f 101e0000 00000069 00000003 28000422 102490c2 bff4180c 101e60d4
->> [   50.082457] GPR16: 00000000 102454ac 00000040 10240000 10241100 102410f8 10240000 00500000
->> [   50.082457] GPR24: 00000002 bf9803f4 10240000 00000000 00000000 100039e0 00000000 102444e8
->> [   50.083789] NIP [100a4d08] 0x100a4d08
->> [   50.083917] LR [101b5234] 0x101b5234
->> [   50.084042] --- interrupt: c00
->> [   50.084238] Instruction dump:
->> [   50.084483] 4bfffc40 60000000 60000000 60000000 9421fff0 39400402 914200c0 38210010
->> [   50.084841] 4bfffc20 00000000 00000000 00000000 <7fe00008> 7c0802a6 7c892378 93c10048
->> [   50.085487] ---[ end trace f6fffe98e2fa8f3e ]---
->> [   50.085678]
->> Trace/breakpoint trap
->>
->> There is no real mode for booke arch and the MMU translation is
->> always on. The corresponding MSR_IS/MSR_DS bit in booke is used
->> to switch the address space, but not for real mode judgment.
->>
->> Fixes: 21f8b2fa3ca5 ("powerpc/kprobes: Ignore traps that happened in real mode")
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 >> ---
->> v1->v2:
->> - use IS_ENABLED(CONFIG_BOOKE) as suggested by Michael Ellerman and
->>    Christophe Leroy
->> - update Oops log to make problem clear
->>
->>   arch/powerpc/kernel/kprobes.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
->> index cbc28d1a2e1b..7a7cd6bda53e 100644
->> --- a/arch/powerpc/kernel/kprobes.c
->> +++ b/arch/powerpc/kernel/kprobes.c
->> @@ -292,7 +292,8 @@ int kprobe_handler(struct pt_regs *regs)
->>       if (user_mode(regs))
->>           return 0;
->> -    if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
->> +    if (!IS_ENABLED(CONFIG_BOOKE) &&
->> +        (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR)))
->>           return 0;
->>       /*
->>
+>>  arch/arm64/kvm/hyp/pgtable.c | 6 +++---
+>>  arch/arm64/mm/mmu.c          | 2 +-
+>>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> Why is this better?
+
+There are two improvements here.
+
+1. Avoids using hard coded numerical shift values to determine the page size
+
+	e.g PAGE_SHIFT = 16 for 64K
+
+2. There are already instances of IS_ENABLED() construct checking for the page
+   size. After this change there will be just a single method to test page size
+   , rather than checking for either config, PAGE_SHIFT or PAGE_SIZE etc through
+   out arm64. This change helps in that unification around IS_ENABLED().
+
+There is another patch which drops remaining usage for PAGE_SIZE as well.
+
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/1628569782-30213-1-git-send-email-anshuman.khandual@arm.com/ 
