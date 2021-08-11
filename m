@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C840E3E946C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29A43E946E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 17:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhHKPUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 11:20:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31848 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232635AbhHKPUE (ORCPT
+        id S232952AbhHKPUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 11:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232934AbhHKPUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:20:04 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BF2jn0054591;
-        Wed, 11 Aug 2021 11:19:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
- : message-id : date : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=3WzDokDLJexQHoOQsmrorWkTcqNQXXScQWMzbJ2FIPw=;
- b=gC87rhPOrIUJme04pTDgV2Vg/KW4T6SODO13OjQGaYZwHYl/nIL2N2IoWQMkwt9oFXFg
- i2QJU1balrJIrlOUJ4EiHlpGXn1ZNA576sV4eiR43YDZJfVHjIhKpoJdcCENuMSD9196
- QTKQBskJmmTcemvJqRFuT8GxytWpmT83eTsN7JUqCcxDDWJB4s+ZI/j38m6Ki06Fg7hU
- giwqwqDJiwkAfAw8vn9KCaoj5opGpyxa/BJAt1uCwdWJK6BfvGHNhnSmM+vvpI6e13NI
- sNQK0Vl8Xde0ad5Uec45ztWPMImhn5iGVNnf3nJiRWMwIJ6lwADbWj6htxWBz0VoqYuo iA== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ab8kmdhmx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 11:19:39 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17BFCpDb022376;
-        Wed, 11 Aug 2021 15:19:37 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 3acfpg838y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Aug 2021 15:19:37 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17BFJYon52036048
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 15:19:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C2544A4053;
-        Wed, 11 Aug 2021 15:19:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7840AA4040;
-        Wed, 11 Aug 2021 15:19:34 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Aug 2021 15:19:34 +0000 (GMT)
-Received: from [9.206.147.74] (unknown [9.206.147.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 489CB60152;
-        Thu, 12 Aug 2021 01:19:33 +1000 (AEST)
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-Subject: [ANNOUNCE] [CFP] linux.conf.au Online 2022 Kernel Miniconf
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     lwn@lwn.net
-Message-ID: <e7e0d0c0-799f-28b7-2a2e-418afe809f24@linux.ibm.com>
-Date:   Thu, 12 Aug 2021 01:19:23 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: IitmhZlCi8J0xzqWXanC6e3vCy6S1rtf
-X-Proofpoint-ORIG-GUID: IitmhZlCi8J0xzqWXanC6e3vCy6S1rtf
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 11 Aug 2021 11:20:09 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1998C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:19:45 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id az7so2736388qkb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:19:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PTbZTB0OggPkXAxfHZ6VcjTpKi0pARGB5K9rQpw80Ro=;
+        b=FqBrCE1C6bKWw4lmcwBR4rx6mFcqiMBN7iKQCz4ZMcW0+Yvah7IpY8WsGQ8xGinZFb
+         v8MSypdJ4RlYSnsHekMoKjfsdntcqaPm9g7AJNSucqgB/kAspGIodBNXaCAJ5W21tPUf
+         0J+ruriImy6cMSCdkp1m+UYWZw/8XJgK+b1UE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PTbZTB0OggPkXAxfHZ6VcjTpKi0pARGB5K9rQpw80Ro=;
+        b=pVEPK8wN31B+4mnf/PqnOLSUeD8CR1fVf0G1qa+4DMXHeLLEOSMtkTMyGqhBrcduMs
+         b+T0/bVENK5kZrYDONf+Y6L7vtmBSn88nRN3/oY71H9x5SQ5FanIG9AiuayzLdYO5AgG
+         72NKrJF2yHgLrRbajKCkeKqNoHeYLKe2MTztDUD2DuBsSQdc0BfjP/ZyMVKtMZ8i/EMY
+         Jvw8n1eFEntgUY+4yMOYmVR1vg+91qC2XDO+0RWf8L1qLIMBw44ZohO/sR0E2eadGDdT
+         wzJHSQPB6I2OIhAcO9WpPYa54VAOBdncoivZGl5Mm/z7sAuduoy68rZwf3GBU+3+P4hr
+         JH3w==
+X-Gm-Message-State: AOAM5335eRZ7efMkFpTC99lQfZNGqbs6A4NuMSKKa+EjobKWZuFvtGSx
+        UjBWQPh7lrGFceW/BQoMxApEmiYdrAsPmw==
+X-Google-Smtp-Source: ABdhPJzNWubb3Z+hzVwaSW5jWXsqjVRG7fkfTCDxAvtlJNgrn2xJEOLwUh566R/MazAkWSN+ljcuJQ==
+X-Received: by 2002:a05:620a:138b:: with SMTP id k11mr21974824qki.486.1628695184687;
+        Wed, 11 Aug 2021 08:19:44 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id q6sm3041299qtr.91.2021.08.11.08.19.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 08:19:44 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id n15so4580351ybm.4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 08:19:43 -0700 (PDT)
+X-Received: by 2002:a25:ba44:: with SMTP id z4mr44554834ybj.476.1628695183483;
+ Wed, 11 Aug 2021 08:19:43 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-11_05:2021-08-11,2021-08-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- clxscore=1011 lowpriorityscore=0 suspectscore=0 phishscore=0 spamscore=0
- mlxscore=0 priorityscore=1501 mlxlogscore=852 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108110102
+References: <20210810165850.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid>
+ <CAE-0n50K+gAa0U9-kswTCdt+UAkxhuJ8BMg-D4sQayP1xqWTyQ@mail.gmail.com>
+ <CAD=FV=VdjTYvLmKfGONCZhpbyrzM_tG7uXkm5==-X6-uO1gTVw@mail.gmail.com> <20210811150340.GG4167@sirena.org.uk>
+In-Reply-To: <20210811150340.GG4167@sirena.org.uk>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 11 Aug 2021 08:19:32 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W0rS0-EZQn3i1GxgYy2A4OhnMNk=W0WUSrFOssjnUOYw@mail.gmail.com>
+Message-ID: <CAD=FV=W0rS0-EZQn3i1GxgYy2A4OhnMNk=W0WUSrFOssjnUOYw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: rt5682: Properly turn off regulators if wrong
+ device ID
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Bard Liao <bardliao@realtek.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LCA2022 Kernel Miniconf - Online - 2022-01-14
----------------------------------------------
+Hi,
 
-The linux.conf.au 2022 Kernel Miniconf Call for Proposals is now open. 
-Start working on your talks!
+On Wed, Aug 11, 2021 at 8:04 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, Aug 11, 2021 at 07:40:59AM -0700, Doug Anderson wrote:
+> > On Tue, Aug 10, 2021 at 9:24 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> > > Nit: Add newline here.
+>
+> > How strongly do you feel about it? I purposely left the newline off to
+> > try to tie the devm_add_action_or_reset() more closely to the
+> > devm_regulator_bulk_get(). I wanted to make it more obvious that the
+> > two of them were "together" and shouldn't be split up. That being
+> > said, it's no skin off my teeth to add a newline if everyone likes it
+> > better. ;-)
+>
+> TBH the newline looks off before I've got as far as reading the code.
 
-Date: 2022-01-14
-Location: The Internet (again)
-Submissions close: 2021-09-05, 23:59 AoE/UTC-12
-Submissions: https://linux.conf.au/proposals/submit/kernel-miniconf/
-More info: https://lca-kernel.ozlabs.org/2022-cfp.html
+Fair 'nuff. v2 is posted with the blank line.
 
-Significant changes from last year:
-- All miniconf speakers are guaranteed a free ticket
-- All talks will be 30 minutes long
-- CFP is now being run at the same time as main conference CFP process: 
-if your talk is of broader interest consider submitting to the main 
-conference as well
+https://lore.kernel.org/r/20210811081751.v2.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid/
 
-***************************************************************************
-
-linux.conf.au 2022 will be held from 14-16 January 2022.
-
-Due to the ongoing COVID-19-related restrictions on events and travel, 
-LCA2022 will once again be held online. (Silver lining is you can speak 
-or attend from wherever you are without flying here!)
-
-The Kernel Miniconf is a single-day miniconf track, held on Friday 14 
-January, about everything related to the kernel and low-level systems 
-programming.
-
-The Kernel Miniconf invites talks about up-and-coming kernel 
-developments, the future direction of the kernel, and kernel development 
-community and process matters. Past Kernel Miniconfs have covered topics 
-such as memory management, RCU, scheduling, testing/CI and filesystems, 
-as well as community and process topics such as licensing, developer 
-workflows, safety critical processes, and so on.
-
-We invite submissions on anything related to kernel and low-level 
-systems programming. We welcome submissions from developers of all 
-levels of experience, and from anyone connected with the kernel whether 
-you are an upstream kernel developer, distro maintainer, academic 
-researcher or a developer who works further downstream. The focus of the 
-miniconf will primarily be on Linux, however non-Linux talks of 
-sufficient interest to a primarily Linux audience will be considered.
-
--- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+-Doug
