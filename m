@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F153E890D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 05:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF52C3E8912
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 06:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233497AbhHKD6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Aug 2021 23:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232905AbhHKD6O (ORCPT
+        id S229550AbhHKEGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 00:06:41 -0400
+Received: from twhmllg4.macronix.com ([211.75.127.132]:45509 "EHLO
+        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhHKEGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Aug 2021 23:58:14 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79272C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:57:51 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d17so918815plr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Aug 2021 20:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VZDnzigX3SjnNXSD0ePWkP9LgJSp4fG8kgmss+VG9ns=;
-        b=L+R0++YNmnfCTMKhjKqOcKL4r/U7m81vQz3IrrH9KLDy//XrRshbenoNZmZvx+VIlg
-         Mq8Qc1IS2nkv1owuCTwuT/xVfJPoRLA9MwiztzGevawbNsG1jIpq1dWtcDKZEA6nFakz
-         6jW0uebiyXkhFAsTrvf8b28PT/Jm8ziY8l5R1B3utIIDLeuPh0i7j5b6WfYy1UU5wn2m
-         AV6QkLUi3fj0zsNyzUivEkcm0Yp5HUaCv1pluWDmaAcHjoAPdT3MzdvrvLTgKh69M+GY
-         5PXaWt5ahBrp/AkNB6otUyLPKOr2S9C60dve5Nwty8fLYrClkI8I/nytnDHs+c6xXBNR
-         d86w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VZDnzigX3SjnNXSD0ePWkP9LgJSp4fG8kgmss+VG9ns=;
-        b=p79UCQDAdf7J5ozcSoF5pyFUkiAMAWwVASpfN4jBJNPVGyj1InHvSPygE7Q+7ku7uY
-         5r9QI3dGoSF5yOj4bfszksytNQUUjp34qygtwQsdA9ROY3yT10QiehRVvjkFYDx9YCFX
-         7tED51eqhDKcM+xqz2C+dT778gz6o67UeCE/lwO8vUcq5vJhlm7CymLuj5Sr/MivViwM
-         oLN/gxOHOVmW3jDJph+oULOwACryL9q2y5Q5ESsyrR10FT8WNUUAbz7rkTWor8lWGtXp
-         /7Rg0xUPB5j+DUjQVqCMkV8Xs3jmJ1f/vse8vmGfogFtPLue0AOMjnU8pBK/jgcGwRgh
-         bDDw==
-X-Gm-Message-State: AOAM531IVJfZS/AJDoU8rGtzBajes/mvv3rTEmGPuDK1gmnioDq5iifU
-        KZO+T85uenKk1ZBymP+LlZVTbw==
-X-Google-Smtp-Source: ABdhPJx/pJbsP0m97XQVCkEHJBz1/qpfTU3xLCXt7Z7OMeaFjN14Huy9YQ+gFbHc8StZrL0P+eTQrA==
-X-Received: by 2002:a17:90a:d702:: with SMTP id y2mr13633559pju.127.1628654270782;
-        Tue, 10 Aug 2021 20:57:50 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id fv2sm4492265pjb.53.2021.08.10.20.57.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 20:57:50 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 09:27:45 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Taniya Das <tdas@codeaurora.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH v1] cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu
- cpufreq driver flag
-Message-ID: <20210811035745.j6jbufrd2pdrnqdp@vireshk-i7>
-References: <1628645918-12890-1-git-send-email-tdas@codeaurora.org>
+        Wed, 11 Aug 2021 00:06:40 -0400
+X-Greylist: delayed 1701 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Aug 2021 00:06:40 EDT
+Received: from TWHMLLG4.macronix.com (localhost [127.0.0.2] (may be forged))
+        by TWHMLLG4.macronix.com with ESMTP id 17B3CqGH056606
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 11:12:52 +0800 (GMT-8)
+        (envelope-from zhengxunli@mxic.com.tw)
+Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
+        by TWHMLLG4.macronix.com with ESMTP id 17B3CZnF056449;
+        Wed, 11 Aug 2021 11:12:35 +0800 (GMT-8)
+        (envelope-from zhengxunli@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+        by Forcepoint Email with ESMTP id 1EC5346CD70567289807;
+        Wed, 11 Aug 2021 11:12:36 +0800 (CST)
+In-Reply-To: <20210810142405.2221540-1-yangyingliang@huawei.com>
+References: <20210810142405.2221540-1-yangyingliang@huawei.com>
+To:     "Yang Yingliang" <yangyingliang@huawei.com>
+Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH -next] spi: mxic: add missing braces
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1628645918-12890-1-git-send-email-tdas@codeaurora.org>
-User-Agent: NeoMutt/20180716-391-311a52
+X-KeepSent: F3887BAF:9F4586C4-4825872E:00113C05;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
+Message-ID: <OFF3887BAF.9F4586C4-ON4825872E.00113C05-4825872E.0011A20D@mxic.com.tw>
+From:   zhengxunli@mxic.com.tw
+Date:   Wed, 11 Aug 2021 11:12:35 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
+ 2021/08/11 AM 11:12:36,
+        Serialize complete at 2021/08/11 AM 11:12:36
+Content-Type: text/plain; charset="Big5"
+Content-Transfer-Encoding: base64
+X-MAIL: TWHMLLG4.macronix.com 17B3CZnF056449
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-08-21, 07:08, Taniya Das wrote:
-> As remote cpufreq updates are supported on QCOM platforms, set
-> dvfs_possible_from_any_cpu cpufreq driver flag.
-> 
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
->  drivers/cpufreq/qcom-cpufreq-hw.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index f86859b..20455aa 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -161,6 +161,7 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
->  		return ret;
->  	} else {
->  		policy->fast_switch_possible = true;
-> +		policy->dvfs_possible_from_any_cpu = true;
->  		icc_scaling_enabled = false;
->  	}
 
-Why don't you set it always ?
+IllhbmcgWWluZ2xpYW5nIiA8eWFuZ3lpbmdsaWFuZ0BodWF3ZWkuY29tPiB3cm90ZSBvbiAyMDIx
+LzA4LzEwIKRVpMggDQoxMDoyNDowNToNCg0KPiAiWWFuZyBZaW5nbGlhbmciIDx5YW5neWluZ2xp
+YW5nQGh1YXdlaS5jb20+IA0KPiAyMDIxLzA4LzEwIKRVpMggMTA6MTgNCj4gDQo+IFRvDQo+IA0K
+PiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4sIDxsaW51eC1zcGlAdmdlci5rZXJuZWwu
+b3JnPiwgDQo+IA0KPiBjYw0KPiANCj4gPGJyb29uaWVAa2VybmVsLm9yZz4sIDx6aGVuZ3h1bmxp
+QG14aWMuY29tLnR3Pg0KPiANCj4gU3ViamVjdA0KPiANCj4gW1BBVENIIC1uZXh0XSBzcGk6IG14
+aWM6IGFkZCBtaXNzaW5nIGJyYWNlcw0KPiANCj4gRml4IHRoZSBmb2xsb3dpbmcgd2FyaW5nOg0K
+PiANCj4gZHJpdmVycy9zcGkvc3BpLW14aWMuYzogSW4gZnVuY3Rpb24goaVteGljX3NwaV9tZW1f
+ZXhlY19vcKGmOg0KPiBkcml2ZXJzL3NwaS9zcGktbXhpYy5jOjQwMTozOiB3YXJuaW5nOiB0aGlz
+IKGlaWahpiBjbGF1c2UgZG9lcyBub3QgDQo+IGd1YXJkLi4uIFstV21pc2xlYWRpbmctaW5kZW50
+YXRpb25dDQo+ICAgIGlmIChvcC0+ZGF0YS5kaXIgPT0gU1BJX01FTV9EQVRBX0lOKQ0KPiAgICBe
+fg0KPiBkcml2ZXJzL3NwaS9zcGktbXhpYy5jOjQwMzo0OiBub3RlOiAuLi50aGlzIHN0YXRlbWVu
+dCwgYnV0IHRoZSANCj4gbGF0dGVyIGlzIG1pc2xlYWRpbmdseSBpbmRlbnRlZCBhcyBpZiBpdCB3
+ZXJlIGd1YXJkZWQgYnkgdGhlIKGlaWahpg0KPiAgICAgaWYgKG9wLT5kYXRhLmR0cikNCj4gICAg
+IF5+DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBZYW5nIFlpbmdsaWFuZyA8eWFuZ3lpbmdsaWFuZ0Bo
+dWF3ZWkuY29tPg0KDQpSZXZpZXdlZC1ieTogWmhlbmd4dW4gTGkgPHpoZW5neHVubGlAbXhpYy5j
+b20udHc+DQoNCkNPTkZJREVOVElBTElUWSBOT1RFOg0KDQpUaGlzIGUtbWFpbCBhbmQgYW55IGF0
+dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiANCmFuZC9vciBw
+ZXJzb25hbCBkYXRhLCB3aGljaCBpcyBwcm90ZWN0ZWQgYnkgYXBwbGljYWJsZSBsYXdzLiBQbGVh
+c2UgYmUgDQpyZW1pbmRlZCB0aGF0IGR1cGxpY2F0aW9uLCBkaXNjbG9zdXJlLCBkaXN0cmlidXRp
+b24sIG9yIHVzZSBvZiB0aGlzIGUtbWFpbCANCihhbmQvb3IgaXRzIGF0dGFjaG1lbnRzKSBvciBh
+bnkgcGFydCB0aGVyZW9mIGlzIHByb2hpYml0ZWQuIElmIHlvdSByZWNlaXZlIA0KdGhpcyBlLW1h
+aWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdXMgaW1tZWRpYXRlbHkgYW5kIGRlbGV0ZSB0aGlz
+IG1haWwgYXMgDQp3ZWxsIGFzIGl0cyBhdHRhY2htZW50KHMpIGZyb20geW91ciBzeXN0ZW0uIElu
+IGFkZGl0aW9uLCBwbGVhc2UgYmUgDQppbmZvcm1lZCB0aGF0IGNvbGxlY3Rpb24sIHByb2Nlc3Np
+bmcsIGFuZC9vciB1c2Ugb2YgcGVyc29uYWwgZGF0YSBpcyANCnByb2hpYml0ZWQgdW5sZXNzIGV4
+cHJlc3NseSBwZXJtaXR0ZWQgYnkgcGVyc29uYWwgZGF0YSBwcm90ZWN0aW9uIGxhd3MuIA0KVGhh
+bmsgeW91IGZvciB5b3VyIGF0dGVudGlvbiBhbmQgY29vcGVyYXRpb24uDQoNCk1hY3Jvbml4IElu
+dGVybmF0aW9uYWwgQ28uLCBMdGQuDQoNCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KDQoNCg0KPT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQ0KDQpDT05GSURFTlRJQUxJVFkgTk9URToNCg0KVGhpcyBlLW1haWwgYW5kIGFueSBh
+dHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gYW5kL29yIHBl
+cnNvbmFsIGRhdGEsIHdoaWNoIGlzIHByb3RlY3RlZCBieSBhcHBsaWNhYmxlIGxhd3MuIFBsZWFz
+ZSBiZSByZW1pbmRlZCB0aGF0IGR1cGxpY2F0aW9uLCBkaXNjbG9zdXJlLCBkaXN0cmlidXRpb24s
+IG9yIHVzZSBvZiB0aGlzIGUtbWFpbCAoYW5kL29yIGl0cyBhdHRhY2htZW50cykgb3IgYW55IHBh
+cnQgdGhlcmVvZiBpcyBwcm9oaWJpdGVkLiBJZiB5b3UgcmVjZWl2ZSB0aGlzIGUtbWFpbCBpbiBl
+cnJvciwgcGxlYXNlIG5vdGlmeSB1cyBpbW1lZGlhdGVseSBhbmQgZGVsZXRlIHRoaXMgbWFpbCBh
+cyB3ZWxsIGFzIGl0cyBhdHRhY2htZW50KHMpIGZyb20geW91ciBzeXN0ZW0uIEluIGFkZGl0aW9u
+LCBwbGVhc2UgYmUgaW5mb3JtZWQgdGhhdCBjb2xsZWN0aW9uLCBwcm9jZXNzaW5nLCBhbmQvb3Ig
+dXNlIG9mIHBlcnNvbmFsIGRhdGEgaXMgcHJvaGliaXRlZCB1bmxlc3MgZXhwcmVzc2x5IHBlcm1p
+dHRlZCBieSBwZXJzb25hbCBkYXRhIHByb3RlY3Rpb24gbGF3cy4gVGhhbmsgeW91IGZvciB5b3Vy
+IGF0dGVudGlvbiBhbmQgY29vcGVyYXRpb24uDQoNCk1hY3Jvbml4IEludGVybmF0aW9uYWwgQ28u
+LCBMdGQuDQoNCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PQ0K
 
-> 
-> --
-> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-> of the Code Aurora Forum, hosted by the  Linux Foundation.
-
--- 
-viresh
