@@ -2,132 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BE53E89D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AB53E89D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 07:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhHKFkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 01:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
+        id S234481AbhHKFly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 01:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhHKFkf (ORCPT
+        with ESMTP id S234086AbhHKFlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:40:35 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1006AC061765;
-        Tue, 10 Aug 2021 22:40:12 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GkzDR6ZTNz9sRN;
-        Wed, 11 Aug 2021 15:40:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628660408;
-        bh=sQV6y3XX3iHyj5pvmLRvlcPDOEiAuXdY/NHLb0fNv7g=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZAejA8Tu18mAHVOJXGHWYwa5R3U8BJmtMZ1iok6fti59Zx76pyuQZcHdsIZfN3mbE
-         9OAS3rdiM2z/tkajgQS5fFw1i0ds2N4hQ6xT3O9XJ6mFJ2C1rH3O+/zZcy4q5sadoC
-         19BMRVui89rxmV4QKRxRcvSFDAzU4Cm8/Bf7ME54XC9hAUt2HfD8kuTghGsw9UBejx
-         ih8zLwiVq7p0DP2G0k9EjP1X/0qGa+RH6e+jNwa9m/V9mODJli4oPxzuMITDwBETdm
-         KelOevU+sTL3d06BQul+LpqoLpMuHjwvdt5XKyHvAUKiHi0NXSe0aXa9WcFCqYArCi
-         /sOFLF4OT0rVg==
-Date:   Wed, 11 Aug 2021 15:40:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Subject: linux-next: manual merge of the scsi-mkp tree with Linus' tree
-Message-ID: <20210811154005.7fbbb9e2@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jQSnKhTegTuB2gIUivp.zsC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 11 Aug 2021 01:41:47 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F92C061765;
+        Tue, 10 Aug 2021 22:41:01 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id a8so1638049pjk.4;
+        Tue, 10 Aug 2021 22:41:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=PDAPRfbqp4fZ98UOjrZjCjbxbDFL6OvNQRqjjMYSxcw=;
+        b=gXLhznkg1MxvrIQH7DIRn1pqa7BxmUfyes/6MFhc3ym+nOtRiv9Q7QA6ozHrI1yJaJ
+         5FNddLeUwCb1HnfmpRQjzNncZT/h9RuKlIDe1k6bmsZpAxPpv4W52l9VPepArBUOi9Xx
+         OB/yHhXpaKsCp7qMYK0DMtqZzkF9jok2IBh9xXvkodOkOw9lH69R70gwaQCb04Os/Gjp
+         nLmTgxgQyoHvb2lXSvBTODAsPobQrSvpyNjpRjD3Lud7tV1OHi/KBTPoBINPi+9gy1Ud
+         32NYc03yVofpX6Evq4Nvw/LToXxFpcI9alx7h1WVlfd897K9rsmUxDQp+4GrHefb3hVz
+         VqJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=PDAPRfbqp4fZ98UOjrZjCjbxbDFL6OvNQRqjjMYSxcw=;
+        b=ldsmtPKUU7o5CcMRg7trpahFVK5IdIeO4mOy/RlGRlfEYU0nF3F1bAQA7jww6jG1e0
+         jKCtEtZB/0aProjAEP+ynY7lJZ09t82WUXcWLVxYKuOrtLrJ/WVt4n7lUzk8JMLmlNs/
+         TMpgkYx1NnOFGBTRvNdzZeHL/bc0b0jbKbH4GREp7fM9MhDj9MQL+AWVMKUXrB9wvmFz
+         Zk4TRtMW44VEhendOeRx9TWmFwHQWLZ5AO6ynjd10U6+cRgqwnT5DcljOK3Dl+5wQYK9
+         p5qif5qJyktbjpHJ3skL4vRp0UF+/WoqyhnbpBW1FmkKVZ3D/VqAIJsJ70Ehzgmc/bD8
+         BkGQ==
+X-Gm-Message-State: AOAM532fiN0ABMWoony73jovjGD5uq1ihQOdZOmuhmT8jT+3uyV3T5OQ
+        B11Z5HgNObw+OCt7jWjlvlI=
+X-Google-Smtp-Source: ABdhPJyIYCLHlhXE0eYEnV0QrziIHArVxeEgRjQZ79sa8FUAsW/VGtw/K9Tgkz34UlZlFaRtJ1x6mA==
+X-Received: by 2002:a17:902:7001:b029:12c:4e36:52c5 with SMTP id y1-20020a1709027001b029012c4e3652c5mr2840928plk.9.1628660461178;
+        Tue, 10 Aug 2021 22:41:01 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id q12sm4236344pjd.18.2021.08.10.22.40.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Aug 2021 22:41:00 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: I/O cancellation in io-uring (was: io_uring: clear TIF_NOTIFY_SIGNAL
+ ...) 
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <1bf56100-e904-65b5-bbb8-fa313d85b01a@kernel.dk>
+Date:   Tue, 10 Aug 2021 22:40:58 -0700
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Olivier Langlois <olivier@trillion01.com>,
+        io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <29430B77-37C2-4E65-B279-2590CF825FB3@gmail.com>
+References: <20210808001342.964634-1-namit@vmware.com>
+ <20210808001342.964634-2-namit@vmware.com>
+ <fdd54421f4d4e825152192e327c838d035352945.camel@trillion01.com>
+ <A4DC14BA-74CA-41DB-BE08-D7B693C11AE0@gmail.com>
+ <bbd25a42-eac0-a8f9-0e54-3c8c8e9894fd@gmail.com>
+ <FD8FD9BD-1E94-4A84-88EB-3A1531BCF556@gmail.com>
+ <1bf56100-e904-65b5-bbb8-fa313d85b01a@kernel.dk>
+To:     Jens Axboe <axboe@kernel.dk>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jQSnKhTegTuB2gIUivp.zsC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+> On Aug 10, 2021, at 7:51 PM, Jens Axboe <axboe@kernel.dk> wrote:
+>=20
+> There's no way to cancel file/bdev related IO, and there likely never
+> will be. That's basically the only exception, everything else can get
+> canceled pretty easily. Many things can be written on why that is the
+> case, and they have (myself included), but it boils down to proper
+> hardware support which we'll likely never have as it's not a well =
+tested
+> path. For other kind of async IO, we're either waiting in poll (which =
+is
+> trivially cancellable) or in an async thread (which is also easily
+> cancellable). For DMA+irq driven block storage, we'd need to be able =
+to
+> reliably cancel on the hardware side, to prevent errant DMA after the
+> fact.
+>=20
+> None of this is really io_uring specific, io_uring just suffers from =
+the
+> same limitations as others would (or are).
+>=20
+>> Otherwise they might potentially never complete, as happens in my
+>> use-case.
+>=20
+> If you see that, that is most certainly a bug. While bdev/reg file IO
+> can't really be canceled, they all have the property that they =
+complete
+> in finite time. Either the IO completes normally in a "short" amount =
+of
+> time, or a timeout will cancel it and complete it in error. There are =
+no
+> unbounded execution times for uncancellable IO.
 
-Today's linux-next merge of the scsi-mkp tree got conflicts in:
+I understand your point that hardware reads/writes cannot easily be =
+cancelled.
+(well, the buffers can be unmapped from the IOMMU tables, but let's put =
+this
+discussion aside).
 
-  drivers/scsi/mpt3sas/mpt3sas_base.c
-  drivers/scsi/mpt3sas/mpt3sas_base.h
+Yet the question is whether reads/writes from special files such as =
+pipes,
+eventfd, signalfd, fuse should be cancellable. Obviously, it is always
+possible to issue a blocking read/write from a worker thread. Yet, there =
+are
+inherent overheads that are associated with this design, specifically
+context-switches. While the overhead of a context-switch is not as high =
+as
+portrayed by some, it is still high for low latency use-cases.
 
-between commit:
+There is a potential alternative, however. When a write to a pipe is
+performed, or when an event takes place or signal sent, queued io-uring =
+reads
+can be fulfilled immediately, without a context-switch to a worker. I
+specifically want to fulfill userfaultfd reads and notify userspace on
+page-faults in such manner. I do not have the numbers in front of me, =
+but
+doing so shows considerable performance improvement.
 
-  fae21608c31c ("scsi: mpt3sas: Transition IOC to Ready state during shutdo=
-wn")
+To allow such use-cases, cancellation of the read/write is needed. A =
+read from
+a pipe might never complete if there is no further writes to the pipe.
+Cancellation is not hard to implement for such cases (it's only the mess =
+with
+the existing AIO's ki_cancel() that bothers me, but as you said - it is =
+a
+single use-case).
 
-from Linus' tree and commit:
+Admittedly, there are no such use-cases in the kernel today, but =
+arguably,
+this is due to the lack of infrastructure. I see no alternative which is =
+as
+performant as the one I propose here. Using poll+read or any other =
+option
+will have unwarranted overhead. =20
 
-  432bc7caef4e ("scsi: mpt3sas: Add io_uring iopoll support")
+If an RFC might convince you, or some more mainstream use-case such as =
+queued
+pipe reads would convince you, I can work on such in order to try to get
+something like that.
 
-from the scsi-mkp tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/scsi/mpt3sas/mpt3sas_base.c
-index cf4a3a2c22ad,e7f6fbb282bd..000000000000
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@@ -8471,7 -8738,8 +8738,8 @@@ mpt3sas_base_hard_reset_handler(struct=20
-  	_base_pre_reset_handler(ioc);
-  	mpt3sas_wait_for_commands_to_complete(ioc);
-  	mpt3sas_base_mask_interrupts(ioc);
-+ 	mpt3sas_base_pause_mq_polling(ioc);
- -	r =3D _base_make_ioc_ready(ioc, type);
- +	r =3D mpt3sas_base_make_ioc_ready(ioc, type);
-  	if (r)
-  		goto out;
-  	_base_clear_outstanding_commands(ioc);
-diff --cc drivers/scsi/mpt3sas/mpt3sas_base.h
-index 0c6c3df0038d,3cf2e4615ff5..000000000000
---- a/drivers/scsi/mpt3sas/mpt3sas_base.h
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.h
-@@@ -1730,10 -1755,9 +1755,13 @@@ do {	ioc_err(ioc, "In func: %s\n", __fu
-  	status, mpi_request, sz); } while (0)
- =20
-  int mpt3sas_wait_for_ioc(struct MPT3SAS_ADAPTER *ioc, int wait_count);
- +int
- +mpt3sas_base_make_ioc_ready(struct MPT3SAS_ADAPTER *ioc, enum reset_type =
-type);
- +void mpt3sas_base_free_irq(struct MPT3SAS_ADAPTER *ioc);
- +void mpt3sas_base_disable_msix(struct MPT3SAS_ADAPTER *ioc);
-+ int mpt3sas_blk_mq_poll(struct Scsi_Host *shost, unsigned int queue_num);
-+ void mpt3sas_base_pause_mq_polling(struct MPT3SAS_ADAPTER *ioc);
-+ void mpt3sas_base_resume_mq_polling(struct MPT3SAS_ADAPTER *ioc);
- =20
-  /* scsih shared API */
-  struct scsi_cmnd *mpt3sas_scsih_scsi_lookup_get(struct MPT3SAS_ADAPTER *i=
-oc,
-
---Sig_/jQSnKhTegTuB2gIUivp.zsC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmETYrUACgkQAVBC80lX
-0Gxbqwf+LeSkg2kU8TJYXh5aMX/3AaM543vCO7luLBTgMQxjhuC/kH+jgeOttMRa
-j0QXmyuUmNwJhNWm16kogMK1PJVq9MM4qpWR/DDLcosVvl6w5hpcaUAW/4u/1qke
-56W0zS51M5xbmSlxtF6Wuknh8l80kfsXQwsJSsfHgktexa3ALBOXwC1k758AQfYl
-K59ABRSzGo5rAJl1kSc+5J3P552YctJk2lhuWllkKHaxx9kAB67+IdxiDWWZO7rw
-zENbevgZaU1EYbfSE7KxRvbIuvdQIt8ZfSSVMJ9B2BZPrYJ13VdiTn4h0lhGyMcA
-mR59vGSgWyvwq8rL+19JfMKBZRc8hQ==
-=RgVL
------END PGP SIGNATURE-----
-
---Sig_/jQSnKhTegTuB2gIUivp.zsC--
