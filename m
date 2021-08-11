@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BE53E8D46
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E043E8D4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Aug 2021 11:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236539AbhHKJem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Aug 2021 05:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236056AbhHKJel (ORCPT
+        id S236650AbhHKJgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Aug 2021 05:36:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21807 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236320AbhHKJgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Aug 2021 05:34:41 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936CFC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:34:17 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso3925250wmq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vnsVN4bcM0E0y8yL+4jX4NPKN0s5XVfHXg6t0sA+kKU=;
-        b=u8FXx8PbqKg72yRV7K6aX2nwg+RaUIMIKfNSyZDi54QHZNgrnmHHhpQ3uW6MNefq+t
-         X/92op1mryh95Wm/AH8EEK6FZ9dY6WHyWJJ6gWW9CV/snKBi8+dpGzZiAUW4j3bT+sQA
-         kEkRFMvY/K+F2WRBhUU/Aw+ZhvCvgDYP07VdNhurn9IQQUMuRJhYvRvsUghUHu0Cd7lm
-         2HxjMjXHAezdkF4PXpqZnFGn0GCPqevGzJ4qOY7sM7q2tRu5scxmVsHV2bkXeB5xOZay
-         Vb/qjRNLocExEd0jwIXNuWn1dpNVgbP5WBCp0KJvYay/+69ktW+ZNYmVv3DQXiNSoqSs
-         F/Vw==
+        Wed, 11 Aug 2021 05:36:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628674537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cf3MjxvLtXnOmLgMvYwULBr4gwnHPx12ZtDKQt4PbM4=;
+        b=g4EZrBhXuSNG/Ec8DymxXXQAN1ws17mDiNDe1f2c2nT4H+ag9rxeagWD7xDV7cN9OicfuZ
+        h0Eh80njBcszwkaiZHsI7GtFMvbPsFtoSrz18kBB51Vr8KBDXCkP7UdotVcflZ2XQwMtCT
+        W8R22UAr/tr5+BLZNGLBke/BI5wgpJA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-nn72cHfpNc25lSnS6zCEHA-1; Wed, 11 Aug 2021 05:35:35 -0400
+X-MC-Unique: nn72cHfpNc25lSnS6zCEHA-1
+Received: by mail-wm1-f69.google.com with SMTP id l19-20020a05600c4f13b029025b036c91c6so658485wmq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Aug 2021 02:35:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vnsVN4bcM0E0y8yL+4jX4NPKN0s5XVfHXg6t0sA+kKU=;
-        b=suShG128A8GEI8tJbhP08+b2zUkeaZkbLXf1eRqtDuyswF2hG6H5sqCL1BnCPCSocV
-         NANRoEy+mvmMn6klsATbP3LF5qNLiut1weJPZK+A5LEx6O4GxSzs1C4Y0EdHWbuJosnA
-         9L340f4SxMNPJXu8Iz82N2BERiE3tzeoYzR62CbritlXFW1KlipcRta08EkuuAPoRg3E
-         eZumlfEH8JCLM1TeGqf9uy2gZzjpvo8k6/OsSW8lbK/TG3MM+tyW9pLZO83P6IWpqk5z
-         pVBRKpStOMMuUGHnfKS7d4sofx/mwScmLs+ZoGcLa1PLcGDJPzp5mKNaRwBHSxTyagK9
-         reZw==
-X-Gm-Message-State: AOAM533ki6SYhFtBvcnKFoU0K+B/Z7O0f1hRa8B3gfzKvTtE0+axpXpi
-        P4rI+0P4rbTctg8dVGhhLRVUIw==
-X-Google-Smtp-Source: ABdhPJwkwReehafMcUbIlZNd433otHjSQ1cTcW/iaeTfVVwqL8nOZJoLVmtkJ6iZwqwM5f+LD1MLMA==
-X-Received: by 2002:a7b:cd83:: with SMTP id y3mr26353421wmj.126.1628674455789;
-        Wed, 11 Aug 2021 02:34:15 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:43fd:e634:73d9:e10e])
-        by smtp.gmail.com with ESMTPSA id i14sm20670426wmq.40.2021.08.11.02.34.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 02:34:15 -0700 (PDT)
-Date:   Wed, 11 Aug 2021 10:34:09 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        lukasz.luba@arm.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH 0/8] cpufreq: Auto-register with energy model
-Message-ID: <YROZkbMEMAeXMt1W@google.com>
-References: <cover.1628579170.git.viresh.kumar@linaro.org>
- <YRJym+Vn4bbwQzzs@google.com>
- <20210811051859.ihjzhvrnuct2knvy@vireshk-i7>
- <YROMZFHCor3pbhMr@google.com>
- <20210811091321.xtb776q4t6cwyanx@vireshk-i7>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=cf3MjxvLtXnOmLgMvYwULBr4gwnHPx12ZtDKQt4PbM4=;
+        b=DswGRVLPZ8LeQkI0ZfgXO4LlmQ+xbrDGyB0pZ+TO9FlRqtV2Vu2rkrSRuAs1cWr6v6
+         c7n8bc6qe6xnIM+86FLs5RnlpOo+uhJaWCdjagRhuDJNcgs6RY+0YEOguVqb39ruelm1
+         ltavEStIZkFCkv+Dyi+sfOpqYuwtqq1NTftH7Xi0QFP47tT2yuKLJ/JMqA3y1PSnOMtA
+         Qte0GzmMwMUiehCPVqqfDKM6HTqfCgBxr00FGbMVpyzb/4IvsNFptsE4qh7JvVZIJLe7
+         f1JYtIgXT0W4fa5KhqQM5fJEF3Y6Ru9XKAEnyOejRvEaI6gad52epw1fBIxEz0DXy+Z4
+         jDKg==
+X-Gm-Message-State: AOAM533Kp7XC+ZHur0aZTDLYF7ukY+RRY/4N2DOSO+QhB7HGpUzQ185c
+        0l28WHb6Pd//ZDlFWn3aB+1JX/YQ5z9y9Hmmv6h+t2cfSKCNetNtlSiHqK6v9QXDYkfVuZSXCgZ
+        WT4G5E5jjZ7m/B0J5Fd8xL4nKrkEf896ArE0pq9WaNuD23yp/JH0AKxDD351mFPE80jzgzY6K
+X-Received: by 2002:a5d:690e:: with SMTP id t14mr35388677wru.258.1628674534756;
+        Wed, 11 Aug 2021 02:35:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzd+c8UQlHqZLR3QOaR8iJgVDzkYujRtaauiswaVPVPS1mM0ajqqHun8pmNv7S0En0cMK0QrQ==
+X-Received: by 2002:a5d:690e:: with SMTP id t14mr35388656wru.258.1628674534565;
+        Wed, 11 Aug 2021 02:35:34 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64a0.dip0.t-ipconnect.de. [91.12.100.160])
+        by smtp.gmail.com with ESMTPSA id o28sm22489467wms.14.2021.08.11.02.35.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 02:35:34 -0700 (PDT)
+Subject: Re: [PATCH] memblock: Check memory add/cap ordering
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <aabc5bad008d49f07d542815c6c8d28ec90bb09e.1628672091.git.geert+renesas@glider.be>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <1c4cb6e9-2ca9-9738-9706-28ff94f8fdcc@redhat.com>
+Date:   Wed, 11 Aug 2021 11:35:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811091321.xtb776q4t6cwyanx@vireshk-i7>
+In-Reply-To: <aabc5bad008d49f07d542815c6c8d28ec90bb09e.1628672091.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 11 Aug 2021 at 14:43:21 (+0530), Viresh Kumar wrote:
-> On 11-08-21, 09:37, Quentin Perret wrote:
-> > On Wednesday 11 Aug 2021 at 10:48:59 (+0530), Viresh Kumar wrote:
-> > > I had to use the pm-opp version, since almost everyone was using that.
-> > > 
-> > > On the other hand, there isn't a lot of OPP specific stuff in
-> > > dev_pm_opp_of_register_em(). It just uses dev_pm_opp_get_opp_count(),
-> > > that's all. This ended up in the OPP core, nothing else. Maybe we can
-> > > now move it back to the EM core and name it differently ?
-> > 
-> > Well it also uses dev_pm_opp_find_freq_ceil() and
-> > dev_pm_opp_get_voltage(), so not sure how easy it will be to move, but
-> > if it is possible no objection from me.
+On 11.08.21 10:55, Geert Uytterhoeven wrote:
+> For memblock_cap_memory_range() to work properly, it should be called
+> after memory is detected and added to memblock with memblock_add() or
+> memblock_add_node().  If memblock_cap_memory_range() would be called
+> before memory is registered, we may silently corrupt memory later
+> because the crash kernel will see all memory as available.
 > 
-> What uses these routines ? dev_pm_opp_of_register_em() ? I am not able
-> to see that at least :(
-
-Yep, it's not immediately obvious, but see how it sets the struct
-em_data_callback to point at _get_power() where the actual energy
-calculation is done. So strictly speaking _get_power() is what uses
-these routines, but it goes in hand with dev_pm_opp_of_register_em() so
-I guess the same reasoning applies.
-
-> > Right but the EM is a description of the hardware, so it seemed fair
-> > to assume this wouldn't change across the lifetime of the OS, similar
-> > to the DT which we can't reload at run-time. Yes it can be a little odd
-> > if you load/unload your driver module, but note that you generally can't
-> > load two completely different drivers on a single system. You'll just
-> > load the same one again and the hardware hasn't changed in the meantime,
-> > so the previously loaded EM will still be correct.
+> Print a warning and bail out if ordering is not satisfied.
 > 
-> Yeah, it will be the same driver but a different version of it, which
-> may have updated the freq table. For me the EM is attached to the
-> freq-table, and the freq-table is not available anymore after the
-> driver is gone.
+> Suggested-by: Mike Rapoport <rppt@kernel.org>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>   mm/memblock.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
-> Anyway, I will leave that for you guys to decide :)
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 57a9849a5d820c34..e2ca8ddc8ebebf4e 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -1685,6 +1685,11 @@ void __init memblock_cap_memory_range(phys_addr_t base, phys_addr_t size)
+>   	if (!size)
+>   		return;
+>   
+> +	if (memblock.memory.cnt <= 1) {
+> +		pr_warn("%s: No memory registered yet\n", __func__);
+> +		return;
+> +	}
+> +
+>   	ret = memblock_isolate_range(&memblock.memory, base, size,
+>   						&start_rgn, &end_rgn);
+>   	if (ret)
+> 
 
-IIUC Lukasz is working on something that should allow changing the EM at
-run-time, so hopefully it'll enable this use-case as well, but we'll see :)
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
